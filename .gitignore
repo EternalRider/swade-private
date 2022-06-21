@@ -8,3 +8,4 @@ foundryconfig.json
 dist/*
 .idea
 docs/*
+example-foundryconfig.json
