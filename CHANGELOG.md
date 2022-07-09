@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v1.1.8
+
+### Fixed
+
+- Active Effects from the Effects tab of the character sheet are now draggable (#542)
+- Tightened the conditions for triggering Joker's Wild. (#543)
+
 ## v1.1.7
 
 ### Added

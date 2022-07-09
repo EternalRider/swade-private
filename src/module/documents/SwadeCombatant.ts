@@ -128,7 +128,12 @@ export default class SwadeCombatant extends Combatant {
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
-    this.handOutBennies();
+    if (
+      hasProperty(changed, 'flags.swade.cardValue') ||
+      hasProperty(changed, 'flags.swade.suitValue')
+    ) {
+      this.handOutBennies();
+    }
   }
 
   /** Checks if this combatant has a joker and hands out bennies based on the actor type and disposition */
