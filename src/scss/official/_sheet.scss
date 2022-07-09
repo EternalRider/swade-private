@@ -1274,7 +1274,6 @@
       max-height: 100%;
     }
     .advances.active {
-      overflow: scroll;
       max-height: 100%;
     }
     .advance-track {
@@ -1284,6 +1283,7 @@
         display: grid;
         grid-template-columns: 1.5em 25% auto 80px;
         text-align: left;
+        align-items: start;
       }
       .faded {
         font-style: italic;
