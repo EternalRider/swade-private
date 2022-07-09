@@ -30,8 +30,8 @@ export class AdvanceEditor extends FormApplication<
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/advanceEditor.hbs',
       title: game.i18n.localize('SWADE.Advances.EditorTitle'),
-      classes: ['swade'],
-      width: 400,
+      classes: ['swade', 'advance-editor'],
+      width: 420,
       height: 'auto' as const,
       submitOnClose: false,
       closeOnSubmit: true,
@@ -39,17 +39,20 @@ export class AdvanceEditor extends FormApplication<
     });
   }
 
-  async getData(_options?: Partial<FormApplicationOptions>): Promise<any> {
+  override async getData(
+    _options?: Partial<FormApplicationOptions>,
+  ): Promise<any> {
     const advance = this.object.advance;
     const data = {
       advance: advance,
       rank: getRankFromAdvanceAsString(advance.sort ?? 0),
       advanceTypes: this._getAdvanceTypes(),
+      owner: this.object.actor.isOwner,
     };
     return data;
   }
 
-  protected async _updateObject(
+  protected override async _updateObject(
     _event: Event,
     formData: Advance,
   ): Promise<unknown> {
@@ -68,6 +71,17 @@ export class AdvanceEditor extends FormApplication<
       { 'data.advances.list': this.advances.toJSON() },
       { diff: false },
     );
+  }
+
+  override activateEditor(
+    name: string,
+    options?: TextEditor.Options,
+    initialContent?: string,
+  ): void {
+    if (name === 'notes' && !!options) {
+      options.plugins = 'lists image table hr code link';
+    }
+    super.activateEditor(name, options, initialContent);
   }
 
   private _getAdvanceTypes(): Record<number, string> {

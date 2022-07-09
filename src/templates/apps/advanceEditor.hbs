@@ -25,14 +25,15 @@
       <input type='checkbox' name='planned' {{checked advance.planned}} />
     </span>
   </div>
-  <div>
-    <div>{{localize 'SWADE.Notes'}}</div>
-    <textarea
-      name='notes'
-      rows='4'
-      maxlength='200'
-      style='resize: none;'
-    >{{advance.notes}}</textarea>
+  <h2>{{localize 'SWADE.Notes'}}</h2>
+  <div class='editor-container'>
+    {{editor
+      content=advance.notes
+      target='notes'
+      button=false
+      owner=owner
+      editable=owner
+    }}
   </div>
   <button type='submit'><i class='far fa-save'></i>{{localize 'Save'}}</button>
 </form>
