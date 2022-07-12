@@ -10,7 +10,7 @@ export class AdvanceEditor extends FormApplication<
 > {
   constructor({ advance, actor }: AdvanceEditorContext, options = {}) {
     super({ advance, actor }, options);
-    if (actor.type === 'vehicle') {
+    if (actor.type !== 'character' && actor.type !== 'npc') {
       throw TypeError(`Actor type ${actor.type} not permissible`);
     }
   }
@@ -19,9 +19,17 @@ export class AdvanceEditor extends FormApplication<
     return this.object;
   }
 
+  get actor() {
+    return this.object.actor;
+  }
+
+  get advance() {
+    return this.object.advance;
+  }
+
   get advances() {
     return getProperty(
-      this.ctx.actor.data,
+      this.actor.data,
       'data.advances.list',
     ) as Collection<Advance>;
   }
@@ -30,7 +38,7 @@ export class AdvanceEditor extends FormApplication<
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/advanceEditor.hbs',
       title: game.i18n.localize('SWADE.Advances.EditorTitle'),
-      classes: ['swade', 'advance-editor'],
+      classes: ['swade', 'advance-editor', 'swade-app'],
       width: 420,
       height: 'auto' as const,
       submitOnClose: false,
@@ -42,12 +50,11 @@ export class AdvanceEditor extends FormApplication<
   override async getData(
     _options?: Partial<FormApplicationOptions>,
   ): Promise<any> {
-    const advance = this.object.advance;
     const data = {
-      advance: advance,
-      rank: getRankFromAdvanceAsString(advance.sort ?? 0),
+      advance: this.advance,
+      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
       advanceTypes: this._getAdvanceTypes(),
-      owner: this.object.actor.isOwner,
+      owner: this.actor.isOwner,
     };
     return data;
   }
@@ -56,9 +63,9 @@ export class AdvanceEditor extends FormApplication<
     _event: Event,
     formData: Advance,
   ): Promise<unknown> {
-    const sortHasChanged = formData.sort !== this.ctx.advance.sort;
+    const sortHasChanged = formData.sort !== this.advance.sort;
     //merge data to update
-    const advance: Advance = foundry.utils.mergeObject(this.object.advance, {
+    const advance: Advance = foundry.utils.mergeObject(this.advance, {
       notes: formData.notes,
       planned: formData.planned,
       type: formData.type,
@@ -78,8 +85,9 @@ export class AdvanceEditor extends FormApplication<
     options?: TextEditor.Options,
     initialContent?: string,
   ): void {
-    if (name === 'notes' && !!options) {
-      options.plugins = 'lists image table hr code link';
+    if (name === 'notes') {
+      if (options) options.plugins = 'lists image table hr code link';
+      if (!initialContent) initialContent = this.advance.notes;
     }
     super.activateEditor(name, options, initialContent);
   }
@@ -105,10 +113,7 @@ export class AdvanceEditor extends FormApplication<
     //update sort values based on index
     arr.forEach((a, i) => (a.sort = i + 1));
     //yeet
-    return this.ctx.actor.update(
-      { 'data.advances.list': arr },
-      { diff: false },
-    );
+    return this.actor.update({ 'data.advances.list': arr }, { diff: false });
   }
 }
 

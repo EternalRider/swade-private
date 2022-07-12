@@ -1,6 +1,7 @@
 <form autocomplete='off'>
+  {{log this}}
   <div class='form-group'>
-    <label>Type</label>
+    <label>{{localize 'Type'}}</label>
     <span class='form-fields'>
       <select name='type' data-dtype='Number'>
         {{#select advance.type}}
