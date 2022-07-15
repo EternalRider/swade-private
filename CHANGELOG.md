@@ -69,6 +69,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Rolling damage and Trait rolls with a Strength of 1 no longer results in an error. (#308)
 
+## v1.1.9
+
+### Fixed
+
+- Fixed an issue where Joker's Wild would be triggered by coming out of Hold
+
 ## v1.1.8
 
 ### Fixed
