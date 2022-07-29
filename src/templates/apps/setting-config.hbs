@@ -1,5 +1,5 @@
-<form class='{{cssClass}}' autocomplete='off'>
-  <nav class='sheet-tabs tabs'>
+<form autocomplete='off' class='main-grid'>
+  <nav class='tabs'>
     <a class='item active' data-tab='basics'>
       <i class='fas fa-cogs'></i>
       {{localize 'SWADE.WorldBasics'}}
@@ -382,12 +382,8 @@
       {{/if}}
     </section>
     <!-- Additional Stats -->
-    <section
-      class='tab attributes'
-      data-tab='additional-stats'
-      id='setting-specific'
-    >
-      <h3>{{localize 'SWADE.Actors'}}</h3>
+    <section class='tab attributes' data-tab='additional-stats'>
+      <h2>{{localize 'SWADE.Actors'}}</h2>
       <ul class='stats-container'>
         <li class='attribute attributes-header'>
           <span class='attribute-key'>Stat Key</span>
@@ -432,8 +428,7 @@
           </li>
         {{/each}}
       </ul>
-      <hr />
-      <h3>{{localize 'SWADE.Items'}}</h3>
+      <h2>{{localize 'SWADE.Items'}}</h2>
       <ul class='stats-container'>
         <li class='attribute attributes-header'>
           <span class='attribute-key'>Stat Key</span>

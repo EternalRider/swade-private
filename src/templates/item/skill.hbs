@@ -1,0 +1,68 @@
+<form class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+
+  <section class="sheet-content">
+    <div>
+      <div class="form-group">
+        <label>{{localize "SWADE.Die"}}</label>
+        <span class="form-fields">
+          <select name="data.die.sides"data-dtype="Number">
+            {{#select data.data.die.sides}} 
+              {{>"systems/swade/templates/die-sides-options.hbs"}}
+          {{/select}}
+          </select>
+          <input
+            name="data.die.modifier"
+            type="text"
+            value="{{data.data.die.modifier}}"
+            placeholder="{{localize 'SWADE.Modifier'}}"
+            data-dtype="Number"
+          />
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{localize "SWADE.LinkAttr"}}</label>
+        <span class="form-fields">
+          <select name="data.attribute" data-dtype="String">
+            {{#select data.data.attribute}}
+              {{> "systems/swade/templates/attribute-select.hbs"}}
+            {{/select}}
+          </select>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{localize "SWADE.WildDie"}}</label>
+        <span class="form-fields">
+          <select name="data.wild-die.sides" data-dtype="Number">
+            {{#select data.data.wild-die.sides}} 
+              {{> "systems/swade/templates/die-sides-options.hbs"}}
+            {{/select}}
+          </select>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{localize "SWADE.CoreSkill"}}</label>
+        <span class="form-fields">
+          <input
+            type="checkbox"
+            name="data.isCoreSkill"
+            {{checked data.data.isCoreSkill}}
+            data-dtype="boolean"
+          />
+        </span>
+      </div>
+    </div>
+    {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</form>

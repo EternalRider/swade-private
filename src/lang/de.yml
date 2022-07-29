@@ -51,8 +51,8 @@ SWADE:
   Skills: Fertigkeiten
   Unskilled: Ungeübt
   LinkAttr: Verbundenes Attribut
-  ArcaneSkill: NEEDS TRANSLATION
-  ActivateArcaneDevice: NEEDS TRANSLATION
+  ArcaneSkill: Arkane Fertigkeit
+  ActivateArcaneDevice: Apparatur aktivieren
   Die: Würfel
   WildDie: Wildcard-Würfel
   Modifier: Modifikator
@@ -83,7 +83,7 @@ SWADE:
   Armor: Rüstung
   WeaponsAndArmor: Waffen & Rüstungen
   Dmg: Schaden
-  DmgOver: Schaden überschreiben
+  DmgOver: Aktionsschaden
   Ap: Pzbr
   APLong: Panzerbrechend
   RoF: Feuerrate
@@ -92,8 +92,8 @@ SWADE:
   Notes: Notizen
   ActionsEffects: Aktionen & Effekte
   Actions: Aktionen
-  DmgModUni: Schadensmodifikator (universell)
-  SkillModUni: Eigenschaftsmodifikator (universell)
+  DmgModUni: Schadensmodifikator
+  SkillModUni: Eigenschaftsmodifikator
   ShotsUsed: Schuss verbraucht
   NaturalArmor: Natürliche Rüstung
   HitLocations: Trefferzonen
@@ -108,7 +108,7 @@ SWADE:
   Special: Spezialfähigkeiten
   Details: Details
   Equippable: Ausrüstbar
-  ArcaneDevice: Arkanes Gerät
+  ArcaneDevice: Arkane Apparatur
   Misc: Sonstiges
   QuickAccess: Schnellzugriff
   Effects: Effekte
@@ -201,7 +201,7 @@ SWADE:
   Formula: Formel
   SitMod: Situativer Mod
   RollMode: Wurfmodus
-  RollExample: z.B. +1d6x= oder -2
+  RollExample: z.B. +1d6x oder -2
   Roll: Probe auf
   RollRaise: Steigerungswurf
   GroupRoll: Gruppenprobe
@@ -351,7 +351,7 @@ SWADE:
   CurrencyNameDesc: Benenne die gängigste Währung deines Settings
   TraitRolls: Eigenschaftswürfe
   Trait: Eigenschaft
-  AltTrait: Alternative Eigenschaft
+  AltTrait: Aktionseigenschaft
   ClickSuggestions: Klicke hier für Vorschläge
   Quick: Schnell
   BonusDamage: Bonusschaden
@@ -581,6 +581,14 @@ SWADE:
   ItemTraitMod: Eigenschaftsmodifikator
   TargetVulnerable: Ziel is Verwundbar
   WildAttack: Rücksichtsloser Angriff
+  DocumentLink: Link
+  DocumentTweaks: Tweaks
+  ItemType: Typ
+  Source: Quelle
+  Properties: Eigenschaften
+  AddAction: Aktion hinzufügen
+  DeleteEmbeddedActionPrompt: Bist du sicher das du die Aktion {action} löschen willst?
+  DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
