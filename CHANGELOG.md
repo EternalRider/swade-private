@@ -38,16 +38,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - For Developers: which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
 - Added Basic Powers as a system compendium (#499)
 - Added modifier presets for `Aiming`, `Wild Attack` and `Target is Vulnerable`
-- Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following exisitng apps:
+- Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following existing apps:
   - Setting Configurator
   - Wild Die Config
   - Advance Editor
   - Roll Dialog
   - Document Tweaks
 - Added V2 Item sheets which are completely redesigned from the ground up, featuring a new layout and visual styles more in line with the existing character sheets.
-- Added `collapsible` and `eachInMap` Handlebars helpers
-- Added `SwadeItem#isArcaneDevice` getter
-
+- Added `collapsible` and `eachInMap` Handlebars helpers.
+- Added `SwadeItem#isArcaneDevice` getter.
 - Added additional translation strings.
 
 ### Changed
