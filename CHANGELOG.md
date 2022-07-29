@@ -65,6 +65,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Deprecated
 
 - Started depreciation of `SwadeActor#getRollShortcuts()` as it is redundant to `SwadeActor#getRollData()` and will be removed in v1.3.0. (#530)
+- Started depreciation of `SwadeItemSheet` as it is being replaced by the `SwadeItemSheetV2`
 - Finished depreciation of string and number types in the `additionalMods` portion of `IRollOptions`
 
 ### Removed
