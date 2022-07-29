@@ -1,6 +1,6 @@
 <form class="{{cssClass}} flexcol" autocomplete="off">
   {{!-- Item Sheet Header --}}
-  {{> "systems/swade/templates/items/partials/header-delete.hbs"}}
+  {{> "systems/swade/templates/items-legacy/partials/header-delete.hbs"}}
   <main class="sheet-body">
     <div class="form-group">
       <label>{{localize "SWADE.Subtype"}}</label>
@@ -28,7 +28,7 @@
       </label>
     </div>
     {{/unless}}
-    {{> "systems/swade/templates/items/partials/description.hbs"}}
+    {{> "systems/swade/templates/items-legacy/partials/description.hbs"}}
     <br />
     {{#if isRaceOrArchetype}}
       <header class="header-field flexrow">
@@ -37,7 +37,7 @@
       {{{displayEmbedded data.flags.swade.embeddedAbilities}}}
     {{/if}}
     {{> "systems/swade/templates/setting-fields.hbs"}}
-    {{> "systems/swade/templates/items/partials/ae-header.hbs"}}
+    {{> "systems/swade/templates/items-legacy/partials/ae-header.hbs"}}
     {{> "systems/swade/templates/effect-list.hbs"}}
   </main>
 </form>

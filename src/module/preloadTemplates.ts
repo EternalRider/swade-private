@@ -28,12 +28,12 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/chat/roll-formula.hbs',
 
     //Items
-    'systems/swade/templates/items/partials/header.hbs',
-    'systems/swade/templates/items/partials/header-delete.hbs',
-    'systems/swade/templates/items/partials/description.hbs',
-    'systems/swade/templates/items/partials/actions.hbs',
-    'systems/swade/templates/items/partials/powers.hbs',
-    'systems/swade/templates/items/partials/ae-header.hbs',
+    'systems/swade/templates/items-legacy/partials/header.hbs',
+    'systems/swade/templates/items-legacy/partials/header-delete.hbs',
+    'systems/swade/templates/items-legacy/partials/description.hbs',
+    'systems/swade/templates/items-legacy/partials/actions.hbs',
+    'systems/swade/templates/items-legacy/partials/powers.hbs',
+    'systems/swade/templates/items-legacy/partials/ae-header.hbs',
     'systems/swade/templates/effect-list.hbs',
 
     //official sheet

@@ -148,13 +148,13 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.CommunityVicSheet',
   });
-  Items.registerSheet('swade', SwadeItemSheet, {
-    makeDefault: true,
-    label: 'SWADE.CommunityItemSheet',
-  });
   Items.registerSheet('swade', SwadeItemSheetV2, {
-    makeDefault: false,
+    makeDefault: true,
     label: 'SWADE.ItemSheet',
+  });
+  Items.registerSheet('swade', SwadeItemSheet, {
+    makeDefault: false,
+    label: 'SWADE.CommunityItemSheet',
   });
 
   CONFIG.Dice.terms.b = Benny;

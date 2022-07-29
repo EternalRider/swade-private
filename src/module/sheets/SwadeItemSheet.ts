@@ -6,7 +6,8 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { copyToClipboard } from '../util';
 
 /**
-@noInheritDoc
+ * @noInheritDoc
+ * @deprecated
  */
 export default class SwadeItemSheet extends ItemSheet {
   static get defaultOptions() {
@@ -28,7 +29,7 @@ export default class SwadeItemSheet extends ItemSheet {
   }
 
   get template() {
-    const path = 'systems/swade/templates/items';
+    const path = 'systems/swade/templates/items-legacy';
     return `${path}/${this.item.type}.hbs`;
   }
 
