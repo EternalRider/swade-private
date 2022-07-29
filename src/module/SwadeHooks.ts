@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
-import { ItemData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { ConfiguredDocumentClass } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { ItemMetadata, JournalMetadata } from '../globals';
 import {
@@ -938,7 +938,7 @@ export default class SwadeHooks {
         await actor.update({ 'data.details.archetype': item.link });
       }
       //process embedded documents
-      const map = new Map<string, ItemData['_source']>(
+      const map = new Map<string, ItemDataSource>(
         item.getFlag('swade', 'embeddedAbilities') ?? [],
       );
       const creationData = new Array<any>();

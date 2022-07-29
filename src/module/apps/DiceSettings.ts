@@ -23,7 +23,7 @@ export default class DiceSettings extends FormApplication<
       id: SWADE.diceConfig.id,
       title: SWADE.diceConfig.title,
       template: 'systems/swade/templates/apps/dice-config.hbs',
-      classes: ['swade', 'dice-config', 'dice-so-nice'],
+      classes: ['swade', 'dice-config', 'dice-so-nice', 'swade-app'],
       width: 500,
       height: 'auto' as const,
       resizable: false,

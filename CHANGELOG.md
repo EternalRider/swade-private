@@ -38,6 +38,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - For Developers: which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
 - Added Basic Powers as a system compendium (#499)
 - Added modifier presets for `Aiming`, `Wild Attack` and `Target is Vulnerable`
+- Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following exisitng apps:
+  - Setting Configurator
+  - Wild Die Config
+  - Advance Editor
+  - Roll Dialog
+  - Document Tweaks
+- Added V2 Item sheets which are completely redesigned from the ground up, featuring a new layout and visual styles more in line with the existing character sheets.
+- Added `collapsible` and `eachInMap` Handlebars helpers
+- Added `SwadeItem#isArcaneDevice` getter
+
 - Added additional translation strings.
 
 ### Changed
@@ -47,6 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restructured the UI of the Roll Dialog to have a more logical flow, guiding the User over the process of checking and constructing their roll. (#505)
 - Replaced the Preset select list with a new list that can be filtered and which adds a modifier by clicking on it in the list. (#505)
 - Converted language files from flat to nested keys for better organization (#528)
+- Enabled Item image zoom functionality on item sheets even if the item is not editable, such as when it is in a locked compendium
 - Changed some translation strings, see the list below: (#528)
   - `SWADE.WealthDie` -> `SWADE.WealthDie.Label`
   - `SWADE.ActNow` -> `SWADE.ActBeforeCurrentCombatant`

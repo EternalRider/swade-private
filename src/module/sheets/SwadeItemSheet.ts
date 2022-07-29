@@ -38,7 +38,7 @@ export default class SwadeItemSheet extends ItemSheet {
 
     if (this.isEditable) {
       buttons.unshift({
-        label: 'Tweaks',
+        label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
         icon: 'fas fa-dice',
         onclick: (ev) => this._onConfigureEntity(ev),
@@ -46,7 +46,7 @@ export default class SwadeItemSheet extends ItemSheet {
     }
 
     buttons.unshift({
-      label: 'Link',
+      label: 'SWADE.DocumentLink',
       class: 'copy-link',
       icon: 'fas fa-link',
       onclick: () => copyToClipboard(this.item.link),
@@ -61,6 +61,18 @@ export default class SwadeItemSheet extends ItemSheet {
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find('.profile-img').on('contextmenu', () => {
+      if (!this.item.img) return;
+      new ImagePopout(this.item.img, {
+        title: this.item.name!,
+        shareable:
+          (this.item.isOwned && this.item.actor?.isOwner) ??
+          game.user?.isGM ??
+          false,
+      }).render(true);
+    });
+
     if (!this.isEditable) return;
     if (
       this.item.canBeArcaneDevice ||
@@ -82,17 +94,6 @@ export default class SwadeItemSheet extends ItemSheet {
       const map = new Map(this.item.getFlag('swade', 'embeddedPowers') ?? []);
       map.delete(id);
       this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
-    });
-
-    html.find('.profile-img').on('contextmenu', () => {
-      if (!this.item.img) return;
-      new ImagePopout(this.item.img, {
-        title: this.item.name!,
-        shareable:
-          (this.item.isOwned && this.item.actor?.isOwner) ??
-          game.user?.isGM ??
-          false,
-      }).render(true);
     });
 
     html.find('.action-create').on('click', () => {

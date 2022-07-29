@@ -15,6 +15,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'sheet-tweaks',
       width: 380,
+      classes: ['swade-app'],
     });
   }
 

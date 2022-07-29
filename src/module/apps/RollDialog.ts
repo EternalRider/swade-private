@@ -20,7 +20,7 @@ export default class RollDialog extends FormApplication<
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/rollDialog.hbs',
-      classes: ['swade', 'roll-dialog'],
+      classes: ['swade', 'roll-dialog', 'swade-app'],
       width: 400,
       filters: [
         {

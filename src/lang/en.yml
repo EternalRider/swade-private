@@ -5,6 +5,7 @@ SWADE:
   CommunityNPCSheet: Community NPC Sheet
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
+  ItemSheet: Savage Worlds Item Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
   ModHint: Make sure your modifier includes a + or -
@@ -121,7 +122,7 @@ SWADE:
   Armor: Armor
   Protection: Protection
   Dmg: Damage
-  DmgOver: Damage Override
+  DmgOver: Action Damage
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
@@ -130,8 +131,8 @@ SWADE:
   Notes: Notes
   ActionsEffects: Actions & Effects
   Actions: Actions
-  DmgModUni: Damage Modifier (universal)
-  SkillModUni: Trait Modifier (universal)
+  DmgModUni: Damage Modifier
+  SkillModUni: Trait Modifier
   ShotsUsed: Shots Used
   NaturalArmor: Natural Armor
   HitLocations: Hit Locations
@@ -347,7 +348,7 @@ SWADE:
   CurrencyNameDesc: Name your currency
   TraitRolls: Trait Rolls
   Trait: Trait
-  AltTrait: Alternative Trait
+  AltTrait: Action Trait
   ClickSuggestions: Click for suggestions
   Quick: Quick
   BonusDamage: Bonus Damage
@@ -560,9 +561,16 @@ SWADE:
       Success: You hang on, for now.
       Raise: You successfully stabilize
   BenniesSpendGM: Spend a GM Benny
-
+  DocumentLink: Link
+  DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
+  ItemType: Item Type
+  Source: Source
+  Properties: Properties
+  AddAction: Add Action
+  DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}
+  DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

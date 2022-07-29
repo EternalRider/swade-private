@@ -28,6 +28,14 @@ export const registerCustomHelpers = function () {
     if (element === '') return true;
   });
 
+  Handlebars.registerHelper(
+    'collapsible',
+    (states: Record<string, boolean>, id: string) => {
+      const currentlyOpen = Boolean(states[id]);
+      return currentlyOpen ? 'open' : '';
+    },
+  );
+
   // Sheet
   Handlebars.registerHelper(
     'localizeSkillAttribute',
@@ -179,4 +187,15 @@ export const registerCustomHelpers = function () {
       }
     }
   });
+
+  Handlebars.registerHelper(
+    'eachInMap',
+    function (map: Map<any, any>, block: Handlebars.HelperOptions) {
+      let output = '';
+      for (const [key, value] of map) {
+        output += block.fn({ key, value });
+      }
+      return output;
+    },
+  );
 };

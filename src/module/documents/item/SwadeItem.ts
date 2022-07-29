@@ -71,6 +71,11 @@ export default class SwadeItem extends Item {
     return ['gear', 'armor', 'shield', 'weapon'].includes(this.type);
   }
 
+  get isArcaneDevice(): boolean {
+    if (!this.canBeArcaneDevice) return false;
+    return getProperty(this.data, 'data.isArcaneDevice') as boolean;
+  }
+
   rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
     let itemData;
@@ -79,7 +84,6 @@ export default class SwadeItem extends Item {
     } else {
       return null;
     }
-    const actor = this.actor!;
     const label = this.name;
     let ap = getProperty(this.data, 'data.ap');
 
@@ -99,8 +103,11 @@ export default class SwadeItem extends Item {
       modifiers.push(...options.additionalMods);
     }
 
-    const terms = Roll.parse(rollParts.join(''), actor.getRollData());
-    const baseRoll = new Array<String>();
+    const terms = Roll.parse(
+      rollParts.join(''),
+      this.parent?.getRollData() ?? {},
+    );
+    const baseRoll = new Array<string>();
     for (const term of terms) {
       if (term instanceof Die) {
         if (!term.modifiers.includes('x') && !term.options.flavor) {
@@ -116,9 +123,9 @@ export default class SwadeItem extends Item {
 
     //Conviction Modifier
     if (
-      actor.data.type !== 'vehicle' &&
+      this.parent?.data.type !== 'vehicle' &&
       game.settings.get('swade', 'enableConviction') &&
-      actor.data.data.details.conviction.active
+      this.parent?.data.data.details.conviction.active
     ) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Conv'),
@@ -132,7 +139,7 @@ export default class SwadeItem extends Item {
     }
 
     //Joker Modifier
-    if (actor.hasJoker) {
+    if (this.parent?.hasJoker) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Joker'),
         value: '+2',
@@ -196,28 +203,82 @@ export default class SwadeItem extends Item {
       case 'shield':
         props.push(
           data.equipped
-            ? `<i class="fas fa-tshirt" title="${game.i18n.localize('SWADE.Equipped')}"></i>`
-            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize('SWADE.Unequipped')}"></i>`,
-          data.parry ? `<i class='fas fa-user-shield' title='${game.i18n.localize('SWADE.Parry')}'></i> ${data.parry}`: '',
-          data.cover ? `<i class='fas fa-umbrella' title='${game.i18n.localize('SWADE.Cover._name')}'></i> ${data.cover}` : '',
-          data.weight ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize('SWADE.Weight')}'></i> ${data.weight}` : '',
-          data.minStr ? `<i class='fas fa-dumbbell' title='${game.i18n.localize('SWADE.MinStrLong')}'></i> ${data.minStr}` : '',
-          data.notes ? `<i class="fas fa-sticky-note" title='${game.i18n.localize('SWADE.Notes')}'></i> ${data.notes}` : '',
+            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
+                'SWADE.Equipped',
+              )}"></i>`
+            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
+                'SWADE.Unequipped',
+              )}"></i>`,
+          data.parry
+            ? `<i class='fas fa-user-shield' title='${game.i18n.localize(
+                'SWADE.Parry',
+              )}'></i> ${data.parry}`
+            : '',
+          data.cover
+            ? `<i class='fas fa-umbrella' title='${game.i18n.localize(
+                'SWADE.Cover._name',
+              )}'></i> ${data.cover}`
+            : '',
+          data.weight
+            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
+                'SWADE.Weight',
+              )}'></i> ${data.weight}`
+            : '',
+          data.minStr
+            ? `<i class='fas fa-dumbbell' title='${game.i18n.localize(
+                'SWADE.MinStrLong',
+              )}'></i> ${data.minStr}`
+            : '',
+          data.notes
+            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
+                'SWADE.Notes',
+              )}'></i> ${data.notes}`
+            : '',
         );
         break;
       case 'armor':
-        for(const loc in data.locations){
-          data.locations[loc] != false ? props.push(game.i18n.localize(`SWADE.${loc.charAt(0).toUpperCase() + loc.slice(1)}`)) : '';
+        for (const loc in data.locations) {
+          data.locations[loc] != false
+            ? props.push(
+                game.i18n.localize(
+                  `SWADE.${loc.charAt(0).toUpperCase() + loc.slice(1)}`,
+                ),
+              )
+            : '';
         }
         props.push(
           data.equipped
-            ? `<i class="fas fa-tshirt" title="${game.i18n.localize('SWADE.Equipped')}"></i>`
-            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize('SWADE.Unequipped')}"></i>`,
-          data.armor ? `<i class='fas fa-shield-alt' title='${game.i18n.localize('SWADE.Armor')}'></i> ${data.armor}` : '',
-          data.cover ? `<i class='fas fa-umbrella' title='${game.i18n.localize('SWADE.Cover._name')}'></i> ${data.cover}` : '',
-          data.weight ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize('SWADE.Weight')}'></i> ${data.weight}` : '',
-          data.minStr ? `<i class='fas fa-dumbbell' title='${game.i18n.localize('SWADE.MinStrLong')}'></i> ${data.minStr}` : '',
-          data.notes ? `<i class="fas fa-sticky-note" title='${game.i18n.localize('SWADE.Notes')}'></i> ${data.notes}` : '',
+            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
+                'SWADE.Equipped',
+              )}"></i>`
+            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
+                'SWADE.Unequipped',
+              )}"></i>`,
+          data.armor
+            ? `<i class='fas fa-shield-alt' title='${game.i18n.localize(
+                'SWADE.Armor',
+              )}'></i> ${data.armor}`
+            : '',
+          data.cover
+            ? `<i class='fas fa-umbrella' title='${game.i18n.localize(
+                'SWADE.Cover._name',
+              )}'></i> ${data.cover}`
+            : '',
+          data.weight
+            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
+                'SWADE.Weight',
+              )}'></i> ${data.weight}`
+            : '',
+          data.minStr
+            ? `<i class='fas fa-dumbbell' title='${game.i18n.localize(
+                'SWADE.MinStrLong',
+              )}'></i> ${data.minStr}`
+            : '',
+          data.notes
+            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
+                'SWADE.Notes',
+              )}'></i> ${data.notes}`
+            : '',
         );
         break;
       case 'edge':
@@ -228,23 +289,67 @@ export default class SwadeItem extends Item {
         props.push(data.rank);
         props.push(data.arcane);
         props.push(`${data.pp} ${game.i18n.localize('SWADE.PPAbbreviation')}`);
-        props.push(`<i class="fas fa-ruler" title='${game.i18n.localize('SWADE.Range._name')}'></i> ${data.range}`);
-        props.push(`<i class='fas fa-shield-alt' title='${game.i18n.localize('SWADE.Ap')}'></i> ${data.ap}`);
-        props.push(`<i class='fas fa-hourglass-half' title='${game.i18n.localize('SWADE.Dur')}'></i> ${data.duration}`);
+        props.push(
+          `<i class="fas fa-ruler" title='${game.i18n.localize(
+            'SWADE.Range._name',
+          )}'></i> ${data.range}`,
+        );
+        props.push(
+          `<i class='fas fa-shield-alt' title='${game.i18n.localize(
+            'SWADE.Ap',
+          )}'></i> ${data.ap}`,
+        );
+        props.push(
+          `<i class='fas fa-hourglass-half' title='${game.i18n.localize(
+            'SWADE.Dur',
+          )}'></i> ${data.duration}`,
+        );
         props.push(data.trapping);
         break;
       case 'weapon':
         props.push(
-          data.equipped 
-          ? `<i class="fas fa-tshirt" title="${game.i18n.localize('SWADE.Equipped')}"></i>` 
-          : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize('SWADE.Unequipped')}"></i>`,
-          data.damage ? `<i class="fas fa-fist-raised" title='${game.i18n.localize('SWADE.Dmg')}'></i> ${data.damage}` : '',
-          data.ap ? `<i class='fas fa-shield-alt' title='${game.i18n.localize('SWADE.Ap')}'></i> ${data.ap}` : '',
-          data.parry ? `<i class='fas fa-user-shield' title='${game.i18n.localize('SWADE.Parry')}'></i> ${data.parry}` : '',
-          data.range ? `<i class='fas fa-ruler' title='${game.i18n.localize('SWADE.Range._name')}'></i> ${data.range}` : '',
-          data.rof ? `<i class='fas fa-tachometer-alt' title='${game.i18n.localize('SWADE.RoF')}'></i> ${data.rof}` : '',
-          data.weight ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize('SWADE.Weight')}'></i> ${data.weight}` : '',
-          data.notes ? `<i class="fas fa-sticky-note" title='${game.i18n.localize('SWADE.Notes')}'></i> ${data.notes}` : '',
+          data.equipped
+            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
+                'SWADE.Equipped',
+              )}"></i>`
+            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
+                'SWADE.Unequipped',
+              )}"></i>`,
+          data.damage
+            ? `<i class="fas fa-fist-raised" title='${game.i18n.localize(
+                'SWADE.Dmg',
+              )}'></i> ${data.damage}`
+            : '',
+          data.ap
+            ? `<i class='fas fa-shield-alt' title='${game.i18n.localize(
+                'SWADE.Ap',
+              )}'></i> ${data.ap}`
+            : '',
+          data.parry
+            ? `<i class='fas fa-user-shield' title='${game.i18n.localize(
+                'SWADE.Parry',
+              )}'></i> ${data.parry}`
+            : '',
+          data.range
+            ? `<i class='fas fa-ruler' title='${game.i18n.localize(
+                'SWADE.Range._name',
+              )}'></i> ${data.range}`
+            : '',
+          data.rof
+            ? `<i class='fas fa-tachometer-alt' title='${game.i18n.localize(
+                'SWADE.RoF',
+              )}'></i> ${data.rof}`
+            : '',
+          data.weight
+            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
+                'SWADE.Weight',
+              )}'></i> ${data.weight}`
+            : '',
+          data.notes
+            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
+                'SWADE.Notes',
+              )}'></i> ${data.notes}`
+            : '',
         );
         break;
       default:
@@ -370,22 +475,22 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
-  private _makeExplodable(expresion: string): string {
+  private _makeExplodable(expression: string): string {
     // Make all dice of a roll able to explode
     const diceRegExp = /\d*d\d+[^kdrxc]/g;
-    expresion = expresion + ' '; // Just because of my poor reg_exp foo
-    const diceStrings: string[] = expresion.match(diceRegExp) || [];
+    expression = expression + ' '; // Just because of my poor reg_exp foo
+    const diceStrings: string[] = expression.match(diceRegExp) || [];
     const used = new Array<string>();
     for (const match of diceStrings) {
       if (used.indexOf(match) === -1) {
-        expresion = expresion.replace(
+        expression = expression.replace(
           new RegExp(match.slice(0, -1), 'g'),
           match.slice(0, -1) + 'x',
         );
         used.push(match);
       }
     }
-    return expresion;
+    return expression;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */

@@ -1,8 +1,13 @@
 .setting-config {
   .sheet-body {
-    max-height: 600px;
     overflow-x: auto;
-    padding: 3px;
+    padding-top: 3px;
+  }
+
+  .main-grid {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: auto;
   }
 
   /* Attributes */
@@ -29,7 +34,6 @@
     & > * {
       text-align: center;
     }
-
     .attribute-key {
       grid-column: 1;
     }
@@ -58,6 +62,6 @@
   }
 
   footer {
-    padding-top: 3px;
+    padding: $medium-spacing;
   }
 }

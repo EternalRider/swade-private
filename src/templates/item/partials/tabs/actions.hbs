@@ -1,0 +1,105 @@
+<header class='header'>
+  <button type='button' class='add-action add-button'>
+    <i class='fa fa-plus'></i>
+    {{localize 'SWADE.AddAction'}}
+  </button>
+</header>
+<ol class='actions-list unmarked-list collapsibles'>
+  {{#each data.data.actions.additional as |action id|}}
+    <li>
+      <details
+        class='action'
+        data-action-id='{{id}}'
+        {{collapsible @root.collapsibleStates.actions id}}
+      >
+        <summary>{{action.name}}</summary>
+        <span class='content'>
+          <div class='form-group action-name'>
+            <label>{{localize 'SWADE.Name'}}</label>
+            <input
+              type='text'
+              name='data.actions.additional.{{id}}.name'
+              value='{{action.name}}'
+            />
+          </div>
+          <div class='form-group action-type'>
+            <label>{{localize 'Type'}}</label>
+            <select name='data.actions.additional.{{id}}.type'>
+              {{#select action.type}}
+                {{selectOptions
+                  @root.actionTypes
+                  selected=action.type
+                  localize=true
+                }}
+              {{/select}}
+            </select>
+          </div>
+          <button
+            type='button'
+            class='action-delete'
+            title='{{localize "Delete"}}'
+            data-action-id='{{id}}'
+          >
+            <i class='fas fa-trash fa-2x'></i>
+          </button>
+          {{#if (eq action.type 'skill')}}
+            <div class='form-group left'>
+              <label> {{localize 'SWADE.AltTrait'}}</label>
+              <input
+                type='text'
+                name='data.actions.additional.{{id}}.skillOverride'
+                value='{{action.skillOverride}}'
+              />
+            </div>
+            <div class='form-group right'>
+              <label>{{localize 'SWADE.TraitMod'}}</label>
+              <input
+                type='text'
+                name='data.actions.additional.{{id}}.skillMod'
+                value='{{action.skillMod}}'
+                title='{{localize "SWADE.ModHint"}}'
+              />
+            </div>
+            <div class='form-group left'>
+              <label>{{localize 'SWADE.RoF'}}</label>
+              <input
+                type='text'
+                name='data.actions.additional.{{id}}.rof'
+                value='{{action.rof}}'
+                data-dtype='Number'
+              />
+            </div>
+            <div class='form-group right'>
+              <label>{{localize 'SWADE.ShotsUsed'}}</label>
+              <input
+                type='number'
+                name='data.actions.additional.{{id}}.shotsUsed'
+                value='{{action.shotsUsed}}'
+                data-dtype='Number'
+              />
+            </div>
+          {{else}}
+            <div class='form-group full-width'>
+              <label>{{localize 'SWADE.DmgOver'}}</label>
+              <input
+                type='text'
+                name='data.actions.additional.{{id}}.dmgOverride'
+                value='{{action.dmgOverride}}'
+              />
+            </div>
+            <div class='form-group full-width'>
+              <label>{{localize 'SWADE.Dmg'}}
+                {{localize 'SWADE.Modifier'}}</label>
+              <input
+                type='text'
+                name='data.actions.additional.{{id}}.dmgMod'
+                value='{{action.dmgMod}}'
+                title='{{localize "SWADE.ModHint"}}'
+              />
+            </div>
+          {{/if}}
+        </span>
+      </details>
+    </li>
+  {{/each}}
+</ol>

@@ -1,8 +1,4 @@
 .roll-dialog {
-  font-family: var(--default-font);
-  .window-content {
-    background-image: url(./assets/main_bg.webp);
-  }
   .modifiers {
     margin: 0;
     padding: 0;
@@ -97,10 +93,8 @@
     .input {
       background: rgba(0, 0, 0, 0.05);
       border: 1px solid var(--color-border-light-tertiary);
-      color: var(--color-text-dark-primary);
       padding: 1px 3px;
       border-radius: 3px;
-      display: flex;
       user-select: text;
       word-break: break-word;
     }

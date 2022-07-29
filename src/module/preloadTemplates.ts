@@ -1,9 +1,5 @@
-export const preloadHandlebarsTemplates = async function () {
+export async function preloadHandlebarsTemplates() {
   const templatePaths = [
-    //Character Sheets
-    'systems/swade/templates/actors/npc-sheet.hbs',
-    'systems/swade/templates/actors/vehicle-sheet.hbs',
-
     //NPC partials
     'systems/swade/templates/actors/partials/attributes.hbs',
     'systems/swade/templates/actors/partials/npc-summary-tab.hbs',
@@ -41,8 +37,6 @@ export const preloadHandlebarsTemplates = async function () {
     'systems/swade/templates/effect-list.hbs',
 
     //official sheet
-    //main sheet
-    'systems/swade/templates/official/sheet.hbs',
 
     //tabs
     'systems/swade/templates/official/tabs/summary.hbs',
@@ -60,7 +54,18 @@ export const preloadHandlebarsTemplates = async function () {
 
     //Sidebar
     'systems/swade/templates/sidebar/combat-tracker.hbs',
+
+    //Item V2
+    'systems/swade/templates/item/partials/header.hbs',
+    'systems/swade/templates/item/partials/additional-stats.hbs',
+    'systems/swade/templates/item/partials/action-properties.hbs',
+    'systems/swade/templates/item/partials/bonus-damage.hbs',
+    'systems/swade/templates/item/partials/equipped.hbs',
+    'systems/swade/templates/item/partials/tabs/powers.hbs',
+    'systems/swade/templates/item/partials/tabs/description.hbs',
+    'systems/swade/templates/item/partials/tabs/actions.hbs',
+    'systems/swade/templates/item/partials/tabs/effects.hbs',
   ];
 
   return loadTemplates(templatePaths);
-};
+}

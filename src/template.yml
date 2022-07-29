@@ -236,6 +236,7 @@ Item:
       - arcaneDevice
       - actions
       - favorite
+      - bonusDamage
     minStr: ''
     armor: 0
     toughness: 0

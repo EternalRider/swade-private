@@ -28,6 +28,7 @@ import {
 } from './module/settings';
 import CharacterSheet from './module/sheets/official/CharacterSheet';
 import SwadeItemSheet from './module/sheets/SwadeItemSheet';
+import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
@@ -52,6 +53,7 @@ Hooks.once('init', () => {
     sheets: {
       CharacterSheet,
       SwadeItemSheet,
+      SwadeItemSheetV2,
       SwadeNPCSheet,
       SwadeVehicleSheet,
     },
@@ -149,6 +151,10 @@ Hooks.once('init', () => {
   Items.registerSheet('swade', SwadeItemSheet, {
     makeDefault: true,
     label: 'SWADE.CommunityItemSheet',
+  });
+  Items.registerSheet('swade', SwadeItemSheetV2, {
+    makeDefault: false,
+    label: 'SWADE.ItemSheet',
   });
 
   CONFIG.Dice.terms.b = Benny;
