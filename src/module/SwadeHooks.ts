@@ -1186,6 +1186,10 @@ export default class SwadeHooks {
     }
   }
 
+  /* ------------------------------------ */
+  /* Third-party Integrations 				      */
+  /* ------------------------------------ */
+
   public static onDiceSoNiceInit(dice3d: Dice3D) {
     game.settings.registerMenu('swade', 'dice-config', {
       name: game.i18n.localize('SWADE.DiceConf'),
@@ -1259,5 +1263,9 @@ export default class SwadeHooks {
       },
       'd2',
     );
+  }
+
+  public static onDevModeRead({ registerPackageDebugFlag }) {
+    registerPackageDebugFlag('my-module-id');
   }
 }

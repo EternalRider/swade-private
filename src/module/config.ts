@@ -15,6 +15,8 @@ export const SWADE: SwadeConfig = {
   ███████║╚███╔███╔╝██║  ██║██████╔╝███████╗
   ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝`,
 
+  PACKAGE_ID: 'swade',
+
   attributes: {
     agility: {
       long: 'SWADE.AttrAgi',
@@ -542,6 +544,8 @@ export interface SwadeConfig {
   ASCII: string;
 
   CONST: typeof constants;
+
+  PACKAGE_ID: string;
 
   //An object to store localization strings
   attributes: {

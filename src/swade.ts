@@ -19,6 +19,7 @@ import { registerCustomHelpers } from './module/handlebarsHelpers';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { listenJournalDrop } from './module/journalDrop';
 import { registerKeybindings } from './module/keybindings';
+import { Logger } from './module/Logger';
 import * as migrations from './module/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
 import {
@@ -41,7 +42,8 @@ import './swade.scss';
 /* Initialize system					          */
 /* ------------------------------------ */
 Hooks.once('init', () => {
-  console.log(
+  Logger.info(
+    true,
     `SWADE | Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`,
   );
 
@@ -215,5 +217,12 @@ Hooks.on(
 /* ------------------------------------ */
 /* Dice So Nice Hooks					          */
 /* ------------------------------------ */
+
+/** Dice So Nice*/
 Hooks.once('diceSoNiceInit', SwadeHooks.onDiceSoNiceInit);
 Hooks.once('diceSoNiceReady', SwadeHooks.onDiceSoNiceReady);
+
+/** Developer Mode */
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+  registerPackageDebugFlag(SWADE.PACKAGE_ID);
+});
