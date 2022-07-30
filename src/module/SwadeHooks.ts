@@ -7,7 +7,7 @@ import {
   DsnCustomWildDieColors,
   DsnCustomWildDieOptions,
 } from '../interfaces/DiceIntegration interface';
-import { Dice3D } from '../interfaces/DiceSoNice.interface';
+import { Dice3D } from '../types/DiceSoNice';
 import ActionCardEditor from './apps/ActionCardEditor';
 import DiceSettings from './apps/DiceSettings';
 import SwadeCombatGroupColor from './apps/SwadeCombatGroupColor';
@@ -1265,7 +1265,7 @@ export default class SwadeHooks {
     );
   }
 
-  public static onDevModeRead({ registerPackageDebugFlag }) {
+  public static onDevModeRead({ registerPackageDebugFlag }: DevModeApi) {
     registerPackageDebugFlag('my-module-id');
   }
 }
