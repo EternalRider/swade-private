@@ -3,8 +3,9 @@ import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/
 import {
   ActorData,
   ItemData,
-  SceneData,
+  SceneData
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { constants } from './constants';
 
 export async function migrateWorld() {
   ui.notifications.info(
@@ -148,13 +149,10 @@ export function migrateActorData(actor: ActorDataSource) {
 }
 
 export function migrateItemData(data: ItemDataSource) {
-  const updateData: Record<string, any> = {};
-  if (data.type === 'weapon') {
-    _migrateWeaponAPToNumber(data, updateData);
-  }
-  if (data.type === 'power') {
-    _migratePowerEquipToFavorite(data, updateData);
-  }
+  const updateData: UpdateData = {};
+  _migrateWeaponAPToNumber(data, updateData);
+  _migratePowerEquipToFavorite(data, updateData);
+  _migrateItemEquipState(data, updateData);
   return updateData;
 }
 
@@ -215,7 +213,7 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
 
 function _migrateVehicleOperator(
   data: ActorDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.data.driver.id;
@@ -228,7 +226,7 @@ function _migrateVehicleOperator(
 
 function _migrateWeaponAPToNumber(
   data: ItemDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'weapon') return updateData;
 
@@ -239,7 +237,7 @@ function _migrateWeaponAPToNumber(
 
 function _migratePowerEquipToFavorite(
   data: ItemDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'data.equipped');
@@ -249,3 +247,27 @@ function _migratePowerEquipToFavorite(
     updateData['data.-=equippable'] = null;
   }
 }
+
+function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
+  if (
+    data.type !== 'armor' &&
+    data.type !== 'weapon' &&
+    data.type !== 'shield' &&
+    data.type !== 'gear'
+  ) {
+    return;
+  }
+  updateData['data.-=equipped'] = null;
+  if (data.type === 'weapon') {
+    updateData['data.equipStatus'] = data.data.equipped
+      ? constants.EQUIP_STATE.MAIN_HAND
+      : constants.EQUIP_STATE.CARRIED;
+  } else {
+    updateData['data.equipStatus'] = data.data.equipped
+      ? constants.EQUIP_STATE.EQUIPPED
+      : constants.EQUIP_STATE.CARRIED;
+  }
+  return updateData;
+}
+
+type UpdateData = Record<string, unknown>;
