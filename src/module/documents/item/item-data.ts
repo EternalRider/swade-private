@@ -1,8 +1,9 @@
-import { AbilitySubType, LinkedAttribute } from '../../../globals';
 import {
-  AdditionalStat,
-  ItemAction,
-} from '../../../interfaces/additional.interface';
+  AbilitySubType,
+  AdditionalStats,
+  LinkedAttribute,
+} from '../../../globals';
+import { ItemAction } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 
 declare global {
@@ -33,10 +34,7 @@ interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
 
 interface ArcaneDevice {
   isArcaneDevice: boolean;
-  arcaneSkillDie: {
-    sides: number;
-    modifier: number;
-  };
+  arcaneSkillDie: TraitDie;
   powerPoints: {
     value: number;
     max: number;
@@ -55,7 +53,7 @@ interface Equipable {
 interface ItemDescription {
   description: string;
   notes: string;
-  additionalStats: Record<string, AdditionalStat>;
+  additionalStats: AdditionalStats;
 }
 
 interface Vehicular {
@@ -80,7 +78,6 @@ interface WeaponData
   extends PhysicalItem,
     ItemDescription,
     Vehicular,
-    Actions,
     BonusDamage,
     Favorite {
   damage: string;
@@ -93,6 +90,7 @@ interface WeaponData
   ammo: string;
   autoReload: boolean;
   parry: number;
+  trademark: 0 | 1 | 2;
 }
 
 interface GearData extends ItemDescription, PhysicalItem, Vehicular, Favorite {}

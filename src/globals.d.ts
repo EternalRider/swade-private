@@ -1,3 +1,4 @@
+import { AdditionalStat } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { SWADE, SwadeConfig } from './module/config';
 import { Dice3D } from './types/DiceSoNice';
@@ -30,3 +31,4 @@ export type JournalMetadata = CompendiumCollection.Metadata & {
 
 export type Attribute = keyof typeof SWADE.attributes;
 export type LinkedAttribute = Attribute | '';
+export type AdditionalStats = Record<string, AdditionalStat>;
