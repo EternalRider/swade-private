@@ -136,18 +136,7 @@ export default class ItemChatCardHelper {
           ui.notifications.warn('SWADE.NotEnoughAmmo', { localize: true });
           return null;
         }
-        if (getProperty(item.data, 'data.actions.skillMod')) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.ItemTraitMod'),
-            value: getProperty(item.data, 'data.actions.skillMod'),
-          });
-        }
-        if (item.data.type === 'weapon' && item.data.data.trademark > 0) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.TrademarkWeapon.Label'),
-            value: '+' + item.data.data.trademark,
-          });
-        }
+        additionalMods.push(...item.getTraitModifiers());
         roll = await this.doTraitAction(getTrait(traitName, actor), actor, {
           additionalMods,
         });
@@ -241,22 +230,10 @@ export default class ItemChatCardHelper {
           ui.notifications.warn('SWADE.NotEnoughAmmo', { localize: true });
           return null;
         }
-
-        //Trademark Weapon
-        if (item.data.data.trademark > 0) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.TrademarkWeapon.Label'),
-            value: '+' + item.data.data.trademark,
-          });
-        }
       }
 
-      if (getProperty(item.data, 'data.actions.skillMod') !== '') {
-        additionalMods.push({
-          label: game.i18n.localize('SWADE.ItemTraitMod'),
-          value: getProperty(item.data, 'data.actions.skillMod'),
-        });
-      }
+      additionalMods.push(...item.getTraitModifiers());
+
       roll = await this.doTraitAction(trait, actor, {
         flavour: actionToUse.name,
         rof: actionToUse.rof,

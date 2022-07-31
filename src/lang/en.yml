@@ -575,6 +575,7 @@ SWADE:
     Label: Trademark Weapon
     Regular: Regular
     Improved: Improved
+  OffHandPenalty: Off-Hand Penalty
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

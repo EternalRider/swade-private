@@ -504,6 +504,32 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
+  getTraitModifiers(): TraitRollModifier[] {
+    const modifiers = new Array<TraitRollModifier>();
+    if (getProperty(this.data.data, 'actions.skillMod')) {
+      modifiers.push({
+        label: game.i18n.localize('SWADE.ItemTraitMod'),
+        value: getProperty(this.data.data, 'actions.skillMod'),
+      });
+    }
+    if (this.data.type === 'weapon') {
+      if (this.data.data.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
+        modifiers.push({
+          label: game.i18n.localize('SWADE.OffHandPenalty'),
+          value: -2,
+        });
+      }
+      if (this.data.data.trademark > 0) {
+        modifiers.push({
+          label: game.i18n.localize('SWADE.TrademarkWeapon.Label'),
+          value: '+' + this.data.data.trademark,
+        });
+      }
+    }
+
+    return modifiers;
+  }
+
   private _makeExplodable(expression: string): string {
     // Make all dice of a roll able to explode
     const diceRegExp = /\d*d\d+[^kdrxc]/g;

@@ -593,6 +593,7 @@ SWADE:
     Label: Lieblingswaffe
     Regular: Lieblingswaffe
     Improved: Absolute Lieblingswaffe
+  OffHandPenalty: Falsche Hand
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

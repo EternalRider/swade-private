@@ -524,6 +524,7 @@ export const SWADE: SwadeConfig = {
         { label: 'SWADE.Snapfire', value: -2 },
         { label: 'SWADE.UnstablePlatform', value: -2 },
         { label: 'SWADE.Encumbered', value: -2 },
+        { label: 'SWADE.OffHandPenalty', value: -2 },
       ],
     },
   ],
