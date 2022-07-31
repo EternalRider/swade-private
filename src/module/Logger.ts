@@ -1,7 +1,7 @@
-import { SWADE } from './config';
+import { PACKAGE_ID } from './config';
 
 export class Logger {
-  static MODULE_ID = SWADE.PACKAGE_ID;
+  static MODULE_ID = PACKAGE_ID;
 
   static LOG_LEVEL = {
     Debug: 0,

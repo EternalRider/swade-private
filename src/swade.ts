@@ -3,7 +3,7 @@ import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
-import { SWADE } from './module/config';
+import { PACKAGE_ID, SWADE } from './module/config';
 import Benny from './module/dice/Benny';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
@@ -222,5 +222,5 @@ Hooks.once('diceSoNiceReady', SwadeHooks.onDiceSoNiceReady);
 
 /** Developer Mode */
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-  registerPackageDebugFlag(SWADE.PACKAGE_ID);
+  registerPackageDebugFlag(PACKAGE_ID);
 });

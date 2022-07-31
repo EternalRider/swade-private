@@ -6,6 +6,8 @@ import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { constants } from './constants';
 import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 
+export const PACKAGE_ID = 'swade';
+
 export const SWADE: SwadeConfig = {
   ASCII: `
   ███████╗██╗    ██╗ █████╗ ██████╗ ███████╗
@@ -14,8 +16,6 @@ export const SWADE: SwadeConfig = {
   ╚════██║██║███╗██║██╔══██║██║  ██║██╔══╝
   ███████║╚███╔███╔╝██║  ██║██████╔╝███████╗
   ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═════╝ ╚══════╝`,
-
-  PACKAGE_ID: 'swade',
 
   attributes: {
     agility: {
@@ -544,8 +544,6 @@ export interface SwadeConfig {
   ASCII: string;
 
   CONST: typeof constants;
-
-  PACKAGE_ID: string;
 
   //An object to store localization strings
   attributes: {
