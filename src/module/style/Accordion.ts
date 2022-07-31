@@ -9,12 +9,12 @@ export class Accordion {
   isExpanding: boolean;
   isClosing: boolean;
   animation: Animation | null;
-  options: AnimationOptions;
+  options: KeyframeAnimationOptions;
 
   constructor(
     el: HTMLDetailsElement,
     contentSelector: string = '.content',
-    options: AnimationOptions = { duration: 400, easing: 'ease-out' },
+    options: KeyframeAnimationOptions = { duration: 400, easing: 'ease-out' },
   ) {
     this.options = options;
     // Store the <details> element
@@ -134,14 +134,4 @@ export class Accordion {
     // Remove the overflow hidden and the fixed height
     this.el.style.height = this.el.style.overflow = '';
   }
-}
-
-interface AnimationOptions {
-  /** @defaultValue `ease-out` */
-  easing?: string;
-  /**
-   * The duration in milliseconds
-   * @defaultValue `400`
-   */
-  duration?: number;
 }
