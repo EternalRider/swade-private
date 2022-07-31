@@ -207,15 +207,12 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    */
   private _determineCargo() {
     return [
-      ...this.actor.itemTypes.gear.filter(
+      ...this.actor.items.filter(
         (i) =>
-          i.data.type === 'gear' &&
-          (!i.data.data.isVehicular || !i.data.data.equipped),
-      ),
-      ...this.actor.itemTypes.weapon.filter(
-        (i) =>
-          i.data.type === 'weapon' &&
-          (!i.data.data.isVehicular || !i.data.data.equipped),
+          //TODO update once containers and consumables are added
+          (i.data.type === 'gear' || i.data.type === 'weapon') &&
+          (!i.data.data.isVehicular ||
+            i.data.data.equipStatus < constants.EQUIP_STATE.EQUIPPED),
       ),
       ...this.actor.itemTypes.armor,
       ...this.actor.itemTypes.shield,
@@ -296,7 +293,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       (i) =>
         (i.data.type === 'gear' || i.data.type === 'weapon') &&
         i.data.data.isVehicular &&
-        i.data.data.equipped > constants.EQUIP_STATE.CARRIED,
+        i.data.data.equipStatus > constants.EQUIP_STATE.CARRIED,
     );
     let retVal = 0;
     for (const m of mods) {

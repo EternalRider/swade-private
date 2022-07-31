@@ -14,6 +14,8 @@ import ItemChatCardHelper from '../../ItemChatCardHelper';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet {
+  equipStateMenu: ContextMenu;
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       ...super.defaultOptions,
@@ -43,6 +45,8 @@ export default class CharacterSheet extends ActorSheet {
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
+
+    this._setupEquipStatusMenu(html);
 
     this.form!.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -294,7 +298,7 @@ export default class CharacterSheet extends ActorSheet {
       this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
     });
 
-    //Toggle Equipment Status
+    //Item toggles
     html.find('.item-toggle').on('click', async (ev) => {
       const target = ev.currentTarget;
       const li = $(target).parents('.item');
@@ -1026,6 +1030,27 @@ export default class CharacterSheet extends ActorSheet {
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`data.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
+  }
+
+  private _setupEquipStatusMenu(html: JQuery<HTMLElement>) {
+    const items: ContextMenuEntry[] = [
+      {
+        name: 'Stored',
+        icon: '<i class="fas fa-treasure-chest"></i>',
+        condition: (item) => {
+          console.log(item);
+          return true;
+        },
+        callback: (item) => {
+          console.log(item);
+        },
+      },
+    ];
+
+    const selector = '.inventory .item-controls .equip-status';
+    // const selector = '.inventory .item-name';
+    const options = { eventName: 'click' };
+    new ContextMenu(html, selector, items, options);
   }
 }
 

@@ -7,6 +7,7 @@ import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
 import { SWADE } from '../../config';
+import { constants } from '../../constants';
 import WildDie from '../../dice/WildDie';
 import * as util from '../../util';
 import SwadeItem from '../item/SwadeItem';
@@ -652,7 +653,10 @@ export default class SwadeActor extends Actor {
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
       if (armor.data.type !== 'armor') continue;
-      if (armor.data.data.equipped && armor.data.data.locations.torso) {
+      if (
+        armor.data.data.equipStatus !== constants.EQUIP_STATE.STORED &&
+        armor.data.data.locations.torso
+      ) {
         finalToughness += armor.data.data.toughness;
       }
     }
@@ -684,16 +688,28 @@ export default class SwadeActor extends Actor {
   }
 
   calcInventoryWeight(): number {
-    const items = [
-      ...this.itemTypes.shield,
-      ...this.itemTypes.weapon,
-      ...this.itemTypes.armor,
-      ...this.itemTypes.gear,
-    ];
+    const items = this.items.map((i) =>
+      i.data.type === 'armor' ||
+      i.data.type === 'weapon' ||
+      i.data.type === 'shield' ||
+      i.data.type === 'gear'
+        ? i.data
+        : null,
+    );
     let retVal = 0;
-    items.forEach((i) => {
-      retVal += i.data.data['weight'] * i.data.data['quantity'];
-    });
+    if (this.data.type === 'vehicle') {
+      for (const item of items) {
+        if (!item) continue;
+        retVal += item.data.weight * item.data.quantity;
+      }
+    } else {
+      for (const item of items) {
+        if (!item) continue;
+        if (item.data.equipStatus !== constants.EQUIP_STATE.STORED) {
+          retVal += item.data.weight * item.data.quantity;
+        }
+      }
+    }
     return retVal;
   }
 
@@ -722,7 +738,8 @@ export default class SwadeActor extends Actor {
 
     //add shields
     for (const shield of this.itemTypes.shield) {
-      if (shield.data.type === 'shield' && shield.data.data.equipped) {
+      if (shield.data.type !== 'shield') continue;
+      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         parryTotal += shield.data.data.parry ?? 0;
       }
     }
@@ -730,7 +747,8 @@ export default class SwadeActor extends Actor {
     //add equipped weapons
     //TODO check for off-hand weapons and ambidexterity
     for (const weapon of this.itemTypes.weapon) {
-      if (weapon.data.type === 'weapon' && weapon.data.data.equipped) {
+      if (weapon.data.type !== 'weapon') continue;
+      if (weapon.data.data.equipStatus >= constants.EQUIP_STATE.EQUIPPED) {
         parryTotal += weapon.data.data.parry ?? 0;
         //add trademark weapon bonus
         parryTotal += weapon.data.data.trademark;
@@ -993,7 +1011,7 @@ export default class SwadeActor extends Actor {
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = i?.data.equipped;
+        const isEquipped = i?.data.equipStatus !== constants.EQUIP_STATE.STORED;
         const isLocation = i?.data.locations[location];
         const isNaturalArmor = i?.data.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;

@@ -1,7 +1,11 @@
-import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import {
+  Context,
+  DocumentModificationOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { ItemData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { EquipState } from '../../../globals';
 import {
   ItemAction,
   TraitRollModifier,
@@ -75,6 +79,18 @@ export default class SwadeItem extends Item {
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
     return getProperty(this.data, 'data.isArcaneDevice') as boolean;
+  }
+
+  get isPhysicalItem(): boolean {
+    const types = [
+      'weapon',
+      'armor',
+      'shield',
+      'gear',
+      'consumable',
+      'container',
+    ];
+    return types.includes(this.data.type);
   }
 
   rollDamage(options: IRollOptions = {}) {
@@ -181,6 +197,18 @@ export default class SwadeItem extends Item {
       item: this,
       flags: { swade: { colorMessage: false } },
     });
+  }
+
+  async setEquipState(state: EquipState): Promise<EquipState> {
+    if (this.data.type === 'weapon' && state > 2) {
+      //TODO replace with logger?
+      ui.notifications.warn(
+        'You cannot set this state on the item ' + this.name,
+      );
+      return this.data.data.equipStatus;
+    }
+    await this.update({ 'data.equippedStatus': state });
+    return state;
   }
 
   getChatData(htmlOptions = {}) {
@@ -514,7 +542,11 @@ export default class SwadeItem extends Item {
     return { current, max };
   }
 
-  override async _preCreate(data, options, user: User) {
+  override async _preCreate(
+    data: ItemDataConstructorData,
+    options: DocumentModificationOptions,
+    user: User,
+  ) {
     await super._preCreate(data, options, user);
     //Set default image if no image already exists
     if (!data.img) {
@@ -529,9 +561,13 @@ export default class SwadeItem extends Item {
         this.parent.type === 'npc' &&
         hasProperty(this.data, 'data.equippable')
       ) {
+        let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
+        if (data.type === 'weapon') {
+          newState = constants.EQUIP_STATE.MAIN_HAND;
+        }
         this.data.update({
           data: {
-            equipped: constants.EQUIP_STATE.EQUIPPED,
+            equipStatus: newState,
           },
         });
       }
@@ -552,12 +588,16 @@ export default class SwadeItem extends Item {
   override async _preUpdate(changed, options, user) {
     await super._preUpdate(changed, options, user);
 
-    if (this.parent && hasProperty(changed, 'data.equipped')) {
+    if (this.parent && hasProperty(changed, 'data.equipStatus')) {
       //toggle all active effects when an item equip status changes
+      const newState = getProperty(changed, 'data.equipStatus') as EquipState;
       const updates = this.parent.effects
         .filter((ae) => ae.data.origin === this.uuid)
         .map((ae) => {
-          return { _id: ae.id, disabled: !changed.data.equipped };
+          return {
+            _id: ae.id,
+            disabled: newState < constants.EQUIP_STATE.EQUIPPED,
+          };
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }

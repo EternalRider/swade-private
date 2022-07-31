@@ -1,10 +1,10 @@
 import {
   AbilitySubType,
   AdditionalStats,
+  EquipState,
   LinkedAttribute,
 } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
-import { constants } from '../../constants';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 
 declare global {
@@ -48,7 +48,9 @@ interface Favorite {
 
 interface Equipable {
   equippable: boolean;
-  equipped: ValueOf<typeof constants.EQUIP_STATE>;
+  /** @deprecated */
+  equipped: boolean;
+  equipStatus: EquipState;
 }
 
 interface ItemDescription {
