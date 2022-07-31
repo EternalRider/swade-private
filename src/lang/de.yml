@@ -589,6 +589,10 @@ SWADE:
   AddAction: Aktion hinzufügen
   DeleteEmbeddedActionPrompt: Bist du sicher das du die Aktion {action} löschen willst?
   DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
+  TrademarkWeapon:
+    Label: Lieblingswaffe
+    Regular: Lieblingswaffe
+    Improved: Absolute Lieblingswaffe
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

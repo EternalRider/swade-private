@@ -228,6 +228,7 @@ Item:
     currentShots: 0
     ammo: ''
     autoReload: false
+    trademark: 0
   armor:
     templates:
       - itemDescription

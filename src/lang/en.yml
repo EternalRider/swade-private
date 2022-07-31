@@ -571,6 +571,10 @@ SWADE:
   AddAction: Add Action
   DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
+  TrademarkWeapon:
+    Label: Trademark Weapon
+    Regular: Regular
+    Improved: Improved
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

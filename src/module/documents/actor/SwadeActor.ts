@@ -387,7 +387,10 @@ export default class SwadeActor extends Actor {
     return this.rollSkill(null, options, tempSkill);
   }
 
-  async makeArcaneDeviceSkillRoll(options: IRollOptions = {}, arcaneSkillDie) {
+  async makeArcaneDeviceSkillRoll(
+    arcaneSkillDie: TraitDie,
+    options: IRollOptions = {},
+  ) {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.ArcaneSkill'),
       type: 'skill',
@@ -698,7 +701,7 @@ export default class SwadeActor extends Actor {
     if (this.data.type === 'vehicle') return 0;
     let parryTotal = 0;
     const parryBase = game.settings.get('swade', 'parryBaseSkill');
-    const parryBaseSkill = this.itemTypes['skill'].find(
+    const parryBaseSkill = this.itemTypes.skill.find(
       (i) => i.name === parryBase,
     );
 
@@ -719,15 +722,18 @@ export default class SwadeActor extends Actor {
 
     //add shields
     for (const shield of this.itemTypes.shield) {
-      if (shield.data.data['equipped']) {
-        parryTotal += getProperty(shield.data, 'data.parry') ?? 0;
+      if (shield.data.type === 'shield' && shield.data.data.equipped) {
+        parryTotal += shield.data.data.parry ?? 0;
       }
     }
 
     //add equipped weapons
+    //TODO check for off-hand weapons and ambidexterity
     for (const weapon of this.itemTypes.weapon) {
-      if (weapon.data.data['equipped']) {
-        parryTotal += getProperty(weapon.data, 'data.parry') ?? 0;
+      if (weapon.data.type === 'weapon' && weapon.data.data.equipped) {
+        parryTotal += weapon.data.data.parry ?? 0;
+        //add trademark weapon bonus
+        parryTotal += weapon.data.data.trademark;
       }
     }
 
