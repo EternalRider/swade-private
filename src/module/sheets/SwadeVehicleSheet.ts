@@ -1,5 +1,6 @@
 import IDriverData from '../../interfaces/DriverData.interface';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
@@ -295,7 +296,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       (i) =>
         (i.data.type === 'gear' || i.data.type === 'weapon') &&
         i.data.data.isVehicular &&
-        i.data.data.equipped,
+        i.data.data.equipped > constants.EQUIP_STATE.CARRIED,
     );
     let retVal = 0;
     for (const m of mods) {

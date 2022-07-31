@@ -7,6 +7,7 @@ import {
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { constants } from '../../constants';
 import * as util from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 
@@ -528,7 +529,11 @@ export default class SwadeItem extends Item {
         this.parent.type === 'npc' &&
         hasProperty(this.data, 'data.equippable')
       ) {
-        this.data.update({ 'data.equipped': true });
+        this.data.update({
+          data: {
+            equipped: constants.EQUIP_STATE.EQUIPPED,
+          },
+        });
       }
     }
   }

@@ -31,4 +31,12 @@ export const constants = {
     HEROIC: 3,
     LEGENDARY: 4,
   },
+  EQUIP_STATE: {
+    DROPPED: 0,
+    CARRIED: 1,
+    EQUIPPED: 2,
+    OFF_HAND: 3,
+    MAIN_HAND: 4,
+    TWO_HANDS: 5,
+  } as const,
 };

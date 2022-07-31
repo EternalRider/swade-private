@@ -3,6 +3,7 @@ import {
   AdditionalStat,
   ItemAction,
 } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 
 declare global {
@@ -49,7 +50,7 @@ interface Favorite {
 
 interface Equipable {
   equippable: boolean;
-  equipped: boolean;
+  equipped: ValueOf<typeof constants.EQUIP_STATE>;
 }
 
 interface ItemDescription {
