@@ -1,6 +1,7 @@
 import { AdditionalStat } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { SWADE, SwadeConfig } from './module/config';
+import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
 
 declare global {
@@ -32,3 +33,4 @@ export type JournalMetadata = CompendiumCollection.Metadata & {
 export type Attribute = keyof typeof SWADE.attributes;
 export type LinkedAttribute = Attribute | '';
 export type AdditionalStats = Record<string, AdditionalStat>;
+export type EquipState = ValueOf<typeof constants.EQUIP_STATE>;

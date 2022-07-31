@@ -32,7 +32,7 @@ export const constants = {
     LEGENDARY: 4,
   },
   EQUIP_STATE: {
-    DROPPED: 0,
+    STORED: 0,
     CARRIED: 1,
     EQUIPPED: 2,
     OFF_HAND: 3,
