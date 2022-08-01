@@ -72,6 +72,7 @@ interface LogMessage {
 }
 
 interface LogMessageVerbose extends LogMessage {
+  /** The log level @see {@link Logger.LOG_LEVEL} */
   level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
