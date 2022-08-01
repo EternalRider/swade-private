@@ -46,9 +46,9 @@ export default class CharacterSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    this._setupEquipStatusMenu(html);
+    this._setupEquipStatusMenu();
 
-    this.form!.addEventListener('keypress', (ev: KeyboardEvent) => {
+    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
       const targetIsButton = 'button' === target?.type;
       if (!targetIsButton && ev.key === 'Enter') {
@@ -1032,7 +1032,7 @@ export default class CharacterSheet extends ActorSheet {
     await this.actor.toggleActiveEffect(data);
   }
 
-  private _setupEquipStatusMenu(html: JQuery<HTMLElement>) {
+  private _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [
       {
         name: 'Stored',
@@ -1047,7 +1047,7 @@ export default class CharacterSheet extends ActorSheet {
       },
     ];
 
-    const selector = '.inventory .item-controls .equip-status';
+    const selector = '.swade-official .inventory .item-controls .equip-status';
     // const selector = '.inventory .item-name';
     const options = { eventName: 'click' };
     new ContextMenu(html, selector, items, options);
