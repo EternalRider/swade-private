@@ -11,70 +11,75 @@ export class Logger {
     Error: 4,
   } as const;
 
-  static log({ data, logLevel, options: { force, toast } = {} }: LogMessage) {
+  static log({
+    msg,
+    level,
+    options: { force, toast, permanent } = {},
+  }: LogMessage) {
     const isDebugging = game.modules
       .get('_dev-mode')
       //@ts-expect-error adding an API to the module data is common practice
       ?.api?.getPackageDebugValue(Logger.PACKAGE_ID);
 
-    switch (logLevel) {
+    switch (level) {
       case Logger.LOG_LEVEL.Error:
-        console.error(Logger.PACKAGE_ID, '|', data);
-        if (toast) ui.notifications.error(data.toString());
+        console.error(Logger.PACKAGE_ID, '|', msg);
+        if (toast) ui.notifications.error(msg.toString(), { permanent });
         break;
       case Logger.LOG_LEVEL.Warn:
-        console.warn(Logger.PACKAGE_ID, '|', data);
-        if (toast) ui.notifications.warn(data.toString());
+        console.warn(Logger.PACKAGE_ID, '|', msg);
+        if (toast) ui.notifications.warn(msg.toString(), { permanent });
         break;
       case Logger.LOG_LEVEL.Info:
-        console.info(Logger.PACKAGE_ID, '|', data);
-        if (toast) ui.notifications.info(data.toString());
+        console.info(Logger.PACKAGE_ID, '|', msg);
+        if (toast) ui.notifications.info(msg.toString(), { permanent });
         break;
       case Logger.LOG_LEVEL.Debug:
         if (!force && !isDebugging) break;
-        console.debug(Logger.PACKAGE_ID, '|', data);
-        if (toast) ui.notifications.info(data.toString());
+        console.debug(Logger.PACKAGE_ID, '|', msg);
+        if (toast) ui.notifications.info(msg.toString(), { permanent });
         break;
       case Logger.LOG_LEVEL.Log:
       default:
         if (!force && !isDebugging) break;
-        console.log(Logger.PACKAGE_ID, '|', data);
-        if (toast) ui.notifications.info(data.toString());
+        console.log(Logger.PACKAGE_ID, '|', msg);
+        if (toast) ui.notifications.info(msg.toString(), { permanent });
         break;
     }
   }
 
-  static error({ data, options }: LogShortcut) {
-    Logger.log({ data, logLevel: Logger.LOG_LEVEL.Error, options });
+  static error({ msg, options }: LogShortcut) {
+    Logger.log({ msg, level: Logger.LOG_LEVEL.Error, options });
   }
 
-  static warn({ data, options }: LogShortcut) {
-    Logger.log({ data, logLevel: Logger.LOG_LEVEL.Warn, options });
+  static warn({ msg, options }: LogShortcut) {
+    Logger.log({ msg, level: Logger.LOG_LEVEL.Warn, options });
   }
 
-  static info({ data, options }: LogShortcut) {
-    Logger.log({ data, logLevel: Logger.LOG_LEVEL.Info, options });
+  static info({ msg, options }: LogShortcut) {
+    Logger.log({ msg, level: Logger.LOG_LEVEL.Info, options });
   }
 
-  static debug({ data, options }: LogShortcut) {
-    Logger.log({ data, logLevel: Logger.LOG_LEVEL.Debug, options });
+  static debug({ msg, options }: LogShortcut) {
+    Logger.log({ msg, level: Logger.LOG_LEVEL.Debug, options });
   }
 }
 
 interface LogShortcut {
   /** The message or data to log */
-  data: any;
+  msg: any;
   options?: LogMessageOptions;
 }
 
 interface LogMessage {
   /** The message or data to log */
-  data: any;
-  logLevel: ValueOf<typeof Logger.LOG_LEVEL>;
+  msg: any;
+  level: ValueOf<typeof Logger.LOG_LEVEL>;
   options?: LogMessageOptions;
 }
 
 interface LogMessageOptions {
   force?: boolean;
   toast?: boolean;
+  permanent?: boolean;
 }

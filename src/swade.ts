@@ -19,6 +19,7 @@ import { registerCustomHelpers } from './module/handlebarsHelpers';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { listenJournalDrop } from './module/journalDrop';
 import { registerKeybindings } from './module/keybindings';
+import { Logger } from './module/Logger';
 import * as migrations from './module/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
 import {
@@ -41,9 +42,9 @@ import './swade.scss';
 /* Initialize system					          */
 /* ------------------------------------ */
 Hooks.once('init', () => {
-  console.info(
-    `SWADE | Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`,
-  );
+  Logger.info({
+    msg: `Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`,
+  });
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;

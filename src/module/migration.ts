@@ -5,6 +5,7 @@ import {
   ItemData,
   SceneData,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { Logger } from './Logger';
 
 export async function migrateWorld() {
   ui.notifications.info(
@@ -16,12 +17,12 @@ export async function migrateWorld() {
     try {
       const updateData = migrateActorData(actor.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`Migrating Actor document ${actor.name}`);
+        Logger.info({ msg: `Migrating Actor document ${actor.name}` });
         await actor.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Actor ${actor.name}: ${err.message}`;
-      console.error(err);
+      Logger.error({ msg: err });
     }
   }
 
@@ -30,19 +31,19 @@ export async function migrateWorld() {
     try {
       const updateData = migrateItemData(item.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`Migrating Item document ${item.name}`);
+        Logger.info({ msg: `Migrating Item document ${item.name}` });
         await item.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Item ${item.name}: ${err.message}`;
-      console.error(err);
+      Logger.error({ msg: err });
     }
   }
 
   // Migrate World Compendium Packs
   for (const p of game.packs) {
     if (p.metadata.package !== 'world') continue;
-    if (!['Actor', 'Item', 'Scene'].includes(p.metadata['type'])) continue;
+    if (!['Actor', 'Item', 'Scene'].includes(p.metadata.type)) continue;
     await migrateCompendium(p);
   }
 
@@ -52,10 +53,9 @@ export async function migrateWorld() {
     'systemMigrationVersion',
     game.system.data.version,
   );
-  ui.notifications.info(
-    `SWADE System Migration to version ${game.system.data.version} completed!`,
-    { permanent: true },
-  );
+  const msg = `SWADE System Migration to version ${game.system.data.version} completed!`;
+  Logger.info({ msg: msg });
+  ui.notifications.info(msg, { permanent: true });
 }
 
 /**
@@ -73,7 +73,7 @@ export async function migrateCompendium(
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate({});
+  await pack.migrate();
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
@@ -95,21 +95,21 @@ export async function migrateCompendium(
 
       // Save the entry, if data was changed
       await doc.update(updateData);
-      console.log(
-        `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
-      );
+      Logger.info({
+        msg: `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
+      });
     } catch (err) {
       // Handle migration failures
       err.message = `Failed swade system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-      console.error(err);
+      Logger.error({ msg: err });
     }
   }
 
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  console.log(
-    `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
-  );
+  Logger.info({
+    msg: `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
+  });
 }
 
 /* -------------------------------------------- */
@@ -205,7 +205,7 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
   for (const [k, v] of Object.entries(data)) {
     if (getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
-        console.log(`Deleting deprecated object key ${k}`);
+        Logger.info({ msg: `Deleting deprecated object key ${k}` });
         delete data[k];
       } else removeDeprecatedObjects(v);
     }
