@@ -9,9 +9,10 @@ import { constants } from './constants';
 import { Logger } from './Logger';
 
 export async function migrateWorld() {
-  ui.notifications.info(
-    `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
-  );
+  Logger.info({
+    msg: `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
+    options: { toast: true },
+  });
 
   // Migrate World Actors
   for (const actor of game.actors!) {
@@ -49,14 +50,12 @@ export async function migrateWorld() {
   }
 
   // Set the migration as complete
-  await game.settings.set(
-    'swade',
-    'systemMigrationVersion',
-    game.system.data.version,
-  );
-  const msg = `SWADE System Migration to version ${game.system.data.version} completed!`;
-  Logger.info({ msg: msg });
-  ui.notifications.info(msg, { permanent: true });
+  const version = game.system.data.version;
+  await game.settings.set('swade', 'systemMigrationVersion', version);
+  Logger.info({
+    msg: `SWADE System Migration to version ${version} completed!`,
+    options: { permanent: true },
+  });
 }
 
 /**

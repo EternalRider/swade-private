@@ -15,7 +15,7 @@ export class Logger {
     msg,
     level,
     options: { force, toast, permanent } = {},
-  }: LogMessage) {
+  }: LogMessageVerbose) {
     const isDebugging = game.modules
       .get('_dev-mode')
       //@ts-expect-error adding an API to the module data is common practice
@@ -48,34 +48,31 @@ export class Logger {
     }
   }
 
-  static error({ msg, options }: LogShortcut) {
+  static error({ msg, options }: LogMessage) {
     Logger.log({ msg, level: Logger.LOG_LEVEL.Error, options });
   }
 
-  static warn({ msg, options }: LogShortcut) {
+  static warn({ msg, options }: LogMessage) {
     Logger.log({ msg, level: Logger.LOG_LEVEL.Warn, options });
   }
 
-  static info({ msg, options }: LogShortcut) {
+  static info({ msg, options }: LogMessage) {
     Logger.log({ msg, level: Logger.LOG_LEVEL.Info, options });
   }
 
-  static debug({ msg, options }: LogShortcut) {
+  static debug({ msg, options }: LogMessage) {
     Logger.log({ msg, level: Logger.LOG_LEVEL.Debug, options });
   }
-}
-
-interface LogShortcut {
-  /** The message or data to log */
-  msg: any;
-  options?: LogMessageOptions;
 }
 
 interface LogMessage {
   /** The message or data to log */
   msg: any;
-  level: ValueOf<typeof Logger.LOG_LEVEL>;
   options?: LogMessageOptions;
+}
+
+interface LogMessageVerbose extends LogMessage {
+  level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
 interface LogMessageOptions {
