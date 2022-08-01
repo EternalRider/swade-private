@@ -11,6 +11,7 @@ import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
+import { Logger } from '../../Logger';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet {
@@ -1038,11 +1039,11 @@ export default class CharacterSheet extends ActorSheet {
         name: 'Stored',
         icon: '<i class="fas fa-treasure-chest"></i>',
         condition: (item) => {
-          console.log(item);
+          Logger.debug({ msg: item });
           return true;
         },
         callback: (item) => {
-          console.log(item);
+          Logger.debug({ msg: item });
         },
       },
     ];
