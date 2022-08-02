@@ -196,4 +196,27 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   return data as StatusEffect;
 }
 
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+
+export function deepFreeze(o) {
+  Object.freeze(o);
+  if (o === undefined) {
+    return o;
+  }
+
+  Object.getOwnPropertyNames(o).forEach(function (prop) {
+    if (
+      o[prop] !== null &&
+      (typeof o[prop] === 'object' || typeof o[prop] === 'function') &&
+      !Object.isFrozen(o[prop])
+    ) {
+      deepFreeze(o[prop]);
+    }
+  });
+
+  return o;
+}
+
 type Permissions = Record<string, number>;

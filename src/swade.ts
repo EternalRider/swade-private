@@ -35,7 +35,7 @@ import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeHooks from './module/SwadeHooks';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import { rollItemMacro } from './module/util';
+import { deepFreeze, rollItemMacro } from './module/util';
 import './swade.scss';
 
 /* ------------------------------------ */
@@ -48,6 +48,8 @@ Hooks.once('init', () => {
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
+  //freeze the constants
+  deepFreeze(CONFIG.SWADE.CONST);
 
   //set up global game object
   game.swade = {
