@@ -94,7 +94,7 @@ export default class SwadeItem extends Item {
     return types.includes(this.data.type);
   }
 
-  get isEquipped(): boolean {
+  get isReadied(): boolean {
     const type = this.data.type;
     if (
       type === 'weapon' ||

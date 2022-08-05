@@ -431,7 +431,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   private _equipStatusOptions(): Record<number, string> {
-    if (this.type === 'weapon') {
+    if (
+      this.item.data.type === 'weapon' &&
+      !(this.item.data.data.isVehicular && this.item.parent?.type === 'vehicle')
+    ) {
       return {
         [constants.EQUIP_STATE.STORED]: 'Stored',
         [constants.EQUIP_STATE.CARRIED]: 'Carried',
