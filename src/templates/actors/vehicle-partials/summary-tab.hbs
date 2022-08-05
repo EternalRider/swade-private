@@ -16,10 +16,13 @@
       </header>
       <span class="quickaccess-list">
         <ol class="gear-list items-list">
-          {{#each itemsByType.gear}} {{#if data.isVehicular}} {{#if
-          data.equipped}}{{>
-          "systems/swade/templates/actors/partials/misc-card.hbs"
-          owner=../owner}} {{/if}} {{/if}} {{/each}}
+          {{#each itemsByType.gear}}
+            {{#if data.isVehicular}}
+              {{#if data.equipped}}
+                {{> "systems/swade/templates/actors/partials/misc-card.hbs" nowner=../owner}} 
+              {{/if}} 
+            {{/if}} 
+          {{/each}}
         </ol>
       </span>
     </section>
@@ -35,9 +38,9 @@
       </header>
       <span class="quickaccess-list">
         <ol class="gear-list items-list">
-          {{#each itemsByType.edge}} {{>
-          "systems/swade/templates/actors/partials/misc-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.edge}}
+            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+          {{/each}}
         </ol>
       </span>
     </section>
@@ -54,15 +57,14 @@
       </header>
       <span class="quickaccess-list">
         <ol class="gear-list items-list">
-          {{#each itemsByType.hindrance}} {{>
-          "systems/swade/templates/actors/partials/misc-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.hindrance}}
+            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+          {{/each}}
         </ol>
       </span>
     </section>
     {{/if}}
   </div>
-
   {{!-- Right panel --}}
   <div class="gear">
     <header class="header-field flexrow">
@@ -77,10 +79,13 @@
     </header>
     <span class="quickaccess-list">
       <ol class="gear-list weapon-list">
-        {{#each itemsByType.weapon as |weapon id|}} {{#if
-        weapon.data.isVehicular}} {{#if weapon.data.equipped}} {{>
-        "systems/swade/templates/actors/partials/weapon-card.hbs"
-        owner=../owner}} {{/if}}{{/if}} {{/each}}
+        {{#each itemsByType.weapon}}
+          {{#if data.isVehicular}}
+            {{#if data.equipped}}
+              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
+            {{/if}}
+          {{/if}}
+        {{/each}}
       </ol>
     </span>
   </div>
