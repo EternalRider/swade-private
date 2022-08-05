@@ -11,11 +11,11 @@ import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
-import { Logger } from '../../Logger';
+import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet {
-  equipStateMenu: ContextMenu;
+  _equipStateMenu: PopUpMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -47,7 +47,7 @@ export default class CharacterSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    this._setupEquipStatusMenu();
+    this._setupEquipStatusMenu(html);
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -656,7 +656,7 @@ export default class CharacterSheet extends ActorSheet {
     data.parry = 0;
     for (const shield of this.actor.itemTypes.shield) {
       if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipped) {
+      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         data.parry += shield.data.data.parry;
       }
     }
@@ -736,11 +736,8 @@ export default class CharacterSheet extends ActorSheet {
     return { current, max };
   }
 
-  /**
-   * Extend and override the sheet header buttons
-   * @override
-   */
-  protected _getHeaderButtons() {
+  /** Extend and override the sheet header buttons */
+  protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
     // Token Configuration
@@ -1033,25 +1030,92 @@ export default class CharacterSheet extends ActorSheet {
     await this.actor.toggleActiveEffect(data);
   }
 
-  private _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
+  protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._element;
     const items: ContextMenuEntry[] = [
       {
-        name: 'Stored',
-        icon: '<i class="fas fa-treasure-chest"></i>',
-        condition: (item) => {
-          Logger.debug({ msg: item });
-          return true;
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
+        icon: '<i class="fas fa-archive"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.STORED);
         },
-        callback: (item) => {
-          Logger.debug({ msg: item });
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
+        icon: '<i class="fas fa-tshirt"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.CARRIED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
+        icon: '<i class="fas fa-tshirt"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type !== 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.EQUIPPED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.OFF_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.MAIN_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
+        icon: '<i class="fas fa-sign-language"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.TWO_HANDS);
         },
       },
     ];
 
-    const selector = '.swade-official .inventory .item-controls .equip-status';
+    const selector = ' .inventory .item-controls .equip-status';
+    // const selector = '.inventory .item-wrapper';
     // const selector = '.inventory .item-name';
     const options = { eventName: 'click' };
-    new ContextMenu(html, selector, items, options);
+    this._equipStateMenu = new PopUpMenu(html, selector, items, options);
   }
 }
 
