@@ -576,6 +576,14 @@ SWADE:
     Regular: Regular
     Improved: Improved
   OffHandPenalty: Off-Hand Penalty
+  ItemEquipStatus:
+    Label: Location
+    Stored: Stored
+    Carried: Carried
+    Equipped: Equipped
+    OffHand: Off-Hand
+    MainHand: Main Hand
+    TwoHands: Two Hands
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

@@ -594,6 +594,14 @@ SWADE:
     Regular: Lieblingswaffe
     Improved: Absolute Lieblingswaffe
   OffHandPenalty: Falsche Hand
+  ItemEquipStatus:
+    Label: Lage
+    Stored: Gelagert
+    Carried: Getragen
+    Equipped: Ausgerüstet
+    OffHand: Nebenhand
+    MainHand: Haupthand
+    TwoHands: Beidhändig
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
