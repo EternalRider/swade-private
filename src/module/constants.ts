@@ -34,8 +34,8 @@ export const constants = {
   EQUIP_STATE: {
     STORED: 0,
     CARRIED: 1,
-    EQUIPPED: 2,
-    OFF_HAND: 3,
+    OFF_HAND: 2,
+    EQUIPPED: 3,
     MAIN_HAND: 4,
     TWO_HANDS: 5,
   } as const,
