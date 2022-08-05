@@ -224,7 +224,8 @@
 
   .tab {
     display: none;
-    overflow: hidden auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     height: 100%;
     width: 100%;
     padding: 7px;
@@ -790,34 +791,41 @@
   }
 
   .inventory {
+    #context-menu {
+      .context-item {
+        text-align: left;
+      }
+    }
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
-    li {
-      display: grid;
-      line-height: 30px;
-      padding: $small-spacing $medium-spacing;
-      margin-bottom: $small-spacing;
+    li.item {
+      padding: 0 $small-spacing;
       &:nth-child(even) {
         background: rgba(0, 0, 0, 0.1);
       }
-      & > * {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        font-size: 14px;
-      }
+    }
+    .item-wrapper {
+      display: grid;
+      column-gap: $small-spacing;
+      align-items: center;
+      line-height: 30px;
+      font-size: 14px;
     }
 
     .item-name {
       text-align: left;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .item-img {
-      height: 32px;
-      width: 32px;
+      height: 28px;
+      width: 28px;
       border: none;
       background-size: cover;
       background-position: center;
@@ -844,11 +852,17 @@
       white-space: normal;
       line-height: normal;
     }
+    .item-controls {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      button {
+        margin: 0;
+      }
+    }
 
     .weapon {
       grid-template-columns: 32px 3fr 1fr 1fr 2fr 1fr 80px;
-      column-gap: $small-spacing;
-      align-items: center;
 
       .item-img {
         grid-column: 1;
@@ -861,6 +875,9 @@
       .damage {
         grid-column: 3;
         text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
         button {
           width: 90%;
         }
@@ -881,19 +898,11 @@
       }
       .item-controls {
         grid-column: 7;
-        text-align: center;
-        display: flex;
-        justify-content: flex-end;
-        button {
-          padding: 0;
-        }
       }
     }
 
     .armor {
       grid-template-columns: 32px 3fr 1fr 1fr 2fr 1fr 80px;
-      column-gap: $small-spacing;
-      align-items: center;
       .item-img {
         grid-column: 1;
       }
@@ -921,19 +930,11 @@
       }
       .item-controls {
         grid-column: 7;
-        text-align: center;
-        display: flex;
-        justify-content: flex-end;
-        button {
-          padding: 0;
-        }
       }
     }
 
     .shield {
       grid-template-columns: 32px 3fr 1fr 1fr 2fr 1fr 80px;
-      column-gap: $small-spacing;
-      align-items: center;
       .item-img {
         grid-column: 1;
       }
@@ -961,19 +962,11 @@
       }
       .item-controls {
         grid-column: 7;
-        text-align: center;
-        display: flex;
-        justify-content: flex-end;
-        button {
-          padding: 0;
-        }
       }
     }
 
     .misc {
       grid-template-columns: 32px 7fr 1fr 80px;
-      column-gap: $small-spacing;
-      align-items: center;
       .item-img {
         grid-column: 1;
       }
@@ -987,12 +980,6 @@
       }
       .item-controls {
         grid-column: 4;
-        text-align: center;
-        display: flex;
-        justify-content: flex-end;
-        button {
-          padding: 0;
-        }
       }
     }
   }
@@ -1006,6 +993,7 @@
     display: grid;
     line-height: 24px;
     padding-left: 5px;
+    margin-top: $small-spacing;
     .item-controls {
       justify-content: space-around !important;
     }
