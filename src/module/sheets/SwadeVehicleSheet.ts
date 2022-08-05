@@ -114,7 +114,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         case 'mod':
           modData = this._createItemData('gear', header);
           modData.data.isVehicular = true;
-          modData.data.equipped = true;
+          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
           modData.name = `New ${type.capitalize()}`;
           await Item.create(modData, {
             renderSheet: true,
@@ -124,7 +124,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         case 'vehicle-weapon':
           weaponData = this._createItemData('weapon', header);
           weaponData.data.isVehicular = true;
-          weaponData.data.equipped = true;
+          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
           await Item.create(weaponData, {
             renderSheet: true,
             parent: this.actor,
