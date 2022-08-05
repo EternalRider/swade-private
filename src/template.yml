@@ -185,7 +185,6 @@ Item:
       powerPoints: {}
     equipable:
       equippable: false
-      equipped: false
       equipStatus: 1
     vehicular:
       isVehicular: false
