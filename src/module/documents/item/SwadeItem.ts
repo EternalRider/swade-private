@@ -94,6 +94,19 @@ export default class SwadeItem extends Item {
     return types.includes(this.data.type);
   }
 
+  get isEquipped(): boolean {
+    const type = this.data.type;
+    if (
+      type === 'weapon' ||
+      type === 'armor' ||
+      type === 'shield' ||
+      type === 'gear'
+    ) {
+      return this.data.data.equipStatus > constants.EQUIP_STATE.CARRIED;
+    }
+    return false;
+  }
+
   override prepareDerivedData() {
     const type = this.data.type;
     if (
@@ -106,9 +119,9 @@ export default class SwadeItem extends Item {
       Object.defineProperty(this.data.data, 'equipped', {
         get() {
           Logger.warn({
-            msg: 'This property is depreciated and will be removed with v1.3.0, please use equipState instead',
+            msg: 'This property is depreciated and will be removed with v1.3.0, please use equipStatus instead',
           });
-          return this.equipState > constants.EQUIP_STATE.CARRIED;
+          return this.equipStatus > constants.EQUIP_STATE.CARRIED;
         },
       });
     }
