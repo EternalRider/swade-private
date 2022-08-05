@@ -18,8 +18,8 @@
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
             {{#if data.isVehicular}}
-              {{#if data.equipped}}
-                {{> "systems/swade/templates/actors/partials/misc-card.hbs" nowner=../owner}} 
+              {{#if (gt data.equipStatus @root.equipStatusEnum.CARRIED)}}
+                {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}} 
               {{/if}} 
             {{/if}} 
           {{/each}}
@@ -81,7 +81,7 @@
       <ol class="gear-list weapon-list">
         {{#each itemsByType.weapon}}
           {{#if data.isVehicular}}
-            {{#if data.equipped}}
+            {{#if (gt data.equipStatus @root.equipStatusEnum.CARRIED)}}
               {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
             {{/if}}
           {{/if}}

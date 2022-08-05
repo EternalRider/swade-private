@@ -198,6 +198,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         percentage: this._calcModsPercentage(modsUsed),
       };
     }
+    data.equipStatusEnum = constants.EQUIP_STATE;
     return data;
   }
 
