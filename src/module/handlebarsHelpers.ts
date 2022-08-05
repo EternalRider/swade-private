@@ -81,10 +81,6 @@ export const registerCustomHelpers = function () {
     return item.data.data['equippable'] || item.data.data['isVehicular'];
   });
 
-  Handlebars.registerHelper('disabled', (value) => {
-    return value ? 'disabled' : '';
-  });
-
   Handlebars.registerHelper('displayEmbedded', (array: any[] = []) => {
     const collection = new Map(array);
     const entities: string[] = [];
