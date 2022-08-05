@@ -12,6 +12,7 @@ import {
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { constants } from '../../constants';
+import { Logger } from '../../Logger';
 import * as util from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 
@@ -56,7 +57,7 @@ export default class SwadeItem extends Item {
     if (!match) return;
     //split the string and convert the values to numbers
     const ranges = match.join('').split('/');
-    //make sure the array is 3 values long
+    //make sure the array is 4 values long
     const increments = Array.from(
       { ...ranges, length: 4 },
       (v) => Number(v) || 0,
@@ -91,6 +92,26 @@ export default class SwadeItem extends Item {
       'container',
     ];
     return types.includes(this.data.type);
+  }
+
+  override prepareDerivedData() {
+    const type = this.data.type;
+    if (
+      type === 'weapon' ||
+      type === 'armor' ||
+      type === 'shield' ||
+      type === 'gear'
+    ) {
+      // TODO remove with 1.3.0
+      Object.defineProperty(this.data.data, 'equipped', {
+        get() {
+          Logger.warn({
+            msg: 'This property is depreciated and will be removed with v1.3.0, please use equipState instead',
+          });
+          return this.equipState > constants.EQUIP_STATE.CARRIED;
+        },
+      });
+    }
   }
 
   rollDamage(options: IRollOptions = {}) {
@@ -200,14 +221,23 @@ export default class SwadeItem extends Item {
   }
 
   async setEquipState(state: EquipState): Promise<EquipState> {
-    if (this.data.type === 'weapon' && state > 2) {
-      //TODO replace with logger?
-      ui.notifications.warn(
-        'You cannot set this state on the item ' + this.name,
-      );
+    Logger.debug({
+      msg: `Trying to set state ${util.getKeyByValue(
+        constants.EQUIP_STATE,
+        state,
+      )} on item ${this.name} with type ${this.type}`,
+    });
+    if (
+      this.data.type === 'weapon' &&
+      state === constants.EQUIP_STATE.EQUIPPED
+    ) {
+      Logger.warn({
+        msg: 'You cannot set this state on the item ' + this.name,
+        options: { toast: true },
+      });
       return this.data.data.equipStatus;
     }
-    await this.update({ 'data.equippedStatus': state });
+    await this.update({ 'data.equipStatus': state });
     return state;
   }
 
