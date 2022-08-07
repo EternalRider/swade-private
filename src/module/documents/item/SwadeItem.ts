@@ -79,7 +79,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this.data, 'data.isArcaneDevice') as boolean;
+    return getProperty(this.data.data, 'isArcaneDevice') as boolean;
   }
 
   get isPhysicalItem(): boolean {
@@ -91,7 +91,7 @@ export default class SwadeItem extends Item {
       'consumable',
       'container',
     ];
-    return types.includes(this.data.type);
+    return types.includes(this.type);
   }
 
   get isReadied(): boolean {
@@ -254,193 +254,198 @@ export default class SwadeItem extends Item {
     return state;
   }
 
-  getChatData(htmlOptions = {}) {
-    const data = deepClone(this.data.data) as any;
-
-    // Rich text description
-    data.description = TextEditor.enrichHTML(data.description, htmlOptions);
-    data.notes = TextEditor.enrichHTML(data.notes, htmlOptions);
-
+  getChatData(
+    enrichOptions: Partial<TextEditor.EnrichOptions> = {},
+  ): ItemChatCardData {
     // Item properties
-    const props = new Array<string>();
-
-    switch (this.type) {
-      case 'hindrance':
-        props.push(
-          data.major
-            ? game.i18n.localize('SWADE.Major')
-            : game.i18n.localize('SWADE.Minor'),
-        );
-        break;
-      case 'shield':
-        props.push(
-          data.equipped
-            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
-                'SWADE.Equipped',
-              )}"></i>`
-            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
-                'SWADE.Unequipped',
-              )}"></i>`,
-          data.parry
-            ? `<i class='fas fa-user-shield' title='${game.i18n.localize(
-                'SWADE.Parry',
-              )}'></i> ${data.parry}`
-            : '',
-          data.cover
-            ? `<i class='fas fa-umbrella' title='${game.i18n.localize(
-                'SWADE.Cover._name',
-              )}'></i> ${data.cover}`
-            : '',
-          data.weight
-            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
-                'SWADE.Weight',
-              )}'></i> ${data.weight}`
-            : '',
-          data.minStr
-            ? `<i class='fas fa-dumbbell' title='${game.i18n.localize(
-                'SWADE.MinStrLong',
-              )}'></i> ${data.minStr}`
-            : '',
-          data.notes
-            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
-                'SWADE.Notes',
-              )}'></i> ${data.notes}`
-            : '',
-        );
-        break;
-      case 'armor':
-        for (const loc in data.locations) {
-          data.locations[loc] != false
-            ? props.push(
-                game.i18n.localize(
-                  `SWADE.${loc.charAt(0).toUpperCase() + loc.slice(1)}`,
-                ),
-              )
-            : '';
-        }
-        props.push(
-          data.equipped
-            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
-                'SWADE.Equipped',
-              )}"></i>`
-            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
-                'SWADE.Unequipped',
-              )}"></i>`,
-          data.armor
-            ? `<i class='fas fa-shield-alt' title='${game.i18n.localize(
-                'SWADE.Armor',
-              )}'></i> ${data.armor}`
-            : '',
-          data.cover
-            ? `<i class='fas fa-umbrella' title='${game.i18n.localize(
-                'SWADE.Cover._name',
-              )}'></i> ${data.cover}`
-            : '',
-          data.weight
-            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
-                'SWADE.Weight',
-              )}'></i> ${data.weight}`
-            : '',
-          data.minStr
-            ? `<i class='fas fa-dumbbell' title='${game.i18n.localize(
-                'SWADE.MinStrLong',
-              )}'></i> ${data.minStr}`
-            : '',
-          data.notes
-            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
-                'SWADE.Notes',
-              )}'></i> ${data.notes}`
-            : '',
-        );
-        break;
-      case 'edge':
-        props.push(data.requirements.value);
-        props.push(data.isArcaneBackground ? 'Arcane' : '');
-        break;
-      case 'power':
-        props.push(data.rank);
-        props.push(data.arcane);
-        props.push(`${data.pp} ${game.i18n.localize('SWADE.PPAbbreviation')}`);
-        props.push(
-          `<i class="fas fa-ruler" title='${game.i18n.localize(
-            'SWADE.Range._name',
-          )}'></i> ${data.range}`,
-        );
-        props.push(
-          `<i class='fas fa-shield-alt' title='${game.i18n.localize(
-            'SWADE.Ap',
-          )}'></i> ${data.ap}`,
-        );
-        props.push(
-          `<i class='fas fa-hourglass-half' title='${game.i18n.localize(
-            'SWADE.Dur',
-          )}'></i> ${data.duration}`,
-        );
-        props.push(data.trapping);
-        break;
-      case 'weapon':
-        props.push(
-          data.equipped
-            ? `<i class="fas fa-tshirt" title="${game.i18n.localize(
-                'SWADE.Equipped',
-              )}"></i>`
-            : `<i class="fas fa-tshirt" style="color:grey" title="${game.i18n.localize(
-                'SWADE.Unequipped',
-              )}"></i>`,
-          data.damage
-            ? `<i class="fas fa-fist-raised" title='${game.i18n.localize(
-                'SWADE.Dmg',
-              )}'></i> ${data.damage}`
-            : '',
-          data.ap
-            ? `<i class='fas fa-shield-alt' title='${game.i18n.localize(
-                'SWADE.Ap',
-              )}'></i> ${data.ap}`
-            : '',
-          data.parry
-            ? `<i class='fas fa-user-shield' title='${game.i18n.localize(
-                'SWADE.Parry',
-              )}'></i> ${data.parry}`
-            : '',
-          data.range
-            ? `<i class='fas fa-ruler' title='${game.i18n.localize(
-                'SWADE.Range._name',
-              )}'></i> ${data.range}`
-            : '',
-          data.rof
-            ? `<i class='fas fa-tachometer-alt' title='${game.i18n.localize(
-                'SWADE.RoF',
-              )}'></i> ${data.rof}`
-            : '',
-          data.weight
-            ? `<i class='fas fa-weight-hanging' title='${game.i18n.localize(
-                'SWADE.Weight',
-              )}'></i> ${data.weight}`
-            : '',
-          data.notes
-            ? `<i class="fas fa-sticky-note" title='${game.i18n.localize(
-                'SWADE.Notes',
-              )}'></i> ${data.notes}`
-            : '',
-        );
-        break;
-      default:
-        break;
+    const chips = new Array<ItemChatCardChip>();
+    const type = this.data.type;
+    if (type === 'hindrance') {
+      let label = game.i18n.localize('SWADE.Major');
+      if (this.data.data.major) {
+        label = game.i18n.localize('SWADE.Minor');
+      }
+      chips.push({ text: label });
     }
-    // Filter properties and return
-    data.properties = props.filter((p) => !!p);
+    if (type === 'shield') {
+      if (this.isReadied) {
+        chips.push({
+          icon: '<i class="fas fa-tshirt"></i>',
+          title: game.i18n.localize('SWADE.Equipped'),
+        });
+      } else {
+        chips.push({
+          icon: '<i class="fas fa-tshirt" style="color:grey"></i>',
+          title: game.i18n.localize('SWADE.Unequipped'),
+        });
+      }
+      chips.push(
+        {
+          icon: '<i class="fas fa-user-shield"></i>',
+          text: this.data.data.parry,
+          title: game.i18n.localize('SWADE.Parry'),
+        },
+        {
+          icon: '<i class="fas fas fa-umbrella"></i>',
+          text: this.data.data.cover,
+          title: game.i18n.localize('SWADE.Cover._name'),
+        },
+        {
+          icon: '<i class="fas fa-dumbbell"></i>',
+          text: this.data.data.minStr,
+        },
+        {
+          icon: '<i class="fas fa-sticky-note"></i>',
+          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          title: game.i18n.localize('SWADE.Notes'),
+        },
+      );
+    }
+    if (type === 'armor') {
+      for (const [location, covered] of Object.entries(
+        this.data.data.locations,
+      )) {
+        if (!covered) continue;
+        chips.push({
+          text: game.i18n.localize(
+            `SWADE.${location.charAt(0).toUpperCase() + location.slice(1)}`,
+          ),
+        });
+      }
+      if (this.isReadied) {
+        chips.push({
+          icon: '<i class="fas fa-tshirt"></i>',
+          title: game.i18n.localize('SWADE.Equipped'),
+        });
+      } else {
+        chips.push({
+          icon: '<i class="fas fa-tshirt" style="color:grey"></i>',
+          title: game.i18n.localize('SWADE.Unequipped'),
+        });
+      }
+      chips.push(
+        {
+          icon: '<i class="fas fa-shield-alt"></i>',
+          title: game.i18n.localize('SWADE.Armor'),
+          text: this.data.data.armor,
+        },
+        {
+          icon: '<i class="fas fa-dumbbell"></i>',
+          text: this.data.data.minStr,
+        },
+        {
+          icon: '<i class="fas fa-sticky-note"></i>',
+          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          title: game.i18n.localize('SWADE.Notes'),
+        },
+      );
+    }
+    if (type === 'edge') {
+      chips.push({
+        text: this.data.data.requirements.value,
+      });
+      if (this.data.data.isArcaneBackground) {
+        chips.push({ text: game.i18n.localize('SWADE.Arcane') });
+      }
+    }
+    if (type === 'power') {
+      chips.push(
+        {
+          text: this.data.data.rank,
+        },
+        { text: this.data.data.arcane },
+        {
+          text: this.data.data.pp + game.i18n.localize('SWADE.PPAbbreviation'),
+        },
+        {
+          icon: '<i class="fas fa-ruler"></i>',
+          text: this.data.data.range,
+          title: game.i18n.localize('SWADE.Range._name'),
+        },
+        {
+          icon: '<i class="fas fa-shield-alt"></i>',
+          text: this.data.data.ap,
+          title: game.i18n.localize('SWADE.Ap'),
+        },
+        {
+          icon: '<i class="fas fa-hourglass-half"></i>',
+          text: this.data.data.duration,
+          title: game.i18n.localize('SWADE.Dur'),
+        },
+        {
+          text: this.data.data.trapping,
+        },
+      );
+    }
+    if (type === 'weapon') {
+      if (this.isReadied) {
+        chips.push({
+          icon: '<i class="fas fa-tshirt"></i>',
+          title: game.i18n.localize('SWADE.Equipped'),
+        });
+      } else {
+        chips.push({
+          icon: '<i class="fas fa-tshirt" style="color:grey"></i>',
+          title: game.i18n.localize('SWADE.Unequipped'),
+        });
+      }
+      chips.push(
+        {
+          icon: '<i class="fas fa-fist-raised"></i>',
+          text: this.data.data.damage,
+          title: game.i18n.localize('SWADE.Dmg'),
+        },
+        {
+          icon: '<i class="fas fa-shield-alt"></i>',
+          text: this.data.data.ap,
+          title: game.i18n.localize('SWADE.Ap'),
+        },
+        {
+          icon: '<i class="fas fa-user-shield"></i>',
+          text: this.data.data.parry,
+          title: game.i18n.localize('SWADE.Parry'),
+        },
+        {
+          icon: '<i class="fas fa-ruler"></i>',
+          text: this.data.data.range,
+          title: game.i18n.localize('SWADE.Range._name'),
+        },
+        {
+          icon: '<i class="fas fa-tachometer-alt"></i>',
+          text: this.data.data.rof,
+          title: game.i18n.localize('SWADE.RoF'),
+        },
+        {
+          icon: '<i class="fas fa-sticky-note"></i>',
+          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          title: game.i18n.localize('SWADE.Notes'),
+        },
+      );
+    }
 
     //Additional actions
-    const actions = getProperty(this.data, 'data.actions.additional');
+    const itemActions = getProperty(
+      this.data,
+      'data.actions.additional',
+    ) as Record<string, ItemAction>;
 
-    data.actions = [];
-    for (const action in actions) {
-      data.actions.push({
+    const actions = new Array<ItemChatCardAction>();
+    for (const action in itemActions) {
+      actions.push({
         key: action,
-        type: actions[action].type,
-        name: actions[action].name,
+        type: itemActions[action].type,
+        name: itemActions[action].name,
       });
     }
+
+    const data: ItemChatCardData = {
+      description: TextEditor.enrichHTML(
+        this.data.data.description,
+        enrichOptions,
+      ),
+      chips: chips,
+      actions: actions,
+    };
     return data;
   }
 
@@ -460,26 +465,25 @@ export default class SwadeItem extends Item {
     if (!this.actor) return;
     const token = this.actor.token;
 
-    const tokenId = token ? `${token.parent!.id}.${token.id}` : null;
+    const tokenId = token ? `${token.parent?.id}.${token.id}` : null;
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     const hasAmmoManagement =
       this.type === 'weapon' &&
       !this.isMeleeWeapon &&
       ammoManagement &&
-      !getProperty(this.data, 'data.autoReload');
-    const hasDamage = !!getProperty(this.data, 'data.damage');
+      !getProperty(this.data.data, 'autoReload');
+    const hasDamage = !!getProperty(this.data.data, 'damage');
     const hasTraitRoll =
       ['weapon', 'power', 'shield'].includes(this.data.type) &&
-      !!getProperty(this.data, 'data.actions.skill');
+      !!getProperty(this.data.data, 'actions.skill');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
-      getProperty(this.data, 'data.shots') > 0 &&
-      !getProperty(this.data, 'data.autoReload');
+      getProperty(this.data.data, 'shots') > 0 &&
+      !getProperty(this.data.data, 'autoReload');
 
     const additionalActions: Record<string, ItemAction> =
-      getProperty(this.data, 'data.actions.additional') || {};
-    const hasAdditionalActions = !isObjectEmpty(additionalActions);
+      getProperty(this.data.data, 'actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === 'skill',
@@ -489,20 +493,19 @@ export default class SwadeItem extends Item {
     );
 
     const templateData = {
-      actor: this.actor,
+      actorId: this.parent?.id,
       tokenId: tokenId,
-      item: this.data,
+      item: this,
       data: this.getChatData(),
-      hasAmmoManagement: hasAmmoManagement,
-      hasReloadButton: hasReloadButton,
-      hasDamage: hasDamage,
+      hasAmmoManagement,
+      hasReloadButton,
+      hasDamage,
       showDamageRolls: hasDamage || hasDamageActions,
-      hasAdditionalActions: hasAdditionalActions,
       trait: getProperty(this.data, 'data.actions.skill'),
-      hasTraitRoll: hasTraitRoll,
+      hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
       powerPoints: this._getPowerPoints(),
-      settingrules: {
+      settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
       },
     };
@@ -592,23 +595,26 @@ export default class SwadeItem extends Item {
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
-  private _getPowerPoints(): { current: number; max: number } | null {
-    if (this.type !== 'power') return null;
+  private _getPowerPoints(): ItemChatCardPowerPoints | null {
+    if (this.data.type === 'power') {
+      const actor = this.parent!;
 
-    const arcane: string = getProperty(this.data, 'data.arcane');
-    let current: number = getProperty(
-      this.actor!.data,
-      'data.powerPoints.value',
-    );
-    let max: number = getProperty(this.actor!.data, 'data.powerPoints.max');
-    if (arcane) {
-      current = getProperty(
-        this.actor!.data,
-        `data.powerPoints.${arcane}.value`,
-      );
-      max = getProperty(this.actor!.data, `data.powerPoints.${arcane}.max`);
+      let value: number = getProperty(actor.data.data, 'powerPoints.value');
+      let max: number = getProperty(actor.data.data, 'powerPoints.max');
+      const arcane = this.data.data.arcane;
+      if (arcane) {
+        value = getProperty(actor.data.data, `powerPoints.${arcane}.value`);
+        max = getProperty(actor.data.data, `powerPoints.${arcane}.max`);
+      }
+      return { value, max };
     }
-    return { current, max };
+    if (this.isArcaneDevice) {
+      return getProperty(
+        this.data.data,
+        'powerPoints',
+      ) as ItemChatCardPowerPoints;
+    }
+    return null;
   }
 
   override async _preCreate(
@@ -671,4 +677,27 @@ export default class SwadeItem extends Item {
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
   }
+}
+
+interface ItemChatCardChip {
+  icon?: string;
+  text?: string | number;
+  title?: string;
+}
+
+interface ItemChatCardAction {
+  key: string;
+  type: ItemAction['type'];
+  name: string;
+}
+
+interface ItemChatCardData {
+  chips: Array<ItemChatCardChip>;
+  actions: Array<ItemChatCardAction>;
+  description: string;
+}
+
+interface ItemChatCardPowerPoints {
+  max: number;
+  value: number;
 }
