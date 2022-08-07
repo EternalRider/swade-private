@@ -1,10 +1,12 @@
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
+import { EquipState } from '../../globals';
 import {
   AdditionalStat,
   ItemAction,
 } from '../../interfaces/additional.interface';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
@@ -216,6 +218,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       collapsibleStates: this.collapsibleStates,
       isArcaneDevice: this.item.isArcaneDevice,
       ranges: this._rangeSuggestions(),
+      equipStatusOptions: this._equipStatusOptions(),
       settingRules: {
         modSlots: game.settings.get('swade', 'vehicleMods'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -426,6 +429,26 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       '300/600/1200',
     ];
   }
+
+  private _equipStatusOptions(): Record<number, string> {
+    if (
+      this.item.data.type === 'weapon' &&
+      !(this.item.data.data.isVehicular && this.item.parent?.type === 'vehicle')
+    ) {
+      return {
+        [constants.EQUIP_STATE.STORED]: 'Stored',
+        [constants.EQUIP_STATE.CARRIED]: 'Carried',
+        [constants.EQUIP_STATE.MAIN_HAND]: 'Main Hand',
+        [constants.EQUIP_STATE.OFF_HAND]: 'Off Hand',
+        [constants.EQUIP_STATE.TWO_HANDS]: 'Two Hands',
+      };
+    }
+    return {
+      [constants.EQUIP_STATE.STORED]: 'Stored',
+      [constants.EQUIP_STATE.CARRIED]: 'Carried',
+      [constants.EQUIP_STATE.EQUIPPED]: 'Equipped',
+    };
+  }
 }
 
 interface SwadeItemSheetData extends OptionsPartial {
@@ -441,6 +464,7 @@ interface SwadeItemSheetData extends OptionsPartial {
     modSlots: boolean;
     noPowerPoints: boolean;
   };
+  equipStatusOptions: Record<EquipState, string>;
   ranges: string[];
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;

@@ -3,7 +3,7 @@ import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
-import { SWADE } from './module/config';
+import { PACKAGE_ID, SWADE } from './module/config';
 import Benny from './module/dice/Benny';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
@@ -35,7 +35,7 @@ import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeHooks from './module/SwadeHooks';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import { rollItemMacro } from './module/util';
+import { deepFreeze, rollItemMacro } from './module/util';
 import './swade.scss';
 
 /* ------------------------------------ */
@@ -48,6 +48,8 @@ Hooks.once('init', () => {
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
+  //freeze the constants
+  deepFreeze(CONFIG.SWADE.CONST);
 
   //set up global game object
   game.swade = {
@@ -223,5 +225,5 @@ Hooks.once('diceSoNiceReady', SwadeHooks.onDiceSoNiceReady);
 
 /** Developer Mode */
 Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-  registerPackageDebugFlag(SWADE.PACKAGE_ID);
+  registerPackageDebugFlag(PACKAGE_ID);
 });

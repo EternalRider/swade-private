@@ -1,5 +1,6 @@
 import IDriverData from '../../interfaces/DriverData.interface';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
@@ -113,7 +114,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         case 'mod':
           modData = this._createItemData('gear', header);
           modData.data.isVehicular = true;
-          modData.data.equipped = true;
+          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
           modData.name = `New ${type.capitalize()}`;
           await Item.create(modData, {
             renderSheet: true,
@@ -123,7 +124,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         case 'vehicle-weapon':
           weaponData = this._createItemData('weapon', header);
           weaponData.data.isVehicular = true;
-          weaponData.data.equipped = true;
+          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
           await Item.create(weaponData, {
             renderSheet: true,
             parent: this.actor,
@@ -197,6 +198,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         percentage: this._calcModsPercentage(modsUsed),
       };
     }
+    data.equipStatusEnum = constants.EQUIP_STATE;
     return data;
   }
 
@@ -206,15 +208,12 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    */
   private _determineCargo() {
     return [
-      ...this.actor.itemTypes.gear.filter(
+      ...this.actor.items.filter(
         (i) =>
-          i.data.type === 'gear' &&
-          (!i.data.data.isVehicular || !i.data.data.equipped),
-      ),
-      ...this.actor.itemTypes.weapon.filter(
-        (i) =>
-          i.data.type === 'weapon' &&
-          (!i.data.data.isVehicular || !i.data.data.equipped),
+          //TODO update once containers and consumables are added
+          (i.data.type === 'gear' || i.data.type === 'weapon') &&
+          (!i.data.data.isVehicular ||
+            i.data.data.equipStatus < constants.EQUIP_STATE.EQUIPPED),
       ),
       ...this.actor.itemTypes.armor,
       ...this.actor.itemTypes.shield,
@@ -295,7 +294,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       (i) =>
         (i.data.type === 'gear' || i.data.type === 'weapon') &&
         i.data.data.isVehicular &&
-        i.data.data.equipped,
+        i.data.data.equipStatus > constants.EQUIP_STATE.CARRIED,
     );
     let retVal = 0;
     for (const m of mods) {

@@ -136,12 +136,7 @@ export default class ItemChatCardHelper {
           ui.notifications.warn('SWADE.NotEnoughAmmo', { localize: true });
           return null;
         }
-        if (getProperty(item.data, 'data.actions.skillMod')) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.ItemTraitMod'),
-            value: getProperty(item.data, 'data.actions.skillMod'),
-          });
-        }
+        additionalMods.push(...item.getTraitModifiers());
         roll = await this.doTraitAction(getTrait(traitName, actor), actor, {
           additionalMods,
         });
@@ -150,7 +145,6 @@ export default class ItemChatCardHelper {
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
-          {},
           getProperty(item.data, 'data.arcaneSkillDie'),
         );
         break;
@@ -223,33 +217,31 @@ export default class ItemChatCardHelper {
       }
       const currentShots = getProperty(item.data, 'data.currentShots');
 
-      //do autoreload stuff if applicable
-      const hasAutoReload = getProperty(item.data, 'data.autoReload');
-      const ammo = actor.items.getName(getProperty(item.data, 'data.ammo'));
-      const canAutoReload =
-        !!ammo && getProperty(ammo.data, 'data.quantity') <= 0;
-      if (
-        ammoManagement &&
-        ((hasAutoReload && !canAutoReload) ||
-          (!!actionToUse.shotsUsed && currentShots < actionToUse.shotsUsed))
-      ) {
-        ui.notifications.warn('SWADE.NotEnoughAmmo', { localize: true });
-        return null;
+      if (item.data.type === 'weapon') {
+        //do autoreload stuff if applicable
+        const hasAutoReload = item.data.data.autoReload;
+        const ammo = actor.items.getName(item.data.data.ammo);
+        const canAutoReload = !!ammo && ammo.data.data['quantity'] <= 0;
+        if (
+          ammoManagement &&
+          ((hasAutoReload && !canAutoReload) ||
+            (!!actionToUse.shotsUsed && currentShots < actionToUse.shotsUsed))
+        ) {
+          ui.notifications.warn('SWADE.NotEnoughAmmo', { localize: true });
+          return null;
+        }
       }
-      if (getProperty(item.data, 'data.actions.skillMod') !== '') {
-        additionalMods.push({
-          label: game.i18n.localize('SWADE.ItemTraitMod'),
-          value: getProperty(item.data, 'data.actions.skillMod'),
-        });
-      }
+
+      additionalMods.push(...item.getTraitModifiers());
+
       roll = await this.doTraitAction(trait, actor, {
         flavour: actionToUse.name,
         rof: actionToUse.rof,
         additionalMods,
       });
 
-      if (roll) {
-        await this.subtractShots(actor, item.id!, actionToUse.shotsUsed || 0);
+      if (roll && item.data.type === 'weapon') {
+        await this.subtractShots(actor, item.id!, actionToUse.shotsUsed ?? 0);
       }
     } else if (actionToUse.type === 'damage') {
       //Do Damage stuff
@@ -271,7 +263,7 @@ export default class ItemChatCardHelper {
         additionalMods,
       });
     }
-    Hooks.call('swadeAction', actor, item, action, roll, game.user!.id);
+    Hooks.call('swadeAction', actor, item, action, roll, game.user?.id);
     return roll;
   }
 

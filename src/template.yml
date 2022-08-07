@@ -185,7 +185,7 @@ Item:
       powerPoints: {}
     equipable:
       equippable: false
-      equipped: false
+      equipStatus: 1
     vehicular:
       isVehicular: false
       mods: 1
@@ -228,6 +228,7 @@ Item:
     currentShots: 0
     ammo: ''
     autoReload: false
+    trademark: 0
   armor:
     templates:
       - itemDescription

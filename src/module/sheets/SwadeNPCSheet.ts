@@ -1,5 +1,6 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /**
@@ -191,7 +192,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     const shields = data.itemsByType['shield'];
     data.parry = 0;
     shields.forEach((shield) => {
-      if (shield.data.equipped) {
+      if (shield.data.equipState === constants.EQUIP_STATE.EQUIPPED) {
         data.parry += shield.data.parry;
       }
     });

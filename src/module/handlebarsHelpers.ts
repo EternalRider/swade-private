@@ -1,3 +1,4 @@
+import { EquipState } from '../globals';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeItem from './documents/item/SwadeItem';
@@ -78,10 +79,6 @@ export const registerCustomHelpers = function () {
 
   Handlebars.registerHelper('canBeEquipped', (item: SwadeItem) => {
     return item.data.data['equippable'] || item.data.data['isVehicular'];
-  });
-
-  Handlebars.registerHelper('disabled', (value) => {
-    return value ? 'disabled' : '';
   });
 
   Handlebars.registerHelper('displayEmbedded', (array: any[] = []) => {
@@ -198,4 +195,50 @@ export const registerCustomHelpers = function () {
       return output;
     },
   );
+
+  Handlebars.registerHelper('equipStatus', (state: EquipState) => {
+    let icon = '';
+    switch (state) {
+      case constants.EQUIP_STATE.STORED:
+        icon = '<i class="fas fa-archive"></i>';
+        break;
+      case constants.EQUIP_STATE.CARRIED:
+        icon = '<i class="fas fa-tshirt item-unequipped"></i>';
+        break;
+      case constants.EQUIP_STATE.EQUIPPED:
+        icon = '<i class="fas fa-tshirt"></i>';
+        break;
+      case constants.EQUIP_STATE.OFF_HAND:
+      case constants.EQUIP_STATE.MAIN_HAND:
+        icon = '<i class="fas fa-hand-paper"></i>';
+        break;
+      case constants.EQUIP_STATE.TWO_HANDS:
+        icon = '<i class="fas fa-sign-language"></i>';
+        break;
+    }
+    return new Handlebars.SafeString(icon);
+  });
+  Handlebars.registerHelper('equipStatusLabel', (state: EquipState) => {
+    const states = {
+      [constants.EQUIP_STATE.STORED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Stored',
+      ),
+      [constants.EQUIP_STATE.CARRIED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Carried',
+      ),
+      [constants.EQUIP_STATE.OFF_HAND]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.OffHand',
+      ),
+      [constants.EQUIP_STATE.EQUIPPED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Equipped',
+      ),
+      [constants.EQUIP_STATE.MAIN_HAND]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.MainHand',
+      ),
+      [constants.EQUIP_STATE.TWO_HANDS]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.TwoHands',
+      ),
+    };
+    return new Handlebars.SafeString(states[state]);
+  });
 };
