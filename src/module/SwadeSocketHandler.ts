@@ -21,6 +21,9 @@ export default class SwadeSocketHandler {
         case 'removeStatusEffect':
           this._onRemoveStatusEffect(data);
           break;
+        case 'giveBennies':
+          this._onGiveBenny(data);
+          break;
         default:
           this._onUnknownSocket(data.type);
           break;
@@ -28,8 +31,12 @@ export default class SwadeSocketHandler {
     });
   }
 
+  emit(data: any) {
+    return game.socket?.emit(this.identifier, data);
+  }
+
   deleteConvictionMessage(messageId: string) {
-    game.socket?.emit(this.identifier, {
+    this.emit({
       type: 'deleteConvictionMessage',
       messageId,
       userId: game.userId,
@@ -37,27 +44,31 @@ export default class SwadeSocketHandler {
   }
 
   removeStatusEffect(uuid: string) {
-    game.socket?.emit(this.identifier, {
+    this.emit({
       type: 'removeStatusEffect',
       effectUUID: uuid,
     });
   }
 
   newRound(combatId: string) {
-    game.socket?.emit(this.identifier, {
+    this.emit({
       type: 'newRound',
       combatId: combatId,
     });
   }
 
-  private async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
+  giveBenny(users: string[]) {
+    this.emit({ type: 'giveBennies', users });
+  }
+
+  protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
     const effect = (await fromUuid(data.effectUUID)) as SwadeActiveEffect;
     if (isFirstOwner(effect.parent)) {
       effect.expire();
     }
   }
 
-  private _onDeleteConvictionMessage(data: DeleteConvictionMessageEvent) {
+  protected _onDeleteConvictionMessage(data: DeleteConvictionMessageEvent) {
     const message = game.messages?.get(data.messageId);
     //only delete the message if the user is a GM and the event emitter is one of the recipients
     if (game.user!.isGM && message?.data.whisper.includes(data.userId)) {
@@ -66,14 +77,20 @@ export default class SwadeSocketHandler {
   }
 
   //advance round
-  private async _onNewRound(data: NewRoundEvent) {
+  protected async _onNewRound(data: NewRoundEvent) {
     if (isFirstGM()) {
       game.combats?.get(data.combatId, { strict: true }).nextRound();
     }
   }
 
-  private _onUnknownSocket(type: string) {
+  protected _onUnknownSocket(type: string) {
     console.warn(`The socket event ${type} is not supported`);
+  }
+
+  protected async _onGiveBenny(data: GiveBenniesEvent) {
+    if (data.users.includes(game.userId!)) {
+      await game.user?.getBenny();
+    }
   }
 }
 
@@ -92,4 +109,8 @@ interface DeleteConvictionMessageEvent extends EventData {
 
 interface NewRoundEvent extends EventData {
   combatId: string;
+}
+
+interface GiveBenniesEvent extends EventData {
+  users: string[];
 }

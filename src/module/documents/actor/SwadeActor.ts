@@ -407,7 +407,7 @@ export default class SwadeActor extends Actor {
 
   async spendBenny() {
     if (this.data.type === 'vehicle') return;
-    const currentBennies = getProperty(this.data, 'data.bennies.value');
+    const currentBennies = getProperty(this.data.data, 'bennies.value');
     //return early if there no bennies to spend
     if (currentBennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {
@@ -420,10 +420,10 @@ export default class SwadeActor extends Actor {
     }
     await this.update({ 'data.bennies.value': currentBennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
-      const gms = game.users!.filter((u) => u.isGM && u.active);
-      for await (const gm of gms) {
-        gm.getBenny();
-      }
+      const gms = game
+        .users!.filter((u) => u.isGM && u.active)
+        .map((u) => u.id);
+      game.swade.sockets.giveBenny(gms);
     }
     if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
