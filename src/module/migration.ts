@@ -9,22 +9,22 @@ import { constants } from './constants';
 import { Logger } from './Logger';
 
 export async function migrateWorld() {
-  Logger.info({
-    msg: `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
-    options: { toast: true },
-  });
+  Logger.info(
+    `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
+    { toast: true },
+  );
 
   // Migrate World Actors
   for (const actor of game.actors!) {
     try {
       const updateData = migrateActorData(actor.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        Logger.info({ msg: `Migrating Actor document ${actor.name}` });
+        Logger.info(`Migrating Actor document ${actor.name}`);
         await actor.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Actor ${actor.name}: ${err.message}`;
-      Logger.error({ msg: err });
+      Logger.error(err);
     }
   }
 
@@ -33,12 +33,12 @@ export async function migrateWorld() {
     try {
       const updateData = migrateItemData(item.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        Logger.info({ msg: `Migrating Item document ${item.name}` });
+        Logger.info(`Migrating Item document ${item.name}`);
         await item.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Item ${item.name}: ${err.message}`;
-      Logger.error({ msg: err });
+      Logger.error(err);
     }
   }
 
@@ -52,9 +52,8 @@ export async function migrateWorld() {
   // Set the migration as complete
   const version = game.system.data.version;
   await game.settings.set('swade', 'systemMigrationVersion', version);
-  Logger.info({
-    msg: `SWADE System Migration to version ${version} completed!`,
-    options: { permanent: true },
+  Logger.info(`SWADE System Migration to version ${version} completed!`, {
+    permanent: true,
   });
 }
 
@@ -95,21 +94,21 @@ export async function migrateCompendium(
 
       // Save the entry, if data was changed
       await doc.update(updateData);
-      Logger.info({
-        msg: `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
-      });
+      Logger.info(
+        `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
+      );
     } catch (err) {
       // Handle migration failures
       err.message = `Failed swade system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-      Logger.error({ msg: err });
+      Logger.error(err);
     }
   }
 
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  Logger.info({
-    msg: `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
-  });
+  Logger.info(
+    `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
+  );
 }
 
 /* -------------------------------------------- */
@@ -202,7 +201,7 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
   for (const [k, v] of Object.entries(data)) {
     if (getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
-        Logger.info({ msg: `Deleting deprecated object key ${k}` });
+        Logger.info(`Deleting deprecated object key ${k}`);
         delete data[k];
       } else removeDeprecatedObjects(v);
     }

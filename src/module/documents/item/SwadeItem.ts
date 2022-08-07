@@ -118,9 +118,9 @@ export default class SwadeItem extends Item {
       // TODO remove with 1.3.0
       Object.defineProperty(this.data.data, 'equipped', {
         get() {
-          Logger.warn({
-            msg: 'This property is depreciated and will be removed with v1.3.0, please use equipStatus instead',
-          });
+          Logger.warn(
+            'This property is depreciated and will be removed with v1.3.0, please use equipStatus instead',
+          );
           return this.equipStatus > constants.EQUIP_STATE.CARRIED;
         },
       });
@@ -234,19 +234,18 @@ export default class SwadeItem extends Item {
   }
 
   async setEquipState(state: EquipState): Promise<EquipState> {
-    Logger.debug({
-      msg: `Trying to set state ${util.getKeyByValue(
+    Logger.debug(
+      `Trying to set state ${util.getKeyByValue(
         constants.EQUIP_STATE,
         state,
       )} on item ${this.name} with type ${this.type}`,
-    });
+    );
     if (
       this.data.type === 'weapon' &&
       state === constants.EQUIP_STATE.EQUIPPED
     ) {
-      Logger.warn({
-        msg: 'You cannot set this state on the item ' + this.name,
-        options: { toast: true },
+      Logger.warn('You cannot set this state on the item ' + this.name, {
+        toast: true,
       });
       return this.data.data.equipStatus;
     }

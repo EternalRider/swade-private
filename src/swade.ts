@@ -42,9 +42,7 @@ import './swade.scss';
 /* Initialize system					          */
 /* ------------------------------------ */
 Hooks.once('init', () => {
-  Logger.info({
-    msg: `Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`,
-  });
+  Logger.info(`Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`);
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
