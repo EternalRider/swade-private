@@ -571,6 +571,19 @@ SWADE:
   AddAction: Add Action
   DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
+  TrademarkWeapon:
+    Label: Trademark Weapon
+    Regular: Regular
+    Improved: Improved
+  OffHandPenalty: Off-Hand Penalty
+  ItemEquipStatus:
+    Label: Location
+    Stored: Stored
+    Carried: Carried
+    Equipped: Equipped
+    OffHand: Off-Hand
+    MainHand: Main Hand
+    TwoHands: Two Hands
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

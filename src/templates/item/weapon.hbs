@@ -126,6 +126,17 @@
           <input type='checkbox' name='data.autoReload' {{checked data.data.autoReload}} />
         </span>
       </div>
+      <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
+        <span class="form-fields">
+          {{#select data.data.trademark}}
+          <select name="data.trademark" data-dtype="Number">
+            <option value="0">None</option>
+            <option value="1">{{localize "SWADE.TrademarkWeapon.Regular"}}</option>
+            <option value="1">{{localize "SWADE.TrademarkWeapon.Improved"}}</option>
+          </select>
+          {{/select}}
+        </span>
+      </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Parry'}}</label>
         <span class='form-fields'>

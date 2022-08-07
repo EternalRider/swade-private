@@ -11,9 +11,12 @@ import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
+import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet {
+  _equipStateMenu: PopUpMenu;
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       ...super.defaultOptions,
@@ -44,7 +47,9 @@ export default class CharacterSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    this.form!.addEventListener('keypress', (ev: KeyboardEvent) => {
+    this._setupEquipStatusMenu(html);
+
+    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
       const targetIsButton = 'button' === target?.type;
       if (!targetIsButton && ev.key === 'Enter') {
@@ -294,7 +299,7 @@ export default class CharacterSheet extends ActorSheet {
       this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
     });
 
-    //Toggle Equipment Status
+    //Item toggles
     html.find('.item-toggle').on('click', async (ev) => {
       const target = ev.currentTarget;
       const li = $(target).parents('.item');
@@ -651,7 +656,7 @@ export default class CharacterSheet extends ActorSheet {
     data.parry = 0;
     for (const shield of this.actor.itemTypes.shield) {
       if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipped) {
+      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         data.parry += shield.data.data.parry;
       }
     }
@@ -731,11 +736,8 @@ export default class CharacterSheet extends ActorSheet {
     return { current, max };
   }
 
-  /**
-   * Extend and override the sheet header buttons
-   * @override
-   */
-  protected _getHeaderButtons() {
+  /** Extend and override the sheet header buttons */
+  protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
     // Token Configuration
@@ -1026,6 +1028,94 @@ export default class CharacterSheet extends ActorSheet {
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`data.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
+  }
+
+  protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._element;
+    const items: ContextMenuEntry[] = [
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
+        icon: '<i class="fas fa-archive"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.STORED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
+        icon: '<i class="fas fa-tshirt"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.CARRIED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
+        icon: '<i class="fas fa-tshirt"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type !== 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.EQUIPPED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.OFF_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.MAIN_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
+        icon: '<i class="fas fa-sign-language"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.TWO_HANDS);
+        },
+      },
+    ];
+
+    const selector = ' .inventory .item-controls .equip-status';
+    // const selector = '.inventory .item-wrapper';
+    // const selector = '.inventory .item-name';
+    const options = { eventName: 'click' };
+    this._equipStateMenu = new PopUpMenu(html, selector, items, options);
   }
 }
 
