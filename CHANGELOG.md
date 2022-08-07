@@ -94,6 +94,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Rolling damage and Trait rolls with a Strength of 1 no longer results in an error. (#308)
+- Players spending a benny while Hard Choices is enabled should no longer see a permission error (#553)
 
 ## v1.1.9
 
