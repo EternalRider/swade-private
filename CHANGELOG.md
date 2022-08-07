@@ -59,6 +59,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - Stored
     - Carried
     - Equipped
+- Weapons can now be marked as Trademark or Improved Trademark Weapons which will result in appropriate bonuses being added to trait rolls
+- Added the Off-Hand penalty as a preset in the roll Dialog
 - Added additional translation strings.
 
 ### Changed
