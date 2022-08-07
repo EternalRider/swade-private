@@ -37,7 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - For Users: The `Shaken`, `Stunned` and `Bleeding Out` effects now trigger workflows and interactions to resolve them.
     - For Developers: which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
 - Added Basic Powers as a system compendium (#499)
-- Added modifier presets for `Aiming`, `Wild Attack` and `Target is Vulnerable`
+- Added modifier presets for `Aiming`, `Wild Attack`, `Target is Vulnerable` and `Off-Hand Penalty`
 - Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following existing apps:
   - Setting Configurator
   - Wild Die Config
@@ -48,7 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added `collapsible` and `eachInMap` Handlebars helpers.
 - Added `SwadeItem#isArcaneDevice` getter.
 - Added `SwadeItem#canBeArcaneDevice` getter.
-- Inventory items can now have the following states instead of just being equipped or unequipped. Stored items do NOT count against the carry capacity and weapons held in the off-hand do NOT give any parry bonus.
+- Inventory items can now have the following states instead of just being equipped or unequipped. Stored items do NOT count against the carry capacity and weapons held in the off-hand do NOT give any parry bonus. (#361)
   - Weapons:
     - Stored
     - Carried
@@ -59,8 +59,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - Stored
     - Carried
     - Equipped
-- Weapons can now be marked as Trademark or Improved Trademark Weapons which will result in appropriate bonuses being added to trait rolls
-- Added the Off-Hand penalty as a preset in the roll Dialog
+- Added migration and depreciation notice for `equipped` property.(#361)
+- Weapons can now be marked as Trademark or Improved Trademark Weapons which will result in appropriate bonuses being added to trait rolls (#527)
 - Added additional translation strings.
 
 ### Changed
@@ -81,6 +81,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Started depreciation of `SwadeActor#getRollShortcuts()` as it is redundant to `SwadeActor#getRollData()` and will be removed in v1.3.0. (#530)
 - Started depreciation of `SwadeItemSheet` as it is being replaced by the `SwadeItemSheetV2`
 - Finished depreciation of string and number types in the `additionalMods` portion of `IRollOptions`
+- Started depreciation of `equipped` property on items of types `weapon`, `armor`, `shield` and `gear` as it has been replaced by te new `equipStatus` property and will be removed in v1.3.0. (#361)
 
 ### Removed
 
