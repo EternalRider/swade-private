@@ -47,6 +47,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added V2 Item sheets which are completely redesigned from the ground up, featuring a new layout and visual styles more in line with the existing character sheets.
 - Added `collapsible` and `eachInMap` Handlebars helpers.
 - Added `SwadeItem#isArcaneDevice` getter.
+- Added `SwadeItem#canBeArcaneDevice` getter.
+- Inventory items can now have the following states instead of just being equipped or unequipped. Stored items do NOT count against the carry capacity and weapons held in the off-hand do NOT give any parry bonus.
+  - Weapons:
+    - Stored
+    - Carried
+    - Off-Hand
+    - Main Hand
+    - Two Hands
+  - Others:
+    - Stored
+    - Carried
+    - Equipped
 - Added additional translation strings.
 
 ### Changed
