@@ -424,8 +424,8 @@ export default class SwadeItem extends Item {
 
     //Additional actions
     const itemActions = getProperty(
-      this.data,
-      'data.actions.additional',
+      this.data.data,
+      'actions.additional',
     ) as Record<string, ItemAction>;
 
     const actions = new Array<ItemChatCardAction>();
@@ -587,6 +587,17 @@ export default class SwadeItem extends Item {
     if (!usage) return;
 
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
+
+    /**
+     * A hook event that is fired before an item is consumed, giving the opportunity to programatically adjust the usage and/or trigger custom logic
+     * @function consume
+     * @memberof hookEvents
+     * @param {Actor} actor                     The actor that owns the item which is being consumed
+     * @param {Item} item                       The item that is used being consumed
+     * @param {number} charges                  The charges used.
+     * @param {UsageUpdates} usage              The determined usage updates that resulted from consuming this item
+     */
+    Hooks.call('swadeConsumeItem', this.actor, this, charges, usage);
 
     let updatedItems = new Array<StoredDocument<SwadeItem>>();
     // Persist the updates
