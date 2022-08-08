@@ -249,6 +249,13 @@ export default class CharacterSheet extends ActorSheet {
       return item.rollDamage();
     });
 
+    // Use Consumable
+    html.find('.use-consumable').on('click', (ev) => {
+      const li = $(ev.currentTarget).parents('.item');
+      const item = this.actor.items.get(li.data('itemId'))!;
+      return item.consume();
+    });
+
     //Toggle Equipment Card collapsible
     html.find('.gear-card .item-name').on('click', (ev) => {
       $(ev.currentTarget)
