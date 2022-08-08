@@ -584,6 +584,11 @@ SWADE:
     OffHand: Off-Hand
     MainHand: Main Hand
     TwoHands: Two Hands
+  DestroyOnEmpty: Destroy when Empty
+  Charges: Charges
+  Consumable:
+    Use: Use
+    Consumables: Consumables
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
@@ -598,6 +603,7 @@ ITEM:
   TypeSkill: Skill
   TypePower: Power
   TypeAbility: Ability
+  TypeConsumable: Consumable
 CARD:
   TypeAdventure: Adventure Card
   TypePoker: Poker Card

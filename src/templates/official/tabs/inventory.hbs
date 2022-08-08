@@ -289,6 +289,78 @@
     {{/each}}
   </ul>
 
+  <!-- Consumables -->
+  <header class="header consumable">
+    <span class='header-name'>{{localize 'SWADE.Consumable.Consumables'}}</span>
+    <span class='charges'>{{localize 'SWADE.Charges'}}</span>
+    <span class='weight'>{{localize 'SWADE.Weight'}}</span>
+    <span class='item-controls'>
+      <button type='button' class='item-create' data-type='consumable'>
+        <i class='fa fa-plus'></i>{{localize 'SWADE.Add'}}
+      </button>
+    </span>
+  </header>
+  <ul>
+    {{#each itemTypes.consumable}}
+    <li class="item" data-item-id='{{id}}'>
+      <span class="item-wrapper consumable">
+        <button
+          type='button'
+          class='item-img item-show'
+          style="background-image: url('{{img}}');"
+          title='{{localize "SWADE.ShowInChat"}}'
+        ></button>
+        <button
+          type='button'
+          class='name item-name'
+          title='{{localize "SWADE.ExpandDescription"}}'
+        >
+          (x{{data.data.quantity}}) {{name}}
+        </button>
+        <span class="charges">
+          <button type="button" class='rollable'>
+            {{data.data.charges.value}}/{{data.data.charges.max}}
+          </button>
+        </span>
+        <span class='weight'>
+          {{formatNumber (times data.data.weight data.data.quantity)}}
+        </span>
+        <span class='item-controls'>
+          {{#if isOwner}}
+            <button
+              type='button'
+              class='item-toggle'
+              data-toggle='data.favorite'
+              title='{{localize "SWADE.Favorite"}}'
+            >
+              {{#if data.data.favorite}}
+                <i class='fas fa-star'></i>
+              {{else}}
+                <i class='fas fa-star item-unequipped'></i>
+              {{/if}}
+            </button>
+            <button
+              type='button'
+              class='item-edit'
+              title='{{localize "SWADE.Ed"}}'
+            >
+              <i class='fas fa-edit'></i>
+            </button>
+            <button
+              type='button'
+              class='item-delete'
+              title='{{localize "SWADE.Del"}}'
+            >
+              <i class='fas fa-trash'></i>
+            </button>
+          {{/if}}
+        </span>
+        <div class='description'>{{enrich data.data.description}}</div>
+      </span>
+    </li>
+    {{/each}}
+  </ul>
+
   <!-- Misc Gear -->
   <header class='header misc'>
     <span class='header-name'>{{localize 'SWADE.Misc'}}</span>
@@ -317,9 +389,9 @@
             (x{{data.data.quantity}})
             {{name}}
           </button>
-          <span class='weight'>{{formatNumber
-              (times data.data.weight data.data.quantity)
-            }}</span>
+          <span class='weight'>
+            {{formatNumber (times data.data.weight data.data.quantity)}}
+          </span>
           <span class='item-controls'>
             {{#if isOwner}}
               {{#if data.data.equippable}}

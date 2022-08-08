@@ -692,7 +692,8 @@ export default class SwadeActor extends Actor {
       i.data.type === 'armor' ||
       i.data.type === 'weapon' ||
       i.data.type === 'shield' ||
-      i.data.type === 'gear'
+      i.data.type === 'gear' ||
+      i.data.type === 'consumable'
         ? i.data
         : null,
     );
@@ -1128,7 +1129,7 @@ export default class SwadeActor extends Actor {
     }
   }
 
-  override async _onUpdate(
+  protected override _onUpdate(
     changed: DeepPartial<SwadeActorDataSource> & Record<string, unknown>,
     options: DocumentModificationOptions,
     user: string,

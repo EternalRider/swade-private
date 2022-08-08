@@ -25,9 +25,11 @@ export type SwadeItemDataSource =
   | HindranceItemDataSource
   | PowerItemDataSource
   | SkillItemDataSource
-  | AbilityItemDataSource;
+  | AbilityItemDataSource
+  | ConsumableDataSource;
 
-interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
+// interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
+interface PhysicalItem {
   weight: number;
   price: number;
   quantity: number;
@@ -50,6 +52,10 @@ interface Equipable {
   equippable: boolean;
   /** @deprecated */
   equipped: boolean;
+  equipStatus: EquipState;
+}
+
+interface Carry {
   equipStatus: EquipState;
 }
 
@@ -82,7 +88,10 @@ interface WeaponData
     ItemDescription,
     Vehicular,
     BonusDamage,
-    Favorite {
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   damage: string;
   range: string;
   rof: number;
@@ -96,9 +105,22 @@ interface WeaponData
   trademark: 0 | 1 | 2;
 }
 
-interface GearData extends ItemDescription, PhysicalItem, Vehicular, Favorite {}
+interface GearData
+  extends ItemDescription,
+    PhysicalItem,
+    Vehicular,
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {}
 
-interface ArmorData extends ItemDescription, PhysicalItem, Favorite {
+interface ArmorData
+  extends ItemDescription,
+    PhysicalItem,
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   minStr: string;
   armor: number | string;
   toughness: number;
@@ -116,10 +138,25 @@ interface ShieldData
     PhysicalItem,
     Actions,
     BonusDamage,
-    Favorite {
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   minStr: string;
   parry: number;
   cover: number;
+}
+
+interface ConsumableData
+  extends PhysicalItem,
+    ItemDescription,
+    Favorite,
+    Carry {
+  charges: {
+    max: number;
+    value: number;
+  };
+  destroyOnEmpty: boolean;
 }
 
 interface EdgeData extends ItemDescription, Favorite {
@@ -200,4 +237,9 @@ interface SkillItemDataSource {
 interface AbilityItemDataSource {
   data: AbilityData;
   type: 'ability';
+}
+
+interface ConsumableDataSource {
+  data: ConsumableData;
+  type: 'consumable';
 }

@@ -20,9 +20,7 @@
         />    
       </span>
     </div>
-    {{#if (canBeEquipped item)}}
-      {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
-    {{/if}}
+    {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class="form-group">
       <label for="data.weight">{{localize "SWADE.Weight"}}</label>
       <span class="form-fields">

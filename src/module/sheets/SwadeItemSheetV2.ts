@@ -201,6 +201,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         flavor: `${this.item.name} - ${statData.label}`,
       });
     });
+
+    html
+      .find('.use-consumable')
+      .on('click', async () => await this.item.consume());
   }
 
   override async getData(
@@ -431,23 +435,33 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   private _equipStatusOptions(): Record<number, string> {
+    let states: Record<number, string> = {
+      [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
+      [constants.EQUIP_STATE.CARRIED]: 'SWADE.ItemEquipStatus.Carried',
+    };
+
     if (
       this.item.data.type === 'weapon' &&
       !(this.item.data.data.isVehicular && this.item.parent?.type === 'vehicle')
     ) {
-      return {
-        [constants.EQUIP_STATE.STORED]: 'Stored',
-        [constants.EQUIP_STATE.CARRIED]: 'Carried',
-        [constants.EQUIP_STATE.MAIN_HAND]: 'Main Hand',
-        [constants.EQUIP_STATE.OFF_HAND]: 'Off Hand',
-        [constants.EQUIP_STATE.TWO_HANDS]: 'Two Hands',
+      states = {
+        ...states,
+        [constants.EQUIP_STATE.MAIN_HAND]: 'SWADE.ItemEquipStatus.MainHand',
+        [constants.EQUIP_STATE.OFF_HAND]: 'SWADE.ItemEquipStatus.OffHand',
+        [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
       };
     }
-    return {
-      [constants.EQUIP_STATE.STORED]: 'Stored',
-      [constants.EQUIP_STATE.CARRIED]: 'Carried',
-      [constants.EQUIP_STATE.EQUIPPED]: 'Equipped',
-    };
+    if (
+      this.item.data.type === 'armor' ||
+      this.item.data.type === 'shield' ||
+      (this.item.data.type === 'gear' && this.item.data.data.equippable)
+    ) {
+      states = {
+        ...states,
+        [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
+      };
+    }
+    return states;
   }
 }
 

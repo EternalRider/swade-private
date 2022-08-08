@@ -249,46 +249,69 @@
       {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.weapon}} {{#if data.data.favorite}} {{>
-      "systems/swade/templates/official/partials/item-card.hbs"}} {{/if}}
+      {{#each actor.itemTypes.weapon}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
       {{/each}}
     </ol>
     {{#if actor.hasArcaneBackground}}
     <ol class="quick-list">
-      {{#each actor.itemTypes.power}} {{#if data.data.favorite}} {{>
-      "systems/swade/templates/official/partials/item-card.hbs"}} {{/if}}
+      {{#each actor.itemTypes.power}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
       {{/each}}
     </ol>
     {{/if}}
     <ol class="quick-list">
-      {{#each actor.itemTypes.armor}} {{#if data.data.favorite}} {{>
-      "systems/swade/templates/official/partials/item-card.hbs"}} {{/if}}
+      {{#each actor.itemTypes.armor}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
       {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.shield}} {{#if data.data.favorite}} {{>
-      "systems/swade/templates/official/partials/item-card.hbs"}} {{/if}}
+      {{#each actor.itemTypes.shield}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
       {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.gear}}{{#if data.data.favorite}}{{>
-      "systems/swade/templates/official/partials/item-card.hbs"}}
-      {{/if}}{{/each}}
+      {{#each actor.itemTypes.consumable}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.edge}}{{#if data.data.favorite}}{{>
-      "systems/swade/templates/official/partials/item-card.hbs"}}
-      {{/if}}{{/each}}
+      {{#each actor.itemTypes.gear}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.hindrance}}{{#if data.data.favorite}}{{>
-      "systems/swade/templates/official/partials/item-card.hbs"}}
-      {{/if}}{{/each}}
+      {{#each actor.itemTypes.edge}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
     </ol>
     <ol class="quick-list">
-      {{#each actor.itemTypes.ability}}{{#if data.data.favorite}}{{>
-      "systems/swade/templates/official/partials/item-card.hbs"}}
-      {{/if}}{{/each}}
+      {{#each actor.itemTypes.hindrance}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
+    </ol>
+    <ol class="quick-list">
+      {{#each actor.itemTypes.ability}}
+        {{#if data.data.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
     </ol>
   </div>
   <div class="note-footer">&nbsp;</div>

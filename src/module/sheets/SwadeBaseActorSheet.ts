@@ -75,9 +75,17 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     // Roll Damage
     html.find('.damage-roll').on('click', (event) => {
       const element = event.currentTarget as Element;
-      const itemId = $(element).parents('[data-item-id]').attr('data-item-id')!;
-      const item = this.actor.items.get(itemId);
+      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const item = this.actor.items.get(id, { strict: true });
       return item!.rollDamage();
+    });
+
+    // Use Consumable
+    html.find('.use-consumable').on('click', async (event) => {
+      const element = event.currentTarget as Element;
+      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const item = this.actor.items.get(id, { strict: true });
+      return item.consume();
     });
 
     //Add Benny

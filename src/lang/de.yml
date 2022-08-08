@@ -602,6 +602,11 @@ SWADE:
     OffHand: Nebenhand
     MainHand: Haupthand
     TwoHands: Beidhändig
+  DestroyOnEmpty: Zerstören, wenn leer
+  Charges: Benutzbar
+  Consumable:
+    Use: Benützen
+    Consumables: Verbrauchsgegenstände
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
@@ -616,6 +621,7 @@ ITEM:
   TypeSkill: Fertigkeit
   TypePower: Macht
   TypeAbility: Eigenschaft
+  TypeConsumable: Verbrauchsgegenstand
 CARD:
   TypeAdventure: Abenteuerkarte
   TypePoker: Pokerkarte

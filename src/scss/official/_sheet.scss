@@ -965,6 +965,29 @@
       }
     }
 
+    .consumable {
+      grid-template-columns: 32px 3fr 4fr 1fr 80px;
+      .item-img {
+        grid-column: 1;
+      }
+      .name {
+        grid-column: 2;
+        flex-wrap: nowrap;
+      }
+      .charges {
+        grid-column: 3;
+        flex-wrap: nowrap;
+        text-align: center;
+      }
+      .weight {
+        grid-column: 4;
+        text-align: center;
+      }
+      .item-controls {
+        grid-column: 5;
+      }
+    }
+
     .misc {
       grid-template-columns: 32px 7fr 1fr 80px;
       .item-img {

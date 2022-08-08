@@ -1,6 +1,10 @@
 <header class='header'>
   {{#unless @root.item.isOwned}}
-    <button type='button' class='add-effect add-button' data-transfer='true'>
+    <button
+      type='button'
+      class='add-effect add-button invisible'
+      data-transfer='true'
+    >
       <i class='fa fa-plus'></i>
       {{localize 'SWADE.ActiveEffects.Add'}}
     </button>

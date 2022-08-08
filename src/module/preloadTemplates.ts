@@ -19,6 +19,7 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/actors/partials/powers-card.hbs',
     'systems/swade/templates/actors/partials/shield-card.hbs',
     'systems/swade/templates/actors/partials/misc-card.hbs',
+    'systems/swade/templates/actors/partials/consumable-card.hbs',
 
     //die type list
     'systems/swade/templates/die-sides-options.hbs',
