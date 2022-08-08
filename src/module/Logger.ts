@@ -14,7 +14,7 @@ export class Logger {
   static log({
     msg,
     level,
-    options: { force, toast, permanent } = {},
+    options: { force, toast, permanent, localize } = {},
   }: LogMessage) {
     const isDebugging = game.modules
       .get('_dev-mode')
@@ -24,20 +24,24 @@ export class Logger {
     switch (level) {
       case Logger.LOG_LEVEL.Error:
         console.error(Logger.PACKAGE_ID, '|', msg);
-        if (toast) ui.notifications.error(msg.toString(), { permanent });
+        if (toast)
+          ui.notifications.error(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Warn:
         console.warn(Logger.PACKAGE_ID, '|', msg);
-        if (toast) ui.notifications.warn(msg.toString(), { permanent });
+        if (toast)
+          ui.notifications.warn(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Info:
         console.info(Logger.PACKAGE_ID, '|', msg);
-        if (toast) ui.notifications.info(msg.toString(), { permanent });
+        if (toast)
+          ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Debug:
         if (!force && !isDebugging) break;
         console.debug(Logger.PACKAGE_ID, '|', msg);
-        if (toast) ui.notifications.info(msg.toString(), { permanent });
+        if (toast)
+          ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Log:
       default:
@@ -73,8 +77,7 @@ interface LogMessage {
   level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
-interface LogMessageOptions {
+interface LogMessageOptions extends Notifications.Options {
   force?: boolean;
   toast?: boolean;
-  permanent?: boolean;
 }

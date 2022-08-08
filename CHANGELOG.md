@@ -61,6 +61,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - Equipped
 - Added migration and depreciation notice for `equipped` property.(#361)
 - Weapons can now be marked as Trademark or Improved Trademark Weapons which will result in appropriate bonuses being added to trait rolls (#527)
+- Added `consumable` item type to the system. Each consumable has a number of charges as well as a Delete when empty toggle. (#513)
+- Added consumable Item Sheet (#513)
 - Added additional translation strings.
 
 ### Changed

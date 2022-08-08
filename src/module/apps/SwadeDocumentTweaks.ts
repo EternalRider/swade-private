@@ -7,10 +7,12 @@ export default class SwadeDocumentTweaks extends FormApplication<
   Record<string, unknown>,
   SwadeActor | SwadeItem
 > {
-  constructor(object, options = {}) {
-    super(object, options);
+  constructor(
+    doc: SwadeActor | SwadeItem,
+    options: Partial<FormApplicationOptions> = {},
+  ) {
+    super(doc, options);
   }
-  object: SwadeActor | SwadeItem;
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'sheet-tweaks',

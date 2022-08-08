@@ -68,15 +68,26 @@
   }
 
   button {
-    border-radius: 0;
-
+    border-radius: $medium-spacing;
     cursor: pointer;
     font-family: var(--default-font);
+
     &:focus {
       box-shadow: var(--input-box-shadow);
     }
     &:hover {
       text-shadow: var(--input-box-shadow);
+    }
+    &.invisible {
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      width: auto;
+      padding: $small-spacing;
+      margin: $small-spacing;
+    }
+    &.rollable {
+      border-bottom: 1px dashed black;
     }
   }
 

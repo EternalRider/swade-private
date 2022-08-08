@@ -234,15 +234,15 @@ export default class SwadeItem extends Item {
   }
 
   async setEquipState(state: EquipState): Promise<EquipState> {
+    const equipState = constants.EQUIP_STATE;
     Logger.debug(
-      `Trying to set state ${util.getKeyByValue(
-        constants.EQUIP_STATE,
-        state,
-      )} on item ${this.name} with type ${this.type}`,
+      `Trying to set state ${util.getKeyByValue(equipState, state)} on item ${
+        this.name
+      } with type ${this.type}`,
     );
     if (
-      this.data.type === 'weapon' &&
-      state === constants.EQUIP_STATE.EQUIPPED
+      (this.data.type === 'weapon' && state === equipState.EQUIPPED) ||
+      (this.data.type === 'consumable' && state > equipState.CARRIED)
     ) {
       Logger.warn('You cannot set this state on the item ' + this.name, {
         toast: true,
@@ -575,6 +575,142 @@ export default class SwadeItem extends Item {
     return modifiers;
   }
 
+  async consume(charges = 1) {
+    const useQuantity = this.data.type === 'consumable';
+    const useResource = this.data.type === 'weapon';
+
+    const usage = this._getUsageUpdates({
+      charges,
+      useQuantity,
+      useResource,
+    });
+    if (!usage) return;
+
+    const { actorUpdates, itemUpdates, resourceUpdates } = usage;
+
+    let updatedItems = new Array<StoredDocument<SwadeItem>>();
+    // Persist the updates
+    if (!foundry.utils.isObjectEmpty(itemUpdates)) {
+      await this.update(itemUpdates);
+    }
+    if (!foundry.utils.isObjectEmpty(actorUpdates)) {
+      await this.actor?.update(actorUpdates);
+    }
+    if (resourceUpdates.length) {
+      updatedItems = (await this.actor?.updateEmbeddedDocuments(
+        'Item',
+        resourceUpdates,
+      )) as Array<StoredDocument<SwadeItem>>;
+    }
+    await this._postConsumptionCleanup(updatedItems);
+  }
+
+  protected async _postConsumptionCleanup(
+    updatedItems: Array<StoredDocument<SwadeItem>>,
+  ) {
+    if (
+      this.data.type === 'consumable' &&
+      this.data.data.destroyOnEmpty &&
+      this.data.data.quantity === 0
+    ) {
+      await this.delete();
+    }
+    for (const update of updatedItems) {
+      const item = this.parent?.items.get(update.id);
+      if (
+        item?.data.type === 'consumable' &&
+        item.data.data.destroyOnEmpty &&
+        item.data.data.quantity === 0
+      ) {
+        await this.delete();
+      }
+    }
+  }
+
+  protected _getUsageUpdates({
+    charges,
+    useQuantity,
+    useResource,
+  }: UsageUpdatesContext): UsageUpdates | false {
+    const actorUpdates: Updates = {};
+    const itemUpdates: Updates = {};
+    const resourceUpdates = new Array<Updates>();
+
+    if (useQuantity) {
+      const canConsume = this._handleUseConsumable(charges, itemUpdates);
+      if (canConsume === false) return false;
+    }
+
+    if (useResource) {
+      const canConsume = this._handleConsumeResource(
+        charges,
+        itemUpdates,
+        resourceUpdates,
+      );
+      if (canConsume === false) return false;
+    }
+
+    return { actorUpdates, itemUpdates, resourceUpdates };
+  }
+
+  protected _handleUseConsumable(
+    chargesToUse: number,
+    itemUpdates: Updates,
+  ): void | boolean {
+    //type guard
+    if (this.data.type !== 'consumable') return false;
+
+    //gather variables
+    const currentCharges = this.data.data.charges.value;
+    const maxCharges = this.data.data.charges.max;
+    const quantity = this.data.data.quantity;
+    const maxChargesOnStack = (quantity - 1) * maxCharges + currentCharges;
+
+    //abort early if too much is being used
+    if (chargesToUse > maxChargesOnStack) return false;
+
+    const totalRemainingCharges = maxChargesOnStack - chargesToUse;
+    const newQuantity = Math.ceil(totalRemainingCharges / maxCharges);
+    let newCharges = totalRemainingCharges % maxCharges;
+
+    if (newCharges === 0 && newQuantity < quantity && newQuantity !== 0) {
+      newCharges = maxCharges;
+    }
+
+    //write updates
+    itemUpdates['data.quantity'] = Math.max(0, newQuantity);
+    itemUpdates['data.charges.value'] = newCharges;
+  }
+
+  private _handleConsumeResource(
+    chargesToUse: number,
+    itemUpdates: Updates,
+    resourceUpdates: Updates[],
+  ): void | boolean {
+    if (this.data.type === 'weapon') {
+      if (this.data.data.autoReload) {
+        const ammo = this.parent?.items.getName(this.data.data.ammo);
+        const quantity = ammo?.data.data['quantity'];
+        if (!ammo || chargesToUse > quantity) {
+          Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
+          return false;
+        }
+        resourceUpdates.push({
+          _id: ammo.id,
+          'data.quantity': quantity - chargesToUse,
+        });
+      } else {
+        const currentShots = this.data.data.currentShots;
+        const usesShots = !!this.data.data.shots && !!currentShots;
+        if (!usesShots || chargesToUse > currentShots) {
+          Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
+          return false;
+        }
+        itemUpdates['data.currentShots'] = currentShots - chargesToUse;
+      }
+    }
+  }
+
   private _makeExplodable(expression: string): string {
     // Make all dice of a roll able to explode
     const diceRegExp = /\d*d\d+[^kdrxc]/g;
@@ -616,7 +752,7 @@ export default class SwadeItem extends Item {
     return null;
   }
 
-  override async _preCreate(
+  protected override async _preCreate(
     data: ItemDataConstructorData,
     options: DocumentModificationOptions,
     user: User,
@@ -633,7 +769,7 @@ export default class SwadeItem extends Item {
       }
       if (
         this.parent.type === 'npc' &&
-        hasProperty(this.data, 'data.equippable')
+        hasProperty(this.data.data, 'equippable')
       ) {
         let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
         if (data.type === 'weapon') {
@@ -648,7 +784,7 @@ export default class SwadeItem extends Item {
     }
   }
 
-  override async _preDelete(options, user: User) {
+  protected override async _preDelete(options, user: User) {
     await super._preDelete(options, user);
     //delete all transferred active effects from the actor
     if (this.parent) {
@@ -659,7 +795,7 @@ export default class SwadeItem extends Item {
     }
   }
 
-  override async _preUpdate(changed, options, user) {
+  protected override async _preUpdate(changed, options, user) {
     await super._preUpdate(changed, options, user);
 
     if (this.parent && hasProperty(changed, 'data.equipStatus')) {
@@ -700,3 +836,20 @@ interface ItemChatCardPowerPoints {
   max: number;
   value: number;
 }
+
+interface UsageUpdatesContext {
+  /** whether the item uses a charge */
+  charges: number;
+  /** Reduce quantity of the item if other consumption modes are not available? */
+  useQuantity: boolean;
+  /** Use up any resources linked to this item? */
+  useResource: boolean;
+}
+
+interface UsageUpdates {
+  actorUpdates: Updates;
+  itemUpdates: Updates;
+  resourceUpdates: Array<Updates>;
+}
+
+type Updates = Record<string, unknown>;

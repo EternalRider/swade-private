@@ -210,13 +210,14 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     return [
       ...this.actor.items.filter(
         (i) =>
-          //TODO update once containers and consumables are added
           (i.data.type === 'gear' || i.data.type === 'weapon') &&
           (!i.data.data.isVehicular ||
             i.data.data.equipStatus < constants.EQUIP_STATE.EQUIPPED),
       ),
+      //TODO update once containers and consumables are added
       ...this.actor.itemTypes.armor,
       ...this.actor.itemTypes.shield,
+      ...this.actor.itemTypes.consumable,
     ];
   }
 
