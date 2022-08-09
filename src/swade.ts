@@ -3,7 +3,7 @@ import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
-import { PACKAGE_ID, SWADE } from './module/config';
+import { SWADE } from './module/config';
 import Benny from './module/dice/Benny';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
@@ -16,6 +16,8 @@ import SwadeMeasuredTemplate from './module/documents/SwadeMeasuredTemplate';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
+import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
+import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { listenJournalDrop } from './module/journalDrop';
 import { registerKeybindings } from './module/keybindings';
@@ -33,7 +35,6 @@ import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
-import SwadeHooks from './module/SwadeHooks';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
 import { deepFreeze, rollItemMacro } from './module/util';
 import './swade.scss';
@@ -175,53 +176,53 @@ Hooks.once('init', () => {
   listenJournalDrop();
 });
 
-Hooks.once('setup', SwadeHooks.onSetup);
-Hooks.once('ready', SwadeHooks.onReady);
-Hooks.on('preCreateItem', SwadeHooks.onPreCreateItem);
-Hooks.on('getSceneControlButtons', SwadeHooks.onGetSceneControlButtons);
-Hooks.on('dropActorSheetData', SwadeHooks.onDropActorSheetData);
-Hooks.on('hotbarDrop', SwadeHooks.onHotbarDrop);
+Hooks.once('setup', SwadeCoreHooks.onSetup);
+Hooks.once('ready', SwadeCoreHooks.onReady);
+Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
+Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
+Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
+Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
 
 /* ------------------------------------ */
 /* Application Render					          */
 /* ------------------------------------ */
-Hooks.on('renderCombatantConfig', SwadeHooks.onRenderCombatantConfig);
-Hooks.on('renderActiveEffectConfig', SwadeHooks.onRenderActiveEffectConfig);
-Hooks.on('renderCompendium', SwadeHooks.onRenderCompendium);
-Hooks.on('renderChatMessage', SwadeHooks.onRenderChatMessage);
-Hooks.on('renderPlayerList', SwadeHooks.onRenderPlayerList);
-Hooks.on('renderUserConfig', SwadeHooks.onRenderUserConfig);
+Hooks.on('renderCombatantConfig', SwadeCoreHooks.onRenderCombatantConfig);
+Hooks.on('renderActiveEffectConfig', SwadeCoreHooks.onRenderActiveEffectConfig);
+Hooks.on('renderCompendium', SwadeCoreHooks.onRenderCompendium);
+Hooks.on('renderChatMessage', SwadeCoreHooks.onRenderChatMessage);
+Hooks.on('renderPlayerList', SwadeCoreHooks.onRenderPlayerList);
+Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 
 /* ------------------------------------ */
 /* Sidebar Tab Render					          */
 /* ------------------------------------ */
-Hooks.on('renderActorDirectory', SwadeHooks.onRenderActorDirectory);
-Hooks.on('renderSettings', SwadeHooks.onRenderSettings);
-Hooks.on('renderCombatTracker', SwadeHooks.onRenderCombatTracker);
-Hooks.on('renderChatLog', SwadeHooks.onRenderChatLog);
-Hooks.on('renderChatPopout', SwadeHooks.onRenderChatLog);
+Hooks.on('renderActorDirectory', SwadeCoreHooks.onRenderActorDirectory);
+Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
+Hooks.on('renderCombatTracker', SwadeCoreHooks.onRenderCombatTracker);
+Hooks.on('renderChatLog', SwadeCoreHooks.onRenderChatLog);
+Hooks.on('renderChatPopout', SwadeCoreHooks.onRenderChatLog);
 
 /* ------------------------------------ */
 /* Context Options    				          */
 /* ------------------------------------ */
-Hooks.on('getUserContextOptions', SwadeHooks.onGetUserContextOptions);
-Hooks.on('getActorEntryContext', SwadeHooks.onGetCombatTrackerEntryContext);
-Hooks.on('getChatLogEntryContext', SwadeHooks.onGetChatLogEntryContext);
+Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
+Hooks.on('getActorEntryContext', SwadeCoreHooks.onGetCombatTrackerEntryContext);
+Hooks.on('getChatLogEntryContext', SwadeCoreHooks.onGetChatLogEntryContext);
 Hooks.on(
   'getActorDirectoryEntryContext',
-  SwadeHooks.onGetActorDirectoryEntryContext,
+  SwadeCoreHooks.onGetActorDirectoryEntryContext,
 );
 Hooks.on(
   'getCombatTrackerEntryContext',
-  SwadeHooks.onGetCombatTrackerEntryContext,
+  SwadeCoreHooks.onGetCombatTrackerEntryContext,
 );
 Hooks.on(
   'getCardsDirectoryEntryContext',
-  SwadeHooks.onGetCardsDirectoryEntryContext,
+  SwadeCoreHooks.onGetCardsDirectoryEntryContext,
 );
 Hooks.on(
   'getCompendiumDirectoryEntryContext',
-  SwadeHooks.onGetCompendiumDirectoryEntryContext,
+  SwadeCoreHooks.onGetCompendiumDirectoryEntryContext,
 );
 
 /* ------------------------------------ */
@@ -229,10 +230,8 @@ Hooks.on(
 /* ------------------------------------ */
 
 /** Dice So Nice*/
-Hooks.once('diceSoNiceInit', SwadeHooks.onDiceSoNiceInit);
-Hooks.once('diceSoNiceReady', SwadeHooks.onDiceSoNiceReady);
+Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
+Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
 
 /** Developer Mode */
-Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-  registerPackageDebugFlag(PACKAGE_ID);
-});
+Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeRead);
