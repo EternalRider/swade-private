@@ -130,7 +130,7 @@ export default class ItemChatCardHelper {
           });
         }
         roll = await item.rollDamage({ additionalMods });
-        Hooks.call('swadeAction', actor, item, action, roll, game.userId);
+        this.callActionHook(actor, item, action, roll);
         break;
       case 'formula':
         //check if we have enough ammo available
@@ -143,7 +143,7 @@ export default class ItemChatCardHelper {
           additionalMods,
         });
         if (roll) await this.subtractShots(actor, item.id!);
-        Hooks.call('swadeAction', actor, item, action, roll, game.userId);
+        this.callActionHook(actor, item, action, roll);
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
@@ -268,7 +268,7 @@ export default class ItemChatCardHelper {
         additionalMods,
       });
     }
-    Hooks.call('swadeAction', actor, item, actionKey, roll, game.userId);
+    this.callActionHook(actor, item, actionKey, roll);
     return roll;
   }
 
@@ -459,5 +459,18 @@ export default class ItemChatCardHelper {
       (isNPC && npcAmmoFromInventory) ||
       (isPC && useAmmoFromInventory)
     );
+  }
+
+  /** @internal */
+  static callActionHook(
+    actor: SwadeActor,
+    item: SwadeItem,
+    action: string,
+    roll: Roll<{}> | null,
+  ) {
+    /**
+     * @category Hooks
+     */
+    Hooks.call('swadeAction', actor, item, action, roll, game.userId);
   }
 }

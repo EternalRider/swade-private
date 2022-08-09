@@ -1,9 +1,11 @@
 {
-  "mode": "file",
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
   "out": "docs",
-  "exclude": "src/assets/*",
-  "includeDeclarations": false,
+  "exclude": ["src/assets/*"],
   "excludeExternals": true,
-  "ignoreCompilerErrors": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
   "disableSources": true
 }

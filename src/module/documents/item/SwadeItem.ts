@@ -202,7 +202,7 @@ export default class SwadeItem extends Item {
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
      * @function rollDamage
-     * @memberof hookEvents
+     * @category Hooks
      * @param {Actor} actor                     The actor that owns the item which rolls the damage
      * @param {Item} item                       The item that is used to create the damage value
      * @param {Roll} roll                       The built base roll, without any modifiers
@@ -591,13 +591,13 @@ export default class SwadeItem extends Item {
     /**
      * A hook event that is fired before an item is consumed, giving the opportunity to programatically adjust the usage and/or trigger custom logic
      * @function consume
-     * @memberof hookEvents
+     * @category Hooks
      * @param {Actor} actor                     The actor that owns the item which is being consumed
      * @param {Item} item                       The item that is used being consumed
      * @param {number} charges                  The charges used.
      * @param {UsageUpdates} usage              The determined usage updates that resulted from consuming this item
      */
-    Hooks.call('swadeConsumeItem', this.actor, this, charges, usage);
+    Hooks.call('swadePreConsumeItem', this, this.parent, charges, usage);
 
     let updatedItems = new Array<StoredDocument<SwadeItem>>();
     // Persist the updates
@@ -613,6 +613,18 @@ export default class SwadeItem extends Item {
         resourceUpdates,
       )) as Array<StoredDocument<SwadeItem>>;
     }
+
+    /**
+     * A hook event that is fired after an item is consumed but before cleanup happens
+     * @function consume
+     * @category Hooks
+     * @param {Item} item                       The item that is used being consumed
+     * @param {Actor} actor                     The actor that owns the item which is being consumed
+     * @param {number} charges                  The cha rges used.
+     * @param {UsageUpdates} usage              The determined usage updates that resulted from consuming this item
+     */
+    Hooks.call('swadeConsumeItem', this, this.parent, charges, usage);
+
     await this._postConsumptionCleanup(updatedItems);
   }
 
