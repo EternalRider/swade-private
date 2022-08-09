@@ -19,7 +19,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      ...super.defaultOptions,
       width: 600,
       height: 560,
       classes: ['swade-item-sheet', 'swade', 'swade-app'],

@@ -13,6 +13,10 @@
   //inputs
   --input-box-shadow: 0 0 5px red;
   --input-border-line: 2px solid var(--accent-color-secondary);
+  --input-border-radius: 0;
+
+  //buttons
+  --button-border-radius: $medium-spacing;
 
   font-family: var(--default-font);
 
@@ -62,13 +66,13 @@
   select {
     background: transparent;
     border: none;
-    border-radius: 0;
+    border-radius: var(--input-border-radius);
     border-bottom: var(--input-border-line);
     font-family: var(--default-font);
   }
 
   button {
-    border-radius: $medium-spacing;
+    border-radius: var(--button-border-radius);
     cursor: pointer;
     font-family: var(--default-font);
 
