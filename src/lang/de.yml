@@ -577,6 +577,9 @@ SWADE:
       Hint: >-
         Wenn diese Einstellung eingeschaltet ist werden Schablonen immer voll
         ausgemalt anstatt nur das Raster
+    FantasyCompanionEntangle:
+      Name: Festgehalten Status nach Fantasy Companion
+      Hint: Verwende die Fantasy Companion version des Festgehalten Stauts. Die Seite muss neu geladen werden damit die Änderung in Kraft tritt.
   ActionTraitMod: Aktionseigenschaftsmodifikator
   ItemTraitMod: Eigenschaftsmodifikator
   TargetVulnerable: Ziel is Verwundbar

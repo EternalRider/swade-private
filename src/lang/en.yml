@@ -542,6 +542,9 @@ SWADE:
       Hint: >-
         When enabled, Measured Templates alway highlight themselves instead of
         the grid.
+    FantasyCompanionEntangle:
+      Name: Fantasy Companion Entangle
+      Hint: Use the Fantasy Companion Entangle status instead of the Core version. Requires a reload to take effect
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

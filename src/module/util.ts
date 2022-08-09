@@ -4,6 +4,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
+import { statusEffects } from './statusEffects';
 
 /**
  * A simple function to allow quick access to an item such as a skill or weapon. Skills are rolled while other items are posted to the chat as a chatcard
@@ -205,10 +206,10 @@ export function copyToClipboard(textToCopy: string) {
 
 /** @internal */
 export function getStatusEffectDataById(idToSearchFor: string) {
-  const filter = (e) => e.id === idToSearchFor;
+  const filter = (e: StatusEffect) => e.id === idToSearchFor;
   let data = CONFIG.statusEffects.find(filter);
   //fallback for when the effect doesn't exist in the global object
-  if (!data) data = SWADE.statusEffects.find(filter);
+  if (!data) data = statusEffects.find(filter);
   return data as StatusEffect;
 }
 
@@ -221,6 +222,29 @@ export function getKeyByValue(object, value) {
 export function deepFreeze<T>(o: T) {
   Object.values(o).forEach((v) => Object.isFrozen(v) || deepFreeze(v));
   return Object.freeze(o);
+}
+
+/** @internal */
+export function setupFantasyCompanionEntangle() {
+  const index = CONFIG.statusEffects.findIndex((v) => v.id === 'entangled');
+  const entangled = CONFIG.statusEffects[index];
+  if (index < 0) return;
+  const changes = [
+    {
+      key: 'data.status.isEntangled',
+      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 'true',
+    },
+    {
+      key: 'data.status.isVulnerable',
+      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 'true',
+    },
+  ];
+
+  CONFIG.statusEffects[index] = foundry.utils.mergeObject(entangled, {
+    changes,
+  });
 }
 
 type Permissions = Record<string, number>;

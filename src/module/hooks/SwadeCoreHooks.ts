@@ -17,6 +17,7 @@ import * as migrations from '../migration';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
+import { setupFantasyCompanionEntangle } from '../util';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -31,6 +32,10 @@ export default class SwadeCoreHooks {
     for (let i = 0; i < SWADE.ranks.length; i++) {
       const element = SWADE.ranks[i];
       SWADE.ranks[i] = game.i18n.localize(element);
+    }
+
+    if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
+      setupFantasyCompanionEntangle();
     }
   }
 

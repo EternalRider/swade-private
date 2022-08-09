@@ -166,8 +166,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'highlightTemplate', {
-    name: game.i18n.localize('SWADE.Settings.HighlightTemplate.Name'),
-    hint: game.i18n.localize('SWADE.Settings.HighlightTemplate.Hint'),
+    name: 'SWADE.Settings.HighlightTemplate.Name',
+    hint: 'SWADE.Settings.HighlightTemplate.Hint',
     scope: 'world',
     type: Boolean,
     default: true,
@@ -175,12 +175,12 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'fantasyCompanionEntangle', {
-    name: 'SWADE.SettingRules.FantasyCompanionEntangle.Label',
-    hint: 'SWADE.SettingRules.FantasyCompanionEntangle.Hint',
+    name: 'SWADE.Settings.FantasyCompanionEntangle.Name',
+    hint: 'SWADE.Settings.FantasyCompanionEntangle.Hint',
     scope: 'world',
     type: Boolean,
     default: false,
-    config: false,
+    config: true,
   });
 }
 
