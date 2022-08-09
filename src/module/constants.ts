@@ -1,9 +1,9 @@
 export const constants = {
   ARMOR_LOCATIONS: {
-    Head: 'head',
-    Torso: 'torso',
-    Legs: 'legs',
-    Arms: 'arms',
+    HEAD: 'head',
+    TORSO: 'torso',
+    LEGS: 'legs',
+    ARMS: 'arms',
   },
   TEMPLATE_PRESET: {
     CONE: 'swcone',

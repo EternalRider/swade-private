@@ -73,14 +73,12 @@ export default class SwadeActor extends Actor {
     return this.data.data.status;
   }
 
-  get armorPerLocation(): ArmorPerLocation {
+  get armorPerLocation(): Record<ArmorLocation, number> {
     return {
-      head: this._getArmorForLocation(CONFIG.SWADE.CONST.ARMOR_LOCATIONS.Head),
-      torso: this._getArmorForLocation(
-        CONFIG.SWADE.CONST.ARMOR_LOCATIONS.Torso,
-      ),
-      arms: this._getArmorForLocation(CONFIG.SWADE.CONST.ARMOR_LOCATIONS.Arms),
-      legs: this._getArmorForLocation(CONFIG.SWADE.CONST.ARMOR_LOCATIONS.Legs),
+      head: this._getArmorForLocation(constants.ARMOR_LOCATIONS.HEAD),
+      torso: this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO),
+      arms: this._getArmorForLocation(constants.ARMOR_LOCATIONS.ARMS),
+      legs: this._getArmorForLocation(constants.ARMOR_LOCATIONS.LEGS),
     };
   }
 
@@ -624,7 +622,7 @@ export default class SwadeActor extends Actor {
 
   /** Calculates the correct armor value based on SWADE v5.5 and returns that value */
   calcArmor(): number {
-    return this._getArmorForLocation(CONFIG.SWADE.CONST.ARMOR_LOCATIONS.Torso);
+    return this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
   }
 
   /**
@@ -998,9 +996,7 @@ export default class SwadeActor extends Actor {
    * @param location The location of the armor such as head, torso, arms or legs
    * @returns The total amount of armor for that location
    */
-  private _getArmorForLocation(
-    location: ValueOf<typeof SWADE.CONST.ARMOR_LOCATIONS>,
-  ): number {
+  private _getArmorForLocation(location: ArmorLocation): number {
     if (this.data.type === 'vehicle') return 0;
 
     let totalArmorVal = 0;
@@ -1056,7 +1052,7 @@ export default class SwadeActor extends Actor {
     this.overrides = foundry.utils.expandObject(overrides);
   }
 
-  override async _preCreate(
+  protected override async _preCreate(
     createData: ActorDataConstructorData,
     options: DocumentModificationOptions,
     user: User,
@@ -1144,5 +1140,4 @@ export default class SwadeActor extends Actor {
   }
 }
 
-type ArmorLocation = ValueOf<typeof SWADE.CONST.ARMOR_LOCATIONS>;
-type ArmorPerLocation = Record<ArmorLocation, number>;
+type ArmorLocation = ValueOf<typeof constants.ARMOR_LOCATIONS>;
