@@ -216,21 +216,12 @@ SWADE:
   Vehicular: Vehicular Weapon
   VehicleMod: Vehicle Mod
   OpSkill: Operation Skill
-  CardSound: Card Sound
-  CardSoundDesc: Play a short card sound when dealing Initiative
-  AutoInit: Automatic Initiative
-  AutoInitDesc: Automatically draw Action Cards every round
-  CreateInitChat: Create Chat Message for Initiative
-  HideWC: Hide NPC Wild Cards
-  HideWCDesc: Do not show which NPCs are Wild Cards to players
   EnableConv: Conviction
   EnableConvDesc: Enable the Conviction setting rule
   EnableWoundPace: Adjust Pace with Wounds
   EnableWoundPaceDesc: When enabled, Pace is automatically affected by Wounds
   GmBennies: Gamemaster Bennies
   GmBenniesDesc: Sets how many Bennies the GM receives on a refresh
-  EnableBennyNotify: Benny notifications
-  EnableBennyNotifyDesc: Displays chat messages when bennies are taken, given or refreshed.
   VehicleMods: Vehicles Mods
   VehicleModsDesc: Vehicles use Mod-Slots
   VehicleEdges: Vehicle Edges
@@ -314,13 +305,7 @@ SWADE:
   CurrentBennies: Current Bennies
   RerollWithBenny: Reroll with Benny
   FreeReroll: Free Reroll
-  HideNpcItemChatCards: Hide NPC Item Chat Cards
-  HideNpcItemChatCardsDesc: >-
-    When enabled, NPC Item Chat Cards are automatically sent as a whisper to all
-    Gamemasters instead of being posted for all to see
   JokersWildDesc: Gives a Benny to every player character when one of them is dealt a Joker
-  ParryBase: Localized Fighting Skill Name
-  ParryBaseDesc: The name of the skill which will be used to calculate a characters Parry
   AutoCalcParry: Automatically calculates Parry, including Shields
   Subtype: Subtype
   SpecialAbility: Special Ability
@@ -379,19 +364,8 @@ SWADE:
   CharacterSummary: Character Summary
   CopyHtml: Copy HTML
   CopyMarkdown: Copy Markdown
-  InitCardDeck: Card Deck to use for Initiative
   Imperial: Imperial
   Metric: Metric
-  WeightUnitLabel: Unit of weight
-  WeightUnitDesc: >-
-    Sets whether weights are measured in pounds or kilograms. Changing this will
-    NOT change the weights on items, only how the encumbrance is calculated
-  UseAttributeShorts: Use shortened attribute names
-  UseAttributeShortsDesc: >-
-    Activate this option if you want to see abbreviated attribute names on the
-    pc and npc sheets, i.e. Agi instead of Agility, Sma instead of Smarts, etc.
-    You'll need to close and reopen all open sheets for this option to take
-    effect.
   BennyImageSheet: Benny
   BennyImageSheetDesc: Select which image to use for Bennies on the Character Sheet
   Benny3DFront: Front Texture
@@ -419,7 +393,6 @@ SWADE:
     been renamed to reflect their source.
   NoActionDeckFound: No Action Deck found, creating one
   NoActionDeckDiscardPileFound: No Action Deck Discard Pile found, creating one
-  InitDiscardPile: Initiative Discard Pile
   Wealth: Wealth
   Characters: Characters
   SettingRules: Setting Rules
@@ -493,17 +466,6 @@ SWADE:
     Changelog: Changelog
     Wiki: Wiki
     ReportAnIssue: Report an Issue
-  Keybindings:
-    OpenFavoriteCards:
-      Name: Open Favorite Card Hand
-      UserConfigLabel: Favorite Card Hand
-      Hint: You can set your favorite hand in the User Config
-      NoCardsWarning: You don't have a favorite card hand set!
-    Bennies:
-      Name: Spend/Receive a Benny
-      Hint: >-
-        Press to spend a Benny, hold down Alt while you press the key to receive
-        a Benny instead
   OpenOrigin: Open origin
   EffectsTemporary: Temporary Effects
   EffectsPermanent: Permanent Effects
@@ -536,15 +498,60 @@ SWADE:
     Add: Add Active Effect
     Source: Source
     ResetDuration: Reset Duration
+  Keybindings:
+    OpenFavoriteCards:
+      Name: Open Favorite Card Hand
+      UserConfigLabel: Favorite Card Hand
+      Hint: You can set your favorite hand in the User Config
+      NoCardsWarning: You don't have a favorite card hand set!
+    Bennies:
+      Name: Spend/Receive a Benny
+      Hint: >-
+        Press to spend a Benny, hold down Alt while you press the key to receive
+        a Benny instead
   Settings:
     HighlightTemplate:
       Name: Always Highlight Templates
-      Hint: >-
-        When enabled, Measured Templates alway highlight themselves instead of
-        the grid.
+      Hint: When enabled, Measured Templates alway highlight themselves instead of the grid.
     FantasyCompanionEntangle:
       Name: Fantasy Companion Entangle
       Hint: Use the Fantasy Companion Entangle status instead of the Core version. Requires a reload to take effect
+    InitDiscardPile:
+      Name: Initiative Discard Pile
+    InitCardDeck:
+      Name: Card Deck to use for Initiative
+    ParryBase:
+      Name: Localized Fighting Skill Name
+      Hint: The name of the skill which will be used to calculate a characters Parry
+    UseAttributeShorts:
+      Name: Use shortened attribute names
+      Hint: >-
+        Activate this option if you want to see abbreviated attribute names on the
+        pc and npc sheets, i.e. Agi instead of Agility, Sma instead of Smarts, etc.
+        You'll need to close and reopen all open sheets for this option to take
+        effect.
+    WeightUnit:
+      Name: Unit of weight
+      Hint: >-
+        Sets whether weights are measured in pounds or kilograms. Changing this will
+        NOT change the weights on items, only how the encumbrance is calculated
+    HideNpcItemChatCards:
+      Name: Hide NPC Item Chat Cards
+      Hint: When enabled, NPC Item Chat Cards are automatically sent as a whisper to all Gamemasters instead of being posted for all to see
+    EnableBennyNotify:
+      Name: Benny notifications
+      Hint: Displays chat messages when bennies are taken, given or refreshed.
+    HideWC:
+      Name: Hide NPC Wild Cards
+      Hint: Do not show which NPCs are Wild Cards to players
+    CreateInitChat:
+      Name: Create Chat Message for Initiative
+    AutoInit:
+      Name: Automatic Initiative
+      Hint: Automatically draw Action Cards every round
+  CardSound:
+    Name: Card Sound
+    Hint: Play a short card sound when dealing Initiative
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

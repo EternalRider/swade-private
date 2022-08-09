@@ -68,8 +68,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'initiativeSound', {
-    name: game.i18n.localize('SWADE.CardSound'),
-    hint: game.i18n.localize('SWADE.CardSoundDesc'),
+    name: 'SWADE.Settings.CardSound.Name',
+    hint: 'SWADE.Settings.CardSound.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -77,8 +77,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'autoInit', {
-    name: game.i18n.localize('SWADE.AutoInit'),
-    hint: game.i18n.localize('SWADE.AutoInitDesc'),
+    name: 'SWADE.Settings.AutoInit.Name',
+    hint: 'SWADE.Settings.AutoInit.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -86,7 +86,7 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'initMessage', {
-    name: game.i18n.localize('SWADE.CreateInitChat'),
+    name: 'SWADE.Settings.CreateInitChat.Name',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -94,8 +94,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'hideNPCWildcards', {
-    name: game.i18n.localize('SWADE.HideWC'),
-    hint: game.i18n.localize('SWADE.HideWCDesc'),
+    name: 'SWADE.Settings.HideWC.Name',
+    hint: 'SWADE.Settings.HideWC.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -103,8 +103,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'notifyBennies', {
-    name: game.i18n.localize('SWADE.EnableBennyNotify'),
-    hint: game.i18n.localize('SWADE.EnableBennyNotifyDesc'),
+    name: 'SWADE.Settings.EnableBennyNotify.Name',
+    hint: 'SWADE.Settings.EnableBennyNotify.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -112,8 +112,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'hideNpcItemChatCards', {
-    name: game.i18n.localize('SWADE.HideNpcItemChatCards'),
-    hint: game.i18n.localize('SWADE.HideNpcItemChatCardsDesc'),
+    name: 'SWADE.Settings.HideNpcItemChatCards.Name',
+    hint: 'SWADE.Settings.HideNpcItemChatCards.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -121,8 +121,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'weightUnit', {
-    name: game.i18n.localize('SWADE.WeightUnitLabel'),
-    hint: game.i18n.localize('SWADE.WeightUnitDesc'),
+    name: 'SWADE.Settings.WeightUnit.Name',
+    hint: 'SWADE.Settings.WeightUnit.Hint',
     default: 'imperial',
     scope: 'world',
     type: String,
@@ -134,8 +134,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'useAttributeShorts', {
-    name: game.i18n.localize('SWADE.UseAttributeShorts'),
-    hint: game.i18n.localize('SWADE.UseAttributeShortsDesc'),
+    name: 'SWADE.Settings.UseAttributeShorts.Name',
+    hint: 'SWADE.Settings.UseAttributeShorts.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -143,8 +143,8 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'parryBaseSkill', {
-    name: game.i18n.localize('SWADE.ParryBase'),
-    hint: game.i18n.localize('SWADE.ParryBaseDesc'),
+    name: 'SWADE.Settings.ParryBase.Name',
+    hint: 'SWADE.Settings.ParryBase.Hint',
     default: 'Fighting',
     scope: 'world',
     type: String,
@@ -152,14 +152,14 @@ export function registerSettings() {
   });
 
   game.settings.register('swade', 'actionDeck', {
-    name: game.i18n.localize('SWADE.InitCardDeck'),
+    name: 'SWADE.Settings.InitCardDeck.Name',
     scope: 'world',
     type: String,
     config: false,
   });
 
   game.settings.register('swade', 'actionDeckDiscardPile', {
-    name: game.i18n.localize('SWADE.InitDiscardPile'),
+    name: 'SWADE.Settings.InitDiscardPile.Name',
     scope: 'world',
     type: String,
     config: false,

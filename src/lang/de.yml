@@ -174,21 +174,12 @@ SWADE:
   Class: Klassifikation
   Vehicular: Fahrzeugwaffe
   VehicleMod: Fahrzeugmod
-  CardSound: Kartengeräusch
-  CardSoundDesc: Kurzen Ton beim Ziehen der Aktionskarten abspielen
-  AutoInit: Automatische Initiative
-  AutoInitDesc: Aktionskarten jede Runde automatisch ziehen
-  CreateInitChat: Chatnachrichten für Initiative
-  HideWC: NSC Wildcards verstecken
-  HideWCDesc: Spielern nicht anzeigen, welche NSCs Wildcards sind
   EnableConv: Entschlossenheit
   EnableConvDesc: Settingregel "Entschlossenheit" verwenden
   EnableWoundPace: Wunden beeinflussen Bewegung
   EnableWoundPaceDesc: Wenn aktiviert, wird die Bewegung automatisch durch Wunden angepasst
   GmBennies: Spielleiter Bennys
   GmBenniesDesc: Anzahl Bennys die du als SL beim auffrischen selbiger erhälst
-  EnableBennyNotify: Nachrichten zu Bennys
-  EnableBennyNotifyDesc: Zeige Chatnachricht beim Nehmen, Einsetzen oder Auffrischen von Bennys
   VehicleMods: Fahrzeug-Modifikationen
   VehicleModsDesc: Fahrzeuge nutzen Modifikations-Plätze
   VehicleEdges: Fahrzeug-Talente
@@ -307,18 +298,9 @@ SWADE:
   CurrentBennies: Derzeitige Bennys
   RerollWithBenny: Mit Benny nochmal würfeln
   FreeReroll: Freier Neuwurf
-  HideNpcItemChatCards: Verstecke NSC Item Chat Karten
-  HideNpcItemChatCardsDesc: >-
-    Wenn diese Option aktiviert ist, werden Chat-Karten für NSC-Items
-    automatisch als Flüstern an alle Spielleiter gesendet, anstatt für alle
-    sichtbar zu sein
   JokersWildDesc: >-
     Wenn diese Option aktiviert ist, werden Bennys verteilt wenn ein Joker als
     Aktionskarte gezogen wird.
-  ParryBase: Parade-Fertigkeit
-  ParryBaseDesc: >-
-    Der Name der Fertigkeit die zur Berechnung des Paradewerts benutzt wird
-    (Normalerweise Kämpfen)
   AutoCalcParry: Automatisch Parade berechnen, inklusive Schilde
   Subtype: Unterkategorie
   SpecialAbility: Spezialfähigkeit
@@ -388,19 +370,8 @@ SWADE:
   CharacterSummary: Charakterzusammenfassung
   CopyHtml: HTML Kopieren
   CopyMarkdown: Markdown kopieren
-  InitCardDeck: Aktionskartendeck
   Metric: Metrisch
   Imperial: Imperial
-  WeightUnitLabel: Gewichtseinheit
-  WeightUnitDesc: >-
-    Gib an ob Gewichtsangaben in Pfund (Imperial) oder Kilogramm (Metrisch)
-    gerechnet werden
-  UseAttributeShorts: Attributsnamen abkürzen
-  UseAttributeShortsDesc: >-
-    Wenn du diese Option aktivierst, werden die Attribute auf dem SC und NSC
-    Bogen als Abkürzungen angegeben, also Ges statt Geschicklichkeit, Ver statt
-    Verstand, etc. Schließe und öffne alle offenen Bögen wenn du diese
-    Einstellung änderst.
   3DBennies: 3D Bennies
   Benny3DFrontBump: Bump Map Vorderseite
   Benny3DBackBump: Bump Map Rückseite
@@ -410,7 +381,6 @@ SWADE:
   Benny3DBackBumpDesc: Bump Map der Rückseite
   Modifiers: Modifikatoren
   Duplicates: Duplikate Gefunden
-  InitDiscardPile: Initiative-Ablagestapel
   Wealth: Vermögen
   BennyImageSheet: Benny
   Characters: Charaktere
@@ -565,12 +535,6 @@ SWADE:
       Name: Favorisierte Kartenhand öffnen
       NoCardsWarning: Es wurde keine favorisierte Kartenhand gesetzt!
       UserConfigLabel: Favorisierte Kartenhand
-  SettingRules: Settingregeln
-  DuplicateItemsBodyText: >-
-    Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
-    wurde sind die folgenden Duplikate festgestellt worde. Diese Duplikaten
-    wurden umbennant um ihre Herkunft zu zeigen.
-  LayOutChaseWithDeck: Deck für Verfolgungsjagd verwenden
   Settings:
     HighlightTemplate:
       Name: Schablonen immer ausmalen
@@ -580,6 +544,51 @@ SWADE:
     FantasyCompanionEntangle:
       Name: Festgehalten Status nach Fantasy Companion
       Hint: Verwende die Fantasy Companion version des Festgehalten Stauts. Die Seite muss neu geladen werden damit die Änderung in Kraft tritt.
+    InitDiscardPile:
+      Name: Initiative-Ablagestapel
+    InitCardDeck:
+      Name: Aktionskartendeck
+    ParryBase:
+      Name: Parade-Fertigkeit
+      Hint: Der Name der Fertigkeit die zur Berechnung des Paradewerts benutzt wird (Normalerweise Kämpfen)
+    UseShortenedAttributes:
+      Name: Attributsnamen abkürzen
+      Hint: >-
+        Wenn du diese Option aktivierst, werden die Attribute auf dem SC und NSC
+        Bogen als Abkürzungen angegeben, also Ges statt Geschicklichkeit, Ver statt
+        Verstand, etc. Schließe und öffne alle offenen Bögen wenn du diese
+        Einstellung änderst.
+    WeightUnit:
+      Name: Gewichtseinheit
+      Hint: >-
+        Gib an ob Gewichtsangaben in Pfund (Imperial) oder Kilogramm (Metrisch)
+        gerechnet werden
+    HideNpcItemChatCards:
+      Name: Verstecke NSC Item Chat Karten
+      Hint: >-
+        Wenn diese Option aktiviert ist, werden Chat-Karten für NSC-Items
+        automatisch als Flüstern an alle Spielleiter gesendet, anstatt für alle
+        sichtbar zu sein
+    EnableBennyNotify:
+      Name: Nachrichten zu Bennys
+      Hint: Zeige Chatnachricht beim Nehmen, Einsetzen oder Auffrischen von Bennys
+    HideWC:
+      Name: NSC Wildcards verstecken
+      Hint: Spielern nicht anzeigen, welche NSCs Wildcards sind
+    CreateInitChat:
+      Name: Chatnachrichten für Initiative
+    AutoInit:
+      Name: Automatische Initiative
+      Hint: Aktionskarten jede Runde automatisch ziehen
+    CardSound:
+      Name: Kartengeräusch
+      Hint: Kurzen Ton beim Ziehen der Aktionskarten abspielen
+  SettingRules: Settingregeln
+  DuplicateItemsBodyText: >-
+    Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
+    wurde sind die folgenden Duplikate festgestellt worde. Diese Duplikaten
+    wurden umbennant um ihre Herkunft zu zeigen.
+  LayOutChaseWithDeck: Deck für Verfolgungsjagd verwenden
   ActionTraitMod: Aktionseigenschaftsmodifikator
   ItemTraitMod: Eigenschaftsmodifikator
   TargetVulnerable: Ziel is Verwundbar

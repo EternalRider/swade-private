@@ -75,10 +75,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Replaced the Preset select list with a new list that can be filtered and which adds a modifier by clicking on it in the list. (#505)
 - Converted language files from flat to nested keys for better organization (#528)
 - Enabled Item image zoom functionality on item sheets even if the item is not editable, such as when it is in a locked compendium
-- Changed some translation strings, see the list below: (#528)
-  - `SWADE.WealthDie` -> `SWADE.WealthDie.Label`
-  - `SWADE.ActNow` -> `SWADE.ActBeforeCurrentCombatant`
-  - `SWADE.MAPenalty` -> `SWADE.MAPenalty.Label`
+- [BREAKING] Changed some translation strings, see the list in the ticket (#528)
 
 ### Deprecated
 
