@@ -156,6 +156,17 @@ Hooks.once('init', () => {
   Items.registerSheet('swade', SwadeItemSheet, {
     makeDefault: false,
     label: 'SWADE.CommunityItemSheet',
+    types: [
+      'weapon',
+      'armor',
+      'shield',
+      'gear',
+      'skill',
+      'edge',
+      'hindrance',
+      'ability',
+      'power',
+    ],
   });
 
   CONFIG.Dice.terms.b = Benny;
