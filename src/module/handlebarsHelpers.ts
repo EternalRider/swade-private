@@ -3,6 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeItem from './documents/item/SwadeItem';
 
+/** @internal */
 export const registerCustomHelpers = function () {
   Handlebars.registerHelper('add', function (a, b) {
     const result = parseInt(a) + parseInt(b);

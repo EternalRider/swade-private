@@ -1,3 +1,4 @@
+/** @internal */
 export async function preloadHandlebarsTemplates() {
   const templatePaths = [
     //NPC partials

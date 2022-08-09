@@ -3,6 +3,7 @@ import SwadeItem from './documents/item/SwadeItem';
 import SwadeActiveEffect from './documents/SwadeActiveEffect';
 import { getStatusEffectDataById } from './util';
 
+/** @internal */
 export function registerEffectCallbacks() {
   const effectCallbacks = game.swade.effectCallbacks;
   effectCallbacks.set('shaken', removeShaken);

@@ -39,6 +39,7 @@ declare global {
       'swade.hardChoices': boolean;
       'swade.applyEncumbrance': boolean;
       'swade.highlightTemplate': boolean;
+      'swade.fantasyCompanionEntangle': boolean;
       'swade.settingFields': {
         actor: Record<string, AdditionalStat>;
         item: Record<string, AdditionalStat>;
@@ -46,6 +47,7 @@ declare global {
     }
   }
 }
+/** @internal */
 export function registerSettings() {
   game.settings.registerMenu('swade', 'setting-config', {
     name: game.i18n.localize('SWADE.SettingConf'),
@@ -171,8 +173,18 @@ export function registerSettings() {
     default: true,
     config: true,
   });
+
+  game.settings.register('swade', 'fantasyCompanionEntangle', {
+    name: 'SWADE.SettingRules.FantasyCompanionEntangle.Label',
+    hint: 'SWADE.SettingRules.FantasyCompanionEntangle.Hint',
+    scope: 'world',
+    type: Boolean,
+    default: false,
+    config: false,
+  });
 }
 
+/** @internal */
 export function registerSettingRules() {
   game.settings.register('swade', 'coreSkills', {
     name: game.i18n.localize('SWADE.CoreSkillsList'),
@@ -353,6 +365,7 @@ export function registerSettingRules() {
   });
 }
 
+/** @internal */
 export function register3DBennySettings() {
   game.settings.register('swade', 'bennyImage3DFront', {
     name: game.i18n.localize('SWADE.Benny3DFront'),

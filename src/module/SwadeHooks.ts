@@ -37,11 +37,15 @@ export default class SwadeHooks {
       const element = SWADE.ranks[i];
       SWADE.ranks[i] = game.i18n.localize(element);
     }
+
+    if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
+      //use FC entangle rule
+    }
   }
 
   public static async onReady() {
     //set up the world if needed
-    await setup.setupWorld();
+    setup.setupWorld();
 
     SWADE.diceConfig.flags = {
       dsnShowBennyAnimation: {
