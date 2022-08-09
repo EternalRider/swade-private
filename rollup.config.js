@@ -8,7 +8,6 @@ import { defineConfig } from 'rollup';
 const name = 'swade';
 const distDirectory = 'dist';
 const srcDirectory = 'src';
-const cacheDirectory = '.cache';
 
 const staticFiles = ['fonts', 'assets', 'templates', 'cards', 'system.json'];
 
@@ -49,12 +48,6 @@ export default defineConfig({
     environment(process.env.NODE_ENV),
     typescript({
       noEmitOnError: isProd,
-      cacheDir: `${cacheDirectory}/.rollup`,
-      outputToFilesystem: false,
-      compilerOptions: {
-        incremental: true,
-        tsBuildInfoFile: '.tsbuildinfo',
-      },
     }),
     styles({
       mode: ['extract', `${name}.css`],
