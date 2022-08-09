@@ -7,8 +7,10 @@ import { constants } from './constants';
 import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 import { statusEffects } from './statusEffects';
 
+/** @internal */
 export const PACKAGE_ID = 'swade';
 
+/** @internal */
 export const SWADE: SwadeConfig = {
   ASCII: `
   ███████╗██╗    ██╗ █████╗ ██████╗ ███████╗
@@ -102,7 +104,7 @@ export const SWADE: SwadeConfig = {
     id: 'actionCardEditor',
   },
 
-  statusEffects: foundry.utils.deepClone(statusEffects),
+  statusEffects: statusEffects,
 
   wildCardIcons: {
     regular: 'systems/swade/assets/ui/wildcard.svg',
@@ -236,6 +238,7 @@ export const SWADE: SwadeConfig = {
   ],
 };
 
+/** @internal */
 export interface SwadeConfig {
   //a piece of ASCII art for the init log message
   ASCII: string;
