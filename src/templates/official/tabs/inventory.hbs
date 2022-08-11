@@ -175,7 +175,7 @@
             }}</span>
           <span class='item-controls'>
             {{#if isOwner}}
-              <button type='menu' class='equip-status' title='{{localize "SWADE.ItemEquipStatus.Label"}}'>
+              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
                 {{equipStatus data.data.equipStatus}}
               </button>
               <button
@@ -252,7 +252,7 @@
             }}</span>
           <span class='item-controls'>
             {{#if isOwner}}
-              <button type='menu' class='equip-status' title='{{localize "SWADE.ItemEquipStatus.Label"}}'>
+              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
                 {{equipStatus data.data.equipStatus}}
               </button>
               <button
@@ -327,6 +327,9 @@
         </span>
         <span class='item-controls'>
           {{#if isOwner}}
+            <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
+              {{equipStatus data.data.equipStatus}}
+            </button>
             <button
               type='button'
               class='item-toggle'
@@ -394,11 +397,9 @@
           </span>
           <span class='item-controls'>
             {{#if isOwner}}
-              {{#if data.data.equippable}}
-                <button type='menu' class='equip-status' title='{{localize "SWADE.ItemEquipStatus.Label"}}'>
-                  {{equipStatus data.data.equipStatus}}
-                </button>
-              {{/if}}
+              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
+                {{equipStatus data.data.equipStatus}}
+              </button>
               <button
                 type='button'
                 class='item-toggle'
