@@ -4,7 +4,7 @@ import {
 } from '../../interfaces/DiceIntegration interface';
 import { Dice3D } from '../../types/DiceSoNice';
 import DiceSettings from '../apps/DiceSettings';
-import { SWADE } from '../config';
+import { PACKAGE_ID, SWADE } from '../config';
 
 /** Hook callbacks for third-party integrations */
 export default class SwadeIntegrationHooks {
@@ -83,7 +83,7 @@ export default class SwadeIntegrationHooks {
     );
   }
 
-  static onDevModeRead({ registerPackageDebugFlag }: DevModeApi) {
-    registerPackageDebugFlag('my-module-id');
+  static onDevModeReady({ registerPackageDebugFlag }: DevModeApi) {
+    registerPackageDebugFlag(PACKAGE_ID);
   }
 }
