@@ -244,16 +244,14 @@ export default class CharacterSheet extends ActorSheet {
 
     // Roll Damage
     html.find('.damage-roll').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      return item.rollDamage();
+      const id = $(ev.currentTarget).parents('.item').data('itemId');
+      return this.actor.items.get(id)?.rollDamage();
     });
 
     // Use Consumable
     html.find('.use-consumable').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      return item.consume();
+      const id = $(ev.currentTarget).parents('.item').data('itemId');
+      return this.actor.items.get(id)?.consume();
     });
 
     //Toggle Equipment Card collapsible
