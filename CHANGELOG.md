@@ -33,9 +33,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added `flavour` option to `IRollOptions` interface.
 - Refactored the way Active Effect expiration is handled. This takes 2 main forms (#531)
   - There is now a `Reset Duration` button for expiration Prompts.
-  - For Developers: There is now an expiration callback API Collection
-    - For Users: The `Shaken`, `Stunned` and `Bleeding Out` effects now trigger workflows and interactions to resolve them.
-    - For Developers: which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
+  - For Users: The `Shaken`, `Stunned` and `Bleeding Out` effects now trigger workflows and interactions to resolve them.
+  - For Developers: There is now an expiration callback API Collection which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
 - Added Basic Powers as a system compendium (#499)
 - Added modifier presets for `Aiming`, `Wild Attack`, `Target is Vulnerable` and `Off-Hand Penalty`
 - Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following existing apps:
