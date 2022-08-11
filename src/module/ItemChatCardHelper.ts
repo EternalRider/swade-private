@@ -27,9 +27,7 @@ export default class ItemChatCardHelper {
     const additionalMods = new Array<TraitRollModifier>();
 
     //save the message ID if we're doing automated ammo management
-    if (game.settings.get('swade', 'ammoManagement')) {
-      SWADE['itemCardMessageId'] = messageId;
-    }
+    SWADE['itemCardMessageId'] = messageId;
 
     // Validate permission to proceed with the roll
     if (!(game.user!.isGM || message.isAuthor)) return null;
@@ -165,6 +163,10 @@ export default class ItemChatCardHelper {
           break;
         }
         await this.reloadWeapon(actor, item);
+        await this.refreshItemCard(actor);
+        break;
+      case 'consume':
+        await item.consume();
         await this.refreshItemCard(actor);
         break;
       default:
@@ -388,30 +390,27 @@ export default class ItemChatCardHelper {
     }
     if (!message) return; //solves for the case where ammo management isn't turned on so there's no errors
 
-    const messageContent = new DOMParser().parseFromString(
+    const content = new DOMParser().parseFromString(
       getProperty(message, 'data.content'),
       'text/html',
     );
 
-    const messageData = $(messageContent)
-      .find('.chat-card.item-card')
-      .first()
-      .data();
+    const messageData = $(content).find('.chat-card.item-card').first().data();
 
-    const item = actor.items.get(messageData.itemId)!;
-    if (item.data.type === 'weapon') {
+    const item = actor.items.get(messageData.itemId);
+    if (item?.data.type === 'weapon') {
       const currentShots = item.data.data.currentShots;
       const maxShots = item.data.data.shots;
 
       //update message content
-      $(messageContent)
+      $(content)
         .find('.ammo-counter .current-shots')
         .first()
         .text(currentShots);
-      $(messageContent).find('.ammo-counter .max-shots').first().text(maxShots);
+      $(content).find('.ammo-counter .max-shots').first().text(maxShots);
     }
 
-    if (item.data.type === 'power') {
+    if (item?.data.type === 'power') {
       const arcane = item.data.data.arcane;
       let currentPP = getProperty(actor.data.data, 'powerPoints.value');
       let maxPP = getProperty(actor.data.data, 'powerPoints.max');
@@ -420,21 +419,27 @@ export default class ItemChatCardHelper {
         maxPP = getProperty(actor.data.data, `powerPoints.${arcane}.max`);
       }
       //update message content
-      $(messageContent).find('.pp-counter .current-pp').first().text(currentPP);
-      $(messageContent).find('.pp-counter .max-pp').first().text(maxPP);
+      $(content).find('.pp-counter .current-pp').first().text(currentPP);
+      $(content).find('.pp-counter .max-pp').first().text(maxPP);
     }
 
-    const isArcaneDevice = getProperty(item.data.data, 'isArcaneDevice');
-    if (isArcaneDevice) {
+    if (item?.data.type === 'consumable') {
+      //update message content
+      const charges = item.data.data.charges;
+      $(content).find('.pp-counter .current-pp').first().text(charges.value);
+      $(content).find('.pp-counter .max-pp').first().text(charges.max);
+    }
+
+    if (item?.isArcaneDevice) {
       const currentPP = getProperty(item.data.data, 'powerPoints.value');
       const maxPP = getProperty(item.data.data, 'powerPoints.max');
       //update message content
-      $(messageContent).find('.pp-counter .current-pp').first().text(currentPP);
-      $(messageContent).find('.pp-counter .max-pp').first().text(maxPP);
+      $(content).find('.pp-counter .current-pp').first().text(currentPP);
+      $(content).find('.pp-counter .max-pp').first().text(maxPP);
     }
 
     //update the message and render the chatlog/chat popout
-    await message.update({ content: messageContent.body.innerHTML });
+    await message.update({ content: content.body.innerHTML });
     ui.chat?.render(true);
     for (const appId in message.apps) {
       const app = message.apps[appId] as FormApplication;

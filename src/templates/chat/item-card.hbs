@@ -46,6 +46,16 @@
     </div>
   {{/if}}
 
+  <!-- Charge Display -->
+  {{#if (eq item.type 'consumable')}}
+    <div class='pp-counter'>
+      {{localize 'SWADE.Charges'}}:
+      <span class='current-pp'>{{item.data.data.charges.value}}</span>
+      &nbsp;/&nbsp;
+      <span class='max-pp'>{{item.data.data.charges.max}}</span>
+    </div>
+  {{/if}}
+
   <!-- Description -->
   <div class='card-content' style='display: none'>{{{data.description}}}</div>
 
@@ -196,6 +206,23 @@
             </button>
           </span>
         {{/unless}}
+      </span>
+    </div>
+  {{/if}}
+
+  {{#if (eq item.type 'consumable')}}
+    <div class='card-buttons'>
+      <span style='display: flex'>
+        <button data-action='consume'>
+          {{localize 'SWADE.Consumable.Use'}}
+        </button>
+        <button
+          data-action='pp-adjust'
+          data-adjust='refresh'
+          title='{{localize "SWADE.Refresh"}}'
+        >
+          <i class='fas fa-sync'></i>
+        </button>
       </span>
     </div>
   {{/if}}
