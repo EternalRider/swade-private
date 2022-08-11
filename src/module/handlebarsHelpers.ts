@@ -204,7 +204,7 @@ export const registerCustomHelpers = function () {
         icon = '<i class="fas fa-archive"></i>';
         break;
       case constants.EQUIP_STATE.CARRIED:
-        icon = '<i class="fas fa-tshirt item-unequipped"></i>';
+        icon = '<i class="fas fa-shopping-bag"></i>';
         break;
       case constants.EQUIP_STATE.EQUIPPED:
         icon = '<i class="fas fa-tshirt"></i>';

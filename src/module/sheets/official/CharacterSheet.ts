@@ -1050,7 +1050,7 @@ export default class CharacterSheet extends ActorSheet {
       },
       {
         name: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
-        icon: '<i class="fas fa-tshirt"></i>',
+        icon: '<i class="fas fa-shopping-bag"></i>',
         condition: true,
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
