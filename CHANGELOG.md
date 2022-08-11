@@ -31,7 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added an option to force Measured Templates highlighting to act like it is on a gridless scene even if it is not. This can be toggled via the `Always Highlight Templates` option in the System Settings and defaults to on (#516).
 - You can now right-click an actor's portrait on all actor sheets to enlarge it
 - Added `flavour` option to `IRollOptions` interface.
-- Refactored the way Active Effect expiration is handled. This takes 2 main forms (#531)
+- Refactored the way Active Effect expiration is handled. This takes 3 main forms (#531)
   - There is now a `Reset Duration` button for expiration Prompts.
   - For Users: The `Shaken`, `Stunned` and `Bleeding Out` effects now trigger workflows and interactions to resolve them.
   - For Developers: There is now an expiration callback API Collection which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
