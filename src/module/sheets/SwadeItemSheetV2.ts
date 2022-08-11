@@ -65,7 +65,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
-
     this._setupAccordions();
 
     html.find('.profile-img').on('contextmenu', () => {
@@ -80,6 +79,16 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     });
 
     if (!this.isEditable) return;
+
+    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
+      const target = ev.target as HTMLButtonElement;
+      const targetIsButton = 'button' === target?.type;
+      if (!targetIsButton && ev.key === 'Enter') {
+        ev.preventDefault();
+        this.submit({ preventClose: true });
+        return false;
+      }
+    });
 
     if (
       this.item.isArcaneDevice ||
