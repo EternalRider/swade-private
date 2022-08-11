@@ -154,7 +154,6 @@ SWADE:
   ActionDeckReset: Aktionsdeck zurücksetzen
   ActionDeckResetNotification: Aktionsdeck wurde zurückgesetzt
   InitDraw: zog...
-  JokersWild: Bennys für Joker
   Addi: Zusätzlich
   Status: Status
   Handling: Manövrierf.
@@ -174,16 +173,6 @@ SWADE:
   Class: Klassifikation
   Vehicular: Fahrzeugwaffe
   VehicleMod: Fahrzeugmod
-  EnableConv: Entschlossenheit
-  EnableConvDesc: Settingregel "Entschlossenheit" verwenden
-  EnableWoundPace: Wunden beeinflussen Bewegung
-  EnableWoundPaceDesc: Wenn aktiviert, wird die Bewegung automatisch durch Wunden angepasst
-  GmBennies: Spielleiter Bennys
-  GmBenniesDesc: Anzahl Bennys die du als SL beim auffrischen selbiger erhälst
-  VehicleMods: Fahrzeug-Modifikationen
-  VehicleModsDesc: Fahrzeuge nutzen Modifikations-Plätze
-  VehicleEdges: Fahrzeug-Talente
-  VehicleEdgesDesc: Fahrzeuge nutzen Talente und Handicaps
   SettingConf: Setting-Konfigurator
   SettingConfLabel: Öffne Setting-Konfigurator
   SettingConfDesc: >-
@@ -227,12 +216,6 @@ SWADE:
   Curr: Aktuell
   Aiming: Zielen
   Ammo: Munition
-  AmmoManagement: Munitionsmanagement
-  AmmoManagementDesc: >-
-    Wenn diese Option aktiviert (und anwendbar) ist, wird die Munition vom
-    Magazin der Waffe abgezogen. Gegenstandskarten im Chat erhalten außerdem
-    eine Schaltfläche zum nachladen und du kannst die Waffe nicht verwenden wenn
-    nicht genügend Munition verfügbar ist
   AutoReload: Braucht keine Aktion zum nachladen
   Berserk: Berserkerrausch
   BleedingOut: Verblutend
@@ -261,18 +244,12 @@ SWADE:
   ActBeforeCurrentCombatant: Jetzt handeln
   ActAfterCurrentCombatant: Nach aktuellem Teilnehmer handeln
   LoseTurn: Zug aussetzen umschalten
-  NPCAmmoFromInventory: NSCs laden Munition aus ihrem Inventar nach
   NoAmmoSet: Keine Munition ausgewählt
   NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
   OnFire: Brennend
   OpSkill: Manöverfertigkeit
-  PCAmmoFromInventory: SCs laden Munition aus ihrem Inventar nach
-  PCAmmoFromInventoryDesc: >-
-    Wenn diese Option aktiviert ist, kann die Option zum Einstellen eines
-    "Ausrüstung" gegenstands als Munition festgelegt werden und wird beim
-    Nachladen der Waffe verwendet
   Poisoned: Vergiftet
   Prone: Liegend
   Reach: Reichweite
@@ -285,7 +262,6 @@ SWADE:
   Smite: Waffe verbessert
   Protection: Schutz
   Torch: Lichtquelle
-  VehicleAmmoFromInventory: Fahrzeuge nutzen Munition aus ihrem Inventar
   WildDiePreset: Wildcard Würfel Voreinstellung
   WildDiePresetDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
@@ -298,9 +274,6 @@ SWADE:
   CurrentBennies: Derzeitige Bennys
   RerollWithBenny: Mit Benny nochmal würfeln
   FreeReroll: Freier Neuwurf
-  JokersWildDesc: >-
-    Wenn diese Option aktiviert ist, werden Bennys verteilt wenn ein Joker als
-    Aktionskarte gezogen wird.
   AutoCalcParry: Automatisch Parade berechnen, inklusive Schilde
   Subtype: Unterkategorie
   SpecialAbility: Spezialfähigkeit
@@ -315,22 +288,12 @@ SWADE:
   String: Text
   Number: Nummer
   Checkbox: Checkbox
-  NoPowerPoints: Keine Machtpunkte
-  NoPowerPointsDesc: >-
-    Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen
-    ausgeblendet
-  WealthType: Kapitalsystem
   WealthDie:
     Label: Wohlstandswürfel
     Broke:
       Label: Pleite
       Hint: Du bist pleite!
   WealthSelectionNoneOther: Keines / Anderes
-  WealthTypeDesc: >-
-    Wähle aus welches System zur Buchführung auf dem Charakterbogen genutzt
-    werden soll
-  CurrencyName: Währungsname
-  CurrencyNameDesc: Benenne die gängigste Währung deines Settings
   TraitRolls: Eigenschaftswürfe
   Trait: Eigenschaft
   AltTrait: Aktionseigenschaft
@@ -339,10 +302,6 @@ SWADE:
   BonusDamage: Bonusschaden
   CoreSkill: Grundfertigkeit
   CoreSkills: Grundfertigkeiten
-  CoreSkillsDesc: >-
-    Gib hier die Namen der Grundfertigkeiten deines Settings an. Zum Beispiel
-    so: Allgemeinwissen, Athletik, Heimlichkeit, Überreden, Wahrnehmung
-  CoreSkillsPackDesc: Wähle aus, aus welchem Kompendium die Grundfertigkeiten bezogen werden
   Joker: Joker
   DmgRolls: Schadenswürfe
   SubtractPPDesc: MP-Kosten von den verfügbaren MP abziehen
@@ -373,18 +332,10 @@ SWADE:
   Metric: Metrisch
   Imperial: Imperial
   3DBennies: 3D Bennies
-  Benny3DFrontBump: Bump Map Vorderseite
-  Benny3DBackBump: Bump Map Rückseite
-  Benny3DFrontDesc: Vordere Textur des Bennys
-  Benny3DBackDesc: Hintere Textur des Bennys
-  Benny3DFrontBumpDesc: Bump Map der Vorderseite
-  Benny3DBackBumpDesc: Bump Map der Rückseite
   Modifiers: Modifikatoren
   Duplicates: Duplikate Gefunden
   Wealth: Vermögen
-  BennyImageSheet: Benny
   Characters: Charaktere
-  CoreSkillsList: Liste der Grundfertigkeiten
   MAPenalty:
     Label: Mehrfachaktionsabzug
     None: Keine
@@ -417,10 +368,6 @@ SWADE:
   ModOther: Andere Modifikatioren
   Snapfire: Schnellschuss
   UnstablePlatform: Unsicheren Grund
-  ApplyEncumbrance: Belastungsabzüge anwenden
-  ApplyEncumbranceHint: >-
-    Wende belatungsabzüge an. Bitte beachtet das {vigor}sproben zum Widerstand
-    gegen {fatigue} derzeit NICHT unterstüzt sind
   NoSceneAvailable: Es ist keine Szene verfügbar oder der Canvas wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
   NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck zu handeln
@@ -491,7 +438,6 @@ SWADE:
   ConvictionActive: Entschlossen
   DrawInit: Initiative ziehen
   Expand: Ausklappen
-  CoreSkillsPack: Kompendium mit Grundfertigkeiten
   Expiration:
     BeginAuto: Automatisch am Anfang des Zuges
     BeginPrompt: Am Anfang des Zuges mit Nachfrage
@@ -515,15 +461,8 @@ SWADE:
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
   NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird einer erstellt
   Subtract: Abziehen
-  HardChoices: Schwere Entscheidungen
-  HardChoicesDesc: Schaltet die Schwere Entscheidungen Regel ein
   ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen in Kraft treten
   CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
-  BennyImageSheetDesc: >-
-    Wählt welches Bild verwendet wird um den Benny am Charakterbogen
-    darzustellen
-  Benny3DBack: Hintere Textur
-  Benny3DFront: Vordere Textur
   Keybindings:
     Bennies:
       Name: Benny bekommen oder Ausgeben
@@ -543,20 +482,24 @@ SWADE:
         ausgemalt anstatt nur das Raster
     FantasyCompanionEntangle:
       Name: Festgehalten Status nach Fantasy Companion
-      Hint: Verwende die Fantasy Companion version des Festgehalten Stauts. Die Seite muss neu geladen werden damit die Änderung in Kraft tritt.
+      Hint: >-
+        Verwende die Fantasy Companion version des Festgehalten Stauts. Die
+        Seite muss neu geladen werden damit die Änderung in Kraft tritt.
     InitDiscardPile:
       Name: Initiative-Ablagestapel
     InitCardDeck:
       Name: Aktionskartendeck
     ParryBase:
       Name: Parade-Fertigkeit
-      Hint: Der Name der Fertigkeit die zur Berechnung des Paradewerts benutzt wird (Normalerweise Kämpfen)
+      Hint: >-
+        Der Name der Fertigkeit die zur Berechnung des Paradewerts benutzt wird
+        (Normalerweise Kämpfen)
     UseShortenedAttributes:
       Name: Attributsnamen abkürzen
       Hint: >-
         Wenn du diese Option aktivierst, werden die Attribute auf dem SC und NSC
-        Bogen als Abkürzungen angegeben, also Ges statt Geschicklichkeit, Ver statt
-        Verstand, etc. Schließe und öffne alle offenen Bögen wenn du diese
+        Bogen als Abkürzungen angegeben, also Ges statt Geschicklichkeit, Ver
+        statt Verstand, etc. Schließe und öffne alle offenen Bögen wenn du diese
         Einstellung änderst.
     WeightUnit:
       Name: Gewichtseinheit
@@ -583,6 +526,90 @@ SWADE:
     CardSound:
       Name: Kartengeräusch
       Hint: Kurzen Ton beim Ziehen der Aktionskarten abspielen
+    Benny3DFront:
+      Name: Vordere Textur
+      Hint: Vordere Textur des Bennys
+    Benny3DBack:
+      Name: Hintere Textur
+      Hint: Hintere Textur des Bennys
+    Benny3DBackBump:
+      Name: Bump Map Rückseite
+      Hint: Bump Map der Rückseite
+    Benny3DFrontBump:
+      Hint: Bump Map der Vorderseite
+      Name: Bump Map Vorderseite
+    CoreSkillsList:
+      Name: Liste der Grundfertigkeiten
+      Hint: >-
+        Gib hier die Namen der Grundfertigkeiten deines Settings an. Zum
+        Beispiel so: Allgemeinwissen, Athletik, Heimlichkeit, Überreden,
+        Wahrnehmung
+    CoreSkillsPack:
+      Name: Kompendium mit Grundfertigkeiten
+      Hint: Wähle aus, aus welchem Kompendium die Grundfertigkeiten bezogen werden
+    WealthType:
+      Name: Kapitalsystem
+      Hint: >-
+        Wähle aus welches System zur Buchführung auf dem Charakterbogen genutzt
+        werden soll
+    CurrencyName:
+      Name: Währungsname
+      Hint: Benenne die gängigste Währung deines Settings
+    JokersWild:
+      Name: Bennys für Joker
+      Hint: >-
+        Wenn diese Option aktiviert ist, werden Bennys verteilt wenn ein Joker
+        als Aktionskarte gezogen wird.
+    AmmoManagement:
+      Name: Munitionsmanagement
+      Hint: >-
+        Wenn diese Option aktiviert (und anwendbar) ist, wird die Munition vom
+        Magazin der Waffe abgezogen. Gegenstandskarten im Chat erhalten außerdem
+        eine Schaltfläche zum nachladen und du kannst die Waffe nicht verwenden
+        wenn nicht genügend Munition verfügbar ist
+    PCAmmoFromInventory:
+      Name: SCs laden Munition aus ihrem Inventar nach
+      Hint: >-
+        Wenn diese Option aktiviert ist, kann die Option zum Einstellen eines
+        "Ausrüstung" gegenstands als Munition festgelegt werden und wird beim
+        Nachladen der Waffe verwendet
+    NPCAmmoFromInventory:
+      Name: NSCs laden Munition aus ihrem Inventar nach
+    VehicleAmmoFromInventory:
+      Name: Fahrzeuge nutzen Munition aus ihrem Inventar
+    EnableWoundPace:
+      Name: Wunden beeinflussen Bewegung
+      Hint: Wenn aktiviert, wird die Bewegung automatisch durch Wunden angepasst
+    EnableConv:
+      Name: Entschlossenheit
+      Hint: Settingregel "Entschlossenheit" verwenden
+    NoPowerPoints:
+      Name: Keine Machtpunkte
+      Hint: >-
+        Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen
+        ausgeblendet
+    ApplyEncumbrance:
+      Name: Belastungsabzüge anwenden
+      Hint: >-
+        Wende belatungsabzüge an. Bitte beachtet das {vigor}sproben zum
+        Widerstand gegen {fatigue} derzeit NICHT unterstüzt sind
+    GmBennies:
+      Name: Spielleiter Bennys
+      Hint: Anzahl Bennys die du als SL beim auffrischen selbiger erhälst
+    VehicleMods:
+      Name: Fahrzeug-Modifikationen
+      Hint: Fahrzeuge nutzen Modifikations-Plätze
+    VehicleEdges:
+      Name: Fahrzeug-Talente
+      Hint: Fahrzeuge nutzen Talente und Handicaps
+    BennyImageSheet:
+      Name: Benny
+      Hint: >-
+        Wählt welches Bild verwendet wird um den Benny am Charakterbogen
+        darzustellen
+    HardChoices:
+      Name: Schwere Entscheidungen
+      Hint: Schaltet die Schwere Entscheidungen Regel ein
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt

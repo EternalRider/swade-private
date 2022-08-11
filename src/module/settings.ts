@@ -187,8 +187,8 @@ export function registerSettings() {
 /** @internal */
 export function registerSettingRules() {
   game.settings.register('swade', 'coreSkills', {
-    name: game.i18n.localize('SWADE.CoreSkillsList'),
-    hint: game.i18n.localize('SWADE.CoreSkillsDesc'),
+    name: 'SWADE.Settings.CoreSkillsList.Name',
+    hint: 'SWADE.Settings.CoreSkillsList.Hint',
     default: 'Athletics, Common Knowledge, Notice, Persuasion, Stealth',
     scope: 'world',
     type: String,
@@ -196,8 +196,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'coreSkillsCompendium', {
-    name: game.i18n.localize('SWADE.CoreSkillsPack'),
-    hint: game.i18n.localize('SWADE.CoreSkillsPackDesc'),
+    name: 'SWADE.Settings.CoreSkillsPack.Name',
+    hint: 'SWADE.Settings.CoreSkillsPack.Hint',
     default: 'swade.skills',
     type: String,
     scope: 'world',
@@ -205,8 +205,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'wealthType', {
-    name: game.i18n.localize('SWADE.WealthType'),
-    hint: game.i18n.localize('SWADE.WealthTypeDesc'),
+    name: 'SWADE.Settings.WealthType.Name',
+    hint: 'SWADE.Settings.WealthType.Hint',
     scope: 'world',
     type: String,
     choices: {
@@ -219,8 +219,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'currencyName', {
-    name: game.i18n.localize('SWADE.CurrencyName'),
-    hint: game.i18n.localize('SWADE.CurrencyNameDesc'),
+    name: 'SWADE.Settings.CurrencyName.Name',
+    hint: 'SWADE.Settings.CurrencyName.Hint',
     scope: 'world',
     type: String,
     default: 'Currency',
@@ -228,8 +228,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'jokersWild', {
-    name: game.i18n.localize('SWADE.JokersWild'),
-    hint: game.i18n.localize('SWADE.JokersWildDesc'),
+    name: 'SWADE.Settings.JokersWild.Name',
+    hint: 'SWADE.Settings.JokersWild.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -237,8 +237,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'ammoManagement', {
-    name: game.i18n.localize('SWADE.AmmoManagement'),
-    hint: game.i18n.localize('SWADE.AmmoManagementDesc'),
+    name: 'SWADE.Settings.AmmoManagement.Name',
+    hint: 'SWADE.Settings.AmmoManagement.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -246,8 +246,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'ammoFromInventory', {
-    name: game.i18n.localize('SWADE.PCAmmoFromInventory'),
-    hint: game.i18n.localize('SWADE.PCAmmoFromInventoryDesc'),
+    name: 'SWADE.Settings.PCAmmoFromInventory.Name',
+    hint: 'SWADE.Settings.PCAmmoFromInventory.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -255,7 +255,7 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'npcAmmo', {
-    name: game.i18n.localize('SWADE.NPCAmmoFromInventory'),
+    name: 'SWADE.Settings.NPCAmmoFromInventory.Name',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -263,7 +263,7 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'vehicleAmmo', {
-    name: game.i18n.localize('SWADE.VehicleAmmoFromInventory'),
+    name: 'SWADE.Settings.VehicleAmmoFromInventory.Name',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -271,8 +271,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'enableConviction', {
-    name: game.i18n.localize('SWADE.EnableConv'),
-    hint: game.i18n.localize('SWADE.EnableConvDesc'),
+    name: 'SWADE.Settings.EnableConv.Name',
+    hint: 'SWADE.Settings.EnableConv.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -280,8 +280,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'enableWoundPace', {
-    name: game.i18n.localize('SWADE.EnableWoundPace'),
-    hint: game.i18n.localize('SWADE.EnableWoundPaceDesc'),
+    name: 'SWADE.Settings.EnableWoundPace.Name',
+    hint: 'SWADE.Settings.EnableWoundPace.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -289,8 +289,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'noPowerPoints', {
-    name: game.i18n.localize('SWADE.NoPowerPoints'),
-    hint: game.i18n.localize('SWADE.NoPowerPointsDesc'),
+    name: 'SWADE.Settings.NoPowerPoints.Name',
+    hint: 'SWADE.Settings.NoPowerPoints.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -298,8 +298,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'applyEncumbrance', {
-    name: game.i18n.localize('SWADE.ApplyEncumbrance'),
-    hint: game.i18n.format('SWADE.ApplyEncumbranceHint', {
+    name: 'SWADE.Settings.ApplyEncumbrance.Name',
+    hint: game.i18n.format('SWADE.Settings.ApplyEncumbrance.Hint', {
       vigor: game.i18n.localize('SWADE.AttrVig'),
       fatigue: game.i18n.localize('SWADE.Fatigue'),
     }),
@@ -310,8 +310,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'gmBennies', {
-    name: game.i18n.localize('SWADE.GmBennies'),
-    hint: game.i18n.localize('SWADE.GmBenniesDesc'),
+    name: 'SWADE.Settings.GmBennies.Name',
+    hint: 'SWADE.Settings.GmBennies.Hint',
     default: 0,
     scope: 'world',
     type: Number,
@@ -319,8 +319,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'vehicleMods', {
-    name: game.i18n.localize('SWADE.VehicleMods'),
-    hint: game.i18n.localize('SWADE.VehicleModsDesc'),
+    name: 'SWADE.Settings.VehicleMods.Name',
+    hint: 'SWADE.Settings.VehicleMods.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -328,8 +328,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'vehicleEdges', {
-    name: game.i18n.localize('SWADE.VehicleEdges'),
-    hint: game.i18n.localize('SWADE.VehicleEdgesDesc'),
+    name: 'SWADE.Settings.VehicleEdges.Name',
+    hint: 'SWADE.Settings.VehicleEdges.Hint',
     default: false,
     scope: 'world',
     type: Boolean,
@@ -346,8 +346,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'bennyImageSheet', {
-    name: game.i18n.localize('SWADE.BennyImageSheet'),
-    hint: game.i18n.localize('SWADE.BennyImageSheetDesc'),
+    name: 'SWADE.Settings.BennyImageSheet.Name',
+    hint: 'SWADE.Settings.BennyImageSheet.Hint',
     type: String,
     default: 'systems/swade/assets/bennie.webp',
     scope: 'world',
@@ -356,8 +356,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'hardChoices', {
-    name: game.i18n.localize('SWADE.HardChoices'),
-    hint: game.i18n.localize('SWADE.HardChoicesDesc'),
+    name: 'SWADE.Settings.HardChoices.Name',
+    hint: 'SWADE.Settings.HardChoices.Hint',
     scope: 'world',
     type: Boolean,
     default: false,
@@ -368,8 +368,8 @@ export function registerSettingRules() {
 /** @internal */
 export function register3DBennySettings() {
   game.settings.register('swade', 'bennyImage3DFront', {
-    name: game.i18n.localize('SWADE.Benny3DFront'),
-    hint: game.i18n.localize('SWADE.Benny3DFrontDesc'),
+    name: 'SWADE.Settings.Benny3DFront.Name',
+    hint: 'SWADE.Settings.Benny3DFront.Hint',
     type: String,
     default: 'systems/swade/assets/benny/benny-chip-front.png',
     scope: 'world',
@@ -378,8 +378,8 @@ export function register3DBennySettings() {
   });
 
   game.settings.register('swade', 'bennyImage3DBack', {
-    name: game.i18n.localize('SWADE.Benny3DBack'),
-    hint: game.i18n.localize('SWADE.Benny3DBackDesc'),
+    name: 'SWADE.Settings.Benny3DBack.Name',
+    hint: 'SWADE.Settings.Benny3DBack.Hint',
     type: String,
     default: 'systems/swade/assets/benny/benny-chip-front.png',
     scope: 'world',
@@ -388,8 +388,8 @@ export function register3DBennySettings() {
   });
 
   game.settings.register('swade', '3dBennyFrontBump', {
-    name: game.i18n.localize('SWADE.Benny3DBackBump'),
-    hint: game.i18n.localize('SWADE.Benny3DBackBumpDesc'),
+    name: 'SWADE.Settings.Benny3DBackBump.Name',
+    hint: 'SWADE.Settings.Benny3DBackBump.Hint',
     type: String,
     default: 'systems/swade/assets/benny/benny_bump.png',
     scope: 'world',
@@ -398,8 +398,8 @@ export function register3DBennySettings() {
   });
 
   game.settings.register('swade', '3dBennyBackBump', {
-    name: game.i18n.localize('SWADE.Benny3DFrontBump'),
-    hint: game.i18n.localize('SWADE.Benny3DFrontBumpDesc'),
+    name: 'SWADE.Settings.Benny3DFrontBump.Name',
+    hint: 'SWADE.Settings.Benny3DFrontBump.Hint',
     type: String,
     default: 'systems/swade/assets/benny/benny_bump.png',
     scope: 'world',

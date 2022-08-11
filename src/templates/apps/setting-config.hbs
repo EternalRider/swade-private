@@ -25,7 +25,7 @@
         <legend>{{localize 'SWADE.Init'}}</legend>
         <!-- Deck -->
         <div class='form-group'>
-          <label>{{localize 'SWADE.InitCardDeck'}}</label>
+          <label>{{localize 'SWADE.Settings.InitCardDeck.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.actionDeck'>
               {{#select settingRules.actionDeck}}
@@ -36,11 +36,10 @@
               {{/select}}
             </select>
           </div>
-          <p class='notes'></p>
         </div>
         <!-- Discard Pile -->
         <div class='form-group'>
-          <label>{{localize 'SWADE.InitDiscardPile'}}</label>
+          <label>{{localize 'SWADE.Settings.InitDiscardPile.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.actionDeckDiscardPile'>
               {{#select settingRules.actionDeckDiscardPile}}
@@ -51,14 +50,13 @@
               {{/select}}
             </select>
           </div>
-          <p class='notes'></p>
         </div>
       </fieldset>
       <!-- Characters -->
       <fieldset id='characters'>
         <legend>{{localize 'SWADE.Characters'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.EnableWoundPace'}}</label>
+          <label>{{localize 'SWADE.Settings.EnableWoundPace.Name'}}</label>
           <div class='form-fields'>
             <input
               type='checkbox'
@@ -67,14 +65,16 @@
               {{checked settingRules.enableWoundPace}}
             />
           </div>
-          <p class='notes'>{{localize 'SWADE.EnableWoundPaceDesc'}}</p>
+          <p class='notes'>
+            {{localize 'SWADE.Settings.EnableWoundPace.Hint'}}
+          </p>
         </div>
       </fieldset>
       <!-- Vehicles -->
       <fieldset id='vehicles'>
         <legend>{{localize 'SWADE.Vehicles'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.VehicleMods'}}</label>
+          <label>{{localize 'SWADE.Settings.VehicleMods.Name'}}</label>
           <div class='form-fields'>
             <input
               type='checkbox'
@@ -83,10 +83,10 @@
               {{checked settingRules.vehicleMods}}
             />
           </div>
-          <p class='notes'>{{localize 'SWADE.VehicleModsDesc'}}</p>
+          <p class='notes'>{{localize 'SWADE.Settings.VehicleMods.Hint'}}</p>
         </div>
         <div class='form-group'>
-          <label>{{localize 'SWADE.VehicleEdges'}}</label>
+          <label>{{localize 'SWADE.Settings.VehicleEdges.Name'}}</label>
           <div class='form-fields'>
             <input
               type='checkbox'
@@ -95,7 +95,7 @@
               {{checked settingRules.vehicleEdges}}
             />
           </div>
-          <p class='notes'>{{localize 'SWADE.VehicleEdgesDesc'}}</p>
+          <p class='notes'>{{localize 'SWADE.Settings.VehicleEdges.Hint'}}</p>
         </div>
       </fieldset>
     </section>
@@ -103,7 +103,7 @@
     <section class='tab' data-tab='setting-rules'>
       <!-- Hard Choices -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.HardChoices'}}</label>
+        <label>{{localize 'SWADE.Settings.HardChoices.Name'}}</label>
         <div class='form-fields'>
           <input
             type='checkbox'
@@ -112,11 +112,11 @@
             {{checked settingRules.hardChoices}}
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.HardChoicesDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.HardChoices.Hint'}}</p>
       </div>
       <!-- Conviction -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.EnableConv'}}</label>
+        <label>{{localize 'SWADE.Settings.EnableConv.Name'}}</label>
         <div class='form-fields'>
           <input
             type='checkbox'
@@ -125,11 +125,11 @@
             {{checked settingRules.enableConviction}}
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.EnableConvDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.EnableConv.Hint'}}</p>
       </div>
       <!-- Joker's Wild -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.JokersWild'}}</label>
+        <label>{{localize 'SWADE.Settings.JokersWild.Name'}}</label>
         <div class='form-fields'>
           <input
             type='checkbox'
@@ -138,11 +138,11 @@
             {{checked settingRules.jokersWild}}
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.JokersWildDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.JokersWild.Hint'}}</p>
       </div>
       <!-- No Power Points -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.NoPowerPoints'}}</label>
+        <label>{{localize 'SWADE.Settings.NoPowerPoints.Name'}}</label>
         <div class='form-fields'>
           <input
             type='checkbox'
@@ -151,11 +151,11 @@
             {{checked settingRules.noPowerPoints}}
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.NoPowerPointsDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.NoPowerPoints.Hint'}}</p>
       </div>
       <!-- Encumbrance -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.ApplyEncumbrance'}}</label>
+        <label>{{localize 'SWADE.Settings.ApplyEncumbrance.Name'}}</label>
         <div class='form-fields'>
           <input
             type='checkbox'
@@ -164,17 +164,19 @@
             {{checked settingRules.applyEncumbrance}}
           />
         </div>
-        <p class='notes'>{{localize
-            'SWADE.ApplyEncumbranceHint'
+        <p class='notes'>
+          {{localize
+            'SWADE.Settings.ApplyEncumbrance.Hint'
             vigor=(localize 'SWADE.AttrVig')
             fatigue=(localize 'SWADE.Fatigue')
-          }}</p>
+          }}
+        </p>
       </div>
       <!-- Core Skills -->
       <fieldset id='core-skills'>
         <legend>{{localize 'SWADE.CoreSkills'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.CoreSkillsList'}}</label>
+          <label>{{localize 'SWADE.Settings.CoreSkillsList.Name'}}</label>
           <div class='form-fields'>
             <textarea
               style='resize: none;'
@@ -183,10 +185,12 @@
               placeholder='Example: Athletics, Common Knowledge, Notice, Persuasion, Stealth'
             >{{settingRules.coreSkills}}</textarea>
           </div>
-          <p class='notes'>{{localize 'SWADE.CoreSkillsDesc'}}</p>
+          <p class='notes'>{{localize
+              'SWADE.Settings.CoreSkillsList.HintHint'
+            }}</p>
         </div>
         <div class='form-group'>
-          <label>{{localize 'SWADE.CoreSkillsPack'}}</label>
+          <label>{{localize 'SWADE.Settings.CoreSkillsPack.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.coreSkillsCompendium'>
               {{#select settingRules.coreSkillsCompendium}}
@@ -194,14 +198,14 @@
               {{/select}}
             </select>
           </div>
-          <p class='notes'>{{localize 'SWADE.CoreSkillsPackDesc'}}</p>
+          <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsPack.Hint'}}</p>
         </div>
       </fieldset>
       <!-- Wealth -->
       <fieldset id='wealth'>
         <legend>{{localize 'SWADE.Wealth'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.WealthType'}}</label>
+          <label>{{localize 'SWADE.Settings.WealthType.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.wealthType'>
               {{#select settingRules.wealthType}}
@@ -215,11 +219,11 @@
               {{/select}}
             </select>
           </div>
-          <p class='notes'>{{localize 'SWADE.WealthTypeDesc'}}</p>
+          <p class='notes'>{{localize 'SWADE.Settings.WealthType.Hint'}}</p>
         </div>
         {{#if (eq settingRules.wealthType 'currency')}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.CurrencyName'}}</label>
+            <label>{{localize 'SWADE.Settings.CurrencyName.Name'}}</label>
             <div class='form-fields'>
               <input
                 type='text'
@@ -227,7 +231,7 @@
                 value='{{settingRules.currencyName}}'
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.CurrencyNameDesc'}}</p>
+            <p class='notes'>{{localize 'SWADE.Settings.CurrencyName.Hint'}}</p>
           </div>
         {{/if}}
       </fieldset>
@@ -235,7 +239,7 @@
       <fieldset id='ammo'>
         <legend>{{localize 'SWADE.Ammo'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.AmmoManagement'}}</label>
+          <label>{{localize 'SWADE.Settings.AmmoManagement.Name'}}</label>
           <div class='form-fields'>
             <input
               type='checkbox'
@@ -244,11 +248,13 @@
               {{checked settingRules.ammoManagement}}
             />
           </div>
-          <p class='notes'>{{localize 'SWADE.AmmoManagementDesc'}}</p>
+          <p class='notes'>{{localize 'SWADE.Settings.AmmoManagement.Hint'}}</p>
         </div>
         {{#if settingRules.ammoManagement}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.PCAmmoFromInventory'}}</label>
+            <label>{{localize
+                'SWADE.Settings.PCAmmoFromInventory.Name'
+              }}</label>
             <div class='form-fields'>
               <input
                 type='checkbox'
@@ -257,10 +263,14 @@
                 {{checked settingRules.ammoFromInventory}}
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.PCAmmoFromInventoryDesc'}}</p>
+            <p class='notes'>{{localize
+                'SWADE.Settings.PCAmmoFromInventory.Hint'
+              }}</p>
           </div>
           <div class='form-group'>
-            <label>{{localize 'SWADE.NPCAmmoFromInventory'}}</label>
+            <label>{{localize
+                'SWADE.Settings.NPCAmmoFromInventory.Name'
+              }}</label>
             <div class='form-fields'>
               <input
                 type='checkbox'
@@ -271,7 +281,9 @@
             </div>
           </div>
           <div class='form-group'>
-            <label>{{localize 'SWADE.VehicleAmmoFromInventory'}}</label>
+            <label>{{localize
+                'SWADE.Settings.VehicleAmmoFromInventory.Name'
+              }}</label>
             <div class='form-fields'>
               <input
                 type='checkbox'
@@ -287,7 +299,7 @@
     <!-- Benny Settings -->
     <section class='tab' data-tab='bennies'>
       <div class='form-group'>
-        <label>{{localize 'SWADE.GmBennies'}}</label>
+        <label>{{localize 'SWADE.Settings.GmBennies.Name'}}</label>
         <div class='form-fields'>
           <input
             type='number'
@@ -296,10 +308,10 @@
             data-dtype='Number'
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.GmBenniesDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.BennyImageSheet'}}</label>
+        <label>{{localize 'SWADE.Settings.BennyImageSheet.Name'}}</label>
         <div class='form-fields'>
           {{filePicker target='settingRules.bennyImageSheet' type='image'}}
           <input
@@ -309,7 +321,7 @@
             data-dtype='String'
           />
         </div>
-        <p class='notes'>{{localize 'SWADE.BennyImageSheetDesc'}}</p>
+        <p class='notes'>{{localize 'SWADE.Settings.BennyImageSheet.Hint'}}</p>
       </div>
       {{#if dice3d}}
         <h3>{{localize 'SWADE.3DBennies'}}</h3>
@@ -320,7 +332,7 @@
         <fieldset>
           <legend>Textures</legend>
           <div class='form-group'>
-            <label>{{localize 'SWADE.Benny3DFront'}}</label>
+            <label>{{localize 'SWADE.Settings.Benny3DFront.Name'}}</label>
             <div class='form-fields'>
               {{filePicker
                 target='settingRules.bennyImage3DFront'
@@ -333,10 +345,10 @@
                 data-dtype='String'
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.Benny3DFrontDesc'}}</p>
+            <p class='notes'>{{localize 'SWADE.Settings.Benny3DFront.Hint'}}</p>
           </div>
           <div class='form-group'>
-            <label>{{localize 'SWADE.Benny3DBack'}}</label>
+            <label>{{localize 'SWADE.Settings.Benny3DBack.Name'}}</label>
             <div class='form-fields'>
               {{filePicker target='settingRules.bennyImage3DBack' type='image'}}
               <input
@@ -346,14 +358,14 @@
                 data-dtype='String'
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.Benny3DBackDesc'}}</p>
+            <p class='notes'>{{localize 'SWADE.Settings.Benny3DBack.Hint'}}</p>
           </div>
         </fieldset>
         <!-- Bumpmaps -->
         <fieldset>
           <legend>Bumpmaps</legend>
           <div class='form-group'>
-            <label>{{localize 'SWADE.Benny3DFrontBump'}}</label>
+            <label>{{localize 'SWADE.Settings.Benny3DFrontBump.Name'}}</label>
             <div class='form-fields'>
               {{filePicker target='settingRules.3dBennyFrontBump' type='image'}}
               <input
@@ -363,10 +375,12 @@
                 data-dtype='String'
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.Benny3DFrontBumpDesc'}}</p>
+            <p class='notes'>
+              {{localize 'SWADE.Settings.Benny3DFrontBump.Hint'}}
+            </p>
           </div>
           <div class='form-group'>
-            <label>{{localize 'SWADE.Benny3DBackBump'}}</label>
+            <label>{{localize 'SWADE.Settings.Benny3DBackBump.Name'}}</label>
             <div class='form-fields'>
               {{filePicker target='settingRules.3dBennyBackBump' type='image'}}
               <input
@@ -376,7 +390,9 @@
                 data-dtype='String'
               />
             </div>
-            <p class='notes'>{{localize 'SWADE.Benny3DBackBumpDesc'}}</p>
+            <p class='notes'>
+              {{localize 'SWADE.Settings.Benny3DBackBump.Hint'}}
+            </p>
           </div>
         </fieldset>
       {{/if}}
