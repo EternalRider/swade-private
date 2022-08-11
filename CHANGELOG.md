@@ -97,6 +97,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Rolling damage and Trait rolls with a Strength of 1 no longer results in an error. (#308)
 - Players spending a benny while Hard Choices is enabled should no longer see a permission error (#553)
 
+### Known Issues
+
+- The menu that used to select an item's equip status (Stored, carried, etc) does not render properly on the RIFTS sheet.
+
 ## v1.1.9
 
 ### Fixed
