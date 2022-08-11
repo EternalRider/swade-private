@@ -580,9 +580,9 @@ SWADE:
     HardChoices:
       Name: Hard Choices
       Hint: Checking this will enable the Hard Choices rule
-  CardSound:
-    Name: Card Sound
-    Hint: Play a short card sound when dealing Initiative
+    CardSound:
+      Name: Card Sound
+      Hint: Play a short card sound when dealing Initiative
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
