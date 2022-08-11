@@ -631,13 +631,6 @@ export default class SwadeItem extends Item {
   protected async _postConsumptionCleanup(
     updatedItems: Array<StoredDocument<SwadeItem>>,
   ) {
-    if (
-      this.data.type === 'consumable' &&
-      this.data.data.destroyOnEmpty &&
-      this.data.data.quantity === 0
-    ) {
-      await this.delete();
-    }
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (
@@ -647,6 +640,13 @@ export default class SwadeItem extends Item {
       ) {
         await this.delete();
       }
+    }
+    if (
+      this.data.type === 'consumable' &&
+      this.data.data.destroyOnEmpty &&
+      this.data.data.quantity === 0
+    ) {
+      await this.delete();
     }
   }
 
