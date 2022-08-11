@@ -540,7 +540,7 @@ export default class CharacterSheet extends ActorSheet {
       if (!this.actor.img) return;
       new ImagePopout(this.actor.img, {
         title: this.actor.name!,
-        shareable: this.actor.isOwner ?? game.user?.isGM ?? false,
+        shareable: this.actor.isOwner ?? game.user?.isGM,
       }).render(true);
     });
   }

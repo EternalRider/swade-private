@@ -234,4 +234,4 @@ Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
 Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
 
 /** Developer Mode */
-Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeRead);
+Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);

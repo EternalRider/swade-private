@@ -71,10 +71,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       if (!this.item.img) return;
       new ImagePopout(this.item.img, {
         title: this.item.name!,
-        shareable:
-          (this.item.isOwned && this.item.actor?.isOwner) ??
-          game.user?.isGM ??
-          false,
+        shareable: this.item?.isOwner ?? game.user?.isGM,
       }).render(true);
     });
 
