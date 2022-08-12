@@ -856,19 +856,18 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _getEffects() {
-    const temporary = new Array<Effect>();
-    const permanent = new Array<Effect>();
+    const temporary = new Array<SheetEffect>();
+    const permanent = new Array<SheetEffect>();
     for (const effect of this.actor.effects) {
-      const val: Effect = {
+      const val: SheetEffect = {
         id: effect.id!,
         label: effect.data.label,
         icon: effect.data.icon,
         disabled: effect.data.disabled,
-        favorite: effect.getFlag('swade', 'favorite'),
+        favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
       if (effect.data.origin) {
-        //@ts-expect-error calling a protected function here
-        val.origin = await effect._getSourceName();
+        val.origin = await effect.getSourceName();
       }
       if (effect.isTemporary) {
         temporary.push(val);
@@ -1123,11 +1122,11 @@ export default class CharacterSheet extends ActorSheet {
   }
 }
 
-interface Effect {
+interface SheetEffect {
   id: string;
   icon: string | undefined | null;
   disabled: boolean;
-  favorite?: boolean;
-  origin?: string | undefined | null;
-  label?: string;
+  favorite: boolean;
+  origin?: string;
+  label: string;
 }

@@ -210,6 +210,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     await this.update({ 'duration.startRound': currentRound });
   }
 
+  /** A shortcut to make the function public */
+  getSourceName = this._getSourceName;
+
   protected override async _onUpdate(
     changed: PropertiesToSource<ActiveEffectDataProperties>,
     options: DocumentModificationOptions,
