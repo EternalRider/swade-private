@@ -123,9 +123,9 @@ export default class CharacterSheet extends ActorSheet {
     }
 
     //Display Advances on About tab
-    html.find('label.advances').on('click', async () => {
-      this._tabs[1].activate('advances');
+    html.find('.character-detail.advances a').on('click', async () => {
       this._tabs[0].activate('about');
+      this._tabs[1].activate('advances');
     });
 
     //Toggle char detail inputs
