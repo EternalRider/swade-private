@@ -999,8 +999,8 @@ export default class CharacterSheet extends ActorSheet {
     input.name = detail;
     input.value = value;
     input.placeholder = label;
-    input.addEventListener('focusout', () => {
-      this.actor.update({ [detail]: input.value }, { diff: false });
+    input.addEventListener('focusout', async () => {
+      await this.actor.update({ [detail]: input.value }, { diff: false });
     });
     //set up the new input in the sheet
     display.replaceWith(input);
@@ -1064,7 +1064,8 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type !== 'weapon';
+          if (item.data.type === 'gear') return item.data.data.equippable;
+          return !['weapon', 'consumable'].includes(item.type);
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1117,8 +1118,6 @@ export default class CharacterSheet extends ActorSheet {
     ];
 
     const selector = ' .inventory .item-controls .equip-status';
-    // const selector = '.inventory .item-wrapper';
-    // const selector = '.inventory .item-name';
     const options = { eventName: 'click' };
     this._equipStateMenu = new PopUpMenu(html, selector, items, options);
   }
