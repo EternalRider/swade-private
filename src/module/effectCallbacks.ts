@@ -106,7 +106,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
       },
     };
     const options: DialogOptions = mergeObject(Dialog.defaultOptions, {
-      classes: ['dialog', 'dialog-buttons-column'],
+      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
     });
     new Dialog(data, options).render(true);
   });
