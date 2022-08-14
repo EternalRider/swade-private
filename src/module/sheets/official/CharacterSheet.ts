@@ -41,7 +41,7 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  activateListeners(html: JQuery<HTMLFormElement>): void {
+  override activateListeners(html: JQuery<HTMLFormElement>): void {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
@@ -545,7 +545,7 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  async getData() {
+  override async getData() {
     const data: any = super.getData();
     if (this.actor.data.type === 'vehicle') return data;
 

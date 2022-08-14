@@ -17,13 +17,13 @@ export default class ActionCardEditor extends FormApplication {
     super(cards, options);
   }
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return {
       ...super.defaultOptions,
       id: SWADE.actionCardEditor.id,
       title: game.i18n.localize('SWADE.ActionCardEditor'),
       template: 'systems/swade/templates/apps/action-card-editor.hbs',
-      classes: ['swade', 'action-card-editor'],
+      classes: ['swade', 'action-card-editor', 'swade-app'],
       scrollY: ['.card-list'],
       width: 600,
       height: 'auto' as const,
@@ -44,13 +44,13 @@ export default class ActionCardEditor extends FormApplication {
     return data as any;
   }
 
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
     html.find('.card-face').on('click', (ev) => this._showCard(ev));
     html.find('.add-card').on('click', async () => this._createNewCard());
   }
 
-  protected async _updateObject(event: Event, formData = {}) {
+  protected override async _updateObject(event: Event, formData = {}) {
     const data = expandObject(formData);
     const cards = Object.entries(data.card) as [string, CardData][];
     const updates = new Array<Record<string, unknown>>();
@@ -103,7 +103,7 @@ export default class ActionCardEditor extends FormApplication {
   }
 
   private async _createNewCard() {
-    const newCard = await Card.create(
+    const newCard = await CONFIG.Card.documentClass.create(
       {
         name: 'New Card',
         type: 'poker',
@@ -123,11 +123,11 @@ export default class ActionCardEditor extends FormApplication {
     }
   }
 
-  render(force: boolean, options?: ScrollRenderOptions) {
+  override render(force: boolean, options?: ScrollRenderOptions) {
     super.render(force, options);
   }
 
-  async _render(force?: boolean, options: ScrollRenderOptions = {}) {
+  override async _render(force?: boolean, options: ScrollRenderOptions = {}) {
     await super._render(force, options);
     if (options.scroll) {
       document
