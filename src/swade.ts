@@ -116,7 +116,7 @@ Hooks.once('init', () => {
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
 
   //@ts-expect-error Types don't properly recognize dotnotation
-  CompendiumCollection.INDEX_FIELDS.Actor.push('data.wildcard');
+  CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
 
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
