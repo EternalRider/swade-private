@@ -59,17 +59,17 @@ export default class Bennies {
     (ev.target as HTMLElement).innerHTML = user.bennies.toString();
   }
 
-  static append(player: HTMLElement, options: any) {
-    const user = options.users.find(
-      (user: User) => user.id == player.dataset.userId,
-    );
+  static append(player: HTMLElement, _options: any) {
+    const playerId = player.dataset.userId;
+    const user = game.users!.find((user) => user.id === playerId)!;
     const span = document.createElement('span');
     span.classList.add('bennies-count');
 
     // Player view
     if (!game.user!.isGM) {
       if (user.isGM) {
-        span.innerHTML = user.getFlag('swade', 'bennies');
+        const bennies = user.getFlag('swade', 'bennies') ?? 0;
+        span.innerHTML = bennies.toString();
       } else if (user.character) {
         span.onmouseleave = Bennies.updateBenny;
         span.onclick = this.spendEvent;
@@ -77,7 +77,7 @@ export default class Bennies {
           span.innerHTML = '-';
         };
         span.title = game.i18n.localize('SWADE.BenniesSpend');
-        span.innerHTML = user.character.data.data.bennies.value;
+        span.innerHTML = user.character.bennies.toString();
       } else {
         return;
       }
@@ -106,11 +106,12 @@ export default class Bennies {
           player.append(span);
         });
       } else {
-        span.innerHTML = user.getFlag('swade', 'bennies');
+        const bennies = user.getFlag('swade', 'bennies') ?? 0;
+        span.innerHTML = bennies.toString();
         player.append(span);
       }
     } else if (user.character) {
-      span.innerHTML = user.character.data.data.bennies.value;
+      span.innerHTML = user.character.bennies.toString();
       player.append(span);
     }
   }
