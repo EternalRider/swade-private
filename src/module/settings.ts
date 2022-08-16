@@ -156,6 +156,7 @@ export function registerSettings() {
     scope: 'world',
     type: String,
     config: false,
+    default: '',
   });
 
   game.settings.register('swade', 'actionDeckDiscardPile', {
@@ -163,6 +164,7 @@ export function registerSettings() {
     scope: 'world',
     type: String,
     config: false,
+    default: '',
   });
 
   game.settings.register('swade', 'highlightTemplate', {
