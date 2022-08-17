@@ -9,6 +9,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     return {
       ...super.defaultOptions,
       template: 'systems/swade/templates/sidebar/combat-tracker.hbs',
+      classes: ['tab', 'sidebar-tab', 'swade']
     };
   }
   activateListeners(html: JQuery<HTMLElement>) {
