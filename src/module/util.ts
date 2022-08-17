@@ -1,4 +1,5 @@
-import { TraitRollModifier } from '../interfaces/additional';
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { TraitRollModifier } from '../interfaces/additional.interface';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
@@ -33,7 +34,7 @@ export function rollItemMacro(itemName: string) {
 }
 
 /**
- *
+ * @internal
  * @param string The string to look for
  * @param localize Switch which determines if the string is a localization key
  */
@@ -43,7 +44,7 @@ export function notificationExists(string: string, localize = false): boolean {
   const active = ui.notifications.active || [];
   return active.some((n) => n.text() === stringToFind);
 }
-
+/** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
   const defaultValue = getProperty(
@@ -60,6 +61,7 @@ export async function shouldShowBennyAnimation(): Promise<boolean> {
 }
 
 //TODO Revisit if still necessary or if this could be done better
+/** @internal */
 export function getCanvas(): Canvas {
   if (canvas instanceof Canvas && canvas.ready) {
     return canvas!;
@@ -68,7 +70,7 @@ export function getCanvas(): Canvas {
 }
 
 /**
- *
+ * @internal
  * @param traitName The name of the trait to be found
  * @param actor The actor to find it from
  * @returns Returns a string of the trait name in the data model if it's an attribute or an Item if it is a skill. If it can find neither an attribute nor a skill then it returns null
@@ -90,6 +92,7 @@ export function getTrait(
   return trait;
 }
 
+/** @internal */
 export async function resetActionDeck() {
   const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
   await deck?.reset({ chatNotification: false });
@@ -97,6 +100,7 @@ export async function resetActionDeck() {
 }
 
 /**
+ * @internal
  * A generic reducer function that can be used to reduce an array of trait roll modifiers into a string that can be parsed by the Foundry VTT Roll class
  * @param acc The accumulator string
  * @param cur The current trait roll modifier
@@ -106,10 +110,14 @@ export function modifierReducer(acc: string, cur: TraitRollModifier): string {
   return (acc += `${cur.value}[${cur.label}]`);
 }
 
+/** @internal */
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */
   if (!doc) return null;
-  const permissions: Permissions = doc.data.permission ?? {};
+  const permissions: Permissions =
+    (doc instanceof TokenDocument
+      ? doc.actor?.data.permission
+      : doc.data.permission) ?? {};
   const playerOwners = Object.entries(permissions)
     .filter(([id, level]) => {
       const user = game.users?.get(id);
@@ -129,19 +137,25 @@ export function firstOwner(doc) {
   return firstGM();
 }
 
-/* Players first, then GM */
+/**
+ * @internal
+ * Players first, then GM
+ */
 export function isFirstOwner(doc) {
   return game.userId === firstOwner(doc)?.id;
 }
 
+/** @internal */
 export function firstGM() {
   return game.users?.find((u) => u.isGM && u.active);
 }
 
+/** @internal */
 export function isFirstGM() {
   return game.userId === firstGM()?.id;
 }
 
+/** @internal */
 export function getRankFromAdvance(advance: number): number {
   if (advance <= 3) {
     return constants.RANK.NOVICE;
@@ -156,11 +170,16 @@ export function getRankFromAdvance(advance: number): number {
   }
 }
 
+/** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
   return SWADE.ranks[getRankFromAdvance(advance)];
 }
 
-// this code taken from https://stackoverflow.com/a/65996386
+/**
+ * @internal
+ * @see  https://stackoverflow.com/a/65996386
+ * @param textToCopy
+ */
 export function copyToClipboard(textToCopy: string) {
   // navigator clipboard api needs a secure context (https)
   if (navigator.clipboard && window.isSecureContext) {
@@ -182,6 +201,49 @@ export function copyToClipboard(textToCopy: string) {
     textArea.remove();
   }
   ui.notifications.info('Copied to clipboard');
+}
+
+/** @internal */
+export function getStatusEffectDataById(idToSearchFor: string) {
+  const filter = (e: StatusEffect) => e.id === idToSearchFor;
+  let data = CONFIG.statusEffects.find(filter);
+  //fallback for when the effect doesn't exist in the global object
+  if (!data) data = SWADE.statusEffects.find(filter);
+  return data as StatusEffect;
+}
+
+/** @internal */
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+
+/** @internal */
+export function deepFreeze<T>(o: T) {
+  Object.values(o).forEach((v) => Object.isFrozen(v) || deepFreeze(v));
+  return Object.freeze(o);
+}
+
+/** @internal */
+export function setupFantasyCompanionEntangle() {
+  const index = CONFIG.statusEffects.findIndex((v) => v.id === 'entangled');
+  const entangled = CONFIG.statusEffects[index];
+  if (index < 0) return;
+  const changes = [
+    {
+      key: 'data.status.isEntangled',
+      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 'true',
+    },
+    {
+      key: 'data.status.isVulnerable',
+      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      value: 'true',
+    },
+  ];
+
+  CONFIG.statusEffects[index] = foundry.utils.mergeObject(entangled, {
+    changes,
+  });
 }
 
 type Permissions = Record<string, number>;

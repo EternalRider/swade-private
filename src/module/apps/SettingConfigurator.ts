@@ -17,7 +17,7 @@ export default class SettingConfigurator extends FormApplication<
       id: SWADE.settingConfig.id,
       title: SWADE.settingConfig.title,
       template: 'systems/swade/templates/apps/setting-config.hbs',
-      classes: ['setting-config', 'sheet'],
+      classes: ['setting-config', 'sheet', 'swade-app'],
       tabs: [
         {
           navSelector: '.tabs',
@@ -27,9 +27,7 @@ export default class SettingConfigurator extends FormApplication<
       ],
       scrollY: ['.sheet-body'],
       width: 600,
-      height: 'auto' as const,
-      top: 200,
-      left: 400,
+      height: 700,
       resizable: false,
       closeOnSubmit: false,
       submitOnClose: true,
@@ -189,8 +187,7 @@ export default class SettingConfigurator extends FormApplication<
           //remove the CF entities
           (e) => e.name !== '#[CF_tempEntity]',
         );
-        const isItem =
-          p.metadata.type === 'Item' || p.metadata.entity === 'Item';
+        const isItem = p.metadata.type === 'Item';
         return isItem && index.every((v) => v['type'] === 'skill');
       })
       .forEach((p) => {

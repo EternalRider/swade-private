@@ -206,7 +206,7 @@
       />
     </span>
     {{else if (eq settingrules.wealthType "wealthDie")}}
-      <button type="button" class="roll">{{localize "SWADE.WealthDie"}}</button>
+      <button type="button" class="roll">{{localize "SWADE.WealthDie.Label"}}</button>
       <select data-dtype="Number" name="data.details.wealth.die">
         {{#select data.data.details.wealth.die}} {{> "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
       </select>
@@ -221,24 +221,29 @@
   </div>
       <div class="quickaccess-list">
         <ol class="gear-list weapon-list">
-          {{#each itemsByType.weapon}} {{>
-          "systems/swade/templates/actors/partials/weapon-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.weapon}}
+            {{>"systems/swade/templates/actors/partials/weapon-card.hbs"owner=../owner}}
+          {{/each}}
         </ol>
         <ol class="gear-list armor-list">
-          {{#each itemsByType.armor}} {{>
-          "systems/swade/templates/actors/partials/armor-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.armor}}
+            {{> "systems/swade/templates/actors/partials/armor-card.hbs" owner=../owner}}
+          {{/each}}
         </ol>
         <ol class="gear-list shield-list">
-          {{#each itemsByType.shield}} {{>
-          "systems/swade/templates/actors/partials/shield-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.shield}}
+            {{> "systems/swade/templates/actors/partials/shield-card.hbs" owner=../owner}}
+          {{/each}}
         </ol>
         <ol class="gear-list items-list">
-          {{#each itemsByType.gear}} {{>
-          "systems/swade/templates/actors/partials/misc-card.hbs"
-          owner=../owner}} {{/each}}
+          {{#each itemsByType.consumable}}
+            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" owner=../owner}}
+          {{/each}}
+        </ol>
+        <ol class="gear-list items-list">
+          {{#each itemsByType.gear}}
+            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+          {{/each}}
         </ol>
       </div>
     </section>

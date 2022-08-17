@@ -1,4 +1,7 @@
-import { AdditionalStat, TraitRollModifier } from '../../interfaces/additional';
+import {
+  AdditionalStat,
+  TraitRollModifier,
+} from '../../interfaces/additional.interface';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -72,9 +75,17 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     // Roll Damage
     html.find('.damage-roll').on('click', (event) => {
       const element = event.currentTarget as Element;
-      const itemId = $(element).parents('[data-item-id]').attr('data-item-id')!;
-      const item = this.actor.items.get(itemId);
+      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const item = this.actor.items.get(id, { strict: true });
       return item!.rollDamage();
+    });
+
+    // Use Consumable
+    html.find('.use-consumable').on('click', async (event) => {
+      const element = event.currentTarget as Element;
+      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const item = this.actor.items.get(id, { strict: true });
+      return item.consume();
     });
 
     //Add Benny
@@ -231,6 +242,14 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     //Wealth Die Roll
     html.find('.currency .roll').on('click', () => this.actor.rollWealthDie());
+
+    html.find('.profile-img').on('contextmenu', () => {
+      if (!this.actor.img) return;
+      new ImagePopout(this.actor.img, {
+        title: this.actor.name!,
+        shareable: this.actor.isOwner ?? game.user?.isGM ?? false,
+      }).render(true);
+    });
   }
 
   getData() {

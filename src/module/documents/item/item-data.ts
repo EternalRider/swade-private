@@ -1,5 +1,10 @@
-import { AbilitySubType, LinkedAttribute } from '../../../globals';
-import { AdditionalStat, ItemAction } from '../../../interfaces/additional';
+import {
+  AbilitySubType,
+  AdditionalStats,
+  EquipState,
+  LinkedAttribute,
+} from '../../../globals';
+import { ItemAction } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 
 declare global {
@@ -20,9 +25,11 @@ export type SwadeItemDataSource =
   | HindranceItemDataSource
   | PowerItemDataSource
   | SkillItemDataSource
-  | AbilityItemDataSource;
+  | AbilityItemDataSource
+  | ConsumableDataSource;
 
-interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
+// interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
+interface PhysicalItem {
   weight: number;
   price: number;
   quantity: number;
@@ -30,10 +37,7 @@ interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
 
 interface ArcaneDevice {
   isArcaneDevice: boolean;
-  arcaneSkillDie: {
-    sides: number;
-    modifier: number;
-  };
+  arcaneSkillDie: TraitDie;
   powerPoints: {
     value: number;
     max: number;
@@ -46,13 +50,19 @@ interface Favorite {
 
 interface Equipable {
   equippable: boolean;
+  /** @deprecated */
   equipped: boolean;
+  equipStatus: EquipState;
+}
+
+interface Carry {
+  equipStatus: EquipState;
 }
 
 interface ItemDescription {
   description: string;
   notes: string;
-  additionalStats: Record<string, AdditionalStat>;
+  additionalStats: AdditionalStats;
 }
 
 interface Vehicular {
@@ -77,9 +87,11 @@ interface WeaponData
   extends PhysicalItem,
     ItemDescription,
     Vehicular,
-    Actions,
     BonusDamage,
-    Favorite {
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   damage: string;
   range: string;
   rof: number;
@@ -90,11 +102,25 @@ interface WeaponData
   ammo: string;
   autoReload: boolean;
   parry: number;
+  trademark: 0 | 1 | 2;
 }
 
-interface GearData extends ItemDescription, PhysicalItem, Vehicular, Favorite {}
+interface GearData
+  extends ItemDescription,
+    PhysicalItem,
+    Vehicular,
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {}
 
-interface ArmorData extends ItemDescription, PhysicalItem, Favorite {
+interface ArmorData
+  extends ItemDescription,
+    PhysicalItem,
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   minStr: string;
   armor: number | string;
   toughness: number;
@@ -112,10 +138,25 @@ interface ShieldData
     PhysicalItem,
     Actions,
     BonusDamage,
-    Favorite {
+    Favorite,
+    ArcaneDevice,
+    Equipable,
+    Actions {
   minStr: string;
   parry: number;
   cover: number;
+}
+
+interface ConsumableData
+  extends PhysicalItem,
+    ItemDescription,
+    Favorite,
+    Carry {
+  charges: {
+    max: number;
+    value: number;
+  };
+  destroyOnEmpty: boolean;
 }
 
 interface EdgeData extends ItemDescription, Favorite {
@@ -129,12 +170,7 @@ interface HindranceData extends ItemDescription, Favorite {
   major: boolean;
 }
 
-interface PowerData
-  extends ItemDescription,
-    Equipable,
-    Actions,
-    BonusDamage,
-    Favorite {
+interface PowerData extends ItemDescription, Actions, BonusDamage, Favorite {
   rank: string;
   pp: string;
   damage: string;
@@ -142,7 +178,6 @@ interface PowerData
   duration: string;
   trapping: string;
   arcane: string;
-  skill: string;
   ap: number;
   modifiers: any[];
 }
@@ -202,4 +237,9 @@ interface SkillItemDataSource {
 interface AbilityItemDataSource {
   data: AbilityData;
   type: 'ability';
+}
+
+interface ConsumableDataSource {
+  data: ConsumableData;
+  type: 'consumable';
 }

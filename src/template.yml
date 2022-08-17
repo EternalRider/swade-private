@@ -168,6 +168,7 @@ Item:
     - skill
     - power
     - ability
+    - consumable
   templates:
     itemDescription:
       description: ''
@@ -185,7 +186,7 @@ Item:
       powerPoints: {}
     equipable:
       equippable: false
-      equipped: false
+      equipStatus: 1
     vehicular:
       isVehicular: false
       mods: 1
@@ -228,6 +229,7 @@ Item:
     currentShots: 0
     ammo: ''
     autoReload: false
+    trademark: 0
   armor:
     templates:
       - itemDescription
@@ -236,6 +238,7 @@ Item:
       - arcaneDevice
       - actions
       - favorite
+      - bonusDamage
     minStr: ''
     armor: 0
     toughness: 0
@@ -257,6 +260,16 @@ Item:
     minStr: ''
     parry: 0
     cover: 0
+  consumable:
+    templates:
+      - itemDescription
+      - favorite
+      - physicalItem
+    charges:
+      value: 1
+      max: 1
+    destroyOnEmpty: false
+    equipStatus: 1
   edge:
     templates:
       - itemDescription
@@ -282,7 +295,6 @@ Item:
     duration: ''
     trapping: ''
     arcane: ''
-    skill: ''
     ap: 0
     modifiers: []
   skill:

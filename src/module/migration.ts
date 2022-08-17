@@ -5,10 +5,13 @@ import {
   ItemData,
   SceneData,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { constants } from './constants';
+import { Logger } from './Logger';
 
 export async function migrateWorld() {
-  ui.notifications.info(
+  Logger.info(
     `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
+    { toast: true },
   );
 
   // Migrate World Actors
@@ -16,12 +19,12 @@ export async function migrateWorld() {
     try {
       const updateData = migrateActorData(actor.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`Migrating Actor document ${actor.name}`);
+        Logger.info(`Migrating Actor document ${actor.name}`);
         await actor.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Actor ${actor.name}: ${err.message}`;
-      console.error(err);
+      Logger.error(err);
     }
   }
 
@@ -30,32 +33,28 @@ export async function migrateWorld() {
     try {
       const updateData = migrateItemData(item.toObject());
       if (!foundry.utils.isObjectEmpty(updateData)) {
-        console.log(`Migrating Item document ${item.name}`);
+        Logger.info(`Migrating Item document ${item.name}`);
         await item.update(updateData, { enforceTypes: false });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Item ${item.name}: ${err.message}`;
-      console.error(err);
+      Logger.error(err);
     }
   }
 
   // Migrate World Compendium Packs
   for (const p of game.packs) {
     if (p.metadata.package !== 'world') continue;
-    if (!['Actor', 'Item', 'Scene'].includes(p.metadata['type'])) continue;
+    if (!['Actor', 'Item', 'Scene'].includes(p.metadata.type)) continue;
     await migrateCompendium(p);
   }
 
   // Set the migration as complete
-  await game.settings.set(
-    'swade',
-    'systemMigrationVersion',
-    game.system.data.version,
-  );
-  ui.notifications.info(
-    `SWADE System Migration to version ${game.system.data.version} completed!`,
-    { permanent: true },
-  );
+  const version = game.system.data.version;
+  await game.settings.set('swade', 'systemMigrationVersion', version);
+  Logger.info(`SWADE System Migration to version ${version} completed!`, {
+    permanent: true,
+  });
 }
 
 /**
@@ -73,7 +72,7 @@ export async function migrateCompendium(
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate({});
+  await pack.migrate();
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
@@ -95,19 +94,19 @@ export async function migrateCompendium(
 
       // Save the entry, if data was changed
       await doc.update(updateData);
-      console.log(
+      Logger.info(
         `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
       );
     } catch (err) {
       // Handle migration failures
       err.message = `Failed swade system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-      console.error(err);
+      Logger.error(err);
     }
   }
 
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  console.log(
+  Logger.info(
     `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
   );
 }
@@ -148,13 +147,10 @@ export function migrateActorData(actor: ActorDataSource) {
 }
 
 export function migrateItemData(data: ItemDataSource) {
-  const updateData: Record<string, any> = {};
-  if (data.type === 'weapon') {
-    _migrateWeaponAPToNumber(data, updateData);
-  }
-  if (data.type === 'power') {
-    _migratePowerEquipToFavorite(data, updateData);
-  }
+  const updateData: UpdateData = {};
+  _migrateWeaponAPToNumber(data, updateData);
+  _migratePowerEquipToFavorite(data, updateData);
+  _migrateItemEquipState(data, updateData);
   return updateData;
 }
 
@@ -205,7 +201,7 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
   for (const [k, v] of Object.entries(data)) {
     if (getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
-        console.log(`Deleting deprecated object key ${k}`);
+        Logger.info(`Deleting deprecated object key ${k}`);
         delete data[k];
       } else removeDeprecatedObjects(v);
     }
@@ -215,7 +211,7 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
 
 function _migrateVehicleOperator(
   data: ActorDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.data.driver.id;
@@ -228,7 +224,7 @@ function _migrateVehicleOperator(
 
 function _migrateWeaponAPToNumber(
   data: ItemDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'weapon') return updateData;
 
@@ -239,13 +235,37 @@ function _migrateWeaponAPToNumber(
 
 function _migratePowerEquipToFavorite(
   data: ItemDataSource,
-  updateData: Record<string, unknown>,
+  updateData: UpdateData,
 ) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'data.equipped');
   if (isOld) {
-    updateData['data.favorite'] = data.data.equipped;
+    updateData['data.favorite'] = getProperty(data, 'data.equipped');
     updateData['data.-=equipped'] = null;
     updateData['data.-=equippable'] = null;
   }
 }
+
+function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
+  if (
+    data.type !== 'armor' &&
+    data.type !== 'weapon' &&
+    data.type !== 'shield' &&
+    data.type !== 'gear'
+  ) {
+    return;
+  }
+  updateData['data.-=equipped'] = null;
+  if (data.type === 'weapon') {
+    updateData['data.equipStatus'] = data.data.equipped
+      ? constants.EQUIP_STATE.MAIN_HAND
+      : constants.EQUIP_STATE.CARRIED;
+  } else {
+    updateData['data.equipStatus'] = data.data.equipped
+      ? constants.EQUIP_STATE.EQUIPPED
+      : constants.EQUIP_STATE.CARRIED;
+  }
+  return updateData;
+}
+
+type UpdateData = Record<string, unknown>;

@@ -1,4 +1,4 @@
-import { Advance } from '../../interfaces/Advance';
+import { Advance } from '../../interfaces/Advance.interface';
 import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getRankFromAdvanceAsString } from '../util';
@@ -10,7 +10,7 @@ export class AdvanceEditor extends FormApplication<
 > {
   constructor({ advance, actor }: AdvanceEditorContext, options = {}) {
     super({ advance, actor }, options);
-    if (actor.type === 'vehicle') {
+    if (actor.type !== 'character' && actor.type !== 'npc') {
       throw TypeError(`Actor type ${actor.type} not permissible`);
     }
   }
@@ -19,9 +19,17 @@ export class AdvanceEditor extends FormApplication<
     return this.object;
   }
 
+  get actor() {
+    return this.object.actor;
+  }
+
+  get advance() {
+    return this.object.advance;
+  }
+
   get advances() {
     return getProperty(
-      this.ctx.actor.data,
+      this.actor.data,
       'data.advances.list',
     ) as Collection<Advance>;
   }
@@ -30,8 +38,8 @@ export class AdvanceEditor extends FormApplication<
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/advanceEditor.hbs',
       title: game.i18n.localize('SWADE.Advances.EditorTitle'),
-      classes: ['swade'],
-      width: 400,
+      classes: ['swade', 'advance-editor', 'swade-app'],
+      width: 420,
       height: 'auto' as const,
       submitOnClose: false,
       closeOnSubmit: true,
@@ -39,23 +47,25 @@ export class AdvanceEditor extends FormApplication<
     });
   }
 
-  async getData(_options?: Partial<FormApplicationOptions>): Promise<any> {
-    const advance = this.object.advance;
+  override async getData(
+    _options?: Partial<FormApplicationOptions>,
+  ): Promise<any> {
     const data = {
-      advance: advance,
-      rank: getRankFromAdvanceAsString(advance.sort ?? 0),
+      advance: this.advance,
+      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
       advanceTypes: this._getAdvanceTypes(),
+      owner: this.actor.isOwner,
     };
     return data;
   }
 
-  protected async _updateObject(
+  protected override async _updateObject(
     _event: Event,
     formData: Advance,
   ): Promise<unknown> {
-    const sortHasChanged = formData.sort !== this.ctx.advance.sort;
+    const sortHasChanged = formData.sort !== this.advance.sort;
     //merge data to update
-    const advance: Advance = foundry.utils.mergeObject(this.object.advance, {
+    const advance: Advance = foundry.utils.mergeObject(this.advance, {
       notes: formData.notes,
       planned: formData.planned,
       type: formData.type,
@@ -68,6 +78,18 @@ export class AdvanceEditor extends FormApplication<
       { 'data.advances.list': this.advances.toJSON() },
       { diff: false },
     );
+  }
+
+  override activateEditor(
+    name: string,
+    options?: TextEditor.Options,
+    initialContent?: string,
+  ): void {
+    if (name === 'notes') {
+      if (options) options.plugins = 'lists image table hr code link';
+      if (!initialContent) initialContent = this.advance.notes;
+    }
+    super.activateEditor(name, options, initialContent);
   }
 
   private _getAdvanceTypes(): Record<number, string> {
@@ -91,10 +113,7 @@ export class AdvanceEditor extends FormApplication<
     //update sort values based on index
     arr.forEach((a, i) => (a.sort = i + 1));
     //yeet
-    return this.ctx.actor.update(
-      { 'data.advances.list': arr },
-      { diff: false },
-    );
+    return this.actor.update({ 'data.advances.list': arr }, { diff: false });
   }
 }
 

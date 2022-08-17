@@ -1,3 +1,4 @@
+/** @internal */
 export function registerKeybindings() {
   game.keybindings.register('swade', 'openFavoriteCardsDoc', {
     name: 'SWADE.Keybindings.OpenFavoriteCards.Name',

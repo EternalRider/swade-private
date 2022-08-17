@@ -1,0 +1,102 @@
+.roll-dialog {
+  .modifiers {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .modifier-entry {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 0.5em 0.5em 0.25em 0.5em;
+    text-align: center;
+    font-weight: bold;
+    &:not(:first-of-type) {
+      border-top: 1px solid var(--color-text-light-3);
+    }
+    input[type='checkbox'] {
+      margin: auto;
+    }
+  }
+  .presets {
+    padding: 0.5em 0.5em 0.25em 0.5em;
+    .toggle-list {
+      text-align: left;
+      height: calc(var(--form-field-height) + 1px);
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--color-border-light-tertiary);
+      border-radius: 3px;
+      padding: 0 3px;
+      text-overflow: ellipsis;
+      .fas {
+        margin: 0 $medium-spacing;
+        transition: transform 200ms;
+      }
+      .rotate {
+        transform: rotate(90deg);
+      }
+    }
+    .dropdown {
+      position: absolute;
+      padding: 0;
+      border: 1px solid var(--color-border-light-tertiary);
+      background-color: var(--color-text-light-2);
+    }
+    .searchBox {
+      margin: 0.5em;
+    }
+    .selections {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      max-height: 300px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      margin-left: 0.5em;
+    }
+    .group-header {
+      font-weight: 700;
+      margin: 0.25em;
+      border-bottom: 1px solid var(--color-border-light-tertiary);
+    }
+    .modifier {
+      margin-left: 0.25em;
+      button {
+        padding: 0 0 0 0.25em;
+        cursor: pointer;
+        border: none;
+        border-radius: 0;
+        background: none;
+        line-height: 24px;
+        text-align: left;
+        &:hover,
+        &:focus {
+          box-shadow: none;
+          background: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+  .add-modifier,
+  .add-preset {
+    line-height: inherit;
+  }
+  .header {
+    text-align: center;
+    border-bottom: 2px groove var(--color-border-light-highlight);
+  }
+  .footer {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+  .formula {
+    .input {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--color-border-light-tertiary);
+      padding: 1px 3px;
+      border-radius: 3px;
+      user-select: text;
+      word-break: break-word;
+    }
+  }
+}

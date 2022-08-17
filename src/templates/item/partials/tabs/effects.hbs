@@ -1,0 +1,46 @@
+<header class='header'>
+  {{#unless @root.item.isOwned}}
+    <button
+      type='button'
+      class='add-effect add-button invisible'
+      data-transfer='true'
+    >
+      <i class='fa fa-plus'></i>
+      {{localize 'SWADE.ActiveEffects.Add'}}
+    </button>
+  {{/unless}}
+</header>
+<ol class='effect-list unmarked-list'>
+  {{#each item.effects}}
+    <li data-effect-id='{{this.id}}'>
+      <img class='effect-icon' src='{{this.data.icon}}' />
+      {{#if this.data.disabled}}
+        <span class='effect-label effect-disabled'>
+          {{this.data.label}}
+        </span>
+      {{else}}
+        <span class='effect-label'>
+          {{this.data.label}}
+        </span>
+      {{/if}}
+      <span class='effect-controls'>
+        {{#unless @root.item.isOwned}}
+          <button
+            type='button'
+            class='effect-action'
+            data-action='toggle'
+            data-toggle='disabled'
+          >
+            <i class='fas fa-power-off'></i>
+          </button>
+          <button type='button' class='effect-action' data-action='edit'>
+            <i class='fas fa-edit'></i>
+          </button>
+          <button type='button' class='effect-action' data-action='delete'>
+            <i class='fas fa-trash'></i>
+          </button>
+        {{/unless}}
+      </span>
+    </li>
+  {{/each}}
+</ol>

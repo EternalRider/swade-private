@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "swade",
-  "version": "1.0.10",
+  "version": "0.0.0",
   "description": "An implementation of the Savage Worlds Adventure Edition game system for Foundry Virtual Tabletop (http://foundryvtt.com). This work is permitted under the Pinnacle Entertainment Group Fan License (https://www.peginc.com/licensing)",
   "author": "FloRad",
   "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md",
@@ -20,7 +20,7 @@
     "build:packs": "node ./tools/build-packs.js",
     "link-project": "node ./tools/link-project.js",
     "update-manifest": "node ./tools/update-manifest.js",
-    "clean": "rimraf dist",
+    "clean": "rimraf dist .cache",
     "clean:link": "node ./tools/link-project.js --clean",
     "check:types": "tsc --noEmit",
     "check:lint": "eslint --ext .ts,.js .",
@@ -46,7 +46,8 @@
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-styles": "^4.0.0",
     "sass": "^1.32.8",
-    "typescript": "^4.5.4",
+    "typedoc": "^0.23.10",
+    "typescript": "^4.6.4",
     "yargs": "^17.2.1"
   }
 }

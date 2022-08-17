@@ -1,0 +1,136 @@
+<form class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    <div class="form-group">
+      <label>{{localize "SWADE.Rank"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.rank"
+          type="text"
+          value="{{data.data.rank}}"
+          placeholder="{{localize 'SWADE.Rank'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.PPShort"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.pp"
+          type="text"
+          value="{{data.data.pp}}"
+          placeholder="{{localize 'SWADE.PP'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Range._name"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.range"
+          type="text"
+          value="{{data.data.range}}"
+          placeholder="{{localize 'SWADE.Range._name'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Dur"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.duration"
+          type="text"
+          value="{{data.data.duration}}"
+          placeholder="{{localize 'SWADE.Dur'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Dmg"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.damage"
+          type="text"
+          value="{{data.data.damage}}"
+          placeholder="{{localize 'SWADE.Dmg'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Ap"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.ap"
+          type="number"
+          value="{{data.data.ap}}"
+          placeholder="{{localize 'SWADE.Ap'}}"
+          data-dtype="Number"
+      /></span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Arcane"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.arcane"
+          type="text"
+          value="{{data.data.arcane}}"
+          placeholder="{{localize 'SWADE.Arcane'}}"
+          data-dtype="String"
+      /></span>
+    </div>
+    <hr>
+    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class='tabs' data-group='main'>
+    <a class='item' data-tab='description' data-group='main'>
+      {{localize 'SWADE.Desc'}}
+    </a>
+    <a class='item' data-tab='properties' data-group='main'>
+      {{localize 'SWADE.Properties'}}
+    </a>
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
+  </nav>
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    <section class='tab description' data-group='main' data-tab='description'>
+      <div>
+        <input
+          name="data.trapping"
+          type="text"
+          value="{{data.data.trapping}}"
+          placeholder="{{localize 'SWADE.Trap'}}"
+          title="{{localize 'SWADE.Trap'}}"
+          data-dtype="String"
+        />
+      </div>
+      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+    </section>
+    <section class='tab properties' data-group='main' data-tab='properties'>
+      {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
+    </section>
+    <section class='tab actions' data-group='main' data-tab='actions'>
+      {{> 'systems/swade/templates/item/partials/tabs/actions.hbs'}}
+    </section>
+    <section class='tab effects' data-group='main' data-tab='effects'>
+      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+    </section>
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</form>

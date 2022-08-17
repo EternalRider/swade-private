@@ -1,32 +1,40 @@
+import { EquipState } from '../globals';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeItem from './documents/item/SwadeItem';
 
-export const registerCustomHelpers = function () {
-  Handlebars.registerHelper('add', function (a, b) {
+/** @internal */
+export function registerCustomHelpers() {
+  Handlebars.registerHelper('add', (a, b) => {
     const result = parseInt(a) + parseInt(b);
     return result.signedString();
   });
 
-  Handlebars.registerHelper('signedString', function (number) {
+  Handlebars.registerHelper('signedString', (number) => {
     const result = parseInt(number);
     if (isNaN(result)) return '';
     return result.signedString();
   });
 
-  Handlebars.registerHelper('times', function (a: number, b: number) {
+  Handlebars.registerHelper('times', (a: number, b: number) => {
     return a * b;
   });
 
-  Handlebars.registerHelper('formatNumber', function (number) {
+  Handlebars.registerHelper('formatNumber', (number) => {
     return Math.round((number + Number.EPSILON) * 1000) / 1000;
   });
 
   Handlebars.registerHelper('isEmpty', (element) => {
-    if (typeof element === undefined) return true;
-    if (Array.isArray(element) && element.length) return false;
-    if (element === '') return true;
+    return Handlebars.Utils.isEmpty(element);
   });
+
+  Handlebars.registerHelper(
+    'collapsible',
+    (states: Record<string, boolean>, id: string) => {
+      const currentlyOpen = Boolean(states[id]);
+      return currentlyOpen ? 'open' : '';
+    },
+  );
 
   // Sheet
   Handlebars.registerHelper(
@@ -70,10 +78,6 @@ export const registerCustomHelpers = function () {
 
   Handlebars.registerHelper('canBeEquipped', (item: SwadeItem) => {
     return item.data.data['equippable'] || item.data.data['isVehicular'];
-  });
-
-  Handlebars.registerHelper('disabled', (value) => {
-    return value ? 'disabled' : '';
   });
 
   Handlebars.registerHelper('displayEmbedded', (array: any[] = []) => {
@@ -179,4 +183,61 @@ export const registerCustomHelpers = function () {
       }
     }
   });
-};
+
+  Handlebars.registerHelper(
+    'eachInMap',
+    function (map: Map<any, any>, block: Handlebars.HelperOptions) {
+      let output = '';
+      for (const [key, value] of map) {
+        output += block.fn({ key, value });
+      }
+      return output;
+    },
+  );
+
+  Handlebars.registerHelper('equipStatus', (state: EquipState) => {
+    let icon = '';
+    switch (state) {
+      case constants.EQUIP_STATE.STORED:
+        icon = '<i class="fas fa-archive"></i>';
+        break;
+      case constants.EQUIP_STATE.CARRIED:
+        icon = '<i class="fas fa-shopping-bag"></i>';
+        break;
+      case constants.EQUIP_STATE.EQUIPPED:
+        icon = '<i class="fas fa-tshirt"></i>';
+        break;
+      case constants.EQUIP_STATE.OFF_HAND:
+      case constants.EQUIP_STATE.MAIN_HAND:
+        icon = '<i class="fas fa-hand-paper"></i>';
+        break;
+      case constants.EQUIP_STATE.TWO_HANDS:
+        icon = '<i class="fas fa-sign-language"></i>';
+        break;
+    }
+    return new Handlebars.SafeString(icon);
+  });
+  Handlebars.registerHelper('equipStatusLabel', (state: EquipState) => {
+    const states = {
+      [constants.EQUIP_STATE.STORED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Stored',
+      ),
+      [constants.EQUIP_STATE.CARRIED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Carried',
+      ),
+      [constants.EQUIP_STATE.OFF_HAND]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.OffHand',
+      ),
+      [constants.EQUIP_STATE.EQUIPPED]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.Equipped',
+      ),
+      [constants.EQUIP_STATE.MAIN_HAND]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.MainHand',
+      ),
+      [constants.EQUIP_STATE.TWO_HANDS]: game.i18n.localize(
+        'SWADE.ItemEquipStatus.TwoHands',
+      ),
+    };
+    return new Handlebars.SafeString(states[state]);
+  });
+}

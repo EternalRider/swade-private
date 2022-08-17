@@ -1,7 +1,8 @@
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { Dice3D } from './interfaces/DiceSoNice';
-import SwadeGame from './interfaces/SwadeGame';
+import { AdditionalStat } from './interfaces/additional.interface';
+import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { SWADE, SwadeConfig } from './module/config';
+import { constants } from './module/constants';
+import { Dice3D } from './types/DiceSoNice';
 
 declare global {
   interface Game {
@@ -21,7 +22,6 @@ declare global {
 }
 
 export type AbilitySubType = 'special' | 'race' | 'archetype';
-export type StatusEffect = ActiveEffectDataConstructorData & { id: string };
 
 export type ActorMetadata = CompendiumCollection.Metadata & { type: 'Actor' };
 export type ItemMetadata = CompendiumCollection.Metadata & { type: 'Item' };
@@ -32,3 +32,7 @@ export type JournalMetadata = CompendiumCollection.Metadata & {
 
 export type Attribute = keyof typeof SWADE.attributes;
 export type LinkedAttribute = Attribute | '';
+export type AdditionalStats = Record<string, AdditionalStat>;
+export type EquipState = ValueOf<typeof constants.EQUIP_STATE>;
+
+export type Updates = Record<string, unknown>;

@@ -1,20 +1,22 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { Attribute, StatusEffect } from '../../../globals';
+import { Attribute } from '../../../globals';
 import {
   AdditionalStat,
   ItemAction,
   TraitRollModifier,
-} from '../../../interfaces/additional';
-import { Advance } from '../../../interfaces/Advance';
+} from '../../../interfaces/additional.interface';
+import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
-import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
+import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet {
+  _equipStateMenu: PopUpMenu;
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       ...super.defaultOptions,
@@ -23,6 +25,7 @@ export default class CharacterSheet extends ActorSheet {
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],
+      template: 'systems/swade/templates/official/sheet.hbs',
       tabs: [
         {
           navSelector: '.tabs',
@@ -38,17 +41,15 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  get template() {
-    return 'systems/swade/templates/official/sheet.hbs';
-  }
-
-  activateListeners(html: JQuery<HTMLFormElement>): void {
+  override activateListeners(html: JQuery<HTMLFormElement>): void {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    this.form!.addEventListener('keypress', (ev: KeyboardEvent) => {
+    this._setupEquipStatusMenu(html);
+
+    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
       const targetIsButton = 'button' === target?.type;
       if (!targetIsButton && ev.key === 'Enter') {
@@ -118,26 +119,13 @@ export default class CharacterSheet extends ActorSheet {
       });
       html
         .find('.status input[type="checkbox"]')
-        .on('change', async (event) => {
-          // Get the key from the target name
-          const id = event.target.dataset.id as string;
-          const key = event.target.dataset.key as string;
-          const statusConfigData = SWADE.statusEffects.find(
-            (effect) => effect.id === id,
-          ) as StatusEffect;
-          await this.actor.update({
-            'data.status': {
-              [key]: false,
-            },
-          });
-          this.actor.toggleActiveEffect(statusConfigData);
-        });
+        .on('change', this._toggleStatusEffect.bind(this));
     }
 
     //Display Advances on About tab
-    html.find('label.advances').on('click', async () => {
-      this._tabs[1].activate('advances');
+    html.find('.character-detail.advances a').on('click', async () => {
       this._tabs[0].activate('about');
+      this._tabs[1].activate('advances');
     });
 
     //Toggle char detail inputs
@@ -256,9 +244,14 @@ export default class CharacterSheet extends ActorSheet {
 
     // Roll Damage
     html.find('.damage-roll').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      return item.rollDamage();
+      const id = $(ev.currentTarget).parents('.item').data('itemId');
+      return this.actor.items.get(id)?.rollDamage();
+    });
+
+    // Use Consumable
+    html.find('.use-consumable').on('click', (ev) => {
+      const id = $(ev.currentTarget).parents('.item').data('itemId');
+      return this.actor.items.get(id)?.consume();
     });
 
     //Toggle Equipment Card collapsible
@@ -311,7 +304,7 @@ export default class CharacterSheet extends ActorSheet {
       this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
     });
 
-    //Toggle Equipment Status
+    //Item toggles
     html.find('.item-toggle').on('click', async (ev) => {
       const target = ev.currentTarget;
       const li = $(target).parents('.item');
@@ -542,9 +535,17 @@ export default class CharacterSheet extends ActorSheet {
           throw new Error(`Action ${button.dataset.action} not supported`);
       }
     });
+
+    html.find('.profile-img').on('contextmenu', () => {
+      if (!this.actor.img) return;
+      new ImagePopout(this.actor.img, {
+        title: this.actor.name!,
+        shareable: this.actor.isOwner ?? game.user?.isGM,
+      }).render(true);
+    });
   }
 
-  async getData() {
+  override async getData() {
     const data: any = super.getData();
     if (this.actor.data.type === 'vehicle') return data;
 
@@ -660,7 +661,7 @@ export default class CharacterSheet extends ActorSheet {
     data.parry = 0;
     for (const shield of this.actor.itemTypes.shield) {
       if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipped) {
+      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         data.parry += shield.data.data.parry;
       }
     }
@@ -740,11 +741,8 @@ export default class CharacterSheet extends ActorSheet {
     return { current, max };
   }
 
-  /**
-   * Extend and override the sheet header buttons
-   * @override
-   */
-  protected _getHeaderButtons() {
+  /** Extend and override the sheet header buttons */
+  protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
     // Token Configuration
@@ -858,19 +856,18 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _getEffects() {
-    const temporary = new Array<Effect>();
-    const permanent = new Array<Effect>();
+    const temporary = new Array<SheetEffect>();
+    const permanent = new Array<SheetEffect>();
     for (const effect of this.actor.effects) {
-      const val: Effect = {
+      const val: SheetEffect = {
         id: effect.id!,
         label: effect.data.label,
         icon: effect.data.icon,
         disabled: effect.data.disabled,
-        favorite: effect.getFlag('swade', 'favorite'),
+        favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
       if (effect.data.origin) {
-        const origin = await fromUuid(effect.data.origin);
-        val.origin = origin?.name;
+        val.origin = await effect.getSourceName();
       }
       if (effect.isTemporary) {
         temporary.push(val);
@@ -1001,8 +998,8 @@ export default class CharacterSheet extends ActorSheet {
     input.name = detail;
     input.value = value;
     input.placeholder = label;
-    input.addEventListener('focusout', () => {
-      this.actor.update({ [detail]: input.value }, { diff: false });
+    input.addEventListener('focusout', async () => {
+      await this.actor.update({ [detail]: input.value }, { diff: false });
     });
     //set up the new input in the sheet
     display.replaceWith(input);
@@ -1026,13 +1023,110 @@ export default class CharacterSheet extends ActorSheet {
       input.value = value.slice(1);
     }
   }
+
+  protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
+    // Get the key from the target name
+    const id = ev.target.dataset.id as string;
+    const key = ev.target.dataset.key as string;
+    const data = util.getStatusEffectDataById(id);
+    // this is just to make sure the status is false in the source data
+    await this.actor.update({ [`data.status.${key}`]: false });
+    await this.actor.toggleActiveEffect(data);
+  }
+
+  protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._element;
+    const items: ContextMenuEntry[] = [
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
+        icon: '<i class="fas fa-archive"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.STORED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
+        icon: '<i class="fas fa-shopping-bag"></i>',
+        condition: true,
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.CARRIED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
+        icon: '<i class="fas fa-tshirt"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          if (item.data.type === 'gear') return item.data.data.equippable;
+          return !['weapon', 'consumable'].includes(item.type);
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.EQUIPPED);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.OFF_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
+        icon: '<i class="fas fa-hand-paper"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.MAIN_HAND);
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
+        icon: '<i class="fas fa-sign-language"></i>',
+        condition: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          return item.data.type === 'weapon';
+        },
+        callback: (i: JQuery<HTMLOListElement>) => {
+          const id = i.parents('li.item').data().itemId;
+          const item = this.actor.items.get(id, { strict: true });
+          item.setEquipState(constants.EQUIP_STATE.TWO_HANDS);
+        },
+      },
+    ];
+
+    const selector = ' .inventory .item-controls .equip-status';
+    const options = { eventName: 'click' };
+    this._equipStateMenu = new PopUpMenu(html, selector, items, options);
+  }
 }
 
-interface Effect {
+interface SheetEffect {
   id: string;
   icon: string | undefined | null;
   disabled: boolean;
-  favorite?: boolean;
-  origin?: string | undefined | null;
-  label?: string;
+  favorite: boolean;
+  origin?: string;
+  label: string;
 }

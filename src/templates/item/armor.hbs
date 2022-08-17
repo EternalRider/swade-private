@@ -1,0 +1,159 @@
+<form class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
+    <div class="form-group">
+      <label>{{localize "SWADE.Armor"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.armor"
+          type="number"
+          value="{{data.data.armor}}"
+          placeholder="{{localize 'SWADE.Armor'}}"
+          data-dtype="Number"
+        />
+      </span>
+    </div>
+    <div class="form-group">
+      <label>{{localize "SWADE.Tough"}}</label>
+      <span class="form-fields">
+        <input
+          name="data.toughness"
+          type="number"
+          value="{{data.data.toughness}}"
+          placeholder="{{localize 'SWADE.Tough'}}"
+          data-dtype="Number"
+        />
+      </span>
+    </div>
+    <hr>
+    <h3>{{localize "SWADE.HitLocations"}}</h3>
+    <div class="hit-locations">
+      <div class="form-group">
+        <input
+            type="checkbox"
+            name="data.locations.head"
+            {{checked
+            data.data.locations.head}}
+            data-dtype="Boolean"
+          />
+        <label>{{localize "SWADE.Head"}}</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="data.locations.torso"
+          {{checked
+          data.data.locations.torso}}
+          data-dtype="Boolean"
+        />
+        <label>{{localize "SWADE.Torso"}}</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="data.locations.arms"
+          {{checked
+          data.data.locations.arms}}
+          data-dtype="Boolean"
+        />
+        <label>{{localize "SWADE.Arms"}}</label>
+      </div>
+      <div class="form-group">
+        <input
+          type="checkbox"
+          name="data.locations.legs"
+          {{checked
+          data.data.locations.legs}}
+          data-dtype="Boolean"
+        />
+        <label>{{localize "SWADE.Legs"}}</label>
+      </div>
+    </div>
+    <hr>
+    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class='tabs' data-group='main'>
+    <a class='item' data-tab='description' data-group='main'>
+      {{localize 'SWADE.Desc'}}
+    </a>
+    <a class='item' data-tab='properties' data-group='main'>
+      {{localize 'SWADE.Properties'}}
+    </a>
+    {{#if item.isArcaneDevice}}
+      <a class='item' data-tab='powers' data-group='main'>
+        {{localize 'SWADE.Pow'}}
+      </a>
+    {{/if}}
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
+  </nav>
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    <section class='tab description' data-group='main' data-tab='description'>
+      <div></div>
+      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+    </section>
+    <section class='tab properties' data-group='main' data-tab='properties'>
+      <div class="form-group">
+        <label>{{localize "SWADE.NaturalArmor"}}</label>
+        <span class="form-fields">
+          <input type="checkbox" name="data.isNaturalArmor" {{checked data.data.isNaturalArmor}} data-dtype="Boolean"/>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.ArcaneDevice'}}</label>
+        <span class='form-fields'>
+          <input type='checkbox' name='data.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{localize "SWADE.MinStrShort"}}</label>
+        <span class="form-fields">
+          <input name="data.minStr" type="text" value="{{data.data.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Weight'}}</label>
+        <span class='form-fields'>
+          <input name='data.weight' type='text' value='{{data.data.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Notes'}}</label>
+        <span class='form-fields'>
+          <input type='text' name='data.notes' value='{{data.data.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
+        </span>
+      </div>
+      {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
+    </section>
+    {{#if item.isArcaneDevice}}
+      <section class='tab powers' data-group='main' data-tab='powers'>
+        {{> 'systems/swade/templates/item/partials/tabs/powers.hbs'}}
+      </section>
+    {{/if}}
+    <section class='tab actions' data-group='main' data-tab='actions'>
+      {{> 'systems/swade/templates/item/partials/tabs/actions.hbs'}}
+    </section>
+    <section class='tab effects' data-group='main' data-tab='effects'>
+      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+    </section>
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</form>

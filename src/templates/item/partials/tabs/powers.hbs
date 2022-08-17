@@ -1,0 +1,71 @@
+<header class='header'>
+    <label class="arcane-skill-label">{{localize "SWADE.ArcaneSkill"}}</label>
+    <span class="arcane-skill-inputs form-group">
+      <span class="form-fields text-center">
+        <select name="data.arcaneSkillDie.sides" data-dtype="Number" class="text-center">
+          {{#select data.data.arcaneSkillDie.sides}}
+            {{> "systems/swade/templates/die-sides-options.hbs"}}
+          {{/select}}
+        </select>
+        <input 
+          name="data.arcaneSkillDie.modifier" 
+          type="text" 
+          value="{{signedString data.data.arcaneSkillDie.modifier}}" 
+          placeholder="{{localize 'SWADE.Modifier'}}" 
+          data-dtype="Number" 
+        />
+      </span>
+    </span>
+  {{#unless @root.settingRules.noPowerPoints}}
+    <label class="power-points-label">{{localize "SWADE.PP"}}</label>
+    <span class="power-points-inputs form-group">
+      <span class="form-fields text-center">
+        <input 
+          name="data.powerPoints.value" 
+          type="number" 
+          value="{{data.data.powerPoints.value}}"
+          title="{{localize 'SWADE.CurPP'}}" 
+          data-dtype="Number"
+          />
+        <strong class="flex-separator">/</strong>
+        <input 
+          name="data.powerPoints.max" 
+          type="number" 
+          value="{{data.data.powerPoints.max}}" 
+          title="{{localize 'SWADE.MaxPP'}}" 
+          data-dtype="Number"
+        />
+      </span>
+    </span>
+  {{/unless}}
+</header>
+<hr>
+<ol class='powers-list unmarked-list collapsibles'>
+  {{#eachInMap embeddedPowers}}
+    <li>
+      <details
+        class='power'
+        data-power-id='{{key}}'
+        {{collapsible @root.collapsibleStates.powers key}}
+      >
+        <summary>{{value.name}}</summary>
+        <span class='content'>
+          <div class="power-rank">{{localize 'SWADE.Rank'}}: {{value.data.rank}}</div>
+          <div class="power-pp">{{value.data.pp}} {{localize "SWADE.PP"}}</div>
+          <button type="button" class="power-delete"><i class="fas fa-trash fa-2x"></i></button>
+          <div class="left">{{localize "SWADE.Range._name"}}: {{value.data.range}}</div>
+          <div class="right">{{localize 'SWADE.Dur'}}: {{value.data.duration}}</div>
+          <div class="left">{{localize 'SWADE.Ap'}}: {{value.data.ap}}</div>
+          <div class="right">
+          {{#if value.data.damage}}
+            <button type="button" class="damage rollable">
+              {{localize "SWADE.Dmg"}}: {{value.data.damage}}
+            </button>
+          {{/if}}
+          </div>
+          <div class="full-width">{{enrich value.data.description}}</div>
+        </span>
+      </details>
+    </li>
+  {{/eachInMap}}
+</ol>

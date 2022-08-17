@@ -1,0 +1,65 @@
+{{! Sheet Header }}
+<div class='item-img-container'>
+  <img
+    class='profile-img'
+    src='{{item.img}}'
+    data-edit='img'
+    alt='{{item.name}}'
+    title='{{localize "SWADE.RightClickZoom"}}'
+  />
+</div>
+<label class='item-name-container'>
+  <span class='sr-only'>{{localize 'Name'}}</span>
+  <input
+    type='text'
+    name='name'
+    class='item-name'
+    value='{{item.name}}'
+    placeholder='{{localize "Name"}}'
+  />
+</label>
+{{#if hasInlineDelete}}
+  <button
+    type='button'
+    class='inline-delete invisible'
+    title='{{localize "SWADE.Del"}}'
+  >
+    <i class='fas fa-trash fa-3x'></i>
+  </button>
+{{/if}}
+<span class='item-detail type' title='{{localize "Type"}}'>{{itemType}}</span>
+<div class='item-detail source form-group' title='{{localize "SWADE.Source"}}'>
+  <span class='form-fields'>
+    <input
+      name='data.source'
+      type='text'
+      value='{{data.data.source}}'
+      placeholder='{{localize "SWADE.Source"}}'
+    />
+  </span>
+</div>
+{{#if isPhysicalItem}}
+  <div class='item-detail quantity form-group'>
+    <label>{{localize 'SWADE.Quantity'}}</label>
+    <span class='form-fields'>
+      <input
+        name='data.quantity'
+        type='number'
+        value='{{data.data.quantity}}'
+        placeholder='{{localize "SWADE.Quantity"}}'
+        data-dtype='Number'
+      />
+    </span>
+  </div>
+  <div class='item-detail price form-group'>
+    <label>{{localize 'SWADE.Price'}}</label>
+    <span class='form-fields'>
+      <input
+        name='data.price'
+        type='number'
+        value='{{data.data.price}}'
+        placeholder='{{localize "SWADE.Price"}}'
+        data-dtype='Number'
+      /></span>
+  </div>
+{{/if}}

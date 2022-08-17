@@ -1,4 +1,4 @@
-import { AdditionalStat } from '../../interfaces/additional';
+import { AdditionalStat } from '../../interfaces/additional.interface';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 
@@ -7,14 +7,17 @@ export default class SwadeDocumentTweaks extends FormApplication<
   Record<string, unknown>,
   SwadeActor | SwadeItem
 > {
-  constructor(object, options = {}) {
-    super(object, options);
+  constructor(
+    doc: SwadeActor | SwadeItem,
+    options: Partial<FormApplicationOptions> = {},
+  ) {
+    super(doc, options);
   }
-  object: SwadeActor | SwadeItem;
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'sheet-tweaks',
       width: 380,
+      classes: ['swade-app'],
     });
   }
 
