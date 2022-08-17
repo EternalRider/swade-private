@@ -188,8 +188,8 @@ SWADE:
   Incap: Incapacitated
   Init: Initiative
   DrawInit: Draw Initiative
-  ActionDeckReset: Reset Action Deck
-  ActionDeckResetNotification: Action Deck reset
+  ActionDeckReset: Reshuffle Action Deck
+  ActionDeckResetNotification: Action Deck reshuffled
   InitDraw: drew the...
   General: General
   Addi: Additional

@@ -42,7 +42,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       .on('click', this._onCombatantControl.bind(this));
     html
       .find('.combat-control[data-control=resetDeck]')
-      .on('click', this._onResetActionDeck.bind(this));
+      .on('click', this._onReshuffleActionDeck.bind(this));
   }
 
   async getData(): Promise<CombatTracker.Data> {
@@ -59,9 +59,9 @@ export default class SwadeCombatTracker extends CombatTracker {
   }
 
   // Reset the Action Deck
-  async _onResetActionDeck(event) {
+  async _onReshuffleActionDeck(event) {
     event.stopImmediatePropagation();
-    await utils.resetActionDeck();
+    await utils.reshuffleActionDeck();
     ui.notifications.info('SWADE.ActionDeckResetNotification', {
       localize: true,
     });
