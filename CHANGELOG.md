@@ -26,24 +26,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added `Wild Die` class which extends the foundry Die class and sets some sensible defaults for the Wild Die. It is also being used for all trait rolls. (#529)
+- Added `Wild Die` class which extends the Foundry Die class and sets some sensible defaults for the Wild Die. It is also being used for all trait rolls. (#529)
 - Added `Wild Die` and `Benny` dice classes to the global `game.swade.dice` object. (#529)
-- Added an option to force Measured Templates highlighting to act like it is on a gridless scene even if it is not. This can be toggled via the `Always Highlight Templates` option in the System Settings and defaults to on (#516).
-- You can now right-click an actor's portrait on all actor sheets to enlarge it
+- Added an option to force Measured Templates highlighting to act like it is on a gridless scene even if it is not. This can be toggled via the `Always Highlight Templates` option in the System Settings and defaults to on. (#516).
+- You can now right-click an actor's portrait on all actor sheets to enlarge it.
 - Added `flavour` option to `IRollOptions` interface.
-- Refactored the way Active Effect expiration is handled. This takes 3 main forms (#531)
+- Refactored the way Active Effect expiration is handled. This takes 3 main forms: (#531)
   - There is now a `Reset Duration` button for expiration Prompts.
   - For Users: The `Shaken`, `Stunned` and `Bleeding Out` effects now trigger workflows and interactions to resolve them.
   - For Developers: There is now an expiration callback API Collection which you can find at `game.swade.effectCallbacks` any time during or after the `init` hook. This collection uses status effect IDs as keys and functions as values. Each function is passed the expiring Active Effect object as its sole parameter. These functions can be asynchronous and are awaited. When an effect expires the system looks for the effect's ID in the collection. If it finds one it executes it, otherwise a fallback is used. You can also delete or overwrite existing callbacks so please be mindful.
-- Added Basic Powers as a system compendium (#499)
-- Added modifier presets for `Aiming`, `Wild Attack`, `Target is Vulnerable` and `Off-Hand Penalty`
+- Added Basic Powers as a system compendium. (#499)
+- Added modifier presets for `Aiming`, `Wild Attack`, `Target is Vulnerable` and `Off-Hand Penalty`.
 - Added the `swade-app` CSS class, a new and convenient way to quickly style applications within Foundry. The class has been applied to the following existing apps:
   - Setting Configurator
   - Wild Die Config
   - Advance Editor
   - Roll Dialog
   - Document Tweaks
-- Added V2 Item sheets which are completely redesigned from the ground up, featuring a new layout and visual styles more in line with the existing character sheets.
+- Added V2 Item sheets, which are completely redesigned from the ground up. They feature a new layout and visual styles more in line with the existing character sheet.
 - Added `collapsible` and `eachInMap` Handlebars helpers.
 - Added `SwadeItem#isArcaneDevice` getter.
 - Added `SwadeItem#canBeArcaneDevice` getter.
@@ -58,12 +58,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - Stored
     - Carried
     - Equipped
-- Added migration and depreciation notice for `equipped` property.(#361)
-- Weapons can now be marked as Trademark or Improved Trademark Weapons which will result in appropriate bonuses being added to trait rolls (#527)
-- Added `consumable` item type to the system. Each consumable has a number of charges as well as a Delete when empty toggle. (#513)
-- Added consumable Item Sheet (#513)
-- Added `swadePreConsumeItem` hook and `swadeConsumeItem` hooks(#513)
-- Added toggle to use the Fantasy Companion version of the Entangled status (#546)
+- Added migration and depreciation notice for `equipped` property. (#361)
+- Weapons can now be marked as Trademark or Improved Trademark weapons which will result in appropriate bonuses being added to trait rolls. (#527)
+- Added `consumable` item type to the system. Each consumable has a number of charges as well as a Destroy when Empty toggle. (#513)
+- Added Consumable Item sheet. (#513)
+- Added `swadePreConsumeItem` hook and `swadeConsumeItem` hooks. (#513)
+- Added toggle to use the Fantasy Companion version of the Entangled status. (#546)
 - Added additional translation strings.
 
 ### Changed
@@ -73,7 +73,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restructured the UI of the Roll Dialog to have a more logical flow, guiding the User over the process of checking and constructing their roll. (#505)
 - Replaced the Preset select list with a new list that can be filtered and which adds a modifier by clicking on it in the list. (#505)
 - Converted language files from flat to nested keys for better organization (#528)
-- Enabled Item image zoom functionality on item sheets even if the item is not editable, such as when it is in a locked compendium
+- Enabled item image zoom functionality on item sheets even if the item is not editable, such as when it is in a locked compendium
 - [BREAKING] Changed some translation strings, see the list in the ticket (#528)
 
 ### Deprecated
@@ -81,7 +81,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Started depreciation of `SwadeActor#getRollShortcuts()` as it is redundant to `SwadeActor#getRollData()` and will be removed in v1.3.0. (#530)
 - Started depreciation of `SwadeItemSheet` as it is being replaced by the `SwadeItemSheetV2`
 - Finished depreciation of string and number types in the `additionalMods` portion of `IRollOptions`
-- Started depreciation of `equipped` property on items of types `weapon`, `armor`, `shield` and `gear` as it has been replaced by te new `equipStatus` property and will be removed in v1.3.0. (#361)
+- Started depreciation of `equipped` property on items of types `weapon`, `armor`, `shield` and `gear` as it has been replaced by the new `equipStatus` property and will be removed in v1.3.0. (#361)
 
 ### Removed
 
@@ -99,7 +99,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Known Issues
 
-- The menu that used to select an item's equip status (Stored, carried, etc) does not render properly on the RIFTS sheet.
+- The menu that used to select an item's equip status (stored, carried, etc) does not render properly on the RIFTS sheet.
 
 ## v1.1.9
 
