@@ -97,7 +97,8 @@ export default class ActionCardEditor extends FormApplication {
     const id = event.currentTarget.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card) return;
-    new ImagePopout(card.face?.img!, {
+    //@ts-ignore
+    new ImagePopout(card.currentFace?.img!, {
       shareable: true,
     }).render(true);
   }
