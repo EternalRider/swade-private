@@ -79,7 +79,7 @@ export default class SwadeCoreHooks {
     if (!game.user!.isGM) return;
     const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
     //TODO Adjust this version every time a migration needs to be triggered
-    const needsMigrationVersion = '1.1.0';
+    const needsMigrationVersion = '1.2.0';
     //Minimal compatible version needed for the migration
     const compatibleMigrationVersion = '1.0.0';
     //If the needed migration version is newer than the old migration version then migrate the world
