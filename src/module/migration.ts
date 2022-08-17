@@ -54,6 +54,7 @@ export async function migrateWorld() {
   await game.settings.set('swade', 'systemMigrationVersion', version);
   Logger.info(`SWADE System Migration to version ${version} completed!`, {
     permanent: true,
+    toast: true,
   });
 }
 
