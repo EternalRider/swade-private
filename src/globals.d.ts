@@ -34,3 +34,5 @@ export type Attribute = keyof typeof SWADE.attributes;
 export type LinkedAttribute = Attribute | '';
 export type AdditionalStats = Record<string, AdditionalStat>;
 export type EquipState = ValueOf<typeof constants.EQUIP_STATE>;
+
+export type Updates = Record<string, unknown>;

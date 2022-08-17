@@ -96,7 +96,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
-    html.find('.inline-delete').on('click', this.item.delete.bind(this));
+    html.find('.inline-delete').on('click', () => this.item.delete());
 
     html.find('.add-action').on('click', () => {
       const id = randomID(8);
