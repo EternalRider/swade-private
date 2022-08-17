@@ -9,7 +9,7 @@
         <li class='flexrow'>
           <img
             class='card-face'
-            src='{{card.face.img}}'
+            src='{{card.currentFace.img}}'
             alt='{{card.name}}'
             data-id='{{card.id}}'
           />
@@ -30,7 +30,7 @@
                 <input
                   type='text'
                   name='card.{{card.id}}.img'
-                  value='{{card.face.img}}'
+                  value='{{card.currentFace.img}}'
                 />
                 <button
                   type='button'

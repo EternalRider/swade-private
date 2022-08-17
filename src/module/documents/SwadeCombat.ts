@@ -148,7 +148,10 @@ export default class SwadeCombat extends Combat {
       const template = `
             <section class="initiative-draw">
               <div class="action-card-filter-container">
-                <img class="result-image" src="${card?.face?.img}">
+                <img class="result-image" src="${
+                  //@ts-ignore
+                  card?.currentFace?.img
+                }">
               </div>
               <h4 class="result-text result-text-card">${card?.name}</h4>
             </section>
@@ -435,7 +438,7 @@ export default class SwadeCombat extends Combat {
     }
     const jokerDrawn = this.combatants.some((c) => c.hasJoker);
     if (jokerDrawn) {
-      await utils.resetActionDeck();
+      await utils.reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
 
@@ -532,7 +535,7 @@ export default class SwadeCombat extends Combat {
 
     //reset the deck when combat is ended
     if (jokerDrawn) {
-      await utils.resetActionDeck();
+      await utils.reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
   }
