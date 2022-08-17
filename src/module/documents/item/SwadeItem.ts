@@ -3,9 +3,11 @@ import {
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
-import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { ItemData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
-import { EquipState } from '../../../globals';
+import {
+  ItemDataConstructorData,
+  ItemDataSource,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
+import { EquipState, Updates } from '../../../globals';
 import {
   ItemAction,
   TraitRollModifier,
@@ -15,6 +17,15 @@ import { constants } from '../../constants';
 import { Logger } from '../../Logger';
 import * as util from '../../util';
 import SwadeActor from '../actor/SwadeActor';
+import {
+  ItemChatCardAction,
+  ItemChatCardChip,
+  ItemChatCardData,
+  ItemChatCardPowerPoints,
+  SwadeConsumeItemCallback,
+  UsageUpdates,
+  UsageUpdatesContext,
+} from './SwadeItem.interface';
 
 declare global {
   interface DocumentClassConfig {
@@ -23,8 +34,8 @@ declare global {
   interface FlagConfig {
     Item: {
       swade: {
-        embeddedAbilities: [string, ItemData['_source']][];
-        embeddedPowers: [string, ItemData['_source']][];
+        embeddedAbilities: [string, ItemDataSource][];
+        embeddedPowers: [string, ItemDataSource][];
         [key: string]: unknown;
       };
     };
@@ -589,15 +600,18 @@ export default class SwadeItem extends Item {
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
 
     /**
-     * A hook event that is fired before an item is consumed, giving the opportunity to programatically adjust the usage and/or trigger custom logic
-     * @function consume
+     * A hook event that is fired before an item is consumed, giving the opportunity to programmatically adjust the usage and/or trigger custom logic
      * @category Hooks
-     * @param {Actor} actor                     The actor that owns the item which is being consumed
-     * @param {Item} item                       The item that is used being consumed
-     * @param {number} charges                  The charges used.
-     * @param {UsageUpdates} usage              The determined usage updates that resulted from consuming this item
+     * @param item               The item that is used being consumed
+     * @param charges            The charges used.
+     * @param usage              The determined usage updates that resulted from consuming this item
      */
-    Hooks.call('swadePreConsumeItem', this, this.parent, charges, usage);
+    Hooks.call<SwadeConsumeItemCallback>(
+      'swadePreConsumeItem',
+      this,
+      charges,
+      usage,
+    );
 
     let updatedItems = new Array<StoredDocument<SwadeItem>>();
     // Persist the updates
@@ -616,20 +630,23 @@ export default class SwadeItem extends Item {
 
     /**
      * A hook event that is fired after an item is consumed but before cleanup happens
-     * @function consume
      * @category Hooks
-     * @param {Item} item                       The item that is used being consumed
-     * @param {Actor} actor                     The actor that owns the item which is being consumed
-     * @param {number} charges                  The cha rges used.
-     * @param {UsageUpdates} usage              The determined usage updates that resulted from consuming this item
+     * @param item               The item that is used being consumed
+     * @param charges            The charges used.
+     * @param usage              The determined usage updates that resulted from consuming this item
      */
-    Hooks.call('swadeConsumeItem', this, this.parent, charges, usage);
+    Hooks.call<SwadeConsumeItemCallback>(
+      'swadeConsumeItem',
+      this,
+      charges,
+      usage,
+    );
 
     await this._postConsumptionCleanup(updatedItems);
   }
 
   protected async _postConsumptionCleanup(
-    updatedItems: Array<StoredDocument<SwadeItem>>,
+    updatedItems: StoredDocument<SwadeItem>[],
   ) {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
@@ -836,43 +853,3 @@ export default class SwadeItem extends Item {
     }
   }
 }
-
-interface ItemChatCardChip {
-  icon?: string;
-  text?: string | number;
-  title?: string;
-}
-
-interface ItemChatCardAction {
-  key: string;
-  type: ItemAction['type'];
-  name: string;
-}
-
-interface ItemChatCardData {
-  chips: Array<ItemChatCardChip>;
-  actions: Array<ItemChatCardAction>;
-  description: string;
-}
-
-interface ItemChatCardPowerPoints {
-  max: number;
-  value: number;
-}
-
-interface UsageUpdatesContext {
-  /** whether the item uses a charge */
-  charges: number;
-  /** Reduce quantity of the item if other consumption modes are not available? */
-  useQuantity: boolean;
-  /** Use up any resources linked to this item? */
-  useResource: boolean;
-}
-
-interface UsageUpdates {
-  actorUpdates: Updates;
-  itemUpdates: Updates;
-  resourceUpdates: Array<Updates>;
-}
-
-type Updates = Record<string, unknown>;
