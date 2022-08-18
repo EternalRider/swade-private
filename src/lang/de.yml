@@ -610,6 +610,13 @@ SWADE:
     HardChoices:
       Name: Schwere Entscheidungen
       Hint: Schaltet die Schwere Entscheidungen Regel ein
+    UseAttributeShorts:
+      Hint: >-
+        Aktivieren Sie diese Option, wenn Sie abgekürzte Attributnamen auf den
+        PC- und NPC-Bögen sehen möchten, z. B. Agi statt Beweglichkeit, Sma
+        statt Smarts usw. Sie müssen alle geöffneten Bögen schließen und erneut
+        öffnen, damit diese Option wirksam wird.
+      Name: Verkürzte Attributnamen verwenden
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -646,6 +653,8 @@ SWADE:
   Consumable:
     Use: Benützen
     Consumables: Verbrauchsgegenstände
+  ItemSheet: Savage Worlds Itembogen
+  EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
