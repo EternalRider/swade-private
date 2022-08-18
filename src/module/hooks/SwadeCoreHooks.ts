@@ -13,6 +13,7 @@ import { SWADE } from '../config';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
+import { Logger } from '../Logger';
 import * as migrations from '../migration';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
@@ -92,7 +93,8 @@ export default class SwadeCoreHooks {
       currentVersion !== '0.0.0' &&
       foundry.utils.isNewerVersion(currentVersion, compatibleMigrationVersion)
     ) {
-      ui.notifications.error('SWADE.SysMigrationWarning', {
+      Logger.error('SWADE.SysMigrationWarning', {
+        toast: true,
         permanent: true,
         localize: true,
       });

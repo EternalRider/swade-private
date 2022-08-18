@@ -60,6 +60,15 @@
     </section>
     {{#if abilityConfig.isRaceOrArchetype}}
     <section class='tab embedded' data-group='main' data-tab='embedded'>
+      {{#if (isEmpty embeddedAbilities)}}
+      <p class="text-center empty-hint">
+        {{localize
+          'SWADE.EmptyRacialAbilitiesHint'
+          race=(localize abilityConfig.localization.race.dropdown)
+          archetype=(localize abilityConfig.localization.archetype.dropdown)
+        }}
+      </p>
+      {{/if}}
       <ol class="effect-list unmarked-list">
       {{#each embeddedAbilities}}
         <li>

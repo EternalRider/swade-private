@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+### v1.2.1
+
+### Added
+
+- Added a hint to the Ability sheet in case it is a race or archetype and it has no racial abilities. (#562)
+
+### Removed
+
+- Removed Effects tab from Power sheet.
+
+### Fixed
+
+- Items from the inventory can now be dragged and reordered again. (#561)
+
 ## v1.2.0
 
 ### Added
