@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+### v1.2.2
+
+### Fixed
+
+- Added the missing Effects tab to the Ability item sheet
+- Fixed a bug that would cause inline weapon creation to fail on vehicle sheets
+- Fixed a bug that prevented equipped mods and weapons to show up on item sheets.
+
 ### v1.2.1
 
 ### Added

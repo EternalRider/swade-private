@@ -17,10 +17,8 @@
       <span class="quickaccess-list">
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
-            {{#if data.isVehicular}}
-              {{#if (gt data.equipStatus @root.equipStatusEnum.CARRIED)}}
-                {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}} 
-              {{/if}} 
+            {{#if (and data.isVehicular (gt data.equipStatus @root.equipStatusEnum.CARRIED))}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}} 
             {{/if}} 
           {{/each}}
         </ol>
@@ -80,10 +78,8 @@
     <span class="quickaccess-list">
       <ol class="gear-list weapon-list">
         {{#each itemsByType.weapon}}
-          {{#if data.isVehicular}}
-            {{#if (gt data.equipStatus @root.equipStatusEnum.CARRIED)}}
-              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
-            {{/if}}
+          {{#if (and data.isVehicular (gt data.equipStatus @root.equipStatusEnum.CARRIED))}}
+            {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
           {{/if}}
         {{/each}}
       </ol>

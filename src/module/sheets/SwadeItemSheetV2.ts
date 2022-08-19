@@ -445,21 +445,25 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.EQUIP_STATE.CARRIED]: 'SWADE.ItemEquipStatus.Carried',
     };
 
-    if (
-      this.item.data.type === 'weapon' &&
-      !(this.item.data.data.isVehicular && this.item.parent?.type === 'vehicle')
-    ) {
-      states = {
-        ...states,
-        [constants.EQUIP_STATE.MAIN_HAND]: 'SWADE.ItemEquipStatus.MainHand',
-        [constants.EQUIP_STATE.OFF_HAND]: 'SWADE.ItemEquipStatus.OffHand',
-        [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
-      };
-    }
-    if (
+    if (this.item.data.type === 'weapon') {
+      if (this.item.data.data.isVehicular && this.actor?.type === 'vehicle') {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
+        };
+      } else {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.MAIN_HAND]: 'SWADE.ItemEquipStatus.MainHand',
+          [constants.EQUIP_STATE.OFF_HAND]: 'SWADE.ItemEquipStatus.OffHand',
+          [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
+        };
+      }
+    } else if (
       this.item.data.type === 'armor' ||
       this.item.data.type === 'shield' ||
-      (this.item.data.type === 'gear' && this.item.data.data.equippable)
+      (this.item.data.type === 'gear' &&
+        (this.item.data.data.equippable || this.item.data.data.isVehicular))
     ) {
       states = {
         ...states,

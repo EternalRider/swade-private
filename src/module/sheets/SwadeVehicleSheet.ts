@@ -94,48 +94,44 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       const header = event.currentTarget;
       const type = header.dataset.type ?? '';
 
-      let modData;
-      let weaponData;
+      let itemData;
 
       switch (type) {
         case 'choice':
-          this._chooseItemType().then(async (dialogInput: any) => {
-            const itemData = this._createItemData(
+          return this._chooseItemType().then(async (dialogInput: any) => {
+            const data = this._createItemData(
               dialogInput.type,
               header,
               dialogInput.name,
             );
-            await Item.create(itemData, {
+            await CONFIG.Item.documentClass.create(data, {
               renderSheet: true,
               parent: this.actor,
             });
           });
-          break;
         case 'mod':
-          modData = this._createItemData('gear', header);
-          modData.data.isVehicular = true;
-          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
-          modData.name = `New ${type.capitalize()}`;
-          await Item.create(modData, {
+          itemData = this._createItemData('gear', header);
+          itemData.data.isVehicular = true;
+          itemData.data.equipStatus = constants.EQUIP_STATE.EQUIPPED;
+          itemData.name = `New ${type.capitalize()}`;
+          return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
-          break;
         case 'vehicle-weapon':
-          weaponData = this._createItemData('weapon', header);
-          weaponData.data.isVehicular = true;
-          modData.data.equipState = constants.EQUIP_STATE.EQUIPPED;
-          await Item.create(weaponData, {
+          itemData = this._createItemData('weapon', header);
+          itemData.data.isVehicular = true;
+          itemData.data.equipStatus = constants.EQUIP_STATE.EQUIPPED;
+          return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
-          break;
         default:
-          await Item.create(this._createItemData(type, header), {
+          itemData = this._createItemData(type, header);
+          return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
-          break;
       }
     });
 
