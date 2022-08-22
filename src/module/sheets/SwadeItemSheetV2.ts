@@ -245,6 +245,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     if (this.type === 'weapon') {
+      data.trademarkWeaponOptions = this._trademarkWeaponOptions();
       data.ammoList = this.actor?.itemTypes.gear.map((i) => i.data.name);
     }
 
@@ -472,6 +473,13 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
     return states;
   }
+  private _trademarkWeaponOptions(): Record<number, string> {
+    return {
+      0: 'None',
+      1: 'SWADE.TrademarkWeapon.Regular',
+      2: 'SWADE.TrademarkWeapon.Improved',
+    };
+  }
 }
 
 interface SwadeItemSheetData extends OptionsPartial {
@@ -489,6 +497,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   };
   equipStatusOptions: Record<EquipState, string>;
   ranges: string[];
+  trademarkWeaponOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];

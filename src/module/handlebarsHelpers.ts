@@ -208,8 +208,10 @@ export function registerCustomHelpers() {
         icon = '<i class="fas fa-tshirt"></i>';
         break;
       case constants.EQUIP_STATE.OFF_HAND:
-      case constants.EQUIP_STATE.MAIN_HAND:
         icon = '<i class="fas fa-hand-paper"></i>';
+        break;
+      case constants.EQUIP_STATE.MAIN_HAND:
+        icon = '<i class="fas fa-hand-paper fa-flip-horizontal"></i>';
         break;
       case constants.EQUIP_STATE.TWO_HANDS:
         icon = '<i class="fas fa-sign-language"></i>';
