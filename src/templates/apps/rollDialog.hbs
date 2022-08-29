@@ -12,6 +12,7 @@
         name='map'
         value='0'
         data-dtype='Number'
+        checked
       />
       <label for='map-none'>{{localize 'SWADE.MAPenalty.None'}}</label>
       <input
@@ -122,12 +123,12 @@
     </select>
   </div>
   <footer class='flexrow'>
-    <button type='submit'>
+    <button type='button' class='submit-roll'>
       <i class='fas fa-dice'></i>
       {{localize 'SWADE.Roll'}}
     </button>
     {{#if displayExtraButton}}
-      <button type='submit' data-type='extra'>
+      <button type='button' class='submit-roll'>
         <i class='far fa-plus-square'></i>
         {{extraButtonLabel}}
       </button>

@@ -80,8 +80,9 @@ export default class RollDialog extends FormApplication<
       html.find('.searchBox').outerWidth(width, true);
       html.find('.dropdown').outerWidth(width).slideToggle({ duration: 200 });
     });
-    html.find('button[type="submit"]').on('click', (ev) => {
-      this.extraButtonUsed = ev.currentTarget.dataset.type === 'extra';
+    html.find('button.submit-roll').on('click', (ev) => {
+      const type = ev.currentTarget.dataset.type;
+      this.extraButtonUsed = type === 'extra';
       this.submit();
     });
     html.find('input[type="checkbox"]').on('change', (ev) => {
@@ -286,11 +287,10 @@ export default class RollDialog extends FormApplication<
 
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
   private _addModifier() {
-    const form = this.form!;
-    const label = form.querySelector<HTMLInputElement>(
+    const label = this.form?.querySelector<HTMLInputElement>(
       '.new-modifier-label',
     )?.value;
-    const value = form.querySelector<HTMLInputElement>(
+    const value = this.form?.querySelector<HTMLInputElement>(
       '.new-modifier-value',
     )?.value;
     if (value) {
