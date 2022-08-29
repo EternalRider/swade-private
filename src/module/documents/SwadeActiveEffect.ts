@@ -28,10 +28,6 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
-  get changes() {
-    return this.data.changes;
-  }
-
   get affectsItems() {
     if (this.parent instanceof CONFIG.Actor.documentClass) {
       const affectedItems = new Array<SwadeItem>();
