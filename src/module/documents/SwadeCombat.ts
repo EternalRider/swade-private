@@ -148,10 +148,7 @@ export default class SwadeCombat extends Combat {
       const template = `
             <section class="initiative-draw">
               <div class="action-card-filter-container">
-                <img class="result-image" src="${
-                  //@ts-ignore
-                  card?.currentFace?.img
-                }">
+                <img class="result-image" src="${card?.currentFace?.img}">
               </div>
               <h4 class="result-text result-text-card">${card?.name}</h4>
             </section>

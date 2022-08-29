@@ -95,7 +95,6 @@ export function getTrait(
 /** @internal */
 export async function reshuffleActionDeck() {
   const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
-  //@ts-ignore
   await deck?.recall({ chatNotification: false });
   await deck?.shuffle({ chatNotification: false });
 }
