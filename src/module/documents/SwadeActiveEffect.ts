@@ -59,11 +59,27 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
+  static override migrateData(data) {
+    super.migrateData(data);
+    if ('changes' in data) {
+      for (const change of data.changes) {
+        const match: RegExpMatchArray = change.key.match(
+          SwadeActiveEffect.ITEM_REGEXP,
+        );
+        if (match) {
+          const newKey = match[3].trim().replace(/^data\./, 'system.');
+          change.key = `@${match[1].trim()}{${match[2].trim()}}[${newKey}]`;
+        }
+      }
+    }
+    return data;
+  }
+
   override apply(actor: SwadeActor, change: EffectChangeData) {
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (match) {
       //get the properties from the match
-      const key: string = match[3].trim();
+      const key = match[3].trim();
       const value = change.value;
       //get the affected items
       const affectedItems = this._getAffectedItems(actor, change);
@@ -87,8 +103,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (match) {
       //get the properties from the match
-      const type: string = match[1].trim().toLowerCase();
-      const name: string = match[2].trim();
+      const type = match[1].trim().toLowerCase();
+      const name = match[2].trim();
       //filter the items down, according to type and name/id
       items.push(
         ...actor.items.filter(
