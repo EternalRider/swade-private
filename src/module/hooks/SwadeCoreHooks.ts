@@ -13,6 +13,7 @@ import { SWADE } from '../config';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
+import { Logger } from '../Logger';
 import * as migrations from '../migration';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
@@ -79,7 +80,7 @@ export default class SwadeCoreHooks {
     if (!game.user!.isGM) return;
     const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
     //TODO Adjust this version every time a migration needs to be triggered
-    const needsMigrationVersion = '1.1.0';
+    const needsMigrationVersion = '1.2.0';
     //Minimal compatible version needed for the migration
     const compatibleMigrationVersion = '1.0.0';
     //If the needed migration version is newer than the old migration version then migrate the world
@@ -92,7 +93,8 @@ export default class SwadeCoreHooks {
       currentVersion !== '0.0.0' &&
       foundry.utils.isNewerVersion(currentVersion, compatibleMigrationVersion)
     ) {
-      ui.notifications.error('SWADE.SysMigrationWarning', {
+      Logger.error('SWADE.SysMigrationWarning', {
+        toast: true,
         permanent: true,
         localize: true,
       });

@@ -245,6 +245,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     if (this.type === 'weapon') {
+      data.trademarkWeaponOptions = this._trademarkWeaponOptions();
       data.ammoList = this.actor?.itemTypes.gear.map((i) => i.data.name);
     }
 
@@ -445,21 +446,25 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.EQUIP_STATE.CARRIED]: 'SWADE.ItemEquipStatus.Carried',
     };
 
-    if (
-      this.item.data.type === 'weapon' &&
-      !(this.item.data.data.isVehicular && this.item.parent?.type === 'vehicle')
-    ) {
-      states = {
-        ...states,
-        [constants.EQUIP_STATE.MAIN_HAND]: 'SWADE.ItemEquipStatus.MainHand',
-        [constants.EQUIP_STATE.OFF_HAND]: 'SWADE.ItemEquipStatus.OffHand',
-        [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
-      };
-    }
-    if (
+    if (this.item.data.type === 'weapon') {
+      if (this.item.data.data.isVehicular && this.actor?.type === 'vehicle') {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
+        };
+      } else {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.MAIN_HAND]: 'SWADE.ItemEquipStatus.MainHand',
+          [constants.EQUIP_STATE.OFF_HAND]: 'SWADE.ItemEquipStatus.OffHand',
+          [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
+        };
+      }
+    } else if (
       this.item.data.type === 'armor' ||
       this.item.data.type === 'shield' ||
-      (this.item.data.type === 'gear' && this.item.data.data.equippable)
+      (this.item.data.type === 'gear' &&
+        (this.item.data.data.equippable || this.item.data.data.isVehicular))
     ) {
       states = {
         ...states,
@@ -467,6 +472,13 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       };
     }
     return states;
+  }
+  private _trademarkWeaponOptions(): Record<number, string> {
+    return {
+      0: 'None',
+      1: 'SWADE.TrademarkWeapon.Regular',
+      2: 'SWADE.TrademarkWeapon.Improved',
+    };
   }
 }
 
@@ -485,6 +497,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   };
   equipStatusOptions: Record<EquipState, string>;
   ranges: string[];
+  trademarkWeaponOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];

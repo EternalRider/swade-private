@@ -628,21 +628,22 @@ export default class SwadeItem extends Item {
   protected async _postConsumptionCleanup(
     updatedItems: StoredDocument<SwadeItem>[],
   ) {
-    for (const update of updatedItems) {
-      const item = this.parent?.items.get(update.id);
-      if (
+    const shouldDelete = (item: SwadeItem) => {
+      return (
         item?.data.type === 'consumable' &&
         item.data.data.destroyOnEmpty &&
-        item.data.data.quantity === 0
-      ) {
+        item.data.data.quantity === 0 &&
+        item.isOwned
+      );
+    };
+
+    for (const update of updatedItems) {
+      const item = this.parent?.items.get(update.id);
+      if (item && shouldDelete(item)) {
         await this.delete();
       }
     }
-    if (
-      this.data.type === 'consumable' &&
-      this.data.data.destroyOnEmpty &&
-      this.data.data.quantity === 0
-    ) {
+    if (shouldDelete(this)) {
       await this.delete();
     }
   }

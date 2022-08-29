@@ -77,22 +77,7 @@ export default class CharacterSheet extends ActorSheet {
         li.setAttribute('draggable', 'true');
         li.addEventListener('dragstart', handler, false);
       });
-      html.find('li.item.weapon').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.armor').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.shield').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.misc').each((i, li) => {
+      html.find('.inventory li.item').each((i, li) => {
         // Add draggable attribute and dragstart listener.
         li.setAttribute('draggable', 'true');
         li.addEventListener('dragstart', handler, false);
@@ -1088,7 +1073,7 @@ export default class CharacterSheet extends ActorSheet {
       },
       {
         name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
-        icon: '<i class="fas fa-hand-paper"></i>',
+        icon: '<i class="fas fa-hand-paper fa-flip-horizontal"></i>',
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });

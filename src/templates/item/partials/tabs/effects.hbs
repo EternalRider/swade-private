@@ -27,16 +27,24 @@
         {{#unless @root.item.isOwned}}
           <button
             type='button'
-            class='effect-action'
+            class='effect-action invisible'
             data-action='toggle'
             data-toggle='disabled'
           >
             <i class='fas fa-power-off'></i>
           </button>
-          <button type='button' class='effect-action' data-action='edit'>
+          <button
+            type='button'
+            class='effect-action invisible'
+            data-action='edit'
+          >
             <i class='fas fa-edit'></i>
           </button>
-          <button type='button' class='effect-action' data-action='delete'>
+          <button
+            type='button'
+            class='effect-action invisible'
+            data-action='delete'
+          >
             <i class='fas fa-trash'></i>
           </button>
         {{/unless}}

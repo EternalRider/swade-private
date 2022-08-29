@@ -4,30 +4,28 @@ import { constants } from './constants';
 import SwadeItem from './documents/item/SwadeItem';
 
 /** @internal */
-export const registerCustomHelpers = function () {
-  Handlebars.registerHelper('add', function (a, b) {
+export function registerCustomHelpers() {
+  Handlebars.registerHelper('add', (a, b) => {
     const result = parseInt(a) + parseInt(b);
     return result.signedString();
   });
 
-  Handlebars.registerHelper('signedString', function (number) {
+  Handlebars.registerHelper('signedString', (number) => {
     const result = parseInt(number);
     if (isNaN(result)) return '';
     return result.signedString();
   });
 
-  Handlebars.registerHelper('times', function (a: number, b: number) {
+  Handlebars.registerHelper('times', (a: number, b: number) => {
     return a * b;
   });
 
-  Handlebars.registerHelper('formatNumber', function (number) {
+  Handlebars.registerHelper('formatNumber', (number) => {
     return Math.round((number + Number.EPSILON) * 1000) / 1000;
   });
 
   Handlebars.registerHelper('isEmpty', (element) => {
-    if (typeof element === undefined) return true;
-    if (Array.isArray(element) && element.length) return false;
-    if (element === '') return true;
+    return Handlebars.Utils.isEmpty(element);
   });
 
   Handlebars.registerHelper(
@@ -210,8 +208,10 @@ export const registerCustomHelpers = function () {
         icon = '<i class="fas fa-tshirt"></i>';
         break;
       case constants.EQUIP_STATE.OFF_HAND:
-      case constants.EQUIP_STATE.MAIN_HAND:
         icon = '<i class="fas fa-hand-paper"></i>';
+        break;
+      case constants.EQUIP_STATE.MAIN_HAND:
+        icon = '<i class="fas fa-hand-paper fa-flip-horizontal"></i>';
         break;
       case constants.EQUIP_STATE.TWO_HANDS:
         icon = '<i class="fas fa-sign-language"></i>';
@@ -242,4 +242,4 @@ export const registerCustomHelpers = function () {
     };
     return new Handlebars.SafeString(states[state]);
   });
-};
+}

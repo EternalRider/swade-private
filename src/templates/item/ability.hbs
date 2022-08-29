@@ -14,14 +14,15 @@
 
   {{!-- Sheet Tab Navigation --}}
   <nav class='tabs' data-group='main'>
-    {{#if abilityConfig.isRaceOrArchetype}}
     <a class='item' data-tab='description' data-group='main'>
       {{localize 'SWADE.Desc'}}
     </a>
+    {{#if abilityConfig.isRaceOrArchetype}}
     <a class='item' data-tab='embedded' data-group='main'>
       {{localize abilityConfig.abilityHeader}}
     </a>
     {{/if}}
+    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
   {{!-- Main Section --}}
@@ -60,6 +61,15 @@
     </section>
     {{#if abilityConfig.isRaceOrArchetype}}
     <section class='tab embedded' data-group='main' data-tab='embedded'>
+      {{#if (isEmpty embeddedAbilities)}}
+      <p class="text-center empty-hint">
+        {{localize
+          'SWADE.EmptyRacialAbilitiesHint'
+          race=(localize abilityConfig.localization.race.dropdown)
+          archetype=(localize abilityConfig.localization.archetype.dropdown)
+        }}
+      </p>
+      {{/if}}
       <ol class="effect-list unmarked-list">
       {{#each embeddedAbilities}}
         <li>
@@ -77,6 +87,9 @@
       </ol>
     </section>
     {{/if}}
+    <section class='tab effects' data-group='main' data-tab='effects'>
+      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+    </section>
   </section>
 
   <figure class='grid-cover gc-1'></figure>
