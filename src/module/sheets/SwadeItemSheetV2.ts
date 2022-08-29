@@ -7,7 +7,9 @@ import {
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
 
@@ -30,6 +32,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         },
       ],
       scrollY: ['.properties', '.actions', '.editor-container .editor-content'],
+      dragDrop: [{ dropSelector: null, dragSelector: '.effect-list li' }],
       resizable: true,
     });
   }
@@ -86,14 +89,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         return false;
       }
     });
-
-    if (
-      this.item.isArcaneDevice ||
-      (this.item.data.type === 'ability' &&
-        this.item.data.data.subtype !== 'special')
-    ) {
-      this.form?.addEventListener('drop', this._onDrop.bind(this));
-    }
 
     // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
     html.find('.inline-delete').on('click', () => this.item.delete());
@@ -288,35 +283,51 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     event.preventDefault();
     event.stopPropagation();
 
-    let data;
-    let item: StoredDocument<SwadeItem> | SwadeItem;
-
-    //get the data and accept it
     try {
       //get the data
-      data = JSON.parse(event.dataTransfer!.getData('text/plain'));
-
-      if ('pack' in data) {
-        const pack = game.packs.get(data.pack, { strict: true });
-        item = (await pack.getDocument(data.id)) as StoredDocument<SwadeItem>;
-      } else if ('actorId' in data) {
-        item = new SwadeItem(data.data);
-      } else {
-        item = game.items!.get(data.id, { strict: true });
-      }
-
-      if (
-        data.type !== 'Item' ||
-        (item.data.type === 'ability' && item.data.data.subtype !== 'special')
-      ) {
-        ui.notifications.warn('SWADE.CannotAddRaceToRace', { localize: true });
-        return false;
+      const data = JSON.parse(event.dataTransfer!.getData('text/plain'));
+      switch (data.type) {
+        case 'ActiveEffect':
+          await this._onDropActiveEffect(event, data);
+          break;
+        case 'Item':
+          await this._onDropItem(event, data);
+          break;
+        default:
+          break;
       }
     } catch (error) {
-      console.error(error);
-      return false;
+      Logger.error(error);
+    }
+  }
+
+  private async _onDropActiveEffect(_event: DragEvent, data) {
+    if (!this.item.isOwner || !data.data) return;
+    if (await this._isSourceSameAsDestination(data)) return;
+    return CONFIG.ActiveEffect.documentClass.create(data.data, {
+      parent: this.item,
+    });
+  }
+
+  private async _onDropItem(_event: DragEvent, data) {
+    Logger.debug(
+      `Trying to add ${data.type} ${data.id} to ${this.item.type}/${this.item.name}`,
+    );
+    if (this.item.type !== 'ability') return;
+    let item: StoredDocument<SwadeItem> | SwadeItem;
+    if ('pack' in data) {
+      const pack = game.packs.get(data.pack, { strict: true });
+      item = (await pack.getDocument(data.id)) as StoredDocument<SwadeItem>;
+    } else if ('actorId' in data) {
+      item = new SwadeItem(data.data);
+    } else {
+      item = game.items!.get(data.id, { strict: true });
     }
 
+    if (item.data.type === 'ability' && item.data.data.subtype !== 'special') {
+      Logger.warn('SWADE.CannotAddRaceToRace', { localize: true, toast: true });
+      return;
+    }
     //prep item data
     const itemData = item.data.toObject();
 
@@ -334,8 +345,64 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       collection.set(randomID(), itemData);
       await this._saveEmbeddedPowers(collection);
     }
+  }
 
-    return super._onDrop(event);
+  /** Is the drop data coming from the same item? */
+  private async _isSourceSameAsDestination(data) {
+    let other;
+
+    //item owned by token actor
+    if (data.sceneId && data.tokenId) {
+      other = game.scenes
+        ?.get(data.sceneId)
+        ?.tokens.get(data.tokenId)
+        ?.actor?.items.get(data.itemId);
+    }
+
+    //standalone item
+    if (!other && data.itemId) {
+      if (data.pack) {
+        other = await game.packs.get(data.pack)?.getDocument(data.itemId);
+      } else {
+        other = game.items?.get(data.itemId);
+      }
+    }
+
+    //item owned by standalone actor
+    if (!other && data.actorId) {
+      if (data.pack) {
+        const actor = (await game.packs
+          .get(data.pack)
+          ?.getDocument(data.actorId)) as StoredDocument<SwadeActor>;
+        other = actor?.items.get(data.itemId);
+      } else {
+        other = game.actors?.get(data.actorId)?.items.get(data.itemId);
+      }
+    }
+    return this.item === other;
+  }
+
+  protected override async _onDragStart(event: DragEvent) {
+    const src = event.target as HTMLElement;
+
+    // Create drag data
+    const dragData: Record<string, unknown> = {
+      actorId: this.actor?.id,
+      sceneId: this.actor?.isToken ? canvas.scene?.id : null,
+      tokenId: this.actor?.isToken ? this.actor?.token?.id : null,
+      itemId: this.item.id,
+      pack: this.item.pack,
+    };
+
+    // Active Effect
+    if (src.dataset.effectId) {
+      const effect = this.item.effects.get(src.dataset.effectId);
+      dragData.type = 'ActiveEffect';
+      dragData.data = effect?.data.toObject();
+    }
+
+    // Set data transfer
+    event.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
   }
 
   private async _deleteEmbeddedDocument(type: 'power' | 'ability', id: string) {
