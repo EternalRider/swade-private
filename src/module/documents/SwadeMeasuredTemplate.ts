@@ -75,7 +75,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
       const snapped = canvas.grid?.getSnappedPosition(center.x, center.y, 2);
-      this.data.update({ x: snapped?.x, y: snapped?.y });
+      this.data.updateSource({ x: snapped?.x, y: snapped?.y });
       this.refresh();
       moveTime = now;
     };
@@ -92,7 +92,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
       const dest = canvas.grid?.getSnappedPosition(this.data.x, this.data.y, 2);
-      this.data.update(dest);
+      this.data.updateSource(dest);
       canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
         this.data.toObject(),
       ]);
@@ -104,7 +104,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       event.stopPropagation();
       const delta = canvas.grid!.type > CONST.GRID_TYPES.SQUARE ? 30 : 15;
       const snap = event.shiftKey ? delta : 5;
-      this.data.update({
+      this.data.updateSource({
         direction: this.data.direction + snap * Math.sign(event.deltaY),
       });
       this.refresh();
@@ -198,7 +198,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     const border = Number(this.borderColor);
 
     //get the highlight layer and prep it
-    const layer = grid.getHighlightLayer(`Template.${this.id}`)!;
+    const layer = grid.getHighlightLayer(this.highlightId);
     layer.clear();
 
     //get the shape of the template and prep it
