@@ -127,7 +127,7 @@ export default class RollDialog extends FormApplication<
     );
     if (expanded.map && expanded.map !== 0) {
       this.ctx.mods.push({
-        label: game.i18n.localize('SWADE.MAPenalty'),
+        label: game.i18n.localize('SWADE.MAPenalty.Label'),
         value: expanded.map,
       });
     }

@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v1.2.4
+
+### Changed
+
+- Made the system manifest v10 compatible. (#566)
+
+### Fixed
+
+- Fixed translation key in Multi-Action Penalty modifier.
+
 ### v1.2.3
 
 ### Change
