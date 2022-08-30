@@ -47,7 +47,7 @@
               <label>{{localize 'SWADE.CardSuit'}}</label>
               <span class='form-fields'>
                 <select data-dtype='Number' name='card.{{card.id}}.suitValue'>
-                  {{#select card.data.data.suit}}
+                  {{#select card.system.suit}}
                     <option value='4'>Spades</option>
                     <option value='3'>Hearts</option>
                     <option value='2'>Diamonds</option>
@@ -61,7 +61,7 @@
               <label>{{localize 'SWADE.CardValue'}}</label>
               <span class='form-fields'>
                 <select data-dtype='Number' name='card.{{card.id}}.cardValue'>
-                  {{#select card.data.value}}
+                  {{#select card.value}}
                     <option value='2'>Two</option>
                     <option value='3'>Three</option>
                     <option value='4'>Four</option>

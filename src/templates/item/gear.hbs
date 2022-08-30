@@ -14,8 +14,8 @@
       <span class="form-fields">
         <input
           type="checkbox"
-          name="data.equippable"
-          {{checked data.data.equippable}}
+          name="system.equippable"
+          {{checked item.system.equippable}}
           data-dtype="Boolean"
         />    
       </span>
@@ -25,9 +25,9 @@
       <label for="data.weight">{{localize "SWADE.Weight"}}</label>
       <span class="form-fields">
         <input
-          name="data.weight"
+          name="system.weight"
           type="text"
-          value="{{data.data.weight}}"
+          value="{{item.system.weight}}"
           placeholder="{{localize 'SWADE.Weight'}}"
           data-dtype="Number"
         />
@@ -72,21 +72,21 @@
         <span class="form-fields">
           <input
             type="checkbox"
-            name="data.isVehicular"
-            {{checked data.data.isVehicular}}
+            name="system.isVehicular"
+            {{checked item.system.isVehicular}}
             data-dtype="Boolean"
           />
         </span>
       </div>
-      {{#if data.data.isVehicular}} 
+      {{#if item.system.isVehicular}} 
         {{#if settingRules.modSlots}}
         <div class="form-group">
           <label>{{localize "SWADE.ModSlots"}}</label>
           <span class="form-fields">
             <input
-              name="data.mods"
+              name="system.mods"
               type="text"
-              value="{{data.data.mods}}"
+              value="{{item.system.mods}}"
               placeholder="{{localize 'SWADE.ModSlots'}}"
               data-dtype="Number"
             />

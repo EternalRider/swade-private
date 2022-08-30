@@ -14,10 +14,10 @@
       <label>{{localize 'SWADE.Range._name'}}</label>
       <span class='form-fields'>
         <input
-          name='data.range'
+          name='system.range'
           type='text'
           list="{{item.id}}-ranges"
-          value='{{data.data.range}}'
+          value='{{item.system.range}}'
           placeholder='{{localize "SWADE.Range._name"}}'
         />
       </span>
@@ -26,9 +26,9 @@
       <label>{{localize 'SWADE.Dmg'}}</label>
       <span class='form-fields'>
         <input
-          name='data.damage'
+          name='system.damage'
           type='text'
-          value='{{data.data.damage}}'
+          value='{{item.system.damage}}'
           placeholder='{{localize "SWADE.Dmg"}}'
         />
       </span>
@@ -37,9 +37,9 @@
       <label for='data.ap'>{{localize 'SWADE.Ap'}}</label>
       <span class='form-fields'>
         <input
-          name='data.ap'
+          name='system.ap'
           type='number'
-          value='{{data.data.ap}}'
+          value='{{item.system.ap}}'
           placeholder='{{localize "SWADE.Ap"}}'
           data-dtype='Number'
         />
@@ -49,17 +49,17 @@
       <label for='data.shots'>{{localize 'SWADE.Mag'}}</label>
       <span class='form-fields text-center'>
         <input
-          name='data.currentShots'
+          name='system.currentShots'
           type='number'
-          value='{{data.data.currentShots}}'
+          value='{{item.system.currentShots}}'
           placeholder='{{localize "SWADE.Mag"}}'
           data-dtype="Number"
         />
         <strong class="flex-separator">/</strong>
         <input
-          name='data.shots'
+          name='system.shots'
           type='number'
-          value='{{data.data.shots}}'
+          value='{{item.system.shots}}'
           placeholder='0'
           data-dtype="Number"
         />
@@ -99,7 +99,7 @@
           <input
             type="text"
             name="data.ammo"
-            value="{{data.data.ammo}}"
+            value="{{item.system.ammo}}"
             list="{{item.id}}-ammo"
             data-dtype="String"
             title="{{localize 'SWADE.ClickSuggestions'}}"
@@ -111,28 +111,28 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.ArcaneDevice'}}</label>
         <span class='form-fields'>
-          <input type='checkbox' name='data.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+          <input type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Vehicular'}}</label>
         <span class='form-fields'>
-          <input type='checkbox' name='data.isVehicular'{{checked data.data.isVehicular}}/>
+          <input type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.AutoReload'}}</label>
         <span class='form-fields'>
-          <input type='checkbox' name='data.autoReload' {{checked data.data.autoReload}} />
+          <input type='checkbox' name='system.autoReload' {{checked item.system.autoReload}} />
         </span>
       </div>
       <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
         <span class="form-fields">
           <select name="data.trademark" data-dtype="Number">
-            {{#select data.data.trademark}}
+            {{#select item.system.trademark}}
               {{selectOptions
                 trademarkWeaponOptions
-                selected=data.data.trademark
+                selected=item.system.trademark
                 localize=true
               }}
             {{/select}}
@@ -143,9 +143,9 @@
         <label>{{localize 'SWADE.Parry'}}</label>
         <span class='form-fields'>
           <input
-            name='data.parry'
+            name='system.parry'
             type='text'
-            value='{{signedString data.data.parry}}'
+            value='{{signedString item.system.parry}}'
             placeholder='{{localize "SWADE.Parry"}}'
             data-dtype='Number'
           />
@@ -155,9 +155,9 @@
         <label for='data.rof'>{{localize 'SWADE.RoF'}}</label>
         <span class='form-fields'>
           <input
-            name='data.rof'
+            name='system.rof'
             type='text'
-            value='{{data.data.rof}}'
+            value='{{item.system.rof}}'
             placeholder='{{localize "SWADE.RoF"}}'
           />
         </span>
@@ -166,9 +166,9 @@
         <label for='data.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
         <span class='form-fields'>
           <input
-            name='data.minStr'
+            name='system.minStr'
             type='text'
-            value='{{data.data.minStr}}'
+            value='{{item.system.minStr}}'
             placeholder='{{localize "SWADE.MinStr"}}'
           />
         </span>
@@ -177,9 +177,9 @@
         <label for='data.weight'>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
           <input
-            name='data.weight'
+            name='system.weight'
             type='text'
-            value='{{data.data.weight}}'
+            value='{{item.system.weight}}'
             placeholder='{{localize "SWADE.Weight"}}'
             data-dtype='Number'
           />
@@ -190,21 +190,21 @@
         <span class='form-fields'>
           <input
             type='text'
-            name='data.notes'
-            value='{{data.data.notes}}'
+            name='system.notes'
+            value='{{item.system.notes}}'
             placeholder='{{localize "SWADE.Notes"}}'
           />
         </span>
       </div>
-      {{#if data.data.isVehicular}}
+      {{#if item.system.isVehicular}}
         {{#if settingRules.modSlots}}
           <div class='form-group'>
             <label for='data.mods'>{{localize 'SWADE.ModSlots'}}</label>
             <span class='form-fields'>
               <input
-                name='data.mods'
+                name='system.mods'
                 type='number'
-                value='{{data.data.mods}}'
+                value='{{item.system.mods}}'
                 placeholder='{{localize "SWADE.ModSlots"}}'
                 data-dtype="Number"
               />

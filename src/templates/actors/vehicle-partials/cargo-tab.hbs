@@ -1,6 +1,6 @@
 <section class='flexrow inventory-info'>
   {{localize 'SWADE.CargoWeight'}}&nbsp;
-  <strong>{{inventoryWeight}} / {{data.data.maxCargo}}</strong>
+  <strong>{{inventoryWeight}} / {{actor.system.maxCargo}}</strong>
 </section>
 <section class='inventory-categories'>
   <div class='items-section'>
@@ -24,16 +24,16 @@
               style='background-image: url({{item.img}})'
             ></div>
             <h4 title='{{item.name}}'>
-              {{item.name}}{{#if item.data.data.isVehicular}}<i
-                  class='fas fa-car-side'
-                ></i>{{/if}}
+              {{name}}{{#if item.actor.system.isVehicular}}
+                <i class='fas fa-car-side'></i>
+              {{/if}}
             </h4>
           </div>
-          <div class='field-longer' title='{{item.data.data.notes}}'>
-            {{item.data.notes}}
+          <div class='field-longer' title='{{item.system.notes}}'>
+            {{item.system.notes}}
           </div>
-          <div class='field-short'>{{item.data.data.quantity}}</div>
-          <div class='field-short'>{{item.data.data.weight}}</div>
+          <div class='field-short'>{{item.system.quantity}}</div>
+          <div class='field-short'>{{item.system.weight}}</div>
           <div class='item-controls'>
             {{#if @root.actor.isOwner}}
               <a

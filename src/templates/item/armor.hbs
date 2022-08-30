@@ -14,9 +14,9 @@
       <label>{{localize "SWADE.Armor"}}</label>
       <span class="form-fields">
         <input
-          name="data.armor"
+          name="system.armor"
           type="number"
-          value="{{data.data.armor}}"
+          value="{{item.system.armor}}"
           placeholder="{{localize 'SWADE.Armor'}}"
           data-dtype="Number"
         />
@@ -26,9 +26,9 @@
       <label>{{localize "SWADE.Tough"}}</label>
       <span class="form-fields">
         <input
-          name="data.toughness"
+          name="system.toughness"
           type="number"
-          value="{{data.data.toughness}}"
+          value="{{item.system.toughness}}"
           placeholder="{{localize 'SWADE.Tough'}}"
           data-dtype="Number"
         />
@@ -40,9 +40,8 @@
       <div class="form-group">
         <input
             type="checkbox"
-            name="data.locations.head"
-            {{checked
-            data.data.locations.head}}
+            name="system.locations.head"
+            {{checked item.system.locations.head}}
             data-dtype="Boolean"
           />
         <label>{{localize "SWADE.Head"}}</label>
@@ -50,9 +49,9 @@
       <div class="form-group">
         <input
           type="checkbox"
-          name="data.locations.torso"
+          name="system.locations.torso"
           {{checked
-          data.data.locations.torso}}
+          item.system.locations.torso}}
           data-dtype="Boolean"
         />
         <label>{{localize "SWADE.Torso"}}</label>
@@ -60,9 +59,9 @@
       <div class="form-group">
         <input
           type="checkbox"
-          name="data.locations.arms"
+          name="system.locations.arms"
           {{checked
-          data.data.locations.arms}}
+          item.system.locations.arms}}
           data-dtype="Boolean"
         />
         <label>{{localize "SWADE.Arms"}}</label>
@@ -70,9 +69,9 @@
       <div class="form-group">
         <input
           type="checkbox"
-          name="data.locations.legs"
+          name="system.locations.legs"
           {{checked
-          data.data.locations.legs}}
+          item.system.locations.legs}}
           data-dtype="Boolean"
         />
         <label>{{localize "SWADE.Legs"}}</label>
@@ -109,7 +108,7 @@
       <div class="form-group">
         <label>{{localize "SWADE.NaturalArmor"}}</label>
         <span class="form-fields">
-          <input type="checkbox" name="data.isNaturalArmor" {{checked data.data.isNaturalArmor}} data-dtype="Boolean"/>
+          <input type="checkbox" name="system.isNaturalArmor" {{checked item.system.isNaturalArmor}} data-dtype="Boolean"/>
         </span>
       </div>
       <div class='form-group'>
@@ -121,19 +120,19 @@
       <div class="form-group">
         <label>{{localize "SWADE.MinStrShort"}}</label>
         <span class="form-fields">
-          <input name="data.minStr" type="text" value="{{data.data.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
+          <input name="system.minStr" type="text" value="{{item.system.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
-          <input name='data.weight' type='text' value='{{data.data.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
+          <input name='data.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Notes'}}</label>
         <span class='form-fields'>
-          <input type='text' name='data.notes' value='{{data.data.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
+          <input type='text' name='data.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}

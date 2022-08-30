@@ -29,8 +29,8 @@
           <span class="form-fields">
             <input
               type="checkbox"
-              name="data.isArcaneBackground"
-              {{checked data.data.isArcaneBackground}}
+              name="system.isArcaneBackground"
+              {{checked item.system.isArcaneBackground}}
               data-dtype="Boolean"
             />
           </span>
@@ -38,9 +38,9 @@
         <div class="form-group">
           <label for="data.requirements.value">{{localize "SWADE.Req"}}</label>
           <input
-            name="data.requirements.value"
+            name="system.requirements.value"
             type="text"
-            value="{{data.data.requirements.value}}"
+            value="{{item.system.requirements.value}}"
             placeholder="{{localize 'SWADE.Req'}}"
             data-dtype="String"
             />

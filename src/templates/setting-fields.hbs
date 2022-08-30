@@ -3,16 +3,15 @@
   <span>{{localize "SWADE.AddStats"}}</span>
 </header>
 <div class="additional-stats">
-  {{#each data.data.additionalStats as |attr key|}}
+  {{#each data.system.additionalStats as |attr key|}}
   <div class="form-group">
     {{#unless (eq attr.dtype "Die")}} {{#if attr.isCheckbox}}
     <label class="check-container"
       >{{attr.label}}
       <input
         type="checkbox"
-        name="data.additionalStats.{{key}}.value"
-        {{checked
-        attr.value}}
+        name="system.additionalStats.{{key}}.value"
+        {{checked attr.value}}
         data-dtype="Boolean"
       />
       <span class="checkmark"></span>
@@ -22,7 +21,7 @@
     <span class="form-fields">
       <input
         type="text"
-        name="data.additionalStats.{{key}}.value"
+        name="system.additionalStats.{{key}}.value"
         data-dtype="{{attr.dtype}}"
         value="{{attr.value}}"
         placeholder="{{localize 'SWADE.Curr'}} {{attr.label}}"
@@ -30,7 +29,7 @@
       {{/if}} {{#if attr.hasMaxValue}}
       <input
         type="text"
-        name="data.additionalStats.{{key}}.max"
+        name="system.additionalStats.{{key}}.max"
         data-dtype="{{attr.dtype}}"
         value="{{attr.max}}"
         placeholder="{{localize 'SWADE.Max'}} {{attr.label}}"
@@ -44,14 +43,14 @@
       <span class="form-fields">
         <input
           type="text"
-          name="data.additionalStats.{{key}}.value"
+          name="system.additionalStats.{{key}}.value"
           data-dtype="String"
           value="{{attr.value}}"
           placeholder="{{localize 'SWADE.Die'}}"
         />
         <input
           type="text"
-          name="data.additionalStats.{{key}}.modifier"
+          name="system.additionalStats.{{key}}.modifier"
           data-dtype="String"
           value="{{attr.modifier}}"
           placeholder="{{localize 'SWADE.Modifier'}}"

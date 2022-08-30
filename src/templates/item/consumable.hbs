@@ -17,16 +17,16 @@
       <label>{{localize "SWADE.Charges"}}</label>
       <span class='form-fields text-center'>
         <input
-          name='data.charges.value'
+          name='system.charges.value'
           type='number'
-          value='{{data.data.charges.value}}'
+          value='{{item.system.charges.value}}'
           data-dtype="Number"
         />
         <strong class="flex-separator">/</strong>
         <input
-          name='data.charges.max'
+          name='system.charges.max'
           type='number'
-          value='{{data.data.charges.max}}'
+          value='{{item.system.charges.max}}'
           data-dtype="Number"
         />
       </span>
@@ -35,9 +35,9 @@
       <label for='data.weight'>{{localize 'SWADE.Weight'}}</label>
       <span class='form-fields'>
         <input
-          name='data.weight'
+          name='system.weight'
           type='text'
-          value='{{data.data.weight}}'
+          value='{{item.system.weight}}'
           placeholder='{{localize "SWADE.Weight"}}'
           data-dtype='Number'
         />
@@ -60,7 +60,7 @@
       <div class="form-group">
         <label>{{localize "SWADE.DestroyOnEmpty"}}</label>
           <span class='form-fields'>
-            <input type='checkbox' name='data.destroyOnEmpty' {{checked item.data.data.destroyOnEmpty}}/>
+            <input type='checkbox' name='system.destroyOnEmpty' {{checked item.item.system.destroyOnEmpty}}/>
           </span>
       </div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}

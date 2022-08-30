@@ -14,8 +14,8 @@
       <span class='flexrow'>
         <input
           type='number'
-          value='{{data.data.wounds.value}}'
-          name='data.wounds.value'
+          value='{{actor.system.wounds.value}}'
+          name='system.wounds.value'
           data-dtype='Number'
           class='wound-input'
           maxlength='4'
@@ -25,8 +25,8 @@
         <span class='seperator'>/</span>
         <input
           type='number'
-          value='{{data.data.wounds.max}}'
-          name='data.wounds.max'
+          value='{{actor.system.wounds.max}}'
+          name='system.wounds.max'
           data-dtype='Number'
           class='wound-input'
           maxlength='4'
@@ -42,7 +42,7 @@
     {{#if settingrules.modSlots}}
       <div id='modBox'>
         <div class='bar-container'>
-          <span class='text'>{{mods.used}}/{{data.data.maxMods}}
+          <span class='text'>{{mods.used}}/{{actor.system.maxMods}}
             {{localize 'SWADE.Mods'}}</span>
           <div class='bar' style='width: {{mods.percentage}}%;'></div>
         </div>
@@ -55,32 +55,32 @@
   <div class='crew-input'>
     <input
       type='text'
-      value='{{data.data.crew.required.value}}'
+      value='{{actor.system.crew.required.value}}'
       data-dtype='Number'
-      name='data.crew.required.value'
+      name='system.crew.required.value'
     />
     <span>/</span>
     <input
       type='text'
-      value='{{data.data.crew.required.max}}'
+      value='{{actor.system.crew.required.max}}'
       data-dtype='Number'
-      name='data.crew.required.max'
+      name='system.crew.required.max'
     />
   </div>
   <label>{{localize 'SWADE.Passengers'}}</label>
   <div class='crew-input'>
     <input
       type='text'
-      value='{{data.data.crew.optional.value}}'
+      value='{{actor.system.crew.optional.value}}'
       data-dtype='Number'
-      name='data.crew.optional.value'
+      name='system.crew.optional.value'
     />
     <span>/</span>
     <input
       type='text'
-      value='{{data.data.crew.optional.max}}'
+      value='{{actor.system.crew.optional.max}}'
       data-dtype='Number'
-      name='data.crew.optional.max'
+      name='system.crew.optional.max'
     />
   </div>
 </section>

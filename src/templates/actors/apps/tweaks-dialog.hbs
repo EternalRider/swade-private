@@ -7,7 +7,7 @@
           <span class='form-fields'>
             <input
               type='checkbox'
-              name='data.wildcard'
+              name='system.wildcard'
               id='{{_id}}-wildcard'
               {{checked data.wildcard}}
             />
@@ -22,7 +22,7 @@
           <span class='form-fields'>
             <input
               type='checkbox'
-              name='data.attributes.smarts.animal'
+              name='system.attributes.smarts.animal'
               id='{{_id}}-animalSmarts'
               {{checked data.attributes.smarts.animal}}
             />
@@ -31,7 +31,7 @@
         <div class='form-group'>
           <label for='{{_id}}-advances'>{{localize 'SWADE.Adv'}}</label>
           <span class='form-fields'>
-            <select name='data.advances.mode' id='{{_id}}-advances'>
+            <select name='system.advances.mode' id='{{_id}}-advances'>
               {{#select data.advances.mode}}
                 {{selectOptions
                   advanceTypes
@@ -47,7 +47,7 @@
           <span class='form-fields'>
             <input
               type='text'
-              name='data.stats.speed.value'
+              name='system.stats.speed.value'
               value='{{data.stats.speed.value}}'
               data-dtype='Number'
             />
@@ -58,7 +58,7 @@
           <span class='form-fields'>
             <select
               class='running-die'
-              name='data.stats.speed.runningDie'
+              name='system.stats.speed.runningDie'
               data-dtype='Number'
             >
               {{#select data.stats.speed.runningDie}}
@@ -72,7 +72,7 @@
             </select>
             <input
               type='text'
-              name='data.stats.speed.runningMod'
+              name='system.stats.speed.runningMod'
               value='{{data.stats.speed.runningMod}}'
               data-dtype='Number'
             />
@@ -84,7 +84,7 @@
         <span class='form-fields'>
           <input
             type='text'
-            name='data.wounds.max'
+            name='system.wounds.max'
             value='{{data.wounds.max}}'
             data-dtype='Number'
           />
@@ -96,7 +96,7 @@
           <span class='form-fields'>
             <input
               type='text'
-              name='data.fatigue.max'
+              name='system.fatigue.max'
               value='{{data.fatigue.max}}'
               data-dtype='Number'
             />
@@ -109,7 +109,7 @@
           <span class='form-fields'>
             <input
               class='bennies-max'
-              name='data.bennies.max'
+              name='system.bennies.max'
               type='text'
               value='{{data.bennies.max}}'
               data-dtype='Number'
@@ -122,7 +122,7 @@
         <span class='form-fields'>
           <input
             id='data.wounds.ignored'
-            name='data.wounds.ignored'
+            name='system.wounds.ignored'
             type='text'
             value='{{data.wounds.ignored}}'
             data-dtype='Number'
@@ -135,7 +135,7 @@
           <span class='form-fields'>
             <input
               id='data.maxCargo'
-              name='data.maxCargo'
+              name='system.maxCargo'
               type='text'
               value='{{data.maxCargo}}'
               data-dtype='Number'
@@ -147,7 +147,7 @@
           <span class='form-fields'>
             <input
               id='data.maxMods'
-              name='data.maxMods'
+              name='system.maxMods'
               type='text'
               value='{{data.maxMods}}'
               data-dtype='Number'
@@ -165,7 +165,7 @@
         <span class='form-fields'>
           <input
             type='checkbox'
-            name='data.initiative.hasLevelHeaded'
+            name='system.initiative.hasLevelHeaded'
             id='{{_id}}-hasLevelHeaded'
             {{checked data.initiative.hasLevelHeaded}}
           />
@@ -178,7 +178,7 @@
         <span class='form-fields'>
           <input
             type='checkbox'
-            name='data.initiative.hasImpLevelHeaded'
+            name='system.initiative.hasImpLevelHeaded'
             id='{{_id}}-hasImpLevelHeaded'
             {{checked data.initiative.hasImpLevelHeaded}}
           />
@@ -189,7 +189,7 @@
         <span class='form-fields'>
           <input
             type='checkbox'
-            name='data.initiative.hasQuick'
+            name='system.initiative.hasQuick'
             id='{{_id}}-hasQuick'
             {{checked data.initiative.hasQuick}}
           />
@@ -200,7 +200,7 @@
         <span class='form-fields'>
           <input
             type='checkbox'
-            name='data.initiative.hasHesitant'
+            name='system.initiative.hasHesitant'
             id='{{_id}}-hasHesitant'
             {{checked data.initiative.hasHesitant}}
           />
@@ -217,7 +217,7 @@
           <span class='form-fields'>
             <input
               type='checkbox'
-              name='data.details.autoCalcToughness'
+              name='system.details.autoCalcToughness'
               id='{{_id}}-autoCalcToughness'
               {{checked data.details.autoCalcToughness}}
             />
@@ -229,7 +229,7 @@
           <span class='form-fields'>
             <input
               type='checkbox'
-              name='data.details.autoCalcParry'
+              name='system.details.autoCalcParry'
               id='{{_id}}-autoCalcParry'
               {{checked data.details.autoCalcParry}}
             />
@@ -257,7 +257,7 @@
         <div class='centered'>
           <input
             type='checkbox'
-            name='data.additionalStats.{{key}}.useField'
+            name='system.additionalStats.{{key}}.useField'
             id='{{_id}}-{{key}}-useField'
             {{checked attr.useField}}
           />

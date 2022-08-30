@@ -15,30 +15,30 @@
     </div>
   </header>
   <div class='card-content collapsed' style='display: none;'>
-    {{#unless (isEmpty data.damage)}}
+    {{#unless (isEmpty system.damage)}}
       <div>
         <a class='damage-roll' title='{{localize "SWADE.Roll"}}'>{{localize
             'SWADE.Dmg'
           }}:
-          {{data.damage}}</a>
+          {{system.damage}}</a>
       </div>
     {{/unless}}
-    {{#unless (isEmpty data.range)}}
-      <div>{{localize 'SWADE.Range._name'}}: {{data.range}}</div>
+    {{#unless (isEmpty system.range)}}
+      <div>{{localize 'SWADE.Range._name'}}: {{system.range}}</div>
     {{/unless}}
-    {{#unless (isEmpty data.shots)}}
-      <div>{{localize 'SWADE.Mag'}}: {{data.shots}}</div>
+    {{#unless (isEmpty system.shots)}}
+      <div>{{localize 'SWADE.Mag'}}: {{system.shots}}</div>
     {{/unless}}
-    {{#if (gt data.rof 1)}}
-      <div>{{localize 'SWADE.RoF'}}: {{data.rof}}</div>
+    {{#if (gt system.rof 1)}}
+      <div>{{localize 'SWADE.RoF'}}: {{system.rof}}</div>
     {{/if}}
-    {{#unless (eq data.ap 0)}}
-      <div>{{localize 'SWADE.Ap'}}: {{data.ap}}</div>
+    {{#unless (eq system.ap 0)}}
+      <div>{{localize 'SWADE.Ap'}}: {{system.ap}}</div>
     {{/unless}}
-    {{#unless (isEmpty data.notes)}}
+    {{#unless (isEmpty system.notes)}}
       <div class='chips'>
         <span>{{localize 'SWADE.Notes'}}:&nbsp;</span>
-        <div>{{enrich data.notes}}</div>
+        <div>{{enrich system.notes}}</div>
       </div>
     {{/unless}}
   </div>

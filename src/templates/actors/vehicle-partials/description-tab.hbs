@@ -1,24 +1,29 @@
-<div id="opSkill">
-  <label>{{localize "SWADE.OpSkill"}}</label>
-  <select name="data.driver.skill">
-    {{#select data.data.driver.skill}} {{selectOptions opSkills}} {{/select}}
+<div id='opSkill'>
+  <label>{{localize 'SWADE.OpSkill'}}</label>
+  <select name='system.driver.skill'>
+    {{#select actor.system.driver.skill}} {{selectOptions opSkills}} {{/select}}
   </select>
-  {{#if (isEmpty data.data.driver.skill)}}
-  <label>{{localize "SWADE.AltSkill"}}</label>
-  <input
-    type="text"
-    value="{{data.data.driver.skillAlternative}}"
-    name="data.driver.skillAlternative"
-  />
+  {{#if (isEmpty actor.system.driver.skill)}}
+    <label>{{localize 'SWADE.AltSkill'}}</label>
+    <input
+      type='text'
+      value='{{actor.system.driver.skillAlternative}}'
+      name='system.driver.skillAlternative'
+    />
   {{/if}}
 </div>
 <br />
-<div class="description">
-  <header class="header-field">
-    <span>{{ localize "SWADE.Desc" }}</span>
+<div class='description'>
+  <header class='header-field'>
+    <span>{{localize 'SWADE.Desc'}}</span>
   </header>
-  <span class="vehicle-editor">
-    {{editor content=data.data.description target="data.description" button=true
-    owner=owner editable=editable}}
+  <span class='vehicle-editor'>
+    {{editor
+      content=actor.system.description
+      target='system.description'
+      button=true
+      owner=owner
+      editable=editable
+    }}
   </span>
 </div>

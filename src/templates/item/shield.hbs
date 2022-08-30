@@ -14,9 +14,9 @@
       <label>{{localize "SWADE.Parry"}}</label>
       <span class="form-fields">
         <input
-          name="data.parry"
+          name="system.parry"
           type="text"
-          value="{{data.data.parry}}"
+          value="{{item.system.parry}}"
           placeholder="{{localize 'SWADE.Parry'}}"
           data-dtype="Number"
         />
@@ -26,9 +26,9 @@
       <label>{{localize "SWADE.Cover._name"}}</label>
       <span class="form-fields">
         <input
-          name="data.cover"
+          name="system.cover"
           type="text"
-          value="{{data.data.cover}}"
+          value="{{item.system.cover}}"
           placeholder="{{localize 'SWADE.Cover._name'}}"
           data-dtype="Number"
         />
@@ -71,19 +71,19 @@
       <div class="form-group">
         <label>{{localize "SWADE.MinStrShort"}}</label>
         <span class="form-fields">
-          <input name="data.minStr" type="text" value="{{data.data.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
+          <input name="system.minStr" type="text" value="{{item.system.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
-          <input name='data.weight' type='text' value='{{data.data.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
+          <input name='data.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Notes'}}</label>
         <span class='form-fields'>
-          <input type='text' name='data.notes' value='{{data.data.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
+          <input type='text' name='data.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}

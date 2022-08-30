@@ -2,15 +2,15 @@
     <label class="arcane-skill-label">{{localize "SWADE.ArcaneSkill"}}</label>
     <span class="arcane-skill-inputs form-group">
       <span class="form-fields text-center">
-        <select name="data.arcaneSkillDie.sides" data-dtype="Number" class="text-center">
-          {{#select data.data.arcaneSkillDie.sides}}
+        <select name="system.arcaneSkillDie.sides" data-dtype="Number" class="text-center">
+          {{#select item.system.arcaneSkillDie.sides}}
             {{> "systems/swade/templates/die-sides-options.hbs"}}
           {{/select}}
         </select>
         <input 
-          name="data.arcaneSkillDie.modifier" 
+          name="system.arcaneSkillDie.modifier" 
           type="text" 
-          value="{{signedString data.data.arcaneSkillDie.modifier}}" 
+          value="{{signedString item.system.arcaneSkillDie.modifier}}" 
           placeholder="{{localize 'SWADE.Modifier'}}" 
           data-dtype="Number" 
         />
@@ -21,17 +21,17 @@
     <span class="power-points-inputs form-group">
       <span class="form-fields text-center">
         <input 
-          name="data.powerPoints.value" 
+          name="system.powerPoints.value" 
           type="number" 
-          value="{{data.data.powerPoints.value}}"
+          value="{{item.system.powerPoints.value}}"
           title="{{localize 'SWADE.CurPP'}}" 
           data-dtype="Number"
           />
         <strong class="flex-separator">/</strong>
         <input 
-          name="data.powerPoints.max" 
+          name="system.powerPoints.max" 
           type="number" 
-          value="{{data.data.powerPoints.max}}" 
+          value="{{item.system.powerPoints.max}}" 
           title="{{localize 'SWADE.MaxPP'}}" 
           data-dtype="Number"
         />

@@ -14,8 +14,8 @@
         {{#if isOwner}}
         <button
           type="button"
-          class="item-toggle {{#unless data.data.favorite}}item-unequipped{{/unless}}"
-          data-toggle="data.favorite"
+          class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
+          data-toggle="system.favorite"
           title="{{localize "SWADE.Favorite"}}"
         >
           <i class="fas fa-star"></i>
@@ -25,7 +25,7 @@
         </button>
         {{/if}}
         </div>
-        <div class='description'>{{enrich data.data.description}}</div>
+        <div class='description'>{{enrich system.description}}</div>
       </li>
     {{/each}}
   </ul>
@@ -40,14 +40,14 @@
     <li class='edge-hindrance item' data-item-id='{{id}}'>
       <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"/>
       <button type="button" class="name item-name" title="{{localize "SWADE.ExpandDescription"}}" >
-        {{name}} {{#if data.data.major}}{{localize 'SWADE.Major' }}{{else}}{{localize 'SWADE.Minor'}}{{/if}}
+        {{name}} {{#if system.major}}{{localize 'SWADE.Major' }}{{else}}{{localize 'SWADE.Minor'}}{{/if}}
       </button>
       <div class='item-controls'>
       {{#if isOwner}}
       <button
         type="button"
-        class="item-toggle {{#unless data.data.favorite}}item-unequipped{{/unless}}"
-        data-toggle="data.favorite"
+        class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
+        data-toggle="system.favorite"
         title="{{localize "SWADE.Favorite"}}"
       >
         <i class="fas fa-star"></i>
@@ -57,7 +57,7 @@
       </button>
       {{/if}}
       </div>
-      <div class='description'>{{enrich data.data.description}}</div>
+      <div class='description'>{{enrich system.description}}</div>
     </li>
     {{/each}}
   </ul>
@@ -76,8 +76,8 @@
       {{#if isOwner}}
       <button
         type="button"
-        class="item-toggle {{#unless data.data.favorite}}item-unequipped{{/unless}}"
-        data-toggle="data.favorite"
+        class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
+        data-toggle="system.favorite"
         title="{{localize "SWADE.Favorite"}}"
       >
         <i class="fas fa-star"></i>
@@ -87,7 +87,7 @@
       </button>
       {{/if}}
       </div>
-      <div class='description'>{{enrich data.data.description}}</div>
+      <div class='description'>{{enrich system.description}}</div>
     </li>
     {{/each}}
   </ul>

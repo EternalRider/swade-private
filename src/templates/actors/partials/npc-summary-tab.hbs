@@ -8,10 +8,9 @@
       <div class="attribute flex2">
         <div class="attribute-label">{{localize "SWADE.Size"}}</div>
         <input
-          id="data.stats.size"
-          name="data.stats.size"
+          name="system.stats.size"
           type="text"
-          value="{{data.data.stats.size}}"
+          value="{{actor.system.stats.size}}"
           data-dtype="Number"
         />
       </div>
@@ -20,9 +19,8 @@
           ><div class="attribute-label">{{localize "SWADE.Pace"}}</div></a
         >
         <input
-          id="pace"
           type="text"
-          value="{{data.data.stats.speed.adjusted}}"
+          value="{{actor.system.stats.speed.adjusted}}"
           data-dtype="Number"
           disabled
         />
@@ -31,45 +29,41 @@
         <div class="attribute-label">{{localize "SWADE.Parry"}}</div>
         <div class="toughness-block">
           <input
-            id="parry"
-            name="data.stats.parry.value"
-            value="{{data.data.stats.parry.value}}"
+            name="system.stats.parry.value"
+            value="{{actor.system.stats.parry.value}}"
             type="text"
             placeholder="0"
             data-dtype="Number"
-            {{disabled
-            data.details.autoCalcParry}}
+            {{disabled actor.system.details.autoCalcParry}}
           />
           <div class="armor-value" data-target="parry">
-            {{signedString data.data.stats.parry.modifier}}
+            {{signedString actor.system.stats.parry.modifier}}
           </div>
         </div>
       </div>
       <div class="attribute flex3">
         <div class="attribute-label">{{localize "SWADE.Tough"}}</div>
         <div class="toughness-block">
-          {{#if data.data.details.autoCalcToughness}}
+          {{#if actor.system.details.autoCalcToughness}}
           <input
-            id="toughness"
-            name="data.stats.toughness.value"
+            name="system.stats.toughness.value"
             type="text"
-            value="{{data.data.stats.toughness.value}}"
+            value="{{actor.system.stats.toughness.value}}"
             placeholder="{{localize 'SWADE.Tough'}}"
             data-dtype="Number"
             disabled
           />
           {{else}}
           <input
-            id="toughness"
-            name="data.stats.toughness.value"
+            name="system.stats.toughness.value"
             type="text"
-            value="{{data.data.stats.toughness.value}}"
+            value="{{actor.system.stats.toughness.value}}"
             placeholder="{{localize 'SWADE.Tough'}}"
             data-dtype="Number"
           />
           {{/if}}
           <div class="armor-value" data-target="armor">
-            {{data.data.stats.toughness.armor}}
+            {{actor.system.stats.toughness.armor}}
           </div>
         </div>
       </div>
@@ -91,18 +85,11 @@
         </div>
       </header>
       <ul class="items-list skills-list">
-        {{#each itemsByType.skill as |skill id|}}
-        <li
-          class="skill item"
-          data-item-id="{{skill._id}}"
-        >
-          <a
-            class="contextmenu-edit"
-            title="Right Click to {{localize 'SWADE.EditSkill'}}"
-          >
-            {{#unless @first}}&nbsp;{{/unless}}{{skill.name}}
-            d{{skill.data.die.sides}}{{modifier
-            skill.data.die.modifier}}{{#unless @last}},{{/unless}}
+        {{#each actor.itemTypes.skill}}
+        <li class="skill item" data-item-id="{{id}}">
+          <a class="contextmenu-edit" title="Right Click to {{localize 'SWADE.EditSkill'}}">
+            {{#unless @first}}&nbsp;{{/unless}}{{name}}
+            d{{system.die.sides}}{{modifier system.die.modifier}}{{#unless @last}},{{/unless}}
           </a>
         </li>
         {{/each}}
@@ -118,11 +105,10 @@
         </div>
       </header>
       <ul class="items-list">
-        {{#each itemsByType.edge as |edge id|}}
-        <li class="item edge-hindrance" data-item-id="{{edge._id}}">
+        {{#each actor.itemTypes.edge}}
+        <li class="item edge-hindrance" data-item-id="{{id}}">
           <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{edge.name}}{{#unless
-            @last}},{{/unless}}
+            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
         {{/each}}
@@ -138,12 +124,10 @@
         </div>
       </header>
       <ul class="items-list">
-        {{#each itemsByType.hindrance as |hindrance id|}}
-        <li class="item edge-hindrance" data-item-id="{{hindrance._id}}">
+        {{#each actor.itemTypes.hindrance}}
+        <li class="item edge-hindrance" data-item-id="{{id}}">
           <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{hindrance.name}} {{#if
-            hindrance.data.major}}{{localize "SWADE.Major"}}{{/if}}{{#unless
-            @last}},{{/unless}}
+            {{#unless @first}}&nbsp;{{/unless}}{{name}} {{#if system.major}}{{localize "SWADE.Major"}}{{/if}}{{#unless @last}},{{/unless}}
           </a>
         </li>
         {{/each}}
@@ -159,11 +143,10 @@
         </div>
       </header>
       <ul class="items-list">
-        {{#each itemsByType.ability as |ability id|}}
-        <li class="item edge-hindrance" data-item-id="{{ability._id}}">
+        {{#each actor.itemTypes.ability}}
+        <li class="item edge-hindrance" data-item-id="{{id}}">
           <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{ability.name}}{{#unless
-            @last}},{{/unless}}
+            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
         {{/each}}
@@ -198,23 +181,23 @@
     <label>{{settingrules.currencyName}}</label>
     <span class="form-fields">
       <input
-        name="data.details.currency"
+        name="system.details.currency"
         type="text"
         data-dtype="Number"
-        value="{{data.data.details.currency}}"
+        value="{{actor.system.details.currency}}"
         placeholder="{{localize 'SWADE.Currency'}}"
       />
     </span>
     {{else if (eq settingrules.wealthType "wealthDie")}}
       <button type="button" class="roll">{{localize "SWADE.WealthDie.Label"}}</button>
-      <select data-dtype="Number" name="data.details.wealth.die">
-        {{#select data.data.details.wealth.die}} {{> "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
+      <select data-dtype="Number" name="system.details.wealth.die">
+        {{#select actor.system.details.wealth.die}} {{> "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
       </select>
       <input
         type="text"
         data-dtype="Number"
-        name="data.details.wealth.modifier"
-        value="{{signedString data.data.details.wealth.modifier}}"
+        name="system.details.wealth.modifier"
+        value="{{signedString actor.system.details.wealth.modifier}}"
         placeholder="{{localize 'SWADE.Modifier'}}"
       />
     {{/if}}
@@ -222,27 +205,27 @@
       <div class="quickaccess-list">
         <ol class="gear-list weapon-list">
           {{#each itemsByType.weapon}}
-            {{>"systems/swade/templates/actors/partials/weapon-card.hbs"owner=../owner}}
+            {{>"systems/swade/templates/actors/partials/weapon-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
         <ol class="gear-list armor-list">
           {{#each itemsByType.armor}}
-            {{> "systems/swade/templates/actors/partials/armor-card.hbs" owner=../owner}}
+            {{> "systems/swade/templates/actors/partials/armor-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
         <ol class="gear-list shield-list">
           {{#each itemsByType.shield}}
-            {{> "systems/swade/templates/actors/partials/shield-card.hbs" owner=../owner}}
+            {{> "systems/swade/templates/actors/partials/shield-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
         <ol class="gear-list items-list">
           {{#each itemsByType.consumable}}
-            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" owner=../owner}}
+            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
-            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
       </div>
@@ -251,8 +234,8 @@
       <header class="header-field flexrow">
         <span>{{localize "SWADE.Desc"}}</span>
       </header>
-      {{editor content=data.data.details.biography.value
-      target="data.details.biography.value" button=true owner=owner
+      {{editor content=actor.system.details.biography.value
+      target="system.details.biography.value" button=true owner=owner
       editable=editable}}
     </section>
   </div>

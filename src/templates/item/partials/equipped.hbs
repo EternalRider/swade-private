@@ -1,11 +1,11 @@
 <div class='form-group'>
   <label>{{localize 'SWADE.ItemEquipStatus.Label'}}</label>
   <span class='form-fields'>
-    <select name='data.equipStatus' data-dtype='Number'>
-      {{#select data.data.equipStatus}}
+    <select name='system.equipStatus' data-dtype='Number'>
+      {{#select item.system.equipStatus}}
         {{selectOptions
           equipStatusOptions
-          selected=data.data.equipStatus
+          selected=item.system.equipStatus
           localize=true
         }}
       {{/select}}
