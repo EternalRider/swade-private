@@ -42,7 +42,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get type(): this['item']['data']['type'] {
-    return this.item.data.type;
+    return this.item.type;
   }
 
   get hasInlineDelete(): boolean {
@@ -187,7 +187,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     html.find('.additional-stats .rollable').on('click', async (ev) => {
       const stat = ev.currentTarget.dataset.stat!;
-      const statData = this.item.data.data.additionalStats[stat]!;
+      const statData = this.item.system.additionalStats[stat]!;
       let modifier = statData.modifier ?? '';
       if (!modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
@@ -210,7 +210,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this.item.data.data.additionalStats ?? {};
+    const additionalStats = this.item.system.additionalStats ?? {};
 
     const data: SwadeItemSheetData = {
       itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
@@ -229,8 +229,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       },
     };
 
-    if (this.item.data.type === 'ability') {
-      const subtype = this.item.data.data.subtype;
+    if (this.item.type === 'ability') {
+      const subtype = this.item.system.subtype;
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
@@ -324,7 +324,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       item = game.items!.get(data.id, { strict: true });
     }
 
-    if (item.data.type === 'ability' && item.data.data.subtype !== 'special') {
+    if (item.type === 'ability' && item.system.subtype !== 'special') {
       Logger.warn('SWADE.CannotAddRaceToRace', { localize: true, toast: true });
       return;
     }
@@ -332,15 +332,15 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     const itemData = item.data.toObject();
 
     if (
-      this.item.data.type === 'ability' &&
-      this.item.data.data.subtype !== 'special'
+      this.item.type === 'ability' &&
+      this.item.system.subtype !== 'special'
     ) {
       const collection = this._getEmbeddedAbilities();
       collection.set(randomID(), itemData);
       await this._saveEmbeddedAbilities(collection);
     }
 
-    if (this.item.canBeArcaneDevice && item.data.type === 'power') {
+    if (this.item.canBeArcaneDevice && item.type === 'power') {
       const collection = this._getEmbeddedPowers();
       collection.set(randomID(), itemData);
       await this._saveEmbeddedPowers(collection);
@@ -513,8 +513,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.EQUIP_STATE.CARRIED]: 'SWADE.ItemEquipStatus.Carried',
     };
 
-    if (this.item.data.type === 'weapon') {
-      if (this.item.data.data.isVehicular && this.actor?.type === 'vehicle') {
+    if (this.item.type === 'weapon') {
+      if (this.item.system.isVehicular && this.actor?.type === 'vehicle') {
         states = {
           ...states,
           [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
@@ -528,10 +528,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         };
       }
     } else if (
-      this.item.data.type === 'armor' ||
-      this.item.data.type === 'shield' ||
-      (this.item.data.type === 'gear' &&
-        (this.item.data.data.equippable || this.item.data.data.isVehicular))
+      this.item.type === 'armor' ||
+      this.item.type === 'shield' ||
+      (this.item.type === 'gear' &&
+        (this.item.system.equippable || this.item.system.isVehicular))
     ) {
       states = {
         ...states,

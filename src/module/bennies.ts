@@ -21,7 +21,7 @@ export default class Bennies {
     }
 
     const npcWildcardsToRefresh = game.actors!.filter(
-      (a) => !a.hasPlayerOwner && a.data.type === 'npc' && a.isWildcard,
+      (a) => !a.hasPlayerOwner && a.type === 'npc' && a.isWildcard,
     );
 
     if (game.settings.get('swade', 'hardChoices')) {

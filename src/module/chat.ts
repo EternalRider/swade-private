@@ -45,7 +45,7 @@ export async function formatRoll(
     return die.results[0]['result'] === 1;
   };
 
-  const roll = Roll.fromJSON(data.message.roll);
+  const roll = chatMessage.rolls[0];
   const chatData: DiceResults = { dice: [], modifiers: [], result: 0 };
 
   for (const term of roll.terms) {

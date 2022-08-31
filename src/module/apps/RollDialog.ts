@@ -173,7 +173,7 @@ export default class RollDialog extends FormApplication<
     if (this.extraButtonUsed && this.ctx.item && !this.ctx.actor) {
       this.ctx.mods.push({
         label: game.i18n.localize('SWADE.BonusDamage'),
-        value: `+1d${this.ctx.item.data.data['bonusDamageDie']}x`,
+        value: `+1d${this.ctx.item.system['bonusDamageDie']}x`,
       });
     }
 

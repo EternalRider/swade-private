@@ -9,7 +9,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     return {
       ...super.defaultOptions,
       template: 'systems/swade/templates/sidebar/combat-tracker.hbs',
-      classes: ['tab', 'sidebar-tab', 'swade']
+      classes: ['tab', 'sidebar-tab', 'swade'],
     };
   }
   activateListeners(html: JQuery<HTMLElement>) {
@@ -53,7 +53,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       foundry.utils.setProperty(turn, 'cardString', combatant?.cardString);
       foundry.utils.setProperty(turn, 'roundHeld', combatant?.roundHeld);
       foundry.utils.setProperty(turn, 'turnLost', combatant?.turnLost);
-      const dontShow = !!combatant?.groupId || combatant?.data.defeated;
+      const dontShow = !!combatant?.groupId || combatant?.defeated;
       foundry.utils.setProperty(turn, 'emptyInit', dontShow);
     }
     return data;

@@ -77,7 +77,7 @@ export function registerCustomHelpers() {
   });
 
   Handlebars.registerHelper('canBeEquipped', (item: SwadeItem) => {
-    return item.data.data['equippable'] || item.data.data['isVehicular'];
+    return item.system['equippable'] || item.system['isVehicular'];
   });
 
   Handlebars.registerHelper('displayEmbedded', (array: any[] = []) => {
@@ -157,14 +157,14 @@ export function registerCustomHelpers() {
     const leaderId = c.groupId!;
 
     const leader = game.combat?.combatants.get(leaderId)!;
-    const groupColor = hasProperty(leader, 'data.flags.swade.groupColor');
+    const groupColor = hasProperty(leader, 'flags.swade.groupColor');
     if (groupColor) {
       return leader.getFlag('swade', 'groupColor');
     } else {
       if (leader?.players?.length) {
-        return leader.players[0].data.color;
+        return leader.players[0].color;
       } else {
-        return game.users?.find((u) => u.isGM)?.data.color;
+        return game.users?.find((u) => u.isGM)?.color;
       }
     }
   });
@@ -176,10 +176,10 @@ export function registerCustomHelpers() {
       return groupColor;
     } else {
       if (c?.players?.length) {
-        return c.players[0].data.color;
+        return c.players[0].color;
       } else {
         const gm = game.users?.find((u) => u.isGM)!;
-        return gm.data.color;
+        return gm.color;
       }
     }
   });

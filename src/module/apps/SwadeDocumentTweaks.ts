@@ -49,7 +49,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     const settingFields = this._getAppropriateSettingFields();
 
     for (const key of Object.keys(settingFields)) {
-      const fieldExists = this.object.data.data.additionalStats[key];
+      const fieldExists = this.object.system.additionalStats[key];
       if (fieldExists) {
         settingFields[key].useField = true;
       }
@@ -63,11 +63,8 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isVehicle: this.object.type === 'vehicle',
       advanceTypes: this._getAdvanceTypes(),
       autoCalc: {
-        toughness: getProperty(
-          this.object.data.data,
-          'details.autoCalcToughness',
-        ),
-        armor: getProperty(this.object.data.data, 'details.autoCalcArmor'),
+        toughness: getProperty(this.object.system, 'details.autoCalcToughness'),
+        armor: getProperty(this.object.system, 'details.autoCalcArmor'),
       },
     };
 
@@ -115,12 +112,12 @@ export default class SwadeDocumentTweaks extends FormApplication<
     const formFields = expandedFormData?.data?.additionalStats ?? {};
     const prototypeFields = this._getAppropriateSettingFields();
     const newFields = foundry.utils.deepClone(
-      this.object.data.data.additionalStats,
+      this.object.system.additionalStats,
     );
     //handle setting specific fields
     const entries = Object.entries(formFields) as [string, AdditionalStat][];
     for (const [key, field] of entries) {
-      const fieldExistsOnDoc = this.object.data.data.additionalStats[key];
+      const fieldExistsOnDoc = this.object.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
         //update existing field
         newFields![key].hasMaxValue = prototypeFields[key].hasMaxValue;
@@ -137,7 +134,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     }
 
     //handle "stray" fields that exist on the actor but have no prototype
-    for (const key of Object.keys(this.object.data.data.additionalStats)) {
+    for (const key of Object.keys(this.object.system.additionalStats)) {
       if (!prototypeFields[key]) {
         //@ts-expect-error This is only done to delete the key
         newFields[`-=${key}`] = null;

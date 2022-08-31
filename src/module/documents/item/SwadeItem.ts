@@ -53,17 +53,17 @@ export default class SwadeItem extends Item {
   }
 
   get isMeleeWeapon(): boolean {
-    if (this.data.type !== 'weapon') return false;
-    const shots = this.data.data.shots;
-    const currentShots = this.data.data.currentShots;
+    if (this.type !== 'weapon') return false;
+    const shots = this.system.shots;
+    const currentShots = this.system.currentShots;
     return (!shots && !currentShots) || (shots === 0 && currentShots === 0);
   }
 
   get range() {
     //return early if the type doesn't match
-    if (this.data.type !== 'weapon' && this.data.type !== 'power') return;
+    if (this.type !== 'weapon' && this.type !== 'power') return;
     //match the range string via Regex
-    const match = this.data.data.range.match(SwadeItem.RANGE_REGEX);
+    const match = this.system.range.match(SwadeItem.RANGE_REGEX);
     //return early if nothing is found
     if (!match) return;
     //split the string and convert the values to numbers
@@ -90,7 +90,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this.data.data, 'isArcaneDevice') as boolean;
+    return getProperty(this.system, 'isArcaneDevice') as boolean;
   }
 
   get isPhysicalItem(): boolean {
@@ -106,14 +106,14 @@ export default class SwadeItem extends Item {
   }
 
   get isReadied(): boolean {
-    const type = this.data.type;
+    const type = this.type;
     if (
       type === 'weapon' ||
       type === 'armor' ||
       type === 'shield' ||
       type === 'gear'
     ) {
-      return this.data.data.equipStatus > constants.EQUIP_STATE.CARRIED;
+      return this.system.equipStatus > constants.EQUIP_STATE.CARRIED;
     }
     return false;
   }
@@ -122,7 +122,7 @@ export default class SwadeItem extends Item {
     const modifiers = new Array<TraitRollModifier>();
     let itemData;
     if (['weapon', 'power', 'shield'].includes(this.type)) {
-      itemData = this.data.data;
+      itemData = this.system;
     } else {
       return null;
     }
@@ -165,9 +165,9 @@ export default class SwadeItem extends Item {
 
     //Conviction Modifier
     if (
-      this.parent?.data.type !== 'vehicle' &&
+      this.parent?.type !== 'vehicle' &&
       game.settings.get('swade', 'enableConviction') &&
-      this.parent?.data.data.details.conviction.active
+      this.parent?.system.details.conviction.active
     ) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Conv'),
@@ -232,13 +232,13 @@ export default class SwadeItem extends Item {
       } with type ${this.type}`,
     );
     if (
-      (this.data.type === 'weapon' && state === equipState.EQUIPPED) ||
-      (this.data.type === 'consumable' && state > equipState.CARRIED)
+      (this.type === 'weapon' && state === equipState.EQUIPPED) ||
+      (this.type === 'consumable' && state > equipState.CARRIED)
     ) {
       Logger.warn('You cannot set this state on the item ' + this.name, {
         toast: true,
       });
-      return this.data.data.equipStatus;
+      return this.system.equipStatus;
     }
     await this.update({ 'data.equipStatus': state });
     return state;
@@ -249,10 +249,10 @@ export default class SwadeItem extends Item {
   ): ItemChatCardData {
     // Item properties
     const chips = new Array<ItemChatCardChip>();
-    const type = this.data.type;
+    const type = this.type;
     if (type === 'hindrance') {
       let label = game.i18n.localize('SWADE.Major');
-      if (this.data.data.major) {
+      if (this.system.major) {
         label = game.i18n.localize('SWADE.Minor');
       }
       chips.push({ text: label });
@@ -272,29 +272,27 @@ export default class SwadeItem extends Item {
       chips.push(
         {
           icon: '<i class="fas fa-user-shield"></i>',
-          text: this.data.data.parry,
+          text: this.system.parry,
           title: game.i18n.localize('SWADE.Parry'),
         },
         {
           icon: '<i class="fas fas fa-umbrella"></i>',
-          text: this.data.data.cover,
+          text: this.system.cover,
           title: game.i18n.localize('SWADE.Cover._name'),
         },
         {
           icon: '<i class="fas fa-dumbbell"></i>',
-          text: this.data.data.minStr,
+          text: this.system.minStr,
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
     }
     if (type === 'armor') {
-      for (const [location, covered] of Object.entries(
-        this.data.data.locations,
-      )) {
+      for (const [location, covered] of Object.entries(this.system.locations)) {
         if (!covered) continue;
         chips.push({
           text: game.i18n.localize(
@@ -317,53 +315,53 @@ export default class SwadeItem extends Item {
         {
           icon: '<i class="fas fa-shield-alt"></i>',
           title: game.i18n.localize('SWADE.Armor'),
-          text: this.data.data.armor,
+          text: this.system.armor,
         },
         {
           icon: '<i class="fas fa-dumbbell"></i>',
-          text: this.data.data.minStr,
+          text: this.system.minStr,
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
     }
     if (type === 'edge') {
       chips.push({
-        text: this.data.data.requirements.value,
+        text: this.system.requirements.value,
       });
-      if (this.data.data.isArcaneBackground) {
+      if (this.system.isArcaneBackground) {
         chips.push({ text: game.i18n.localize('SWADE.Arcane') });
       }
     }
     if (type === 'power') {
       chips.push(
         {
-          text: this.data.data.rank,
+          text: this.system.rank,
         },
-        { text: this.data.data.arcane },
+        { text: this.system.arcane },
         {
-          text: this.data.data.pp + game.i18n.localize('SWADE.PPAbbreviation'),
+          text: this.system.pp + game.i18n.localize('SWADE.PPAbbreviation'),
         },
         {
           icon: '<i class="fas fa-ruler"></i>',
-          text: this.data.data.range,
+          text: this.system.range,
           title: game.i18n.localize('SWADE.Range._name'),
         },
         {
           icon: '<i class="fas fa-shield-alt"></i>',
-          text: this.data.data.ap,
+          text: this.system.ap,
           title: game.i18n.localize('SWADE.Ap'),
         },
         {
           icon: '<i class="fas fa-hourglass-half"></i>',
-          text: this.data.data.duration,
+          text: this.system.duration,
           title: game.i18n.localize('SWADE.Dur'),
         },
         {
-          text: this.data.data.trapping,
+          text: this.system.trapping,
         },
       );
     }
@@ -382,32 +380,32 @@ export default class SwadeItem extends Item {
       chips.push(
         {
           icon: '<i class="fas fa-fist-raised"></i>',
-          text: this.data.data.damage,
+          text: this.system.damage,
           title: game.i18n.localize('SWADE.Dmg'),
         },
         {
           icon: '<i class="fas fa-shield-alt"></i>',
-          text: this.data.data.ap,
+          text: this.system.ap,
           title: game.i18n.localize('SWADE.Ap'),
         },
         {
           icon: '<i class="fas fa-user-shield"></i>',
-          text: this.data.data.parry,
+          text: this.system.parry,
           title: game.i18n.localize('SWADE.Parry'),
         },
         {
           icon: '<i class="fas fa-ruler"></i>',
-          text: this.data.data.range,
+          text: this.system.range,
           title: game.i18n.localize('SWADE.Range._name'),
         },
         {
           icon: '<i class="fas fa-tachometer-alt"></i>',
-          text: this.data.data.rof,
+          text: this.system.rof,
           title: game.i18n.localize('SWADE.RoF'),
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.data.data.notes, enrichOptions),
+          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
@@ -415,7 +413,7 @@ export default class SwadeItem extends Item {
 
     //Additional actions
     const itemActions = getProperty(
-      this.data.data,
+      this.system,
       'actions.additional',
     ) as Record<string, ItemAction>;
 
@@ -430,7 +428,7 @@ export default class SwadeItem extends Item {
 
     const data: ItemChatCardData = {
       description: TextEditor.enrichHTML(
-        this.data.data.description,
+        this.system.description,
         enrichOptions,
       ),
       chips: chips,
@@ -442,7 +440,7 @@ export default class SwadeItem extends Item {
   /** A shorthand function to roll skills directly */
   async roll(options: IRollOptions = {}) {
     //return early if there's no parent or this isn't a skill
-    if (this.data.type !== 'skill' || !this.parent) return null;
+    if (this.type !== 'skill' || !this.parent) return null;
     return this.parent.rollSkill(this.id, options);
   }
 
@@ -461,19 +459,19 @@ export default class SwadeItem extends Item {
       this.type === 'weapon' &&
       !this.isMeleeWeapon &&
       ammoManagement &&
-      !getProperty(this.data.data, 'autoReload');
-    const hasDamage = !!getProperty(this.data.data, 'damage');
+      !getProperty(this.system, 'autoReload');
+    const hasDamage = !!getProperty(this.system, 'damage');
     const hasTraitRoll =
-      ['weapon', 'power', 'shield'].includes(this.data.type) &&
-      !!getProperty(this.data.data, 'actions.skill');
+      ['weapon', 'power', 'shield'].includes(this.type) &&
+      !!getProperty(this.system, 'actions.skill');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
-      getProperty(this.data.data, 'shots') > 0 &&
-      !getProperty(this.data.data, 'autoReload');
+      getProperty(this.system, 'shots') > 0 &&
+      !getProperty(this.system, 'autoReload');
 
     const additionalActions: Record<string, ItemAction> =
-      getProperty(this.data.data, 'actions.additional') || {};
+      getProperty(this.system, 'actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === 'skill',
@@ -542,23 +540,23 @@ export default class SwadeItem extends Item {
 
   getTraitModifiers(): TraitRollModifier[] {
     const modifiers = new Array<TraitRollModifier>();
-    if (getProperty(this.data.data, 'actions.skillMod')) {
+    if (getProperty(this.system, 'actions.skillMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this.data.data, 'actions.skillMod'),
+        value: getProperty(this.system, 'actions.skillMod'),
       });
     }
-    if (this.data.type === 'weapon') {
-      if (this.data.data.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
+    if (this.type === 'weapon') {
+      if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),
           value: -2,
         });
       }
-      if (this.data.data.trademark > 0) {
+      if (this.system.trademark > 0) {
         modifiers.push({
           label: game.i18n.localize('SWADE.TrademarkWeapon.Label'),
-          value: '+' + this.data.data.trademark,
+          value: '+' + this.system.trademark,
         });
       }
     }
@@ -567,8 +565,8 @@ export default class SwadeItem extends Item {
   }
 
   async consume(charges = 1) {
-    const useQuantity = this.data.type === 'consumable';
-    const useResource = this.data.type === 'weapon';
+    const useQuantity = this.type === 'consumable';
+    const useResource = this.type === 'weapon';
 
     const usage = this._getUsageUpdates({
       charges,
@@ -630,9 +628,9 @@ export default class SwadeItem extends Item {
   ) {
     const shouldDelete = (item: SwadeItem) => {
       return (
-        item?.data.type === 'consumable' &&
-        item.data.data.destroyOnEmpty &&
-        item.data.data.quantity === 0 &&
+        item?.type === 'consumable' &&
+        item.system.destroyOnEmpty &&
+        item.system.quantity === 0 &&
         item.isOwned
       );
     };
@@ -679,12 +677,12 @@ export default class SwadeItem extends Item {
     itemUpdates: Updates,
   ): void | boolean {
     //type guard
-    if (this.data.type !== 'consumable') return false;
+    if (this.type !== 'consumable') return false;
 
     //gather variables
-    const currentCharges = this.data.data.charges.value;
-    const maxCharges = this.data.data.charges.max;
-    const quantity = this.data.data.quantity;
+    const currentCharges = this.system.charges.value;
+    const maxCharges = this.system.charges.max;
+    const quantity = this.system.quantity;
     const maxChargesOnStack = (quantity - 1) * maxCharges + currentCharges;
 
     //abort early if too much is being used
@@ -708,10 +706,10 @@ export default class SwadeItem extends Item {
     itemUpdates: Updates,
     resourceUpdates: Updates[],
   ): void | boolean {
-    if (this.data.type === 'weapon') {
-      if (this.data.data.autoReload) {
-        const ammo = this.parent?.items.getName(this.data.data.ammo);
-        const quantity = ammo?.data.data['quantity'];
+    if (this.type === 'weapon') {
+      if (this.system.autoReload) {
+        const ammo = this.parent?.items.getName(this.system.ammo);
+        const quantity = ammo?.system['quantity'];
         if (!ammo || chargesToUse > quantity) {
           Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
           return false;
@@ -721,8 +719,8 @@ export default class SwadeItem extends Item {
           'data.quantity': quantity - chargesToUse,
         });
       } else {
-        const currentShots = this.data.data.currentShots;
-        const usesShots = !!this.data.data.shots && !!currentShots;
+        const currentShots = this.system.currentShots;
+        const usesShots = !!this.system.shots && !!currentShots;
         if (!usesShots || chargesToUse > currentShots) {
           Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
           return false;
@@ -752,23 +750,20 @@ export default class SwadeItem extends Item {
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
   private _getPowerPoints(): ItemChatCardPowerPoints | null {
-    if (this.data.type === 'power') {
+    if (this.type === 'power') {
       const actor = this.parent!;
 
-      let value: number = getProperty(actor.data.data, 'powerPoints.value');
-      let max: number = getProperty(actor.data.data, 'powerPoints.max');
-      const arcane = this.data.data.arcane;
+      let value: number = getProperty(actor.system, 'powerPoints.value');
+      let max: number = getProperty(actor.system, 'powerPoints.max');
+      const arcane = this.system.arcane;
       if (arcane) {
-        value = getProperty(actor.data.data, `powerPoints.${arcane}.value`);
-        max = getProperty(actor.data.data, `powerPoints.${arcane}.max`);
+        value = getProperty(actor.system, `powerPoints.${arcane}.value`);
+        max = getProperty(actor.system, `powerPoints.${arcane}.max`);
       }
       return { value, max };
     }
     if (this.isArcaneDevice) {
-      return getProperty(
-        this.data.data,
-        'powerPoints',
-      ) as ItemChatCardPowerPoints;
+      return getProperty(this.system, 'powerPoints') as ItemChatCardPowerPoints;
     }
     return null;
   }
@@ -785,15 +780,15 @@ export default class SwadeItem extends Item {
     }
 
     if (this.parent) {
-      if (data.type === 'skill' && options.renderSheet !== null) {
+      if (type === 'skill' && options.renderSheet !== null) {
         options.renderSheet = true;
       }
       if (
         this.parent.type === 'npc' &&
-        hasProperty(this.data.data, 'equippable')
+        hasProperty(this.system, 'equippable')
       ) {
         let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
-        if (data.type === 'weapon') {
+        if (type === 'weapon') {
           newState = constants.EQUIP_STATE.MAIN_HAND;
         }
         this.data.update({

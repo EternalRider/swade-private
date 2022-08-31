@@ -48,14 +48,14 @@ export default class SwadeCombat extends Combat {
       if (c.isDefeated || roundHeld || inGroup) continue;
 
       // Set up edges
-      const hasHesitant = c.actor?.data.data.initiative.hasHesitant;
-      const hasQuick = c.actor?.data.data.initiative.hasQuick;
+      const hasHesitant = c.actor?.system.initiative.hasHesitant;
+      const hasQuick = c.actor?.system.initiative.hasQuick;
 
       // Figure out how many cards to draw
       let cardsToDraw = 1;
-      if (c.actor?.data.data.initiative.hasLevelHeaded) cardsToDraw = 2;
-      if (c.actor?.data.data.initiative.hasImpLevelHeaded) cardsToDraw = 3;
-      if (c.actor?.data.data.initiative.hasHesitant) cardsToDraw = 2;
+      if (c.actor?.system.initiative.hasLevelHeaded) cardsToDraw = 2;
+      if (c.actor?.system.initiative.hasImpLevelHeaded) cardsToDraw = 3;
+      if (c.actor?.system.initiative.hasHesitant) cardsToDraw = 2;
 
       // Draw initiative
       let card: Card;
@@ -77,7 +77,7 @@ export default class SwadeCombat extends Combat {
         }
       } else if (hasHesitant) {
         // Hesitant
-        if (cards.some((c) => c.data.data['isJoker'])) {
+        if (cards.some((c) => c.system['isJoker'])) {
           card = await this.pickACard({
             cards: cards,
             combatantName: c.name,
@@ -85,12 +85,12 @@ export default class SwadeCombat extends Combat {
         } else {
           //sort cards to pick the lower one
           cards.sort((a, b) => {
-            const cardA = a.data.value!;
-            const cardB = b.data.value!;
+            const cardA = a.value!;
+            const cardB = b.value!;
             const card = cardA - cardB;
             if (card !== 0) return card;
-            const suitA = a.data.data['suit'];
-            const suitB = b.data.data['suit'];
+            const suitA = a.system['suit'];
+            const suitB = b.system['suit'];
             const suit = suitA - suitB;
             return suit;
           });
@@ -106,7 +106,7 @@ export default class SwadeCombat extends Combat {
         });
       } else if (hasQuick) {
         card = cards[0];
-        const cardValue = card?.data.value!;
+        const cardValue = card?.value!;
         //if the card value is less than 5 then pick a card otherwise use the card
         if (cardValue <= 5) {
           card = await this.pickACard({
@@ -122,13 +122,13 @@ export default class SwadeCombat extends Combat {
       }
 
       const newFlags = {
-        cardValue: card.data.value!,
-        suitValue: card.data.data['suit'],
-        hasJoker: card.data.data['isJoker'],
+        cardValue: card.value!,
+        suitValue: card.system['suit'],
+        hasJoker: card.system['isJoker'],
         cardString: card.data.description,
       };
 
-      const initiative = card?.data.data['suit'] + card.data.value;
+      const initiative = card?.system['suit'] + card.value;
 
       c.data.update({ initiative: initiative, 'flags.swade': newFlags });
 
@@ -237,7 +237,7 @@ export default class SwadeCombat extends Combat {
     };
 
     //decide whether to sort by name or card
-    if (a.data.flags?.swade && b.data.flags?.swade) {
+    if (a.flags?.swade && b.flags?.swade) {
       return cardSortCombatants(a, b);
     }
     return nameSortCombatants(a, b);
@@ -268,17 +268,17 @@ export default class SwadeCombat extends Combat {
 
     let immediateRedraw = false;
     if (isQuickDraw) {
-      enableRedraw = !cards.some((card) => card.data.value! > 5);
+      enableRedraw = !cards.some((card) => card.value! > 5);
     }
 
     const sortedCards = deepClone(cards);
     sortedCards.sort((a: Card, b: Card) => {
-      const cardA = a.data.value ?? 0;
-      const cardB = b.data.value ?? 0;
+      const cardA = a.value ?? 0;
+      const cardB = b.value ?? 0;
       const card = cardB - cardA;
       if (card !== 0) return card;
-      const suitA = a.data.data['suit'] ?? 0;
-      const suitB = b.data.data['suit'] ?? 0;
+      const suitA = a.system['suit'] ?? 0;
+      const suitB = b.system['suit'] ?? 0;
       return suitB - suitA;
     });
     const highestCardID = sortedCards[0].id;
@@ -341,9 +341,9 @@ export default class SwadeCombat extends Combat {
               card = cards.find((c) => c.id === oldCardId);
             } else {
               console.log('No card was selected');
-              const thereIsAJoker = cards.some((c) => c.data.data['isJoker']);
+              const thereIsAJoker = cards.some((c) => c.system['isJoker']);
               if (thereIsAJoker) {
-                card = cards.find((c) => c.data.data['isJoker']);
+                card = cards.find((c) => c.system['isJoker']);
               } else {
                 card = cards[0]; //If no card was selected, assign the first card that was drawn
               }
@@ -365,9 +365,9 @@ export default class SwadeCombat extends Combat {
     const actionCardDeck = game.cards!.get(packName, { strict: true });
     return actionCardDeck.cards.find(
       (c) =>
-        c.data.type === 'poker' &&
-        c.data.value === cardValue &&
-        c.data.data['suit'] === cardSuit,
+        c.type === 'poker' &&
+        c.value === cardValue &&
+        c.system['suit'] === cardSuit,
     );
   }
 

@@ -25,7 +25,7 @@ export function rollItemMacro(itemName: string) {
     return null;
   }
   //Roll the skill
-  if (item.data.type === 'skill') {
+  if (item.type === 'skill') {
     return item.roll();
   } else {
     // Show the item

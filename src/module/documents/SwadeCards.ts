@@ -38,7 +38,7 @@ export default class SwadeCards extends Cards {
     how: foundry.CONST.CARD_DRAW_MODES = foundry.CONST.CARD_DRAW_MODES.TOP,
   ): Promise<Card[]> {
     // validate
-    if (this.data.type !== 'deck') {
+    if (this.type !== 'deck') {
       throw new Error('You can only deal cards for Initiative from a Deck');
     }
 

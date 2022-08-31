@@ -25,20 +25,20 @@ export default class SwadeActor extends Actor {
    * @returns true when the actor is a Wild Card
    */
   get isWildcard(): boolean {
-    if (this.data.type === 'vehicle') {
+    if (this.type === 'vehicle') {
       return false;
     } else {
-      return this.data.data.wildcard || this.data.type === 'character';
+      return this.system.wildcard || this.type === 'character';
     }
   }
 
   /** @returns true when the actor has an arcane background or a special ability that grants powers. */
   get hasArcaneBackground(): boolean {
     const abEdge = this.itemTypes.edge.find(
-      (i) => i.data.type === 'edge' && i.data.data.isArcaneBackground,
+      (i) => i.type === 'edge' && i.system.isArcaneBackground,
     );
     const abAbility = this.itemTypes.ability.find(
-      (i) => i.data.type === 'ability' && i.data.data.grantsPowers,
+      (i) => i.type === 'ability' && i.system.grantsPowers,
     );
     return !!abEdge || !!abAbility;
   }
@@ -64,13 +64,13 @@ export default class SwadeActor extends Actor {
   }
 
   get bennies(): number {
-    if (this.data.type === 'vehicle') return 0;
-    return this.data.data.bennies.value;
+    if (this.type === 'vehicle') return 0;
+    return this.system.bennies.value;
   }
 
   /** @returns an object that contains booleans which denote the current status of the actor */
   get status() {
-    return this.data.data.status;
+    return this.system.status;
   }
 
   get armorPerLocation(): Record<ArmorLocation, number> {
@@ -85,49 +85,49 @@ export default class SwadeActor extends Actor {
   /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced */
   get isEncumbered(): boolean {
     const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');
-    if (this.data.type === 'vehicle' || !applyEncumbrance) {
+    if (this.type === 'vehicle' || !applyEncumbrance) {
       return false;
     }
-    const encumbrance = this.data.data.details.encumbrance;
+    const encumbrance = this.system.details.encumbrance;
     return encumbrance.value > encumbrance.max;
   }
 
   override prepareBaseData() {
-    if (this.data.type === 'vehicle') return;
+    if (this.type === 'vehicle') return;
     //auto calculations
-    if (this.data.data.details.autoCalcToughness) {
+    if (this.system.details.autoCalcToughness) {
       //if we calculate the toughness then we set the values to 0 beforehand so the active effects can be applies
-      this.data.data.stats.toughness.value = 0;
-      this.data.data.stats.toughness.armor = 0;
+      this.system.stats.toughness.value = 0;
+      this.system.stats.toughness.armor = 0;
     }
-    if (this.data.data.details.autoCalcParry) {
+    if (this.system.details.autoCalcParry) {
       //same procedure as with Toughness
-      this.data.data.stats.parry.value = 0;
+      this.system.stats.parry.value = 0;
     }
   }
 
   override prepareDerivedData() {
     this._filterOverrides();
     //return early for Vehicles
-    if (this.data.type === 'vehicle') return;
+    if (this.type === 'vehicle') return;
 
     //die type bounding for attributes
-    for (const attribute of Object.values(this.data.data.attributes)) {
+    for (const attribute of Object.values(this.system.attributes)) {
       attribute.die = this._boundTraitDie(attribute.die);
     }
 
     //handle carry capacity
-    this.data.data.details.encumbrance = {
+    this.system.details.encumbrance = {
       max: this.calcMaxCarryCapacity(),
       value: this.calcInventoryWeight(),
     };
 
     //handle advances
-    const advances = this.data.data.advances;
+    const advances = this.system.advances;
     if (advances.mode === 'expanded') {
       const advRaw = getProperty(
-        this.data._source,
-        'data.advances.list',
+        this._source,
+        'system.advances.list',
       ) as Advance[];
       const list = new Collection<Advance>();
       advRaw.forEach((adv) => list.set(adv.id, adv));
@@ -137,7 +137,7 @@ export default class SwadeActor extends Actor {
       advances.rank = util.getRankFromAdvanceAsString(activeAdvances);
     }
 
-    let pace = this.data.data.stats.speed.value;
+    let pace = this.system.stats.speed.value;
 
     //subtract encumbrance, if necessary
     if (this.isEncumbered) pace -= 2;
@@ -145,21 +145,21 @@ export default class SwadeActor extends Actor {
     //modify pace with wounds
     if (game.settings.get('swade', 'enableWoundPace')) {
       //bound maximum wound penalty to -3
-      const wounds = Math.min(this.data.data.wounds.value, 3);
+      const wounds = Math.min(this.system.wounds.value, 3);
       //subtract wounds
       pace -= wounds;
     }
     //make sure the pace doesn't go below 1
-    this.data.data.stats.speed.adjusted = Math.max(pace, 1);
+    this.system.stats.speed.adjusted = Math.max(pace, 1);
 
     //set scale
-    this.data.data.stats.scale = this.calcScale(this.data.data.stats.size);
+    this.system.stats.scale = this.calcScale(this.system.stats.size);
 
     // Toughness calculation
-    const shouldAutoCalcToughness = this.data.data.details.autoCalcToughness;
+    const shouldAutoCalcToughness = this.system.details.autoCalcToughness;
     if (shouldAutoCalcToughness) {
-      const adjustedTough = this.data.data.stats.toughness.value;
-      const adjustedArmor = this.data.data.stats.toughness.armor;
+      const adjustedTough = this.system.stats.toughness.value;
+      const adjustedArmor = this.system.stats.toughness.armor;
 
       //add some sensible lower limits
       const finalArmor = Math.max(this.calcArmor() + adjustedArmor, 0);
@@ -167,28 +167,27 @@ export default class SwadeActor extends Actor {
         this.calcToughness(false) + adjustedTough + finalArmor,
         1,
       );
-      this.data.data.stats.toughness.value = finalTough;
-      this.data.data.stats.toughness.armor = finalArmor;
+      this.system.stats.toughness.value = finalTough;
+      this.system.stats.toughness.armor = finalArmor;
     }
 
-    const shouldAutoCalcParry = this.data.data.details.autoCalcParry;
+    const shouldAutoCalcParry = this.system.details.autoCalcParry;
     if (shouldAutoCalcParry) {
-      const adjustedParry = this.data.data.stats.parry.value;
+      const adjustedParry = this.system.stats.parry.value;
       const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
-      this.data.data.stats.parry.value = completeParry;
+      this.system.stats.parry.value = completeParry;
     }
   }
 
   async rollAttribute(attribute: Attribute, options: IRollOptions = {}) {
-    if (this.data.type === 'vehicle') return null;
+    if (this.type === 'vehicle') return null;
     if (options.rof && options.rof > 1) {
       ui.notifications.warn(
         'Attribute Rolls with RoF greater than 1 are not currently supported',
       );
     }
     const label: string = SWADE.attributes[attribute].long;
-    const actorData = this.data;
-    const abl = actorData.data.attributes[attribute];
+    const abl = this.system.attributes[attribute];
     const rolls = new Array<Roll>();
 
     const attrRoll = new Roll('');
@@ -330,10 +329,10 @@ export default class SwadeActor extends Actor {
   }
 
   async rollWealthDie() {
-    if (this.data.type === 'vehicle') return;
-    const die = this.data.data.details.wealth.die ?? 6;
-    const mod = this.data.data.details.wealth.modifier ?? 0;
-    const wildDie = this.data.data.details.wealth['wild-die'] ?? 6;
+    if (this.type === 'vehicle') return;
+    const die = this.system.details.wealth.die ?? 6;
+    const mod = this.system.details.wealth.modifier ?? 0;
+    const wildDie = this.system.details.wealth['wild-die'] ?? 6;
     if (die < 4) {
       ui.notifications.warn('SWADE.WealthDie.Broke.Hint', { localize: true });
       return null;
@@ -404,8 +403,8 @@ export default class SwadeActor extends Actor {
   }
 
   async spendBenny() {
-    if (this.data.type === 'vehicle') return;
-    const currentBennies = getProperty(this.data.data, 'bennies.value');
+    if (this.type === 'vehicle') return;
+    const currentBennies = getProperty(this.system, 'bennies.value');
     //return early if there no bennies to spend
     if (currentBennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {
@@ -435,7 +434,7 @@ export default class SwadeActor extends Actor {
   }
 
   async getBenny() {
-    if (this.data.type === 'vehicle') return;
+    if (this.type === 'vehicle') return;
     const combatant = this.token?.combatant;
     const notHiddenNPC =
       !combatant?.isNPC || (combatant?.isNPC && !combatant?.hidden);
@@ -450,7 +449,7 @@ export default class SwadeActor extends Actor {
       ChatMessage.create(chatData);
     }
     await this.update({
-      'data.bennies.value': this.data.data.bennies.value + 1,
+      'data.bennies.value': this.system.bennies.value + 1,
     });
   }
 
@@ -495,7 +494,7 @@ export default class SwadeActor extends Actor {
    * @param displayToChat display a message to chat
    */
   async refreshBennies(displayToChat = true) {
-    if (this.data.type === 'vehicle') return;
+    if (this.type === 'vehicle') return;
     if (displayToChat) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this,
@@ -506,7 +505,7 @@ export default class SwadeActor extends Actor {
       };
       ChatMessage.create(chatData);
     }
-    let newValue = this.data.data.bennies.max;
+    let newValue = this.system.bennies.max;
     const hardChoices = game.settings.get('swade', 'hardChoices');
     if (
       hardChoices &&
@@ -522,8 +521,8 @@ export default class SwadeActor extends Actor {
   /** Calculates the total Wound Penalties */
   calcWoundPenalties(): number {
     let retVal = 0;
-    const wounds = parseInt(getProperty(this.data, 'data.wounds.value'));
-    let ignoredWounds = parseInt(getProperty(this.data, 'data.wounds.ignored'));
+    const wounds = parseInt(getProperty(this.system, 'wounds.value'));
+    let ignoredWounds = parseInt(getProperty(this.system, 'wounds.ignored'));
     if (isNaN(ignoredWounds)) ignoredWounds = 0;
 
     if (!isNaN(wounds)) {
@@ -544,16 +543,16 @@ export default class SwadeActor extends Actor {
   /** Calculates the total Fatigue Penalties */
   calcFatiguePenalties(): number {
     let retVal = 0;
-    const fatigue = parseInt(getProperty(this.data, 'data.fatigue.value'));
+    const fatigue = parseInt(getProperty(this.system, 'fatigue.value'));
     if (!isNaN(fatigue)) retVal -= fatigue;
     return retVal;
   }
 
   calcStatusPenalties(): number {
     let retVal = 0;
-    const isDistracted = getProperty(this.data, 'data.status.isDistracted');
-    const isEntangled = getProperty(this.data, 'data.status.isEntangled');
-    const isBound = getProperty(this.data, 'data.status.isBound');
+    const isDistracted = getProperty(this.system, 'status.isDistracted');
+    const isEntangled = getProperty(this.system, 'status.isEntangled');
+    const isBound = getProperty(this.system, 'status.isBound');
     if (isDistracted || isEntangled || isBound) {
       retVal -= 2;
     }
@@ -583,17 +582,17 @@ export default class SwadeActor extends Actor {
    */
   override getRollData(): Record<string, number | string> {
     const out: Record<string, any> = {
-      wounds: this.data.data.wounds.value || 0,
+      wounds: this.system.wounds.value || 0,
     };
 
     //return early if the actor is a vehicle
-    if (this.data.type === 'vehicle') {
-      out.topspeed = this.data.data.topspeed || 0;
+    if (this.type === 'vehicle') {
+      out.topspeed = this.system.topspeed || 0;
       return out;
     }
 
     // Attributes
-    const attributes = this.data.data.attributes;
+    const attributes = this.system.attributes;
     for (const [key, attribute] of Object.entries(attributes)) {
       const short = key.substring(0, 3);
       const name = game.i18n.localize(SWADE.attributes[key].long);
@@ -607,15 +606,15 @@ export default class SwadeActor extends Actor {
 
     const skills = this.itemTypes.skill;
     for (const skill of skills) {
-      if (skill.data.type !== 'skill') continue;
-      const skillDie = Number(skill.data.data.die.sides);
-      const skillMod = Number(skill.data.data.die.modifier);
+      if (skill.type !== 'skill') continue;
+      const skillDie = Number(skill.system.die.sides);
+      const skillMod = Number(skill.system.die.modifier);
       const name = skill.name!.slugify({ strict: true });
       const skillModString = skillMod !== 0 ? skillMod.signedString() : '';
       out[name] = `1d${skillDie}[${skill.name}]${skillModString}`;
     }
-    out.fatigue = this.data.data.fatigue.value || 0;
-    out.pace = this.data.data.stats.speed.adjusted || 0;
+    out.fatigue = this.system.fatigue.value || 0;
+    out.pace = this.system.stats.speed.adjusted || 0;
 
     return out;
   }
@@ -630,17 +629,17 @@ export default class SwadeActor extends Actor {
    * @param includeArmor include armor in final value (true/false). Default is true
    */
   calcToughness(includeArmor = true): number {
-    if (this.data.type === 'vehicle') return 0;
+    if (this.type === 'vehicle') return 0;
     let finalToughness = 0;
 
     //get the base values we need
-    const vigor = this.data.data.attributes.vigor.die.sides;
-    const vigMod = this.data.data.attributes.vigor.die.modifier;
-    const toughMod = this.data.data.stats.toughness.modifier;
+    const vigor = this.system.attributes.vigor.die.sides;
+    const vigMod = this.system.attributes.vigor.die.modifier;
+    const toughMod = this.system.stats.toughness.modifier;
 
     finalToughness = Math.round(vigor / 2) + 2;
 
-    const size = this.data.data.stats.size ?? 0;
+    const size = this.system.stats.size ?? 0;
     finalToughness += size;
     finalToughness += toughMod;
 
@@ -650,12 +649,12 @@ export default class SwadeActor extends Actor {
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
-      if (armor.data.type !== 'armor') continue;
+      if (armor.type !== 'armor') continue;
       if (
-        armor.data.data.equipStatus !== constants.EQUIP_STATE.STORED &&
-        armor.data.data.locations.torso
+        armor.system.equipStatus !== constants.EQUIP_STATE.STORED &&
+        armor.system.locations.torso
       ) {
-        finalToughness += armor.data.data.toughness;
+        finalToughness += armor.system.toughness;
       }
     }
 
@@ -668,9 +667,9 @@ export default class SwadeActor extends Actor {
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
   calcMaxCarryCapacity(): number {
-    if (this.data.type === 'vehicle') return 0;
+    if (this.type === 'vehicle') return 0;
     const unit = game.settings.get('swade', 'weightUnit');
-    const strength = deepClone(this.data.data.attributes.strength);
+    const strength = deepClone(this.system.attributes.strength);
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
     strength.die.sides += stepAdjust;
     //bound the adjusted strength die to 12
@@ -687,25 +686,25 @@ export default class SwadeActor extends Actor {
 
   calcInventoryWeight(): number {
     const items = this.items.map((i) =>
-      i.data.type === 'armor' ||
-      i.data.type === 'weapon' ||
-      i.data.type === 'shield' ||
-      i.data.type === 'gear' ||
-      i.data.type === 'consumable'
-        ? i.data
+      i.type === 'armor' ||
+      i.type === 'weapon' ||
+      i.type === 'shield' ||
+      i.type === 'gear' ||
+      i.type === 'consumable'
+        ? i.system
         : null,
     );
     let retVal = 0;
-    if (this.data.type === 'vehicle') {
+    if (this.type === 'vehicle') {
       for (const item of items) {
         if (!item) continue;
-        retVal += item.data.weight * item.data.quantity;
+        retVal += item.weight * item.quantity;
       }
     } else {
       for (const item of items) {
         if (!item) continue;
-        if (item.data.equipStatus !== constants.EQUIP_STATE.STORED) {
-          retVal += item.data.weight * item.data.quantity;
+        if (item.equipStatus !== constants.EQUIP_STATE.STORED) {
+          retVal += item.weight * item.quantity;
         }
       }
     }
@@ -713,7 +712,7 @@ export default class SwadeActor extends Actor {
   }
 
   calcParry(): number {
-    if (this.data.type === 'vehicle') return 0;
+    if (this.type === 'vehicle') return 0;
     let parryTotal = 0;
     const parryBase = game.settings.get('swade', 'parryBaseSkill');
     const parryBaseSkill = this.itemTypes.skill.find(
@@ -723,8 +722,8 @@ export default class SwadeActor extends Actor {
     let skillDie = 0;
     let skillMod = 0;
     if (parryBaseSkill) {
-      skillDie = getProperty(parryBaseSkill, 'data.data.die.sides') ?? 0;
-      skillMod = getProperty(parryBaseSkill, 'data.data.die.modifier') ?? 0;
+      skillDie = getProperty(parryBaseSkill.system, 'die.sides') ?? 0;
+      skillMod = getProperty(parryBaseSkill.system, 'die.modifier') ?? 0;
     }
 
     //base parry calculation
@@ -737,20 +736,20 @@ export default class SwadeActor extends Actor {
 
     //add shields
     for (const shield of this.itemTypes.shield) {
-      if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        parryTotal += shield.data.data.parry ?? 0;
+      if (shield.type !== 'shield') continue;
+      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
+        parryTotal += shield.system.parry ?? 0;
       }
     }
 
     //add equipped weapons
     //TODO check for off-hand weapons and ambidexterity
     for (const weapon of this.itemTypes.weapon) {
-      if (weapon.data.type !== 'weapon') continue;
-      if (weapon.data.data.equipStatus >= constants.EQUIP_STATE.EQUIPPED) {
-        parryTotal += weapon.data.data.parry ?? 0;
+      if (weapon.type !== 'weapon') continue;
+      if (weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED) {
+        parryTotal += weapon.system.parry ?? 0;
         //add trademark weapon bonus
-        parryTotal += weapon.data.data.trademark;
+        parryTotal += weapon.system.trademark;
       }
     }
 
@@ -759,20 +758,20 @@ export default class SwadeActor extends Actor {
 
   /** Helper Function for Vehicle Actors, to roll Maneuvering checks */
   async rollManeuverCheck() {
-    if (this.data.type !== 'vehicle') return;
+    if (this.type !== 'vehicle') return;
     const driver = await this.getDriver();
 
     //Return early if no driver was found
     if (!driver) return;
 
     //Get skillname
-    let skillName = this.data.data.driver.skill;
+    let skillName = this.system.driver.skill;
     if (skillName === '') {
-      skillName = this.data.data.driver.skillAlternative;
+      skillName = this.system.driver.skillAlternative;
     }
 
     // Calculate handling
-    const handling = this.data.data.handling;
+    const handling = this.system.handling;
     const wounds = this.calcWoundPenalties();
     const basePenalty = handling + wounds;
 
@@ -795,8 +794,8 @@ export default class SwadeActor extends Actor {
   }
 
   async getDriver(): Promise<SwadeActor | undefined> {
-    if (this.data.type !== 'vehicle') return;
-    const driverId = this.data.data.driver.id;
+    if (this.type !== 'vehicle') return;
+    const driverId = this.system.driver.id;
     let driver: SwadeActor | undefined = undefined;
     if (driverId) {
       try {
@@ -812,14 +811,14 @@ export default class SwadeActor extends Actor {
     skill: SwadeItem,
     options: IRollOptions,
   ): [Roll, TraitRollModifier[]] {
-    if (this.data.type === 'vehicle') {
+    if (this.type === 'vehicle') {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
-    if (skill.data.type !== 'skill') {
+    if (skill.type !== 'skill') {
       throw new Error('Detected-non skill in skill roll construction');
     }
     if (!options.rof) options.rof = 1;
-    const skillData = skill.data.data;
+    const skillData = skill.system;
 
     const rolls = new Array<Roll>();
 
@@ -849,7 +848,7 @@ export default class SwadeActor extends Actor {
     );
 
     //add encumbrance penalty if necessary
-    if (skill.data.data.attribute === 'agility' && this.isEncumbered) {
+    if (skill.system.attribute === 'agility' && this.isEncumbered) {
       rollMods.push({
         label: game.i18n.localize('SWADE.Encumbered'),
         value: -2,
@@ -945,19 +944,19 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    if (this.data.type !== 'vehicle') {
+    if (this.type !== 'vehicle') {
       //Status penalties
-      if (this.data.data.status.isEntangled) {
+      if (this.system.status.isEntangled) {
         mods.push({
           label: game.i18n.localize('SWADE.Entangled'),
           value: -2,
         });
-      } else if (this.data.data.status.isBound) {
+      } else if (this.system.status.isBound) {
         mods.push({
           label: game.i18n.localize('SWADE.Bound'),
           value: -2,
         });
-      } else if (this.data.data.status.isDistracted) {
+      } else if (this.system.status.isDistracted) {
         mods.push({
           label: game.i18n.localize('SWADE.Distr'),
           value: -2,
@@ -967,7 +966,7 @@ export default class SwadeActor extends Actor {
       //Conviction Die
       const useConviction =
         this.isWildcard &&
-        this.data.data.details.conviction.active &&
+        this.system.details.conviction.active &&
         game.settings.get('swade', 'enableConviction');
       if (useConviction) {
         mods.push({
@@ -997,46 +996,46 @@ export default class SwadeActor extends Actor {
    * @returns The total amount of armor for that location
    */
   private _getArmorForLocation(location: ArmorLocation): number {
-    if (this.data.type === 'vehicle') return 0;
+    if (this.type === 'vehicle') return 0;
 
     let totalArmorVal = 0;
 
     //get armor items and retrieve their data
     const armorList = this.itemTypes.armor.map((i) =>
-      i.data.type === 'armor' ? i.data : null,
+      i.type === 'armor' ? i.system : null,
     );
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = i?.data.equipStatus !== constants.EQUIP_STATE.STORED;
-        const isLocation = i?.data.locations[location];
-        const isNaturalArmor = i?.data.isNaturalArmor;
+        const isEquipped = i?.equipStatus !== constants.EQUIP_STATE.STORED;
+        const isLocation = i?.locations[location];
+        const isNaturalArmor = i?.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;
       })
       .sort((a, b) => {
-        const aValue = Number(a!.data.armor);
-        const bValue = Number(b!.data.armor);
+        const aValue = Number(a?.armor);
+        const bValue = Number(b?.armor);
         return bValue - aValue;
       });
 
     if (nonNaturalArmors.length === 1) {
-      totalArmorVal = Number(nonNaturalArmors[0]!.data.armor);
+      totalArmorVal = Number(nonNaturalArmors[0]!.armor);
     } else if (nonNaturalArmors.length > 1) {
       totalArmorVal =
-        Number(nonNaturalArmors[0]!.data.armor) +
-        Math.floor(Number(nonNaturalArmors[1]!.data.armor) / 2);
+        Number(nonNaturalArmors[0]?.armor) +
+        Math.floor(Number(nonNaturalArmors[1]?.armor) / 2);
     }
 
     //add natural armor
     armorList
       .filter((i) => {
-        const isEquipped = i?.data.equipStatus !== constants.EQUIP_STATE.STORED;
-        const isLocation = i?.data.locations[location];
-        const isNaturalArmor = i!.data.isNaturalArmor;
+        const isEquipped = i?.equipStatus !== constants.EQUIP_STATE.STORED;
+        const isLocation = i?.locations[location];
+        const isNaturalArmor = i?.isNaturalArmor;
         return isNaturalArmor && isEquipped && isLocation;
       })
       .forEach((i) => {
-        totalArmorVal += Number(i!.data.armor);
+        totalArmorVal += Number(i?.armor);
       });
 
     return totalArmorVal;
@@ -1081,7 +1080,7 @@ export default class SwadeActor extends Actor {
 
       // extract skill data
       const skills = skillIndex
-        .filter((i) => i.data.type === 'skill')
+        .filter((i) => i.type === 'skill')
         .filter((i) => coreSkills.includes(i.data.name))
         .map((s) => s.data.toObject());
 
@@ -1093,7 +1092,7 @@ export default class SwadeActor extends Actor {
             type: 'skill',
             img: 'systems/swade/assets/icons/skill.svg',
             //@ts-expect-error We're just adding some base data for a skill here.
-            data: {
+            system: {
               attribute: '',
             },
           });
@@ -1102,7 +1101,7 @@ export default class SwadeActor extends Actor {
 
       //set all the skills to be core skills
       for (const skill of skills) {
-        if (skill.type === 'skill') skill.data.isCoreSkill = true;
+        if (skill.type === 'skill') skill.system.isCoreSkill = true;
       }
 
       //Add the Untrained skill
@@ -1121,7 +1120,7 @@ export default class SwadeActor extends Actor {
       });
       //Add the items to the creation data
 
-      this.data.update({ items: skills });
+      this.data.updateSource({ items: skills });
     }
   }
 
@@ -1131,7 +1130,7 @@ export default class SwadeActor extends Actor {
     user: string,
   ) {
     super._onUpdate(changed, options, user);
-    if (this.data.type === 'npc') {
+    if (this.type === 'npc') {
       ui.actors?.render(true);
     }
     if (hasProperty(changed, 'data.bennies') && this.hasPlayerOwner) {

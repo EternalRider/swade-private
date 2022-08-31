@@ -14,7 +14,7 @@ export function listenJournalDrop() {
 
   // Create the tile with the gathered information
   async function _onDropImage(event: DragEvent, data: JournalImageDropData) {
-    if (data.type == 'image') {
+    if (type == 'image') {
       // Determine the tile size
       const tex = await loadTexture(data.src);
       const t = getCanvas().app!.stage.worldTransform;

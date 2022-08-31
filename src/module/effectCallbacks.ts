@@ -25,7 +25,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
           if (
             !parent ||
             parent instanceof SwadeItem ||
-            parent?.data.type === 'vehicle'
+            parent?.type === 'vehicle'
           ) {
             return;
           }
@@ -40,7 +40,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
                 label: game.i18n.localize(
                   'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
                 ),
-                value: parent.data.data.attributes.spirit.unShakeBonus,
+                value: parent.system.attributes.spirit.unShakeBonus,
               },
             ],
           });

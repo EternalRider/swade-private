@@ -120,9 +120,9 @@ export default class CharacterSheet extends ActorSheet {
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      if (this.actor.data.type === 'vehicle') return;
-      const current = this.actor.data.data.details.conviction.value;
-      const active = this.actor.data.data.details.conviction.active;
+      if (this.actor.type === 'vehicle') return;
+      const current = this.actor.system.details.conviction.value;
+      const active = this.actor.system.details.conviction.active;
       if (current > 0 && !active) {
         await this.actor.update({
           'data.details.conviction.value': current - 1,
@@ -174,11 +174,11 @@ export default class CharacterSheet extends ActorSheet {
 
     //Running Die
     html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
 
-      const runningDieSides = this.actor.data.data.stats.speed.runningDie;
-      const runningMod = this.actor.data.data.stats.speed.runningMod;
-      const pace = this.actor.data.data.stats.speed.adjusted;
+      const runningDieSides = this.actor.system.stats.speed.runningDie;
+      const runningMod = this.actor.systemats.speed.runningMod;
+      const pace = this.actor.systemats.speed.adjusted;
       const runningDie = `1d${runningDieSides}[${game.i18n.localize(
         'SWADE.RunningDie',
       )}]`;
@@ -475,7 +475,7 @@ export default class CharacterSheet extends ActorSheet {
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat!;
-      const statData = this.actor.data.data.additionalStats[stat]!;
+      const statData = this.actor.system.additionalStats[stat]!;
       let modifier = statData.modifier || '';
       if (!!modifier && !modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
@@ -498,13 +498,13 @@ export default class CharacterSheet extends ActorSheet {
 
     //Advances
     html.find('.advance-action').on('click', (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
       const button = ev.currentTarget;
       const id = $(button).parents('li.advance').data().advanceId;
       switch (button.dataset.action) {
         case 'edit':
           new AdvanceEditor({
-            advance: this.actor.data.data.advances.list.get(id, {
+            advance: this.actor.system.advances.list.get(id, {
               strict: true,
             }),
             actor: this.actor,
@@ -532,7 +532,7 @@ export default class CharacterSheet extends ActorSheet {
 
   override async getData() {
     const data: any = super.getData();
-    if (this.actor.data.type === 'vehicle') return data;
+    if (this.actor.type === 'vehicle') return data;
 
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.values()).sort(
@@ -543,7 +543,7 @@ export default class CharacterSheet extends ActorSheet {
     for (const item of items as any[]) {
       // Basic template rendering data
       const data = item.data;
-      const actions = item.data.data?.actions?.additional ?? {};
+      const actions = item.system?.actions?.additional ?? {};
       item.actions = [];
 
       for (const action in actions) {
@@ -604,19 +604,19 @@ export default class CharacterSheet extends ActorSheet {
     }
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
 
-    const powerFilter = (i) => i.data.type === 'power';
+    const powerFilter = (i) => i.type === 'power';
     //Deal with ABs and Powers
     const powers = {
       arcanes: {},
       arcanesCount: this.actor.items
         .filter(powerFilter)
         .map((p) => {
-          return p.data.data['arcane'];
+          return p.system['arcane'];
         })
         .filter(Boolean).length,
       hasPowersWithoutArcane:
         this.actor.items.filter(powerFilter).reduce((acc, cur) => {
-          if (cur.data.data['arcane']) {
+          if (cur.system['arcane']) {
             return acc;
           } else {
             return (acc += 1);
@@ -625,8 +625,8 @@ export default class CharacterSheet extends ActorSheet {
     };
 
     for (const power of this.actor.items.filter(powerFilter)) {
-      if (power.data.type !== 'power') continue;
-      const arcane = power.data.data.arcane;
+      if (power.type !== 'power') continue;
+      const arcane = power.system.arcane;
       if (!arcane) continue;
       if (!powers.arcanes[arcane]) {
         powers.arcanes[arcane] = {
@@ -645,9 +645,9 @@ export default class CharacterSheet extends ActorSheet {
     data.powers = powers;
     data.parry = 0;
     for (const shield of this.actor.itemTypes.shield) {
-      if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        data.parry += shield.data.data.parry;
+      if (shield.type !== 'shield') continue;
+      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
+        data.parry += shield.system.parry;
       }
     }
     // Check for enabled optional rules
@@ -661,23 +661,23 @@ export default class CharacterSheet extends ActorSheet {
     };
 
     data.advances = {
-      expanded: this.actor.data.data.advances.mode === 'expanded',
+      expanded: this.actor.system.advances.mode === 'expanded',
       list: this._getAdvances(),
     };
 
     data.archetype = {
-      value: this.actor.data.data.details.archetype
+      value: this.actor.system.details.archetype
         ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.data.data.details.archetype),
+            TextEditor.enrichHTML(this.actor.system.details.archetype),
           )
         : game.i18n.localize('SWADE.Archetype'),
       label: 'SWADE.Archetype',
     };
 
     data.species = {
-      value: this.actor.data.data.details.species.name
+      value: this.actor.system.details.species.name
         ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.data.data.details.species.name),
+            TextEditor.enrichHTML(this.actor.system.details.species.name),
           )
         : game.i18n.localize('SWADE.Race'),
       label: 'SWADE.Race',
@@ -693,9 +693,9 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private _getAdvances() {
-    if (this.actor.data.type === 'vehicle') return [];
+    if (this.actor.type === 'vehicle') return [];
     const retVal = new Array<{ rank: string; list: Advance[] }>();
-    const advances = this.actor.data.data.advances.list;
+    const advances = this.actor.system.advances.list;
     for (const advance of advances) {
       const sort = advance.sort;
       const rankIndex = util.getRankFromAdvance(advance.sort);
@@ -712,19 +712,17 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected _getPowerPoints(item: SwadeItem) {
-    if (item.data.type !== 'power') return {};
-    const arcane = item.data.data.arcane;
-    let current = getProperty(item.actor!, 'data.data.powerPoints.value');
-    let max = getProperty(item.actor!, 'data.data.powerPoints.max');
+    if (item.type !== 'power') return {};
+    const arcane = item.system.arcane;
+    let current = getProperty(item.actor!, 'system.powerPoints.value');
+    let max = getProperty(item.actor!, 'system.powerPoints.max');
     if (arcane) {
-      current = getProperty(
-        item.actor!,
-        `data.data.powerPoints.${arcane}.value`,
-      );
-      max = getProperty(item.actor!, `data.data.powerPoints.${arcane}.max`);
+      current = getProperty(item.actor!, `system.powerPoints.${arcane}.value`);
+      max = getProperty(item.actor!, `system.powerPoints.${arcane}.max`);
     }
     return { current, max };
   }
+  system;
 
   /** Extend and override the sheet header buttons */
   protected override _getHeaderButtons() {
@@ -908,8 +906,8 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private async _addAdvance() {
-    if (this.actor.data.type === 'vehicle') return;
-    const advances = this.actor.data.data.advances.list;
+    if (this.actor.type === 'vehicle') return;
+    const advances = this.actor.system.advances.list;
     const newAdvance: Advance = {
       id: foundry.utils.randomID(8),
       type: constants.ADVANCE_TYPE.EDGE,
@@ -926,7 +924,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private async _deleteAdvance(id: string) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     Dialog.confirm({
       title: game.i18n.localize('SWADE.Advances.Delete'),
       content: `<form>
@@ -936,8 +934,8 @@ export default class CharacterSheet extends ActorSheet {
     </form>`,
       defaultYes: false,
       yes: () => {
-        if (this.actor.data.type === 'vehicle') return;
-        const advances = this.actor.data.data.advances.list;
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
         advances.delete(id);
         const arr = advances.toJSON();
         arr.forEach((a, i) => (a.sort = i + 1));
@@ -947,7 +945,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private async _toggleAdvancePlanned(id: string) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     Dialog.confirm({
       title: game.i18n.localize('SWADE.Advances.Toggle'),
       content: `<form>
@@ -957,8 +955,8 @@ export default class CharacterSheet extends ActorSheet {
       </form>`,
       defaultYes: false,
       yes: () => {
-        if (this.actor.data.type === 'vehicle') return;
-        const advances = this.actor.data.data.advances.list;
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
         const advance = advances.get(id, { strict: true });
         advance.planned = !advance.planned;
         advances.set(id, advance);
@@ -971,7 +969,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private _setupCharacterDetailInput(ev: JQuery.ClickEvent) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     //gather data
     const display = $(ev.currentTarget).parent().find('span.display');
     const detail = display.data().detail;
@@ -1048,7 +1046,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          if (item.data.type === 'gear') return item.data.data.equippable;
+          if (item.type === 'gear') return item.system.equippable;
           return !['weapon', 'consumable'].includes(item.type);
         },
         callback: (i: JQuery<HTMLOListElement>) => {
@@ -1063,7 +1061,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1077,7 +1075,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1091,7 +1089,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;

@@ -83,12 +83,12 @@ export default class ActionCardEditor extends FormApplication {
   }
 
   private _sortCards(a: Card, b: Card) {
-    const suitA = a.data.data['suit'];
-    const suitB = b.data.data['suit'];
+    const suitA = a.system['suit'];
+    const suitB = b.system['suit'];
     const suit = suitB - suitA;
     if (suit !== 0) return suit;
-    const cardA = a.data.value ?? 0;
-    const cardB = b.data.value ?? 0;
+    const cardA = a.value ?? 0;
+    const cardB = b.value ?? 0;
     const card = cardB - cardA;
     return card;
   }

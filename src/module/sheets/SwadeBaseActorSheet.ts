@@ -139,7 +139,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     //Running Die
     html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
 
       const runningDieSides = this.actor.data.data.stats.speed.runningDie;
       const runningMod = this.actor.data.data.stats.speed.runningMod;
@@ -264,7 +264,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       a.name!.localeCompare(b.name!),
     );
 
-    if (this.actor.data.type !== 'vehicle') {
+    if (this.actor.type !== 'vehicle') {
       //Encumbrance
       data.inventoryWeight = this._calcInventoryWeight([
         ...data.itemsByType['gear'],
@@ -274,7 +274,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       ]);
       data.maxCarryCapacity = this.actor.calcMaxCarryCapacity();
 
-      if (this.actor.data.type === 'character') {
+      if (this.actor.type === 'character') {
         data.powersOptions =
           'class="powers-list resizable" data-base-size="560"';
       } else {

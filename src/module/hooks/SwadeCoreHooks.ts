@@ -62,9 +62,9 @@ export default class SwadeCoreHooks {
         type: Object,
         default: {
           labelColor: '#000000',
-          diceColor: game.user?.data.color,
-          outlineColor: game.user?.data.color,
-          edgeColor: game.user?.data.color,
+          diceColor: game.user?.color,
+          outlineColor: game.user?.color,
+          edgeColor: game.user?.color,
         },
       },
       dsnCustomWildDieOptions: {
@@ -130,7 +130,7 @@ export default class SwadeCoreHooks {
 
       if (wildcard) {
         element.innerHTML = `
-					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.data.name}</a>
+					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.name}</a>
 					`;
       }
     }
@@ -149,11 +149,11 @@ export default class SwadeCoreHooks {
       },
       {
         label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
-        url: game.system.data.changelog as string,
+        url: game.system.changelog as string,
       },
       {
         label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
-        url: game.system.data.readme as string,
+        url: game.system.readme as string,
       },
     ];
 
@@ -232,7 +232,7 @@ export default class SwadeCoreHooks {
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         return (
           deck.type === 'deck' &&
-          deck.cards.contents.every((c) => c.data.type === 'poker') &&
+          deck.cards.contents.every((c) => c.type === 'poker') &&
           deck.isOwner
         );
       },
@@ -927,8 +927,8 @@ export default class SwadeCoreHooks {
         item = game.items!.get(data.id, { strict: true });
       }
       //check if it's the proper type and subtype
-      if (item.data.type !== 'ability') return;
-      const subType = item.data.data.subtype;
+      if (item.type !== 'ability') return;
+      const subType = item.system.subtype;
       if (subType === 'special') return;
       //set name from archetype/race
       if (subType === 'race') {
@@ -944,7 +944,7 @@ export default class SwadeCoreHooks {
       const duplicates = new Array<{ type: string; name: string }>();
       for (const entry of map.values()) {
         const existingItems = actor.items.filter(
-          (i) => i.data.type === entry.type && i.name === entry.name,
+          (i) => i.type === entry.type && i.name === entry.name,
         );
         if (existingItems.length > 0) {
           duplicates.push({
@@ -1010,12 +1010,12 @@ export default class SwadeCoreHooks {
     const deck = game.cards!.get(actionDeckID, { strict: true });
 
     const cards = Array.from(deck.cards.values()).sort((a, b) => {
-      const cardA = a.data.value!;
-      const cardB = b.data.value!;
+      const cardA = a.value!;
+      const cardB = b.value!;
       const card = cardA - cardB;
       if (card !== 0) return card;
-      const suitA = a.data.data['suit'];
-      const suitB = b.data.data['suit'];
+      const suitA = a.system['suit'];
+      const suitB = b.system['suit'];
       const suit = suitA - suitB;
       return suit;
     });
@@ -1024,8 +1024,8 @@ export default class SwadeCoreHooks {
 
     const cardList = new Array<any>();
     for (const card of cards) {
-      const cardValue = card.data.value!;
-      const suitValue = card.data.data['suit'];
+      const cardValue = card.value!;
+      const suitValue = card.system['suit'];
       const color =
         suitValue === 2 || suitValue === 3 ? 'color: red;' : 'color: black;';
       const isDealt =
@@ -1043,11 +1043,11 @@ export default class SwadeCoreHooks {
         isAvailable,
         name: card.name,
         cardString: card.data.description,
-        isJoker: card.data.data['isJoker'],
+        isJoker: card.system['isJoker'],
       });
     }
     const numberOfJokers = cards.filter(
-      (card) => card.data.data['isJoker'],
+      (card) => card.system['isJoker'],
     ).length;
 
     //render and inject new HTML
@@ -1069,9 +1069,9 @@ export default class SwadeCoreHooks {
       const cardId = selectedCard.data().cardId as string;
       const card = deck.cards.get(cardId, { strict: true });
 
-      const cardValue = card.data.value as number;
-      const suitValue = card.data.data['suit'] as number;
-      const hasJoker = card.data.data['isJoker'] as boolean;
+      const cardValue = card.value as number;
+      const suitValue = card.system['suit'] as number;
+      const hasJoker = card.system['isJoker'] as boolean;
       const cardString = card.data.description;
 
       //move the card to the discard pile
@@ -1174,8 +1174,8 @@ export default class SwadeCoreHooks {
 
   /** This hook only really exists to stop Races from being added to the actor as an item */
   static onPreCreateItem(item: SwadeItem, options: object, userId: string) {
-    if (item.parent && item.data.type === 'ability') {
-      const subType = item.data.data.subtype;
+    if (item.parent && item.type === 'ability') {
+      const subType = item.system.subtype;
       if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
     }
   }
