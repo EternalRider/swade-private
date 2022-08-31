@@ -91,7 +91,7 @@
           </span>
           <span class='current-pp'>
             {{#if item.system.arcane}}
-              {{#each @root.actor.data.system.powerPoints as |ab|}}
+              {{#each @root.actor.system.powerPoints as |ab|}}
                 {{#if (eq @key @root.item.system.arcane)}}
                   {{ab.value}}
                 {{/if}}

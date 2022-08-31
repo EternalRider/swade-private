@@ -2,7 +2,7 @@
 import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { ConfiguredDocumentClass } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
-import { ItemMetadata, JournalMetadata } from '../../globals';
+import { ItemMetadata, JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import Bennies from '../bennies';
@@ -10,6 +10,7 @@ import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
@@ -1051,9 +1052,8 @@ export default class SwadeCoreHooks {
 
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
-    $(await renderTemplate(path, { cardList, numberOfJokers })).insertBefore(
-      `#combatant-config-${options.document.id} footer`,
-    );
+    const element = await renderTemplate(path, { cardList, numberOfJokers });
+    html.find('footer').before(element);
 
     //pull the combatant from the Config Object
     const combatant = app.object;
@@ -1080,7 +1080,7 @@ export default class SwadeCoreHooks {
       await card.discard(discardPile, { chatNotification: false });
 
       //update the combatant with the new card
-      const updates = new Array<Record<string, unknown>>();
+      const updates = new Array<Updates>();
       updates.push({
         _id: combatant.id,
         initiative: suitValue + cardValue,
@@ -1116,7 +1116,7 @@ export default class SwadeCoreHooks {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
     const createOption = (
-      exp: ValueOf<typeof SWADE.CONST.STATUS_EFFECT_EXPIRATION> | undefined,
+      exp: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION> | undefined,
       label: string,
     ) => {
       return `<option value="${exp}" ${
@@ -1126,19 +1126,19 @@ export default class SwadeCoreHooks {
     const expirationOpt = [
       createOption(undefined, game.i18n.localize('SWADE.Expiration.None')),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.BeginAuto'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.BeginPrompt'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.EndAuto'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.EndPrompt'),
       ),
     ];
