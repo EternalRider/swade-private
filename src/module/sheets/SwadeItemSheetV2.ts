@@ -195,7 +195,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       //return of there's no value to roll
       if (!statData.value) return;
       const roll = new Roll(`${statData.value}${modifier}`);
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
         flavor: `${this.item.name} - ${statData.label}`,

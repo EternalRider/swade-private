@@ -208,7 +208,7 @@ export default class CharacterSheet extends ActorSheet {
             return acc + cur.value + `[${cur.label}]`;
           }, '');
         const runningRoll = new Roll(rollFormula);
-        await runningRoll.evaluate({ async: true });
+        await runningRoll.evaluate();
         await runningRoll.toMessage({
           speaker: ChatMessage.getSpeaker({ actor: this.actor }),
           flavor: game.i18n.localize('SWADE.Running'),
@@ -483,7 +483,7 @@ export default class CharacterSheet extends ActorSheet {
         `${statData.value}${modifier}`,
         this.actor.getRollData(),
       );
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         flavor: statData.label,

@@ -404,18 +404,17 @@ export default class SwadeActor extends Actor {
 
   async spendBenny() {
     if (this.type === 'vehicle') return;
-    const currentBennies = getProperty(this.system, 'bennies.value');
     //return early if there no bennies to spend
-    if (currentBennies < 1) return;
+    if (this.bennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
         speaker: game.user,
       });
       const chatData = { content: message };
-      ChatMessage.create(chatData);
+      await CONFIG.ChatMessage.documentClass.create(chatData);
     }
-    await this.update({ 'system.bennies.value': currentBennies - 1 });
+    await this.update({ 'system.bennies.value': this.bennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
       const gms = game
         .users!.filter((u) => u.isGM && u.active)
@@ -424,7 +423,7 @@ export default class SwadeActor extends Actor {
     }
     if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate({ async: true }),
+        await new Roll('1dB').evaluate(),
         game.user!,
         true,
         null,
@@ -446,11 +445,21 @@ export default class SwadeActor extends Actor {
       const chatData = {
         content: message,
       };
-      ChatMessage.create(chatData);
+      await CONFIG.ChatMessage.documentClass.create(chatData);
     }
     await this.update({
       'system.bennies.value': this.bennies + 1,
     });
+
+    if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
+      game.dice3d.showForRoll(
+        await new Roll('1dB').evaluate(),
+        game.user!,
+        true,
+        null,
+        false,
+      );
+    }
   }
 
   async toggleActiveEffect(
