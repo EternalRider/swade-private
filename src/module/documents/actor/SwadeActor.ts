@@ -223,9 +223,8 @@ export default class SwadeActor extends Actor {
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * @function rollAttribute
      * @category Hooks
-     * @param {Actor} actor                     The actor that rolls the attribute
+     * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
      * @param {Roll} roll                       The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
@@ -291,10 +290,9 @@ export default class SwadeActor extends Actor {
 
     /**
      * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * @function rollSkill
      * @category Hooks
-     * @param {Actor} actor                     The actor that rolls the skill
-     * @param {Item} skill                      The Skill item that is being rolled
+     * @param {SwadeActor} actor                The actor that rolls the skill
+     * @param {SwadeItem} skill                 The Skill item that is being rolled
      * @param {Roll} roll                       The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
@@ -421,6 +419,14 @@ export default class SwadeActor extends Actor {
         .map((u) => u.id);
       game.swade.sockets.giveBenny(gms);
     }
+
+    /**
+     * A hook event that is fired after an actor spends a Benny
+     * @category Hooks
+     * @param {SwadeActor} actor                     The actor that spent the benny
+     */
+    Hooks.call('swadeSpendBenny', this);
+
     if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
         await new Roll('1dB').evaluate(),
@@ -450,6 +456,13 @@ export default class SwadeActor extends Actor {
     await this.update({
       'system.bennies.value': this.bennies + 1,
     });
+
+    /**
+     * A hook event that is fired after an actor has been awarded a benny
+     * @category Hooks
+     * @param {SwadeActor} actor                     The actor that received the benny
+     */
+    Hooks.call('swadeGetBenny', this);
 
     if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(

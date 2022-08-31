@@ -48,8 +48,16 @@ export default class SwadeUser extends User {
         ChatMessage.create(chatData);
       }
       await this.setFlag('swade', 'bennies', this.bennies - 1);
-      const dsnShowBennyAnimation = await shouldShowBennyAnimation();
-      if (!!game.dice3d && dsnShowBennyAnimation) {
+
+      /**
+       * A hook event that is fired after an actor spends a Benny
+       * @function spendBenny
+       * @category Hooks
+       * @param {SwadeUser} user                     The user that spent the benny
+       */
+      Hooks.call('swadeSpendGameMasterBenny', this);
+
+      if (!!game.dice3d && (await shouldShowBennyAnimation())) {
         game.dice3d.showForRoll(
           await new Roll('1dB').evaluate(),
           game.user!,
@@ -66,6 +74,15 @@ export default class SwadeUser extends User {
   async getBenny() {
     if (this.isGM) {
       await this.setFlag('swade', 'bennies', this.bennies + 1);
+
+      /**
+       * A hook event that is fired after an actor spends a Benny
+       * @function spendBenny
+       * @category Hooks
+       * @param {SwadeUser} user                     The user that received the benny
+       */
+      Hooks.call('swadeGetGameMasterBenny', this);
+
       createGmBennyAddMessage(this, true);
     } else if (this.character) {
       await this.character.getBenny();

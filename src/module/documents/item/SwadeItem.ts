@@ -22,7 +22,6 @@ import {
   ItemChatCardChip,
   ItemChatCardData,
   ItemChatCardPowerPoints,
-  SwadeConsumeItemCallback,
   UsageUpdates,
   UsageUpdatesContext,
 } from './SwadeItem.interface';
@@ -192,10 +191,9 @@ export default class SwadeItem extends Item {
 
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
-     * @function rollDamage
      * @category Hooks
-     * @param {Actor} actor                     The actor that owns the item which rolls the damage
-     * @param {Item} item                       The item that is used to create the damage value
+     * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
+     * @param {SwadeItem} item                  The item that is used to create the damage value
      * @param {Roll} roll                       The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
@@ -584,12 +582,7 @@ export default class SwadeItem extends Item {
      * @param charges            The charges used.
      * @param usage              The determined usage updates that resulted from consuming this item
      */
-    Hooks.call<SwadeConsumeItemCallback>(
-      'swadePreConsumeItem',
-      this,
-      charges,
-      usage,
-    );
+    Hooks.call('swadePreConsumeItem', this, charges, usage);
 
     let updatedItems = new Array<StoredDocument<SwadeItem>>();
     // Persist the updates
@@ -613,12 +606,7 @@ export default class SwadeItem extends Item {
      * @param charges            The charges used.
      * @param usage              The determined usage updates that resulted from consuming this item
      */
-    Hooks.call<SwadeConsumeItemCallback>(
-      'swadeConsumeItem',
-      this,
-      charges,
-      usage,
-    );
+    Hooks.call('swadeConsumeItem', this, charges, usage);
 
     await this._postConsumptionCleanup(updatedItems);
   }
