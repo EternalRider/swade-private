@@ -506,7 +506,7 @@ export default class SwadeItem extends Item {
 
     // Basic chat message data
     const chatData: ChatMessageDataConstructorData = {
-      user: game.user!.id,
+      user: game.user?.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: {
@@ -520,7 +520,7 @@ export default class SwadeItem extends Item {
 
     if (
       game.settings.get('swade', 'hideNpcItemChatCards') &&
-      this.actor!.data.type === 'npc'
+      this.actor?.type === 'npc'
     ) {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
     }
