@@ -112,7 +112,7 @@ export default class SwadeCombatant extends Combatant {
         .tokens?.controlled.map((t) => t.id)
         .indexOf(tokenID as string) ?? 0;
     const sortValue = tokenIndex + combatants;
-    this.data.updateSource({
+    this.data.update({
       flags: {
         swade: {
           cardValue: sortValue,

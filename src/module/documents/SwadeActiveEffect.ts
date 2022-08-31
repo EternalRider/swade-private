@@ -278,20 +278,20 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
     //localize labels, just to be sure
     const label = game.i18n.localize(this.data.label);
-    this.data.updateSource({ label: label });
+    this.data.update({ label: label });
 
     //automatically favorite status effects
     if (data.flags?.core?.statusId) {
-      this.data.updateSource({ 'flags.swade.favorite': true });
+      this.data.update({ 'flags.swade.favorite': true });
     }
 
     // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
     if (!data.duration?.combat && game.combat) {
-      this.data.updateSource({ 'duration.combat': game.combat.id });
+      this.data.update({ 'duration.combat': game.combat.id });
     }
 
     //set the world time at creation
-    this.data.updateSource({ duration: { startTime: game.time.worldTime } });
+    this.data.update({ duration: { startTime: game.time.worldTime } });
 
     if (this.getFlag('swade', 'loseTurnOnHold')) {
       const combatant = game.combat?.combatants.find(

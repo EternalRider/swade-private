@@ -1142,7 +1142,7 @@ export default class SwadeActor extends Actor {
       });
       //Add the items to the creation data
 
-      this.data.updateSource({ items: skills });
+      this.data.update({ items: skills });
     }
   }
 
