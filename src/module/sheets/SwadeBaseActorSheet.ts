@@ -111,8 +111,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
       if (current > 0 && !active) {
         await this.actor.update({
-          'data.details.conviction.value': current - 1,
-          'data.details.conviction.active': true,
+          'system.details.conviction.value': current - 1,
+          'system.details.conviction.active': true,
         });
         ChatMessage.create({
           speaker: {
@@ -123,7 +123,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         });
       } else {
         await this.actor.update({
-          'data.details.conviction.active': false,
+          'system.details.conviction.active': false,
         });
         await chat.createConvictionEndMessage(this.actor);
       }
@@ -191,7 +191,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'delete':
           return effect.delete();
         case 'toggle':
-          return effect.update({ disabled: !effect?.data.disabled });
+          return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
           fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
             if (item) this.actor.items.get(item.id!)!.sheet?.render(true);
@@ -448,7 +448,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         break;
     }
 
-    const targetPropertyPath = `data.stats.${targetProperty}`;
+    const targetPropertyPath = `system.stats.${targetProperty}`;
     const targetPropertyValue = getProperty(
       this.actor.data,
       targetPropertyPath,

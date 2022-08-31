@@ -26,7 +26,7 @@ export default class Bennies {
 
     if (game.settings.get('swade', 'hardChoices')) {
       for await (const actor of npcWildcardsToRefresh) {
-        actor.update({ 'data.bennies.value': 0 });
+        actor.update({ 'system.bennies.value': 0 });
       }
     } else {
       for await (const actor of npcWildcardsToRefresh) {

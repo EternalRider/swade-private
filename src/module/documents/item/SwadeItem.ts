@@ -240,7 +240,7 @@ export default class SwadeItem extends Item {
       });
       return this.system.equipStatus;
     }
-    await this.update({ 'data.equipStatus': state });
+    await this.update({ 'system.equipStatus': state });
     return state;
   }
 
@@ -697,8 +697,8 @@ export default class SwadeItem extends Item {
     }
 
     //write updates
-    itemUpdates['data.quantity'] = Math.max(0, newQuantity);
-    itemUpdates['data.charges.value'] = newCharges;
+    itemUpdates['system.quantity'] = Math.max(0, newQuantity);
+    itemUpdates['system.charges.value'] = newCharges;
   }
 
   private _handleConsumeResource(
@@ -776,7 +776,9 @@ export default class SwadeItem extends Item {
     await super._preCreate(data, options, user);
     //Set default image if no image already exists
     if (!data.img) {
-      this.data.update({ img: `systems/swade/assets/icons/${data.type}.svg` });
+      this.data.updateSource({
+        img: `systems/swade/assets/icons/${data.type}.svg`,
+      });
     }
 
     if (this.parent) {

@@ -75,7 +75,7 @@ export class AdvanceEditor extends FormApplication<
     //normal update operation
     this.advances.set(advance.id, advance);
     return this.ctx.actor.update(
-      { 'data.advances.list': this.advances.toJSON() },
+      { 'system.advances.list': this.advances.toJSON() },
       { diff: false },
     );
   }
@@ -113,7 +113,7 @@ export class AdvanceEditor extends FormApplication<
     //update sort values based on index
     arr.forEach((a, i) => (a.sort = i + 1));
     //yeet
-    return this.actor.update({ 'data.advances.list': arr }, { diff: false });
+    return this.actor.update({ 'system.advances.list': arr }, { diff: false });
   }
 }
 

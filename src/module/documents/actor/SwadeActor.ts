@@ -415,7 +415,7 @@ export default class SwadeActor extends Actor {
       const chatData = { content: message };
       ChatMessage.create(chatData);
     }
-    await this.update({ 'data.bennies.value': currentBennies - 1 });
+    await this.update({ 'system.bennies.value': currentBennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
       const gms = game
         .users!.filter((u) => u.isGM && u.active)
@@ -449,7 +449,7 @@ export default class SwadeActor extends Actor {
       ChatMessage.create(chatData);
     }
     await this.update({
-      'data.bennies.value': this.system.bennies.value + 1,
+      'system.bennies.value': this.bennies + 1,
     });
   }
 
@@ -515,7 +515,7 @@ export default class SwadeActor extends Actor {
     ) {
       newValue = 0;
     }
-    await this.update({ 'data.bennies.value': newValue });
+    await this.update({ 'system.bennies.value': newValue });
   }
 
   /** Calculates the total Wound Penalties */

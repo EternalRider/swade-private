@@ -242,7 +242,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     //fallback for when the effect doesn't exist in the global object
     if (!data) data = SWADE.statusEffects.find((e) => e.id === id)!;
     // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`data.status.${key}`]: false });
+    await this.actor.update({ [`system.status.${key}`]: false });
     this.actor.toggleActiveEffect(data);
   }
 }

@@ -125,8 +125,8 @@ export default class CharacterSheet extends ActorSheet {
       const active = this.actor.system.details.conviction.active;
       if (current > 0 && !active) {
         await this.actor.update({
-          'data.details.conviction.value': current - 1,
-          'data.details.conviction.active': true,
+          'system.details.conviction.value': current - 1,
+          'system.details.conviction.active': true,
         });
         ChatMessage.create({
           speaker: {
@@ -137,7 +137,7 @@ export default class CharacterSheet extends ActorSheet {
         });
       } else {
         await this.actor.update({
-          'data.details.conviction.active': false,
+          'system.details.conviction.active': false,
         });
       }
     });
@@ -329,8 +329,8 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     html.find('.armor-display').on('click', () => {
-      const armorPropertyPath = 'data.stats.toughness.armor';
-      const armorvalue = getProperty(this.actor.data, armorPropertyPath);
+      const armorPropertyPath = 'system.stats.toughness.armor';
+      const armorvalue = getProperty(this.actor, armorPropertyPath);
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
@@ -363,11 +363,8 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     html.find('.parry-display').on('click', () => {
-      const parryPropertyPath = 'data.stats.parry.modifier';
-      const parryMod = getProperty(
-        this.actor.data,
-        parryPropertyPath,
-      ) as number;
+      const parryPropertyPath = 'system.stats.parry.modifier';
+      const parryMod = getProperty(this.actor, parryPropertyPath) as number;
       const label = game.i18n.localize('SWADE.Parry');
       const template = `
       <form><div class="form-group">
@@ -444,10 +441,10 @@ export default class CharacterSheet extends ActorSheet {
       if (action === 'pp-adjust') {
         const adjustment = button.getAttribute('data-adjust') as string;
         const power = this.actor.items.get(itemId, { strict: true });
-        let key = 'data.powerPoints.value';
-        const arcane = getProperty(power.data, 'data.arcane');
-        if (arcane) key = `data.powerPoints.${arcane}.value`;
-        let newPP = getProperty(this.actor.data, key);
+        let key = 'system.powerPoints.value';
+        const arcane = getProperty(power.system, 'arcane');
+        if (arcane) key = `system.powerPoints.${arcane}.value`;
+        let newPP = getProperty(this.actor, key);
         if (adjustment === 'plus') {
           newPP += parseInt(ppToAdjust, 10);
         } else if (adjustment === 'minus') {
@@ -460,8 +457,8 @@ export default class CharacterSheet extends ActorSheet {
       if (action === 'arcane-device-pp-adjust') {
         const adjustment = button.getAttribute('data-adjust') as string;
         const item = this.actor.items.get(itemId)!;
-        const key = 'data.powerPoints.value';
-        let newPP = getProperty(item.data, key);
+        const key = 'system.powerPoints.value';
+        let newPP = getProperty(item, key);
         if (adjustment === 'plus') {
           newPP += parseInt(arcaneDevicePPToAdjust, 10);
         } else if (adjustment === 'minus') {
@@ -916,7 +913,7 @@ export default class CharacterSheet extends ActorSheet {
       notes: '',
     };
     advances.set(newAdvance.id, newAdvance);
-    await this.actor.update({ 'data.advances.list': advances.toJSON() });
+    await this.actor.update({ 'system.advances.list': advances.toJSON() });
     new AdvanceEditor({
       advance: newAdvance,
       actor: this.actor,
@@ -939,7 +936,7 @@ export default class CharacterSheet extends ActorSheet {
         advances.delete(id);
         const arr = advances.toJSON();
         arr.forEach((a, i) => (a.sort = i + 1));
-        this.actor.update({ 'data.advances.list': arr });
+        this.actor.update({ 'system.advances.list': arr });
       },
     });
   }
@@ -961,7 +958,7 @@ export default class CharacterSheet extends ActorSheet {
         advance.planned = !advance.planned;
         advances.set(id, advance);
         this.actor.update(
-          { 'data.advances.list': advances.toJSON() },
+          { 'syste,.advances.list': advances.toJSON() },
           { diff: false },
         );
       },
@@ -974,7 +971,7 @@ export default class CharacterSheet extends ActorSheet {
     const display = $(ev.currentTarget).parent().find('span.display');
     const detail = display.data().detail;
     const label = game.i18n.localize(display.data().label);
-    const value = getProperty(this.actor.data, detail);
+    const value = getProperty(this.actor, detail);
     //create element
     const input = document.createElement('input');
     input.type = 'text';
@@ -1013,7 +1010,7 @@ export default class CharacterSheet extends ActorSheet {
     const key = ev.target.dataset.key as string;
     const data = util.getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`data.status.${key}`]: false });
+    await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
   }
 

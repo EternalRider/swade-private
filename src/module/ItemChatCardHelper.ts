@@ -313,16 +313,16 @@ export default class ItemChatCardHelper {
       if (!ammo && !isReloadPossible) return;
       const current = getProperty(ammo.system, 'quantity');
       const newQuantity = current - shotsUsed;
-      await ammo.update({ 'data.quantity': newQuantity });
+      await ammo.update({ 'system.quantity': newQuantity });
       //handle normal shot consumption
     } else if (ammoManagement && !!shotsUsed && currentShots - shotsUsed >= 0) {
-      await item.update({ 'data.currentShots': currentShots - shotsUsed });
+      await item.update({ 'system.currentShots': currentShots - shotsUsed });
     }
   }
 
   static async reloadWeapon(actor: SwadeActor, weapon: SwadeItem) {
     if (weapon.type !== 'weapon') return;
-    const ammoName = weapon.systemmo;
+    const ammoName = weapon.system.ammo;
     //return if there's no ammo set
     if (!ammoName) {
       if (!notificationExists('SWADE.NoAmmoSet', true)) {
@@ -363,12 +363,12 @@ export default class ItemChatCardHelper {
 
       //update the ammo item
       await ammo.update({
-        'data.quantity': leftoverAmmoInInventory,
+        'system.quantity': leftoverAmmoInInventory,
       });
     }
 
     //update the weapon
-    await weapon.update({ 'data.currentShots': ammoInMagazine });
+    await weapon.update({ 'system.currentShots': ammoInMagazine });
 
     //check to see we're not posting the message twice
     if (!notificationExists('SWADE.ReloadSuccess', true)) {

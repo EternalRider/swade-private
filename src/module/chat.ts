@@ -172,10 +172,10 @@ export function chatListeners(html: JQuery<HTMLElement>) {
         .val() as string;
       const adjustment = element.getAttribute('data-adjust') as string;
       const power = actor.items.get(itemId, { strict: true });
-      let key = 'data.powerPoints.value';
-      const arcane = getProperty(power.data, 'data.arcane');
-      if (arcane) key = `data.powerPoints.${arcane}.value`;
-      const oldPP = getProperty(actor.data, key) as number;
+      let key = 'system.powerPoints.value';
+      const arcane = getProperty(power.system, 'arcane');
+      if (arcane) key = `system.powerPoints.${arcane}.value`;
+      const oldPP = getProperty(actor, key) as number;
       if (adjustment === 'plus') {
         await actor.update({ [key]: oldPP + parseInt(ppToAdjust, 10) });
       } else if (adjustment === 'minus') {
@@ -192,8 +192,8 @@ export function chatListeners(html: JQuery<HTMLElement>) {
         .val() as string;
       const adjustment = element.getAttribute('data-adjust') as string;
       const item = actor.items.get(itemId, { strict: true });
-      const key = 'data.powerPoints.value';
-      const oldPP = getProperty(item.data, key) as number;
+      const key = 'system.powerPoints.value';
+      const oldPP = getProperty(item, key) as number;
       if (adjustment === 'plus') {
         await item.update({ [key]: oldPP + parseInt(adPPToAdjust, 10) });
       } else if (adjustment === 'minus') {

@@ -220,7 +220,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   async setDriver(id: string): Promise<void> {
     const driver = game.actors?.get(id);
     if (driver && driver.type !== 'vehicle') {
-      await this.actor.update({ 'data.driver.id': id });
+      await this.actor.update({ 'system.driver.id': id });
     }
   }
 
@@ -248,14 +248,14 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       driverData.img = driver.img!;
       driverData.name = driver.name!;
     } else {
-      //else just show an aunknown driver
-      driverData.name = 'Unkown Driver';
+      //else just show an an unknown driver
+      driverData.name = 'Unknown Driver';
     }
     return driverData;
   }
 
   private async _resetDriver() {
-    await this.actor.update({ 'data.driver.id': null });
+    await this.actor.update({ 'system.driver.id': null });
   }
 
   private async _openDriverSheet() {

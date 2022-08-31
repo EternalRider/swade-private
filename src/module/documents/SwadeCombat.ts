@@ -130,7 +130,7 @@ export default class SwadeCombat extends Combat {
 
       const initiative = card?.system['suit'] + card.value;
 
-      c.data.update({ initiative: initiative, 'flags.swade': newFlags });
+      c.data.updateSource({ initiative: initiative, 'flags.swade': newFlags });
 
       if (c.isGroupLeader) {
         await c.setSuitValue(c.suitValue ?? 0 + 0.9);
@@ -139,8 +139,11 @@ export default class SwadeCombat extends Combat {
         let s = newFlags.suitValue;
         for (const f of followers) {
           s -= 0.02;
-          f.data.update({ initiative: initiative, 'flags.swade': newFlags });
-          f.data.update({ 'flags.swade.suitValue': s });
+          f.data.updateSource({
+            initiative: initiative,
+            'flags.swade': newFlags,
+          });
+          f.data.updateSource({ 'flags.swade.suitValue': s });
         }
       }
 
@@ -374,7 +377,7 @@ export default class SwadeCombat extends Combat {
   override async resetAll() {
     for (const combatant of this.combatants) {
       const update = this._getInitResetUpdate(combatant);
-      if (update) combatant.data.update(update);
+      if (update) combatant.data.updateSource(update);
     }
     return this.update(
       { turn: 0, combatants: this.combatants.toObject() },
@@ -442,7 +445,7 @@ export default class SwadeCombat extends Combat {
     // first we update the combatants locally
     for (const combatant of this.combatants) {
       const update = this._getInitResetUpdate(combatant);
-      if (update) combatant.data.update(update);
+      if (update) combatant.data.updateSource(update);
     }
     if (game.settings.get('swade', 'autoInit')) {
       // if automatic init is on we draw cards

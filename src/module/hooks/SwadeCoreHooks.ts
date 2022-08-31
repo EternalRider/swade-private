@@ -908,7 +908,7 @@ export default class SwadeCoreHooks {
         if (data.pack) {
           idToSet = `Compendium.${data.pack}.${data.id}`;
         }
-        await sheet.actor.update({ 'data.driver.id': idToSet });
+        await sheet.actor.update({ 'system.driver.id': idToSet });
       }
     }
     //handle race item creation
@@ -932,9 +932,9 @@ export default class SwadeCoreHooks {
       if (subType === 'special') return;
       //set name from archetype/race
       if (subType === 'race') {
-        await actor.update({ 'data.details.species.name': item.link });
+        await actor.update({ 'system.details.species.name': item.link });
       } else if (subType === 'archetype') {
-        await actor.update({ 'data.details.archetype': item.link });
+        await actor.update({ 'system.details.archetype': item.link });
       }
       //process embedded documents
       const map = new Map<string, ItemDataSource>(

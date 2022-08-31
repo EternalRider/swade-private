@@ -97,7 +97,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       const id = randomID(8);
       this.collapsibleStates[id] = true;
       this.item.update({
-        ['data.actions.additional.' + id]: {
+        ['system.actions.additional.' + id]: {
           name: 'New Action',
           type: 'skill',
         },
@@ -117,7 +117,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         content: `<p class="text-center">${text}</p>`,
         yes: () => {
           this.item.update({
-            'data.actions.additional': {
+            'system.actions.additional': {
               [`-=${id}`]: null,
             },
           });
@@ -170,7 +170,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         case 'delete':
           return effect.delete();
         case 'toggle':
-          return effect.update({ disabled: !effect.data.disabled });
+          return effect.update({ disabled: !effect.disabled });
       }
     });
 
