@@ -511,7 +511,7 @@ export default class SwadeItem extends Item {
       content: html,
       speaker: {
         actor: this.parent?.id,
-        token: tokenId,
+        token: token?.id,
         scene: token?.parent?.id,
         alias: this.parent?.name,
       },
