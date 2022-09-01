@@ -1,16 +1,16 @@
 import {
   Context,
-  DocumentModificationOptions
+  DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import {
   ItemDataConstructorData,
-  ItemDataSource
+  ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { EquipState, Updates } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier
+  TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { constants } from '../../constants';
@@ -23,7 +23,7 @@ import {
   ItemChatCardData,
   ItemChatCardPowerPoints,
   UsageUpdates,
-  UsageUpdatesContext
+  UsageUpdatesContext,
 } from './SwadeItem.interface';
 
 declare global {
@@ -764,7 +764,7 @@ export default class SwadeItem extends Item {
     await super._preCreate(data, options, user);
     //Set default image if no image already exists
     if (!data.img) {
-      this.data.update({
+      this.updateSource({
         img: `systems/swade/assets/icons/${data.type}.svg`,
       });
     }
@@ -781,7 +781,7 @@ export default class SwadeItem extends Item {
         if (type === 'weapon') {
           newState = constants.EQUIP_STATE.MAIN_HAND;
         }
-        this.data.update({
+        this.updateSource({
           data: {
             equipStatus: newState,
           },
