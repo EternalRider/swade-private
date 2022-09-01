@@ -234,9 +234,13 @@
       <header class="header-field flexrow">
         <span>{{localize "SWADE.Desc"}}</span>
       </header>
-      {{editor content=actor.system.details.biography.value
-      target="system.details.biography.value" button=true owner=owner
-      editable=editable}}
+      {{editor 
+        actor.system.details.biography.value
+        target="system.details.biography.value" 
+        button=true 
+        owner=owner
+        editable=editable
+      }}
     </section>
   </div>
 </div>
