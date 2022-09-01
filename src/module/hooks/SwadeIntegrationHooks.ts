@@ -20,7 +20,7 @@ export default class SwadeIntegrationHooks {
   }
 
   static onDiceSoNiceReady(dice3d: Dice3D) {
-    const currentDSNVersion = game.modules!.get('dice-so-nice')!.data.version;
+    const currentDSNVersion = game.modules!.get('dice-so-nice').version;
     if (isNewerVersion(currentDSNVersion, '4.5.0')) {
       //TODO: Remove with swade v1.2
       SWADE.dsnColorSets = game?.dice3d!.exports.COLORSETS;
