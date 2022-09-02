@@ -89,7 +89,7 @@ export class AdvanceEditor extends FormApplication<
       if (options) options.plugins = 'lists image table hr code link';
       if (!initialContent) initialContent = this.advance.notes;
     }
-    super.activateEditor(name, options, initialContent);
+    return super.activateEditor(name, options, initialContent);
   }
 
   private _getAdvanceTypes(): Record<number, string> {

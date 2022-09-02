@@ -76,7 +76,7 @@
     {{/unless}} {{/each}}
   </ul>
   {{/if}} 
-  {{#each powers.arcanes as |arcane key|}}
+  {{#each powers.arcaneBackgrounds as |background key|}}
   <header class="section-header">
     <span class="name">{{key}}</span>
     {{#unless @root.settingrules.noPowerPoints}}
@@ -86,20 +86,20 @@
         <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
         <input
           type="number"
-          name="{{arcane.valuePath}}"
-          value="{{arcane.value}}"
+          name="{{background.valuePath}}"
+          value="{{background.value}}"
         />
       </label>
       /
       <label>
         <span class="sr-only">{{localize "SWADE.MaxPP"}}</span>
-        <input type="number" name="{{arcane.maxPath}}" value="{{arcane.max}}" />
+        <input type="number" name="{{background.maxPath}}" value="{{background.max}}" />
       </label>
     </span>
     {{/unless}}
   </header>
   <ul>
-    {{#each arcane.powers}}
+    {{#each background.powers}}
     <li class="power item" data-item-id="{{id}}">
       <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"/>
       <button type="button" class="name item-name" title="{{localize "SWADE.ExpandDescription"}}">{{name}}</button>
@@ -121,7 +121,7 @@
       <div class="description">
         <div class="description-grid">
           <span class="power-details">
-            {{#if data.damage}}
+            {{#if system.damage}}
             <button type="button" class="damage-roll">
               {{localize "SWADE.Dmg"}}: {{system.damage}}
             </button>

@@ -1,12 +1,12 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { Attribute } from '../../../globals';
+import { AdditionalStats, Attribute } from '../../../globals';
 import {
-  AdditionalStat,
   ItemAction,
-  TraitRollModifier,
+  TraitRollModifier
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
+import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
@@ -14,7 +14,10 @@ import ItemChatCardHelper from '../../ItemChatCardHelper';
 import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
-export default class CharacterSheet extends ActorSheet {
+export default class CharacterSheet extends ActorSheet<
+  DocumentSheetOptions,
+  SwadeActorSheetData
+> {
   _equipStateMenu: PopUpMenu;
 
   static get defaultOptions() {
@@ -527,47 +530,55 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  override async getData() {
-    const data: any = super.getData();
-    if (this.actor.type === 'vehicle') return data;
+  override async getData(
+    options?: Partial<DocumentSheetOptions>,
+  ): Promise<SwadeActorSheetData> {
+    if (this.actor.type === 'vehicle') return super.getData(options);
 
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.values()).sort(
-      (a, b) => a.data.sort - b.data.sort,
+      (a, b) => a.sort - b.sort,
     );
 
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    for (const item of items as any[]) {
+    for (const item of items) {
       // Basic template rendering data
-      const data = item.data;
-      const actions = item.system?.actions?.additional ?? {};
-      item.actions = [];
+      const system = item.system;
+      const itemActions = getProperty(system, 'actions.additional') ?? {};
+      const actions = new Array<any>();
 
-      for (const action in actions) {
-        item.actions.push({
+      for (const action in itemActions) {
+        actions.push({
           key: action,
-          type: actions[action].type,
-          name: actions[action].name,
+          type: itemActions[action].type,
+          name: itemActions[action].name,
         });
       }
-      item.hasDamage =
-        !!getProperty(data, 'data.damage') ||
-        !!item.actions.find((action) => action.type === 'damage');
-      item.skill =
-        getProperty(data, 'data.actions.skill') ||
-        !!item.actions.find((action) => action.type === 'skill');
-      item.hasSkillRoll =
-        ['weapon', 'power', 'shield'].includes(data.type) &&
-        getProperty(data, 'data.actions.skill');
-      item.hasAmmoManagement =
+      const hasDamage =
+        !!getProperty(system, 'damage') ||
+        !!actions.find((action) => action.type === 'damage');
+      const skill =
+        getProperty(system, 'actions.skill') ||
+        !!actions.find((action) => action.type === 'skill');
+      const hasSkillRoll =
+        ['weapon', 'power', 'shield'].includes(item.type) &&
+        getProperty(system, 'actions.skill');
+      const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
         !item.isMeleeWeapon &&
-        !data.data.autoReload;
-      item.hasReloadButton =
-        ammoManagement && data.data.shots > 0 && !data.data.autoReload;
+        !system.autoReload;
+      const hasReloadButton =
+        ammoManagement && system.shots > 0 && !system.autoReload;
+      const powerPoints = this._getPowerPoints(system);
 
-      item.powerPoints = this._getPowerPoints(data);
+      foundry.utils.setProperty(item, 'actions', actions);
+      foundry.utils.setProperty(item, 'hasDamage', hasDamage);
+      foundry.utils.setProperty(item, 'skill', skill);
+      foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
+      foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
+      foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      foundry.utils.setProperty(item, 'powerPoints', powerPoints);
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
@@ -577,116 +588,90 @@ export default class CharacterSheet extends ActorSheet {
       itemTypes[type].push(item);
     }
 
-    data.itemTypes = itemTypes;
-    data.effects = await this._getEffects();
-
-    //sort skills alphabetically
-    data.sortedSkills = this.actor.itemTypes.skill.sort((a, b) =>
-      a.name!.localeCompare(b.name!),
-    );
-
-    data.currentBennies = [];
-    const bennies = getProperty(
-      this.actor.data,
-      'data.bennies.value',
-    ) as number;
-    for (let i = 0; i < bennies; i++) {
-      data.currentBennies.push(i + 1);
-    }
-
-    const additionalStats: Record<string, AdditionalStat> =
-      data.data.data.additionalStats || {};
-    for (const attr of Object.values(additionalStats)) {
-      attr['isCheckbox'] = attr.dtype === 'Boolean';
-    }
-    data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
-
-    const powerFilter = (i) => i.type === 'power';
     //Deal with ABs and Powers
-    const powers = {
-      arcanes: {},
-      arcanesCount: this.actor.items
-        .filter(powerFilter)
-        .map((p) => {
-          return p.system['arcane'];
-        })
-        .filter(Boolean).length,
-      hasPowersWithoutArcane:
-        this.actor.items.filter(powerFilter).reduce((acc, cur) => {
-          if (cur.system['arcane']) {
-            return acc;
-          } else {
-            return (acc += 1);
-          }
-        }, 0) > 0,
+    const powers: SheetPowers = {
+      arcaneBackgrounds: {},
+      hasPowersWithoutArcane: itemTypes.power.some((p) => !p.system['arcane']),
     };
 
-    for (const power of this.actor.items.filter(powerFilter)) {
+    for (const power of this.actor.itemTypes.power) {
       if (power.type !== 'power') continue;
-      const arcane = power.system.arcane;
-      if (!arcane) continue;
-      if (!powers.arcanes[arcane]) {
-        powers.arcanes[arcane] = {
-          valuePath: `data.powerPoints.${arcane}.value`,
-          value: getProperty(
-            this.actor.data,
-            `data.powerPoints.${arcane}.value`,
-          ),
-          maxPath: `data.powerPoints.${arcane}.max`,
-          max: getProperty(this.actor.data, `data.powerPoints.${arcane}.max`),
+      const ab = power.system.arcane;
+      if (!ab) continue;
+      if (!powers.arcaneBackgrounds[ab]) {
+        powers.arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: getProperty(this.actor.system, `powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: getProperty(this.actor.system, `powerPoints.${ab}.max`),
           powers: [],
         };
       }
-      powers.arcanes[arcane].powers.push(power);
+      powers.arcaneBackgrounds[ab].powers.push(power);
     }
-    data.powers = powers;
-    data.parry = 0;
-    for (const shield of this.actor.itemTypes.shield) {
-      if (shield.type !== 'shield') continue;
-      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        data.parry += shield.system.parry;
+
+    const parry = itemTypes.shield.reduce((acc, cur) => {
+      if (
+        cur.type !== 'shield' &&
+        cur.system.equipStatus === constants.EQUIP_STATE.EQUIPPED
+      ) {
+        return (acc += cur.system.parry);
       }
-    }
-    // Check for enabled optional rules
-    data.settingrules = {
-      conviction: game.settings.get('swade', 'enableConviction'),
-      noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
-      wealthType: game.settings.get('swade', 'wealthType'),
-      currencyName: game.settings.get('swade', 'currencyName'),
-      weightUnit:
-        game.settings.get('swade', 'weightUnit') === 'imperial' ? 'lbs' : 'kg',
+      return acc;
+    }, 0);
+
+    const additionalStats = this._getAdditionalStats();
+
+    const data: SwadeActorSheetData = {
+      itemTypes: itemTypes,
+      parry: parry,
+      powers: powers,
+      additionalStats: additionalStats,
+      currentBennies: Array.fromRange(this.actor.bennies, 1),
+      hasAdditionalStats: foundry.utils.isEmpty(additionalStats),
+      bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
+      useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
+      sortedSkills: itemTypes.skill.sort((a, b) =>
+        a.name!.localeCompare(b.name!),
+      ),
+      sheetEffects: await this._getEffects(),
+      archetype: {
+        value: this.actor.system.details.archetype
+          ? new Handlebars.SafeString(
+            await TextEditor.enrichHTML(this.actor.system.details.archetype, {
+                async: true,
+              }),
+            )
+          : game.i18n.localize('SWADE.Archetype'),
+        label: 'SWADE.Archetype',
+      },
+      species: {
+        value: this.actor.system.details.species.name
+          ? new Handlebars.SafeString(
+            await TextEditor.enrichHTML(this.actor.system.details.species.name, {
+                async: true,
+              }),
+            )
+          : game.i18n.localize('SWADE.Race'),
+        label: 'SWADE.Race',
+      },
+      settingrules: {
+        conviction: game.settings.get('swade', 'enableConviction'),
+        noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
+        wealthType: game.settings.get('swade', 'wealthType'),
+        currencyName: game.settings.get('swade', 'currencyName'),
+        weightUnit:
+          game.settings.get('swade', 'weightUnit') === 'imperial'
+            ? 'lbs'
+            : 'kg',
+      },
+      advances: {
+        expanded: this.actor.system.advances.mode === 'expanded',
+        list: this._getAdvances(),
+      },
     };
 
-    data.advances = {
-      expanded: this.actor.system.advances.mode === 'expanded',
-      list: this._getAdvances(),
-    };
-
-    data.archetype = {
-      value: this.actor.system.details.archetype
-        ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.system.details.archetype),
-          )
-        : game.i18n.localize('SWADE.Archetype'),
-      label: 'SWADE.Archetype',
-    };
-
-    data.species = {
-      value: this.actor.system.details.species.name
-        ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.system.details.species.name),
-          )
-        : game.i18n.localize('SWADE.Race'),
-      label: 'SWADE.Race',
-    };
-
-    //add benny image URI
-    data.bennyImageURL = game.settings.get('swade', 'bennyImageSheet');
-
-    // Procoess attribute abbreviation toggle
-    data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
-
-    return data;
+    return foundry.utils.mergeObject(await super.getData(options), data);
   }
 
   private _getAdvances() {
@@ -719,36 +704,29 @@ export default class CharacterSheet extends ActorSheet {
     }
     return { current, max };
   }
-  system;
 
   /** Extend and override the sheet header buttons */
   protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
-    // Token Configuration
-    const canConfigure = this.actor.isOwner;
-    if (this.options.editable && canConfigure) {
+    // Document Tweaks
+    if (this.options.editable && this.actor.isOwner) {
       const button = {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
         icon: 'fas fa-dice',
-        onclick: (ev) => this._onConfigureEntity(ev),
+        onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
       };
       buttons = [button, ...buttons];
     }
     return buttons;
   }
 
-  protected _onConfigureEntity(event: Event) {
-    event.preventDefault();
-    new game.swade.apps.SwadeDocumentTweaks(this.actor).render(true);
-  }
-
   protected _toggleItem(
     doc: SwadeItem | SwadeActiveEffect,
     toggle: string,
   ): Record<string, unknown> {
-    const oldVal = !!getProperty(doc.data, toggle);
+    const oldVal = !!getProperty(doc, toggle);
     return { _id: doc.id, [toggle]: !oldVal };
   }
 
@@ -829,7 +807,7 @@ export default class CharacterSheet extends ActorSheet {
         combat: game.combat?.id,
       };
     }
-    return await CONFIG.ActiveEffect.documentClass.create(data, {
+    return CONFIG.ActiveEffect.documentClass.create(data, {
       renderSheet: renderSheet,
       parent: this.actor,
     });
@@ -841,12 +819,12 @@ export default class CharacterSheet extends ActorSheet {
     for (const effect of this.actor.effects) {
       const val: SheetEffect = {
         id: effect.id!,
-        label: effect.data.label,
-        icon: effect.data.icon,
-        disabled: effect.data.disabled,
+        label: effect.label,
+        icon: effect.icon,
+        disabled: effect.disabled,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
-      if (effect.data.origin) {
+      if (effect.origin) {
         val.origin = await effect.getSourceName();
       }
       if (effect.isTemporary) {
@@ -989,6 +967,14 @@ export default class CharacterSheet extends ActorSheet {
     ev.currentTarget.remove();
   }
 
+  private _getAdditionalStats(): AdditionalStats {
+    const stats = foundry.utils.deepClone(this.actor.system.additionalStats);
+    for (const attr of Object.values(stats)) {
+      attr['isCheckbox'] = attr.dtype === 'Boolean';
+    }
+    return stats;
+  }
+
   /**
    * Handle input changes to numeric form fields, allowing them to accept delta-typed inputs
    * @param {Event} event  Triggering event.
@@ -998,7 +984,7 @@ export default class CharacterSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor.data, input.name) + delta;
+      input.value = getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }
@@ -1109,4 +1095,51 @@ interface SheetEffect {
   favorite: boolean;
   origin?: string;
   label: string;
+}
+
+interface SheetPowers {
+  hasPowersWithoutArcane: boolean;
+  arcaneBackgrounds: Record<string, SheetArcaneBackground>;
+}
+
+interface SheetArcaneBackground {
+  valuePath: string;
+  value: any;
+  maxPath: string;
+  max: any;
+  powers: SwadeItem[];
+}
+
+type OptionsPartial = Partial<ActorSheet.Data<DocumentSheetOptions>>;
+
+interface SwadeActorSheetData extends OptionsPartial {
+  itemTypes: Record<string, SwadeItem[]>;
+  parry: number;
+  settingrules: Record<string, unknown>;
+  currentBennies: number[];
+  powers: SheetPowers;
+  hasAdditionalStats: boolean;
+  additionalStats: AdditionalStats;
+  bennyImageURL: string;
+  useAttributeShorts: boolean;
+  sortedSkills: SwadeItem[];
+  species: {
+    label: string;
+    value: Handlebars.SafeString | string;
+  };
+  archetype: {
+    label: string;
+    value: Handlebars.SafeString | string;
+  };
+  advances: {
+    expanded: boolean;
+    list: Array<{
+      rank: string;
+      list: Advance[];
+    }>;
+  };
+  sheetEffects: {
+    temporary: SheetEffect[];
+    permanent: SheetEffect[];
+  };
 }

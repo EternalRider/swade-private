@@ -1155,7 +1155,7 @@ export default class SwadeActor extends Actor {
     if (this.type === 'npc') {
       ui.actors?.render(true);
     }
-    if (hasProperty(changed, 'data.bennies') && this.hasPlayerOwner) {
+    if (hasProperty(changed, 'system.bennies') && this.hasPlayerOwner) {
       ui.players?.render(true);
     }
   }

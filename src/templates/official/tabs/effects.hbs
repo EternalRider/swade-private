@@ -44,7 +44,7 @@
   </span>
 </div>
 <ul class="effects-list">
-  {{#each effects.temporary}}{{> effectPartial effect=this}}{{/each}}
+  {{#each sheetEffects.temporary}}{{> effectPartial effect=this}}{{/each}}
 </ul>
 <div class="effect-header">
   <span class="effect-label">{{localize 'SWADE.EffectsPermanent'}}</span>
@@ -53,5 +53,5 @@
   </span>
 </div>
 <ul class="effects-list">
-  {{#each effects.permanent}}{{> effectPartial effect=this}}{{/each}}
+  {{#each sheetEffects.permanent}}{{> effectPartial effect=this}}{{/each}}
 </ul>

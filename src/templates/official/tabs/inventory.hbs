@@ -11,10 +11,10 @@
       <label>{{settingrules.currencyName}}</label>
       <span class='form-fields'>
         <input
-          name='data.details.currency'
+           name='system.details.currency'
           type='text'
           data-dtype='Number'
-          value='{{system.details.currency}}'
+          value='{{actor.system.details.currency}}'
           placeholder='{{localize "SWADE.Currency"}}'
         />
       </span>
@@ -23,8 +23,8 @@
         <button class='roll'>{{localize 'SWADE.WealthDie.Label'}}</button>
       </label>
       <span class='form-fields'>
-        <select data-dtype='Number' name='data.details.wealth.die'>
-          {{#select system.details.wealth.die}}
+        <select data-dtype='Number'  name='system.details.wealth.die'>
+          {{#select actor.system.details.wealth.die}}
             <option value='0'>{{localize
                 'SWADE.WealthDie.Broke.Label'
               }}</option>
@@ -34,8 +34,8 @@
         <input
           type='text'
           data-dtype='Number'
-          name='data.details.wealth.modifier'
-          value='{{signedString system.details.wealth.modifier}}'
+           name='system.details.wealth.modifier'
+          value='{{signedString actor.system.details.wealth.modifier}}'
           placeholder='{{localize "SWADE.Modifier"}}'
         />
       </span>
@@ -243,7 +243,7 @@
             title='{{localize "SWADE.ExpandDescription"}}'
           >
             {{#if (gte system.quantity 2)}} (x{{system.quantity}}) {{/if}}
-            {{data.name}}
+            {{name}}
           </button>
           <span class='parry'>{{system.parry}}</span>
           <span class='cover'>{{enrich system.cover}}</span>

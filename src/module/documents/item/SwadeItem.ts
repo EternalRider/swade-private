@@ -242,9 +242,9 @@ export default class SwadeItem extends Item {
     return state;
   }
 
-  getChatData(
-    enrichOptions: Partial<TextEditor.EnrichOptions> = {},
-  ): ItemChatCardData {
+  async getChatData(
+    enrichOptions: Partial<TextEditor.EnrichOptions> = { async: true },
+  ): Promise<ItemChatCardData> {
     // Item properties
     const chips = new Array<ItemChatCardChip>();
     const type = this.type;
@@ -284,7 +284,7 @@ export default class SwadeItem extends Item {
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
+          text: await TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
@@ -321,7 +321,7 @@ export default class SwadeItem extends Item {
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
+          text: await TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
@@ -403,7 +403,7 @@ export default class SwadeItem extends Item {
         },
         {
           icon: '<i class="fas fa-sticky-note"></i>',
-          text: TextEditor.enrichHTML(this.system.notes, enrichOptions),
+          text: await TextEditor.enrichHTML(this.system.notes, enrichOptions),
           title: game.i18n.localize('SWADE.Notes'),
         },
       );
@@ -425,7 +425,7 @@ export default class SwadeItem extends Item {
     }
 
     const data: ItemChatCardData = {
-      description: TextEditor.enrichHTML(
+      description: await TextEditor.enrichHTML(
         this.system.description,
         enrichOptions,
       ),
@@ -482,12 +482,12 @@ export default class SwadeItem extends Item {
       actorId: this.parent?.id,
       tokenId: tokenId,
       item: this,
-      data: this.getChatData(),
+      data: await this.getChatData(),
       hasAmmoManagement,
       hasReloadButton,
       hasDamage,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this.data, 'data.actions.skill'),
+      trait: getProperty(this.system, 'actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
       powerPoints: this._getPowerPoints(),
@@ -573,8 +573,6 @@ export default class SwadeItem extends Item {
     });
     if (!usage) return;
 
-    const { actorUpdates, itemUpdates, resourceUpdates } = usage;
-
     /**
      * A hook event that is fired before an item is consumed, giving the opportunity to programmatically adjust the usage and/or trigger custom logic
      * @category Hooks
@@ -584,12 +582,14 @@ export default class SwadeItem extends Item {
      */
     Hooks.call('swadePreConsumeItem', this, charges, usage);
 
+    const { actorUpdates, itemUpdates, resourceUpdates } = usage;
+
     let updatedItems = new Array<StoredDocument<SwadeItem>>();
     // Persist the updates
-    if (!foundry.utils.isObjectEmpty(itemUpdates)) {
+    if (!foundry.utils.isEmpty(itemUpdates)) {
       await this.update(itemUpdates);
     }
-    if (!foundry.utils.isObjectEmpty(actorUpdates)) {
+    if (!foundry.utils.isEmpty(actorUpdates)) {
       await this.actor?.update(actorUpdates);
     }
     if (resourceUpdates.length) {
@@ -626,7 +626,7 @@ export default class SwadeItem extends Item {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (item && shouldDelete(item)) {
-        await this.delete();
+        await item.delete();
       }
     }
     if (shouldDelete(this)) {

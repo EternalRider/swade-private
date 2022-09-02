@@ -73,7 +73,7 @@ export default class ActionCardEditor extends FormApplication {
       const current = this.cards.cards.get(id, { strict: true });
       const diff = foundry.utils.diffObject(current.data.toObject(), newData);
       //skip if there's no differences
-      if (foundry.utils.isObjectEmpty(diff)) continue;
+      if (foundry.utils.isEmpty(diff)) continue;
       //set the ID for the update
       diff['_id'] = id;
       updates.push(foundry.utils.flattenObject(diff));

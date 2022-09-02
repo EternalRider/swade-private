@@ -145,10 +145,9 @@
           title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.RunningDie'}}"
           style="background-image: url(systems/swade/assets/official/dice/d{{actor.system.stats.speed.runningDie}}.svg);"
         >
-          <span class="sr-only"
-            >d{{data.stats.speed.runningDie}} {{localize
-            'SWADE.RunningDie'}}</span
-          >
+          <span class="sr-only">
+            d{{actor.system.stats.speed.runningDie}} {{localize 'SWADE.RunningDie'}}
+            </span>
         </button>
       </span>
     </div>
@@ -220,7 +219,7 @@
       <button
         type="button"
         class="item-create controls"
-      data-type="choice"
+        data-type="choice"
         data-equipped="true"
         data-choices="weapon,power,armor,shield,effect"
       >
@@ -229,14 +228,14 @@
     </header>
     <ol class="quick-list">
       {{#each actor.effects}}
-        {{#if data.flags.swade.favorite}}
-          <li class="gear-card item {{#if data.disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}">
+        {{#if flags.swade.favorite}}
+          <li class="gear-card item {{#if disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}">
             <div class="card-header flexrow">
-              <div class="item-image" style="background-image: url('{{data.icon}}')"></div>
-              {{#if data.origin}}
-                <button type="button" class="item-name effect-action" data-action="open-origin" title="{{localize "SWADE.OpenOrigin"}}">{{data.label}}</button>
+              <div class="item-image" style="background-image: url('{{icon}}')"></div>
+              {{#if origin}}
+                <button type="button" class="item-name effect-action" data-action="open-origin" title="{{localize "SWADE.OpenOrigin"}}">{{label}}</button>
               {{else}}
-                <div class="item-name">{{data.label}}</div>
+                <div class="item-name">{{label}}</div>
               {{/if}}
               <div class="item-controls">
                 <button type="button" class="item-control effect-action" data-action="toggle" data-toggle="disabled">
