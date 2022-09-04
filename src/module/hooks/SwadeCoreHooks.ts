@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { ConfiguredDocumentClass } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
-import { ItemMetadata, JournalMetadata, Updates } from '../../globals';
+import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import Bennies from '../bennies';
@@ -804,25 +801,25 @@ export default class SwadeCoreHooks {
   }
 
   static async onHotbarDrop(
-    hotbar: Hotbar,
-    data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
+    _hotbar: Hotbar,
+    data: { type: string; uuid: string },
     slot: number,
   ) {
     /**
      * Create a Macro from an Item drop.
      * Get an existing item macro if one exists, otherwise create a new one.
      */
-    if (data['type'] !== 'Item' || !('data' in data)) {
+    if (data.type !== 'Item') {
       return ui.notifications.warn(
         'You can only create macro buttons for owned Items',
       );
     }
-    const item = data.data;
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
     // Create the macro command
-    const macro = await Macro.create({
-      name: item?.name,
+    const macro = await CONFIG.Macro.documentClass.create({
+      name: item?.name as string,
       type: CONST.MACRO_TYPES.SCRIPT,
-      img: item?.img,
+      img: item?.img as string,
       command: `game.swade.rollItemMacro("${item?.name}");`,
     });
     await game.user?.assignHotbarMacro(macro!, slot);
@@ -897,35 +894,21 @@ export default class SwadeCoreHooks {
   static async onDropActorSheetData(
     actor: SwadeActor,
     sheet: ActorSheet,
-    data: any,
+    data: { type: string; uuid: string },
   ) {
     const sheetIsVehicleSheet = sheet instanceof SwadeVehicleSheet;
 
     if (data.type === 'Actor' && sheetIsVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'summary') {
-        let idToSet = `Actor.${data.id}`;
-        if (data.pack) {
-          idToSet = `Compendium.${data.pack}.${data.id}`;
-        }
-        await sheet.actor.update({ 'system.driver.id': idToSet });
+        await sheet.actor.update({ 'system.driver.id': data.uuid });
       }
     }
+
     //handle race item creation
-    const isNewItemDrop = data.type === 'Item' && !data.data;
+    const isNewItemDrop = data.type === 'Item';
     if (isNewItemDrop && !sheetIsVehicleSheet) {
-      let item: SwadeItem | StoredDocument<SwadeItem>;
-      //retrieve the item
-      if (data.pack) {
-        const pack = game.packs.get(data.pack, {
-          strict: true,
-        }) as CompendiumCollection<ItemMetadata>;
-        item = (await pack.getDocument(data.id)) as StoredDocument<SwadeItem>;
-      } else if (data.actorId) {
-        item = new SwadeItem(data.data);
-      } else {
-        item = game.items!.get(data.id, { strict: true });
-      }
+      const item = (await fromUuid(data.uuid)) as SwadeItem;
       //check if it's the proper type and subtype
       if (item.type !== 'ability') return;
       const subType = item.system.subtype;
@@ -937,9 +920,7 @@ export default class SwadeCoreHooks {
         await actor.update({ 'system.details.archetype': item.link });
       }
       //process embedded documents
-      const map = new Map<string, ItemDataSource>(
-        item.getFlag('swade', 'embeddedAbilities') ?? [],
-      );
+      const map = item.embeddedAbilities;
       const creationData = new Array<any>();
       const duplicates = new Array<{ type: string; name: string }>();
       for (const entry of map.values()) {
@@ -962,8 +943,9 @@ export default class SwadeCoreHooks {
         });
       }
       if (duplicates.length > 0) {
-        new Dialog({
+        Dialog.prompt({
           title: game.i18n.localize('SWADE.Duplicates'),
+          rejectClose: false,
           content: await renderTemplate(
             '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
             {
@@ -977,14 +959,10 @@ export default class SwadeCoreHooks {
               }),
             },
           ),
-          default: 'ok',
-          buttons: {
-            ok: {
-              label: game.i18n.localize('SWADE.Ok'),
-              icon: '<i class="fas fa-check"></i>',
-            },
+          callback: () => {
+            /*NO-OP*/
           },
-        }).render(true);
+        });
       }
       //copy active effects
       const effects = item.effects.map((ae) => ae.data.toObject());

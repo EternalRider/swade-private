@@ -26,8 +26,9 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
   get template() {
     // Later you might want to return a different template
     // based on user permissions.
-    if (!game.user?.isGM && this.actor.limited)
+    if (!game.user?.isGM && this.actor.limited) {
       return 'systems/swade/templates/actors/limited-sheet.hbs';
+    }
     return 'systems/swade/templates/actors/npc-sheet.hbs';
   }
 
