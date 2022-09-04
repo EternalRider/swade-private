@@ -50,7 +50,7 @@ export default class SwadeActor extends Actor {
 
     let combatant: SwadeCombatant | undefined;
     const hasToken = !!this.token;
-    const isLinked = this.data.token.actorLink;
+    const isLinked = this.prototypeToken.actorLink;
     if (isLinked || !hasToken) {
       //linked token
       combatant = game.combat?.combatants.find((c) => c.actor?.id === this.id);

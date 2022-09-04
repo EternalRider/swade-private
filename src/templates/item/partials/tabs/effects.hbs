@@ -12,15 +12,15 @@
 </header>
 <ol class='effect-list unmarked-list'>
   {{#each item.effects}}
-    <li data-effect-id='{{this.id}}'>
-      <img class='effect-icon' src='{{this.data.icon}}' />
-      {{#if this.data.disabled}}
+    <li data-effect-id='{{id}}'>
+      <img class='effect-icon' src='{{icon}}' />
+      {{#if disabled}}
         <span class='effect-label effect-disabled'>
-          {{this.data.label}}
+          {{label}}
         </span>
       {{else}}
         <span class='effect-label'>
-          {{this.data.label}}
+          {{label}}
         </span>
       {{/if}}
       <span class='effect-controls'>

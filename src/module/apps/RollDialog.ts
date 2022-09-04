@@ -217,8 +217,8 @@ export default class RollDialog extends FormApplication<
   }
 
   protected override _onSearchFilter(
-    event: KeyboardEvent,
-    query: string,
+    _event: InputEvent,
+    _query: string,
     rgx: RegExp,
     html: HTMLElement,
   ) {
@@ -255,7 +255,7 @@ export default class RollDialog extends FormApplication<
     return this.ctx.mods
       .filter((v) => !v.ignore) //remove the disabled modifiers
       .reduce((acc: string, cur: TraitRollModifier) => {
-        return (acc += `<br>${cur.label}: ${cur.value}`);
+        return (acc += `<br>${cur.label}: ${cur.value.to}`);
       }, '');
   }
 

@@ -2,7 +2,7 @@ import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/f
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier
+  TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
@@ -570,7 +570,6 @@ export default class CharacterSheet extends ActorSheet<
         !system.autoReload;
       const hasReloadButton =
         ammoManagement && system.shots > 0 && !system.autoReload;
-      const powerPoints = this._getPowerPoints(system);
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
@@ -578,7 +577,10 @@ export default class CharacterSheet extends ActorSheet<
       foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
-      foundry.utils.setProperty(item, 'powerPoints', powerPoints);
+      if (item.type === 'power') {
+        const powerPoints = this._getPowerPoints(item);
+        foundry.utils.setProperty(item, 'powerPoints', powerPoints);
+      }
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
@@ -591,7 +593,9 @@ export default class CharacterSheet extends ActorSheet<
     //Deal with ABs and Powers
     const powers: SheetPowers = {
       arcaneBackgrounds: {},
-      hasPowersWithoutArcane: itemTypes.power.some((p) => !p.system['arcane']),
+      hasPowersWithoutArcane: this.actor.itemTypes.power.some(
+        (p) => !p.system['arcane'],
+      ),
     };
 
     for (const power of this.actor.itemTypes.power) {
@@ -610,7 +614,7 @@ export default class CharacterSheet extends ActorSheet<
       powers.arcaneBackgrounds[ab].powers.push(power);
     }
 
-    const parry = itemTypes.shield.reduce((acc, cur) => {
+    const parry = this.actor.itemTypes.shield.reduce((acc, cur) => {
       if (
         cur.type !== 'shield' &&
         cur.system.equipStatus === constants.EQUIP_STATE.EQUIPPED
@@ -631,14 +635,14 @@ export default class CharacterSheet extends ActorSheet<
       hasAdditionalStats: foundry.utils.isEmpty(additionalStats),
       bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
-      sortedSkills: itemTypes.skill.sort((a, b) =>
+      sortedSkills: this.actor.itemTypes.skill.sort((a, b) =>
         a.name!.localeCompare(b.name!),
       ),
       sheetEffects: await this._getEffects(),
       archetype: {
         value: this.actor.system.details.archetype
           ? new Handlebars.SafeString(
-            await TextEditor.enrichHTML(this.actor.system.details.archetype, {
+              await TextEditor.enrichHTML(this.actor.system.details.archetype, {
                 async: true,
               }),
             )
@@ -648,9 +652,12 @@ export default class CharacterSheet extends ActorSheet<
       species: {
         value: this.actor.system.details.species.name
           ? new Handlebars.SafeString(
-            await TextEditor.enrichHTML(this.actor.system.details.species.name, {
-                async: true,
-              }),
+              await TextEditor.enrichHTML(
+                this.actor.system.details.species.name,
+                {
+                  async: true,
+                },
+              ),
             )
           : game.i18n.localize('SWADE.Race'),
         label: 'SWADE.Race',
@@ -694,15 +701,16 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   protected _getPowerPoints(item: SwadeItem) {
-    if (item.type !== 'power') return {};
-    const arcane = item.system.arcane;
-    let current = getProperty(item.actor!, 'system.powerPoints.value');
-    let max = getProperty(item.actor!, 'system.powerPoints.max');
-    if (arcane) {
-      current = getProperty(item.actor!, `system.powerPoints.${arcane}.value`);
-      max = getProperty(item.actor!, `system.powerPoints.${arcane}.max`);
+    if (item.type === 'power' && item.actor) {
+      const arcane = item.system.arcane;
+      let current = getProperty(item.actor, 'system.powerPoints.value');
+      let max = getProperty(item.actor, 'system.powerPoints.max');
+      if (arcane) {
+        current = getProperty(item.actor, `system.powerPoints.${arcane}.value`);
+        max = getProperty(item.actor, `system.powerPoints.${arcane}.max`);
+      }
+      return { current, max };
     }
-    return { current, max };
   }
 
   /** Extend and override the sheet header buttons */
@@ -854,14 +862,14 @@ export default class CharacterSheet extends ActorSheet<
     switch (type) {
       case 'choice':
         this._chooseItemType().then(async (dialogInput: any) => {
-          if (dialogInput.type !== 'effect') {
+          if (dialogInput.type === 'effect') {
+            this._createActiveEffect(dialogInput.name);
+          } else {
             const itemData = createItem(dialogInput.type, dialogInput.name);
-            await Item.create(itemData, {
+            await CONFIG.Item.documentClass.create(itemData, {
               renderSheet: true,
               parent: this.actor,
             });
-          } else {
-            this._createActiveEffect(dialogInput.name);
           }
         });
         break;
@@ -872,7 +880,7 @@ export default class CharacterSheet extends ActorSheet<
         this._addAdvance();
         break;
       default:
-        await Item.create(createItem(type), {
+        await CONFIG.Item.documentClass.create(createItem(type), {
           renderSheet: true,
           parent: this.actor,
         });

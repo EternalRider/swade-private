@@ -117,7 +117,40 @@ export default class SwadeItem extends Item {
     return false;
   }
 
-  rollDamage(options: IRollOptions = {}) {
+  get embeddedAbilities() {
+    const flagContent = this.getFlag('swade', 'embeddedAbilities') ?? [];
+    return new Map(flagContent);
+  }
+
+  get embeddedPowers() {
+    const flagContent = this.getFlag('swade', 'embeddedPowers') ?? [];
+    return new Map(flagContent);
+  }
+
+  static override migrateData(data) {
+    super.migrateData(data);
+    if (data.flags?.swade?.embeddedAbilities) {
+      for (const [key, item] of data.flags.swade.embeddedAbilities) {
+        if (item.system && !item.data) continue;
+        item.system = {
+          ...item.data,
+        };
+        delete item.data;
+      }
+    }
+    if (data.flags?.swade?.embeddedPowers) {
+      for (const [key, item] of data.flags.swade.embeddedPowers) {
+        if (item.system && !item.data) continue;
+        item.system = {
+          ...item.data,
+        };
+        delete item.data;
+      }
+    }
+    return data;
+  }
+
+  async rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
     let itemData;
     if (['weapon', 'power', 'shield'].includes(this.type)) {
@@ -770,7 +803,7 @@ export default class SwadeItem extends Item {
     }
 
     if (this.parent) {
-      if (type === 'skill' && options.renderSheet !== null) {
+      if (data.type === 'skill' && options.renderSheet !== null) {
         options.renderSheet = true;
       }
       if (
@@ -795,7 +828,7 @@ export default class SwadeItem extends Item {
     //delete all transferred active effects from the actor
     if (this.parent) {
       const toDelete = this.parent.effects
-        .filter((e) => e.data.origin === this.uuid)
+        .filter((e) => e.origin === this.uuid)
         .map((ae) => ae.id!);
       await this.parent.deleteEmbeddedDocuments('ActiveEffect', toDelete);
     }
@@ -804,11 +837,11 @@ export default class SwadeItem extends Item {
   protected override async _preUpdate(changed, options, user) {
     await super._preUpdate(changed, options, user);
 
-    if (this.parent && hasProperty(changed, 'data.equipStatus')) {
+    if (this.parent && hasProperty(changed, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
-      const newState = getProperty(changed, 'data.equipStatus') as EquipState;
+      const newState = getProperty(changed, 'system.equipStatus') as EquipState;
       const updates = this.parent.effects
-        .filter((ae) => ae.data.origin === this.uuid)
+        .filter((ae) => ae.origin === this.uuid)
         .map((ae) => {
           return {
             _id: ae.id,

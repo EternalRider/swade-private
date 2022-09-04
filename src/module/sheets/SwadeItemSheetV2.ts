@@ -131,7 +131,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     html.find('.power-delete').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
-      const power = this._getEmbeddedPowers().get(id);
+      const power = this.item.embeddedPowers.get(id);
       const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
         power: power?.name,
       });
@@ -181,7 +181,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     html.find('.power .damage').on('click', (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
-      const tempPower = new SwadeItem(this._getEmbeddedPowers().get(id));
+      const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
       tempPower.rollDamage();
     });
 
@@ -210,7 +210,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this.item.system.additionalStats ?? {};
+    const additionalStats = this.item.system.additionalStats;
 
     const data: SwadeItemSheetData = {
       itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
@@ -245,7 +245,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     if (this.item.isArcaneDevice) {
-      data.embeddedPowers = this._getEmbeddedPowers();
+      data.embeddedPowers = this.item.embeddedPowers;
     }
     return foundry.utils.mergeObject(await super.getData(options), data);
   }
@@ -285,7 +285,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     try {
       //get the data
-      const data = JSON.parse(event.dataTransfer!.getData('text/plain'));
+      const data = JSON.parse(event.dataTransfer!.getData('text/plain')) as {
+        type: string;
+        uuid: string;
+      };
       switch (data.type) {
         case 'ActiveEffect':
           await this._onDropActiveEffect(event, data);
@@ -311,38 +314,30 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   private async _onDropItem(_event: DragEvent, data) {
     Logger.debug(
-      `Trying to add ${data.type} ${data.id} to ${this.item.type}/${this.item.name}`,
+      `Trying to add ${data.type} ${data.uuid} to ${this.item.type}/${this.item.name}`,
     );
     if (this.item.type !== 'ability') return;
-    let item: StoredDocument<SwadeItem> | SwadeItem;
-    if ('pack' in data) {
-      const pack = game.packs.get(data.pack, { strict: true });
-      item = (await pack.getDocument(data.id)) as StoredDocument<SwadeItem>;
-    } else if ('actorId' in data) {
-      item = new SwadeItem(data.data);
-    } else {
-      item = game.items!.get(data.id, { strict: true });
-    }
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
       Logger.warn('SWADE.CannotAddRaceToRace', { localize: true, toast: true });
       return;
     }
     //prep item data
-    const itemData = item.data.toObject();
+    const itemData = item.toObject();
 
     if (
       this.item.type === 'ability' &&
       this.item.system.subtype !== 'special'
     ) {
-      const collection = this._getEmbeddedAbilities();
-      collection.set(randomID(), itemData);
+      const collection = this.item.embeddedAbilities;
+      collection.set(foundry.utils.randomID(), itemData);
       await this._saveEmbeddedAbilities(collection);
     }
 
     if (this.item.canBeArcaneDevice && item.type === 'power') {
-      const collection = this._getEmbeddedPowers();
-      collection.set(randomID(), itemData);
+      const collection = this.item.embeddedPowers;
+      collection.set(foundry.utils.randomID(), itemData);
       await this._saveEmbeddedPowers(collection);
     }
   }
@@ -416,13 +411,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     this.item.setFlag('swade', flagKey[type], Array.from(map));
   }
 
-  private _getEmbeddedAbilities() {
-    const flagContent = this.item.getFlag('swade', 'embeddedAbilities') ?? [];
-    return new Map(flagContent as Array<[string, ItemDataSource]>);
-  }
-
   private _prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
-    const collection = this._getEmbeddedAbilities();
+    const collection = this.item.embeddedAbilities;
     const items = new Array<Record<string, unknown>>();
     for (const [key, val] of collection) {
       const type =
@@ -432,7 +422,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
       let majorMinor = '';
       if (val.type === 'hindrance') {
-        if (val.data.major) {
+        if (val.data?.major ?? val.system.major) {
           majorMinor = game.i18n.localize('SWADE.Major');
         } else {
           majorMinor = game.i18n.localize('SWADE.Minor');
@@ -451,11 +441,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   private async _saveEmbeddedAbilities(map: Map<string, ItemDataSource>) {
     return this.item.setFlag('swade', 'embeddedAbilities', Array.from(map));
-  }
-
-  private _getEmbeddedPowers() {
-    const flagContent = this.item.getFlag('swade', 'embeddedPowers') ?? [];
-    return new Map(flagContent as Array<[string, ItemDataSource]>);
   }
 
   private async _saveEmbeddedPowers(map: Map<string, ItemDataSource>) {
@@ -540,6 +525,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
     return states;
   }
+
   private _trademarkWeaponOptions(): Record<number, string> {
     return {
       0: 'None',
