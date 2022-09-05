@@ -159,7 +159,7 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap = getProperty(this.data, 'data.ap');
+    let ap = getProperty(this.system, 'ap');
 
     if (ap) {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;

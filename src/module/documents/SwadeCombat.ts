@@ -125,7 +125,7 @@ export default class SwadeCombat extends Combat {
         cardValue: card.value!,
         suitValue: card.system['suit'],
         hasJoker: card.system['isJoker'],
-        cardString: card.data.description,
+        cardString: card.description,
       };
 
       const initiative = card?.system['suit'] + card.value;

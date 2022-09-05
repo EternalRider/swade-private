@@ -180,8 +180,8 @@ export default class CharacterSheet extends ActorSheet<
       if (this.actor.type === 'vehicle') return;
 
       const runningDieSides = this.actor.system.stats.speed.runningDie;
-      const runningMod = this.actor.systemats.speed.runningMod;
-      const pace = this.actor.systemats.speed.adjusted;
+      const runningMod = this.actor.system.stats.speed.runningMod;
+      const pace = this.actor.system.stats.speed.adjusted;
       const runningDie = `1d${runningDieSides}[${game.i18n.localize(
         'SWADE.RunningDie',
       )}]`;
@@ -854,9 +854,9 @@ export default class CharacterSheet extends ActorSheet<
       const itemData = {
         name: name ? name : `New ${type.capitalize()}`,
         type: type,
-        data: button.dataset,
+        system: button.dataset,
       };
-      delete itemData.data['type'];
+      delete itemData.system.type;
       return itemData;
     };
     switch (type) {

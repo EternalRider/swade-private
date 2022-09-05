@@ -388,7 +388,7 @@ export default class ItemChatCardHelper {
     if (!message) return; //solves for the case where ammo management isn't turned on so there's no errors
 
     const content = new DOMParser().parseFromString(
-      getProperty(message, 'data.content'),
+      message.content,
       'text/html',
     );
 
