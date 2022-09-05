@@ -155,7 +155,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    * @override
    */
   async getData() {
-    const data = super.getData();
+    const data = await super.getData();
 
     data.config = SWADE;
     data.itemsByType = {};
