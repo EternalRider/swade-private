@@ -1,6 +1,6 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { SWADE } from '../config';
 import { constants } from '../constants';
+import { getStatusEffectDataById } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /**
@@ -239,11 +239,9 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Get the key from the target name
     const id = ev.target.dataset.id as string;
     const key = ev.target.dataset.key as string;
-    let data = CONFIG.SWADE.statusEffects.find((e) => e.id === id);
-    //fallback for when the effect doesn't exist in the global object
-    if (!data) data = SWADE.statusEffects.find((e) => e.id === id)!;
+    const data = getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    this.actor.toggleActiveEffect(data);
+    await this.actor.toggleActiveEffect(data);
   }
 }
