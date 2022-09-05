@@ -22,6 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.0
+
+### Added
+
+- Added migration for Item-affecting Active Effects
+- Added migration for embedded abilities and embedded powers
+
+### Changed
+
+- Migrated the system over to the new Foundry data model. This makes it completely incompatible with v9
+
+### Fixed
+
+- The NPC sheet now uses `CONFIG.statusEffects` instead of wrongfully using `CONFIG.SWADE.statusEffects`.
+
 ## v1.2.4
 
 ### Changed
