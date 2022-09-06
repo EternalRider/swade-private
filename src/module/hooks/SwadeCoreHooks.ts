@@ -434,7 +434,7 @@ export default class SwadeCoreHooks {
   ) {
     const canApply = (li: JQuery<HTMLElement>) => {
       const message = game.messages?.get(li.data('messageId'))!;
-      const actor = ChatMessage.getSpeakerActor(message.data['speaker']);
+      const actor = ChatMessage.getSpeakerActor(message.speaker);
       const isRightMessageType =
         message?.isRoll &&
         message?.isContentVisible &&

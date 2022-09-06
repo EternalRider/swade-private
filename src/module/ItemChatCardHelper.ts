@@ -73,7 +73,7 @@ export default class ItemChatCardHelper {
     return roll;
   }
 
-  static getChatCardActor(card): SwadeActor | null {
+  static getChatCardActor(card: HTMLElement): SwadeActor | null {
     // Case 1 - a synthetic actor from a Token
     const tokenKey = card.dataset.tokenId;
     if (tokenKey) {

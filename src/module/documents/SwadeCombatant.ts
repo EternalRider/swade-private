@@ -147,7 +147,7 @@ export default class SwadeCombatant extends Combatant {
       return;
     const combatants = game.combat?.combatants ?? [];
     const isTokenHostile =
-      this.token?.data.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+      this.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
     //Give bennies to PCs
     if (this.actor?.type === 'character') {
       await this._createJokersWildMessage();
@@ -166,7 +166,7 @@ export default class SwadeCombatant extends Combatant {
       //give all enemy wildcards a benny
       const hostiles = combatants.filter((c) => {
         const isHostile =
-          c.token?.data.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+          c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
         return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
       });
       for (const c of hostiles ?? []) {

@@ -1,3 +1,4 @@
+import { AdditionalStats } from '../../globals';
 import {
   AdditionalStat,
   TraitRollModifier,
@@ -287,17 +288,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const powers = data.itemsByType['power'];
       if (powers) {
         powers.forEach((pow: any) => {
-          if (!pow.data.arcane) return;
-          if (
-            data.arcanes.find((el: string) => el == pow.data.arcane) ===
-            undefined
-          ) {
-            data.arcanes.push(pow.data.arcane);
+          const arcane = pow.system.arcane;
+          if (!arcane) return;
+          if (data.arcanes.find((el: string) => el == arcane) === undefined) {
+            data.arcanes.push(arcane);
             // Add powerpoints data relevant to the detected arcane
-            if (
-              !hasProperty(data, `data.data.powerPoints.${pow.data.arcane}`)
-            ) {
-              data.data.data.powerPoints[pow.data.arcane] = {
+            if (!hasProperty(data, `system.powerPoints.${arcane}`)) {
+              data.data.system.powerPoints[arcane] = {
                 value: 0,
                 max: 0,
               };
@@ -315,8 +312,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: Record<string, AdditionalStat> =
-      data.data.data.additionalStats || {};
+    const additionalStats: AdditionalStats = this.actor.system.additionalStats;
     for (const attr of Object.values(additionalStats)) {
       attr['isCheckbox'] = attr['dtype'] === 'Boolean';
     }
@@ -489,7 +485,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   protected _calcInventoryWeight(items): number {
     let retVal = 0;
     items.forEach((i: any) => {
-      retVal += i.data.weight * i.data.quantity;
+      retVal += i.system.weight * i.system.quantity;
     });
     return retVal;
   }

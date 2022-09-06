@@ -1,25 +1,27 @@
 import { SWADE } from './config';
 import SwadeActor from './documents/actor/SwadeActor';
 import ItemChatCardHelper from './ItemChatCardHelper';
+import { Logger } from './Logger';
 
 export async function formatRoll(
   chatMessage: ChatMessage,
   html: JQuery<HTMLElement>,
-  data: any,
+  _data: any,
 ) {
   const colorMessage = chatMessage.getFlag('swade', 'colorMessage') as boolean;
 
   // Little helper function
-  const pushDice = (data, total, faces, red?: boolean) => {
+  const pushDice = (
+    data: DiceResults,
+    total: number,
+    faces: number,
+    red?: boolean,
+  ) => {
     let color = 'black';
-    if (total > faces) {
-      color = 'green';
-    }
-    if (red) {
-      color = 'red';
-    }
+    if (total > faces) color = 'green';
+    if (red) color = 'red';
     let img = '';
-    if ([4, 6, 8, 10, 12, 20].indexOf(faces) > -1) {
+    if ([4, 6, 8, 10, 12, 20].indexOf(faces) !== -1) {
       img = `icons/svg/d${faces}-grey.svg`;
     }
     data.dice.push({
@@ -53,7 +55,12 @@ export async function formatRoll(
       // Compute dice from the pool
       term.rolls.forEach((roll: Roll) => {
         const faces = roll.terms[0]['faces'];
-        pushDice(chatData, roll.total, faces, colorMessage && rollIsRed(roll));
+        pushDice(
+          chatData,
+          roll.total ?? 0,
+          faces,
+          colorMessage && rollIsRed(roll),
+        );
       });
     } else if (term instanceof Die) {
       // Grab the right dice
@@ -85,13 +92,14 @@ export async function formatRoll(
   for (const term of roll.terms) {
     if (term instanceof PoolTerm) {
       // Compute dice from the pool
-      term.rolls.forEach((roll, i) => {
+      for (let i = 0; i < term.rolls.length; i++) {
+        const roll = term.rolls[i];
         const faces = roll.terms[0]['faces'];
         if (!term.results[i].discarded) {
           const color = colorMessage && rollIsRed(roll);
-          pushDice(results, roll.total, faces, color);
+          pushDice(results, roll.total!, faces, color);
         }
-      });
+      }
     } else if (term instanceof Die) {
       if (term.flavor === game.i18n.localize('SWADE.Conv')) {
         conviction = term.total!;
@@ -117,13 +125,13 @@ export async function formatRoll(
       mod = Roll.safeEval(modString);
     }
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
   } finally {
     if (results.dice.length > 0) {
-      results.dice.forEach((v) => {
-        v.result += conviction;
-        v.result += mod;
-      });
+      for (const die of results.dice) {
+        die.result += conviction;
+        die.result += mod;
+      }
     } else {
       results.total! += mod + conviction;
     }
@@ -148,18 +156,13 @@ export function chatListeners(html: JQuery<HTMLElement>) {
   });
 
   html.on('click', '.card-buttons button', async (event) => {
-    const element = event.currentTarget as Element;
-    const actorId = $(element)
-      .parents('[data-actor-id]')
-      .attr('data-actor-id') as string;
-    const itemId = $(element)
-      .parents('[data-item-id]')
-      .attr('data-item-id') as string;
-    const actor = game.actors!.get(actorId, { strict: true });
-    const action = element.getAttribute('data-action');
-    const messageId = $(element)
-      .parents('[data-message-id]')
-      .attr('data-message-id');
+    const element = event.currentTarget as HTMLElement;
+    const chatCard = element.closest<HTMLElement>('.chat-card')!;
+    const actor = ItemChatCardHelper.getChatCardActor(chatCard);
+    if (!actor) return;
+    const itemId = $(element).parents('[data-item-id]').data().itemId;
+    const action = element.dataset.action;
+    const messageId = $(element).parents('[data-message-id]').data().messageId;
 
     // Bind item cards
     ItemChatCardHelper.onChatCardAction(event);
@@ -170,7 +173,7 @@ export function chatListeners(html: JQuery<HTMLElement>) {
         .closest('.flexcol')
         .find('input.pp-adjust')
         .val() as string;
-      const adjustment = element.getAttribute('data-adjust') as string;
+      const adjustment = element.dataset.adjust;
       const power = actor.items.get(itemId, { strict: true });
       let key = 'system.powerPoints.value';
       const arcane = getProperty(power.system, 'arcane');
@@ -273,14 +276,11 @@ export async function rerollFromChat(
   spendBenny: boolean,
 ) {
   const message = game.messages?.get(li.data('messageId'))!;
-  const flavor = new DOMParser().parseFromString(
-    getProperty(message, 'data.flavor'),
-    'text/html',
-  );
-  const speaker = getProperty(message, 'data.speaker');
-  const roll = message.roll!;
-  const actor = ChatMessage.getSpeakerActor(speaker)! as unknown as SwadeActor;
-  const currentBennies = getProperty(actor.data, 'data.bennies.value');
+  const flavor = new DOMParser().parseFromString(message.flavor, 'text/html');
+  const speaker = message.speaker;
+  const roll = message.rolls[0]!;
+  const actor = ChatMessage.getSpeakerActor(speaker)!;
+  const currentBennies = actor.bennies;
   const doSpendBenny = spendBenny && actor?.isWildcard;
 
   if (doSpendBenny && currentBennies <= 0) {
@@ -292,11 +292,9 @@ export async function rerollFromChat(
     ? game.i18n.localize('SWADE.RerollWithBenny')
     : game.i18n.localize('SWADE.FreeReroll');
 
-  const prefixes = flavor.getElementsByClassName('prefix');
+  const prefixes = flavor.querySelectorAll<HTMLElement>('prefix');
   if (prefixes.length > 0) {
-    Array.from(prefixes).forEach((el: HTMLElement) => {
-      el.innerText = prefix;
-    });
+    prefixes.forEach((el) => (el.innerText = prefix));
   } else {
     flavor.body.innerHTML = `<strong class="prefix">${prefix}</strong><br>${flavor.body.innerHTML}`;
   }
@@ -308,12 +306,13 @@ export async function rerollFromChat(
   if (doSpendBenny) {
     await actor.spendBenny();
   }
-  roll.reroll({ async: false }).toMessage(newRollData);
+  const evaluated = await roll.reroll({ async: true });
+  evaluated.toMessage(newRollData);
 }
 
 interface ChatDie {
   img: string | null;
-  result: string;
+  result: number;
   color: string;
   dice: boolean;
 }
@@ -321,6 +320,6 @@ interface ChatDie {
 interface DiceResults {
   dice: ChatDie[];
   modifiers?: (string | number)[];
-  result?: number;
+  result?: number | string;
   total?: number;
 }
