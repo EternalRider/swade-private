@@ -292,7 +292,7 @@ export async function rerollFromChat(
     ? game.i18n.localize('SWADE.RerollWithBenny')
     : game.i18n.localize('SWADE.FreeReroll');
 
-  const prefixes = flavor.querySelectorAll<HTMLElement>('prefix');
+  const prefixes = flavor.querySelectorAll<HTMLElement>('.prefix');
   if (prefixes.length > 0) {
     prefixes.forEach((el) => (el.innerText = prefix));
   } else {
@@ -303,9 +303,7 @@ export async function rerollFromChat(
     flavor: flavor.body.innerHTML,
   };
 
-  if (doSpendBenny) {
-    await actor.spendBenny();
-  }
+  if (doSpendBenny) await actor.spendBenny();
   const evaluated = await roll.reroll({ async: true });
   evaluated.toMessage(newRollData);
 }
