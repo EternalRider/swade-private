@@ -119,20 +119,22 @@ export default class SwadeItem extends Item {
   }
 
   override prepareDerivedData() {
-    const type = this.data.type;
     if (
-      type === 'weapon' ||
-      type === 'armor' ||
-      type === 'shield' ||
-      type === 'gear'
+      this.type === 'weapon' ||
+      this.type === 'armor' ||
+      this.type === 'shield' ||
+      this.type === 'gear'
     ) {
-      // TODO remove with 1.3.0
+      // TODO remove with 2.1.0
+      const depreciationMsg =
+        'This property is depreciated and will be removed with v2.1.0, please use equipStatus instead';
       Object.defineProperty(this.data.data, 'equipped', {
         get() {
-          Logger.warn(
-            'This property is depreciated and will be removed with v1.3.0, please use equipStatus instead',
-          );
+          Logger.warn(depreciationMsg);
           return this.equipStatus > constants.EQUIP_STATE.CARRIED;
+        },
+        set(_val) {
+          Logger.warn(depreciationMsg);
         },
       });
     }

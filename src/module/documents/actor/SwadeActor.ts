@@ -1008,7 +1008,7 @@ export default class SwadeActor extends Actor {
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = i?.data.equipStatus !== constants.EQUIP_STATE.STORED;
+        const isEquipped = i!.data.equipStatus > constants.EQUIP_STATE.CARRIED;
         const isLocation = i?.data.locations[location];
         const isNaturalArmor = i?.data.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;

@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v1.2.5
+
+### Removed
+
+- Added a Setter to the depreciated `equipped` property in order to prevent Active Effects from breaking.
+
+### Fixed
+
+- The NPC sheet now uses `CONFIG.statusEffects` instead of wrongfully using `CONFIG.SWADE.statusEffects`.
+- Armors are no longer apply if they're not equipped. (#576)
+
 ## v1.2.4
 
 ### Changed
