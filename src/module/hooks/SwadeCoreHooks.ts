@@ -752,7 +752,7 @@ export default class SwadeCoreHooks {
     options: any,
   ) {
     html.find('.player').each((_index, player) => {
-      PlayerBennyDisplay.append(player, options);
+      new PlayerBennyDisplay(player);
     });
   }
 

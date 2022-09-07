@@ -1,56 +1,94 @@
 import { SWADE } from '../config';
+import SwadeUser from '../documents/SwadeUser';
 
 export default class PlayerBennyDisplay {
-  static async append(player: HTMLElement, _options: any) {
-    const user = game.users!.get(player.dataset.userId!, { strict: true });
+  element: HTMLElement;
+  player: SwadeUser;
+  counter: HTMLSpanElement;
 
-    const counter = document.createElement('span');
-    counter.classList.add('bennies-count');
-    counter.addEventListener('mouseleave', PlayerBennyDisplay.updateBennyCount);
-
-    // GM interactive interface
-    if (game.user?.isGM) {
-      counter.classList.add('bennies-gm');
-      const callback = user.isGM
-        ? PlayerBennyDisplay.onSpendBenny
-        : PlayerBennyDisplay.onGiveBenny;
-      counter.addEventListener('click', callback);
-      counter.addEventListener(
-        'mouseover',
-        () => (counter.innerHTML = user.isGM ? '-' : '+'),
-      );
-      counter.title = user.isGM
-        ? game.i18n.localize('SWADE.BenniesSpend')
-        : game.i18n.localize('SWADE.BenniesGive');
-
-      // Manage GM Bennies
-      if (user.isGM) {
-        const bennies = user.getFlag('swade', 'bennies');
-        // Set bennies to number as defined in GM benny setting
-        if (!bennies) {
-          const gmBennies = game.settings.get('swade', 'gmBennies');
-          await user.setFlag('swade', 'bennies', gmBennies);
-          counter.innerHTML = gmBennies.toString();
-        } else {
-          const bennies = user.getFlag('swade', 'bennies') ?? 0;
-          counter.innerHTML = bennies.toString();
-        }
-      } else if (user.character) {
-        counter.innerHTML = user.character.bennies.toString();
-      }
+  get bennies() {
+    if (this.player.isGM) {
+      return this.player.getFlag('swade', 'bennies') ?? 0;
+    } else if (this.player.character) {
+      return this.player.character.bennies;
     } else {
-      // Player view
-      if (user.isGM) {
-        const bennies = user.getFlag('swade', 'bennies') ?? 0;
-        counter.innerHTML = bennies.toString();
-      } else if (user.character) {
-        counter.addEventListener('click', PlayerBennyDisplay.onSpendBenny);
-        counter.addEventListener('mouseover', () => (counter.innerHTML = '-'));
-        counter.title = game.i18n.localize('SWADE.BenniesSpend');
-        counter.innerHTML = user.character.bennies.toString();
-      }
+      return 'X';
     }
-    player.append(counter);
+  }
+
+  constructor(element: HTMLElement) {
+    //Gather the data
+    const userId = element.dataset.userId!;
+    const player = game.users!.get(userId, { strict: true });
+    //return early if there's not actually anything to display
+    if (!player.isGM && !player.character) return;
+    this.element = element;
+    this.player = player;
+    this._initialize();
+  }
+
+  private _initialize() {
+    //Create counter
+    this.counter = document.createElement('span');
+    this.counter.classList.add('bennies-count');
+    this.counter.addEventListener(
+      'mouseleave',
+      this.updateBennyCount.bind(this),
+    );
+    this.counter.addEventListener('mouseover', this.onMouseOver.bind(this));
+
+    if (game.user?.isGM) {
+      this._initGameMaster();
+    } else {
+      this._initPlayer();
+    }
+    //append the counter to the player list
+    this.element.append(this.counter);
+  }
+
+  /** GM interactive interface */
+  private _initGameMaster() {
+    this.counter.classList.add('bennies-gm');
+    this.counter.innerHTML = this.bennies.toString();
+    const callback = this.player.isGM ? this.onSpendBenny : this.onGiveBenny;
+    this.counter.addEventListener('click', callback.bind(this));
+    this.counter.title = this.player.isGM
+      ? game.i18n.localize('SWADE.BenniesSpend')
+      : game.i18n.localize('SWADE.BenniesGive');
+  }
+
+  /** Player view */
+  private _initPlayer() {
+    this.counter.innerHTML = this.bennies.toString();
+    if (this.player.character) {
+      this.counter.addEventListener('click', this.onSpendBenny.bind(this));
+      this.counter.title = game.i18n.localize('SWADE.BenniesSpend');
+    }
+  }
+
+  updateBennyCount(ev?: MouseEvent) {
+    ev?.preventDefault();
+    this.counter.innerHTML = this.bennies.toString();
+  }
+
+  onMouseOver() {
+    if (game.user?.isGM && this.player.character) {
+      this.counter.innerHTML = this.player.isGM ? '-' : '+';
+    } else if (this.player.character) {
+      this.counter.innerHTML = '-';
+    }
+  }
+
+  async onGiveBenny(ev?: MouseEvent) {
+    ev?.preventDefault();
+    await this.player.getBenny();
+    this.updateBennyCount(ev);
+  }
+
+  async onSpendBenny(ev?: MouseEvent) {
+    ev?.preventDefault();
+    await this.player.spendBenny();
+    this.updateBennyCount(ev);
   }
 
   static async refreshAll() {
@@ -81,29 +119,5 @@ export default class PlayerBennyDisplay {
       });
     }
     ui.players?.render(true);
-  }
-
-  static async onGiveBenny(ev: MouseEvent) {
-    const target = ev.currentTarget as HTMLElement;
-    const userId = target.parentElement?.dataset.userId;
-    const user = game.users?.get(userId!, { strict: true });
-    await user?.getBenny();
-    ui.players?.render(true);
-  }
-
-  static async onSpendBenny(ev: MouseEvent) {
-    ev.preventDefault();
-    const target = ev.currentTarget as HTMLElement;
-    const userId = target.parentElement?.dataset.userId;
-    const user = game.users?.get(userId!);
-    await user?.spendBenny();
-  }
-
-  private static updateBennyCount(ev: MouseEvent) {
-    ev.preventDefault();
-    const target = ev.currentTarget as HTMLElement;
-    const userId = target.parentElement?.dataset.userId!;
-    const user = game.users!.get(userId, { strict: true });
-    target.innerHTML = user.bennies.toString();
   }
 }

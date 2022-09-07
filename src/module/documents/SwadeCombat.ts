@@ -166,7 +166,7 @@ export default class SwadeCombat extends Combat {
             alias: `${c.token!.name} ${game.i18n.localize('SWADE.InitDraw')}`,
           },
           whisper:
-            c.token?.data.hidden || c.hidden
+            c.token?.hidden || c.hidden
               ? game?.users?.filter((u) => u.isGM)
               : [],
           content: template,

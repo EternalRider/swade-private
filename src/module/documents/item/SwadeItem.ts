@@ -150,28 +150,6 @@ export default class SwadeItem extends Item {
     return data;
   }
 
-  override prepareDerivedData() {
-    if (
-      this.type === 'weapon' ||
-      this.type === 'armor' ||
-      this.type === 'shield' ||
-      this.type === 'gear'
-    ) {
-      // TODO remove with 2.1.0
-      const depreciationMsg =
-        'This property is depreciated and will be removed with v2.1.0, please use equipStatus instead';
-      Object.defineProperty(this.system, 'equipped', {
-        get() {
-          Logger.warn(depreciationMsg);
-          return this.equipStatus > constants.EQUIP_STATE.CARRIED;
-        },
-        set(_val) {
-          Logger.warn(depreciationMsg);
-        },
-      });
-    }
-  }
-
   async rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
     let itemData;
