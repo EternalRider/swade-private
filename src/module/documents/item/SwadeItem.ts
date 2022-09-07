@@ -811,7 +811,7 @@ export default class SwadeItem extends Item {
         hasProperty(this.system, 'equippable')
       ) {
         let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
-        if (type === 'weapon') {
+        if (data.type === 'weapon') {
           newState = constants.EQUIP_STATE.MAIN_HAND;
         }
         this.updateSource({

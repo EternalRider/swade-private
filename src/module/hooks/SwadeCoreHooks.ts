@@ -2,7 +2,6 @@
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
-import Bennies from '../bennies';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
@@ -16,6 +15,7 @@ import * as migrations from '../migration';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
+import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -751,8 +751,8 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     options: any,
   ) {
-    html.find('.player').each((id, player) => {
-      Bennies.append(player, options);
+    html.find('.player').each((_index, player) => {
+      PlayerBennyDisplay.append(player, options);
     });
   }
 
@@ -856,16 +856,16 @@ export default class SwadeCoreHooks {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fas fa-sync"></i>',
         condition: (li) => game.user!.isGM,
-        callback: (li) => {
-          game.users?.get(li[0].dataset.userId!)?.refreshBennies();
+        callback: async (li) => {
+          await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
         },
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fas fa-sync"></i>',
         condition: (li) => game.user!.isGM,
-        callback: (li) => {
-          Bennies.refreshAll();
+        callback: async (li) => {
+          await PlayerBennyDisplay.refreshAll();
         },
       },
     );

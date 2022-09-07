@@ -525,7 +525,7 @@ export default class SwadeActor extends Actor {
       const chatData = {
         content: message,
       };
-      ChatMessage.create(chatData);
+      CONFIG.ChatMessage.documentClass.create(chatData);
     }
     let newValue = this.system.bennies.max;
     const hardChoices = game.settings.get('swade', 'hardChoices');

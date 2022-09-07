@@ -93,10 +93,10 @@ export default class SwadeUser extends User {
     if (this.isGM) {
       const gmBennies = game.settings.get('swade', 'gmBennies');
       await this.setFlag('swade', 'bennies', gmBennies);
-      ui.players?.render(true);
     } else if (this.character) {
       await this.character.refreshBennies(displayToChat);
     }
+    ui.players?.render(true);
   }
 }
 
