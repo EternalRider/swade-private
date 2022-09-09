@@ -221,9 +221,9 @@ SWADE:
   BleedingOut: Verblutend
   DSNNone: '- Kein -'
   Defending: Verteidigend
-  DiceConf: Würfel Konfiguration
+  DiceConf: Wildcard Würfel Konfiguration
   DiceConfDesc: Verwalte Einstellungen der SWADE/Dice So Nice integration
-  DiceConfLabel: Würfel Konfiguration Öffnen
+  DiceConfLabel: Wildcard Würfel Konfiguration Öffnen
   Diseased: Erkrankt
   Encumbered: Überladen
   Flying: Fliegend

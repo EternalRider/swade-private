@@ -93,6 +93,7 @@ export default class CharacterSummarizer {
     summary += '<p><strong>' + game.i18n.localize('SWADE.Race') + '</strong>: ';
     summary += TextEditor.enrichHTML(
       getProperty(this.actor.system, 'details.species.name'),
+      { async: false },
     );
     summary +=
       '<br/><strong>' + game.i18n.localize('SWADE.Rank') + '</strong>: ';

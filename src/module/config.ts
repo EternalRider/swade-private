@@ -168,10 +168,6 @@ export const SWADE: SwadeConfig = {
 
   activeMeasuredTemplatePreview: null,
 
-  dsnColorSets: {},
-
-  dsnTextureList: {},
-
   abilitySheet: {
     special: {
       dropdown: 'SWADE.SpecialAbility',
@@ -315,9 +311,6 @@ export interface SwadeConfig {
   measuredTemplatePresets: Array<TemplateConfig>;
 
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
-
-  dsnColorSets: any;
-  dsnTextureList: any;
 
   abilitySheet: Record<AbilitySubType, { dropdown: string; abilities: string }>;
 

@@ -69,16 +69,18 @@ export default class DiceSettings extends FormApplication<
       }
     }
 
-    return {
+    const data = {
       settings,
       hasCustomWildDie: settings['dsnWildDie'].value !== 'customWildDie',
-      textureList: this._prepareTextureList(),
-      fontList: this._prepareFontList(),
+      textureList: game.dice3d?.exports.Utils.prepareTextureList(),
+      fontList: game.dice3d?.exports.Utils.prepareFontList(),
       materialList: this._prepareMaterialList(),
     };
+
+    return data;
   }
 
-  async _updateObject(event, formData): Promise<void> {
+  async _updateObject(_event, formData): Promise<void> {
     const expandedFormdata = expandObject(formData) as any;
     //handle basic settings
     for (const [key, value] of Object.entries(expandedFormdata.swade)) {
@@ -115,58 +117,10 @@ export default class DiceSettings extends FormApplication<
   }
 
   private _prepareColorsetList() {
-    const sets = this._deepCopyColorsets(SWADE.dsnColorSets);
-    sets.none = {
-      name: 'none',
-      category: 'DICESONICE.Colors',
-      description: 'SWADE.DSNNone',
-    };
-    delete sets.custom;
-    const groupedSetsList = Object.values(sets) as any[];
-    groupedSetsList.sort((set1: any, set2: any) => {
-      if (
-        game.i18n.localize(set1.description) <
-        game.i18n.localize(set2.description)
-      ) {
-        return -1;
-      } else if (
-        game.i18n.localize(set1.description) >
-        game.i18n.localize(set2.description)
-      ) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    const preparedList = {};
-    for (let i = 0; i < groupedSetsList.length; i++) {
-      const locCategory = game.i18n.localize(groupedSetsList[i].category);
-      if (!preparedList.hasOwnProperty(locCategory))
-        preparedList[locCategory] = {};
-
-      preparedList[locCategory][groupedSetsList[i].name] = game.i18n.localize(
-        groupedSetsList[i].description,
-      );
-    }
-    return preparedList;
-  }
-
-  private _prepareTextureList() {
-    return Object.keys(SWADE.dsnTextureList).reduce((i18nCfg, key) => {
-      i18nCfg[key] = SWADE.dsnTextureList[key].name;
-      return i18nCfg;
-    }, {});
-  }
-
-  private _prepareFontList() {
-    const fontList = {
-      auto: game.i18n.localize('DICESONICE.FontAuto'),
-    };
-    game.dice3d?.box.dicefactory.fontFamilies.forEach((font) => {
-      fontList[font] = font;
-    });
-    fontList['auto'] = game.i18n.localize('DICESONICE.FontAuto');
-    return fontList;
+    const dsnList = game.dice3d!.exports.Utils.prepareColorsetList();
+    delete dsnList.Colors.custom;
+    dsnList.Colors.none = game.i18n.localize('SWADE.DSNNone');
+    return dsnList;
   }
 
   private _prepareMaterialList() {
@@ -178,17 +132,5 @@ export default class DiceSettings extends FormApplication<
       wood: 'DICESONICE.MaterialWood',
       chrome: 'DICESONICE.MaterialChrome',
     };
-  }
-
-  private _deepCopyColorsets(colorsets: any): any {
-    const deepCopy = {};
-    for (const [key, value] of Object.entries(colorsets) as [string, any]) {
-      deepCopy[deepClone(key)] = {
-        name: deepClone(value['name']),
-        category: deepClone(value['category']),
-        description: deepClone(value['description']),
-      };
-    }
-    return deepCopy;
   }
 }

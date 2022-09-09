@@ -80,6 +80,11 @@ export declare class Dice3D {
 interface Dice3DExports {
   COLORSETS: any;
   TEXTURELIST: any;
+  Utils: {
+    prepareFontList: () => Record<string, string>;
+    prepareTextureList: () => Record<string, string>;
+    prepareColorsetList: () => Record<string, Record<string, string>>;
+  };
 }
 
 interface Dice3DShowData {
