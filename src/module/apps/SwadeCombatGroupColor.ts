@@ -9,25 +9,24 @@ export default class SwadeCombatGroupColor extends FormApplication<
   constructor(object: Combatant, options = {}) {
     super(object, options);
   }
-  activateListeners(html) {
+  activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
-    html.find('.reset-color').click(this._onResetColor.bind(this));
+    html.find('.reset-color').on('click', this._onResetColor.bind(this));
   }
   static get defaultOptions() {
-    return {
-      ...super.defaultOptions,
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'group-color-picker',
       title: 'SWADE.SetGroupColor',
       template:
         'systems/swade/templates/sidebar/combatant-group-color-picker.hbs',
-      classes: ['swade'],
+      classes: ['swade', 'swade-app'],
       width: 275,
       height: 'auto' as const,
       resizable: false,
       closeOnSubmit: true,
       submitOnClose: true,
       submitOnChange: false,
-    };
+    });
   }
 
   async _onChangeColorPicker(event) {
@@ -40,18 +39,17 @@ export default class SwadeCombatGroupColor extends FormApplication<
     let groupColor = '#efefef';
 
     if (c?.players?.length) {
-      groupColor = c.players[0].data.color!;
+      groupColor = c.players[0].color!;
     } else {
       const gm = game.users?.find((u) => u.isGM === true)!;
-      groupColor = gm.data.color!;
+      groupColor = gm.color!;
     }
 
     await this.object.unsetFlag('swade', 'groupColor');
     $(this.form!).find('#groupColor').val(groupColor);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async _updateObject(event, formData: GroupColorPickerData) {}
+  async _updateObject(_event, _formData: GroupColorPickerData) {}
 }
 
 interface GroupColorPickerData {}

@@ -60,7 +60,7 @@ export default class PlayerBennyDisplay {
   /** Player view */
   private _initPlayer() {
     this.counter.innerHTML = this.bennies.toString();
-    if (this.player.character) {
+    if (this.player.character && game.userId === this.player.id) {
       this.counter.addEventListener('click', this.onSpendBenny.bind(this));
       this.counter.title = game.i18n.localize('SWADE.BenniesSpend');
     }
@@ -74,7 +74,7 @@ export default class PlayerBennyDisplay {
   onMouseOver() {
     if (game.user?.isGM && this.player.character) {
       this.counter.innerHTML = this.player.isGM ? '-' : '+';
-    } else if (this.player.character) {
+    } else if (this.player.character && game.userId === this.player.id) {
       this.counter.innerHTML = '-';
     }
   }
