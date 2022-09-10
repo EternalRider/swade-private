@@ -243,7 +243,7 @@ export default class SwadeActor extends Actor {
     }
 
     // Roll and return
-    return game.swade.RollDialog.asPromise({
+    return RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -310,7 +310,7 @@ export default class SwadeActor extends Actor {
     }
 
     // Roll and return
-    return game.swade.RollDialog.asPromise({
+    return RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
