@@ -7,6 +7,7 @@ import IRollOptions from '../interfaces/RollOptions.interface';
 import { SWADE } from './config';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
+import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 import { Logger } from './Logger';
 import { getTrait, notificationExists } from './util';
 
@@ -63,6 +64,13 @@ export default class ItemChatCardHelper {
       }
     }
 
+    if (action === 'template') {
+      const template = button.dataset.template;
+      SwadeMeasuredTemplate.fromPreset(template);
+      button.disabled = false;
+      return null;
+    }
+
     const roll = await this.handleAction(item, actor, action, additionalMods);
 
     //Only refresh the card if there is a roll and the item isn't a power
@@ -86,7 +94,7 @@ export default class ItemChatCardHelper {
     }
 
     // Case 2 - use Actor ID directory
-    const actorId = card.dataset.actorId;
+    const actorId = card.dataset.actorId!;
     return game.actors?.get(actorId) ?? null;
   }
 

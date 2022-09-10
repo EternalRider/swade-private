@@ -9,6 +9,7 @@ export const constants = {
   /** @enum */
   TEMPLATE_PRESET: {
     CONE: 'swcone',
+    STREAM: 'stream',
     SBT: 'sbt',
     MBT: 'mbt',
     LBT: 'lbt',

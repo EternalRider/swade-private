@@ -59,11 +59,18 @@
     place-self: center;
   }
 
-  .hit-locations {
+  .column-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto;
     column-gap: $medium-spacing;
+  }
+
+  .two-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .three-columns {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .item-detail {

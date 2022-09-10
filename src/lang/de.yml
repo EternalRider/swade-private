@@ -203,10 +203,6 @@ SWADE:
   ConvictionExtend: Entschlossenheit einsetzen?
   ConvictionEnd: schwankt in der Entschlossenheit
   NoBennies: Du hast nicht genug Bennys!
-  SBT: Kleine Flächenschablone
-  MBT: Mittlere Flächenschablone
-  LBT: Große Flächenschablone
-  Cone: Kegelschablone
   GM: Spielleiter
   Vehicles: Fahrzeuge
   AddStats: Weitere Werte
@@ -655,6 +651,24 @@ SWADE:
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
   EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
+  Templates:
+    Cone:
+      Short: Kegel
+      Long: Kebelschablone
+    Stream:
+      Short: Stream
+      Long: Streamschablone
+    Small:
+      Short: KFS
+      Long: Kleine Flächenschablone
+    Medium:
+      Short: MFS
+      Long: Mittlere Flächenschablone
+    Large:
+      Short: GFS
+      Long: Große Flächenschablone
+    Available: Verfügbare Schablonen
+    Possible: Mögliche Schablonen
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

@@ -116,7 +116,7 @@ export const SWADE: SwadeConfig = {
       data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 9 },
       button: {
         name: constants.TEMPLATE_PRESET.CONE,
-        title: 'SWADE.Cone',
+        title: 'SWADE.Templates.Cone.Long',
         icon: 'text-icon cone',
         visible: true,
         button: true,
@@ -126,10 +126,27 @@ export const SWADE: SwadeConfig = {
       },
     },
     {
+      data: {
+        t: foundry.CONST.MEASURED_TEMPLATE_TYPES.RAY,
+        distance: 12,
+        width: 1,
+      },
+      button: {
+        name: constants.TEMPLATE_PRESET.STREAM,
+        title: 'SWADE.Templates.Stream.Long',
+        icon: 'fa-solid fa-wave-square',
+        visible: true,
+        button: true,
+        onClick: () => {
+          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.STREAM);
+        },
+      },
+    },
+    {
       data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 1 },
       button: {
         name: constants.TEMPLATE_PRESET.SBT,
-        title: 'SWADE.SBT',
+        title: 'SWADE.Templates.Small.Long',
         icon: 'text-icon sbt',
         visible: true,
         button: true,
@@ -142,7 +159,7 @@ export const SWADE: SwadeConfig = {
       data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 2 },
       button: {
         name: constants.TEMPLATE_PRESET.MBT,
-        title: 'SWADE.MBT',
+        title: 'SWADE.Templates.Medium.Long',
         icon: 'text-icon mbt',
         visible: true,
         button: true,
@@ -155,7 +172,7 @@ export const SWADE: SwadeConfig = {
       data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 3 },
       button: {
         name: constants.TEMPLATE_PRESET.LBT,
-        title: 'SWADE.LBT',
+        title: 'SWADE.Templates.Large.Long',
         icon: 'text-icon lbt',
         visible: true,
         button: true,

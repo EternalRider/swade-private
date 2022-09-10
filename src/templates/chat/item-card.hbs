@@ -70,10 +70,9 @@
   {{#if (or showTraitRolls item.isArcaneDevice)}}
     <div class='card-buttons'>
       <h4 class='actions-subheading'>
-        <i class='fas fa-bullseye'></i>
+        <i class='fa-solid fa-crosshairs'></i>
         {{localize 'SWADE.TraitRolls'}}
       </h4>
-
       {{#if hasTraitRoll}}
         <button data-action='formula'>{{trait}}</button>
       {{/if}}
@@ -85,9 +84,9 @@
 
       <!-- Arcane Skill Roll (Artificer's) -->
       {{#if item.isArcaneDevice}}
-        <button data-action='arcane-device'>{{localize
-            'SWADE.ActivateArcaneDevice'
-          }}</button>
+        <button data-action='arcane-device'>
+          {{localize 'SWADE.ActivateArcaneDevice'}}
+        </button>
       {{/if}}
     </div>
   {{/if}}
@@ -111,11 +110,58 @@
     </div>
   {{/if}}
 
+  <!-- Template Controls -->
+  {{#if item.system.templates}}
+    <div class='card-buttons'>
+      <h4 class='actions-subheading'>
+        <i class='fas fa-bullseye'></i>
+        {{localize 'SWADE.Templates.Available'}}
+      </h4>
+      <span class='flexrow'>
+        {{#if item.system.templates.cone}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='swcone'
+          >{{localize 'SWADE.Templates.Cone.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.stream}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='stream'
+          >{{localize 'SWADE.Templates.Stream.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.small}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='sbt'
+          >{{localize 'SWADE.Templates.Small.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.medium}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='mbt'
+          >{{localize 'SWADE.Templates.Medium.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.large}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='lbt'
+          >{{localize 'SWADE.Templates.Large.Short'}}</button>
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+
   <!-- Power Controls -->
   {{#if (eq item.type 'power')}}
     <div class='card-buttons'>
       <span class='flexcol'>
-        <span class='flexrow' style='display: flex'>
+        <span class='flexrow'>
           <label>
             <strong>{{localize 'SWADE.PPCost'}}: </strong>
           </label>

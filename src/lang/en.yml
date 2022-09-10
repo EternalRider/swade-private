@@ -254,10 +254,6 @@ SWADE:
   ConvictionExtend: Do you want to extend your conviction?
   ConvictionEnd: wavers in their conviction
   NoBennies: You don't have enough bennies!
-  SBT: Small Blast Template
-  MBT: Medium Blast Template
-  LBT: Large Blast Template
-  Cone: Cone Template
   GM: Game Master
   Vehicles: Vehicles
   AddStats: Additional Stats
@@ -634,6 +630,24 @@ SWADE:
   EmptyRacialAbilitiesHint: >-
     This {race} or {archetype} doesn't have any abilities yet. Drag&Drop
     something onto the sheet to get started.
+  Templates:
+    Cone:
+      Short: Cone
+      Long: Cone Template
+    Stream:
+      Short: Stream
+      Long: Stream Template
+    Small:
+      Short: SBT
+      Long: Small Blast Template
+    Medium:
+      Short: MBT
+      Long: Medium Blast Template
+    Large:
+      Short: LBT
+      Large: Large Blast Template
+    Available: Available Templates
+    Possible: Possible Templates
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

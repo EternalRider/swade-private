@@ -200,6 +200,13 @@ Item:
       bonusDamageDie: 6
     favorite:
       favorite: false
+    templates:
+      templates:
+        cone: false
+        stream: false
+        small: false
+        medium: false
+        large: false
   gear:
     templates:
       - itemDescription
@@ -219,6 +226,7 @@ Item:
       - actions
       - bonusDamage
       - favorite
+      - templates
     damage: ''
     range: ''
     rof: 1
@@ -288,6 +296,7 @@ Item:
       - actions
       - bonusDamage
       - favorite
+      - templates
     rank: ''
     pp: 0
     damage: ''
