@@ -259,5 +259,57 @@
       {{/if}}
     {{/each}}
 
+      <!-- Template Controls -->
+  {{#if item.system.templates}}
+    <div class='card-buttons'>
+      <h4 class='actions-subheading'>
+        <i class='fas fa-bullseye'></i>
+        {{localize 'SWADE.Templates.Available'}}
+      </h4>
+      <span class='flexrow'>
+        {{#if item.system.templates.cone}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='swcone'
+          >{{localize 'SWADE.Templates.Cone.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.stream}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='stream'
+          >{{localize 'SWADE.Templates.Stream.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.small}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='sbt'
+          >{{localize 'SWADE.Templates.Small.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.medium}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='mbt'
+          >{{localize 'SWADE.Templates.Medium.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.large}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='lbt'
+          >{{localize 'SWADE.Templates.Large.Short'}}</button>
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+
   </div>
 </div>

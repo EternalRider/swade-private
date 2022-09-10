@@ -10,6 +10,7 @@ import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
+import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
@@ -400,76 +401,9 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     //Item Action Buttons
-    html.find('.card-buttons button').on('click', async (ev) => {
-      const button = ev.currentTarget;
-      const action = button.dataset.action!;
-      const itemId = $(button).parents('.chat-card.item-card').data().itemId;
-      const item = this.actor.items.get(itemId, { strict: true });
-      const additionalMods = new Array<TraitRollModifier>();
-      const ppToAdjust = $(button)
-        .parents('.chat-card.item-card')
-        .find('input.pp-adjust')
-        .val() as string;
-      const arcaneDevicePPToAdjust = $(button)
-        .parents('.chat-card.item-card')
-        .find('input.arcane-device-pp-adjust')
-        .val() as string;
-
-      //if it's a power and the No Power Points rule is in effect
-      if (
-        item.type === 'power' &&
-        game.settings.get('swade', 'noPowerPoints')
-      ) {
-        let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
-        modifier = Math.min(modifier * -1, modifier);
-        const actionObj = getProperty(
-          item.data,
-          `data.actions.additional.${action}.skillOverride`,
-        ) as ItemAction;
-        //filter down further to make sure we only apply the penalty to a trait roll
-        if (
-          action === 'formula' ||
-          (!!actionObj && actionObj.type === 'skill')
-        ) {
-          additionalMods.push({
-            label: game.i18n.localize('ITEM.TypePower'),
-            value: modifier.signedString(),
-          });
-        }
-      }
-
-      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
-
-      //handle Power Item Card PP adjustment
-      if (action === 'pp-adjust') {
-        const adjustment = button.getAttribute('data-adjust') as string;
-        const power = this.actor.items.get(itemId, { strict: true });
-        let key = 'system.powerPoints.value';
-        const arcane = getProperty(power.system, 'arcane');
-        if (arcane) key = `system.powerPoints.${arcane}.value`;
-        let newPP = getProperty(this.actor, key);
-        if (adjustment === 'plus') {
-          newPP += parseInt(ppToAdjust, 10);
-        } else if (adjustment === 'minus') {
-          newPP -= parseInt(ppToAdjust, 10);
-        }
-        await this.actor.update({ [key]: newPP });
-      }
-
-      //handle Arcane Device Item Card PP adjustment
-      if (action === 'arcane-device-pp-adjust') {
-        const adjustment = button.getAttribute('data-adjust') as string;
-        const item = this.actor.items.get(itemId)!;
-        const key = 'system.powerPoints.value';
-        let newPP = getProperty(item, key);
-        if (adjustment === 'plus') {
-          newPP += parseInt(arcaneDevicePPToAdjust, 10);
-        } else if (adjustment === 'minus') {
-          newPP -= parseInt(arcaneDevicePPToAdjust, 10);
-        }
-        await item.update({ [key]: newPP });
-      }
-    });
+    html
+      .find('.card-buttons button')
+      .on('click', this._handleItemActions.bind(this));
 
     //Additional Stats roll
     html.find('.additional-stats .roll').on('click', async (ev) => {
@@ -842,6 +776,71 @@ export default class CharacterSheet extends ActorSheet<
       }
     }
     return { temporary, permanent };
+  }
+
+  protected async _handleItemActions(ev: JQuery.ClickEvent) {
+    const button = ev.currentTarget as HTMLButtonElement;
+    const action = button.dataset.action!;
+    const itemId = $(button).parents('.chat-card.item-card').data().itemId;
+    const item = this.actor.items.get(itemId, { strict: true });
+    const additionalMods = new Array<TraitRollModifier>();
+    const ppToAdjust = $(button)
+      .parents('.chat-card.item-card')
+      .find('input.pp-adjust')
+      .val() as string;
+    const arcaneDevicePPToAdjust = $(button)
+      .parents('.chat-card.item-card')
+      .find('input.arcane-device-pp-adjust')
+      .val() as string;
+
+    //if it's a power and the No Power Points rule is in effect
+    if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
+      let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
+      modifier = Math.min(modifier * -1, modifier);
+      const actionObj = getProperty(
+        item.data,
+        `data.actions.additional.${action}.skillOverride`,
+      ) as ItemAction;
+      //filter down further to make sure we only apply the penalty to a trait roll
+      if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
+        additionalMods.push({
+          label: game.i18n.localize('ITEM.TypePower'),
+          value: modifier.signedString(),
+        });
+      }
+    } else if (action === 'pp-adjust') {
+      //handle Power Item Card PP adjustment
+      const adjustment = button.getAttribute('data-adjust') as string;
+      const power = this.actor.items.get(itemId, { strict: true });
+      let key = 'system.powerPoints.value';
+      const arcane = getProperty(power.system, 'arcane');
+      if (arcane) key = `system.powerPoints.${arcane}.value`;
+      let newPP = getProperty(this.actor, key);
+      if (adjustment === 'plus') {
+        newPP += parseInt(ppToAdjust, 10);
+      } else if (adjustment === 'minus') {
+        newPP -= parseInt(ppToAdjust, 10);
+      }
+      await this.actor.update({ [key]: newPP });
+    } else if (action === 'arcane-device-pp-adjust') {
+      //handle Arcane Device Item Card PP adjustment
+      const adjustment = button.getAttribute('data-adjust') as string;
+      const item = this.actor.items.get(itemId)!;
+      const key = 'system.powerPoints.value';
+      let newPP = getProperty(item, key);
+      if (adjustment === 'plus') {
+        newPP += parseInt(arcaneDevicePPToAdjust, 10);
+      } else if (adjustment === 'minus') {
+        newPP -= parseInt(arcaneDevicePPToAdjust, 10);
+      }
+      await item.update({ [key]: newPP });
+    } else if (action === 'template') {
+      //Handle template placement
+      const template = button.dataset.template!;
+      SwadeMeasuredTemplate.fromPreset(template);
+    } else {
+      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
+    }
   }
 
   protected async _inlineItemCreate(button: HTMLButtonElement) {
