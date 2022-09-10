@@ -341,7 +341,7 @@ export default class ItemChatCardHelper {
 
     const isReloadPossible = this.isReloadPossible(actor);
     const ammo = actor.items.getName(ammoName);
-    const shots = weapon.systemots;
+    const shots = weapon.system.shots;
     let ammoInMagazine = shots;
     const missingAmmo = shots - weapon.system.currentShots;
 
