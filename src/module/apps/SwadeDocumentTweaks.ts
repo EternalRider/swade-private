@@ -46,11 +46,10 @@ export default class SwadeDocumentTweaks extends FormApplication<
    * @return {Object}
    */
   getData() {
-    const settingFields = this._getAppropriateSettingFields();
+    const settingFields = this._getPrototypeSettingFields();
 
-    for (const key of Object.keys(settingFields)) {
-      const fieldExists = this.object.system.additionalStats[key];
-      if (fieldExists) {
+    for (const key in settingFields) {
+      if (this.object.system.additionalStats[key]) {
         settingFields[key].useField = true;
       }
     }
@@ -62,20 +61,9 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
       advanceTypes: this._getAdvanceTypes(),
-      autoCalc: {
-        toughness: getProperty(this.object.system, 'details.autoCalcToughness'),
-        armor: getProperty(this.object.system, 'details.autoCalcArmor'),
-      },
     };
 
     return data;
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
   }
 
   /**
@@ -97,31 +85,31 @@ export default class SwadeDocumentTweaks extends FormApplication<
     await this.object.update(expandedFormData);
   }
 
-  private _getAppropriateSettingFields() {
-    const fields = game.settings.get('swade', 'settingFields') as any;
+  private _getPrototypeSettingFields() {
+    const fields = game.settings.get('swade', 'settingFields');
     let settingFields: AdditionalStats = {};
     if (this.object instanceof SwadeActor) {
       settingFields = fields.actor;
     } else if (this.object instanceof SwadeItem) {
       settingFields = fields.item;
     }
-    return settingFields;
+    return foundry.utils.deepClone(settingFields);
   }
 
   private _handleAdditionalStats(expandedFormData) {
-    const formFields = expandedFormData?.data?.additionalStats ?? {};
-    const prototypeFields = this._getAppropriateSettingFields();
+    const formFields = expandedFormData.system.additionalStats ?? {};
+    const prototypeFields = this._getPrototypeSettingFields();
     const newFields = foundry.utils.deepClone(
       this.object.system.additionalStats,
-    );
+    ) as AdditionalStats;
     //handle setting specific fields
     const entries = Object.entries(formFields) as [string, AdditionalStat][];
     for (const [key, field] of entries) {
       const fieldExistsOnDoc = this.object.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
         //update existing field
-        newFields![key].hasMaxValue = prototypeFields[key].hasMaxValue;
-        newFields![key].dtype = prototypeFields[key].dtype;
+        newFields[key].hasMaxValue = prototypeFields[key].hasMaxValue;
+        newFields[key].dtype = prototypeFields[key].dtype;
         if (newFields[key].dtype === 'Boolean') newFields[key]['-=max'] = null;
       } else if (field.useField && !fieldExistsOnDoc) {
         //add new field
@@ -130,11 +118,12 @@ export default class SwadeDocumentTweaks extends FormApplication<
         //delete field
         //@ts-expect-error This is only done to delete the key
         newFields[`-=${key}`] = null;
+        delete newFields[key];
       }
     }
 
     //handle "stray" fields that exist on the actor but have no prototype
-    for (const key of Object.keys(this.object.system.additionalStats)) {
+    for (const key in this.object.system.additionalStats) {
       if (!prototypeFields[key]) {
         //@ts-expect-error This is only done to delete the key
         newFields[`-=${key}`] = null;

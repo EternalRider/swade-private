@@ -631,8 +631,8 @@ export default class CharacterSheet extends ActorSheet<
       parry: parry,
       powers: powers,
       additionalStats: additionalStats,
+      hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
       currentBennies: Array.fromRange(this.actor.bennies, 1),
-      hasAdditionalStats: foundry.utils.isEmpty(additionalStats),
       bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       sortedSkills: this.actor.itemTypes.skill.sort((a, b) =>
