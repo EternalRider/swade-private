@@ -26,14 +26,14 @@ lint:
   cache:
     <<: *global_cache
 
-typecheck:
-  stage: tests
-  before_script:
-    - npm ci --cache .npm --prefer-offline
-  script:
-    - npm run check:types
-  cache:
-    <<: *global_cache
+# typecheck:
+#   stage: tests
+#   before_script:
+#     - npm ci --cache .npm --prefer-offline
+#   script:
+#     - npm run check:types
+#   cache:
+#     <<: *global_cache
 
 build:
   stage: build
