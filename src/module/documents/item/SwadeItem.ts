@@ -130,6 +130,7 @@ export default class SwadeItem extends Item {
   static override migrateData(data) {
     super.migrateData(data);
     if (data.flags?.swade?.embeddedAbilities) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [key, item] of data.flags.swade.embeddedAbilities) {
         if (item.system && !item.data) continue;
         item.system = {
@@ -139,6 +140,7 @@ export default class SwadeItem extends Item {
       }
     }
     if (data.flags?.swade?.embeddedPowers) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [key, item] of data.flags.swade.embeddedPowers) {
         if (item.system && !item.data) continue;
         item.system = {
