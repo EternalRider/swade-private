@@ -42,9 +42,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `SWADE.MBT` -> `SWADE.Templates.Medium.Long`
   - `SWADE.LBT` -> `SWADE.Templates.Short.Long`
 
+### Removed
+
+- Removed the ability for images to be dropped to the canvas from Journal Entries. This feature was a holdover from the days when Cards were still journal entries and with the new journal system it has become utterly broken. If the demand is there we can look at reintroducing this feature.
+
 ## v1.2.5
 
-### Removed
+### Added
 
 - Added a Setter to the depreciated `equipped` property in order to prevent Active Effects from breaking.
 
