@@ -2,7 +2,7 @@ import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/f
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier
+  TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
@@ -573,7 +573,7 @@ export default class CharacterSheet extends ActorSheet<
         a.name!.localeCompare(b.name!),
       ),
       sheetEffects: await this._getEffects(),
-      enrichedText: await this._getEnrichedText();
+      enrichedText: await this._getEnrichedText(),
       archetype: {
         value: this.actor.system.details.archetype
           ? new Handlebars.SafeString(
@@ -756,14 +756,22 @@ export default class CharacterSheet extends ActorSheet<
     });
   }
 
-  protected async _getEnrichedText(): Promise<SwadeActorSheetData["enrichedText"]>{
-    return{
-      appearance: await TextEditor.enrichHTML(this.actor.system.details.appearance, {async: false}),
-      goals: await TextEditor.enrichHTML(this.actor.system.details.goals, {async: false}),
-      biography: await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: false}),
-      notes: await TextEditor.enrichHTML(this.actor.system.details.notes, {async: false}),
-      advances: await TextEditor.enrichHTML(this.actor.system.advances.details, {async: false}),
-    }
+  protected async _getEnrichedText(): Promise<
+    SwadeActorSheetData['enrichedText']
+  > {
+    return {
+      appearance: await this._enrichText(this.actor.system.details.appearance),
+      goals: await this._enrichText(this.actor.system.details.goals),
+      biography: await this._enrichText(
+        this.actor.system.details.biography.value,
+      ),
+      notes: await this._enrichText(this.actor.system.details.notes),
+      advances: await this._enrichText(this.actor.system.advances.details),
+    };
+  }
+
+  private async _enrichText(text: string) {
+    return TextEditor.enrichHTML(text, { async: false });
   }
 
   protected async _getEffects() {
@@ -1146,7 +1154,7 @@ interface SwadeActorSheetData extends OptionsPartial {
     goals: string;
     notes: string;
     biography: string;
-    advances?:string;
+    advances?: string;
   };
   species: {
     label: string;
