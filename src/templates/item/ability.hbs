@@ -32,8 +32,8 @@
         <div class="form-group">
           <label>{{localize "SWADE.Subtype"}}</label>
           <span class="form-fields">
-            <select name="data.subtype">
-            {{#select data.data.subtype}}
+            <select name="system.subtype">
+            {{#select item.system.subtype}}
               <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
               {{#unless item.isOwned}}
                 <option value="race">{{localize abilityConfig.localization.race.dropdown}}</option>
@@ -49,8 +49,8 @@
               <span class="form-fields">
                 <input
                   type="checkbox"
-                  name="data.grantsPowers"
-                  {{checked data.data.grantsPowers}}
+                  name="system.grantsPowers"
+                  {{checked item.system.grantsPowers}}
                   data-dtype="Boolean"
                 />
               </span>

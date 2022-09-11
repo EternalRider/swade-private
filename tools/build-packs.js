@@ -12,7 +12,7 @@ const inputDir = path.resolve(src);
 const packs = await readdir(inputDir);
 //go through each subdirectory
 for (const pack of packs) {
-  console.log(chalk.green(`Building pack ${pack}`));
+  console.log(chalk.green('Building pack ' + chalk.bold(pack)));
   let packData = '';
   const packPath = path.resolve(inputDir, pack);
   const entries = await readdir(packPath);

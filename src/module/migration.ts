@@ -1,3 +1,4 @@
+/* eslint-disable deprecation/deprecation */
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import {
@@ -18,7 +19,7 @@ export async function migrateWorld() {
   for (const actor of game.actors!) {
     try {
       const updateData = migrateActorData(actor.toObject());
-      if (!foundry.utils.isObjectEmpty(updateData)) {
+      if (!foundry.utils.isEmpty(updateData)) {
         Logger.info(`Migrating Actor document ${actor.name}`);
         await actor.update(updateData, { enforceTypes: false });
       }
@@ -32,7 +33,7 @@ export async function migrateWorld() {
   for (const item of game.items!) {
     try {
       const updateData = migrateItemData(item.toObject());
-      if (!foundry.utils.isObjectEmpty(updateData)) {
+      if (!foundry.utils.isEmpty(updateData)) {
         Logger.info(`Migrating Item document ${item.name}`);
         await item.update(updateData, { enforceTypes: false });
       }
@@ -91,7 +92,7 @@ export async function migrateCompendium(
           updateData = migrateSceneData(doc.data as SceneData);
           break;
       }
-      if (isObjectEmpty(updateData)) continue;
+      if (foundry.utils.isEmpty(updateData)) continue;
 
       // Save the entry, if data was changed
       await doc.update(updateData);
@@ -135,7 +136,7 @@ export function migrateActorData(actor: ActorDataSource) {
     const itemUpdate = migrateItemData(i);
 
     // Update the Owned Item
-    if (!isObjectEmpty(itemUpdate)) {
+    if (!foundry.utils.isEmpty(itemUpdate)) {
       itemUpdate._id = i._id;
       arr.push(foundry.utils.expandObject(itemUpdate));
     }
@@ -218,7 +219,7 @@ function _migrateVehicleOperator(
   const driverId = data.data.driver.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
   if (hasOldID) {
-    updateData['data.driver.id'] = `Actor.${driverId}`;
+    updateData['system.driver.id'] = `Actor.${driverId}`;
   }
   return updateData;
 }
@@ -230,7 +231,7 @@ function _migrateWeaponAPToNumber(
   if (data.type !== 'weapon') return updateData;
 
   if (data.data.ap && typeof data.data.ap === 'string') {
-    updateData['data.ap'] = Number(data.data.ap);
+    updateData['system.ap'] = Number(data.data.ap);
   }
 }
 
@@ -241,9 +242,9 @@ function _migratePowerEquipToFavorite(
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'data.equipped');
   if (isOld) {
-    updateData['data.favorite'] = getProperty(data, 'data.equipped');
-    updateData['data.-=equipped'] = null;
-    updateData['data.-=equippable'] = null;
+    updateData['system.favorite'] = getProperty(data, 'data.equipped');
+    updateData['system.-=equipped'] = null;
+    updateData['system.-=equippable'] = null;
   }
 }
 
@@ -258,11 +259,11 @@ function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
   }
   updateData['data.-=equipped'] = null;
   if (data.type === 'weapon') {
-    updateData['data.equipStatus'] = data.data.equipped
+    updateData['system.equipStatus'] = data.data.equipped
       ? constants.EQUIP_STATE.MAIN_HAND
       : constants.EQUIP_STATE.CARRIED;
   } else {
-    updateData['data.equipStatus'] = data.data.equipped
+    updateData['system.equipStatus'] = data.data.equipped
       ? constants.EQUIP_STATE.EQUIPPED
       : constants.EQUIP_STATE.CARRIED;
   }

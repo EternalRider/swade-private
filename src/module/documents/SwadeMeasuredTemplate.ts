@@ -33,7 +33,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       direction: 0,
       x: 0,
       y: 0,
-      fillColor: game.user!.data.color,
+      fillColor: game?.user.color,
     };
 
     const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find(
@@ -75,7 +75,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
       const snapped = canvas.grid?.getSnappedPosition(center.x, center.y, 2);
-      this.data.update({ x: snapped?.x, y: snapped?.y });
+      this.document.updateSource({ x: snapped?.x, y: snapped?.y });
       this.refresh();
       moveTime = now;
     };
@@ -91,10 +91,14 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     // Confirm the workflow (left-click)
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
-      const dest = canvas.grid?.getSnappedPosition(this.data.x, this.data.y, 2);
-      this.data.update(dest);
+      const dest = canvas.grid?.getSnappedPosition(
+        this.document.x,
+        this.document.y,
+        2,
+      );
+      this.document.updateSource(dest);
       canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
-        this.data.toObject(),
+        this.document.toObject(),
       ]);
     };
 
@@ -104,8 +108,8 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       event.stopPropagation();
       const delta = canvas.grid!.type > CONST.GRID_TYPES.SQUARE ? 30 : 15;
       const snap = event.shiftKey ? delta : 5;
-      this.data.update({
-        direction: this.data.direction + snap * Math.sign(event.deltaY),
+      this.document.updateSource({
+        direction: this.document.direction + snap * Math.sign(event.deltaY),
       });
       this.refresh();
     };
@@ -198,7 +202,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     const border = Number(this.borderColor);
 
     //get the highlight layer and prep it
-    const layer = grid.getHighlightLayer(`Template.${this.id}`)!;
+    const layer = grid.getHighlightLayer(this.highlightId);
     layer.clear();
 
     //get the shape of the template and prep it

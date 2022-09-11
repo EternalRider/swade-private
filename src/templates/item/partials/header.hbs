@@ -31,9 +31,9 @@
 <div class='item-detail source form-group' title='{{localize "SWADE.Source"}}'>
   <span class='form-fields'>
     <input
-      name='data.source'
+      name='system.source'
       type='text'
-      value='{{data.data.source}}'
+      value='{{item.system.source}}'
       placeholder='{{localize "SWADE.Source"}}'
     />
   </span>
@@ -43,9 +43,9 @@
     <label>{{localize 'SWADE.Quantity'}}</label>
     <span class='form-fields'>
       <input
-        name='data.quantity'
+        name='system.quantity'
         type='number'
-        value='{{data.data.quantity}}'
+        value='{{item.system.quantity}}'
         placeholder='{{localize "SWADE.Quantity"}}'
         data-dtype='Number'
       />
@@ -55,9 +55,9 @@
     <label>{{localize 'SWADE.Price'}}</label>
     <span class='form-fields'>
       <input
-        name='data.price'
+        name='system.price'
         type='number'
-        value='{{data.data.price}}'
+        value='{{item.system.price}}'
         placeholder='{{localize "SWADE.Price"}}'
         data-dtype='Number'
       /></span>

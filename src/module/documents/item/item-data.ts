@@ -83,6 +83,16 @@ interface BonusDamage {
   bonusDamageDie: number;
 }
 
+interface Templates {
+  templates: {
+    cone: boolean;
+    stream: boolean;
+    small: boolean;
+    medium: boolean;
+    large: boolean;
+  };
+}
+
 interface WeaponData
   extends PhysicalItem,
     ItemDescription,
@@ -91,7 +101,8 @@ interface WeaponData
     Favorite,
     ArcaneDevice,
     Equipable,
-    Actions {
+    Actions,
+    Templates {
   damage: string;
   range: string;
   rof: number;
@@ -170,7 +181,12 @@ interface HindranceData extends ItemDescription, Favorite {
   major: boolean;
 }
 
-interface PowerData extends ItemDescription, Actions, BonusDamage, Favorite {
+interface PowerData
+  extends ItemDescription,
+    Actions,
+    BonusDamage,
+    Favorite,
+    Templates {
   rank: string;
   pp: string;
   damage: string;

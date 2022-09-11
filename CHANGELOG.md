@@ -22,6 +22,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.0
+
+### Added
+
+- Added migration for Item-affecting Active Effects.
+- Added migration for embedded abilities and embedded powers.
+- Added the Stream template as a preset to the scene controls.
+- Enabled weapons and powers to save which templates they can produce.
+- Added buttons to activate placable template previews to the item chat cards.
+- Added Additional translation strings.
+
+### Changed
+
+- Migrated the system over to the new Foundry data model. This makes it completely incompatible with v9
+- Moved the following translation strings:
+  - `SWADE.Cone` -> `SWADE.Templates.Cone.Long`
+  - `SWADE.SBT` -> `SWADE.Templates.Small.Long`
+  - `SWADE.MBT` -> `SWADE.Templates.Medium.Long`
+  - `SWADE.LBT` -> `SWADE.Templates.Short.Long`
+
 ## v1.2.5
 
 ### Removed

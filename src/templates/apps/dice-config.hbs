@@ -21,13 +21,15 @@
 
       {{else if this.isSelectOptGroup}}
       <select name="{{this.module}}.{{this.key}}">
-        {{#select this.value}} {{#each this.groups as |group key|}}
-        <optgroup label="{{key}}">
-          {{#each group as |name id|}}
-          <option value="{{id}}">{{name}}</option>
-          {{/each}}
-        </optgroup>
-        {{/each}} {{/select}}
+        {{#select this.value}}
+          {{#each this.groups as |group key|}}
+            <optgroup label="{{key}}">
+              {{#each group as |name id|}}
+                <option value="{{id}}">{{name}}</option>
+              {{/each}}
+            </optgroup>
+          {{/each}} 
+        {{/select}}
       </select>
 
       {{else if this.isRange}}
@@ -57,18 +59,19 @@
 
     <p class="notes">{{this.hint}}</p>
   </div>
-
-  {{/inline}} {{#each settings}} {{> settingPartial}} {{/each}}
+  {{/inline}} 
+  
+  {{#each settings}}
+    {{> settingPartial}} 
+  {{/each}}
 
   <div class="form-group">
     <label>{{localize "DICESONICE.texture"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.texture"
-      {{disabled
-      hasCustomWildDie}}
+      {{disabled hasCustomWildDie}}
     >
-      {{selectOptions textureList
-      selected=settings.dsnCustomWildDieOptions.value.texture localize=true}}
+      {{selectOptions textureList selected=settings.dsnCustomWildDieOptions.value.texture localize=true}}
     </select>
   </div>
 
@@ -76,12 +79,10 @@
     <label>{{localize "DICESONICE.material"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.material"
-      {{disabled
-      hasCustomWildDie}}
+      {{disabled hasCustomWildDie}}
     >
       {{#select settings.dsnCustomWildDieOptions.value.material}}
-      {{selectOptions materialList
-      selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
+        {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
       {{/select}}
     </select>
   </div>
@@ -90,12 +91,11 @@
     <label>{{localize "DICESONICE.font"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.font"
-      {{disabled
-      hasCustomWildDie}}
+      {{disabled hasCustomWildDie}}
     >
-      {{#select settings.dsnCustomWildDieOptions.value.font}} {{selectOptions
-      fontList selected=settings.dsnCustomWildDieOptions.value.font
-      localize=false}} {{/select}}
+      {{#select settings.dsnCustomWildDieOptions.value.font}}
+        {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}} 
+      {{/select}}
     </select>
   </div>
 

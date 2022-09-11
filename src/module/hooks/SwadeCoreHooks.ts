@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { ConfiguredDocumentClass } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
-import { ItemMetadata, JournalMetadata } from '../../globals';
+import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
-import Bennies from '../bennies';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
@@ -18,6 +15,7 @@ import * as migrations from '../migration';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
+import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -61,9 +59,9 @@ export default class SwadeCoreHooks {
         type: Object,
         default: {
           labelColor: '#000000',
-          diceColor: game.user?.data.color,
-          outlineColor: game.user?.data.color,
-          edgeColor: game.user?.data.color,
+          diceColor: game.user?.color,
+          outlineColor: game.user?.color,
+          edgeColor: game.user?.color,
         },
       },
       dsnCustomWildDieOptions: {
@@ -129,7 +127,7 @@ export default class SwadeCoreHooks {
 
       if (wildcard) {
         element.innerHTML = `
-					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.data.name}</a>
+					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.name}</a>
 					`;
       }
     }
@@ -148,11 +146,11 @@ export default class SwadeCoreHooks {
       },
       {
         label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
-        url: game.system.data.changelog as string,
+        url: game.system.changelog as string,
       },
       {
         label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
-        url: game.system.data.readme as string,
+        url: game.system.readme as string,
       },
     ];
 
@@ -231,7 +229,7 @@ export default class SwadeCoreHooks {
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         return (
           deck.type === 'deck' &&
-          deck.cards.contents.every((c) => c.data.type === 'poker') &&
+          deck.cards.contents.every((c) => c.type === 'poker') &&
           deck.isOwner
         );
       },
@@ -436,7 +434,7 @@ export default class SwadeCoreHooks {
   ) {
     const canApply = (li: JQuery<HTMLElement>) => {
       const message = game.messages?.get(li.data('messageId'))!;
-      const actor = ChatMessage.getSpeakerActor(message.data['speaker']);
+      const actor = ChatMessage.getSpeakerActor(message.speaker);
       const isRightMessageType =
         message?.isRoll &&
         message?.isContentVisible &&
@@ -753,8 +751,8 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     options: any,
   ) {
-    html.find('.player').each((id, player) => {
-      Bennies.append(player, options);
+    html.find('.player').each((_index, player) => {
+      new PlayerBennyDisplay(player);
     });
   }
 
@@ -803,25 +801,25 @@ export default class SwadeCoreHooks {
   }
 
   static async onHotbarDrop(
-    hotbar: Hotbar,
-    data: DropData<InstanceType<ConfiguredDocumentClass<typeof Macro>>>,
+    _hotbar: Hotbar,
+    data: { type: string; uuid: string },
     slot: number,
   ) {
     /**
      * Create a Macro from an Item drop.
      * Get an existing item macro if one exists, otherwise create a new one.
      */
-    if (data['type'] !== 'Item' || !('data' in data)) {
+    if (data.type !== 'Item') {
       return ui.notifications.warn(
         'You can only create macro buttons for owned Items',
       );
     }
-    const item = data.data;
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
     // Create the macro command
-    const macro = await Macro.create({
-      name: item?.name,
+    const macro = await CONFIG.Macro.documentClass.create({
+      name: item?.name as string,
       type: CONST.MACRO_TYPES.SCRIPT,
-      img: item?.img,
+      img: item?.img as string,
       command: `game.swade.rollItemMacro("${item?.name}");`,
     });
     await game.user?.assignHotbarMacro(macro!, slot);
@@ -858,16 +856,16 @@ export default class SwadeCoreHooks {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fas fa-sync"></i>',
         condition: (li) => game.user!.isGM,
-        callback: (li) => {
-          game.users?.get(li[0].dataset.userId!)?.refreshBennies();
+        callback: async (li) => {
+          await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
         },
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fas fa-sync"></i>',
         condition: (li) => game.user!.isGM,
-        callback: (li) => {
-          Bennies.refreshAll();
+        callback: async (li) => {
+          await PlayerBennyDisplay.refreshAll();
         },
       },
     );
@@ -896,54 +894,38 @@ export default class SwadeCoreHooks {
   static async onDropActorSheetData(
     actor: SwadeActor,
     sheet: ActorSheet,
-    data: any,
+    data: { type: string; uuid: string },
   ) {
     const sheetIsVehicleSheet = sheet instanceof SwadeVehicleSheet;
 
     if (data.type === 'Actor' && sheetIsVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'summary') {
-        let idToSet = `Actor.${data.id}`;
-        if (data.pack) {
-          idToSet = `Compendium.${data.pack}.${data.id}`;
-        }
-        await sheet.actor.update({ 'data.driver.id': idToSet });
+        await sheet.actor.update({ 'system.driver.id': data.uuid });
       }
     }
+
     //handle race item creation
-    const isNewItemDrop = data.type === 'Item' && !data.data;
+    const isNewItemDrop = data.type === 'Item';
     if (isNewItemDrop && !sheetIsVehicleSheet) {
-      let item: SwadeItem | StoredDocument<SwadeItem>;
-      //retrieve the item
-      if (data.pack) {
-        const pack = game.packs.get(data.pack, {
-          strict: true,
-        }) as CompendiumCollection<ItemMetadata>;
-        item = (await pack.getDocument(data.id)) as StoredDocument<SwadeItem>;
-      } else if (data.actorId) {
-        item = new SwadeItem(data.data);
-      } else {
-        item = game.items!.get(data.id, { strict: true });
-      }
+      const item = (await fromUuid(data.uuid)) as SwadeItem;
       //check if it's the proper type and subtype
-      if (item.data.type !== 'ability') return;
-      const subType = item.data.data.subtype;
+      if (item.type !== 'ability') return;
+      const subType = item.system.subtype;
       if (subType === 'special') return;
       //set name from archetype/race
       if (subType === 'race') {
-        await actor.update({ 'data.details.species.name': item.link });
+        await actor.update({ 'system.details.species.name': item.link });
       } else if (subType === 'archetype') {
-        await actor.update({ 'data.details.archetype': item.link });
+        await actor.update({ 'system.details.archetype': item.link });
       }
       //process embedded documents
-      const map = new Map<string, ItemDataSource>(
-        item.getFlag('swade', 'embeddedAbilities') ?? [],
-      );
+      const map = item.embeddedAbilities;
       const creationData = new Array<any>();
       const duplicates = new Array<{ type: string; name: string }>();
       for (const entry of map.values()) {
         const existingItems = actor.items.filter(
-          (i) => i.data.type === entry.type && i.name === entry.name,
+          (i) => i.type === entry.type && i.name === entry.name,
         );
         if (existingItems.length > 0) {
           duplicates.push({
@@ -961,8 +943,9 @@ export default class SwadeCoreHooks {
         });
       }
       if (duplicates.length > 0) {
-        new Dialog({
+        Dialog.prompt({
           title: game.i18n.localize('SWADE.Duplicates'),
+          rejectClose: false,
           content: await renderTemplate(
             '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
             {
@@ -976,14 +959,10 @@ export default class SwadeCoreHooks {
               }),
             },
           ),
-          default: 'ok',
-          buttons: {
-            ok: {
-              label: game.i18n.localize('SWADE.Ok'),
-              icon: '<i class="fas fa-check"></i>',
-            },
+          callback: () => {
+            /*NO-OP*/
           },
-        }).render(true);
+        });
       }
       //copy active effects
       const effects = item.effects.map((ae) => ae.data.toObject());
@@ -1009,12 +988,12 @@ export default class SwadeCoreHooks {
     const deck = game.cards!.get(actionDeckID, { strict: true });
 
     const cards = Array.from(deck.cards.values()).sort((a, b) => {
-      const cardA = a.data.value!;
-      const cardB = b.data.value!;
+      const cardA = a.value!;
+      const cardB = b.value!;
       const card = cardA - cardB;
       if (card !== 0) return card;
-      const suitA = a.data.data['suit'];
-      const suitB = b.data.data['suit'];
+      const suitA = a.system['suit'];
+      const suitB = b.system['suit'];
       const suit = suitA - suitB;
       return suit;
     });
@@ -1023,8 +1002,8 @@ export default class SwadeCoreHooks {
 
     const cardList = new Array<any>();
     for (const card of cards) {
-      const cardValue = card.data.value!;
-      const suitValue = card.data.data['suit'];
+      const cardValue = card.value!;
+      const suitValue = card.system['suit'];
       const color =
         suitValue === 2 || suitValue === 3 ? 'color: red;' : 'color: black;';
       const isDealt =
@@ -1042,18 +1021,17 @@ export default class SwadeCoreHooks {
         isAvailable,
         name: card.name,
         cardString: card.data.description,
-        isJoker: card.data.data['isJoker'],
+        isJoker: card.system['isJoker'],
       });
     }
     const numberOfJokers = cards.filter(
-      (card) => card.data.data['isJoker'],
+      (card) => card.system['isJoker'],
     ).length;
 
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
-    $(await renderTemplate(path, { cardList, numberOfJokers })).insertBefore(
-      `#combatant-config-${options.document.id} footer`,
-    );
+    const element = await renderTemplate(path, { cardList, numberOfJokers });
+    html.find('footer').before(element);
 
     //pull the combatant from the Config Object
     const combatant = app.object;
@@ -1069,9 +1047,9 @@ export default class SwadeCoreHooks {
       const cardId = selectedCard.data().cardId as string;
       const card = deck.cards.get(cardId, { strict: true });
 
-      const cardValue = card.data.value as number;
-      const suitValue = card.data.data['suit'] as number;
-      const hasJoker = card.data.data['isJoker'] as boolean;
+      const cardValue = card.value as number;
+      const suitValue = card.system['suit'] as number;
+      const hasJoker = card.system['isJoker'] as boolean;
       const cardString = card.data.description;
 
       //move the card to the discard pile
@@ -1080,7 +1058,7 @@ export default class SwadeCoreHooks {
       await card.discard(discardPile, { chatNotification: false });
 
       //update the combatant with the new card
-      const updates = new Array<Record<string, unknown>>();
+      const updates = new Array<Updates>();
       updates.push({
         _id: combatant.id,
         initiative: suitValue + cardValue,
@@ -1116,7 +1094,7 @@ export default class SwadeCoreHooks {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
     const createOption = (
-      exp: ValueOf<typeof SWADE.CONST.STATUS_EFFECT_EXPIRATION> | undefined,
+      exp: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION> | undefined,
       label: string,
     ) => {
       return `<option value="${exp}" ${
@@ -1126,19 +1104,19 @@ export default class SwadeCoreHooks {
     const expirationOpt = [
       createOption(undefined, game.i18n.localize('SWADE.Expiration.None')),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.BeginAuto'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.BeginPrompt'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.EndAuto'),
       ),
       createOption(
-        SWADE.CONST.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.EndPrompt'),
       ),
     ];
@@ -1174,8 +1152,8 @@ export default class SwadeCoreHooks {
 
   /** This hook only really exists to stop Races from being added to the actor as an item */
   static onPreCreateItem(item: SwadeItem, options: object, userId: string) {
-    if (item.parent && item.data.type === 'ability') {
-      const subType = item.data.data.subtype;
+    if (item.parent && item.type === 'ability') {
+      const subType = item.system.subtype;
       if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
     }
   }

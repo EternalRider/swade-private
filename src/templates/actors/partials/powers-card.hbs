@@ -17,23 +17,23 @@
     </div>
   </header>
   <div class='card-content collapsed' style='display: none;'>
-    {{#if data.damage}}
+    {{#if system.damage}}
       <div>
         <a class='damage-roll' title='{{localize "SWADE.Roll"}}'>{{localize
             'SWADE.Dmg'
           }}:
-          {{data.damage}}</a>
+          {{system.damage}}</a>
       </div>
     {{/if}}
-    {{#if data.pp}}
-      <div>{{localize 'SWADE.PP'}}: {{data.pp}}</div>
+    {{#if system.pp}}
+      <div>{{localize 'SWADE.PP'}}: {{system.pp}}</div>
     {{/if}}
-    {{#if data.range}}
-      <div>{{localize 'SWADE.Range._name'}}: {{data.range}}</div>
+    {{#if system.range}}
+      <div>{{localize 'SWADE.Range._name'}}: {{system.range}}</div>
     {{/if}}
-    {{#if data.duration}}
+    {{#if system.duration}}
       <div class='flexrow ellipsize'>
-        <div>{{localize 'SWADE.Dur'}}: {{data.duration}}</div>
+        <div>{{localize 'SWADE.Dur'}}: {{system.duration}}</div>
       </div>
     {{/if}}
   </div>

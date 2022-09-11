@@ -13,9 +13,9 @@
       <label>{{localize "SWADE.Rank"}}</label>
       <span class="form-fields">
         <input
-          name="data.rank"
+          name="system.rank"
           type="text"
-          value="{{data.data.rank}}"
+          value="{{item.system.rank}}"
           placeholder="{{localize 'SWADE.Rank'}}"
           data-dtype="String"
       /></span>
@@ -24,9 +24,9 @@
       <label>{{localize "SWADE.PPShort"}}</label>
       <span class="form-fields">
         <input
-          name="data.pp"
+          name="system.pp"
           type="text"
-          value="{{data.data.pp}}"
+          value="{{item.system.pp}}"
           placeholder="{{localize 'SWADE.PP'}}"
           data-dtype="String"
       /></span>
@@ -35,9 +35,9 @@
       <label>{{localize "SWADE.Range._name"}}</label>
       <span class="form-fields">
         <input
-          name="data.range"
+          name="system.range"
           type="text"
-          value="{{data.data.range}}"
+          value="{{item.system.range}}"
           placeholder="{{localize 'SWADE.Range._name'}}"
           data-dtype="String"
       /></span>
@@ -46,9 +46,9 @@
       <label>{{localize "SWADE.Dur"}}</label>
       <span class="form-fields">
         <input
-          name="data.duration"
+          name="system.duration"
           type="text"
-          value="{{data.data.duration}}"
+          value="{{item.system.duration}}"
           placeholder="{{localize 'SWADE.Dur'}}"
           data-dtype="String"
       /></span>
@@ -57,9 +57,9 @@
       <label>{{localize "SWADE.Dmg"}}</label>
       <span class="form-fields">
         <input
-          name="data.damage"
+          name="system.damage"
           type="text"
-          value="{{data.data.damage}}"
+          value="{{item.system.damage}}"
           placeholder="{{localize 'SWADE.Dmg'}}"
           data-dtype="String"
       /></span>
@@ -68,9 +68,9 @@
       <label>{{localize "SWADE.Ap"}}</label>
       <span class="form-fields">
         <input
-          name="data.ap"
+          name="system.ap"
           type="number"
-          value="{{data.data.ap}}"
+          value="{{item.system.ap}}"
           placeholder="{{localize 'SWADE.Ap'}}"
           data-dtype="Number"
       /></span>
@@ -79,9 +79,9 @@
       <label>{{localize "SWADE.Arcane"}}</label>
       <span class="form-fields">
         <input
-          name="data.arcane"
+          name="system.arcane"
           type="text"
-          value="{{data.data.arcane}}"
+          value="{{item.system.arcane}}"
           placeholder="{{localize 'SWADE.Arcane'}}"
           data-dtype="String"
       /></span>
@@ -106,9 +106,9 @@
     <section class='tab description' data-group='main' data-tab='description'>
       <div>
         <input
-          name="data.trapping"
+          name="system.trapping"
           type="text"
-          value="{{data.data.trapping}}"
+          value="{{item.system.trapping}}"
           placeholder="{{localize 'SWADE.Trap'}}"
           title="{{localize 'SWADE.Trap'}}"
           data-dtype="String"
@@ -117,6 +117,55 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
+      <h4>{{localize "SWADE.Templates.Possible"}}</h4>
+      <div class="column-grid three-columns">
+        <div class="form-group">
+          <input
+            type="checkbox"
+            name="system.templates.small"
+            {{checked item.system.templates.small}}
+            data-dtype="Boolean"
+          />
+          <label>{{localize 'SWADE.Templates.Small.Short'}}</label>
+        </div>
+        <div class="form-group">
+          <input
+            type="checkbox"
+            name="system.templates.medium"
+            {{checked item.system.templates.medium}}
+            data-dtype="Boolean"
+          />
+          <label>{{localize 'SWADE.Templates.Medium.Short'}}</label>
+        </div>
+        <div class="form-group">
+          <input
+            type="checkbox"
+            name="system.templates.large"
+            {{checked item.system.templates.large}}
+            data-dtype="Boolean"
+          />
+          <label>{{localize 'SWADE.Templates.Large.Short'}}</label>
+        </div>
+        <div class="form-group">
+          <input
+              type="checkbox"
+              name="system.templates.cone"
+              {{checked item.system.templates.cone}}
+              data-dtype="Boolean"
+            />
+          <label>{{localize 'SWADE.Templates.Cone.Short'}}</label>
+        </div>
+        <div class="form-group">
+          <input
+              type="checkbox"
+              name="system.templates.stream"
+              {{checked item.system.templates.stream}}
+              data-dtype="Boolean"
+            />
+          <label>{{localize 'SWADE.Templates.Stream.Short'}}</label>
+        </div>
+      </div>
+      <hr>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
     </section>

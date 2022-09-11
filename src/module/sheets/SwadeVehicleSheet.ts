@@ -155,7 +155,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    * @override
    */
   async getData() {
-    const data = super.getData();
+    const data = await super.getData();
 
     data.config = SWADE;
     data.itemsByType = {};
@@ -175,7 +175,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     );
     data.inventoryWeight = 0;
     data.inventory.forEach((i: SwadeItem) => {
-      data.inventoryWeight += i.data.data['weight'] * i.data.data['quantity'];
+      data.inventoryWeight += i.system['weight'] * i.system['quantity'];
     });
 
     //Fetch Driver data
@@ -206,9 +206,9 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     return [
       ...this.actor.items.filter(
         (i) =>
-          (i.data.type === 'gear' || i.data.type === 'weapon') &&
-          (!i.data.data.isVehicular ||
-            i.data.data.equipStatus < constants.EQUIP_STATE.EQUIPPED),
+          (i.type === 'gear' || i.type === 'weapon') &&
+          (!i.system.isVehicular ||
+            i.system.equipStatus < constants.EQUIP_STATE.EQUIPPED),
       ),
       //TODO update once containers and consumables are added
       ...this.actor.itemTypes.armor,
@@ -219,15 +219,15 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
 
   async setDriver(id: string): Promise<void> {
     const driver = game.actors?.get(id);
-    if (driver && driver.data.type !== 'vehicle') {
-      await this.actor.update({ 'data.driver.id': id });
+    if (driver && driver.type !== 'vehicle') {
+      await this.actor.update({ 'system.driver.id': id });
     }
   }
 
   private async _fetchDriver() {
-    if (this.actor.data.type !== 'vehicle') return null;
+    if (this.actor.type !== 'vehicle') return null;
 
-    const driverId = this.actor.data.data.driver.id;
+    const driverId = this.actor.system.driver.id;
     const driver = await this.actor.getDriver();
     const userCanViewDriver =
       game.user?.isGM ||
@@ -248,19 +248,19 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       driverData.img = driver.img!;
       driverData.name = driver.name!;
     } else {
-      //else just show an aunknown driver
-      driverData.name = 'Unkown Driver';
+      //else just show an an unknown driver
+      driverData.name = 'Unknown Driver';
     }
     return driverData;
   }
 
   private async _resetDriver() {
-    await this.actor.update({ 'data.driver.id': null });
+    await this.actor.update({ 'system.driver.id': null });
   }
 
   private async _openDriverSheet() {
-    if (this.actor.data.type !== 'vehicle') return;
-    const driverId = this.actor.data.data.driver.id;
+    if (this.actor.type !== 'vehicle') return;
+    const driverId = this.actor.system.driver.id;
     const driver = (await fromUuid(driverId)) as SwadeActor;
     if (driver) {
       driver.sheet?.render(true);
@@ -289,15 +289,15 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   private _calcModSlotsUsed(): number {
     const mods = this.actor.items.filter(
       (i) =>
-        (i.data.type === 'gear' || i.data.type === 'weapon') &&
-        i.data.data.isVehicular &&
-        i.data.data.equipStatus > constants.EQUIP_STATE.CARRIED,
+        (i.type === 'gear' || i.type === 'weapon') &&
+        i.system.isVehicular &&
+        i.system.equipStatus > constants.EQUIP_STATE.CARRIED,
     );
     let retVal = 0;
     for (const m of mods) {
-      if (m.data.type !== 'weapon' && m.data.type !== 'gear') continue;
-      const slots = m.data.data.mods ?? 0;
-      const quantity = m.data.data.quantity ?? 0;
+      if (m.type !== 'weapon' && m.type !== 'gear') continue;
+      const slots = m.system.mods ?? 0;
+      const quantity = m.system.quantity ?? 0;
       retVal += slots * quantity;
     }
     return retVal;
@@ -308,8 +308,8 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    * @param modsUsed number of active modslots
    */
   private _calcModsPercentage(modsUsed: number): number {
-    if (this.actor.data.type !== 'vehicle') return 0;
-    const maxMods = this.actor.data.data.maxMods;
+    if (this.actor.type !== 'vehicle') return 0;
+    const maxMods = this.actor.system.maxMods;
     const p = (modsUsed / maxMods) * 100;
 
     //cap the percentage at 100

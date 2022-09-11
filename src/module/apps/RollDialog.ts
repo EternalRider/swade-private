@@ -80,8 +80,9 @@ export default class RollDialog extends FormApplication<
       html.find('.searchBox').outerWidth(width, true);
       html.find('.dropdown').outerWidth(width).slideToggle({ duration: 200 });
     });
-    html.find('button[type="submit"]').on('click', (ev) => {
-      this.extraButtonUsed = ev.currentTarget.dataset.type === 'extra';
+    html.find('button.submit-roll').on('click', (ev) => {
+      const type = ev.currentTarget.dataset.type;
+      this.extraButtonUsed = type === 'extra';
       this.submit();
     });
     html.find('input[type="checkbox"]').on('change', (ev) => {
@@ -172,7 +173,7 @@ export default class RollDialog extends FormApplication<
     if (this.extraButtonUsed && this.ctx.item && !this.ctx.actor) {
       this.ctx.mods.push({
         label: game.i18n.localize('SWADE.BonusDamage'),
-        value: `+1d${this.ctx.item.data.data['bonusDamageDie']}x`,
+        value: `+1d${this.ctx.item.system['bonusDamageDie']}x`,
       });
     }
 
@@ -216,8 +217,8 @@ export default class RollDialog extends FormApplication<
   }
 
   protected override _onSearchFilter(
-    event: KeyboardEvent,
-    query: string,
+    _event: InputEvent,
+    _query: string,
     rgx: RegExp,
     html: HTMLElement,
   ) {
@@ -254,7 +255,9 @@ export default class RollDialog extends FormApplication<
     return this.ctx.mods
       .filter((v) => !v.ignore) //remove the disabled modifiers
       .reduce((acc: string, cur: TraitRollModifier) => {
-        return (acc += `<br>${cur.label}: ${cur.value}`);
+        const value =
+          typeof cur.value === 'number' ? cur.value.signedString() : cur.value;
+        return (acc += `<br>${cur.label}: ${value}`);
       }, '');
   }
 
@@ -286,11 +289,10 @@ export default class RollDialog extends FormApplication<
 
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
   private _addModifier() {
-    const form = this.form!;
-    const label = form.querySelector<HTMLInputElement>(
+    const label = this.form?.querySelector<HTMLInputElement>(
       '.new-modifier-label',
     )?.value;
-    const value = form.querySelector<HTMLInputElement>(
+    const value = this.form?.querySelector<HTMLInputElement>(
       '.new-modifier-value',
     )?.value;
     if (value) {

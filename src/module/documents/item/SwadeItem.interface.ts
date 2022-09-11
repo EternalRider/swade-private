@@ -40,7 +40,7 @@ export interface UsageUpdates {
   resourceUpdates: Updates[];
 }
 
-export type SwadeConsumeItemCallback = (
+export type SwadeConsumeItemHook = (
   item: SwadeItem,
   charges: number,
   updates: UsageUpdates,

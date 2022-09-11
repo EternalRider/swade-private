@@ -85,7 +85,7 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
   if (!canvas || !canvas.ready || !canvas.scene) return;
 
   // Get size of grid square.
-  const grid = canvas.scene.data.grid;
+  const grid = canvas.scene.grid.size;
   // Set spacing to half a grid square.
   let spacing = grid / 2;
   // Define the number of rows.
@@ -100,8 +100,8 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
    * is based on the size of the grid squares. This emulates the scale between minis and playing
    * cards on the tabletop.
    */
-  let cardHeight = grid * (deck.data.height ?? 3.5);
-  let cardWidth = grid * (deck.data.width ?? 2.5);
+  let cardHeight = grid * (deck.height ?? 3.5);
+  let cardWidth = grid * (deck.width ?? 2.5);
 
   // Draw the cards.
   //@ts-expect-error It's technically a protected method but we're borrowing here
@@ -122,8 +122,8 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
   const dimensions = canvas.scene.dimensions as Dimensions;
   const sceneWidth = dimensions.sceneWidth;
   const sceneHeight = dimensions.sceneHeight;
-  const sceneRectX = dimensions.paddingX;
-  const sceneRectY = dimensions.paddingY;
+  const sceneRectX = dimensions.sceneRect.x;
+  const sceneRectY = dimensions.sceneRect.y;
 
   /**
    * Calculate the default width and height of the full spread based on number of cards, card sizes, and spacing between cards.
@@ -198,7 +198,7 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
     for (let x = 0; x < columns; x++) {
       // Set the tile data for size and position. Use a flag to identify the tile as a Chase card for deletion later.
       const tData = {
-        img: cardsDrawn[counter].face!.img,
+        img: cardsDrawn[counter].currentFace?.img,
         width: cardWidth,
         height: cardHeight,
         x: positionX,

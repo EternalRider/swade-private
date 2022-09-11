@@ -16,7 +16,7 @@
             name='name'
             type='text'
             value='{{actor.name}}'
-            placeholder='{{localize 'SWADE.Name'}}'
+            placeholder='{{localize "SWADE.Name"}}'
           />
         </h1>
       </div>
@@ -25,8 +25,8 @@
   <section class='sheet-body'>
     <div style='height: 600px'>
       {{editor
-        content=data.data.details.biography.value
-        target='data.details.biography.value'
+        actor.system.details.biography.value
+        target='system.details.biography.value'
         button=true
         owner=owner
         editable=editable

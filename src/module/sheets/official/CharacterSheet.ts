@@ -1,20 +1,24 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { Attribute } from '../../../globals';
+import { AdditionalStats, Attribute } from '../../../globals';
 import {
-  AdditionalStat,
   ItemAction,
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
+import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
+import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
-export default class CharacterSheet extends ActorSheet {
+export default class CharacterSheet extends ActorSheet<
+  DocumentSheetOptions,
+  SwadeActorSheetData
+> {
   _equipStateMenu: PopUpMenu;
 
   static get defaultOptions() {
@@ -120,13 +124,13 @@ export default class CharacterSheet extends ActorSheet {
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      if (this.actor.data.type === 'vehicle') return;
-      const current = this.actor.data.data.details.conviction.value;
-      const active = this.actor.data.data.details.conviction.active;
+      if (this.actor.type === 'vehicle') return;
+      const current = this.actor.system.details.conviction.value;
+      const active = this.actor.system.details.conviction.active;
       if (current > 0 && !active) {
         await this.actor.update({
-          'data.details.conviction.value': current - 1,
-          'data.details.conviction.active': true,
+          'system.details.conviction.value': current - 1,
+          'system.details.conviction.active': true,
         });
         ChatMessage.create({
           speaker: {
@@ -137,7 +141,7 @@ export default class CharacterSheet extends ActorSheet {
         });
       } else {
         await this.actor.update({
-          'data.details.conviction.active': false,
+          'system.details.conviction.active': false,
         });
       }
     });
@@ -174,11 +178,11 @@ export default class CharacterSheet extends ActorSheet {
 
     //Running Die
     html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
 
-      const runningDieSides = this.actor.data.data.stats.speed.runningDie;
-      const runningMod = this.actor.data.data.stats.speed.runningMod;
-      const pace = this.actor.data.data.stats.speed.adjusted;
+      const runningDieSides = this.actor.system.stats.speed.runningDie;
+      const runningMod = this.actor.system.stats.speed.runningMod;
+      const pace = this.actor.system.stats.speed.adjusted;
       const runningDie = `1d${runningDieSides}[${game.i18n.localize(
         'SWADE.RunningDie',
       )}]`;
@@ -329,8 +333,8 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     html.find('.armor-display').on('click', () => {
-      const armorPropertyPath = 'data.stats.toughness.armor';
-      const armorvalue = getProperty(this.actor.data, armorPropertyPath);
+      const armorPropertyPath = 'system.stats.toughness.armor';
+      const armorvalue = getProperty(this.actor, armorPropertyPath);
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
@@ -363,11 +367,8 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     html.find('.parry-display').on('click', () => {
-      const parryPropertyPath = 'data.stats.parry.modifier';
-      const parryMod = getProperty(
-        this.actor.data,
-        parryPropertyPath,
-      ) as number;
+      const parryPropertyPath = 'system.stats.parry.modifier';
+      const parryMod = getProperty(this.actor, parryPropertyPath) as number;
       const label = game.i18n.localize('SWADE.Parry');
       const template = `
       <form><div class="form-group">
@@ -400,82 +401,15 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     //Item Action Buttons
-    html.find('.card-buttons button').on('click', async (ev) => {
-      const button = ev.currentTarget;
-      const action = button.dataset.action!;
-      const itemId = $(button).parents('.chat-card.item-card').data().itemId;
-      const item = this.actor.items.get(itemId, { strict: true });
-      const additionalMods = new Array<TraitRollModifier>();
-      const ppToAdjust = $(button)
-        .parents('.chat-card.item-card')
-        .find('input.pp-adjust')
-        .val() as string;
-      const arcaneDevicePPToAdjust = $(button)
-        .parents('.chat-card.item-card')
-        .find('input.arcane-device-pp-adjust')
-        .val() as string;
-
-      //if it's a power and the No Power Points rule is in effect
-      if (
-        item.type === 'power' &&
-        game.settings.get('swade', 'noPowerPoints')
-      ) {
-        let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
-        modifier = Math.min(modifier * -1, modifier);
-        const actionObj = getProperty(
-          item.data,
-          `data.actions.additional.${action}.skillOverride`,
-        ) as ItemAction;
-        //filter down further to make sure we only apply the penalty to a trait roll
-        if (
-          action === 'formula' ||
-          (!!actionObj && actionObj.type === 'skill')
-        ) {
-          additionalMods.push({
-            label: game.i18n.localize('ITEM.TypePower'),
-            value: modifier.signedString(),
-          });
-        }
-      }
-
-      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
-
-      //handle Power Item Card PP adjustment
-      if (action === 'pp-adjust') {
-        const adjustment = button.getAttribute('data-adjust') as string;
-        const power = this.actor.items.get(itemId, { strict: true });
-        let key = 'data.powerPoints.value';
-        const arcane = getProperty(power.data, 'data.arcane');
-        if (arcane) key = `data.powerPoints.${arcane}.value`;
-        let newPP = getProperty(this.actor.data, key);
-        if (adjustment === 'plus') {
-          newPP += parseInt(ppToAdjust, 10);
-        } else if (adjustment === 'minus') {
-          newPP -= parseInt(ppToAdjust, 10);
-        }
-        await this.actor.update({ [key]: newPP });
-      }
-
-      //handle Arcane Device Item Card PP adjustment
-      if (action === 'arcane-device-pp-adjust') {
-        const adjustment = button.getAttribute('data-adjust') as string;
-        const item = this.actor.items.get(itemId)!;
-        const key = 'data.powerPoints.value';
-        let newPP = getProperty(item.data, key);
-        if (adjustment === 'plus') {
-          newPP += parseInt(arcaneDevicePPToAdjust, 10);
-        } else if (adjustment === 'minus') {
-          newPP -= parseInt(arcaneDevicePPToAdjust, 10);
-        }
-        await item.update({ [key]: newPP });
-      }
-    });
+    html
+      .find('.card-buttons button')
+      .on('click', this._handleItemActions.bind(this));
 
     //Additional Stats roll
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat!;
-      const statData = this.actor.data.data.additionalStats[stat]!;
+      const statData = this.actor.system.additionalStats[stat]!;
       let modifier = statData.modifier || '';
       if (!!modifier && !modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
@@ -498,13 +432,13 @@ export default class CharacterSheet extends ActorSheet {
 
     //Advances
     html.find('.advance-action').on('click', (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
       const button = ev.currentTarget;
       const id = $(button).parents('li.advance').data().advanceId;
       switch (button.dataset.action) {
         case 'edit':
           new AdvanceEditor({
-            advance: this.actor.data.data.advances.list.get(id, {
+            advance: this.actor.system.advances.list.get(id, {
               strict: true,
             }),
             actor: this.actor,
@@ -530,47 +464,57 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  override async getData() {
-    const data: any = super.getData();
-    if (this.actor.data.type === 'vehicle') return data;
+  override async getData(
+    options?: Partial<DocumentSheetOptions>,
+  ): Promise<SwadeActorSheetData> {
+    if (this.actor.type === 'vehicle') return super.getData(options);
 
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.values()).sort(
-      (a, b) => a.data.sort - b.data.sort,
+      (a, b) => a.sort - b.sort,
     );
 
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    for (const item of items as any[]) {
+    for (const item of items) {
       // Basic template rendering data
-      const data = item.data;
-      const actions = item.data.data?.actions?.additional ?? {};
-      item.actions = [];
+      const system = item.system;
+      const itemActions = getProperty(system, 'actions.additional') ?? {};
+      const actions = new Array<any>();
 
-      for (const action in actions) {
-        item.actions.push({
+      for (const action in itemActions) {
+        actions.push({
           key: action,
-          type: actions[action].type,
-          name: actions[action].name,
+          type: itemActions[action].type,
+          name: itemActions[action].name,
         });
       }
-      item.hasDamage =
-        !!getProperty(data, 'data.damage') ||
-        !!item.actions.find((action) => action.type === 'damage');
-      item.skill =
-        getProperty(data, 'data.actions.skill') ||
-        !!item.actions.find((action) => action.type === 'skill');
-      item.hasSkillRoll =
-        ['weapon', 'power', 'shield'].includes(data.type) &&
-        getProperty(data, 'data.actions.skill');
-      item.hasAmmoManagement =
+      const hasDamage =
+        !!getProperty(system, 'damage') ||
+        !!actions.find((action) => action.type === 'damage');
+      const skill =
+        getProperty(system, 'actions.skill') ||
+        !!actions.find((action) => action.type === 'skill');
+      const hasSkillRoll =
+        ['weapon', 'power', 'shield'].includes(item.type) &&
+        getProperty(system, 'actions.skill');
+      const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
         !item.isMeleeWeapon &&
-        !data.data.autoReload;
-      item.hasReloadButton =
-        ammoManagement && data.data.shots > 0 && !data.data.autoReload;
+        !system.autoReload;
+      const hasReloadButton =
+        ammoManagement && system.shots > 0 && !system.autoReload;
 
-      item.powerPoints = this._getPowerPoints(data);
+      foundry.utils.setProperty(item, 'actions', actions);
+      foundry.utils.setProperty(item, 'hasDamage', hasDamage);
+      foundry.utils.setProperty(item, 'skill', skill);
+      foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
+      foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
+      foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      if (item.type === 'power') {
+        const powerPoints = this._getPowerPoints(item);
+        foundry.utils.setProperty(item, 'powerPoints', powerPoints);
+      }
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
@@ -580,122 +524,101 @@ export default class CharacterSheet extends ActorSheet {
       itemTypes[type].push(item);
     }
 
-    data.itemTypes = itemTypes;
-    data.effects = await this._getEffects();
-
-    //sort skills alphabetically
-    data.sortedSkills = this.actor.itemTypes.skill.sort((a, b) =>
-      a.name!.localeCompare(b.name!),
-    );
-
-    data.currentBennies = [];
-    const bennies = getProperty(
-      this.actor.data,
-      'data.bennies.value',
-    ) as number;
-    for (let i = 0; i < bennies; i++) {
-      data.currentBennies.push(i + 1);
-    }
-
-    const additionalStats: Record<string, AdditionalStat> =
-      data.data.data.additionalStats || {};
-    for (const attr of Object.values(additionalStats)) {
-      attr['isCheckbox'] = attr.dtype === 'Boolean';
-    }
-    data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
-
-    const powerFilter = (i) => i.data.type === 'power';
     //Deal with ABs and Powers
-    const powers = {
-      arcanes: {},
-      arcanesCount: this.actor.items
-        .filter(powerFilter)
-        .map((p) => {
-          return p.data.data['arcane'];
-        })
-        .filter(Boolean).length,
-      hasPowersWithoutArcane:
-        this.actor.items.filter(powerFilter).reduce((acc, cur) => {
-          if (cur.data.data['arcane']) {
-            return acc;
-          } else {
-            return (acc += 1);
-          }
-        }, 0) > 0,
+    const powers: SheetPowers = {
+      arcaneBackgrounds: {},
+      hasPowersWithoutArcane: this.actor.itemTypes.power.some(
+        (p) => !p.system['arcane'],
+      ),
     };
 
-    for (const power of this.actor.items.filter(powerFilter)) {
-      if (power.data.type !== 'power') continue;
-      const arcane = power.data.data.arcane;
-      if (!arcane) continue;
-      if (!powers.arcanes[arcane]) {
-        powers.arcanes[arcane] = {
-          valuePath: `data.powerPoints.${arcane}.value`,
-          value: getProperty(
-            this.actor.data,
-            `data.powerPoints.${arcane}.value`,
-          ),
-          maxPath: `data.powerPoints.${arcane}.max`,
-          max: getProperty(this.actor.data, `data.powerPoints.${arcane}.max`),
+    for (const power of this.actor.itemTypes.power) {
+      if (power.type !== 'power') continue;
+      const ab = power.system.arcane;
+      if (!ab) continue;
+      if (!powers.arcaneBackgrounds[ab]) {
+        powers.arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: getProperty(this.actor.system, `powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: getProperty(this.actor.system, `powerPoints.${ab}.max`),
           powers: [],
         };
       }
-      powers.arcanes[arcane].powers.push(power);
+      powers.arcaneBackgrounds[ab].powers.push(power);
     }
-    data.powers = powers;
-    data.parry = 0;
-    for (const shield of this.actor.itemTypes.shield) {
-      if (shield.data.type !== 'shield') continue;
-      if (shield.data.data.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        data.parry += shield.data.data.parry;
+
+    const parry = this.actor.itemTypes.shield.reduce((acc, cur) => {
+      if (
+        cur.type !== 'shield' &&
+        cur.system.equipStatus === constants.EQUIP_STATE.EQUIPPED
+      ) {
+        return (acc += cur.system.parry);
       }
-    }
-    // Check for enabled optional rules
-    data.settingrules = {
-      conviction: game.settings.get('swade', 'enableConviction'),
-      noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
-      wealthType: game.settings.get('swade', 'wealthType'),
-      currencyName: game.settings.get('swade', 'currencyName'),
-      weightUnit:
-        game.settings.get('swade', 'weightUnit') === 'imperial' ? 'lbs' : 'kg',
+      return acc;
+    }, 0);
+
+    const additionalStats = this._getAdditionalStats();
+
+    const data: SwadeActorSheetData = {
+      itemTypes: itemTypes,
+      parry: parry,
+      powers: powers,
+      additionalStats: additionalStats,
+      hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
+      currentBennies: Array.fromRange(this.actor.bennies, 1),
+      bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
+      useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
+      sortedSkills: this.actor.itemTypes.skill.sort((a, b) =>
+        a.name!.localeCompare(b.name!),
+      ),
+      sheetEffects: await this._getEffects(),
+      archetype: {
+        value: this.actor.system.details.archetype
+          ? new Handlebars.SafeString(
+              await TextEditor.enrichHTML(this.actor.system.details.archetype, {
+                async: true,
+              }),
+            )
+          : game.i18n.localize('SWADE.Archetype'),
+        label: 'SWADE.Archetype',
+      },
+      species: {
+        value: this.actor.system.details.species.name
+          ? new Handlebars.SafeString(
+              await TextEditor.enrichHTML(
+                this.actor.system.details.species.name,
+                {
+                  async: true,
+                },
+              ),
+            )
+          : game.i18n.localize('SWADE.Race'),
+        label: 'SWADE.Race',
+      },
+      settingrules: {
+        conviction: game.settings.get('swade', 'enableConviction'),
+        noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
+        wealthType: game.settings.get('swade', 'wealthType'),
+        currencyName: game.settings.get('swade', 'currencyName'),
+        weightUnit:
+          game.settings.get('swade', 'weightUnit') === 'imperial'
+            ? 'lbs'
+            : 'kg',
+      },
+      advances: {
+        expanded: this.actor.system.advances.mode === 'expanded',
+        list: this._getAdvances(),
+      },
     };
 
-    data.advances = {
-      expanded: this.actor.data.data.advances.mode === 'expanded',
-      list: this._getAdvances(),
-    };
-
-    data.archetype = {
-      value: this.actor.data.data.details.archetype
-        ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.data.data.details.archetype),
-          )
-        : game.i18n.localize('SWADE.Archetype'),
-      label: 'SWADE.Archetype',
-    };
-
-    data.species = {
-      value: this.actor.data.data.details.species.name
-        ? new Handlebars.SafeString(
-            TextEditor.enrichHTML(this.actor.data.data.details.species.name),
-          )
-        : game.i18n.localize('SWADE.Race'),
-      label: 'SWADE.Race',
-    };
-
-    //add benny image URI
-    data.bennyImageURL = game.settings.get('swade', 'bennyImageSheet');
-
-    // Procoess attribute abbreviation toggle
-    data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
-
-    return data;
+    return foundry.utils.mergeObject(await super.getData(options), data);
   }
 
   private _getAdvances() {
-    if (this.actor.data.type === 'vehicle') return [];
+    if (this.actor.type === 'vehicle') return [];
     const retVal = new Array<{ rank: string; list: Advance[] }>();
-    const advances = this.actor.data.data.advances.list;
+    const advances = this.actor.system.advances.list;
     for (const advance of advances) {
       const sort = advance.sort;
       const rankIndex = util.getRankFromAdvance(advance.sort);
@@ -712,48 +635,40 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected _getPowerPoints(item: SwadeItem) {
-    if (item.data.type !== 'power') return {};
-    const arcane = item.data.data.arcane;
-    let current = getProperty(item.actor!, 'data.data.powerPoints.value');
-    let max = getProperty(item.actor!, 'data.data.powerPoints.max');
-    if (arcane) {
-      current = getProperty(
-        item.actor!,
-        `data.data.powerPoints.${arcane}.value`,
-      );
-      max = getProperty(item.actor!, `data.data.powerPoints.${arcane}.max`);
+    if (item.type === 'power' && item.actor) {
+      const arcane = item.system.arcane;
+      let current = getProperty(item.actor, 'system.powerPoints.value');
+      let max = getProperty(item.actor, 'system.powerPoints.max');
+      if (arcane) {
+        current = getProperty(item.actor, `system.powerPoints.${arcane}.value`);
+        max = getProperty(item.actor, `system.powerPoints.${arcane}.max`);
+      }
+      return { current, max };
     }
-    return { current, max };
   }
 
   /** Extend and override the sheet header buttons */
   protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
-    // Token Configuration
-    const canConfigure = this.actor.isOwner;
-    if (this.options.editable && canConfigure) {
+    // Document Tweaks
+    if (this.options.editable && this.actor.isOwner) {
       const button = {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
         icon: 'fas fa-dice',
-        onclick: (ev) => this._onConfigureEntity(ev),
+        onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
       };
       buttons = [button, ...buttons];
     }
     return buttons;
   }
 
-  protected _onConfigureEntity(event: Event) {
-    event.preventDefault();
-    new game.swade.apps.SwadeDocumentTweaks(this.actor).render(true);
-  }
-
   protected _toggleItem(
     doc: SwadeItem | SwadeActiveEffect,
     toggle: string,
   ): Record<string, unknown> {
-    const oldVal = !!getProperty(doc.data, toggle);
+    const oldVal = !!getProperty(doc, toggle);
     return { _id: doc.id, [toggle]: !oldVal };
   }
 
@@ -834,7 +749,7 @@ export default class CharacterSheet extends ActorSheet {
         combat: game.combat?.id,
       };
     }
-    return await CONFIG.ActiveEffect.documentClass.create(data, {
+    return CONFIG.ActiveEffect.documentClass.create(data, {
       renderSheet: renderSheet,
       parent: this.actor,
     });
@@ -846,12 +761,12 @@ export default class CharacterSheet extends ActorSheet {
     for (const effect of this.actor.effects) {
       const val: SheetEffect = {
         id: effect.id!,
-        label: effect.data.label,
-        icon: effect.data.icon,
-        disabled: effect.data.disabled,
+        label: effect.label,
+        icon: effect.icon,
+        disabled: effect.disabled,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
-      if (effect.data.origin) {
+      if (effect.origin) {
         val.origin = await effect.getSourceName();
       }
       if (effect.isTemporary) {
@@ -861,6 +776,71 @@ export default class CharacterSheet extends ActorSheet {
       }
     }
     return { temporary, permanent };
+  }
+
+  protected async _handleItemActions(ev: JQuery.ClickEvent) {
+    const button = ev.currentTarget as HTMLButtonElement;
+    const action = button.dataset.action!;
+    const itemId = $(button).parents('.chat-card.item-card').data().itemId;
+    const item = this.actor.items.get(itemId, { strict: true });
+    const additionalMods = new Array<TraitRollModifier>();
+    const ppToAdjust = $(button)
+      .parents('.chat-card.item-card')
+      .find('input.pp-adjust')
+      .val() as string;
+    const arcaneDevicePPToAdjust = $(button)
+      .parents('.chat-card.item-card')
+      .find('input.arcane-device-pp-adjust')
+      .val() as string;
+
+    //if it's a power and the No Power Points rule is in effect
+    if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
+      let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
+      modifier = Math.min(modifier * -1, modifier);
+      const actionObj = getProperty(
+        item.data,
+        `data.actions.additional.${action}.skillOverride`,
+      ) as ItemAction;
+      //filter down further to make sure we only apply the penalty to a trait roll
+      if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
+        additionalMods.push({
+          label: game.i18n.localize('ITEM.TypePower'),
+          value: modifier.signedString(),
+        });
+      }
+    } else if (action === 'pp-adjust') {
+      //handle Power Item Card PP adjustment
+      const adjustment = button.getAttribute('data-adjust') as string;
+      const power = this.actor.items.get(itemId, { strict: true });
+      let key = 'system.powerPoints.value';
+      const arcane = getProperty(power.system, 'arcane');
+      if (arcane) key = `system.powerPoints.${arcane}.value`;
+      let newPP = getProperty(this.actor, key);
+      if (adjustment === 'plus') {
+        newPP += parseInt(ppToAdjust, 10);
+      } else if (adjustment === 'minus') {
+        newPP -= parseInt(ppToAdjust, 10);
+      }
+      await this.actor.update({ [key]: newPP });
+    } else if (action === 'arcane-device-pp-adjust') {
+      //handle Arcane Device Item Card PP adjustment
+      const adjustment = button.getAttribute('data-adjust') as string;
+      const item = this.actor.items.get(itemId)!;
+      const key = 'system.powerPoints.value';
+      let newPP = getProperty(item, key);
+      if (adjustment === 'plus') {
+        newPP += parseInt(arcaneDevicePPToAdjust, 10);
+      } else if (adjustment === 'minus') {
+        newPP -= parseInt(arcaneDevicePPToAdjust, 10);
+      }
+      await item.update({ [key]: newPP });
+    } else if (action === 'template') {
+      //Handle template placement
+      const template = button.dataset.template!;
+      SwadeMeasuredTemplate.fromPreset(template);
+    } else {
+      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
+    }
   }
 
   protected async _inlineItemCreate(button: HTMLButtonElement) {
@@ -873,22 +853,22 @@ export default class CharacterSheet extends ActorSheet {
       const itemData = {
         name: name ? name : `New ${type.capitalize()}`,
         type: type,
-        data: button.dataset,
+        system: button.dataset,
       };
-      delete itemData.data['type'];
+      delete itemData.system.type;
       return itemData;
     };
     switch (type) {
       case 'choice':
         this._chooseItemType().then(async (dialogInput: any) => {
-          if (dialogInput.type !== 'effect') {
+          if (dialogInput.type === 'effect') {
+            this._createActiveEffect(dialogInput.name);
+          } else {
             const itemData = createItem(dialogInput.type, dialogInput.name);
-            await Item.create(itemData, {
+            await CONFIG.Item.documentClass.create(itemData, {
               renderSheet: true,
               parent: this.actor,
             });
-          } else {
-            this._createActiveEffect(dialogInput.name);
           }
         });
         break;
@@ -899,7 +879,7 @@ export default class CharacterSheet extends ActorSheet {
         this._addAdvance();
         break;
       default:
-        await Item.create(createItem(type), {
+        await CONFIG.Item.documentClass.create(createItem(type), {
           renderSheet: true,
           parent: this.actor,
         });
@@ -908,8 +888,8 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private async _addAdvance() {
-    if (this.actor.data.type === 'vehicle') return;
-    const advances = this.actor.data.data.advances.list;
+    if (this.actor.type === 'vehicle') return;
+    const advances = this.actor.system.advances.list;
     const newAdvance: Advance = {
       id: foundry.utils.randomID(8),
       type: constants.ADVANCE_TYPE.EDGE,
@@ -918,7 +898,7 @@ export default class CharacterSheet extends ActorSheet {
       notes: '',
     };
     advances.set(newAdvance.id, newAdvance);
-    await this.actor.update({ 'data.advances.list': advances.toJSON() });
+    await this.actor.update({ 'system.advances.list': advances.toJSON() });
     new AdvanceEditor({
       advance: newAdvance,
       actor: this.actor,
@@ -926,7 +906,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private async _deleteAdvance(id: string) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     Dialog.confirm({
       title: game.i18n.localize('SWADE.Advances.Delete'),
       content: `<form>
@@ -936,18 +916,18 @@ export default class CharacterSheet extends ActorSheet {
     </form>`,
       defaultYes: false,
       yes: () => {
-        if (this.actor.data.type === 'vehicle') return;
-        const advances = this.actor.data.data.advances.list;
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
         advances.delete(id);
         const arr = advances.toJSON();
         arr.forEach((a, i) => (a.sort = i + 1));
-        this.actor.update({ 'data.advances.list': arr });
+        this.actor.update({ 'system.advances.list': arr });
       },
     });
   }
 
   private async _toggleAdvancePlanned(id: string) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     Dialog.confirm({
       title: game.i18n.localize('SWADE.Advances.Toggle'),
       content: `<form>
@@ -957,13 +937,13 @@ export default class CharacterSheet extends ActorSheet {
       </form>`,
       defaultYes: false,
       yes: () => {
-        if (this.actor.data.type === 'vehicle') return;
-        const advances = this.actor.data.data.advances.list;
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
         const advance = advances.get(id, { strict: true });
         advance.planned = !advance.planned;
         advances.set(id, advance);
         this.actor.update(
-          { 'data.advances.list': advances.toJSON() },
+          { 'syste,.advances.list': advances.toJSON() },
           { diff: false },
         );
       },
@@ -971,12 +951,12 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   private _setupCharacterDetailInput(ev: JQuery.ClickEvent) {
-    if (this.actor.data.type === 'vehicle') return;
+    if (this.actor.type === 'vehicle') return;
     //gather data
     const display = $(ev.currentTarget).parent().find('span.display');
     const detail = display.data().detail;
     const label = game.i18n.localize(display.data().label);
-    const value = getProperty(this.actor.data, detail);
+    const value = getProperty(this.actor, detail);
     //create element
     const input = document.createElement('input');
     input.type = 'text';
@@ -994,6 +974,14 @@ export default class CharacterSheet extends ActorSheet {
     ev.currentTarget.remove();
   }
 
+  private _getAdditionalStats(): AdditionalStats {
+    const stats = foundry.utils.deepClone(this.actor.system.additionalStats);
+    for (const attr of Object.values(stats)) {
+      attr['isCheckbox'] = attr.dtype === 'Boolean';
+    }
+    return stats;
+  }
+
   /**
    * Handle input changes to numeric form fields, allowing them to accept delta-typed inputs
    * @param {Event} event  Triggering event.
@@ -1003,7 +991,7 @@ export default class CharacterSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor.data, input.name) + delta;
+      input.value = getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }
@@ -1015,7 +1003,7 @@ export default class CharacterSheet extends ActorSheet {
     const key = ev.target.dataset.key as string;
     const data = util.getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`data.status.${key}`]: false });
+    await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
   }
 
@@ -1048,7 +1036,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          if (item.data.type === 'gear') return item.data.data.equippable;
+          if (item.type === 'gear') return item.system.equippable;
           return !['weapon', 'consumable'].includes(item.type);
         },
         callback: (i: JQuery<HTMLOListElement>) => {
@@ -1063,7 +1051,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1077,7 +1065,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1091,7 +1079,7 @@ export default class CharacterSheet extends ActorSheet {
         condition: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
-          return item.data.type === 'weapon';
+          return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
           const id = i.parents('li.item').data().itemId;
@@ -1114,4 +1102,51 @@ interface SheetEffect {
   favorite: boolean;
   origin?: string;
   label: string;
+}
+
+interface SheetPowers {
+  hasPowersWithoutArcane: boolean;
+  arcaneBackgrounds: Record<string, SheetArcaneBackground>;
+}
+
+interface SheetArcaneBackground {
+  valuePath: string;
+  value: any;
+  maxPath: string;
+  max: any;
+  powers: SwadeItem[];
+}
+
+type OptionsPartial = Partial<ActorSheet.Data<DocumentSheetOptions>>;
+
+interface SwadeActorSheetData extends OptionsPartial {
+  itemTypes: Record<string, SwadeItem[]>;
+  parry: number;
+  settingrules: Record<string, unknown>;
+  currentBennies: number[];
+  powers: SheetPowers;
+  hasAdditionalStats: boolean;
+  additionalStats: AdditionalStats;
+  bennyImageURL: string;
+  useAttributeShorts: boolean;
+  sortedSkills: SwadeItem[];
+  species: {
+    label: string;
+    value: Handlebars.SafeString | string;
+  };
+  archetype: {
+    label: string;
+    value: Handlebars.SafeString | string;
+  };
+  advances: {
+    expanded: boolean;
+    list: Array<{
+      rank: string;
+      list: Advance[];
+    }>;
+  };
+  sheetEffects: {
+    temporary: SheetEffect[];
+    permanent: SheetEffect[];
+  };
 }

@@ -4,14 +4,14 @@
   data-item-id='{{item.id}}'
   data-token-id='{{tokenId}}'
 >
-  {{#if item.data.data.notes}}
+  {{#if item.system.notes}}
     <div class='chips'>
       <p>
         <span class='bold'>
           <i class='fas fa-sticky-note'></i>
           {{localize 'SWADE.Notes'}}:
         </span>
-        {{item.data.data.notes}}
+        {{item.system.notes}}
       </p>
     </div>
   {{/if}}
@@ -23,25 +23,25 @@
           <i class='fas fa-shield-alt'></i>
           {{localize 'SWADE.Armor'}}:
         </span>
-        {{item.data.data.armor}}
+        {{item.system.armor}}
       </p>
     </div>
   {{/if}}
 
-  {{#if (and (eq item.type 'weapon') item.data.data.range)}}
+  {{#if (and (eq item.type 'weapon') item.system.range)}}
     <div class='chips'>
       <p>
         <span class='bold'><i class='fas fa-ruler-combined'></i> Range:</span>
-        {{item.data.data.range}}
+        {{item.system.range}}
       </p>
     </div>
   {{/if}}
 
-  {{#if (and (eq item.type 'weapon') (gt item.data.data.ap '0'))}}
+  {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
     <div class='chips'>
       <p>
         <span class='bold'><i class='fas fa-shield-alt'></i> AP:</span>
-        {{item.data.data.ap}}
+        {{item.system.ap}}
       </p>
     </div>
   {{/if}}
@@ -53,7 +53,7 @@
           <i class='fas fa-shield-alt'></i>
           {{localize 'SWADE.Parry'}}:
         </span>
-        {{item.data.data.parry}}
+        {{item.system.parry}}
       </p>
     </div>
   {{/if}}
@@ -65,10 +65,10 @@
           {{localize 'SWADE.Mag'}}:</span>
         <span
           class='current-shots'
-        >{{item.data.data.currentShots}}</span>&nbsp;/&nbsp;<span
+        >{{item.system.currentShots}}</span>&nbsp;/&nbsp;<span
           class='max-shots'
-        >{{item.data.data.shots}}</span>
-        {{#if item.data.data.ammo}}&nbsp;- &nbsp;{{item.data.data.ammo}}{{/if}}
+        >{{item.system.shots}}</span>
+        {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
       </p>
     </div>
   {{/if}}
@@ -86,30 +86,30 @@
       <div class='pp-counter'>
         <p>
           <span class='bold'>
-            {{#if item.data.data.arcane}}{{item.data.data.arcane}}
+            {{#if item.system.arcane}}{{item.system.arcane}}
             {{/if}}{{localize 'SWADE.PP'}}:
           </span>
           <span class='current-pp'>
-            {{#if item.data.data.arcane}}
-              {{#each @root.actor.data.data.powerPoints as |ab|}}
-                {{#if (eq @key ../item.data.data.arcane)}}
+            {{#if item.system.arcane}}
+              {{#each @root.actor.system.powerPoints as |ab|}}
+                {{#if (eq @key @root.item.system.arcane)}}
                   {{ab.value}}
                 {{/if}}
               {{/each}}
             {{else}}
-              {{@root.actor.data.data.powerPoints.value}}
+              {{@root.actor.system.powerPoints.value}}
             {{/if}}
           </span>
           &nbsp;/&nbsp;
           <span class='max-pp'>
-            {{#if item.data.data.arcane}}
-              {{#each @root.actor.data.data.powerPoints as |ab|}}
-                {{#if (eq @key ../item.data.data.arcane)}}
+            {{#if item.system.arcane}}
+              {{#each @root.actor.system.powerPoints as |ab|}}
+                {{#if (eq @key @root.item.system.arcane)}}
                   {{ab.max}}
                 {{/if}}
               {{/each}}
             {{else}}
-              {{@root.actor.data.data.powerPoints.max}}
+              {{@root.actor.system.powerPoints.max}}
             {{/if}}
           </span>
         </p>
@@ -117,16 +117,16 @@
     {{/unless}}
   {{/if}}
 
-  {{#if item.data.data.isArcaneDevice}}
+  {{#if item.system.isArcaneDevice}}
     <div class='pp-counter'>
       <p>
         <span class='bold'>{{localize 'SWADE.ArcaneDevice'}}
           {{localize 'SWADE.PP'}}:</span>
         <span
           class='current-pp'
-        >{{item.data.data.powerPoints.value}}</span>&nbsp;/&nbsp;<span
+        >{{item.system.powerPoints.value}}</span>&nbsp;/&nbsp;<span
           class='max-pp'
-        >{{item.data.data.powerPoints.max}}</span>
+        >{{item.system.powerPoints.max}}</span>
       </p>
     </div>
   {{/if}}
@@ -141,7 +141,7 @@
           <input
             type='number'
             class='pp-adjust'
-            value='{{item.data.data.pp}}'
+            value='{{item.system.pp}}'
           />
         </span>
         {{#unless (or powersTab @root.settingrules.noPowerPoints)}}
@@ -169,7 +169,7 @@
       </span>
     {{/if}}
 
-    {{#if item.data.data.isArcaneDevice}}
+    {{#if item.isArcaneDevice}}
       <span class='flexcol'>
         <span class='flexrow' style='display: flex'>
           <label>
@@ -205,7 +205,7 @@
     {{/if}}
 
     {{#unless powersTab}}
-      {{#if (or hasSkillRoll item.data.data.isArcaneDevice)}}
+      {{#if (or hasSkillRoll item.isArcaneDevice)}}
         <h4 class='actions-subheading'>
           <i class='fas fa-bullseye'></i>
           {{localize 'SWADE.TraitRolls'}}
@@ -228,7 +228,7 @@
       {{/if}}
     {{/each}}
 
-    {{#if item.data.data.isArcaneDevice}}
+    {{#if item.isArcaneDevice}}
       <button class='card-button' data-action='arcane-device'>
         {{localize 'SWADE.ActivateArcaneDevice'}}
       </button>
@@ -243,10 +243,10 @@
       {{/if}}
     {{/unless}}
 
-    {{#if item.data.data.damage}}
+    {{#if item.system.damage}}
       <button class='card-button' data-action='damage'>
         {{#if powersTab}}<i class='fas fa-tint'></i>
-        {{/if}}{{item.data.data.damage}}
+        {{/if}}{{item.system.damage}}
       </button>
     {{/if}}
 
@@ -258,6 +258,58 @@
         </button>
       {{/if}}
     {{/each}}
+
+      <!-- Template Controls -->
+  {{#if item.system.templates}}
+    <div class='card-buttons'>
+      <h4 class='actions-subheading'>
+        <i class='fas fa-bullseye'></i>
+        {{localize 'SWADE.Templates.Available'}}
+      </h4>
+      <span class='flexrow'>
+        {{#if item.system.templates.cone}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='swcone'
+          >{{localize 'SWADE.Templates.Cone.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.stream}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='stream'
+          >{{localize 'SWADE.Templates.Stream.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.small}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='sbt'
+          >{{localize 'SWADE.Templates.Small.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.medium}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='mbt'
+          >{{localize 'SWADE.Templates.Medium.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.large}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='lbt'
+          >{{localize 'SWADE.Templates.Large.Short'}}</button>
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
 
   </div>
 </div>

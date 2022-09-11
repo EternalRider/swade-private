@@ -20,20 +20,6 @@ export default class SwadeIntegrationHooks {
   }
 
   static onDiceSoNiceReady(dice3d: Dice3D) {
-    const currentDSNVersion = game.modules!.get('dice-so-nice')!.data.version;
-    if (isNewerVersion(currentDSNVersion, '4.5.0')) {
-      //TODO: Remove with swade v1.2
-      SWADE.dsnColorSets = game?.dice3d!.exports.COLORSETS;
-      SWADE.dsnTextureList = game?.dice3d!.exports.TEXTURELIST;
-    } else {
-      import(foundry.utils.getRoute('/modules/dice-so-nice/DiceColors.js'))
-        .then((obj) => {
-          SWADE.dsnColorSets = obj.COLORSETS;
-          SWADE.dsnTextureList = obj.TEXTURELIST;
-        })
-        .catch((err) => console.error(err));
-    }
-
     const customWilDieColors =
       game.user!.getFlag('swade', 'dsnCustomWildDieColors') ||
       (SWADE.diceConfig.flags.dsnCustomWildDieColors
@@ -52,7 +38,7 @@ export default class SwadeIntegrationHooks {
     dice3d.addColorset(
       {
         name: 'customWildDie',
-        description: 'DICESONICE.ColorCustom',
+        description: 'SWADE.CustomWildDie',
         category: 'DICESONICE.Colors',
         foreground: customWilDieColors.labelColor,
         background: customWilDieColors.diceColor,

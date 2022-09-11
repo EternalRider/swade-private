@@ -1,3 +1,4 @@
+import { AdditionalStats } from '../../globals';
 import {
   AdditionalStat,
   TraitRollModifier,
@@ -111,8 +112,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
       if (current > 0 && !active) {
         await this.actor.update({
-          'data.details.conviction.value': current - 1,
-          'data.details.conviction.active': true,
+          'system.details.conviction.value': current - 1,
+          'system.details.conviction.active': true,
         });
         ChatMessage.create({
           speaker: {
@@ -123,7 +124,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         });
       } else {
         await this.actor.update({
-          'data.details.conviction.active': false,
+          'system.details.conviction.active': false,
         });
         await chat.createConvictionEndMessage(this.actor);
       }
@@ -139,7 +140,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     //Running Die
     html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.data.type === 'vehicle') return;
+      if (this.actor.type === 'vehicle') return;
 
       const runningDieSides = this.actor.data.data.stats.speed.runningDie;
       const runningMod = this.actor.data.data.stats.speed.runningMod;
@@ -191,7 +192,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'delete':
           return effect.delete();
         case 'toggle':
-          return effect.update({ disabled: !effect?.data.disabled });
+          return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
           fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
             if (item) this.actor.items.get(item.id!)!.sheet?.render(true);
@@ -264,7 +265,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       a.name!.localeCompare(b.name!),
     );
 
-    if (this.actor.data.type !== 'vehicle') {
+    if (this.actor.type !== 'vehicle') {
       //Encumbrance
       data.inventoryWeight = this._calcInventoryWeight([
         ...data.itemsByType['gear'],
@@ -274,7 +275,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       ]);
       data.maxCarryCapacity = this.actor.calcMaxCarryCapacity();
 
-      if (this.actor.data.type === 'character') {
+      if (this.actor.type === 'character') {
         data.powersOptions =
           'class="powers-list resizable" data-base-size="560"';
       } else {
@@ -287,17 +288,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const powers = data.itemsByType['power'];
       if (powers) {
         powers.forEach((pow: any) => {
-          if (!pow.data.arcane) return;
-          if (
-            data.arcanes.find((el: string) => el == pow.data.arcane) ===
-            undefined
-          ) {
-            data.arcanes.push(pow.data.arcane);
+          const arcane = pow.system.arcane;
+          if (!arcane) return;
+          if (data.arcanes.find((el: string) => el == arcane) === undefined) {
+            data.arcanes.push(arcane);
             // Add powerpoints data relevant to the detected arcane
-            if (
-              !hasProperty(data, `data.data.powerPoints.${pow.data.arcane}`)
-            ) {
-              data.data.data.powerPoints[pow.data.arcane] = {
+            if (!hasProperty(data, `system.powerPoints.${arcane}`)) {
+              data.data.system.powerPoints[arcane] = {
                 value: 0,
                 max: 0,
               };
@@ -315,8 +312,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: Record<string, AdditionalStat> =
-      data.data.data.additionalStats || {};
+    const additionalStats: AdditionalStats = this.actor.system.additionalStats;
     for (const attr of Object.values(additionalStats)) {
       attr['isCheckbox'] = attr['dtype'] === 'Boolean';
     }
@@ -448,7 +444,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         break;
     }
 
-    const targetPropertyPath = `data.stats.${targetProperty}`;
+    const targetPropertyPath = `system.stats.${targetProperty}`;
     const targetPropertyValue = getProperty(
       this.actor.data,
       targetPropertyPath,
@@ -489,7 +485,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   protected _calcInventoryWeight(items): number {
     let retVal = 0;
     items.forEach((i: any) => {
-      retVal += i.data.weight * i.data.quantity;
+      retVal += i.system.weight * i.system.quantity;
     });
     return retVal;
   }

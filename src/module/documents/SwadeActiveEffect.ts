@@ -28,10 +28,6 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
-  get changes() {
-    return this.data.changes;
-  }
-
   get affectsItems() {
     if (this.parent instanceof CONFIG.Actor.documentClass) {
       const affectedItems = new Array<SwadeItem>();
@@ -63,11 +59,27 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
+  static override migrateData(data) {
+    super.migrateData(data);
+    if ('changes' in data) {
+      for (const change of data.changes) {
+        const match: RegExpMatchArray = change.key.match(
+          SwadeActiveEffect.ITEM_REGEXP,
+        );
+        if (match) {
+          const newKey = match[3].trim().replace(/^data\./, 'system.');
+          change.key = `@${match[1].trim()}{${match[2].trim()}}[${newKey}]`;
+        }
+      }
+    }
+    return data;
+  }
+
   override apply(actor: SwadeActor, change: EffectChangeData) {
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (match) {
       //get the properties from the match
-      const key: string = match[3].trim();
+      const key = match[3].trim();
       const value = change.value;
       //get the affected items
       const affectedItems = this._getAffectedItems(actor, change);
@@ -91,8 +103,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (match) {
       //get the properties from the match
-      const type: string = match[1].trim().toLowerCase();
-      const name: string = match[2].trim();
+      const type = match[1].trim().toLowerCase();
+      const name = match[2].trim();
       //filter the items down, according to type and name/id
       items.push(
         ...actor.items.filter(
@@ -266,20 +278,20 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
     //localize labels, just to be sure
     const label = game.i18n.localize(this.data.label);
-    this.data.update({ label: label });
+    this.updateSource({ label: label });
 
     //automatically favorite status effects
     if (data.flags?.core?.statusId) {
-      this.data.update({ 'flags.swade.favorite': true });
+      this.updateSource({ 'flags.swade.favorite': true });
     }
 
     // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
     if (!data.duration?.combat && game.combat) {
-      this.data.update({ 'duration.combat': game.combat.id });
+      this.updateSource({ 'duration.combat': game.combat.id });
     }
 
     //set the world time at creation
-    this.data.update({ duration: { startTime: game.time.worldTime } });
+    this.updateSource({ duration: { startTime: game.time.worldTime } });
 
     if (this.getFlag('swade', 'loseTurnOnHold')) {
       const combatant = game.combat?.combatants.find(

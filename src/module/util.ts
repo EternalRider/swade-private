@@ -25,7 +25,7 @@ export function rollItemMacro(itemName: string) {
     return null;
   }
   //Roll the skill
-  if (item.data.type === 'skill') {
+  if (item.type === 'skill') {
     return item.roll();
   } else {
     // Show the item
@@ -93,9 +93,9 @@ export function getTrait(
 }
 
 /** @internal */
-export async function resetActionDeck() {
+export async function reshuffleActionDeck() {
   const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
-  await deck?.reset({ chatNotification: false });
+  await deck?.recall({ chatNotification: false });
   await deck?.shuffle({ chatNotification: false });
 }
 
@@ -114,11 +114,9 @@ export function modifierReducer(acc: string, cur: TraitRollModifier): string {
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */
   if (!doc) return null;
-  const permissions: Permissions =
-    (doc instanceof TokenDocument
-      ? doc.actor?.data.permission
-      : doc.data.permission) ?? {};
-  const playerOwners = Object.entries(permissions)
+  const ownership: Ownership =
+    (doc instanceof TokenDocument ? doc.actor?.ownership : doc.ownership) ?? {};
+  const playerOwners = Object.entries(ownership)
     .filter(([id, level]) => {
       const user = game.users?.get(id);
       return (
@@ -246,4 +244,4 @@ export function setupFantasyCompanionEntangle() {
   });
 }
 
-type Permissions = Record<string, number>;
+type Ownership = Record<string, number>;

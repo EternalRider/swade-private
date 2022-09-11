@@ -5,7 +5,7 @@
   </button>
 </header>
 <ol class='actions-list unmarked-list collapsibles'>
-  {{#each data.data.actions.additional as |action id|}}
+  {{#each item.system.actions.additional as |action id|}}
     <li>
       <details
         class='action'
@@ -18,13 +18,13 @@
             <label>{{localize 'SWADE.Name'}}</label>
             <input
               type='text'
-              name='data.actions.additional.{{id}}.name'
+              name='system.actions.additional.{{id}}.name'
               value='{{action.name}}'
             />
           </div>
           <div class='form-group action-type'>
             <label>{{localize 'Type'}}</label>
-            <select name='data.actions.additional.{{id}}.type'>
+            <select name='system.actions.additional.{{id}}.type'>
               {{#select action.type}}
                 {{selectOptions
                   @root.actionTypes
@@ -47,7 +47,7 @@
               <label> {{localize 'SWADE.AltTrait'}}</label>
               <input
                 type='text'
-                name='data.actions.additional.{{id}}.skillOverride'
+                name='system.actions.additional.{{id}}.skillOverride'
                 value='{{action.skillOverride}}'
               />
             </div>
@@ -55,7 +55,7 @@
               <label>{{localize 'SWADE.TraitMod'}}</label>
               <input
                 type='text'
-                name='data.actions.additional.{{id}}.skillMod'
+                name='system.actions.additional.{{id}}.skillMod'
                 value='{{action.skillMod}}'
                 title='{{localize "SWADE.ModHint"}}'
               />
@@ -64,7 +64,7 @@
               <label>{{localize 'SWADE.RoF'}}</label>
               <input
                 type='text'
-                name='data.actions.additional.{{id}}.rof'
+                name='system.actions.additional.{{id}}.rof'
                 value='{{action.rof}}'
                 data-dtype='Number'
               />
@@ -73,7 +73,7 @@
               <label>{{localize 'SWADE.ShotsUsed'}}</label>
               <input
                 type='number'
-                name='data.actions.additional.{{id}}.shotsUsed'
+                name='system.actions.additional.{{id}}.shotsUsed'
                 value='{{action.shotsUsed}}'
                 data-dtype='Number'
               />
@@ -83,7 +83,7 @@
               <label>{{localize 'SWADE.DmgOver'}}</label>
               <input
                 type='text'
-                name='data.actions.additional.{{id}}.dmgOverride'
+                name='system.actions.additional.{{id}}.dmgOverride'
                 value='{{action.dmgOverride}}'
               />
             </div>
@@ -92,7 +92,7 @@
                 {{localize 'SWADE.Modifier'}}</label>
               <input
                 type='text'
-                name='data.actions.additional.{{id}}.dmgMod'
+                name='system.actions.additional.{{id}}.dmgMod'
                 value='{{action.dmgMod}}'
                 title='{{localize "SWADE.ModHint"}}'
               />

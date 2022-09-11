@@ -1,17 +1,16 @@
 {
-  "name": "swade",
   "id": "swade",
+  "name": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "1.2.1",
-  "minimumCoreVersion": 9,
-  "compatibleCoreVersion": 9,
+  "version": "2.0.0-rc3",
+  "minimumCoreVersion": 10,
+  "compatibleCoreVersion": 10,
   "compatibility": {
-    "minimum": 9,
-    "verified": 9,
-    "maximum": 9
+    "minimum": 10,
+    "verified": 10,
+    "maximum": 10
   },
-  "author": "FloRad",
   "authors": [
     {
       "name": "FloRad",
@@ -26,29 +25,33 @@
       "name": "skills",
       "label": "Basic Skills",
       "system": "swade",
-      "path": "./packs/skills.db",
-      "type": "Item"
+      "path": "packs/skills.db",
+      "type": "Item",
+      "private": false
     },
     {
       "name": "edges",
       "label": "Basic Edges",
       "system": "swade",
-      "path": "./packs/edges.db",
-      "type": "Item"
+      "path": "packs/edges.db",
+      "type": "Item",
+      "private": false
     },
     {
       "name": "hindrances",
       "label": "Basic Hindrances",
       "system": "swade",
-      "path": "./packs/hindrances.db",
-      "type": "Item"
+      "path": "packs/hindrances.db",
+      "type": "Item",
+      "private": false
     },
     {
       "name": "powers",
       "label": "Basic Powers",
       "system": "swade",
-      "path": "./packs/powers.db",
-      "type": "Item"
+      "path": "packs/powers.db",
+      "type": "Item",
+      "private": false
     }
   ],
   "languages": [

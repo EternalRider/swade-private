@@ -61,25 +61,32 @@ export declare class Dice3D {
   /**
    * Add a colorset (theme)
    * @param colorset
-   * @param  mode= "default","preferred"
+   * @param  mode = "default","preferred"
    * The "mode" parameter have 2 modes :
    * - "default" only register the colorset
    * - "preferred" apply the colorset if the player didn't already change his dice appearance for this world.
    */
-  addColorset(colorset: DiceColorsetData, mode: string);
+  addColorset(colorset: DiceColorsetData, mode: 'default' | 'preferred');
 
   /**
    * Register a new dice preset
    * @param data The informations on the new dice preset (see below)
    * @param shape should be explicit when using a custom die term. Supported shapes are d2,d4,d6,d8,d10,d12,d20
    */
-  addDicePreset(data: DicePresetData, shape?: string): void;
+  addDicePreset(
+    data: DicePresetData,
+    shape?: 'd2' | 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20',
+  ): void;
 }
 
-//TODO Type
 interface Dice3DExports {
   COLORSETS: any;
   TEXTURELIST: any;
+  Utils: {
+    prepareFontList: () => Record<string, string>;
+    prepareTextureList: () => Record<string, string>;
+    prepareColorsetList: () => Record<string, Record<string, string>>;
+  };
 }
 
 interface Dice3DShowData {

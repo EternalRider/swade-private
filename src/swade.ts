@@ -19,7 +19,6 @@ import { registerCustomHelpers } from './module/handlebarsHelpers';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
-import { listenJournalDrop } from './module/journalDrop';
 import { registerKeybindings } from './module/keybindings';
 import { Logger } from './module/Logger';
 import * as migrations from './module/migration';
@@ -116,7 +115,7 @@ Hooks.once('init', () => {
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
 
   //@ts-expect-error Types don't properly recognize dotnotation
-  CompendiumCollection.INDEX_FIELDS.Actor.push('data.wildcard');
+  CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
 
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
@@ -171,9 +170,6 @@ Hooks.once('init', () => {
   });
 
   CONFIG.Dice.terms.b = Benny;
-
-  // Drop a journal image to a tile (for cards)
-  listenJournalDrop();
 });
 
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -226,7 +222,7 @@ Hooks.on(
 );
 
 /* ------------------------------------ */
-/* Dice So Nice Hooks					          */
+/* Third Party Integrations		          */
 /* ------------------------------------ */
 
 /** Dice So Nice*/

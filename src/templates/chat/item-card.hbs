@@ -14,10 +14,10 @@
     <div class='ammo-counter'>
       <i class='fas fa-dot-circle'></i>
       {{localize 'SWADE.Mag'}}:
-      <span class='current-shots'>{{item.data.data.currentShots}}</span>
+      <span class='current-shots'>{{item.system.currentShots}}</span>
       &nbsp;/&nbsp;
-      <span class='max-shots'>{{item.data.data.shots}}</span>
-      {{#if item.data.data.ammo}}&nbsp;- &nbsp;{{item.data.data.ammo}}{{/if}}
+      <span class='max-shots'>{{item.system.shots}}</span>
+      {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
     </div>
   {{/if}}
 
@@ -25,8 +25,8 @@
   {{#if (eq item.type 'power')}}
     {{#unless settingRules.noPowerPoints}}
       <div class='pp-counter'>
-        {{#if item.data.data.arcane}}
-          {{item.data.data.arcane}}
+        {{#if item.system.arcane}}
+          {{item.system.arcane}}
         {{/if}}
         {{localize 'SWADE.PP'}}:
         <span class='current-pp'>{{powerPoints.value}}</span>
@@ -50,9 +50,9 @@
   {{#if (eq item.type 'consumable')}}
     <div class='pp-counter'>
       {{localize 'SWADE.Charges'}}:
-      <span class='current-pp'>{{item.data.data.charges.value}}</span>
+      <span class='current-pp'>{{item.system.charges.value}}</span>
       &nbsp;/&nbsp;
-      <span class='max-pp'>{{item.data.data.charges.max}}</span>
+      <span class='max-pp'>{{item.system.charges.max}}</span>
     </div>
   {{/if}}
 
@@ -70,10 +70,9 @@
   {{#if (or showTraitRolls item.isArcaneDevice)}}
     <div class='card-buttons'>
       <h4 class='actions-subheading'>
-        <i class='fas fa-bullseye'></i>
+        <i class='fa-solid fa-crosshairs'></i>
         {{localize 'SWADE.TraitRolls'}}
       </h4>
-
       {{#if hasTraitRoll}}
         <button data-action='formula'>{{trait}}</button>
       {{/if}}
@@ -85,9 +84,9 @@
 
       <!-- Arcane Skill Roll (Artificer's) -->
       {{#if item.isArcaneDevice}}
-        <button data-action='arcane-device'>{{localize
-            'SWADE.ActivateArcaneDevice'
-          }}</button>
+        <button data-action='arcane-device'>
+          {{localize 'SWADE.ActivateArcaneDevice'}}
+        </button>
       {{/if}}
     </div>
   {{/if}}
@@ -101,7 +100,7 @@
       </h4>
 
       {{#if hasDamage}}
-        <button data-action='damage'>{{item.data.data.damage}}</button>
+        <button data-action='damage'>{{item.system.damage}}</button>
       {{/if}}
       {{#each data.actions}}
         {{#if (eq type 'damage')}}
@@ -111,11 +110,58 @@
     </div>
   {{/if}}
 
+  <!-- Template Controls -->
+  {{#if item.system.templates}}
+    <div class='card-buttons'>
+      <h4 class='actions-subheading'>
+        <i class='fas fa-bullseye'></i>
+        {{localize 'SWADE.Templates.Available'}}
+      </h4>
+      <span class='flexrow'>
+        {{#if item.system.templates.cone}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='swcone'
+          >{{localize 'SWADE.Templates.Cone.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.stream}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='stream'
+          >{{localize 'SWADE.Templates.Stream.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.small}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='sbt'
+          >{{localize 'SWADE.Templates.Small.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.medium}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='mbt'
+          >{{localize 'SWADE.Templates.Medium.Short'}}</button>
+        {{/if}}
+        {{#if item.system.templates.large}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='lbt'
+          >{{localize 'SWADE.Templates.Large.Short'}}</button>
+        {{/if}}
+      </span>
+    </div>
+  {{/if}}
+
   <!-- Power Controls -->
   {{#if (eq item.type 'power')}}
     <div class='card-buttons'>
       <span class='flexcol'>
-        <span class='flexrow' style='display: flex'>
+        <span class='flexrow'>
           <label>
             <strong>{{localize 'SWADE.PPCost'}}: </strong>
           </label>
@@ -123,7 +169,7 @@
             type='number'
             class='pp-adjust'
             data-dtype='Number'
-            value='{{item.data.data.pp}}'
+            value='{{item.system.pp}}'
           />
         </span>
 

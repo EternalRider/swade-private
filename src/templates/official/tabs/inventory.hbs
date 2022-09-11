@@ -1,9 +1,9 @@
 <section class='flexrow'>
   <div class='encumbrance'>
     <span class='label'>{{localize 'SWADE.CarryWeight'}}</span>
-    <span class='value'>{{formatNumber data.data.details.encumbrance.value}}
+    <span class='value'>{{formatNumber actor.system.details.encumbrance.value}}
       /
-      {{data.data.details.encumbrance.max}}
+      {{actor.system.details.encumbrance.max}}
       {{settingrules.weightUnit}}</span>
   </div>
   <div class='form-group currency'>
@@ -11,10 +11,10 @@
       <label>{{settingrules.currencyName}}</label>
       <span class='form-fields'>
         <input
-          name='data.details.currency'
+           name='system.details.currency'
           type='text'
           data-dtype='Number'
-          value='{{data.data.details.currency}}'
+          value='{{actor.system.details.currency}}'
           placeholder='{{localize "SWADE.Currency"}}'
         />
       </span>
@@ -23,8 +23,8 @@
         <button class='roll'>{{localize 'SWADE.WealthDie.Label'}}</button>
       </label>
       <span class='form-fields'>
-        <select data-dtype='Number' name='data.details.wealth.die'>
-          {{#select data.data.details.wealth.die}}
+        <select data-dtype='Number'  name='system.details.wealth.die'>
+          {{#select actor.system.details.wealth.die}}
             <option value='0'>{{localize
                 'SWADE.WealthDie.Broke.Label'
               }}</option>
@@ -34,8 +34,8 @@
         <input
           type='text'
           data-dtype='Number'
-          name='data.details.wealth.modifier'
-          value='{{signedString data.data.details.wealth.modifier}}'
+           name='system.details.wealth.modifier'
+          value='{{signedString actor.system.details.wealth.modifier}}'
           placeholder='{{localize "SWADE.Modifier"}}'
         />
       </span>
@@ -74,39 +74,39 @@
             class='name item-name'
             title='{{localize "SWADE.ExpandDescription"}}'
           >
-            {{#if (gte data.data.quantity 2)}} (x{{data.data.quantity}}) {{/if}}
+            {{#if (gte system.quantity 2)}} (x{{system.quantity}}) {{/if}}
             {{name}}
           </button>
           <span class='damage'>
-            {{#if data.data.damage}}
+            {{#if system.damage}}
               <button
                 type='button'
                 class='damage-roll rollable'
                 title='{{localize "SWADE.RollDamage"}}'
-              >{{data.data.damage}}</button>
+              >{{system.damage}}</button>
             {{/if}}
           </span>
-          <span class='ap'>{{data.data.ap}}</span>
-          <span class='note'>{{enrich data.data.notes}}</span>
+          <span class='ap'>{{system.ap}}</span>
+          <span class='note'>{{enrich system.notes}}</span>
           <span class='weight'>{{formatNumber
-              (times data.data.weight data.data.quantity)
+              (times system.weight system.quantity)
             }}</span>
           <span class='item-controls'>
             {{#if isOwner}}
               <button
                 type='menu'
                 class='equip-status'
-                title='{{equipStatusLabel data.data.equipStatus}}'
+                title='{{equipStatusLabel system.equipStatus}}'
               >
-              {{equipStatus data.data.equipStatus}}
+              {{equipStatus system.equipStatus}}
               </button>
               <button
                 type='button'
                 class='item-toggle'
-                data-toggle='data.favorite'
+                data-toggle='system.favorite'
                 title='{{localize "SWADE.Favorite"}}'
               >
-                {{#if data.data.favorite}}
+                {{#if system.favorite}}
                   <i class='fas fa-star'></i>
                 {{else}}
                   <i class='fas fa-star item-unequipped'></i>
@@ -128,7 +128,7 @@
               </button>
             {{/if}}
           </span>
-          <div class='description'>{{enrich data.data.description}}</div>
+          <div class='description'>{{enrich system.description}}</div>
         </span>
       </li>
     {{/each}}
@@ -164,27 +164,27 @@
             class='name item-name'
             title='{{localize "SWADE.ExpandDescription"}}'
           >
-            {{#if (gte data.data.quantity 2)}} (x{{data.data.quantity}}) {{/if}}
+            {{#if (gte system.quantity 2)}} (x{{system.quantity}}) {{/if}}
             {{name}}
           </button>
-          <span class='bonus'> {{data.data.armor}} </span>
-          <span class='min-str'>{{data.data.minStr}}</span>
-          <span class='note'>{{enrich data.data.notes}}</span>
+          <span class='bonus'> {{system.armor}} </span>
+          <span class='min-str'>{{system.minStr}}</span>
+          <span class='note'>{{enrich system.notes}}</span>
           <span class='weight'>{{formatNumber
-              (times data.data.weight data.data.quantity)
+              (times system.weight system.quantity)
             }}</span>
           <span class='item-controls'>
             {{#if isOwner}}
-              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
-                {{equipStatus data.data.equipStatus}}
+              <button type='menu' class='equip-status' title='{{equipStatusLabel system.equipStatus}}'>
+                {{equipStatus system.equipStatus}}
               </button>
               <button
                 type='button'
                 class='item-toggle'
-                data-toggle='data.favorite'
+                data-toggle='system.favorite'
                 title='{{localize "SWADE.Favorite"}}'
               >
-                {{#if data.data.favorite}}
+                {{#if system.favorite}}
                   <i class='fas fa-star'></i>
                 {{else}}
                   <i class='fas fa-star item-unequipped'></i>
@@ -206,7 +206,7 @@
               </button>
             {{/if}}
           </span>
-          <div class='description'>{{enrich data.data.description}}</div>
+          <div class='description'>{{enrich system.description}}</div>
         </span>
       </li>
     {{/each}}
@@ -242,26 +242,26 @@
             class='name item-name'
             title='{{localize "SWADE.ExpandDescription"}}'
           >
-            {{#if (gte data.data.quantity 2)}} (x{{data.data.quantity}}) {{/if}}
-            {{data.name}}
+            {{#if (gte system.quantity 2)}} (x{{system.quantity}}) {{/if}}
+            {{name}}
           </button>
-          <span class='parry'>{{data.data.parry}}</span>
-          <span class='cover'>{{enrich data.data.cover}}</span>
+          <span class='parry'>{{system.parry}}</span>
+          <span class='cover'>{{enrich system.cover}}</span>
           <span class='weight'>{{formatNumber
-              (times data.data.weight data.data.quantity)
+              (times system.weight system.quantity)
             }}</span>
           <span class='item-controls'>
             {{#if isOwner}}
-              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
-                {{equipStatus data.data.equipStatus}}
+              <button type='menu' class='equip-status' title='{{equipStatusLabel system.equipStatus}}'>
+                {{equipStatus system.equipStatus}}
               </button>
               <button
                 type='button'
                 class='item-toggle'
-                data-toggle='data.favorite'
+                data-toggle='system.favorite'
                 title='{{localize "SWADE.Favorite"}}'
               >
-                {{#if data.data.favorite}}
+                {{#if system.favorite}}
                   <i class='fas fa-star'></i>
                 {{else}}
                   <i class='fas fa-star item-unequipped'></i>
@@ -283,7 +283,7 @@
               </button>
             {{/if}}
           </span>
-          <div class='description'>{{enrich data.data.description}}</div>
+          <div class='description'>{{enrich system.description}}</div>
         </span>
       </li>
     {{/each}}
@@ -315,28 +315,28 @@
           class='name item-name'
           title='{{localize "SWADE.ExpandDescription"}}'
         >
-          (x{{data.data.quantity}}) {{name}}
+          (x{{system.quantity}}) {{name}}
         </button>
         <span class="charges">
           <button type="button" class='rollable use-consumable' title="{{localize "SWADE.Consumable.Use"}}">
-            {{data.data.charges.value}}/{{data.data.charges.max}}
+            {{system.charges.value}}/{{system.charges.max}}
           </button>
         </span>
         <span class='weight'>
-          {{formatNumber (times data.data.weight data.data.quantity)}}
+          {{formatNumber (times system.weight system.quantity)}}
         </span>
         <span class='item-controls'>
           {{#if isOwner}}
-            <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
-              {{equipStatus data.data.equipStatus}}
+            <button type='menu' class='equip-status' title='{{equipStatusLabel system.equipStatus}}'>
+              {{equipStatus system.equipStatus}}
             </button>
             <button
               type='button'
               class='item-toggle'
-              data-toggle='data.favorite'
+              data-toggle='system.favorite'
               title='{{localize "SWADE.Favorite"}}'
             >
-              {{#if data.data.favorite}}
+              {{#if system.favorite}}
                 <i class='fas fa-star'></i>
               {{else}}
                 <i class='fas fa-star item-unequipped'></i>
@@ -358,7 +358,7 @@
             </button>
           {{/if}}
         </span>
-        <div class='description'>{{enrich data.data.description}}</div>
+        <div class='description'>{{enrich system.description}}</div>
       </span>
     </li>
     {{/each}}
@@ -389,24 +389,24 @@
             class='name item-name'
             title='{{localize "SWADE.ExpandDescription"}}'
           >
-            (x{{data.data.quantity}})
+            (x{{system.quantity}})
             {{name}}
           </button>
           <span class='weight'>
-            {{formatNumber (times data.data.weight data.data.quantity)}}
+            {{formatNumber (times system.weight system.quantity)}}
           </span>
           <span class='item-controls'>
             {{#if isOwner}}
-              <button type='menu' class='equip-status' title='{{equipStatusLabel data.data.equipStatus}}'>
-                {{equipStatus data.data.equipStatus}}
+              <button type='menu' class='equip-status' title='{{equipStatusLabel system.equipStatus}}'>
+                {{equipStatus system.equipStatus}}
               </button>
               <button
                 type='button'
                 class='item-toggle'
-                data-toggle='data.favorite'
+                data-toggle='system.favorite'
                 title='{{localize "SWADE.Favorite"}}'
               >
-                {{#if data.data.favorite}}
+                {{#if system.favorite}}
                   <i class='fas fa-star'></i>
                 {{else}}
                   <i class='fas fa-star item-unequipped'></i>
@@ -428,7 +428,7 @@
               </button>
             {{/if}}
           </span>
-          <div class='description'>{{enrich data.data.description}}</div>
+          <div class='description'>{{enrich system.description}}</div>
         </span>
       </li>
     {{/each}}

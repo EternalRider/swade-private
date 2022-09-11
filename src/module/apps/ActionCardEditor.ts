@@ -73,7 +73,7 @@ export default class ActionCardEditor extends FormApplication {
       const current = this.cards.cards.get(id, { strict: true });
       const diff = foundry.utils.diffObject(current.data.toObject(), newData);
       //skip if there's no differences
-      if (foundry.utils.isObjectEmpty(diff)) continue;
+      if (foundry.utils.isEmpty(diff)) continue;
       //set the ID for the update
       diff['_id'] = id;
       updates.push(foundry.utils.flattenObject(diff));
@@ -83,12 +83,12 @@ export default class ActionCardEditor extends FormApplication {
   }
 
   private _sortCards(a: Card, b: Card) {
-    const suitA = a.data.data['suit'];
-    const suitB = b.data.data['suit'];
+    const suitA = a.system['suit'];
+    const suitB = b.system['suit'];
     const suit = suitB - suitA;
     if (suit !== 0) return suit;
-    const cardA = a.data.value ?? 0;
-    const cardB = b.data.value ?? 0;
+    const cardA = a.value ?? 0;
+    const cardB = b.value ?? 0;
     const card = cardB - cardA;
     return card;
   }
@@ -97,7 +97,7 @@ export default class ActionCardEditor extends FormApplication {
     const id = event.currentTarget.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card) return;
-    new ImagePopout(card.face?.img!, {
+    new ImagePopout(card.currentFace?.img!, {
       shareable: true,
     }).render(true);
   }

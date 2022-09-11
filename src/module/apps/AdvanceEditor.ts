@@ -75,7 +75,7 @@ export class AdvanceEditor extends FormApplication<
     //normal update operation
     this.advances.set(advance.id, advance);
     return this.ctx.actor.update(
-      { 'data.advances.list': this.advances.toJSON() },
+      { 'system.advances.list': this.advances.toJSON() },
       { diff: false },
     );
   }
@@ -89,7 +89,7 @@ export class AdvanceEditor extends FormApplication<
       if (options) options.plugins = 'lists image table hr code link';
       if (!initialContent) initialContent = this.advance.notes;
     }
-    super.activateEditor(name, options, initialContent);
+    return super.activateEditor(name, options, initialContent);
   }
 
   private _getAdvanceTypes(): Record<number, string> {
@@ -113,7 +113,7 @@ export class AdvanceEditor extends FormApplication<
     //update sort values based on index
     arr.forEach((a, i) => (a.sort = i + 1));
     //yeet
-    return this.actor.update({ 'data.advances.list': arr }, { diff: false });
+    return this.actor.update({ 'system.advances.list': arr }, { diff: false });
   }
 }
 

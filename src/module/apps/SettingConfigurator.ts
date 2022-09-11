@@ -210,7 +210,7 @@ export default class SettingConfigurator extends FormApplication<
   private _buildActionDeckDiscardPileChoices() {
     const discardPiles: Record<string, string> = {};
     game.cards
-      ?.filter((stack) => stack.data.type === 'pile')
+      ?.filter((stack) => stack.type === 'pile')
       .forEach((p) => (discardPiles[p.id] = p.name!));
     return discardPiles;
   }
