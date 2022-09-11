@@ -214,6 +214,12 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     const data: SwadeItemSheetData = {
       itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
+      enrichedDescription: await TextEditor.enrichHTML(
+        this.item.system.description,
+        {
+          async: true,
+        },
+      ),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
       actionTypes: this.actionTypes,
@@ -544,6 +550,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   additionalStats: Record<string, AdditionalStat>;
   collapsibleStates: CollapsibleStates;
   isArcaneDevice: boolean;
+  enrichedDescription: string;
   settingRules: {
     modSlots: boolean;
     noPowerPoints: boolean;

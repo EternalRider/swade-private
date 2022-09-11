@@ -78,7 +78,7 @@
       {{/each}}
     {{else}}
       {{editor
-        actor.system.advances.details
+        enrichedText.advances
         target='system.advances.details'
         button=owner
         owner=owner
@@ -90,7 +90,7 @@
     <div class='editor-container'>
       <header class='section-header'>{{localize 'SWADE.Appearance'}}</header>
       {{editor
-        actor.system.details.appearance
+        enrichedText.appearance
         target='system.details.appearance'
         button=owner
         owner=owner
@@ -102,7 +102,7 @@
         {{localize 'SWADE.CharacterGoals'}}
       </header>
       {{editor
-        actor.system.details.goals
+        enrichedText.goals
         target='system.details.goals'
         button=owner
         owner=owner
@@ -112,7 +112,7 @@
     <div class='editor-container'>
       <header class='section-header'>{{localize 'SWADE.Biography'}}</header>
       {{editor
-        actor.system.details.biography.value
+        enrichedText.biography
         target='system.details.biography.value'
         button=owner
         owner=owner
@@ -122,7 +122,7 @@
   </section>
   <section class='tab actor-notes' data-group='about' data-tab='notes'>
     {{editor
-      actor.system.details.notes
+      enrichedText.notes
       target='system.details.notes'
       button=owner
       owner=owner

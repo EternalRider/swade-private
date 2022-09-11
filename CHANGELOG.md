@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.1
+
+### Fixed
+
+- Character Sheet Editors now have enriched text again
+- Item Sheet descriptions now have enriched text again
+
 ## v2.0.0
 
 ### Added
