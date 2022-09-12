@@ -236,7 +236,9 @@ export default class SwadeActor extends Actor {
       return Roll.fromTerms([
         ...roll.terms,
         ...Roll.parse(
-          modifiers.reduce(util.modifierReducer, ''),
+          modifiers
+            .map(util.normalizeRollModifiers)
+            .reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -303,7 +305,9 @@ export default class SwadeActor extends Actor {
       return Roll.fromTerms([
         ...roll.terms,
         ...Roll.parse(
-          modifiers.reduce(util.modifierReducer, ''),
+          modifiers
+            .map(util.normalizeRollModifiers)
+            .reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
