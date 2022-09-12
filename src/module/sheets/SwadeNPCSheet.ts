@@ -181,8 +181,8 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       .on('change', this._toggleStatusEffect.bind(this));
   }
 
-  getData() {
-    const data: any = super.getData();
+  async getData() {
+    const data: any = await super.getData();
 
     // Progress attribute abbreviation toggle
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
@@ -190,13 +190,17 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
 
-    const shields = data.itemsByType['shield'];
+    const shields = data.itemsByType.shield;
     data.parry = 0;
     shields.forEach((shield) => {
       if (shield.data.equipState === constants.EQUIP_STATE.EQUIPPED) {
         data.parry += shield.data.parry;
       }
     });
+    data.enrichedBiography = await TextEditor.enrichHTML(
+      this.actor.system.details.biography.value,
+      { async: true },
+    );
     return data;
   }
 
