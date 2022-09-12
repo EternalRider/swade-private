@@ -13,6 +13,7 @@ import {
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
+import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { Logger } from '../../Logger';
 import * as util from '../../util';
@@ -239,14 +240,16 @@ export default class SwadeItem extends Item {
       return Roll.fromTerms([
         ...roll.terms,
         ...Roll.parse(
-          modifiers.reduce(util.modifierReducer, ''),
+          modifiers
+            .map(util.normalizeRollModifiers)
+            .reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
     }
 
     // Roll and return
-    return game.swade.RollDialog.asPromise({
+    return RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this.actor! }),

@@ -3,7 +3,7 @@
   "name": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "2.0.0-rc3",
+  "version": "2.0.2",
   "minimumCoreVersion": 10,
   "compatibleCoreVersion": 10,
   "compatibility": {

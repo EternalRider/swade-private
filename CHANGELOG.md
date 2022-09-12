@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.2
+
+### Fixed
+
+- Fixed text enrichment for NPC and vehicle sheets.
+
 ## v2.0.1
 
 ### Fixed

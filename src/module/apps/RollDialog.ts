@@ -2,7 +2,7 @@ import { TraitRollModifier } from '../../interfaces/additional.interface';
 import WildDie from '../dice/WildDie';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
-import * as util from '../util';
+import { modifierReducer, normalizeRollModifiers } from '../util';
 
 export default class RollDialog extends FormApplication<
   FormApplicationOptions,
@@ -101,7 +101,7 @@ export default class RollDialog extends FormApplication<
       modGroups: CONFIG.SWADE.prototypeRollGroups,
       extraButtonLabel: '',
       rollMode: game.settings.get('core', 'rollMode'),
-      modifiers: this.ctx.mods.map(this._normalizeModValue),
+      modifiers: this.ctx.mods.map(normalizeRollModifiers),
       formula: this._buildRollForEvaluation().formula,
       isTraitRoll: this._isTraitRoll(),
     };
@@ -217,7 +217,7 @@ export default class RollDialog extends FormApplication<
   }
 
   protected override _onSearchFilter(
-    _event: InputEvent,
+    _event: KeyboardEvent,
     _query: string,
     rgx: RegExp,
     html: HTMLElement,
@@ -237,8 +237,8 @@ export default class RollDialog extends FormApplication<
       ...Roll.parse(
         this.ctx.mods
           .filter((v) => !v.ignore) //remove the disabled modifiers
-          .map(this._normalizeModValue)
-          .reduce(util.modifierReducer, ''),
+          .map(normalizeRollModifiers)
+          .reduce(modifierReducer, ''),
         this._getRollData(),
       ),
     ]);
@@ -264,23 +264,6 @@ export default class RollDialog extends FormApplication<
   private _getRollData() {
     if (this.ctx.actor) return this.ctx.actor.getRollData();
     return this.ctx.item?.actor?.getRollData() ?? {};
-  }
-
-  /** Normalize a given modifier value to a string for display and evaluation */
-  private _normalizeModValue(mod: TraitRollModifier): TraitRollModifier {
-    let normalizedValue: string;
-    if (typeof mod.value === 'string') {
-      normalizedValue = mod.value === '' ? '+0' : mod.value;
-    } else if (typeof mod.value === 'number') {
-      normalizedValue = mod.value.signedString();
-    } else {
-      throw new Error('Invalid modifier value ' + mod.value);
-    }
-    return {
-      value: normalizedValue,
-      label: mod.label,
-      ignore: mod.ignore,
-    };
   }
 
   private _isTraitRoll(): boolean {

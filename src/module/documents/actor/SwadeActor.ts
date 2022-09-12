@@ -236,7 +236,9 @@ export default class SwadeActor extends Actor {
       return Roll.fromTerms([
         ...roll.terms,
         ...Roll.parse(
-          modifiers.reduce(util.modifierReducer, ''),
+          modifiers
+            .map(util.normalizeRollModifiers)
+            .reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -303,7 +305,9 @@ export default class SwadeActor extends Actor {
       return Roll.fromTerms([
         ...roll.terms,
         ...Roll.parse(
-          modifiers.reduce(util.modifierReducer, ''),
+          modifiers
+            .map(util.normalizeRollModifiers)
+            .reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -1103,12 +1107,12 @@ export default class SwadeActor extends Actor {
       // extract skill data
       const skills = skillIndex
         .filter((i) => i.type === 'skill')
-        .filter((i) => coreSkills.includes(i.data.name))
-        .map((s) => s.data.toObject());
+        .filter((i) => coreSkills.includes(i.name!))
+        .map((s) => s.toObject());
 
       // Create core skills not in compendium (for custom skill names entered by the user)
       for (const skillName of coreSkills) {
-        if (!skillIndex.find((skill) => skillName === skill.data.name)) {
+        if (!skillIndex.find((skill) => skillName === skill.name)) {
           skills.push({
             name: skillName,
             type: 'skill',

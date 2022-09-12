@@ -110,6 +110,25 @@ export function modifierReducer(acc: string, cur: TraitRollModifier): string {
   return (acc += `${cur.value}[${cur.label}]`);
 }
 
+/** Normalize a given modifier value to a string for display and evaluation */
+export function normalizeRollModifiers(
+  mod: TraitRollModifier,
+): TraitRollModifier {
+  let normalizedValue: string;
+  if (typeof mod.value === 'string') {
+    normalizedValue = mod.value === '' ? '+0' : mod.value;
+  } else if (typeof mod.value === 'number') {
+    normalizedValue = mod.value.signedString();
+  } else {
+    throw new Error('Invalid modifier value ' + mod.value);
+  }
+  return {
+    value: normalizedValue,
+    label: mod.label,
+    ignore: mod.ignore,
+  };
+}
+
 /** @internal */
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */
