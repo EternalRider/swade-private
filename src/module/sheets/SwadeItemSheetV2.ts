@@ -222,6 +222,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       ),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
+      hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
@@ -545,6 +546,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   itemType: string;
   hasInlineDelete: boolean;
   isPhysicalItem: boolean;
+  hasCategory: boolean;
   actionTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: Record<string, AdditionalStat>;

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
+import { CompendiumTOCMetadata } from '../apps/CompendiumTOC';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
@@ -40,7 +41,23 @@ export default class SwadeCoreHooks {
 
   static async onReady() {
     //set up the world if needed
-    await setup.setupWorld();
+    setup.setupWorld();
+
+    //set up the compendium tables of content
+    for (const pack of game.packs) {
+      const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
+        pack.metadata.type,
+      );
+      const tocBlockList = game.settings.get('swade', 'tocBlockList');
+      const isBlocked = tocBlockList[pack.collection];
+      if (isRightType && !isBlocked) {
+        pack.apps = [
+          new game.swade.apps.CompendiumTOC(
+            pack as CompendiumCollection<CompendiumTOCMetadata>,
+          ),
+        ];
+      }
+    }
 
     SWADE.diceConfig.flags = {
       dsnShowBennyAnimation: {
@@ -103,18 +120,17 @@ export default class SwadeCoreHooks {
   static onRenderActorDirectory(
     app: ActorDirectory,
     html: JQuery<HTMLElement>,
-    options: any,
+    data: any,
   ) {
     // Mark all Wildcards in the Actors sidebars with an icon
     const entries = html.find('.document-name');
-    const actors: Array<SwadeActor> = app.documents;
-    const wildcards = actors.filter(
+    const wildcards = app.documents.filter(
       (a) => a.isWildcard && a.type === 'character',
     );
 
     //if the player is not a GM, then don't mark the NPC wildcards
     if (!game.settings.get('swade', 'hideNPCWildcards') || game.user?.isGM) {
-      const npcWildcards = actors.filter(
+      const npcWildcards = app.documents.filter(
         (a) => a.isWildcard && a.type === 'npc',
       );
       wildcards.push(...npcWildcards);
@@ -172,16 +188,33 @@ export default class SwadeCoreHooks {
     newOptions.push({
       name: 'SWADE.ShowCharacterSummary',
       icon: '<i class="fas fa-users"></i>',
-      callback: async (li) => {
-        const selectedUser = game.actors?.get(li[0].dataset.documentId!)!;
-        CharacterSummarizer.summarizeCharacters([selectedUser]);
+      callback: (li) => {
+        const actor = game.actors?.get(li.data('documentId'), { strict: true });
+        CharacterSummarizer.summarizeCharacters([actor!]);
       },
       condition: (li) => {
-        const selectedUser = game.actors?.get(li[0].dataset.documentId!)!;
-        return CharacterSummarizer.isSupportedActorType(selectedUser);
+        const actor = game.actors?.get(li.data('documentId'), { strict: true });
+        return CharacterSummarizer.isSupportedActorType(actor!);
       },
     });
     options.splice(0, 0, ...newOptions);
+  }
+
+  static onRenderCompendiumDirectory(
+    app: CompendiumDirectory,
+    html: JQuery<HTMLElement>,
+    _data: any,
+  ) {
+    const tocBlockList = game.settings.get('swade', 'tocBlockList');
+    html.find('li.directory-item').each((_i, li) => {
+      const pack = li.dataset.pack as string;
+      const statusIcons = li.querySelector<HTMLDivElement>('.status-icons')!;
+      if (tocBlockList[pack]) {
+        const template = document.createElement('template');
+        template.innerHTML = '<i class="fa-solid fa-align-slash"></i>';
+        statusIcons.prepend(template.content.firstChild!);
+      }
+    });
   }
 
   static async onRenderCompendium(
@@ -257,72 +290,105 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     options: ContextMenuEntry[],
   ) {
-    options.push({
-      name: 'SWADE.ConvertToDeck',
-      icon: '<i class="fas fa-file-export"></i>',
-      condition: (li) => {
-        const pack = game.packs.get(li.data('pack'), { strict: true });
-        return pack.metadata.type === 'JournalEntry';
-      },
-      callback: async (li) => {
-        const pack = game.packs.get(li.data('pack'), {
-          strict: true,
-        }) as CompendiumCollection<JournalMetadata>;
-        const docs = await pack.getDocuments();
-        const allDocsHaveCardFlags = docs.every((c) =>
-          hasProperty(c, 'data.flags.swade'),
-        );
-        if (!allDocsHaveCardFlags) {
-          return ui.notifications.warn('SWADE.NotADeckCompendium', {
-            localize: true,
+    options.push(
+      {
+        name: 'SWADE.CompendiumTOC.Toggle',
+        icon: '<i class="fa-solid fa-book"></i>',
+        condition: (li) => {
+          const pack = game.packs.get(li.data('pack'), { strict: true });
+          const rightType = ['Actor', 'Item', 'JournalEntry'].includes(
+            pack.metadata.type,
+          );
+          return !!game.user?.isGM && rightType;
+        },
+        callback: async (li) => {
+          const confirmation = await Dialog.confirm({
+            title: game.i18n.localize('SWADE.CompendiumTOC.Dialog.Title'),
+            content: `<p>${game.i18n.localize(
+              'SWADE.CompendiumTOC.Dialog.Content',
+            )}</p>`,
+            defaultYes: false,
           });
-        }
-
-        const suits = ['', 'clubs', 'diamonds', 'hearts', 'spades'];
-        //get the vital information from the journal entry
-        const cards = docs.map((entry) => {
-          return {
-            name: entry.name,
-            text: entry.data.content,
-            img: entry.data.img,
-            suit: entry.getFlag('swade', 'suitValue') as number,
-            value: entry.getFlag('swade', 'cardValue') as number,
-          };
-        });
-        //create the empty deck
-        const deck = await Cards.create({
-          name: pack.metadata.label,
-          type: 'deck',
-        });
-        //map the journal entry data to the raw card data
-        const rawCardData = cards.map((card) => {
-          return {
-            name: card.name,
-            type: 'poker',
-            suit: suits[card.suit],
-            value: card.value,
-            description: card.text,
-            faces: [
-              {
-                img: card.img,
-                name: card.name,
-              },
-            ],
-            face: 0,
-            origin: deck?.id,
-            sort: card.suit * 13 + card.value,
-            data: {
-              suit: card.suit,
-              isJoker: card.value > 90,
-            },
-          };
-        });
-        //create the cards in the deck
-        deck?.createEmbeddedDocuments('Card', rawCardData);
-        //open the sheet once we're done
-        deck?.sheet?.render(true);
+          if (!confirmation) return;
+          const tocBlockList = game.settings.get('swade', 'tocBlockList');
+          const packId = li.data('pack') as string;
+          const isCurrentlyBlocked = tocBlockList[packId] ?? false;
+          Logger.debug(`Toggling ${packId} to ${!isCurrentlyBlocked}`);
+          //set the new value
+          tocBlockList[packId] = !isCurrentlyBlocked;
+          await game.settings.set('swade', 'tocBlockList', tocBlockList);
+          //reload all clients to load the new settings.
+          if (game.user?.isGM) game.socket?.emit('reload');
+          foundry.utils.debouncedReload();
+        },
       },
-    });
+      {
+        name: 'SWADE.ConvertToDeck',
+        icon: '<i class="fas fa-file-export"></i>',
+        condition: (li) => {
+          const pack = game.packs.get(li.data('pack'), { strict: true });
+          return !!game.user?.isGM && pack.metadata.type === 'JournalEntry';
+        },
+        callback: async (li) => {
+          const pack = game.packs.get(li.data('pack'), {
+            strict: true,
+          }) as CompendiumCollection<JournalMetadata>;
+          const docs = await pack.getDocuments();
+          const allDocsHaveCardFlags = docs.every((c) =>
+            hasProperty(c, 'data.flags.swade'),
+          );
+          if (!allDocsHaveCardFlags) {
+            return ui.notifications.warn('SWADE.NotADeckCompendium', {
+              localize: true,
+            });
+          }
+
+          const suits = ['', 'clubs', 'diamonds', 'hearts', 'spades'];
+          //get the vital information from the journal entry
+          const cards = docs.map((entry) => {
+            return {
+              name: entry.name,
+              text: entry.data.content,
+              img: entry.data.img,
+              suit: entry.getFlag('swade', 'suitValue') as number,
+              value: entry.getFlag('swade', 'cardValue') as number,
+            };
+          });
+          //create the empty deck
+          const deck = await Cards.create({
+            name: pack.metadata.label,
+            type: 'deck',
+          });
+          //map the journal entry data to the raw card data
+          const rawCardData = cards.map((card) => {
+            return {
+              name: card.name,
+              type: 'poker',
+              suit: suits[card.suit],
+              value: card.value,
+              description: card.text,
+              faces: [
+                {
+                  img: card.img,
+                  name: card.name,
+                },
+              ],
+              face: 0,
+              origin: deck?.id,
+              sort: card.suit * 13 + card.value,
+              data: {
+                suit: card.suit,
+                isJoker: card.value > 90,
+              },
+            };
+          });
+          //create the cards in the deck
+          deck?.createEmbeddedDocuments('Card', rawCardData);
+          //open the sheet once we're done
+          deck?.sheet?.render(true);
+        },
+      },
+    );
   }
 
   static onRenderCombatTracker(

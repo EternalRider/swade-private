@@ -44,6 +44,7 @@ declare global {
         actor: Record<string, AdditionalStat>;
         item: Record<string, AdditionalStat>;
       };
+      'swade.tocBlockList': Record<string, boolean>;
     }
   }
 }
@@ -345,6 +346,18 @@ export function registerSettingRules() {
     //@ts-expect-error The types can't really cope with this but Foundry can
     type: Object,
     config: false,
+  });
+
+  game.settings.register('swade', 'tocBlockList', {
+    name: 'Compendium TOC Blocklist',
+    default: {},
+    scope: 'world',
+    //@ts-expect-error The types can't really cope with this but Foundry can
+    type: Object,
+    config: false,
+    onChange: (v) => {
+      console.log(v);
+    },
   });
 
   game.settings.register('swade', 'bennyImageSheet', {

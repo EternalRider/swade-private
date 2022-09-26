@@ -66,7 +66,7 @@ export declare class Dice3D {
    * - "default" only register the colorset
    * - "preferred" apply the colorset if the player didn't already change his dice appearance for this world.
    */
-  addColorset(colorset: DiceColorsetData, mode: 'default' | 'preferred');
+  addColorset(colorset: DiceColorsetData, mode: 'default' | 'preferred' | 'no');
 
   /**
    * Register a new dice preset

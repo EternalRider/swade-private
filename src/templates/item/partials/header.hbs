@@ -63,3 +63,18 @@
       /></span>
   </div>
 {{/if}}
+{{#if hasCategory}}
+  <div
+    class='item-detail category form-group'
+    title='{{localize "SWADE.Category"}}'
+  >
+    <span class='form-fields'>
+      <input
+        name='system.category'
+        type='text'
+        value='{{item.system.category}}'
+        placeholder='{{localize "SWADE.Category"}}'
+      />
+    </span>
+  </div>
+{{/if}}
