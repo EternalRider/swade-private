@@ -46,15 +46,22 @@ export default class SwadeCombatTracker extends CombatTracker {
       .on('click', this._onReshuffleActionDeck.bind(this));
   }
 
-  async getData(): Promise<CombatTracker.Data> {
-    const data = await super.getData();
+  async getData(
+    options?: Partial<ApplicationOptions>,
+  ): Promise<CombatTracker.Data> {
+    const data = await super.getData(options);
     for (const turn of data.turns as CombatTracker.Turn[]) {
       const combatant = this.viewed?.combatants.get(turn.id, { strict: true });
-      foundry.utils.setProperty(turn, 'cardString', combatant?.cardString);
-      foundry.utils.setProperty(turn, 'roundHeld', combatant?.roundHeld);
-      foundry.utils.setProperty(turn, 'turnLost', combatant?.turnLost);
-      const dontShow = !!combatant?.groupId || combatant?.defeated;
-      foundry.utils.setProperty(turn, 'emptyInit', dontShow);
+      foundry.utils.mergeObject(
+        turn,
+        {
+          cardString: combatant?.cardString,
+          roundHeld: combatant?.roundHeld,
+          turnLost: combatant?.turnLost,
+          emptyInit: !!combatant?.groupId || turn.defeated,
+        },
+        { inplace: true },
+      );
     }
     return data;
   }
@@ -99,7 +106,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     await super._onToggleDefeatedStatus(c);
     if (c.isGroupLeader) {
       const newLeader = await this.viewed!.combatants.find(
-        (f) => f.groupId === c.id && !f.data.defeated,
+        (f) => f.groupId === c.id && !f.isDefeated,
       )!;
       await newLeader.update({
         flags: {

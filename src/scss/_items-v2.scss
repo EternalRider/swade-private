@@ -106,9 +106,19 @@
     }
   }
 
+  .category {
+    grid-row: 3;
+    grid-column: 7/11;
+    display: flex;
+    align-items: center;
+    input {
+      text-align: center;
+    }
+  }
+
   .quantity {
     grid-row: 3;
-    grid-column: 3/7;
+    grid-column: 3/5;
     display: flex;
     align-items: center;
     input {
@@ -118,7 +128,7 @@
 
   .price {
     grid-row: 3;
-    grid-column: 7/11;
+    grid-column: 5/7;
     display: flex;
     align-items: center;
     input {

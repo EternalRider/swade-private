@@ -55,7 +55,7 @@ interface Equipable {
   equipStatus: EquipState;
 }
 
-interface Carry {
+interface EquipStatus {
   equipStatus: EquipState;
 }
 
@@ -93,6 +93,10 @@ interface Templates {
   };
 }
 
+interface Category {
+  category: string;
+}
+
 interface WeaponData
   extends PhysicalItem,
     ItemDescription,
@@ -102,7 +106,8 @@ interface WeaponData
     ArcaneDevice,
     Equipable,
     Actions,
-    Templates {
+    Templates,
+    Category {
   damage: string;
   range: string;
   rof: number;
@@ -123,7 +128,8 @@ interface GearData
     Favorite,
     ArcaneDevice,
     Equipable,
-    Actions {}
+    Actions,
+    Category {}
 
 interface ArmorData
   extends ItemDescription,
@@ -131,7 +137,8 @@ interface ArmorData
     Favorite,
     ArcaneDevice,
     Equipable,
-    Actions {
+    Actions,
+    Category {
   minStr: string;
   armor: number | string;
   toughness: number;
@@ -152,7 +159,8 @@ interface ShieldData
     Favorite,
     ArcaneDevice,
     Equipable,
-    Actions {
+    Actions,
+    Category {
   minStr: string;
   parry: number;
   cover: number;
@@ -162,7 +170,8 @@ interface ConsumableData
   extends PhysicalItem,
     ItemDescription,
     Favorite,
-    Carry {
+    EquipStatus,
+    Category {
   charges: {
     max: number;
     value: number;
@@ -170,7 +179,7 @@ interface ConsumableData
   destroyOnEmpty: boolean;
 }
 
-interface EdgeData extends ItemDescription, Favorite {
+interface EdgeData extends ItemDescription, Favorite, Category {
   isArcaneBackground: boolean;
   requirements: {
     value: string;

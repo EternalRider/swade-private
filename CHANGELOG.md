@@ -22,6 +22,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.3
+
+### Added
+
+- Added a category input to the item sheets. weapons, armor, shields, consumables, gear and edges can have categories.
+- Added the Compendium TOC App. This application will be automatically be be used as the UI for Item, Actor and JournalEntry compendiums. You can toggle the usage of the Compendium TOC by right-clicking the compendium and selecting the `Toggle use Compendium TOC`. Documents in a compendium are grouped as follows: (#572)
+  - Actors are grouped by type
+  - Edges are grouped by type and then by category
+  - Powers are grouped by type and then by rank
+  - Other items are grouped by category, if they have one, and by type if they don't
+- Added additional translation strings
+
+### Fixed
+
+- Removed some more compatibility warnings (#592)
+- The Wild Die config should no longer break when using non-english languages
+
+### Known Issues
+
+- The compendium TOC isn't be automatically registered with freshly created world compendiums. Please refresh after creating a new compendium in your world.
+
 ## v2.0.2
 
 ### Fixed

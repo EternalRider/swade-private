@@ -669,6 +669,14 @@ SWADE:
       Long: Große Flächenschablone
     Available: Verfügbare Schablonen
     Possible: Mögliche Schablonen
+  CompendiumTOC:
+    Dialog:
+      Title: Umschalten bestätigen
+      Content: >-
+        Damit die Änderung wirksam wird, werden Foundry VTT und alle verbundenen
+        Clients neu geladen. Bitte bestätigen.
+    Header: Inhalt
+  Category: Item Kategorie
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

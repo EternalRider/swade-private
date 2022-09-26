@@ -93,6 +93,19 @@ export default class SwadeItem extends Item {
     return getProperty(this.system, 'isArcaneDevice') as boolean;
   }
 
+  get isReadied(): boolean {
+    const type = this.type;
+    if (
+      type === 'weapon' ||
+      type === 'armor' ||
+      type === 'shield' ||
+      type === 'gear'
+    ) {
+      return this.system.equipStatus > constants.EQUIP_STATE.CARRIED;
+    }
+    return false;
+  }
+
   get isPhysicalItem(): boolean {
     const types = [
       'weapon',
@@ -105,17 +118,9 @@ export default class SwadeItem extends Item {
     return types.includes(this.type);
   }
 
-  get isReadied(): boolean {
-    const type = this.type;
-    if (
-      type === 'weapon' ||
-      type === 'armor' ||
-      type === 'shield' ||
-      type === 'gear'
-    ) {
-      return this.system.equipStatus > constants.EQUIP_STATE.CARRIED;
-    }
-    return false;
+  get canHaveCategory(): boolean {
+    const types = ['edge'];
+    return types.includes(this.type) || this.isPhysicalItem;
   }
 
   get embeddedAbilities() {
