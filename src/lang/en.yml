@@ -115,6 +115,7 @@ SWADE:
   Reach: Reach
   Torch: Torch
   Invisible: Invisible
+  ColdBodied: Cold Bodied
   Smite: Smite
   Armor: Armor
   Protection: Protection
@@ -666,3 +667,6 @@ ITEM:
 CARD:
   TypeAdventure: Adventure Card
   TypePoker: Poker Card
+DETECTION:
+  SeeInfravision: See Infravision
+  SenseInfravision: Sense Infravision

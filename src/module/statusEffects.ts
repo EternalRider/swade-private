@@ -278,7 +278,7 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Invisible',
   },
   {
-    icon: 'systems/swade/assets/icon/status/status_coldbodied.svg',
+    icon: 'systems/swade/assets/icons/status/status_coldbodied.svg',
     id: 'cold-bodied',
     label: 'SWADE.ColdBodied'
   },

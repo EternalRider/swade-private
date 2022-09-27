@@ -114,7 +114,7 @@ Hooks.once('init', () => {
 
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
-  CONFIG.specialStatusEffects.COLDBODIED = 'cold bodied'
+  CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied'
 
   //register detection modes
   CONFIG.Canvas.detectionModes.seeInfravision = new DetectionModeInfravision({
