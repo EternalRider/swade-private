@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## v2.0.4
 
+### Removed
+
+- Removed more references to the v9 datapaths in item sheet templates
+
 ### Fixed
 
 - Fixed search on Journal Entry compendiums in the TOC App

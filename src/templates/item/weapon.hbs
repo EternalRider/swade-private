@@ -34,7 +34,7 @@
       </span>
     </div>
     <div class='form-group'>
-      <label for='data.ap'>{{localize 'SWADE.Ap'}}</label>
+      <label for='system.ap'>{{localize 'SWADE.Ap'}}</label>
       <span class='form-fields'>
         <input
           name='system.ap'
@@ -46,7 +46,7 @@
       </span>
     </div>
     <div class='form-group'>
-      <label for='data.shots'>{{localize 'SWADE.Mag'}}</label>
+      <label for='system.shots'>{{localize 'SWADE.Mag'}}</label>
       <span class='form-fields text-center'>
         <input
           name='system.currentShots'
@@ -98,7 +98,7 @@
         <span class="form-fields">
           <input
             type="text"
-            name="data.ammo"
+            name="system.ammo"
             value="{{item.system.ammo}}"
             list="{{item.id}}-ammo"
             data-dtype="String"
@@ -178,7 +178,7 @@
       <hr>
       <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
         <span class="form-fields">
-          <select name="data.trademark" data-dtype="Number">
+          <select name="system.trademark" data-dtype="Number">
             {{#select item.system.trademark}}
               {{selectOptions
                 trademarkWeaponOptions
@@ -202,7 +202,7 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='data.rof'>{{localize 'SWADE.RoF'}}</label>
+        <label for='system.rof'>{{localize 'SWADE.RoF'}}</label>
         <span class='form-fields'>
           <input
             name='system.rof'
@@ -213,7 +213,7 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='data.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
+        <label for='system.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
         <span class='form-fields'>
           <input
             name='system.minStr'
@@ -224,7 +224,7 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='data.weight'>{{localize 'SWADE.Weight'}}</label>
+        <label for='system.weight'>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
           <input
             name='system.weight'
@@ -249,7 +249,7 @@
       {{#if item.system.isVehicular}}
         {{#if settingRules.modSlots}}
           <div class='form-group'>
-            <label for='data.mods'>{{localize 'SWADE.ModSlots'}}</label>
+            <label for='system.mods'>{{localize 'SWADE.ModSlots'}}</label>
             <span class='form-fields'>
               <input
                 name='system.mods'

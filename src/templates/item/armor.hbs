@@ -114,7 +114,7 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.ArcaneDevice'}}</label>
         <span class='form-fields'>
-          <input type='checkbox' name='data.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+          <input type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
         </span>
       </div>
       <div class="form-group">
@@ -126,13 +126,13 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
-          <input name='data.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
+          <input name='system.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
         </span>
       </div>
       <div class='form-group'>
         <label>{{localize 'SWADE.Notes'}}</label>
         <span class='form-fields'>
-          <input type='text' name='data.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
+          <input type='text' name='system.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
