@@ -8,11 +8,13 @@
       autocomplete='off'
     />
   </div>
-  <section class='content' style='column-width: {{columnWidth}}'>
+  <section class='content'>
     {{#if isJournal}}
       {{#each entries}}
         <section class='journal' data-document-id='{{id}}'>
-          <h3 class='journal-heading'><a>{{name}}</a></h3>
+          <header data-document-id='{{id}}'>
+            <h3 class='journal-heading'><a>{{name}}</a></h3>
+          </header>
           <ol class='unmarked-list pages'>
             {{#each pages}}
               <li class='page' data-page-id='{{id}}'>

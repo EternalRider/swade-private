@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.4
+
+### Fixed
+
+- Fixed search on Journal Entry compendiums in the TOC App
+- Improved Journal Entry and page sorting.
+
 ## v2.0.3
 
 ### Added

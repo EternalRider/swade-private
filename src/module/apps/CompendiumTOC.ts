@@ -51,6 +51,9 @@ export default class CompendiumTOC extends Compendium<
   activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     html.find('a').on('click', this._onClickLink.bind(this));
+    html[0]
+      .querySelectorAll<HTMLDivElement>('.content')
+      .forEach((e) => (e.style.columnWidth = this.columnWidth));
 
     // set up resize observer
     new ResizeObserver(this._onObserveResize.bind(this)).observe(html[0]);
@@ -104,7 +107,7 @@ export default class CompendiumTOC extends Compendium<
 
   protected override _contextMenu(html: JQuery<HTMLElement>): void {
     const items = this._getEntryContextOptions();
-    const selector = this.isJournal ? '.journal-heading' : '[data-document-id]';
+    const selector = this.isJournal ? '.journal header' : '[data-document-id]';
     ContextMenu.create(this, html, selector, items);
   }
 
@@ -114,7 +117,8 @@ export default class CompendiumTOC extends Compendium<
     rgx: RegExp,
     html: HTMLElement,
   ) {
-    const children = html.querySelectorAll<HTMLLIElement>('.toc-entry');
+    const selector = this.isJournal ? '.page' : '.toc-entry';
+    const children = html.querySelectorAll<HTMLLIElement>(selector);
     for (const li of children) {
       const name = li.querySelector<HTMLAnchorElement>('.name')!;
       const match = rgx.test(SearchFilter.cleanQuery(name.innerText));
@@ -333,19 +337,21 @@ export default class CompendiumTOC extends Compendium<
 
   protected async _getJournalEntries(): Promise<CompendiumEntry[]> {
     const collection = this.collection as CompendiumCollection<JournalMetadata>;
-    const documents = await collection.getDocuments();
-    const entries: CompendiumEntry[] = documents
+    const journals = await collection.getDocuments();
+    const entries: CompendiumEntry[] = journals
       .filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY)
-      .sort((a, b) => a.sort - b.sort)
+      .sort(this._sortDocs)
       .map((doc) => {
         let pages: CompendiumPage[] = [];
         if (doc.pages.size > 1) {
-          pages = doc.pages.map((p) => {
-            return {
-              id: p.id,
-              name: p.name,
-            };
-          });
+          pages = doc.pages
+            .map((p) => {
+              return {
+                id: p.id,
+                name: p.name,
+              };
+            })
+            .sort(this._sortDocs);
         }
         return {
           name: doc.name!,
@@ -383,6 +389,12 @@ export default class CompendiumTOC extends Compendium<
       isOverFlowing = content.scrollHeight > parent.clientHeight;
       columnCount++;
     } while (isOverFlowing && columnCount <= this.maxColumns);
+  }
+
+  private _sortDocs(a, b) {
+    const sort = a.sort - b.sort;
+    if (sort !== 0) return sort;
+    return a.name.localeCompare(b.name);
   }
 }
 
