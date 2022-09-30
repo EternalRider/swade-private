@@ -248,7 +248,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     if (this.type === 'weapon') {
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      data.ammoList = this.actor?.itemTypes.gear.map((i) => i.name) as string[];
+      data.ammoList = this.actor?.itemTypes.gear
+        .filter((g) => g.system.isAmmo)
+        .map((i) => i.name) as string[];
     }
 
     if (this.item.isArcaneDevice) {

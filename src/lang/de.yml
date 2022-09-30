@@ -677,6 +677,7 @@ SWADE:
         Clients neu geladen. Bitte bestätigen.
     Header: Inhalt
   Category: Item Kategorie
+  ItemIsAmmo: Ist Munition
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

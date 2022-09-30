@@ -219,6 +219,7 @@ Item:
       - actions
       - favorite
       - category
+    isAmmo: false
   weapon:
     templates:
       - itemDescription

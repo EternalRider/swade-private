@@ -129,7 +129,9 @@ interface GearData
     ArcaneDevice,
     Equipable,
     Actions,
-    Category {}
+    Category {
+  isAmmo: boolean;
+}
 
 interface ArmorData
   extends ItemDescription,
