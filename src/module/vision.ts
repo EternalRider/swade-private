@@ -1,11 +1,8 @@
 export default class DetectionModeInfravision extends DetectionMode {
       /** @override */
   static getDetectionFilter() {
-    // return this._detectionFilter ??= GlowOverlayFilter.create({
-    //   glowColor: [1, 0.27, 0, 1]
-    // });
-    return this._detectionFilter ??= OutlineOverlayFilter.create({
-      outlineColor: [1, 0.27, 0, 1]
+    return this._detectionFilter ??= GlowOverlayFilter.create({
+      glowColor: [1, 0.27, 0, 1]
     });
   }
 
