@@ -1,8 +1,5 @@
 import { AdditionalStats } from '../../globals';
-import {
-  AdditionalStat,
-  TraitRollModifier,
-} from '../../interfaces/additional.interface';
+import { AdditionalStat } from '../../interfaces/additional.interface';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -139,45 +136,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     //Running Die
-    html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.type === 'vehicle') return;
-
-      const runningDieSides = this.actor.data.data.stats.speed.runningDie;
-      const runningMod = this.actor.data.data.stats.speed.runningMod;
-      const pace = this.actor.data.data.stats.speed.adjusted;
-      const runningDie = `1d${runningDieSides}[${game.i18n.localize(
-        'SWADE.RunningDie',
-      )}]`;
-      const mods: TraitRollModifier[] = [
-        { label: game.i18n.localize('SWADE.Pace'), value: pace.signedString() },
-      ];
-
-      if (runningMod) {
-        mods.push({
-          label: 'Modifier',
-          value: runningMod.signedString(),
-        });
-      }
-      if (ev.shiftKey) {
-        const rollFormula =
-          runningDie + runningMod.signedString() + pace.signedString();
-        const runningRoll = new Roll(rollFormula);
-        await runningRoll.evaluate({ async: true });
-        await runningRoll.toMessage({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          flavor: game.i18n.localize('SWADE.Running'),
-        });
-        return;
-      }
-      game.swade.RollDialog.asPromise({
-        roll: new Roll(runningDie),
-        mods: mods,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: game.i18n.localize('SWADE.Running'),
-        title: game.i18n.localize('SWADE.Running'),
-        actor: this.actor,
-        allowGroup: false,
-      });
+    html.find('.running-die').on('click', async () => {
+      await this.actor.rollRunningDie();
     });
 
     html.find('.effect-action').on('click', (ev) => {
