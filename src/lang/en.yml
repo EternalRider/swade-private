@@ -581,6 +581,15 @@ SWADE:
     CardSound:
       Name: Card Sound
       Hint: Play a short card sound when dealing Initiative
+    StartingCurrency:
+      PC:
+        Name: Player Character starting currency
+        Hint: >-
+          Set the amount of currency that Player Character Actors recieve upon
+          creation
+      NPC:
+        Hint: Set the amount of currency that NPC Actors recieve upon creation
+        Name: NPC starting currency
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
@@ -649,6 +658,16 @@ SWADE:
       Large: Large Blast Template
     Available: Available Templates
     Possible: Possible Templates
+  CompendiumTOC:
+    Toggle: Toggle use Compendium TOC
+    Dialog:
+      Title: Confirm Toggle
+      Content: >-
+        In order for the change to take effect, Foundry VTT and all connected
+        clients will be reloaded. Please confirm.
+    Header: Contents
+  Category: Item Category
+  ItemIsAmmo: Is Ammunition
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

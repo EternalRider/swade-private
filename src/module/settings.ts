@@ -44,6 +44,9 @@ declare global {
         actor: Record<string, AdditionalStat>;
         item: Record<string, AdditionalStat>;
       };
+      'swade.tocBlockList': Record<string, boolean>;
+      'swade.npcStartingCurrency': number;
+      'swade.pcStartingCurrency': number;
     }
   }
 }
@@ -347,6 +350,18 @@ export function registerSettingRules() {
     config: false,
   });
 
+  game.settings.register('swade', 'tocBlockList', {
+    name: 'Compendium TOC Blocklist',
+    default: {},
+    scope: 'world',
+    //@ts-expect-error The types can't really cope with this but Foundry can
+    type: Object,
+    config: false,
+    onChange: (v) => {
+      console.log(v);
+    },
+  });
+
   game.settings.register('swade', 'bennyImageSheet', {
     name: 'SWADE.Settings.BennyImageSheet.Name',
     hint: 'SWADE.Settings.BennyImageSheet.Hint',
@@ -363,6 +378,24 @@ export function registerSettingRules() {
     scope: 'world',
     type: Boolean,
     default: false,
+    config: false,
+  });
+
+  game.settings.register('swade', 'pcStartingCurrency', {
+    name: 'SWADE.Settings.StartingCurrency.PC.Name',
+    hint: 'SWADE.Settings.StartingCurrency.PC.Hint',
+    scope: 'world',
+    type: Number,
+    default: 500,
+    config: false,
+  });
+
+  game.settings.register('swade', 'npcStartingCurrency', {
+    name: 'SWADE.Settings.StartingCurrency.NPC.Name',
+    hint: 'SWADE.Settings.StartingCurrency.NPC.Hint',
+    scope: 'world',
+    type: Number,
+    default: 0,
     config: false,
   });
 }

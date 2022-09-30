@@ -63,7 +63,7 @@ Actor:
           value: ''
         species:
           name: ''
-        currency: 500
+        currency: 0
         wealth:
           die: 6
           modifier: 0
@@ -207,6 +207,8 @@ Item:
         small: false
         medium: false
         large: false
+    category:
+      category: ""
   gear:
     templates:
       - itemDescription
@@ -216,6 +218,8 @@ Item:
       - vehicular
       - actions
       - favorite
+      - category
+    isAmmo: false
   weapon:
     templates:
       - itemDescription
@@ -227,6 +231,7 @@ Item:
       - bonusDamage
       - favorite
       - templates
+      - category
     damage: ''
     range: ''
     rof: 1
@@ -247,6 +252,7 @@ Item:
       - actions
       - favorite
       - bonusDamage
+      - category
     minStr: ''
     armor: 0
     toughness: 0
@@ -265,6 +271,7 @@ Item:
       - actions
       - bonusDamage
       - favorite
+      - category
     minStr: ''
     parry: 0
     cover: 0
@@ -273,6 +280,7 @@ Item:
       - itemDescription
       - favorite
       - physicalItem
+      - category
     charges:
       value: 1
       max: 1
@@ -282,6 +290,7 @@ Item:
     templates:
       - itemDescription
       - favorite
+      - category
     isArcaneBackground: false
     requirements:
       value: ''

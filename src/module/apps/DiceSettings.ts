@@ -118,8 +118,9 @@ export default class DiceSettings extends FormApplication<
 
   private _prepareColorsetList() {
     const dsnList = game.dice3d!.exports.Utils.prepareColorsetList();
-    delete dsnList.Colors.custom;
-    dsnList.Colors.none = game.i18n.localize('SWADE.DSNNone');
+    const colors = game.i18n.localize('DICESONICE.Colors');
+    delete dsnList[colors].custom;
+    dsnList[colors].none = game.i18n.localize('SWADE.DSNNone');
     return dsnList;
   }
 

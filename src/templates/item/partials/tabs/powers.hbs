@@ -50,20 +50,20 @@
       >
         <summary>{{value.name}}</summary>
         <span class='content'>
-          <div class="power-rank">{{localize 'SWADE.Rank'}}: {{value.data.rank}}</div>
-          <div class="power-pp">{{value.data.pp}} {{localize "SWADE.PP"}}</div>
+          <div class="power-rank">{{localize 'SWADE.Rank'}}: {{value.system.rank}}</div>
+          <div class="power-pp">{{value.system.pp}} {{localize "SWADE.PP"}}</div>
           <button type="button" class="power-delete invisible"><i class="fas fa-trash fa-2x"></i></button>
-          <div class="left">{{localize "SWADE.Range._name"}}: {{value.data.range}}</div>
-          <div class="right">{{localize 'SWADE.Dur'}}: {{value.data.duration}}</div>
-          <div class="left">{{localize 'SWADE.Ap'}}: {{value.data.ap}}</div>
+          <div class="left">{{localize "SWADE.Range._name"}}: {{value.system.range}}</div>
+          <div class="right">{{localize 'SWADE.Dur'}}: {{value.system.duration}}</div>
+          <div class="left">{{localize 'SWADE.Ap'}}: {{value.system.ap}}</div>
           <div class="right">
-          {{#if value.data.damage}}
+          {{#if value.system.damage}}
             <button type="button" class="damage invisible rollable">
-              {{localize "SWADE.Dmg"}}: {{value.data.damage}}
+              {{localize "SWADE.Dmg"}}: {{value.system.damage}}
             </button>
           {{/if}}
           </div>
-          <div class="full-width">{{enrich value.data.description}}</div>
+          <div class="full-width">{{enrich value.system.description}}</div>
         </span>
       </details>
     </li>

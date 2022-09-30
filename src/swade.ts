@@ -1,4 +1,5 @@
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
+import CompendiumTOC from './module/apps/CompendiumTOC';
 import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
@@ -63,6 +64,7 @@ Hooks.once('init', () => {
       SwadeDocumentTweaks,
       AdvanceEditor,
       SettingConfigurator,
+      CompendiumTOC,
     },
     dice: {
       Benny,
@@ -131,6 +133,12 @@ Hooks.once('init', () => {
 
   //@ts-expect-error Types don't properly recognize dotnotation
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
+
+  //@ts-expect-error Types don't properly recognize dotnotation
+  JournalTextPageSheet._converter.setOption('tables', true);
+
+  //@ts-expect-error Revist once types have caught up
+  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
@@ -212,6 +220,10 @@ Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
 Hooks.on('renderCombatTracker', SwadeCoreHooks.onRenderCombatTracker);
 Hooks.on('renderChatLog', SwadeCoreHooks.onRenderChatLog);
 Hooks.on('renderChatPopout', SwadeCoreHooks.onRenderChatLog);
+Hooks.on(
+  'renderCompendiumDirectory',
+  SwadeCoreHooks.onRenderCompendiumDirectory,
+);
 
 /* ------------------------------------ */
 /* Context Options    				          */

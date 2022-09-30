@@ -222,6 +222,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       ),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
+      hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
@@ -247,7 +248,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     if (this.type === 'weapon') {
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      data.ammoList = this.actor?.itemTypes.gear.map((i) => i.name) as string[];
+      data.ammoList = this.actor?.itemTypes.gear
+        .filter((i) => i.system.isAmmo)
+        .map((i) => i.name) as string[];
     }
 
     if (this.item.isArcaneDevice) {
@@ -545,6 +548,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   itemType: string;
   hasInlineDelete: boolean;
   isPhysicalItem: boolean;
+  hasCategory: boolean;
   actionTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: Record<string, AdditionalStat>;

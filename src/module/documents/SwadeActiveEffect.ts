@@ -277,7 +277,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     super._preCreate(data, options, user);
 
     //localize labels, just to be sure
-    const label = game.i18n.localize(this.data.label);
+    const label = game.i18n.localize(this.label);
     this.updateSource({ label: label });
 
     //automatically favorite status effects

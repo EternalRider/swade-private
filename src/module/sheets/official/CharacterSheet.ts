@@ -1027,7 +1027,6 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
-    this._element;
     const items: ContextMenuEntry[] = [
       {
         name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),

@@ -613,6 +613,17 @@ SWADE:
         statt Smarts usw. Sie müssen alle geöffneten Bögen schließen und erneut
         öffnen, damit diese Option wirksam wird.
       Name: Verkürzte Attributnamen verwenden
+    StartingCurrency:
+      PC:
+        Name: Startwährung Spielercharaktere
+        Hint: >-
+          Legen Sie den Währungsbetrag fest, den Spielercharaktere bei der
+          Erstellung erhalten
+      NPC:
+        Name: Startwährung NSCs
+        Hint: >-
+          Legen Sie den Währungsbetrag fest, den NSCs bei der Erstellung
+          erhalten
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -669,6 +680,15 @@ SWADE:
       Long: Große Flächenschablone
     Available: Verfügbare Schablonen
     Possible: Mögliche Schablonen
+  CompendiumTOC:
+    Dialog:
+      Title: Umschalten bestätigen
+      Content: >-
+        Damit die Änderung wirksam wird, werden Foundry VTT und alle verbundenen
+        Clients neu geladen. Bitte bestätigen.
+    Header: Inhalt
+  Category: Item Kategorie
+  ItemIsAmmo: Ist Munition
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
