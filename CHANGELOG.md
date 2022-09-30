@@ -22,15 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.1.0
+
+### Added
+
+- Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input.
+
 ## v2.0.4
 
 ### Removed
 
-- Removed more references to the v9 datapaths in item sheet templates
+- Removed more references to the v9 datapaths in item sheet templates.
 
 ### Fixed
 
-- Fixed search on Journal Entry compendiums in the TOC App
+- Fixed search on Journal Entry compendiums in the TOC App.
 - Improved Journal Entry and page sorting.
 
 ## v2.0.3

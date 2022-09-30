@@ -249,7 +249,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     if (this.type === 'weapon') {
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
       data.ammoList = this.actor?.itemTypes.gear
-        .filter((g) => g.system.isAmmo)
+        .filter((i) => i.system.isAmmo)
         .map((i) => i.name) as string[];
     }
 
