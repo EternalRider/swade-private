@@ -361,6 +361,45 @@ export default class SwadeActor extends Actor {
     });
   }
 
+  async rollRunningDie() {
+    if (this.type === 'vehicle') return;
+
+    const runningDieSides = this.system.stats.speed.runningDie;
+    const runningMod = this.system.stats.speed.runningMod;
+    const pace = this.system.stats.speed.adjusted;
+    const runningDie = `1d${runningDieSides}[${game.i18n.localize(
+      'SWADE.RunningDie',
+    )}]`;
+
+    const mods: TraitRollModifier[] = [
+      { label: game.i18n.localize('SWADE.Pace'), value: pace },
+    ];
+
+    if (runningMod) {
+      mods.push({
+        label: game.i18n.localize('SWADE.Modifier'),
+        value: runningMod,
+      });
+    }
+
+    if (this.isEncumbered) {
+      mods.push({
+        label: game.i18n.localize('SWADE.Encumbered'),
+        value: -2,
+      });
+    }
+
+    game.swade.RollDialog.asPromise({
+      roll: new Roll(runningDie),
+      mods: mods,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: game.i18n.localize('SWADE.Running'),
+      title: game.i18n.localize('SWADE.Running'),
+      actor: this,
+      allowGroup: false,
+    });
+  }
+
   async makeUnskilledAttempt(options: IRollOptions = {}) {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.Unskilled'),

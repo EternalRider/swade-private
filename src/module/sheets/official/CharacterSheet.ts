@@ -177,58 +177,8 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     //Running Die
-    html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.type === 'vehicle') return;
-
-      const runningDieSides = this.actor.system.stats.speed.runningDie;
-      const runningMod = this.actor.system.stats.speed.runningMod;
-      const pace = this.actor.system.stats.speed.adjusted;
-      const runningDie = `1d${runningDieSides}[${game.i18n.localize(
-        'SWADE.RunningDie',
-      )}]`;
-
-      const mods: TraitRollModifier[] = [
-        { label: game.i18n.localize('SWADE.Pace'), value: pace },
-      ];
-
-      if (runningMod) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Modifier'),
-          value: runningMod,
-        });
-      }
-
-      if (this.actor.isEncumbered) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Encumbered'),
-          value: -2,
-        });
-      }
-
-      if (ev.shiftKey) {
-        const rollFormula =
-          runningDie +
-          mods.reduce((acc: string, cur: TraitRollModifier) => {
-            return acc + cur.value + `[${cur.label}]`;
-          }, '');
-        const runningRoll = new Roll(rollFormula);
-        await runningRoll.evaluate({ async: true });
-        await runningRoll.toMessage({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          flavor: game.i18n.localize('SWADE.Running'),
-        });
-        return;
-      }
-
-      game.swade.RollDialog.asPromise({
-        roll: new Roll(runningDie),
-        mods: mods,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: game.i18n.localize('SWADE.Running'),
-        title: game.i18n.localize('SWADE.Running'),
-        actor: this.actor,
-        allowGroup: false,
-      });
+    html.find('.running-die').on('click', async () => {
+      await this.actor.rollRunningDie();
     });
 
     // Roll Damage
