@@ -63,7 +63,7 @@ Actor:
           value: ''
         species:
           name: ''
-        currency: 500
+        currency: 0
         wealth:
           die: 6
           modifier: 0

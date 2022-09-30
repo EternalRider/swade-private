@@ -580,6 +580,15 @@ SWADE:
     CardSound:
       Name: Card Sound
       Hint: Play a short card sound when dealing Initiative
+    StartingCurrency:
+      PC:
+        Name: Player Character starting currency
+        Hint: >-
+          Set the amount of currency that Player Character Actors recieve upon
+          creation
+      NPC:
+        Hint: Set the amount of currency that NPC Actors recieve upon creation
+        Name: NPC starting currency
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

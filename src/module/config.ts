@@ -86,6 +86,8 @@ export const SWADE: SwadeConfig = {
       'actionDeck',
       'applyEncumbrance',
       'actionDeckDiscardPile',
+      'pcStartingCurrency',
+      'npcStartingCurrency',
       'bennyImageSheet',
       'bennyImage3DFront',
       'bennyImage3DBack',

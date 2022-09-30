@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input.
+- You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount.
 
 ## v2.0.4
 

@@ -1086,12 +1086,17 @@ export default class SwadeActor extends Actor {
     //return early if it's a vehicle
     if (createData.type === 'vehicle') return;
 
+    const isImported = foundry.utils.hasProperty(
+      createData,
+      'flags.core.sourceId',
+    );
+
     const coreSkillList = game.settings.get('swade', 'coreSkills');
     //only do this if this is a PC with no prior skills
     if (
-      coreSkillList &&
-      createData.type === 'character' &&
-      this.itemTypes.skill.length <= 0
+      coreSkillList.length > 0 &&
+      this.type === 'character' &&
+      this.itemTypes.skill.length === 0
     ) {
       //Get list of core skills from settings
       const coreSkills = coreSkillList.split(',').map((s) => s.trim());
@@ -1144,9 +1149,20 @@ export default class SwadeActor extends Actor {
           },
         },
       });
-      //Add the items to the creation data
 
+      //Add the items to the creation data
       this.updateSource({ items: skills });
+    }
+
+    //Handle starting currency
+    if (!isImported) {
+      let currency = 0;
+      if (this.type === 'character') {
+        currency = game.settings.get('swade', 'pcStartingCurrency');
+      } else if (this.type === 'npc') {
+        currency = game.settings.get('swade', 'npcStartingCurrency');
+      }
+      this.updateSource({ 'system.details.currency': currency });
     }
   }
 

@@ -10,6 +10,20 @@
     overflow: auto;
   }
 
+  .form-group {
+    --form-element-width: 270px;
+    label {
+      flex: 3;
+    }
+    .form-fields {
+      flex: 0 0 var(--form-element-width);
+      max-width: var(--form-element-width);
+    }
+    select {
+      max-width: var(--form-element-width);
+    }
+  }
+
   /* Attributes */
   .stats-container {
     margin: 0px 5px;
