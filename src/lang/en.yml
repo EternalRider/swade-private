@@ -668,6 +668,8 @@ SWADE:
     Header: Contents
   Category: Item Category
   ItemIsAmmo: Is Ammunition
+  SeeInfravision: See Infravision
+  SenseInfravision: Sense Infravision
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
@@ -686,6 +688,3 @@ ITEM:
 CARD:
   TypeAdventure: Adventure Card
   TypePoker: Poker Card
-DETECTION:
-  SeeInfravision: See Infravision
-  SenseInfravision: Sense Infravision

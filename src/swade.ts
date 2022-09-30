@@ -121,12 +121,12 @@ Hooks.once('init', () => {
   //register detection modes
   CONFIG.Canvas.detectionModes.seeInfravision = new DetectionModeInfravision({
     id: "seeInfravision",
-    label: "DETECTION.SeeInfravision",
+    label: "SWADE.SeeInfravision",
     type: DetectionMode.DETECTION_TYPES.SIGHT
   })
   CONFIG.Canvas.detectionModes.senseInfravision = new DetectionModeInfravision({
     id: "senseInfravision",
-    label: "DETECTION.SenseInfravision",
+    label: "SWADE.SenseInfravision",
     walls: false,
     type: DetectionMode.DETECTION_TYPES.OTHER
   }),

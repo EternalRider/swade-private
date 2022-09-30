@@ -1,13 +1,13 @@
 export default class DetectionModeInfravision extends DetectionMode {
       /** @override */
-  static getDetectionFilter() {
+  static override getDetectionFilter() {
     return this._detectionFilter ??= GlowOverlayFilter.create({
       glowColor: [1, 0.27, 0, 1]
     });
   }
 
   /** @override */
-  _canDetect(visionSource, target) {
+  override _canDetect(visionSource, target) {
 
     // See/Detect Invisibility can ONLY detect invisible status
     const tgt = target?.document;
