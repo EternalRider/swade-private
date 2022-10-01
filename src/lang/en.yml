@@ -115,6 +115,7 @@ SWADE:
   Reach: Reach
   Torch: Torch
   Invisible: Invisible
+  ColdBodied: Cold Bodied
   Smite: Smite
   Armor: Armor
   Protection: Protection
@@ -667,6 +668,8 @@ SWADE:
     Header: Contents
   Category: Item Category
   ItemIsAmmo: Is Ammunition
+  SeeInfravision: See Infravision
+  SenseInfravision: Sense Infravision
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

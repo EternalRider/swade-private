@@ -689,6 +689,8 @@ SWADE:
     Header: Inhalt
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
+  SeeInfravision: TODO
+  SenseInfravision: TODO
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

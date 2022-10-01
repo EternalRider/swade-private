@@ -37,6 +37,7 @@ export default class SwadeCoreHooks {
     if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
       setupFantasyCompanionEntangle();
     }
+    
   }
 
   static async onReady() {

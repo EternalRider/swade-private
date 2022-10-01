@@ -5,6 +5,7 @@ import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
+import DetectionModeInfravision from './module/vision';
 import Benny from './module/dice/Benny';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
@@ -115,6 +116,20 @@ Hooks.once('init', () => {
 
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
+  CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied'
+
+  //register detection modes
+  CONFIG.Canvas.detectionModes.seeInfravision = new DetectionModeInfravision({
+    id: "seeInfravision",
+    label: "SWADE.SeeInfravision",
+    type: DetectionMode.DETECTION_TYPES.SIGHT
+  })
+  CONFIG.Canvas.detectionModes.senseInfravision = new DetectionModeInfravision({
+    id: "senseInfravision",
+    label: "SWADE.SenseInfravision",
+    walls: false,
+    type: DetectionMode.DETECTION_TYPES.OTHER
+  }),
 
   //@ts-expect-error Types don't properly recognize dotnotation
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
