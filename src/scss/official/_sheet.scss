@@ -743,6 +743,9 @@
         text-decoration-thickness: $small-spacing;
       }
     }
+    .card-header {
+      justify-content: space-between;
+    }
     .item-image {
       background-repeat: no-repeat;
       background-position: center;
@@ -754,9 +757,8 @@
     }
     .item-controls {
       line-height: 24px;
-      text-align: center;
-      flex: 0 0 32px;
-      justify-self: flex-end;
+      display: flex;
+      justify-content: flex-end;
     }
     .card-content {
       font-size: 14px;
