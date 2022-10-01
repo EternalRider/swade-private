@@ -28,6 +28,13 @@ export const statusEffects: StatusEffect[] = [
     icon: 'icons/svg/skull.svg',
     id: 'incapacitated',
     label: 'SWADE.Incap',
+    changes: [
+      {
+        key: 'system.status.isIncapacitated',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'true',
+      },
+    ],
   },
   {
     icon: 'systems/swade/assets/icons/status/status_aiming.svg',

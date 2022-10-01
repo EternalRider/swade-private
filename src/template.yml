@@ -98,6 +98,7 @@ Actor:
         isStunned: false
         isEntangled: false
         isBound: false
+        isIncapacitated: false
       initiative:
         hasHesitant: false
         hasLevelHeaded: false

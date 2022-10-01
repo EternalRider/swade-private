@@ -132,17 +132,17 @@ export default class SwadeCombatTracker extends CombatTracker {
     if (!c.roundHeld) {
       // Add flag for on hold to show icon on token
       await c.setRoundHeld(this.viewed!.round);
-      await c.actor.toggleActiveEffect(data, { active: true });
+      await c.actor?.toggleActiveEffect(data, { active: true });
       if (c.isGroupLeader) {
         const followers = await this._getFollowers(c);
         for (const f of followers) {
           await f.setRoundHeld(this.viewed!.round);
-          await f.actor.toggleActiveEffect(data, { active: true });
+          await f.actor?.toggleActiveEffect(data, { active: true });
         }
       }
     } else {
       await c.unsetFlag('swade', 'roundHeld');
-      await c.actor.toggleActiveEffect(data, { active: false });
+      await c.actor?.toggleActiveEffect(data, { active: false });
     }
   }
   // Toggle Turn Lost
@@ -151,7 +151,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     if (!c.turnLost) {
       const groupId = c.groupId;
       if (groupId) {
-        const leader = await this.viewed!.combatants.find(
+        const leader = await this.viewed?.combatants.find(
           (l) => l.id === groupId,
         );
         if (leader) {
@@ -159,25 +159,21 @@ export default class SwadeCombatTracker extends CombatTracker {
         }
       } else {
         await c.update({
-          flags: {
-            swade: {
-              turnLost: true,
-              '-=roundHeld': null,
-            },
+          'flags.swade': {
+            turnLost: true,
+            '-=roundHeld': null,
           },
         });
-        await c.actor.toggleActiveEffect(data, { active: false });
+        await c.actor?.toggleActiveEffect(data, { active: false });
       }
     } else {
       await c.update({
-        flags: {
-          swade: {
-            roundHeld: this.viewed!.round,
-            '-=turnLost': null,
-          },
+        'flags.swade': {
+          roundHeld: this.viewed?.round,
+          '-=turnLost': null,
         },
       });
-      await c.actor.toggleActiveEffect(data, { active: false });
+      await c.actor?.toggleActiveEffect(data, { active: false });
     }
   }
   // Act Now
@@ -196,7 +192,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         },
       },
     });
-    await combatant.actor.toggleActiveEffect(data, { active: false });
+    await combatant.actor?.toggleActiveEffect(data, { active: false });
     if (combatant.isGroupLeader) {
       const followers = await this._getFollowers(combatant);
       let s = combatant.suitValue!;
@@ -211,7 +207,7 @@ export default class SwadeCombatTracker extends CombatTracker {
             },
           },
         });
-        await f.actor.toggleActiveEffect(data, { active: false });
+        await f.actor?.toggleActiveEffect(data, { active: false });
       }
     }
 
@@ -232,7 +228,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         },
       },
     });
-    await combatant.actor.toggleActiveEffect(data, { active: false });
+    await combatant.actor?.toggleActiveEffect(data, { active: false });
     if (combatant.isGroupLeader) {
       const followers = await this._getFollowers(combatant);
       let s = combatant.suitValue!;
@@ -247,7 +243,7 @@ export default class SwadeCombatTracker extends CombatTracker {
             },
           },
         });
-        await f.actor.toggleActiveEffect(data, { active: false });
+        await f.actor?.toggleActiveEffect(data, { active: false });
       }
     }
 
