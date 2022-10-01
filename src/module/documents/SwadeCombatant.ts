@@ -26,6 +26,12 @@ declare global {
 }
 
 export default class SwadeCombatant extends Combatant {
+  override get isDefeated() {
+    const actor = this.actor;
+    if (actor?.isWildcard) return super.isDefeated;
+    return actor?.status.isIncapacitated || super.isDefeated;
+  }
+
   get suitValue() {
     return this.getFlag('swade', 'suitValue');
   }
