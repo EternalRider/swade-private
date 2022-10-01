@@ -534,7 +534,7 @@ export default class SwadeActor extends Actor {
 
     //else toggle the effect directly on the actor
     const existingEffect = this.effects.find(
-      (e) => e.getFlag('core', 'statusId') === effectData.id,
+      (e) => e.statusId === effectData.id,
     );
     const state = options.active ?? !existingEffect;
     if (!state && existingEffect) {

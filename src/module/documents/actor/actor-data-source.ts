@@ -131,6 +131,7 @@ export interface CharacterDataSourceData {
     isStunned: boolean;
     isEntangled: boolean;
     isBound: boolean;
+    isIncapacitated: boolean;
   };
   initiative: {
     hasHesitant: boolean;
