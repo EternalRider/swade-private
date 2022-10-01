@@ -267,6 +267,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (this.affectsItems && parent instanceof CONFIG.Actor.documentClass) {
       this._removeEffectsFromItems(parent);
     }
+    // Get the active Combat if there is one.
+    const activeCombat = game.combats.active;
+    if (activeCombat) {
+      // Get the Combatant that corresponds to the Actor.
+      const combatant = activeCombat.combatants.find((c) => c.actorId === parent.id);
+      // If there is a corresponding Combatant, process Combatant Controls
+      if (combatant) {
+        // If status is Holding, turn off Hold for Combatant.
+        if (this.label === game.i18n.localize('SWADE.Holding')) {
+          await combatant?.unsetFlag('swade', 'roundHeld');
+        }
+      }
+    }
   }
 
   protected override async _preCreate(
@@ -275,6 +288,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
+    // Get the active Combat if there is one.
+    const activeCombat = game.combats.active;
+    if (activeCombat) {
+      // Get the Combatant that corresponds to the Actor.
+      const combatant = activeCombat.combatants.find((c) => c.actorId === this.parent.id);
+      // If there is a corresponding Combatant, process Combatant Controls
+      if (combatant) {
+        // If status is Holding, turn on Hold for Combatant.
+        if (this.label === game.i18n.localize('SWADE.Holding')) {
+          await combatant.setRoundHeld(activeCombat.current.round);
+        }
+      }
+    }
 
     //localize labels, just to be sure
     const label = game.i18n.localize(this.label);
