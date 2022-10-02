@@ -206,8 +206,9 @@
       </button>
     </header>
     <ol class="skill-list">
-      {{#each sortedSkills as |skill|}}{{>
-      "systems/swade/templates/official/partials/skill-card.hbs"}} {{/each}}
+      {{#each sortedSkills as |skill|}}
+        {{>"systems/swade/templates/official/partials/skill-card.hbs"}}
+      {{/each}}
     </ol>
   </div>
   <div class="note-footer">&nbsp;</div>
