@@ -691,6 +691,11 @@ SWADE:
   ItemIsAmmo: Ist Munition
   SeeInfravision: TODO
   SenseInfravision: TODO
+  Attribute: Eigenschaft
+  BaseDie: Würfelbasis
+  AttributeManager:
+    Title: Eigenschaften von {name} verwalten
+    Open: Eigenschaften bearbeiten
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

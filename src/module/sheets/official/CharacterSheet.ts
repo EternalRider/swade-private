@@ -6,6 +6,7 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
+import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
@@ -132,7 +133,7 @@ export default class CharacterSheet extends ActorSheet<
           'system.details.conviction.value': current - 1,
           'system.details.conviction.active': true,
         });
-        ChatMessage.create({
+        CONFIG.ChatMessage.documentClass.create({
           speaker: {
             actor: this.actor.id,
             alias: this.actor.name,
@@ -155,10 +156,13 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     //Roll Attribute
-    html.find('.attribute-label').on('click', (ev) => {
-      const attribute = ev.currentTarget.parentElement!.dataset
-        .attribute! as Attribute;
-      this.actor.rollAttribute(attribute);
+    html.find('.attribute button').on('click', async (ev) => {
+      const attribute = ev.currentTarget.dataset.attribute as Attribute;
+      await this.actor.rollAttribute(attribute);
+    });
+
+    html.find('.attribute-manager').on('click', () => {
+      new AttributeManager(this.actor).render(true);
     });
 
     //Toggle Equipment Card collapsible
@@ -170,10 +174,10 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     // Roll Skill
-    html.find('.skill-card .skill-die').on('click', (ev) => {
+    html.find('.skill-card .skill-die').on('click', async (ev) => {
       const element = ev.currentTarget as HTMLElement;
       const item = element.parentElement!.dataset.itemId!;
-      this.actor.rollSkill(item);
+      await this.actor.rollSkill(item);
     });
 
     //Running Die
@@ -182,15 +186,15 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     // Roll Damage
-    html.find('.damage-roll').on('click', (ev) => {
+    html.find('.damage-roll').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('.item').data('itemId');
-      return this.actor.items.get(id)?.rollDamage();
+      await this.actor.items.get(id)?.rollDamage();
     });
 
     // Use Consumable
-    html.find('.use-consumable').on('click', (ev) => {
+    html.find('.use-consumable').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('.item').data('itemId');
-      return this.actor.items.get(id)?.consume();
+      await this.actor.items.get(id)?.consume();
     });
 
     //Toggle Equipment Card collapsible

@@ -106,14 +106,26 @@ export default class SwadeActor extends Actor {
     }
   }
 
+  override prepareEmbeddedDocuments() {
+    for (const effect of this.effects) {
+      effect._safePrepareData();
+    }
+    this.applyActiveEffects();
+    for (const item of this.items) {
+      item._safePrepareData();
+    }
+  }
+
   override prepareDerivedData() {
     this._filterOverrides();
     //return early for Vehicles
     if (this.type === 'vehicle') return;
 
     //die type bounding for attributes
-    for (const attribute of Object.values(this.system.attributes)) {
+    for (const key in this.system.attributes) {
+      const attribute = this.system.attributes[key];
       attribute.die = this._boundTraitDie(attribute.die);
+      attribute['wild-die'].sides = Math.max(attribute['wild-die'].sides, 12);
     }
 
     //handle carry capacity
@@ -940,7 +952,6 @@ export default class SwadeActor extends Actor {
   }
 
   /**
-   * Thus
    * @param die The die to adjust
    * @returns the properly adjusted trait die
    */
@@ -949,9 +960,9 @@ export default class SwadeActor extends Actor {
     if (sides < 4 && sides !== 1) {
       die.sides = 4;
     } else if (sides > 12) {
-      //const difference = sides - 12;
+      const difference = sides - 12;
       die.sides = 12;
-      //die.modifier += difference / 2;
+      die.modifier += difference / 2;
     }
     return die;
   }

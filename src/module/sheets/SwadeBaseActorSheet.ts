@@ -1,5 +1,6 @@
-import { AdditionalStats } from '../../globals';
+import { AdditionalStats, Attribute } from '../../globals';
 import { AdditionalStat } from '../../interfaces/additional.interface';
+import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -63,11 +64,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     // Roll attribute
-    html.find('.attribute-label a').on('click', (event) => {
-      const element = event.currentTarget;
-      const attribute = element.parentElement!.parentElement!.dataset
-        .attribute! as keyof typeof SWADE.attributes;
+    html.find('.attribute-value').on('click', (event) => {
+      const attribute = event.currentTarget.dataset.attribute as Attribute;
       this.actor.rollAttribute(attribute);
+    });
+
+    html.find('.attribute-manager').on('click', () => {
+      new AttributeManager(this.actor).render(true);
     });
 
     // Roll Damage
@@ -183,10 +186,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
       const statData = getProperty(
-        this.actor.data,
-        `data.additionalStats.${stat}`,
+        this.actor,
+        `system.additionalStats.${stat}`,
       ) as AdditionalStat;
-      let modifier = statData.modifier || '';
+      let modifier = statData.modifier ?? '0';
       if (!!modifier && !modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
       }

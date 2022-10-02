@@ -29,10 +29,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input.
 - You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount.
 - Player Character actors can now record whether they're incapacitated. As per the rules, incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become incapacitated.
+- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 
 ### Changed
 
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
+- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 
 ## v2.0.4
 

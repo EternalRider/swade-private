@@ -44,24 +44,14 @@
       <div class="attribute flex3">
         <div class="attribute-label">{{localize "SWADE.Tough"}}</div>
         <div class="toughness-block">
-          {{#if actor.system.details.autoCalcToughness}}
           <input
             name="system.stats.toughness.value"
             type="text"
             value="{{actor.system.stats.toughness.value}}"
             placeholder="{{localize 'SWADE.Tough'}}"
             data-dtype="Number"
-            disabled
+            {{disabled  actor.system.details.autoCalcToughness}}
           />
-          {{else}}
-          <input
-            name="system.stats.toughness.value"
-            type="text"
-            value="{{actor.system.stats.toughness.value}}"
-            placeholder="{{localize 'SWADE.Tough'}}"
-            data-dtype="Number"
-          />
-          {{/if}}
           <div class="armor-value" data-target="armor">
             {{actor.system.stats.toughness.armor}}
           </div>
