@@ -1,0 +1,52 @@
+.attribute-manager {
+  --line-border-color: rgb(93, 173, 236);
+
+  .window-content {
+    overflow-y: hidden;
+    padding: 4px;
+  }
+  .index-card {
+    header {
+      font-size: 1.5em;
+      border-bottom: 2px solid var(--accent-color);
+      margin: 0 0 0.5em 0;
+    }
+
+    footer {
+      margin-top: 0.5em;
+    }
+  }
+
+  .attribute {
+    align-items: center;
+    label {
+      font-size: 1.25em;
+      margin: 0 0.25em;
+    }
+    input[type],
+    select {
+      border-bottom: none;
+      margin: 0 0.25em;
+    }
+    &:nth-child(even) {
+      background-color: rgba(0 0 0 / 10%);
+    }
+  }
+
+  .paperclip {
+    border: none;
+    position: absolute;
+    object-fit: cover;
+    height: 100px;
+    right: 15px;
+    top: 20px;
+    rotate: 45deg;
+    pointer-events: none;
+    filter: drop-shadow(0 0 2px black);
+  }
+
+  .attribute + .attribute {
+    padding: 0.25em 0;
+    border-bottom: 2px solid var(--line-border-color);
+  }
+}

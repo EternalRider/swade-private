@@ -670,6 +670,11 @@ SWADE:
   ItemIsAmmo: Is Ammunition
   SeeInfravision: See Infravision
   SenseInfravision: Sense Infravision
+  Attribute: Attribute
+  BaseDie: Base Die
+  AttributeManager:
+    Title: Manage Attributes for {name}
+    Open: Manage Attributes
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

@@ -1,130 +1,130 @@
-<header class="section-header">{{localize "SWADE.Attributes"}}</header>
-<div class="flexrow">
-  <div class="attribute" data-attribute="agility">
-    <button
-      type="button"
-      class="attribute-label"
-      title="{{localize 'SWADE.Roll'}}"
-    >
-      {{#if useAttributeShorts}}{{ localize "SWADE.AttrAgiShort" }}{{else}}{{ localize "SWADE.AttrAgi" }}{{/if}}
-    </button>
-    <span class="attribute-value flexrow">
-      <select
-        name="system.attributes.agility.die.sides"
-        data-dtype="Number"
-        style="background-image:url('systems/swade/assets/official/dice/d{{actor.system.attributes.agility.die.sides}}.svg')"
-      >
-        {{#select actor.system.attributes.agility.die.sides}} {{>
-        "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
-      </select>
-      <input
-        name="system.attributes.agility.die.modifier"
-        type="text"
-        value="{{signedString actor.system.attributes.agility.die.modifier}}"
-        data-dtype="Number"
-      />
+<header class='section-header'>
+  <span class='name'>{{localize 'SWADE.Attributes'}}</span>
+  <button
+    type='button'
+    class='attribute-manager'
+    title='{{localize "SWADE.AttributeManager.Open"}}'
+  >
+    <i class='fa-solid fa-gear'></i>
+  </button>
+</header>
+<div class='flexrow'>
+  <div class='attribute'>
+    <span class='attribute-label'>
+      {{#if useAttributeShorts}}
+        {{localize 'SWADE.AttrAgiShort'}}
+      {{else}}
+        {{localize 'SWADE.AttrAgi'}}
+      {{/if}}
     </span>
+    <button
+      type='button'
+      class='attribute-value flexrow rollable'
+      title='{{localize "SWADE.Roll"}}'
+      data-attribute='agility'
+    >
+      <img
+        class='die'
+        src='systems/swade/assets/official/dice/d{{actor.system.attributes.agility.die.sides}}.svg'
+      />
+      <span class='modifier'>
+        {{signedString actor.system.attributes.agility.die.modifier}}
+      </span>
+    </button>
   </div>
-  <div class="attribute" data-attribute="smarts">
-    <button
-      type="button"
-      class="attribute-label"
-      title="{{localize 'SWADE.Roll'}}"
-    >
-      {{#if useAttributeShorts}}{{ localize "SWADE.AttrSmaShort" }}{{else}}{{ localize "SWADE.AttrSma" }}{{/if}}
-      {{#if actor.system.attributes.smarts.animal}}&nbsp;({{ localize "SWADE.AnimalSmartsMarker" }}){{/if}}
-    </button>
-    <span class="attribute-value flexrow">
-      <select
-        name="system.attributes.smarts.die.sides"
-        data-dtype="Number"
-        style="background-image:url('systems/swade/assets/official/dice/d{{actor.system.attributes.smarts.die.sides}}.svg')"
-      >
-        {{#select actor.system.attributes.smarts.die.sides}} {{>
-        "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
-      </select>
-      <input
-        name="system.attributes.smarts.die.modifier"
-        type="text"
-        value="{{signedString actor.system.attributes.smarts.die.modifier}}"
-        data-dtype="Number"
-      />
+  <div class='attribute'>
+    <span class='attribute-label'>
+      {{#if useAttributeShorts}}
+        {{localize 'SWADE.AttrSmaShort'}}
+      {{else}}
+        {{localize 'SWADE.AttrSma'}}
+      {{/if}}
+      {{#if actor.system.attributes.smarts.animal}}
+        &nbsp;({{localize 'SWADE.AnimalSmartsMarker'}})
+      {{/if}}
     </span>
+    <button
+      type='button'
+      class='attribute-value flexrow rollable'
+      title='{{localize "SWADE.Roll"}}'
+      data-attribute='smarts'
+    >
+      <img
+        class='die'
+        src='systems/swade/assets/official/dice/d{{actor.system.attributes.smarts.die.sides}}.svg'
+      />
+      <span class='modifier'>
+        {{signedString actor.system.attributes.smarts.die.modifier}}
+      </span>
+    </button>
   </div>
-  <div class="attribute" data-attribute="spirit">
-    <button
-      type="button"
-      class="attribute-label"
-      title="{{localize 'SWADE.Roll'}}"
-    >
-      {{#if useAttributeShorts}}{{ localize "SWADE.AttrSprShort" }}{{else}}{{ localize "SWADE.AttrSpr" }}{{/if}}
-    </button>
-    <span class="attribute-value flexrow">
-      <select
-        name="system.attributes.spirit.die.sides"
-        data-dtype="Number"
-        style="background-image:url('systems/swade/assets/official/dice/d{{actor.system.attributes.spirit.die.sides}}.svg')"
-      >
-        {{#select actor.system.attributes.spirit.die.sides}} {{>
-        "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
-      </select>
-      <input
-        name="system.attributes.spirit.die.modifier"
-        type="text"
-        value="{{signedString actor.system.attributes.spirit.die.modifier}}"
-        data-dtype="Number"
-      />
+  <div class='attribute'>
+    <span class='attribute-label'>
+      {{#if useAttributeShorts}}
+        {{localize 'SWADE.AttrSprShort'}}
+      {{else}}
+        {{localize 'SWADE.AttrSpr'}}
+      {{/if}}
     </span>
+    <button
+      type='button'
+      class='attribute-value flexrow rollable'
+      title='{{localize "SWADE.Roll"}}'
+      data-attribute='spirit'
+    >
+      <img
+        class='die'
+        src='systems/swade/assets/official/dice/d{{actor.system.attributes.spirit.die.sides}}.svg'
+      />
+      <span class='modifier'>
+        {{signedString actor.system.attributes.spirit.die.modifier}}
+      </span>
+    </button>
   </div>
-  <div class="attribute" data-attribute="strength">
-    <button
-      type="button"
-      class="attribute-label"
-      title="{{localize 'SWADE.Roll'}}"
-    >
-      {{#if useAttributeShorts}}{{ localize "SWADE.AttrStrShort" }}{{else}}{{ localize "SWADE.AttrStr" }}{{/if}}
-    </button>
-    <span class="attribute-value flexrow">
-      <select
-        name="system.attributes.strength.die.sides"
-        data-dtype="Number"
-        style="background-image:url('systems/swade/assets/official/dice/d{{actor.system.attributes.strength.die.sides}}.svg')"
-      >
-        {{#select actor.system.attributes.strength.die.sides}}
-        <option value="1">1</option>
-        {{> "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
-      </select>
-      <input
-        name="system.attributes.strength.die.modifier"
-        type="text"
-        value="{{signedString actor.system.attributes.strength.die.modifier}}"
-        data-dtype="Number"
-      />
+  <div class='attribute'>
+    <span class='attribute-label'>
+      {{#if useAttributeShorts}}
+        {{localize 'SWADE.AttrStrShort'}}
+      {{else}}
+        {{localize 'SWADE.AttrStr'}}
+      {{/if}}
     </span>
+    <button
+      type='button'
+      class='attribute-value flexrow rollable'
+      title='{{localize "SWADE.Roll"}}'
+      data-attribute='strength'
+    >
+      <img
+        class='die'
+        src='systems/swade/assets/official/dice/d{{actor.system.attributes.strength.die.sides}}.svg'
+      />
+      <span class='modifier'>
+        {{signedString actor.system.attributes.strength.die.modifier}}
+      </span>
+    </button>
   </div>
-  <div class="attribute" data-attribute="vigor">
-    <button
-      type="button"
-      class="attribute-label"
-      title="{{localize 'SWADE.Roll'}}"
-    >
-      {{#if useAttributeShorts}}{{ localize "SWADE.AttrVigShort" }}{{else}}{{ localize "SWADE.AttrVig" }}{{/if}}
-    </button>
-    <span class="attribute-value flexrow">
-      <select
-        name="system.attributes.vigor.die.sides"
-        data-dtype="Number"
-        style="background-image:url('systems/swade/assets/official/dice/d{{actor.system.attributes.vigor.die.sides}}.svg')"
-      >
-        {{#select actor.system.attributes.vigor.die.sides}} {{>
-        "systems/swade/templates/die-sides-options.hbs"}} {{/select}}
-      </select>
-      <input
-        name="system.attributes.vigor.die.modifier"
-        type="text"
-        value="{{signedString actor.system.attributes.vigor.die.modifier}}"
-        data-dtype="Number"
-      />
+  <div class='attribute'>
+    <span class='attribute-label'>
+      {{#if useAttributeShorts}}
+        {{localize 'SWADE.AttrVigShort'}}
+      {{else}}
+        {{localize 'SWADE.AttrVig'}}
+      {{/if}}
     </span>
+    <button
+      type='button'
+      class='attribute-value flexrow rollable'
+      title='{{localize "SWADE.Roll"}}'
+      data-attribute='vigor'
+    >
+      <img
+        class='die'
+        src='systems/swade/assets/official/dice/d{{actor.system.attributes.vigor.die.sides}}.svg'
+      />
+      <span class='modifier'>
+        {{signedString actor.system.attributes.vigor.die.modifier}}
+      </span>
+    </button>
   </div>
 </div>

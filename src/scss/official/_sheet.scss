@@ -286,16 +286,16 @@
     font-size: var(--section-header-size);
     color: var(--section-header-color);
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     .name {
       text-align: center;
       z-index: 0;
-      grid-column: 1 / span 2;
+      grid-column: 1 / -1;
       grid-row: 1;
     }
     .controls {
       z-index: 1;
-      grid-column: 2;
+      grid-column: 3;
       grid-row: 1;
       font-family: var(--default-font);
     }
@@ -544,45 +544,32 @@
   .primary {
     text-align: center;
     margin-bottom: $medium-spacing;
+
+    .attribute-manager {
+      grid-column: 1;
+      grid-row: 1;
+      z-index: 1;
+      width: 100%;
+    }
     .attribute-label {
       font-weight: 700;
     }
     .attribute-value {
       margin-top: $small-spacing;
       flex-wrap: nowrap;
+      width: 100%;
     }
     .attribute {
-      margin-bottom: $medium-spacing;
-      input {
-        background-color: transparent;
-        border-bottom: $solid-line;
-        border-radius: 0;
+      .die {
+        border: none;
+        height: 28px;
+      }
+      .modifier {
         margin: 0;
         width: 100%;
-        height: 28px;
+        line-height: 28px;
       }
-      select {
-        color: transparent;
-        border: none;
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-        height: 28px;
-        text-align-last: center;
-        -moz-text-align-last: center;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-color: transparent;
-        ::-ms-expand {
-          display: none;
-        }
-        &:hover {
-          box-shadow: 0 0 5px var(--color-shadow-primary);
-        }
-      }
-      option {
-        color: black;
-      }
+      margin-bottom: $medium-spacing;
     }
     .attribute + .attribute {
       padding-left: $medium-spacing;

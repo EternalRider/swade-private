@@ -28,7 +28,8 @@
     background-position: left top;
   }
 
-  input[type] {
+  input[type],
+  select {
     &:hover,
     &:focus {
       box-shadow: var(--input-box-shadow);

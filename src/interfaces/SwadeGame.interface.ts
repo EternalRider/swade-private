@@ -1,4 +1,5 @@
 import { AdvanceEditor } from '../module/apps/AdvanceEditor';
+import AttributeManager from '../module/apps/AttributeManager';
 import CompendiumTOC from '../module/apps/CompendiumTOC';
 import RollDialog from '../module/apps/RollDialog';
 import SettingConfigurator from '../module/apps/SettingConfigurator';
@@ -30,6 +31,7 @@ export interface SwadeGame {
     AdvanceEditor: typeof AdvanceEditor;
     SettingConfigurator: typeof SettingConfigurator;
     CompendiumTOC: typeof CompendiumTOC;
+    AttributeManager: typeof AttributeManager;
   };
   dice: {
     Benny: typeof Benny;

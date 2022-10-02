@@ -137,8 +137,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
           //delete override
           delete overrides[key];
           //restore original data from source
-          const source = getProperty(item.data._source, key);
-          setProperty(item.data, key, source);
+          const source = getProperty(item._source.system, key);
+          setProperty(item.system, key, source);
         }
       }
       item.overrides = foundry.utils.expandObject(overrides);

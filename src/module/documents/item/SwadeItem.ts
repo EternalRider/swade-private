@@ -17,6 +17,7 @@ import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { Logger } from '../../Logger';
 import * as util from '../../util';
+import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import {
   ItemChatCardAction,
@@ -478,6 +479,16 @@ export default class SwadeItem extends Item {
     return data;
   }
 
+  override prepareDerivedData() {
+    if (this.type === 'skill') {
+      this.system.die = this._boundTraitDie(this.system.die);
+      this.system['wild-die'].sides = Math.max(
+        this.system['wild-die'].sides,
+        12,
+      );
+    }
+  }
+
   /** A shorthand function to roll skills directly */
   async roll(options: IRollOptions = {}) {
     //return early if there's no parent or this isn't a skill
@@ -487,7 +498,7 @@ export default class SwadeItem extends Item {
 
   /**
    * Assembles data and creates a chat card for the item
-   * @returns the rendered chatcard
+   * @returns the rendered chat card
    */
   async show() {
     // Basic template rendering data
@@ -777,6 +788,22 @@ export default class SwadeItem extends Item {
       }
     }
     return expression;
+  }
+
+  /**
+   * @param die The die to adjust
+   * @returns the properly adjusted trait die
+   */
+  private _boundTraitDie(die: TraitDie): TraitDie {
+    const sides = die.sides;
+    if (sides < 4 && sides !== 1) {
+      die.sides = 4;
+    } else if (sides > 12) {
+      const difference = sides - 12;
+      die.sides = 12;
+      die.modifier += difference / 2;
+    }
+    return die;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */

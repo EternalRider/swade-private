@@ -282,9 +282,11 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   protected override _getSubmitData(updateData: object | null = {}) {
     const data = super._getSubmitData(updateData);
-    // Prevent submitting overridden values
-    const overrides = foundry.utils.flattenObject(this.item.overrides);
-    Object.keys(overrides).forEach((v) => delete data[v]);
+    if (this.item.type !== 'skill') {
+      // Prevent submitting overridden values
+      const overrides = foundry.utils.flattenObject(this.item.overrides);
+      Object.keys(overrides).forEach((v) => delete data[v]);
+    }
     return data;
   }
 
