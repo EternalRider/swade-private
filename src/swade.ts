@@ -31,7 +31,6 @@ import {
   registerSettings,
 } from './module/settings';
 import CharacterSheet from './module/sheets/official/CharacterSheet';
-import SwadeItemSheet from './module/sheets/SwadeItemSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
@@ -56,7 +55,6 @@ Hooks.once('init', () => {
   game.swade = {
     sheets: {
       CharacterSheet,
-      SwadeItemSheet,
       SwadeItemSheetV2,
       SwadeNPCSheet,
       SwadeVehicleSheet,
@@ -177,21 +175,6 @@ Hooks.once('init', () => {
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
     label: 'SWADE.ItemSheet',
-  });
-  Items.registerSheet('swade', SwadeItemSheet, {
-    makeDefault: false,
-    label: 'SWADE.CommunityItemSheet',
-    types: [
-      'weapon',
-      'armor',
-      'shield',
-      'gear',
-      'skill',
-      'edge',
-      'hindrance',
-      'ability',
-      'power',
-    ],
   });
 
   CONFIG.Dice.terms.b = Benny;
