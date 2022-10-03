@@ -482,7 +482,7 @@ export default class SwadeItem extends Item {
   override prepareDerivedData() {
     if (this.type === 'skill') {
       this.system.die = this._boundTraitDie(this.system.die);
-      this.system['wild-die'].sides = Math.max(
+      this.system['wild-die'].sides = Math.min(
         this.system['wild-die'].sides,
         12,
       );

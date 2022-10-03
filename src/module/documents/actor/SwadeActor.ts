@@ -125,7 +125,7 @@ export default class SwadeActor extends Actor {
     for (const key in this.system.attributes) {
       const attribute = this.system.attributes[key];
       attribute.die = this._boundTraitDie(attribute.die);
-      attribute['wild-die'].sides = Math.max(attribute['wild-die'].sides, 12);
+      attribute['wild-die'].sides = Math.min(attribute['wild-die'].sides, 12);
     }
 
     //handle carry capacity
