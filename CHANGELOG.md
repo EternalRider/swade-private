@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.5
+
+### Removed
+
+- Removed more depreciation warnings from `SwadeActiveEffect class`
+
+## Fixed
+
+- The Destroy On Empty checkbox in the consumable item sheet should now work properly again
+
 ## v2.0.4
 
 ### Removed
