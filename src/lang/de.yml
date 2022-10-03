@@ -696,6 +696,8 @@ SWADE:
   AttributeManager:
     Title: Eigenschaften von {name} verwalten
     Open: Eigenschaften bearbeiten
+  HeavyWeapon: Schwere Waffe
+  HeavyArmor: Schwere Panzerung
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

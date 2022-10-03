@@ -82,6 +82,15 @@ export default class SwadeActor extends Actor {
     };
   }
 
+  get hasHeavyArmor(): boolean {
+    return this.itemTypes.armor.some(
+      (a) =>
+        !!foundry.utils.getProperty(a, 'system.isHeavyArmor') &&
+        foundry.utils.getProperty(a, 'system.equipStatus') >=
+          constants.EQUIP_STATE.EQUIPPED,
+    );
+  }
+
   /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced */
   get isEncumbered(): boolean {
     const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');

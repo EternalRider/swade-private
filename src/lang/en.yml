@@ -675,6 +675,8 @@ SWADE:
   AttributeManager:
     Title: Manage Attributes for {name}
     Open: Manage Attributes
+  HeavyArmor: Heavy Armor
+  HeavyWeapon: Heavy Weapon
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

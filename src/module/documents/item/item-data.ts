@@ -119,6 +119,7 @@ interface WeaponData
   autoReload: boolean;
   parry: number;
   trademark: 0 | 1 | 2;
+  isHeavyWeapon: boolean;
 }
 
 interface GearData
@@ -145,6 +146,7 @@ interface ArmorData
   armor: number | string;
   toughness: number;
   isNaturalArmor: boolean;
+  isHeavyArmor: boolean;
   locations: {
     head: boolean;
     torso: boolean;

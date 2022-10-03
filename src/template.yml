@@ -244,6 +244,7 @@ Item:
     ammo: ''
     autoReload: false
     trademark: 0
+    isHeavyWeapon: false
   armor:
     templates:
       - itemDescription
@@ -258,6 +259,7 @@ Item:
     armor: 0
     toughness: 0
     isNaturalArmor: false
+    isHeavyArmor: false
     locations:
       head: false
       torso: true
