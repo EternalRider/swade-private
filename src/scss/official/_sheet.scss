@@ -553,6 +553,7 @@
     }
     .attribute-label {
       font-weight: 700;
+      white-space: nowrap;
     }
     .attribute-value {
       margin-top: $small-spacing;
