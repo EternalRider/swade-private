@@ -137,8 +137,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
           //delete override
           delete overrides[key];
           //restore original data from source
-          const source = getProperty(item._source.system, key);
-          setProperty(item.system, key, source);
+          const source = getProperty(item._source, key);
+          setProperty(item, key, source);
         }
       }
       item.overrides = foundry.utils.expandObject(overrides);
@@ -194,10 +194,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   async promptEffectDeletion() {
     const title = game.i18n.format('SWADE.RemoveEffectTitle', {
-      label: this.data.label,
+      label: this.label,
     });
     const content = game.i18n.format('SWADE.RemoveEffectBody', {
-      label: this.data.label,
+      label: this.label,
       parent: this.parent?.name,
     });
     const buttons: Record<string, Dialog.Button> = {

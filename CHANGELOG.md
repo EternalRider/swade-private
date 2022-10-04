@@ -38,6 +38,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 
+## v2.0.5
+
+### Removed
+
+- Removed more depreciation warnings from `SwadeActiveEffect` class
+
+## Fixed
+
+- The Destroy On Empty checkbox in the consumable item sheet should now work properly again
+- The compendium TOC app should now respect the order of pages in a journal entry again.
+
 ## v2.0.4
 
 ### Removed
