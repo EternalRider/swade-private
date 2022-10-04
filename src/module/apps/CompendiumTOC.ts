@@ -349,6 +349,7 @@ export default class CompendiumTOC extends Compendium<
               return {
                 id: p.id,
                 name: p.name,
+                sort: p.sort,
               };
             })
             .sort(this._sortDocs);
@@ -421,6 +422,7 @@ interface CompendiumEntry {
 interface CompendiumPage {
   id: string;
   name: string;
+  sort?: number;
 }
 
 export type CompendiumTOCMetadata = CompendiumCollection.Metadata & {
