@@ -26,11 +26,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Removed
 
-- Removed more depreciation warnings from `SwadeActiveEffect class`
+- Removed more depreciation warnings from `SwadeActiveEffect` class
 
 ## Fixed
 
 - The Destroy On Empty checkbox in the consumable item sheet should now work properly again
+- The compendium TOC app should now respect the order of pages in a journal entry again.
 
 ## v2.0.4
 
