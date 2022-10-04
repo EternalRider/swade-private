@@ -1,4 +1,5 @@
 import { AdditionalStat } from '../interfaces/additional.interface';
+import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
 
 declare global {
@@ -53,11 +54,20 @@ declare global {
 /** @internal */
 export function registerSettings() {
   game.settings.registerMenu('swade', 'setting-config', {
-    name: game.i18n.localize('SWADE.SettingConf'),
-    label: game.i18n.localize('SWADE.SettingConfLabel'),
-    hint: game.i18n.localize('SWADE.SettingConfDesc'),
-    icon: 'fas fa-globe',
+    name: 'SWADE.SettingConf',
+    label: 'SWADE.SettingConfLabel',
+    hint: 'SWADE.SettingConfDesc',
+    icon: 'fa-solid fa-globe',
     type: SettingConfigurator,
+    restricted: true,
+  });
+
+  game.settings.registerMenu('swade', 'toc-settings', {
+    name: 'SWADE.TOCSettings.Name',
+    label: 'SWADE.TOCSettings.Label',
+    hint: 'SWADE.TOCSettings.Hint',
+    icon: 'fa-solid fa-books',
+    type: CompendiumTOCSettings,
     restricted: true,
   });
 

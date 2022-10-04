@@ -1,0 +1,30 @@
+.swade.toc-settings {
+  .window-content {
+    padding: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 1fr max-content;
+    height: 100%;
+  }
+
+  .packs {
+    padding: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .label {
+    flex: 2;
+    font-weight: 700;
+  }
+
+  .inUse {
+    text-align: end;
+    font-weight: 700;
+  }
+  footer {
+    margin: 0.5rem;
+  }
+}
