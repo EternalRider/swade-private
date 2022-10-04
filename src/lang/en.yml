@@ -677,6 +677,11 @@ SWADE:
     Open: Manage Attributes
   HeavyArmor: Heavy Armor
   HeavyWeapon: Heavy Weapon
+  UsesTOC: Use Compendium TOC
+  TOCSettings:
+    Label: Open Compendium TOC Settings
+    Name: Compendium TOC Settings
+    Hint: Configure the Compendum TOC Application
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

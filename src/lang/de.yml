@@ -698,6 +698,10 @@ SWADE:
     Open: Eigenschaften bearbeiten
   HeavyWeapon: Schwere Waffe
   HeavyArmor: Schwere Panzerung
+  TOCSettings:
+    Label: Compendium TOC Einstellungen öffnen
+    Name: Compendium TOC Einstellungen
+    Hint: Konfigurieren Sie die Compendum TOC-Anwendung
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

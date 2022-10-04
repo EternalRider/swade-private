@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 - Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively.
 - Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped.
+- Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app.
 
 ### Changed
 
