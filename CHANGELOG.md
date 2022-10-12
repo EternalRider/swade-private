@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.0.6
+
+### Fixed
+
+- Fixed some spelling mistakes in the german translation.
+- Fixed checkbox type additional stats not appearing correctly on the character sheet.
+
+### Removed
+
+- Removed additional depreciation warnings in the core hooks and vehicle sheet.
+
 ## v2.0.5
 
 ### Removed
