@@ -1031,7 +1031,7 @@ export default class SwadeCoreHooks {
         });
       }
       //copy active effects
-      const effects = item.effects.map((ae) => ae.data.toObject());
+      const effects = item.effects.map((ae) => ae.toObject());
       if (effects.length > 0) {
         await actor.createEmbeddedDocuments('ActiveEffect', effects);
       }

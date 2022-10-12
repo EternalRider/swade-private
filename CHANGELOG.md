@@ -39,6 +39,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 
+## v2.0.6
+
+### Fixed
+
+- Fixed some spelling mistakes in the german translation.
+- Fixed checkbox type additional stats not appearing correctly on the character sheet.
+
+### Removed
+
+- Removed additional depreciation warnings in the core hooks and vehicle sheet.
+
 ## v2.0.5
 
 ### Removed

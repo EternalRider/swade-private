@@ -111,8 +111,8 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
           });
         case 'mod':
           itemData = this._createItemData('gear', header);
-          itemData.data.isVehicular = true;
-          itemData.data.equipStatus = constants.EQUIP_STATE.EQUIPPED;
+          itemData.system.isVehicular = true;
+          itemData.system.equipStatus = constants.EQUIP_STATE.EQUIPPED;
           itemData.name = `New ${type.capitalize()}`;
           return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
@@ -120,8 +120,8 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
           });
         case 'vehicle-weapon':
           itemData = this._createItemData('weapon', header);
-          itemData.data.isVehicular = true;
-          itemData.data.equipStatus = constants.EQUIP_STATE.EQUIPPED;
+          itemData.system.isVehicular = true;
+          itemData.system.equipStatus = constants.EQUIP_STATE.EQUIPPED;
           return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
             parent: this.actor,
@@ -281,9 +281,9 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       name: name ? name : `New ${type.capitalize()}`,
       type: type,
       img: `systems/swade/assets/icons/${type}.svg`,
-      data: deepClone(header.dataset),
+      system: deepClone(header.dataset),
     };
-    delete itemData.data['type'];
+    delete itemData.system['type'];
     return itemData;
   }
 
