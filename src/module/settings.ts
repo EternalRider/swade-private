@@ -29,6 +29,7 @@ declare global {
       'swade.enableConviction': boolean;
       'swade.enableWoundPace': boolean;
       'swade.noPowerPoints': boolean;
+      'swade.alwaysGeneralPP': boolean;
       'swade.gmBennies': number;
       'swade.vehicleMods': boolean;
       'swade.vehicleEdges': boolean;
@@ -306,6 +307,15 @@ export function registerSettingRules() {
   game.settings.register('swade', 'noPowerPoints', {
     name: 'SWADE.Settings.NoPowerPoints.Name',
     hint: 'SWADE.Settings.NoPowerPoints.Hint',
+    default: false,
+    scope: 'world',
+    type: Boolean,
+    config: false,
+  });
+
+  game.settings.register('swade', 'alwaysGeneralPP', {
+    name: 'SWADE.Settings.AlwaysGeneralPP.Name',
+    hint: 'SWADE.Settings.AlwaysGeneralPP.Hint',
     default: false,
     scope: 'world',
     type: Boolean,

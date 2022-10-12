@@ -584,6 +584,9 @@ SWADE:
       Hint: >-
         Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen
         ausgeblendet
+    AlwaysGeneralPP:
+      Name: TODO
+      Hint: TODO
     ApplyEncumbrance:
       Name: Belastungsabzüge anwenden
       Hint: >-

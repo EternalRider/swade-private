@@ -5,7 +5,7 @@
       "ITEM.TypePower"}}
     </button>
   </div>
-  {{#if powers.hasPowersWithoutArcane}}
+  {{#if powers.showGeneral}}
   <header class="section-header">
     <span class="name">{{localize "SWADE.General"}}</span>
     {{#unless settingrules.noPowerPoints}}
@@ -31,6 +31,8 @@
     </span>
     {{/unless}}
   </header>
+  {{/if}}
+  {{#if powers.hasPowersWithoutArcane}}
   <ul>
     {{#each actor.itemTypes.power}} {{#unless system.arcane}}
     <li class="power item" data-item-id="{{id}}">
