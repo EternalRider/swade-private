@@ -558,6 +558,9 @@ SWADE:
     NoPowerPoints:
       Name: No Power Points
       Hint: When enabled this option hides all Power Point interactions
+    AlwaysGeneralPP:
+      Name: Always Show General Power Points
+      Hint: When enabled the General Powers section always shows even if all powers have an associated Arcane Background
     ApplyEncumbrance:
       Name: Apply Encumbrance Penalties
       Hint: >-

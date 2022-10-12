@@ -484,7 +484,10 @@ export default class CharacterSheet extends ActorSheet<
       hasPowersWithoutArcane: this.actor.itemTypes.power.some(
         (p) => !p.system['arcane'],
       ),
+      showGeneral: true
     };
+    
+    powers.showGeneral = powers.hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
 
     for (const power of this.actor.itemTypes.power) {
       if (power.type !== 'power') continue;
@@ -1079,6 +1082,7 @@ interface SheetEffect {
 interface SheetPowers {
   hasPowersWithoutArcane: boolean;
   arcaneBackgrounds: Record<string, SheetArcaneBackground>;
+  showGeneral: boolean;
 }
 
 interface SheetArcaneBackground {

@@ -153,6 +153,19 @@
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.NoPowerPoints.Hint'}}</p>
       </div>
+      <!-- Always General Power Points -->
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.AlwaysGeneralPP.Name'}}</label>
+        <div class='form-fields'>
+          <input
+            type='checkbox'
+            name='settingRules.alwaysGeneralPP'
+            data-dtype='Boolean'
+            {{checked settingRules.alwaysGeneralPP}}
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.AlwaysGeneralPP.Hint'}}</p>
+      </div>
       <!-- Encumbrance -->
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.ApplyEncumbrance.Name'}}</label>

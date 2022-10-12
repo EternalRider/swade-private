@@ -80,6 +80,7 @@ export const SWADE: SwadeConfig = {
       'npcAmmo',
       'vehicleAmmo',
       'noPowerPoints',
+      'alwaysGeneralPP',
       'wealthType',
       'currencyName',
       'hardChoices',
