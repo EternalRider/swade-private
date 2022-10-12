@@ -477,10 +477,10 @@ SWADE:
         Wenn diese Einstellung eingeschaltet ist werden Schablonen immer voll
         ausgemalt anstatt nur das Raster
     FantasyCompanionEntangle:
-      Name: Festgehalten Status nach Fantasy Companion
+      Name: <em>Festgehalten Status</em> nach Fantasy Companion
       Hint: >-
-        Verwende die Fantasy Companion version des Festgehalten Stauts. Die
-        Seite muss neu geladen werden damit die Änderung in Kraft tritt.
+        Verwende die Fantasy Companion version des <em>Festgehalten Status</em>. Die
+        Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
     InitDiscardPile:
       Name: Initiative-Ablagestapel
     InitCardDeck:
@@ -521,7 +521,7 @@ SWADE:
       Hint: Aktionskarten jede Runde automatisch ziehen
     CardSound:
       Name: Kartengeräusch
-      Hint: Kurzen Ton beim Ziehen der Aktionskarten abspielen
+      Hint: Kartengeräusch beim Ziehen der Initiative-Aktionskarten abspielen
     Benny3DFront:
       Name: Vordere Textur
       Hint: Vordere Textur des Bennys
