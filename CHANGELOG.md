@@ -26,21 +26,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input.
-- You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount.
-- Player Character actors can now record whether they're incapacitated. As per the rules, incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become incapacitated.
-- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
-- Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively.
-- Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped.
-- Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app.
-- Added the Active Effect Guided Implementation System (or just Active Effect Wizard), which is an application to quickly create Active Effects from common Presets. The app can be opened on the Character and Item sheets by clicking on the "Add Active Effect" button on the effects tab and selecting the appropriate option from the dropdown. If the resulting Active Effect has no changes after submission, the Foundry Active Effect sheet is opened. On the NPC sheet you can open the app by clicking the **+** icon in the header of the effects section. Alternatively you can Shift-Click to add and open an empty Active Effect.
+- Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input. (#556)
+- You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount. (#569)
+- Player Character actors can now record whether they're incapacitated. As per the rules, incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become incapacitated. (#579 / #317)
+- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
+- Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively. (#548)
+- Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped. (#548)
+- Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app. (#608)
+- Added the Active Effect Guided Implementation System (or just Active Effect Wizard), which is an application to quickly create Active Effects from common Presets. The app can be opened on the Character and Item sheets by clicking on the "Add Active Effect" button on the effects tab and selecting the appropriate option from the dropdown. If the resulting Active Effect has no changes after submission, the Foundry Active Effect sheet is opened. On the NPC sheet you can open the app by clicking the **+** icon in the header of the effects section. Alternatively you can Shift-Click to add and open an empty Active Effect. (#557)
 - Added additional translation strings
 
 ### Changed
 
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
-- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
+- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
+
+### Fixed
+
+- Fixed a wrong translation key related to measured templates (#619)
 
 ## v2.0.6
 
