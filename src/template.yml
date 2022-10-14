@@ -71,8 +71,10 @@ Actor:
         conviction:
           value: 0
           active: false
-
-      powerPoints: {}
+      powerPoints: 
+        general:
+          value: 0
+          max: 0
       fatigue:
         value: 0
         min: 0
