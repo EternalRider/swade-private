@@ -34,6 +34,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped. (#548)
 - Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app. (#608)
 - Added the Active Effect Guided Implementation System (or just Active Effect Wizard), which is an application to quickly create Active Effects from common Presets. The app can be opened on the Character and Item sheets by clicking on the "Add Active Effect" button on the effects tab and selecting the appropriate option from the dropdown. If the resulting Active Effect has no changes after submission, the Foundry Active Effect sheet is opened. On the NPC sheet you can open the app by clicking the **+** icon in the header of the effects section. Alternatively you can Shift-Click to add and open an empty Active Effect. (#557)
+- Toggling the `Hold` status effect now also toggles the hold status of a combatant in the Combat tracker. Thanks to Kristian Serrano. (!247)
+- Added Vision and Detection modes for Infravision. Thanks to Joseph Meehan. (!248)
+  - The vision and detection modes do not work when the scene has Global Illumination enabled.
+  - `See Infravision` is restricted by walls.
+  - `Sense Infravision` is not restricted by walls.
+  - Tokens with the `Invisible` Status Effect can still be detected with Infravision.
+  - Adding the `Cold-Bodied` Status Effect makes a token invisible to Infravision.
+- Added the ability remove items from the Quick Access directly to the Quick Access. Thanks to Kristian Serrano. (!249)
+- Added a toggle for always showing the general Power Point pool on an actor sheet. Thanks to Joseph Meehan. (!255)
 - Added additional translation strings
 
 ### Changed
