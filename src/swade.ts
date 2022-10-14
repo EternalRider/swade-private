@@ -1,3 +1,4 @@
+import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import CompendiumTOC from './module/apps/CompendiumTOC';
@@ -65,6 +66,7 @@ Hooks.once('init', () => {
       SettingConfigurator,
       CompendiumTOC,
       AttributeManager,
+      ActiveEffectWizard,
     },
     dice: {
       Benny,

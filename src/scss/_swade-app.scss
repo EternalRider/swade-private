@@ -138,6 +138,12 @@
       }
     }
   }
+  summary {
+    &:hover,
+    &:focus {
+      text-shadow: var(--input-box-shadow);
+    }
+  }
 
   .sub-tabs {
     display: flex;

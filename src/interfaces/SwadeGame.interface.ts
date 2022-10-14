@@ -1,3 +1,4 @@
+import ActiveEffectWizard from '../module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../module/apps/AdvanceEditor';
 import AttributeManager from '../module/apps/AttributeManager';
 import CompendiumTOC from '../module/apps/CompendiumTOC';
@@ -30,6 +31,7 @@ export interface SwadeGame {
     SettingConfigurator: typeof SettingConfigurator;
     CompendiumTOC: typeof CompendiumTOC;
     AttributeManager: typeof AttributeManager;
+    ActiveEffectWizard: typeof ActiveEffectWizard;
   };
   dice: {
     Benny: typeof Benny;

@@ -289,6 +289,7 @@ SWADE:
     Broke:
       Label: Pleite
       Hint: Du bist pleite!
+    Sides: Wohlstandswürfelseiten
   WealthSelectionNoneOther: Keines / Anderes
   TraitRolls: Eigenschaftswürfe
   Trait: Eigenschaft
@@ -479,8 +480,8 @@ SWADE:
     FantasyCompanionEntangle:
       Name: <em>Festgehalten Status</em> nach Fantasy Companion
       Hint: >-
-        Verwende die Fantasy Companion version des <em>Festgehalten Status</em>. Die
-        Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
+        Verwende die Fantasy Companion version des <em>Festgehalten Status</em>.
+        Die Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
     InitDiscardPile:
       Name: Initiative-Ablagestapel
     InitCardDeck:
@@ -705,6 +706,22 @@ SWADE:
     Label: Compendium TOC Einstellungen öffnen
     Name: Compendium TOC Einstellungen
     Hint: Konfigurieren Sie die Compendum TOC-Anwendung
+  DieSides: Würfelseiten
+  WildDieSides: Wildcard-Würfel Seiten
+  EncumbranceSteps: Belastungsschritte
+  EffectWizard:
+    Preview: Vorschau
+    Change: Änderung
+    Mode: Modus
+    Value: Wert
+    Changes: Änderungen
+    SelectAttribute: Attribut wählen
+    EnterSkill:
+      Label: Fertigkeit auswählen
+      Hint: >-
+        Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
+        Liste der Vorschläge auswählen
+  OtherStats: Andere Stats
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

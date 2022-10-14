@@ -1,0 +1,112 @@
+.active-effect-wizard {
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: max-content max-content 1fr max-content;
+    row-gap: 0.5rem;
+    height: 100%;
+    overflow: hidden;
+  }
+  header {
+    grid-column: 1/-1;
+    grid-row: 1;
+    h2 {
+      font-size: 1.25em;
+    }
+  }
+
+  summary {
+    font-size: 1.2em;
+    border-bottom: 1px solid var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+
+  .other-presets {
+    li {
+      margin: 0.25rem 0;
+    }
+  }
+
+  .changes-list {
+    padding: 0;
+  }
+
+  .button-list {
+    margin: 0.5rem 0;
+  }
+
+  .change {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 30px;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--accent-color-secondary);
+    align-items: center;
+    &.header {
+      font-weight: bold;
+      border: 1px solid var(--accent-color-secondary);
+      border-radius: 2px;
+      background: rgba(0, 0, 0, 0.1);
+      padding: 0.25rem;
+    }
+    .label {
+      grid-column: 1;
+    }
+    .mode {
+      grid-column: 2;
+    }
+    .value {
+      grid-column: 3;
+    }
+    .change-controls {
+      display: flex;
+      flex: 0 0 2rem;
+    }
+  }
+
+  .effect-basics {
+    padding: 0 8px;
+    grid-column: 1/-1;
+    grid-row: 2;
+    display: grid;
+    column-gap: 0.5rem;
+    grid-template-areas:
+      'icon name name'
+      'icon icon-path icon-path'
+      'icon turns behavior';
+
+    .icon {
+      grid-area: icon;
+      border: none;
+      max-height: 100px;
+      place-self: center;
+    }
+    .icon-path {
+      grid-area: icon-path;
+    }
+    .name {
+      grid-area: name;
+    }
+    .turns {
+      grid-area: turns;
+    }
+    .behavior {
+      grid-area: behavior;
+    }
+  }
+  .preview {
+    grid-column: 1;
+    grid-row: 3;
+    padding: 0.25rem;
+  }
+  .presets {
+    grid-column: 2;
+    grid-row: 3;
+    overflow-y: auto;
+    padding: 0.25rem;
+  }
+
+  footer {
+    grid-column: 1/-1;
+    grid-row: 4;
+  }
+}

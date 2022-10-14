@@ -305,7 +305,8 @@
     color: rgba(0, 0, 0, 0.2);
   }
 
-  .item-create {
+  .item-create,
+  .add-effect {
     color: var(--add-button-color);
     &:hover,
     :focus {
@@ -1101,8 +1102,10 @@
       margin-bottom: 1em;
     }
     .effect-add {
-      display: flex;
-      justify-content: flex-end;
+      display: block;
+      margin-left: auto;
+      width: fit-content;
+      padding-left: 3rem;
     }
     .effect,
     .effect-header {
