@@ -778,10 +778,9 @@ export default class CharacterSheet extends ActorSheet<
       //handle Power Item Card PP adjustment
       const adjustment = button.getAttribute('data-adjust') as string;
       const power = this.actor.items.get(itemId, { strict: true });
-      let key = 'system.powerPoints.value';
-      const arcane = getProperty(power.system, 'arcane');
-      if (arcane) key = `system.powerPoints.${arcane}.value`;
-      let newPP = getProperty(this.actor, key);
+      const arcane = getProperty(power, 'system.arcane') || 'general';
+      const key = `system.powerPoints.${arcane}.value`;
+      let newPP = getProperty(this.actor, key) as number;
       if (adjustment === 'plus') {
         newPP += parseInt(ppToAdjust, 10);
       } else if (adjustment === 'minus') {
