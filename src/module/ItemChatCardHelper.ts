@@ -416,13 +416,12 @@ export default class ItemChatCardHelper {
     }
 
     if (item?.type === 'power') {
-      const arcane = item.system.arcane;
-      let currentPP = getProperty(actor.system, 'powerPoints.value');
-      let maxPP = getProperty(actor.system, 'powerPoints.max');
-      if (arcane) {
-        currentPP = getProperty(actor.system, `powerPoints.${arcane}.value`);
-        maxPP = getProperty(actor.system, `powerPoints.${arcane}.max`);
-      }
+      const arcane = item.system.arcane || 'general';
+      const currentPP = getProperty(
+        actor.system,
+        `system.powerPoints.${arcane}.value`,
+      );
+      const maxPP = getProperty(actor.system, `powerPoints.${arcane}.max`);
       //update message content
       $(content).find('.pp-counter .current-pp').first().text(currentPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);

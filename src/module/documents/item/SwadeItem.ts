@@ -810,18 +810,21 @@ export default class SwadeItem extends Item {
   private _getPowerPoints(): ItemChatCardPowerPoints | null {
     if (this.type === 'power') {
       const actor = this.parent!;
-
-      let value: number = getProperty(actor.system, 'powerPoints.value');
-      let max: number = getProperty(actor.system, 'powerPoints.max');
-      const arcane = this.system.arcane;
-      if (arcane) {
-        value = getProperty(actor.system, `powerPoints.${arcane}.value`);
-        max = getProperty(actor.system, `powerPoints.${arcane}.max`);
-      }
+      const arcane = this.system.arcane || 'general';
+      const value = foundry.utils.getProperty(
+        actor.system,
+        `powerPoints.${arcane}.value`,
+      );
+      const max = foundry.utils.getProperty(
+        actor.system,
+        `powerPoints.${arcane}.max`,
+      );
       return { value, max };
-    }
-    if (this.isArcaneDevice) {
-      return getProperty(this.system, 'powerPoints') as ItemChatCardPowerPoints;
+    } else if (this.isArcaneDevice) {
+      return foundry.utils.getProperty(
+        this.system,
+        'powerPoints',
+      ) as ItemChatCardPowerPoints;
     }
     return null;
   }
