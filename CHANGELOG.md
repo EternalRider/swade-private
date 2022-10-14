@@ -33,10 +33,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively.
 - Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped.
 - Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app.
+- Added the Active Effect Guided Implementation System (or just Active Effect Wizard), which is an application to quickly create Active Effects from common Presets. The app can be opened on the Character and Item sheets by clicking on the "Add Active Effect" button on the effects tab and selecting the appropriate option from the dropdown. If the resulting Active Effect has no changes after submission, the Foundry Active Effect sheet is opened. On the NPC sheet you can open the app by clicking the **+** icon in the header of the effects section. Alternatively you can Shift-Click to add and open an empty Active Effect.
+- Added additional translation strings
 
 ### Changed
 
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
+- Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1.
 
 ## v2.0.6

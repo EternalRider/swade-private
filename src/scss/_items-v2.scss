@@ -192,11 +192,11 @@
   }
 
   .header {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    padding-left: 3rem;
     .add-button {
-      grid-column: 2/-1;
-      justify-self: end;
       color: #aaa;
       &:hover,
       &:focus {

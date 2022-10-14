@@ -1,5 +1,6 @@
 import { AdditionalStats, Attribute } from '../../globals';
 import { AdditionalStat } from '../../interfaces/additional.interface';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import * as chat from '../chat';
@@ -153,12 +154,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'edit':
           return effect.sheet?.render(true);
         case 'delete':
-          return effect.delete();
+          return effect.deleteDialog();
         case 'toggle':
           return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
           fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
-            if (item) this.actor.items.get(item.id!)!.sheet?.render(true);
+            this.actor.items.get(item.id!)?.sheet?.render(true);
           });
           break;
         default:
@@ -169,17 +170,20 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     html.find('.add-effect').on('click', async (ev) => {
       const transfer = $(ev.currentTarget).data('transfer');
-      const effect = await CONFIG.ActiveEffect.documentClass.create(
-        {
-          label: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-          }),
-          icon: '/icons/svg/mystery-man-black.svg',
-          transfer: transfer,
-        },
-        { renderSheet: true, parent: this.actor },
-      );
-      this.actor.effects.get(effect?.id!, { strict: true }).sheet?.render(true);
+      if (ev.shiftKey) {
+        await CONFIG.ActiveEffect.documentClass.create(
+          {
+            label: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+            }),
+            icon: '/icons/svg/mystery-man-black.svg',
+            transfer: transfer,
+          },
+          { renderSheet: true, parent: this.actor },
+        );
+      } else {
+        new ActiveEffectWizard(this.actor).render(true);
+      }
     });
 
     html.find('.additional-stats .roll').on('click', async (ev) => {

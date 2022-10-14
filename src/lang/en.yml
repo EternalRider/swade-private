@@ -296,6 +296,7 @@ SWADE:
     Broke:
       Label: Broke
       Hint: You are Broke!
+    Sides: Wealth Die Sides
   TraitRolls: Trait Rolls
   Trait: Trait
   AltTrait: Action Trait
@@ -445,6 +446,8 @@ SWADE:
     Add: Add Active Effect
     Source: Source
     ResetDuration: Reset Duration
+    AddGuided: Open Wizard
+    AddUnguided: Add Empty Effect
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand
@@ -465,8 +468,8 @@ SWADE:
     FantasyCompanionEntangle:
       Name: Fantasy Companion <em>Entangle</em>
       Hint: >-
-        Use the Fantasy Companion <em>Entangle</em> status instead of the Core version.
-        Requires a reload to take effect
+        Use the Fantasy Companion <em>Entangle</em> status instead of the Core
+        version. Requires a reload to take effect
     InitDiscardPile:
       Name: Initiative Discard Pile
     InitCardDeck:
@@ -685,6 +688,22 @@ SWADE:
     Label: Open Compendium TOC Settings
     Name: Compendium TOC Settings
     Hint: Configure the Compendum TOC Application
+  DieSides: Die Sides
+  WildDieSides: Wild Die Sides
+  EncumbranceSteps: Encumbrance Steps
+  EffectWizard:
+    Preview: Preview
+    Change: Change
+    Mode: Mode
+    Value: Value
+    Changes: Changes
+    SelectAttribute: Select Attribute
+    EnterSkill:
+      Label: Enter skill
+      Hint: >-
+        You can enter any skill name you like or select one from the list of
+        suggestions
+  OtherStats: Other Stats
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

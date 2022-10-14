@@ -4,6 +4,7 @@ import {
   AdditionalStat,
   ItemAction,
 } from '../../interfaces/additional.interface';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -18,6 +19,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   SwadeItemSheetData
 > {
   collapsibleStates: CollapsibleStates = { powers: {}, actions: {} };
+  _effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -69,6 +71,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     this._setupAccordions();
+    this._setupEffectCreateMenu(html);
 
     html.find('.profile-img').on('contextmenu', () => {
       if (!this.item.img) return;
@@ -143,20 +146,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           classes: ['dialog', 'swade-app'],
         }),
       });
-    });
-
-    html.find('.add-effect').on('click', async (ev) => {
-      const newEffect = await CONFIG.ActiveEffect.documentClass.create(
-        {
-          label: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-          }),
-          icon: '/icons/svg/mystery-man.svg',
-          transfer: Boolean(ev.currentTarget.dataset.transfer),
-        },
-        { parent: this.item },
-      );
-      newEffect?.sheet?.render(true);
     });
 
     html.find('.effect-action').on('click', (ev) => {
@@ -482,6 +471,46 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           states[id] = !currentState;
         });
       });
+  }
+
+  private _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._effectCreateDropDown = new ContextMenu(
+      html,
+      '.effects .header',
+      [
+        {
+          name: 'SWADE.ActiveEffects.AddGuided',
+          icon: '<i class="fa-solid fa-hat-wizard"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            new ActiveEffectWizard(this.object).render(true);
+          },
+        },
+        {
+          name: 'SWADE.ActiveEffects.AddUnguided',
+          icon: '<i class="fa-solid fa-file-plus"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            this._createActiveEffect();
+          },
+        },
+      ],
+      { eventName: 'click' },
+    );
+  }
+
+  private async _createActiveEffect() {
+    const newEffect = await CONFIG.ActiveEffect.documentClass.create(
+      {
+        label: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+        }),
+        icon: '/icons/svg/mystery-man.svg',
+        transfer: true,
+      },
+      { parent: this.item },
+    );
+    newEffect?.sheet?.render(true);
   }
 
   private _rangeSuggestions() {

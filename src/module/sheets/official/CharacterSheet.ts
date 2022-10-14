@@ -5,6 +5,7 @@ import {
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
+import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
 import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
@@ -13,6 +14,7 @@ import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
+import { Logger } from '../../Logger';
 import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
@@ -21,6 +23,7 @@ export default class CharacterSheet extends ActorSheet<
   SwadeActorSheetData
 > {
   _equipStateMenu: PopUpMenu;
+  _effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -53,6 +56,7 @@ export default class CharacterSheet extends ActorSheet<
     if (!this.options.editable) return;
 
     this._setupEquipStatusMenu(html);
+    this._setupEffectCreateMenu(html);
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -269,7 +273,7 @@ export default class CharacterSheet extends ActorSheet<
         case 'edit':
           return effect.sheet?.render(true);
         case 'delete':
-          return effect.delete();
+          return effect.deleteDialog();
         case 'toggle':
           return effect.update(this._toggleItem(effect, toggle));
         case 'open-origin':
@@ -277,7 +281,7 @@ export default class CharacterSheet extends ActorSheet<
           if (item) item?.sheet?.render(true);
           break;
         default:
-          console.warn(`The action ${action} is not currently supported`);
+          Logger.warn(`The action ${action} is not currently supported`);
           break;
       }
     });
@@ -680,33 +684,17 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   protected async _createActiveEffect(
-    name?: string,
     data: ActiveEffectDataConstructorData = {
-      label: '',
-      icon: '',
-      duration: {},
+      label: game.i18n.format('DOCUMENT.New', {
+        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+      }),
+      icon: '/icons/svg/mystery-man-black.svg',
+      duration: {
+        combat: game.combat?.id,
+      },
     },
     renderSheet = true,
   ) {
-    //Modify the data based on parameters passed in
-    if (!name) {
-      name = game.i18n.format('DOCUMENT.New', {
-        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-      });
-    }
-    data.label = name;
-
-    // Set default icon if none provided.
-    if (!data.icon) {
-      data.icon = '/icons/svg/mystery-man-black.svg';
-    }
-
-    // Set combat ID if none provided.
-    if (!data.duration) {
-      data.duration = {
-        combat: game.combat?.id,
-      };
-    }
     return CONFIG.ActiveEffect.documentClass.create(data, {
       renderSheet: renderSheet,
       parent: this.actor,
@@ -838,7 +826,7 @@ export default class CharacterSheet extends ActorSheet<
       case 'choice':
         this._chooseItemType().then(async (dialogInput: any) => {
           if (dialogInput.type === 'effect') {
-            this._createActiveEffect(dialogInput.name);
+            this._createActiveEffect({ label: dialogInput.name });
           } else {
             const itemData = createItem(dialogInput.type, dialogInput.name);
             await CONFIG.Item.documentClass.create(itemData, {
@@ -847,9 +835,6 @@ export default class CharacterSheet extends ActorSheet<
             });
           }
         });
-        break;
-      case 'effect':
-        this._createActiveEffect();
         break;
       case 'advance':
         this._addAdvance();
@@ -1067,6 +1052,32 @@ export default class CharacterSheet extends ActorSheet<
     const selector = ' .inventory .item-controls .equip-status';
     const options = { eventName: 'click' };
     this._equipStateMenu = new PopUpMenu(html, selector, items, options);
+  }
+
+  protected _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._effectCreateDropDown = new ContextMenu(
+      html,
+      '.effects .effect-add',
+      [
+        {
+          name: 'SWADE.ActiveEffects.AddGuided',
+          icon: '<i class="fa-solid fa-hat-wizard"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            new ActiveEffectWizard(this.object).render(true);
+          },
+        },
+        {
+          name: 'SWADE.ActiveEffects.AddUnguided',
+          icon: '<i class="fa-solid fa-file-plus"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            this._createActiveEffect();
+          },
+        },
+      ],
+      { eventName: 'click' },
+    );
   }
 }
 
