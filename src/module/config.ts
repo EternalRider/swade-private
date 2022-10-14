@@ -103,10 +103,6 @@ export const SWADE: SwadeConfig = {
     flags: {},
   },
 
-  actionCardEditor: {
-    id: 'actionCardEditor',
-  },
-
   statusEffects: statusEffects,
 
   wildCardIcons: {
@@ -315,10 +311,6 @@ export interface SwadeConfig {
     id: string;
     title: string;
     flags: Record<string, any>;
-  };
-
-  actionCardEditor: {
-    id: string;
   };
 
   statusEffects: StatusEffect[];
