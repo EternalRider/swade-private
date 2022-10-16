@@ -29,7 +29,7 @@ export default class CharacterSheet extends ActorSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       ...super.defaultOptions,
       classes: ['swade-official', 'sheet', 'actor'],
-      width: 630,
+      width: 650,
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],
@@ -720,7 +720,10 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private async _enrichText(text: string) {
-    return TextEditor.enrichHTML(text, { async: false, secrets: this.options.editable });
+    return TextEditor.enrichHTML(text, {
+      async: false,
+      secrets: this.options.editable,
+    });
   }
 
   protected async _getEffects() {
