@@ -677,8 +677,8 @@ SWADE:
     Header: Contents
   Category: Item Category
   ItemIsAmmo: Is Ammunition
-  SeeInfravision: See Infravision
-  SenseInfravision: Sense Infravision
+  SeeInfravision: Infravision
+  SenseInfravision: Sense Heat
   Attribute: Attribute
   BaseDie: Base Die
   AttributeManager:
