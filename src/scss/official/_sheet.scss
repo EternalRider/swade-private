@@ -252,7 +252,7 @@
     }
   }
 
-  button {
+  button:not(section.secret > button.reveal) {
     border: none;
     background: transparent;
     border-radius: 0;
@@ -278,6 +278,14 @@
 
   .editor {
     width: 100%;
+
+    .editor-menu button span {
+      text-shadow: none;
+
+      &:hover {
+        text-shadow: var(--input-text-shadow);
+      }
+    }
   }
 
   .section-header {

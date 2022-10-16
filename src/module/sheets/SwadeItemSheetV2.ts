@@ -207,6 +207,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         this.item.system.description,
         {
           async: true,
+          secrets: this.isEditable,
         },
       ),
       hasInlineDelete: this.hasInlineDelete,

@@ -185,6 +185,11 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Progress attribute abbreviation toggle
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
 
+    data.enrichedBiography = await TextEditor.enrichHTML(
+      this.actor.system.details.biography.value,
+      { async: true, secrets: this.options.editable },
+    );
+
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
 
@@ -195,10 +200,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         data.parry += shield.data.parry;
       }
     });
-    data.enrichedBiography = await TextEditor.enrichHTML(
-      this.actor.system.details.biography.value,
-      { async: true },
-    );
+
     return data;
   }
 
