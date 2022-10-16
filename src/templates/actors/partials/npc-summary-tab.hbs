@@ -97,7 +97,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.edge}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -116,7 +116,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.hindrance}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}} {{#if system.major}}{{localize "SWADE.Major"}}{{/if}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -135,7 +135,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.ability}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -154,7 +154,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.action}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>

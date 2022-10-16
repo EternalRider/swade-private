@@ -261,6 +261,8 @@
     width: auto;
     padding: $small-spacing;
     margin: $small-spacing;
+    background-position: center;
+    background-size: cover;
     cursor: pointer;
     i {
       margin: 0;
@@ -1021,7 +1023,7 @@
       .item-controls {
         grid-column: 3;
       }
-    }    
+    }
   }
 
   .header {
