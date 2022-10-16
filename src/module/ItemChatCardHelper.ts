@@ -30,12 +30,11 @@ export default class ItemChatCardHelper {
     //save the message ID if we're doing automated ammo management
     SWADE['itemCardMessageId'] = messageId;
 
-    // Validate permission to proceed with the roll
-    if (!(game.user!.isGM || message.isAuthor)) return null;
-
     // Get the Actor from a synthetic Token
-    const actor = this.getChatCardActor(card);
-    if (!actor) return null;
+    // This is a variable type because we might switch it later if this turns out
+    // to be a resistance-type trait roll. 
+    let actor = this.getChatCardActor(card);
+    if (!actor) return null; 
 
     // Get the Item
     const item = actor.items.get(card.dataset.itemId);
@@ -47,15 +46,33 @@ export default class ItemChatCardHelper {
       return null;
     }
 
+    const actionObj = getProperty(
+        item.system,
+        `actions.additional.${action}`,
+        ) as ItemAction;
+
+    // "Resist" types target the actor with a currently selected token, not the 
+    // one that spawned the chat card. So swap that actor in.
+    if (item.system.type === 'action'  && actionObj.type === 'resist') {
+      // swap the selected token's actor in as the target for the roll
+      if (!canvas.tokens || !(canvas.tokens.controlled.length == 1)) {
+        ui.notifications.warn(game.i18n.localize('SWADE.NoTokenSelectedForResistRoll'));
+        button.disabled = false;
+        return null;
+      }
+      actor = canvas.tokens?.controlled[0].actor ?? actor;
+    } else if (!(game.user!.isGM || message.isAuthor || actor.isOwner)) { 
+      // For non-resist types, don't allow a roll unless the message author is
+      // the user clicking the button.
+      button.disabled = false;
+      return null;
+    }
+
     //if it's a power and the No Power Points rule is in effect
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
       const ppCost = $(card).find('input.pp-adjust').val() as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
-      const actionObj = getProperty(
-        item.system,
-        `actions.additional.${action}`,
-      ) as ItemAction;
       if (action === 'formula' || (actionObj && actionObj.type === 'skill')) {
         additionalMods.push({
           label: game.i18n.localize('ITEM.TypePower'),
@@ -213,7 +230,7 @@ export default class ItemChatCardHelper {
 
     let roll: Promise<Roll> | Roll | null = null;
 
-    if (action.type === 'skill') {
+    if (action.type === 'skill' || action.type === 'resist') {
       //set the trait name and potentially override it via the action
       let traitName = getProperty(item.system, 'actions.skill');
       if (action.skillOverride) traitName = action.skillOverride;
@@ -394,6 +411,12 @@ export default class ItemChatCardHelper {
       delete SWADE['itemCardMessageId'];
     }
     if (!message) return; //solves for the case where ammo management isn't turned on so there's no errors
+
+    // Some chat cards have buttons that can be clicked by other actors in the game, 
+    // eg. resistance actions. When this happens, we cannot update the chat card, as
+    // the acting Actor does not own the card. Skip over these cases, there is no 
+    // update necessary.
+    if (message.speaker.actor !== actor.id) return;
 
     const content = new DOMParser().parseFromString(
       message.content,

@@ -66,19 +66,25 @@
     </div>
   {{/if}}
 
-  <!-- Trait Rolls -->
+  <!-- Normal & Resistance Trait Rolls -->
   {{#if (or showTraitRolls item.isArcaneDevice)}}
     <div class='card-buttons'>
       <h4 class='actions-subheading'>
         <i class='fa-solid fa-crosshairs'></i>
         {{localize 'SWADE.TraitRolls'}}
       </h4>
+
       {{#if hasTraitRoll}}
         <button data-action='formula'>{{trait}}</button>
       {{/if}}
+
       {{#each data.actions}}
         {{#if (eq type 'skill')}}
-          <button data-action='{{key}}'>{{name}}</button>
+          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
+        {{else if (eq type 'resist')}}
+          <button data-action='{{key}}' data-type='{{type}}'>
+            <i class='fa-solid fa-ban'></i>&nbsp;{{name}}
+          </button>
         {{/if}}
       {{/each}}
 
@@ -88,7 +94,6 @@
           {{localize 'SWADE.ActivateArcaneDevice'}}
         </button>
       {{/if}}
-    </div>
   {{/if}}
 
   <!-- Damage Rolls -->

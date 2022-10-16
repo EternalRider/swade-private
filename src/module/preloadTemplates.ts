@@ -46,6 +46,7 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/official/tabs/effects.hbs',
     'systems/swade/templates/official/tabs/inventory.hbs',
     'systems/swade/templates/official/tabs/powers.hbs',
+    'systems/swade/templates/official/tabs/actions.hbs',
     'systems/swade/templates/official/tabs/about.hbs',
 
     //misc partials

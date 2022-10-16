@@ -172,6 +172,7 @@ Item:
     - power
     - ability
     - consumable
+    - action
   templates:
     itemDescription:
       description: ''
@@ -336,6 +337,11 @@ Item:
       - favorite
     subtype: special
     grantsPowers: false
+  action:
+    templates:
+      - itemDescription
+      - actions
+      - favorite
 Card:
   types:
     - poker

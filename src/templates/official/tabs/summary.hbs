@@ -224,7 +224,7 @@
         class="item-create controls"
         data-type="choice"
         data-equipped="true"
-        data-choices="weapon,power,armor,shield,effect"
+        data-choices="weapon,power,armor,shield,effect,action"
       >
         <i class="fa fa-plus"></i>{{localize "SWADE.Add"}}
       </button>
@@ -318,6 +318,13 @@
         {{/if}}
       {{/each}}
     </ol>
+    <ol class="quick-list">
+      {{#each actor.itemTypes.action}}
+        {{#if system.favorite}}
+          {{> "systems/swade/templates/official/partials/item-card.hbs"}}
+        {{/if}}
+      {{/each}}
+    </ol>    
   </div>
   <div class="note-footer">&nbsp;</div>
 </span>

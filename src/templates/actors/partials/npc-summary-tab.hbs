@@ -142,6 +142,25 @@
         {{/each}}
       </ul>
     </section>
+    <section class="gear abilities">
+      <header class="header-field flexrow">
+        <div>
+          <span>{{localize "SWADE.Actions"}}</span>
+        </div>
+        <div class="header-field-add">
+          <a class="item-create" data-type="action"><i class="fa fa-plus"></i></a>
+        </div>
+      </header>
+      <ul class="items-list">
+        {{#each actor.itemTypes.action}}
+        <li class="item edge-hindrance" data-item-id="{{id}}">
+          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </section>
     <section class="gear">
       {{> "systems/swade/templates/setting-fields.hbs"}}
     </section>

@@ -84,6 +84,8 @@ SWADE:
   WeaponsAndArmor: Waffen & Rüstungen
   Dmg: Schaden
   DmgOver: Aktionsschaden
+  Resist: TODO
+  ResistRolls: TODO
   Ap: Pzbr
   APLong: Panzerbrechend
   RoF: Feuerrate
@@ -664,6 +666,7 @@ SWADE:
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
   EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
+  NoTokenSelectedForResistRoll: TODO
   Templates:
     Cone:
       Short: Kegel
@@ -735,6 +738,7 @@ ITEM:
   TypePower: Macht
   TypeAbility: Eigenschaft
   TypeConsumable: Verbrauchsgegenstand
+  TypeAction: TODO
 CARD:
   TypeAdventure: Abenteuerkarte
   TypePoker: Pokerkarte

@@ -121,6 +121,8 @@ SWADE:
   Protection: Protection
   Dmg: Damage
   DmgOver: Action Damage
+  Resist: Resist
+  ResistRolls: Resistance rolls
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
@@ -646,6 +648,7 @@ SWADE:
   EmptyRacialAbilitiesHint: >-
     This {race} or {archetype} doesn't have any abilities yet. Drag&Drop
     something onto the sheet to get started.
+  NoTokenSelectedForResistRoll: To make a resistance roll, first select one token    
   Templates:
     Cone:
       Short: Cone
@@ -719,6 +722,7 @@ ITEM:
   TypePower: Power
   TypeAbility: Ability
   TypeConsumable: Consumable
+  TypeAction: Action
 CARD:
   TypeAdventure: Adventure Card
   TypePoker: Poker Card

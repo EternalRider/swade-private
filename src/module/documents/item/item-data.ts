@@ -26,7 +26,8 @@ export type SwadeItemDataSource =
   | PowerItemDataSource
   | SkillItemDataSource
   | AbilityItemDataSource
-  | ConsumableDataSource;
+  | ConsumableDataSource
+  | ActionItemDataSource;
 
 // interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
 interface PhysicalItem {
@@ -216,6 +217,8 @@ interface AbilityData extends ItemDescription, Favorite {
   grantsPowers: boolean;
 }
 
+interface ActionData extends ItemDescription, Favorite, Actions {}
+
 interface SkillData extends ItemDescription {
   attribute: LinkedAttribute;
   isCoreSkill: boolean;
@@ -271,4 +274,9 @@ interface AbilityItemDataSource {
 interface ConsumableDataSource {
   data: ConsumableData;
   type: 'consumable';
+}
+
+interface ActionItemDataSource {
+  data: ActionData;
+  type: 'action';
 }

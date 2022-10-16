@@ -12,7 +12,7 @@
     </div>
   </header>
   <div class="card-content" style="display: none">
-  {{#if (or system.actions.skill system.actions.dmgMod system.actions.skillMod system.actions.additional.length system.isArcaneDevice)}}
+  {{#if (or hasSkillRoll hasDamage hasAmmoManagement hasReloadButton system.isArcaneDevice hasActionRoll)}}
     {{>"systems/swade/templates/shared-partials/action-card.hbs" item=this}}
   {{else}}
   {{#if system.description}}

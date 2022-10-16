@@ -455,6 +455,7 @@ export default class CharacterSheet extends ActorSheet<
       const hasSkillRoll =
         ['weapon', 'power', 'shield'].includes(item.type) &&
         getProperty(system, 'actions.skill');
+      const hasActionRoll = ['action'].includes(item.type);
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
@@ -469,6 +470,7 @@ export default class CharacterSheet extends ActorSheet<
       foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      foundry.utils.setProperty(item, 'hasActionRoll', hasActionRoll);
       if (item.type === 'power') {
         const powerPoints = this._getPowerPoints(item);
         foundry.utils.setProperty(item, 'powerPoints', powerPoints);
