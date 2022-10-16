@@ -161,14 +161,16 @@ export default class SwadeItem extends Item {
 
   async rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
-    let itemData;
+    let damage = '';
     if (['weapon', 'power', 'shield'].includes(this.type)) {
-      itemData = this.system;
+      damage = this.system.damage;
+    } else if (this.type === 'shield' || options.dmgOverride) {
+      damage = options.dmgOverride ?? '';
     } else {
       return null;
     }
     const label = this.name;
-    let ap = getProperty(this.system, 'ap');
+    let ap = foundry.utils.getProperty(this.system, 'ap');
 
     if (ap) {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -176,11 +178,8 @@ export default class SwadeItem extends Item {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
     }
 
-    let rollParts = [itemData.damage];
+    const rollParts = [damage];
 
-    if (this.type === 'shield' || options.dmgOverride) {
-      rollParts = [options.dmgOverride];
-    }
     //Additional Mods
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
