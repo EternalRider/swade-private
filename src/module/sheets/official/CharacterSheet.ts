@@ -720,7 +720,7 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private async _enrichText(text: string) {
-    return TextEditor.enrichHTML(text, { async: false });
+    return TextEditor.enrichHTML(text, { async: false, secrets: this.options.editable });
   }
 
   protected async _getEffects() {
