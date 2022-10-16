@@ -78,7 +78,25 @@
                 data-dtype='Number'
               />
             </div>
-          {{else}}
+          {{else if (eq action.type 'resist')}}
+            <div class='form-group left'>
+              <label> {{localize 'SWADE.AltTrait'}}</label>
+              <input
+                type='text'
+                name='system.actions.additional.{{id}}.skillOverride'
+                value='{{action.skillOverride}}'
+              />
+            </div>
+            <div class='form-group right'>
+              <label>{{localize 'SWADE.TraitMod'}}</label>
+              <input
+                type='text'
+                name='system.actions.additional.{{id}}.skillMod'
+                value='{{action.skillMod}}'
+                title='{{localize "SWADE.ModHint"}}'
+              />
+            </div>
+          {{else}} <!-- resistance type -->
             <div class='form-group full-width'>
               <label>{{localize 'SWADE.DmgOver'}}</label>
               <input

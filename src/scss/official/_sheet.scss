@@ -1000,6 +1000,20 @@
         grid-column: 4;
       }
     }
+
+    .action {
+      grid-template-columns: 32px 8fr 80px;
+      .item-img {
+        grid-column: 1;
+      }
+      .name {
+        grid-column: 2;
+        flex-wrap: nowrap;
+      }
+      .item-controls {
+        grid-column: 3;
+      }
+    }    
   }
 
   .header {

@@ -48,7 +48,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get hasInlineDelete(): boolean {
-    const types = ['edge', 'hindrance', 'ability', 'skill', 'power'];
+    const types = ['edge', 'hindrance', 'ability', 'skill', 'power', 'action'];
     return types.includes(this.type);
   }
 
@@ -65,7 +65,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get actionTypes(): Record<string, string> {
-    return { skill: 'SWADE.Trait', damage: 'SWADE.Dmg' };
+    return { skill: 'SWADE.Trait', damage: 'SWADE.Dmg', resist: 'SWADE.Resist' };
   }
 
   override activateListeners(html: JQuery<HTMLElement>): void {
