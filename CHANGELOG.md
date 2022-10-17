@@ -37,8 +37,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Toggling the `Hold` status effect now also toggles the hold status of a combatant in the Combat tracker. Thanks to Kristian Serrano. (!247)
 - Added Vision and Detection modes for Infravision. Thanks to Joseph Meehan. (!248)
   - The vision and detection modes do not work when the scene has Global Illumination enabled.
-  - `See Infravision` is restricted by walls.
-  - `Sense Infravision` is not restricted by walls.
+  - `See Heat` is restricted by walls.
+  - `Sense Heat` is not restricted by walls.
   - Tokens with the `Invisible` Status Effect can still be detected with Infravision.
   - Adding the `Cold-Bodied` Status Effect makes a token invisible to Infravision.
 - Added the ability remove items from the Quick Access directly to the Quick Access. Thanks to Kristian Serrano. (!249)

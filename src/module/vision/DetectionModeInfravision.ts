@@ -1,8 +1,9 @@
+//@ts-nocheck
+import InfraVisionFilter from './InfravisionFilter';
+
 export default class DetectionModeInfravision extends DetectionMode {
   static override getDetectionFilter() {
-    return (this._detectionFilter ??= GlowOverlayFilter.create({
-      glowColor: [1, 0.27, 0, 1],
-    }));
+    return (this._detectionFilter ??= InfraVisionFilter.create());
   }
 
   override _canDetect(visionSource, target) {
