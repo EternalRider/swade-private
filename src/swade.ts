@@ -121,13 +121,13 @@ Hooks.once('init', () => {
   CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
 
   //register detection modes
-  CONFIG.Canvas.detectionModes.seeInfravision = new DetectionModeInfravision({
-    id: 'seeInfravision',
+  CONFIG.Canvas.detectionModes.seeHeat = new DetectionModeInfravision({
+    id: 'seeHeat',
     label: 'SWADE.Vision.SeeHeat',
     type: DetectionMode.DETECTION_TYPES.SIGHT,
   });
-  CONFIG.Canvas.detectionModes.senseInfravision = new DetectionModeInfravision({
-    id: 'senseInfravision',
+  CONFIG.Canvas.detectionModes.senseHeat = new DetectionModeInfravision({
+    id: 'senseHeat',
     label: 'SWADE.Vision.SenseHeat',
     walls: false,
     type: DetectionMode.DETECTION_TYPES.OTHER,
