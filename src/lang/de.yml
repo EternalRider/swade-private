@@ -694,8 +694,9 @@ SWADE:
     Header: Inhalt
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
-  SeeInfravision: Wärme sehen
-  SenseInfravision: Wärme spüren
+  Vision:
+    SeeHeat: Wärme sehen
+    SenseHeat: Wärme spüren
   Attribute: Eigenschaft
   BaseDie: Würfelbasis
   AttributeManager:

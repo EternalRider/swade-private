@@ -38,7 +38,7 @@ import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
 import { deepFreeze, rollItemMacro } from './module/util';
-import DetectionModeInfravision from './module/vision';
+import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import './swade.scss';
 
 /* ------------------------------------ */
@@ -123,12 +123,12 @@ Hooks.once('init', () => {
   //register detection modes
   CONFIG.Canvas.detectionModes.seeInfravision = new DetectionModeInfravision({
     id: 'seeInfravision',
-    label: 'SWADE.SeeInfravision',
+    label: 'SWADE.Vision.SeeHeat',
     type: DetectionMode.DETECTION_TYPES.SIGHT,
   });
   CONFIG.Canvas.detectionModes.senseInfravision = new DetectionModeInfravision({
     id: 'senseInfravision',
-    label: 'SWADE.SenseInfravision',
+    label: 'SWADE.Vision.SenseHeat',
     walls: false,
     type: DetectionMode.DETECTION_TYPES.OTHER,
   });
