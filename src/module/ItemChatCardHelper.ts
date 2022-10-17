@@ -32,9 +32,9 @@ export default class ItemChatCardHelper {
 
     // Get the Actor from a synthetic Token
     // This is a variable type because we might switch it later if this turns out
-    // to be a resistance-type trait roll. 
+    // to be a resistance-type trait roll.
     let actor = this.getChatCardActor(card);
-    if (!actor) return null; 
+    if (!actor) return null;
 
     // Get the Item
     const item = actor.items.get(card.dataset.itemId);
@@ -46,22 +46,24 @@ export default class ItemChatCardHelper {
       return null;
     }
 
-    const actionObj = getProperty(
-        item.system,
-        `actions.additional.${action}`,
-        ) as ItemAction;
+    const actionObj = foundry.utils.getProperty(
+      item,
+      'system.actions.additional.' + action,
+    ) as ItemAction;
 
-    // "Resist" types target the actor with a currently selected token, not the 
+    // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
-    if (item.system.type === 'action'  && actionObj.type === 'resist') {
+    if (item.type === 'action' && actionObj.type === 'resist') {
       // swap the selected token's actor in as the target for the roll
-      if (!canvas.tokens || !(canvas.tokens.controlled.length == 1)) {
-        ui.notifications.warn(game.i18n.localize('SWADE.NoTokenSelectedForResistRoll'));
+      if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
+        ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {
+          localize: true,
+        });
         button.disabled = false;
         return null;
       }
       actor = canvas.tokens?.controlled[0].actor ?? actor;
-    } else if (!(game.user!.isGM || message.isAuthor || actor.isOwner)) { 
+    } else if (!(game.user!.isGM || message.isAuthor || actor.isOwner)) {
       // For non-resist types, don't allow a roll unless the message author is
       // the user clicking the button.
       button.disabled = false;
@@ -412,9 +414,9 @@ export default class ItemChatCardHelper {
     }
     if (!message) return; //solves for the case where ammo management isn't turned on so there's no errors
 
-    // Some chat cards have buttons that can be clicked by other actors in the game, 
+    // Some chat cards have buttons that can be clicked by other actors in the game,
     // eg. resistance actions. When this happens, we cannot update the chat card, as
-    // the acting Actor does not own the card. Skip over these cases, there is no 
+    // the acting Actor does not own the card. Skip over these cases, there is no
     // update necessary.
     if (message.speaker.actor !== actor.id) return;
 

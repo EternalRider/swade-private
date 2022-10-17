@@ -262,7 +262,8 @@
     padding: $small-spacing;
     margin: $small-spacing;
     background-position: center;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     cursor: pointer;
     i {
       margin: 0;
