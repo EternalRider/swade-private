@@ -64,6 +64,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed a wrong translation key related to measured templates (#619)
 - Fixed a bug that would cause a button in the Action Card Editor to appear empty when Foundry was set to german (#620)
+- Dropping owned items onto the hotbar should create proper macros again (#621)
 
 ## v2.0.6
 

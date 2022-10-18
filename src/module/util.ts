@@ -44,6 +44,7 @@ export function notificationExists(string: string, localize = false): boolean {
   const active = ui.notifications.active || [];
   return active.some((n) => n.text() === stringToFind);
 }
+
 /** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
@@ -58,15 +59,6 @@ export async function shouldShowBennyAnimation(): Promise<boolean> {
   } else {
     return value;
   }
-}
-
-//TODO Revisit if still necessary or if this could be done better
-/** @internal */
-export function getCanvas(): Canvas {
-  if (canvas instanceof Canvas && canvas.ready) {
-    return canvas!;
-  }
-  throw new Error('No Canvas available');
 }
 
 /**

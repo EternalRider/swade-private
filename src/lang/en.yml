@@ -708,6 +708,7 @@ SWADE:
         You can enter any skill name you like or select one from the list of
         suggestions
   OtherStats: Other Stats
+  HotbarDropOwnedItemWarning: You can only create macro buttons for owned Items
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
