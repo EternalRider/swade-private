@@ -18,6 +18,7 @@ import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
+import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -871,24 +872,8 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    /**
-     * Create a Macro from an Item drop.
-     * Get an existing item macro if one exists, otherwise create a new one.
-     */
-    if (data.type !== 'Item') {
-      return ui.notifications.warn(
-        'You can only create macro buttons for owned Items',
-      );
-    }
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
-    // Create the macro command
-    const macro = await CONFIG.Macro.documentClass.create({
-      name: item?.name as string,
-      type: CONST.MACRO_TYPES.SCRIPT,
-      img: item?.img as string,
-      command: `game.swade.rollItemMacro("${item?.name}");`,
-    });
-    await game.user?.assignHotbarMacro(macro!, slot);
+    onHotbarDrop(_hotbar, data, slot);
+    return false;
   }
 
   static onGetUserContextOptions(

@@ -724,6 +724,7 @@ SWADE:
         Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
+  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
