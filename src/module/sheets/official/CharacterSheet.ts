@@ -151,14 +151,6 @@ export default class CharacterSheet extends ActorSheet<
       }
     });
 
-    html.find('.add-benny').on('click', () => {
-      this.actor.getBenny();
-    });
-
-    html.find('.spend-benny').on('click', () => {
-      this.actor.spendBenny();
-    });
-
     //Roll Attribute
     html.find('.attribute button').on('click', async (ev) => {
       const attribute = ev.currentTarget.dataset.attribute as Attribute;
@@ -420,6 +412,10 @@ export default class CharacterSheet extends ActorSheet<
         shareable: this.actor.isOwner ?? game.user?.isGM,
       }).render(true);
     });
+
+    html
+      .find('.adjust-counter')
+      .on('click', this._handleCounterAdjust.bind(this));
   }
 
   override async getData(
@@ -972,6 +968,45 @@ export default class CharacterSheet extends ActorSheet<
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
+  }
+
+  protected async _handleCounterAdjust(ev: JQuery.ClickEvent) {
+    const action = ev.currentTarget.dataset.action;
+
+    switch (action) {
+      case 'fatigue-plus':
+        await this.actor.update({
+          'system.fatigue.value': this.actor.system.fatigue.value + 1,
+        });
+        break;
+      case 'fatigue-minus':
+        await this.actor.update({
+          'system.fatigue.value': Math.max(
+            0,
+            this.actor.system.fatigue.value - 1,
+          ),
+        });
+        break;
+      case 'wounds-plus':
+        await this.actor.update({
+          'system.wounds.value': this.actor.system.wounds.value + 1,
+        });
+        break;
+      case 'wounds-minus':
+        await this.actor.update({
+          'system.wounds.value': Math.max(
+            0,
+            this.actor.system.wounds.value - 1,
+          ),
+        });
+        break;
+      case 'spend-benny':
+        await this.actor.spendBenny();
+        break;
+      case 'get-benny':
+        await this.actor.getBenny();
+        break;
+    }
   }
 
   protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {

@@ -449,6 +449,19 @@
       flex-wrap: nowrap;
       justify-content: flex-start;
     }
+
+    .counter-header {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      line-height: 24px;
+      font-weight: 700;
+      .label {
+        white-space: nowrap;
+      }
+    }
+
     .status {
       grid-row: 1;
       grid-column: span 2;
@@ -495,38 +508,20 @@
   .bennies {
     display: grid;
     grid-template-columns: repeat(12, 10px);
-    min-height: 80px;
+    min-height: 70px;
+    .counter-header {
+      grid-row: 1;
+      grid-column: 1 / -1;
+    }
   }
   .benny {
-    width: 80px;
-    height: 80px;
-    align-self: center;
-    justify-self: start;
-    grid-row: 1;
-    background-position: center;
+    width: 70px;
+    height: 70px;
+    grid-row: 2;
     background-size: contain;
-    text-align: center;
     &:hover {
       filter: grayscale(100%);
     }
-  }
-  .current-bennies {
-    grid-row: 1;
-    grid-column: 11 / span 2;
-    align-self: end;
-    justify-self: end;
-    font-size: 24px;
-    font-weight: 700;
-    margin-right: $small-spacing;
-    margin-bottom: -$medium-spacing;
-    z-index: 10;
-  }
-  .add-benny {
-    grid-row: 1;
-    grid-column: 11 / span 2;
-    align-self: start;
-    justify-self: center;
-    z-index: 10;
   }
 
   .attributes,
