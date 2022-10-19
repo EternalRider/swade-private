@@ -52,13 +52,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a new action type - Resist. Thanks to Richard Gaywood.
   - Resist are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
   - These are good for resistance types, eg. adding an Evade resistance to a dragon's breath weapon so defenders can easily roll Athletics when they are targeted.
+- Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet
 
 ### Changed
 
+- [BREAKING CHANGE] The general Power Point pool has been moved from `system.powerPoints` to `system.powerPoints.general` and is now treated like AB-specific pools. A migration for actors and active effects has been provided. Please keep in mind that the migration for token attribute bars has only been made for _prototype Tokens_. Actual tokens will need to be adjusted by hand. (#369)
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
-- [BREAKING CHANGE] The general Power Point pool has been moved from `system.powerPoints` to `system.powerPoints.general` and is now treated like AB-specific pools. A migration for actors and active effects has been provided. Please keep in mind that the migration for token attribute bars has only been made for _prototype Tokens_. Actual tokens will need to be adjusted by hand. (#369)
+- Status Effects have been updated to use v10 attribute keys
 
 ### Fixed
 
