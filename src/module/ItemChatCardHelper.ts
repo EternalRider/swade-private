@@ -416,9 +416,10 @@ export default class ItemChatCardHelper {
 
     // Some chat cards have buttons that can be clicked by other actors in the game,
     // eg. resistance actions. When this happens, we cannot update the chat card, as
-    // the acting Actor does not own the card. Skip over these cases, there is no
-    // update necessary.
-    if (message.speaker.actor !== actor.id) return;
+    // the acting Actor does not own the card. Skip over these cases; there is no
+    // update necessary. Card updates are for things like ammo management and only make sense
+    // when they're being done by the actor that owns the card.
+    if (!message.isAuthor) return;
 
     const content = new DOMParser().parseFromString(
       message.content,
