@@ -66,9 +66,9 @@
     </div>
   {{/if}}
 
-  <!-- Normal & Resistance Trait Rolls -->
+  <!-- Normal Trait Rolls -->
   {{#if (or showTraitRolls item.isArcaneDevice)}}
-    <div class='card-buttons'>
+    <div class='card-buttons trait-rolls'>
       <h4 class='actions-subheading'>
         <i class='fa-solid fa-crosshairs'></i>
         {{localize 'SWADE.TraitRolls'}}
@@ -81,10 +81,6 @@
       {{#each data.actions}}
         {{#if (eq type 'skill')}}
           <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
-        {{else if (eq type 'resist')}}
-          <button data-action='{{key}}' data-type='{{type}}'>
-            <i class='fa-solid fa-ban'></i>&nbsp;{{name}}
-          </button>
         {{/if}}
       {{/each}}
 
@@ -94,11 +90,29 @@
           {{localize 'SWADE.ActivateArcaneDevice'}}
         </button>
       {{/if}}
+    </div>
   {{/if}}
+
+  {{#if hasResistRoll}}
+    <div class='card-buttons resist-rolls'>
+      <h4 class='actions-subheading'>
+        <i class='fa-solid fa-ban'></i>
+        {{localize 'SWADE.ResistRolls'}}
+      </h4>  
+
+      {{#each data.actions}}
+        {{#if (eq type 'resist')}}
+          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>        
+        {{/if}}
+      {{/each}}
+
+    </div>
+  {{/if}}
+
 
   <!-- Damage Rolls -->
   {{#if showDamageRolls}}
-    <div class='card-buttons'>
+    <div class='card-buttons damage-rolls'>
       <h4 class='actions-subheading'>
         <i class='fas fa-tint'></i>
         {{localize 'SWADE.DmgRolls'}}
@@ -117,7 +131,7 @@
 
   <!-- Template Controls -->
   {{#if item.system.templates}}
-    <div class='card-buttons'>
+    <div class='card-buttons template-controls'>
       <h4 class='actions-subheading'>
         <i class='fas fa-bullseye'></i>
         {{localize 'SWADE.Templates.Available'}}

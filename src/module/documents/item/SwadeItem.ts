@@ -530,6 +530,9 @@ export default class SwadeItem extends Item {
     const hasDamageActions = Object.values(additionalActions).some(
       (v) => v.type === 'damage',
     );
+    const hasResistRoll = Object.values(additionalActions).some(
+      (v) => v.type === 'resist',
+    );
 
     const templateData = {
       actorId: this.parent?.id,
@@ -543,6 +546,7 @@ export default class SwadeItem extends Item {
       trait: getProperty(this.system, 'actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
+      hasResistRoll : hasResistRoll,
       powerPoints: this._getPowerPoints(),
       settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
