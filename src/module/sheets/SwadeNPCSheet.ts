@@ -198,11 +198,10 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
 
-    const shields = data.itemsByType.shield;
     data.parry = 0;
-    shields.forEach((shield) => {
-      if (shield.data.equipState === constants.EQUIP_STATE.EQUIPPED) {
-        data.parry += shield.data.parry;
+    data.itemsByType.shield.forEach((shield) => {
+      if (shield.system.equipState === constants.EQUIP_STATE.EQUIPPED) {
+        data.parry += shield.system.parry;
       }
     });
 
