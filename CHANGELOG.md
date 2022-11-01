@@ -61,6 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
 - Status Effects have been updated to use v10 attribute keys
+- Replaced the icons for the Measured Templates to be more represent the actual template sizes (#631)
 
 ### Fixed
 
