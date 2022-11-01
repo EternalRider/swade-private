@@ -222,13 +222,11 @@ export function hideChatActionButtons(
     if (actor && actor.isOwner) return;
     else if (game.user!.isGM || data.author.id === game.user!.id) return;
 
-    // Otherwise conceal all action buttons except for resistance rolls
-    // (resistance rolls can be rolled by other actors as a defence)
-    const buttons = chatCard.find('button[data-action]');
-    buttons.each((i, btn) => {
-      if (btn.dataset.type === 'resist') return;
-      btn.style.display = 'none';
-    });
+    // Otherwise conceal all action button sections except for 
+    // resistance rolls (which can be rolled by other actors as a defence)
+    chatCard.find('div.trait-rolls:first')[0].style.display = 'none';
+    chatCard.find('div.damage-rolls:first')[0].style.display = 'none';
+    chatCard.find('div.template-controls:first')[0].style.display = 'none';
   }
 }
 
