@@ -122,7 +122,7 @@ SWADE:
   Dmg: Damage
   DmgOver: Action Damage
   Resist: Resist
-  ResistRolls: Resistance rolls
+  ResistRolls: Resistance Rolls
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
@@ -470,8 +470,8 @@ SWADE:
     FantasyCompanionEntangle:
       Name: Fantasy Companion Entangle
       Hint: >-
-        Use the Fantasy Companion Entangle status instead of the Core
-        version. Requires a reload to take effect
+        Use the Fantasy Companion Entangle status instead of the Core version.
+        Requires a reload to take effect
     InitDiscardPile:
       Name: Initiative Discard Pile
     InitCardDeck:
@@ -565,7 +565,9 @@ SWADE:
       Hint: When enabled this option hides all Power Point interactions
     AlwaysGeneralPP:
       Name: Always Show General Power Points
-      Hint: When enabled the General Powers section always shows even if all powers have an associated Arcane Background
+      Hint: >-
+        When enabled the General Powers section always shows even if all powers
+        have an associated Arcane Background
     ApplyEncumbrance:
       Name: Apply Encumbrance Penalties
       Hint: >-
@@ -648,7 +650,7 @@ SWADE:
   EmptyRacialAbilitiesHint: >-
     This {race} or {archetype} doesn't have any abilities yet. Drag&Drop
     something onto the sheet to get started.
-  NoTokenSelectedForResistRoll: To make a resistance roll, first select one token    
+  NoTokenSelectedForResistRoll: To make a resistance roll, first select one token
   Templates:
     Cone:
       Short: Cone

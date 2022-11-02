@@ -98,17 +98,16 @@
       <h4 class='actions-subheading'>
         <i class='fa-solid fa-ban'></i>
         {{localize 'SWADE.ResistRolls'}}
-      </h4>  
+      </h4>
 
       {{#each data.actions}}
         {{#if (eq type 'resist')}}
-          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>        
+          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
         {{/if}}
       {{/each}}
 
     </div>
   {{/if}}
-
 
   <!-- Damage Rolls -->
   {{#if showDamageRolls}}
