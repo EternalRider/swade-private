@@ -51,8 +51,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a new action type - Resist. Thanks to Richard Gaywood.
   - Resist are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
   - These are good for resistance types, eg. adding an Evade resistance to a dragon's breath weapon so defenders can easily roll Athletics when they are targeted.
-- Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet
-- Added additional translation strings
+- Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet.
+- Added the utility function `getStatusEffectDataById` to the new global `game.swade.util` object
+- Added additional translation strings.
 
 ### Changed
 
@@ -60,14 +61,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
 - Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
-- Status Effects have been updated to use v10 attribute keys
-- Replaced the icons for the Measured Templates to be more represent the actual template sizes (#631)
+- Status Effects have been updated to use v10 attribute keys.
+- Replaced the icons for the Measured Templates to be more represent the actual template sizes. (#631)
+- Disabled the ability for players to draw cards in the combat tracker. (#633)
 
 ### Fixed
 
-- Fixed a wrong translation key related to measured templates (#619)
-- Fixed a bug that would cause a button in the Action Card Editor to appear empty when Foundry was set to german (#620)
-- Dropping owned items onto the hotbar should create proper macros again (#621)
+- Fixed a wrong translation key related to measured templates. (#619)
+- Fixed a bug that would cause a button in the Action Card Editor to appear empty when Foundry was set to german. (#620)
+- Dropping owned items onto the hotbar should create proper macros again. (#621)
+- Fixed a few i18n issues with the Setting Configurator. (#636)
 
 ## v2.0.6
 

@@ -37,7 +37,11 @@ import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import { deepFreeze, rollItemMacro } from './module/util';
+import {
+  deepFreeze,
+  getStatusEffectDataById,
+  rollItemMacro,
+} from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import './swade.scss';
 
@@ -71,6 +75,9 @@ Hooks.once('init', () => {
     dice: {
       Benny,
       WildDie,
+    },
+    util: {
+      getStatusEffectDataById,
     },
     rollItemMacro,
     sockets: new SwadeSocketHandler(),

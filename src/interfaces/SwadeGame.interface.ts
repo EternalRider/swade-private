@@ -16,7 +16,7 @@ import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
-import { rollItemMacro } from '../module/util';
+import { getStatusEffectDataById, rollItemMacro } from '../module/util';
 
 export interface SwadeGame {
   sheets: {
@@ -36,6 +36,9 @@ export interface SwadeGame {
   dice: {
     Benny: typeof Benny;
     WildDie: typeof WildDie;
+  };
+  util: {
+    getStatusEffectDataById: typeof getStatusEffectDataById;
   };
   CharacterSummarizer: typeof CharacterSummarizer;
   RollDialog: typeof RollDialog;
