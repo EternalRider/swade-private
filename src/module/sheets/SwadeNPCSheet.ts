@@ -114,11 +114,6 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       this.actor.items.get(li.data('itemId'))?.sheet?.render(true);
     });
 
-    html.find('.item-show').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      this.actor.items.get(li.data('itemId'))?.show();
-    });
-
     // Delete Item
     html.find('.item-delete').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.gear-card');

@@ -38,16 +38,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       item?.sheet?.render(true);
     });
 
-    html.find('.item .item-controls .item-show').on('click', async (ev) => {
+    html.find('.item-show').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      item.show();
-    });
-
-    html.find('.item .item-name .item-image').on('click', async (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      item.show();
+      this.actor.items.get(li.data('itemId'))?.show();
     });
 
     // Edit armor modifier
@@ -78,7 +71,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const element = event.currentTarget as Element;
       const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
-      return item!.rollDamage();
+      return item.rollDamage();
     });
 
     // Use Consumable
