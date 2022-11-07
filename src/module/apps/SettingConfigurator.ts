@@ -14,8 +14,8 @@ export default class SettingConfigurator extends FormApplication<
 
   static get defaultOptions(): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: SWADE.settingConfig.id,
-      title: SWADE.settingConfig.title,
+      id: 'settingConfig',
+      title: game.i18n.localize('SWADE.SettingConf'),
       template: 'systems/swade/templates/apps/setting-config.hbs',
       classes: ['setting-config', 'sheet', 'swade-app'],
       tabs: [

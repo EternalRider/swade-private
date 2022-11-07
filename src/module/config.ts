@@ -64,8 +64,6 @@ export const SWADE: SwadeConfig = {
   },
 
   settingConfig: {
-    id: 'settingConfig',
-    title: 'SWADE Setting Rule Configurator',
     settings: [
       'coreSkills',
       'coreSkillsCompendium',
@@ -302,8 +300,6 @@ export interface SwadeConfig {
   };
 
   settingConfig: {
-    id: string;
-    title: string;
     settings: Array<string>;
   };
 
