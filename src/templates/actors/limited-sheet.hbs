@@ -24,12 +24,12 @@
   </header>
   <section class='sheet-body'>
     <div style='height: 600px'>
-      {{editor
-        actor.system.details.biography.value
-        target='system.details.biography.value'
-        button=true
-        owner=owner
+      {{editor 
+        enrichedBiography
+        target="system.details.biography.value" 
+        button=true 
         editable=editable
+        engine="prosemirror"
       }}
     </div>
   </section>

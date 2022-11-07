@@ -4,6 +4,7 @@ import {
   AdditionalStat,
   ItemAction,
 } from '../../interfaces/additional.interface';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -18,6 +19,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   SwadeItemSheetData
 > {
   collapsibleStates: CollapsibleStates = { powers: {}, actions: {} };
+  _effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -46,7 +48,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get hasInlineDelete(): boolean {
-    const types = ['edge', 'hindrance', 'ability', 'skill', 'power'];
+    const types = ['edge', 'hindrance', 'ability', 'skill', 'power', 'action'];
     return types.includes(this.type);
   }
 
@@ -63,12 +65,13 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get actionTypes(): Record<string, string> {
-    return { skill: 'SWADE.Trait', damage: 'SWADE.Dmg' };
+    return { skill: 'SWADE.Trait', damage: 'SWADE.Dmg', resist: 'SWADE.Resist' };
   }
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     this._setupAccordions();
+    this._setupEffectCreateMenu(html);
 
     html.find('.profile-img').on('contextmenu', () => {
       if (!this.item.img) return;
@@ -145,20 +148,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       });
     });
 
-    html.find('.add-effect').on('click', async (ev) => {
-      const newEffect = await CONFIG.ActiveEffect.documentClass.create(
-        {
-          label: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-          }),
-          icon: '/icons/svg/mystery-man.svg',
-          transfer: Boolean(ev.currentTarget.dataset.transfer),
-        },
-        { parent: this.item },
-      );
-      newEffect?.sheet?.render(true);
-    });
-
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
       const effectId = a.closest('li')!.dataset.effectId!;
@@ -218,6 +207,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         this.item.system.description,
         {
           async: true,
+          secrets: this.isEditable,
         },
       ),
       hasInlineDelete: this.hasInlineDelete,
@@ -248,7 +238,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     if (this.type === 'weapon') {
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      data.ammoList = this.actor?.itemTypes.gear.map((i) => i.name) as string[];
+      data.ammoList = this.actor?.itemTypes.gear
+        .filter((i) => i.system.isAmmo)
+        .map((i) => i.name) as string[];
     }
 
     if (this.item.isArcaneDevice) {
@@ -280,9 +272,11 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   protected override _getSubmitData(updateData: object | null = {}) {
     const data = super._getSubmitData(updateData);
-    // Prevent submitting overridden values
-    const overrides = foundry.utils.flattenObject(this.item.overrides);
-    Object.keys(overrides).forEach((v) => delete data[v]);
+    if (this.item.type !== 'skill') {
+      // Prevent submitting overridden values
+      const overrides = foundry.utils.flattenObject(this.item.overrides);
+      Object.keys(overrides).forEach((v) => delete data[v]);
+    }
     return data;
   }
 
@@ -478,6 +472,46 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           states[id] = !currentState;
         });
       });
+  }
+
+  private _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._effectCreateDropDown = new ContextMenu(
+      html,
+      '.effects .header',
+      [
+        {
+          name: 'SWADE.ActiveEffects.AddGuided',
+          icon: '<i class="fa-solid fa-hat-wizard"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            new ActiveEffectWizard(this.object).render(true);
+          },
+        },
+        {
+          name: 'SWADE.ActiveEffects.AddUnguided',
+          icon: '<i class="fa-solid fa-file-plus"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            this._createActiveEffect();
+          },
+        },
+      ],
+      { eventName: 'click' },
+    );
+  }
+
+  private async _createActiveEffect() {
+    const newEffect = await CONFIG.ActiveEffect.documentClass.create(
+      {
+        label: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+        }),
+        icon: '/icons/svg/mystery-man.svg',
+        transfer: true,
+      },
+      { parent: this.item },
+    );
+    newEffect?.sheet?.render(true);
   }
 
   private _rangeSuggestions() {

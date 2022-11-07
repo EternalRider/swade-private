@@ -252,7 +252,7 @@
     }
   }
 
-  button {
+  button:not(section.secret > button.reveal) {
     border: none;
     background: transparent;
     border-radius: 0;
@@ -261,6 +261,9 @@
     width: auto;
     padding: $small-spacing;
     margin: $small-spacing;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
     cursor: pointer;
     i {
       margin: 0;
@@ -278,6 +281,14 @@
 
   .editor {
     width: 100%;
+
+    .editor-menu button span {
+      text-shadow: none;
+
+      &:hover {
+        text-shadow: var(--input-text-shadow);
+      }
+    }
   }
 
   .section-header {
@@ -286,16 +297,16 @@
     font-size: var(--section-header-size);
     color: var(--section-header-color);
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
     .name {
       text-align: center;
       z-index: 0;
-      grid-column: 1 / span 2;
+      grid-column: 1 / -1;
       grid-row: 1;
     }
     .controls {
       z-index: 1;
-      grid-column: 2;
+      grid-column: 3;
       grid-row: 1;
       font-family: var(--default-font);
     }
@@ -305,7 +316,8 @@
     color: rgba(0, 0, 0, 0.2);
   }
 
-  .item-create {
+  .item-create,
+  .add-effect {
     color: var(--add-button-color);
     &:hover,
     :focus {
@@ -437,6 +449,19 @@
       flex-wrap: nowrap;
       justify-content: flex-start;
     }
+
+    .counter-header {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      line-height: 24px;
+      font-weight: 700;
+      .label {
+        white-space: nowrap;
+      }
+    }
+
     .status {
       grid-row: 1;
       grid-column: span 2;
@@ -483,38 +508,20 @@
   .bennies {
     display: grid;
     grid-template-columns: repeat(12, 10px);
-    min-height: 80px;
+    min-height: 70px;
+    .counter-header {
+      grid-row: 1;
+      grid-column: 1 / -1;
+    }
   }
   .benny {
-    width: 80px;
-    height: 80px;
-    align-self: center;
-    justify-self: start;
-    grid-row: 1;
-    background-position: center;
+    width: 70px;
+    height: 70px;
+    grid-row: 2;
     background-size: contain;
-    text-align: center;
     &:hover {
       filter: grayscale(100%);
     }
-  }
-  .current-bennies {
-    grid-row: 1;
-    grid-column: 11 / span 2;
-    align-self: end;
-    justify-self: end;
-    font-size: 24px;
-    font-weight: 700;
-    margin-right: $small-spacing;
-    margin-bottom: -$medium-spacing;
-    z-index: 10;
-  }
-  .add-benny {
-    grid-row: 1;
-    grid-column: 11 / span 2;
-    align-self: start;
-    justify-self: center;
-    z-index: 10;
   }
 
   .attributes,
@@ -544,45 +551,33 @@
   .primary {
     text-align: center;
     margin-bottom: $medium-spacing;
+
+    .attribute-manager {
+      grid-column: 1;
+      grid-row: 1;
+      z-index: 1;
+      width: 100%;
+    }
     .attribute-label {
       font-weight: 700;
+      white-space: nowrap;
     }
     .attribute-value {
       margin-top: $small-spacing;
       flex-wrap: nowrap;
+      width: 100%;
     }
     .attribute {
-      margin-bottom: $medium-spacing;
-      input {
-        background-color: transparent;
-        border-bottom: $solid-line;
-        border-radius: 0;
+      .die {
+        border: none;
+        height: 28px;
+      }
+      .modifier {
         margin: 0;
         width: 100%;
-        height: 28px;
+        line-height: 28px;
       }
-      select {
-        color: transparent;
-        border: none;
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-        height: 28px;
-        text-align-last: center;
-        -moz-text-align-last: center;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-color: transparent;
-        ::-ms-expand {
-          display: none;
-        }
-        &:hover {
-          box-shadow: 0 0 5px var(--color-shadow-primary);
-        }
-      }
-      option {
-        color: black;
-      }
+      margin-bottom: $medium-spacing;
     }
     .attribute + .attribute {
       padding-left: $medium-spacing;
@@ -743,6 +738,9 @@
         text-decoration-thickness: $small-spacing;
       }
     }
+    .card-header {
+      justify-content: space-between;
+    }
     .item-image {
       background-repeat: no-repeat;
       background-position: center;
@@ -754,9 +752,8 @@
     }
     .item-controls {
       line-height: 24px;
-      text-align: center;
-      flex: 0 0 32px;
-      justify-self: flex-end;
+      display: flex;
+      justify-content: flex-end;
     }
     .card-content {
       font-size: 14px;
@@ -1009,6 +1006,20 @@
         grid-column: 4;
       }
     }
+
+    .action {
+      grid-template-columns: 32px 8fr 80px;
+      .item-img {
+        grid-column: 1;
+      }
+      .name {
+        grid-column: 2;
+        flex-wrap: nowrap;
+      }
+      .item-controls {
+        grid-column: 3;
+      }
+    }
   }
 
   .header {
@@ -1111,8 +1122,10 @@
       margin-bottom: 1em;
     }
     .effect-add {
-      display: flex;
-      justify-content: flex-end;
+      display: block;
+      margin-left: auto;
+      width: fit-content;
+      padding-left: 3rem;
     }
     .effect,
     .effect-header {

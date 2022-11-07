@@ -67,8 +67,8 @@
         margin: 0 auto;
       }
       &.high-card {
-        .indicator{
-          visibility: visible
+        .indicator {
+          visibility: visible;
         }
       }
     }
@@ -104,23 +104,6 @@
   }
 }
 
-.text-icon {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-style: normal;
-}
-.cone::before {
-  content: 'C';
-}
-.sbt::before {
-  content: 'S';
-}
-.mbt::before {
-  content: 'M';
-}
-.lbt::before {
-  content: 'L';
-}
-
 .scrollable {
   overflow-x: auto;
 }
@@ -154,7 +137,7 @@
   .effect-controls {
     display: flex;
     justify-content: flex-end;
-    gap: .75ch;
+    gap: 0.75ch;
     line-height: 24px;
     flex: 0 0 60px;
     a,

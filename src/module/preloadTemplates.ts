@@ -30,12 +30,6 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/chat/roll-formula.hbs',
 
     //Items
-    'systems/swade/templates/items-legacy/partials/header.hbs',
-    'systems/swade/templates/items-legacy/partials/header-delete.hbs',
-    'systems/swade/templates/items-legacy/partials/description.hbs',
-    'systems/swade/templates/items-legacy/partials/actions.hbs',
-    'systems/swade/templates/items-legacy/partials/powers.hbs',
-    'systems/swade/templates/items-legacy/partials/ae-header.hbs',
     'systems/swade/templates/effect-list.hbs',
 
     //official sheet
@@ -46,6 +40,7 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/official/tabs/effects.hbs',
     'systems/swade/templates/official/tabs/inventory.hbs',
     'systems/swade/templates/official/tabs/powers.hbs',
+    'systems/swade/templates/official/tabs/actions.hbs',
     'systems/swade/templates/official/tabs/about.hbs',
 
     //misc partials

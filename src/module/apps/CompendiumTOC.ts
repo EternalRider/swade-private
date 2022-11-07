@@ -24,6 +24,8 @@ export default class CompendiumTOC extends Compendium<
     });
   }
 
+  static ALLOWED_TYPES = ['Actor', 'Item', 'JournalEntry'];
+
   static CF_ENTITY = '#[CF_tempEntity]';
 
   get isJournal(): boolean {

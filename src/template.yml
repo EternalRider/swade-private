@@ -63,7 +63,7 @@ Actor:
           value: ''
         species:
           name: ''
-        currency: 500
+        currency: 0
         wealth:
           die: 6
           modifier: 0
@@ -71,8 +71,10 @@ Actor:
         conviction:
           value: 0
           active: false
-
-      powerPoints: {}
+      powerPoints: 
+        general:
+          value: 0
+          max: 0
       fatigue:
         value: 0
         min: 0
@@ -98,6 +100,7 @@ Actor:
         isStunned: false
         isEntangled: false
         isBound: false
+        isIncapacitated: false
       initiative:
         hasHesitant: false
         hasLevelHeaded: false
@@ -169,6 +172,7 @@ Item:
     - power
     - ability
     - consumable
+    - action
   templates:
     itemDescription:
       description: ''
@@ -219,6 +223,7 @@ Item:
       - actions
       - favorite
       - category
+    isAmmo: false
   weapon:
     templates:
       - itemDescription
@@ -242,6 +247,7 @@ Item:
     ammo: ''
     autoReload: false
     trademark: 0
+    isHeavyWeapon: false
   armor:
     templates:
       - itemDescription
@@ -256,6 +262,7 @@ Item:
     armor: 0
     toughness: 0
     isNaturalArmor: false
+    isHeavyArmor: false
     locations:
       head: false
       torso: true
@@ -280,11 +287,11 @@ Item:
       - favorite
       - physicalItem
       - category
+      - equipable
     charges:
       value: 1
       max: 1
     destroyOnEmpty: false
-    equipStatus: 1
   edge:
     templates:
       - itemDescription
@@ -330,6 +337,11 @@ Item:
       - favorite
     subtype: special
     grantsPowers: false
+  action:
+    templates:
+      - itemDescription
+      - actions
+      - favorite
 Card:
   types:
     - poker

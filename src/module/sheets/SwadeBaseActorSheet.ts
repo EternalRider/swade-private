@@ -1,10 +1,8 @@
-import { AdditionalStats } from '../../globals';
-import {
-  AdditionalStat,
-  TraitRollModifier,
-} from '../../interfaces/additional.interface';
+import { AdditionalStats, Attribute } from '../../globals';
+import { AdditionalStat } from '../../interfaces/additional.interface';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
-import * as chat from '../chat';
 import { SWADE } from '../config';
 import SwadeItem from '../documents/item/SwadeItem';
 /**
@@ -40,16 +38,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       item?.sheet?.render(true);
     });
 
-    html.find('.item .item-controls .item-show').on('click', async (ev) => {
+    html.find('.item-show').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      item.show();
-    });
-
-    html.find('.item .item-name .item-image').on('click', async (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      item.show();
+      this.actor.items.get(li.data('itemId'))?.show();
     });
 
     // Edit armor modifier
@@ -66,11 +57,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     // Roll attribute
-    html.find('.attribute-label a').on('click', (event) => {
-      const element = event.currentTarget;
-      const attribute = element.parentElement!.parentElement!.dataset
-        .attribute! as keyof typeof SWADE.attributes;
+    html.find('.attribute-value').on('click', (event) => {
+      const attribute = event.currentTarget.dataset.attribute as Attribute;
       this.actor.rollAttribute(attribute);
+    });
+
+    html.find('.attribute-manager').on('click', () => {
+      new AttributeManager(this.actor).render(true);
     });
 
     // Roll Damage
@@ -78,7 +71,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const element = event.currentTarget as Element;
       const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
-      return item!.rollDamage();
+      return item.rollDamage();
     });
 
     // Use Consumable
@@ -101,33 +94,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      const current = getProperty(
-        this.actor.data,
-        'data.details.conviction.value',
-      ) as number;
-      const active = getProperty(
-        this.actor.data,
-        'data.details.conviction.active',
-      ) as boolean;
-
-      if (current > 0 && !active) {
-        await this.actor.update({
-          'system.details.conviction.value': current - 1,
-          'system.details.conviction.active': true,
-        });
-        ChatMessage.create({
-          speaker: {
-            actor: this.actor.id,
-            alias: this.actor.name,
-          },
-          content: game.i18n.localize('SWADE.ConvictionActivate'),
-        });
-      } else {
-        await this.actor.update({
-          'system.details.conviction.active': false,
-        });
-        await chat.createConvictionEndMessage(this.actor);
-      }
+      await this.actor.toggleConviction();
     });
 
     // Filter power list
@@ -139,45 +106,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     //Running Die
-    html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.type === 'vehicle') return;
-
-      const runningDieSides = this.actor.data.data.stats.speed.runningDie;
-      const runningMod = this.actor.data.data.stats.speed.runningMod;
-      const pace = this.actor.data.data.stats.speed.adjusted;
-      const runningDie = `1d${runningDieSides}[${game.i18n.localize(
-        'SWADE.RunningDie',
-      )}]`;
-      const mods: TraitRollModifier[] = [
-        { label: game.i18n.localize('SWADE.Pace'), value: pace.signedString() },
-      ];
-
-      if (runningMod) {
-        mods.push({
-          label: 'Modifier',
-          value: runningMod.signedString(),
-        });
-      }
-      if (ev.shiftKey) {
-        const rollFormula =
-          runningDie + runningMod.signedString() + pace.signedString();
-        const runningRoll = new Roll(rollFormula);
-        await runningRoll.evaluate({ async: true });
-        await runningRoll.toMessage({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          flavor: game.i18n.localize('SWADE.Running'),
-        });
-        return;
-      }
-      game.swade.RollDialog.asPromise({
-        roll: new Roll(runningDie),
-        mods: mods,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: game.i18n.localize('SWADE.Running'),
-        title: game.i18n.localize('SWADE.Running'),
-        actor: this.actor,
-        allowGroup: false,
-      });
+    html.find('.running-die').on('click', async () => {
+      await this.actor.rollRunningDie();
     });
 
     html.find('.effect-action').on('click', (ev) => {
@@ -190,12 +120,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'edit':
           return effect.sheet?.render(true);
         case 'delete':
-          return effect.delete();
+          return effect.deleteDialog();
         case 'toggle':
           return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
           fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
-            if (item) this.actor.items.get(item.id!)!.sheet?.render(true);
+            this.actor.items.get(item.id!)?.sheet?.render(true);
           });
           break;
         default:
@@ -206,27 +136,30 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     html.find('.add-effect').on('click', async (ev) => {
       const transfer = $(ev.currentTarget).data('transfer');
-      const effect = await CONFIG.ActiveEffect.documentClass.create(
-        {
-          label: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-          }),
-          icon: '/icons/svg/mystery-man-black.svg',
-          transfer: transfer,
-        },
-        { renderSheet: true, parent: this.actor },
-      );
-      this.actor.effects.get(effect?.id!, { strict: true }).sheet?.render(true);
+      if (ev.shiftKey) {
+        await CONFIG.ActiveEffect.documentClass.create(
+          {
+            label: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+            }),
+            icon: '/icons/svg/mystery-man-black.svg',
+            transfer: transfer,
+          },
+          { renderSheet: true, parent: this.actor },
+        );
+      } else {
+        new ActiveEffectWizard(this.actor).render(true);
+      }
     });
 
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
       const statData = getProperty(
-        this.actor.data,
-        `data.additionalStats.${stat}`,
+        this.actor,
+        `system.additionalStats.${stat}`,
       ) as AdditionalStat;
-      let modifier = statData.modifier || '';
+      let modifier = statData.modifier ?? '0';
       if (!!modifier && !modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
       }

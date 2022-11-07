@@ -12,7 +12,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.status.isShaken',
+        key: 'system.status.isShaken',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -28,6 +28,13 @@ export const statusEffects: StatusEffect[] = [
     icon: 'icons/svg/skull.svg',
     id: 'incapacitated',
     label: 'SWADE.Incap',
+    changes: [
+      {
+        key: 'system.status.isIncapacitated',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'true',
+      },
+    ],
   },
   {
     icon: 'systems/swade/assets/icons/status/status_aiming.svg',
@@ -43,17 +50,17 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.attributes.strength.die.sides',
+        key: 'system.attributes.strength.die.sides',
         value: '2',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
       {
-        key: 'data.stats.toughness.value',
+        key: 'system.stats.toughness.value',
         value: '2',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
       {
-        key: 'data.wounds.ignored',
+        key: 'system.wounds.ignored',
         value: '1',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
@@ -73,7 +80,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.stats.parry.modifier',
+        key: 'system.stats.parry.modifier',
         value: '4',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
@@ -100,17 +107,17 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Bound',
     changes: [
       {
-        key: 'data.status.isBound',
+        key: 'system.status.isBound',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
       {
-        key: 'data.status.isDistracted',
+        key: 'system.status.isDistracted',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
       {
-        key: 'data.status.isVulnerable',
+        key: 'system.status.isVulnerable',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -122,12 +129,12 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Entangled',
     changes: [
       {
-        key: 'data.status.isEntangled',
+        key: 'system.status.isEntangled',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
       {
-        key: 'data.status.isDistracted',
+        key: 'system.status.isDistracted',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -147,7 +154,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.status.isDistracted',
+        key: 'system.status.isDistracted',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -177,17 +184,17 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.status.isStunned',
+        key: 'system.status.isStunned',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
       {
-        key: 'data.status.isDistracted',
+        key: 'system.status.isDistracted',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
       {
-        key: 'data.status.isVulnerable',
+        key: 'system.status.isVulnerable',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -208,7 +215,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.status.isVulnerable',
+        key: 'system.status.isVulnerable',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -278,6 +285,11 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Invisible',
   },
   {
+    icon: 'systems/swade/assets/icons/status/status_coldbodied.svg',
+    id: 'cold-bodied',
+    label: 'SWADE.ColdBodied',
+  },
+  {
     icon: 'systems/swade/assets/icons/status/status_smite.svg',
     id: 'smite',
     label: 'SWADE.Smite',
@@ -291,12 +303,12 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'data.stats.toughness.value',
+        key: 'system.stats.toughness.value',
         value: '0',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
       {
-        key: 'data.stats.toughness.armor',
+        key: 'system.stats.toughness.armor',
         value: '0',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },

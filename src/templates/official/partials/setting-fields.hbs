@@ -1,5 +1,7 @@
 {{#if hasAdditionalStats}}
-  <header class='section-header'>{{localize 'SWADE.AddStats'}}</header>
+  <header class='section-header'>
+    <span class='name'>{{localize 'SWADE.AddStats'}}</span>
+  </header>
   <div class='additional-stats'>
     {{#each actor.system.additionalStats as |attr key|}}
       <div class='form-group'>

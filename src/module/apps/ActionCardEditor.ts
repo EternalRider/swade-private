@@ -1,5 +1,3 @@
-import { SWADE } from '../config';
-
 interface ScrollRenderOptions extends Application.RenderOptions {
   scroll?: boolean;
 }
@@ -12,15 +10,17 @@ interface CardData {
   isJoker: boolean;
 }
 
-export default class ActionCardEditor extends FormApplication {
+export default class ActionCardEditor extends FormApplication<
+  FormApplicationOptions,
+  any,
+  Cards
+> {
   constructor(cards: Cards, options: Partial<FormApplicationOptions> = {}) {
     super(cards, options);
   }
 
   static override get defaultOptions() {
-    return {
-      ...super.defaultOptions,
-      id: SWADE.actionCardEditor.id,
+    return foundry.utils.mergeObject(super.defaultOptions, {
       title: game.i18n.localize('SWADE.ActionCardEditor'),
       template: 'systems/swade/templates/apps/action-card-editor.hbs',
       classes: ['swade', 'action-card-editor', 'swade-app'],
@@ -29,7 +29,10 @@ export default class ActionCardEditor extends FormApplication {
       height: 'auto' as const,
       closeOnSubmit: false,
       submitOnClose: false,
-    };
+    });
+  }
+  get id(): string {
+    return `actionCardEditor-${this.object.id}`;
   }
 
   get cards() {
@@ -105,7 +108,9 @@ export default class ActionCardEditor extends FormApplication {
   private async _createNewCard() {
     const newCard = await CONFIG.Card.documentClass.create(
       {
-        name: 'New Card',
+        name: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('DOCUMENT.Card'),
+        }),
         type: 'poker',
         faces: [
           {
@@ -130,9 +135,7 @@ export default class ActionCardEditor extends FormApplication {
   override async _render(force?: boolean, options: ScrollRenderOptions = {}) {
     await super._render(force, options);
     if (options.scroll) {
-      document
-        .querySelector(`#${SWADE.actionCardEditor.id} .card-list`)
-        ?.scrollIntoView(false);
+      document.querySelector(`#${this.id} .card-list`)?.scrollIntoView(false);
     }
   }
 }

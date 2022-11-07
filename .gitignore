@@ -5,7 +5,7 @@ foundryconfig.json
 .vscode/*
 !.vscode/extensions.json
 !.vscode/i18n-ally-custom-framework.yml
-dist/*
+**/dist/*
 .idea
 docs/*
 .cache

@@ -41,6 +41,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
     return false;
   }
 
+  get statusId() {
+    return this.getFlag('core', 'statusId');
+  }
+
   get expiresAtStartOfTurn(): boolean {
     const expiration = this.getFlag('swade', 'expiration') ?? -1;
     return [
@@ -267,6 +271,22 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (this.affectsItems && parent instanceof CONFIG.Actor.documentClass) {
       this._removeEffectsFromItems(parent);
     }
+    // Get the active Combat if there is one.
+    const activeCombat = game.combats?.active;
+    if (activeCombat) {
+      // Get the Combatant that corresponds to the Actor.
+      const combatant = activeCombat.getCombatantByActor(
+        this.parent?.id as string,
+      );
+      // If there is a corresponding Combatant, process Combatant Controls
+      if (combatant) {
+        // If status is Holding, turn off Hold for Combatant.
+        this.statusId;
+        if (this.statusId === 'holding') {
+          await combatant?.unsetFlag('swade', 'roundHeld');
+        }
+      }
+    }
   }
 
   protected override async _preCreate(
@@ -275,10 +295,24 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
+    // Get the active Combat if there is one.
+    const activeCombat = game.combats?.active;
+    if (activeCombat) {
+      // Get the Combatant that corresponds to the Actor.
+      const combatant = activeCombat.getCombatantByActor(
+        this.parent?.id as string,
+      );
+      // If there is a corresponding Combatant, process Combatant Controls
+      if (combatant) {
+        // If status is Holding, turn on Hold for Combatant.
+        if (this.statusId === 'holding') {
+          await combatant.setRoundHeld(activeCombat.current.round as number);
+        }
+      }
+    }
 
     //localize labels, just to be sure
-    const label = game.i18n.localize(this.label);
-    this.updateSource({ label: label });
+    this.updateSource({ label: game.i18n.localize(this.label) });
 
     //automatically favorite status effects
     if (data.flags?.core?.statusId) {

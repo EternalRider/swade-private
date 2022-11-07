@@ -197,7 +197,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     data.equipStatusEnum = constants.EQUIP_STATE;
     data.enrichedDescription = await TextEditor.enrichHTML(
       this.actor.system.description,
-      { async: true },
+      { async: true, secrets: this.options.editable },
     );
     return data;
   }

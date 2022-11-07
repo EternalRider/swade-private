@@ -1,0 +1,110 @@
+<img src="systems/swade/assets/paperclip_cut.webp" class="paperclip">
+<form class="index-card" autocomplete='off'>
+  <header class="flexrow attribute">
+    <span>{{localize "SWADE.Attribute"}}</span>
+    <span>{{localize "SWADE.BaseDie"}}</span>
+    <span>{{localize "SWADE.Modifier"}}</span>
+    <span>{{localize "SWADE.WildDie"}}</span>
+  </header>
+  <section class='flexrow attribute agility'>
+    <label>{{localize 'SWADE.AttrAgi'}}</label>
+    <select name='system.attributes.agility.die.sides' data-dtype='Number'>
+      {{#select object._source.system.attributes.agility.die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+    <input 
+      type="text" 
+      name="system.attributes.agility.die.modifier" 
+      value="{{signedString object._source.system.attributes.agility.die.modifier}}"
+      data-dtype="Number"
+    >
+    <select name='system.attributes.agility.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
+      {{#select object._source.system.attributes.agility.wild-die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+  </section>
+  <section class='flexrow attribute smarts'>
+    <label>{{localize 'SWADE.AttrSma'}}</label>
+    <select name='system.attributes.smarts.die.sides' data-dtype='Number'>
+      {{#select object._source.system.attributes.smarts.die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+    <input 
+      type="text" 
+      name="system.attributes.smarts.die.modifier" 
+      value="{{signedString object._source.system.attributes.smarts.die.modifier}}"
+      data-dtype="Number"
+    >
+    <select name='system.attributes.smarts.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
+      {{#select object._source.system.attributes.smarts.wild-die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+  </section>
+  <section class='flexrow attribute spirit'>
+    <label>{{localize 'SWADE.AttrSpr'}}</label>
+    <select name='system.attributes.spirit.die.sides' data-dtype='Number'>
+      {{#select object._source.system.attributes.spirit.die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+    <input 
+      type="text" 
+      name="system.attributes.spirit.die.modifier" 
+      value="{{signedString object._source.system.attributes.spirit.die.modifier}}"
+      data-dtype="Number"
+    >
+    <select name='system.attributes.spirit.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
+      {{#select object._source.system.attributes.spirit.wild-die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+  </section>
+  <section class='flexrow attribute strength'>
+    <label>{{localize 'SWADE.AttrStr'}}</label>
+    <select name='system.attributes.strength.die.sides' data-dtype='Number'>
+      {{#select object._source.system.attributes.strength.die.sides}}
+        <option value="1">1</option>
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+    <input 
+      type="text" 
+      name="system.attributes.strength.die.modifier" 
+      value="{{signedString object._source.system.attributes.strength.die.modifier}}"
+      data-dtype="Number"
+    >
+    <select name='system.attributes.strength.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
+      {{#select object._source.system.attributes.strength.wild-die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+  </section>
+  <section class='flexrow attribute vigor'>
+    <label>{{localize 'SWADE.AttrVig'}}</label>
+    <select name='system.attributes.vigor.die.sides' data-dtype='Number'>
+      {{#select object._source.system.attributes.vigor.die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+    <input 
+      type="text" 
+      name="system.attributes.vigor.die.modifier" 
+      value="{{signedString object._source.system.attributes.vigor.die.modifier}}"
+      data-dtype="Number"
+    >
+    <select name='system.attributes.vigor.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
+      {{#select object._source.system.attributes.vigor.wild-die.sides}}
+        {{>"systems/swade/templates/die-sides-options.hbs"}}
+      {{/select}}
+    </select>
+  </section>
+  <footer>
+    <button type='button'>
+      <i class='fas fa-save'></i>{{localize 'Save Changes'}}
+    </button>
+  </footer>
+</form>

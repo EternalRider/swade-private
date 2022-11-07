@@ -10,7 +10,7 @@ export interface AdditionalStat {
 
 export interface ItemAction {
   name: string;
-  type: 'skill' | 'damage';
+  type: 'skill' | 'damage' | 'resist';
   rof?: number;
   shotsUsed?: number;
   skillMod?: string;

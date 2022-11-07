@@ -211,7 +211,7 @@ export function chatListeners(html: JQuery<HTMLElement>) {
  * Hide the display of chat card action buttons which cannot be performed by the user
  */
 export function hideChatActionButtons(
-  message: ChatMessage,
+  _msg: ChatMessage,
   html: JQuery<HTMLElement>,
   data: any,
 ) {
@@ -222,12 +222,11 @@ export function hideChatActionButtons(
     if (actor && actor.isOwner) return;
     else if (game.user!.isGM || data.author.id === game.user!.id) return;
 
-    // Otherwise conceal action buttons except for saving throw
-    const buttons = chatCard.find('button[data-action]');
-    buttons.each((i, btn) => {
-      if (btn.dataset.action === 'save') return;
-      btn.style.display = 'none';
-    });
+    // Otherwise conceal all action button sections except for 
+    // resistance rolls (which can be rolled by other actors as a defence)
+    chatCard.find('div.trait-rolls:first')[0].style.display = 'none';
+    chatCard.find('div.damage-rolls:first')[0].style.display = 'none';
+    chatCard.find('div.template-controls:first')[0].style.display = 'none';
   }
 }
 

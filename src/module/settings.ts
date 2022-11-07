@@ -1,4 +1,5 @@
 import { AdditionalStat } from '../interfaces/additional.interface';
+import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
 
 declare global {
@@ -28,6 +29,7 @@ declare global {
       'swade.enableConviction': boolean;
       'swade.enableWoundPace': boolean;
       'swade.noPowerPoints': boolean;
+      'swade.alwaysGeneralPP': boolean;
       'swade.gmBennies': number;
       'swade.vehicleMods': boolean;
       'swade.vehicleEdges': boolean;
@@ -45,17 +47,28 @@ declare global {
         item: Record<string, AdditionalStat>;
       };
       'swade.tocBlockList': Record<string, boolean>;
+      'swade.npcStartingCurrency': number;
+      'swade.pcStartingCurrency': number;
     }
   }
 }
 /** @internal */
 export function registerSettings() {
   game.settings.registerMenu('swade', 'setting-config', {
-    name: game.i18n.localize('SWADE.SettingConf'),
-    label: game.i18n.localize('SWADE.SettingConfLabel'),
-    hint: game.i18n.localize('SWADE.SettingConfDesc'),
-    icon: 'fas fa-globe',
+    name: 'SWADE.SettingConf',
+    label: 'SWADE.SettingConfLabel',
+    hint: 'SWADE.SettingConfDesc',
+    icon: 'fa-solid fa-globe',
     type: SettingConfigurator,
+    restricted: true,
+  });
+
+  game.settings.registerMenu('swade', 'toc-settings', {
+    name: 'SWADE.TOCSettings.Name',
+    label: 'SWADE.TOCSettings.Label',
+    hint: 'SWADE.TOCSettings.Hint',
+    icon: 'fa-solid fa-books',
+    type: CompendiumTOCSettings,
     restricted: true,
   });
 
@@ -300,6 +313,15 @@ export function registerSettingRules() {
     config: false,
   });
 
+  game.settings.register('swade', 'alwaysGeneralPP', {
+    name: 'SWADE.Settings.AlwaysGeneralPP.Name',
+    hint: 'SWADE.Settings.AlwaysGeneralPP.Hint',
+    default: false,
+    scope: 'world',
+    type: Boolean,
+    config: false,
+  });
+
   game.settings.register('swade', 'applyEncumbrance', {
     name: 'SWADE.Settings.ApplyEncumbrance.Name',
     hint: game.i18n.format('SWADE.Settings.ApplyEncumbrance.Hint', {
@@ -376,6 +398,24 @@ export function registerSettingRules() {
     scope: 'world',
     type: Boolean,
     default: false,
+    config: false,
+  });
+
+  game.settings.register('swade', 'pcStartingCurrency', {
+    name: 'SWADE.Settings.StartingCurrency.PC.Name',
+    hint: 'SWADE.Settings.StartingCurrency.PC.Hint',
+    scope: 'world',
+    type: Number,
+    default: 500,
+    config: false,
+  });
+
+  game.settings.register('swade', 'npcStartingCurrency', {
+    name: 'SWADE.Settings.StartingCurrency.NPC.Name',
+    hint: 'SWADE.Settings.StartingCurrency.NPC.Hint',
+    scope: 'world',
+    type: Number,
+    default: 0,
     config: false,
   });
 }

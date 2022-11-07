@@ -28,7 +28,8 @@
     background-position: left top;
   }
 
-  input[type] {
+  input[type],
+  select {
     &:hover,
     &:focus {
       box-shadow: var(--input-box-shadow);
@@ -135,6 +136,12 @@
       &:focus {
         text-shadow: none;
       }
+    }
+  }
+  summary {
+    &:hover,
+    &:focus {
+      text-shadow: var(--input-box-shadow);
     }
   }
 

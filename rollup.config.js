@@ -46,9 +46,7 @@ export default defineConfig({
   },
   plugins: [
     environment(process.env.NODE_ENV),
-    typescript({
-      noEmitOnError: false,
-    }),
+    typescript({ noEmitOnError: false }),
     styles({
       mode: ['extract', `${name}.css`],
       url: false,
