@@ -41,7 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `Sense Heat` is not restricted by walls.
   - Tokens with the `Invisible` Status Effect can still be detected with Infravision.
   - Adding the `Cold-Bodied` Status Effect makes a token invisible to Infravision.
-- Added the ability remove items from the Quick Access directly to the Quick Access. Thanks to Kristian Serrano. (!249)
+- Added the ability to remove items from the Quick Access directly to the Quick Access. Thanks to Kristian Serrano. (!249)
 - Added a toggle for always showing the general Power Point pool on an actor sheet. Thanks to Joseph Meehan. (!255)
 - Added a new Item type - Action Items. Thanks to Richard Gaywood.
   - Just like other items, Action Items can contain trait rolls, and these can contain all the usual modifiers.
@@ -49,7 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Actions can be dragged onto character sheets and will appear in the Actions tab.
   - These are good for reminding yourself of specific rules in the moment, eg Grappling, Networking, Pushing, Chases, etc.
 - Added a new action type - Resist. Thanks to Richard Gaywood.
-  - Resist are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
+  - Resist rolls are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
   - These are good for resistance types, eg. adding an Evade resistance to a dragon's breath weapon so defenders can easily roll Athletics when they are targeted.
 - Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet.
 - Added the utility function `getStatusEffectDataById` to the new global `game.swade.util` object.
