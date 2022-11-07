@@ -1,4 +1,6 @@
+import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
+import AttributeManager from './module/apps/AttributeManager';
 import CompendiumTOC from './module/apps/CompendiumTOC';
 import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
@@ -30,13 +32,17 @@ import {
   registerSettings,
 } from './module/settings';
 import CharacterSheet from './module/sheets/official/CharacterSheet';
-import SwadeItemSheet from './module/sheets/SwadeItemSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import { deepFreeze, rollItemMacro } from './module/util';
+import {
+  deepFreeze,
+  getStatusEffectDataById,
+  rollItemMacro,
+} from './module/util';
+import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import './swade.scss';
 
 /* ------------------------------------ */
@@ -54,7 +60,6 @@ Hooks.once('init', () => {
   game.swade = {
     sheets: {
       CharacterSheet,
-      SwadeItemSheet,
       SwadeItemSheetV2,
       SwadeNPCSheet,
       SwadeVehicleSheet,
@@ -64,10 +69,15 @@ Hooks.once('init', () => {
       AdvanceEditor,
       SettingConfigurator,
       CompendiumTOC,
+      AttributeManager,
+      ActiveEffectWizard,
     },
     dice: {
       Benny,
       WildDie,
+    },
+    util: {
+      getStatusEffectDataById,
     },
     rollItemMacro,
     sockets: new SwadeSocketHandler(),
@@ -115,6 +125,20 @@ Hooks.once('init', () => {
 
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
+  CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
+
+  //register detection modes
+  CONFIG.Canvas.detectionModes.seeHeat = new DetectionModeInfravision({
+    id: 'seeHeat',
+    label: 'SWADE.Vision.SeeHeat',
+    type: DetectionMode.DETECTION_TYPES.SIGHT,
+  });
+  CONFIG.Canvas.detectionModes.senseHeat = new DetectionModeInfravision({
+    id: 'senseHeat',
+    label: 'SWADE.Vision.SenseHeat',
+    walls: false,
+    type: DetectionMode.DETECTION_TYPES.OTHER,
+  });
 
   //@ts-expect-error Types don't properly recognize dotnotation
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
@@ -160,21 +184,6 @@ Hooks.once('init', () => {
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
     label: 'SWADE.ItemSheet',
-  });
-  Items.registerSheet('swade', SwadeItemSheet, {
-    makeDefault: false,
-    label: 'SWADE.CommunityItemSheet',
-    types: [
-      'weapon',
-      'armor',
-      'shield',
-      'gear',
-      'skill',
-      'edge',
-      'hindrance',
-      'ability',
-      'power',
-    ],
   });
 
   CONFIG.Dice.terms.b = Benny;

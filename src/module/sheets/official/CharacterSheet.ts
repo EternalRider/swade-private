@@ -5,13 +5,16 @@ import {
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
+import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
+import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
+import { Logger } from '../../Logger';
 import PopUpMenu from '../../PopUpMenu';
 import * as util from '../../util';
 
@@ -20,12 +23,13 @@ export default class CharacterSheet extends ActorSheet<
   SwadeActorSheetData
 > {
   _equipStateMenu: PopUpMenu;
+  _effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       ...super.defaultOptions,
       classes: ['swade-official', 'sheet', 'actor'],
-      width: 630,
+      width: 650,
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],
@@ -52,6 +56,7 @@ export default class CharacterSheet extends ActorSheet<
     if (!this.options.editable) return;
 
     this._setupEquipStatusMenu(html);
+    this._setupEffectCreateMenu(html);
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -124,41 +129,17 @@ export default class CharacterSheet extends ActorSheet<
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      if (this.actor.type === 'vehicle') return;
-      const current = this.actor.system.details.conviction.value;
-      const active = this.actor.system.details.conviction.active;
-      if (current > 0 && !active) {
-        await this.actor.update({
-          'system.details.conviction.value': current - 1,
-          'system.details.conviction.active': true,
-        });
-        ChatMessage.create({
-          speaker: {
-            actor: this.actor.id,
-            alias: this.actor.name,
-          },
-          content: game.i18n.localize('SWADE.ConvictionActivate'),
-        });
-      } else {
-        await this.actor.update({
-          'system.details.conviction.active': false,
-        });
-      }
-    });
-
-    html.find('.add-benny').on('click', () => {
-      this.actor.getBenny();
-    });
-
-    html.find('.spend-benny').on('click', () => {
-      this.actor.spendBenny();
+      await this.actor.toggleConviction();
     });
 
     //Roll Attribute
-    html.find('.attribute-label').on('click', (ev) => {
-      const attribute = ev.currentTarget.parentElement!.dataset
-        .attribute! as Attribute;
-      this.actor.rollAttribute(attribute);
+    html.find('.attribute button').on('click', async (ev) => {
+      const attribute = ev.currentTarget.dataset.attribute as Attribute;
+      await this.actor.rollAttribute(attribute);
+    });
+
+    html.find('.attribute-manager').on('click', () => {
+      new AttributeManager(this.actor).render(true);
     });
 
     //Toggle Equipment Card collapsible
@@ -170,77 +151,27 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     // Roll Skill
-    html.find('.skill-card .skill-die').on('click', (ev) => {
+    html.find('.skill-card .skill-die').on('click', async (ev) => {
       const element = ev.currentTarget as HTMLElement;
       const item = element.parentElement!.dataset.itemId!;
-      this.actor.rollSkill(item);
+      await this.actor.rollSkill(item);
     });
 
     //Running Die
-    html.find('.running-die').on('click', async (ev) => {
-      if (this.actor.type === 'vehicle') return;
-
-      const runningDieSides = this.actor.system.stats.speed.runningDie;
-      const runningMod = this.actor.system.stats.speed.runningMod;
-      const pace = this.actor.system.stats.speed.adjusted;
-      const runningDie = `1d${runningDieSides}[${game.i18n.localize(
-        'SWADE.RunningDie',
-      )}]`;
-
-      const mods: TraitRollModifier[] = [
-        { label: game.i18n.localize('SWADE.Pace'), value: pace },
-      ];
-
-      if (runningMod) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Modifier'),
-          value: runningMod,
-        });
-      }
-
-      if (this.actor.isEncumbered) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Encumbered'),
-          value: -2,
-        });
-      }
-
-      if (ev.shiftKey) {
-        const rollFormula =
-          runningDie +
-          mods.reduce((acc: string, cur: TraitRollModifier) => {
-            return acc + cur.value + `[${cur.label}]`;
-          }, '');
-        const runningRoll = new Roll(rollFormula);
-        await runningRoll.evaluate({ async: true });
-        await runningRoll.toMessage({
-          speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-          flavor: game.i18n.localize('SWADE.Running'),
-        });
-        return;
-      }
-
-      game.swade.RollDialog.asPromise({
-        roll: new Roll(runningDie),
-        mods: mods,
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: game.i18n.localize('SWADE.Running'),
-        title: game.i18n.localize('SWADE.Running'),
-        actor: this.actor,
-        allowGroup: false,
-      });
+    html.find('.running-die').on('click', async () => {
+      await this.actor.rollRunningDie();
     });
 
     // Roll Damage
-    html.find('.damage-roll').on('click', (ev) => {
+    html.find('.damage-roll').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('.item').data('itemId');
-      return this.actor.items.get(id)?.rollDamage();
+      await this.actor.items.get(id)?.rollDamage();
     });
 
     // Use Consumable
-    html.find('.use-consumable').on('click', (ev) => {
+    html.find('.use-consumable').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('.item').data('itemId');
-      return this.actor.items.get(id)?.consume();
+      await this.actor.items.get(id)?.consume();
     });
 
     //Toggle Equipment Card collapsible
@@ -315,7 +246,7 @@ export default class CharacterSheet extends ActorSheet<
         case 'edit':
           return effect.sheet?.render(true);
         case 'delete':
-          return effect.delete();
+          return effect.deleteDialog();
         case 'toggle':
           return effect.update(this._toggleItem(effect, toggle));
         case 'open-origin':
@@ -323,7 +254,7 @@ export default class CharacterSheet extends ActorSheet<
           if (item) item?.sheet?.render(true);
           break;
         default:
-          console.warn(`The action ${action} is not currently supported`);
+          Logger.warn(`The action ${action} is not currently supported`);
           break;
       }
     });
@@ -462,6 +393,10 @@ export default class CharacterSheet extends ActorSheet<
         shareable: this.actor.isOwner ?? game.user?.isGM,
       }).render(true);
     });
+
+    html
+      .find('.adjust-counter')
+      .on('click', this._handleCounterAdjust.bind(this));
   }
 
   override async getData(
@@ -497,6 +432,7 @@ export default class CharacterSheet extends ActorSheet<
       const hasSkillRoll =
         ['weapon', 'power', 'shield'].includes(item.type) &&
         getProperty(system, 'actions.skill');
+      const hasActionRoll = ['action'].includes(item.type);
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
@@ -511,6 +447,7 @@ export default class CharacterSheet extends ActorSheet<
       foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      foundry.utils.setProperty(item, 'hasActionRoll', hasActionRoll);
       if (item.type === 'power') {
         const powerPoints = this._getPowerPoints(item);
         foundry.utils.setProperty(item, 'powerPoints', powerPoints);
@@ -530,7 +467,12 @@ export default class CharacterSheet extends ActorSheet<
       hasPowersWithoutArcane: this.actor.itemTypes.power.some(
         (p) => !p.system['arcane'],
       ),
+      showGeneral: true,
     };
+
+    powers.showGeneral =
+      powers.hasPowersWithoutArcane ||
+      game.settings.get('swade', 'alwaysGeneralPP');
 
     for (const power of this.actor.itemTypes.power) {
       if (power.type !== 'power') continue;
@@ -723,33 +665,17 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   protected async _createActiveEffect(
-    name?: string,
     data: ActiveEffectDataConstructorData = {
-      label: '',
-      icon: '',
-      duration: {},
+      label: game.i18n.format('DOCUMENT.New', {
+        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+      }),
+      icon: '/icons/svg/mystery-man-black.svg',
+      duration: {
+        combat: game.combat?.id,
+      },
     },
     renderSheet = true,
   ) {
-    //Modify the data based on parameters passed in
-    if (!name) {
-      name = game.i18n.format('DOCUMENT.New', {
-        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-      });
-    }
-    data.label = name;
-
-    // Set default icon if none provided.
-    if (!data.icon) {
-      data.icon = '/icons/svg/mystery-man-black.svg';
-    }
-
-    // Set combat ID if none provided.
-    if (!data.duration) {
-      data.duration = {
-        combat: game.combat?.id,
-      };
-    }
     return CONFIG.ActiveEffect.documentClass.create(data, {
       renderSheet: renderSheet,
       parent: this.actor,
@@ -771,7 +697,10 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private async _enrichText(text: string) {
-    return TextEditor.enrichHTML(text, { async: false });
+    return TextEditor.enrichHTML(text, {
+      async: false,
+      secrets: this.options.editable,
+    });
   }
 
   protected async _getEffects() {
@@ -831,10 +760,9 @@ export default class CharacterSheet extends ActorSheet<
       //handle Power Item Card PP adjustment
       const adjustment = button.getAttribute('data-adjust') as string;
       const power = this.actor.items.get(itemId, { strict: true });
-      let key = 'system.powerPoints.value';
-      const arcane = getProperty(power.system, 'arcane');
-      if (arcane) key = `system.powerPoints.${arcane}.value`;
-      let newPP = getProperty(this.actor, key);
+      const arcane = getProperty(power, 'system.arcane') || 'general';
+      const key = `system.powerPoints.${arcane}.value`;
+      let newPP = getProperty(this.actor, key) as number;
       if (adjustment === 'plus') {
         newPP += parseInt(ppToAdjust, 10);
       } else if (adjustment === 'minus') {
@@ -881,7 +809,7 @@ export default class CharacterSheet extends ActorSheet<
       case 'choice':
         this._chooseItemType().then(async (dialogInput: any) => {
           if (dialogInput.type === 'effect') {
-            this._createActiveEffect(dialogInput.name);
+            this._createActiveEffect({ label: dialogInput.name });
           } else {
             const itemData = createItem(dialogInput.type, dialogInput.name);
             await CONFIG.Item.documentClass.create(itemData, {
@@ -890,9 +818,6 @@ export default class CharacterSheet extends ActorSheet<
             });
           }
         });
-        break;
-      case 'effect':
-        this._createActiveEffect();
         break;
       case 'advance':
         this._addAdvance();
@@ -1026,6 +951,45 @@ export default class CharacterSheet extends ActorSheet<
     await this.actor.toggleActiveEffect(data);
   }
 
+  protected async _handleCounterAdjust(ev: JQuery.ClickEvent) {
+    const action = ev.currentTarget.dataset.action;
+
+    switch (action) {
+      case 'fatigue-plus':
+        await this.actor.update({
+          'system.fatigue.value': this.actor.system.fatigue.value + 1,
+        });
+        break;
+      case 'fatigue-minus':
+        await this.actor.update({
+          'system.fatigue.value': Math.max(
+            0,
+            this.actor.system.fatigue.value - 1,
+          ),
+        });
+        break;
+      case 'wounds-plus':
+        await this.actor.update({
+          'system.wounds.value': this.actor.system.wounds.value + 1,
+        });
+        break;
+      case 'wounds-minus':
+        await this.actor.update({
+          'system.wounds.value': Math.max(
+            0,
+            this.actor.system.wounds.value - 1,
+          ),
+        });
+        break;
+      case 'spend-benny':
+        await this.actor.spendBenny();
+        break;
+      case 'get-benny':
+        await this.actor.getBenny();
+        break;
+    }
+  }
+
   protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [
       {
@@ -1111,6 +1075,32 @@ export default class CharacterSheet extends ActorSheet<
     const options = { eventName: 'click' };
     this._equipStateMenu = new PopUpMenu(html, selector, items, options);
   }
+
+  protected _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+    this._effectCreateDropDown = new ContextMenu(
+      html,
+      '.effects .effect-add',
+      [
+        {
+          name: 'SWADE.ActiveEffects.AddGuided',
+          icon: '<i class="fa-solid fa-hat-wizard"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            new ActiveEffectWizard(this.object).render(true);
+          },
+        },
+        {
+          name: 'SWADE.ActiveEffects.AddUnguided',
+          icon: '<i class="fa-solid fa-file-plus"></i>',
+          condition: this.object.isOwner,
+          callback: (_li) => {
+            this._createActiveEffect();
+          },
+        },
+      ],
+      { eventName: 'click' },
+    );
+  }
 }
 
 interface SheetEffect {
@@ -1125,6 +1115,7 @@ interface SheetEffect {
 interface SheetPowers {
   hasPowersWithoutArcane: boolean;
   arcaneBackgrounds: Record<string, SheetArcaneBackground>;
+  showGeneral: boolean;
 }
 
 interface SheetArcaneBackground {

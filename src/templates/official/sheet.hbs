@@ -76,11 +76,12 @@
   <nav class="gridcell tabs" data-group="primary">
     <a class="item" data-tab="summary" data-group="primary">{{localize "SWADE.Summary"}}</a>
     <a class="item" data-tab="edges" data-group="primary">{{localize "SWADE.EdgesHindrances"}}</a>
-    <a class="item" data-tab="effects" data-group="primary">{{localize "SWADE.Effects"}}</a>
     <a class="item" data-tab="inventory" data-group="primary">{{localize "SWADE.Inv"}}</a>
     {{#if actor.hasArcaneBackground}}
-    <a class="item" data-tab="powers" data-group="primary">{{localize "SWADE.Pow"}}</a>
+      <a class="item" data-tab="powers" data-group="primary">{{localize "SWADE.Pow"}}</a>
     {{/if}}
+    <a class="item" data-tab="effects" data-group="primary">{{localize "SWADE.Effects"}}</a>
+    <a class="item" data-tab="actions" data-group="primary">{{localize "SWADE.Actions"}}</a>
     <a class="item" data-tab="about" data-group="primary">{{localize "SWADE.About"}}</a>
   </nav>
 
@@ -90,29 +91,28 @@
     <section class="tab summary active" data-group="primary" data-tab="summary">
       {{> "systems/swade/templates/official/tabs/summary.hbs"}}
     </section>
-
     {{!-- Edges/Hindrances Tab --}}
     <section class="tab edges" data-group="primary" data-tab="edges">
       {{> "systems/swade/templates/official/tabs/edges.hbs"}}
     </section>
-
-    {{!-- Effects Tab --}}
-    <section class="tab effects" data-group="primary" data-tab="effects">
-      {{> "systems/swade/templates/official/tabs/effects.hbs"}}
-    </section>
-
     {{!-- Inventory Tab --}}
     <section class="tab inventory" data-group="primary" data-tab="inventory">
       {{> "systems/swade/templates/official/tabs/inventory.hbs"}}
     </section>
-
     {{!-- Powers Tab --}} 
     {{#if actor.hasArcaneBackground}}
-    <section class="tab powers" data-group="primary" data-tab="powers">
-      {{> "systems/swade/templates/official/tabs/powers.hbs"}}
-    </section>
+      <section class="tab powers" data-group="primary" data-tab="powers">
+        {{> "systems/swade/templates/official/tabs/powers.hbs"}}
+      </section>
     {{/if}}
-
+    {{!-- Effects Tab --}}
+    <section class="tab effects" data-group="primary" data-tab="effects">
+      {{> "systems/swade/templates/official/tabs/effects.hbs"}}
+    </section>
+    {{!-- Actions Tab --}}
+    <section class="tab edges" data-group="primary" data-tab="actions">
+      {{> "systems/swade/templates/official/tabs/actions.hbs"}}
+    </section>
     {{!-- Biography Tab --}}
     <section class="tab about" data-group="primary" data-tab="about">
       {{> "systems/swade/templates/official/tabs/about.hbs"}}

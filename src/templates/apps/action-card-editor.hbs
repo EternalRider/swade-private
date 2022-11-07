@@ -1,7 +1,10 @@
 <form autocomplete='off'>
   <header class='header'>
     <h1>{{deckName}}</h1>
-    <button type='button' class='add-card'>{{localize 'SWADE.Add'}}</button>
+    <button type='button' class='add-card'>
+      <i class='fa-solid fa-lg fa-plus'></i>
+      {{localize 'DOCUMENT.Card'}}
+    </button>
   </header>
   <section class='body'>
     <ul class='card-list'>
@@ -12,6 +15,7 @@
             src='{{card.currentFace.img}}'
             alt='{{card.name}}'
             data-id='{{card.id}}'
+            loading='lazy'
           />
           <span class='flexcol card-details'>
             <span class='form-group'>

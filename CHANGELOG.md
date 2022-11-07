@@ -22,6 +22,57 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## v2.1.0
+
+### Added
+
+- Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input. (#556)
+- You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount. (#569)
+- Player Character actors can now record whether they're Incapacitated. As per the rules, Incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become Incapacitated. (#579 / #317)
+- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly convert the value from die sides to a static modifier e.g. adding 2 sides to a d12 will result in d12+1. (#362)
+- Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively. (#548)
+- Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped. (#548)
+- Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app. (#608)
+- Added the Active Effect Guided Implementation System (AEGIS, or just Active Effect Wizard), which is an application to quickly create Active Effects from common Presets. The app can be opened on the Character and Item sheets by clicking on the "Add Active Effect" button on the effects tab and selecting the appropriate option from the dropdown. If the resulting Active Effect has no changes after submission, the Foundry Active Effect sheet is opened. On the NPC sheet you can open the app by clicking the **+** icon in the header of the effects section. Alternatively you can Shift-Click to add and open an empty Active Effect. (#557)
+- Toggling the `Hold` status effect now also toggles the hold status of a combatant in the Combat tracker. Thanks to Kristian Serrano. (!247)
+- Added Vision and Detection modes for Infravision. Thanks to Joseph Meehan. (!248)
+  - The vision and detection modes do not work when the scene has Global Illumination enabled.
+  - `See Heat` is restricted by walls.
+  - `Sense Heat` is not restricted by walls.
+  - Tokens with the `Invisible` Status Effect can still be detected with Infravision.
+  - Adding the `Cold-Bodied` Status Effect makes a token invisible to Infravision.
+- Added the ability to remove items from the Quick Access directly to the Quick Access. Thanks to Kristian Serrano. (!249)
+- Added a toggle for always showing the general Power Point pool on an actor sheet. Thanks to Joseph Meehan. (!255)
+- Added a new Item type - Action Items. Thanks to Richard Gaywood.
+  - Just like other items, Action Items can contain trait rolls, and these can contain all the usual modifiers.
+  - Action Items do not need to be attached to, or associated with, specific gear.
+  - Action Items can be dragged onto character sheets and will appear in the Actions tab.
+  - These are good for reminding yourself of specific rules in the moment, eg Grappling, Networking, Pushing, Chases, etc.
+- Added a new action type - Resist. Thanks to Richard Gaywood.
+  - Resist rolls are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
+  - These are good for resistance types, eg. adding an Evade resistance to a dragon's breath weapon so defenders can easily roll Athletics when they are targeted.
+- Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet.
+- Added the utility function `getStatusEffectDataById` to the new global `game.swade.util` object.
+- Added the new `SwadeActor.toggleConviction` function. (#637)
+- Added additional translation strings.
+
+### Changed
+
+- [BREAKING CHANGE] The general Power Point pool has been moved from `system.powerPoints` to `system.powerPoints.general` and is now treated like AB-specific pools. A migration for actors and active effects has been provided. Please keep in mind that the migration for token attribute bars has only been made for _prototype Tokens_. Actual tokens will need to be adjusted by hand. (#369)
+- Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
+- Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
+- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly convert the value from die sides to a static modifier e.g. adding 2 sides to a d12 will result in d12+1. (#362)
+- Status Effects have been updated to use v10 attribute keys.
+- Replaced the icons for the Measured Templates to be more represent the actual template sizes. (#631)
+- Disabled the ability for players to draw cards in the combat tracker. (#633)
+
+### Fixed
+
+- Fixed a wrong translation key related to measured templates. (#619)
+- Fixed a bug that would cause a button in the Action Card Editor to appear empty when Foundry was set to german. (#620)
+- Dropping owned items onto the hotbar should create proper macros again. (#621)
+- Fixed a few i18n issues with the Setting Configurator. (#636)
+
 ## v2.0.6
 
 ### Fixed
@@ -48,11 +99,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Removed
 
-- Removed more references to the v9 datapaths in item sheet templates
+- Removed more references to the v9 datapaths in item sheet templates.
 
 ### Fixed
 
-- Fixed search on Journal Entry compendiums in the TOC App
+- Fixed search on Journal Entry compendiums in the TOC App.
 - Improved Journal Entry and page sorting.
 
 ## v2.0.3

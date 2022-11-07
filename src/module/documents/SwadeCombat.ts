@@ -50,12 +50,10 @@ export default class SwadeCombat extends Combat {
       // Set up edges
       const hasHesitant = c.actor?.system.initiative.hasHesitant;
       const hasQuick = c.actor?.system.initiative.hasQuick;
+      const isIncapacitated = c.actor?.system.status.isIncapacitated;
 
       // Figure out how many cards to draw
-      let cardsToDraw = 1;
-      if (c.actor?.system.initiative.hasLevelHeaded) cardsToDraw = 2;
-      if (c.actor?.system.initiative.hasImpLevelHeaded) cardsToDraw = 3;
-      if (c.actor?.system.initiative.hasHesitant) cardsToDraw = 2;
+      const cardsToDraw = this._determineCardsToDraw(c);
 
       // Draw initiative
       let card: Card;
@@ -75,6 +73,8 @@ export default class SwadeCombat extends Combat {
         } else {
           card = cards[0];
         }
+      } else if (isIncapacitated) {
+        card = cards[0];
       } else if (hasHesitant) {
         // Hesitant
         if (cards.some((c) => c.system['isJoker'])) {
@@ -182,7 +182,7 @@ export default class SwadeCombat extends Combat {
       { diff: false },
     );
 
-    if (!skipMessage) this.playInitiativeSound();
+    if (!skipMessage) this._playInitiativeSound();
 
     // Create multiple chat messages
     if (game.settings.get('swade', 'initMessage') && !skipMessage) {
@@ -517,7 +517,7 @@ export default class SwadeCombat extends Combat {
     }
   }
 
-  protected async playInitiativeSound() {
+  protected async _playInitiativeSound() {
     if (game.settings.get('swade', 'initiativeSound')) {
       const data = {
         src: 'systems/swade/assets/card-flip.wav',
@@ -527,6 +527,22 @@ export default class SwadeCombat extends Combat {
       };
       AudioHelper.play(data, true);
     }
+  }
+
+  protected _determineCardsToDraw(combatant: SwadeCombatant): number {
+    let cardsToDraw = 1;
+    const actor = combatant.actor!;
+    const initiative = actor.system.initiative;
+    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
+      cardsToDraw = 2;
+    }
+    if (initiative?.hasImpLevelHeaded) {
+      cardsToDraw = 3;
+    }
+    if (actor.type !== 'vehicle' && actor.system.status.isIncapacitated) {
+      cardsToDraw = 1;
+    }
+    return cardsToDraw;
   }
 
   override async _preDelete(options: DocumentModificationOptions, user: User) {

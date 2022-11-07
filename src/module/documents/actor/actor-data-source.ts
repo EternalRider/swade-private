@@ -131,6 +131,7 @@ export interface CharacterDataSourceData {
     isStunned: boolean;
     isEntangled: boolean;
     isBound: boolean;
+    isIncapacitated: boolean;
   };
   initiative: {
     hasHesitant: boolean;
@@ -139,8 +140,7 @@ export interface CharacterDataSourceData {
     hasQuick: boolean;
   };
   powerPoints: {
-    value: number;
-    max: number;
+    general: { value: number; max: number };
   } & Record<string, { value: number; max: number }>;
   additionalStats: Record<string, AdditionalStat>;
   wildcard: boolean;

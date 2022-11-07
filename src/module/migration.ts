@@ -1,17 +1,20 @@
 /* eslint-disable deprecation/deprecation */
+import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
+import { EffectChangeDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import {
   ActorData,
   ItemData,
   SceneData,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
+import { Updates } from '../globals';
 import { constants } from './constants';
 import { Logger } from './Logger';
 
 export async function migrateWorld() {
   Logger.info(
-    `Applying SWADE System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`,
+    `Applying SWADE System Migration for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`,
     { toast: true },
   );
 
@@ -51,7 +54,7 @@ export async function migrateWorld() {
   }
 
   // Set the migration as complete
-  const version = game.system.data.version;
+  const version = game.system.version;
   await game.settings.set('swade', 'systemMigrationVersion', version);
   Logger.info(`SWADE System Migration to version ${version} completed!`, {
     permanent: true,
@@ -66,7 +69,7 @@ export async function migrateWorld() {
 export async function migrateCompendium(
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
 ) {
-  const type = pack.metadata['type'];
+  const type = pack.metadata.type;
   if (!['Actor', 'Item', 'Scene'].includes(type)) return;
 
   // Unlock the pack for editing
@@ -124,10 +127,11 @@ export async function migrateCompendium(
  * @return {Object}         The updateData to apply
  */
 export function migrateActorData(actor: ActorDataSource) {
-  const updateData: Record<string, any> = {};
+  const updateData: UpdateData = {};
 
   // Actor Data Updates
   _migrateVehicleOperator(actor, updateData);
+  _migrateGeneralPowerPoints(actor, updateData);
 
   // Migrate Owned Items
   if (!actor.items) return updateData;
@@ -142,7 +146,7 @@ export function migrateActorData(actor: ActorDataSource) {
     }
 
     return arr;
-  }, new Array<Record<string, unknown>>());
+  }, new Array<UpdateData>());
 
   if (items.length > 0) updateData.items = items;
   return updateData;
@@ -165,7 +169,7 @@ export function migrateItemData(data: ItemDataSource) {
 export function migrateSceneData(scene: SceneData) {
   const tokens = scene.tokens.map((token) => {
     const t = token.toObject();
-    const update: Record<string, unknown> = {};
+    const update: Updates = {};
     if (Object.keys(update).length) foundry.utils.mergeObject(t, update);
     if (!t.actorId || t.actorLink) {
       t.actorData = {};
@@ -173,7 +177,7 @@ export function migrateSceneData(scene: SceneData) {
       t.actorId = null;
       t.actorData = {};
     } else if (!t.actorLink) {
-      const actorData = foundry.utils.duplicate(t.actorData) as any;
+      const actorData = foundry.utils.duplicate(t.actorData) as ActorDataSource;
       actorData.type = token.actor?.type;
       const update = migrateActorData(actorData);
       ['items', 'effects'].forEach((embeddedName) => {
@@ -216,12 +220,63 @@ function _migrateVehicleOperator(
   updateData: UpdateData,
 ) {
   if (data.type !== 'vehicle') return updateData;
-  const driverId = data.data.driver.id;
+  const driverId = data.system.driver.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
   if (hasOldID) {
     updateData['system.driver.id'] = `Actor.${driverId}`;
   }
   return updateData;
+}
+
+function _migrateGeneralPowerPoints(
+  data: ActorDataSource,
+  updateData: UpdateData,
+) {
+  if (data.type === 'vehicle') return updateData;
+
+  const isOld =
+    foundry.utils.hasProperty(data, 'system.powerPoints.value') &&
+    foundry.utils.hasProperty(data, 'system.powerPoints.max');
+  if (!isOld) return updateData;
+
+  //migrate basic PP
+  const powerPoints = data.system.powerPoints;
+  updateData['system.powerPoints.general.value'] = powerPoints.value;
+  updateData['system.powerPoints.general.max'] = powerPoints.max;
+  updateData['system.powerPoints.-=max'] = null;
+  updateData['system.powerPoints.-=value'] = null;
+
+  //migrate prototype Token
+  if (data.prototypeToken.bar1.attribute === 'powerPoints') {
+    updateData['prototypeToken.bar1.attribute'] = 'powerPoints.general';
+  }
+  if (data.prototypeToken.bar2.attribute === 'powerPoints') {
+    updateData['prototypeToken.bar2.attribute'] = 'powerPoints.general';
+  }
+
+  //check the active effects
+  const effects = new Array<ActiveEffectDataConstructorData>();
+  for (const effect of data.effects) {
+    const changes = new Array<EffectChangeDataConstructorData>();
+    for (const change of effect.changes) {
+      if (change.key === 'system.powerPoints.value') {
+        changes.push({
+          ...change,
+          key: 'system.powerPoints.general.value',
+        });
+      }
+      if (change.key === 'system.powerPoints.max') {
+        changes.push({
+          ...change,
+          key: 'system.powerPoints.general.max',
+        });
+      }
+    }
+    if (changes.length > 0) {
+      effects.push({ _id: effect._id, changes: changes });
+    }
+  }
+  if (effects.length > 0) updateData.effects = effects;
 }
 
 function _migrateWeaponAPToNumber(
@@ -230,8 +285,8 @@ function _migrateWeaponAPToNumber(
 ) {
   if (data.type !== 'weapon') return updateData;
 
-  if (data.data.ap && typeof data.data.ap === 'string') {
-    updateData['system.ap'] = Number(data.data.ap);
+  if (data.system.ap && typeof data.system.ap === 'string') {
+    updateData['system.ap'] = Number(data.system.ap);
   }
 }
 
@@ -240,9 +295,9 @@ function _migratePowerEquipToFavorite(
   updateData: UpdateData,
 ) {
   if (data.type !== 'power') return updateData;
-  const isOld = foundry.utils.hasProperty(data, 'data.equipped');
+  const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
-    updateData['system.favorite'] = getProperty(data, 'data.equipped');
+    updateData['system.favorite'] = getProperty(data, 'system.equipped');
     updateData['system.-=equipped'] = null;
     updateData['system.-=equippable'] = null;
   }
@@ -257,13 +312,13 @@ function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
   ) {
     return;
   }
-  updateData['data.-=equipped'] = null;
+  updateData['system.-=equipped'] = null;
   if (data.type === 'weapon') {
-    updateData['system.equipStatus'] = data.data.equipped
+    updateData['system.equipStatus'] = data.system.equipped
       ? constants.EQUIP_STATE.MAIN_HAND
       : constants.EQUIP_STATE.CARRIED;
   } else {
-    updateData['system.equipStatus'] = data.data.equipped
+    updateData['system.equipStatus'] = data.system.equipped
       ? constants.EQUIP_STATE.EQUIPPED
       : constants.EQUIP_STATE.CARRIED;
   }

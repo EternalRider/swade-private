@@ -9,19 +9,19 @@
     <!-- Global counter -->
     {{#unless settingrules.noPowerPoints}}
     <div class="power-counter" data-arcane="All">
-      <label for="data.powerPoints.value">{{localize "SWADE.PP"}}</label>
+      <label>{{localize "SWADE.PP"}}</label>
       <input
-        name="system.powerPoints.value"
+        name="system.powerPoints.general.value"
         type="text"
-        value="{{actor.system.powerPoints.value}}"
+        value="{{actor.system.powerPoints.general.value}}"
         placeholder="{{localize 'SWADE.CurPP'}}"
         data-dtype="Number"
       />
       <span>/</span>
       <input
-        name="system.powerPoints.max"
+        name="system.powerPoints.general.max"
         type="text"
-        value="{{actor.system.powerPoints.max}}"
+        value="{{actor.system.powerPoints.general.max}}"
         placeholder="{{localize 'SWADE.MaxPP'}}"
         data-dtype="Number"
       />
@@ -29,7 +29,7 @@
     <!-- Individual counters -->
     {{#each arcanes as |arcane id|}}
     <div class="power-counter" data-arcane="{{arcane}}">
-      {{#with (lookup ../actor.system.powerPoints arcane)}}
+      {{#with (lookup @root.actor.system.powerPoints arcane)}}
       <label for="system.powerPoints.{{arcane}}.value">
         {{localize "SWADE.PP"}}
       </label>

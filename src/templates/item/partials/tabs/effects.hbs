@@ -1,12 +1,7 @@
 <header class='header'>
   {{#unless @root.item.isOwned}}
-    <button
-      type='button'
-      class='add-effect add-button invisible'
-      data-transfer='true'
-    >
-      <i class='fa fa-plus'></i>
-      {{localize 'SWADE.ActiveEffects.Add'}}
+    <button type='menu' class='add-effect add-button invisible'>
+      <i class='fa-solid fa-plus'></i>{{localize 'SWADE.ActiveEffects.Add'}}
     </button>
   {{/unless}}
 </header>

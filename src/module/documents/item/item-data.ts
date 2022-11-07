@@ -26,7 +26,8 @@ export type SwadeItemDataSource =
   | PowerItemDataSource
   | SkillItemDataSource
   | AbilityItemDataSource
-  | ConsumableDataSource;
+  | ConsumableDataSource
+  | ActionItemDataSource;
 
 // interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
 interface PhysicalItem {
@@ -119,6 +120,7 @@ interface WeaponData
   autoReload: boolean;
   parry: number;
   trademark: 0 | 1 | 2;
+  isHeavyWeapon: boolean;
 }
 
 interface GearData
@@ -129,7 +131,9 @@ interface GearData
     ArcaneDevice,
     Equipable,
     Actions,
-    Category {}
+    Category {
+  isAmmo: boolean;
+}
 
 interface ArmorData
   extends ItemDescription,
@@ -143,6 +147,7 @@ interface ArmorData
   armor: number | string;
   toughness: number;
   isNaturalArmor: boolean;
+  isHeavyArmor: boolean;
   locations: {
     head: boolean;
     torso: boolean;
@@ -212,6 +217,8 @@ interface AbilityData extends ItemDescription, Favorite {
   grantsPowers: boolean;
 }
 
+interface ActionData extends ItemDescription, Favorite, Actions {}
+
 interface SkillData extends ItemDescription {
   attribute: LinkedAttribute;
   isCoreSkill: boolean;
@@ -267,4 +274,9 @@ interface AbilityItemDataSource {
 interface ConsumableDataSource {
   data: ConsumableData;
   type: 'consumable';
+}
+
+interface ActionItemDataSource {
+  data: ActionData;
+  type: 'action';
 }

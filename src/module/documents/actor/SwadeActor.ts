@@ -6,6 +6,7 @@ import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
+import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import WildDie from '../../dice/WildDie';
@@ -82,6 +83,15 @@ export default class SwadeActor extends Actor {
     };
   }
 
+  get hasHeavyArmor(): boolean {
+    return this.itemTypes.armor.some(
+      (a) =>
+        !!foundry.utils.getProperty(a, 'system.isHeavyArmor') &&
+        foundry.utils.getProperty(a, 'system.equipStatus') >=
+          constants.EQUIP_STATE.EQUIPPED,
+    );
+  }
+
   /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced */
   get isEncumbered(): boolean {
     const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');
@@ -106,14 +116,26 @@ export default class SwadeActor extends Actor {
     }
   }
 
+  override prepareEmbeddedDocuments() {
+    for (const effect of this.effects) {
+      effect._safePrepareData();
+    }
+    this.applyActiveEffects();
+    for (const item of this.items) {
+      item._safePrepareData();
+    }
+  }
+
   override prepareDerivedData() {
     this._filterOverrides();
     //return early for Vehicles
     if (this.type === 'vehicle') return;
 
     //die type bounding for attributes
-    for (const attribute of Object.values(this.system.attributes)) {
+    for (const key in this.system.attributes) {
+      const attribute = this.system.attributes[key];
       attribute.die = this._boundTraitDie(attribute.die);
+      attribute['wild-die'].sides = Math.min(attribute['wild-die'].sides, 12);
     }
 
     //handle carry capacity
@@ -361,6 +383,45 @@ export default class SwadeActor extends Actor {
     });
   }
 
+  async rollRunningDie() {
+    if (this.type === 'vehicle') return;
+
+    const runningDieSides = this.system.stats.speed.runningDie;
+    const runningMod = this.system.stats.speed.runningMod;
+    const pace = this.system.stats.speed.adjusted;
+    const runningDie = `1d${runningDieSides}[${game.i18n.localize(
+      'SWADE.RunningDie',
+    )}]`;
+
+    const mods: TraitRollModifier[] = [
+      { label: game.i18n.localize('SWADE.Pace'), value: pace },
+    ];
+
+    if (runningMod) {
+      mods.push({
+        label: game.i18n.localize('SWADE.Modifier'),
+        value: runningMod,
+      });
+    }
+
+    if (this.isEncumbered) {
+      mods.push({
+        label: game.i18n.localize('SWADE.Encumbered'),
+        value: -2,
+      });
+    }
+
+    game.swade.RollDialog.asPromise({
+      roll: new Roll(runningDie),
+      mods: mods,
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      flavor: game.i18n.localize('SWADE.Running'),
+      title: game.i18n.localize('SWADE.Running'),
+      actor: this,
+      allowGroup: false,
+    });
+  }
+
   async makeUnskilledAttempt(options: IRollOptions = {}) {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.Unskilled'),
@@ -479,6 +540,30 @@ export default class SwadeActor extends Actor {
     }
   }
 
+  async toggleConviction() {
+    if (this.type === 'vehicle') return;
+    const current = this.system.details.conviction.value;
+    const active = this.system.details.conviction.active;
+    if (current > 0 && !active) {
+      await this.update({
+        'system.details.conviction.value': current - 1,
+        'system.details.conviction.active': true,
+      });
+      await CONFIG.ChatMessage.documentClass.create({
+        speaker: {
+          actor: this.id,
+          alias: this.name,
+        },
+        content: game.i18n.localize('SWADE.ConvictionActivate'),
+      });
+    } else {
+      await this.update({
+        'system.details.conviction.active': false,
+      });
+      await createConvictionEndMessage(this);
+    }
+  }
+
   async toggleActiveEffect(
     effectData: StatusEffect,
     options: { overlay?: boolean; active?: boolean } = { overlay: false },
@@ -495,7 +580,7 @@ export default class SwadeActor extends Actor {
 
     //else toggle the effect directly on the actor
     const existingEffect = this.effects.find(
-      (e) => e.getFlag('core', 'statusId') === effectData.id,
+      (e) => e.statusId === effectData.id,
     );
     const state = options.active ?? !existingEffect;
     if (!state && existingEffect) {
@@ -901,7 +986,6 @@ export default class SwadeActor extends Actor {
   }
 
   /**
-   * Thus
    * @param die The die to adjust
    * @returns the properly adjusted trait die
    */
@@ -910,9 +994,9 @@ export default class SwadeActor extends Actor {
     if (sides < 4 && sides !== 1) {
       die.sides = 4;
     } else if (sides > 12) {
-      //const difference = sides - 12;
+      const difference = sides - 12;
       die.sides = 12;
-      //die.modifier += difference / 2;
+      die.modifier += difference / 2;
     }
     return die;
   }
@@ -1086,12 +1170,17 @@ export default class SwadeActor extends Actor {
     //return early if it's a vehicle
     if (createData.type === 'vehicle') return;
 
+    const isImported = foundry.utils.hasProperty(
+      createData,
+      'flags.core.sourceId',
+    );
+
     const coreSkillList = game.settings.get('swade', 'coreSkills');
     //only do this if this is a PC with no prior skills
     if (
-      coreSkillList &&
-      createData.type === 'character' &&
-      this.itemTypes.skill.length <= 0
+      coreSkillList.length > 0 &&
+      this.type === 'character' &&
+      this.itemTypes.skill.length === 0
     ) {
       //Get list of core skills from settings
       const coreSkills = coreSkillList.split(',').map((s) => s.trim());
@@ -1144,9 +1233,20 @@ export default class SwadeActor extends Actor {
           },
         },
       });
-      //Add the items to the creation data
 
+      //Add the items to the creation data
       this.updateSource({ items: skills });
+    }
+
+    //Handle starting currency
+    if (!isImported) {
+      let currency = 0;
+      if (this.type === 'character') {
+        currency = game.settings.get('swade', 'pcStartingCurrency');
+      } else if (this.type === 'npc') {
+        currency = game.settings.get('swade', 'npcStartingCurrency');
+      }
+      this.updateSource({ 'system.details.currency': currency });
     }
   }
 

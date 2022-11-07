@@ -1,4 +1,3 @@
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { constants } from '../constants';
 import { getStatusEffectDataById } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
@@ -112,14 +111,13 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Update Item via right-click
     html.find('.contextmenu-edit').on('contextmenu', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'))!;
-      item.sheet?.render(true);
+      this.actor.items.get(li.data('itemId'))?.sheet?.render(true);
     });
 
     // Delete Item
     html.find('.item-delete').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.gear-card');
-      this.actor.items.get(li.data('itemId'))?.delete();
+      this.actor.items.get(li.data('itemId'))?.deleteDialog();
     });
 
     // Roll Skill
@@ -187,56 +185,22 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Progress attribute abbreviation toggle
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
 
+    data.enrichedBiography = await TextEditor.enrichHTML(
+      this.actor.system.details.biography.value,
+      { async: true, secrets: this.options.editable },
+    );
+
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
 
-    const shields = data.itemsByType.shield;
     data.parry = 0;
-    shields.forEach((shield) => {
-      if (shield.data.equipState === constants.EQUIP_STATE.EQUIPPED) {
-        data.parry += shield.data.parry;
+    data.itemsByType.shield.forEach((shield) => {
+      if (shield.system.equipState === constants.EQUIP_STATE.EQUIPPED) {
+        data.parry += shield.system.parry;
       }
     });
-    data.enrichedBiography = await TextEditor.enrichHTML(
-      this.actor.system.details.biography.value,
-      { async: true },
-    );
+
     return data;
-  }
-
-  protected async _createActiveEffect(
-    name?: string,
-    data: ActiveEffectDataConstructorData = {
-      label: '',
-      icon: '',
-      duration: {},
-    },
-    renderSheet = true,
-  ) {
-    let possibleName = game.i18n.format('DOCUMENT.New', {
-      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-    });
-
-    //Modify the data based on parameters passed in
-    if (name) possibleName = name;
-    data.label = possibleName;
-
-    // Set default icon if none provided.
-    if (!data.icon) {
-      data.icon = '/icons/svg/mystery-man-black.svg';
-    }
-
-    // Set combat ID if none provided.
-    if (!data.duration) {
-      data.duration = {
-        combat: game.combat?.id,
-      };
-    }
-
-    await CONFIG.ActiveEffect.documentClass.create(data, {
-      renderSheet: renderSheet,
-      parent: this.actor,
-    });
   }
 
   protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {

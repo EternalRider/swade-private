@@ -84,6 +84,8 @@ SWADE:
   WeaponsAndArmor: Waffen & Rüstungen
   Dmg: Schaden
   DmgOver: Aktionsschaden
+  Resist: Widerstand
+  ResistRolls: Widerstandsproben
   Ap: Pzbr
   APLong: Panzerbrechend
   RoF: Feuerrate
@@ -289,6 +291,7 @@ SWADE:
     Broke:
       Label: Pleite
       Hint: Du bist pleite!
+    Sides: Wohlstandswürfelseiten
   WealthSelectionNoneOther: Keines / Anderes
   TraitRolls: Eigenschaftswürfe
   Trait: Eigenschaft
@@ -477,10 +480,10 @@ SWADE:
         Wenn diese Einstellung eingeschaltet ist werden Schablonen immer voll
         ausgemalt anstatt nur das Raster
     FantasyCompanionEntangle:
-      Name: <em>Festgehalten Status</em> nach Fantasy Companion
+      Name: Festgehalten Status nach Fantasy Companion
       Hint: >-
-        Verwende die Fantasy Companion version des <em>Festgehalten Status</em>. Die
-        Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
+        Verwende die Fantasy Companion Version des Festgehalten Status.
+        Die Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
     InitDiscardPile:
       Name: Initiative-Ablagestapel
     InitCardDeck:
@@ -581,9 +584,10 @@ SWADE:
       Hint: Settingregel "Entschlossenheit" verwenden
     NoPowerPoints:
       Name: Keine Machtpunkte
-      Hint: >-
-        Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen
-        ausgeblendet
+      Hint: Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen ausgeblendet
+    AlwaysGeneralPP:
+      Name: Immer generelle Machtpunkte anzeigen
+      Hint: Wenn diese Option aktiviert ist, wird der Mächte Abschnitt "Generell" immer angezeigt, selbst wenn alle Mächte einen zugeordneten Arkanen Hintergrund haben
     ApplyEncumbrance:
       Name: Belastungsabzüge anwenden
       Hint: >-
@@ -613,6 +617,17 @@ SWADE:
         statt Smarts usw. Sie müssen alle geöffneten Bögen schließen und erneut
         öffnen, damit diese Option wirksam wird.
       Name: Verkürzte Attributnamen verwenden
+    StartingCurrency:
+      PC:
+        Name: Startwährung Spielercharaktere
+        Hint: >-
+          Legen Sie den Währungsbetrag fest, den Spielercharaktere bei der
+          Erstellung erhalten
+      NPC:
+        Name: Startwährung NSCs
+        Hint: >-
+          Legen Sie den Währungsbetrag fest, den NSCs bei der Erstellung
+          erhalten
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -651,6 +666,7 @@ SWADE:
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
   EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
+  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe zu machen
   Templates:
     Cone:
       Short: Kegel
@@ -677,6 +693,38 @@ SWADE:
         Clients neu geladen. Bitte bestätigen.
     Header: Inhalt
   Category: Item Kategorie
+  ItemIsAmmo: Ist Munition
+  Vision:
+    SeeHeat: Wärme sehen
+    SenseHeat: Wärme spüren
+  Attribute: Eigenschaft
+  BaseDie: Würfelbasis
+  AttributeManager:
+    Title: Eigenschaften von {name} verwalten
+    Open: Eigenschaften bearbeiten
+  HeavyWeapon: Schwere Waffe
+  HeavyArmor: Schwere Panzerung
+  TOCSettings:
+    Label: Compendium TOC Einstellungen öffnen
+    Name: Compendium TOC Einstellungen
+    Hint: Konfigurieren Sie die Compendum TOC-Anwendung
+  DieSides: Würfelseiten
+  WildDieSides: Wildcard-Würfel Seiten
+  EncumbranceSteps: Belastungsschritte
+  EffectWizard:
+    Preview: Vorschau
+    Change: Änderung
+    Mode: Modus
+    Value: Wert
+    Changes: Änderungen
+    SelectAttribute: Attribut wählen
+    EnterSkill:
+      Label: Fertigkeit auswählen
+      Hint: >-
+        Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
+        Liste der Vorschläge auswählen
+  OtherStats: Andere Stats
+  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
@@ -692,6 +740,7 @@ ITEM:
   TypePower: Macht
   TypeAbility: Eigenschaft
   TypeConsumable: Verbrauchsgegenstand
+  TypeAction: Aktion
 CARD:
   TypeAdventure: Abenteuerkarte
   TypePoker: Pokerkarte

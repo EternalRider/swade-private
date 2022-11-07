@@ -1,7 +1,6 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { CombatantDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/combatantData';
 import { SWADE } from '../config';
-import { getCanvas } from '../util';
 
 declare global {
   interface DocumentClassConfig {
@@ -26,6 +25,12 @@ declare global {
 }
 
 export default class SwadeCombatant extends Combatant {
+  override get isDefeated() {
+    const actor = this.actor;
+    if (actor?.isWildcard) return super.isDefeated;
+    return actor?.status.isIncapacitated || super.isDefeated;
+  }
+
   get suitValue() {
     return this.getFlag('swade', 'suitValue');
   }
@@ -108,9 +113,8 @@ export default class SwadeCombatant extends Combatant {
     const tokenID =
       data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
     const tokenIndex =
-      getCanvas()
-        .tokens?.controlled.map((t) => t.id)
-        .indexOf(tokenID as string) ?? 0;
+      canvas.tokens?.controlled.map((t) => t.id).indexOf(tokenID as string) ??
+      0;
     const sortValue = tokenIndex + combatants;
     this.updateSource({
       flags: {

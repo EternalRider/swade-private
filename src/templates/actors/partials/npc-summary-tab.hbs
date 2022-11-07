@@ -44,24 +44,14 @@
       <div class="attribute flex3">
         <div class="attribute-label">{{localize "SWADE.Tough"}}</div>
         <div class="toughness-block">
-          {{#if actor.system.details.autoCalcToughness}}
           <input
             name="system.stats.toughness.value"
             type="text"
             value="{{actor.system.stats.toughness.value}}"
             placeholder="{{localize 'SWADE.Tough'}}"
             data-dtype="Number"
-            disabled
+            {{disabled  actor.system.details.autoCalcToughness}}
           />
-          {{else}}
-          <input
-            name="system.stats.toughness.value"
-            type="text"
-            value="{{actor.system.stats.toughness.value}}"
-            placeholder="{{localize 'SWADE.Tough'}}"
-            data-dtype="Number"
-          />
-          {{/if}}
           <div class="armor-value" data-target="armor">
             {{actor.system.stats.toughness.armor}}
           </div>
@@ -107,7 +97,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.edge}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -126,7 +116,7 @@
       <ul class="items-list">
         {{#each actor.itemTypes.hindrance}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}} {{#if system.major}}{{localize "SWADE.Major"}}{{/if}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -145,7 +135,26 @@
       <ul class="items-list">
         {{#each actor.itemTypes.ability}}
         <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="item-control item-edit" title="{{localize 'SWADE.Ed'}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
+          </a>
+        </li>
+        {{/each}}
+      </ul>
+    </section>
+    <section class="gear abilities">
+      <header class="header-field flexrow">
+        <div>
+          <span>{{localize "SWADE.Actions"}}</span>
+        </div>
+        <div class="header-field-add">
+          <a class="item-create" data-type="action"><i class="fa fa-plus"></i></a>
+        </div>
+      </header>
+      <ul class="items-list">
+        {{#each actor.itemTypes.action}}
+        <li class="item edge-hindrance" data-item-id="{{id}}">
+          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
           </a>
         </li>
@@ -238,8 +247,8 @@
         enrichedBiography
         target="system.details.biography.value" 
         button=true 
-        owner=owner
         editable=editable
+        engine="prosemirror"
       }}
     </section>
   </div>

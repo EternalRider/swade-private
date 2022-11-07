@@ -128,25 +128,30 @@ export default class SwadeCombatTracker extends CombatTracker {
   }
   // Toggle Hold
   async _onToggleHoldStatus(c: SwadeCombatant) {
+    const data = utils.getStatusEffectDataById('holding');
     if (!c.roundHeld) {
       // Add flag for on hold to show icon on token
       await c.setRoundHeld(this.viewed!.round);
+      await c.actor?.toggleActiveEffect(data, { active: true });
       if (c.isGroupLeader) {
         const followers = await this._getFollowers(c);
         for (const f of followers) {
           await f.setRoundHeld(this.viewed!.round);
+          await f.actor?.toggleActiveEffect(data, { active: true });
         }
       }
     } else {
       await c.unsetFlag('swade', 'roundHeld');
+      await c.actor?.toggleActiveEffect(data, { active: false });
     }
   }
   // Toggle Turn Lost
   async _onToggleTurnLostStatus(c: SwadeCombatant) {
+    const data = utils.getStatusEffectDataById('holding');
     if (!c.turnLost) {
       const groupId = c.groupId;
       if (groupId) {
-        const leader = await this.viewed!.combatants.find(
+        const leader = await this.viewed?.combatants.find(
           (l) => l.id === groupId,
         );
         if (leader) {
@@ -154,27 +159,26 @@ export default class SwadeCombatTracker extends CombatTracker {
         }
       } else {
         await c.update({
-          flags: {
-            swade: {
-              turnLost: true,
-              '-=roundHeld': null,
-            },
+          'flags.swade': {
+            turnLost: true,
+            '-=roundHeld': null,
           },
         });
+        await c.actor?.toggleActiveEffect(data, { active: false });
       }
     } else {
       await c.update({
-        flags: {
-          swade: {
-            roundHeld: this.viewed!.round,
-            '-=turnLost': null,
-          },
+        'flags.swade': {
+          roundHeld: this.viewed?.round,
+          '-=turnLost': null,
         },
       });
+      await c.actor?.toggleActiveEffect(data, { active: false });
     }
   }
   // Act Now
   async _onActNow(combatant: SwadeCombatant) {
+    const data = utils.getStatusEffectDataById('holding');
     let targetCombatant = this.viewed!.combatant;
     if (combatant.id === targetCombatant?.id) {
       targetCombatant = this.viewed!.turns.find((c) => !c.roundHeld)!;
@@ -188,6 +192,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         },
       },
     });
+    await combatant.actor?.toggleActiveEffect(data, { active: false });
     if (combatant.isGroupLeader) {
       const followers = await this._getFollowers(combatant);
       let s = combatant.suitValue!;
@@ -202,6 +207,7 @@ export default class SwadeCombatTracker extends CombatTracker {
             },
           },
         });
+        await f.actor?.toggleActiveEffect(data, { active: false });
       }
     }
 
@@ -211,6 +217,7 @@ export default class SwadeCombatTracker extends CombatTracker {
   }
   // Act After Current Combatant
   async _onActAfterCurrentCombatant(combatant: SwadeCombatant) {
+    const data = utils.getStatusEffectDataById('holding');
     const currentCombatant = this.viewed!.combatant;
     await combatant.update({
       flags: {
@@ -221,6 +228,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         },
       },
     });
+    await combatant.actor?.toggleActiveEffect(data, { active: false });
     if (combatant.isGroupLeader) {
       const followers = await this._getFollowers(combatant);
       let s = combatant.suitValue!;
@@ -235,6 +243,7 @@ export default class SwadeCombatTracker extends CombatTracker {
             },
           },
         });
+        await f.actor?.toggleActiveEffect(data, { active: false });
       }
     }
 

@@ -64,8 +64,6 @@ export const SWADE: SwadeConfig = {
   },
 
   settingConfig: {
-    id: 'settingConfig',
-    title: 'SWADE Setting Rule Configurator',
     settings: [
       'coreSkills',
       'coreSkillsCompendium',
@@ -80,12 +78,15 @@ export const SWADE: SwadeConfig = {
       'npcAmmo',
       'vehicleAmmo',
       'noPowerPoints',
+      'alwaysGeneralPP',
       'wealthType',
       'currencyName',
       'hardChoices',
       'actionDeck',
       'applyEncumbrance',
       'actionDeckDiscardPile',
+      'pcStartingCurrency',
+      'npcStartingCurrency',
       'bennyImageSheet',
       'bennyImage3DFront',
       'bennyImage3DBack',
@@ -98,10 +99,6 @@ export const SWADE: SwadeConfig = {
     id: 'diceConfig',
     title: 'SWADE Dice Settings',
     flags: {},
-  },
-
-  actionCardEditor: {
-    id: 'actionCardEditor',
   },
 
   statusEffects: statusEffects,
@@ -117,7 +114,7 @@ export const SWADE: SwadeConfig = {
       button: {
         name: constants.TEMPLATE_PRESET.CONE,
         title: 'SWADE.Templates.Cone.Long',
-        icon: 'text-icon cone',
+        icon: 'fa-solid fa-location-pin fa-rotate-90',
         visible: true,
         button: true,
         onClick: () => {
@@ -134,7 +131,7 @@ export const SWADE: SwadeConfig = {
       button: {
         name: constants.TEMPLATE_PRESET.STREAM,
         title: 'SWADE.Templates.Stream.Long',
-        icon: 'fa-solid fa-wave-square',
+        icon: 'fa-solid fa-rectangle-wide',
         visible: true,
         button: true,
         onClick: () => {
@@ -147,7 +144,7 @@ export const SWADE: SwadeConfig = {
       button: {
         name: constants.TEMPLATE_PRESET.SBT,
         title: 'SWADE.Templates.Small.Long',
-        icon: 'text-icon sbt',
+        icon: 'fa-solid fa-circle-1 fa-2xs',
         visible: true,
         button: true,
         onClick: () => {
@@ -160,7 +157,7 @@ export const SWADE: SwadeConfig = {
       button: {
         name: constants.TEMPLATE_PRESET.MBT,
         title: 'SWADE.Templates.Medium.Long',
-        icon: 'text-icon mbt',
+        icon: 'fa-solid fa-circle-2 fa-sm',
         visible: true,
         button: true,
         onClick: () => {
@@ -173,7 +170,7 @@ export const SWADE: SwadeConfig = {
       button: {
         name: constants.TEMPLATE_PRESET.LBT,
         title: 'SWADE.Templates.Large.Long',
-        icon: 'text-icon lbt',
+        icon: 'fa-solid fa-circle-3 fa-lg',
         visible: true,
         button: true,
         onClick: () => {
@@ -303,8 +300,6 @@ export interface SwadeConfig {
   };
 
   settingConfig: {
-    id: string;
-    title: string;
     settings: Array<string>;
   };
 
@@ -312,10 +307,6 @@ export interface SwadeConfig {
     id: string;
     title: string;
     flags: Record<string, any>;
-  };
-
-  actionCardEditor: {
-    id: string;
   };
 
   statusEffects: StatusEffect[];

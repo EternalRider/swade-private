@@ -17,6 +17,7 @@ import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { Logger } from '../../Logger';
 import * as util from '../../util';
+import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import {
   ItemChatCardAction,
@@ -160,14 +161,16 @@ export default class SwadeItem extends Item {
 
   async rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
-    let itemData;
+    let damage = '';
     if (['weapon', 'power', 'shield'].includes(this.type)) {
-      itemData = this.system;
+      damage = this.system.damage;
+    } else if (this.type === 'shield' || options.dmgOverride) {
+      damage = options.dmgOverride ?? '';
     } else {
       return null;
     }
     const label = this.name;
-    let ap = getProperty(this.system, 'ap');
+    let ap = foundry.utils.getProperty(this.system, 'ap');
 
     if (ap) {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -175,11 +178,8 @@ export default class SwadeItem extends Item {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
     }
 
-    let rollParts = [itemData.damage];
+    const rollParts = [damage];
 
-    if (this.type === 'shield' || options.dmgOverride) {
-      rollParts = [options.dmgOverride];
-    }
     //Additional Mods
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
@@ -478,6 +478,16 @@ export default class SwadeItem extends Item {
     return data;
   }
 
+  override prepareDerivedData() {
+    if (this.type === 'skill') {
+      this.system.die = this._boundTraitDie(this.system.die);
+      this.system['wild-die'].sides = Math.min(
+        this.system['wild-die'].sides,
+        12,
+      );
+    }
+  }
+
   /** A shorthand function to roll skills directly */
   async roll(options: IRollOptions = {}) {
     //return early if there's no parent or this isn't a skill
@@ -487,7 +497,7 @@ export default class SwadeItem extends Item {
 
   /**
    * Assembles data and creates a chat card for the item
-   * @returns the rendered chatcard
+   * @returns the rendered chat card
    */
   async show() {
     // Basic template rendering data
@@ -520,6 +530,9 @@ export default class SwadeItem extends Item {
     const hasDamageActions = Object.values(additionalActions).some(
       (v) => v.type === 'damage',
     );
+    const hasResistRoll = Object.values(additionalActions).some(
+      (v) => v.type === 'resist',
+    );
 
     const templateData = {
       actorId: this.parent?.id,
@@ -533,6 +546,7 @@ export default class SwadeItem extends Item {
       trait: getProperty(this.system, 'actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
+      hasResistRoll: hasResistRoll,
       powerPoints: this._getPowerPoints(),
       settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -779,22 +793,41 @@ export default class SwadeItem extends Item {
     return expression;
   }
 
+  /**
+   * @param die The die to adjust
+   * @returns the properly adjusted trait die
+   */
+  private _boundTraitDie(die: TraitDie): TraitDie {
+    const sides = die.sides;
+    if (sides < 4 && sides !== 1) {
+      die.sides = 4;
+    } else if (sides > 12) {
+      const difference = sides - 12;
+      die.sides = 12;
+      die.modifier += difference / 2;
+    }
+    return die;
+  }
+
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
   private _getPowerPoints(): ItemChatCardPowerPoints | null {
     if (this.type === 'power') {
       const actor = this.parent!;
-
-      let value: number = getProperty(actor.system, 'powerPoints.value');
-      let max: number = getProperty(actor.system, 'powerPoints.max');
-      const arcane = this.system.arcane;
-      if (arcane) {
-        value = getProperty(actor.system, `powerPoints.${arcane}.value`);
-        max = getProperty(actor.system, `powerPoints.${arcane}.max`);
-      }
+      const arcane = this.system.arcane || 'general';
+      const value = foundry.utils.getProperty(
+        actor.system,
+        `powerPoints.${arcane}.value`,
+      );
+      const max = foundry.utils.getProperty(
+        actor.system,
+        `powerPoints.${arcane}.max`,
+      );
       return { value, max };
-    }
-    if (this.isArcaneDevice) {
-      return getProperty(this.system, 'powerPoints') as ItemChatCardPowerPoints;
+    } else if (this.isArcaneDevice) {
+      return foundry.utils.getProperty(
+        this.system,
+        'powerPoints',
+      ) as ItemChatCardPowerPoints;
     }
     return null;
   }
@@ -855,7 +888,7 @@ export default class SwadeItem extends Item {
         .map((ae) => {
           return {
             _id: ae.id,
-            disabled: newState < constants.EQUIP_STATE.EQUIPPED,
+            disabled: newState < constants.EQUIP_STATE.OFF_HAND,
           };
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);

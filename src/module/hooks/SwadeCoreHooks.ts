@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
-import { CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import CompendiumTOC, { CompendiumTOCMetadata } from '../apps/CompendiumTOC';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
@@ -18,6 +18,7 @@ import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
+import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -187,7 +188,7 @@ export default class SwadeCoreHooks {
     // Invoke character summarizer on selected character
     newOptions.push({
       name: 'SWADE.ShowCharacterSummary',
-      icon: '<i class="fas fa-users"></i>',
+      icon: '<i class="fa-solid fa-users"></i>',
       callback: (li) => {
         const actor = game.actors?.get(li.data('documentId'), { strict: true });
         CharacterSummarizer.summarizeCharacters([actor!]);
@@ -255,7 +256,7 @@ export default class SwadeCoreHooks {
   ) {
     const actionCardEditor: ContextMenuEntry = {
       name: 'SWADE.OpenACEditor',
-      icon: '<i class="fas fa-edit"></i>',
+      icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
         //return early if there's no canvas or scene to lay out cards
         if (!canvas || !canvas.ready || !canvas.scene) return false;
@@ -273,7 +274,7 @@ export default class SwadeCoreHooks {
     };
     const chaseLayout: ContextMenuEntry = {
       name: 'SWADE.LayOutChaseWithDeck',
-      icon: '<i class="fas fa-shipping-fast"></i>',
+      icon: '<i class="fa-solid fa-shipping-fast"></i>',
       condition: (li) => {
         const cards = game.cards!.get(li.data('documentId'), { strict: true });
         return cards.type === 'deck';
@@ -296,7 +297,7 @@ export default class SwadeCoreHooks {
         icon: '<i class="fa-solid fa-book"></i>',
         condition: (li) => {
           const pack = game.packs.get(li.data('pack'), { strict: true });
-          const rightType = ['Actor', 'Item', 'JournalEntry'].includes(
+          const rightType = CompendiumTOC.ALLOWED_TYPES.includes(
             pack.metadata.type,
           );
           return !!game.user?.isGM && rightType;
@@ -324,7 +325,7 @@ export default class SwadeCoreHooks {
       },
       {
         name: 'SWADE.ConvertToDeck',
-        icon: '<i class="fas fa-file-export"></i>',
+        icon: '<i class="fa-solid fa-file-export"></i>',
         condition: (li) => {
           const pack = game.packs.get(li.data('pack'), { strict: true });
           return !!game.user?.isGM && pack.metadata.type === 'JournalEntry';
@@ -512,13 +513,13 @@ export default class SwadeCoreHooks {
     options.push(
       {
         name: game.i18n.localize('SWADE.RerollWithBenny'),
-        icon: '<i class="fas fa-dice"></i>',
+        icon: '<i class="fa-solid fa-dice"></i>',
         condition: canApply,
         callback: (li) => chat.rerollFromChat(li, true),
       },
       {
         name: game.i18n.localize('SWADE.FreeReroll'),
-        icon: '<i class="fas fa-dice"></i>',
+        icon: '<i class="fa-solid fa-dice"></i>',
         condition: canApply,
         callback: (li) => chat.rerollFromChat(li, false),
       },
@@ -532,7 +533,7 @@ export default class SwadeCoreHooks {
     const index = options.findIndex((v) => v.name === 'COMBAT.CombatantReroll');
     if (index !== -1) {
       options[index].name = 'SWADE.Redraw';
-      options[index].icon = '<i class="fas fa-sync-alt"></i>';
+      options[index].icon = '<i class="fa-solid fa-sync-alt"></i>';
     }
 
     const newOptions = new Array<ContextMenuEntry>();
@@ -540,7 +541,7 @@ export default class SwadeCoreHooks {
     // Set as group leader
     newOptions.push({
       name: 'SWADE.MakeGroupLeader',
-      icon: '<i class="fas fa-users"></i>',
+      icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
         const combatant = game.combat!.combatants.get(targetCombatantId)!;
@@ -566,7 +567,7 @@ export default class SwadeCoreHooks {
     // Set Group Color
     newOptions.push({
       name: 'SWADE.SetGroupColor',
-      icon: '<i class="fas fa-palette"></i>',
+      icon: '<i class="fa-solid fa-palette"></i>',
       condition: (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
         const combatant = game.combat?.combatants.get(targetCombatantId)!;
@@ -582,7 +583,7 @@ export default class SwadeCoreHooks {
     // Remove Group Leader
     newOptions.push({
       name: 'SWADE.RemoveGroupLeader',
-      icon: '<i class="fas fa-users-slash"></i>',
+      icon: '<i class="fa-solid fa-users-slash"></i>',
       condition: (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
         const combatant = game.combat?.combatants.get(targetCombatantId)!;
@@ -608,7 +609,7 @@ export default class SwadeCoreHooks {
     // Add selected tokens as followers
     newOptions.push({
       name: 'SWADE.AddTokenFollowers',
-      icon: '<i class="fas fa-users"></i>',
+      icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
         const selectedTokens = canvas?.tokens?.controlled ?? [];
         return (
@@ -697,7 +698,7 @@ export default class SwadeCoreHooks {
     // Set all combatants with this one's name as its followers.
     newOptions.push({
       name: 'SWADE.GroupByName',
-      icon: '<i class="fas fa-users"></i>',
+      icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
         const combatant = game.combat?.combatants.get(targetCombatantId)!;
@@ -737,7 +738,7 @@ export default class SwadeCoreHooks {
       // Follow a leader
       newOptions.push({
         name: game.i18n.format('SWADE.Follow', { name: gl.name }),
-        icon: '<i class="fas fa-user-friends"></i>',
+        icon: '<i class="fa-solid fa-user-friends"></i>',
         condition: (li) => {
           const targetCombatantId = li.attr('data-combatant-id') as string;
           const combatant = game.combat?.combatants.get(targetCombatantId)!;
@@ -793,7 +794,7 @@ export default class SwadeCoreHooks {
       // Unfollow a leader
       newOptions.push({
         name: game.i18n.format('SWADE.Unfollow', { name: gl.name }),
-        icon: '<i class="fas fa-user-friends"></i>',
+        icon: '<i class="fa-solid fa-user-friends"></i>',
         condition: (li) => {
           const targetCombatantId = li.attr('data-combatant-id') as string;
           const combatant = game.combat?.combatants.get(targetCombatantId)!;
@@ -871,24 +872,8 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    /**
-     * Create a Macro from an Item drop.
-     * Get an existing item macro if one exists, otherwise create a new one.
-     */
-    if (data.type !== 'Item') {
-      return ui.notifications.warn(
-        'You can only create macro buttons for owned Items',
-      );
-    }
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
-    // Create the macro command
-    const macro = await CONFIG.Macro.documentClass.create({
-      name: item?.name as string,
-      type: CONST.MACRO_TYPES.SCRIPT,
-      img: item?.img as string,
-      command: `game.swade.rollItemMacro("${item?.name}");`,
-    });
-    await game.user?.assignHotbarMacro(macro!, slot);
+    onHotbarDrop(_hotbar, data, slot);
+    return false;
   }
 
   static onGetUserContextOptions(
@@ -900,7 +885,7 @@ export default class SwadeCoreHooks {
     context.push(
       {
         name: game.i18n.localize('SWADE.BenniesGive'),
-        icon: '<i class="fas fa-plus"></i>',
+        icon: '<i class="fa-solid fa-plus"></i>',
         condition: (li) =>
           game.user!.isGM && game.users?.get(li[0].dataset.userId!)!.isGM!,
         callback: async (li) => {
@@ -920,7 +905,7 @@ export default class SwadeCoreHooks {
       },
       {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
-        icon: '<i class="fas fa-sync"></i>',
+        icon: '<i class="fa-solid fa-sync"></i>',
         condition: (li) => game.user!.isGM,
         callback: async (li) => {
           await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
@@ -928,7 +913,7 @@ export default class SwadeCoreHooks {
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
-        icon: '<i class="fas fa-sync"></i>',
+        icon: '<i class="fa-solid fa-sync"></i>',
         condition: (li) => game.user!.isGM,
         callback: async (li) => {
           await PlayerBennyDisplay.refreshAll();
@@ -952,7 +937,7 @@ export default class SwadeCoreHooks {
     tile.tools.push({
       name: 'clear-chase-cards',
       title: 'SWADE.ClearChaseCards',
-      icon: 'fas fa-shipping-fast',
+      icon: 'fa-solid fa-shipping-fast',
       onClick: () => chaseUtils.removeChaseTiles(canvas.scene!),
     });
   }
@@ -1188,7 +1173,7 @@ export default class SwadeCoreHooks {
     ];
     const tab = `
     <a class="item" data-tab="expiration">
-      <i class="fas fa-step-forward"></i> ${game.i18n.localize(
+      <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize(
         'SWADE.Expiration.TabLabel',
       )}
     </a>`;

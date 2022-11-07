@@ -14,8 +14,8 @@ export default class SettingConfigurator extends FormApplication<
 
   static get defaultOptions(): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: SWADE.settingConfig.id,
-      title: SWADE.settingConfig.title,
+      id: 'settingConfig',
+      title: game.i18n.localize('SWADE.SettingConf'),
       template: 'systems/swade/templates/apps/setting-config.hbs',
       classes: ['setting-config', 'sheet', 'swade-app'],
       tabs: [
@@ -25,7 +25,7 @@ export default class SettingConfigurator extends FormApplication<
           initial: 'basics',
         },
       ],
-      scrollY: ['.sheet-body'],
+      scrollY: ['.sheet-body .tab'],
       width: 600,
       height: 700,
       resizable: false,
@@ -180,8 +180,7 @@ export default class SettingConfigurator extends FormApplication<
   }
 
   private _buildCoreSkillPackChoices() {
-    const retVal: Record<string, string> = {};
-    game.packs
+    return game.packs
       ?.filter((p) => {
         const index = Array.from(p.index.values()).filter(
           //remove the CF entities
@@ -190,10 +189,14 @@ export default class SettingConfigurator extends FormApplication<
         const isItem = p.metadata.type === 'Item';
         return isItem && index.every((v) => v['type'] === 'skill');
       })
-      .forEach((p) => {
-        retVal[p.collection] = `${p.metadata.label} (${p.metadata.package})`;
-      });
-    return retVal;
+      .reduce((acc, p) => {
+        let packName = 'System';
+        if (p.metadata['packageType'] !== 'system') {
+          packName = game.modules.get(p.metadata['packageName'])?.title;
+        }
+        acc[p.collection] = `${p.metadata.label} (${packName})`;
+        return acc;
+      }, {} as Record<string, string>);
   }
 
   private _buildActionDeckChoices() {
