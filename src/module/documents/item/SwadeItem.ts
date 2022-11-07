@@ -546,7 +546,7 @@ export default class SwadeItem extends Item {
       trait: getProperty(this.system, 'actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
-      hasResistRoll : hasResistRoll,
+      hasResistRoll: hasResistRoll,
       powerPoints: this._getPowerPoints(),
       settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -888,7 +888,7 @@ export default class SwadeItem extends Item {
         .map((ae) => {
           return {
             _id: ae.id,
-            disabled: newState < constants.EQUIP_STATE.EQUIPPED,
+            disabled: newState < constants.EQUIP_STATE.OFF_HAND,
           };
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
