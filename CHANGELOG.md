@@ -28,8 +28,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Added an "Is Ammunition" checkbox to Gear type items. Weapon item sheets now filter this for the ammunition suggestions as well. Please keep in mind that these are just suggestions. You can set anything as ammunition for a weapon if you put its name into the appropriate input. (#556)
 - You can now configure the starting currency for both Player Characters and NPCs in the Setting Configurator. Note that this is only relevant for newly created Actors. Actors that get imported retain their already set currency amount. (#569)
-- Player Character actors can now record whether they're incapacitated. As per the rules, incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become incapacitated. (#579 / #317)
-- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides to a d12 will result in d12+1. (#362)
+- Player Character actors can now record whether they're Incapacitated. As per the rules, Incapacitated characters only draw a single card every round, no matter which Edges or Hindrances they have. Extras are marked as defeated/dead when they become Incapacitated. (#579 / #317)
+- Added the _Attribute Manager_ app, which can be opened via the small gear icon next to the Attribute header on the player character and NPC sheets. Using the _Attribute Manager_ you can now set the _base values_ for the die, modifier and wild die of all attributes. Using Active Effects will now properly convert the value from die sides to a static modifier e.g. adding 2 sides to a d12 will result in d12+1. (#362)
 - Weapons and Armor items can now record whether they're Heavy Weapons or Heavy Armor respectively. (#548)
 - Added the `SwadeActor#hasHeavyArmor` getter which returns whether the actor has any heavy armor equipped. (#548)
 - Added an application to the system settings which can be used to quickly set which compendiums use the Compendium TOC app. (#608)
@@ -46,7 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a new Item type - Action Items. Thanks to Richard Gaywood.
   - Just like other items, Action Items can contain trait rolls, and these can contain all the usual modifiers.
   - Action Items do not need to be attached to, or associated with, specific gear.
-  - Actions can be dragged onto character sheets and will appear in the Actions tab.
+  - Action Items can be dragged onto character sheets and will appear in the Actions tab.
   - These are good for reminding yourself of specific rules in the moment, eg Grappling, Networking, Pushing, Chases, etc.
 - Added a new action type - Resist. Thanks to Richard Gaywood.
   - Resist rolls are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
@@ -61,7 +61,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - [BREAKING CHANGE] The general Power Point pool has been moved from `system.powerPoints` to `system.powerPoints.general` and is now treated like AB-specific pools. A migration for actors and active effects has been provided. Please keep in mind that the migration for token attribute bars has only been made for _prototype Tokens_. Actual tokens will need to be adjusted by hand. (#369)
 - Moved the logic for rolling the running die to the `SwadeActor` class. This also means the Shift workflow has been removed as a consequence.
 - Changed the order of sheet tabs on the character sheet to put mechanically relevant tabs more into the center.
-- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly overflow the value from die sides to a static modifier e.g. adding 2 sides do a d12 will result in d12+1. (#362)
+- Changed the item sheet for skills to adjust the base die, modifier and wild die for a given skill. These can still be affected via Active Effects as before but will now properly convert the value from die sides to a static modifier e.g. adding 2 sides to a d12 will result in d12+1. (#362)
 - Status Effects have been updated to use v10 attribute keys.
 - Replaced the icons for the Measured Templates to be more represent the actual template sizes. (#631)
 - Disabled the ability for players to draw cards in the combat tracker. (#633)
