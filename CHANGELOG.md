@@ -52,7 +52,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Resist are Trait rolls, but instead of being linked to the character who placed the card in chat they apply to whichever token is selected when the button is clicked.
   - These are good for resistance types, eg. adding an Evade resistance to a dragon's breath weapon so defenders can easily roll Athletics when they are targeted.
 - Added Increment/Decrement buttons to the Fatigue, Wounds and Bennies Counters in the character sheet.
-- Added the utility function `getStatusEffectDataById` to the new global `game.swade.util` object
+- Added the utility function `getStatusEffectDataById` to the new global `game.swade.util` object.
+- Added the new `SwadeActor.toggleConviction` function. (#637)
 - Added additional translation strings.
 
 ### Changed

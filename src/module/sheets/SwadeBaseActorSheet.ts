@@ -3,7 +3,6 @@ import { AdditionalStat } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
-import * as chat from '../chat';
 import { SWADE } from '../config';
 import SwadeItem from '../documents/item/SwadeItem';
 /**
@@ -102,33 +101,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      const current = getProperty(
-        this.actor.data,
-        'data.details.conviction.value',
-      ) as number;
-      const active = getProperty(
-        this.actor.data,
-        'data.details.conviction.active',
-      ) as boolean;
-
-      if (current > 0 && !active) {
-        await this.actor.update({
-          'system.details.conviction.value': current - 1,
-          'system.details.conviction.active': true,
-        });
-        ChatMessage.create({
-          speaker: {
-            actor: this.actor.id,
-            alias: this.actor.name,
-          },
-          content: game.i18n.localize('SWADE.ConvictionActivate'),
-        });
-      } else {
-        await this.actor.update({
-          'system.details.conviction.active': false,
-        });
-        await chat.createConvictionEndMessage(this.actor);
-      }
+      await this.actor.toggleConviction();
     });
 
     // Filter power list

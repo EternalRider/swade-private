@@ -6,6 +6,7 @@ import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
+import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import WildDie from '../../dice/WildDie';
@@ -536,6 +537,30 @@ export default class SwadeActor extends Actor {
         null,
         false,
       );
+    }
+  }
+
+  async toggleConviction() {
+    if (this.type === 'vehicle') return;
+    const current = this.system.details.conviction.value;
+    const active = this.system.details.conviction.active;
+    if (current > 0 && !active) {
+      await this.update({
+        'system.details.conviction.value': current - 1,
+        'system.details.conviction.active': true,
+      });
+      await CONFIG.ChatMessage.documentClass.create({
+        speaker: {
+          actor: this.id,
+          alias: this.name,
+        },
+        content: game.i18n.localize('SWADE.ConvictionActivate'),
+      });
+    } else {
+      await this.update({
+        'system.details.conviction.active': false,
+      });
+      await createConvictionEndMessage(this);
     }
   }
 

@@ -129,26 +129,7 @@ export default class CharacterSheet extends ActorSheet<
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
-      if (this.actor.type === 'vehicle') return;
-      const current = this.actor.system.details.conviction.value;
-      const active = this.actor.system.details.conviction.active;
-      if (current > 0 && !active) {
-        await this.actor.update({
-          'system.details.conviction.value': current - 1,
-          'system.details.conviction.active': true,
-        });
-        CONFIG.ChatMessage.documentClass.create({
-          speaker: {
-            actor: this.actor.id,
-            alias: this.actor.name,
-          },
-          content: game.i18n.localize('SWADE.ConvictionActivate'),
-        });
-      } else {
-        await this.actor.update({
-          'system.details.conviction.active': false,
-        });
-      }
+      await this.actor.toggleConviction();
     });
 
     //Roll Attribute
