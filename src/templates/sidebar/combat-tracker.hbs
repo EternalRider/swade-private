@@ -60,6 +60,7 @@
     </header>
 
     <ol id="combat-tracker" class="directory-list">
+        {{log this}}
         {{#each turns}}
         <li class="combatant actor directory-item flexrow {{this.css}}" data-combatant-id="{{this.id}}">
             <div class="token-initiative" style="border-right-color: {{#if (isInGroup this.id)}}{{leaderColor this.id}}{{else if this.defeated}}#fff{{else}}{{groupColor this.id}}{{/if}}; {{#if this.defeated}}opacity: 0.3;{{/if}}">
@@ -71,7 +72,7 @@
                 <span class="initiative"><i class="fas fa-ban"></i></span>
                 {{else if this.hasRolled}}
                 <span class="initiative">{{this.cardString}}</span>
-                {{else if this.owner}}
+                {{else if @root.user.isGM}}
                 <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
                 {{else}}
                 <span class="initiative"></span>
