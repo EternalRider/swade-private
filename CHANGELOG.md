@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.2
+
+### Fixed
+
+- Default trait and damage actions should once again work on chat cards as expected
+
 ## 2.1.1
 
 ### Fixed
