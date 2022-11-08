@@ -53,7 +53,7 @@ export default class ItemChatCardHelper {
 
     // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
-    if (item.type === 'action' && actionObj.type === 'resist') {
+    if (actionObj.type === 'resist') {
       // swap the selected token's actor in as the target for the roll
       if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
         ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {

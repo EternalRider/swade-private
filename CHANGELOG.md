@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.1
+
+### Fixed
+
+- Resistance rolls should now properly trigger off of non-action items again.
+- Fixed the missing Effects tab on the Actions item sheet.
+
 ## v2.1.0
 
 ### Added
