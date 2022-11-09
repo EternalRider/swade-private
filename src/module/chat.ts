@@ -175,10 +175,9 @@ export function chatListeners(html: JQuery<HTMLElement>) {
         .val() as string;
       const adjustment = element.dataset.adjust;
       const power = actor.items.get(itemId, { strict: true });
-      let key = 'system.powerPoints.value';
-      const arcane = getProperty(power.system, 'arcane');
-      if (arcane) key = `system.powerPoints.${arcane}.value`;
-      const oldPP = getProperty(actor, key) as number;
+      const arcane = foundry.utils.getProperty(power, 'system.arcane');
+      const key = `system.powerPoints.${arcane || 'general'}.value`;
+      const oldPP = foundry.utils.getProperty(actor, key) as number;
       if (adjustment === 'plus') {
         await actor.update({ [key]: oldPP + parseInt(ppToAdjust, 10) });
       } else if (adjustment === 'minus') {

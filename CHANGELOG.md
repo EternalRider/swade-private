@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.4
+
+### Fixed
+
+- Power Points on the actor sheet should once again be in sync with Power Points in chat cards. (#645)
+- Power Points should show up on the Quick Access properly again. (#645)
+- Power Point pools that are not the "All" pool on the NPC sheet should once again have the proper Power Point controls displayed.
+
 ## 2.1.3
 
 ### Fixed
