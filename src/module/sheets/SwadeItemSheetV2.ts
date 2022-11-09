@@ -65,7 +65,11 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   get actionTypes(): Record<string, string> {
-    return { skill: 'SWADE.Trait', damage: 'SWADE.Dmg', resist: 'SWADE.Resist' };
+    return {
+      skill: 'SWADE.Trait',
+      damage: 'SWADE.Dmg',
+      resist: 'SWADE.Resist',
+    };
   }
 
   override activateListeners(html: JQuery<HTMLElement>): void {
@@ -317,12 +321,13 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     Logger.debug(
       `Trying to add ${data.type} ${data.uuid} to ${this.item.type}/${this.item.name}`,
     );
-    if (this.item.type !== 'ability') return;
     const item = (await fromUuid(data.uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
-      Logger.warn('SWADE.CannotAddRaceToRace', { localize: true, toast: true });
-      return;
+      return Logger.warn('SWADE.CannotAddRaceToRace', {
+        localize: true,
+        toast: true,
+      });
     }
     //prep item data
     const itemData = item.toObject();
@@ -336,7 +341,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       await this._saveEmbeddedAbilities(collection);
     }
 
-    if (this.item.canBeArcaneDevice && item.type === 'power') {
+    if (this.item.isArcaneDevice && item.type === 'power') {
       const collection = this.item.embeddedPowers;
       collection.set(foundry.utils.randomID(), itemData);
       await this._saveEmbeddedPowers(collection);

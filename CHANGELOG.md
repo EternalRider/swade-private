@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.3
+
+### Fixed
+
+- Powers can once again be added to arcane devices. (#627)
+
 ## 2.1.2
 
 ### Fixed

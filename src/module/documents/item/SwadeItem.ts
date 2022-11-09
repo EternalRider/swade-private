@@ -91,7 +91,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this.system, 'isArcaneDevice') as boolean;
+    return getProperty(this, 'system.isArcaneDevice') as boolean;
   }
 
   get isReadied(): boolean {
