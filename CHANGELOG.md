@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Powers can once again be added to arcane devices. (#627)
+- The text editor in the Advance Editor should once again be functional. (#642)
 
 ## 2.1.2
 
