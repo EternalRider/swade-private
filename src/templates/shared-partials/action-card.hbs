@@ -31,7 +31,7 @@
   {{#if (and (eq item.type 'weapon') item.system.range)}}
     <div class='chips'>
       <p>
-        <span class='bold'><i class='fas fa-ruler-combined'></i> Range:</span>
+        <span class='bold'><i class='fas fa-ruler-combined'></i> {{localize "SWADE.Range._name"}}:</span>
         {{item.system.range}}
       </p>
     </div>
@@ -40,7 +40,7 @@
   {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
     <div class='chips'>
       <p>
-        <span class='bold'><i class='fas fa-shield-alt'></i> AP:</span>
+        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize "SWADE.Ap"}}:</span>
         {{item.system.ap}}
       </p>
     </div>
@@ -49,10 +49,7 @@
   {{#if (eq item.type 'shield')}}
     <div class='chips'>
       <p>
-        <span class='bold'>
-          <i class='fas fa-shield-alt'></i>
-          {{localize 'SWADE.Parry'}}:
-        </span>
+        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize 'SWADE.Parry'}}:</span>
         {{item.system.parry}}
       </p>
     </div>
@@ -84,35 +81,31 @@
   {{#if (eq item.type 'power')}}
     {{#unless (or powersTab @root.settingrules.noPowerPoints)}}
       <div class='pp-counter'>
-        <p>
-          <span class='bold'>
-            {{#if item.system.arcane}}{{item.system.arcane}}
-            {{/if}}{{localize 'SWADE.PP'}}:
-          </span>
-          <span class='current-pp'>
-            {{#if item.system.arcane}}
+        <span class='bold'>
+          {{#if item.system.arcane}}
+            {{item.system.arcane}}
+          {{/if}}
+          {{localize 'SWADE.PP'}}:
+        </span>
+        {{#if item.system.arcane}}
+          {{#with item as | power |}}
               {{#each @root.actor.system.powerPoints as |ab|}}
-                {{#if (eq @key @root.item.system.arcane)}}
-                  {{ab.value}}
+                {{#if (eq @key power.system.arcane)}}
+                <span class='current-pp'>{{ab.value}}</span>
+                &nbsp;/&nbsp;
+                <span class='max-pp'>{{ab.max}}</span>
                 {{/if}}
               {{/each}}
-            {{else}}
-              {{@root.actor.system.powerPoints.value}}
-            {{/if}}
+          {{/with}}
+        {{else}}
+          <span class='current-pp'>
+            {{@root.actor.system.powerPoints.general.value}}
           </span>
           &nbsp;/&nbsp;
           <span class='max-pp'>
-            {{#if item.system.arcane}}
-              {{#each @root.actor.system.powerPoints as |ab|}}
-                {{#if (eq @key @root.item.system.arcane)}}
-                  {{ab.max}}
-                {{/if}}
-              {{/each}}
-            {{else}}
-              {{@root.actor.system.powerPoints.max}}
-            {{/if}}
+            {{@root.actor.system.powerPoints.general.max}}
           </span>
-        </p>
+        {{/if}}
       </div>
     {{/unless}}
   {{/if}}

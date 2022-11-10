@@ -37,7 +37,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     this.form = html[0];
 
     // Resize resizable classes
-    const resizable = (html as JQuery).find('.resizable');
+    const resizable = html.find('.resizable');
     resizable.each((_, el) => {
       const heightDelta =
         (this.position.height as number) - (this.options.height as number);
@@ -48,9 +48,9 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     const arcane = !this.options['activeArcane']
       ? 'All'
       : this.options['activeArcane'];
-    (html as JQuery).find('.arcane-tabs .arcane').removeClass('active');
-    (html as JQuery).find(`[data-arcane='${arcane}']`).addClass('active');
-    this._filterPowers(html as JQuery, arcane);
+    html.find('.arcane-tabs .arcane').removeClass('active');
+    html.find(`[data-arcane='${arcane}']`).addClass('active');
+    this._filterPowers(html, arcane);
 
     return html;
   }

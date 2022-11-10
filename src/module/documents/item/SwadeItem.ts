@@ -91,7 +91,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this.system, 'isArcaneDevice') as boolean;
+    return getProperty(this, 'system.isArcaneDevice') as boolean;
   }
 
   get isReadied(): boolean {
@@ -533,6 +533,9 @@ export default class SwadeItem extends Item {
     const hasResistRoll = Object.values(additionalActions).some(
       (v) => v.type === 'resist',
     );
+    const hasTemplates =
+      !!this.system.templates &&
+      Object.values(this.system.templates).some((v) => v);
 
     const templateData = {
       actorId: this.parent?.id,
@@ -542,6 +545,7 @@ export default class SwadeItem extends Item {
       hasAmmoManagement,
       hasReloadButton,
       hasDamage,
+      hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
       trait: getProperty(this.system, 'actions.skill'),
       hasTraitRoll,

@@ -1,3 +1,6 @@
+{{! This is a basic template for the chat item cards. 
+It renders everything, even sections that are not needed to be seen by a given player. 
+Unneeded sections are later hidden in the a renderChatMessage hook }}
 <div
   class='swade chat-card item-card'
   data-actor-id='{{actorId}}'
@@ -61,7 +64,7 @@
 
   <!-- Reload Button -->
   {{#if hasReloadButton}}
-    <div class='card-buttons'>
+    <div class='card-buttons reload-controls'>
       <button data-action='reload'>{{localize 'SWADE.Reload'}}</button>
     </div>
   {{/if}}
@@ -129,7 +132,7 @@
   {{/if}}
 
   <!-- Template Controls -->
-  {{#if item.system.templates}}
+  {{#if hasTemplates}}
     <div class='card-buttons template-controls'>
       <h4 class='actions-subheading'>
         <i class='fas fa-bullseye'></i>
@@ -177,7 +180,7 @@
 
   <!-- Power Controls -->
   {{#if (eq item.type 'power')}}
-    <div class='card-buttons'>
+    <div class='card-buttons pp-controls'>
       <span class='flexcol'>
         <span class='flexrow'>
           <label>
@@ -192,7 +195,7 @@
         </span>
 
         {{#unless settingRules.noPowerPoints}}
-          <span class='flexrow' style='display: flex'>
+          <span class='flexrow'>
             <button
               class='card-button'
               data-action='pp-adjust'
@@ -227,7 +230,7 @@
 
   <!-- Arcane Device Controls -->
   {{#if item.isArcaneDevice}}
-    <div class='card-buttons'>
+    <div class='card-buttons arcane-device-controls'>
       <span class='flexcol'>
         <span class='flexrow' style='display: flex'>
           <label>

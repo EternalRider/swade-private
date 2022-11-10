@@ -175,10 +175,9 @@ export function chatListeners(html: JQuery<HTMLElement>) {
         .val() as string;
       const adjustment = element.dataset.adjust;
       const power = actor.items.get(itemId, { strict: true });
-      let key = 'system.powerPoints.value';
-      const arcane = getProperty(power.system, 'arcane');
-      if (arcane) key = `system.powerPoints.${arcane}.value`;
-      const oldPP = getProperty(actor, key) as number;
+      const arcane = foundry.utils.getProperty(power, 'system.arcane');
+      const key = `system.powerPoints.${arcane || 'general'}.value`;
+      const oldPP = foundry.utils.getProperty(actor, key) as number;
       if (adjustment === 'plus') {
         await actor.update({ [key]: oldPP + parseInt(ppToAdjust, 10) });
       } else if (adjustment === 'minus') {
@@ -211,22 +210,31 @@ export function chatListeners(html: JQuery<HTMLElement>) {
  * Hide the display of chat card action buttons which cannot be performed by the user
  */
 export function hideChatActionButtons(
-  _msg: ChatMessage,
+  msg: ChatMessage,
   html: JQuery<HTMLElement>,
-  data: any,
+  _data: any,
 ) {
   const chatCard = html.find('.swade.chat-card');
   if (chatCard.length > 0) {
     // If the user is the message author or the actor owner, proceed
-    const actor = game.actors!.get(data.message.speaker.actor);
-    if (actor && actor.isOwner) return;
-    else if (game.user!.isGM || data.author.id === game.user!.id) return;
+    const actor = game.actors?.get(msg.speaker.actor);
+    if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
 
-    // Otherwise conceal all action button sections except for 
-    // resistance rolls (which can be rolled by other actors as a defence)
-    chatCard.find('div.trait-rolls:first')[0].style.display = 'none';
-    chatCard.find('div.damage-rolls:first')[0].style.display = 'none';
-    chatCard.find('div.template-controls:first')[0].style.display = 'none';
+    // Otherwise conceal all action button sections except for
+    // resistance rolls (which can be rolled by other actors as a defense)
+    const toHide = [
+      '.trait-rolls',
+      '.damage-rolls',
+      '.template-controls',
+      '.pp-controls',
+      '.arcane-device-controls',
+      '.pp-counter',
+      '.ammo-counter',
+      '.reload-controls',
+    ];
+    for (const group of toHide) {
+      chatCard.find(group)?.css({ display: 'none' });
+    }
   }
 }
 

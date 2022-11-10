@@ -217,24 +217,23 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
       // Display the current active arcane
       data.activeArcane = this.options['activeArcane'];
-      data.arcanes = [];
-      const powers = data.itemsByType['power'];
-      if (powers) {
-        powers.forEach((pow: any) => {
-          const arcane = pow.system.arcane;
-          if (!arcane) return;
-          if (data.arcanes.find((el: string) => el == arcane) === undefined) {
-            data.arcanes.push(arcane);
-            // Add powerpoints data relevant to the detected arcane
-            if (!hasProperty(data, `system.powerPoints.${arcane}`)) {
-              data.data.system.powerPoints[arcane] = {
-                value: 0,
-                max: 0,
-              };
-            }
+      const arcanes = new Array<string>();
+      const powers = data.itemsByType.power;
+      powers.forEach((pow: any) => {
+        const arcane: string = pow.system.arcane;
+        if (!arcane) return;
+        if (!arcanes.find((el) => el === arcane)) {
+          arcanes.push(arcane);
+          // Add powerpoints data relevant to the detected arcane
+          if (!hasProperty(this.actor, `system.powerPoints.${arcane}`)) {
+            data.actor.system.powerPoints[arcane] = {
+              value: 0,
+              max: 0,
+            };
           }
-        });
-      }
+        }
+      });
+      data.arcanes = arcanes;
 
       // Check for enabled optional rules
       data.settingrules = {
@@ -247,7 +246,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     const additionalStats: AdditionalStats = this.actor.system.additionalStats;
     for (const attr of Object.values(additionalStats)) {
-      attr['isCheckbox'] = attr['dtype'] === 'Boolean';
+      attr['isCheckbox'] = attr.dtype === 'Boolean';
     }
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
     return data;

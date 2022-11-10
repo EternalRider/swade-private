@@ -49,11 +49,11 @@ export default class ItemChatCardHelper {
     const actionObj = foundry.utils.getProperty(
       item,
       'system.actions.additional.' + action,
-    ) as ItemAction;
+    ) as ItemAction | undefined;
 
     // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
-    if (item.type === 'action' && actionObj.type === 'resist') {
+    if (actionObj?.type === 'resist') {
       // swap the selected token's actor in as the target for the roll
       if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
         ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {
@@ -129,14 +129,14 @@ export default class ItemChatCardHelper {
     action: string,
     additionalMods: TraitRollModifier[] = [],
   ): Promise<Roll | null> {
-    const traitName = getProperty(item.system, 'actions.skill');
+    const traitName = getProperty(item, 'system.actions.skill');
     let roll: Promise<Roll | null> | Roll | null = null;
-    const ammo = actor.items.getName(getProperty(item.system, 'ammo'));
+    const ammo = actor.items.getName(getProperty(item, 'system.ammo'));
     const usesAmmoManagement =
       game.settings.get('swade', 'ammoManagement') && !item.isMeleeWeapon;
-    const drawsAmmoFromInv = getProperty(item.system, 'autoReload');
-    const ammoAvailable = ammo && getProperty(ammo.system, 'quantity') > 0;
-    const enoughShots = getProperty(item.system, 'currentShots') > 0;
+    const drawsAmmoFromInv = getProperty(item, 'system.autoReload');
+    const ammoAvailable = ammo && getProperty(ammo, 'system.quantity') > 0;
+    const enoughShots = getProperty(item, 'system.currentShots') > 0;
     const canReload = this.isReloadPossible(actor) && usesAmmoManagement;
 
     const cannotShoot =
@@ -145,10 +145,10 @@ export default class ItemChatCardHelper {
 
     switch (action) {
       case 'damage':
-        if (getProperty(item.system, 'actions.dmgMod')) {
+        if (getProperty(item, 'system.actions.dmgMod')) {
           additionalMods.push({
             label: game.i18n.localize('SWADE.ItemDmgMod'),
-            value: getProperty(item.system, 'actions.dmgMod'),
+            value: getProperty(item, 'system.actions.dmgMod'),
           });
         }
         roll = await item.rollDamage({ additionalMods });
@@ -169,13 +169,13 @@ export default class ItemChatCardHelper {
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
-          getProperty(item.system, 'arcaneSkillDie'),
+          getProperty(item, 'system.arcaneSkillDie'),
         );
         break;
       case 'reload':
         if (
-          getProperty(item.system, 'currentShots') >=
-          getProperty(item.system, 'shots')
+          getProperty(item, 'system.currentShots') >=
+          getProperty(item, 'system.shots')
         ) {
           //check to see we're not posting the message twice
           if (!notificationExists('SWADE.ReloadUnneeded', true)) {
@@ -221,8 +221,8 @@ export default class ItemChatCardHelper {
     additionalMods: TraitRollModifier[] = [],
   ): Promise<Roll | null> {
     const action = getProperty(
-      item.system,
-      `actions.additional.${actionKey}`,
+      item,
+      `system.actions.additional.${actionKey}`,
     ) as ItemAction;
     const ammoManagement =
       game.settings.get('swade', 'ammoManagement') && !item.isMeleeWeapon;
@@ -328,17 +328,17 @@ export default class ItemChatCardHelper {
     shotsUsed = 1,
   ): Promise<void> {
     const item = actor.items.get(itemId)!;
-    const currentShots = parseInt(getProperty(item.system, 'currentShots'));
-    const hasAutoReload = getProperty(item.system, 'autoReload') as boolean;
+    const currentShots = parseInt(getProperty(item, 'system.currentShots'));
+    const hasAutoReload = getProperty(item, 'system.autoReload') as boolean;
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     const isReloadPossible = this.isReloadPossible(actor);
 
     //handle Auto Reload
     if (hasAutoReload) {
       if (!isReloadPossible) return;
-      const ammo = actor.items.getName(getProperty(item.system, 'ammo'))!;
+      const ammo = actor.items.getName(getProperty(item, 'system.ammo'))!;
       if (!ammo && !isReloadPossible) return;
-      const current = getProperty(ammo.system, 'quantity');
+      const current = getProperty(ammo, 'system.quantity');
       const newQuantity = current - shotsUsed;
       await ammo.update({ 'system.quantity': newQuantity });
       //handle normal shot consumption
@@ -444,10 +444,10 @@ export default class ItemChatCardHelper {
     if (item?.type === 'power') {
       const arcane = item.system.arcane || 'general';
       const currentPP = getProperty(
-        actor.system,
+        actor,
         `system.powerPoints.${arcane}.value`,
       );
-      const maxPP = getProperty(actor.system, `powerPoints.${arcane}.max`);
+      const maxPP = getProperty(actor, `system.powerPoints.${arcane}.max`);
       //update message content
       $(content).find('.pp-counter .current-pp').first().text(currentPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);
@@ -461,8 +461,8 @@ export default class ItemChatCardHelper {
     }
 
     if (item?.isArcaneDevice) {
-      const currentPP = getProperty(item.system, 'powerPoints.value');
-      const maxPP = getProperty(item.system, 'powerPoints.max');
+      const currentPP = getProperty(item, 'system.powerPoints.value');
+      const maxPP = getProperty(item, 'system.powerPoints.max');
       //update message content
       $(content).find('.pp-counter .current-pp').first().text(currentPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);

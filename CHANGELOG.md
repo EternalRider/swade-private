@@ -22,6 +22,34 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.4
+
+### Fixed
+
+- Power Points on the actor sheet should once again be in sync with Power Points in chat cards. (#645)
+- Power Points should show up on the Quick Access properly again. (#645)
+- Power Point pools that are not the "All" pool on the NPC sheet should once again have the proper Power Point controls displayed.
+
+## 2.1.3
+
+### Fixed
+
+- Powers can once again be added to arcane devices. (#627)
+- The text editor in the Advance Editor should once again be functional. (#642)
+
+## 2.1.2
+
+### Fixed
+
+- Default trait and damage actions should once again work on chat cards as expected
+
+## 2.1.1
+
+### Fixed
+
+- Resistance rolls should now properly trigger off of non-action items again.
+- Fixed the missing Effects tab on the Actions item sheet.
+
 ## v2.1.0
 
 ### Added

@@ -28,9 +28,9 @@ export class AdvanceEditor extends FormApplication<
   }
 
   get advances() {
-    return getProperty(
-      this.actor.data,
-      'data.advances.list',
+    return foundry.utils.getProperty(
+      this.actor,
+      'system.advances.list',
     ) as Collection<Advance>;
   }
 
@@ -55,6 +55,10 @@ export class AdvanceEditor extends FormApplication<
       rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
       advanceTypes: this._getAdvanceTypes(),
       owner: this.actor.isOwner,
+      notes: await TextEditor.enrichHTML(this.advance.notes, {
+        async: true,
+        secrets: this.actor.isOwner,
+      }),
     };
     return data;
   }
@@ -86,7 +90,7 @@ export class AdvanceEditor extends FormApplication<
     initialContent?: string,
   ): void {
     if (name === 'notes') {
-      if (options) options.plugins = 'lists image table hr code link';
+      // if (options) options.plugins = 'lists image table hr code link';
       if (!initialContent) initialContent = this.advance.notes;
     }
     return super.activateEditor(name, options, initialContent);
