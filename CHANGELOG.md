@@ -30,10 +30,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- Action chat cards should now display the default trait again
+- Action chat cards should now display the default trait again.
 - Unsigned integers should no longer cause action modifiers to fail.
 - Damage actions should use the proper damage values again.
 - Skills on NPC sheets should be sorted alphabetically again.
+- Clicking on bennies on the character sheet once again causes one to be spent.
 
 ## 2.1.4
 
