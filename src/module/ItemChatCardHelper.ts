@@ -234,7 +234,7 @@ export default class ItemChatCardHelper {
 
     if (action.type === 'skill' || action.type === 'resist') {
       //set the trait name and potentially override it via the action
-      let traitName = getProperty(item.system, 'actions.skill');
+      let traitName = getProperty(item, 'system.actions.skill');
       if (action.skillOverride) traitName = action.skillOverride;
 
       //find the trait and either get the skill item or the key of the attribute
@@ -242,11 +242,11 @@ export default class ItemChatCardHelper {
 
       if (action.skillMod && parseInt(action.skillMod) !== 0) {
         additionalMods.push({
-          label: action.name ?? game.i18n.localize('SWADE.ActionTraitMod'),
+          label: game.i18n.localize('SWADE.ActionTraitMod'),
           value: action.skillMod,
         });
       }
-      const currentShots = getProperty(item.system, 'currentShots');
+      const currentShots = getProperty(item, 'system.currentShots');
 
       if (item.type === 'weapon') {
         //do autoreload stuff if applicable
@@ -276,10 +276,10 @@ export default class ItemChatCardHelper {
       }
     } else if (action.type === 'damage') {
       //Do Damage stuff
-      if (getProperty(item.system, 'actions.dmgMod') !== '') {
+      if (getProperty(item, 'system.actions.dmgMod') !== '') {
         additionalMods.push({
           label: game.i18n.localize('SWADE.ItemDmgMod'),
-          value: getProperty(item.system, 'actions.dmgMod'),
+          value: getProperty(item, 'system.actions.dmgMod'),
         });
       }
       if (action.dmgMod) {
@@ -375,7 +375,7 @@ export default class ItemChatCardHelper {
         return;
       }
 
-      const ammoInInventory = getProperty(ammo.data, 'data.quantity') as number;
+      const ammoInInventory = getProperty(ammo, 'system.quantity') as number;
       let leftoverAmmoInInventory = ammoInInventory - missingAmmo;
       if (ammoInInventory < missingAmmo) {
         ammoInMagazine = weapon.system.currentShots + ammoInInventory;
@@ -443,13 +443,10 @@ export default class ItemChatCardHelper {
 
     if (item?.type === 'power') {
       const arcane = item.system.arcane || 'general';
-      const currentPP = getProperty(
-        actor,
-        `system.powerPoints.${arcane}.value`,
-      );
+      const curPP = getProperty(actor, `system.powerPoints.${arcane}.value`);
       const maxPP = getProperty(actor, `system.powerPoints.${arcane}.max`);
       //update message content
-      $(content).find('.pp-counter .current-pp').first().text(currentPP);
+      $(content).find('.pp-counter .current-pp').first().text(curPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);
     }
 

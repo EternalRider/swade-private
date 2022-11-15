@@ -194,9 +194,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     for (const type of game.system.documentTypes.Item) {
       data.itemsByType[type] = data.items.filter((i) => i.type === type) || [];
     }
-    data.itemsByType.skill.sort((a: SwadeItem, b: SwadeItem) =>
-      a.name!.localeCompare(b.name!),
-    );
+
+    data.sortedSkills = this.actor.items
+      .filter((i) => i.type === 'skill')
+      .sort((a, b) => a.name!.localeCompare(b.name!));
 
     if (this.actor.type !== 'vehicle') {
       //Encumbrance

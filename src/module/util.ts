@@ -108,7 +108,12 @@ export function normalizeRollModifiers(
 ): TraitRollModifier {
   let normalizedValue: string;
   if (typeof mod.value === 'string') {
-    normalizedValue = mod.value === '' ? '+0' : mod.value;
+    if (mod.value.startsWith('@')) {
+      normalizedValue = mod.value;
+    } else {
+      normalizedValue =
+        mod.value === '' ? '+0' : Number(mod.value).signedString();
+    }
   } else if (typeof mod.value === 'number') {
     normalizedValue = mod.value.signedString();
   } else {

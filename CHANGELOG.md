@@ -22,6 +22,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.5
+
+### Changed
+
+- Action trait modifiers now use the term "Action Trait Modifier" in the roll instead of the action name.
+
+### Fixed
+
+- Action chat cards should now display the default trait again
+- Unsigned integers should no longer cause action modifiers to fail.
+- Damage actions should use the proper damage values again.
+- Skills on NPC sheets should be sorted alphabetically again.
+
 ## 2.1.4
 
 ### Fixed

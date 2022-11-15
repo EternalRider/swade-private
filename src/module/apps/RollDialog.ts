@@ -254,6 +254,7 @@ export default class RollDialog extends FormApplication<
   private _buildModifierFlavor() {
     return this.ctx.mods
       .filter((v) => !v.ignore) //remove the disabled modifiers
+      .map(normalizeRollModifiers)
       .reduce((acc: string, cur: TraitRollModifier) => {
         const value =
           typeof cur.value === 'number' ? cur.value.signedString() : cur.value;
