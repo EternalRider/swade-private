@@ -75,13 +75,13 @@
         </div>
       </header>
       <ul class="items-list skills-list">
-        {{#each actor.itemTypes.skill}}
-        <li class="skill item" data-item-id="{{id}}">
-          <a class="contextmenu-edit" title="Right Click to {{localize 'SWADE.EditSkill'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{name}}
-            d{{system.die.sides}}{{modifier system.die.modifier}}{{#unless @last}},{{/unless}}
-          </a>
-        </li>
+        {{#each sortedSkills}}
+          <li class="skill item" data-item-id="{{id}}">
+            <a class="contextmenu-edit" title="Right Click to {{localize 'SWADE.EditSkill'}}">
+              {{#unless @first}}&nbsp;{{/unless}}{{name}}
+              d{{system.die.sides}}{{modifier system.die.modifier}}{{#unless @last}},{{/unless}}
+            </a>
+          </li>
         {{/each}}
       </ul>
     </section>
