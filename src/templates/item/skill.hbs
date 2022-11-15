@@ -30,7 +30,7 @@
         <label>{{localize "SWADE.LinkAttr"}}</label>
         <span class="form-fields">
           <select name="system.attribute" data-dtype="String">
-            {{#select item._source.system.attribute}}
+            {{#select item.system.attribute}}
               {{> "systems/swade/templates/attribute-select.hbs"}}
             {{/select}}
           </select>

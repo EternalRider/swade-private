@@ -17,7 +17,9 @@
         src='systems/swade/assets/official/dice/d{{system.die.sides}}.svg'
         alt='d{{system.die.sides}}{{modifier system.die.modifier}}'
       />
-      {{modifier system.die.modifier}}
+      {{#if system.die.modifier}}
+        <span class='skill-die-modifier'>{{modifier system.die.modifier}}</span>
+      {{/if}}
     </button>
     <div class='item-controls'>
       {{#if isOwner}}

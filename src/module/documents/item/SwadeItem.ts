@@ -162,10 +162,10 @@ export default class SwadeItem extends Item {
   async rollDamage(options: IRollOptions = {}) {
     const modifiers = new Array<TraitRollModifier>();
     let damage = '';
-    if (['weapon', 'power', 'shield'].includes(this.type)) {
+    if (options.dmgOverride) {
+      damage = options.dmgOverride;
+    } else if (['weapon', 'power'].includes(this.type)) {
       damage = this.system.damage;
-    } else if (this.type === 'shield' || options.dmgOverride) {
-      damage = options.dmgOverride ?? '';
     } else {
       return null;
     }
@@ -454,8 +454,8 @@ export default class SwadeItem extends Item {
 
     //Additional actions
     const itemActions = getProperty(
-      this.system,
-      'actions.additional',
+      this,
+      'system.actions.additional',
     ) as Record<string, ItemAction>;
 
     const actions = new Array<ItemChatCardAction>();
@@ -510,19 +510,19 @@ export default class SwadeItem extends Item {
       this.type === 'weapon' &&
       !this.isMeleeWeapon &&
       ammoManagement &&
-      !getProperty(this.system, 'autoReload');
-    const hasDamage = !!getProperty(this.system, 'damage');
+      !getProperty(this, 'system.autoReload');
+    const hasDamage = !!getProperty(this, 'system.damage');
     const hasTraitRoll =
-      ['weapon', 'power', 'shield'].includes(this.type) &&
-      !!getProperty(this.system, 'actions.skill');
+      ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
+      !!getProperty(this, 'system.actions.skill');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
-      getProperty(this.system, 'shots') > 0 &&
-      !getProperty(this.system, 'autoReload');
+      getProperty(this, 'system.shots') > 0 &&
+      !getProperty(this, 'system.autoReload');
 
     const additionalActions: Record<string, ItemAction> =
-      getProperty(this.system, 'actions.additional') || {};
+      getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === 'skill',
@@ -547,7 +547,7 @@ export default class SwadeItem extends Item {
       hasDamage,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this.system, 'actions.skill'),
+      trait: getProperty(this, 'system.actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
       hasResistRoll: hasResistRoll,
@@ -599,10 +599,10 @@ export default class SwadeItem extends Item {
 
   getTraitModifiers(): TraitRollModifier[] {
     const modifiers = new Array<TraitRollModifier>();
-    if (getProperty(this.system, 'actions.skillMod')) {
+    if (getProperty(this, 'system.actions.skillMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this.system, 'actions.skillMod'),
+        value: getProperty(this, 'system.actions.skillMod'),
       });
     }
     if (this.type === 'weapon') {
