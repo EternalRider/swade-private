@@ -30,9 +30,9 @@
     "pretty-staged": "pretty-quick --staged --pattern '**/*.!(hbs)'"
   },
   "devDependencies": {
-    "@guanghechen/rollup-plugin-copy": "^1.8.6",
+    "@guanghechen/rollup-plugin-copy": "^2.1.0",
     "@league-of-foundry-developers/foundry-vtt-types": "^9.249.0",
-    "@rollup/plugin-typescript": "^8.3.0",
+    "@rollup/plugin-typescript": "^9.0.0",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
     "chalk": "^5.0.0",
@@ -43,12 +43,12 @@
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.70.0",
+    "rollup": "^2.7.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-styles": "^4.0.0",
     "sass": "^1.32.8",
     "typedoc": "^0.23.10",
-    "typescript": "^4.6.4",
+    "typescript": "^4.6",
     "yargs": "^17.2.1"
   }
 }

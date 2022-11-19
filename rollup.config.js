@@ -83,4 +83,5 @@ export default defineConfig({
     }),
     isDev && livereload(distDirectory),
   ],
+  strictDeprecations: true
 });
