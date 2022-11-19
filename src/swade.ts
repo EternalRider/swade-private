@@ -43,6 +43,7 @@ import {
   rollItemMacro,
 } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
+import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
 
 /* ------------------------------------ */
@@ -131,13 +132,40 @@ Hooks.once('init', () => {
   CONFIG.Canvas.detectionModes.seeHeat = new DetectionModeInfravision({
     id: 'seeHeat',
     label: 'SWADE.Vision.SeeHeat',
-    type: DetectionMode.DETECTION_TYPES.SIGHT,
+    type: DetectionMode.DETECTION_TYPES.OTHER,
   });
   CONFIG.Canvas.detectionModes.senseHeat = new DetectionModeInfravision({
     id: 'senseHeat',
     label: 'SWADE.Vision.SenseHeat',
     walls: false,
     type: DetectionMode.DETECTION_TYPES.OTHER,
+  });
+
+  CONFIG.Canvas.visionModes.infraVision = new VisionMode({
+    id: 'infraVision',
+    label: 'SWADE.Vision.Infravision',
+    canvas: {
+      shader: ColorAdjustmentsSamplerShader,
+      uniforms: {
+        saturation: -0.5,
+        tint: InfravisionBackgroundVisionShader.COLOR_TINT,
+      },
+    },
+    lighting: {
+      background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+      illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+      coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+    },
+    vision: {
+      darkness: { adaptive: false },
+      defaults: {
+        attenuation: 0,
+        brightness: 0.5,
+        saturation: -0.5,
+        contrast: 0,
+      },
+      background: { shader: InfravisionBackgroundVisionShader },
+    },
   });
 
   //@ts-expect-error Types don't properly recognize dotnotation
@@ -195,6 +223,7 @@ Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
+Hooks.on('sightRefresh', SwadeCoreHooks.onSightRefresh);
 
 /* ------------------------------------ */
 /* Application Render					          */

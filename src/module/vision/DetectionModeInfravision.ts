@@ -1,4 +1,3 @@
-//@ts-nocheck
 import InfraVisionFilter from './InfravisionFilter';
 
 export default class DetectionModeInfravision extends DetectionMode {
@@ -7,7 +6,7 @@ export default class DetectionModeInfravision extends DetectionMode {
   }
 
   override _canDetect(visionSource, target) {
-    // See/Detect Invisibility can ONLY detect invisible status
+    // See/Sense Heat can ONLY detect warm tokens, ignoring those that are cold-bodied
     const tgt = target?.document;
     const coldBodied =
       tgt instanceof TokenDocument &&
