@@ -96,12 +96,14 @@ export default class SwadeCoreHooks {
     if (!game.user!.isGM) return;
     const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
     //TODO Adjust this version every time a migration needs to be triggered
-    const needsMigrationVersion = '1.2.0';
+    const needsMigrationVersion = '2.1.0';
     //Minimal compatible version needed for the migration
-    const compatibleMigrationVersion = '1.0.0';
+    const compatibleMigrationVersion = '2.0.0';
     //If the needed migration version is newer than the old migration version then migrate the world
-    const needsMigration =
-      currentVersion && isNewerVersion(needsMigrationVersion, currentVersion);
+    const needsMigration = foundry.utils.isNewerVersion(
+      needsMigrationVersion,
+      currentVersion,
+    );
     if (!needsMigration) return;
 
     // Perform the migration
@@ -1206,6 +1208,26 @@ export default class SwadeCoreHooks {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
       if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
+    }
+  }
+
+  static onSightRefresh() {
+    if (
+      !canvas.effects.visibility.tokenVision ||
+      !canvas.effects.visionSources.size
+    ) {
+      return;
+    }
+
+    for (const token of canvas.tokens?.placeables ?? []) {
+      //skip tokens that aren't controlled or not vision sources.
+      if (
+        !(token.controlled || canvas.effects?.visionSources.has(token.sourceId))
+      ) {
+        continue;
+      }
+      //apply the alpha filter to the token to make it appear unaffected by any vision mode. This helps with readability
+      token.detectionFilter = CONFIG.SWADE.alphaFilter;
     }
   }
 }

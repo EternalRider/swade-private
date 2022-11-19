@@ -22,6 +22,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.6
+
+### Added
+
+- Added `Infravision` vision mode to go along with the `See Heat` and `Sense Heat` detection modes. To use the Vision mode go to the Token settings and select the vision mode from the dropdown.
+- Added additional translation strings.
+
+### Changed
+
+- Improved the visual representation of See/Sense Heat detection modes.
+
+### Fixed
+
+- Fixed an issue that would prevent the roll dialog to add bonus damage to dice rolls.
+- Fixed the missing migration that was supposed to happen with system version `2.1.0`. If nothing happens you can run `game.swade.migrations.migrateWorld()` in either the devtools or as a script macro.
+
+### Known Issues
+
+- In order to properly use the See/Sense Heat detection modes you need to add an instance of Basic Sight to the token detection, even if it has Basic Sight already. Add the Basic Sight after you've added the See/Sense Heat mode, set the range to 0 and uncheck the checkbox to disable Basic Sight.
+
 ## 2.1.5
 
 ### Changed
