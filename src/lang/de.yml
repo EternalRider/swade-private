@@ -482,8 +482,8 @@ SWADE:
     FantasyCompanionEntangle:
       Name: Festgehalten Status nach Fantasy Companion
       Hint: >-
-        Verwende die Fantasy Companion Version des Festgehalten Status.
-        Die Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
+        Verwende die Fantasy Companion Version des Festgehalten Status. Die
+        Seite muss neu geladen werden, damit die Änderung in Kraft tritt.
     InitDiscardPile:
       Name: Initiative-Ablagestapel
     InitCardDeck:
@@ -584,10 +584,15 @@ SWADE:
       Hint: Settingregel "Entschlossenheit" verwenden
     NoPowerPoints:
       Name: Keine Machtpunkte
-      Hint: Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen ausgeblendet
+      Hint: >-
+        Wenn diese Option aktiviert ist, werden alle Machtpunkt-Interaktionen
+        ausgeblendet
     AlwaysGeneralPP:
       Name: Immer generelle Machtpunkte anzeigen
-      Hint: Wenn diese Option aktiviert ist, wird der Mächte Abschnitt "Generell" immer angezeigt, selbst wenn alle Mächte einen zugeordneten Arkanen Hintergrund haben
+      Hint: >-
+        Wenn diese Option aktiviert ist, wird der Mächte Abschnitt "Generell"
+        immer angezeigt, selbst wenn alle Mächte einen zugeordneten Arkanen
+        Hintergrund haben
     ApplyEncumbrance:
       Name: Belastungsabzüge anwenden
       Hint: >-
@@ -697,6 +702,7 @@ SWADE:
   Vision:
     SeeHeat: Wärme sehen
     SenseHeat: Wärme spüren
+    Infravision: Wärmesicht
   Attribute: Eigenschaft
   BaseDie: Würfelbasis
   AttributeManager:
