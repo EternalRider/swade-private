@@ -613,6 +613,7 @@ SWADE:
       Fail: You remain Stunned
       Success: You are no longer Stunned but remain Vulnerable
       Raise: You are no longer Stunned nor Vulnerable
+      UnStunModifier: Unstun Modifier
     BleedingOut:
       Title: Vigor Test to resist Bleeding Out
       Fail: You perish

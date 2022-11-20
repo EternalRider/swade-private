@@ -426,6 +426,7 @@ SWADE:
       Fail: Du bleibst betäubt
       Success: Du bist nicht mehr Betäubt aber bleibst Verwundbar
       Raise: Du bist nicht mehr btäubt und auch nicht Verwundbar
+      UnStunModifier: Betäubt Resistenz
     BleedingOut:
       Title: Konstitutionsprobe gegen Ausbluten
       Fail: Du stirbst

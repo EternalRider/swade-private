@@ -20,12 +20,12 @@ Actor:
             sides: 6
           animal: false
         spirit:
+          unShakeBonus: 0
           die:
             sides: 4
             modifier: 0
           wild-die:
             sides: 6
-          unShakeBonus: 0
         strength:
           die:
             sides: 4
@@ -34,6 +34,7 @@ Actor:
             sides: 6
           encumbranceSteps: 0
         vigor:
+          unStunBonus: 0
           die:
             sides: 4
             modifier: 0
