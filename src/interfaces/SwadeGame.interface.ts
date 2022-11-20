@@ -47,6 +47,7 @@ export interface SwadeGame {
   migrations: typeof migrations;
   itemChatCardHelper: typeof ItemChatCardHelper;
   effectCallbacks: Collection<StatusEffectCallback>;
+  ready: boolean;
 }
 
 export type StatusEffectCallback = (effect: SwadeActiveEffect) => Promise<void>;

@@ -87,6 +87,7 @@ Hooks.once('init', () => {
     CharacterSummarizer,
     RollDialog,
     effectCallbacks: new Collection(),
+    ready: false,
   };
 
   //register custom Handlebars helpers

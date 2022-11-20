@@ -42,7 +42,7 @@ export default class SwadeCoreHooks {
 
   static async onReady() {
     //set up the world if needed
-    setup.setupWorld();
+    await setup.setupWorld();
 
     //set up the compendium tables of content
     for (const pack of game.packs) {
@@ -117,7 +117,16 @@ export default class SwadeCoreHooks {
         localize: true,
       });
     }
-    migrations.migrateWorld();
+    await migrations.migrateWorld();
+
+    // set the system as ready
+    game.swade.ready = true;
+
+    /**
+     * @category Hooks
+     * This hook is called once swade is done setting up itself
+     */
+    Hooks.callAll('swadeReady');
   }
 
   static onRenderActorDirectory(
