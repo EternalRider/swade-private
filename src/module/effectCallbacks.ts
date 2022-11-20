@@ -119,6 +119,14 @@ async function removeStunned(effect: SwadeActiveEffect) {
   const roll = await parent.rollAttribute('vigor', {
     title: flavour,
     flavour,
+    additionalMods: [
+      {
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.Stunned.UnStunModifier',
+        ),
+        value: parent.system.attributes.vigor.unStunBonus,
+      },
+    ],
   });
   const result = roll?.total ?? 0;
   //no roll or failed

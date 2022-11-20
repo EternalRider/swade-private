@@ -47,9 +47,9 @@ export interface CharacterDataSourceData {
       animal: boolean;
     };
     spirit: {
+      unShakeBonus: number;
       die: TraitDie;
       'wild-die': WildDie;
-      unShakeBonus: number;
     };
     strength: {
       die: TraitDie;
@@ -57,6 +57,7 @@ export interface CharacterDataSourceData {
       encumbranceSteps: number;
     };
     vigor: {
+      unStunBonus: number;
       die: TraitDie;
       'wild-die': WildDie;
     };
