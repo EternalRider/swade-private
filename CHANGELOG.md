@@ -29,6 +29,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `swadeReady` Hook that is called when the system has done all the necessary setup it needs. Alongside the hook there is now a global indicator called `game.swade.ready` that returns whether the system is ready. (#630)
 - Added the new property `unStunBonus` to the `vigor` attribute. The full active effect key is `system.attributes.vigor.unStunBonus` and the effect expiration workflow for the Stunned effect has been adjusted as well to respect this modifier. (#652)
 
+## 2.1.7
+
+### Fixed
+
+- Shields once again display cover in the inventory. (#659)
+- Shields should no longer show a No Ammo warning when using the default trait action. (#660)
+- Active Effects with negative values on values should no longer produce a `NaN` result. (#646)
+
 ## 2.1.6
 
 ### Added
