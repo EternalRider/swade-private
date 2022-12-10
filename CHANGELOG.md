@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.1.7
+
+### Fixed
+
+- Shields once again display cover in the inventory. (#659)
+- Shields should no longer show a No Ammo warning when using the default trait action. (#660)
+- Active Effects with negative values on values should no longer produce a `NaN` result. (#646)
+
 ## 2.1.6
 
 ### Added

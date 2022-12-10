@@ -68,7 +68,7 @@ export function registerCustomHelpers() {
 
   Handlebars.registerHelper('modifier', (str: string) => {
     str = str === '' || str === null ? '0' : str;
-    const value = typeof str == 'string' ? Number(str) : str;
+    const value = typeof str == 'string' ? parseInt(str) : str;
     return value == 0 ? '' : value > 0 ? ` + ${value}` : ` - ${-value}`;
   });
 

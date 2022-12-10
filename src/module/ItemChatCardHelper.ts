@@ -129,43 +129,14 @@ export default class ItemChatCardHelper {
     action: string,
     additionalMods: TraitRollModifier[] = [],
   ): Promise<Roll | null> {
-    const traitName = getProperty(item, 'system.actions.skill');
     let roll: Promise<Roll | null> | Roll | null = null;
-    const ammo = actor.items.getName(getProperty(item, 'system.ammo'));
-    const usesAmmoManagement =
-      game.settings.get('swade', 'ammoManagement') && !item.isMeleeWeapon;
-    const drawsAmmoFromInv = getProperty(item, 'system.autoReload');
-    const ammoAvailable = ammo && getProperty(ammo, 'system.quantity') > 0;
-    const enoughShots = getProperty(item, 'system.currentShots') > 0;
-    const canReload = this.isReloadPossible(actor) && usesAmmoManagement;
-
-    const cannotShoot =
-      (canReload && drawsAmmoFromInv && !ammoAvailable) ||
-      (canReload && !enoughShots);
 
     switch (action) {
       case 'damage':
-        if (getProperty(item, 'system.actions.dmgMod')) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.ItemDmgMod'),
-            value: getProperty(item, 'system.actions.dmgMod'),
-          });
-        }
-        roll = await item.rollDamage({ additionalMods });
-        this.callActionHook(actor, item, action, roll);
+        roll = await this.handleDamageAction(item, actor, additionalMods);
         break;
       case 'formula':
-        //check if we have enough ammo available
-        if (item.type !== 'power' && cannotShoot) {
-          Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
-          return null;
-        }
-        additionalMods.push(...item.getTraitModifiers());
-        roll = await this.doTraitAction(getTrait(traitName, actor), actor, {
-          additionalMods,
-        });
-        if (roll) await this.subtractShots(actor, item.id!);
-        this.callActionHook(actor, item, action, roll);
+        roll = await this.handleFormulaAction(item, actor, additionalMods);
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
@@ -204,6 +175,54 @@ export default class ItemChatCardHelper {
         // This is so an external API can directly use handleAdditionalActions to use an action and still fire the hook
         break;
     }
+    return roll;
+  }
+
+  static async handleFormulaAction(
+    item: SwadeItem,
+    actor: SwadeActor,
+    additionalMods: TraitRollModifier[] = [],
+  ) {
+    const traitName = getProperty(item, 'system.actions.skill');
+    const ammo = actor.items.getName(getProperty(item, 'system.ammo'));
+    const usesAmmoManagement =
+      game.settings.get('swade', 'ammoManagement') && !item.isMeleeWeapon;
+    const drawsAmmoFromInv = getProperty(item, 'system.autoReload');
+    const ammoAvailable = ammo && getProperty(ammo, 'system.quantity') > 0;
+    const enoughShots = getProperty(item, 'system.currentShots') > 0;
+    const canReload = this.isReloadPossible(actor) && usesAmmoManagement;
+
+    const cannotShoot =
+      (canReload && drawsAmmoFromInv && !ammoAvailable) ||
+      (canReload && !enoughShots);
+    //check if we have enough ammo available
+    if (item.type === 'weapon' && cannotShoot) {
+      Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
+      return null;
+    }
+    additionalMods.push(...item.getTraitModifiers());
+    const trait = getTrait(traitName, actor);
+    const roll = await this.doTraitAction(trait, actor, {
+      additionalMods,
+    });
+    if (roll) await this.subtractShots(actor, item.id!);
+    this.callActionHook(actor, item, 'formula', roll);
+    return roll;
+  }
+
+  static async handleDamageAction(
+    item: SwadeItem,
+    actor: SwadeActor,
+    additionalMods: TraitRollModifier[] = [],
+  ) {
+    if (getProperty(item, 'system.actions.dmgMod')) {
+      additionalMods.push({
+        label: game.i18n.localize('SWADE.ItemDmgMod'),
+        value: getProperty(item, 'system.actions.dmgMod'),
+      });
+    }
+    const roll = await item.rollDamage({ additionalMods });
+    this.callActionHook(actor, item, 'damage', roll);
     return roll;
   }
 
