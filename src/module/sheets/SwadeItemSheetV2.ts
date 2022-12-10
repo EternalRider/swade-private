@@ -114,8 +114,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     html.find('.action-delete').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.actionId;
       const action = getProperty(
-        this.item.data,
-        `data.actions.additional.${id}`,
+        this.item,
+        `system.actions.additional.${id}`,
       ) as ItemAction;
       const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
         action: action.name,
