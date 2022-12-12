@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Added the `swadeReady` Hook that is called when the system has done all the necessary setup it needs. Alongside the hook there is now a global indicator called `game.swade.ready` that returns whether the system is ready. (#630)
 - Added the new property `unStunBonus` to the `vigor` attribute. The full active effect key is `system.attributes.vigor.unStunBonus` and the effect expiration workflow for the Stunned effect has been adjusted as well to respect this modifier. (#652)
+- Added a limited version of the Player Character sheet that only displays appearance, biography, name and artwork. (#573)
 
 ## 2.1.7
 
