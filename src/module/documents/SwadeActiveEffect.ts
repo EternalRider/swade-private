@@ -295,6 +295,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
+    if (!data.icon) {
+      this.updateSource({
+        icon: 'systems/swade/assets/icons/active-effect.svg',
+      });
+    }
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {

@@ -511,7 +511,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         label: game.i18n.format('DOCUMENT.New', {
           type: game.i18n.localize('DOCUMENT.ActiveEffect'),
         }),
-        icon: '/icons/svg/mystery-man.svg',
         transfer: true,
       },
       { parent: this.item },

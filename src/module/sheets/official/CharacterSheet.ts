@@ -669,10 +669,6 @@ export default class CharacterSheet extends ActorSheet<
       label: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),
-      icon: '/icons/svg/mystery-man-black.svg',
-      duration: {
-        combat: game.combat?.id,
-      },
     },
     renderSheet = true,
   ) {
