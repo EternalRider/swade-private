@@ -33,7 +33,6 @@ export default class CharacterSheet extends ActorSheet<
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],
-      template: 'systems/swade/templates/official/sheet.hbs',
       tabs: [
         {
           navSelector: '.tabs',
@@ -47,6 +46,12 @@ export default class CharacterSheet extends ActorSheet<
         },
       ],
     });
+  }
+
+  get template(): string {
+    const base = 'systems/swade/templates/official/';
+    if (this.actor.limited) return base + 'limited.hbs';
+    return base + 'sheet.hbs';
   }
 
   override activateListeners(html: JQuery<HTMLFormElement>): void {
