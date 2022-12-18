@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the new property `unStunBonus` to the `vigor` attribute. The full active effect key is `system.attributes.vigor.unStunBonus` and the effect expiration workflow for the Stunned effect has been adjusted as well to respect this modifier. (#652)
 - Added a limited version of the Player Character sheet that only displays appearance, biography, name and artwork. (#573)
 - Added the Selection additional stat. You can set a semicolon separated list in the Setting Configurator which will be available to items and actors as a dropdown style Additional Stat. (#541)
+- Added the option to turn of currency for NPCs to the Setting Configurator. (#634)
 - Added additional translation strings.
 
 ## 2.1.7

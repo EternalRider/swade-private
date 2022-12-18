@@ -19,6 +19,7 @@ declare global {
       'swade.coreSkillsCompendium': string;
       'swade.wealthType': 'currency' | 'wealthDie' | 'none';
       'swade.currencyName': string;
+      'swade.npcsUseCurrency': boolean;
       'swade.jokersWild': boolean;
       'swade.parryBaseSkill': string;
       'swade.weightUnit': 'imperial' | 'metric';
@@ -240,6 +241,15 @@ export function registerSettingRules() {
     scope: 'world',
     type: String,
     default: 'Currency',
+    config: false,
+  });
+
+  game.settings.register('swade', 'npcsUseCurrency', {
+    name: game.i18n.localize('SWADE.Settings.NPCCurrency.Name'),
+    hint: game.i18n.localize('SWADE.Settings.NPCCurrency.Hint'),
+    scope: 'world',
+    type: Boolean,
+    default: true,
     config: false,
   });
 
