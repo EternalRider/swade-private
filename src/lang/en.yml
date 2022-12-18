@@ -601,6 +601,11 @@ SWADE:
       NPC:
         Hint: Set the amount of currency that NPC Actors recieve upon creation
         Name: NPC starting currency
+    NPCCurrency:
+      Name: NPCs use currency
+      Hint: >-
+        When enabled, all NPCs have the same currency options as Player
+        Characters
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

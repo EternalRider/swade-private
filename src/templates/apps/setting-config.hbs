@@ -221,17 +221,31 @@
             <select name='settingRules.wealthType'>
               {{#select settingRules.wealthType}}
                 <option value='currency'>{{localize 'SWADE.Currency'}}</option>
-                <option value='wealthDie'>{{localize
-                    'SWADE.WealthDie.Label'
-                  }}</option>
-                <option value='none'>{{localize
-                    'SWADE.WealthSelectionNoneOther'
-                  }}</option>
+                <option value='wealthDie'>
+                  {{localize 'SWADE.WealthDie.Label'}}
+                </option>
+                <option value='none'>
+                  {{localize 'SWADE.WealthSelectionNoneOther'}}
+                </option>
               {{/select}}
             </select>
           </div>
           <p class='notes'>{{localize 'SWADE.Settings.WealthType.Hint'}}</p>
         </div>
+        {{#unless (eq settingRules.wealthType 'none')}}
+          <div class='form-group'>
+            <label>{{localize 'SWADE.Settings.NPCCurrency.Name'}}</label>
+            <div class='form-fields'>
+              <input
+                type='checkbox'
+                name='settingRules.npcsUseCurrency'
+                data-dtype='Boolean'
+                {{checked settingRules.npcsUseCurrency}}
+              />
+            </div>
+            <p class='notes'>{{localize 'SWADE.Settings.NPCCurrency.Hint'}}</p>
+          </div>
+        {{/unless}}
         {{#if (eq settingRules.wealthType 'currency')}}
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.CurrencyName.Name'}}</label>
@@ -255,9 +269,9 @@
                 value='{{settingRules.pcStartingCurrency}}'
               />
             </div>
-            <p class='notes'>
-              {{localize 'SWADE.Settings.StartingCurrency.PC.Hint'}}
-            </p>
+            <p class='notes'>{{localize
+                'SWADE.Settings.StartingCurrency.PC.Hint'
+              }}</p>
           </div>
           <div class='form-group'>
             <label>
@@ -270,9 +284,9 @@
                 value='{{settingRules.npcStartingCurrency}}'
               />
             </div>
-            <p class='notes'>
-              {{localize 'SWADE.Settings.StartingCurrency.NPC.Hint'}}
-            </p>
+            <p class='notes'>{{localize
+                'SWADE.Settings.StartingCurrency.NPC.Hint'
+              }}</p>
           </div>
         {{/if}}
       </fieldset>

@@ -81,6 +81,7 @@ export const SWADE: SwadeConfig = {
       'alwaysGeneralPP',
       'wealthType',
       'currencyName',
+      'npcsUseCurrency',
       'hardChoices',
       'actionDeck',
       'applyEncumbrance',

@@ -242,6 +242,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
         wealthType: game.settings.get('swade', 'wealthType'),
         currencyName: game.settings.get('swade', 'currencyName'),
+        npcsUseCurrency: game.settings.get('swade', 'npcsUseCurrency'),
       };
     }
 

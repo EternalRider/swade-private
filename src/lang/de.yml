@@ -635,6 +635,11 @@ SWADE:
         Hint: >-
           Legen Sie den Währungsbetrag fest, den NSCs bei der Erstellung
           erhalten
+    NPCCurrency:
+      Name: NPCs verwenden Währung
+      Hint: >-
+        Wenn aktiviert, haben alle NSCs dieselben Währungsoptionen wie
+        Spielercharaktere
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
