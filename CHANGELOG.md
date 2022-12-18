@@ -33,6 +33,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the option to turn of currency for NPCs to the Setting Configurator. (#634)
 - Added additional translation strings.
 
+### Fixed
+
+- Active Effects with a duration set in seconds will now properly reset the time when prompted to do so in the expiration dialogue.
+
 ## 2.1.7
 
 ### Fixed

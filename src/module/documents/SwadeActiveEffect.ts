@@ -222,8 +222,12 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   async resetDuration() {
-    const currentRound = game.combat?.round ?? 1;
-    await this.update({ 'duration.startRound': currentRound });
+    await this.update({
+      duration: {
+        startRound: game.combat?.round ?? 1,
+        startTime: game.time.worldTime,
+      },
+    });
   }
 
   /** A shortcut to make the function public */
