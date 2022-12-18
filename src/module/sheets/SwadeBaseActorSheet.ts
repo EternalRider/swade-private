@@ -245,10 +245,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: AdditionalStats = this.actor.system.additionalStats;
-    for (const attr of Object.values(additionalStats)) {
-      attr['isCheckbox'] = attr.dtype === 'Boolean';
-    }
+    const additionalStats: AdditionalStats = this._getAdditionalStats();
+    data.additionalStats = additionalStats;
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
     return data;
   }
@@ -415,14 +413,6 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     }).render(true);
   }
 
-  protected _calcInventoryWeight(items): number {
-    let retVal = 0;
-    items.forEach((i: any) => {
-      retVal += i.system.weight * i.system.quantity;
-    });
-    return retVal;
-  }
-
   protected _filterPowers(html: JQuery, arcane: string) {
     this.options['activeArcane'] = arcane;
     // Show, hide powers
@@ -456,5 +446,28 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }
+  }
+
+  protected _calcInventoryWeight(items): number {
+    let retVal = 0;
+    items.forEach((i: any) => {
+      retVal += i.system.weight * i.system.quantity;
+    });
+    return retVal;
+  }
+
+  private _getAdditionalStats(): AdditionalStats {
+    const stats = foundry.utils.deepClone(
+      this.actor.system.additionalStats,
+    ) as AdditionalStats;
+    for (const [key, attr] of Object.entries(stats)) {
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        attr.options = options[key]
+          .optionString!.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    return stats;
   }
 }

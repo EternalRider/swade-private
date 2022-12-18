@@ -2,7 +2,7 @@ import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/f
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier,
+  TraitRollModifier
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
@@ -920,9 +920,16 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(this.actor.system.additionalStats);
-    for (const attr of Object.values(stats)) {
-      attr['isCheckbox'] = attr.dtype === 'Boolean';
+    const stats = foundry.utils.deepClone(
+      this.actor.system.additionalStats,
+    ) as AdditionalStats;
+    for (const [key, attr] of Object.entries(stats)) {
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        attr.options = options[key]
+          .optionString!.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
     }
     return stats;
   }

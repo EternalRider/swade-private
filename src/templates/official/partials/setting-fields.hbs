@@ -3,7 +3,7 @@
     <span class='name'>{{localize 'SWADE.AddStats'}}</span>
   </header>
   <div class='additional-stats'>
-    {{#each actor.system.additionalStats as |attr key|}}
+    {{#each additionalStats as |attr key|}}
       <div class='form-group'>
         {{#if (eq attr.dtype 'Die')}}
           <label>
@@ -38,6 +38,17 @@
             />
             <span class='checkmark'></span>
           </label>
+        {{else if (eq attr.dtype 'Selection')}}
+          <label>{{attr.label}}</label>
+          <select name='system.additionalStats.{{key}}.value'>
+            {{#select attr.value}}
+              {{selectOptions
+                attr.options
+                selected=advance.value
+                localize=true
+              }}
+            {{/select}}
+          </select>
         {{else}}
           <label>{{attr.label}}</label>
           <span class='form-fields'>

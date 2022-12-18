@@ -293,6 +293,7 @@ SWADE:
   String: Text
   Number: Number
   Checkbox: Checkbox
+  Selection: Selection
   WealthDie:
     Label: Wealth Die
     Broke:
@@ -713,6 +714,8 @@ SWADE:
         suggestions
   OtherStats: Other Stats
   HotbarDropOwnedItemWarning: You can only create macro buttons for owned Items
+  AdditionalStats:
+    SelectHint: Enter a list of options, seperated by semicolon
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

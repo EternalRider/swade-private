@@ -47,6 +47,7 @@ export default class SettingConfigurator extends FormApplication<
         Number: 'SWADE.Number',
         Boolean: 'SWADE.Checkbox',
         Die: 'SWADE.Die',
+        Selection: 'SWADE.Selection',
       },
       coreSkillPackChoices: this._buildCoreSkillPackChoices(),
       actionDeckChoices: this._buildActionDeckChoices(),

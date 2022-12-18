@@ -34,10 +34,12 @@
   .attribute {
     display: grid;
     grid-template-columns: repeat(4, 1fr) 20px;
+    grid-template-rows: auto;
     place-items: center;
     column-gap: 10px;
-    height: 28px;
     line-height: 24px;
+    padding: $medium-spacing 0;
+    border-bottom: 1px solid #aaa;
     input,
     select {
       background: transparent;
@@ -62,6 +64,10 @@
     }
     .attribute-control {
       grid-column: 5;
+    }
+    .attribute-optionString {
+      grid-column: 1/-1;
+      grid-row: 2;
     }
   }
 
