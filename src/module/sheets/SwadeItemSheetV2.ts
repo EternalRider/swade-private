@@ -1,9 +1,6 @@
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { EquipState } from '../../globals';
-import {
-  AdditionalStat,
-  ItemAction,
-} from '../../interfaces/additional.interface';
+import { AdditionalStats, EquipState } from '../../globals';
+import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
@@ -203,7 +200,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this.item.system.additionalStats;
+    const additionalStats = this._getAdditionalStats();
 
     const data: SwadeItemSheetData = {
       itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
@@ -453,6 +450,21 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
+  private _getAdditionalStats(): AdditionalStats {
+    const stats = foundry.utils.deepClone(
+      this.item.system.additionalStats,
+    ) as AdditionalStats;
+    for (const [key, attr] of Object.entries(stats)) {
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').item;
+        attr.options = options[key]
+          .optionString!.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    return stats;
+  }
+
   private _setupAccordions() {
     this.form
       ?.querySelectorAll<HTMLDetailsElement>('.actions-list details')
@@ -587,7 +599,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   hasCategory: boolean;
   actionTypes: Record<string, string>;
   hasAdditionalStats: boolean;
-  additionalStats: Record<string, AdditionalStat>;
+  additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;
   isArcaneDevice: boolean;
   enrichedDescription: string;

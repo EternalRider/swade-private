@@ -286,6 +286,7 @@ SWADE:
   String: Text
   Number: Nummer
   Checkbox: Checkbox
+  Selection: Auswahl
   WealthDie:
     Label: Wohlstandswürfel
     Broke:
@@ -732,6 +733,8 @@ SWADE:
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
   HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
+  AdditionalStats:
+    SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

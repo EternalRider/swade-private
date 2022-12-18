@@ -1,4 +1,4 @@
-import { AdditionalStat } from '../interfaces/additional.interface';
+import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
 
@@ -43,8 +43,8 @@ declare global {
       'swade.highlightTemplate': boolean;
       'swade.fantasyCompanionEntangle': boolean;
       'swade.settingFields': {
-        actor: Record<string, AdditionalStat>;
-        item: Record<string, AdditionalStat>;
+        actor: Record<string, PrototypeAdditionalStat>;
+        item: Record<string, PrototypeAdditionalStat>;
       };
       'swade.tocBlockList': Record<string, boolean>;
       'swade.npcStartingCurrency': number;

@@ -479,9 +479,19 @@
               name='actorSettingStats.{{key}}.hasMaxValue'
               {{checked attr.hasMaxValue}}
             />
-            <a class='attribute-control' data-action='delete'><i
-                class='fas fa-trash'
-              ></i></a>
+            <a class='attribute-control' data-action='delete'>
+              <i class='fas fa-trash'></i>
+            </a>
+            {{#if (eq attr.dtype 'Selection')}}
+              <input
+                hint='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+                placeholder='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+                class='attribute-optionString'
+                type='text'
+                name='actorSettingStats.{{key}}.optionString'
+                value='{{attr.optionString}}'
+              />
+            {{/if}}
           </li>
         {{/each}}
       </ul>

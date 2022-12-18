@@ -1,11 +1,15 @@
-export interface AdditionalStat {
-  dtype: 'String' | 'Number' | 'Boolean' | 'Die';
+export interface PrototypeAdditionalStat {
+  dtype: 'String' | 'Number' | 'Boolean' | 'Die' | 'Selection';
   hasMaxValue: boolean;
   label: string;
+  optionString?: string;
+}
+export interface AdditionalStat extends PrototypeAdditionalStat {
   useField?: boolean;
   value?: string | number;
   max?: string | number;
   modifier?: string;
+  options?: Record<string, string>;
 }
 
 export interface ItemAction {

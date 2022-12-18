@@ -532,6 +532,9 @@
   .additional-stats {
     padding-left: $large-spacing;
     max-width: 95%;
+    select {
+      max-width: 270px;
+    }
   }
 
   .armor-display {
