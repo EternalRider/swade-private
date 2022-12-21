@@ -67,11 +67,17 @@ export default class SwadeCoreHooks {
         label: game.i18n.localize('SWADE.ShowBennyAnimation'),
         hint: game.i18n.localize('SWADE.ShowBennyAnimationDesc'),
       },
-      dsnWildDie: {
+      dsnWildDiePreset: {
         type: String,
         default: 'none',
         label: game.i18n.localize('SWADE.WildDiePreset'),
         hint: game.i18n.localize('SWADE.WildDiePresetDesc'),
+      },
+      dsnWildDie: {
+        type: String,
+        default: 'none',
+        label: game.i18n.localize('SWADE.WildDieTheme'),
+        hint: game.i18n.localize('SWADE.WildDieThemeDesc'),
       },
       dsnCustomWildDieColors: {
         type: Object,

@@ -10,6 +10,7 @@ declare global {
     User: {
       swade: {
         bennies?: number;
+        dsnWildDiePreset: DsnWildDiePreset;
         dsnCustomWildDieColors: DsnCustomWildDieColors;
         dsnCustomWildDieOptions: DsnCustomWildDieOptions;
         dsnShowBennyAnimation: boolean;

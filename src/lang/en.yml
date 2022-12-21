@@ -219,8 +219,10 @@ SWADE:
   ShowBennyAnimationDesc: >-
     Play an animation when spending a Benny. Only available if Dice So Nice! is
     installed
-  WildDiePreset: Wild Die Theme
-  WildDiePresetDesc: >-
+  WildDiePreset: Wild Die Preset
+  WildDiePresetDesc: Select a DSN Preset design for your Wild Die.
+  WildDieTheme: Wild Die Theme
+  WildDieThemeDesc: >-
     Select a DSN Theme for your Wild Die. Select 'Custom' if you want to create
     your own or 'None' if you don't want your Wild Die to look differently.
     Please keep in mind that self-created Wild Dies currently can only be seen
