@@ -181,6 +181,7 @@ interface ConsumableData
     max: number;
     value: number;
   };
+  messageOnUse: boolean;
   destroyOnEmpty: boolean;
 }
 

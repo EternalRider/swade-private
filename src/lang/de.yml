@@ -742,6 +742,9 @@ SWADE:
   HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
   AdditionalStats:
     SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
+  MessageOnUse:
+    Label: Nachricht bei Verwendung
+    Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

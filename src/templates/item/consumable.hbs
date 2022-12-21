@@ -51,19 +51,31 @@
     <a class='item' data-tab='description' data-group='main'>
       {{localize 'SWADE.Desc'}}
     </a>
+    <a class='item' data-tab='properties' data-group='main'>
+      {{localize 'SWADE.Properties'}}
+    </a>
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
+      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+    </section>
+    <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
         <label>{{localize "SWADE.DestroyOnEmpty"}}</label>
           <span class='form-fields'>
             <input type='checkbox' name='system.destroyOnEmpty' {{checked item.system.destroyOnEmpty}}/>
           </span>
       </div>
-      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+      <div class="form-group">
+        <label>{{localize "SWADE.MessageOnUse.Label"}}</label>
+          <span class='form-fields'>
+            <input type='checkbox' name='system.messageOnUse' {{checked item.system.messageOnUse}}/>
+          </span>
+        <p class="notes">{{localize "SWADE.MessageOnUse.Hint"}}</p>
+      </div>
     </section>
     <section class='tab effects' data-group='main' data-tab='effects'>
       {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}

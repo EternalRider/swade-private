@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a limited version of the Player Character sheet that only displays appearance, biography, name and artwork. (#573)
 - Added the Selection additional stat. You can set a semicolon separated list in the Setting Configurator which will be available to items and actors as a dropdown style Additional Stat. (#541)
 - Added the option to turn of currency for NPCs to the Setting Configurator. (#634)
+- Consumable type items can now display a small chat notification when a charge is used. This can be toggled per item and defaults to enabled. (#610)
 - Added additional translation strings.
 
 ### Fixed

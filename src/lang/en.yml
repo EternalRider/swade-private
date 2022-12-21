@@ -723,6 +723,9 @@ SWADE:
   HotbarDropOwnedItemWarning: You can only create macro buttons for owned Items
   AdditionalStats:
     SelectHint: Enter a list of options, seperated by semicolon
+  MessageOnUse:
+    Label: Message on Use
+    Hint: Display a chat message when this item is used
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

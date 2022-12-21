@@ -669,6 +669,10 @@ export default class SwadeItem extends Item {
      */
     Hooks.call('swadeConsumeItem', this, charges, usage);
 
+    if (this.type === 'consumable' && this.system.messageOnUse) {
+      await this._createChargeUsageMessage(charges);
+    }
+
     await this._postConsumptionCleanup(updatedItems);
   }
 
@@ -834,6 +838,13 @@ export default class SwadeItem extends Item {
       ) as ItemChatCardPowerPoints;
     }
     return null;
+  }
+
+  protected async _createChargeUsageMessage(charges: number) {
+    return CONFIG.ChatMessage.documentClass.create({
+      speaker: ChatMessage.getSpeaker(),
+      content: `<p>${charges} charge(s) used on <em>${this.name}</em></p>`,
+    });
   }
 
   protected override async _preCreate(
