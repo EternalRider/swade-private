@@ -5,6 +5,7 @@ import {
 import { Dice3D } from '../../types/DiceSoNice';
 import DiceSettings from '../apps/DiceSettings';
 import { PACKAGE_ID, SWADE } from '../config';
+import SwadeUser from '../documents/SwadeUser';
 
 /** Hook callbacks for third-party integrations */
 export default class SwadeIntegrationHooks {
@@ -20,11 +21,6 @@ export default class SwadeIntegrationHooks {
   }
 
   static onDiceSoNiceReady(dice3d: Dice3D) {
-    const wildDiePreset =
-      game.user!.getFlag('swade', 'dsnWildDie') ||
-      (SWADE.diceConfig.flags.dsnWildDie
-        .default as DsnWildDiePreset);
-
     const customWilDieColors =
       game.user!.getFlag('swade', 'dsnCustomWildDieColors') ||
       (SWADE.diceConfig.flags.dsnCustomWildDieColors
@@ -72,6 +68,51 @@ export default class SwadeIntegrationHooks {
       },
       'd2',
     );
+  }
+
+  static onDiceSoNiceRollStart(_messageId: string, context: any) {
+    const user = context.user as SwadeUser;
+    if (user.id === game.userId) return;
+    const wildDie = context.roll.terms.find(
+      (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
+    );
+
+    const colorSet = wildDie.options.colorset;
+    //return early if the colorset is none
+    if (!colorSet || colorSet === 'none') return;
+
+    const dieSystem = wildDie.options.appearance.system;
+    if (colorSet === 'customWildDie') {
+      // Build the custom appearance and set it
+      const customColors = user.getFlag('swade', 'dsnCustomWildDieColors');
+      const customOptions = user.getFlag('swade', 'dsnCustomWildDieOptions');
+      const customAppearance = {
+        colorset: 'custom',
+        foreground: customColors?.labelColor,
+        background: customColors?.diceColor,
+        edge: customColors?.edgeColor,
+        outline: customColors?.outlineColor,
+        font: customOptions?.font,
+        material: customOptions?.material,
+        texture: customOptions?.texture,
+        system: dieSystem,
+      };
+      setProperty(wildDie, 'options.appearance', customAppearance);
+    } else {
+      // Set the preset
+      setProperty(wildDie, 'options.colorset', colorSet);
+    }
+    // Get the dicePreset for the given die type
+    const dicePreset = game.dice3d?.DiceFactory.systems[dieSystem].dice.find(
+      (d) => d.type === 'd' + wildDie.faces,
+    );
+    if (!dicePreset) return;
+    if (dicePreset?.modelFile && !dicePreset.modelLoaded) {
+      // Load the modelFile
+      dicePreset.loadModel(game.dice3d?.DiceFactory.loaderGLTF);
+    }
+    // Load the textures
+    dicePreset.loadTextures();
   }
 
   static onDevModeReady({ registerPackageDebugFlag }: DevModeApi) {

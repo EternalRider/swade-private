@@ -24,9 +24,6 @@ export default class SwadeSocketHandler {
         case 'giveBennies':
           this._onGiveBenny(data);
           break;
-        case 'onRollWildDie':
-          this._onRollWildDie(data);
-          break;
         default:
           this._onUnknownSocket(data.type);
           break;
@@ -64,15 +61,6 @@ export default class SwadeSocketHandler {
     this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
   }
 
-  onRollWildDie(dieType: string, colorPreset: string) {
-    this.emit<RollWildDieEvent>({
-      type: 'onRollWildDie',
-      user: game.userId!,
-      dieType,
-      colorPreset,
-    });
-  }
-
   protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
     const effect = (await fromUuid(data.effectUUID)) as SwadeActiveEffect;
     if (isFirstOwner(effect.parent)) {
@@ -104,61 +92,6 @@ export default class SwadeSocketHandler {
       await game.user?.getBenny();
     }
   }
-
-  protected async _onRollWildDie(data: RollWildDieEvent) {
-    const user = game.users?.get(data.user);
-    if (data.user != game?.userId) {
-      // Get the other user's configured Wild Die data.
-      const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset');
-      const colorPreset = user?.getFlag('swade', 'dsnWildDie') || 'none';
-      // Change the Wild Die theme.
-      Hooks.once('diceSoNiceRollStart', (_messageId, context) => {
-        const wildDie = context.roll.terms.find(
-          (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
-        );
-        if (colorPreset !== 'none') {
-          if (colorPreset === 'customWildDie') {
-            // Build the custom appearance and set it
-            const customColors = user?.getFlag(
-              'swade',
-              'dsnCustomWildDieColors',
-            );
-            const customOptions = user?.getFlag(
-              'swade',
-              'dsnCustomWildDieOptions',
-            );
-            const customAppearance = {
-              colorset: 'custom',
-              foreground: customColors?.labelColor,
-              background: customColors?.diceColor,
-              edge: customColors?.edgeColor,
-              outline: customColors?.outlineColor,
-              font: customOptions?.font,
-              material: customOptions?.material,
-              texture: customOptions?.texture,
-              system: dieSystem,
-            };
-            setProperty(wildDie, 'options.appearance', customAppearance);
-          } else {
-            // Set the preset
-            setProperty(wildDie, 'options.colorset', colorPreset);
-          }
-          // Get the dicePreset for the given die type
-          const dicePreset = game.dice3d?.DiceFactory.systems[
-            dieSystem
-          ].dice.find((d) => d.type === data.dieType);
-          if (dicePreset) {
-            if (dicePreset?.modelFile && !dicePreset.modelLoaded) {
-              // Load the modelFile
-              dicePreset.loadModel(game.dice3d?.DiceFactory.loaderGLTF);
-            }
-            // Load the textures
-            dicePreset.loadTextures();
-          }
-        }
-      });
-    }
-  }
 }
 
 interface EventData {
@@ -180,10 +113,4 @@ interface NewRoundEvent extends EventData {
 
 interface GiveBenniesEvent extends EventData {
   users: string[];
-}
-
-interface RollWildDieEvent extends EventData {
-  user: string;
-  dieType: string;
-  colorPreset: string;
 }

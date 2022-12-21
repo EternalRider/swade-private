@@ -279,6 +279,7 @@ Hooks.on(
 /** Dice So Nice*/
 Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
 Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
+Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);

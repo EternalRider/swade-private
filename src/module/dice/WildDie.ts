@@ -13,13 +13,13 @@ export default class WildDie extends Die {
     if (game.dice3d) {
       // Get the user's configured Wild Die data.
       const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset');
-      const colorPreset = user?.getFlag('swade', 'dsnWildDie') || 'none';
+      const colorSet = user?.getFlag('swade', 'dsnWildDie') || 'none';
       // If the color preset is not none
-      if (colorPreset !== 'none') {
+      if (colorSet !== 'none') {
         // If dieSystem is defined... (new users might not have one defined)
         if (dieSystem) {
           // Set the color preset.
-          setProperty(termData, 'options.colorset', colorPreset);
+          setProperty(termData, 'options.colorset', colorSet);
           // Set the system value.
           setProperty(termData, 'options.appearance.system', dieSystem);
           // Get the die model for the respective die type
@@ -33,8 +33,6 @@ export default class WildDie extends Die {
             }
             dicePreset.loadTextures();
           }
-          // Pass the data to everyone else and load any models and textures on their end.
-          game.swade.sockets.onRollWildDie(`d${termData?.faces}`, colorPreset);
         }
       }
     }
