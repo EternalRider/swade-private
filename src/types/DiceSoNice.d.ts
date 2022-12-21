@@ -86,6 +86,7 @@ interface Dice3DExports {
     prepareFontList: () => Record<string, string>;
     prepareTextureList: () => Record<string, string>;
     prepareColorsetList: () => Record<string, Record<string, string>>;
+    prepareSystemList: () => Record<string, string>;
   };
 }
 

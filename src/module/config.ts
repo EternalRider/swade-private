@@ -43,10 +43,6 @@ export const SWADE: SwadeConfig = {
     },
   },
 
-  imagedrop: {
-    height: 300,
-  },
-
   bennies: {
     templates: {
       refresh: 'systems/swade/templates/chat/benny-refresh.hbs',
@@ -97,8 +93,6 @@ export const SWADE: SwadeConfig = {
   },
 
   diceConfig: {
-    id: 'diceConfig',
-    title: 'SWADE Dice Settings',
     flags: {},
   },
 
@@ -282,10 +276,6 @@ export interface SwadeConfig {
     };
   };
 
-  imagedrop: {
-    height: number;
-  };
-
   bennies: {
     templates: {
       refresh: string;
@@ -307,8 +297,6 @@ export interface SwadeConfig {
   };
 
   diceConfig: {
-    id: string;
-    title: string;
     flags: Record<string, any>;
   };
 

@@ -12,10 +12,10 @@ export default class WildDie extends Die {
     const user = game.user;
     if (game.dice3d) {
       // Get the user's configured Wild Die data.
-      const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset');
-      const colorSet = user?.getFlag('swade', 'dsnWildDie') || 'none';
+      const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset') || 'none';
+      const colorSet = user?.getFlag('swade', 'dsnWildDie');
       // If the color preset is not none
-      if (colorSet !== 'none') {
+      if (dieSystem !== 'none') {
         // If dieSystem is defined... (new users might not have one defined)
         if (dieSystem) {
           // Set the color preset.

@@ -77,11 +77,11 @@ export default class SwadeIntegrationHooks {
       (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
     );
 
-    const colorSet = wildDie.options.colorset;
-    //return early if the colorset is none
-    if (!colorSet || colorSet === 'none') return;
-
     const dieSystem = wildDie.options.appearance.system;
+    //return early if the colorset is none
+    if (!dieSystem || dieSystem === 'none') return;
+
+    const colorSet = wildDie.options.colorset;
     if (colorSet === 'customWildDie') {
       // Build the custom appearance and set it
       const customColors = user.getFlag('swade', 'dsnCustomWildDieColors');

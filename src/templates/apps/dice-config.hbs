@@ -11,22 +11,18 @@
         {{checked
         this.value}}
       />
-      {{else if (and this.isSelect (eq this.key 'dsnWildDiePreset'))}}
-      <select name="{{this.module}}.{{this.key}}">
-        {{#select this.value}} {{#each this.groups as |name k|}}
-        <option value="{{k}}">{{localize name}}</option>
-        {{/each}} {{/select}}
-      </select>
 
       {{else if this.isSelect}}
-      <select name="{{this.module}}.{{this.key}}">
-        {{#select this.value}} {{#each this.choices as |name k|}}
-        <option value="{{k}}">{{localize name}}</option>
-        {{/each}} {{/select}}
+      <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
+        {{#select this.value}}
+          {{#each this.choices as |name id|}}
+            <option value="{{id}}">{{localize name}}</option>
+          {{/each}}
+        {{/select}}
       </select>
 
       {{else if this.isSelectOptGroup}}
-      <select name="{{this.module}}.{{this.key}}">
+      <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
         {{#select this.value}}
           {{#each this.groups as |group key|}}
             <optgroup label="{{key}}">
@@ -75,7 +71,7 @@
     <label>{{localize "DICESONICE.texture"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.texture"
-      {{disabled hasCustomWildDie}}
+      {{disabled (or noWildDie hasCustomWildDie)}}
     >
       {{selectOptions textureList selected=settings.dsnCustomWildDieOptions.value.texture localize=true}}
     </select>
@@ -85,7 +81,7 @@
     <label>{{localize "DICESONICE.material"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.material"
-      {{disabled hasCustomWildDie}}
+      {{disabled (or noWildDie hasCustomWildDie)}}
     >
       {{#select settings.dsnCustomWildDieOptions.value.material}}
         {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
@@ -97,7 +93,7 @@
     <label>{{localize "DICESONICE.font"}}</label>
     <select
       name="swade.dsnCustomWildDieOptions.font"
-      {{disabled hasCustomWildDie}}
+      {{disabled (or noWildDie hasCustomWildDie)}}
     >
       {{#select settings.dsnCustomWildDieOptions.value.font}}
         {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
@@ -113,16 +109,14 @@
         name="labelColor"
         value="{{settings.dsnCustomWildDieColors.value.labelColor}}"
         data-dtype="String"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
       <input
         type="color"
         name="labelColorSelector"
         value="{{settings.dsnCustomWildDieColors.value.labelColor}}"
         data-edit="labelColor"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
     </div>
   </div>
@@ -135,16 +129,14 @@
         name="diceColor"
         value="{{settings.dsnCustomWildDieColors.value.diceColor}}"
         data-dtype="String"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
       <input
         type="color"
         name="diceColorSelector"
         value="{{settings.dsnCustomWildDieColors.value.diceColor}}"
         data-edit="diceColor"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
     </div>
   </div>
@@ -157,16 +149,14 @@
         name="outlineColor"
         value="{{settings.dsnCustomWildDieColors.value.outlineColor}}"
         data-dtype="String"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
       <input
         type="color"
         name="outlineColorSelector"
         value="{{settings.dsnCustomWildDieColors.value.outlineColor}}"
         data-edit="outlineColor"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
     </div>
   </div>
@@ -179,16 +169,14 @@
         name="edgeColor"
         value="{{settings.dsnCustomWildDieColors.value.edgeColor}}"
         data-dtype="String"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
       <input
         type="color"
         name="edgeColorSelector"
         value="{{settings.dsnCustomWildDieColors.value.edgeColor}}"
         data-edit="edgeColor"
-        {{disabled
-        hasCustomWildDie}}
+        {{disabled (or noWildDie hasCustomWildDie)}}
       />
     </div>
   </div>
