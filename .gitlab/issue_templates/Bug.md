@@ -4,10 +4,12 @@ In order to submit an effective bug report, please include the following informa
 
 > Please share the following basic details about your setup.
 
-- Foundry VTT Version: (Example 0.5.4)
+- Foundry VTT Version: (Example v10)
+- SWADE System Version: (example 2.1.0)
 - Operating System: [Windows, MacOS, Linux (which distro)]
 - How Are You Using Foundry: [Native Application (Electron), Chrome, Firefox, Safari, Brave, etc...]
 - Modules Enabled?: [yes, no] If yes, please list any which might be relevant
+- Have you tried reproducing the issue without any modules enabled?: [yes, no]
 
 ### Issue Description
 
@@ -19,6 +21,6 @@ In order to submit an effective bug report, please include the following informa
 
 ### Possible Solution and/or Root Cause
 
-> If you have any possible leads to the Root Cause or suggestions for fixes thgen please provide them here
+> If you have any possible leads to the Root Cause or suggestions for fixes then please provide them here
 
 /label ~bug
