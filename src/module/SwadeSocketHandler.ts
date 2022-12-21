@@ -34,38 +34,43 @@ export default class SwadeSocketHandler {
     });
   }
 
-  emit(data: any) {
+  emit<T extends EventData>(data: T) {
     return game.socket?.emit(this.identifier, data);
   }
 
   deleteConvictionMessage(messageId: string) {
-    this.emit({
+    this.emit<DeleteConvictionMessageEvent>({
       type: 'deleteConvictionMessage',
       messageId,
-      userId: game.userId,
+      userId: game.userId!,
     });
   }
 
   removeStatusEffect(uuid: string) {
-    this.emit({
+    this.emit<RemoveStatusEffectEvent>({
       type: 'removeStatusEffect',
       effectUUID: uuid,
     });
   }
 
   newRound(combatId: string) {
-    this.emit({
+    this.emit<NewRoundEvent>({
       type: 'newRound',
       combatId: combatId,
     });
   }
 
   giveBenny(users: string[]) {
-    this.emit({ type: 'giveBennies', users });
+    this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
   }
 
-  onRollWildDie(data: any) {
-    this.emit(data);
+  onRollWildDie(dieType: string, colorPreset: string) {
+    this.emit<RollWildDieEvent>({
+      type: 'onRollWildDie',
+      user: game.userId!,
+      dieType,
+      colorPreset,
+    });
   }
 
   protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
@@ -107,9 +112,9 @@ export default class SwadeSocketHandler {
       const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset');
       const colorPreset = user?.getFlag('swade', 'dsnWildDie') || 'none';
       // Change the Wild Die theme.
-      Hooks.once('diceSoNiceRollStart', (messageId, context) => {
+      Hooks.once('diceSoNiceRollStart', (_messageId, context) => {
         const wildDie = context.roll.terms.find(
-          (d) => d.options.flavor === 'Wild Die',
+          (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
         );
         if (colorPreset !== 'none') {
           if (colorPreset === 'customWildDie') {
@@ -176,8 +181,8 @@ interface NewRoundEvent extends EventData {
 interface GiveBenniesEvent extends EventData {
   users: string[];
 }
+
 interface RollWildDieEvent extends EventData {
-  type: string;
   user: string;
   dieType: string;
   colorPreset: string;

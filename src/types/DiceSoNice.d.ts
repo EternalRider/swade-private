@@ -3,7 +3,7 @@ import { ChatSpeakerData } from '@league-of-foundry-developers/foundry-vtt-types
 export declare class Dice3D {
   //TODO type box
   box: any;
-
+  DiceFactory: any;
   exports: Dice3DExports;
 
   /**

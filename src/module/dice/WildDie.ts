@@ -23,7 +23,9 @@ export default class WildDie extends Die {
           // Set the system value.
           setProperty(termData, 'options.appearance.system', dieSystem);
           // Get the die model for the respective die type
-          const dicePreset = game.dice3d?.DiceFactory?.systems[dieSystem]?.dice?.find((d) => d.type === `d${termData?.faces}`);
+          const dicePreset = game.dice3d?.DiceFactory?.systems[
+            dieSystem
+          ]?.dice?.find((d) => d.type === `d${termData?.faces}`);
           if (dicePreset) {
             if (dicePreset.modelFile && !dicePreset.modelLoaded) {
               // Load the modelFile
@@ -32,12 +34,7 @@ export default class WildDie extends Die {
             dicePreset.loadTextures();
           }
           // Pass the data to everyone else and load any models and textures on their end.
-          game.swade.sockets.onRollWildDie({
-            type: 'onRollWildDie',
-            user: game?.user?.id,
-            dieType: `d${termData?.faces}`,
-            colorPreset: colorPreset,
-          });
+          game.swade.sockets.onRollWildDie(`d${termData?.faces}`, colorPreset);
         }
       }
     }
