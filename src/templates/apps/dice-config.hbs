@@ -11,6 +11,12 @@
         {{checked
         this.value}}
       />
+      {{else if (and this.isSelect (eq this.key 'dsnWildDiePreset'))}}
+      <select name="{{this.module}}.{{this.key}}">
+        {{#select this.value}} {{#each this.groups as |name k|}}
+        <option value="{{k}}">{{localize name}}</option>
+        {{/each}} {{/select}}
+      </select>
 
       {{else if this.isSelect}}
       <select name="{{this.module}}.{{this.key}}">
@@ -28,7 +34,7 @@
                 <option value="{{id}}">{{name}}</option>
               {{/each}}
             </optgroup>
-          {{/each}} 
+          {{/each}}
         {{/select}}
       </select>
 
@@ -59,10 +65,10 @@
 
     <p class="notes">{{this.hint}}</p>
   </div>
-  {{/inline}} 
-  
+  {{/inline}}
+
   {{#each settings}}
-    {{> settingPartial}} 
+    {{> settingPartial}}
   {{/each}}
 
   <div class="form-group">
@@ -94,7 +100,7 @@
       {{disabled hasCustomWildDie}}
     >
       {{#select settings.dsnCustomWildDieOptions.value.font}}
-        {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}} 
+        {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
       {{/select}}
     </select>
   </div>

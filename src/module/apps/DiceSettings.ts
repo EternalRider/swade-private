@@ -63,6 +63,10 @@ export default class DiceSettings extends FormApplication<
         isCheckbox: this.config.flags[flag].type === Boolean,
         isObject: this.config.flags[flag].type === Object,
       };
+      if (flag === 'dsnWildDiePreset') {
+        settings[flag].isSelect = true;
+        settings[flag].groups = this._prepareSystemList();
+      }
       if (flag === 'dsnWildDie') {
         settings[flag].isSelectOptGroup = true;
         settings[flag].groups = this._prepareColorsetList();
@@ -114,6 +118,10 @@ export default class DiceSettings extends FormApplication<
       }
     }
     this.render(true);
+  }
+
+  private _prepareSystemList() {
+    return game.dice3d!.exports.Utils.prepareSystemList();
   }
 
   private _prepareColorsetList() {

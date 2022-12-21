@@ -20,6 +20,11 @@ export default class SwadeIntegrationHooks {
   }
 
   static onDiceSoNiceReady(dice3d: Dice3D) {
+    const wildDiePreset =
+      game.user!.getFlag('swade', 'dsnWildDie') ||
+      (SWADE.diceConfig.flags.dsnWildDie
+        .default as DsnWildDiePreset);
+
     const customWilDieColors =
       game.user!.getFlag('swade', 'dsnCustomWildDieColors') ||
       (SWADE.diceConfig.flags.dsnCustomWildDieColors

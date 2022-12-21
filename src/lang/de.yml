@@ -261,7 +261,9 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: >-
+  WildDiePresetDesc: TODO Needs Translation
+  WildDieTheme: Wildcard Würfel Thema
+  WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
     eigener erstellt werden soll, oder "Kein" wenn der Wildcard-Würfel nicht
     anders aussehen soll. Bitte beachte, dass selbst erstellte Wildcard-Würfel
