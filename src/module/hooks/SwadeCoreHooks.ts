@@ -99,31 +99,38 @@ export default class SwadeCoreHooks {
     };
 
     // Determine whether a system migration is required and feasible
-    if (!game.user!.isGM) return;
-    const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
-    //TODO Adjust this version every time a migration needs to be triggered
-    const needsMigrationVersion = '2.1.0';
-    //Minimal compatible version needed for the migration
-    const compatibleMigrationVersion = '2.0.0';
-    //If the needed migration version is newer than the old migration version then migrate the world
-    const needsMigration = foundry.utils.isNewerVersion(
-      needsMigrationVersion,
-      currentVersion,
-    );
-    if (!needsMigration) return;
+    if (game.user?.isGM) {
+      const currentVersion = game.settings.get(
+        'swade',
+        'systemMigrationVersion',
+      );
+      //TODO Adjust this version every time a migration needs to be triggered
+      const needsMigrationVersion = '2.2.0';
+      //Minimal compatible version needed for the migration
+      const compatibleMigrationVersion = '2.0.0';
+      //If the needed migration version is newer than the old migration version then migrate the world
+      const needsMigration = foundry.utils.isNewerVersion(
+        needsMigrationVersion,
+        currentVersion,
+      );
+      if (!needsMigration) return;
 
-    // Perform the migration
-    if (
-      currentVersion !== '0.0.0' &&
-      foundry.utils.isNewerVersion(currentVersion, compatibleMigrationVersion)
-    ) {
-      Logger.error('SWADE.SysMigrationWarning', {
-        toast: true,
-        permanent: true,
-        localize: true,
-      });
+      // Perform the migration
+      if (
+        currentVersion !== '0.0.0' &&
+        !foundry.utils.isNewerVersion(
+          currentVersion,
+          compatibleMigrationVersion,
+        )
+      ) {
+        Logger.error('SWADE.SysMigrationWarning', {
+          toast: true,
+          permanent: true,
+          localize: true,
+        });
+      }
+      await migrations.migrateWorld();
     }
-    await migrations.migrateWorld();
 
     // set the system as ready
     game.swade.ready = true;
