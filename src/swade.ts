@@ -90,9 +90,6 @@ Hooks.once('init', () => {
     ready: false,
   };
 
-  //register custom Handlebars helpers
-  registerCustomHelpers();
-
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
   CONFIG.Item.documentClass = SwadeItem;
@@ -178,6 +175,8 @@ Hooks.once('init', () => {
   //@ts-expect-error Revist once types have caught up
   CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
+  //register custom Handlebars helpers
+  registerCustomHelpers();
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
 

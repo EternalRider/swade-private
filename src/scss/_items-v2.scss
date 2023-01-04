@@ -361,4 +361,28 @@
   .use-consumable {
     margin: $medium-spacing;
   }
+
+  .granted-items {
+    padding: 0;
+    .granted-item {
+      margin: $small-spacing 0;
+      display: grid;
+      grid-template-columns: 24px 1fr 32px;
+      column-gap: $small-spacing;
+      align-items: center;
+      .grant-name {
+        text-decoration: underline var(--accent-color);
+        line-height: 22px;
+        &.missing {
+          border: 1px dashed var(--accent-color);
+          background: rgba(255, 0, 0, 0.05);
+        }
+      }
+      .icon {
+        border: none;
+        border-radius: 0;
+        height: 24px;
+      }
+    }
+  }
 }

@@ -651,6 +651,8 @@ SWADE:
     OffHand: Off-Hand
     MainHand: Main Hand
     TwoHands: Two Hands
+    Added: Added
+    Readied: Readied
   DestroyOnEmpty: Destroy when Empty
   Charges: Charges
   Consumable:
@@ -726,6 +728,10 @@ SWADE:
   MessageOnUse:
     Label: Message on Use
     Hint: Display a chat message when this item is used
+  ItemGrants:
+    EmptyHint: This item currently grants no items
+    Header: Item Grants
+    When: Grant Items When
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

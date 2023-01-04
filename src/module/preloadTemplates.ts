@@ -58,6 +58,7 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/item/partials/action-properties.hbs',
     'systems/swade/templates/item/partials/bonus-damage.hbs',
     'systems/swade/templates/item/partials/equipped.hbs',
+    'systems/swade/templates/item/partials/grants.hbs',
     'systems/swade/templates/item/partials/tabs/powers.hbs',
     'systems/swade/templates/item/partials/tabs/description.hbs',
     'systems/swade/templates/item/partials/tabs/actions.hbs',

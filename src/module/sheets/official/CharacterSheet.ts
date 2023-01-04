@@ -2,7 +2,7 @@ import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/f
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier
+  TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
@@ -204,25 +204,8 @@ export default class CharacterSheet extends ActorSheet<
     // Delete Item
     html.find('.item-delete').on('click', async (ev) => {
       const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'), {
-        strict: true,
-      });
-      const template = `
-      <form>
-        <div style="text-align: center;">
-          <p>
-          ${game.i18n.localize('Delete')} <strong>${item.name}</strong>?
-          </p>
-        </div>
-      </form>`;
-      await Dialog.confirm({
-        title: game.i18n.localize('Delete'),
-        content: template,
-        yes: () => {
-          li.slideUp(200, () => item.delete());
-        },
-        no: () => {},
-      });
+      const item = this.actor.items.get(li.data('itemId'));
+      item?.deleteDialog();
     });
 
     html.find('.item-create').on('click', async (ev) => {
