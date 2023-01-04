@@ -57,7 +57,6 @@
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
-      <div></div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
@@ -84,8 +83,7 @@
           />
         </span>
       </div>
-      {{#if item.system.isVehicular}} 
-        {{#if settingRules.modSlots}}
+      {{#if (and item.system.isVehicular settingRules.modSlots)}} 
         <div class="form-group">
           <label>{{localize "SWADE.ModSlots"}}</label>
           <span class="form-fields">
@@ -98,9 +96,9 @@
             />
           </span>
         </div>
-        {{/if}}
       {{/if}}
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if item.isArcaneDevice}}
       <section class='tab powers' data-group='main' data-tab='powers'>

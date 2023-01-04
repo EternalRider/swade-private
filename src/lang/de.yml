@@ -673,6 +673,8 @@ SWADE:
     OffHand: Nebenhand
     MainHand: Haupthand
     TwoHands: Beidhändig
+    Added: Hinzugefügt
+    Readied: Bereit
   DestroyOnEmpty: Zerstören, wenn leer
   Charges: Benutzbar
   Consumable:
@@ -745,6 +747,10 @@ SWADE:
   MessageOnUse:
     Label: Nachricht bei Verwendung
     Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
+  ItemGrants:
+    EmptyHint: Dieses Item gewährt derzeit keine Items
+    Header: Gewährte Items
+    When: Items gewähren wen
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

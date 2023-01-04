@@ -40,6 +40,13 @@ export interface UsageUpdates {
   resourceUpdates: Updates[];
 }
 
+export interface ItemGrant {
+  uuid: string;
+  img: string | null;
+  name: string | null;
+  missing?: boolean;
+}
+
 export type SwadeConsumeItemHook = (
   item: SwadeItem,
   charges: number,

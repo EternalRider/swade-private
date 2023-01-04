@@ -7,6 +7,7 @@ import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
@@ -149,6 +150,19 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       });
     });
 
+    html.find('.grant-delete').on('click', async (ev) => {
+      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
+      const grants = getProperty(this.item, 'system.grants') as ItemGrant[];
+      grants.findSplice((v) => v.uuid === uuid);
+      await this.item.update({ 'system.grants': grants });
+    });
+
+    html.find('.grant-name').on('click', async (ev) => {
+      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
+      const doc = (await fromUuid(uuid)) as SwadeItem;
+      doc?.sheet?.render(true);
+    });
+
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
       const effectId = a.closest('li')!.dataset.effectId!;
@@ -203,14 +217,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     const additionalStats = this._getAdditionalStats();
 
     const data: SwadeItemSheetData = {
-      itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
-      enrichedDescription: await TextEditor.enrichHTML(
-        this.item.system.description,
-        {
-          async: true,
-          secrets: this.isEditable,
-        },
-      ),
+      itemType: this._getItemType(),
+      enrichedDescription: await this._enrichText(this.item.system.description),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
@@ -235,6 +243,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         isRaceOrArchetype: subtype === 'race' || subtype === 'archetype',
       };
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
+    }
+
+    if (this.item.grantsItems) {
+      data.grantedItems = await this._getGrantedItems();
     }
 
     if (this.type === 'weapon') {
@@ -329,6 +341,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     //prep item data
     const itemData = item.toObject();
 
+    if (this.item.grantsItems && !this.item.isEmbedded) {
+      await this._addGrantedItem(item);
+    }
+
     if (
       this.item.type === 'ability' &&
       this.item.system.subtype !== 'special'
@@ -343,6 +359,19 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       collection.set(foundry.utils.randomID(), itemData);
       await this._saveEmbeddedPowers(collection);
     }
+  }
+
+  private async _addGrantedItem(item: SwadeItem) {
+    const grants = foundry.utils.getProperty(
+      this.item,
+      'system.grants',
+    ) as ItemGrant[];
+    grants.push({
+      name: item.name,
+      img: item.img,
+      uuid: item.uuid,
+    });
+    await this.item.update({ 'system.grants': grants });
   }
 
   /** Is the drop data coming from the same item? */
@@ -463,6 +492,48 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       }
     }
     return stats;
+  }
+
+  private _getGrantedItems(): ItemGrant[] {
+    if (!this.item.grantsItems) return [];
+    const grants = foundry.utils.getProperty(
+      this.item,
+      'system.grants',
+    ) as ItemGrant[];
+    const enriched = new Array<ItemGrant>();
+    for (const item of grants) {
+      const grant = fromUuidSync(item.uuid) as SwadeItem;
+      enriched.push({
+        name: item.name,
+        img: item.img,
+        uuid: item.uuid,
+        missing: !grant,
+      });
+    }
+    return enriched;
+  }
+
+  private _getItemType(): string {
+    if (this.type === 'ability') {
+      const subtype = this.item.system.subtype;
+      switch (subtype) {
+        case 'race':
+          return SWADE.abilitySheet.race.dropdown;
+        case 'archetype':
+          return SWADE.abilitySheet.archetype.dropdown;
+        default:
+          return SWADE.abilitySheet.special.dropdown;
+      }
+    }
+    return `ITEM.Type${this.type.capitalize()}`;
+  }
+
+  private async _enrichText(text: string): Promise<string> {
+    const enriched = await TextEditor.enrichHTML(text, {
+      async: true,
+      secrets: this.isEditable,
+    });
+    return enriched;
   }
 
   private _setupAccordions() {
@@ -618,6 +689,7 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isRaceOrArchetype: boolean;
   };
+  grantedItems?: ItemGrant[];
 }
 
 type OptionsPartial = Partial<ItemSheet.Data<DocumentSheetOptions>>;

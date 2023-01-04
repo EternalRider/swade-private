@@ -189,7 +189,7 @@ Item:
         sides: 4
         modifier: 0
       powerPoints: {}
-    equipable:
+    equippable:
       equippable: false
       equipStatus: 1
     vehicular:
@@ -214,22 +214,26 @@ Item:
         large: false
     category:
       category: ""
+    grantEmbedded:
+      grants: []
+      grantOn: 0
   gear:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - vehicular
       - actions
       - favorite
       - category
+      - grantEmbedded
     isAmmo: false
   weapon:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - vehicular
       - actions
@@ -237,6 +241,7 @@ Item:
       - favorite
       - templates
       - category
+      - grantEmbedded
     damage: ''
     range: ''
     rof: 1
@@ -253,12 +258,13 @@ Item:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - actions
       - favorite
       - bonusDamage
       - category
+      - grantEmbedded
     minStr: ''
     armor: 0
     toughness: 0
@@ -273,12 +279,13 @@ Item:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - actions
       - bonusDamage
       - favorite
       - category
+      - grantEmbedded
     minStr: ''
     parry: 0
     cover: 0
@@ -288,7 +295,8 @@ Item:
       - favorite
       - physicalItem
       - category
-      - equipable
+      - equippable
+      - grantEmbedded
     charges:
       value: 1
       max: 1
@@ -302,11 +310,13 @@ Item:
     isArcaneBackground: false
     requirements:
       value: ''
+    grants: []
   hindrance:
     templates:
       - itemDescription
       - favorite
     major: false
+    grants: []
   power:
     templates:
       - itemDescription
@@ -339,6 +349,7 @@ Item:
       - favorite
     subtype: special
     grantsPowers: false
+    grants: []
   action:
     templates:
       - itemDescription
