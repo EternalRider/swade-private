@@ -142,7 +142,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
             label: game.i18n.format('DOCUMENT.New', {
               type: game.i18n.localize('DOCUMENT.ActiveEffect'),
             }),
-            icon: '/icons/svg/mystery-man-black.svg',
+            icon: 'systems/swade/assets/icons/active-effect.svg',
             transfer: transfer,
           },
           { renderSheet: true, parent: this.actor },
