@@ -137,11 +137,16 @@ export default class SwadeItem extends Item {
     return new Map(flagContent);
   }
 
-  get grantsItems(): boolean {
+  get canGrantItems(): boolean {
     return (
       this.isPhysicalItem ||
       ['hindrance', 'edge', 'ability'].includes(this.type)
     );
+  }
+
+  get grantsItems(): ItemGrant[] {
+    if (!this.canGrantItems) return [];
+    return getProperty(this, 'system.grants') as ItemGrant[];
   }
 
   get hasGranted(): string[] {
@@ -697,19 +702,20 @@ export default class SwadeItem extends Item {
   }
 
   async grantEmbedded(target = this.parent) {
-    if (!this.grantsItems || !target) return;
-    const grants = getProperty(this, 'system.grants') as ItemGrant[];
+    if (!this.canGrantItems || !target) return;
+    const grants = this.getItemGrantChain();
     const created = new Array<string>();
     //create the items
     for (const grant of grants) {
       const item = await fromUuid(grant.uuid);
       if (!item) {
-        console.warn('Could not find grant', grant);
+        Logger.warn('Could not find grant' + grant);
         continue;
       }
       const grantedItem = await SwadeItem.create(item.toObject(), {
         parent: target,
         renderSheet: null,
+        isItemGrant: true,
       });
       if (grantedItem) created.push(grantedItem.id);
     }
@@ -888,6 +894,22 @@ export default class SwadeItem extends Item {
     return null;
   }
 
+  getItemGrantChain(ignoreSet = new Set<string>()): SwadeItem[] {
+    if (!this.canGrantItems || ignoreSet.has(this.uuid)) return [];
+    ignoreSet.add(this.uuid);
+
+    const links = this.grantsItems.map((g) =>
+      fromUuidSync(g.uuid),
+    ) as SwadeItem[];
+
+    const allLinks = [
+      ...links,
+      ...links.flatMap((i) => i.getItemGrantChain(ignoreSet)),
+    ];
+
+    return allLinks.filter((i) => i.uuid !== this.uuid);
+  }
+
   protected async _createChargeUsageMessage(charges: number) {
     return CONFIG.ChatMessage.documentClass.create({
       speaker: ChatMessage.getSpeaker(),
@@ -928,6 +950,23 @@ export default class SwadeItem extends Item {
       }
     }
   }
+
+  // protected override _onCreate(
+  //   data: ItemDataSource,
+  //   options: DocumentModificationOptions,
+  //   userId: string,
+  // ) {
+  //   super._onCreate(data, options, userId);
+  //   const grantOn = getProperty(this, 'system.grantOn');
+  //   if (
+  //     !options.isItemGrant &&
+  //     this.canGrantItems &&
+  //     this.isEmbedded &&
+  //     grantOn === constants.GRANT_ON.ADDED
+  //   ) {
+  //     this.grantEmbedded();
+  //   }
+  // }
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
@@ -980,7 +1019,7 @@ export default class SwadeItem extends Item {
   ) {
     super._onUpdate(changed, options, userId);
     if (
-      this.grantsItems &&
+      this.canGrantItems &&
       this.isEmbedded &&
       getProperty(this, 'system.grantOn') &&
       hasProperty(changed, 'system.equipStatus')
@@ -992,7 +1031,7 @@ export default class SwadeItem extends Item {
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||
         (grantOn === constants.EQUIP_STATE.EQUIPPED &&
           equipStatus >= constants.EQUIP_STATE.OFF_HAND);
-      if (shouldGrant && this.hasGranted.length > 0) {
+      if (shouldGrant && this.hasGranted.length < 0) {
         this.grantEmbedded();
       } else if (!shouldGrant) {
         this.removeGranted();
@@ -1006,10 +1045,11 @@ export default class SwadeItem extends Item {
   ) {
     await super._onCreateDocuments(items, context);
     for (const item of items) {
-      if (item.grantsItems && item.parent) {
+      if (context.isItemGrant) continue;
+      if (item.canGrantItems && item.parent) {
         const equipStatus = getProperty(item, 'system.equipStatus');
         const grantOn = getProperty(item, 'system.grantOn');
-        if (!grantOn || equipStatus === grantOn) {
+        if (grantOn === constants.GRANT_ON.ADDED || equipStatus === grantOn) {
           await item.grantEmbedded();
         }
       }
