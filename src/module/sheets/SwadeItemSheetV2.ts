@@ -152,7 +152,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     html.find('.grant-delete').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
-      const grants = getProperty(this.item, 'system.grants') as ItemGrant[];
+      const grants = this.item.grantsItems;
       grants.findSplice((v) => v.uuid === uuid);
       await this.item.update({ 'system.grants': grants });
     });
@@ -245,7 +245,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
     }
 
-    if (this.item.grantsItems) {
+    if (this.item.canGrantItems) {
       data.grantedItems = await this._getGrantedItems();
     }
 
@@ -327,10 +327,11 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   private async _onDropItem(_event: DragEvent, data) {
+    const uuid = data.uuid;
     Logger.debug(
-      `Trying to add ${data.type} ${data.uuid} to ${this.item.type}/${this.item.name}`,
+      `Trying to add ${data.type} ${uuid} to ${this.item.type}/${this.item.name}`,
     );
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
+    const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
       return Logger.warn('SWADE.CannotAddRaceToRace', {
@@ -341,7 +342,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     //prep item data
     const itemData = item.toObject();
 
-    if (this.item.grantsItems && !this.item.isEmbedded) {
+    if (this.item.canGrantItems && !this.item.isEmbedded) {
       await this._addGrantedItem(item);
     }
 
@@ -362,10 +363,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   private async _addGrantedItem(item: SwadeItem) {
-    const grants = foundry.utils.getProperty(
-      this.item,
-      'system.grants',
-    ) as ItemGrant[];
+    if (item.uuid === this.item.uuid) return;
+
+    const grants = this.item.grantsItems;
     grants.push({
       name: item.name,
       img: item.img,
@@ -495,11 +495,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   }
 
   private _getGrantedItems(): ItemGrant[] {
-    if (!this.item.grantsItems) return [];
-    const grants = foundry.utils.getProperty(
-      this.item,
-      'system.grants',
-    ) as ItemGrant[];
+    if (!this.item.canGrantItems) return [];
+    const grants = this.item.grantsItems;
     const enriched = new Array<ItemGrant>();
     for (const item of grants) {
       const grant = fromUuidSync(item.uuid) as SwadeItem;
