@@ -32,11 +32,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the Selection additional stat. You can set a semicolon separated list in the Setting Configurator which will be available to items and actors as a dropdown style Additional Stat. (#541)
 - Added the option to turn of currency for NPCs to the Setting Configurator. (#634)
 - Consumable type items can now display a small chat notification when a charge is used. This can be toggled per item and defaults to enabled. (#610)
+- Added the ability for items to grant other items under certain circumstances. Physical items (such as weapons and gear) can grant Items when the granting item is equipped or added to the actor. Edges, Hindrances and Abilities grant items only when they're added to the actor. When a granting Item is removed, all granted items are removed alongside it.
+  - To add a item to be granted simply drag&drop it from the item sidebar or a compendium on the the item sheet of the granting item.
+  - Any item type can be granted.
+  - Unlike races and archetypes, Granted items are copied from their original item (in the world or compendium, wherever it came from) so you can make changes to the granted item before it is granted and the changes will be reflected without you having to delete and re-add the granted item.
 - Added additional translation strings.
 
 ### Fixed
 
 - Active Effects with a duration set in seconds will now properly reset the time when prompted to do so in the expiration dialogue.
+
+### Known Issues
+
+- Item Grants with circular references are currently possible and might result in 1 or more extra items created but should not cause endless loops.
 
 ## 2.1.7
 

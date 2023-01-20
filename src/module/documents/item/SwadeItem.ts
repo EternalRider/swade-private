@@ -703,15 +703,11 @@ export default class SwadeItem extends Item {
 
   async grantEmbedded(target = this.parent) {
     if (!this.canGrantItems || !target) return;
-    const grants = this.getItemGrantChain();
+    const grants = await this.getItemGrantChain();
+
     const created = new Array<string>();
     //create the items
-    for (const grant of grants) {
-      const item = await fromUuid(grant.uuid);
-      if (!item) {
-        Logger.warn('Could not find grant' + grant);
-        continue;
-      }
+    for (const item of grants) {
       const grantedItem = await SwadeItem.create(item.toObject(), {
         parent: target,
         renderSheet: null,
@@ -894,20 +890,18 @@ export default class SwadeItem extends Item {
     return null;
   }
 
-  getItemGrantChain(ignoreSet = new Set<string>()): SwadeItem[] {
-    if (!this.canGrantItems || ignoreSet.has(this.uuid)) return [];
-    ignoreSet.add(this.uuid);
+  async getItemGrantChain(ignored = new Set<string>()): Promise<SwadeItem[]> {
+    if (!this.canGrantItems || ignored.has(this.uuid)) return [];
+    ignored.add(this.uuid);
+    const links = (await Promise.all(
+      this.grantsItems.map((g) => fromUuid(g.uuid)),
+    )) as SwadeItem[];
 
-    const links = this.grantsItems.map((g) =>
-      fromUuidSync(g.uuid),
-    ) as SwadeItem[];
+    const children = await Promise.all(
+      links.flatMap((i) => i.getItemGrantChain(ignored)),
+    );
 
-    const allLinks = [
-      ...links,
-      ...links.flatMap((i) => i.getItemGrantChain(ignoreSet)),
-    ];
-
-    return allLinks.filter((i) => i.uuid !== this.uuid);
+    return [...new Set([...links, ...children.deepFlatten()])];
   }
 
   protected async _createChargeUsageMessage(charges: number) {
@@ -951,22 +945,22 @@ export default class SwadeItem extends Item {
     }
   }
 
-  // protected override _onCreate(
-  //   data: ItemDataSource,
-  //   options: DocumentModificationOptions,
-  //   userId: string,
-  // ) {
-  //   super._onCreate(data, options, userId);
-  //   const grantOn = getProperty(this, 'system.grantOn');
-  //   if (
-  //     !options.isItemGrant &&
-  //     this.canGrantItems &&
-  //     this.isEmbedded &&
-  //     grantOn === constants.GRANT_ON.ADDED
-  //   ) {
-  //     this.grantEmbedded();
-  //   }
-  // }
+  protected override _onCreate(
+    data: ItemDataSource,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    super._onCreate(data, options, userId);
+    const grantOn = getProperty(this, 'system.grantOn');
+    if (
+      !options.isItemGrant &&
+      this.canGrantItems &&
+      this.isEmbedded &&
+      grantOn === constants.GRANT_ON.ADDED
+    ) {
+      this.grantEmbedded();
+    }
+  }
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
@@ -1027,11 +1021,11 @@ export default class SwadeItem extends Item {
       const equipStatus = getProperty(this, 'system.equipStatus');
       const grantOn = getProperty(this, 'system.grantOn');
       const shouldGrant =
-        (grantOn === constants.EQUIP_STATE.CARRIED &&
+        (grantOn === constants.GRANT_ON.CARRIED &&
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||
-        (grantOn === constants.EQUIP_STATE.EQUIPPED &&
+        (grantOn === constants.GRANT_ON.READIED &&
           equipStatus >= constants.EQUIP_STATE.OFF_HAND);
-      if (shouldGrant && this.hasGranted.length < 0) {
+      if (shouldGrant && this.hasGranted.length <= 0) {
         this.grantEmbedded();
       } else if (!shouldGrant) {
         this.removeGranted();
@@ -1039,20 +1033,19 @@ export default class SwadeItem extends Item {
     }
   }
 
-  static async _onCreateDocuments(
-    items: SwadeItem[],
-    context: DocumentModificationContext,
-  ) {
-    await super._onCreateDocuments(items, context);
-    for (const item of items) {
-      if (context.isItemGrant) continue;
-      if (item.canGrantItems && item.parent) {
-        const equipStatus = getProperty(item, 'system.equipStatus');
-        const grantOn = getProperty(item, 'system.grantOn');
-        if (grantOn === constants.GRANT_ON.ADDED || equipStatus === grantOn) {
-          await item.grantEmbedded();
-        }
-      }
-    }
-  }
+  // static async _onCreateDocuments(
+  //   items: SwadeItem[],
+  //   context: DocumentModificationContext,
+  // ) {
+  //   await super._onCreateDocuments(items, context);
+  //   for (const item of items) {
+  //     if (item.canGrantItems && item.parent) {
+  //       const equipStatus = getProperty(item, 'system.equipStatus');
+  //       const grantOn = getProperty(item, 'system.grantOn');
+  //       if (grantOn === constants.GRANT_ON.ADDED || equipStatus === grantOn) {
+  //         await item.grantEmbedded();
+  //       }
+  //     }
+  //   }
+  // }
 }
