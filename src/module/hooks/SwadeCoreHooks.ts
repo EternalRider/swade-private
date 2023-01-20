@@ -1232,24 +1232,4 @@ export default class SwadeCoreHooks {
       if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
     }
   }
-
-  static onSightRefresh() {
-    if (
-      !canvas.effects.visibility.tokenVision ||
-      !canvas.effects.visionSources.size
-    ) {
-      return;
-    }
-
-    for (const token of canvas.tokens?.placeables ?? []) {
-      //skip tokens that aren't controlled or not vision sources.
-      if (
-        !(token.controlled || canvas.effects?.visionSources.has(token.sourceId))
-      ) {
-        continue;
-      }
-      //apply the alpha filter to the token to make it appear unaffected by any vision mode. This helps with readability
-      token.detectionFilter = CONFIG.SWADE.alphaFilter;
-    }
-  }
 }

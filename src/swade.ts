@@ -223,7 +223,6 @@ Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
-Hooks.on('sightRefresh', SwadeCoreHooks.onSightRefresh);
 
 /* ------------------------------------ */
 /* Application Render					          */
