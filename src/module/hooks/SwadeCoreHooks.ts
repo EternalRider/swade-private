@@ -891,7 +891,7 @@ export default class SwadeCoreHooks {
     chat.chatListeners(html);
   }
 
-  static async onHotbarDrop(
+  static onHotbarDrop(
     _hotbar: Hotbar,
     data: { type: string; uuid: string },
     slot: number,
