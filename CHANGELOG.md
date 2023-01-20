@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - To add a item to be granted simply drag&drop it from the item sidebar or a compendium on the the item sheet of the granting item.
   - Any item type can be granted.
   - Unlike races and archetypes, Granted items are copied from their original item (in the world or compendium, wherever it came from) so you can make changes to the granted item before it is granted and the changes will be reflected without you having to delete and re-add the granted item.
+- Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity the more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
 - Added additional translation strings.
 
 ### Fixed

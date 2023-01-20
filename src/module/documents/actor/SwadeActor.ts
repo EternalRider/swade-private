@@ -199,6 +199,13 @@ export default class SwadeActor extends Actor {
       const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
       this.system.stats.parry.value = completeParry;
     }
+
+    /**
+     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the attribute
+     */
+    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
   async rollAttribute(attribute: Attribute, options: IRollOptions = {}) {
