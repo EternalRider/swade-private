@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Active Effects with a duration set in seconds will now properly reset the time when prompted to do so in the expiration dialogue.
 - Dropping an item from an actor sheet to the hotbar should no longer create the core macro alongside the swade macro (#674)
+- Fixed tokens not properly rendering under occlusion (such as overhead tiles) (#670)
 
 ### Known Issues
 
