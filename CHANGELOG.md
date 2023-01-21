@@ -39,8 +39,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity the more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
 - Added the ability to ignore points of fatigue by adding to the `system.fatigue.ignored` property and also added an input for this to the Tweaks window. (#596)
 - Added support to reduce the total penalty of Wounds and Fatigue (such as from the Relief power in the Fantasy companion). To set the amount of ignored points you can use an active effect using the key `system.woundsOrFatigue.ignored`. (#596)
-- Added a section for active effects to the vehicle sheet.
+- Added a section for active effects to the vehicle sheet. (#550)
 - Added additional translation strings.
+
+### Changed
+
+- The Wild Die config now also supports selecting a die preset instead of just a theme (!257)
 
 ### Fixed
 
