@@ -125,8 +125,22 @@
           <input
             id='system.wounds.ignored'
             name='system.wounds.ignored'
-            type='text'
+            type='number'
             value='{{doc.system.wounds.ignored}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group' id='ignoredFatigue'>
+        <label for='system.fatigue.ignored'>
+          {{localize 'SWADE.IgnFatigue'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='system.fatigue.ignored'
+            name='system.fatigue.ignored'
+            type='number'
+            value='{{doc.system.fatigue.ignored}}'
             data-dtype='Number'
           />
         </span>

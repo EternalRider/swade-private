@@ -732,6 +732,7 @@ SWADE:
     EmptyHint: This item currently grants no items
     Header: Item Grants
     When: Grant Items When
+  IgnFatigue: Ignore Fatigue
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
