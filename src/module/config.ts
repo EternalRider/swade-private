@@ -241,8 +241,6 @@ export const SWADE: SwadeConfig = {
     'SWADE.Ranks.Heroic',
     'SWADE.Ranks.Legendary',
   ],
-
-  alphaFilter: new PIXI.filters.AlphaFilter(),
 };
 
 /** @internal */
@@ -316,6 +314,4 @@ export interface SwadeConfig {
   prototypeRollGroups: TraitRollModifierGroup[];
 
   ranks: string[];
-
-  alphaFilter: PIXI.filters.AlphaFilter;
 }
