@@ -751,6 +751,7 @@ SWADE:
     EmptyHint: Dieses Item gewährt derzeit keine Items
     Header: Gewährte Items
     When: Items gewähren wen
+  IgnFatigue: Erschöpfung ignorieren
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

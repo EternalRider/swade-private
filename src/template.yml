@@ -80,10 +80,13 @@ Actor:
         value: 0
         min: 0
         max: 2
+        ignored: 0
       wounds:
         value: 0
         min: 0
         max: 3
+        ignored: 0
+      woundsOrFatigue:
         ignored: 0
       advances:
         mode: expanded

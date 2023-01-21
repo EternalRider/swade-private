@@ -92,12 +92,8 @@ export interface CharacterDataSourceData {
       modifier: number;
       'wild-die': number;
     };
-    biography: {
-      value: string;
-    };
-    species: {
-      name: string;
-    };
+    biography: { value: string };
+    species: { name: string };
     conviction: {
       value: number;
       active: boolean;
@@ -107,6 +103,7 @@ export interface CharacterDataSourceData {
     value: number;
     min: number;
     max: number;
+    ignored: number;
   };
   wounds: {
     value: number;
@@ -114,6 +111,7 @@ export interface CharacterDataSourceData {
     max: number;
     ignored: number;
   };
+  woundsOrFatigue: { ignored: number };
   advances: {
     mode: 'legacy' | 'expanded';
     value: number;

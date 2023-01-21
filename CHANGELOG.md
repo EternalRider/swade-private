@@ -37,6 +37,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Any item type can be granted.
   - Unlike races and archetypes, Granted items are copied from their original item (in the world or compendium, wherever it came from) so you can make changes to the granted item before it is granted and the changes will be reflected without you having to delete and re-add the granted item.
 - Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity the more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
+- Added the ability to ignore points of fatigue by adding to the `system.fatigue.ignored` property and also added an input for this to the Tweaks window.
+- Added support to reduce the total penalty of Wounds and Fatigue (such as from the Relief power in the Fantasy companion). To set the amount of ignored points you can use an active effect using the key `system.woundsOrFatigue.ignored`.
 - Added additional translation strings.
 
 ### Fixed
