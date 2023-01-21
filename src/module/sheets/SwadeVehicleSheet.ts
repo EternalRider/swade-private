@@ -5,17 +5,12 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
-/**
- * @noInheritDoc
- */
+/** @noInheritDoc */
 export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
-  /**
-   * Extend and override the default options used by the Actor Sheet
-   * @returns {Object}
-   */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['swade', 'sheet', 'actor', 'vehicle'],
+      template: 'systems/swade/templates/actors/vehicle-sheet.hbs',
       width: 600,
       height: 540,
       tabs: [
@@ -26,12 +21,6 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         },
       ],
     });
-  }
-
-  get template() {
-    // Later you might want to return a different template
-    // based on user permissions.
-    return 'systems/swade/templates/actors/vehicle-sheet.hbs';
   }
 
   activateListeners(html: JQuery<HTMLElement>) {
