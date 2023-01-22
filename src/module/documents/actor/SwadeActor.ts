@@ -1,9 +1,10 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
-import { Attribute, ItemMetadata } from '../../../globals';
+import { ItemMetadata } from '../../../globals';
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
+import { ArtworkMapping } from '../../../interfaces/ArtworkMapping.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
 import { createConvictionEndMessage } from '../../chat';
@@ -13,7 +14,6 @@ import WildDie from '../../dice/WildDie';
 import * as util from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../SwadeCombatant';
-import { SwadeActorDataSource, TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -22,6 +22,27 @@ declare global {
 }
 
 export default class SwadeActor extends Actor {
+  constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
+    if (game.swade.ready && ctx?.pack && data._id) {
+      const art = { actor: '', token: '' } as ArtworkMapping;
+      if (art) {
+        data.img = art.actor;
+        const tokenArt =
+          typeof art.token === 'string'
+            ? { texture: { src: art.token } }
+            : {
+                texture: {
+                  src: art.token.img,
+                  scaleX: art.token.scale,
+                  scaleY: art.token.scale,
+                },
+              };
+        data.prototypeToken = mergeObject(data.prototypeToken ?? {}, tokenArt);
+      }
+    }
+    super(data, ctx);
+  }
+
   /**
    * @returns true when the actor is a Wild Card
    */

@@ -11,12 +11,14 @@ import WildDie from '../module/dice/WildDie';
 import SwadeActiveEffect from '../module/documents/SwadeActiveEffect';
 import ItemChatCardHelper from '../module/ItemChatCardHelper';
 import * as migrations from '../module/migration';
+import { registerCompendiumArt } from '../module/setup/compendiumArt';
 import CharacterSheet from '../module/sheets/official/CharacterSheet';
 import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
 import { getStatusEffectDataById, rollItemMacro } from '../module/util';
+import { ArtworkMapping } from './ArtworkMapping.interface';
 
 export interface SwadeGame {
   sheets: {
@@ -40,12 +42,16 @@ export interface SwadeGame {
   util: {
     getStatusEffectDataById: typeof getStatusEffectDataById;
   };
+  compendiumArt: {
+    map: Map<string, ArtworkMapping>;
+    registerCompendiumArt: typeof registerCompendiumArt;
+  };
   CharacterSummarizer: typeof CharacterSummarizer;
   RollDialog: typeof RollDialog;
-  sockets: SwadeSocketHandler;
-  rollItemMacro: typeof rollItemMacro;
-  migrations: typeof migrations;
   itemChatCardHelper: typeof ItemChatCardHelper;
+  rollItemMacro: typeof rollItemMacro;
+  sockets: SwadeSocketHandler;
+  migrations: typeof migrations;
   effectCallbacks: Collection<StatusEffectCallback>;
   ready: boolean;
 }
