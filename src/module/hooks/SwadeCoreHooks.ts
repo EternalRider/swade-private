@@ -1164,7 +1164,7 @@ export default class SwadeCoreHooks {
   static onRenderActiveEffectConfig(
     app: ActiveEffectConfig,
     html: JQuery<HTMLElement>,
-    data,
+    _data: ActiveEffectConfig.Data,
   ) {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
