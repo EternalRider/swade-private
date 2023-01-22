@@ -326,7 +326,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     });
   }
 
-  private async _onDropItem(_event: DragEvent, data) {
+  private async _onDropItem(event: DragEvent, data) {
     const uuid = data.uuid;
     Logger.debug(
       `Trying to add ${data.type} ${uuid} to ${this.item.type}/${this.item.name}`,
@@ -339,31 +339,25 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         toast: true,
       });
     }
-    //prep item data
-    const itemData = item.toObject();
 
-    if (this.item.canGrantItems && !this.item.isEmbedded) {
+    const tab = event.target as HTMLElement;
+
+    if (tab.classList?.contains('properties')) {
       await this._addGrantedItem(item);
-    }
-
-    if (
-      this.item.type === 'ability' &&
-      this.item.system.subtype !== 'special'
-    ) {
-      const collection = this.item.embeddedAbilities;
-      collection.set(foundry.utils.randomID(), itemData);
-      await this._saveEmbeddedAbilities(collection);
-    }
-
-    if (this.item.isArcaneDevice && item.type === 'power') {
-      const collection = this.item.embeddedPowers;
-      collection.set(foundry.utils.randomID(), itemData);
-      await this._saveEmbeddedPowers(collection);
+    } else if (tab.classList?.contains('embedded')) {
+      await this._addEmbedded(item);
+    } else if (tab.classList?.contains('powers')) {
+      await this._addArcaneDevicePower(item);
     }
   }
 
   private async _addGrantedItem(item: SwadeItem) {
-    if (item.uuid === this.item.uuid) return;
+    if (
+      !this.item.canGrantItems ||
+      this.item.isEmbedded ||
+      item.uuid === this.item.uuid
+    )
+      return;
 
     const grants = this.item.grantsItems;
     grants.push({
@@ -372,6 +366,24 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       uuid: item.uuid,
     });
     await this.item.update({ 'system.grants': grants });
+  }
+
+  private async _addEmbedded(item: SwadeItem) {
+    if (
+      this.item.type === 'ability' &&
+      this.item.system.subtype !== 'special'
+    ) {
+      const collection = this.item.embeddedAbilities;
+      collection.set(foundry.utils.randomID(), item.toObject());
+      await this._saveEmbeddedAbilities(collection);
+    }
+  }
+
+  private async _addArcaneDevicePower(item: SwadeItem) {
+    if (!this.item.isArcaneDevice || item.type !== 'power') return;
+    const collection = this.item.embeddedPowers;
+    collection.set(foundry.utils.randomID(), item.toObject());
+    await this._saveEmbeddedPowers(collection);
   }
 
   /** Is the drop data coming from the same item? */

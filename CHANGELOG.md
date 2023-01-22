@@ -45,6 +45,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - The Wild Die config now also supports selecting a die preset instead of just a theme (!257)
+- In order to better facilitate Item Grants alongside Race/Archetype embedded items you are now required to drop items their respective tabs, see the list below:
+  - Granted Items -> Properties tab
+  - Arcane Device powers -> Powers tab
+  - Embedded Items -> Archetype/Racial Abilities tab
 
 ### Fixed
 
