@@ -952,11 +952,12 @@ export default class SwadeItem extends Item {
   ) {
     super._onCreate(data, options, userId);
     const grantOn = getProperty(this, 'system.grantOn');
+    const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
     if (
       !options.isItemGrant &&
       this.canGrantItems &&
       this.isEmbedded &&
-      grantOn === constants.GRANT_ON.ADDED
+      (grantOn === constants.GRANT_ON.ADDED || nonPhysGranter)
     ) {
       this.grantEmbedded();
     }
