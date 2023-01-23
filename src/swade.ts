@@ -32,7 +32,6 @@ import {
   registerSettingRules,
   registerSettings,
 } from './module/settings';
-import { registerCompendiumArt } from './module/setup/compendiumArt';
 import CharacterSheet from './module/sheets/official/CharacterSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
@@ -84,7 +83,6 @@ Hooks.once('init', () => {
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),
-      registerCompendiumArt: registerCompendiumArt,
     },
     rollItemMacro,
     sockets: new SwadeSocketHandler(),

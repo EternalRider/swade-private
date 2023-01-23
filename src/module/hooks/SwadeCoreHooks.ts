@@ -13,6 +13,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
 import { Logger } from '../Logger';
 import * as migrations from '../migration';
+import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
@@ -38,6 +39,8 @@ export default class SwadeCoreHooks {
     if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
       setupFantasyCompanionEntangle();
     }
+
+    registerCompendiumArt();
   }
 
   static async onReady() {

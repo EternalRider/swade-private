@@ -4,7 +4,6 @@ import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-
 import { ItemMetadata } from '../../../globals';
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
-import { ArtworkMapping } from '../../../interfaces/ArtworkMapping.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
 import { createConvictionEndMessage } from '../../chat';
@@ -14,6 +13,7 @@ import WildDie from '../../dice/WildDie';
 import * as util from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../SwadeCombatant';
+import { TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -24,7 +24,9 @@ declare global {
 export default class SwadeActor extends Actor {
   constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
     if (game.swade.ready && ctx?.pack && data._id) {
-      const art = { actor: '', token: '' } as ArtworkMapping;
+      const art = game.swade.compendiumArt.map.get(
+        `Compendium.${ctx.pack}.${data._id}`,
+      );
       if (art) {
         data.img = art.actor;
         const tokenArt =

@@ -1,6 +1,9 @@
 import { ArtworkMappingFile } from '../../interfaces/ArtworkMapping.interface';
 import { Logger } from '../Logger';
 import { isObject } from '../util';
+/**
+ * Thanks goes out to lebombjames and the starfinder system on whose code this is based
+ */
 
 /**
  * Pull actor and token art from module.json files, which will replace default images on compendium actors and their
@@ -9,17 +12,17 @@ import { isObject } from '../util';
  *
  * Examples of valid maps
  *
- *  "alien-archives": {
- *    "2qbiJSmMCDVdaRrR": {
- *      "actor": "systems/sfrpg/images/starfinder_icon.webp",
+ *  "some.pack-name": {
+ *    "someId": {
+ *      "actor": "some/path/to/an/image.webp",
  *      "token": {
- *        "img": "systems/sfrpg/images/starfinder_icon.webp",
+ *        "img": "some/path/to/an/image.webp",
  *        "scale": 2
  *      }
  *    },
- *    "74I5mQmMMiZWJ7jf": {
- *      "actor": "systems/sfrpg/images/starfinder_icon.webp",
- *      "token": "systems/sfrpg/images/starfinder_icon.webp"
+ *    "someOtherId": {
+ *      "actor": "some/other/path/to/an/image.webp",
+ *      "token": some/other/path/to/an/image.webp"
  *      }
  *    }
  *  }
@@ -30,11 +33,15 @@ export async function registerCompendiumArt() {
   const modules = [...game.modules.entries()].filter(([_key, m]) => m.active); // Get a list of active modules
 
   for (const [id, module] of modules) {
-    const moduleArt = await getArtMap(module.flags?.[id]); // Get maps from any active modules
+    const mappingFlag = foundry.utils.getProperty(
+      module,
+      `flags.${id}.swade-art`,
+    );
+    const moduleArt = await getArtMap(mappingFlag); // Get maps from any active modules
     if (!moduleArt) continue;
 
     for (const [packName, art] of Object.entries(moduleArt)) {
-      const pack = game.packs.get(`${id}.${packName}`);
+      const pack = game.packs.get(packName);
       if (!pack) {
         Logger.warn(
           `Failed pack lookup from module art registration (${id}): ${packName}`,
@@ -65,18 +72,19 @@ export async function registerCompendiumArt() {
 async function getArtMap(art): Promise<ArtworkMappingFile | null> {
   if (!art) {
     return null;
-  } else if (isModuleArt(art)) {
+  } else if (isArtMappingObject(art)) {
     return art;
   } else if (typeof art === 'string') {
     // Instead of being in a module.json file, the art map is in a separate JSON file referenced by path
     try {
-      const response = await fetch(art);
-      if (!response.ok) {
+      const response = (await foundry.utils.fetchJsonWithTimeout(
+        art,
+      )) as ArtworkMappingFile;
+      if (!response) {
         Logger.warn(`Failed loading art mapping file at ${art}`);
         return null;
       }
-      const map = await response.json();
-      return isModuleArt(map) ? map : null;
+      return isArtMappingObject(response) ? response : null;
     } catch (error) {
       if (error instanceof Error) {
         Logger.warn(error.message);
@@ -92,7 +100,7 @@ async function getArtMap(art): Promise<ArtworkMappingFile | null> {
  * @param {object} record An art object
  * @returns {boolean} Whether the object is a valid compendium art object or not
  */
-function isModuleArt(record: ArtworkMappingFile) {
+function isArtMappingObject(record: ArtworkMappingFile): boolean {
   return (
     isObject(record) && // Ensure the map is an object
     Object.values(record).every(
