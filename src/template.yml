@@ -335,6 +335,7 @@ Item:
     trapping: ''
     arcane: ''
     ap: 0
+    innate: false
     modifiers: []
   skill:
     templates:

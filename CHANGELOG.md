@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to ignore points of fatigue by adding to the `system.fatigue.ignored` property and also added an input for this to the Tweaks window. (#596)
 - Added support to reduce the total penalty of Wounds and Fatigue (such as from the Relief power in the Fantasy companion). To set the amount of ignored points you can use an active effect using the key `system.woundsOrFatigue.ignored`. (#596)
 - Added a section for active effects to the vehicle sheet. (#550)
+- Power items can now be marked as innate. This data is not used currently but helps lay foundations for future expansions of the power system. (#671)
 - Added additional translation strings.
 
 ### Changed

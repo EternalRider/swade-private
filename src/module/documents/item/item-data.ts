@@ -221,6 +221,7 @@ interface PowerData
   arcane: string;
   ap: number;
   modifiers: any[];
+  innate: boolean;
 }
 
 interface AbilityData extends ItemDescription, Favorite {

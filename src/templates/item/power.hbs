@@ -117,6 +117,13 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
+      <div class="form-group">
+        <label >Innate Power</label>
+        <span class='form-fields'>
+          <input type='checkbox' name='system.innate' {{checked item.system.innate}}/>
+        </span>
+      </div>
+      <hr>
       <h4>{{localize "SWADE.Templates.Possible"}}</h4>
       <div class="column-grid three-columns">
         <div class="form-group">
