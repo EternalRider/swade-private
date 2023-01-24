@@ -219,7 +219,7 @@ Item:
       category: ""
     grantEmbedded:
       grants: []
-      grantOn: 0
+      grantOn: 1
   gear:
     templates:
       - itemDescription

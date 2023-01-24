@@ -952,12 +952,19 @@ export default class SwadeItem extends Item {
   ) {
     super._onCreate(data, options, userId);
     const grantOn = getProperty(this, 'system.grantOn');
+    const equipStatus = getProperty(this, 'system.equipStatus');
     const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
+    const shouldGrant =
+      grantOn === constants.GRANT_ON.ADDED ||
+      nonPhysGranter ||
+      (grantOn === constants.GRANT_ON.CARRIED &&
+        equipStatus === constants.EQUIP_STATE.CARRIED) ||
+      (grantOn === constants.GRANT_ON.READIED && this.isReadied);
     if (
       !options.isItemGrant &&
       this.canGrantItems &&
       this.isEmbedded &&
-      (grantOn === constants.GRANT_ON.ADDED || nonPhysGranter)
+      shouldGrant
     ) {
       this.grantEmbedded();
     }
@@ -1015,7 +1022,7 @@ export default class SwadeItem extends Item {
     super._onUpdate(changed, options, userId);
     if (
       this.canGrantItems &&
-      this.isEmbedded &&
+      this.parent &&
       getProperty(this, 'system.grantOn') &&
       hasProperty(changed, 'system.equipStatus')
     ) {
@@ -1024,8 +1031,7 @@ export default class SwadeItem extends Item {
       const shouldGrant =
         (grantOn === constants.GRANT_ON.CARRIED &&
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||
-        (grantOn === constants.GRANT_ON.READIED &&
-          equipStatus >= constants.EQUIP_STATE.OFF_HAND);
+        (grantOn === constants.GRANT_ON.READIED && this.isReadied);
       if (shouldGrant && this.hasGranted.length <= 0) {
         this.grantEmbedded();
       } else if (!shouldGrant) {
@@ -1033,20 +1039,4 @@ export default class SwadeItem extends Item {
       }
     }
   }
-
-  // static async _onCreateDocuments(
-  //   items: SwadeItem[],
-  //   context: DocumentModificationContext,
-  // ) {
-  //   await super._onCreateDocuments(items, context);
-  //   for (const item of items) {
-  //     if (item.canGrantItems && item.parent) {
-  //       const equipStatus = getProperty(item, 'system.equipStatus');
-  //       const grantOn = getProperty(item, 'system.grantOn');
-  //       if (grantOn === constants.GRANT_ON.ADDED || equipStatus === grantOn) {
-  //         await item.grantEmbedded();
-  //       }
-  //     }
-  //   }
-  // }
 }
