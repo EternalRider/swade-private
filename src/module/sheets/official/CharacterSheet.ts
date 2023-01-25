@@ -33,7 +33,6 @@ export default class CharacterSheet extends ActorSheet<
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],
-      template: 'systems/swade/templates/official/sheet.hbs',
       tabs: [
         {
           navSelector: '.tabs',
@@ -47,6 +46,12 @@ export default class CharacterSheet extends ActorSheet<
         },
       ],
     });
+  }
+
+  get template(): string {
+    const base = 'systems/swade/templates/official/';
+    if (this.actor.limited) return base + 'limited.hbs';
+    return base + 'sheet.hbs';
   }
 
   override activateListeners(html: JQuery<HTMLFormElement>): void {
@@ -199,25 +204,8 @@ export default class CharacterSheet extends ActorSheet<
     // Delete Item
     html.find('.item-delete').on('click', async (ev) => {
       const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'), {
-        strict: true,
-      });
-      const template = `
-      <form>
-        <div style="text-align: center;">
-          <p>
-          ${game.i18n.localize('Delete')} <strong>${item.name}</strong>?
-          </p>
-        </div>
-      </form>`;
-      await Dialog.confirm({
-        title: game.i18n.localize('Delete'),
-        content: template,
-        yes: () => {
-          li.slideUp(200, () => item.delete());
-        },
-        no: () => {},
-      });
+      const item = this.actor.items.get(li.data('itemId'));
+      item?.deleteDialog();
     });
 
     html.find('.item-create').on('click', async (ev) => {
@@ -669,10 +657,6 @@ export default class CharacterSheet extends ActorSheet<
       label: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),
-      icon: '/icons/svg/mystery-man-black.svg',
-      duration: {
-        combat: game.combat?.id,
-      },
     },
     renderSheet = true,
   ) {
@@ -919,9 +903,16 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(this.actor.system.additionalStats);
-    for (const attr of Object.values(stats)) {
-      attr['isCheckbox'] = attr.dtype === 'Boolean';
+    const stats = foundry.utils.deepClone(
+      this.actor.system.additionalStats,
+    ) as AdditionalStats;
+    for (const [key, attr] of Object.entries(stats)) {
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        attr.options = options[key]
+          .optionString!.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
     }
     return stats;
   }

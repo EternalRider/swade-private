@@ -532,6 +532,9 @@
   .additional-stats {
     padding-left: $large-spacing;
     max-width: 95%;
+    select {
+      max-width: 270px;
+    }
   }
 
   .armor-display {
@@ -1341,6 +1344,30 @@
       .section-header {
         margin-bottom: $medium-spacing;
         font-size: $medium-font;
+      }
+    }
+  }
+
+  //#######################
+  // Limited Sheet
+  //#######################
+  .limited {
+    .sheet-body {
+      padding: 0 $large-spacing 0 $large-spacing;
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 100%;
+      display: grid;
+      grid-template-rows: max-content 1fr max-content 1fr;
+    }
+    .charname-container {
+      grid-row: 1 / span 2;
+    }
+    .profile-img {
+      cursor: default;
+      &:hover,
+      &:focus {
+        filter: drop-shadow(0.2em 0.4em 0.3em rgba(0, 0, 0, 0.5));
       }
     }
   }

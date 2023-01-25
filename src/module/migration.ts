@@ -10,6 +10,7 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
 import { Updates } from '../globals';
 import { constants } from './constants';
+import SwadeUser from './documents/SwadeUser';
 import { Logger } from './Logger';
 
 export async function migrateWorld() {
@@ -51,6 +52,20 @@ export async function migrateWorld() {
     if (p.metadata.package !== 'world') continue;
     if (!['Actor', 'Item', 'Scene'].includes(p.metadata.type)) continue;
     await migrateCompendium(p);
+  }
+
+  // Migrate users
+  for (const user of game.users!) {
+    try {
+      const updateData = migrateUser(user);
+      if (!foundry.utils.isEmpty(updateData)) {
+        Logger.info(`Migrating User document ${user.name}`);
+        await user.update(updateData, { enforceTypes: false });
+      }
+    } catch (err) {
+      err.message = `Failed swade system migration for user ${user.name}: ${err.message}`;
+      Logger.error(err);
+    }
   }
 
   // Set the migration as complete
@@ -198,6 +213,12 @@ export function migrateSceneData(scene: SceneData) {
   return { tokens };
 }
 
+export function migrateUser(user: SwadeUser) {
+  const updateData: UpdateData = {};
+  _migrateWildDieFlag(user, updateData);
+  return updateData;
+}
+
 /**
  * Purge the data model of any inner objects which have been flagged as _deprecated.
  * @param {object} data   The data to clean
@@ -322,6 +343,19 @@ function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
       ? constants.EQUIP_STATE.EQUIPPED
       : constants.EQUIP_STATE.CARRIED;
   }
+  return updateData;
+}
+
+function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
+  const dsnWildDie = user?.getFlag('swade', 'dsnWildDie');
+  const isOld = dsnWildDie === 'none';
+  if (!isOld) return;
+
+  updateData['flags.swade'] = {
+    '-=dsnWildDie': null,
+    dsnWildDiePreset: 'none',
+  };
+
   return updateData;
 }
 

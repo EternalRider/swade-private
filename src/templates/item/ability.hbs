@@ -17,6 +17,9 @@
     <a class='item' data-tab='description' data-group='main'>
       {{localize 'SWADE.Desc'}}
     </a>
+    <a class='item' data-tab='properties' data-group='main'>
+      {{localize 'SWADE.Properties'}}
+    </a>
     {{#if abilityConfig.isRaceOrArchetype}}
     <a class='item' data-tab='embedded' data-group='main'>
       {{localize abilityConfig.abilityHeader}}
@@ -28,36 +31,37 @@
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description active' data-group='main' data-tab='description'>
-      <div>
-        <div class="form-group">
-          <label>{{localize "SWADE.Subtype"}}</label>
-          <span class="form-fields">
-            <select name="system.subtype">
-            {{#select item.system.subtype}}
-              <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
-              {{#unless item.isOwned}}
-                <option value="race">{{localize abilityConfig.localization.race.dropdown}}</option>
-                <option value="archetype">{{localize abilityConfig.localization.archetype.dropdown}}</option>
-              {{/unless}}
-            {{/select}}
-            </select>
-          </span>
-        </div>
-        {{#unless abilityConfig.isRaceOrArchetype}}
-          <div class="form-group">
-            <label>{{localize "SWADE.GrantsPowers"}}</label>
-              <span class="form-fields">
-                <input
-                  type="checkbox"
-                  name="system.grantsPowers"
-                  {{checked item.system.grantsPowers}}
-                  data-dtype="Boolean"
-                />
-              </span>
-          </div>
-        {{/unless}}
-      </div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+    </section>
+    <section class='tab properties' data-group='main' data-tab='properties'>
+      <div class="form-group">
+        <label>{{localize "SWADE.Subtype"}}</label>
+        <span class="form-fields">
+          <select name="system.subtype">
+          {{#select item.system.subtype}}
+            <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
+            {{#unless item.isOwned}}
+              <option value="race">{{localize abilityConfig.localization.race.dropdown}}</option>
+              <option value="archetype">{{localize abilityConfig.localization.archetype.dropdown}}</option>
+            {{/unless}}
+          {{/select}}
+          </select>
+        </span>
+      </div>
+      {{#unless abilityConfig.isRaceOrArchetype}}
+        <div class="form-group">
+          <label>{{localize "SWADE.GrantsPowers"}}</label>
+            <span class="form-fields">
+              <input
+                type="checkbox"
+                name="system.grantsPowers"
+                {{checked item.system.grantsPowers}}
+                data-dtype="Boolean"
+              />
+            </span>
+        </div>
+      {{/unless}}
+      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if abilityConfig.isRaceOrArchetype}}
     <section class='tab embedded' data-group='main' data-tab='embedded'>
@@ -85,6 +89,7 @@
         </li>
       {{/each}}
       </ol>
+
     </section>
     {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>

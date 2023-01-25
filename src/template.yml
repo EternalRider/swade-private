@@ -20,12 +20,12 @@ Actor:
             sides: 6
           animal: false
         spirit:
+          unShakeBonus: 0
           die:
             sides: 4
             modifier: 0
           wild-die:
             sides: 6
-          unShakeBonus: 0
         strength:
           die:
             sides: 4
@@ -34,6 +34,7 @@ Actor:
             sides: 6
           encumbranceSteps: 0
         vigor:
+          unStunBonus: 0
           die:
             sides: 4
             modifier: 0
@@ -79,10 +80,13 @@ Actor:
         value: 0
         min: 0
         max: 2
+        ignored: 0
       wounds:
         value: 0
         min: 0
         max: 3
+        ignored: 0
+      woundsOrFatigue:
         ignored: 0
       advances:
         mode: expanded
@@ -188,7 +192,7 @@ Item:
         sides: 4
         modifier: 0
       powerPoints: {}
-    equipable:
+    equippable:
       equippable: false
       equipStatus: 1
     vehicular:
@@ -213,22 +217,26 @@ Item:
         large: false
     category:
       category: ""
+    grantEmbedded:
+      grants: []
+      grantOn: 1
   gear:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - vehicular
       - actions
       - favorite
       - category
+      - grantEmbedded
     isAmmo: false
   weapon:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - vehicular
       - actions
@@ -236,6 +244,7 @@ Item:
       - favorite
       - templates
       - category
+      - grantEmbedded
     damage: ''
     range: ''
     rof: 1
@@ -252,12 +261,13 @@ Item:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - actions
       - favorite
       - bonusDamage
       - category
+      - grantEmbedded
     minStr: ''
     armor: 0
     toughness: 0
@@ -272,12 +282,13 @@ Item:
     templates:
       - itemDescription
       - physicalItem
-      - equipable
+      - equippable
       - arcaneDevice
       - actions
       - bonusDamage
       - favorite
       - category
+      - grantEmbedded
     minStr: ''
     parry: 0
     cover: 0
@@ -287,10 +298,12 @@ Item:
       - favorite
       - physicalItem
       - category
-      - equipable
+      - equippable
+      - grantEmbedded
     charges:
       value: 1
       max: 1
+    messageOnUse: true
     destroyOnEmpty: false
   edge:
     templates:
@@ -300,11 +313,13 @@ Item:
     isArcaneBackground: false
     requirements:
       value: ''
+    grants: []
   hindrance:
     templates:
       - itemDescription
       - favorite
     major: false
+    grants: []
   power:
     templates:
       - itemDescription
@@ -320,6 +335,7 @@ Item:
     trapping: ''
     arcane: ''
     ap: 0
+    innate: false
     modifiers: []
   skill:
     templates:
@@ -337,6 +353,7 @@ Item:
       - favorite
     subtype: special
     grantsPowers: false
+    grants: []
   action:
     templates:
       - itemDescription

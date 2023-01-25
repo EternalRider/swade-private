@@ -4,8 +4,58 @@
 <div class="flexrow">
   {{!-- Left panel --}}
   <div class="gear">
+    <section>{{> "systems/swade/templates/setting-fields.hbs"}}</section>
     <section>
-      {{> "systems/swade/templates/setting-fields.hbs"}}
+      <header class="header-field flexrow">
+        <div>{{ localize "SWADE.Effects" }}</div>
+        <div class="header-field-add">
+          <a class="add-effect" data-transfer="false"><i class="fa fa-plus"></i></a>
+        </div>
+      </header>
+      {{> "systems/swade/templates/effect-list.hbs"}}
+    </section>
+    {{#if settingrules.vehicleEdges}}
+      <section>
+        <header class="header-field flexrow">
+          <div>
+            <span>{{localize "SWADE.Edges"}}</span>
+          </div>
+          <div class="header-field-add">
+            <a class="item-create" data-type="edge"><i class="fa fa-plus"></i></a>
+          </div>
+        </header>
+        <span class="quickaccess-list">
+          <ol class="gear-list items-list">
+            {{#each itemsByType.edge}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/each}}
+          </ol>
+        </span>
+      </section>
+      <section>
+        <header class="header-field flexrow">
+          <div>
+            <span>{{localize "SWADE.Hindrances"}}</span>
+          </div>
+          <div class="header-field-add">
+            <a class="item-create" data-type="hindrance"
+              ><i class="fa fa-plus"></i
+            ></a>
+          </div>
+        </header>
+        <span class="quickaccess-list">
+          <ol class="gear-list items-list">
+            {{#each itemsByType.hindrance}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/each}}
+          </ol>
+        </span>
+      </section>
+    {{/if}}
+  </div>
+  {{!-- Right panel --}}
+  <div class="gear">
+    <section>
       <header class="header-field flexrow">
         <div>
           <span>{{localize "SWADE.Mods"}}</span>
@@ -24,65 +74,26 @@
         </ol>
       </span>
     </section>
-    {{#if settingrules.vehicleEdges}}
     <section>
       <header class="header-field flexrow">
         <div>
-          <span>{{localize "SWADE.Edges"}}</span>
+          <span>{{localize "SWADE.Weapons"}}</span>
         </div>
         <div class="header-field-add">
-          <a class="item-create" data-type="edge"><i class="fa fa-plus"></i></a>
-        </div>
-      </header>
-      <span class="quickaccess-list">
-        <ol class="gear-list items-list">
-          {{#each itemsByType.edge}}
-            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
-          {{/each}}
-        </ol>
-      </span>
-    </section>
-    <section>
-      <header class="header-field flexrow">
-        <div>
-          <span>{{localize "SWADE.Hindrances"}}</span>
-        </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="hindrance"
+          <a class="item-create" data-type="vehicle-weapon"
             ><i class="fa fa-plus"></i
           ></a>
         </div>
       </header>
       <span class="quickaccess-list">
-        <ol class="gear-list items-list">
-          {{#each itemsByType.hindrance}}
-            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+        <ol class="gear-list weapon-list">
+          {{#each itemsByType.weapon}}
+            {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
+              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
+            {{/if}}
           {{/each}}
         </ol>
       </span>
     </section>
-    {{/if}}
-  </div>
-  {{!-- Right panel --}}
-  <div class="gear">
-    <header class="header-field flexrow">
-      <div>
-        <span>{{localize "SWADE.Weapons"}}</span>
-      </div>
-      <div class="header-field-add">
-        <a class="item-create" data-type="vehicle-weapon"
-          ><i class="fa fa-plus"></i
-        ></a>
-      </div>
-    </header>
-    <span class="quickaccess-list">
-      <ol class="gear-list weapon-list">
-        {{#each itemsByType.weapon}}
-          {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-            {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
-          {{/if}}
-        {{/each}}
-      </ol>
-    </span>
   </div>
 </div>

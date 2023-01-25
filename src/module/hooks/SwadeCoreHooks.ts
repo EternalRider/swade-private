@@ -13,6 +13,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
 import { Logger } from '../Logger';
 import * as migrations from '../migration';
+import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
@@ -38,11 +39,47 @@ export default class SwadeCoreHooks {
     if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
       setupFantasyCompanionEntangle();
     }
+
+    registerCompendiumArt();
   }
 
   static async onReady() {
-    //set up the world if needed
-    setup.setupWorld();
+    if (game.user?.isGM) {
+      //set up the world if needed
+      await setup.setupWorld();
+
+      // Determine whether a system migration is required and feasible
+      const currentVersion = game.settings.get(
+        'swade',
+        'systemMigrationVersion',
+      );
+      //TODO Adjust this version every time a migration needs to be triggered
+      const needsMigrationVersion = '2.2.0';
+      //Minimal compatible version needed for the migration
+      const compatibleMigrationVersion = '2.0.0';
+      //If the needed migration version is newer than the old migration version then migrate the world
+      const needsMigration = foundry.utils.isNewerVersion(
+        needsMigrationVersion,
+        currentVersion,
+      );
+      if (needsMigration) {
+        // Perform the migration
+        if (
+          currentVersion !== '0.0.0' &&
+          !foundry.utils.isNewerVersion(
+            currentVersion,
+            compatibleMigrationVersion,
+          )
+        ) {
+          Logger.error('SWADE.SysMigrationWarning', {
+            toast: true,
+            permanent: true,
+            localize: true,
+          });
+        }
+        await migrations.migrateWorld();
+      }
+    }
 
     //set up the compendium tables of content
     for (const pack of game.packs) {
@@ -67,11 +104,17 @@ export default class SwadeCoreHooks {
         label: game.i18n.localize('SWADE.ShowBennyAnimation'),
         hint: game.i18n.localize('SWADE.ShowBennyAnimationDesc'),
       },
-      dsnWildDie: {
+      dsnWildDiePreset: {
         type: String,
         default: 'none',
         label: game.i18n.localize('SWADE.WildDiePreset'),
         hint: game.i18n.localize('SWADE.WildDiePresetDesc'),
+      },
+      dsnWildDie: {
+        type: String,
+        default: 'none',
+        label: game.i18n.localize('SWADE.WildDieTheme'),
+        hint: game.i18n.localize('SWADE.WildDieThemeDesc'),
       },
       dsnCustomWildDieColors: {
         type: Object,
@@ -92,32 +135,14 @@ export default class SwadeCoreHooks {
       },
     };
 
-    // Determine whether a system migration is required and feasible
-    if (!game.user!.isGM) return;
-    const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
-    //TODO Adjust this version every time a migration needs to be triggered
-    const needsMigrationVersion = '2.1.0';
-    //Minimal compatible version needed for the migration
-    const compatibleMigrationVersion = '2.0.0';
-    //If the needed migration version is newer than the old migration version then migrate the world
-    const needsMigration = foundry.utils.isNewerVersion(
-      needsMigrationVersion,
-      currentVersion,
-    );
-    if (!needsMigration) return;
+    // set the system as ready
+    game.swade.ready = true;
 
-    // Perform the migration
-    if (
-      currentVersion !== '0.0.0' &&
-      foundry.utils.isNewerVersion(currentVersion, compatibleMigrationVersion)
-    ) {
-      Logger.error('SWADE.SysMigrationWarning', {
-        toast: true,
-        permanent: true,
-        localize: true,
-      });
-    }
-    migrations.migrateWorld();
+    /**
+     * @category Hooks
+     * This hook is called once swade is done setting up itself
+     */
+    Hooks.callAll('swadeReady');
   }
 
   static onRenderActorDirectory(
@@ -869,7 +894,7 @@ export default class SwadeCoreHooks {
     chat.chatListeners(html);
   }
 
-  static async onHotbarDrop(
+  static onHotbarDrop(
     _hotbar: Hotbar,
     data: { type: string; uuid: string },
     slot: number,
@@ -1142,7 +1167,7 @@ export default class SwadeCoreHooks {
   static onRenderActiveEffectConfig(
     app: ActiveEffectConfig,
     html: JQuery<HTMLElement>,
-    data,
+    _data: ActiveEffectConfig.Data,
   ) {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
@@ -1208,26 +1233,6 @@ export default class SwadeCoreHooks {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
       if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
-    }
-  }
-
-  static onSightRefresh() {
-    if (
-      !canvas.effects.visibility.tokenVision ||
-      !canvas.effects.visionSources.size
-    ) {
-      return;
-    }
-
-    for (const token of canvas.tokens?.placeables ?? []) {
-      //skip tokens that aren't controlled or not vision sources.
-      if (
-        !(token.controlled || canvas.effects?.visionSources.has(token.sourceId))
-      ) {
-        continue;
-      }
-      //apply the alpha filter to the token to make it appear unaffected by any vision mode. This helps with readability
-      token.detectionFilter = CONFIG.SWADE.alphaFilter;
     }
   }
 }

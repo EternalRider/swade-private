@@ -17,6 +17,7 @@ import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
 import { getStatusEffectDataById, rollItemMacro } from '../module/util';
+import { ArtworkMapping } from './ArtworkMapping.interface';
 
 export interface SwadeGame {
   sheets: {
@@ -40,13 +41,17 @@ export interface SwadeGame {
   util: {
     getStatusEffectDataById: typeof getStatusEffectDataById;
   };
+  compendiumArt: {
+    map: Map<string, ArtworkMapping>;
+  };
   CharacterSummarizer: typeof CharacterSummarizer;
   RollDialog: typeof RollDialog;
-  sockets: SwadeSocketHandler;
-  rollItemMacro: typeof rollItemMacro;
-  migrations: typeof migrations;
   itemChatCardHelper: typeof ItemChatCardHelper;
+  rollItemMacro: typeof rollItemMacro;
+  sockets: SwadeSocketHandler;
+  migrations: typeof migrations;
   effectCallbacks: Collection<StatusEffectCallback>;
+  ready: boolean;
 }
 
 export type StatusEffectCallback = (effect: SwadeActiveEffect) => Promise<void>;

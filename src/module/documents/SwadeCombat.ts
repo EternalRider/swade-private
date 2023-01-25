@@ -421,9 +421,8 @@ export default class SwadeCombat extends Combat {
     }
 
     //update time
-    let advanceTime =
+    const advanceTime =
       Math.max(this.turns.length - this.turn!, 0) * CONFIG.time.turnTime;
-    advanceTime += CONFIG.time.roundTime;
     // Update the encounter
     //FIXME return once types are updated
     //@ts-expect-error The property doesn't seem to be defined in the types

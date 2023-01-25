@@ -280,9 +280,14 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Torch',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_invisible.svg',
     id: 'invisible',
-    label: 'SWADE.Invisible',
+    label: 'EFFECT.StatusInvisible',
+    icon: 'icons/svg/invisible.svg',
+  },
+  {
+    icon: 'icons/svg/blind.svg',
+    id: 'blind',
+    label: 'EFFECT.StatusBlind',
   },
   {
     icon: 'systems/swade/assets/icons/status/status_coldbodied.svg',

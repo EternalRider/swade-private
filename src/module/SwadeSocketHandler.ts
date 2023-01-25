@@ -31,34 +31,34 @@ export default class SwadeSocketHandler {
     });
   }
 
-  emit(data: any) {
+  emit<T extends EventData>(data: T) {
     return game.socket?.emit(this.identifier, data);
   }
 
   deleteConvictionMessage(messageId: string) {
-    this.emit({
+    this.emit<DeleteConvictionMessageEvent>({
       type: 'deleteConvictionMessage',
       messageId,
-      userId: game.userId,
+      userId: game.userId!,
     });
   }
 
   removeStatusEffect(uuid: string) {
-    this.emit({
+    this.emit<RemoveStatusEffectEvent>({
       type: 'removeStatusEffect',
       effectUUID: uuid,
     });
   }
 
   newRound(combatId: string) {
-    this.emit({
+    this.emit<NewRoundEvent>({
       type: 'newRound',
       combatId: combatId,
     });
   }
 
   giveBenny(users: string[]) {
-    this.emit({ type: 'giveBennies', users });
+    this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
   }
 
   protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {

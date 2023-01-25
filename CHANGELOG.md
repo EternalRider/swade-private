@@ -22,6 +22,46 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.0
+
+### Added
+
+- Added the `swadeReady` hook that is called when the system has done all the necessary setup it needs. Alongside the hook there is now a global indicator called `game.swade.ready` that returns whether the system is ready. (#630)
+- Added the new property `unStunBonus` to the `vigor` attribute. The full active effect key is `system.attributes.vigor.unStunBonus` and the effect expiration workflow for the Stunned effect has been adjusted as well to respect this modifier. (#652)
+- Added a limited version of the Player Character sheet that only displays appearance, biography, name and artwork. (#573)
+- Added the `Selection` additional stat. You can set a semicolon separated list in the Setting Configurator which will be available to items and actors as a dropdown style Additional Stat. (#541)
+- Added an option to turn off currency for NPCs to the Setting Configurator. (#634)
+- Consumable type items can now display a small chat notification when a charge is used. This can be toggled per item and defaults to enabled. (#610)
+- Added the ability for items to grant other items. Physical items (such as weapons and gear) can grant items when the granting item is equipped or added to the actor. Edges, Hindrances and Abilities grant items only when they're added to the actor. When a granting item is removed, all items granted by the granting item are removed alongside it.
+  - To add a item to be granted simply drag&drop it from the item sidebar or a compendium onto the item sheet of the granting item.
+  - Any item type can be granted.
+  - Unlike races and archetypes, granted items are copied from their original item (in the world or compendium, wherever it came from) so you can make changes to the granted item before it is granted and the changes will be reflected without you having to delete and re-add the granted item. When a granting item is removed, all items granted by the granting item are removed alongside it.
+- Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity to more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
+- Added the ability to ignore points of fatigue by adding to the `system.fatigue.ignored` property and also added an input for this to the Tweaks window. (#596)
+- Added support to reduce the total penalty of Wounds and Fatigue (such as from the Relief power in the Fantasy companion). To set the amount of ignored points you can use an ActiveEffect using the key `system.woundsOrFatigue.ignored`. (#596)
+- Added a section for ActiveEffects to the vehicle sheet. (#550)
+- Power items can now be marked as innate. This data is not used currently but helps lay foundations for future expansions of the power system. (#671)
+- Added a System Documentation Journal compendium. The docs are a snapshot of the current system wiki and somewhat outdated. We will over time update the docs to make them more easily usable and up to date. Thanks to ChaosOS! (#624)
+- Added additional translation strings.
+
+### Changed
+
+- The Wild Die config now also supports selecting a die preset instead of just a theme. Thanks to Kristian Serrano! (!257)
+- In order to better facilitate Item Grants alongside Race/Archetype embedded items you are now required to drop items onto their respective tabs, see the list below:
+  - Granted items -> Properties tab
+  - Arcane Device powers -> Powers tab
+  - Embedded Items -> Archetype/Racial Abilities tab
+
+### Fixed
+
+- ActiveEffects with a duration set in seconds will now properly reset the time when prompted to do so in the expiration dialogue.
+- Dragging an item from an actor sheet to the hotbar should no longer create the core macro alongside the swade macro (#674)
+- Fixed tokens not properly rendering under occlusion (such as overhead tiles) (#670)
+
+### Known Issues
+
+- Item Grants with circular references are currently possible and might result in 1 or more extra items created but should not cause endless loops.
+
 ## 2.1.7
 
 ### Fixed

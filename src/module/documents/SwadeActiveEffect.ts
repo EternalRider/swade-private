@@ -222,8 +222,12 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   async resetDuration() {
-    const currentRound = game.combat?.round ?? 1;
-    await this.update({ 'duration.startRound': currentRound });
+    await this.update({
+      duration: {
+        startRound: game.combat?.round ?? 1,
+        startTime: game.time.worldTime,
+      },
+    });
   }
 
   /** A shortcut to make the function public */
@@ -295,6 +299,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
+    if (!data.icon) {
+      this.updateSource({
+        icon: 'systems/swade/assets/icons/active-effect.svg',
+      });
+    }
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {

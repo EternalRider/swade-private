@@ -9,7 +9,7 @@ export default class ActiveEffectWizard extends FormApplication {
     label: game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
     }),
-    icon: '/icons/svg/mystery-man-black.svg',
+    icon: 'systems/swade/assets/icons/active-effect.svg',
   };
 
   private changes = new Array<ChangePreview>();

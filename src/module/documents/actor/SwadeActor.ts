@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
-import { Attribute, ItemMetadata } from '../../../globals';
+import { ItemMetadata } from '../../../globals';
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -13,7 +13,7 @@ import WildDie from '../../dice/WildDie';
 import * as util from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../SwadeCombatant';
-import { SwadeActorDataSource, TraitDie } from './actor-data-source';
+import { TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -22,6 +22,29 @@ declare global {
 }
 
 export default class SwadeActor extends Actor {
+  constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
+    if (game.swade.ready && ctx?.pack && data._id) {
+      const art = game.swade.compendiumArt.map.get(
+        `Compendium.${ctx.pack}.${data._id}`,
+      );
+      if (art) {
+        data.img = art.actor;
+        const tokenArt =
+          typeof art.token === 'string'
+            ? { texture: { src: art.token } }
+            : {
+                texture: {
+                  src: art.token.img,
+                  scaleX: art.token.scale,
+                  scaleY: art.token.scale,
+                },
+              };
+        data.prototypeToken = mergeObject(data.prototypeToken ?? {}, tokenArt);
+      }
+    }
+    super(data, ctx);
+  }
+
   /**
    * @returns true when the actor is a Wild Card
    */
@@ -199,6 +222,13 @@ export default class SwadeActor extends Actor {
       const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
       this.system.stats.parry.value = completeParry;
     }
+
+    /**
+     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the attribute
+     */
+    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
   async rollAttribute(attribute: Attribute, options: IRollOptions = {}) {
@@ -227,8 +257,8 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
 
-    const modifiers = this._buildTraitRollModifiers(
-      abl,
+    const modifiers = this.getTraitRollModifiers(
+      abl.die,
       options,
       game.i18n.localize(label),
     );
@@ -631,39 +661,34 @@ export default class SwadeActor extends Actor {
 
   /** Calculates the total Wound Penalties */
   calcWoundPenalties(): number {
-    let retVal = 0;
-    const wounds = parseInt(getProperty(this.system, 'wounds.value'));
-    let ignoredWounds = parseInt(getProperty(this.system, 'wounds.ignored'));
-    if (isNaN(ignoredWounds)) ignoredWounds = 0;
+    let total = 0;
+    const wounds = getProperty(this, 'system.wounds.value') as number;
+    const ignoredWounds = getProperty(this, 'system.wounds.ignored') as number;
 
-    if (!isNaN(wounds)) {
-      if (wounds > 3) {
-        retVal += 3;
-      } else {
-        retVal += wounds;
-      }
-      if (retVal - ignoredWounds < 0) {
-        retVal = 0;
-      } else {
-        retVal -= ignoredWounds;
-      }
-    }
-    return retVal * -1;
+    //clamp the value between 0 and the maximum
+    total = Math.clamped(wounds - ignoredWounds, 0, 3);
+    return total * -1;
   }
 
   /** Calculates the total Fatigue Penalties */
   calcFatiguePenalties(): number {
-    let retVal = 0;
-    const fatigue = parseInt(getProperty(this.system, 'fatigue.value'));
-    if (!isNaN(fatigue)) retVal -= fatigue;
-    return retVal;
+    let total = 0;
+    const fatigue = getProperty(this, 'system.fatigue.value') as number;
+    const ignoredFatigue = getProperty(
+      this,
+      'system.fatigue.ignored',
+    ) as number;
+
+    //get the bigger of the two values so we don't accidentally return a negative value for the penalty
+    total = Math.max(fatigue - ignoredFatigue, 0);
+    return total * -1;
   }
 
   calcStatusPenalties(): number {
     let retVal = 0;
-    const isDistracted = getProperty(this.system, 'status.isDistracted');
-    const isEntangled = getProperty(this.system, 'status.isEntangled');
-    const isBound = getProperty(this.system, 'status.isBound');
+    const isDistracted = getProperty(this, 'system.status.isDistracted');
+    const isEntangled = getProperty(this, 'system.status.isEntangled');
+    const isBound = getProperty(this, 'system.status.isBound');
     if (isDistracted || isEntangled || isBound) {
       retVal -= 2;
     }
@@ -952,8 +977,8 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
 
-    const rollMods = this._buildTraitRollModifiers(
-      skillData,
+    const rollMods = this.getTraitRollModifiers(
+      skillData.die,
       options,
       skill.name,
     );
@@ -1005,39 +1030,44 @@ export default class SwadeActor extends Actor {
     return new WildDie({ faces: sides });
   }
 
-  private _buildTraitRollModifiers(
-    data: any,
+  getTraitRollModifiers(
+    die: TraitDie,
     options: IRollOptions,
-    name: string | null | undefined,
+    name?: string | null,
   ): TraitRollModifier[] {
     const mods = new Array<TraitRollModifier>();
 
     //Trait modifier
-    const modifier = parseInt(data.die.modifier);
-    if (!isNaN(modifier) && modifier !== 0) {
+    if (die.modifier !== 0) {
       mods.push({
         label: name
           ? `${name} ${game.i18n.localize('SWADE.Modifier')}`
           : game.i18n.localize('SWADE.TraitMod'),
-        value: modifier,
+        value: die.modifier,
       });
     }
 
-    // Wounds
-    const woundPenalties = this.calcWoundPenalties();
-    if (woundPenalties !== 0) {
+    const wounds = this.calcWoundPenalties();
+    const fatigue = this.calcFatiguePenalties();
+    const numbness = this.system.woundsOrFatigue.ignored;
+    if (numbness > 0) {
+      const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
+        'SWADE.Fatigue',
+      )}`;
+      mods.push({
+        label: label,
+        value: Math.min(wounds + fatigue + numbness, 0),
+      });
+    } else {
+      //Wounds
       mods.push({
         label: game.i18n.localize('SWADE.Wounds'),
-        value: woundPenalties,
+        value: wounds,
       });
-    }
-
-    //Fatigue
-    const fatiguePenalties = this.calcFatiguePenalties();
-    if (fatiguePenalties !== 0) {
+      //Fatigue
       mods.push({
         label: game.i18n.localize('SWADE.Fatigue'),
-        value: fatiguePenalties,
+        value: fatigue,
       });
     }
 

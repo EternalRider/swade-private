@@ -1,5 +1,4 @@
 export async function setupWorld() {
-  if (!game.user?.isGM) return;
   await setupActionDeck();
   await setupDiscardPile();
 }

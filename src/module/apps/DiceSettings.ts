@@ -20,8 +20,8 @@ export default class DiceSettings extends FormApplication<
   static get defaultOptions() {
     return {
       ...super.defaultOptions,
-      id: SWADE.diceConfig.id,
-      title: SWADE.diceConfig.title,
+      id: 'diceConfig',
+      title: 'SWADE Dice Settings',
       template: 'systems/swade/templates/apps/dice-config.hbs',
       classes: ['swade', 'dice-config', 'dice-so-nice', 'swade-app'],
       width: 500,
@@ -40,16 +40,17 @@ export default class DiceSettings extends FormApplication<
     super.activateListeners(html);
 
     html.find('#reset').on('click', () => this._resetSettings());
-    html
-      .find('#submit')
-      .on('click', () => this.close().then(() => location.reload()));
+    html.find('#submit').on('click', async () => {
+      await this.close();
+      location.reload();
+    });
   }
 
   /**
    * @override
    */
   getData(): any {
-    const settings = {};
+    const settings: Record<string, any> = {};
     for (const flag in this.config.flags) {
       const defaultValue = this.config.flags[flag].default;
       const value = game.user?.getFlag('swade', flag);
@@ -63,15 +64,23 @@ export default class DiceSettings extends FormApplication<
         isCheckbox: this.config.flags[flag].type === Boolean,
         isObject: this.config.flags[flag].type === Object,
       };
+      if (flag === 'dsnWildDiePreset') {
+        settings[flag].isSelect = true;
+        settings[flag].choices = this._prepareSystemList();
+      }
       if (flag === 'dsnWildDie') {
         settings[flag].isSelectOptGroup = true;
         settings[flag].groups = this._prepareColorsetList();
+        settings[flag].disabled =
+          game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none';
+        console.log(settings[flag]);
       }
     }
 
     const data = {
       settings,
       hasCustomWildDie: settings['dsnWildDie'].value !== 'customWildDie',
+      noWildDie: game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none',
       textureList: game.dice3d?.exports.Utils.prepareTextureList(),
       fontList: game.dice3d?.exports.Utils.prepareFontList(),
       materialList: this._prepareMaterialList(),
@@ -116,12 +125,14 @@ export default class DiceSettings extends FormApplication<
     this.render(true);
   }
 
+  private _prepareSystemList() {
+    const systems = game.dice3d!.exports.Utils.prepareSystemList();
+    systems.none = game.i18n.localize('SWADE.DSNNone');
+    return systems;
+  }
+
   private _prepareColorsetList() {
-    const dsnList = game.dice3d!.exports.Utils.prepareColorsetList();
-    const colors = game.i18n.localize('DICESONICE.Colors');
-    delete dsnList[colors].custom;
-    dsnList[colors].none = game.i18n.localize('SWADE.DSNNone');
-    return dsnList;
+    return game.dice3d!.exports.Utils.prepareColorsetList();
   }
 
   private _prepareMaterialList() {

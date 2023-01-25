@@ -46,4 +46,10 @@ export const constants = {
     MAIN_HAND: 4,
     TWO_HANDS: 5,
   } as const,
+  /** @enum */
+  GRANT_ON: {
+    ADDED: 0,
+    CARRIED: 1,
+    READIED: 2,
+  } as const,
 };

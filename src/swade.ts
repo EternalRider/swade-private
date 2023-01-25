@@ -1,3 +1,4 @@
+import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
 import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
@@ -80,6 +81,9 @@ Hooks.once('init', () => {
     util: {
       getStatusEffectDataById,
     },
+    compendiumArt: {
+      map: new Map<string, ArtworkMapping>(),
+    },
     rollItemMacro,
     sockets: new SwadeSocketHandler(),
     migrations: migrations,
@@ -87,10 +91,8 @@ Hooks.once('init', () => {
     CharacterSummarizer,
     RollDialog,
     effectCallbacks: new Collection(),
+    ready: false,
   };
-
-  //register custom Handlebars helpers
-  registerCustomHelpers();
 
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
@@ -177,6 +179,8 @@ Hooks.once('init', () => {
   //@ts-expect-error Revist once types have caught up
   CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
+  //register custom Handlebars helpers
+  registerCustomHelpers();
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
 
@@ -223,7 +227,6 @@ Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
-Hooks.on('sightRefresh', SwadeCoreHooks.onSightRefresh);
 
 /* ------------------------------------ */
 /* Application Render					          */
@@ -278,6 +281,7 @@ Hooks.on(
 /** Dice So Nice*/
 Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
 Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
+Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);

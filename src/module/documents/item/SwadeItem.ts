@@ -19,11 +19,13 @@ import { Logger } from '../../Logger';
 import * as util from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
+import SwadeUser from '../SwadeUser';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
   ItemChatCardData,
   ItemChatCardPowerPoints,
+  ItemGrant,
   UsageUpdates,
   UsageUpdatesContext,
 } from './SwadeItem.interface';
@@ -37,6 +39,7 @@ declare global {
       swade: {
         embeddedAbilities: [string, ItemDataSource][];
         embeddedPowers: [string, ItemDataSource][];
+        hasGranted?: string[];
         [key: string]: unknown;
       };
     };
@@ -132,6 +135,28 @@ export default class SwadeItem extends Item {
   get embeddedPowers() {
     const flagContent = this.getFlag('swade', 'embeddedPowers') ?? [];
     return new Map(flagContent);
+  }
+
+  get canGrantItems(): boolean {
+    return (
+      this.isPhysicalItem ||
+      ['hindrance', 'edge', 'ability'].includes(this.type)
+    );
+  }
+
+  get grantsItems(): ItemGrant[] {
+    if (!this.canGrantItems) return [];
+    return getProperty(this, 'system.grants') as ItemGrant[];
+  }
+
+  get hasGranted(): string[] {
+    return this.getFlag('swade', 'hasGranted') ?? [];
+  }
+
+  get grantedBy(): SwadeItem | undefined {
+    if (this.parent) {
+      return this.parent.items.find((i) => i.hasGranted.includes(this.id!));
+    }
   }
 
   static override migrateData(data) {
@@ -669,7 +694,39 @@ export default class SwadeItem extends Item {
      */
     Hooks.call('swadeConsumeItem', this, charges, usage);
 
+    if (this.type === 'consumable' && this.system.messageOnUse) {
+      await this._createChargeUsageMessage(charges);
+    }
+
     await this._postConsumptionCleanup(updatedItems);
+  }
+
+  async grantEmbedded(target = this.parent) {
+    if (!this.canGrantItems || !target) return;
+    const grantChain = await this.getItemGrantChain();
+
+    const created = new Array<string>();
+    //create the items
+    for (const link of grantChain) {
+      if (link.grant.mutation) {
+        link.item.updateSource(link.grant.mutation);
+      }
+      const grantedItem = await SwadeItem.create(link.item.toObject(), {
+        parent: target,
+        renderSheet: null,
+        isItemGrant: true,
+      });
+      if (grantedItem) created.push(grantedItem.id);
+    }
+    await this.setFlag('swade', 'hasGranted', created);
+    console.log(this.name, this.hasGranted);
+  }
+
+  async removeGranted(target = this.parent) {
+    if (this.hasGranted.length > 0) {
+      await target?.deleteEmbeddedDocuments('Item', this.hasGranted);
+      await this.unsetFlag('swade', 'hasGranted');
+    }
   }
 
   protected async _postConsumptionCleanup(
@@ -819,21 +876,51 @@ export default class SwadeItem extends Item {
       const actor = this.parent!;
       const arcane = this.system.arcane || 'general';
       const value = foundry.utils.getProperty(
-        actor.system,
-        `powerPoints.${arcane}.value`,
+        actor,
+        `system.powerPoints.${arcane}.value`,
       );
       const max = foundry.utils.getProperty(
-        actor.system,
-        `powerPoints.${arcane}.max`,
+        actor,
+        `system.powerPoints.${arcane}.max`,
       );
       return { value, max };
     } else if (this.isArcaneDevice) {
       return foundry.utils.getProperty(
-        this.system,
-        'powerPoints',
+        this,
+        'system.powerPoints',
       ) as ItemChatCardPowerPoints;
     }
     return null;
+  }
+  /** returns a flattened array of item grants, going down the chain of grants */
+  async getItemGrantChain(
+    ignored = new Set<string>(),
+  ): Promise<{ grant: ItemGrant; item: SwadeItem }[]> {
+    if (!this.canGrantItems || ignored.has(this.uuid)) return [];
+    ignored.add(this.uuid);
+    const grantedItems = (await Promise.all(
+      this.grantsItems.map((g) => fromUuid(g.uuid)),
+    )) as SwadeItem[];
+
+    const grants = grantedItems.map((item) => {
+      return {
+        item: item,
+        grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
+      };
+    });
+
+    const children = await Promise.all(
+      grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
+    );
+
+    return [...new Set([...grants, ...children.deepFlatten()])];
+  }
+
+  protected async _createChargeUsageMessage(charges: number) {
+    return CONFIG.ChatMessage.documentClass.create({
+      speaker: ChatMessage.getSpeaker(),
+      content: `<p>${charges} charge(s) used on <em>${this.name}</em></p>`,
+    });
   }
 
   protected override async _preCreate(
@@ -855,7 +942,7 @@ export default class SwadeItem extends Item {
       }
       if (
         this.parent.type === 'npc' &&
-        hasProperty(this.system, 'equippable')
+        hasProperty(this, 'system.equippable')
       ) {
         let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
         if (data.type === 'weapon') {
@@ -870,7 +957,35 @@ export default class SwadeItem extends Item {
     }
   }
 
-  protected override async _preDelete(options, user: User) {
+  protected override _onCreate(
+    data: ItemDataSource,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    super._onCreate(data, options, userId);
+    const grantOn = getProperty(this, 'system.grantOn');
+    const equipStatus = getProperty(this, 'system.equipStatus');
+    const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
+    const shouldGrant =
+      grantOn === constants.GRANT_ON.ADDED ||
+      nonPhysGranter ||
+      (grantOn === constants.GRANT_ON.CARRIED &&
+        equipStatus === constants.EQUIP_STATE.CARRIED) ||
+      (grantOn === constants.GRANT_ON.READIED && this.isReadied);
+    if (
+      !options.isItemGrant &&
+      this.canGrantItems &&
+      this.isEmbedded &&
+      shouldGrant
+    ) {
+      this.grantEmbedded();
+    }
+  }
+
+  protected override async _preDelete(
+    options: DocumentModificationOptions,
+    user: SwadeUser,
+  ) {
     await super._preDelete(options, user);
     //delete all transferred active effects from the actor
     if (this.parent) {
@@ -881,7 +996,19 @@ export default class SwadeItem extends Item {
     }
   }
 
-  protected override async _preUpdate(changed, options, user) {
+  protected override _onDelete(
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    super._onDelete(options, userId);
+    if (this.parent) this.removeGranted();
+  }
+
+  protected override async _preUpdate(
+    changed: DeepPartial<ItemDataConstructorData>,
+    options: DocumentModificationOptions,
+    user: SwadeUser,
+  ) {
     await super._preUpdate(changed, options, user);
 
     if (this.parent && hasProperty(changed, 'system.equipStatus')) {
@@ -896,6 +1023,32 @@ export default class SwadeItem extends Item {
           };
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
+    }
+  }
+
+  protected override _onUpdate(
+    changed: DeepPartial<ItemDataSource>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    super._onUpdate(changed, options, userId);
+    if (
+      this.canGrantItems &&
+      this.parent &&
+      getProperty(this, 'system.grantOn') &&
+      hasProperty(changed, 'system.equipStatus')
+    ) {
+      const equipStatus = getProperty(this, 'system.equipStatus');
+      const grantOn = getProperty(this, 'system.grantOn');
+      const shouldGrant =
+        (grantOn === constants.GRANT_ON.CARRIED &&
+          equipStatus >= constants.EQUIP_STATE.CARRIED) ||
+        (grantOn === constants.GRANT_ON.READIED && this.isReadied);
+      if (shouldGrant && this.hasGranted.length <= 0) {
+        this.grantEmbedded();
+      } else if (!shouldGrant) {
+        this.removeGranted();
+      }
     }
   }
 }

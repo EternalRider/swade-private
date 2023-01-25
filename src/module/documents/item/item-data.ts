@@ -6,6 +6,7 @@ import {
 } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
+import { ItemGrant } from './SwadeItem.interface';
 
 declare global {
   interface SourceConfig {
@@ -29,7 +30,6 @@ export type SwadeItemDataSource =
   | ConsumableDataSource
   | ActionItemDataSource;
 
-// interface PhysicalItem extends Equipable, ArcaneDevice, Actions {
 interface PhysicalItem {
   weight: number;
   price: number;
@@ -49,10 +49,8 @@ interface Favorite {
   favorite: true;
 }
 
-interface Equipable {
+interface Equippable {
   equippable: boolean;
-  /** @deprecated */
-  equipped: boolean;
   equipStatus: EquipState;
 }
 
@@ -80,6 +78,11 @@ interface Actions {
   };
 }
 
+interface GrantEmbedded {
+  grants: Array<ItemGrant>;
+  grantOn: number;
+}
+
 interface BonusDamage {
   bonusDamageDie: number;
 }
@@ -105,10 +108,11 @@ interface WeaponData
     BonusDamage,
     Favorite,
     ArcaneDevice,
-    Equipable,
+    Equippable,
     Actions,
     Templates,
-    Category {
+    Category,
+    GrantEmbedded {
   damage: string;
   range: string;
   rof: number;
@@ -129,9 +133,10 @@ interface GearData
     Vehicular,
     Favorite,
     ArcaneDevice,
-    Equipable,
+    Equippable,
     Actions,
-    Category {
+    Category,
+    GrantEmbedded {
   isAmmo: boolean;
 }
 
@@ -140,9 +145,10 @@ interface ArmorData
     PhysicalItem,
     Favorite,
     ArcaneDevice,
-    Equipable,
+    Equippable,
     Actions,
-    Category {
+    Category,
+    GrantEmbedded {
   minStr: string;
   armor: number | string;
   toughness: number;
@@ -163,9 +169,10 @@ interface ShieldData
     BonusDamage,
     Favorite,
     ArcaneDevice,
-    Equipable,
+    Equippable,
     Actions,
-    Category {
+    Category,
+    GrantEmbedded {
   minStr: string;
   parry: number;
   cover: number;
@@ -176,11 +183,13 @@ interface ConsumableData
     ItemDescription,
     Favorite,
     EquipStatus,
-    Category {
+    Category,
+    GrantEmbedded {
   charges: {
     max: number;
     value: number;
   };
+  messageOnUse: boolean;
   destroyOnEmpty: boolean;
 }
 
@@ -189,10 +198,12 @@ interface EdgeData extends ItemDescription, Favorite, Category {
   requirements: {
     value: string;
   };
+  grants: Array<ItemGrant>;
 }
 
 interface HindranceData extends ItemDescription, Favorite {
   major: boolean;
+  grants: Array<ItemGrant>;
 }
 
 interface PowerData
@@ -210,11 +221,13 @@ interface PowerData
   arcane: string;
   ap: number;
   modifiers: any[];
+  innate: boolean;
 }
 
 interface AbilityData extends ItemDescription, Favorite {
   subtype: AbilitySubType;
   grantsPowers: boolean;
+  grants: Array<ItemGrant>;
 }
 
 interface ActionData extends ItemDescription, Favorite, Actions {}

@@ -93,6 +93,92 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
+      <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
+        <span class="form-fields">
+          <select name="system.trademark" data-dtype="Number">
+            {{#select item.system.trademark}}
+              {{selectOptions
+                trademarkWeaponOptions
+                selected=item.system.trademark
+                localize=true
+              }}
+            {{/select}}
+          </select>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Parry'}}</label>
+        <span class='form-fields'>
+          <input
+            name='system.parry'
+            type='text'
+            value='{{signedString item.system.parry}}'
+            placeholder='{{localize "SWADE.Parry"}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='system.rof'>{{localize 'SWADE.RoF'}}</label>
+        <span class='form-fields'>
+          <input
+            name='system.rof'
+            type='text'
+            value='{{item.system.rof}}'
+            placeholder='{{localize "SWADE.RoF"}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='system.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
+        <span class='form-fields'>
+          <input
+            name='system.minStr'
+            type='text'
+            value='{{item.system.minStr}}'
+            placeholder='{{localize "SWADE.MinStr"}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='system.weight'>{{localize 'SWADE.Weight'}}</label>
+        <span class='form-fields'>
+          <input
+            name='system.weight'
+            type='text'
+            value='{{item.system.weight}}'
+            placeholder='{{localize "SWADE.Weight"}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Notes'}}</label>
+        <span class='form-fields'>
+          <input
+            type='text'
+            name='system.notes'
+            value='{{item.system.notes}}'
+            placeholder='{{localize "SWADE.Notes"}}'
+          />
+        </span>
+      </div>
+      {{#if item.system.isVehicular}}
+        {{#if settingRules.modSlots}}
+          <div class='form-group'>
+            <label for='system.mods'>{{localize 'SWADE.ModSlots'}}</label>
+            <span class='form-fields'>
+              <input
+                name='system.mods'
+                type='number'
+                value='{{item.system.mods}}'
+                placeholder='{{localize "SWADE.ModSlots"}}'
+                data-dtype="Number"
+              />
+            </span>
+          </div>
+        {{/if}}
+      {{/if}}
       <div class="form-group">
         <label>{{localize "SWADE.Ammo"}}</label>
         <span class="form-fields">
@@ -181,93 +267,7 @@
           <label>{{localize 'SWADE.Templates.Stream.Short'}}</label>
         </div>
       </div>
-      <hr>
-      <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
-        <span class="form-fields">
-          <select name="system.trademark" data-dtype="Number">
-            {{#select item.system.trademark}}
-              {{selectOptions
-                trademarkWeaponOptions
-                selected=item.system.trademark
-                localize=true
-              }}
-            {{/select}}
-          </select>
-        </span>
-      </div>
-      <div class='form-group'>
-        <label>{{localize 'SWADE.Parry'}}</label>
-        <span class='form-fields'>
-          <input
-            name='system.parry'
-            type='text'
-            value='{{signedString item.system.parry}}'
-            placeholder='{{localize "SWADE.Parry"}}'
-            data-dtype='Number'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label for='system.rof'>{{localize 'SWADE.RoF'}}</label>
-        <span class='form-fields'>
-          <input
-            name='system.rof'
-            type='text'
-            value='{{item.system.rof}}'
-            placeholder='{{localize "SWADE.RoF"}}'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label for='system.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
-        <span class='form-fields'>
-          <input
-            name='system.minStr'
-            type='text'
-            value='{{item.system.minStr}}'
-            placeholder='{{localize "SWADE.MinStr"}}'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label for='system.weight'>{{localize 'SWADE.Weight'}}</label>
-        <span class='form-fields'>
-          <input
-            name='system.weight'
-            type='text'
-            value='{{item.system.weight}}'
-            placeholder='{{localize "SWADE.Weight"}}'
-            data-dtype='Number'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label>{{localize 'SWADE.Notes'}}</label>
-        <span class='form-fields'>
-          <input
-            type='text'
-            name='system.notes'
-            value='{{item.system.notes}}'
-            placeholder='{{localize "SWADE.Notes"}}'
-          />
-        </span>
-      </div>
-      {{#if item.system.isVehicular}}
-        {{#if settingRules.modSlots}}
-          <div class='form-group'>
-            <label for='system.mods'>{{localize 'SWADE.ModSlots'}}</label>
-            <span class='form-fields'>
-              <input
-                name='system.mods'
-                type='number'
-                value='{{item.system.mods}}'
-                placeholder='{{localize "SWADE.ModSlots"}}'
-                data-dtype="Number"
-              />
-            </span>
-          </div>
-        {{/if}}
-      {{/if}}
+      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if item.isArcaneDevice}}
       <section class='tab powers' data-group='main' data-tab='powers'>

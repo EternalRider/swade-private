@@ -1,4 +1,4 @@
-import { AdditionalStat } from '../interfaces/additional.interface';
+import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
 
@@ -19,6 +19,7 @@ declare global {
       'swade.coreSkillsCompendium': string;
       'swade.wealthType': 'currency' | 'wealthDie' | 'none';
       'swade.currencyName': string;
+      'swade.npcsUseCurrency': boolean;
       'swade.jokersWild': boolean;
       'swade.parryBaseSkill': string;
       'swade.weightUnit': 'imperial' | 'metric';
@@ -43,8 +44,8 @@ declare global {
       'swade.highlightTemplate': boolean;
       'swade.fantasyCompanionEntangle': boolean;
       'swade.settingFields': {
-        actor: Record<string, AdditionalStat>;
-        item: Record<string, AdditionalStat>;
+        actor: Record<string, PrototypeAdditionalStat>;
+        item: Record<string, PrototypeAdditionalStat>;
       };
       'swade.tocBlockList': Record<string, boolean>;
       'swade.npcStartingCurrency': number;
@@ -240,6 +241,15 @@ export function registerSettingRules() {
     scope: 'world',
     type: String,
     default: 'Currency',
+    config: false,
+  });
+
+  game.settings.register('swade', 'npcsUseCurrency', {
+    name: game.i18n.localize('SWADE.Settings.NPCCurrency.Name'),
+    hint: game.i18n.localize('SWADE.Settings.NPCCurrency.Hint'),
+    scope: 'world',
+    type: Boolean,
+    default: true,
     config: false,
   });
 

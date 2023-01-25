@@ -43,10 +43,6 @@ export const SWADE: SwadeConfig = {
     },
   },
 
-  imagedrop: {
-    height: 300,
-  },
-
   bennies: {
     templates: {
       refresh: 'systems/swade/templates/chat/benny-refresh.hbs',
@@ -81,6 +77,7 @@ export const SWADE: SwadeConfig = {
       'alwaysGeneralPP',
       'wealthType',
       'currencyName',
+      'npcsUseCurrency',
       'hardChoices',
       'actionDeck',
       'applyEncumbrance',
@@ -96,8 +93,6 @@ export const SWADE: SwadeConfig = {
   },
 
   diceConfig: {
-    id: 'diceConfig',
-    title: 'SWADE Dice Settings',
     flags: {},
   },
 
@@ -246,8 +241,6 @@ export const SWADE: SwadeConfig = {
     'SWADE.Ranks.Heroic',
     'SWADE.Ranks.Legendary',
   ],
-
-  alphaFilter: new PIXI.filters.AlphaFilter(),
 };
 
 /** @internal */
@@ -281,10 +274,6 @@ export interface SwadeConfig {
     };
   };
 
-  imagedrop: {
-    height: number;
-  };
-
   bennies: {
     templates: {
       refresh: string;
@@ -306,8 +295,6 @@ export interface SwadeConfig {
   };
 
   diceConfig: {
-    id: string;
-    title: string;
     flags: Record<string, any>;
   };
 
@@ -327,6 +314,4 @@ export interface SwadeConfig {
   prototypeRollGroups: TraitRollModifierGroup[];
 
   ranks: string[];
-
-  alphaFilter: PIXI.filters.AlphaFilter;
 }

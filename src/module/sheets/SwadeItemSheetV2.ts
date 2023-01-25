@@ -1,15 +1,13 @@
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { EquipState } from '../../globals';
-import {
-  AdditionalStat,
-  ItemAction,
-} from '../../interfaces/additional.interface';
+import { AdditionalStats, EquipState } from '../../globals';
+import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
@@ -152,6 +150,19 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       });
     });
 
+    html.find('.grant-delete').on('click', async (ev) => {
+      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
+      const grants = this.item.grantsItems;
+      grants.findSplice((v) => v.uuid === uuid);
+      await this.item.update({ 'system.grants': grants });
+    });
+
+    html.find('.grant-name').on('click', async (ev) => {
+      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
+      const doc = (await fromUuid(uuid)) as SwadeItem;
+      doc?.sheet?.render(true);
+    });
+
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
       const effectId = a.closest('li')!.dataset.effectId!;
@@ -203,17 +214,11 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this.item.system.additionalStats;
+    const additionalStats = this._getAdditionalStats();
 
     const data: SwadeItemSheetData = {
-      itemType: game.i18n.localize(`ITEM.Type${this.type.capitalize()}`),
-      enrichedDescription: await TextEditor.enrichHTML(
-        this.item.system.description,
-        {
-          async: true,
-          secrets: this.isEditable,
-        },
-      ),
+      itemType: this._getItemType(),
+      enrichedDescription: await this._enrichText(this.item.system.description),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
@@ -238,6 +243,10 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         isRaceOrArchetype: subtype === 'race' || subtype === 'archetype',
       };
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
+    }
+
+    if (this.item.canGrantItems) {
+      data.grantedItems = await this._getGrantedItems();
     }
 
     if (this.type === 'weapon') {
@@ -317,11 +326,12 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     });
   }
 
-  private async _onDropItem(_event: DragEvent, data) {
+  private async _onDropItem(event: DragEvent, data) {
+    const uuid = data.uuid;
     Logger.debug(
-      `Trying to add ${data.type} ${data.uuid} to ${this.item.type}/${this.item.name}`,
+      `Trying to add ${data.type} ${uuid} to ${this.item.type}/${this.item.name}`,
     );
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
+    const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
       return Logger.warn('SWADE.CannotAddRaceToRace', {
@@ -329,23 +339,51 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         toast: true,
       });
     }
-    //prep item data
-    const itemData = item.toObject();
 
+    const tab = event.target as HTMLElement;
+
+    if (tab.classList?.contains('properties')) {
+      await this._addGrantedItem(item);
+    } else if (tab.classList?.contains('embedded')) {
+      await this._addEmbedded(item);
+    } else if (tab.classList?.contains('powers')) {
+      await this._addArcaneDevicePower(item);
+    }
+  }
+
+  private async _addGrantedItem(item: SwadeItem) {
+    if (
+      !this.item.canGrantItems ||
+      this.item.isEmbedded ||
+      item.uuid === this.item.uuid
+    )
+      return;
+
+    const grants = this.item.grantsItems;
+    grants.push({
+      name: item.name,
+      img: item.img,
+      uuid: item.uuid,
+    });
+    await this.item.update({ 'system.grants': grants });
+  }
+
+  private async _addEmbedded(item: SwadeItem) {
     if (
       this.item.type === 'ability' &&
       this.item.system.subtype !== 'special'
     ) {
       const collection = this.item.embeddedAbilities;
-      collection.set(foundry.utils.randomID(), itemData);
+      collection.set(foundry.utils.randomID(), item.toObject());
       await this._saveEmbeddedAbilities(collection);
     }
+  }
 
-    if (this.item.isArcaneDevice && item.type === 'power') {
-      const collection = this.item.embeddedPowers;
-      collection.set(foundry.utils.randomID(), itemData);
-      await this._saveEmbeddedPowers(collection);
-    }
+  private async _addArcaneDevicePower(item: SwadeItem) {
+    if (!this.item.isArcaneDevice || item.type !== 'power') return;
+    const collection = this.item.embeddedPowers;
+    collection.set(foundry.utils.randomID(), item.toObject());
+    await this._saveEmbeddedPowers(collection);
   }
 
   /** Is the drop data coming from the same item? */
@@ -453,6 +491,60 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
+  private _getAdditionalStats(): AdditionalStats {
+    const stats = foundry.utils.deepClone(
+      this.item.system.additionalStats,
+    ) as AdditionalStats;
+    for (const [key, attr] of Object.entries(stats)) {
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').item;
+        attr.options = options[key]
+          .optionString!.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    return stats;
+  }
+
+  private _getGrantedItems(): ItemGrant[] {
+    if (!this.item.canGrantItems) return [];
+    const grants = this.item.grantsItems;
+    const enriched = new Array<ItemGrant>();
+    for (const item of grants) {
+      const grant = fromUuidSync(item.uuid) as SwadeItem;
+      enriched.push({
+        name: item.name,
+        img: item.img,
+        uuid: item.uuid,
+        missing: !grant,
+      });
+    }
+    return enriched;
+  }
+
+  private _getItemType(): string {
+    if (this.type === 'ability') {
+      const subtype = this.item.system.subtype;
+      switch (subtype) {
+        case 'race':
+          return SWADE.abilitySheet.race.dropdown;
+        case 'archetype':
+          return SWADE.abilitySheet.archetype.dropdown;
+        default:
+          return SWADE.abilitySheet.special.dropdown;
+      }
+    }
+    return `ITEM.Type${this.type.capitalize()}`;
+  }
+
+  private async _enrichText(text: string): Promise<string> {
+    const enriched = await TextEditor.enrichHTML(text, {
+      async: true,
+      secrets: this.isEditable,
+    });
+    return enriched;
+  }
+
   private _setupAccordions() {
     this.form
       ?.querySelectorAll<HTMLDetailsElement>('.actions-list details')
@@ -511,7 +603,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         label: game.i18n.format('DOCUMENT.New', {
           type: game.i18n.localize('DOCUMENT.ActiveEffect'),
         }),
-        icon: '/icons/svg/mystery-man.svg',
         transfer: true,
       },
       { parent: this.item },
@@ -588,7 +679,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   hasCategory: boolean;
   actionTypes: Record<string, string>;
   hasAdditionalStats: boolean;
-  additionalStats: Record<string, AdditionalStat>;
+  additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;
   isArcaneDevice: boolean;
   enrichedDescription: string;
@@ -607,6 +698,7 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isRaceOrArchetype: boolean;
   };
+  grantedItems?: ItemGrant[];
 }
 
 type OptionsPartial = Partial<ItemSheet.Data<DocumentSheetOptions>>;

@@ -3,7 +3,7 @@ import { ChatSpeakerData } from '@league-of-foundry-developers/foundry-vtt-types
 export declare class Dice3D {
   //TODO type box
   box: any;
-
+  DiceFactory: any;
   exports: Dice3DExports;
 
   /**
@@ -86,6 +86,7 @@ interface Dice3DExports {
     prepareFontList: () => Record<string, string>;
     prepareTextureList: () => Record<string, string>;
     prepareColorsetList: () => Record<string, Record<string, string>>;
+    prepareSystemList: () => Record<string, string>;
   };
 }
 

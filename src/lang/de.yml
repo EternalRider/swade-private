@@ -261,7 +261,9 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: >-
+  WildDiePresetDesc: TODO Needs Translation
+  WildDieTheme: Wildcard Würfel Thema
+  WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
     eigener erstellt werden soll, oder "Kein" wenn der Wildcard-Würfel nicht
     anders aussehen soll. Bitte beachte, dass selbst erstellte Wildcard-Würfel
@@ -286,6 +288,7 @@ SWADE:
   String: Text
   Number: Nummer
   Checkbox: Checkbox
+  Selection: Auswahl
   WealthDie:
     Label: Wohlstandswürfel
     Broke:
@@ -426,6 +429,7 @@ SWADE:
       Fail: Du bleibst betäubt
       Success: Du bist nicht mehr Betäubt aber bleibst Verwundbar
       Raise: Du bist nicht mehr btäubt und auch nicht Verwundbar
+      UnStunModifier: Betäubt Resistenz
     BleedingOut:
       Title: Konstitutionsprobe gegen Ausbluten
       Fail: Du stirbst
@@ -633,6 +637,11 @@ SWADE:
         Hint: >-
           Legen Sie den Währungsbetrag fest, den NSCs bei der Erstellung
           erhalten
+    NPCCurrency:
+      Name: NPCs verwenden Währung
+      Hint: >-
+        Wenn aktiviert, haben alle NSCs dieselben Währungsoptionen wie
+        Spielercharaktere
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -664,6 +673,8 @@ SWADE:
     OffHand: Nebenhand
     MainHand: Haupthand
     TwoHands: Beidhändig
+    Added: Hinzugefügt
+    Readied: Bereit
   DestroyOnEmpty: Zerstören, wenn leer
   Charges: Benutzbar
   Consumable:
@@ -731,6 +742,16 @@ SWADE:
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
   HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
+  AdditionalStats:
+    SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
+  MessageOnUse:
+    Label: Nachricht bei Verwendung
+    Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
+  ItemGrants:
+    EmptyHint: Dieses Item gewährt derzeit keine Items
+    Header: Gewährte Items
+    When: Items gewähren wen
+  IgnFatigue: Erschöpfung ignorieren
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

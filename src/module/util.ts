@@ -260,4 +260,9 @@ export function setupFantasyCompanionEntangle() {
   });
 }
 
+/** @internal */
+export function isObject(value) {
+  return !!value && typeof value === 'object';
+}
+
 type Ownership = Record<string, number>;

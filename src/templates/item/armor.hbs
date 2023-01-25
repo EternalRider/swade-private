@@ -101,7 +101,6 @@
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
-      <div></div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
@@ -143,6 +142,7 @@
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
+      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if item.isArcaneDevice}}
       <section class='tab powers' data-group='main' data-tab='powers'>
