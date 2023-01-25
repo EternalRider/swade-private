@@ -52,6 +52,14 @@
       "path": "packs/powers.db",
       "type": "Item",
       "private": false
+    },
+    {
+      "name": "system-docs",
+      "label": "System Documentation",
+      "system": "swade",
+      "path": "packs/system-docs.db",
+      "type": "JournalEntry",
+      "private": false
     }
   ],
   "languages": [
