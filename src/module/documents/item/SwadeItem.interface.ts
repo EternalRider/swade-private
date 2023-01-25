@@ -1,3 +1,4 @@
+import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import SwadeItem from './SwadeItem';
@@ -44,6 +45,7 @@ export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
+  mutation?: DeepPartial<ItemDataConstructorData>;
   missing?: boolean;
 }
 

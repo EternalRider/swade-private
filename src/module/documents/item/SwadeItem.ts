@@ -703,12 +703,15 @@ export default class SwadeItem extends Item {
 
   async grantEmbedded(target = this.parent) {
     if (!this.canGrantItems || !target) return;
-    const grants = await this.getItemGrantChain();
+    const grantChain = await this.getItemGrantChain();
 
     const created = new Array<string>();
     //create the items
-    for (const item of grants) {
-      const grantedItem = await SwadeItem.create(item.toObject(), {
+    for (const link of grantChain) {
+      if (link.grant.mutation) {
+        link.item.updateSource(link.grant.mutation);
+      }
+      const grantedItem = await SwadeItem.create(link.item.toObject(), {
         parent: target,
         renderSheet: null,
         isItemGrant: true,
@@ -889,19 +892,28 @@ export default class SwadeItem extends Item {
     }
     return null;
   }
-
-  async getItemGrantChain(ignored = new Set<string>()): Promise<SwadeItem[]> {
+  /** returns a flattened array of item grants, going down the chain of grants */
+  async getItemGrantChain(
+    ignored = new Set<string>(),
+  ): Promise<{ grant: ItemGrant; item: SwadeItem }[]> {
     if (!this.canGrantItems || ignored.has(this.uuid)) return [];
     ignored.add(this.uuid);
-    const links = (await Promise.all(
+    const grantedItems = (await Promise.all(
       this.grantsItems.map((g) => fromUuid(g.uuid)),
     )) as SwadeItem[];
 
+    const grants = grantedItems.map((item) => {
+      return {
+        item: item,
+        grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
+      };
+    });
+
     const children = await Promise.all(
-      links.flatMap((i) => i.getItemGrantChain(ignored)),
+      grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
     );
 
-    return [...new Set([...links, ...children.deepFlatten()])];
+    return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
   protected async _createChargeUsageMessage(charges: number) {
