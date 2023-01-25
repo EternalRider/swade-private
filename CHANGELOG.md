@@ -36,16 +36,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - To add a item to be granted simply drag&drop it from the item sidebar or a compendium on the the item sheet of the granting item.
   - Any item type can be granted.
   - Unlike races and archetypes, Granted items are copied from their original item (in the world or compendium, wherever it came from) so you can make changes to the granted item before it is granted and the changes will be reflected without you having to delete and re-add the granted item.
-- Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity the more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
+- Added the `swadeActorPrepareDerivedData` hook which runs for every actor during their data preparation and gives modules the opportunity to more easily and cleanly adjust actor data such as replacing the maximum carry capacity.
 - Added the ability to ignore points of fatigue by adding to the `system.fatigue.ignored` property and also added an input for this to the Tweaks window. (#596)
 - Added support to reduce the total penalty of Wounds and Fatigue (such as from the Relief power in the Fantasy companion). To set the amount of ignored points you can use an active effect using the key `system.woundsOrFatigue.ignored`. (#596)
 - Added a section for active effects to the vehicle sheet. (#550)
 - Power items can now be marked as innate. This data is not used currently but helps lay foundations for future expansions of the power system. (#671)
+- Added a System Documentation Journal compendium. The docs are a snapshot of the current system wiki and somewhat outdated. We will over time update the docs to make them more easily usable and up to date. Thanks to ChaosOS! (#624)
 - Added additional translation strings.
 
 ### Changed
 
-- The Wild Die config now also supports selecting a die preset instead of just a theme (!257)
+- The Wild Die config now also supports selecting a die preset instead of just a theme. Thanks to Kristian Serrano! (!257)
 - In order to better facilitate Item Grants alongside Race/Archetype embedded items you are now required to drop items their respective tabs, see the list below:
   - Granted Items -> Properties tab
   - Arcane Device powers -> Powers tab
