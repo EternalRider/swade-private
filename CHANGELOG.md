@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.1
+
+### Changed
+
+- Player character sheets now always show quantity on the inventory tab. (#679)
+
+### Fixed
+
+- Fixed missing editor on item sheets. (#681)
+
 ## 2.2.0
 
 ### Added

@@ -3,7 +3,7 @@
   "type": "deck",
   "description": "A standard 54-card Action Deck",
   "img": "cards/backs/light-soft.webp",
-  "data": {},
+  "system": {},
   "cards": [
     {
       "_id": "Gh7Jpi1TXCvQp6dp",
