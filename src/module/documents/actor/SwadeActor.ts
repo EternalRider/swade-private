@@ -1026,7 +1026,7 @@ export default class SwadeActor extends Actor {
     return die;
   }
 
-  private _buildWildDie(sides = 6): Die {
+  private _buildWildDie(sides = 6): WildDie {
     return new WildDie({ faces: sides });
   }
 

@@ -510,13 +510,13 @@ export default class SwadeCoreHooks {
   }
 
   /** Add roll data to the message for formatting of dice pools*/
-  static async onRenderChatMessage(
+  static onRenderChatMessage(
     message: ChatMessage,
     html: JQuery<HTMLElement>,
     data: any,
   ) {
     if (message.isRoll && message.isContentVisible) {
-      await chat.formatRoll(message, html, data);
+      chat.formatRoll(message, html, data);
     }
 
     chat.hideChatActionButtons(message, html, data);
@@ -845,9 +845,9 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     options: any,
   ) {
-    html.find('.player').each((_index, player) => {
-      new PlayerBennyDisplay(player);
-    });
+    html[0]
+      .querySelectorAll<HTMLLIElement>('.player')
+      .forEach((player) => new PlayerBennyDisplay(player));
   }
 
   static onRenderUserConfig(
