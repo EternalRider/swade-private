@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.2
+
+### Fixed
+
+- Dropping Macros now should properly revert to core behavior if the item isn't owned (#682)
+- Setting themed Compendium TOC apps should no longer get overwritten by the system version
+
 ## 2.2.1
 
 ### Changed
