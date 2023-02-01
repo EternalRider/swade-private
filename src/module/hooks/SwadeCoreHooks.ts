@@ -41,46 +41,6 @@ export default class SwadeCoreHooks {
     }
 
     registerCompendiumArt();
-  }
-
-  static async onReady() {
-    if (game.user?.isGM) {
-      //set up the world if needed
-      await setup.setupWorld();
-
-      // Determine whether a system migration is required and feasible
-      const currentVersion = game.settings.get(
-        'swade',
-        'systemMigrationVersion',
-      );
-      //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '2.2.0';
-      //Minimal compatible version needed for the migration
-      const compatibleMigrationVersion = '2.0.0';
-      //If the needed migration version is newer than the old migration version then migrate the world
-      const needsMigration = foundry.utils.isNewerVersion(
-        needsMigrationVersion,
-        currentVersion,
-      );
-      if (needsMigration) {
-        // Perform the migration
-        if (
-          currentVersion !== '0.0.0' &&
-          !foundry.utils.isNewerVersion(
-            currentVersion,
-            compatibleMigrationVersion,
-          )
-        ) {
-          Logger.error('SWADE.SysMigrationWarning', {
-            toast: true,
-            permanent: true,
-            localize: true,
-          });
-        }
-        await migrations.migrateWorld();
-      }
-    }
-
     //set up the compendium tables of content
     for (const pack of game.packs) {
       const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
@@ -90,13 +50,15 @@ export default class SwadeCoreHooks {
       const isBlocked = tocBlockList[pack.collection];
       if (isRightType && !isBlocked) {
         pack.apps = [
-          new game.swade.apps.CompendiumTOC(
+          new CompendiumTOC(
             pack as CompendiumCollection<CompendiumTOCMetadata>,
           ),
         ];
       }
     }
+  }
 
+  static async onReady() {
     SWADE.diceConfig.flags = {
       dsnShowBennyAnimation: {
         type: Boolean,
@@ -135,6 +97,44 @@ export default class SwadeCoreHooks {
       },
     };
 
+    //setup world and do migrations
+    if (game.user?.isGM) {
+      //set up the world if needed
+      await setup.setupWorld();
+
+      // Determine whether a system migration is required and feasible
+      const currentVersion = game.settings.get(
+        'swade',
+        'systemMigrationVersion',
+      );
+      //TODO Adjust this version every time a migration needs to be triggered
+      const needsMigrationVersion = '2.2.0';
+      //Minimal compatible version needed for the migration
+      const compatibleMigrationVersion = '2.0.0';
+      //If the needed migration version is newer than the old migration version then migrate the world
+      const needsMigration = foundry.utils.isNewerVersion(
+        needsMigrationVersion,
+        currentVersion,
+      );
+      if (needsMigration) {
+        // Perform the migration
+        if (
+          currentVersion !== '0.0.0' &&
+          !foundry.utils.isNewerVersion(
+            currentVersion,
+            compatibleMigrationVersion,
+          )
+        ) {
+          Logger.error('SWADE.SysMigrationWarning', {
+            toast: true,
+            permanent: true,
+            localize: true,
+          });
+        }
+        await migrations.migrateWorld();
+      }
+    }
+
     // set the system as ready
     game.swade.ready = true;
 
@@ -148,7 +148,7 @@ export default class SwadeCoreHooks {
   static onRenderActorDirectory(
     app: ActorDirectory,
     html: JQuery<HTMLElement>,
-    data: any,
+    _data: any,
   ) {
     // Mark all Wildcards in the Actors sidebars with an icon
     const entries = html.find('.document-name');
@@ -899,8 +899,10 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    onHotbarDrop(_hotbar, data, slot);
-    return false;
+    if (data.type === 'Item' && data.uuid.startsWith('Actor')) {
+      onHotbarDrop(_hotbar, data, slot);
+      return false;
+    }
   }
 
   static onGetUserContextOptions(
