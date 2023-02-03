@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.3
+
+### Fixed
+
+- The system TOC should once again be enabled and also not overwrite setting TOC apps.
+- Fixed a technical issue that could cause granted items to be granted multiple times.
+
 ## 2.2.2
 
 ### Fixed

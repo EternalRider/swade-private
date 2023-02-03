@@ -39,8 +39,10 @@ export default class SwadeCoreHooks {
     if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
       setupFantasyCompanionEntangle();
     }
-
     registerCompendiumArt();
+  }
+
+  static async onReady() {
     //set up the compendium tables of content
     for (const pack of game.packs) {
       const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
@@ -56,9 +58,7 @@ export default class SwadeCoreHooks {
         ];
       }
     }
-  }
 
-  static async onReady() {
     SWADE.diceConfig.flags = {
       dsnShowBennyAnimation: {
         type: Boolean,

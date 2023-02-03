@@ -705,21 +705,23 @@ export default class SwadeItem extends Item {
     if (!this.canGrantItems || !target) return;
     const grantChain = await this.getItemGrantChain();
 
-    const created = new Array<string>();
-    //create the items
     for (const link of grantChain) {
       if (link.grant.mutation) {
         link.item.updateSource(link.grant.mutation);
       }
-      const grantedItem = await SwadeItem.create(link.item.toObject(), {
+    }
+    //create the items
+    const grantedItems = await SwadeItem.createDocuments(
+      grantChain.map((l) => l.item.toObject()),
+      {
         parent: target,
         renderSheet: null,
         isItemGrant: true,
-      });
-      if (grantedItem) created.push(grantedItem.id);
-    }
+      },
+    );
+    const created = grantedItems.map((i) => i.id);
     await this.setFlag('swade', 'hasGranted', created);
-    console.log(this.name, this.hasGranted);
+    Logger.debug([this.name, this.hasGranted]);
   }
 
   async removeGranted(target = this.parent) {
@@ -957,30 +959,30 @@ export default class SwadeItem extends Item {
     }
   }
 
-  protected override _onCreate(
-    data: ItemDataSource,
-    options: DocumentModificationOptions,
-    userId: string,
-  ) {
-    super._onCreate(data, options, userId);
-    const grantOn = getProperty(this, 'system.grantOn');
-    const equipStatus = getProperty(this, 'system.equipStatus');
-    const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
-    const shouldGrant =
-      grantOn === constants.GRANT_ON.ADDED ||
-      nonPhysGranter ||
-      (grantOn === constants.GRANT_ON.CARRIED &&
-        equipStatus === constants.EQUIP_STATE.CARRIED) ||
-      (grantOn === constants.GRANT_ON.READIED && this.isReadied);
-    if (
-      !options.isItemGrant &&
-      this.canGrantItems &&
-      this.isEmbedded &&
-      shouldGrant
-    ) {
-      this.grantEmbedded();
-    }
-  }
+  // protected override _onCreate(
+  //   data: ItemDataSource,
+  //   options: DocumentModificationOptions,
+  //   userId: string,
+  // ) {
+  //   super._onCreate(data, options, userId);
+  //   const grantOn = getProperty(this, 'system.grantOn');
+  //   const equipStatus = getProperty(this, 'system.equipStatus');
+  //   const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
+  //   const shouldGrant =
+  //     grantOn === constants.GRANT_ON.ADDED ||
+  //     nonPhysGranter ||
+  //     (grantOn === constants.GRANT_ON.CARRIED &&
+  //       equipStatus === constants.EQUIP_STATE.CARRIED) ||
+  //     (grantOn === constants.GRANT_ON.READIED && this.isReadied);
+  //   if (
+  //     !options.isItemGrant &&
+  //     this.canGrantItems &&
+  //     this.isEmbedded &&
+  //     shouldGrant
+  //   ) {
+  //     this.grantEmbedded();
+  //   }
+  // }
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
@@ -1024,6 +1026,32 @@ export default class SwadeItem extends Item {
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
+  }
+
+  protected static override async _onCreateDocuments(
+    items: SwadeItem[],
+    context,
+  ) {
+    console.debug(items, context);
+    if (!context.isItemGrant) {
+      for (const item of items) {
+        const grantOn = getProperty(item, 'system.grantOn');
+        const equipStatus = getProperty(item, 'system.equipStatus');
+        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
+          item.type,
+        );
+        const shouldGrant =
+          grantOn === constants.GRANT_ON.ADDED ||
+          nonPhysGranter ||
+          (grantOn === constants.GRANT_ON.CARRIED &&
+            equipStatus === constants.EQUIP_STATE.CARRIED) ||
+          (grantOn === constants.GRANT_ON.READIED && item.isReadied);
+        if (item.canGrantItems && item.isEmbedded && shouldGrant) {
+          await item.grantEmbedded();
+        }
+      }
+    }
+    await super._onCreateDocuments(items, context);
   }
 
   protected override _onUpdate(
