@@ -1,0 +1,64 @@
+.swade-roll {
+  --min-color: red;
+  --exploded-color: green;
+
+  .critical-failure {
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    filter: sepia(0.5);
+  }
+
+  .min {
+    color: var(--min-color);
+  }
+  .exploded {
+    color: var(--exploded-color);
+  }
+  .dice-result {
+    order: unset;
+  }
+  .modifier-list,
+  .result-list,
+  .formula-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .modifier-list {
+    font-size: var(--font-size-12);
+    color: var(--color-text-dark-secondary);
+  }
+
+  .result-list,
+  .formula-list {
+    li {
+      margin: 2px;
+      display: inline-flex;
+      justify-content: center;
+      font-weight: bold;
+      &.die {
+        width: 25px;
+        height: 25px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    }
+  }
+
+  .dice-roll {
+    flex-direction: column;
+  }
+
+  .roll-interaction {
+    margin-top: $small-spacing;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    button {
+      width: auto;
+    }
+  }
+}

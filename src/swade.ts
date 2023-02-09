@@ -9,6 +9,9 @@ import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
 import Benny from './module/dice/Benny';
+import { DamageRoll } from './module/dice/DamageRoll';
+import { SwadeRoll } from './module/dice/SwadeRoll';
+import { TraitRoll } from './module/dice/TraitRoll';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
 import SwadeItem from './module/documents/item/SwadeItem';
@@ -218,7 +221,12 @@ Hooks.once('init', () => {
     label: 'SWADE.ItemSheet',
   });
 
+  CONFIG.Dice.SwadeRoll = SwadeRoll;
+  CONFIG.Dice.TraitRoll = TraitRoll;
+  CONFIG.Dice.DamageRoll = DamageRoll;
+
   CONFIG.Dice.terms.b = Benny;
+  CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
 });
 
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -256,7 +264,6 @@ Hooks.on(
 /* ------------------------------------ */
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
 Hooks.on('getActorEntryContext', SwadeCoreHooks.onGetCombatTrackerEntryContext);
-Hooks.on('getChatLogEntryContext', SwadeCoreHooks.onGetChatLogEntryContext);
 Hooks.on(
   'getActorDirectoryEntryContext',
   SwadeCoreHooks.onGetActorDirectoryEntryContext,

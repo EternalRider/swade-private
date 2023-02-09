@@ -1,0 +1,76 @@
+<div class='swade-roll'>
+  {{#unless isPrivate}}
+    {{#if rerolled}}<p>{{rerolled}}</p>{{/if}}
+    {{#if modifiers.length}}
+      <details class='modifiers'>
+        <summary>{{localize 'SWADE.Modifiers'}}</summary>
+        <span class='content'>
+          <ol class='modifier-list'>
+            {{#each modifiers}}
+              <li>{{label}}: {{value}}</li>
+            {{/each}}
+          </ol>
+        </span>
+      </details>
+    {{/if}}
+  {{/unless}}
+  <div class='dice-roll damage-roll'>
+    <div class='dice-result'>
+      <div class='dice-formula'>
+        {{#if isPrivate}}???{{else}}
+          <ol class='formula-list'>
+            {{#each formulaParts}}
+              {{#if die}}
+                <li
+                  class='die'
+                  style='background-image: url({{img}});'
+                  title='{{hint}}'
+                >
+                  <label class='{{class}}'>{{this.result}}</label>
+                </li>
+              {{else}}
+                <li title='{{hint}}'>{{result}}</li>
+              {{/if}}
+            {{/each}}
+          </ol>
+        {{/if}}
+      </div>
+      {{#unless isPrivate}}{{{tooltip}}}{{/unless}}
+      <div class='dice-total'>
+        {{#if isPrivate}}???{{else}}{{total}}{{/if}}
+      </div>
+    </div>
+  </div>
+  <div class='roll-interaction'>
+    <button
+      type='button'
+      class='benny-reroll'
+      data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+      aria-label='{{localize "SWADE.RerollWithBenny"}}'
+    >
+      <i class='fa-solid fa-dice'></i>
+      Benny
+    </button>
+    {{#if isGM}}
+      <button
+        type='button'
+        class='benny-reroll'
+        data-gm-benny='true'
+        data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+        aria-label='{{localize "SWADE.RerollWithBenny"}}'
+      >
+        <i class='fa-solid fa-dice'></i>
+        GM Benny
+      </button>
+    {{/if}}
+    <button
+      type='button'
+      class='free-reroll'
+      data-tooltip='{{localize "SWADE.FreeReroll"}}'
+      aria-label='{{localize "SWADE.FreeReroll"}}'
+    >
+      <i class='fa-solid fa-dice'></i>
+      Free
+    </button>
+  </div>
+</div>

@@ -733,6 +733,7 @@ SWADE:
     Header: Item Grants
     When: Grant Items When
   IgnFatigue: Ignore Fatigue
+  Critfail: CRITICAL FAILURE
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

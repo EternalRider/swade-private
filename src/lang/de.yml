@@ -752,6 +752,7 @@ SWADE:
     Header: Gewährte Items
     When: Items gewähren wen
   IgnFatigue: Erschöpfung ignorieren
+  Critfail: KRITISCHER PATZER
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

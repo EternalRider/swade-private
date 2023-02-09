@@ -15,6 +15,7 @@ import {
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
+import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
 import * as util from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
@@ -195,7 +196,7 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap = foundry.utils.getProperty(this.system, 'ap');
+    let ap = foundry.utils.getProperty(this, 'system.ap');
 
     if (ap) {
       ap = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -210,7 +211,7 @@ export default class SwadeItem extends Item {
       modifiers.push(...options.additionalMods);
     }
 
-    const terms = Roll.parse(
+    const terms = DamageRoll.parse(
       rollParts.join(''),
       this.parent?.getRollData() ?? {},
     );
@@ -253,26 +254,30 @@ export default class SwadeItem extends Item {
       });
     }
 
-    const roll = new Roll(baseRoll.join(''));
+    const roll = new DamageRoll(
+      baseRoll.join(''),
+      {},
+      {
+        modifiers: modifiers,
+      },
+    );
 
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
      * @category Hooks
      * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
      * @param {SwadeItem} item                  The item that is used to create the damage value
-     * @param {Roll} roll                       The built base roll, without any modifiers
+     * @param {DamageRoll} roll                 The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.call('swadeRollDamage', this.actor, this, roll, modifiers, options);
 
     if (options.suppressChat) {
-      return Roll.fromTerms([
+      return DamageRoll.fromTerms([
         ...roll.terms,
-        ...Roll.parse(
-          modifiers
-            .map(util.normalizeRollModifiers)
-            .reduce(util.modifierReducer, ''),
+        ...DamageRoll.parse(
+          roll.modifiers.reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -286,7 +291,6 @@ export default class SwadeItem extends Item {
       flavor: `${label} ${game.i18n.localize('SWADE.Dmg')}${ap}${flavour}`,
       title: `${label} ${game.i18n.localize('SWADE.Dmg')}`,
       item: this,
-      flags: { swade: { colorMessage: false } },
     });
   }
 

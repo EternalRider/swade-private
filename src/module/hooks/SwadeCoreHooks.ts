@@ -8,6 +8,7 @@ import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeCombatant from '../documents/SwadeCombatant';
@@ -17,6 +18,7 @@ import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
+import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
@@ -96,6 +98,22 @@ export default class SwadeCoreHooks {
         },
       },
     };
+
+    //set up the compendium tables of content
+    for (const pack of game.packs) {
+      const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
+        pack.metadata.type,
+      );
+      const tocBlockList = game.settings.get('swade', 'tocBlockList');
+      const isBlocked = tocBlockList[pack.collection];
+      if (isRightType && !isBlocked) {
+        pack.apps = [
+          new CompendiumTOC(
+            pack as CompendiumCollection<CompendiumTOCMetadata>,
+          ),
+        ];
+      }
+    }
 
     //setup world and do migrations
     if (game.user?.isGM) {
@@ -515,42 +533,16 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     data: any,
   ) {
-    if (message.isRoll && message.isContentVisible) {
-      chat.formatRoll(message, html, data);
-    }
-
     chat.hideChatActionButtons(message, html, data);
-  }
-
-  static onGetChatLogEntryContext(
-    html: JQuery<HTMLElement>,
-    options: ContextMenuEntry[],
-  ) {
-    const canApply = (li: JQuery<HTMLElement>) => {
-      const message = game.messages?.get(li.data('messageId'))!;
-      const actor = ChatMessage.getSpeakerActor(message.speaker);
-      const isRightMessageType =
-        message?.isRoll &&
-        message?.isContentVisible &&
-        !message.getFlag('core', 'RollTable');
-      return (
-        isRightMessageType && !!actor && (game.user?.isGM! || actor.isOwner)
-      );
-    };
-    options.push(
-      {
-        name: game.i18n.localize('SWADE.RerollWithBenny'),
-        icon: '<i class="fa-solid fa-dice"></i>',
-        condition: canApply,
-        callback: (li) => chat.rerollFromChat(li, true),
-      },
-      {
-        name: game.i18n.localize('SWADE.FreeReroll'),
-        icon: '<i class="fa-solid fa-dice"></i>',
-        condition: canApply,
-        callback: (li) => chat.rerollFromChat(li, false),
-      },
-    );
+    html
+      .find('.swade-roll button.free-reroll')
+      .on('click', SwadeRoll.rerollFree.bind(this));
+    html
+      .find('.swade-roll button.benny-reroll')
+      .on('click', SwadeRoll.rerollBenny.bind(this));
+    html[0]
+      .querySelectorAll<HTMLDetailsElement>('details.modifiers')
+      .forEach((detail) => new Accordion(detail));
   }
 
   static async onGetCombatTrackerEntryContext(

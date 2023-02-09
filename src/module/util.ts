@@ -265,4 +265,13 @@ export function isObject(value) {
   return !!value && typeof value === 'object';
 }
 
+export function chunkArray<T>(array: T[], size: number): Array<T[]> {
+  const result: Array<T[]> = [];
+  for (let i = 0; i < array.length; i += size) {
+    const chunk = array.slice(i, i + size);
+    result.push(chunk);
+  }
+  return result;
+}
+
 type Ownership = Record<string, number>;

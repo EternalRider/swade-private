@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.0
+
+### Added
+
+- Added swade-specific roll classes which can be found in the global `CONFIG.Dice` object.
+  - `SwadeRoll` which is uses for general rolls like running and the wealth die
+  - `TraitRoll` which is used for skill and attribute rolls
+  - `DamageRoll` which is used for damage rolls
+- Added additional translation strings.
+
+### Changed
+
+- Changed the roll dialog to expect one of the three new roll classes
+
 ## 2.2.3
 
 ### Fixed
