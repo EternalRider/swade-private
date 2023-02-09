@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
-import { ItemMetadata } from '../../../globals';
+import { Attribute, ItemMetadata } from '../../../globals';
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -9,6 +9,8 @@ import RollDialog from '../../apps/RollDialog';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { SwadeRoll } from '../../dice/SwadeRoll';
+import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import * as util from '../../util';
 import SwadeItem from '../item/SwadeItem';
@@ -271,26 +273,25 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    const roll = Roll.fromTerms([basePool]);
+    const roll = TraitRoll.fromTerms([basePool]);
+    roll.modifiers = modifiers;
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
-     * @param {Roll} roll                       The built base roll, without any modifiers
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.call('swadeRollAttribute', this, attribute, roll, modifiers, options);
 
     if (options.suppressChat) {
-      return Roll.fromTerms([
+      return TraitRoll.fromTerms([
         ...roll.terms,
-        ...Roll.parse(
-          modifiers
-            .map(util.normalizeRollModifiers)
-            .reduce(util.modifierReducer, ''),
+        ...TraitRoll.parse(
+          roll.modifiers.reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -312,8 +313,6 @@ export default class SwadeActor extends Actor {
           'SWADE.AttributeTest',
         )}`,
       actor: this,
-      allowGroup: true,
-      flags: { swade: { colorMessage: true } },
     });
   }
 
@@ -333,8 +332,9 @@ export default class SwadeActor extends Actor {
     }
 
     const skillRoll = this._handleComplexSkill(skill, options);
-    const roll = skillRoll[0];
+    const roll = TraitRoll.fromRoll(skillRoll[0]);
     const modifiers = skillRoll[1];
+    roll.modifiers = modifiers;
 
     //Build Flavour
     let flavour = '';
@@ -347,19 +347,17 @@ export default class SwadeActor extends Actor {
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the skill
      * @param {SwadeItem} skill                 The Skill item that is being rolled
-     * @param {Roll} roll                       The built base roll, without any modifiers
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.call('swadeRollSkill', this, skill, roll, modifiers, options);
 
     if (options.suppressChat) {
-      return Roll.fromTerms([
+      return TraitRoll.fromTerms([
         ...roll.terms,
-        ...Roll.parse(
-          modifiers
-            .map(util.normalizeRollModifiers)
-            .reduce(util.modifierReducer, ''),
+        ...TraitRoll.parse(
+          roll.modifiers.reduce(util.modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -377,13 +375,11 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-      allowGroup: true,
-      flags: { swade: { colorMessage: true } },
     });
   }
 
   async rollWealthDie() {
-    if (this.type === 'vehicle') return;
+    if (this.type === 'vehicle') return null;
     const die = this.system.details.wealth.die ?? 6;
     const mod = this.system.details.wealth.modifier ?? 0;
     const wildDie = this.system.details.wealth['wild-die'] ?? 6;
@@ -403,9 +399,13 @@ export default class SwadeActor extends Actor {
     const pool = PoolTerm.fromRolls(rolls);
     pool.modifiers.push('kh');
 
+    const roll = SwadeRoll.fromTerms([pool]);
+    const mods = [{ label: 'Modifier', value: mod }];
+    roll.modifiers = mods;
+
     return RollDialog.asPromise({
-      roll: Roll.fromTerms([pool]),
-      mods: [{ label: 'Modifier', value: mod }],
+      roll: roll,
+      mods: mods,
       speaker: ChatMessage.getSpeaker(),
       actor: this,
       flavor: game.i18n.localize('SWADE.WealthDie.Label'),
@@ -414,7 +414,7 @@ export default class SwadeActor extends Actor {
   }
 
   async rollRunningDie() {
-    if (this.type === 'vehicle') return;
+    if (this.type === 'vehicle') return null;
 
     const runningDieSides = this.system.stats.speed.runningDie;
     const runningMod = this.system.stats.speed.runningMod;
@@ -441,14 +441,13 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    game.swade.RollDialog.asPromise({
-      roll: new Roll(runningDie),
+    return RollDialog.asPromise({
+      roll: new SwadeRoll(runningDie, this.getRollData(), { modifiers: mods }),
       mods: mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: game.i18n.localize('SWADE.Running'),
       title: game.i18n.localize('SWADE.Running'),
       actor: this,
-      allowGroup: false,
     });
   }
 
