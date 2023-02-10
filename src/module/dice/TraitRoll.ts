@@ -5,6 +5,7 @@ import {
 } from '../../interfaces/roll.interface';
 import { chunkArray } from '../util';
 import { SwadeRoll } from './SwadeRoll';
+import WildDie from './WildDie';
 
 export class TraitRoll extends SwadeRoll<ActorRollData> {
   constructor(
@@ -47,6 +48,23 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       data.flavor = game.i18n.localize('SWADE.GroupRoll');
     }
     return data;
+  }
+
+  override clone() {
+    const cloned = super.clone();
+    if (cloned.terms[0] instanceof PoolTerm) {
+      for (const poolPart of cloned.terms[0].rolls) {
+        poolPart.terms.forEach((part, i, terms) => {
+          if (
+            part instanceof Die &&
+            part.flavor === game.i18n.localize('SWADE.WildDie')
+          ) {
+            terms[i] = new WildDie({ faces: part.faces });
+          }
+        });
+      }
+    }
+    return cloned;
   }
 
   protected _formatResultParts() {

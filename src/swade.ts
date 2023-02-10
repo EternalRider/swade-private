@@ -227,6 +227,7 @@ Hooks.once('init', () => {
 
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
+  CONFIG.Dice.types.push(WildDie);
 });
 
 Hooks.once('setup', SwadeCoreHooks.onSetup);
