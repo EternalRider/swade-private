@@ -24,12 +24,12 @@
                 <li
                   class='die'
                   style='background-image: url({{img}});'
-                  title='{{hint}}'
+                  data-tooltip='{{hint}}'
                 >
                   <label class='{{class}}'>{{this.result}}</label>
                 </li>
               {{else}}
-                <li title='{{hint}}'>{{result}}</li>
+                <li data-tooltip='{{hint}}'>{{result}}</li>
               {{/if}}
             {{/each}}
           </ol>
