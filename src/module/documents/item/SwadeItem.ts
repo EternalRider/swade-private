@@ -218,8 +218,11 @@ export default class SwadeItem extends Item {
     const baseRoll = new Array<string>();
     for (const term of terms) {
       if (term instanceof Die) {
-        if (!term.modifiers.includes('x') && !term.options.flavor) {
+        if (!term.modifiers.includes('x')) {
           term.modifiers.push('x');
+        }
+        if (!term.flavor) {
+          term.options.flavor = game.i18n.localize('SWADE.BaseDamage');
         }
         baseRoll.push(term.formula);
       } else if (term instanceof StringTerm) {

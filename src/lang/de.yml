@@ -753,6 +753,7 @@ SWADE:
     When: Items gewähren wen
   IgnFatigue: Erschöpfung ignorieren
   Critfail: KRITISCHER PATZER
+  BaseDamage: Basisschaden
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

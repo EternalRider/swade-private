@@ -734,6 +734,7 @@ SWADE:
     When: Grant Items When
   IgnFatigue: Ignore Fatigue
   Critfail: CRITICAL FAILURE
+  BaseDamage: Base Damage
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
