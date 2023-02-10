@@ -1,5 +1,8 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import {
+  Context,
+  DocumentModificationOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
@@ -12,10 +15,15 @@ import { constants } from '../../constants';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
-import * as util from '../../util';
+import { Logger } from '../../Logger';
+import {
+  getRankFromAdvanceAsString,
+  modifierReducer,
+  shouldShowBennyAnimation,
+} from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../SwadeCombatant';
-import { TraitDie } from './actor-data-source';
+import { SwadeActorDataSource, TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -127,18 +135,32 @@ export default class SwadeActor extends Actor {
     return encumbrance.value > encumbrance.max;
   }
 
-  override prepareBaseData() {
+  get race(): SwadeItem | undefined {
     if (this.type === 'vehicle') return;
-    //auto calculations
-    if (this.system.details.autoCalcToughness) {
-      //if we calculate the toughness then we set the values to 0 beforehand so the active effects can be applies
-      this.system.stats.toughness.value = 0;
-      this.system.stats.toughness.armor = 0;
+    const races = this.items.filter(
+      (i) => i.type === 'ability' && i.system.subtype === 'race',
+    );
+    if (races.length > 1) {
+      Logger.warn(`Actor ${this.name} (${this.id}) has more than one race!`);
     }
-    if (this.system.details.autoCalcParry) {
-      //same procedure as with Toughness
-      this.system.stats.parry.value = 0;
+    return races[0];
+  }
+
+  get archetype(): SwadeItem | undefined {
+    if (this.type === 'vehicle') return;
+    const archetypes = this.items.filter(
+      (i) => i.type === 'ability' && i.system.subtype === 'archetype',
+    );
+    if (archetypes.length > 1) {
+      Logger.warn(
+        `Actor ${this.name} (${this.id}) has more than one archetype!`,
+      );
     }
+    return archetypes[0];
+  }
+
+  override prepareBaseData() {
+    this._prepareCharacterBaseData();
   }
 
   override prepareEmbeddedDocuments() {
@@ -153,7 +175,33 @@ export default class SwadeActor extends Actor {
 
   override prepareDerivedData() {
     this._filterOverrides();
-    //return early for Vehicles
+    this._prepareCharacterDerivedData();
+
+    /**
+     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the attribute
+     */
+    Hooks.callAll('swadeActorPrepareDerivedData', this);
+  }
+
+  private _prepareCharacterBaseData() {
+    //typeguard against vehicles
+    if (this.type === 'vehicle') return;
+    //auto calculations
+    if (this.system.details.autoCalcToughness) {
+      //if we calculate the toughness then we set the values to 0 beforehand so the active effects can be applies
+      this.system.stats.toughness.value = 0;
+      this.system.stats.toughness.armor = 0;
+    }
+    if (this.system.details.autoCalcParry) {
+      //same procedure as with Toughness
+      this.system.stats.parry.value = 0;
+    }
+  }
+
+  private _prepareCharacterDerivedData() {
+    //typeguard against vehicles
     if (this.type === 'vehicle') return;
 
     //die type bounding for attributes
@@ -181,7 +229,7 @@ export default class SwadeActor extends Actor {
       const activeAdvances = list.filter((a) => !a.planned).length;
       advances.list = list;
       advances.value = activeAdvances;
-      advances.rank = util.getRankFromAdvanceAsString(activeAdvances);
+      advances.rank = getRankFromAdvanceAsString(activeAdvances);
     }
 
     let pace = this.system.stats.speed.value;
@@ -224,13 +272,6 @@ export default class SwadeActor extends Actor {
       const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
       this.system.stats.parry.value = completeParry;
     }
-
-    /**
-     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
-     */
-    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
   async rollAttribute(attribute: Attribute, options: IRollOptions = {}) {
@@ -291,7 +332,7 @@ export default class SwadeActor extends Actor {
       return TraitRoll.fromTerms([
         ...roll.terms,
         ...TraitRoll.parse(
-          roll.modifiers.reduce(util.modifierReducer, ''),
+          roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -332,7 +373,7 @@ export default class SwadeActor extends Actor {
     }
 
     const skillRoll = this._handleComplexSkill(skill, options);
-    const roll = TraitRoll.fromRoll(skillRoll[0]);
+    const roll = skillRoll[0];
     const modifiers = skillRoll[1];
     roll.modifiers = modifiers;
 
@@ -357,7 +398,7 @@ export default class SwadeActor extends Actor {
       return TraitRoll.fromTerms([
         ...roll.terms,
         ...TraitRoll.parse(
-          roll.modifiers.reduce(util.modifierReducer, ''),
+          roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -521,7 +562,7 @@ export default class SwadeActor extends Actor {
      */
     Hooks.call('swadeSpendBenny', this);
 
-    if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
+    if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
         await new Roll('1dB').evaluate({ async: true }),
         game.user!,
@@ -558,7 +599,7 @@ export default class SwadeActor extends Actor {
      */
     Hooks.call('swadeGetBenny', this);
 
-    if (!!game.dice3d && (await util.shouldShowBennyAnimation())) {
+    if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
         await new Roll('1dB').evaluate({ async: true }),
         game.user!,
@@ -706,11 +747,6 @@ export default class SwadeActor extends Actor {
     return scale;
   }
 
-  /** @deprecated */
-  getRollShortcuts(): Record<string, number | string> {
-    console.warn('Please use SwadeActor#getRollData() instead!');
-    return this.getRollData();
-  }
   /**
    * Function for shortcut roll in item (@str + 1d6)
    * return something like : {agi: "1d8x+1", sma: "1d6x", spi: "1d6x", str: "1d6x-1", vig: "1d6x"}
@@ -945,7 +981,7 @@ export default class SwadeActor extends Actor {
   private _handleComplexSkill(
     skill: SwadeItem,
     options: IRollOptions,
-  ): [Roll, TraitRollModifier[]] {
+  ): [TraitRoll, TraitRollModifier[]] {
     if (this.type === 'vehicle') {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
@@ -959,17 +995,16 @@ export default class SwadeActor extends Actor {
 
     //Add all necessary trait die
     for (let i = 0; i < options.rof; i++) {
-      const skillRoll = new Roll('');
-      const traitDie = this._buildTraitDie(skillData.die.sides, skill.name!);
-      skillRoll.terms.push(traitDie);
-      rolls.push(skillRoll);
+      rolls.push(
+        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
+      );
     }
 
     //Add Wild Die
     if (this.isWildcard) {
-      const wildRoll = new Roll('');
-      wildRoll.terms.push(this._buildWildDie(skillData['wild-die'].sides));
-      rolls.push(wildRoll);
+      rolls.push(
+        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
+      );
     }
 
     const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
@@ -990,7 +1025,7 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    return [Roll.fromTerms([basePool]), rollMods];
+    return [TraitRoll.fromTerms([basePool]), rollMods];
   }
 
   /**

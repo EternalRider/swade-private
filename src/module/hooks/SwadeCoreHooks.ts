@@ -1166,30 +1166,30 @@ export default class SwadeCoreHooks {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
     const createOption = (
-      exp: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION> | undefined,
       label: string,
+      exp?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>,
     ) => {
       return `<option value="${exp}" ${
         exp === expiration ? 'selected' : ''
       }>${label}</option>`;
     };
     const expirationOpt = [
-      createOption(undefined, game.i18n.localize('SWADE.Expiration.None')),
+      createOption(game.i18n.localize('SWADE.Expiration.None')),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.BeginAuto'),
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.BeginPrompt'),
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.EndAuto'),
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.EndPrompt'),
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
       ),
     ];
     const tab = `
@@ -1222,11 +1222,12 @@ export default class SwadeCoreHooks {
     html.find('section[data-tab="duration"]').after(section);
   }
 
-  /** This hook only really exists to stop Races from being added to the actor as an item */
-  static onPreCreateItem(item: SwadeItem, options: object, userId: string) {
+  /** This hook only really exists to stop Races from being added to the actor as an item if the actor already HAS one */
+  static onPreCreateItem(item: SwadeItem, _options: object, _userId: string) {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
-      if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
+      if (subType === 'race' && item.parent.race) return false;
+      if (subType === 'archetype' && item.parent.archetype) return false;
     }
   }
 }

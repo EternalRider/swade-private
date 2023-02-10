@@ -30,11 +30,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `SwadeRoll` which is uses for general rolls like running and the wealth die
   - `TraitRoll` which is used for skill and attribute rolls
   - `DamageRoll` which is used for damage rolls
+- Added race and archetype getters to the `SwadeActor` that return the appropriate item if the actor has one.
 - Added additional translation strings.
 
 ### Changed
 
 - Changed the roll dialog to expect one of the three new roll classes
+- The small, medium and large burst template checkboxes now show the full name on hover in the weapon and power item sheets.
 
 ## 2.2.3
 
