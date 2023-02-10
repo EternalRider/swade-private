@@ -218,55 +218,7 @@
           <input type="checkbox" name="system.isHeavyWeapon" {{checked item.system.isHeavyWeapon}}/>
         </span>
       </div>
-      <hr>
-      <h4>{{localize "SWADE.Templates.Possible"}}</h4>
-      <div class="column-grid three-columns">
-        <div class="form-group">
-          <input
-            type="checkbox"
-            name="system.templates.small"
-            {{checked item.system.templates.small}}
-            data-dtype="Boolean"
-          />
-          <label>{{localize 'SWADE.Templates.Small.Short'}}</label>
-        </div>
-        <div class="form-group">
-          <input
-            type="checkbox"
-            name="system.templates.medium"
-            {{checked item.system.templates.medium}}
-            data-dtype="Boolean"
-          />
-          <label>{{localize 'SWADE.Templates.Medium.Short'}}</label>
-        </div>
-        <div class="form-group">
-          <input
-            type="checkbox"
-            name="system.templates.large"
-            {{checked item.system.templates.large}}
-            data-dtype="Boolean"
-          />
-          <label>{{localize 'SWADE.Templates.Large.Short'}}</label>
-        </div>
-        <div class="form-group">
-          <input
-              type="checkbox"
-              name="system.templates.cone"
-              {{checked item.system.templates.cone}}
-              data-dtype="Boolean"
-            />
-          <label>{{localize 'SWADE.Templates.Cone.Short'}}</label>
-        </div>
-        <div class="form-group">
-          <input
-              type="checkbox"
-              name="system.templates.stream"
-              {{checked item.system.templates.stream}}
-              data-dtype="Boolean"
-            />
-          <label>{{localize 'SWADE.Templates.Stream.Short'}}</label>
-        </div>
-      </div>
+      {{> 'systems/swade/templates/item/partials/templates.hbs'}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if item.isArcaneDevice}}
