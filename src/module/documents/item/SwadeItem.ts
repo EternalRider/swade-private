@@ -957,39 +957,10 @@ export default class SwadeItem extends Item {
         if (data.type === 'weapon') {
           newState = constants.EQUIP_STATE.MAIN_HAND;
         }
-        this.updateSource({
-          data: {
-            equipStatus: newState,
-          },
-        });
+        this.updateSource({ 'system.equipStatus': newState });
       }
     }
   }
-
-  // protected override _onCreate(
-  //   data: ItemDataSource,
-  //   options: DocumentModificationOptions,
-  //   userId: string,
-  // ) {
-  //   super._onCreate(data, options, userId);
-  //   const grantOn = getProperty(this, 'system.grantOn');
-  //   const equipStatus = getProperty(this, 'system.equipStatus');
-  //   const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(this.type);
-  //   const shouldGrant =
-  //     grantOn === constants.GRANT_ON.ADDED ||
-  //     nonPhysGranter ||
-  //     (grantOn === constants.GRANT_ON.CARRIED &&
-  //       equipStatus === constants.EQUIP_STATE.CARRIED) ||
-  //     (grantOn === constants.GRANT_ON.READIED && this.isReadied);
-  //   if (
-  //     !options.isItemGrant &&
-  //     this.canGrantItems &&
-  //     this.isEmbedded &&
-  //     shouldGrant
-  //   ) {
-  //     this.grantEmbedded();
-  //   }
-  // }
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
