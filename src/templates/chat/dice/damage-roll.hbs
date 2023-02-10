@@ -42,35 +42,37 @@
     </div>
   </div>
   <div class='roll-interaction'>
-    <button
-      type='button'
-      class='benny-reroll'
-      data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
-      aria-label='{{localize "SWADE.RerollWithBenny"}}'
-    >
-      <i class='fa-solid fa-dice'></i>
-      Benny
-    </button>
-    {{#if isGM}}
+    {{#unless isPrivate}}
       <button
         type='button'
         class='benny-reroll'
-        data-gm-benny='true'
         data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
         aria-label='{{localize "SWADE.RerollWithBenny"}}'
       >
         <i class='fa-solid fa-dice'></i>
-        GM Benny
+        Benny
       </button>
-    {{/if}}
-    <button
-      type='button'
-      class='free-reroll'
-      data-tooltip='{{localize "SWADE.FreeReroll"}}'
-      aria-label='{{localize "SWADE.FreeReroll"}}'
-    >
-      <i class='fa-solid fa-dice'></i>
-      Free
-    </button>
+      {{#if isGM}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-gm-benny='true'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+        >
+          <i class='fa-solid fa-dice'></i>
+          GM Benny
+        </button>
+      {{/if}}
+      <button
+        type='button'
+        class='free-reroll'
+        data-tooltip='{{localize "SWADE.FreeReroll"}}'
+        aria-label='{{localize "SWADE.FreeReroll"}}'
+      >
+        <i class='fa-solid fa-dice'></i>
+        Free
+      </button>
+    {{/unless}}
   </div>
 </div>

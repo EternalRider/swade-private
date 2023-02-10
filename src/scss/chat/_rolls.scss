@@ -1,23 +1,47 @@
 .swade-roll {
-  --min-color: red;
-  --exploded-color: green;
+  --exploded-color: rgb(0, 100, 0);
+  --min-color: rgb(200, 0, 0);
+  --critfail-color: rgb(200, 0, 0);
 
   .critical-failure {
-    text-align: center;
-    color: red;
+    color: var(--critfail-color);
     font-weight: bold;
-    filter: sepia(0.5);
+    line-height: 24px;
+    text-align: center;
+    background: rgba(128, 0, 0, 0.2);
+    border: 1px solid var(--color-border-light-2);
+    border-radius: 3px;
+    box-shadow: 0 0 2px #fff inset;
+    margin-bottom: 0.25rem;
   }
 
-  .min {
-    color: var(--min-color);
+  .die {
+    .min {
+      color: var(--min-color);
+      position: relative;
+      &:before {
+        font-size: 0.5em;
+        font-family: var(--font-awesome);
+        content: '\f00d';
+        position: absolute;
+        top: -1em;
+        right: -0.8em;
+      }
+    }
+    .exploded {
+      color: var(--exploded-color);
+      position: relative;
+      &:before {
+        font-size: 0.5em;
+        font-family: var(--font-awesome);
+        content: '\f666';
+        position: absolute;
+        top: -1em;
+        right: -0.8em;
+      }
+    }
   }
-  .exploded {
-    color: var(--exploded-color);
-  }
-  .dice-result {
-    order: unset;
-  }
+
   .modifier-list,
   .result-list,
   .formula-list {
@@ -27,7 +51,7 @@
   }
 
   .modifier-list {
-    font-size: var(--font-size-12);
+    font-size: var(--font-size-14);
     color: var(--color-text-dark-secondary);
   }
 
