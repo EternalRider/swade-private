@@ -968,78 +968,10 @@ export default class SwadeCoreHooks {
     sheet: ActorSheet,
     data: { type: string; uuid: string },
   ) {
-    const sheetIsVehicleSheet = sheet instanceof SwadeVehicleSheet;
-
-    if (data.type === 'Actor' && sheetIsVehicleSheet) {
+    if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'summary') {
-        await sheet.actor.update({ 'system.driver.id': data.uuid });
-      }
-    }
-
-    //handle race item creation
-    const isNewItemDrop = data.type === 'Item';
-    if (isNewItemDrop && !sheetIsVehicleSheet) {
-      const item = (await fromUuid(data.uuid)) as SwadeItem;
-      //check if it's the proper type and subtype
-      if (item.type !== 'ability') return;
-      const subType = item.system.subtype;
-      if (subType === 'special') return;
-      //set name from archetype/race
-      if (subType === 'race') {
-        await actor.update({ 'system.details.species.name': item.link });
-      } else if (subType === 'archetype') {
-        await actor.update({ 'system.details.archetype': item.link });
-      }
-      //process embedded documents
-      const map = item.embeddedAbilities;
-      const creationData = new Array<any>();
-      const duplicates = new Array<{ type: string; name: string }>();
-      for (const entry of map.values()) {
-        const existingItems = actor.items.filter(
-          (i) => i.type === entry.type && i.name === entry.name,
-        );
-        if (existingItems.length > 0) {
-          duplicates.push({
-            type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
-            name: entry.name,
-          });
-          entry.name += ` (${item.name})`;
-        }
-        creationData.push(entry);
-      }
-      if (creationData.length > 0) {
-        await actor.createEmbeddedDocuments('Item', creationData, {
-          //@ts-expect-error Normally the flag is a boolean
-          renderSheet: null,
-        });
-      }
-      if (duplicates.length > 0) {
-        Dialog.prompt({
-          title: game.i18n.localize('SWADE.Duplicates'),
-          rejectClose: false,
-          content: await renderTemplate(
-            '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
-            {
-              duplicates: duplicates.sort((a, b) =>
-                a.type.localeCompare(b.type),
-              ),
-              bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
-                type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
-                name: item.name,
-                target: actor.name,
-              }),
-            },
-          ),
-          callback: () => {
-            /*NO-OP*/
-          },
-        });
-      }
-      //copy active effects
-      const effects = item.effects.map((ae) => ae.toObject());
-      if (effects.length > 0) {
-        await actor.createEmbeddedDocuments('ActiveEffect', effects);
+        await actor.update({ 'system.driver.id': data.uuid });
       }
     }
   }
@@ -1226,8 +1158,14 @@ export default class SwadeCoreHooks {
   static onPreCreateItem(item: SwadeItem, _options: object, _userId: string) {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
-      if (subType === 'race' && item.parent.race) return false;
-      if (subType === 'archetype' && item.parent.archetype) return false;
+      if (subType === 'race' && !!item.actor?.race) {
+        ui.notifications.warn('You can only have one race at a time!');
+        return false;
+      }
+      if (subType === 'archetype' && !!item.actor?.archetype) {
+        ui.notifications.warn('You can only have one archetype at a time!');
+        return false;
+      }
     }
   }
 }

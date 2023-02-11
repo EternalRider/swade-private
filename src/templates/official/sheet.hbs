@@ -41,16 +41,33 @@
     </div>
   </div>
   {{/if}}
-
-  <span class="gridcell character-detail race">
-    <button type="button"><i class="fas fa-edit"></i></button>
-    <label class="sr-only">{{localize species.label}}</label>
-    <span class="display" data-detail="system.details.species.name" data-label="{{species.label}}">{{species.value}}</span>
+  <span class="gridcell character-detail race" data-tooltip="{{localize 'SWADE.Race'}}">
+    <label class="sr-only">{{localize 'SWADE.Race'}}</label>
+    {{#if actor.race}}
+      <button type="button" data-item-id="{{actor.race.id}}">{{actor.race.name}}</button>
+   {{else}}
+      <input 
+        type="text" 
+        name="system.details.species.name" 
+        value="{{actor.system.details.species.name}}"
+        placeholder="{{localize 'SWADE.Race'}}"
+        data-tooltip="{{localize 'SWADE.Race'}}"
+      >
+   {{/if}}
   </span>
-  <span class="gridcell character-detail archetype">
-    <button type="button"><i class="fas fa-edit"></i></button>
-    <label class="sr-only">{{localize archetype.label}}</label>
-    <span class="display" data-detail="system.details.archetype" data-label="{{archetype.label}}">{{archetype.value}}</span>
+  <span class="gridcell character-detail archetype" data-tooltip="{{localize 'SWADE.Archetype'}}">
+    <label class="sr-only">{{localize 'SWADE.Archetype'}}</label>
+   {{#if actor.archetype}}
+      <button  type="button" data-item-id="{{actor.archetype.id}}" >{{actor.archetype.name}}</button>
+   {{else}}
+      <input 
+        type="text" 
+        name="system.details.archetype" 
+        value="{{actor.system.details.archetype}}"
+        placeholder="{{localize 'SWADE.Archetype'}}"
+        data-tooltip="{{localize 'SWADE.Archetype'}}"
+      >
+   {{/if}}
   </span>
   <span class="gridcell character-detail rank">
     <label class="sr-only">{{localize 'SWADE.Rank'}}</label>

@@ -131,8 +131,12 @@
     border-radius: 0;
     margin: 0;
     border-bottom: $solid-line;
-    span.display {
+    button {
+      white-space: nowrap;
       overflow-x: clip;
+      text-overflow: ellipsis;
+      width: 100% !important;
+      text-align: start;
     }
     input[type] {
       background: transparent;

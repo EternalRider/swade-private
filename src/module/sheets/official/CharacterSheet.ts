@@ -9,6 +9,7 @@ import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
 import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
+import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import SwadeItem from '../../documents/item/SwadeItem';
 import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
@@ -27,7 +28,6 @@ export default class CharacterSheet extends ActorSheet<
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      ...super.defaultOptions,
       classes: ['swade-official', 'sheet', 'actor'],
       width: 650,
       height: 700,
@@ -126,11 +126,6 @@ export default class CharacterSheet extends ActorSheet<
       this._tabs[0].activate('about');
       this._tabs[1].activate('advances');
     });
-
-    //Toggle char detail inputs
-    html
-      .find('.character-detail button')
-      .on('click', this._setupCharacterDetailInput.bind(this));
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
@@ -382,9 +377,25 @@ export default class CharacterSheet extends ActorSheet<
       }).render(true);
     });
 
+    html[0]
+      .querySelectorAll('.adjust-counter')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+      );
     html
       .find('.adjust-counter')
       .on('click', this._handleCounterAdjust.bind(this));
+
+    html[0]
+      .querySelectorAll(
+        '.character-detail.race button, .character-detail.archetype button',
+      )
+      .forEach((btn) => {
+        btn.addEventListener('click', (ev) => {
+          const id = ev.currentTarget.dataset.itemId as string;
+          this.actor.items.get(id)?.sheet?.render(true);
+        });
+      });
   }
 
   override async getData(
@@ -504,29 +515,6 @@ export default class CharacterSheet extends ActorSheet<
       ),
       sheetEffects: await this._getEffects(),
       enrichedText: await this._getEnrichedText(),
-      archetype: {
-        value: this.actor.system.details.archetype
-          ? new Handlebars.SafeString(
-              await TextEditor.enrichHTML(this.actor.system.details.archetype, {
-                async: true,
-              }),
-            )
-          : game.i18n.localize('SWADE.Archetype'),
-        label: 'SWADE.Archetype',
-      },
-      species: {
-        value: this.actor.system.details.species.name
-          ? new Handlebars.SafeString(
-              await TextEditor.enrichHTML(
-                this.actor.system.details.species.name,
-                {
-                  async: true,
-                },
-              ),
-            )
-          : game.i18n.localize('SWADE.Race'),
-        label: 'SWADE.Race',
-      },
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -544,6 +532,60 @@ export default class CharacterSheet extends ActorSheet<
     };
 
     return foundry.utils.mergeObject(await super.getData(options), data);
+  }
+
+  protected override async _onDropItem(
+    event: DragEvent,
+    data: ActorSheet.DropData.Item,
+  ): Promise<unknown> {
+    await super._onDropItem(event, data);
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
+    //check if it's the proper type and subtype
+    if (item.type !== 'ability') return;
+    const subType = item.system.subtype;
+    if (subType === 'special') return;
+
+    //process embedded documents
+    const map = item.embeddedAbilities;
+    const creationData = new Array<any>();
+    const duplicates = new Array<{ type: string; name: string }>();
+    for (const entry of map.values()) {
+      const existingItems = this.actor.items.filter(
+        (i) => i.type === entry.type && i.name === entry.name,
+      );
+      if (existingItems.length > 0) {
+        duplicates.push({
+          type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
+          name: entry.name,
+        });
+        entry.name += ` (${item.name})`;
+      }
+      creationData.push(entry);
+    }
+    if (creationData.length > 0) {
+      await this.actor.createEmbeddedDocuments('Item', creationData, {
+        //@ts-expect-error Normally the flag is a boolean
+        renderSheet: null,
+      });
+    }
+    if (duplicates.length > 0) {
+      Dialog.prompt({
+        title: game.i18n.localize('SWADE.Duplicates'),
+        rejectClose: false,
+        content: await renderTemplate(
+          '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
+          {
+            duplicates: duplicates.sort((a, b) => a.type.localeCompare(b.type)),
+            bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
+              type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
+              name: item.name,
+              target: this.actor.name,
+            }),
+          },
+        ),
+        callback: () => {},
+      });
+    }
   }
 
   private _getAdvances() {
@@ -878,30 +920,6 @@ export default class CharacterSheet extends ActorSheet<
     });
   }
 
-  private _setupCharacterDetailInput(ev: JQuery.ClickEvent) {
-    if (this.actor.type === 'vehicle') return;
-    //gather data
-    const display = $(ev.currentTarget).parent().find('span.display');
-    const detail = display.data().detail;
-    const label = game.i18n.localize(display.data().label);
-    const value = getProperty(this.actor, detail);
-    //create element
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = detail;
-    input.value = value;
-    input.placeholder = label;
-    input.addEventListener('focusout', async () => {
-      await this.actor.update({ [detail]: input.value }, { diff: false });
-    });
-    //set up the new input in the sheet
-    display.replaceWith(input);
-    //focus the input
-    input.focus();
-    //remove the button;
-    ev.currentTarget.remove();
-  }
-
   private _getAdditionalStats(): AdditionalStats {
     const stats = foundry.utils.deepClone(
       this.actor.system.additionalStats,
@@ -942,8 +960,8 @@ export default class CharacterSheet extends ActorSheet<
     await this.actor.toggleActiveEffect(data);
   }
 
-  protected async _handleCounterAdjust(ev: JQuery.ClickEvent) {
-    const action = ev.currentTarget.dataset.action;
+  protected async _handleCounterAdjust(ev: MouseEvent) {
+    const action = ev?.currentTarget?.dataset?.action;
 
     switch (action) {
       case 'fatigue-plus':
@@ -978,6 +996,8 @@ export default class CharacterSheet extends ActorSheet<
       case 'get-benny':
         await this.actor.getBenny();
         break;
+      default:
+        throw new Error('Unkonw action!');
     }
   }
 
@@ -1136,14 +1156,6 @@ interface SwadeActorSheetData extends OptionsPartial {
     notes: string;
     biography: string;
     advances?: string;
-  };
-  species: {
-    label: string;
-    value: Handlebars.SafeString | string;
-  };
-  archetype: {
-    label: string;
-    value: Handlebars.SafeString | string;
   };
   advances: {
     expanded: boolean;
