@@ -185,7 +185,6 @@ export default class RollDialog extends FormApplication<
 
     const roll = this.#buildRollForEvaluation();
     const terms = roll.terms;
-    let flavor = this.ctx.flavor;
 
     //Add the Wild Die for a group roll of
     if (
@@ -199,12 +198,15 @@ export default class RollDialog extends FormApplication<
         const wildRoll = this.rollCls.fromTerms([wildDie]);
         traitPool.rolls.push(wildRoll);
         traitPool.terms.push(wildRoll.formula);
-        flavor += `<br>${game.i18n.localize('SWADE.GroupRoll')}`;
       }
     }
 
     //recreate the roll
     const finalizedRoll = this.rollCls.fromTerms(terms, roll.options);
+    if (finalizedRoll instanceof TraitRoll) {
+      finalizedRoll.groupRoll =
+        this.#extraButtonUsed && !this.ctx.actor?.isWildcard;
+    }
 
     //evaluate
     await finalizedRoll.evaluate({ async: true });
@@ -212,7 +214,7 @@ export default class RollDialog extends FormApplication<
     // Convert the roll to a chat message and return it
     await finalizedRoll.toMessage(
       {
-        flavor: flavor,
+        flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
       },
       { rollMode: this.rollMode },

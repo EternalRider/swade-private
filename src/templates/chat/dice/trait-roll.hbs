@@ -1,6 +1,14 @@
 <div class='swade-roll'>
   {{#unless isPrivate}}
-    {{#if rerolled}}<p>{{rerolled}}</p>{{/if}}
+    {{#if groupRoll}}
+      <div class='group-roll'>
+        <i class='fa-duotone fa-user-group'></i>
+        {{localize 'SWADE.GroupRoll'}}
+      </div>
+    {{/if}}
+    {{#if rerolled}}
+      <div class='reroll'><i class='fa-solid fa-rotate'></i>{{rerolled}}</div>
+    {{/if}}
     {{#if modifiers.length}}
       <details class='modifiers'>
         <summary>{{localize 'SWADE.Modifiers'}}</summary>
@@ -18,7 +26,7 @@
     {{/if}}
   {{/unless}}
   <div class='dice-roll trait-roll'>
-    {{#if flavor}}<div class='dice-flavor'>{{flavor}}</div>{{/if}}
+    {{!-- {{#if flavor}}<div class='dice-flavor'>{{flavor}}</div>{{/if}} --}}
     <div class='dice-result'>
       <div class='dice-formula'>
         {{#if isPrivate}}???{{else}}

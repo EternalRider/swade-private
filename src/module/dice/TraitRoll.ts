@@ -44,9 +44,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     const data = await super.getRenderData(flavor, isPrivate);
     data.isCritfail = this.isCritfail && !isPrivate;
     data.resultParts = this._formatResultParts();
-    if (!isPrivate && this.groupRoll) {
-      data.flavor = game.i18n.localize('SWADE.GroupRoll');
-    }
+    data.groupRoll = this.groupRoll;
     return data;
   }
 

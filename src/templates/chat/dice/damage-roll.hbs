@@ -1,6 +1,8 @@
 <div class='swade-roll'>
   {{#unless isPrivate}}
-    {{#if rerolled}}<p>{{rerolled}}</p>{{/if}}
+    {{#if rerolled}}
+      <div class='reroll'><i class='fa-solid fa-rotate'></i>{{rerolled}}</div>
+    {{/if}}
     {{#if modifiers.length}}
       <details class='modifiers'>
         <summary>{{localize 'SWADE.Modifiers'}}</summary>

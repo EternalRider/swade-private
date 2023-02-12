@@ -84,7 +84,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     if (!this._evaluated) await this.evaluate({ async: true });
     const chatData = {
       isGM: game.user?.isGM,
-      rerolled: this.rerollMode,
+      rerolled: this._getRerollLabel(),
       isPrivate: isPrivate,
       flavor: isPrivate ? null : flavor,
       user: game.user?.id,
@@ -170,6 +170,15 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     if (total > faces) return 'exploded';
     if (roll.dice.some((d) => d.results[0].result === 1)) return 'min';
     return '';
+  }
+
+  protected _getRerollLabel(): string | undefined {
+    if (this.rerollMode === 'benny') {
+      return game.i18n.localize('SWADE.RerollWithBenny');
+    }
+    if (this.rerollMode === 'free') {
+      return game.i18n.localize('SWADE.FreeReroll');
+    }
   }
 
   #formatModifiers(): TraitRollModifier[] {
