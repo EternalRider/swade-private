@@ -14,12 +14,9 @@
     box-shadow: 0 0 2px #fff inset;
     margin-bottom: 0.25rem;
   }
-
-  .reroll {
-    text-align: end;
-  }
+  .reroll,
   .group-roll {
-    font-size: var(--font-size-12);
+    font-size: var(--font-size-14);
   }
 
   .die {
