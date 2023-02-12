@@ -185,7 +185,7 @@ export default class SwadeItem extends Item {
     return data;
   }
 
-  async rollDamage(options: IRollOptions = {}) {
+  async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
     const modifiers = new Array<TraitRollModifier>();
     let damage = '';
     if (options.dmgOverride) {
@@ -294,7 +294,7 @@ export default class SwadeItem extends Item {
       flavor: `${label} ${game.i18n.localize('SWADE.Dmg')}${ap}${flavour}`,
       title: `${label} ${game.i18n.localize('SWADE.Dmg')}`,
       item: this,
-    });
+    }) as Promise<DamageRoll | null>;
   }
 
   async setEquipState(state: EquipState): Promise<EquipState> {

@@ -590,7 +590,7 @@ SWADE:
       Hint: Select which image to use for Bennies on the Character Sheet
     HardChoices:
       Name: Hard Choices
-      Hint: Checking this will enable the Hard Choices rule
+      Hint: Checking this will enable the Hard Choices setting rule
     CardSound:
       Name: Card Sound
       Hint: Play a short card sound when dealing Initiative
@@ -608,6 +608,9 @@ SWADE:
       Hint: >-
         When enabled, all NPCs have the same currency options as Player
         Characters
+    DumbLuck:
+      Name: Dumb Luck
+      Hint: Checking this will enable the Dumb Luck Setting Rule
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

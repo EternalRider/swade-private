@@ -45,6 +45,8 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     data.isCritfail = this.isCritfail && !isPrivate;
     data.resultParts = this._formatResultParts();
     data.groupRoll = this.groupRoll;
+    data.lockReroll =
+      this.isCritfail && !game.settings.get('swade', 'dumbLuck');
     return data;
   }
 

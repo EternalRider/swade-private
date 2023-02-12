@@ -114,6 +114,19 @@
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.HardChoices.Hint'}}</p>
       </div>
+      <!-- Dumb Luck -->
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.DumbLuck.Name'}}</label>
+        <div class='form-fields'>
+          <input
+            type='checkbox'
+            name='settingRules.dumbLuck'
+            data-dtype='Boolean'
+            {{checked settingRules.dumbLuck}}
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.DumbLuck.Hint'}}</p>
+      </div>
       <!-- Conviction -->
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.EnableConv.Name'}}</label>

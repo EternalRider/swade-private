@@ -274,7 +274,10 @@ export default class SwadeActor extends Actor {
     }
   }
 
-  async rollAttribute(attribute: Attribute, options: IRollOptions = {}) {
+  async rollAttribute(
+    attribute: Attribute,
+    options: IRollOptions = {},
+  ): Promise<TraitRoll | null> {
     if (this.type === 'vehicle') return null;
     if (options.rof && options.rof > 1) {
       ui.notifications.warn(
@@ -354,14 +357,14 @@ export default class SwadeActor extends Actor {
           'SWADE.AttributeTest',
         )}`,
       actor: this,
-    });
+    }) as Promise<TraitRoll | null>;
   }
 
   async rollSkill(
     skillId: string | null | undefined,
     options: IRollOptions = { rof: 1 },
     tempSkill?: SwadeItem,
-  ): Promise<Roll | null> {
+  ): Promise<TraitRoll | null> {
     let skill: SwadeItem | undefined;
     skill = this.items.find((i) => i.id == skillId);
     if (tempSkill) {
@@ -416,7 +419,7 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-    });
+    }) as Promise<TraitRoll | null>;
   }
 
   async rollWealthDie() {

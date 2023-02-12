@@ -79,6 +79,7 @@ export const SWADE: SwadeConfig = {
       'currencyName',
       'npcsUseCurrency',
       'hardChoices',
+      'dumbLuck',
       'actionDeck',
       'applyEncumbrance',
       'actionDeckDiscardPile',

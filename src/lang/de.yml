@@ -618,7 +618,7 @@ SWADE:
         darzustellen
     HardChoices:
       Name: Schwere Entscheidungen
-      Hint: Schaltet die Schwere Entscheidungen Regel ein
+      Hint: Schaltet die Schwere Entscheidungen Settingregel ein
     UseAttributeShorts:
       Hint: >-
         Aktivieren Sie diese Option, wenn Sie abgekürzte Attributnamen auf den
@@ -642,6 +642,9 @@ SWADE:
       Hint: >-
         Wenn aktiviert, haben alle NSCs dieselben Währungsoptionen wie
         Spielercharaktere
+    DumbLuck:
+      Name: Narrenglück
+      Hint: Schaltet die Narrenglück Settingregel ein
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt

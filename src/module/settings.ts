@@ -40,6 +40,7 @@ declare global {
       'swade.3dBennyFrontBump': string;
       'swade.3dBennyBackBump': string;
       'swade.hardChoices': boolean;
+      'swade.dumbLuck': boolean;
       'swade.applyEncumbrance': boolean;
       'swade.highlightTemplate': boolean;
       'swade.fantasyCompanionEntangle': boolean;
@@ -405,6 +406,15 @@ export function registerSettingRules() {
   game.settings.register('swade', 'hardChoices', {
     name: 'SWADE.Settings.HardChoices.Name',
     hint: 'SWADE.Settings.HardChoices.Hint',
+    scope: 'world',
+    type: Boolean,
+    default: false,
+    config: false,
+  });
+
+  game.settings.register('swade', 'dumbLuck', {
+    name: 'SWADE.Settings.DumbLuck.Name',
+    hint: 'SWADE.Settings.DumbLuck.Hint',
     scope: 'world',
     type: Boolean,
     default: false,

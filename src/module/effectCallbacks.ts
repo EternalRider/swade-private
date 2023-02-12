@@ -1,3 +1,4 @@
+import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 import SwadeActiveEffect from './documents/SwadeActiveEffect';
@@ -13,7 +14,7 @@ export function registerEffectCallbacks() {
 
 async function removeShaken(effect: SwadeActiveEffect) {
   await new Promise((resolve) => {
-    let roll: Roll<{}> | null = null;
+    let roll: TraitRoll | null = null;
     let processed = false;
     const buttons: Record<string, Dialog.Button> = {
       roll: {
