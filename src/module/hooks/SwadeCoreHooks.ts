@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
-import CompendiumTOC, { CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import { CompendiumTOC, CompendiumTOCMetadata } from '../apps/CompendiumTOC';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
@@ -98,22 +98,6 @@ export default class SwadeCoreHooks {
         },
       },
     };
-
-    //set up the compendium tables of content
-    for (const pack of game.packs) {
-      const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
-        pack.metadata.type,
-      );
-      const tocBlockList = game.settings.get('swade', 'tocBlockList');
-      const isBlocked = tocBlockList[pack.collection];
-      if (isRightType && !isBlocked) {
-        pack.apps = [
-          new CompendiumTOC(
-            pack as CompendiumCollection<CompendiumTOCMetadata>,
-          ),
-        ];
-      }
-    }
 
     //setup world and do migrations
     if (game.user?.isGM) {

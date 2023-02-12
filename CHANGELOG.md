@@ -33,12 +33,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added support for the Dumb Luck setting rule which disables rerolls on critical failures. You can find the toggle in the Setting Configurator. (#588)
 - Added race and archetype getters to the `SwadeActor` that return the appropriate item if the actor has one.
 - Added additional translation strings.
+- Added the option to display a disclaimer at the top of a compendium TOC. The disclaimer is set with the options object when instantiating a TOC.
 
 ### Changed
 
 - Changed the roll dialog to expect one of the three new roll classes
 - The small, medium and large burst template checkboxes now show the full name on hover in the weapon and power item sheets.
 - Races and archetypes have been reworked and now get added to the character. A character can only have one race and one archetype at a given time and a warning will be shown if you attempt to add a second. For player characters the race and archetype can be accessed by clicking their names on the sheet header. NPCs have their race and archetype shown in the `Special Abilities` section of the NPC sheet.
+- The CompendiumTOC should now load much quicker for actor compendiums. (#680)
 
 ## 2.2.4
 
@@ -54,6 +56,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - The system TOC should once again be enabled and also not overwrite setting TOC apps.
 - Fixed a technical issue that could cause granted items to be granted multiple times.
+
+## 2.2.2
+
+### Fixed
+
+- Dropping Macros now should properly revert to core behavior if the item isn't owned (#682)
+- Setting themed Compendium TOC apps should no longer get overwritten by the system version
 
 ## 2.2.2
 

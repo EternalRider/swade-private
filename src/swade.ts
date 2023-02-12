@@ -2,7 +2,7 @@ import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
 import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
-import CompendiumTOC from './module/apps/CompendiumTOC';
+import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
