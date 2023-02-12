@@ -1,13 +1,16 @@
+import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { SWADE } from '../config';
-import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { Logger } from '../Logger';
 
-export default class CompendiumTOC extends Compendium<
+export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
-  ApplicationOptions,
+  TOCApplicationOptions,
   CompendiumTOCData
 > {
+  #disclaimer?: string;
+
   static get defaultOptions(): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['swade-app', 'compendium-toc'],
@@ -27,6 +30,14 @@ export default class CompendiumTOC extends Compendium<
   static ALLOWED_TYPES = ['Actor', 'Item', 'JournalEntry'];
 
   static CF_ENTITY = '#[CF_tempEntity]';
+
+  constructor(
+    collection: CompendiumCollection<CompendiumTOCMetadata>,
+    options?: Partial<TOCApplicationOptions>,
+  ) {
+    super(collection, options);
+    this.#disclaimer = options?.disclaimer;
+  }
 
   get isJournal(): boolean {
     return this.metadata.type === 'JournalEntry';
@@ -69,6 +80,7 @@ export default class CompendiumTOC extends Compendium<
       header: game.i18n.localize('SWADE.CompendiumTOC.Header'),
       wildCardMarker: CONFIG.SWADE.wildCardIcons.compendium,
       columnWidth: this.columnWidth,
+      disclaimer: this.#disclaimer,
     };
 
     if (this.isJournal) {
@@ -139,12 +151,20 @@ export default class CompendiumTOC extends Compendium<
 
   protected async _groupActors(): Promise<CompendiumCategory[]> {
     const collection = this.collection as CompendiumCollection<ActorMetadata>;
-    const documents = await collection.getDocuments();
+    const documents = (await collection.getIndex({
+      fields: [
+        'data.wildcard', //backwards compatability
+        'token.img',
+        'system.wildcard',
+        'prototypeToken.randomImg',
+        'prototypeToken.texture.src',
+      ],
+    })) as Collection<ActorIndexEntry>;
     const actors = documents.filter(
       (doc) => doc.name !== CompendiumTOC.CF_ENTITY,
     );
 
-    const actorsByType: Record<string, StoredDocument<SwadeActor>[]> = {};
+    const actorsByType: Record<string, ActorIndexEntry[]> = {};
     for (const actor of actors) {
       const type = actor.type;
       if (!actorsByType[type]) actorsByType[type] = [];
@@ -321,16 +341,22 @@ export default class CompendiumTOC extends Compendium<
   }
 
   protected async _groupUnCategorized(
-    docs: StoredDocument<SwadeItem | SwadeActor>[],
+    docs: StoredDocument<SwadeItem>[] | ActorIndexEntry[],
   ): Promise<CompendiumEntry[]> {
     const mapped = docs.map(async (doc) => {
-      const isActor = doc.documentName === 'Actor';
-      const img = isActor ? await doc.getTokenImages() : [doc.img];
+      const isItem = doc?.documentName === 'Item';
+      if (isItem) {
+        return {
+          name: doc.name as string,
+          id: doc.id,
+          img: doc.img,
+        };
+      }
       return {
         name: doc.name as string,
-        id: doc.id,
-        img: img[0],
-        isWildcard: isActor && doc.isWildcard,
+        id: doc._id,
+        img: await this._getActorTokenImage(doc),
+        isWildcard: this._actorIsWildcard(doc),
       };
     });
     const resolved = await Promise.all(mapped);
@@ -399,6 +425,56 @@ export default class CompendiumTOC extends Compendium<
     if (sort !== 0) return sort;
     return a.name.localeCompare(b.name);
   }
+
+  private async _getActorTokenImage(actor: ActorIndexEntry): Promise<string> {
+    let images: string[] = [];
+    const pack = this.collection.metadata.id;
+    //Priority 1: Compendium Artpacks
+    if (game.swade.compendiumArt.map.has(`Compendium.${pack}.${actor._id}`)) {
+      images = [this._getCompendiumArt(actor)];
+    }
+    //Priority 2: random token art
+    else if (actor.prototypeToken?.randomImg) {
+      try {
+        images = await Actor._requestTokenImages(actor._id, {
+          pack: this.collection.metadata.id,
+        });
+      } catch (error) {
+        Logger.error(error);
+      }
+    }
+    //Priority 3: Normal token art
+    else if (
+      !actor.prototypeToken?.randomImg &&
+      actor.prototypeToken?.texture.src
+    ) {
+      images = [actor.prototypeToken.texture.src];
+    } else if (actor.token.img) {
+      images = [actor.token.img];
+    } else {
+      //lowest Priority actor image
+      images = [actor.img];
+    }
+
+    return images[0];
+  }
+
+  private _actorIsWildcard(actor: ActorIndexEntry): boolean {
+    return actor.system?.wildcard || actor.data?.wildcard;
+  }
+
+  private _getCompendiumArt(actor: ActorIndexEntry): string {
+    const pack = this.collection.metadata.id;
+    const art = game.swade.compendiumArt.map.get(
+      `Compendium.${pack}.${actor._id}`,
+    );
+    let tokenArt = '';
+    if (art) {
+      actor.img = art.actor;
+      tokenArt = typeof art.token === 'string' ? art.token : art.token.img;
+    }
+    return tokenArt;
+  }
 }
 
 interface CompendiumTOCData
@@ -407,6 +483,7 @@ interface CompendiumTOCData
   header: string;
   wildCardMarker: string;
   columnWidth: string;
+  disclaimer?: string;
   entries?: CompendiumEntry[];
   categories?: CompendiumCategory[];
 }
@@ -431,6 +508,10 @@ export type CompendiumTOCMetadata = CompendiumCollection.Metadata & {
   type: 'Actor' | 'Item' | 'JournalEntry';
 };
 
+type TOCApplicationOptions = ApplicationOptions & {
+  disclaimer?: string;
+};
+
 interface CompendiumCategory {
   category: string;
   groups?: CompendiumGroup[];
@@ -441,3 +522,20 @@ interface CompendiumGroup {
   group: string;
   entries: CompendiumEntry[];
 }
+
+type ActorIndexEntry = {
+  _id: string;
+  name: string;
+  type: 'character' | 'npc' | 'vehicle';
+  img: string;
+  data: { wildcard: boolean };
+  prototypeToken?: {
+    randomImg: boolean;
+    texture: {
+      src: string;
+    };
+  };
+  token: {
+    img: string;
+  };
+} & Partial<ActorDataSource>;
