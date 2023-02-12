@@ -786,10 +786,7 @@ export default class SwadeActor extends Actor {
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
       if (armor.type !== 'armor') continue;
-      if (
-        armor.system.equipStatus !== constants.EQUIP_STATE.STORED &&
-        armor.system.locations.torso
-      ) {
+      if (armor.isReadied && armor.system.locations.torso) {
         finalToughness += armor.system.toughness;
       }
     }

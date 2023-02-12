@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.4
+
+### Fixed
+
+- Armor should no longer add to toughness unless it is equipped
+- The selection options input for item additional stats should now be displayed again properly.
+- Selection-type additional stats should no longer keep item and actor sheets from opening if the string is empty.
+
 ## 2.2.3
 
 ### Fixed

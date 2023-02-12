@@ -498,8 +498,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').item;
-        attr.options = options[key]
-          .optionString!.split(';')
+        const optionString = options[key].optionString ?? '';
+        attr.options = optionString
+          .split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
       }
     }
