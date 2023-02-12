@@ -82,7 +82,9 @@
                 type='button'
                 class='damage-roll rollable'
                 title='{{localize "SWADE.RollDamage"}}'
-              >{{system.damage}}</button>
+              >
+              {{system.damage}}{{signedString system.actions.dmgMod}}
+              </button>
             {{/if}}
           </span>
           <span class='ap'>{{system.ap}}</span>

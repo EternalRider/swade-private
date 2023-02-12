@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The small, medium and large burst template checkboxes now show the full name on hover in the weapon and power item sheets.
 - Races and archetypes have been reworked and now get added to the character. A character can only have one race and one archetype at a given time and a warning will be shown if you attempt to add a second. For player characters the race and archetype can be accessed by clicking their names on the sheet header. NPCs have their race and archetype shown in the `Special Abilities` section of the NPC sheet.
 - The CompendiumTOC should now load much quicker for actor compendiums. (#680)
+- Weapons now properly display the item damage modifier in addition to the regular base damage in the inventory. (#661)
 
 ## 2.2.4
 
