@@ -927,8 +927,9 @@ export default class CharacterSheet extends ActorSheet<
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
-        attr.options = options[key]
-          .optionString!.split(';')
+        const optionString = options[key].optionString ?? '';
+        attr.options = optionString
+          .split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
       }
     }

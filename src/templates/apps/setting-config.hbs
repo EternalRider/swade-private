@@ -474,9 +474,9 @@
           <span class='attribute-label'>Label</span>
           <span class='attribute-dtype'>Data Type</span>
           <span class='attribute-maxValue'>Has Max Value</span>
-          <a class='attribute-control' data-action='createChar'><i
-              class='fas fa-plus'
-            ></i></a>
+          <a class='attribute-control' data-action='createChar'>
+            <i class='fas fa-plus'></i>
+          </a>
         </li>
         {{#each actorSettingStats as |attr key|}}
           <li class='attribute' data-attribute='{{key}}'>
@@ -529,9 +529,9 @@
           <span class='attribute-label'>Label</span>
           <span class='attribute-dtype'>Data Type</span>
           <span class='attribute-maxValue'>Has Max Value</span>
-          <a class='attribute-control' data-action='createItem'><i
-              class='fas fa-plus'
-            ></i></a>
+          <a class='attribute-control' data-action='createItem'>
+            <iclass='fas fa-plus'></i>
+          </a>
         </li>
         {{#each itemSettingStats as |attr key|}}
           <li class='attribute' data-attribute='{{key}}'>
@@ -561,9 +561,19 @@
               name='itemSettingStats.{{key}}.hasMaxValue'
               {{checked attr.hasMaxValue}}
             />
-            <a class='attribute-control' data-action='delete'><i
-                class='fas fa-trash'
-              ></i></a>
+            <a class='attribute-control' data-action='delete'>
+              <i class='fas fa-trash'></i>
+            </a>
+            {{#if (eq attr.dtype 'Selection')}}
+              <input
+                hint='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+                placeholder='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+                class='attribute-optionString'
+                type='text'
+                name='actorSettingStats.{{key}}.optionString'
+                value='{{attr.optionString}}'
+              />
+            {{/if}}
           </li>
         {{/each}}
       </ul>
