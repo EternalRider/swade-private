@@ -517,7 +517,7 @@
           <span class='attribute-dtype'>Data Type</span>
           <span class='attribute-maxValue'>Has Max Value</span>
           <a class='attribute-control' data-action='createItem'>
-            <iclass='fas fa-plus'></i>
+            <i class='fas fa-plus'></i>
           </a>
         </li>
         {{#each itemSettingStats as |attr key|}}
@@ -557,7 +557,7 @@
                 placeholder='{{localize "SWADE.AdditionalStats.SelectHint"}}'
                 class='attribute-optionString'
                 type='text'
-                name='actorSettingStats.{{key}}.optionString'
+                name='itemSettingStats.{{key}}.optionString'
                 value='{{attr.optionString}}'
               />
             {{/if}}

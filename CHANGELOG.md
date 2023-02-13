@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.2.5
+
+### Fixed
+
+- Selection type additional stats show up properly again on item sheets
+
+### Changed
+
+- Invalid additional stats keys now get corrected in the Setting Configurator.
+
 ## 2.2.4
 
 ### Fixed

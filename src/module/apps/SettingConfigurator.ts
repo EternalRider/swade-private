@@ -1,3 +1,4 @@
+import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
 
 export default class SettingConfigurator extends FormApplication<
@@ -90,14 +91,11 @@ export default class SettingConfigurator extends FormApplication<
 
     // Handle the free-form attributes list
     const settingFields = game.settings.get('swade', 'settingFields');
-    const actorAttributes = this._handleKeyValidityCheck(formActorAttrs);
-    const itemAttributes = this._handleKeyValidityCheck(formItemAttrs);
+    const actorStats = this._handleKeyValidityCheck(formActorAttrs);
+    const itemStats = this._handleKeyValidityCheck(formItemAttrs);
     const saveValue = {
-      actor: this._handleRemovableAttributes(
-        actorAttributes,
-        settingFields.actor,
-      ),
-      item: this._handleRemovableAttributes(itemAttributes, settingFields.item),
+      actor: this._handleRemovableAttributes(actorStats, settingFields.actor),
+      item: this._handleRemovableAttributes(itemStats, settingFields.item),
     };
     await game.settings.set('swade', 'settingFields', saveValue);
 
@@ -152,18 +150,22 @@ export default class SettingConfigurator extends FormApplication<
     }
   }
 
-  private _handleKeyValidityCheck(attributes: any): any {
-    return Object.values(attributes).reduce((obj: any, v: any) => {
-      const k = v['key'].trim();
-      if (/[\s.]/.test(k)) {
-        return ui.notifications.error(
-          'Attribute keys may not contain spaces or periods',
+  private _handleKeyValidityCheck(stats: AdditionalStats) {
+    const retVal: AdditionalStats = {};
+    for (const stat of Object.values(stats)) {
+      let key = stat.key!.trim();
+      if (/[\s.]/.test(key)) {
+        const invalidKey = key;
+        key = key.slugify().replace('.', '-');
+        ui.notifications.warn(
+          `Additional Stat key ${invalidKey} is invalid and has been changed to ${key}`,
+          { permanent: true },
         );
       }
-      delete v['key'];
-      obj[k] = v;
-      return obj;
-    }, {});
+      delete stat.key;
+      retVal[key] = stat;
+    }
+    return retVal;
   }
 
   /**
@@ -171,7 +173,10 @@ export default class SettingConfigurator extends FormApplication<
    * @param attributes
    * @param base
    */
-  private _handleRemovableAttributes(attributes: any, base: any) {
+  private _handleRemovableAttributes(
+    attributes: AdditionalStats,
+    base: AdditionalStats,
+  ) {
     for (const k of Object.keys(base)) {
       if (!attributes.hasOwnProperty(k)) {
         delete attributes[k];
@@ -193,7 +198,7 @@ export default class SettingConfigurator extends FormApplication<
       .reduce((acc, p) => {
         let packName = 'System';
         if (p.metadata['packageType'] !== 'system') {
-          packName = game.modules.get(p.metadata['packageName'])?.title;
+          packName = game.modules.get(p.metadata['packageName'])?.['title'];
         }
         acc[p.collection] = `${p.metadata.label} (${packName})`;
         return acc;
