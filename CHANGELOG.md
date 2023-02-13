@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Invalid additional stats keys now get corrected in the Setting Configurator.
+- Item Grants on consumables can no longer be set to trigger when the item is readied as consumables cannot be readied. (#694)s
 
 ## 2.2.4
 
