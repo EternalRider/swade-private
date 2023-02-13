@@ -43,6 +43,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The CompendiumTOC should now load much quicker for actor compendiums. (#680)
 - Weapons now properly display the item damage modifier in addition to the regular base damage in the inventory. (#661)
 
+## 2.2.5
+
+### Fixed
+
+- Selection type additional stats show up properly again on item sheets
+
+### Changed
+
+- Invalid additional stats keys now get corrected in the Setting Configurator.
+- Item Grants on consumables can no longer be set to trigger when the item is readied as consumables cannot be readied. (#694)
+
 ## 2.2.4
 
 ### Fixed

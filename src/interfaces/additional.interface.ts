@@ -5,6 +5,7 @@ export interface PrototypeAdditionalStat {
   optionString?: string;
 }
 export interface AdditionalStat extends PrototypeAdditionalStat {
+  key?: string;
   useField?: boolean;
   value?: string | number;
   max?: string | number;

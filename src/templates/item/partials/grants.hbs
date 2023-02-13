@@ -12,9 +12,11 @@
           <option value='1'>
             {{localize 'SWADE.ItemEquipStatus.Carried'}}
           </option>
-          <option value='2'>
-            {{localize 'SWADE.ItemEquipStatus.Readied'}}
-          </option>
+          {{#unless (eq item.type 'consumable')}}
+            <option value='2'>
+              {{localize 'SWADE.ItemEquipStatus.Readied'}}
+            </option>
+          {{/unless}}
         {{/select}}
       </select>
     </span>
