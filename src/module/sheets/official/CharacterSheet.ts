@@ -429,7 +429,7 @@ export default class CharacterSheet extends ActorSheet<
         getProperty(system, 'actions.skill') ||
         !!actions.find((action) => action.type === 'skill');
       const hasSkillRoll =
-        ['weapon', 'power', 'shield'].includes(item.type) &&
+        ['weapon', 'power', 'shield', 'action'].includes(item.type) &&
         getProperty(system, 'actions.skill');
       const hasActionRoll = ['action'].includes(item.type);
       const hasAmmoManagement =
