@@ -204,6 +204,7 @@ Item:
         skillMod: ''
         dmgMod: ''
         additional: {}
+        isHeavyWeapon: false
     bonusDamage:
       bonusDamageDie: 6
     favorite:

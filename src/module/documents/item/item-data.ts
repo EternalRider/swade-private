@@ -75,6 +75,7 @@ interface Actions {
     skillMod: string;
     dmgMod: string;
     additional: Partial<Record<string, ItemAction>>;
+    isHeavyWeapon: boolean;
   };
 }
 

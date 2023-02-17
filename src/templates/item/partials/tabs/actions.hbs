@@ -96,7 +96,7 @@
                 title='{{localize "SWADE.ModHint"}}'
               />
             </div>
-          {{else}} <!-- resistance type -->
+          {{else}} <!-- damage type -->
             <div class='form-group full-width'>
               <label>{{localize 'SWADE.DmgOver'}}</label>
               <input
@@ -114,6 +114,12 @@
                 value='{{action.dmgMod}}'
                 title='{{localize "SWADE.ModHint"}}'
               />
+            </div>
+            <div class='form-group full-width'>
+              <label>{{localize "SWADE.HeavyWeapon"}}</label>
+              <span class="form-fields">
+                <input type="checkbox" name="system.actions.additional.{{id}}.isHeavyWeapon" {{checked action.isHeavyWeapon}}/>
+              </span>
             </div>
           {{/if}}
         </span>
