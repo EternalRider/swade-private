@@ -18,6 +18,7 @@ SWADE:
   Pace: Pace
   Running: Running
   RunningDie: Running Die
+  RunningMod: Running Modifier
   RollRun: Click to run
   Adv: Advances
   Rank: Rank
@@ -302,6 +303,8 @@ SWADE:
       Label: Broke
       Hint: You are Broke!
     Sides: Wealth Die Sides
+    WildSides: Wealth Wild Die Sides
+    Modifier: Wealth Die Modifier
   TraitRolls: Trait Rolls
   Trait: Trait
   AltTrait: Action Trait
