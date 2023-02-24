@@ -34,6 +34,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added race and archetype getters to the `SwadeActor` that return the appropriate item if the actor has one.
 - Added additional translation strings.
 - Added the option to display a disclaimer at the top of a compendium TOC. The disclaimer is set with the options object when instantiating a TOC.
+- Item actions can now be flagged to be Heavy Damage. Thanks goes to Drental! (!290)
+- Added additional translation strings
 
 ### Changed
 
@@ -42,6 +44,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Races and archetypes have been reworked and now get added to the character. A character can only have one race and one archetype at a given time and a warning will be shown if you attempt to add a second. For player characters the race and archetype can be accessed by clicking their names on the sheet header. NPCs have their race and archetype shown in the `Special Abilities` section of the NPC sheet.
 - The CompendiumTOC should now load much quicker for actor compendiums. (#680)
 - Weapons now properly display the item damage modifier in addition to the regular base damage in the inventory. (#661)
+
+### Fixed
+
+- The Unskilled Attempt should now once again recieve the appropriate -2 modifier when created. (#698)
 
 ## 2.2.5
 
