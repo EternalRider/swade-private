@@ -3,7 +3,7 @@ permission:
   default: 0
   XGltUb0dWlJLkvbE: 3
 type: hindrance
-data:
+system:
   description: See SWADE p.26
   notes: ''
   major: false

@@ -2,7 +2,7 @@ name: Improved Nerves of Steel
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.43</p>
   notes: ''
   isArcaneBackground: false

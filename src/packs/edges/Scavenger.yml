@@ -2,7 +2,7 @@ name: Scavenger
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.52</p>
   notes: ''
   isArcaneBackground: false

@@ -2,7 +2,7 @@ name: Calculating
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.41</p>
   notes: ''
   isArcaneBackground: false
