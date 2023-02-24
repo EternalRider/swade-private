@@ -47,7 +47,7 @@ SWADE:
   AttrStrShort: Str
   AttrVigShort: Vig
   Skills: Skills
-  Unskilled: Unskilled
+  Unskilled: Unskilled Attempt
   CoreSkill: Core Skill
   CoreSkills: Core Skills
   LinkAttr: Linked Attribute
