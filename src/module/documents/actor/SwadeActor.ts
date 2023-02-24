@@ -499,7 +499,8 @@ export default class SwadeActor extends Actor {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
-      data: {
+      //@ts-expect-error something something
+      system: {
         die: {
           sides: 4,
           modifier: 0,
@@ -1289,7 +1290,7 @@ export default class SwadeActor extends Actor {
         type: 'skill',
         img: 'systems/swade/assets/icons/skill.svg',
         //@ts-expect-error We're just adding some base data for a skill here.
-        data: {
+        system: {
           attribute: '',
           die: {
             sides: 4,
