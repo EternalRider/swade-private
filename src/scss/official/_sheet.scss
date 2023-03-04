@@ -1186,6 +1186,9 @@
   .powers {
     .section-header {
       font-size: $large-font;
+      button.adjust-counter {
+        font-size:0.9em;
+      }
     }
     ul {
       list-style: none;

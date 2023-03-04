@@ -27,7 +27,10 @@
           name="system.powerPoints.general.max"
           value="{{actor.system.powerPoints.general.max}}"
         />
-      </label>
+      </label>    
+      <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="general">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
     </span>
     {{/unless}}
   </header>
@@ -96,7 +99,10 @@
       <label>
         <span class="sr-only">{{localize "SWADE.MaxPP"}}</span>
         <input type="number" name="{{background.maxPath}}" value="{{background.max}}" />
-      </label>
+      </label>    
+      <button type="button" class="adjust-counter" data-action="pp-refresh" data-background="{{key}}">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
     </span>
     {{/unless}}
   </header>
