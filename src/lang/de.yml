@@ -757,6 +757,7 @@ SWADE:
   IgnFatigue: Erschöpfung ignorieren
   Critfail: KRITISCHER PATZER
   BaseDamage: Basisschaden
+  RefreshPP: Machtpunkte auffrischen
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

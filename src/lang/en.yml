@@ -741,6 +741,7 @@ SWADE:
   IgnFatigue: Ignore Fatigue
   Critfail: CRITICAL FAILURE
   BaseDamage: Base Damage
+  RefreshPP: Refresh Power Points
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
