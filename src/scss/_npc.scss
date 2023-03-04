@@ -169,6 +169,11 @@
   .powers {
     .header-field {
       padding: 5px;
+      button.adjust-counter {
+        border: none;
+        background: none;
+        width: auto;
+      }
     }
   }
 

@@ -997,8 +997,15 @@ export default class CharacterSheet extends ActorSheet<
       case 'get-benny':
         await this.actor.getBenny();
         break;
+      case 'pp-refresh': {
+        const arcane = ev?.currentTarget?.dataset?.arcane;
+        await this.actor.update({
+          ['system.powerPoints.' + arcane + '.value']: this.actor.system.powerPoints[arcane].max,
+        });
+        break
+      }
       default:
-        throw new Error('Unkonw action!');
+        throw new Error('Unknown action!');
     }
   }
 

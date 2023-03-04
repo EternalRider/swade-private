@@ -103,6 +103,17 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         li.setAttribute('draggable', 'true');
         li.addEventListener('dragstart', handler, false);
       });
+      
+      // Refresh
+      html[0]
+      .querySelectorAll('.adjust-counter')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+      );
+      html
+      .find('.adjust-counter')
+      .on('click', this._handleCounterAdjust.bind(this));
+
     }
 
     // Everything below here is only needed if the sheet is editable
@@ -264,6 +275,22 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         ),
         callback: () => {},
       });
+    }
+  }
+
+  protected async _handleCounterAdjust(ev: MouseEvent) {
+    const action = ev?.currentTarget?.dataset?.action;
+
+    switch (action) {
+      case 'pp-refresh': {
+        const arcane = ev?.currentTarget?.dataset?.arcane;
+        await this.actor.update({
+          ['system.powerPoints.' + arcane + '.value']: this.actor.system.powerPoints[arcane].max,
+        });
+        break
+      }
+      default:
+        throw new Error('Unknown action!');
     }
   }
 }
