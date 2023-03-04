@@ -28,7 +28,13 @@
           value="{{actor.system.powerPoints.general.max}}"
         />
       </label>    
-      <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="general">
+      <button 
+      type="button" 
+      class="adjust-counter" 
+      data-action="pp-refresh" 
+      data-arcane="general" 
+      data-tooltip="{{localize "SWADE.RefreshPP"}}"
+      >
         <i class="fa-solid fa-arrows-rotate"></i>
       </button>
     </span>
@@ -86,7 +92,7 @@
     <span class="name">{{key}}</span>
     {{#unless @root.settingrules.noPowerPoints}}
     <span class="pp-counter controls">
-       <span class="pp-label" data-arcane="{{background.arcaneBackground}}">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
+       <span class="pp-label" data-arcane="{{key}}">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
       <label>
         <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
         <input
@@ -100,7 +106,13 @@
         <span class="sr-only">{{localize "SWADE.MaxPP"}}</span>
         <input type="number" name="{{background.maxPath}}" value="{{background.max}}" />
       </label>    
-      <button type="button" class="adjust-counter" data-action="pp-refresh" data-background="{{key}}">
+      <button 
+        type="button" 
+        class="adjust-counter" 
+        data-action="pp-refresh" 
+        data-background="{{key}}"  
+        data-tooltip="{{localize "SWADE.RefreshPP"}}"
+      >
         <i class="fa-solid fa-arrows-rotate"></i>
       </button>
     </span>

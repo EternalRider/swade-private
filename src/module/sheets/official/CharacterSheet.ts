@@ -479,7 +479,6 @@ export default class CharacterSheet extends ActorSheet<
       if (!ab) continue;
       if (!powers.arcaneBackgrounds[ab]) {
         powers.arcaneBackgrounds[ab] = {
-          arcaneBackground: ab,
           valuePath: `system.powerPoints.${ab}.value`,
           value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
           maxPath: `system.powerPoints.${ab}.max`,
@@ -1140,7 +1139,6 @@ interface SheetPowers {
 }
 
 interface SheetArcaneBackground {
-  arcaneBackground: string;
   valuePath: string;
   value: any;
   maxPath: string;
