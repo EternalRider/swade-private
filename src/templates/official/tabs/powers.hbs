@@ -10,7 +10,7 @@
     <span class="name">{{localize "SWADE.General"}}</span>
     {{#unless settingrules.noPowerPoints}}
     <span class="pp-counter controls">
-       {{localize "SWADE.PPAbbreviation"}}:&nbsp;
+       <span class="pp-label" data-arcane="general">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
       <label>
         <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
         <input
@@ -86,7 +86,7 @@
     <span class="name">{{key}}</span>
     {{#unless @root.settingrules.noPowerPoints}}
     <span class="pp-counter controls">
-      {{localize "SWADE.PPAbbreviation"}}:&nbsp;
+       <span class="pp-label" data-arcane="{{background.arcaneBackground}}">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
       <label>
         <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
         <input

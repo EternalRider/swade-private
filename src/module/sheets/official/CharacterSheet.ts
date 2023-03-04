@@ -475,14 +475,15 @@ export default class CharacterSheet extends ActorSheet<
 
     for (const power of this.actor.itemTypes.power) {
       if (power.type !== 'power') continue;
-      const ab = power.system.arcane;
+      const ab = power.system.arcane as string;
       if (!ab) continue;
       if (!powers.arcaneBackgrounds[ab]) {
         powers.arcaneBackgrounds[ab] = {
+          arcaneBackground: ab,
           valuePath: `system.powerPoints.${ab}.value`,
-          value: getProperty(this.actor.system, `powerPoints.${ab}.value`),
+          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
           maxPath: `system.powerPoints.${ab}.max`,
-          max: getProperty(this.actor.system, `powerPoints.${ab}.max`),
+          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
           powers: [],
         };
       }
@@ -1000,9 +1001,10 @@ export default class CharacterSheet extends ActorSheet<
       case 'pp-refresh': {
         const arcane = ev?.currentTarget?.dataset?.arcane;
         await this.actor.update({
-          ['system.powerPoints.' + arcane + '.value']: this.actor.system.powerPoints[arcane].max,
+          ['system.powerPoints.' + arcane + '.value']:
+            this.actor.system.powerPoints[arcane].max,
         });
-        break
+        break;
       }
       default:
         throw new Error('Unknown action!');
@@ -1138,6 +1140,7 @@ interface SheetPowers {
 }
 
 interface SheetArcaneBackground {
+  arcaneBackground: string;
   valuePath: string;
   value: any;
   maxPath: string;
