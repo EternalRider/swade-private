@@ -6,11 +6,18 @@ declare global {
   interface DocumentClassConfig {
     ChatMessage: typeof SwadeChatMessage;
   }
+
+  interface FlagConfig {
+    ChatMessage: {
+      swade: {
+        targets?: { name: string; uuid: string }[];
+        [key: string]: unknown;
+      };
+    };
+  }
 }
 
 export default class SwadeChatMessage extends ChatMessage {
-  static CHAT_TEMPLATE = 'systems/swade/templates/chat/dice/roll-message.hbs';
-
   /** Returns the most significant roll for this chat message */
   get significantRoll(): SwadeRoll | undefined {
     if (this['rolls'].length === 0) return;
@@ -64,18 +71,22 @@ export default class SwadeChatMessage extends ChatMessage {
 
   async #renderMessageBody(isPrivate: boolean, content?: string) {
     const significantRoll = this.significantRoll;
-    return renderTemplate(this.constructor.CHAT_TEMPLATE, {
-      lockReroll: this.#isCritfail && !game.settings.get('swade', 'dumbLuck'),
-      modifiers: this.#formatModifiers(),
-      rerolled: significantRoll?.getRerollLabel(),
-      groupRoll:
-        significantRoll instanceof TraitRoll && significantRoll.groupRoll,
-      isCritfail: this.#isCritfail && !isPrivate,
-      isPrivate: isPrivate,
-      isGM: game.user?.isGM,
-      isAuthor: this.isAuthor || game.user?.isGM,
-      rolls: await this.#renderRolls(isPrivate),
-      content: content,
-    });
+    return renderTemplate(
+      'systems/swade/templates/chat/dice/roll-message.hbs',
+      {
+        lockReroll: this.#isCritfail && !game.settings.get('swade', 'dumbLuck'),
+        modifiers: this.#formatModifiers(),
+        rerolled: significantRoll?.getRerollLabel(),
+        groupRoll:
+          significantRoll instanceof TraitRoll && significantRoll.groupRoll,
+        isCritfail: this.#isCritfail && !isPrivate,
+        isPrivate: isPrivate,
+        isGM: game.user?.isGM,
+        isAuthor: this.isAuthor || game.user?.isGM,
+        rolls: await this.#renderRolls(isPrivate),
+        targets: this.getFlag('swade', 'targets'),
+        content: content,
+      },
+    );
   }
 }

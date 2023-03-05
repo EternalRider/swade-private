@@ -527,6 +527,41 @@ export default class SwadeCoreHooks {
     html[0]
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
+
+    html[0]
+      .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
+      .forEach((target) => {
+        target.addEventListener('mouseenter', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          const tokenObj = tokenDoc?.object;
+          if (tokenObj?.isVisible && !tokenObj?.controlled) {
+            tokenObj?._onHoverIn(ev);
+          }
+        });
+        target.addEventListener('mouseleave', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          const tokenObj = tokenDoc?.object;
+          if (tokenObj?.isVisible && !tokenObj?.controlled) {
+            tokenObj?._onHoverOut(ev);
+          }
+        });
+        target.addEventListener('click', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
+        });
+      });
   }
 
   static async onGetCombatTrackerEntryContext(

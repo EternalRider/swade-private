@@ -742,6 +742,7 @@ SWADE:
   Critfail: CRITICAL FAILURE
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
+  Targets: 'Targets:'
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

@@ -1,3 +1,4 @@
+import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import { TraitRollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
@@ -33,7 +34,11 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
 
     roll.rerollMode = 'free';
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({ speaker: speaker, flavor: msg['flavor'] });
+    await evaluated.toMessage({
+      speaker: speaker,
+      flavor: msg['flavor'],
+      flags: msg['flags'],
+    });
   }
 
   static async rerollBenny(event: JQuery.ClickEvent) {
@@ -57,7 +62,11 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     await spender?.spendBenny();
     roll.rerollMode = 'benny';
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({ speaker: speaker, flavor: msg['flavor'] });
+    await evaluated.toMessage({
+      speaker: speaker,
+      flavor: msg['flavor'],
+      flags: msg['flags'],
+    });
   }
 
   set rerollMode(mode: 'free' | 'benny') {
@@ -101,50 +110,53 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return chatData;
   }
 
-  // override async toMessage<
-  //   T extends DeepPartial<ChatMessageDataConstructorData> = {},
-  // >(
-  //   messageData: T,
-  //   {
-  //     rollMode = 'publicroll',
-  //     create = true,
-  //   }: {
-  //     rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
-  //     create?: boolean | undefined;
-  //   } = {},
-  // ) {
-  //   // Perform the roll, if it has not yet been rolled
-  //   if (!this._evaluated) await this.evaluate({ async: true });
+  override async toMessage<
+    T extends DeepPartial<ChatMessageDataConstructorData> = {},
+  >(
+    messageData: T,
+    {
+      rollMode = 'publicroll',
+      create = true,
+    }: {
+      rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
+      create?: boolean | undefined;
+    } = {},
+  ) {
+    // Perform the roll, if it has not yet been rolled
+    if (!this._evaluated) await this.evaluate({ async: true });
+    messageData = foundry.utils.mergeObject(
+      {
+        user: game.user!.id,
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        sound: CONFIG.sounds.dice,
+        flags: {
+          swade: {
+            targets: Array.from(game.user!.targets).map((t) => {
+              return { name: t.name, uuid: t.document.uuid };
+            }),
+          },
+        },
+      },
+      messageData,
+    );
+    messageData['rolls'] = [this];
 
-  //   // Prepare chat data
-  //   let targets = '';
-  //   const targetSet = game.user!.targets;
-  //   if (targetSet.size > 0) {
-  //     targetSet.forEach((t) => (targets += `${t.name}<br>`));
-  //   } else {
-  //     targets = 'None';
-  //   }
-  //   messageData = foundry.utils.mergeObject(
-  //     {
-  //       user: game.user!.id,
-  //       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-  //       content: messageData.content,
-  //       sound: CONFIG.sounds.dice,
-  //     },
-  //     messageData,
-  //   );
-  //   messageData['rolls'] = [this];
+    // Either create the message or just return the chat data
+    const cls = getDocumentClass('ChatMessage');
+    const msg = new cls(messageData);
 
-  //   // Either create the message or just return the chat data
-  //   const cls = getDocumentClass('ChatMessage');
-  //   const msg = new cls(messageData);
+    // Either create or return the data
+    //@ts-expect-error foo bar
+    if (create) return cls.create(msg.toObject(), { rollMode });
+    if (rollMode) msg.applyRollMode(rollMode);
+    return msg.toObject();
+  }
 
-  //   // Either create or return the data
-  //   //@ts-expect-error foo bar
-  //   if (create) return cls.create(msg.toObject(), { rollMode });
-  //   if (rollMode) msg.applyRollMode(rollMode);
-  //   return msg.toObject();
-  // }
+  protected async _getToMessageContent(
+    messageData: ChatMessageDataConstructorData,
+  ): Promise<string> {
+    return messageData.content ?? '';
+  }
 
   override async render({
     flavor,

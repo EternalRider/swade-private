@@ -1,38 +1,42 @@
 <section class='swade-roll-message'>
-  <header></header>
   {{#unless isPrivate}}
+    {{#if content}}<section>{{{content}}}</section>{{/if}}
     <section>
-      {{{content}}}
+      {{#if targets.length}}
+        <span>{{localize 'SWADE.Targets'}}</span>
+        <ul class='targets'>
+          {{#each targets}}
+            <li><a class='target' data-token-uuid='{{uuid}}'>{{name}}</a></li>
+          {{/each}}
+        </ul>
+      {{/if}}
     </section>
-    <section>
-      <div class='roll-metadata flexrow'>
-        <div class='group-roll'>
-          {{#if groupRoll}}
-            <i class='fa-duotone fa-user-group'></i>
-            {{localize 'SWADE.GroupRoll'}}
-          {{/if}}
-        </div>
-        <div class='reroll'>
-          {{#if rerolled}}{{rerolled}}{{/if}}
-        </div>
+    {{#if modifiers.length}}
+      <details class='modifiers'>
+        <summary>{{localize 'SWADE.Modifiers'}}</summary>
+        <span class='content'>
+          <ol class='modifier-list'>
+            {{#each modifiers}}
+              <li>{{label}}: {{value}}</li>
+            {{/each}}
+          </ol>
+        </span>
+      </details>
+    {{/if}}
+    <div class='roll-metadata flexrow'>
+      <div class='reroll'>
+        {{#if rerolled}}{{rerolled}}{{/if}}
       </div>
-
-      {{#if modifiers.length}}
-        <details class='modifiers'>
-          <summary>{{localize 'SWADE.Modifiers'}}</summary>
-          <span class='content'>
-            <ol class='modifier-list'>
-              {{#each modifiers}}
-                <li>{{label}}: {{value}}</li>
-              {{/each}}
-            </ol>
-          </span>
-        </details>
-      {{/if}}
-      {{#if isCritfail}}
-        <p class='critical-failure'>{{localize 'SWADE.Critfail'}}</p>
-      {{/if}}
-    </section>
+      <div class='group-roll'>
+        {{#if groupRoll}}
+          <i class='fa-duotone fa-user-group'></i>
+          {{localize 'SWADE.GroupRoll'}}
+        {{/if}}
+      </div>
+    </div>
+    {{#if isCritfail}}
+      <p class='critical-failure'>{{localize 'SWADE.Critfail'}}</p>
+    {{/if}}
   {{/unless}}
   {{{rolls}}}
   <footer class='roll-interaction'>

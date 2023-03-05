@@ -758,6 +758,7 @@ SWADE:
   Critfail: KRITISCHER PATZER
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
+  Targets: 'Ziele:'
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
