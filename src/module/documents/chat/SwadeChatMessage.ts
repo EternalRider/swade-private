@@ -24,8 +24,16 @@ export default class SwadeChatMessage extends ChatMessage {
     return this.rolls[this.rolls.length - 1];
   }
 
+  get speakerActor() {
+    return ChatMessage.getSpeakerActor(this.speaker);
+  }
+
   get #isCritfail(): boolean {
-    return !!this.significantRoll?.isCritfail;
+    const actor = this.speakerActor;
+    const rollIsCritFail = !!this.significantRoll?.isCritfail;
+    //just return false if there's no actor.
+    if (!actor) return false;
+    return rollIsCritFail && actor.isWildcard;
   }
 
   protected override async _renderRollContent(
