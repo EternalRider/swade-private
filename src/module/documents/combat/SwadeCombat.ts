@@ -1,5 +1,6 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import * as utils from '../util';
+import { reshuffleActionDeck } from '../../util';
+
 import SwadeCombatant from './SwadeCombatant';
 
 declare global {
@@ -437,7 +438,7 @@ export default class SwadeCombat extends Combat {
     }
     const jokerDrawn = this.combatants.some((c) => c.hasJoker);
     if (jokerDrawn) {
-      await utils.reshuffleActionDeck();
+      await reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
 
@@ -550,7 +551,7 @@ export default class SwadeCombat extends Combat {
 
     //reset the deck when combat is ended
     if (jokerDrawn) {
-      await utils.reshuffleActionDeck();
+      await reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
   }
