@@ -21,8 +21,8 @@ import {
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
+import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import SwadeCombatant from '../SwadeCombatant';
 import { SwadeActorDataSource, TraitDie } from './actor-data-source';
 
 declare global {

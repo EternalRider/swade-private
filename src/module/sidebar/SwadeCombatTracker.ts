@@ -1,4 +1,4 @@
-import SwadeCombatant from '../documents/SwadeCombatant';
+import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import * as utils from '../util';
 
 /**
