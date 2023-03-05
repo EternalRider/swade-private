@@ -1,6 +1,8 @@
 <section class='swade-roll-message'>
   {{#unless isPrivate}}
-    {{#if content}}<section>{{{content}}}</section>{{/if}}
+    {{#if content}}
+      <section class='content'>{{{content}}}</section>
+    {{/if}}
     <section>
       {{#if targets.length}}
         <span>{{localize 'SWADE.Targets'}}</span>
