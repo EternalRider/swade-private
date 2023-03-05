@@ -20,8 +20,8 @@ declare global {
 export default class SwadeChatMessage extends ChatMessage {
   /** Returns the most significant roll for this chat message */
   get significantRoll(): SwadeRoll | undefined {
-    if (this['rolls'].length === 0) return;
-    return this['rolls'][this['rolls'].length - 1];
+    if (this.rolls.length === 0) return;
+    return this.rolls[this.rolls.length - 1];
   }
 
   get #isCritfail(): boolean {
@@ -59,7 +59,7 @@ export default class SwadeChatMessage extends ChatMessage {
 
   async #renderRolls(isPrivate: boolean): Promise<string> {
     let html = '';
-    for (const r of this['rolls']) {
+    for (const r of this.rolls) {
       html += await r.render({ isPrivate });
     }
     return html;
@@ -70,15 +70,14 @@ export default class SwadeChatMessage extends ChatMessage {
   }
 
   async #renderMessageBody(isPrivate: boolean, content?: string) {
-    const significantRoll = this.significantRoll;
+    const roll = this.significantRoll;
     return renderTemplate(
       'systems/swade/templates/chat/dice/roll-message.hbs',
       {
         lockReroll: this.#isCritfail && !game.settings.get('swade', 'dumbLuck'),
         modifiers: this.#formatModifiers(),
-        rerolled: significantRoll?.getRerollLabel(),
-        groupRoll:
-          significantRoll instanceof TraitRoll && significantRoll.groupRoll,
+        rerolled: roll?.getRerollLabel(),
+        groupRoll: roll instanceof TraitRoll && roll.groupRoll,
         isCritfail: this.#isCritfail && !isPrivate,
         isPrivate: isPrivate,
         isGM: game.user?.isGM,

@@ -12,9 +12,15 @@
     margin-bottom: 0.25rem;
   }
 
+  .modifiers,
   .reroll,
   .group-roll {
     font-size: var(--font-size-14);
+  }
+
+  .modifier-list {
+    list-style: disc;
+    margin-top: 0;
   }
 
   .targets {
@@ -77,16 +83,11 @@
     }
   }
 
-  .modifier-list,
   .result-list,
   .formula-list {
     padding: 0;
     margin: 0;
     list-style: none;
-  }
-
-  .modifiers {
-    font-size: var(--font-size-14);
   }
 
   .result-list,

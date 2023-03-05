@@ -110,6 +110,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return chatData;
   }
 
+  //@ts-expect-error The types for this are a MESS
   override async toMessage<
     T extends DeepPartial<ChatMessageDataConstructorData> = {},
   >(
