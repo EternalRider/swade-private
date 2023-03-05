@@ -28,12 +28,12 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
       event.currentTarget.closest('.message').dataset.messageId,
       { strict: true },
     );
-    const speaker = msg.speaker;
-    const roll = msg.rolls[0] as SwadeRoll;
+    const speaker = msg['speaker'];
+    const roll = msg['rolls'][0] as SwadeRoll;
 
     roll.rerollMode = 'free';
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({ speaker: speaker, flavor: msg.flavor });
+    await evaluated.toMessage({ speaker: speaker, flavor: msg['flavor'] });
   }
 
   static async rerollBenny(event: JQuery.ClickEvent) {
@@ -44,8 +44,8 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
       target.closest('.message').dataset.messageId,
       { strict: true },
     );
-    const speaker = msg.speaker;
-    const roll = msg.rolls[0] as SwadeRoll;
+    const speaker = msg['speaker'];
+    const roll = msg['rolls'][0] as SwadeRoll;
     const actor = ChatMessage.getSpeakerActor(speaker);
 
     const spender = isGmBenny && game.user?.isGM ? game.user : actor;
@@ -57,7 +57,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     await spender?.spendBenny();
     roll.rerollMode = 'benny';
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({ speaker: speaker, flavor: msg.flavor });
+    await evaluated.toMessage({ speaker: speaker, flavor: msg['flavor'] });
   }
 
   set rerollMode(mode: 'free' | 'benny') {
@@ -77,24 +77,75 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return mods.map(normalizeRollModifiers);
   }
 
+  get isRerollable(): boolean {
+    return false;
+  }
+
+  get isCritfail(): boolean | undefined {
+    return false;
+  }
+
   async getRenderData(
     flavor?: string,
     isPrivate = false,
   ): Promise<Record<string, unknown>> {
     if (!this._evaluated) await this.evaluate({ async: true });
     const chatData = {
-      isGM: game.user?.isGM,
-      rerolled: this._getRerollLabel(),
       isPrivate: isPrivate,
       flavor: isPrivate ? null : flavor,
       user: game.user?.id,
       tooltip: isPrivate ? '' : await this.getTooltip(),
       total: this.total,
-      modifiers: this.#formatModifiers(),
       formulaParts: this._formatFormulaParts(),
     };
     return chatData;
   }
+
+  // override async toMessage<
+  //   T extends DeepPartial<ChatMessageDataConstructorData> = {},
+  // >(
+  //   messageData: T,
+  //   {
+  //     rollMode = 'publicroll',
+  //     create = true,
+  //   }: {
+  //     rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
+  //     create?: boolean | undefined;
+  //   } = {},
+  // ) {
+  //   // Perform the roll, if it has not yet been rolled
+  //   if (!this._evaluated) await this.evaluate({ async: true });
+
+  //   // Prepare chat data
+  //   let targets = '';
+  //   const targetSet = game.user!.targets;
+  //   if (targetSet.size > 0) {
+  //     targetSet.forEach((t) => (targets += `${t.name}<br>`));
+  //   } else {
+  //     targets = 'None';
+  //   }
+  //   messageData = foundry.utils.mergeObject(
+  //     {
+  //       user: game.user!.id,
+  //       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+  //       content: messageData.content,
+  //       sound: CONFIG.sounds.dice,
+  //     },
+  //     messageData,
+  //   );
+  //   messageData['rolls'] = [this];
+
+  //   // Either create the message or just return the chat data
+  //   const cls = getDocumentClass('ChatMessage');
+  //   const msg = new cls(messageData);
+
+  //   // Either create or return the data
+  //   //@ts-expect-error foo bar
+  //   if (create) return cls.create(msg.toObject(), { rollMode });
+  //   if (rollMode) msg.applyRollMode(rollMode);
+  //   return msg.toObject();
+  // }
+
   override async render({
     flavor,
     //@ts-expect-error ts resolves this to the function but it's actually the class
@@ -172,16 +223,12 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return '';
   }
 
-  protected _getRerollLabel(): string | undefined {
+  getRerollLabel(): string | undefined {
     if (this.rerollMode === 'benny') {
       return game.i18n.localize('SWADE.RerollWithBenny');
     }
     if (this.rerollMode === 'free') {
       return game.i18n.localize('SWADE.FreeReroll');
     }
-  }
-
-  #formatModifiers(): TraitRollModifier[] {
-    return this.modifiers.filter((v) => !v.ignore); //remove the disabled modifiers
   }
 }

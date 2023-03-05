@@ -23,7 +23,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return this.#termIsPoolTerm(this.terms[0]);
   }
 
-  get isCritfail(): boolean | undefined {
+  override get isCritfail() {
     if (!this.isValidTraitRoll || !this._evaluated) return undefined;
     const term = this.terms[0];
     return (
@@ -40,13 +40,13 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     this.options['groupRoll'] = groupRoll;
   }
 
+  override get isRerollable(): boolean {
+    return true;
+  }
+
   override async getRenderData(flavor?: string, isPrivate = false) {
     const data = await super.getRenderData(flavor, isPrivate);
-    data.isCritfail = this.isCritfail && !isPrivate;
     data.resultParts = this._formatResultParts();
-    data.groupRoll = this.groupRoll;
-    data.lockReroll =
-      this.isCritfail && !game.settings.get('swade', 'dumbLuck');
     return data;
   }
 

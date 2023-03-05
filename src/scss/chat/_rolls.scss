@@ -1,8 +1,5 @@
-.swade-roll {
-  --exploded-color: rgb(0, 100, 0);
-  --min-color: rgb(200, 0, 0);
+.swade-roll-message {
   --critfail-color: rgb(200, 0, 0);
-
   .critical-failure {
     color: var(--critfail-color);
     font-weight: bold;
@@ -14,10 +11,35 @@
     box-shadow: 0 0 2px #fff inset;
     margin-bottom: 0.25rem;
   }
+
   .reroll,
   .group-roll {
     font-size: var(--font-size-14);
   }
+
+  .targets {
+    .target {
+    }
+  }
+
+  .reroll {
+    text-align: end;
+  }
+
+  .roll-interaction {
+    margin-top: $small-spacing;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    button {
+      width: auto;
+    }
+  }
+}
+
+.swade-roll {
+  --exploded-color: rgb(0, 100, 0);
+  --min-color: rgb(200, 0, 0);
 
   .die {
     .min {
@@ -77,15 +99,5 @@
 
   .dice-roll {
     flex-direction: column;
-  }
-
-  .roll-interaction {
-    margin-top: $small-spacing;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    button {
-      width: auto;
-    }
   }
 }

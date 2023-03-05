@@ -1,28 +1,5 @@
 <div class='swade-roll'>
-  {{#unless isPrivate}}
-    {{#if groupRoll}}
-      <div class='group-roll'>
-        <i class='fa-duotone fa-user-group'></i>
-        {{localize 'SWADE.GroupRoll'}}
-      </div>
-    {{/if}}
-    {{#if rerolled}}<div class='reroll'>{{rerolled}}</div>{{/if}}
-    {{#if modifiers.length}}
-      <details class='modifiers'>
-        <summary>{{localize 'SWADE.Modifiers'}}</summary>
-        <span class='content'>
-          <ol class='modifier-list'>
-            {{#each modifiers}}
-              <li>{{label}}: {{value}}</li>
-            {{/each}}
-          </ol>
-        </span>
-      </details>
-    {{/if}}
-    {{#if isCritfail}}
-      <p class='critical-failure'>{{localize 'SWADE.Critfail'}}</p>
-    {{/if}}
-  {{/unless}}
+  {{#unless isPrivate}}{{/unless}}
   <div class='dice-roll trait-roll'>
     {{#if flavor}}<div class='dice-flavor'>{{flavor}}</div>{{/if}}
     <div class='dice-result'>
@@ -62,42 +39,5 @@
         {{/if}}
       </div>
     </div>
-  </div>
-  <div class='roll-interaction'>
-    {{#unless isPrivate}}
-      {{#if isGM}}
-        <button
-          type='button'
-          class='benny-reroll'
-          data-gm-benny='true'
-          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
-          aria-label='{{localize "SWADE.RerollWithBenny"}}'
-          {{disabled lockReroll}}
-        >
-          <i class='fa-solid fa-dice'></i>
-          GM Benny
-        </button>
-      {{/if}}
-      <button
-        type='button'
-        class='benny-reroll'
-        data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
-        aria-label='{{localize "SWADE.RerollWithBenny"}}'
-        {{disabled lockReroll}}
-      >
-        <i class='fa-solid fa-dice'></i>
-        Benny
-      </button>
-      <button
-        type='button'
-        class='free-reroll'
-        data-tooltip='{{localize "SWADE.FreeReroll"}}'
-        aria-label='{{localize "SWADE.FreeReroll"}}'
-        {{disabled lockReroll}}
-      >
-        <i class='fa-solid fa-dice'></i>
-        Free
-      </button>
-    {{/unless}}
   </div>
 </div>

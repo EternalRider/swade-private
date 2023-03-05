@@ -1,0 +1,77 @@
+<section class='swade-roll-message'>
+  <header></header>
+  {{#unless isPrivate}}
+    <section>
+      {{{content}}}
+    </section>
+    <section>
+      <div class='roll-metadata flexrow'>
+        <div class='group-roll'>
+          {{#if groupRoll}}
+            <i class='fa-duotone fa-user-group'></i>
+            {{localize 'SWADE.GroupRoll'}}
+          {{/if}}
+        </div>
+        <div class='reroll'>
+          {{#if rerolled}}{{rerolled}}{{/if}}
+        </div>
+      </div>
+
+      {{#if modifiers.length}}
+        <details class='modifiers'>
+          <summary>{{localize 'SWADE.Modifiers'}}</summary>
+          <span class='content'>
+            <ol class='modifier-list'>
+              {{#each modifiers}}
+                <li>{{label}}: {{value}}</li>
+              {{/each}}
+            </ol>
+          </span>
+        </details>
+      {{/if}}
+      {{#if isCritfail}}
+        <p class='critical-failure'>{{localize 'SWADE.Critfail'}}</p>
+      {{/if}}
+    </section>
+  {{/unless}}
+  {{{rolls}}}
+  <footer class='roll-interaction'>
+    {{#unless isPrivate}}
+      {{#if isGM}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-gm-benny='true'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          GM Benny
+        </button>
+      {{/if}}
+      {{#if isAuthor}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          Benny
+        </button>
+        <button
+          type='button'
+          class='free-reroll'
+          data-tooltip='{{localize "SWADE.FreeReroll"}}'
+          aria-label='{{localize "SWADE.FreeReroll"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          Free
+        </button>
+      {{/if}}
+    {{/unless}}
+  </footer>
+</section>

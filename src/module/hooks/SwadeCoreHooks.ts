@@ -519,10 +519,10 @@ export default class SwadeCoreHooks {
   ) {
     chat.hideChatActionButtons(message, html, data);
     html
-      .find('.swade-roll button.free-reroll')
+      .find('.swade-roll-message button.free-reroll')
       .on('click', SwadeRoll.rerollFree.bind(this));
     html
-      .find('.swade-roll button.benny-reroll')
+      .find('.swade-roll-message button.benny-reroll')
       .on('click', SwadeRoll.rerollBenny.bind(this));
     html[0]
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')

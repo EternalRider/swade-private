@@ -1,18 +1,4 @@
 <div class='swade-roll'>
-  {{#unless isPrivate}}
-    {{#if modifiers.length}}
-      <details class='modifiers'>
-        <summary>{{localize 'SWADE.Modifiers'}}</summary>
-        <span class='content'>
-          <ol class='modifier-list'>
-            {{#each modifiers}}
-              <li>{{label}}: {{value}}</li>
-            {{/each}}
-          </ol>
-        </span>
-      </details>
-    {{/if}}
-  {{/unless}}
   <div class='dice-roll'>
     <div class='dice-result'>
       <div class='dice-formula'>

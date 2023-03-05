@@ -15,10 +15,11 @@ import { TraitRoll } from './module/dice/TraitRoll';
 import WildDie from './module/dice/WildDie';
 import SwadeActor from './module/documents/actor/SwadeActor';
 import SwadeCards from './module/documents/card/SwadeCards';
+import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
+import SwadeCombat from './module/documents/combat/SwadeCombat';
 import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
 import SwadeActiveEffect from './module/documents/SwadeActiveEffect';
-import SwadeCombat from './module/documents/SwadeCombat';
 import SwadeMeasuredTemplate from './module/documents/SwadeMeasuredTemplate';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
@@ -105,6 +106,7 @@ Hooks.once('init', () => {
   CONFIG.ActiveEffect.documentClass = SwadeActiveEffect;
   CONFIG.User.documentClass = SwadeUser;
   CONFIG.Cards.documentClass = SwadeCards;
+  CONFIG.ChatMessage.documentClass = SwadeChatMessage;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
