@@ -202,7 +202,10 @@ export default class RollDialog extends FormApplication<
     }
 
     //recreate the roll
-    const finalizedRoll = this.rollCls.fromTerms(terms, roll.options);
+    const finalizedRoll = this.rollCls.fromTerms(
+      terms,
+      roll.options,
+    ) as SwadeRoll;
     if (finalizedRoll instanceof TraitRoll) {
       finalizedRoll.groupRoll =
         this.#extraButtonUsed && !this.ctx.actor?.isWildcard;
@@ -219,6 +222,7 @@ export default class RollDialog extends FormApplication<
       },
       { rollMode: this.rollMode },
     );
+
     return finalizedRoll;
   }
 
@@ -247,7 +251,7 @@ export default class RollDialog extends FormApplication<
           .reduce(modifierReducer, ''),
         this.#getRollData(),
       ),
-    ]);
+    ]) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
   }
