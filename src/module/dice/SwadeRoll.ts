@@ -142,13 +142,24 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     );
     messageData['rolls'] = [this];
 
+    Hooks.callAll('preRenderSwadeRollMessage', messageData, {
+      create,
+      rollMode,
+    });
     // Either create the message or just return the chat data
     const cls = getDocumentClass('ChatMessage');
     const msg = new cls(messageData);
 
     // Either create or return the data
-    //@ts-expect-error foo bar
-    if (create) return cls.create(msg.toObject(), { rollMode });
+    if (create) {
+      //@ts-expect-error foo bar
+      const createdMsg = await cls.create(msg.toObject(), { rollMode });
+      Hooks.callAll('renderSwadeRollMessage', createdMsg, messageData, {
+        create,
+        rollMode,
+      });
+      return createdMsg;
+    }
     if (rollMode) msg.applyRollMode(rollMode);
     return msg.toObject();
   }
