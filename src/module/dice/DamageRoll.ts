@@ -12,4 +12,8 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   override get isCritfail() {
     return false;
   }
+
+  override get isCritFailConfirmationRoll() {
+    return false;
+  }
 }

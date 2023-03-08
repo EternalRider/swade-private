@@ -94,13 +94,19 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return false;
   }
 
+  get isCritFailConfirmationRoll() {
+    return this.options['critfailConfirmationRoll'];
+  }
+
   async getRenderData(
     flavor?: string,
     isPrivate = false,
+    displayResult = true,
   ): Promise<Record<string, unknown>> {
     if (!this._evaluated) await this.evaluate({ async: true });
     const chatData = {
       isPrivate: isPrivate,
+      displayResult: displayResult,
       flavor: isPrivate ? null : flavor,
       user: game.user?.id,
       tooltip: isPrivate ? '' : await this.getTooltip(),
@@ -125,6 +131,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   ) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate({ async: true });
+    const tempRolls = messageData['rolls'] ?? [];
     messageData = foundry.utils.mergeObject(
       {
         user: game.user!.id,
@@ -140,26 +147,15 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
       },
       messageData,
     );
-    messageData['rolls'] = [this];
 
-    Hooks.callAll('preRenderSwadeRollMessage', messageData, {
-      create,
-      rollMode,
-    });
+    messageData['rolls'] = [...tempRolls, this];
     // Either create the message or just return the chat data
     const cls = getDocumentClass('ChatMessage');
     const msg = new cls(messageData);
 
     // Either create or return the data
-    if (create) {
-      //@ts-expect-error foo bar
-      const createdMsg = await cls.create(msg.toObject(), { rollMode });
-      Hooks.callAll('renderSwadeRollMessage', createdMsg, messageData, {
-        create,
-        rollMode,
-      });
-      return createdMsg;
-    }
+    //@ts-expect-error foo bar
+    if (create) return cls.create(msg.toObject(), { rollMode });
     if (rollMode) msg.applyRollMode(rollMode);
     return msg.toObject();
   }
@@ -175,9 +171,19 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     //@ts-expect-error ts resolves this to the function but it's actually the class
     template = this.constructor.CHAT_TEMPLATE,
     isPrivate = false,
+    displayResult = true,
   }: RollRenderOptions = {}) {
-    const data = await this.getRenderData(flavor, isPrivate);
+    const data = await this.getRenderData(flavor, isPrivate, displayResult);
     return renderTemplate(template, data);
+  }
+
+  getRerollLabel(): string | undefined {
+    if (this.rerollMode === 'benny') {
+      return game.i18n.localize('SWADE.RerollWithBenny');
+    }
+    if (this.rerollMode === 'free') {
+      return game.i18n.localize('SWADE.FreeReroll');
+    }
   }
 
   protected _formatFormulaParts(): RollPart[] {
@@ -245,14 +251,5 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     if (total > faces) return 'exploded';
     if (roll.dice.some((d) => d.results[0].result === 1)) return 'min';
     return '';
-  }
-
-  getRerollLabel(): string | undefined {
-    if (this.rerollMode === 'benny') {
-      return game.i18n.localize('SWADE.RerollWithBenny');
-    }
-    if (this.rerollMode === 'free') {
-      return game.i18n.localize('SWADE.FreeReroll');
-    }
   }
 }

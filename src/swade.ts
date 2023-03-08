@@ -26,7 +26,6 @@ import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
-import SwadeSystemHooks from './module/hooks/SwadeSystemHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { registerKeybindings } from './module/keybindings';
 import { Logger } from './module/Logger';
@@ -288,7 +287,7 @@ Hooks.on(
 /* ------------------------------------ */
 /* System Hooks              	          */
 /* ------------------------------------ */
-Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
+// Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
 
 /* ------------------------------------ */
 /* Third Party Integrations		          */

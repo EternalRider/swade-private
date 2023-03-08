@@ -23,21 +23,23 @@
         {{/if}}
       </div>
       {{#unless isPrivate}}{{{tooltip}}}{{/unless}}
-      <div class='dice-total'>
-        {{#if isPrivate}}???{{else}}
-          <ol class='result-list'>
-            {{#each resultParts}}
-              <li
-                class='die'
-                style='background-image: url({{img}});'
-                data-tooltip='{{hint}}'
-              >
-                <span class='label {{class}}'>{{this.result}}</span>
-              </li>
-            {{/each}}
-          </ol>
-        {{/if}}
-      </div>
+      {{#if displayResult}}
+        <div class='dice-total'>
+          {{#if isPrivate}}???{{else}}
+            <ol class='result-list'>
+              {{#each resultParts}}
+                <li
+                  class='die'
+                  style='background-image: url({{img}});'
+                  data-tooltip='{{hint}}'
+                >
+                  <span class='label {{class}}'>{{this.result}}</span>
+                </li>
+              {{/each}}
+            </ol>
+          {{/if}}
+        </div>
+      {{/if}}
     </div>
   </div>
 </div>

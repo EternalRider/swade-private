@@ -6,12 +6,14 @@ export interface SwadeRollOptions
   extends InexactPartial<RollTerm.EvaluationOptions> {
   modifiers?: TraitRollModifier[];
   rerollMode?: 'benny' | 'free';
+  critfailConfirmationRoll?: boolean;
 }
 
 export interface RollRenderOptions {
   flavor?: string;
   template?: string;
   isPrivate?: boolean;
+  displayResult?: boolean;
 }
 
 export interface RollPart {

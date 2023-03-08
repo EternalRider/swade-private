@@ -30,10 +30,18 @@ export default class SwadeChatMessage extends ChatMessage {
 
   get #isCritfail(): boolean {
     const actor = this.speakerActor;
-    const rollIsCritFail = !!this.significantRoll?.isCritfail;
     //just return false if there's no actor.
     if (!actor) return false;
-    return rollIsCritFail && actor.isWildcard;
+    const roll = this.significantRoll;
+    const rollIsCritFail = !!roll?.isCritfail;
+    const isGroupRoll = roll instanceof TraitRoll && roll.groupRoll;
+    if (actor.isWildcard || isGroupRoll) return rollIsCritFail;
+    return (
+      rollIsCritFail &&
+      this.rolls
+        .filter((r: SwadeRoll) => r.isCritFailConfirmationRoll)
+        .every((r) => r.total === 1)
+    );
   }
 
   protected override async _renderRollContent(
@@ -66,9 +74,16 @@ export default class SwadeChatMessage extends ChatMessage {
   }
 
   async #renderRolls(isPrivate: boolean): Promise<string> {
+    if (isPrivate) return this.significantRoll!.render({ isPrivate });
     let html = '';
-    for (const r of this.rolls) {
-      html += await r.render({ isPrivate });
+    for (let i = 0; i < this.rolls.length; i++) {
+      const roll = this.rolls[i];
+      const displayResult = i === this.rolls.length - 1;
+      if (roll instanceof SwadeRoll) {
+        html += await roll.render({ isPrivate, displayResult });
+      } else {
+        html += await roll.render({ isPrivate });
+      }
     }
     return html;
   }

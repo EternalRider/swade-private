@@ -21,9 +21,11 @@
         {{/if}}
       </div>
       {{#unless isPrivate}}{{{tooltip}}}{{/unless}}
-      <div class='dice-total'>
-        {{#if isPrivate}}???{{else}}{{total}}{{/if}}
-      </div>
+      {{#if displayResult}}
+        <div class='dice-total'>
+          {{#if isPrivate}}???{{else}}{{total}}{{/if}}
+        </div>
+      {{/if}}
     </div>
   </div>
 </div>

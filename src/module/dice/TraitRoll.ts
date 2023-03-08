@@ -1,3 +1,4 @@
+import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import {
   ActorRollData,
   RollPart,
@@ -44,6 +45,10 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return true;
   }
 
+  override get isCritFailConfirmationRoll() {
+    return false;
+  }
+
   override async getRenderData(flavor?: string, isPrivate = false) {
     const data = await super.getRenderData(flavor, isPrivate);
     data.resultParts = this._formatResultParts();
@@ -65,6 +70,23 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       }
     }
     return cloned;
+  }
+
+  override async toMessage<
+    T extends DeepPartial<ChatMessageDataConstructorData> = {},
+  >(
+    messageData: T,
+    {
+      rollMode = 'publicroll',
+      create = true,
+    }: {
+      rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
+      create?: boolean | undefined;
+    } = {},
+  ) {
+    const roll = await this._handleExtraCritfail(messageData);
+    if (roll) messageData['rolls'] = [roll];
+    return super.toMessage(messageData, { rollMode, create });
   }
 
   protected _formatResultParts() {
@@ -101,6 +123,25 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
 
   #termIsPoolTerm(term: RollTerm): term is PoolTerm {
     return term instanceof PoolTerm;
+  }
+
+  protected async _handleExtraCritfail(
+    data: DeepPartial<ChatMessageDataConstructorData>,
+  ): Promise<SwadeRoll | undefined> {
+    if (!data.speaker) return;
+    const actor = ChatMessage.getSpeakerActor(data['speaker']);
+    if (
+      actor?.type === 'npc' &&
+      !actor.isWildcard &&
+      !this.groupRoll &&
+      this.total === 1
+    ) {
+      return new SwadeRoll(
+        '1d6[Confirmation Die]',
+        {},
+        { critfailConfirmationRoll: true },
+      ).evaluate({ async: true });
+    }
   }
 }
 
