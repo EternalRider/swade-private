@@ -26,14 +26,14 @@
   .targets {
     list-style: none;
     padding-left: 0;
-    display: inline-block;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: $small-spacing;
     li {
-      display: inline;
-    }
-    .target {
-      padding: 0 $medium-spacing;
-      border: 1px solid #fff;
-      border-radius: $medium-spacing;
+      .target {
+        padding: 3px;
+        line-height: 1;
+      }
     }
   }
 
@@ -45,9 +45,10 @@
     margin-top: $small-spacing;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
     button {
       width: auto;
+      flex-grow: 1;
+      font-size: var(--font-size-14);
     }
   }
 }

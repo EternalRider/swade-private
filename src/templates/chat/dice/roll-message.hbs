@@ -8,7 +8,11 @@
         <span>{{localize 'SWADE.Targets'}}</span>
         <ul class='targets'>
           {{#each targets}}
-            <li><a class='target' data-token-uuid='{{uuid}}'>{{name}}</a></li>
+            <li>
+              <button class='target' data-token-uuid='{{uuid}}'>
+                {{name}}
+              </button>
+            </li>
           {{/each}}
         </ul>
       {{/if}}
