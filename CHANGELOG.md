@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - The Unskilled Attempt should now once again receive the appropriate -2 modifier when created. (#698)
+- Added locale-based sorting to character summarizer (#706)
 
 ## 2.2.5
 
