@@ -86,6 +86,7 @@ interface GrantEmbedded {
 
 interface BonusDamage {
   bonusDamageDie: number;
+  bonusDamageDice: number;
 }
 
 interface Templates {

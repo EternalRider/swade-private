@@ -206,6 +206,7 @@ Item:
         additional: {}
     bonusDamage:
       bonusDamageDie: 6
+      bonusDamageDice: 1
     favorite:
       favorite: false
     templates:
