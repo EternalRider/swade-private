@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the option to display a disclaimer at the top of a compendium TOC. The disclaimer is set with the options object when instantiating a TOC.
 - Item actions can now be flagged to be Heavy Damage. Thanks goes to Drental! (!290)
 - Added the ability to refresh power points. Thanks goes to ChaosOS! (#666) (!291)
+- Added the ability to specify the number of additional damage dice to be rolled. Thanks goes to John Stevens! (#707) (!293)
 - Added additional translation strings.
 
 ### Changed
