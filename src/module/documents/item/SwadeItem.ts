@@ -1010,7 +1010,6 @@ export default class SwadeItem extends Item {
     items: SwadeItem[],
     context,
   ) {
-    console.debug(items, context);
     if (!context.isItemGrant) {
       for (const item of items) {
         const grantOn = getProperty(item, 'system.grantOn');
