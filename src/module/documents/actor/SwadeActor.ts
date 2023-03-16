@@ -131,8 +131,7 @@ export default class SwadeActor extends Actor {
     if (this.type === 'vehicle' || !applyEncumbrance) {
       return false;
     }
-    const encumbrance = this.system.details.encumbrance;
-    return encumbrance.value > encumbrance.max;
+    return this.system.details.encumbrance.isEncumbered;
   }
 
   get race(): SwadeItem | undefined {
@@ -212,9 +211,13 @@ export default class SwadeActor extends Actor {
     }
 
     //handle carry capacity
+    const encumbranceMax = this.calcMaxCarryCapacity();
+    const encumbranceValue = this.calcInventoryWeight();
+    const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');
     this.system.details.encumbrance = {
-      max: this.calcMaxCarryCapacity(),
-      value: this.calcInventoryWeight(),
+      max: encumbranceMax,
+      value: encumbranceValue,
+      isEncumbered: applyEncumbrance && encumbranceValue > encumbranceMax,
     };
 
     //handle advances
