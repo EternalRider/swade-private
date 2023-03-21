@@ -22,6 +22,7 @@ declare global {
         expiration?: number;
         loseTurnOnHold?: boolean;
         favorite?: boolean;
+        related?: string[];
       };
     };
   }
@@ -345,6 +346,25 @@ export default class SwadeActiveEffect extends ActiveEffect {
           combatant?.setFlag('swade', 'turnLost', true),
           combatant?.unsetFlag('swade', 'roundHeld'),
         ]);
+      }
+    }
+  }
+
+  protected override _onCreate(
+    data: PropertiesToSource<ActiveEffectDataProperties>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void {
+    super._onCreate(data, options, userId);
+    const relatedEffects = this.getFlag('swade', 'related');
+    if (relatedEffects && this.parent?.documentName === 'Actor') {
+      const effectsToCreate = CONFIG.statusEffects.filter((v) =>
+        relatedEffects.includes(v.id),
+      );
+      const isStatusEffect = !!this.statusId;
+      for (const effect of effectsToCreate) {
+        setProperty(effect, 'flags.swade.favorite', isStatusEffect);
+        this.parent.toggleActiveEffect(effect, { active: true });
       }
     }
   }
