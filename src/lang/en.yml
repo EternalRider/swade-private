@@ -739,10 +739,19 @@ SWADE:
     Header: Item Grants
     When: Grant Items When
   IgnFatigue: Ignore Fatigue
-  Critfail: CRITICAL FAILURE
+
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
   Targets: 'Targets:'
+  Rolls:
+    RollResult: Roll Result
+    SwadeRoll: Roll
+    DamageRoll: Damage Roll
+    TraitRoll: Trait Roll
+    Critfail:
+      Critfail: CRITICAL FAILURE
+      Confirm: Critical Failure Confirmation
+      ConfirmDie: Confirmation Die
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

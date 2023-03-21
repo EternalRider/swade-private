@@ -1,5 +1,4 @@
 <div class='swade-roll'>
-  {{#unless isPrivate}}{{/unless}}
   <div class='dice-roll trait-roll'>
     {{#if flavor}}<div class='dice-flavor'>{{flavor}}</div>{{/if}}
     <div class='dice-result'>
@@ -24,8 +23,11 @@
       </div>
       {{#unless isPrivate}}{{{tooltip}}}{{/unless}}
       {{#if displayResult}}
-        <div class='dice-total'>
-          {{#if isPrivate}}???{{else}}
+        {{#if isPrivate}}
+          <div class='dice-total'>???</div>
+        {{else}}
+          <div class='dice-flavor'>{{localize 'SWADE.Rolls.RollResult'}}</div>
+          <div class='dice-total'>
             <ol class='result-list'>
               {{#each resultParts}}
                 <li
@@ -37,8 +39,8 @@
                 </li>
               {{/each}}
             </ol>
-          {{/if}}
-        </div>
+          </div>
+        {{/if}}
       {{/if}}
     </div>
   </div>

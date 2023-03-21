@@ -137,7 +137,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       this.total === 1
     ) {
       return new SwadeRoll(
-        '1d6[Confirmation Die]',
+        `1d6[${game.i18n.localize('SWADE.Rolls.Critfail.ConfirmDie')}]`,
         {},
         { critfailConfirmationRoll: true },
       ).evaluate({ async: true });

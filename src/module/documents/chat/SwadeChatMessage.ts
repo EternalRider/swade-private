@@ -76,11 +76,14 @@ export default class SwadeChatMessage extends ChatMessage {
   async #renderRolls(isPrivate: boolean): Promise<string> {
     if (isPrivate) return this.significantRoll!.render({ isPrivate });
     let html = '';
-    for (let i = 0; i < this.rolls.length; i++) {
-      const roll = this.rolls[i];
-      const displayResult = i === this.rolls.length - 1;
+    for (let i = 0; i < this['rolls'].length; i++) {
+      const roll = this['rolls'][i] as Roll;
+      const displayResult = roll === this.significantRoll;
       if (roll instanceof SwadeRoll) {
-        html += await roll.render({ isPrivate, displayResult });
+        const flavor = roll.isCritFailConfirmationRoll
+          ? game.i18n.localize('SWADE.Rolls.Critfail.Confirm')
+          : game.i18n.localize(`SWADE.Rolls.${roll.constructor.name}`);
+        html += await roll.render({ isPrivate, displayResult, flavor });
       } else {
         html += await roll.render({ isPrivate });
       }
