@@ -160,6 +160,20 @@ export default class SwadeActor extends Actor {
     return archetypes[0];
   }
 
+  override get itemTypes() {
+    const types: Record<string, SwadeItem[]> = Object.fromEntries(
+      game.documentTypes.Item.map((t) => [t, []]),
+    );
+    for (const item of this.items.values()) {
+      types[item.type].push(item);
+    }
+    //sort the items before returning them
+    for (const type in types) {
+      types[type].sort((a, b) => a.sort - b.sort);
+    }
+    return types;
+  }
+
   override prepareBaseData() {
     this._prepareCharacterBaseData();
   }
