@@ -144,6 +144,19 @@
             data-dtype='Number'
           />
         </span>
+      <div class='form-group' id='bonusUnshake'>
+        <label for='system.fatigue.ignored'>
+          {{localize 'SWADE.UnshakeModifier'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='system.attributes.spirit.unShakeBonus'
+            name='system.attributes.spirit.unShakeBonus'
+            type='number'
+            value='{{doc.system.attributes.spirit.unShakeBonus}}'
+            data-dtype='Number'
+          />
+        </span>
       </div>
       {{#if isVehicle}}
         <div class='form-group' id='maxCargo'>
