@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Replaced some unused translations (#703)
   - `SWADE.ItemEdit` -> `SWADE.Ed`
   - `SWADE.ItemDelete` -> `SWADE.Del`
+- The `WIKI` link now leads to the System Documentation compendium instead of to the gitlab wiki. (#701)
 
 ### Fixed
 

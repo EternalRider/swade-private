@@ -185,25 +185,35 @@ export default class SwadeCoreHooks {
 
     //create system links
     const systemLinks = $('<li>').addClass('system-links');
-    const links: Array<{ label: string; url: string }> = [
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
-        url: 'https://gitlab.com/peginc/swade/-/issues/new',
-      },
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
-        url: game.system.changelog as string,
-      },
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
-        url: game.system.readme as string,
-      },
-    ];
+    const links: Array<{ label: string; url?: string; click?: EventListener }> =
+      [
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
+          url: 'https://gitlab.com/peginc/swade/-/issues/new',
+        },
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
+          url: game.system.changelog as string,
+        },
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
+          click: (_ev) => game.packs.get('swade.system-docs')?.render(true),
+        },
+      ];
 
     //insert links links
-    links.forEach((link) =>
-      systemLinks.append(`<a href="${link.url}">${link.label}</a>`),
-    );
+    links.forEach((link) => {
+      const anchor = document.createElement('a');
+      anchor.innerText = link.label;
+      if (link.url) {
+        anchor.href = link.url;
+      }
+      if (link.click) {
+        anchor.addEventListener('click', link.click);
+      }
+
+      systemLinks.append(anchor);
+    });
 
     systemInfo.after(systemLinks);
   }
