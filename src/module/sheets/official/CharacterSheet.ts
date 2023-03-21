@@ -460,35 +460,6 @@ export default class CharacterSheet extends ActorSheet<
       itemTypes[type].push(item);
     }
 
-    //Deal with ABs and Powers
-    const powers: SheetPowers = {
-      arcaneBackgrounds: {},
-      hasPowersWithoutArcane: this.actor.itemTypes.power.some(
-        (p) => !p.system['arcane'],
-      ),
-      showGeneral: true,
-    };
-
-    powers.showGeneral =
-      powers.hasPowersWithoutArcane ||
-      game.settings.get('swade', 'alwaysGeneralPP');
-
-    for (const power of this.actor.itemTypes.power) {
-      if (power.type !== 'power') continue;
-      const ab = power.system.arcane as string;
-      if (!ab) continue;
-      if (!powers.arcaneBackgrounds[ab]) {
-        powers.arcaneBackgrounds[ab] = {
-          valuePath: `system.powerPoints.${ab}.value`,
-          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
-          maxPath: `system.powerPoints.${ab}.max`,
-          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
-          powers: [],
-        };
-      }
-      powers.arcaneBackgrounds[ab].powers.push(power);
-    }
-
     const parry = this.actor.itemTypes.shield.reduce((acc, cur) => {
       if (
         cur.type !== 'shield' &&
@@ -504,7 +475,7 @@ export default class CharacterSheet extends ActorSheet<
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
       parry: parry,
-      powers: powers,
+      powers: this._getPowers(),
       additionalStats: additionalStats,
       hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
       currentBennies: Array.fromRange(this.actor.bennies, 1),
@@ -934,6 +905,44 @@ export default class CharacterSheet extends ActorSheet<
       }
     }
     return stats;
+  }
+
+  private _getPowers(): SheetPowers {
+    //Deal with ABs and Powers
+    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
+
+    const powerItems = this.actor.items
+      .filter((i) => i.type === 'power')
+      .sort((a, b) => a.sort - b.sort);
+    for (const power of powerItems) {
+      const ab = power.system.arcane || 'general';
+      if (!arcaneBackgrounds[ab]) {
+        arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
+          powers: [],
+        };
+      }
+      arcaneBackgrounds[ab].powers.push(power);
+    }
+
+    //sort the powers by their sort value
+    for (const entry of Object.values(arcaneBackgrounds)) {
+      entry.powers.sort((a, b) => a.sort - b.sort);
+    }
+
+    const hasPowersWithoutArcane =
+      arcaneBackgrounds?.general?.powers.length > 0;
+    const showGeneral =
+      hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
+
+    return {
+      arcaneBackgrounds,
+      hasPowersWithoutArcane,
+      showGeneral,
+    };
   }
 
   /**
