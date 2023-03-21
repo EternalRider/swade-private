@@ -8,7 +8,7 @@ import SwadeDocumentTweaks from '../module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from '../module/CharacterSummarizer';
 import Benny from '../module/dice/Benny';
 import WildDie from '../module/dice/WildDie';
-import SwadeActiveEffect from '../module/documents/SwadeActiveEffect';
+import SwadeActiveEffect from '../module/documents/active-effect/SwadeActiveEffect';
 import ItemChatCardHelper from '../module/ItemChatCardHelper';
 import * as migrations from '../module/migration';
 import CharacterSheet from '../module/sheets/official/CharacterSheet';
