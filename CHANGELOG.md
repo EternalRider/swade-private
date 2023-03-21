@@ -38,6 +38,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to refresh power points. Thanks goes to ChaosOS! (#666) (!291)
 - Added the ability to specify the number of additional damage dice to be rolled. Thanks goes to John Stevens! (#707) (!293)
 - Added the ability to toggle encumbrance using an active effect. (#708)
+- Added the unshake bonus to the tweaks menu. Thanks goes to John Stevens! (#709) (!294)
+- Added the ability for certain status effects to add related status effects when they are created.
 - Added additional translation strings.
 
 ### Changed
