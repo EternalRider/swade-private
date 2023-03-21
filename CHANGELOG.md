@@ -56,7 +56,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - The Unskilled Attempt should now once again receive the appropriate -2 modifier when created. (#698)
-- Added locale-based sorting to character summarizer (#706)
+- Added locale-based sorting to character summarizer. (#706)
+- Restored the ability to sort powers via drag&drop on the character sheet. (#710)
+- Restored the ability to sort items via drag&drop on the npc sheet. (#710)
 
 ## 2.2.5
 
