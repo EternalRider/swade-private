@@ -1,7 +1,7 @@
 import { TraitRoll } from './dice/TraitRoll';
+import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-import SwadeActiveEffect from './documents/SwadeActiveEffect';
 import { getStatusEffectDataById } from './util';
 
 /** @internal */
@@ -139,8 +139,6 @@ async function removeStunned(effect: SwadeActiveEffect) {
   //normal success, still vulnerable
   if (result.between(4, 7)) {
     await effect.delete();
-    const data = getStatusEffectDataById('vulnerable');
-    await parent.toggleActiveEffect(data);
     return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Success', {
       localize: true,
     });
