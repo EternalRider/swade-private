@@ -911,10 +911,7 @@ export default class CharacterSheet extends ActorSheet<
     //Deal with ABs and Powers
     const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
 
-    const powerItems = this.actor.items
-      .filter((i) => i.type === 'power')
-      .sort((a, b) => a.sort - b.sort);
-    for (const power of powerItems) {
+    for (const power of this.actor.itemTypes.power) {
       const ab = power.system.arcane || 'general';
       if (!arcaneBackgrounds[ab]) {
         arcaneBackgrounds[ab] = {

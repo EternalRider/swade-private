@@ -13,7 +13,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    if (!this.isEditable) return;
 
     const inputs = html.find('input');
     inputs.on('focus', (ev) => ev.currentTarget.select());

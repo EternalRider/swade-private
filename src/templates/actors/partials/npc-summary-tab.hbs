@@ -95,7 +95,7 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.edge}}
-        <li class="item" data-item-id="{{id}}">
+        <li class="edge item" data-item-id="{{id}}">
           <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{name}}
           </a>
@@ -114,7 +114,7 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.hindrance}}
-        <li class="item" data-item-id="{{id}}">
+        <li class="hindrance item" data-item-id="{{id}}">
           <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{name}}&nbsp;{{#if system.major}}{{localize "SWADE.Major"}}{{/if}}
           </a>
@@ -133,14 +133,14 @@
       </header>
       <ul class="items-list">
         {{#if actor.race}}
-          <li class="item" data-item-id="{{actor.race.id}}">
+          <li class="ability item" data-item-id="{{actor.race.id}}">
             <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
               {{actor.race.name}}&nbsp;({{localize "SWADE.Race"}})
             </a>
           </li>
         {{/if}}
         {{#if actor.archetype}}
-          <li class="item" data-item-id="{{actor.archetype.id}}">
+          <li class="ability item" data-item-id="{{actor.archetype.id}}">
             <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
               {{actor.archetype.name}}&nbsp;({{localize "SWADE.Archetype"}})
             </a>
@@ -148,7 +148,7 @@
         {{/if}}
         {{#each actor.itemTypes.ability}}
           {{#if (eq system.subtype "special")}}
-            <li class="item" data-item-id="{{id}}">
+            <li class="ability item" data-item-id="{{id}}">
               <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
                 {{name}}
               </a>
@@ -168,7 +168,7 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.action}}
-        <li class="item" data-item-id="{{id}}">
+        <li class="action item" data-item-id="{{id}}">
           <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
             {{name}}
           </a>

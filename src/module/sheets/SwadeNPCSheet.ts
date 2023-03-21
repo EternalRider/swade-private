@@ -63,32 +63,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     if (this.actor.isOwner) {
       const handler = (ev) => this._onDragStart(ev);
       // Find all items on the character sheet.
-      html.find('li.item.skill').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.weapon').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.armor').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.shield').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.misc').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.power').each((i, li) => {
+      html.find('li.item').each((i, li) => {
         // Add draggable attribute and dragstart listener.
         li.setAttribute('draggable', 'true');
         li.addEventListener('dragstart', handler, false);
@@ -98,26 +73,20 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         li.setAttribute('draggable', 'true');
         li.addEventListener('dragstart', handler, false);
       });
-      html.find('li.item.edge-hindrance').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      
+
       // Refresh
       html[0]
-      .querySelectorAll('.adjust-counter')
-      .forEach((el) =>
-        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
-      );
+        .querySelectorAll('.adjust-counter')
+        .forEach((el) =>
+          el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+        );
       html
-      .find('.adjust-counter')
-      .on('click', this._handleCounterAdjust.bind(this));
-
+        .find('.adjust-counter')
+        .on('click', this._handleCounterAdjust.bind(this));
     }
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    if (!this.isEditable) return;
 
     // Update Item via right-click
     html.find('.contextmenu-edit').on('contextmenu', (ev) => {
@@ -285,9 +254,10 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       case 'pp-refresh': {
         const arcane = ev?.currentTarget?.dataset?.arcane;
         await this.actor.update({
-          ['system.powerPoints.' + arcane + '.value']: this.actor.system.powerPoints[arcane].max,
+          ['system.powerPoints.' + arcane + '.value']:
+            this.actor.system.powerPoints[arcane].max,
         });
-        break
+        break;
       }
       default:
         throw new Error('Unknown action!');
