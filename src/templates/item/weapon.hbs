@@ -192,6 +192,33 @@
           />
         </span>
       </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.ReloadType.Label'}}</label>
+        <span class='form-fields'>
+          <select name='system.reloadType' data-dtype='String'>
+            {{#select item.system.reloadType}}
+                {{selectOptions
+                  reloadTypeOptions
+                  selected=item.system.reloadType
+                  localize=true
+                }}
+            {{/select}}
+          </select>
+        </span>
+      </div>
+      {{#if ppReload}}
+      <div class="form-group">
+        <label>{{localize "SWADE.ppReload"}}</label>
+        <span class="form-fields">
+          <input 
+            type='text' 
+            name='system.ppReloadCost'
+            value='{{item.system.ppReloadCost}}'
+            data-dtype='number'
+          />
+        </span>
+      </div>
+      {{/if}}
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
       <div class='form-group'>
@@ -204,12 +231,6 @@
         <label>{{localize 'SWADE.Vehicular'}}</label>
         <span class='form-fields'>
           <input type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
-        </span>
-      </div>
-      <div class='form-group'>
-        <label>{{localize 'SWADE.AutoReload'}}</label>
-        <span class='form-fields'>
-          <input type='checkbox' name='system.autoReload' {{checked item.system.autoReload}} />
         </span>
       </div>
       <div class="form-group">

@@ -250,10 +250,26 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     if (this.type === 'weapon') {
+      data.ppReload = false;
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      data.ammoList = this.actor?.itemTypes.gear
-        .filter((i) => i.system.isAmmo)
-        .map((i) => i.name) as string[];
+      switch (this.item.system.reloadType){
+        case constants.RELOAD_TYPE.NONE:
+        case constants.RELOAD_TYPE.SINGLE:
+        case constants.RELOAD_TYPE.FULL:
+          data.ammoList = this.actor?.itemTypes.gear
+            .filter((i) => i.system.isAmmo)
+            .map((i) => i.name) as string[];
+          break;
+        case constants.RELOAD_TYPE.MAGAZINE:
+          data.ammoList = this.actor?.itemTypes.consumable
+            .filter((i) => i.system.isMagazine)
+            .map((i) => i.name) as string[];
+          break;
+        case constants.RELOAD_TYPE.PP:
+          data.ammoList = Object.keys(this.actor.system?.powerPoints)
+          data.ppReload = true;
+      }
+      data.reloadTypeOptions = this._reloadTypeOptions();
     }
 
     if (this.item.isArcaneDevice) {
@@ -666,10 +682,20 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   private _trademarkWeaponOptions(): Record<number, string> {
     return {
-      0: 'None',
+      0: 'SWADE.TrademarkWeapon.None',
       1: 'SWADE.TrademarkWeapon.Regular',
       2: 'SWADE.TrademarkWeapon.Improved',
     };
+  }
+
+  private _reloadTypeOptions(): Record<string, string> {
+    return {
+      [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
+      [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
+      [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
+      // [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
+      [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP'
+    }
   }
 }
 
@@ -694,6 +720,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
+  ppReload: boolean;
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;

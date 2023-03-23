@@ -406,7 +406,24 @@ pages:
         a custom Action Deck or upload the <a rel="nofollow noreferrer noopener"
         href="https://www.peginc.com/store/vtt-deadlands-the-weird-west-action-deck/"
         target="_blank">VTT Deadlands: the Weird West Action Deck</a>, you can
-        select that deck to use for Initiative.</p>
+        select that deck to use for Initiative.</p><h2>Ammunition Management</h2>
+        <p>Automates ammunition usage. This is further controlled by weapon settings.</p>
+        <ul><li><p>If both halves of the Shots counter are empty, the weapon won't use ammo. 
+        Otherwise, the system tries to match ammo options by name; if the ammo field is 
+        empty, it will suggest options from your inventory.</p></li><li><p>If Reload Type 
+        is set to <strong>none</strong>, using any trait roll will directly pull from the 
+        linked ammunition, bypassing the Shots counter.</p><ul><li><p>If the ammo is a 
+        <em>gear</em> type item, it will use the quantity.</p></li><li><p>If the ammo is 
+        a <em>consumable</em> type item, it will use the charges.</p></li></ul></li><li>
+        <p>If the Reload Type is set to <strong>single</strong>, each press of the Reload 
+        button will reduce the quantity of the gear item by 1 and increase the shots counter 
+        by 1.</p></li><li><p>If the Reload Type is set to <strong>full</strong>, each press 
+        of the Reload button will attempt to completely refill the shots counter and reduce 
+        the gear item by the corresponding amount. If there isn't enough ammo left in your 
+        inventory, it will conduct a partial reload and reduce the quantity to zero.</p>
+        </li><li><p>If the Reload Type is set to <strong>Power Points</strong>, each press 
+        of the Reload button will reduce the linked power points by the "Power Points to 
+        Reload" value and refresh the shots counter to max.</p></li>
       format: 1
       markdown: ''
     title:

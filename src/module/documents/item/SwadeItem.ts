@@ -14,6 +14,7 @@ import {
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import RollDialog from '../../apps/RollDialog';
+import MagReload from '../../apps/MagReload';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
@@ -122,6 +123,8 @@ export default class SwadeItem extends Item {
     ];
     return types.includes(this.type);
   }
+
+  
 
   get canHaveCategory(): boolean {
     const types = ['edge'];
@@ -542,7 +545,7 @@ export default class SwadeItem extends Item {
       this.type === 'weapon' &&
       !this.isMeleeWeapon &&
       ammoManagement &&
-      !getProperty(this, 'system.autoReload');
+      !getProperty(this, 'system.reloadType') != constants.RELOAD_TYPE.NONE;
     const hasDamage = !!getProperty(this, 'system.damage');
     const hasTraitRoll =
       ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
@@ -551,7 +554,7 @@ export default class SwadeItem extends Item {
       ammoManagement &&
       this.type === 'weapon' &&
       getProperty(this, 'system.shots') > 0 &&
-      !getProperty(this, 'system.autoReload');
+      getProperty(this, 'system.reloadType') != constants.RELOAD_TYPE.NONE;
 
     const additionalActions: Record<string, ItemAction> =
       getProperty(this, 'system.actions.additional') || {};
@@ -655,13 +658,40 @@ export default class SwadeItem extends Item {
     return modifiers;
   }
 
+  canExpendResources(shotsUsed = 1): boolean {
+    switch (this.type) {
+      case 'weapon': {
+        if (!game.settings.get('swade', 'ammoManagement') || 
+          this.isMeleeWeapon) return true;
+    
+        //do autoreload stuff if applicable
+        const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
+        const ammo = this?.parent.items.getName(this.system.ammo);
+        // const ammoCount = 0;
+        if(noReload && !ammo) return false;
+        else if (noReload) {
+          const ammoCount = ammo.type === 'consumable' ? ammo.system['charges']['value'] : ammo.system['quantity'];
+          return shotsUsed < ammoCount;
+        }
+        else {
+          return shotsUsed < this.system.currentShots
+        }
+        break;
+      }
+      default:
+        return true;
+    }
+  }
+
   async consume(charges = 1) {
     const useQuantity = this.type === 'consumable';
-    const useResource = this.type === 'weapon';
+    const useAmmo = this.type === 'weapon';
+    const useResource = this.type === 'gear'
 
     const usage = this._getUsageUpdates({
       charges,
       useQuantity,
+      useAmmo,
       useResource,
     });
     if (!usage) return;
@@ -706,6 +736,126 @@ export default class SwadeItem extends Item {
     }
 
     await this._postConsumptionCleanup(updatedItems);
+  }
+  
+  async reload() {
+    if (this.type !== 'weapon') return;
+
+    if (!this._isReloadPossible()) {
+      if (!util.notificationExists('SWADE.ReloadNotPossible', true)) {
+        Logger.info('SWADE.ReloadNotPossible', { toast: true, localize: true });
+      }
+      return;
+    }
+    const ammoName = this.system.ammo;
+    //return if there's no ammo set
+    if (!ammoName) {
+      if (!util.notificationExists('SWADE.NoAmmoSet', true)) {
+        Logger.info('SWADE.NoAmmoSet', { toast: true, localize: true });
+      }
+      return;
+    }
+
+    const ammo = this.parent?.items.getName(ammoName);
+    const shots = this.system.shots;
+    const missingAmmo = shots - this.system.currentShots;
+    let ammoInMagazine = shots;
+
+
+
+    if (!ammo && this.system.reloadType != constants.RELOAD_TYPE.PP) {
+      if (!util.notificationExists('SWADE.NoAmmoSet', true)) {
+        Logger.warn('SWADE.NoAmmoSet', {
+          toast: true,
+          localize: true,
+        });
+      }
+      return;
+    }
+
+    switch (this.system.reloadType) {
+      case constants.RELOAD_TYPE.NONE:{
+        // Shouldn't ever arrive here because the Reload button shouldn't display
+        break;
+      }
+      case constants.RELOAD_TYPE.SINGLE:{
+        if (ammo.system.quantity > 0) {
+          ammo.consume(1)
+          await this.update({ 'system.currentShots': this.system.currentShots + 1 });
+        }
+        else {
+          if (!util.notificationExists('SWADE.NotEnoughAmmo', true)) {
+            Logger.warn('SWADE.NotEnoughAmmo', {
+              toast: true,
+              localize: true,
+            });
+          }
+        }
+        break;
+      }
+      case constants.RELOAD_TYPE.FULL:{
+        const ammoInInventory = ammo.system.quantity;
+        if (ammoInInventory < missingAmmo) { // partial reload
+          ammoInMagazine = this.system.currentShots + ammoInInventory;
+          ammo.consume(ammoInInventory)
+          if (!util.notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
+            Logger.warn('SWADE.NotEnoughAmmoToReload', {
+              toast: true,
+              localize: true,
+            });
+          }
+        }
+        else {
+          ammo.consume(missingAmmo)
+        }
+        await this.update({ 'system.currentShots': ammoInMagazine });
+        break;
+      }
+      case constants.RELOAD_TYPE.MAGAZINE: {
+        const magList = this.actor?.itemTypes.consumable.filter((i) => i.system.isMagazine)
+        if (magList.length == 0) {
+          if (!util.notificationExists('SWADE.NoMags', true)) {
+            Logger.warn('SWADE.NoMags', {
+              toast: true,
+              localize: true,
+            });
+          }
+          break;
+        }
+        await MagReload.asPromise();
+        break;
+      }
+      case constants.RELOAD_TYPE.PP: {
+        const powerPoints = this.actor?.system.powerPoints[this.system.ammo]
+        if (!powerPoints) {
+          if (!util.notificationExists('SWADE.NoAmmoPP', true)) {
+            Logger.warn('SWADE.NoAmmoPP', {
+              toast: true,
+              localize: true,
+            });
+          }
+          return;
+        }
+
+        if (powerPoints?.value < this.system.ppReloadCost) {
+          if (!util.notificationExists('SWADE.NotEnoughAmmo', true)) {
+            Logger.warn('SWADE.NotEnoughAmmo', {
+              toast: true,
+              localize: true,
+            });
+          }
+          return;
+        }
+        await this.actor.update({['system.powerPoints.' + this.system.ammo + '.value']: powerPoints.value - this.system.ppReloadCost})
+        await this.update({ 'system.currentShots': ammoInMagazine });
+        break;
+      }
+    }
+
+    //check to see we're not posting the message twice
+    if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    }
   }
 
   async grantEmbedded(target = this.parent) {
@@ -764,6 +914,7 @@ export default class SwadeItem extends Item {
   protected _getUsageUpdates({
     charges,
     useQuantity,
+    useAmmo,
     useResource,
   }: UsageUpdatesContext): UsageUpdates | false {
     const actorUpdates: Updates = {};
@@ -775,11 +926,19 @@ export default class SwadeItem extends Item {
       if (canConsume === false) return false;
     }
 
+    if (useAmmo) {
+      const canConsume = this._handleConsumeAmmo(
+        charges,
+        itemUpdates,
+        resourceUpdates,
+      )
+      if (canConsume === false) return false;
+    }
+
     if (useResource) {
       const canConsume = this._handleConsumeResource(
         charges,
         itemUpdates,
-        resourceUpdates,
       );
       if (canConsume === false) return false;
     }
@@ -809,6 +968,8 @@ export default class SwadeItem extends Item {
 
     if (newCharges === 0 && newQuantity < quantity && newQuantity !== 0) {
       newCharges = maxCharges;
+
+
     }
 
     //write updates
@@ -816,14 +977,19 @@ export default class SwadeItem extends Item {
     itemUpdates['system.charges.value'] = newCharges;
   }
 
-  private _handleConsumeResource(
+  private _handleConsumeAmmo(
     chargesToUse: number,
     itemUpdates: Updates,
-    resourceUpdates: Updates[],
-  ): void | boolean {
-    if (this.type === 'weapon') {
-      if (this.system.autoReload) {
-        const ammo = this.parent?.items.getName(this.system.ammo);
+    resourceUpdates: Updates[],): void | boolean {
+    if (!game.settings.get('swade', 'ammoManagement')) return false;
+
+    if (this.system.reloadType === constants.RELOAD_TYPE.NONE) {
+      if (!this._isReloadPossible()) return false;
+      const ammo = this.parent?.items.getName(this.system.ammo);
+      if (ammo.type === 'consumable') {
+        ammo?.consume(chargesToUse);
+      }
+      else {
         const quantity = ammo?.system['quantity'];
         if (!ammo || chargesToUse > quantity) {
           Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
@@ -833,16 +999,41 @@ export default class SwadeItem extends Item {
           _id: ammo.id,
           'data.quantity': quantity - chargesToUse,
         });
-      } else {
-        const currentShots = this.system.currentShots;
-        const usesShots = !!this.system.shots && !!currentShots;
-        if (!usesShots || chargesToUse > currentShots) {
-          Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
-          return false;
-        }
-        itemUpdates['data.currentShots'] = currentShots - chargesToUse;
+
       }
+    } else {
+      const currentShots = this.system.currentShots;
+      const usesShots = !!this.system.shots && !!currentShots;
+      if (!usesShots || chargesToUse > currentShots) {
+        Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
+        return false;
+      }
+      itemUpdates['system.currentShots'] = currentShots - chargesToUse;
     }
+  }
+
+  private _handleConsumeResource(
+    chargesToUse: number,
+    itemUpdates: Updates
+  ): void | boolean {
+    itemUpdates['system.quantity'] = this.system.quantity - chargesToUse;
+  }
+
+  private _isReloadPossible(): boolean {
+    const isPC = this.parent.type === 'character';
+    const isNPC = this.parent.type === 'npc';
+    const isVehicle = this.parent.type === 'vehicle';
+    const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
+    const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
+    const useAmmoFromInventory = game.settings.get(
+      'swade',
+      'ammoFromInventory',
+    );
+    return (
+      (isVehicle && vehicleAmmoFromInventory) ||
+      (isNPC && npcAmmoFromInventory) ||
+      (isPC && useAmmoFromInventory)
+    );
   }
 
   private _makeExplodable(expression: string): string {

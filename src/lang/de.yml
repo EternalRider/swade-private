@@ -214,7 +214,6 @@ SWADE:
   Curr: Aktuell
   Aiming: Zielen
   Ammo: Munition
-  AutoReload: Braucht keine Aktion zum nachladen
   Berserk: Berserkerrausch
   BleedingOut: Verblutend
   DSNNone: '- Kein -'
@@ -242,7 +241,16 @@ SWADE:
   ActBeforeCurrentCombatant: Jetzt handeln
   ActAfterCurrentCombatant: Nach aktuellem Teilnehmer handeln
   LoseTurn: Zug aussetzen umschalten
+  ReloadType:
+    Label: TODO
+    None: TODO
+    Single: TODO
+    Full: TODO
+    Magazine: TODO
+    PP: TODO
   NoAmmoSet: Keine Munition ausgewählt
+  NoAmmoPP: TODO
+  NoMags: TODO
   NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
@@ -254,6 +262,7 @@ SWADE:
   Refresh: Aktualisiere diese Karte
   Reload: Nachladen
   ReloadSuccess: Die Waffe wurde erfolgreich nachgeladen
+  ReloadNotPossible: TODO
   ReloadUnneeded: Die Waffe ist bereits voll geladen
   ShowBennyAnimation: Zeige die Benny Animation
   ShowBennyAnimationDesc: Spielt eine 3D Animation ab wenn ein Benny ausgegeben wird
@@ -665,6 +674,7 @@ SWADE:
   DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
   TrademarkWeapon:
     Label: Lieblingswaffe
+    None: TODO
     Regular: Lieblingswaffe
     Improved: Absolute Lieblingswaffe
   OffHandPenalty: Falsche Hand
@@ -713,6 +723,7 @@ SWADE:
     Header: Inhalt
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
+  ItemIsMagazine: TODO
   Vision:
     SeeHeat: Wärme sehen
     SenseHeat: Wärme spüren
