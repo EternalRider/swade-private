@@ -5,6 +5,8 @@ import {
 } from '../interfaces/additional.interface';
 import IRollOptions from '../interfaces/RollOptions.interface';
 import { SWADE } from './config';
+import { SwadeRoll } from './dice/SwadeRoll';
+import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
@@ -15,7 +17,7 @@ import { getTrait, notificationExists } from './util';
  * A helper class for Item chat card logic
  */
 export default class ItemChatCardHelper {
-  static async onChatCardAction(event): Promise<Roll | null> {
+  static async onChatCardAction(event): Promise<SwadeRoll | null> {
     event.preventDefault();
 
     // Extract card data
@@ -128,8 +130,8 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     action: string,
     additionalMods: TraitRollModifier[] = [],
-  ): Promise<Roll | null> {
-    let roll: Promise<Roll | null> | Roll | null = null;
+  ): Promise<SwadeRoll | null> {
+    let roll: SwadeRoll | null = null;
 
     switch (action) {
       case 'damage':
@@ -227,18 +229,16 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     actionKey: string,
     additionalMods: TraitRollModifier[] = [],
-  ): Promise<Roll | null> {
+  ): Promise<SwadeRoll | null> {
     const action = getProperty(
       item,
       `system.actions.additional.${actionKey}`,
     ) as ItemAction;
-    const ammoManagement =
-      game.settings.get('swade', 'ammoManagement') && !item.isMeleeWeapon;
 
     // if there isn't actually any action then return early
     if (!action) return null;
 
-    let roll: Promise<Roll> | Roll | null = null;
+    let roll: SwadeRoll | null = null;
 
     if (action.type === 'skill' || action.type === 'resist') {
       //set the trait name and potentially override it via the action
@@ -254,12 +254,11 @@ export default class ItemChatCardHelper {
           value: action.skillMod,
         });
       }
-      const currentShots = getProperty(item, 'system.currentShots');
 
       if (item.type === 'weapon') {
-        if (!item.canExpendResources(action.shotsUsed)) {    
+        if (!item.canExpendResources(action.shotsUsed)) {
           Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
-          return null
+          return null;
         }
       }
 
@@ -303,7 +302,7 @@ export default class ItemChatCardHelper {
     trait: string | SwadeItem | null | undefined,
     actor: SwadeActor,
     options: IRollOptions,
-  ): Promise<Roll | null> {
+  ): Promise<TraitRoll | null> {
     const rollSkill = trait instanceof SwadeItem || !trait;
     const rollAttribute = typeof trait === 'string';
     if (rollSkill) {
@@ -316,7 +315,6 @@ export default class ItemChatCardHelper {
       return null;
     }
   }
-
 
   static async refreshItemCard(actor: SwadeActor, messageId?: string) {
     //get ChatMessage and remove temporarily stored id from CONFIG object
@@ -391,13 +389,12 @@ export default class ItemChatCardHelper {
     }
   }
 
-
   /** @internal */
   static callActionHook(
     actor: SwadeActor,
     item: SwadeItem,
     action: string,
-    roll: Roll<{}> | null,
+    roll: SwadeRoll | null,
   ) {
     /**
      * @category Hooks

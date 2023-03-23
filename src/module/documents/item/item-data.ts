@@ -124,6 +124,8 @@ interface WeaponData
   shots: number;
   currentShots: number;
   ammo: string;
+  /** @deprecated */
+  autoReload: boolean;
   reloadType: ReloadType;
   parry: number;
   trademark: 0 | 1 | 2;

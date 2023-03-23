@@ -252,7 +252,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     if (this.type === 'weapon') {
       data.ppReload = false;
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      switch (this.item.system.reloadType){
+      switch (this.item.system.reloadType) {
         case constants.RELOAD_TYPE.NONE:
         case constants.RELOAD_TYPE.SINGLE:
         case constants.RELOAD_TYPE.FULL:
@@ -266,7 +266,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
             .map((i) => i.name) as string[];
           break;
         case constants.RELOAD_TYPE.PP:
-          data.ammoList = Object.keys(this.actor.system?.powerPoints)
+          data.ammoList = Object.keys(this.actor.system?.powerPoints);
           data.ppReload = true;
       }
       data.reloadTypeOptions = this._reloadTypeOptions();
@@ -693,9 +693,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
       [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
       [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
-      // [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
-      [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP'
-    }
+      [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
+      [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
+    };
   }
 }
 

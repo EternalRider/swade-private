@@ -1,25 +1,16 @@
-import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
-import * as util from '../../util';
-
-/***** 
-
-WIP File
-
-*****/
-
 export default class MagReload extends FormApplication<
   FormApplicationOptions,
   object,
-  ReloadContext
+  MagReloadContext
 > {
-  #callback: (roll: SwadeRoll | null) => void;
+  #callback: (reloaded: boolean) => void;
   #isResolved = false;
-  
-  static asPromise(ctx: ReloadContext): Promise<SwadeItem | null> {
-    return new Promise((resolve) => new RollDialog(ctx, resolve));
+
+  static asPromise(ctx: MagReloadContext): Promise<boolean> {
+    return new Promise((resolve) => new MagReload(ctx, resolve));
   }
-      
+
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/magreload.hbs',
@@ -40,7 +31,7 @@ export default class MagReload extends FormApplication<
 
   constructor(
     ctx: MagReloadContext,
-    resolve: (roll: SwadeItem | null) => void,
+    resolve: (reloaded: boolean) => void,
     options?: Partial<FormApplicationOptions>,
   ) {
     super(ctx, options);
@@ -53,20 +44,26 @@ export default class MagReload extends FormApplication<
   }
 
   override close(options?: Application.CloseOptions): Promise<void> {
-    if (!this.#isResolved) this.#callback(null);
+    if (!this.#isResolved) this.#callback(false);
     $(document).off('keydown.chooseDefault');
     return super.close(options);
   }
 
-  #resolve(roll: SwadeRoll) {
+  protected override async _updateObject(
+    _event: Event,
+    _formData?: object,
+  ): Promise<unknown> {
+    throw new Error('Method not implemented.');
+  }
+
+  #resolve() {
     this.#isResolved = true;
-    this.#callback(roll);
+    this.#callback(true);
     this.close();
   }
 }
 
 interface MagReloadContext {
   item: SwadeItem;
-  actor: SwadeActor;
-  title: String;
+  magList: SwadeItem[];
 }
