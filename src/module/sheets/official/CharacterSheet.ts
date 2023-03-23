@@ -436,9 +436,11 @@ export default class CharacterSheet extends ActorSheet<
         ammoManagement &&
         item.type === 'weapon' &&
         !item.isMeleeWeapon &&
-        !system.autoReload;
+        system.reloadType !== constants.RELOAD_TYPE.NONE;
       const hasReloadButton =
-        ammoManagement && system.shots > 0 && !system.autoReload;
+        ammoManagement &&
+        system.shots > 0 &&
+        system.reloadType !== constants.RELOAD_TYPE.NONE;
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);

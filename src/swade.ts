@@ -223,11 +223,15 @@ Hooks.once('init', () => {
     label: 'SWADE.ItemSheet',
   });
 
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.TraitRoll = TraitRoll;
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });

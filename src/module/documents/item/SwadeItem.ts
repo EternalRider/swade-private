@@ -543,7 +543,7 @@ export default class SwadeItem extends Item {
       this.type === 'weapon' &&
       !this.isMeleeWeapon &&
       ammoManagement &&
-      !getProperty(this, 'system.reloadType') != constants.RELOAD_TYPE.NONE;
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE;
     const hasDamage = !!getProperty(this, 'system.damage');
     const hasTraitRoll =
       ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
@@ -552,7 +552,7 @@ export default class SwadeItem extends Item {
       ammoManagement &&
       this.type === 'weapon' &&
       getProperty(this, 'system.shots') > 0 &&
-      getProperty(this, 'system.reloadType') != constants.RELOAD_TYPE.NONE;
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE;
 
     const additionalActions: Record<string, ItemAction> =
       getProperty(this, 'system.actions.additional') || {};
@@ -666,15 +666,16 @@ export default class SwadeItem extends Item {
         const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
         const ammo = this?.parent.items.getName(this.system.ammo);
         // const ammoCount = 0;
-        if (noReload && !ammo) return false;
-        else if (noReload) {
+        if (noReload && !ammo) {
+          return false;
+        } else if (noReload) {
           const ammoCount =
             ammo.type === 'consumable'
               ? ammo.system['charges']['value']
               : ammo.system['quantity'];
-          return shotsUsed < ammoCount;
+          return shotsUsed <= ammoCount;
         } else {
-          return shotsUsed < this.system.currentShots;
+          return shotsUsed <= this.system.currentShots;
         }
       }
       default:
@@ -738,12 +739,11 @@ export default class SwadeItem extends Item {
   }
 
   async reload() {
-    if (this.type !== 'weapon') return;
+    const ammoManagement = game.settings.get('swade', 'ammoManagement');
+    if (this.type !== 'weapon' || !ammoManagement) return;
 
-    if (!this._isReloadPossible()) {
-      if (!util.notificationExists('SWADE.ReloadNotPossible', true)) {
-        Logger.info('SWADE.ReloadNotPossible', { toast: true, localize: true });
-      }
+    if (!this._needsFullReloadProcedure()) {
+      await this._handleSimpleReload();
       return;
     }
     const ammoName = this.system.ammo;
@@ -758,7 +758,7 @@ export default class SwadeItem extends Item {
     const ammo = this.parent?.items.getName(ammoName);
     const missingAmmo = this.system.shots - this.system.currentShots;
 
-    if (!ammo && this.system.reloadType != constants.RELOAD_TYPE.PP) {
+    if (!ammo && this.system.reloadType !== constants.RELOAD_TYPE.PP) {
       if (!util.notificationExists('SWADE.NoAmmoSet', true)) {
         Logger.warn('SWADE.NoAmmoSet', {
           toast: true,
@@ -944,15 +944,38 @@ export default class SwadeItem extends Item {
   }
 
   private _isReloadPossible(): boolean {
-    const isPC = this.parent.type === 'character';
-    const isNPC = this.parent.type === 'npc';
-    const isVehicle = this.parent.type === 'vehicle';
+    if (this.type !== 'weapon') return false;
+    //gather general datapoints;
+    const isPC = this.parent?.type === 'character';
+    const isNPC = this.parent?.type === 'npc';
+    const isVehicle = this.parent?.type === 'vehicle';
     const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
     const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
     const useAmmoFromInventory = game.settings.get(
       'swade',
       'ammoFromInventory',
     );
+
+    return (
+      (isVehicle && vehicleAmmoFromInventory) ||
+      (isNPC && npcAmmoFromInventory) ||
+      (isPC && useAmmoFromInventory)
+    );
+  }
+
+  private _needsFullReloadProcedure(): boolean {
+    if (this.type !== 'weapon') return false;
+    //gather general datapoints;
+    const isPC = this.parent?.type === 'character';
+    const isNPC = this.parent?.type === 'npc';
+    const isVehicle = this.parent?.type === 'vehicle';
+    const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
+    const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
+    const useAmmoFromInventory = game.settings.get(
+      'swade',
+      'ammoFromInventory',
+    );
+
     return (
       (isVehicle && vehicleAmmoFromInventory) ||
       (isNPC && npcAmmoFromInventory) ||
@@ -1144,6 +1167,15 @@ export default class SwadeItem extends Item {
     });
     await this.update({ 'system.currentShots': this.system.shots });
 
+    if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    }
+  }
+
+  private async _handleSimpleReload() {
+    await this.update({
+      'system.currentShots': this.system.shots,
+    });
     if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     }
