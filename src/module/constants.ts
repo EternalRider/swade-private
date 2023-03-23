@@ -46,6 +46,13 @@ export const constants = {
     MAIN_HAND: 4,
     TWO_HANDS: 5,
   } as const,
+  RELOAD_TYPE: {
+    NONE: 'none',
+    SINGLE: 'single',
+    FULL: 'full',
+    MAGAZINE: 'magazine',
+    PP: 'pp',
+  } as const,
   /** @enum */
   GRANT_ON: {
     ADDED: 0,

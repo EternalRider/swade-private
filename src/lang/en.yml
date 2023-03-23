@@ -271,12 +271,22 @@ SWADE:
   Reload: Reload
   Refresh: Refresh this card
   Ammo: Ammunition
+  ppReload: Power Points to Reload
+  ReloadNotPossible: This actor type doesn't reload
   ReloadUnneeded: The weapon is already fully loaded
   ReloadSuccess: The weapon has been successfully reloaded
   NotEnoughAmmo: You don't have enough ammunition for this action!
   NotEnoughAmmoToReload: There's not enough ammo for a full reload
-  AutoReload: Doesn't need Reload action
+  ReloadType: 
+    Label: Reload Type
+    None: None
+    Single: Single
+    Full: Full
+    Magazine: Magazine
+    PP: Power Points
   NoAmmoSet: There is no ammunition set
+  NoAmmoPP: Could not find power points matching the set ammo
+  NoMags: You don't have any consumables marked as magazines in your inventory
   Trapping: Trappings
   AddBenny: Add a Benny
   CurrentBennies: Current Bennies
@@ -548,14 +558,12 @@ SWADE:
     AmmoManagement:
       Name: Ammunition Management
       Hint: >-
-        When turned on, and applicable, actions subtract ammunition from the
-        magazine of the weapon. Item cards also gain a new reload button and you
-        will not be able to roll an attack if not enough ammunition is available
+        Automates ammo consumption. See system documentation journal for details.
     PCAmmoFromInventory:
       Name: PCs use Ammunition from Inventory
       Hint: >-
-        When activated the option to set a `Gear` Item can be set to be used as
-        ammunition and will be used when reloading the weapon
+        When activated a Gear or Consumable Item that is set as
+        ammunition will be used when reloading the weapon
     NPCAmmoFromInventory:
       Name: NPCs use ammunition from their inventory
     VehicleAmmoFromInventory:
@@ -646,6 +654,7 @@ SWADE:
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
     Label: Trademark Weapon
+    None: None
     Regular: Regular
     Improved: Improved
   OffHandPenalty: Off-Hand Penalty
@@ -696,6 +705,7 @@ SWADE:
     Header: Contents
   Category: Item Category
   ItemIsAmmo: Is Ammunition
+  ItemIsMagazine: Is a Magazine for a Weapon
   Vision:
     SeeHeat: See Heat
     SenseHeat: Sense Heat

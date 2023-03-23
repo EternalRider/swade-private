@@ -3,6 +3,7 @@ import {
   AdditionalStats,
   EquipState,
   LinkedAttribute,
+  ReloadType,
 } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
@@ -123,7 +124,7 @@ interface WeaponData
   shots: number;
   currentShots: number;
   ammo: string;
-  autoReload: boolean;
+  reloadType: ReloadType;
   parry: number;
   trademark: 0 | 1 | 2;
   isHeavyWeapon: boolean;
@@ -191,6 +192,7 @@ interface ConsumableData
     max: number;
     value: number;
   };
+  isMagazine: boolean;
   messageOnUse: boolean;
   destroyOnEmpty: boolean;
 }

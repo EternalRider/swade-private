@@ -77,6 +77,12 @@
           </span>
         <p class="notes">{{localize "SWADE.MessageOnUse.Hint"}}</p>
       </div>
+      <div class="form-group">
+        <label>{{localize "SWADE.ItemIsMagazine"}}</label>
+          <span class='form-fields'>
+            <input type='checkbox' name='system.isMagazine' {{checked item.system.isMagazine}}/>
+          </span>
+      </div>
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     <section class='tab effects' data-group='main' data-tab='effects'>
