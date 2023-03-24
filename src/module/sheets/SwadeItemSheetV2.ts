@@ -693,7 +693,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
       [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
       [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
-      // [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
+      [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
       [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
   }

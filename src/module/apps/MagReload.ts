@@ -1,11 +1,10 @@
 import SwadeItem from '../documents/item/SwadeItem';
-export default class MagReload extends FormApplication<
-  FormApplicationOptions,
-  object,
-  MagReloadContext
-> {
+
+export default class MagReload extends Application<ApplicationOptions> {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
+  magazines: SwadeItem[];
+  weapon: SwadeItem;
 
   static asPromise(ctx: MagReloadContext): Promise<boolean> {
     return new Promise((resolve) => new MagReload(ctx, resolve));
@@ -34,13 +33,27 @@ export default class MagReload extends FormApplication<
     resolve: (reloaded: boolean) => void,
     options?: Partial<FormApplicationOptions>,
   ) {
-    super(ctx, options);
+    super(options);
     this.#callback = resolve;
+    this.magazines = ctx.magazines;
+    this.weapon = ctx.weapon;
     this.render(true);
   }
 
-  get ctx() {
-    return this.object;
+  override activateListeners(html: JQuery<HTMLElement>): void {
+    super.activateListeners(html);
+    html[0]
+      .querySelectorAll<HTMLButtonElement>('button[data-item-id]')
+      .forEach((btn) =>
+        btn.addEventListener('click', this.#handleReload.bind(this)),
+      );
+  }
+
+  async getData(options?: Partial<ApplicationOptions>) {
+    const renderData = {
+      magazines: this.magazines,
+    };
+    return foundry.utils.mergeObject(renderData, await super.getData(options));
   }
 
   override close(options?: Application.CloseOptions): Promise<void> {
@@ -49,11 +62,38 @@ export default class MagReload extends FormApplication<
     return super.close(options);
   }
 
-  protected override async _updateObject(
-    _event: Event,
-    _formData?: object,
-  ): Promise<unknown> {
-    throw new Error('Method not implemented.');
+  async #handleReload(ev: MouseEvent) {
+    if (this.weapon.type !== 'weapon') return;
+    const target = ev.currentTarget as HTMLButtonElement;
+    let magazine = this.#selectMagazine(target.dataset.itemId as string);
+    //assume weapon has a mag inserted.
+    const currentShots = this.weapon.system.currentShots;
+    const magStackSize = magazine.system.quantity;
+    const newCurrentShots = magazine.system.charges.value;
+    //If the selected magazine has a stacksize greater than 1 then create a new consumable with the new charges
+    if (magStackSize > 1) {
+      const newMagItemData = foundry.utils.mergeObject(magazine.toObject(), {
+        'system.quantity': 1,
+        'system.charges.value': currentShots,
+      });
+      //persist updates
+      await magazine.update({ 'system.quantity': magStackSize - 1 });
+      magazine = (await CONFIG.Item.documentClass.create(newMagItemData, {
+        parent: magazine.parent!,
+      })) as SwadeItem;
+    }
+
+    await Promise.all([
+      magazine.update({ 'system.charges.value': currentShots }),
+      this.weapon.update({
+        'system.currentShots': newCurrentShots,
+      }),
+    ]);
+    this.#resolve();
+  }
+
+  #selectMagazine(id: string) {
+    return this.magazines.find((i) => i.id === id) as SwadeItem;
   }
 
   #resolve() {
@@ -64,6 +104,6 @@ export default class MagReload extends FormApplication<
 }
 
 interface MagReloadContext {
-  item: SwadeItem;
-  magList: SwadeItem[];
+  weapon: SwadeItem;
+  magazines: SwadeItem[];
 }

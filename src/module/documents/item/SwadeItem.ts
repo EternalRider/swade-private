@@ -1121,9 +1121,9 @@ export default class SwadeItem extends Item {
   }
 
   private async _handleMagazineReload() {
-    const magList =
+    const magazines =
       this.actor?.itemTypes.consumable.filter((i) => i.system.isMagazine) ?? [];
-    if (magList.length === 0) {
+    if (magazines.length === 0) {
       if (!util.notificationExists('SWADE.NoMags', true)) {
         Logger.warn('SWADE.NoMags', {
           toast: true,
@@ -1132,7 +1132,7 @@ export default class SwadeItem extends Item {
       }
       return;
     }
-    const reloaded = await MagReload.asPromise({ item: this, magList });
+    const reloaded = await MagReload.asPromise({ weapon: this, magazines });
 
     if (reloaded) {
       if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
@@ -1252,6 +1252,17 @@ export default class SwadeItem extends Item {
           };
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
+    }
+    //handle and potentially reject magazine updates
+    if (
+      this.type === 'consumable' &&
+      this.system.isMagazine &&
+      foundry.utils.hasProperty(changed, 'system.quantity')
+    ) {
+      const quantity = changed.system.quantity;
+      if (quantity > 1) {
+        Logger.debug('Rejected quantity update on magazine ' + this.id);
+      }
     }
   }
 

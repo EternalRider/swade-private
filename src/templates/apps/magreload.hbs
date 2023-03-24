@@ -1,13 +1,19 @@
-<form autocomplete="off">
-    <div class="form-group">
-        {{!-- Repeating list of the mags? Name, charges, not sure what else --}}
-        {{#each maglist}}
-        
-        {{/each}}
-    </div>
-    <footer>
-        <button type='button'>
-        <i class='fas fa-save'></i>{{localize 'SWADE.Reload'}}
-        </button>
-    </footer>
-</form>
+<main autocomplete='off'>
+  {{! Repeating list of the mags? Name, charges, not sure what else }}
+  <ul class='unmarked-list'>
+    {{#each magazines}}
+      <li>
+        <button data-item-id='{{id}}'>
+          x{{system.quantity}}
+          {{name}}
+          -
+          {{system.charges.value}}/{{system.charges.max}}</button>
+      </li>
+    {{/each}}
+  </ul>
+</main>
+<footer>
+  <button type='button'>
+    <i class='fas fa-save'></i>{{localize 'SWADE.Reload'}}
+  </button>
+</footer>
