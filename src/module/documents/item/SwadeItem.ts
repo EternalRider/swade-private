@@ -1122,7 +1122,9 @@ export default class SwadeItem extends Item {
 
   private async _handleMagazineReload() {
     const magazines =
-      this.actor?.itemTypes.consumable.filter((i) => i.system.isMagazine) ?? [];
+      this.actor?.itemTypes.consumable.filter(
+        (i) => i.system.isMagazine && i.system.charges.value > 0,
+      ) ?? [];
     if (magazines.length === 0) {
       if (!util.notificationExists('SWADE.NoMags', true)) {
         Logger.warn('SWADE.NoMags', {
