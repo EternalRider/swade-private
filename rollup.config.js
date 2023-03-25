@@ -1,5 +1,6 @@
 import copy from '@guanghechen/rollup-plugin-copy';
 import typescript from '@rollup/plugin-typescript';
+import autoprefixer from 'autoprefixer';
 import * as yaml from 'js-yaml';
 import { defineConfig } from 'rollup';
 import livereload from 'rollup-plugin-livereload';
@@ -51,7 +52,8 @@ export default defineConfig({
       extract: true,
       minimize: isProd,
       sourceMap: true,
-      use: ['sass']
+      use: ['sass'],
+      plugins: [autoprefixer()]
     }),
     copy({
       targets: [
