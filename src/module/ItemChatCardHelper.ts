@@ -11,7 +11,7 @@ import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 import { Logger } from './Logger';
-import { getTrait, notificationExists } from './util';
+import { getTrait } from './util';
 
 /**
  * A helper class for Item chat card logic
@@ -146,19 +146,6 @@ export default class ItemChatCardHelper {
         );
         break;
       case 'reload':
-        if (
-          getProperty(item, 'system.currentShots') >=
-          getProperty(item, 'system.shots')
-        ) {
-          //check to see we're not posting the message twice
-          if (!notificationExists('SWADE.ReloadUnneeded', true)) {
-            Logger.info('SWADE.ReloadUnneeded', {
-              localize: true,
-              toast: true,
-            });
-          }
-          break;
-        }
         await item.reload();
         await this.refreshItemCard(actor);
         break;

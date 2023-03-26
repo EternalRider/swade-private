@@ -526,7 +526,7 @@
     .powers-list {
       display: flex;
       flex-direction: row;
-      align-content: start;
+      align-content: flex-start;
       flex-wrap: wrap;
       overflow: auto;
       .power {
