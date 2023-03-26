@@ -89,9 +89,15 @@ export default class MagReload extends Application<ApplicationOptions> {
     //set the shots in the weapon
     await this.weapon.update({ 'system.currentShots': magContent });
 
-    //destroy the magazine if it is empty and set to do so
-    if (currentShots === 0 && magazine?.system.destroyOnEmpty) {
-      await magazine.delete();
+    const emptyMagStack = this.magazines.find(
+      (m) => m.type === 'consumable' && m.system.charges.value === 0,
+    );
+    if (emptyMagStack && currentShots === 0) {
+      //check if there's a stack we can add to. If there is one, we can add to the stack instead of just
+      await emptyMagStack.update({
+        'system.quantity': emptyMagStack.system.quantity + 1,
+      });
+      await magazine?.delete();
     } else {
       //else just update the charges
       await magazine?.update({ 'system.charges.value': currentShots });
@@ -114,7 +120,11 @@ export default class MagReload extends Application<ApplicationOptions> {
     const groups: MagazineGroups = Object.fromEntries(
       this.magazines.map((m) => [m.name!, []]),
     );
-    for (const mag of this.magazines) {
+    const filteredMags = this.magazines.filter(
+      (m) => m.system.charges.value > 0,
+    );
+
+    for (const mag of filteredMags) {
       const charges = getProperty(mag, 'system.charges.value') as number;
       const capacity = getProperty(mag, 'system.charges.max') as number;
 

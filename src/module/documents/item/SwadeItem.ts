@@ -756,8 +756,8 @@ export default class SwadeItem extends Item {
     const reloadType = this.system.reloadType;
 
     if (!ammo && reloadType !== constants.RELOAD_TYPE.PP) {
-      if (!notificationExists('SWADE.NoAmmoSet', true)) {
-        Logger.warn('SWADE.NoAmmoSet', {
+      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
+        Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
           localize: true,
         });
@@ -765,10 +765,7 @@ export default class SwadeItem extends Item {
       return;
     }
 
-    if (
-      this.system.currentShots >= this.system.shots &&
-      reloadType !== constants.RELOAD_TYPE.MAGAZINE
-    ) {
+    if (this.system.currentShots >= this.system.shots) {
       if (!notificationExists('SWADE.ReloadUnneeded', true)) {
         Logger.info('SWADE.ReloadUnneeded', {
           localize: true,
@@ -1134,12 +1131,9 @@ export default class SwadeItem extends Item {
     }
     const magazines =
       this.actor?.itemTypes.consumable.filter(
-        (i) =>
-          i.system.isMagazine &&
-          i.system.charges.value > 0 &&
-          i.name === this.system.ammo,
+        (i) => i.system.isMagazine && i.name === this.system.ammo,
       ) ?? [];
-    if (magazines.length === 0) {
+    if (magazines.filter((m) => m.system.charges.value > 0).length === 0) {
       if (!notificationExists('SWADE.NoMags', true)) {
         Logger.warn('SWADE.NoMags', {
           toast: true,
@@ -1263,8 +1257,13 @@ export default class SwadeItem extends Item {
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
     //handle and potentially reject magazine updates
-    if (this.type === 'consumable' && this.system.isMagazine) {
-      if (foundry.utils.hasProperty(changed, 'system.quantity')) {
+    if (this.type === 'consumable') {
+      if (
+        foundry.utils.hasProperty(changed, 'system.quantity') &&
+        this.system.isMagazine &&
+        this.system.charges.value !== 0 &&
+        this.system.charges.value !== this.system.charges.max
+      ) {
         const quantity = changed.system.quantity;
         const charges = this.system.charges;
         if (quantity > 1 && charges.value < charges.max) {

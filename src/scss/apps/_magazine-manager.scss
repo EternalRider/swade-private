@@ -1,5 +1,8 @@
 .magazine-manager {
   ul.unmarked-list {
+    &:last-of-type {
+      margin-bottom: 0;
+    }
     padding: 0;
     li + li {
       margin-top: 0.5rem;
