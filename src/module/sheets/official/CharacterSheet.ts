@@ -62,6 +62,7 @@ export default class CharacterSheet extends ActorSheet<
 
     this._setupEquipStatusMenu(html);
     this._setupEffectCreateMenu(html);
+    this._setupItemContextMenu(html);
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -83,43 +84,16 @@ export default class CharacterSheet extends ActorSheet<
       .on('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
-    if (this.actor.isOwner) {
-      const handler = (ev) => this._onDragStart(ev);
-      // Find all items on the character sheet.
-      html.find('li.item.skill').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('.inventory li.item').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.power').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.edge-hindrance').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html
-        .find('.status input[type="checkbox"]')
-        .on('change', this._toggleStatusEffect.bind(this));
-    }
+    // Find all items on the character sheet.
+    html.find('li.item').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
+    });
+
+    html
+      .find('.status input[type="checkbox"]')
+      .on('change', this._toggleStatusEffect.bind(this));
 
     //Display Advances on About tab
     html.find('.character-detail.advances a').on('click', async () => {
@@ -1128,6 +1102,38 @@ export default class CharacterSheet extends ActorSheet<
       ],
       { eventName: 'click' },
     );
+  }
+
+  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
+    const items: ContextMenuEntry[] = [
+      {
+        name: 'SWADE.Ed',
+        icon: '<i class="fa-solid fa-edit"></i>',
+        callback: (i) =>
+          this.actor.items.get(i.data('itemId'))?.sheet?.render(true),
+      },
+      {
+        name: 'SWADE.Duplicate',
+        icon: '<i class="fa-solid fa-copy"></i>',
+        callback: async (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const cloned = await item?.clone(
+            { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
+            { save: true, parent: this.actor },
+          );
+          cloned?.sheet?.render(true);
+        },
+        condition: (i) =>
+          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
+      },
+      {
+        name: 'SWADE.Del',
+        icon: '<i class="fa-solid fa-trash"></i>',
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+      },
+    ];
+
+    ContextMenu.create(this, html, 'li.item', items);
   }
 }
 
