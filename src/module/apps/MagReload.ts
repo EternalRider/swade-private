@@ -1,4 +1,4 @@
-import SwadeItem from '../documents/item/SwadeItem';
+import type SwadeItem from '../documents/item/SwadeItem';
 
 export default class MagReload extends Application<ApplicationOptions> {
   #callback: (reloaded: boolean) => void;
@@ -12,19 +12,17 @@ export default class MagReload extends Application<ApplicationOptions> {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
+      title: 'Select a magazine',
       template: 'systems/swade/templates/apps/magreload.hbs',
-      classes: ['swade', 'magreload', 'swade-app'],
+      classes: ['swade', 'magazine-manager', 'swade-app'],
       width: 400,
+      height: 'auto' as const,
       filters: [
         {
           inputSelector: '.searchBox',
           contentSelector: '.selections',
         },
       ],
-      height: 'auto' as const,
-      closeOnSubmit: true,
-      submitOnClose: false,
-      submitOnChange: false,
     });
   }
 
@@ -45,24 +43,24 @@ export default class MagReload extends Application<ApplicationOptions> {
     html[0]
       .querySelectorAll<HTMLButtonElement>('button[data-item-id]')
       .forEach((btn) =>
-        btn.addEventListener('click', this.#handleReload.bind(this)),
+        btn.addEventListener('click', this._onClickMagazine.bind(this)),
       );
   }
 
   async getData(options?: Partial<ApplicationOptions>) {
     const renderData = {
-      magazines: this.magazines,
+      magazineGroups: this.#prepareMagazineList(),
     };
     return foundry.utils.mergeObject(renderData, await super.getData(options));
   }
 
-  override close(options?: Application.CloseOptions): Promise<void> {
+  override async close(options?: Application.CloseOptions): Promise<void> {
     if (!this.#isResolved) this.#callback(false);
-    $(document).off('keydown.chooseDefault');
-    return super.close(options);
+    await super.close(options);
   }
 
-  async #handleReload(ev: MouseEvent) {
+  async _onClickMagazine(ev: MouseEvent) {
+    ev.preventDefault();
     if (this.weapon.type !== 'weapon') return;
     const target = ev.currentTarget as HTMLButtonElement;
     let magazine = this.#selectMagazine(target.dataset.itemId as string);
@@ -101,9 +99,44 @@ export default class MagReload extends Application<ApplicationOptions> {
     this.#callback(true);
     this.close();
   }
+
+  #prepareMagazineList(): MagazineGroups {
+    const groups: MagazineGroups = Object.fromEntries(
+      this.magazines.map((m) => [m.name!, []]),
+    );
+    for (const mag of this.magazines) {
+      const charges = getProperty(mag, 'system.charges.value') as number;
+      const capacity = getProperty(mag, 'system.charges.max') as number;
+
+      groups[mag.name!].push({
+        id: mag.id!,
+        name: mag.name!,
+        charges,
+        capacity,
+        percentage: Math.round((charges / capacity) * 100),
+        quantity: mag.system.quantity > 1 ? mag.system.quantity : undefined,
+      });
+    }
+
+    Object.values(groups).forEach((v) =>
+      v.sort((a, b) => b.percentage - a.percentage),
+    );
+    return groups;
+  }
 }
 
 interface MagReloadContext {
   weapon: SwadeItem;
   magazines: SwadeItem[];
 }
+
+interface RenderedMagazine {
+  id: string;
+  name: string;
+  charges: number;
+  capacity: number;
+  percentage: number;
+  quantity?: number;
+}
+
+type MagazineGroups = Record<string, RenderedMagazine[]>;
