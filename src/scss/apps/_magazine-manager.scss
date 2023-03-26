@@ -5,7 +5,8 @@
       margin-top: 0.5rem;
     }
   }
-  S .magazine {
+  .magazine {
+    padding: 0 0.5rem;
     line-height: unset;
     display: grid;
     grid-template-rows: 1fr 1fr;
@@ -14,11 +15,10 @@
       'name counter'
       'name meter';
     .name {
+      grid-area: name;
       display: flex;
       align-items: center;
-      grid-area: name;
       text-align: start;
-      padding-left: 0.5em;
     }
     .counter {
       grid-area: counter;
