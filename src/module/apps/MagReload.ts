@@ -59,15 +59,20 @@ export default class MagReload extends Application<ApplicationOptions> {
     await super.close(options);
   }
 
-  async _onClickMagazine(ev: MouseEvent) {
+  private async _onClickMagazine(ev: MouseEvent) {
     ev.preventDefault();
     if (this.weapon.type !== 'weapon') return;
     const target = ev.currentTarget as HTMLButtonElement;
     let magazine = this.#selectMagazine(target.dataset.itemId as string);
-    //assume weapon has a mag inserted.
+    if (magazine?.type !== 'consumable') return;
+
     const currentShots = this.weapon.system.currentShots;
+    const magContent = magazine.system.charges.value;
     const magStackSize = magazine.system.quantity;
-    const newCurrentShots = magazine.system.charges.value;
+
+    //return early if the new and old mag have the same content as there's nothing to do
+    if (currentShots === magContent) return;
+
     //If the selected magazine has a stacksize greater than 1 then create a new consumable with the new charges
     if (magStackSize > 1) {
       const newMagItemData = foundry.utils.mergeObject(magazine.toObject(), {
@@ -76,22 +81,27 @@ export default class MagReload extends Application<ApplicationOptions> {
       });
       //persist updates
       await magazine.update({ 'system.quantity': magStackSize - 1 });
-      magazine = (await CONFIG.Item.documentClass.create(newMagItemData, {
+      magazine = await CONFIG.Item.documentClass.create(newMagItemData, {
         parent: magazine.parent!,
-      })) as SwadeItem;
+      });
     }
 
-    await Promise.all([
-      magazine.update({ 'system.charges.value': currentShots }),
-      this.weapon.update({
-        'system.currentShots': newCurrentShots,
-      }),
-    ]);
+    //set the shots in the weapon
+    await this.weapon.update({ 'system.currentShots': magContent });
+
+    //destroy the magazine if it is empty and set to do so
+    if (currentShots === 0 && magazine?.system.destroyOnEmpty) {
+      await magazine.delete();
+    } else {
+      //else just update the charges
+      await magazine?.update({ 'system.charges.value': currentShots });
+    }
+
     this.#resolve();
   }
 
   #selectMagazine(id: string) {
-    return this.magazines.find((i) => i.id === id) as SwadeItem;
+    return this.magazines.find((i) => i.id === id);
   }
 
   #resolve() {
