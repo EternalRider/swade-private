@@ -268,6 +268,7 @@ SWADE:
   Max: Max
   Curr: Current
   DSNNone: '- None -'
+  Duplicate: Duplicate
   Reload: Reload
   Refresh: Refresh this card
   Ammo: Ammunition
