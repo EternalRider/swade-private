@@ -28,7 +28,7 @@ export default class SwadeChatMessage extends ChatMessage {
     return ChatMessage.getSpeakerActor(this.speaker);
   }
 
-  get #isCritfail(): boolean {
+  get isCritfail(): boolean {
     const actor = this.speakerActor;
     //just return false if there's no actor.
     if (!actor) return false;
@@ -100,11 +100,11 @@ export default class SwadeChatMessage extends ChatMessage {
     return renderTemplate(
       'systems/swade/templates/chat/dice/roll-message.hbs',
       {
-        lockReroll: this.#isCritfail && !game.settings.get('swade', 'dumbLuck'),
+        lockReroll: this.isCritfail && !game.settings.get('swade', 'dumbLuck'),
         modifiers: this.#formatModifiers(),
         rerolled: roll?.getRerollLabel(),
         groupRoll: roll instanceof TraitRoll && roll.groupRoll,
-        isCritfail: this.#isCritfail && !isPrivate,
+        isCritfail: this.isCritfail && !isPrivate,
         isPrivate: isPrivate,
         isGM: game.user?.isGM,
         isAuthor: this.isAuthor || game.user?.isGM,

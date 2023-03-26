@@ -18,7 +18,7 @@ import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
-import * as util from '../../util';
+import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
@@ -278,10 +278,10 @@ export default class SwadeItem extends Item {
     Hooks.call('swadeRollDamage', this.actor, this, roll, modifiers, options);
 
     if (options.suppressChat) {
-      return DamageRoll.fromTerms([
+      return DamageRoll.fromTerms<DamageRoll['constructor']>([
         ...roll.terms,
         ...DamageRoll.parse(
-          roll.modifiers.reduce(util.modifierReducer, ''),
+          roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
       ]);
@@ -301,7 +301,7 @@ export default class SwadeItem extends Item {
   async setEquipState(state: EquipState): Promise<EquipState> {
     const equipState = constants.EQUIP_STATE;
     Logger.debug(
-      `Trying to set state ${util.getKeyByValue(equipState, state)} on item ${
+      `Trying to set state ${getKeyByValue(equipState, state)} on item ${
         this.name
       } with type ${this.type}`,
     );
@@ -749,7 +749,7 @@ export default class SwadeItem extends Item {
     const ammoName = this.system.ammo;
     //return if there's no ammo set
     if (!ammoName) {
-      if (!util.notificationExists('SWADE.NoAmmoSet', true)) {
+      if (!notificationExists('SWADE.NoAmmoSet', true)) {
         Logger.info('SWADE.NoAmmoSet', { toast: true, localize: true });
       }
       return;
@@ -757,12 +757,26 @@ export default class SwadeItem extends Item {
 
     const ammo = this.parent?.items.getName(ammoName);
     const missingAmmo = this.system.shots - this.system.currentShots;
+    const reloadType = this.system.reloadType;
 
-    if (!ammo && this.system.reloadType !== constants.RELOAD_TYPE.PP) {
-      if (!util.notificationExists('SWADE.NoAmmoSet', true)) {
+    if (!ammo && reloadType !== constants.RELOAD_TYPE.PP) {
+      if (!notificationExists('SWADE.NoAmmoSet', true)) {
         Logger.warn('SWADE.NoAmmoSet', {
           toast: true,
           localize: true,
+        });
+      }
+      return;
+    }
+
+    if (
+      this.system.currentShots >= this.system.shots &&
+      reloadType !== constants.RELOAD_TYPE.MAGAZINE
+    ) {
+      if (!notificationExists('SWADE.ReloadUnneeded', true)) {
+        Logger.info('SWADE.ReloadUnneeded', {
+          localize: true,
+          toast: true,
         });
       }
       return;
@@ -1076,11 +1090,11 @@ export default class SwadeItem extends Item {
       await this.update({
         'system.currentShots': this.system.currentShots + 1,
       });
-      if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+      if (!notificationExists('SWADE.ReloadSuccess', true)) {
         Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
       }
     } else {
-      if (!util.notificationExists('SWADE.NotEnoughAmmo', true)) {
+      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
           localize: true,
@@ -1091,7 +1105,7 @@ export default class SwadeItem extends Item {
 
   private async _handleFullReload(ammo: SwadeItem, missingAmmo: number) {
     if (ammo.system.quantity <= 0) {
-      if (!util.notificationExists('SWADE.NotEnoughAmmo', true)) {
+      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
           localize: true,
@@ -1104,7 +1118,7 @@ export default class SwadeItem extends Item {
       // partial reload
       ammoInMagazine = this.system.currentShots + ammo.system.quantity;
       await ammo.consume(ammo.system.quantity);
-      if (!util.notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
+      if (!notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
         Logger.warn('SWADE.NotEnoughAmmoToReload', {
           toast: true,
           localize: true,
@@ -1115,7 +1129,7 @@ export default class SwadeItem extends Item {
     }
     await this.update({ 'system.currentShots': ammoInMagazine });
 
-    if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+    if (!notificationExists('SWADE.ReloadSuccess', true)) {
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     }
   }
@@ -1123,10 +1137,13 @@ export default class SwadeItem extends Item {
   private async _handleMagazineReload() {
     const magazines =
       this.actor?.itemTypes.consumable.filter(
-        (i) => i.system.isMagazine && i.system.charges.value > 0,
+        (i) =>
+          i.system.isMagazine &&
+          i.system.charges.value > 0 &&
+          i.name === this.system.ammo,
       ) ?? [];
     if (magazines.length === 0) {
-      if (!util.notificationExists('SWADE.NoMags', true)) {
+      if (!notificationExists('SWADE.NoMags', true)) {
         Logger.warn('SWADE.NoMags', {
           toast: true,
           localize: true,
@@ -1137,7 +1154,7 @@ export default class SwadeItem extends Item {
     const reloaded = await MagReload.asPromise({ weapon: this, magazines });
 
     if (reloaded) {
-      if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+      if (!notificationExists('SWADE.ReloadSuccess', true)) {
         Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
       }
     }
@@ -1146,7 +1163,7 @@ export default class SwadeItem extends Item {
   private async _handlePPReload() {
     const powerPoints = this.actor?.system.powerPoints[this.system.ammo];
     if (!powerPoints) {
-      if (!util.notificationExists('SWADE.NoAmmoPP', true)) {
+      if (!notificationExists('SWADE.NoAmmoPP', true)) {
         Logger.warn('SWADE.NoAmmoPP', {
           toast: true,
           localize: true,
@@ -1155,7 +1172,7 @@ export default class SwadeItem extends Item {
       return;
     }
     if (powerPoints?.value < this.system.ppReloadCost) {
-      if (!util.notificationExists('SWADE.NotEnoughAmmo', true)) {
+      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
           localize: true,
@@ -1169,7 +1186,7 @@ export default class SwadeItem extends Item {
     });
     await this.update({ 'system.currentShots': this.system.shots });
 
-    if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+    if (!notificationExists('SWADE.ReloadSuccess', true)) {
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     }
   }
@@ -1178,7 +1195,7 @@ export default class SwadeItem extends Item {
     await this.update({
       'system.currentShots': this.system.shots,
     });
-    if (!util.notificationExists('SWADE.ReloadSuccess', true)) {
+    if (!notificationExists('SWADE.ReloadSuccess', true)) {
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     }
   }
@@ -1256,14 +1273,17 @@ export default class SwadeItem extends Item {
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
     //handle and potentially reject magazine updates
-    if (
-      this.type === 'consumable' &&
-      this.system.isMagazine &&
-      foundry.utils.hasProperty(changed, 'system.quantity')
-    ) {
-      const quantity = changed.system.quantity;
-      if (quantity > 1) {
-        Logger.debug('Rejected quantity update on magazine ' + this.id);
+    if (this.type === 'consumable' && this.system.isMagazine) {
+      if (foundry.utils.hasProperty(changed, 'system.quantity')) {
+        const quantity = changed.system.quantity;
+        const charges = this.system.charges;
+        if (quantity > 1 && charges.value < charges.max) {
+          delete changed.system.quantity;
+          Logger.warn(
+            'Partially filled magazines can only have a quantity of 1',
+            { toast: true, localize: true },
+          );
+        }
       }
     }
   }
