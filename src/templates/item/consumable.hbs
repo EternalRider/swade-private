@@ -9,9 +9,11 @@
 
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
-    <div class="form-group">
-      <button class="use-consumable">{{localize "SWADE.Consumable.Use"}}</button>
-    </div>
+    {{#unless item.system.isMagazine}}
+      <div class="form-group">
+        <button class="use-consumable">{{localize "SWADE.Consumable.Use"}}</button>
+      </div>
+    {{/unless}}
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class="form-group">
       <label>{{localize "SWADE.Charges"}}</label>
