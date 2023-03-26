@@ -742,10 +742,6 @@ export default class SwadeItem extends Item {
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     if (this.type !== 'weapon' || !ammoManagement) return;
 
-    if (!this._needsFullReloadProcedure()) {
-      await this._handleSimpleReload();
-      return;
-    }
     const ammoName = this.system.ammo;
     //return if there's no ammo set
     if (!ammoName) {
@@ -793,7 +789,7 @@ export default class SwadeItem extends Item {
         await this._handleMagazineReload();
         break;
       case constants.RELOAD_TYPE.PP:
-        await this._handlePPReload();
+        await this._handlePowerPointReload();
         break;
       case constants.RELOAD_TYPE.NONE:
       default:
@@ -1086,13 +1082,11 @@ export default class SwadeItem extends Item {
 
   private async _handleSingleReload(ammo: SwadeItem) {
     if (ammo.system.quantity > 0) {
-      await ammo.consume(1);
+      if (this._needsFullReloadProcedure()) await ammo.consume(1);
       await this.update({
         'system.currentShots': this.system.currentShots + 1,
       });
-      if (!notificationExists('SWADE.ReloadSuccess', true)) {
-        Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-      }
+      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     } else {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
@@ -1104,6 +1098,9 @@ export default class SwadeItem extends Item {
   }
 
   private async _handleFullReload(ammo: SwadeItem, missingAmmo: number) {
+    if (!this._needsFullReloadProcedure()) {
+      return this._handleSimpleReload();
+    }
     if (ammo.system.quantity <= 0) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
@@ -1128,13 +1125,13 @@ export default class SwadeItem extends Item {
       await ammo.consume(missingAmmo);
     }
     await this.update({ 'system.currentShots': ammoInMagazine });
-
-    if (!notificationExists('SWADE.ReloadSuccess', true)) {
-      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-    }
+    Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
   }
 
   private async _handleMagazineReload() {
+    if (!this._needsFullReloadProcedure()) {
+      return this._handleSimpleReload();
+    }
     const magazines =
       this.actor?.itemTypes.consumable.filter(
         (i) =>
@@ -1154,13 +1151,11 @@ export default class SwadeItem extends Item {
     const reloaded = await MagReload.asPromise({ weapon: this, magazines });
 
     if (reloaded) {
-      if (!notificationExists('SWADE.ReloadSuccess', true)) {
-        Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-      }
+      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     }
   }
 
-  private async _handlePPReload() {
+  private async _handlePowerPointReload() {
     const powerPoints = this.actor?.system.powerPoints[this.system.ammo];
     if (!powerPoints) {
       if (!notificationExists('SWADE.NoAmmoPP', true)) {
@@ -1185,19 +1180,14 @@ export default class SwadeItem extends Item {
         powerPoints.value - this.system.ppReloadCost,
     });
     await this.update({ 'system.currentShots': this.system.shots });
-
-    if (!notificationExists('SWADE.ReloadSuccess', true)) {
-      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-    }
+    Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
   }
 
   private async _handleSimpleReload() {
     await this.update({
       'system.currentShots': this.system.shots,
     });
-    if (!notificationExists('SWADE.ReloadSuccess', true)) {
-      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-    }
+    Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
   }
 
   protected override async _preCreate(
