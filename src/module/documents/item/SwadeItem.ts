@@ -662,17 +662,15 @@ export default class SwadeItem extends Item {
         if (!game.settings.get('swade', 'ammoManagement') || this.isMeleeWeapon)
           return true;
 
-        //do autoreload stuff if applicable
         const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
         const ammo = this?.parent.items.getName(this.system.ammo);
-        // const ammoCount = 0;
         if (noReload && !ammo) {
           return false;
         } else if (noReload) {
           const ammoCount =
-            ammo.type === 'consumable'
-              ? ammo.system['charges']['value']
-              : ammo.system['quantity'];
+            ammo?.type === 'consumable'
+              ? ammo?.system['charges']['value']
+              : ammo?.system['quantity'];
           return shotsUsed <= ammoCount;
         } else {
           return shotsUsed <= this.system.currentShots;

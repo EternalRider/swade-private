@@ -1,4 +1,7 @@
 .magazine-manager {
+  .discard-mag {
+    flex: 0 0 20px;
+  }
   ul.unmarked-list {
     &:last-of-type {
       margin-bottom: 0;

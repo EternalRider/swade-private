@@ -3,6 +3,7 @@ import type SwadeItem from '../documents/item/SwadeItem';
 export default class MagReload extends Application<ApplicationOptions> {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
+  discardEmptyMagazine = false;
   magazines: SwadeItem[];
   weapon: SwadeItem;
 
@@ -45,6 +46,12 @@ export default class MagReload extends Application<ApplicationOptions> {
       .forEach((btn) =>
         btn.addEventListener('click', this._onClickMagazine.bind(this)),
       );
+    html[0]
+      .querySelector<HTMLInputElement>('.discard-mag')
+      ?.addEventListener('click', (ev) => {
+        const target = ev.currentTarget as HTMLInputElement;
+        this.discardEmptyMagazine = target.checked;
+      });
   }
 
   async getData(options?: Partial<ApplicationOptions>) {
@@ -68,10 +75,13 @@ export default class MagReload extends Application<ApplicationOptions> {
 
     const currentShots = this.weapon.system.currentShots;
     const magContent = magazine.system.charges.value;
-    const magStackSize = magazine.system.quantity;
-
     //return early if the new and old mag have the same content as there's nothing to do
     if (currentShots === magContent) return;
+    //set the shots in the weapon
+    await this.weapon.update({ 'system.currentShots': magContent });
+
+    const magStackSize = magazine.system.quantity;
+    const emptyMag = currentShots === 0;
 
     //If the selected magazine has a stacksize greater than 1 then create a new consumable with the new charges
     if (magStackSize > 1) {
@@ -86,13 +96,10 @@ export default class MagReload extends Application<ApplicationOptions> {
       });
     }
 
-    //set the shots in the weapon
-    await this.weapon.update({ 'system.currentShots': magContent });
-
     const emptyMagStack = this.magazines.find(
       (m) => m.type === 'consumable' && m.system.charges.value === 0,
     );
-    if (emptyMagStack && currentShots === 0) {
+    if (emptyMagStack && emptyMag) {
       //check if there's a stack we can add to. If there is one, we can add to the stack instead of just
       await emptyMagStack.update({
         'system.quantity': emptyMagStack.system.quantity + 1,
