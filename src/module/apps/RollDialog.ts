@@ -175,13 +175,7 @@ export default class RollDialog extends FormApplication<
   }
 
   async #evaluateRoll(): Promise<SwadeRoll> {
-    //Raise Damage
-    if (this.#extraButtonUsed && this.ctx.item && !this.ctx.actor) {
-      this.modifiers.push({
-        label: game.i18n.localize('SWADE.BonusDamage'),
-        value: `+${this.ctx.item.system['bonusDamageDice']}d${this.ctx.item['system']['bonusDamageDie']}x`,
-      });
-    }
+    this.#checkForAndAddBonusDamage();
 
     const roll = this.#buildRollForEvaluation();
     const terms = roll.terms;
@@ -272,6 +266,17 @@ export default class RollDialog extends FormApplication<
   #getRollData() {
     if (this.ctx.actor) return this.ctx.actor.getRollData();
     return this.ctx.item?.actor?.getRollData() ?? {};
+  }
+
+  #checkForAndAddBonusDamage() {
+    if (this.#extraButtonUsed && this.ctx.item && !this.ctx.actor) {
+      const bonusDamageDice = this.ctx.item?.['system']['bonusDamageDice'];
+      const bonusDamageDieType = this.ctx.item?.['system']['bonusDamageDie'];
+      this.modifiers.push({
+        label: game.i18n.localize('SWADE.BonusDamage'),
+        value: `+${bonusDamageDice ?? 1}d${bonusDamageDieType}x`,
+      });
+    }
   }
 
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
