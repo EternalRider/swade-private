@@ -561,7 +561,6 @@ export default class SwadeActor extends Actor {
   }
 
   async spendBenny() {
-    if (this.type === 'vehicle') return;
     //return early if there no bennies to spend
     if (this.bennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {

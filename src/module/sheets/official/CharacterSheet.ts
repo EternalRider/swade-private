@@ -343,22 +343,21 @@ export default class CharacterSheet extends ActorSheet<
       }
     });
 
-    html.find('.profile-img').on('contextmenu', () => {
-      if (!this.actor.img) return;
-      new ImagePopout(this.actor.img, {
-        title: this.actor.name!,
-        shareable: this.actor.isOwner ?? game.user?.isGM,
-      }).render(true);
-    });
+    html[0]
+      .querySelector<HTMLImageElement>('.profile-img')
+      ?.addEventListener('contextmenu', () => {
+        if (!this.actor.img) return;
+        new ImagePopout(this.actor.img, {
+          title: this.actor.name!,
+          shareable: this.actor.isOwner ?? game.user?.isGM,
+        }).render(true);
+      });
 
     html[0]
       .querySelectorAll('.adjust-counter')
       .forEach((el) =>
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
-    html
-      .find('.adjust-counter')
-      .on('click', this._handleCounterAdjust.bind(this));
 
     html[0]
       .querySelectorAll(
@@ -1107,6 +1106,35 @@ export default class CharacterSheet extends ActorSheet<
   protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
     const items: ContextMenuEntry[] = [
       {
+        name: 'SWADE.Reload',
+        icon: '<i class="fa-solid fa-right-to-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          return (
+            item?.type === 'weapon' &&
+            !!item.system.shots &&
+            game.settings.get('swade', 'ammoManagement')
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
+      },
+      {
+        name: 'Remove Magazine',
+        icon: '<i class="fa-solid fa-right-from-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const isWeapon = item?.type === 'weapon';
+          const insertedMagazine = item?.getFlag('swade', 'insertedMagazine');
+          return (
+            isWeapon &&
+            !!insertedMagazine &&
+            item.needsFullReloadProcedure() &&
+            item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.unload(),
+      },
+      {
         name: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
         callback: (i) =>
@@ -1115,16 +1143,16 @@ export default class CharacterSheet extends ActorSheet<
       {
         name: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
+        condition: (i) =>
+          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
         callback: async (i) => {
           const item = this.actor.items.get(i.data('itemId'));
           const cloned = await item?.clone(
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
-            { save: true, parent: this.actor },
+            { save: true },
           );
           cloned?.sheet?.render(true);
         },
-        condition: (i) =>
-          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
       },
       {
         name: 'SWADE.Del',

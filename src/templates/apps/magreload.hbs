@@ -1,8 +1,10 @@
 <div>
-  <div class='flexrow'>
-    <label>Discard empty magazine</label>
-    <input type='checkbox' class='discard-mag' />
-  </div>
+  {{#if canDiscard}}
+    <div class='flexrow'>
+      <label>Discard empty magazine</label>
+      <input type='checkbox' class='discard-mag' />
+    </div>
+  {{/if}}
   {{! Repeating list of the mags? Name, charges, not sure what else }}
   {{#each magazineGroups}}
     <section>

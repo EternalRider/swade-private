@@ -42,6 +42,7 @@ declare global {
         embeddedAbilities: [string, ItemDataSource][];
         embeddedPowers: [string, ItemDataSource][];
         hasGranted?: string[];
+        loadedAmmo?: ItemDataSource;
         [key: string]: unknown;
       };
     };
@@ -793,6 +794,49 @@ export default class SwadeItem extends Item {
     }
   }
 
+  async unload() {
+    const loadedAmmo = this?.getFlag('swade', 'loadedAmmo');
+    if (this.type !== 'weapon' || !this.actor || !loadedAmmo) return;
+    const reloadType = this.system.reloadType;
+
+    if (reloadType === constants.RELOAD_TYPE.MAGAZINE && loadedAmmo) {
+      const updates: Updates[] = [
+        {
+          _id: this.id,
+          'system.currentShots': 0,
+          'flags.swade': { '-=loadedAmmo': null },
+        },
+      ];
+
+      if (!this.needsFullReloadProcedure()) {
+        await this.actor.updateEmbeddedDocuments('Item', updates);
+        return;
+      }
+
+      const existingMagStack = this.actor.items.find(
+        (i) =>
+          i.type === 'consumable' &&
+          i.system.isMagazine &&
+          i.system.charges.max === loadedAmmo['system.charges.value'],
+      );
+
+      if (existingMagStack) {
+        updates.push({
+          _id: existingMagStack.id,
+          'system.quantity': existingMagStack.system.quantity + 1,
+        });
+      } else {
+        const newItemData = foundry.utils.mergeObject(loadedAmmo, {
+          'system.charges.value': this.system.currentShots,
+        });
+        await CONFIG.Item.documentClass.create(newItemData, {
+          parent: this.actor,
+        });
+      }
+      await this.actor.updateEmbeddedDocuments('Item', updates);
+    }
+  }
+
   async grantEmbedded(target = this.parent) {
     if (!this.canGrantItems || !target) return;
     const grantChain = await this.getItemGrantChain();
@@ -968,7 +1012,7 @@ export default class SwadeItem extends Item {
     );
   }
 
-  private _needsFullReloadProcedure(): boolean {
+  needsFullReloadProcedure(): boolean {
     if (this.type !== 'weapon') return false;
     //gather general datapoints;
     const isPC = this.parent?.type === 'character';
@@ -1077,7 +1121,7 @@ export default class SwadeItem extends Item {
 
   private async _handleSingleReload(ammo: SwadeItem) {
     if (ammo.system.quantity > 0) {
-      if (this._needsFullReloadProcedure()) await ammo.consume(1);
+      if (this.needsFullReloadProcedure()) await ammo.consume(1);
       await this.update({
         'system.currentShots': this.system.currentShots + 1,
       });
@@ -1093,7 +1137,7 @@ export default class SwadeItem extends Item {
   }
 
   private async _handleFullReload(ammo: SwadeItem, missingAmmo: number) {
-    if (!this._needsFullReloadProcedure()) {
+    if (!this.needsFullReloadProcedure()) {
       return this._handleSimpleReload();
     }
     if (ammo.system.quantity <= 0) {
@@ -1124,7 +1168,7 @@ export default class SwadeItem extends Item {
   }
 
   private async _handleMagazineReload() {
-    if (!this._needsFullReloadProcedure()) {
+    if (!this.needsFullReloadProcedure()) {
       return this._handleSimpleReload();
     }
     const magazines =
