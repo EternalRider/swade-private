@@ -86,6 +86,15 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   ) {
     const roll = await this._handleExtraCritfail(messageData);
     if (roll) messageData['rolls'] = [roll];
+
+    foundry.utils.setProperty(
+      messageData,
+      'flags.swade.targets',
+      Array.from(game.user!.targets).map((t) => {
+        return { name: t.name, uuid: t.document.uuid };
+      }),
+    );
+
     return super.toMessage(messageData, { rollMode, create });
   }
 

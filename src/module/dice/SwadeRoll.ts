@@ -137,13 +137,6 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
         user: game.user!.id,
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         sound: CONFIG.sounds.dice,
-        flags: {
-          swade: {
-            targets: Array.from(game.user!.targets).map((t) => {
-              return { name: t.name, uuid: t.document.uuid };
-            }),
-          },
-        },
       },
       messageData,
     );

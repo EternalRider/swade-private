@@ -97,6 +97,9 @@ export default class SwadeChatMessage extends ChatMessage {
 
   async #renderMessageBody(isPrivate: boolean, content?: string) {
     const roll = this.significantRoll;
+    const targets =
+      roll instanceof TraitRoll ? this.getFlag('swade', 'targets') : [];
+
     return renderTemplate(
       'systems/swade/templates/chat/dice/roll-message.hbs',
       {
@@ -109,7 +112,7 @@ export default class SwadeChatMessage extends ChatMessage {
         isGM: game.user?.isGM,
         isAuthor: this.isAuthor || game.user?.isGM,
         rolls: await this.#renderRolls(isPrivate),
-        targets: this.getFlag('swade', 'targets'),
+        targets: targets,
         content: content,
       },
     );
