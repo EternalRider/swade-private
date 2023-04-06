@@ -5,10 +5,8 @@
       <input type='checkbox' class='discard-mag' />
     </div>
   {{/if}}
-  {{! Repeating list of the mags? Name, charges, not sure what else }}
   {{#each magazineGroups}}
     <section>
-      {{log this}}
       <h3>{{@key}}</h3>
       <ul class='unmarked-list'>
         {{#each this}}

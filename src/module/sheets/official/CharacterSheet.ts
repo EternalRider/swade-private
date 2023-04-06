@@ -1124,10 +1124,10 @@ export default class CharacterSheet extends ActorSheet<
         condition: (i) => {
           const item = this.actor.items.get(i.data('itemId'));
           const isWeapon = item?.type === 'weapon';
-          const insertedMagazine = item?.getFlag('swade', 'insertedMagazine');
+          const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
           return (
             isWeapon &&
-            !!insertedMagazine &&
+            !!loadedAmmo &&
             item.needsFullReloadProcedure() &&
             item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE
           );

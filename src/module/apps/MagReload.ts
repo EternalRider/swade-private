@@ -3,7 +3,7 @@ import type SwadeItem from '../documents/item/SwadeItem';
 export default class MagReload extends Application<ApplicationOptions> {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
-  _userWantsToDiscard = false;
+  #userWantsToDiscard = false;
   magazines: SwadeItem[];
   weapon: SwadeItem;
 
@@ -60,7 +60,7 @@ export default class MagReload extends Application<ApplicationOptions> {
       .querySelector<HTMLInputElement>('.discard-mag')
       ?.addEventListener('click', (ev) => {
         const target = ev.currentTarget as HTMLInputElement;
-        this._userWantsToDiscard = target.checked;
+        this.#userWantsToDiscard = target.checked;
       });
   }
 
@@ -92,49 +92,21 @@ export default class MagReload extends Application<ApplicationOptions> {
     //return early if the new and old mag have the same content as there's nothing to do
     if (currentShots === magContent) return;
 
-    //set the shots in the weapon and the inserted magazine
-    const magToInsert = foundry.utils.mergeObject(selectedMagazine.toObject(), {
-      'system.quantity': 1,
-    });
-    await this.weapon.update({
-      'system.currentShots': magContent,
-      'flags.swade.loadedAmmo': magToInsert,
-    });
-
     const magStackSize = selectedMagazine.system.quantity;
-    const discardEmptyMagazine = this._userWantsToDiscard && this.weaponIsEmpty;
+    const discardEmptyMagazine =
+      this.#userWantsToDiscard && this.weaponIsEmpty && this.insertedMagazine;
 
     //discard empty magazine if desired
-    if (discardEmptyMagazine && this.insertedMagazine) {
-      //simply overwrite the old magazine with the new one to "discard" the old one
-      if (magStackSize > 1) {
-        await selectedMagazine.update({ 'system.quantity': magStackSize - 1 });
-      } else {
-        await selectedMagazine.delete();
-      }
+    if (discardEmptyMagazine || !this.insertedMagazine) {
+      await this.#loadMagazineFromInventory(selectedMagazine, magStackSize);
     } else if (magStackSize > 1) {
-      //take from the stack, and put the remaining shots into a new mag
-      await selectedMagazine.update({ 'system.quantity': magStackSize - 1 });
-      const emptyMagStack = this.magazines.find(
-        (m) => m.type === 'consumable' && m.system.charges.value === 0,
-      );
-      if (!emptyMagStack || (!this.weaponIsEmpty && this.insertedMagazine)) {
-        //Otherwise just clone the magazine and update the data
-        await selectedMagazine.clone(
-          { system: { quantity: 1, 'charges.value': currentShots } },
-          { save: true },
-        );
-      } else {
-        //check if there's a stack we can add to
-        await emptyMagStack.update({
-          'system.quantity': emptyMagStack.system.quantity + 1,
-        });
-      }
+      await this.#exchangeMagWithStack(selectedMagazine, magStackSize);
     } else {
       //last resort: just update the charges
       await selectedMagazine.update({ 'system.charges.value': currentShots });
     }
 
+    await this.#loadMagIntoWeapon(selectedMagazine);
     this.#resolve();
   }
 
@@ -174,6 +146,47 @@ export default class MagReload extends Application<ApplicationOptions> {
       v.sort((a, b) => b.percentage - a.percentage),
     );
     return groups;
+  }
+
+  /** set the shots in the weapon and the inserted magazine */
+  async #loadMagIntoWeapon(magazine: SwadeItem) {
+    const magToInsert = foundry.utils.mergeObject(magazine.toObject(), {
+      'system.quantity': 1,
+    });
+    await this.weapon.update({
+      'system.currentShots': magazine.system.charges.value,
+      'flags.swade.loadedAmmo': magToInsert,
+    });
+  }
+
+  /** simply overwrite the old magazine with the new one to "discard" the old one */
+  async #loadMagazineFromInventory(magazine: SwadeItem, magStackSize: number) {
+    if (magStackSize > 1) {
+      await magazine.update({ 'system.quantity': magStackSize - 1 });
+    } else {
+      await magazine.delete();
+    }
+  }
+
+  async #exchangeMagWithStack(magazine: SwadeItem, magStackSize: number) {
+    const currentShots = this.weapon.system.currentShots;
+    //take from the stack, and put the remaining shots into a new mag
+    await magazine.update({ 'system.quantity': magStackSize - 1 });
+    const emptyMagStack = this.magazines.find(
+      (m) => m.type === 'consumable' && m.system.charges.value === 0,
+    );
+    if (!emptyMagStack || (!this.weaponIsEmpty && this.insertedMagazine)) {
+      //Otherwise just clone the magazine and update the data
+      await magazine.clone(
+        { system: { quantity: 1, 'charges.value': currentShots } },
+        { save: true },
+      );
+    } else {
+      //check if there's a stack we can add to
+      await emptyMagStack.update({
+        'system.quantity': emptyMagStack.system.quantity + 1,
+      });
+    }
   }
 }
 

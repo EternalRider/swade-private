@@ -817,7 +817,8 @@ export default class SwadeItem extends Item {
         (i) =>
           i.type === 'consumable' &&
           i.system.isMagazine &&
-          i.system.charges.max === loadedAmmo['system.charges.value'],
+          i.system.charges.max ===
+            foundry.utils.getProperty(this, 'system.currentShots'),
       );
 
       if (existingMagStack) {
