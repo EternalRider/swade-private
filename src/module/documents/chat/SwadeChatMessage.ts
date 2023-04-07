@@ -9,9 +9,12 @@ declare global {
 
   interface FlagConfig {
     ChatMessage: {
-      swade: {
+      swade?: {
         targets?: { name: string; uuid: string }[];
         [key: string]: unknown;
+      };
+      core?: {
+        canPopout?: boolean;
       };
     };
   }

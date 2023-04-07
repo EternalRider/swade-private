@@ -606,7 +606,7 @@ export default class SwadeItem extends Item {
         scene: token?.parent?.id,
         alias: this.parent?.name,
       },
-      flags: { 'core.canPopout': true },
+      flags: { core: { canPopout: true } },
     };
 
     if (
