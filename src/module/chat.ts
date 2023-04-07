@@ -4,15 +4,10 @@ import ItemChatCardHelper from './ItemChatCardHelper';
 
 export function chatListeners(html: JQuery<HTMLElement>) {
   html.on('click', '.card-header .item-name', (event) => {
-    const target = $(event.currentTarget).parents('.item-card');
-    const actor = game.actors!.get(target.data('actorId'))!;
-    if (
-      actor &&
-      (game.user!.isGM || actor.testUserPermission(game.user!, 'OBSERVER'))
-    ) {
-      const desc = target.find('.card-content');
-      desc.slideToggle();
-    }
+    $(event.currentTarget)
+      .parents('.item-card')
+      .find('.card-content')
+      .slideToggle();
   });
 
   html.on('click', '.card-buttons button', async (event) => {
