@@ -23,30 +23,30 @@ export class Logger {
 
     switch (level) {
       case Logger.LOG_LEVEL.Error:
-        console.error(Logger.PACKAGE_ID, '|', msg);
+        console.error(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
         if (toast)
           ui.notifications.error(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Warn:
-        console.warn(Logger.PACKAGE_ID, '|', msg);
+        console.warn(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
         if (toast)
           ui.notifications.warn(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Info:
-        console.info(Logger.PACKAGE_ID, '|', msg);
+        console.info(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
         if (toast)
           ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Debug:
         if (!force && !isDebugging) break;
-        console.debug(Logger.PACKAGE_ID, '|', msg);
+        console.debug(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
         if (toast)
           ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Log:
       default:
         if (!force && !isDebugging) break;
-        console.log(Logger.PACKAGE_ID, '|', msg);
+        console.log(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
         if (toast) ui.notifications.info(msg.toString(), { permanent });
         break;
     }

@@ -269,7 +269,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
       },
       {
-        name: 'Swade.RemoveMagazine',
+        name: 'SWADE.RemoveMagazine',
         icon: '<i class="fa-solid fa-right-from-bracket"></i>',
         condition: (i) => {
           const item = this.actor.items.get(i.data('itemId'));
