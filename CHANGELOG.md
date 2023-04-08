@@ -40,12 +40,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to toggle encumbrance using an active effect. (#708)
 - Added the unshake bonus to the tweaks menu. Thanks goes to John Stevens! (#709) (!294)
 - Added the ability for certain status effects to add related status effects when they are created.
-- Added the `Is a Magazine for a Weapon` toggle to consumables. Thanks goes to ChaosOS! (#578)(!292)
-- Added the ability for consumable items to be used as magazines in weapons. (#714)(#578)(!292)
+- Added the `Is a Magazine for a Weapon` toggle to consumables. Thanks goes to ChaosOS! (#578) (!292)
+- Added the ability for consumable items to be used as magazines in weapons. (#714) (#578) (!292)
   - Magazines are consumables that can be loaded into and removed from a weapon.
   - The contents of the magazine are loaded into the weapon. For example if a weapon has 1 shot left and you load a magazine with 30 rounds then a magazine with 1 shot is placed in the inventory and the 30 shots are put into the weapon.
   - Empty magazines can be discarded in the reload dialog. If you choose not to discard the magazine it will be placed into a stack in the inventory.
   - Tooltips that contain information about the currently loaded ammunition are available on the item chat card and the weapon item sheet.
+- Added the ability to reload weapons with Power Points. To enable that set the reload type to "Power Points" and set the Ammunition field to the Arcane Background that should be used.
+- Added anchor styles and font color variables to `.swade-app` class
 - Added additional translation strings.
 
 ### Changed
@@ -60,7 +62,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `SWADE.ItemDelete` -> `SWADE.Del`
 - The `WIKI` link now leads to the System Documentation compendium instead of to the gitlab wiki. (#701)
 - NPC actors can now also use the official character sheet and the themed setting versions. Thanks goes to Kristian Serrano! (!297)
-- Added anchor styles and font color variables to `.swade-app` class
+- Changed the way reloading behaves. (!292)
+  - The "Does not need reload action" checkbox has been replaced by the Reload Type "None"
 
 ### Fixed
 
