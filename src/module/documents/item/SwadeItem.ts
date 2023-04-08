@@ -198,14 +198,12 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap = foundry.utils.getProperty(this, 'system.ap');
+    const ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
 
     if (ap) {
-      ap = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
-    } else {
-      ap = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
+      apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
     }
-
     const rollParts = [damage];
 
     //Additional Mods
@@ -288,14 +286,19 @@ export default class SwadeItem extends Item {
       ]);
     }
 
+    const finalFlavor = `${label} ${game.i18n.localize(
+      'SWADE.Dmg',
+    )}${apFlavor}${flavour}`;
+
     // Roll and return
     return RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this.actor! }),
-      flavor: `${label} ${game.i18n.localize('SWADE.Dmg')}${ap}${flavour}`,
+      flavor: finalFlavor,
       title: `${label} ${game.i18n.localize('SWADE.Dmg')}`,
       item: this,
+      ap: ap,
     }) as Promise<DamageRoll | null>;
   }
 
