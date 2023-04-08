@@ -53,6 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `SWADE.ItemEdit` -> `SWADE.Ed`
   - `SWADE.ItemDelete` -> `SWADE.Del`
 - The `WIKI` link now leads to the System Documentation compendium instead of to the gitlab wiki. (#701)
+- NPC actors can now also use the official character sheet and the themed setting versions. Thanks to Kristian Serrano! (!297)
 
 ### Fixed
 
