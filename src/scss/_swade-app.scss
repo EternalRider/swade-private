@@ -118,7 +118,7 @@
     border-style: solid;
   }
 
-  a:not(.header-button, .document-id-link) {
+  a:not(.header-button, .document-id-link, .content-link, .editor-edit) {
     color: var(--accent-color);
   }
 
