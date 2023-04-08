@@ -1,4 +1,5 @@
 import { TraitRollModifier } from '../../../interfaces/additional.interface';
+import { DamageRoll } from '../../dice/DamageRoll';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 
@@ -111,6 +112,7 @@ export default class SwadeChatMessage extends ChatMessage {
         rerolled: roll?.getRerollLabel(),
         groupRoll: roll instanceof TraitRoll && roll.groupRoll,
         isCritfail: this.isCritfail && !isPrivate,
+        isDamageRoll: roll instanceof DamageRoll && !isPrivate,
         isPrivate: isPrivate,
         isGM: game.user?.isGM,
         isAuthor: this.isAuthor || game.user?.isGM,
