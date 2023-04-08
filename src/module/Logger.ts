@@ -20,33 +20,33 @@ export class Logger {
       .get('_dev-mode')
       //@ts-expect-error adding an API to the module data is common practice
       ?.api?.getPackageDebugValue(Logger.PACKAGE_ID);
-
+    const prefix = Logger.PACKAGE_ID + '|';
     switch (level) {
       case Logger.LOG_LEVEL.Error:
-        console.error(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
+        console.error(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
           ui.notifications.error(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Warn:
-        console.warn(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
+        console.warn(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
           ui.notifications.warn(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Info:
-        console.info(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
+        console.info(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
           ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Debug:
         if (!force && !isDebugging) break;
-        console.debug(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
+        console.debug(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
           ui.notifications.info(msg.toString(), { permanent, localize });
         break;
       case Logger.LOG_LEVEL.Log:
       default:
         if (!force && !isDebugging) break;
-        console.log(Logger.PACKAGE_ID, '|', game.i18n.localize(msg));
+        console.log(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast) ui.notifications.info(msg.toString(), { permanent });
         break;
     }
