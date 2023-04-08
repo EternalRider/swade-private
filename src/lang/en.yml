@@ -278,7 +278,7 @@ SWADE:
   ReloadSuccess: The weapon has been successfully reloaded
   NotEnoughAmmo: You don't have enough ammunition for this action!
   NotEnoughAmmoToReload: There's not enough ammo for a full reload
-  ReloadType: 
+  ReloadType:
     Label: Reload Type
     None: None
     Single: Single
@@ -560,12 +560,13 @@ SWADE:
     AmmoManagement:
       Name: Ammunition Management
       Hint: >-
-        Automates ammo consumption. See system documentation journal for details.
+        Automates ammo consumption. See system documentation journal for
+        details.
     PCAmmoFromInventory:
       Name: PCs use Ammunition from Inventory
       Hint: >-
-        When activated a Gear or Consumable Item that is set as
-        ammunition will be used when reloading the weapon
+        When activated a Gear or Consumable Item that is set as ammunition will
+        be used when reloading the weapon
     NPCAmmoFromInventory:
       Name: NPCs use ammunition from their inventory
     VehicleAmmoFromInventory:
@@ -751,7 +752,6 @@ SWADE:
     Header: Item Grants
     When: Grant Items When
   IgnFatigue: Ignore Fatigue
-
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
   Targets: 'Targets:'
@@ -764,6 +764,7 @@ SWADE:
       Critfail: CRITICAL FAILURE
       Confirm: Critical Failure Confirmation
       ConfirmDie: Confirmation Die
+  LoadedAmmo: Loaded Ammmunition
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

@@ -209,6 +209,14 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     html
       .find('.use-consumable')
       .on('click', async () => await this.item.consume());
+
+    html.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
+      const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
+      const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
+      game.tooltip.activate(ev.currentTarget, {
+        text: await TextEditor.enrichHTML(content, { async: true }),
+      });
+    });
   }
 
   override async getData(
@@ -264,6 +272,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           data.ammoList = this.actor?.itemTypes.consumable
             .filter((i) => i.system.isMagazine)
             .map((i) => i.name) as string[];
+          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
           break;
         case constants.RELOAD_TYPE.PP:
           data.ammoList = Object.keys(this.actor.system?.powerPoints);
@@ -717,9 +726,11 @@ interface SwadeItemSheetData extends OptionsPartial {
   equipStatusOptions: Record<EquipState, string>;
   ranges: string[];
   trademarkWeaponOptions?: Record<number, string>;
+  reloadTypeOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
+  ammoLoaded?: string;
   ppReload: boolean;
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;

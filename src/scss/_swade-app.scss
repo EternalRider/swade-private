@@ -113,6 +113,11 @@
     }
   }
 
+  fieldset {
+    border-color: var(--accent-color-secondary);
+    border-style: solid;
+  }
+
   a:not(.header-button, .document-id-link) {
     color: var(--accent-color);
   }

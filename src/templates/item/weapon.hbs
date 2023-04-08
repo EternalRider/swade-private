@@ -65,6 +65,12 @@
         />
       </span>
     </div>
+    {{#if ammoLoaded}}
+    <fieldset class="loaded-ammo">
+      <legend>{{localize "SWADE.LoadedAmmo"}}</legend>
+      <u class="loaded-ammo-name">{{ammoLoaded}}</u>
+    </fieldset>
+    {{/if}}
     <hr>
     {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
   </section>

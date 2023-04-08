@@ -768,7 +768,6 @@ SWADE:
     Header: Gewährte Items
     When: Items gewähren wen
   IgnFatigue: Erschöpfung ignorieren
-  
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
   Targets: 'Ziele:'
@@ -781,6 +780,7 @@ SWADE:
       Critfail: KRITISCHER PATZER
       Confirm: Bestätigung des kritischen Patzers
       ConfirmDie: Bestätigungswürfel
+  LoadedAmmo: Geladene Munition
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

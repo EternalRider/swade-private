@@ -385,4 +385,13 @@
       }
     }
   }
+
+  .loaded-ammo {
+    margin: 0;
+    padding-left: $medium-spacing;
+    padding-right: 0;
+    &-name {
+      text-decoration-style: dotted;
+    }
+  }
 }
