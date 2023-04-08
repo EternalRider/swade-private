@@ -159,7 +159,7 @@ function promptThisUser(actor: SwadeActor, damage: number, ap: number) {
     }
     new Dialog(
       {
-        title: game.i18n.format(
+        title: game.i18n.localize(
           'SWADE.DamageApplicator.ChoosePlayerDialog.Title',
         ),
         content: `${game.i18n.format(
@@ -199,8 +199,8 @@ async function soakPrompt(
   // Set Wounds text for chat message
   const woundsText = `${woundsInflicted} ${
     woundsInflicted > 1
-      ? game.i18n.format('SWADE.Wounds')
-      : game.i18n.format('SWADE.Wound')
+      ? game.i18n.localize('SWADE.Wounds')
+      : game.i18n.localize('SWADE.Wound')
   }`;
   // Text for Wounds about to be taken.
   let message = game.i18n.format(
@@ -228,7 +228,7 @@ async function soakPrompt(
     let prompt = '';
     const buttons: Record<string, Dialog.Button> = {
       adjust: {
-        label: game.i18n.format(
+        label: game.i18n.localize(
           'SWADE.DamageApplicator.SoakDialog.AdjustDamage',
         ),
         callback: async (html: JQuery<HTMLElement>) => {
@@ -273,7 +273,7 @@ async function soakPrompt(
           { name: actor.name },
         );
         buttons.accept = {
-          label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.Accept'),
+          label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Accept'),
           callback: async () => {
             await ChatMessage.create({
               content: game.i18n.format(
@@ -296,7 +296,7 @@ async function soakPrompt(
         { name: actor.name, wounds: woundsText },
       );
       buttons.soakBenny = {
-        label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.Benny'),
+        label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Benny'),
         callback: async () => {
           if (actor.isWildcard && actor.bennies > 0) {
             actor.spendBenny();
@@ -311,7 +311,7 @@ async function soakPrompt(
         },
       };
       buttons.soakFree = {
-        label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.Free'),
+        label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Free'),
         callback: async () => {
           await attemptSoak(actor, woundsInflicted, statusToApply, woundsText);
         },
@@ -368,9 +368,9 @@ async function soakPrompt(
           ${game.i18n.format('SWADE.DamageApplicator.AdjustDamagePrompt', {
             name: actor?.name,
           })}
-          <label for="damage">${game.i18n.format('SWADE.Dmg')}</label>
+          <label for="damage">${game.i18n.localize('SWADE.Dmg')}</label>
           <input type="number" id="damage" value="${damage}" autofocus>
-          <label for="ap">${game.i18n.format('SWADE.Ap')}</label>
+          <label for="ap">${game.i18n.localize('SWADE.Ap')}</label>
           <input type="number" id="ap" value="${ap}">
           </fieldset>
         </form>
@@ -430,8 +430,8 @@ async function attemptSoak(
     // Construct text for number of Wounds remaining.
     const woundsRemainingText = `${woundsRemaining} ${
       woundsRemaining > 1 || woundsRemaining === 0
-        ? game.i18n.format('SWADE.Wounds')
-        : game.i18n.format('SWADE.Wound')
+        ? game.i18n.localize('SWADE.Wounds')
+        : game.i18n.localize('SWADE.Wound')
     }`;
     // Open Dialog to reroll with a Benny, reroll for free, or accept the Wounds.
     const rerollSoakDialog = new Dialog(
@@ -451,7 +451,7 @@ async function attemptSoak(
         ),
         buttons: {
           rerollBenny: {
-            label: game.i18n.format(
+            label: game.i18n.localize(
               'SWADE.DamageApplicator.RerollSoakDialog.Benny',
             ),
             callback: async () => {
@@ -470,7 +470,7 @@ async function attemptSoak(
             },
           },
           rerollFree: {
-            label: game.i18n.format(
+            label: game.i18n.localize(
               'SWADE.DamageApplicator.RerollSoakDialog.Free',
             ),
             callback: async () => {
@@ -494,8 +494,8 @@ async function attemptSoak(
               // Construct text for the new Wounds value to be accepted (singular or plural Wounds).
               const newWoundsValueText = `${newWoundsValue} ${
                 newWoundsValue > 1 || newWoundsValue === 0
-                  ? game.i18n.format('SWADE.Wounds')
-                  : game.i18n.format('SWADE.Wound')
+                  ? game.i18n.localize('SWADE.Wounds')
+                  : game.i18n.localize('SWADE.Wound')
               }`;
               if (statusToApply === 'shaken') {
                 await applyShaken(actor);
