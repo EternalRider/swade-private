@@ -1,4 +1,5 @@
 import { TraitRollModifier } from '../../interfaces/additional.interface';
+import { DamageRoll } from '../dice/DamageRoll';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import WildDie from '../dice/WildDie';
@@ -208,6 +209,10 @@ export default class RollDialog extends FormApplication<
     //evaluate
     await finalizedRoll.evaluate({ async: true });
 
+    if (finalizedRoll instanceof DamageRoll) {
+      finalizedRoll.ap = this.ctx.ap ?? 0;
+    }
+
     // Convert the roll to a chat message and return it
     await finalizedRoll.toMessage(
       {
@@ -341,6 +346,7 @@ interface RollDialogContext {
   title: string;
   item?: SwadeItem;
   actor?: SwadeActor;
+  ap?: number;
 }
 
 interface RollDialogFormData {

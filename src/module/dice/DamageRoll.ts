@@ -1,9 +1,20 @@
-import { ActorRollData } from '../../interfaces/roll.interface';
+import {
+  ActorRollData,
+  SwadeRollOptions,
+} from '../../interfaces/roll.interface';
 import { SwadeRoll } from './SwadeRoll';
 
 export class DamageRoll extends SwadeRoll<ActorRollData> {
   static override CHAT_TEMPLATE =
     'systems/swade/templates/chat/dice/damage-roll.hbs';
+
+  constructor(
+    formula: string,
+    data: ActorRollData = {},
+    options: DamageRollOptions = {},
+  ) {
+    super(formula, data, options);
+  }
 
   override get isRerollable() {
     return true;
@@ -16,4 +27,16 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   override get isCritFailConfirmationRoll() {
     return false;
   }
+
+  get ap() {
+    return this.options['ap'] ?? 0;
+  }
+
+  set ap(ap: number) {
+    this.options['ap'] = ap;
+  }
+}
+
+interface DamageRollOptions extends SwadeRollOptions {
+  ap?: number;
 }
