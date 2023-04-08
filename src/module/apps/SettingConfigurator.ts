@@ -36,7 +36,7 @@ export default class SettingConfigurator extends FormApplication<
     });
   }
 
-  getData(): any {
+  async getData(): any {
     const settingFields = game.settings.get('swade', 'settingFields');
     const data = {
       settingRules: {},
@@ -53,6 +53,7 @@ export default class SettingConfigurator extends FormApplication<
       coreSkillPackChoices: this._buildCoreSkillPackChoices(),
       actionDeckChoices: this._buildActionDeckChoices(),
       discardPileChoices: this._buildActionDeckDiscardPileChoices(),
+      injuryTableChoices: await this._buildInjuryTableChoices(),
     };
     for (const setting of this.config.settings) {
       data.settingRules[setting] = game.settings.get('swade', setting);
@@ -222,5 +223,28 @@ export default class SettingConfigurator extends FormApplication<
       ?.filter((stack) => stack.type === 'pile')
       .forEach((p) => (discardPiles[p.id] = p.name!));
     return discardPiles;
+  }
+
+  private async _buildInjuryTableChoices() {
+    const injuryTables: Record<string, string> = {};
+    for (const p of game.packs) {
+      if (
+        p.metadata.type === 'RollTable' &&
+        p.metadata.packageType !== 'system'
+      ) {
+        for (const i of p.index) {
+          const rollTable = await p.getDocument(i._id);
+          if (rollTable) {
+            injuryTables[rollTable.uuid] = `${rollTable.name} (${p.title})`;
+          }
+        }
+      }
+    }
+    if (game.tables?.size) {
+      for (const rollTable of game.tables) {
+        injuryTables[rollTable.uuid] = `${rollTable.name} (World)`;
+      }
+    }
+    return injuryTables;
   }
 }
