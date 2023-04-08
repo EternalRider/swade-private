@@ -545,6 +545,9 @@ export default class SwadeItem extends Item {
       !this.isMeleeWeapon &&
       ammoManagement &&
       getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE;
+    const hasMagazine =
+      hasAmmoManagement &&
+      this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
     const hasDamage = !!getProperty(this, 'system.damage');
     const hasTraitRoll =
       ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
@@ -577,6 +580,7 @@ export default class SwadeItem extends Item {
       item: this,
       data: await this.getChatData(),
       hasAmmoManagement,
+      hasMagazine,
       hasReloadButton,
       hasDamage,
       hasTemplates,
@@ -862,10 +866,9 @@ export default class SwadeItem extends Item {
   }
 
   async removeGranted(target = this.parent) {
-    if (this.hasGranted.length > 0) {
-      await target?.deleteEmbeddedDocuments('Item', this.hasGranted);
-      await this.unsetFlag('swade', 'hasGranted');
-    }
+    if (this.hasGranted.length < 1) return;
+    await target?.deleteEmbeddedDocuments('Item', this.hasGranted);
+    await this.unsetFlag('swade', 'hasGranted');
   }
 
   protected async _postConsumptionCleanup(
