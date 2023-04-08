@@ -1,6 +1,7 @@
 .swade-app {
   //Custom properties
   --content-background-image: url('./assets/main_bg.webp');
+  --font-color: rgb(0, 0, 0);
   --accent-color: rgb(140, 22, 15);
   --accent-color-secondary: rgb(170, 170, 170);
   --default-font: 'Roboto Slab', 'Signika', serif;
@@ -8,11 +9,11 @@
 
   //tabs
   --tab-font: 'Anton', 'Signika', sans-serif;
-  --tab-color-inactive: black;
+  --tab-color-inactive: rgb(0, 0, 0);
   --tab-hover-shadow: 0 0 8px var(--color-shadow-primary);
 
   //inputs
-  --input-box-shadow: 0 0 5px red;
+  --input-box-shadow: 0 0 5px rgb(255, 0, 0);
   --input-border-line: 2px solid var(--accent-color-secondary);
   --input-border-radius: 0;
 
@@ -26,10 +27,12 @@
     background-image: var(--content-background-image);
     background-repeat: repeat;
     background-position: left top;
+    color: var(--font-color);
   }
 
   input[type],
   select {
+    color: var(--font-color);
     &:hover,
     &:focus {
       box-shadow: var(--input-box-shadow);
@@ -108,6 +111,10 @@
     &.rollable {
       border-bottom: 1px dashed black;
     }
+  }
+
+  a:not(.header-button, .document-id-link) {
+    color: var(--accent-color);
   }
 
   .tabs {
