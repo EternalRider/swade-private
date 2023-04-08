@@ -40,6 +40,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to toggle encumbrance using an active effect. (#708)
 - Added the unshake bonus to the tweaks menu. Thanks goes to John Stevens! (#709) (!294)
 - Added the ability for certain status effects to add related status effects when they are created.
+- Added the `Is a Magazine for a Weapon` toggle to consumables. Thanks goes to ChaosOS! (#578)(!292)
+- Added the ability for consumable items to be used as magazines in weapons. (#714)(#578)(!292)
 - Added additional translation strings.
 
 ### Changed
@@ -53,7 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `SWADE.ItemEdit` -> `SWADE.Ed`
   - `SWADE.ItemDelete` -> `SWADE.Del`
 - The `WIKI` link now leads to the System Documentation compendium instead of to the gitlab wiki. (#701)
-- NPC actors can now also use the official character sheet and the themed setting versions. Thanks to Kristian Serrano! (!297)
+- NPC actors can now also use the official character sheet and the themed setting versions. Thanks goes to Kristian Serrano! (!297)
 
 ### Fixed
 
