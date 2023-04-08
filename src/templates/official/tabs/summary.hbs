@@ -112,6 +112,7 @@
     <span class="checkmark"></span>
   </label>
 </div>
+{{#if actor.isWildcard}}
 <div class="bennies">
   <header class="counter-header">
     <button type="button" class="adjust-counter" data-action="spend-benny">
@@ -133,6 +134,7 @@
     {{/unless}}
   {{/each}}
 </div>
+{{/if}}
 
 <span class="attributes primary">
   {{> "systems/swade/templates/official/partials/attributes.hbs"}}
@@ -346,7 +348,7 @@
           {{> "systems/swade/templates/official/partials/item-card.hbs"}}
         {{/if}}
       {{/each}}
-    </ol>    
+    </ol>
   </div>
   <div class="note-footer">&nbsp;</div>
 </span>

@@ -21,7 +21,7 @@
     />
   </label>
   <figure class="gridcell branding"></figure>
-  {{#if settingrules.conviction}}
+  {{#if (and settingrules.conviction actor.isWildcard)}}
   <div id="conviction" class="gridcell">
     <button type="button" class="conviction-toggle">
       <strong class="{{#if actor.system.details.conviction.active}}pulse{{/if}}">
@@ -46,9 +46,9 @@
     {{#if actor.race}}
       <button type="button" data-item-id="{{actor.race.id}}">{{actor.race.name}}</button>
    {{else}}
-      <input 
-        type="text" 
-        name="system.details.species.name" 
+      <input
+        type="text"
+        name="system.details.species.name"
         value="{{actor.system.details.species.name}}"
         placeholder="{{localize 'SWADE.Race'}}"
         data-tooltip="{{localize 'SWADE.Race'}}"
@@ -60,9 +60,9 @@
    {{#if actor.archetype}}
       <button  type="button" data-item-id="{{actor.archetype.id}}" >{{actor.archetype.name}}</button>
    {{else}}
-      <input 
-        type="text" 
-        name="system.details.archetype" 
+      <input
+        type="text"
+        name="system.details.archetype"
         value="{{actor.system.details.archetype}}"
         placeholder="{{localize 'SWADE.Archetype'}}"
         data-tooltip="{{localize 'SWADE.Archetype'}}"
@@ -116,7 +116,7 @@
     <section class="tab inventory" data-group="primary" data-tab="inventory">
       {{> "systems/swade/templates/official/tabs/inventory.hbs"}}
     </section>
-    {{!-- Powers Tab --}} 
+    {{!-- Powers Tab --}}
     {{#if actor.hasArcaneBackground}}
       <section class="tab powers" data-group="primary" data-tab="powers">
         {{> "systems/swade/templates/official/tabs/powers.hbs"}}
