@@ -100,6 +100,34 @@ export function hideChatActionButtons(
   }
 }
 
+export function createMagazineTooltip(
+  _msg: ChatMessage,
+  html: JQuery<HTMLElement>,
+) {
+  const card = html[0];
+  const magazine = card.querySelector<HTMLElement>(
+    '.swade.chat-card .magazine',
+  );
+
+  magazine?.addEventListener('mouseenter', async () => {
+    const actor = ItemChatCardHelper.getChatCardActor(
+      card.querySelector('.swade.chat-card')!,
+    );
+    const itemId =
+      card.querySelector<HTMLElement>('[data-item-id]')?.dataset.itemId;
+    const loadedAmmo = actor?.items
+      .get(itemId as string)
+      ?.getFlag('swade', 'loadedAmmo');
+    let content = 'No Magazine loaded';
+    if (loadedAmmo) {
+      content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
+    }
+    game.tooltip.activate(magazine, {
+      text: await TextEditor.enrichHTML(content, { async: true }),
+    });
+  });
+}
+
 /**
  * Creates an end message for Conviction
  * @param actor The Actor whose conviction is ending

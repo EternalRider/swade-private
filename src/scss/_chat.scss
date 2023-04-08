@@ -1,6 +1,22 @@
 .swade.chat-card {
   font-style: normal;
-  font-size: 12px;
+  font-size: var(--font-size-12);
+
+  .pp-counter,
+  .ammo-counter {
+    margin: $small-spacing 0;
+  }
+
+  .ammo-counter {
+    display: flex;
+    column-gap: $medium-spacing;
+    .ammo-name {
+      margin-left: auto;
+    }
+    .magazine {
+      text-decoration-style: dotted;
+    }
+  }
 
   .card-header {
     padding: 3px 0;
@@ -31,7 +47,7 @@
   .card-content {
     margin: 5px 0;
     h3 {
-      font-size: 12px;
+      font-size: var(--font-size-12);
       margin: 0;
       font-weight: bold;
     }
@@ -53,7 +69,7 @@
     }
 
     button {
-      font-size: 12px;
+      font-size: var(--font-size-12);
       height: 24px;
       line-height: 20px;
       margin: 2px 0;

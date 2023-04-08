@@ -528,6 +528,8 @@ export default class SwadeCoreHooks {
     data: any,
   ) {
     chat.hideChatActionButtons(message, html, data);
+    chat.createMagazineTooltip(message, html);
+    
     html
       .find('.swade-roll-message button.free-reroll')
       .on('click', SwadeRoll.rerollFree.bind(this));
