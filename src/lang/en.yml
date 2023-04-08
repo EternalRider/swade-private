@@ -806,7 +806,7 @@ SWADE:
       IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
-    NoTargetsSelected: The User who rolled damage must select one or more Targets.
+    NoTargetsSelected: Please select a target to apply the damage to.
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC
