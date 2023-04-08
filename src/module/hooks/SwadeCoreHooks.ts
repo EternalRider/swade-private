@@ -8,9 +8,10 @@ import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { SwadeRoll } from '../dice/SwadeRoll';
 import { damageApplicator } from '../dice/DamageApplicator';
+import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
+import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
@@ -524,13 +525,12 @@ export default class SwadeCoreHooks {
 
   /** Add roll data to the message for formatting of dice pools*/
   static onRenderChatMessage(
-    message: ChatMessage,
+    message: SwadeChatMessage,
     html: JQuery<HTMLElement>,
-    data: any,
+    data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
     chat.hideChatActionButtons(message, html, data);
     chat.createMagazineTooltip(message, html);
-    
     html
       .find('.swade-roll-message button.free-reroll')
       .on('click', SwadeRoll.rerollFree.bind(this));
@@ -540,8 +540,8 @@ export default class SwadeCoreHooks {
     html[0]
       .querySelectorAll('.swade-roll-message button.calculate-wounds')
       .forEach((target) => {
-        target.addEventListener('click', async (ev) => {
-          await damageApplicator(data);
+        target.addEventListener('click', async () => {
+          await damageApplicator(message);
         });
       });
     html[0]
@@ -577,11 +577,11 @@ export default class SwadeCoreHooks {
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
             target.dataset.tokenUuid,
-            ) as TokenDocument | null;
-            if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
-          });
+          ) as TokenDocument | null;
+          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
         });
-      }
+      });
+  }
 
   static async onGetCombatTrackerEntryContext(
     html: JQuery<HTMLElement>,
