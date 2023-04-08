@@ -204,7 +204,7 @@ Hooks.once('init', () => {
   Items.unregisterSheet('core', ItemSheet);
 
   Actors.registerSheet('swade', CharacterSheet, {
-    types: ['character'],
+    types: ['character', 'npc'],
     makeDefault: true,
     label: 'SWADE.OfficialSheet',
   });
