@@ -58,41 +58,30 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
   override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
-    // Drag events for macros.
-
-    if (this.actor.isOwner) {
-      const handler = (ev) => this._onDragStart(ev);
-      // Find all items on the character sheet.
-      html.find('li.item').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-
-      // Refresh
-      html[0]
-        .querySelectorAll('.adjust-counter')
-        .forEach((el) =>
-          el.addEventListener('click', this._handleCounterAdjust.bind(this)),
-        );
-      html
-        .find('.adjust-counter')
-        .on('click', this._handleCounterAdjust.bind(this));
-    }
-
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    // Update Item via right-click
-    html.find('.contextmenu-edit').on('contextmenu', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      this.actor.items.get(li.data('itemId'))?.sheet?.render(true);
+    // Drag events for macros.
+    // Find all items on the character sheet.
+    html.find('li.item').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
     });
+    html.find('li.active-effect').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
+    });
+
+    // Refresh
+    html[0]
+      .querySelectorAll('.adjust-counter')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+      );
+
+    this._setupItemContextMenu(html);
 
     // Delete Item
     html.find('.item-delete').on('click', (ev) => {
@@ -262,5 +251,66 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       default:
         throw new Error('Unknown action!');
     }
+  }
+
+  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
+    const items: ContextMenuEntry[] = [
+      {
+        name: 'SWADE.Reload',
+        icon: '<i class="fa-solid fa-right-to-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          return (
+            item?.type === 'weapon' &&
+            !!item.system.shots &&
+            game.settings.get('swade', 'ammoManagement')
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
+      },
+      {
+        name: 'Swade.RemoveMagazine',
+        icon: '<i class="fa-solid fa-right-from-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const isWeapon = item?.type === 'weapon';
+          const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
+          return (
+            isWeapon &&
+            !!loadedAmmo &&
+            item.needsFullReloadProcedure() &&
+            item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.unload(),
+      },
+      {
+        name: 'SWADE.Ed',
+        icon: '<i class="fa-solid fa-edit"></i>',
+        callback: (i) =>
+          this.actor.items.get(i.data('itemId'))?.sheet?.render(true),
+      },
+      {
+        name: 'SWADE.Duplicate',
+        icon: '<i class="fa-solid fa-copy"></i>',
+        condition: (i) =>
+          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
+        callback: async (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const cloned = await item?.clone(
+            { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
+            { save: true },
+          );
+          cloned?.sheet?.render(true);
+        },
+      },
+      {
+        name: 'SWADE.Del',
+        icon: '<i class="fa-solid fa-trash"></i>',
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+      },
+    ];
+
+    ContextMenu.create(this, html, 'li.item', items);
   }
 }

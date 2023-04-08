@@ -81,7 +81,6 @@
   .left-panel .items-list {
     margin: 5px 0;
     padding: 0;
-    overflow: auto;
     .item {
       display: inline-block;
       &:not(:last-child)::after {

@@ -252,6 +252,7 @@ SWADE:
   NoAmmoSet: Keine Munition ausgewählt
   NoAmmoPP: Nicht genug Machtpunkte vorhanden
   NoMags: Keine Magazine vorhanden
+  RemoveMagazine: Remove Magazine
   NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen

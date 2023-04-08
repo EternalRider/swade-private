@@ -288,6 +288,7 @@ SWADE:
   NoAmmoSet: There is no ammunition set
   NoAmmoPP: Could not find power points matching the set ammo
   NoMags: You don't have any consumables marked as magazines in your inventory
+  RemoveMagazine: Remove Magazine
   Trapping: Trappings
   AddBenny: Add a Benny
   CurrentBennies: Current Bennies
