@@ -127,6 +127,35 @@
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.DumbLuck.Hint'}}</p>
       </div>
+      <!-- Wound Cap -->
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.WoundCap.Name'}}</label>
+        <div class='form-fields'>
+          <input type='checkbox' name='settingRules.woundCap' data-dtype='Boolean' {{checked settingRules.woundCap}} />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.WoundCap.Hint'}}</p>
+      </div>
+      <!-- Gritty Damage -->
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.GrittyDamage.Name'}}</label>
+        <div class='form-fields'>
+          <input type='checkbox' name='settingRules.grittyDamage' data-dtype='Boolean' {{checked settingRules.grittyDamage}} />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
+      </div>
+      {{#if settingRules.grittyDamage}}
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.InjuryTable.Name'}}</label>
+        <div class='form-fields'>
+          <select name='settingRules.injuryTable'>
+            {{#select settingRules.injuryTable}}
+            {{selectOptions injuryTableChoices}}
+            {{/select}}
+          </select>
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.InjuryTable.Hint'}}</p>
+      </div>
+      {{/if}}
       <!-- Conviction -->
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.EnableConv.Name'}}</label>

@@ -625,6 +625,15 @@ SWADE:
     DumbLuck:
       Name: Dumb Luck
       Hint: Checking this will enable the Dumb Luck Setting Rule
+    WoundCap:
+      Name: Wound Cap
+      Hint: Checking this will enable the Wound Cap Setting Rule when calculating Wounds.
+    GrittyDamage:
+      Name: Gritty Damage
+      Hint: Checking this will enable the Gritty Damage Setting Rule and allow for selecting the Injury Table to roll.
+    InjuryTable:
+      Name: Injury Table
+      Hint: Select the appropriate RollTable to automatically roll for Gritty Damage.
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
@@ -765,6 +774,39 @@ SWADE:
       Confirm: Critical Failure Confirmation
       ConfirmDie: Confirmation Die
   LoadedAmmo: Loaded Ammmunition
+  DamageApplicator:
+    ApplyDamage: Apply Damage
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
+    ChoosePlayerDialog:
+      Title: Choose a Player
+      Prompt: <p>Which player would like to manage the damage for {name}?</p>
+    SoakDialog:
+      WoundedTitle: Roll to Soak Wounds for {name}?
+      UnwoundedTitle: Adjust Damage to Determine Status for {name}?
+      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
+      ShakenPrompt: <p>{name} is about to become Shaken.</p>
+      UnharmedPrompt: <p>{name} might be unharmed.</p>
+      Benny: Spend a Benny to Soak
+      Free: Soak for Free
+      TakeWounds: Take {wounds}
+      AdjustDamage: Adjust Damage
+      ApplyShaken: Apply Shaken Status
+      Accept: Accept
+    RerollSoakDialog:
+      Title: Reroll to Soak Wounds for {name}?
+      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
+      Benny: Spend a Benny to Reroll
+      Free: Reroll for Free
+      TakeWounds: Take {wounds}
+    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
+      SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
+      IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
+    NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
+    NoTargetsSelected: The User who rolled damage must select one or more Targets.
 ACTOR:
   TypeCharacter: Player Character
   TypeNpc: NPC

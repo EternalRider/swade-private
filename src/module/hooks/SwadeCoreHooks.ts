@@ -9,6 +9,7 @@ import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { SwadeRoll } from '../dice/SwadeRoll';
+import { damageApplicator } from '../dice/DamageApplicator';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -537,9 +538,15 @@ export default class SwadeCoreHooks {
       .find('.swade-roll-message button.benny-reroll')
       .on('click', SwadeRoll.rerollBenny.bind(this));
     html[0]
+      .querySelectorAll('.swade-roll-message button.calculate-wounds')
+      .forEach((target) => {
+        target.addEventListener('click', async (ev) => {
+          await damageApplicator(data);
+        });
+      });
+    html[0]
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
-
     html[0]
       .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
       .forEach((target) => {
@@ -570,11 +577,11 @@ export default class SwadeCoreHooks {
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
             target.dataset.tokenUuid,
-          ) as TokenDocument | null;
-          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
+            ) as TokenDocument | null;
+            if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
+          });
         });
-      });
-  }
+      }
 
   static async onGetCombatTrackerEntryContext(
     html: JQuery<HTMLElement>,

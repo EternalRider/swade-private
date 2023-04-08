@@ -32,4 +32,14 @@
       {{/if}}
     </div>
   </div>
+  <div class="wounds-calc">
+    <button
+      type='button'
+      class='calculate-wounds'
+      data-tooltip='{{localize "SWADE.DamageApplicator.ApplyDamage"}}'
+      aria-label='{{localize "SWADE.DamageApplicator.ApplyDamage"}}' {{disabled lockReroll}}>
+      <i class='fa-solid fa-meter-droplet'></i>
+      {{localize "SWADE.DamageApplicator.ApplyDamage"}}
+    </button>
+  </div>
 </div>
