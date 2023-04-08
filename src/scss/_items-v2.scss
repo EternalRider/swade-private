@@ -137,17 +137,8 @@
   }
 
   .editor-container {
-    overflow: hidden;
-    max-height: 100%;
-    .editor {
-      padding: 0 $medium-spacing;
-      // border: $solid-line;
-      height: 100%;
-      .editor-content {
-        height: 100%;
-        overflow-y: auto;
-        word-break: break-word;
-      }
+    .editor-content {
+      overflow-y: scroll;
     }
   }
 
