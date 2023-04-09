@@ -44,7 +44,12 @@ export async function damageApplicator(message: SwadeChatMessage) {
 }
 
 // Function for translating damage to Wounds.
-export async function calcWounds(targetUuid, damage, ap, targetUserId) {
+export async function calcWounds(
+  targetUuid: string,
+  damage: number,
+  ap: number,
+  targetUserId: string,
+) {
   // Get the target of the damage.
   const target = (await fromUuid(targetUuid)) as SwadeActor | TokenDocument;
   // If the target document is a Token, change the actor value to target.actor, otherwise use the target document itself.
@@ -78,19 +83,19 @@ export async function calcWounds(targetUuid, damage, ap, targetUserId) {
     woundsInflicted = 4;
   }
   // Set default status to apply as none.
-  let statusToApply = 'none';
+  let statusToApply = Status.NONE;
   // If damage meets or beats Toughness without a raise.
   if (excess >= 0 && excess < 4) {
     // Set status to Shaken.
-    statusToApply = 'shaken';
+    statusToApply = Status.NONE;
     // If already shaken, set status to wounded and wounds inflicted to 1.
     if (actor.system.status.isShaken && woundsInflicted === 0) {
       woundsInflicted = 1;
-      statusToApply = 'wounded';
+      statusToApply = Status.WOUNDED;
     }
     // If damage is at least a raise over Toughness, set status to wounded
   } else if (excess >= 4) {
-    statusToApply = 'wounded';
+    statusToApply = Status.WOUNDED;
   }
 
   // Trigger Soak prompt.
@@ -132,7 +137,8 @@ function promptThisUser(actor: SwadeActor, damage: number, ap: number) {
       multipleActivePlayers.length > 1 &&
       defaultOwnership);
   // Is there no distinct owner but multiple owners?
-  const noUniquePlayerOwnerAvailable = !activeCharacterPlayer && multipleActiveOwners;
+  const noUniquePlayerOwnerAvailable =
+    !activeCharacterPlayer && multipleActiveOwners;
   /*
     Prompt this user if the user is the player to whom the Target Actor is assigned, or
     if the user is a player and has owner permissions and there are no other active players with owner permissions.
@@ -155,7 +161,6 @@ function promptThisUser(actor: SwadeActor, damage: number, ap: number) {
     (userHasOwnerPermission || defaultOwnership)
   )
     return true;
-
 
   // Prompt the GM to select a player to prompt if they are the GM and there are multiple active players with owner permission.
   if (userIsGM && noUniquePlayerOwnerAvailable) {
@@ -216,12 +221,12 @@ function promptThisUser(actor: SwadeActor, damage: number, ap: number) {
 
 // Function for prompting to Soak.
 async function soakPrompt(
-  actor,
-  damage,
-  ap,
-  woundsInflicted,
-  statusToApply,
-  targetUserId,
+  actor: SwadeActor,
+  damage: number,
+  ap: number,
+  woundsInflicted: number,
+  statusToApply: Status,
+  targetUserId: string,
 ) {
   // Set singular Wound or plural Wounds for chat message
   const woundsText = `${woundsInflicted} ${
@@ -313,10 +318,9 @@ async function soakPrompt(
           'SWADE.DamageApplicator.SoakDialog.ApplyShaken',
         ),
         callback: async (_html) => {
-          message = game.i18n.format(
-            'SWADE.DamageApplicator.Result.IsShaken',
-            { name: actor.name },
-          );
+          message = game.i18n.format('SWADE.DamageApplicator.Result.IsShaken', {
+            name: actor.name,
+          });
 
           // Apply Shaken Status Effect.
           await applyShaken(actor);
@@ -328,7 +332,8 @@ async function soakPrompt(
         label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Accept'),
         callback: async () => {
           await ChatMessage.create({
-            content: game.i18n.format('SWADE.DamageApplicator.Result.NoSignificantDamage',
+            content: game.i18n.format(
+              'SWADE.DamageApplicator.Result.NoSignificantDamage',
               {
                 name: actor.name,
               },
@@ -368,7 +373,7 @@ async function soakPrompt(
     let defaultButton = '';
 
     // If status is not Wounded...
-    if (statusToApply !== 'wounded') {
+    if (statusToApply !== Status.WOUNDED) {
       // Delete Soak and Take Wounds buttons.
       delete buttons.take;
       delete buttons.soakBenny;
@@ -376,38 +381,43 @@ async function soakPrompt(
       delete buttons.soakFree;
 
       // Set the title
-      title = game.i18n.format('SWADE.DamageApplicator.SoakDialog.UnwoundedTitle',
+      title = game.i18n.format(
+        'SWADE.DamageApplicator.SoakDialog.UnwoundedTitle',
         { name: actor.name },
       );
 
       // If the status is Shaken...
-      if (statusToApply === 'shaken') {
+      if (statusToApply === Status.SHAKEN) {
         // Delete general accept button.
         delete buttons.accept;
 
         // Set the prompt text.
-        prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.ShakenPrompt',
+        prompt = game.i18n.format(
+          'SWADE.DamageApplicator.SoakDialog.ShakenPrompt',
           { name: actor.name },
         );
         // Set the default button to Apply Shaken
         defaultButton = 'applyShaken';
-      } else if (statusToApply === 'none') {
+      } else if (statusToApply === Status.NONE) {
         // Delete Apply Shaken Button
         delete buttons.applyShaken;
 
         // If there is no damage applied at all, change prompt to unharmed.
-        prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.UnharmedPrompt',
+        prompt = game.i18n.format(
+          'SWADE.DamageApplicator.SoakDialog.UnharmedPrompt',
           { name: actor.name },
         );
         defaultButton = 'accept';
       }
     } else {
       // In all other circumstances, set the title to Wounded title.
-      title = game.i18n.format('SWADE.DamageApplicator.SoakDialog.WoundedTitle',
+      title = game.i18n.format(
+        'SWADE.DamageApplicator.SoakDialog.WoundedTitle',
         { name: actor.name },
       );
       // Set the prompt text to Wounded text
-      prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.WoundedPrompt',
+      prompt = game.i18n.format(
+        'SWADE.DamageApplicator.SoakDialog.WoundedPrompt',
         { name: actor.name, wounds: woundsText },
       );
 
@@ -423,23 +433,19 @@ async function soakPrompt(
       defaultButton = 'take';
     }
     // Construct the Dialog and render it.
-    const soakDialog = new Dialog(
+    const adjustDamage = new Handlebars.SafeString(
+      game.i18n.format('SWADE.DamageApplicator.AdjustDamagePrompt', {
+        name: actor?.name,
+      }),
+    );
+    const content = await renderTemplate(
+      'systems/swade/templates/apps/damage/soak.hbs',
+      { ap, damage, adjustDamage, prompt: new Handlebars.SafeString(prompt) },
+    );
+    new Dialog(
       {
         title: title,
-        content: `
-        ${prompt}
-        <form>
-          <fieldset>
-          ${game.i18n.format('SWADE.DamageApplicator.AdjustDamagePrompt', {
-            name: actor?.name,
-          })}
-          <label for="damage">${game.i18n.localize('SWADE.Dmg')}</label>
-          <input type="number" id="damage" value="${damage}" autofocus>
-          <label for="ap">${game.i18n.localize('SWADE.Ap')}</label>
-          <input type="number" id="ap" value="${ap}">
-          </fieldset>
-        </form>
-      `,
+        content: content,
         buttons: buttons,
         default: defaultButton,
       },
@@ -450,15 +456,16 @@ async function soakPrompt(
 
 // Function to roll for Soaking Wounds.
 async function attemptSoak(
-  actor,
-  woundsInflicted,
-  statusToApply,
-  woundsText,
+  actor: SwadeActor,
+  woundsInflicted: number,
+  statusToApply: Status,
+  woundsText: string,
   bestSoakAttempt = 0,
 ) {
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   // Roll Vigor and get the data.
   const vigorRoll = await actor.rollAttribute('vigor');
+  //TODO figure out what to do if the roll is null i.e. cancelled
   let message = '';
   // Calculate how many Wounds have been Soaked with the roll
   const woundsSoaked = Math.floor(vigorRoll.total / 4);
@@ -488,7 +495,7 @@ async function attemptSoak(
       woundsRemaining > 1 || woundsRemaining === 0
         ? game.i18n.localize('SWADE.Wounds')
         : game.i18n.localize('SWADE.Wound')
-      }`;
+    }`;
 
     // Build default buttons
     const buttons: Record<string, Dialog.Button> = {
@@ -507,11 +514,11 @@ async function attemptSoak(
               : game.i18n.localize('SWADE.Wound')
           }`;
           // If Shaken, apply it
-          if (statusToApply === 'shaken') {
+          if (statusToApply === Status.SHAKEN) {
             await applyShaken(actor);
             // If Actor is already Shaken, change status to wounded.
             if (actor.system.status.isShaken) {
-              statusToApply = 'wounded';
+              statusToApply = Status.WOUNDED;
             } else {
               // Set message to indicate they are now Shaken.
               message = game.i18n.format(
@@ -523,7 +530,7 @@ async function attemptSoak(
             }
           }
           // If status is wounded
-          if (statusToApply === 'wounded') {
+          if (statusToApply === Status.WOUNDED) {
             // Update Wounds on the Actor
             await actor.update({
               'system.wounds.value': newWoundsValue,
@@ -627,14 +634,16 @@ async function attemptSoak(
     // If the user is a GM and does not have Bennies, delete the button for spending GM Bennies.
     if (!gmHasBennies) delete buttons.rerollGmBenny;
     // Create and render Dialog.
-    const rerollSoakDialog = new Dialog(
+    new Dialog(
       {
-        title: game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.Title',
+        title: game.i18n.format(
+          'SWADE.DamageApplicator.RerollSoakDialog.Title',
           {
             name: actor.name,
           },
         ),
-        content: game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.Prompt',
+        content: game.i18n.format(
+          'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
           {
             name: actor.name,
             wounds: woundsRemainingText,
@@ -671,7 +680,8 @@ async function applyIncapacitated(actor: SwadeActor) {
       (s) => s.id === 'incapacitated',
     );
     // If there's an Status Effect data for Incapacitated.
-    if (data) await actor.toggleActiveEffect(data, { active: true, overlay: true });
+    if (data)
+      await actor.toggleActiveEffect(data, { active: true, overlay: true });
   }
 }
 
@@ -690,4 +700,10 @@ async function rollInjuryTable() {
       localize: true,
     });
   }
+}
+
+enum Status {
+  NONE,
+  SHAKEN,
+  WOUNDED,
 }
