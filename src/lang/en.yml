@@ -787,6 +787,7 @@ SWADE:
       ShakenPrompt: <p>{name} is about to become Shaken.</p>
       UnharmedPrompt: <p>{name} might be unharmed.</p>
       Benny: Spend a Benny to Soak
+      GMBenny: Spend a GM Benny to Soak
       Free: Soak for Free
       TakeWounds: Take {wounds}
       AdjustDamage: Adjust Damage
@@ -796,6 +797,7 @@ SWADE:
       Title: Reroll to Soak Wounds for {name}?
       Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
       Benny: Spend a Benny to Reroll
+      GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
     AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
