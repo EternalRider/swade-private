@@ -72,6 +72,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restored the ability to sort powers via drag&drop on the character sheet. (#710)
 - Restored the ability to sort items via drag&drop on the npc sheet. (#710)
 - Descriptions in item chat cards can now be viewed by anyone who can see the chat cards instead of just GMs and Observers. (#722)
+- Having multiple copies of the same linked actor as tokens on the scene should no longer cause status effects to be removed if an even number of tokens is present. (#724)
 
 ## 2.2.5
 

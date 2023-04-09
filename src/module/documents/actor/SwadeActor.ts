@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import {
   Context,
-  DocumentModificationOptions,
+  DocumentModificationOptions
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
@@ -19,7 +19,7 @@ import { Logger } from '../../Logger';
 import {
   getRankFromAdvanceAsString,
   modifierReducer,
-  shouldShowBennyAnimation,
+  shouldShowBennyAnimation
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -662,17 +662,7 @@ export default class SwadeActor extends Actor {
     effectData: StatusEffect,
     options: { overlay?: boolean; active?: boolean } = { overlay: false },
   ) {
-    //get the active tokens
-    const tokens = this.getActiveTokens();
-    //if there's tokens, iterate over them to toggle the effect directly
-    if (tokens.length > 0) {
-      for (const token of tokens) {
-        await token.document.toggleActiveEffect(effectData, options);
-      }
-      return;
-    }
-
-    //else toggle the effect directly on the actor
+    //toggle the effect directly on the actor
     const existingEffect = this.effects.find(
       (e) => e.statusId === effectData.id,
     );
