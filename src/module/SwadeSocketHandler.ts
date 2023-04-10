@@ -1,4 +1,4 @@
-import { calcWounds } from './dice/DamageApplicator';
+import { calcWounds } from './apps/DamageApplicator';
 import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import { isFirstGM, isFirstOwner } from './util';
 
@@ -24,9 +24,6 @@ export default class SwadeSocketHandler {
           break;
         case 'giveBennies':
           this._onGiveBenny(data);
-          break;
-        case 'calcWounds':
-          this._onCalcWounds(data);
           break;
         default:
           this._onUnknownSocket(data.type);
@@ -65,16 +62,6 @@ export default class SwadeSocketHandler {
     this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
   }
 
-  calcWounds(actorUuid: string, damage: number, ap: number, playerId: string) {
-    this.emit<CalcWoundsEvent>({
-      type: 'calcWounds',
-      tokenActorUUID: actorUuid,
-      damage: damage,
-      ap: ap,
-      targetUserId: playerId,
-    });
-  }
-
   protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
     const effect = (await fromUuid(data.effectUUID)) as SwadeActiveEffect;
     if (isFirstOwner(effect.parent)) {
@@ -99,10 +86,6 @@ export default class SwadeSocketHandler {
 
   protected _onUnknownSocket(type: string) {
     console.warn(`The socket event ${type} is not supported`);
-  }
-
-  protected async _onCalcWounds(data: CalcWoundsEvent) {
-    calcWounds(data.tokenActorUUID, data.damage, data.ap, data.targetUserId);
   }
 
   protected async _onGiveBenny(data: GiveBenniesEvent) {
@@ -131,11 +114,4 @@ interface NewRoundEvent extends EventData {
 
 interface GiveBenniesEvent extends EventData {
   users: string[];
-}
-
-interface CalcWoundsEvent extends EventData {
-  tokenActorUUID: string;
-  damage: number;
-  ap: number;
-  targetUserId: string;
 }
