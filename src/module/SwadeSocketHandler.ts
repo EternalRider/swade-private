@@ -1,4 +1,3 @@
-import { calcWounds } from './apps/DamageApplicator';
 import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import { isFirstGM, isFirstOwner } from './util';
 

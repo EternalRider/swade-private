@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { DamageRoll } from '../dice/DamageRoll';
 import type SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
-import { DamageRoll } from '../dice/DamageRoll';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -28,10 +28,6 @@ export async function damageApplicator(message: SwadeChatMessage) {
   for (const token of controlledTokens) {
     // Get the actor from the token data.
     const actor = token.actor!;
-    // Get the player who is controlling the character.
-    const characterPlayer = game.users?.find(
-      (u) => u.character?.id === actor?.id,
-    );
     // Trigger calculation of Wounds
     calcWounds(actor.uuid, damage, ap);
   }
@@ -92,13 +88,7 @@ export async function calcWounds(
   }
 
   // Trigger Soak prompt.
-  await soakPrompt(
-    actor,
-    damage,
-    ap,
-    woundsInflicted,
-    statusToApply,
-  );
+  await soakPrompt(actor, damage, ap, woundsInflicted, statusToApply);
 }
 
 // Function for prompting to Soak.
@@ -143,10 +133,9 @@ async function soakPrompt(
       },
     },
     take: {
-      label: game.i18n.format(
-        'SWADE.DamageApplicator.SoakDialog.TakeWounds',
-        { wounds: woundsText },
-      ),
+      label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.TakeWounds', {
+        wounds: woundsText,
+      }),
       icon: '<i class="fas fa-droplet"></i>',
       callback: async () => {
         const existingWounds = actor.system.wounds.value;
@@ -183,9 +172,7 @@ async function soakPrompt(
       },
     },
     applyShaken: {
-      label: game.i18n.format(
-        'SWADE.DamageApplicator.SoakDialog.ApplyShaken',
-      ),
+      label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.ApplyShaken'),
       icon: '<i class="fas fa-face-hushed"></i>',
       callback: async (_html) => {
         message = game.i18n.format('SWADE.DamageApplicator.Result.IsShaken', {
@@ -285,10 +272,9 @@ async function soakPrompt(
     }
   } else {
     // In all other circumstances, set the title to Wounded title.
-    title = game.i18n.format(
-      'SWADE.DamageApplicator.SoakDialog.WoundedTitle',
-      { name: actor.name },
-    );
+    title = game.i18n.format('SWADE.DamageApplicator.SoakDialog.WoundedTitle', {
+      name: actor.name,
+    });
     // Set the prompt text to Wounded text
     prompt = game.i18n.format(
       'SWADE.DamageApplicator.SoakDialog.WoundedPrompt',
@@ -550,7 +536,9 @@ async function applyShaken(actor: SwadeActor) {
 // Function for applying the Incapacitated Status Effect
 async function applyIncapacitated(actor: SwadeActor) {
   // Check if they're already Incapacitated; we don't need to add another instance if so.
-  const isIncapacitated = actor.effects.find((e) => e.name === game.i18n.format('SWADE.Incap'));
+  const isIncapacitated = actor.effects.find(
+    (e) => e.name === game.i18n.format('SWADE.Incap'),
+  );
   // If there is not such Status Effect, then apply it.
   if (isIncapacitated === undefined) {
     const data = CONFIG.SWADE.statusEffects.find(
