@@ -8,7 +8,7 @@ import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { damageApplicator } from '../dice/DamageApplicator';
+import { damageApplicator } from '../apps/DamageApplicator';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
