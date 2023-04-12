@@ -7,13 +7,13 @@ import {
   ItemDataConstructorData,
   ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { EquipState, Updates } from '../../../globals';
+import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
   TraitRollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
-import MagReload from '../../apps/MagReload';
+import Reloadinator from '../../apps/Reloadinator';
 import RollDialog from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
@@ -781,7 +781,7 @@ export default class SwadeItem extends Item {
       return;
     }
 
-    switch (this.system.reloadType) {
+    switch (reloadType) {
       case constants.RELOAD_TYPE.SINGLE:
         await this._handleSingleReload(ammo as SwadeItem);
         break;
@@ -789,7 +789,8 @@ export default class SwadeItem extends Item {
         await this._handleFullReload(ammo as SwadeItem, missingAmmo);
         break;
       case constants.RELOAD_TYPE.MAGAZINE:
-        await this._handleMagazineReload();
+      case constants.RELOAD_TYPE.BATTERY:
+        await this._handleMagazineBatteryReload(reloadType);
         break;
       case constants.RELOAD_TYPE.PP:
         await this._handlePowerPointReload();
@@ -801,12 +802,17 @@ export default class SwadeItem extends Item {
     }
   }
 
-  async unload() {
+  async removeAmmo() {
     const loadedAmmo = this?.getFlag('swade', 'loadedAmmo');
     if (this.type !== 'weapon' || !this.actor || !loadedAmmo) return;
     const reloadType = this.system.reloadType;
+    if (
+      reloadType !== constants.RELOAD_TYPE.MAGAZINE &&
+      reloadType !== constants.RELOAD_TYPE.BATTERY
+    )
+      return;
 
-    if (reloadType === constants.RELOAD_TYPE.MAGAZINE && loadedAmmo) {
+    if (loadedAmmo) {
       const updates: Updates[] = [
         {
           _id: this.id,
@@ -820,27 +826,55 @@ export default class SwadeItem extends Item {
         return;
       }
 
-      const existingMagStack = this.actor.items.find(
-        (i) =>
-          i.type === 'consumable' &&
-          i.system.isMagazine &&
-          i.system.charges.max ===
-            foundry.utils.getProperty(this, 'system.currentShots'),
-      );
+      const isFull = this.system.currentShots === this.system.shots;
+      if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
+        const existingStack = this.actor.items.find(
+          (i) =>
+            i.type === 'consumable' &&
+            i.name === loadedAmmo.name &&
+            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED &&
+            i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE &&
+            i.system.charges.value === i.system.charges.max,
+        );
+        if (existingStack && isFull) {
+          updates.push({
+            _id: existingStack.id,
+            'system.quantity': existingStack.system.quantity + 1,
+          });
+        } else {
+          const newItemData = foundry.utils.mergeObject(loadedAmmo, {
+            'system.charges.value': this.system.currentShots,
+          });
+          await CONFIG.Item.documentClass.create(newItemData, {
+            parent: this.actor,
+          });
+        }
+      } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
+        const existingStack = this.actor.items.find(
+          (i) =>
+            i.type === 'consumable' &&
+            i.name === loadedAmmo.name &&
+            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED &&
+            i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY &&
+            i.system.charges.value === 100,
+        );
 
-      if (existingMagStack) {
-        updates.push({
-          _id: existingMagStack.id,
-          'system.quantity': existingMagStack.system.quantity + 1,
-        });
-      } else {
-        const newItemData = foundry.utils.mergeObject(loadedAmmo, {
-          'system.charges.value': this.system.currentShots,
-        });
-        await CONFIG.Item.documentClass.create(newItemData, {
-          parent: this.actor,
-        });
+        if (existingStack && isFull) {
+          updates.push({
+            _id: existingStack.id,
+            'system.quantity': existingStack.system.quantity + 1,
+          });
+        } else {
+          const factor = this.system.currentShots / this.system.shots;
+          const newItemData = foundry.utils.mergeObject(loadedAmmo, {
+            'system.charges.value': Math.ceil(factor * 100),
+          });
+          await CONFIG.Item.documentClass.create(newItemData, {
+            parent: this.actor,
+          });
+        }
       }
+
       await this.actor.updateEmbeddedDocuments('Item', updates);
     }
   }
@@ -1174,14 +1208,29 @@ export default class SwadeItem extends Item {
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
   }
 
-  private async _handleMagazineReload() {
+  private async _handleMagazineBatteryReload(reloadType: ReloadType) {
     if (!this.needsFullReloadProcedure()) {
       return this._handleSimpleReload();
     }
-    const magazines =
-      this.actor?.itemTypes.consumable.filter(
-        (i) => i.system.isMagazine && i.name === this.system.ammo,
-      ) ?? [];
+    let magazines = new Array<SwadeItem>();
+    if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
+      magazines =
+        this.actor?.itemTypes.consumable.filter(
+          (i) =>
+            i.type === 'consumable' &&
+            i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE &&
+            i.name === this.system.ammo,
+        ) ?? [];
+    } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
+      magazines =
+        this.actor?.itemTypes.consumable.filter(
+          (i) =>
+            i.type === 'consumable' &&
+            i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY &&
+            i.name === this.system.ammo,
+        ) ?? [];
+    }
+
     if (magazines.filter((m) => m.system.charges.value > 0).length === 0) {
       if (!notificationExists('SWADE.NoMags', true)) {
         Logger.warn('SWADE.NoMags', {
@@ -1191,7 +1240,7 @@ export default class SwadeItem extends Item {
       }
       return;
     }
-    const reloaded = await MagReload.asPromise({ weapon: this, magazines });
+    const reloaded = await Reloadinator.asPromise({ weapon: this, magazines });
 
     if (reloaded) {
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
@@ -1305,11 +1354,11 @@ export default class SwadeItem extends Item {
         });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
-    //handle and potentially reject magazine updates
+    //handle and potentially reject magazine/battery updates
     if (this.type === 'consumable') {
       if (
         foundry.utils.hasProperty(changed, 'system.quantity') &&
-        this.system.isMagazine &&
+        this.system.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
         this.system.charges.value !== 0 &&
         this.system.charges.value !== this.system.charges.max
       ) {
@@ -1322,6 +1371,12 @@ export default class SwadeItem extends Item {
             { toast: true, localize: true },
           );
         }
+      }
+      if (
+        foundry.utils.hasProperty(changed, 'system.charges.max') &&
+        this.system.subtype === constants.CONSUMABLE_TYPE.BATTERY
+      ) {
+        foundry.utils.setProperty(changed, 'system.charges.max', 100);
       }
     }
   }

@@ -270,15 +270,38 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           break;
         case constants.RELOAD_TYPE.MAGAZINE:
           data.ammoList = this.actor?.itemTypes.consumable
-            .filter((i) => i.system.isMagazine)
+            .filter(
+              (i) =>
+                i.type === 'consumable' &&
+                i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE,
+            )
             .map((i) => i.name) as string[];
           data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
           break;
         case constants.RELOAD_TYPE.PP:
           data.ammoList = Object.keys(this.actor.system?.powerPoints);
           data.ppReload = true;
+          break;
+        case constants.RELOAD_TYPE.BATTERY:
+          data.ammoList = this.actor?.itemTypes.consumable
+            .filter(
+              (i) =>
+                i.type === 'consumable' &&
+                i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY,
+            )
+            .map((i) => i.name) as string[];
+          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
+          break;
       }
       data.reloadTypeOptions = this._reloadTypeOptions();
+    }
+
+    if (this.type === 'consumable') {
+      data.subtypes = {
+        [constants.CONSUMABLE_TYPE.REGULAR]: 'SWADE.ConsumableType.Regular',
+        [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
+        [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
+      };
     }
 
     if (this.item.isArcaneDevice) {
@@ -702,7 +725,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
       [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
       [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
-      [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine', // Disabled until mags are ready
+      [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
+      [constants.RELOAD_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
   }
@@ -737,6 +761,7 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isRaceOrArchetype: boolean;
   };
+  subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
 }
 

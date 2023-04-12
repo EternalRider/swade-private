@@ -307,7 +307,7 @@ Item:
       max: 1
     messageOnUse: true
     destroyOnEmpty: false
-    isMagazine: false
+    subtype: regular
   edge:
     templates:
       - itemDescription

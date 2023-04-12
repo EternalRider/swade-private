@@ -1,6 +1,7 @@
 import {
   AbilitySubType,
   AdditionalStats,
+  ConsumableType,
   EquipState,
   LinkedAttribute,
   ReloadType,
@@ -194,7 +195,7 @@ interface ConsumableData
     max: number;
     value: number;
   };
-  isMagazine: boolean;
+  subtype: ConsumableType;
   messageOnUse: boolean;
   destroyOnEmpty: boolean;
 }
