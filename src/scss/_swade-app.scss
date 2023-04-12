@@ -118,10 +118,6 @@
     border-style: solid;
   }
 
-  a:not(.header-button, .document-id-link, .content-link, .editor-edit) {
-    color: var(--accent-color);
-  }
-
   .tabs {
     margin-top: 6px;
     flex-wrap: wrap;
