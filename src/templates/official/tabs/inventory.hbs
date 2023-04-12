@@ -317,13 +317,13 @@
           (x{{system.quantity}}) {{name}}
         </button>
         <span class="charges">
-          {{#if system.isMagazine}}
+          {{#unless (eq system.subtype "regular")}}
             {{system.charges.value}}/{{system.charges.max}}
           {{else}}
             <button type="button" class='rollable use-consumable' title="{{localize "SWADE.Consumable.Use"}}">
               {{system.charges.value}}/{{system.charges.max}}
             </button>
-          {{/if}}
+          {{/unless}}
         </span>
         <span class='weight'>
           {{formatNumber (times system.weight system.quantity)}}

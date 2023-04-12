@@ -9,11 +9,11 @@
 
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
-    {{#unless item.system.isMagazine}}
+    {{#if (eq item.system.subtype "regular")}}
       <div class="form-group">
         <button class="use-consumable">{{localize "SWADE.Consumable.Use"}}</button>
       </div>
-    {{/unless}}
+    {{/if}}
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class="form-group">
       <label>{{localize "SWADE.Charges"}}</label>
@@ -80,9 +80,13 @@
         <p class="notes">{{localize "SWADE.MessageOnUse.Hint"}}</p>
       </div>
       <div class="form-group">
-        <label>{{localize "SWADE.ItemIsMagazine"}}</label>
+        <label>{{localize "SWADE.ConsumableType.Label"}}</label>
           <span class='form-fields'>
-            <input type='checkbox' name='system.isMagazine' {{checked item.system.isMagazine}}/>
+              <select name='system.subtype'>
+                  {{#select item.system.subtype}}
+                    {{selectOptions subtypes localize=true}}
+                  {{/select}}
+              </select>
           </span>
       </div>
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}

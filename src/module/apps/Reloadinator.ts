@@ -1,20 +1,21 @@
+import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-export default class MagReload extends Application<ApplicationOptions> {
+export default class Reloadinator extends Application<ApplicationOptions> {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
-  #userWantsToDiscard = false;
+  #wantsToDiscard = false;
   magazines: SwadeItem[];
   weapon: SwadeItem;
 
   static asPromise(ctx: MagReloadContext): Promise<boolean> {
-    return new Promise((resolve) => new MagReload(ctx, resolve));
+    return new Promise((resolve) => new Reloadinator(ctx, resolve));
   }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       title: 'Select a magazine',
-      template: 'systems/swade/templates/apps/magreload.hbs',
+      template: 'systems/swade/templates/apps/reload-manager.hbs',
       classes: ['swade', 'magazine-manager', 'swade-app'],
       width: 400,
       height: 'auto' as const,
@@ -27,7 +28,7 @@ export default class MagReload extends Application<ApplicationOptions> {
     });
   }
 
-  get insertedMagazine() {
+  get loadedAmmo() {
     return this.weapon.getFlag('swade', 'loadedAmmo');
   }
 
@@ -54,21 +55,20 @@ export default class MagReload extends Application<ApplicationOptions> {
     html[0]
       .querySelectorAll<HTMLButtonElement>('button[data-item-id]')
       .forEach((btn) =>
-        btn.addEventListener('click', this._onClickMagazine.bind(this)),
+        btn.addEventListener('click', this._onClickOption.bind(this)),
       );
     html[0]
-      .querySelector<HTMLInputElement>('.discard-mag')
+      .querySelector<HTMLInputElement>('.discard')
       ?.addEventListener('click', (ev) => {
         const target = ev.currentTarget as HTMLInputElement;
-        this.#userWantsToDiscard = target.checked;
+        this.#wantsToDiscard = target.checked;
       });
   }
 
   async getData(options?: Partial<ApplicationOptions>) {
     const renderData = {
-      magazineGroups: this.#prepareMagazineList(),
-      canDiscard:
-        this.weapon.system.currentShots === 0 && this.insertedMagazine,
+      magazineGroups: this.#prepareOptionList(),
+      canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
     };
     return foundry.utils.mergeObject(renderData, await super.getData(options));
   }
@@ -78,39 +78,37 @@ export default class MagReload extends Application<ApplicationOptions> {
     await super.close(options);
   }
 
-  private async _onClickMagazine(ev: MouseEvent) {
+  private async _onClickOption(ev: MouseEvent) {
     ev.preventDefault();
     if (this.weapon.type !== 'weapon') return;
     const target = ev.currentTarget as HTMLButtonElement;
-    const selectedMagazine = this.#selectMagazine(
-      target.dataset.itemId as string,
-    );
-    if (selectedMagazine?.type !== 'consumable') return;
+    const selected = this.#selectOption(target.dataset.itemId as string);
+    if (selected?.type !== 'consumable') return;
 
     const currentShots = this.weapon.system.currentShots;
-    const magContent = selectedMagazine.system.charges.value;
+    const magContent = selected.system.charges.value;
     //return early if the new and old mag have the same content as there's nothing to do
     if (currentShots === magContent) return;
 
-    const magStackSize = selectedMagazine.system.quantity;
-    const discardEmptyMagazine =
-      this.#userWantsToDiscard && this.weaponIsEmpty && this.insertedMagazine;
+    const stackSize = selected.system.quantity;
+    const discardEmpty =
+      this.#wantsToDiscard && this.weaponIsEmpty && this.loadedAmmo;
 
     //discard empty magazine if desired
-    if (discardEmptyMagazine || !this.insertedMagazine) {
-      await this.#loadMagazineFromInventory(selectedMagazine, magStackSize);
-    } else if (magStackSize > 1) {
-      await this.#exchangeMagWithStack(selectedMagazine, magStackSize);
+    if (discardEmpty || !this.loadedAmmo) {
+      await this.#loadFromInventory(selected, stackSize);
+    } else if (stackSize > 1) {
+      await this.#exchangeMagWithStack(selected, stackSize);
     } else {
       //last resort: just update the charges
-      await selectedMagazine.update({ 'system.charges.value': currentShots });
+      await selected.update({ 'system.charges.value': currentShots });
     }
 
-    await this.#loadMagIntoWeapon(selectedMagazine);
+    await this.#loadIntoWeapon(selected);
     this.#resolve();
   }
 
-  #selectMagazine(id: string) {
+  #selectOption(id: string) {
     return this.magazines.find((i) => i.id === id)!;
   }
 
@@ -120,7 +118,7 @@ export default class MagReload extends Application<ApplicationOptions> {
     this.close();
   }
 
-  #prepareMagazineList(): MagazineGroups {
+  #prepareOptionList(): MagazineGroups {
     const groups: MagazineGroups = Object.fromEntries(
       this.magazines.map((m) => [m.name!, []]),
     );
@@ -148,37 +146,51 @@ export default class MagReload extends Application<ApplicationOptions> {
     return groups;
   }
 
-  /** set the shots in the weapon and the inserted magazine */
-  async #loadMagIntoWeapon(magazine: SwadeItem) {
-    const magToInsert = foundry.utils.mergeObject(magazine.toObject(), {
+  /** set the shots in the weapon and the selected magazine/battery */
+  async #loadIntoWeapon(selected: SwadeItem) {
+    if (selected.type !== 'consumable') return;
+    const selectedToInsert = foundry.utils.mergeObject(selected.toObject(), {
       'system.quantity': 1,
     });
+    let shots = 0;
+    if (selected.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
+      shots = selected.system.charges.value;
+    } else if (selected.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
+      shots = this.#getShotsFromBatteryFill(selected);
+    }
     await this.weapon.update({
-      'system.currentShots': magazine.system.charges.value,
-      'flags.swade.loadedAmmo': magToInsert,
+      'system.currentShots': shots,
+      'flags.swade.loadedAmmo': selectedToInsert,
     });
   }
 
   /** simply overwrite the old magazine with the new one to "discard" the old one */
-  async #loadMagazineFromInventory(magazine: SwadeItem, magStackSize: number) {
-    if (magStackSize > 1) {
-      await magazine.update({ 'system.quantity': magStackSize - 1 });
+  async #loadFromInventory(selected: SwadeItem, stackSize: number) {
+    if (stackSize > 1) {
+      await selected.update({ 'system.quantity': stackSize - 1 });
     } else {
-      await magazine.delete();
+      await selected.delete();
     }
   }
 
-  async #exchangeMagWithStack(magazine: SwadeItem, magStackSize: number) {
-    const currentShots = this.weapon.system.currentShots;
+  async #exchangeMagWithStack(selected: SwadeItem, stackSize: number) {
+    if (selected.type !== 'consumable') return;
     //take from the stack, and put the remaining shots into a new mag
-    await magazine.update({ 'system.quantity': magStackSize - 1 });
+    await selected.update({ 'system.quantity': stackSize - 1 });
     const emptyMagStack = this.magazines.find(
       (m) => m.type === 'consumable' && m.system.charges.value === 0,
     );
-    if (!emptyMagStack || (!this.weaponIsEmpty && this.insertedMagazine)) {
+    if (!emptyMagStack || (!this.weaponIsEmpty && this.loadedAmmo)) {
+      const subtype = selected.system.subtype;
+      let newCharges = 0;
+      if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
+        newCharges = this.#getBatteryFillFromWeapon();
+      } else if (subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
+        newCharges = this.weapon.system.currentShots;
+      }
       //Otherwise just clone the magazine and update the data
-      await magazine.clone(
-        { system: { quantity: 1, 'charges.value': currentShots } },
+      await selected.clone(
+        { system: { quantity: 1, 'charges.value': newCharges } },
         { save: true },
       );
     } else {
@@ -187,6 +199,21 @@ export default class MagReload extends Application<ApplicationOptions> {
         'system.quantity': emptyMagStack.system.quantity + 1,
       });
     }
+  }
+
+  #getBatteryFillFromWeapon(): number {
+    if (this.weapon.type !== 'weapon') return 0;
+    const per =
+      (this.weapon.system.currentShots / this.weapon.system.shots) * 100;
+    return Math.ceil(per);
+  }
+
+  #getShotsFromBatteryFill(battery: SwadeItem): number {
+    if (this.weapon.type !== 'weapon' || battery.type !== 'consumable') {
+      return 0;
+    }
+    const factor = battery.system.charges.value / 100;
+    return Math.ceil(this.weapon.system.shots * factor);
   }
 }
 

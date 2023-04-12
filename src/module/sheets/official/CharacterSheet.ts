@@ -1119,7 +1119,7 @@ export default class CharacterSheet extends ActorSheet<
         callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
       },
       {
-        name: 'SWADE.RemoveMagazine',
+        name: 'SWADE.RemoveAmmo',
         icon: '<i class="fa-solid fa-right-from-bracket"></i>',
         condition: (i) => {
           const item = this.actor.items.get(i.data('itemId'));
@@ -1129,10 +1129,11 @@ export default class CharacterSheet extends ActorSheet<
             isWeapon &&
             !!loadedAmmo &&
             item.needsFullReloadProcedure() &&
-            item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE
+            (item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE ||
+              item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );
         },
-        callback: (i) => this.actor.items.get(i.data('itemId'))?.unload(),
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.removeAmmo(),
       },
       {
         name: 'SWADE.Ed',

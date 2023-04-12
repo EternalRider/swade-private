@@ -248,11 +248,15 @@ SWADE:
     Single: Einzel
     Full: Voll
     Magazine: Magazin
+    Battery: Batterie
     PP: Machtpunkte
+  ConsumableType:
+    Label: Subtyp
+    Regular: Regulär
   NoAmmoSet: Keine Munition ausgewählt
   NoAmmoPP: Nicht genug Machtpunkte vorhanden
   NoMags: Keine Magazine vorhanden
-  RemoveMagazine: Remove Magazine
+  RemoveAmmo: Munition entfernen
   NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
@@ -731,7 +735,6 @@ SWADE:
     Header: Inhalt
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
-  ItemIsMagazine: Gegenstand ist Magazin
   Vision:
     SeeHeat: Wärme sehen
     SenseHeat: Wärme spüren
