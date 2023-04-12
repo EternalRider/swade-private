@@ -279,7 +279,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
           break;
         case constants.RELOAD_TYPE.PP:
-          data.ammoList = Object.keys(this.actor.system?.powerPoints);
+          data.ammoList = Object.keys(this.actor?.system?.powerPoints);
           data.ppReload = true;
           break;
         case constants.RELOAD_TYPE.BATTERY:
