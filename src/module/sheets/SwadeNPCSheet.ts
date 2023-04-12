@@ -117,16 +117,22 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       };
 
       // Getting back to main logic
-      if (type == 'choice') {
+      if (type === 'choice') {
         const dialogInput = await this._chooseItemType();
         const itemData = createItem(dialogInput.type, dialogInput.name);
-        itemData.data.equipped = true;
-        await Item.create(itemData, { renderSheet: true, parent: this.actor });
+        foundry.utils.setProperty(itemData, 'system.equipStatus', constants.EQUIP_STATE.EQUIPPED);
+        await CONFIG.Item.documentClass.create(itemData, {
+          renderSheet: true,
+          parent: this.actor,
+        });
         return;
       } else {
         const itemData = createItem(type);
-        itemData.data.equipped = true;
-        await Item.create(itemData, { renderSheet: true, parent: this.actor });
+        foundry.utils.setProperty(itemData, 'system.equipStatus', constants.EQUIP_STATE.EQUIPPED);
+        await CONFIG.Item.documentClass.create(itemData, {
+          renderSheet: true,
+          parent: this.actor,
+        });
       }
     });
 
