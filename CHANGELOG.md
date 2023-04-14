@@ -27,36 +27,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added swade-specific roll classes which can be found in the global `CONFIG.Dice` object.
-  - `SwadeRoll` which is uses for general rolls like running and the wealth die. (#691)
+  - `SwadeRoll` which is used for general rolls like running and the wealth die. (#691)
   - `TraitRoll` which is used for skill and attribute rolls. (#677)
   - `DamageRoll` which is used for damage rolls. (#678)
-- Added support for the Dumb Luck setting rule which disables rerolls on critical failures. You can find the toggle in the Setting Configurator. (#588)
+- Added support for the "Dumb Luck" setting rule which allows rerolls on critical failures. You can find the toggle in the Setting Configurator. (#588)
 - Added race and archetype getters to the `SwadeActor` that return the appropriate item if the actor has one.
-- Added additional translation strings.
-- Added the option to display a disclaimer at the top of a compendium TOC. The disclaimer is set with the options object when instantiating a TOC.
+- Added the option to display a disclaimer at the top of a Compendium TOC. The disclaimer is set with the `options` object when instantiating a TOC.
 - Item actions can now be flagged to be Heavy Damage. Thanks goes to Drental! (!290)
 - Added the ability to refresh power points. Thanks goes to ChaosOS! (#666) (!291)
 - Added the ability to specify the number of additional damage dice to be rolled. Thanks goes to John Stevens! (#707) (!293)
-- Added the ability to toggle encumbrance using an active effect. (#708)
+- Added the ability to toggle encumbrance using an Active Effect. (#708)
 - Added the unshake bonus to the tweaks menu. Thanks goes to John Stevens! (#709) (!294)
 - Added the ability for certain status effects to add related status effects when they are created.
-- Added the toggle to consumables that can mark consumables as batteries or magazines. Thanks goes to ChaosOS! (#578) (#725) (!292)
+- Added a toggle to consumables that can mark consumables as batteries or magazines. Thanks goes to ChaosOS! (#578) (#725) (!292)
 - Added the ability for consumable items to be used to refill shots in weapons. (#714) (#725)(#578) (!292)
   - Magazines are consumables that can be loaded into and removed from a weapon.
   - The contents of the magazine are loaded into the weapon. For example if a weapon has 1 shot left and you load a magazine with 30 rounds then a magazine with 1 shot is placed in the inventory and the 30 shots are put into the weapon.
   - Empty magazines and batteries can be discarded in the reload dialog. If you choose not to discard the magazine or battery it will be placed into a stack in the inventory.
   - Batteries are consumable that refill a weapon based on a percentage charge, e.g a weapon with a capacity of 10 will gain 2 shots from a battery with 20/100 charges.
   - Tooltips that contain information about the currently loaded ammunition are available on the item chat card and the weapon item sheet.
-- Added the ability to reload weapons with Power Points. To enable that set the reload type to "Power Points" and set the Ammunition field to the Arcane Background that should be used.
+- Added the ability to reload weapons with Power Points. To enable this feature set the reload type to "Power Points" and set the Ammunition field to the Arcane Background that should be used.
 - Added font color variables to `.swade-app` class
 - Added additional translation strings.
 
 ### Changed
 
-- Changed the roll dialog to expect one of the three new roll classes
-- The small, medium and large burst template checkboxes now show the full name on hover in the weapon and power item sheets.
+- Changed the roll dialog to expect one of the three new `Roll` classes
+- The small, medium and large burst template checkboxes now show the full name of the template on hover in the weapon and power item sheets.
 - Races and archetypes have been reworked and now get added to the character. A character can only have one race and one archetype at a given time and a warning will be shown if you attempt to add a second. For player characters the race and archetype can be accessed by clicking their names on the sheet header. NPCs have their race and archetype shown in the `Special Abilities` section of the NPC sheet.
-- The CompendiumTOC should now load much quicker for actor compendiums. (#680)
+- The Compendium TOC should now load much quicker for actor compendiums. (#680)
 - Weapons now properly display the item damage modifier in addition to the regular base damage in the inventory. (#661)
 - Replaced some unused translations (#703)
   - `SWADE.ItemEdit` -> `SWADE.Ed`
@@ -68,7 +67,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- The Unskilled Attempt should now once again receive the appropriate -2 modifier when created. (#698)
+- The Unskilled Attempt should once again receive the appropriate -2 modifier when created. (#698)
 - Added locale-based sorting to character summarizer. (#706)
 - Restored the ability to sort powers via drag&drop on the character sheet. (#710)
 - Restored the ability to sort items via drag&drop on the npc sheet. (#710)
