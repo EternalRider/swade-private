@@ -657,6 +657,9 @@ SWADE:
       Fail: You perish
       Success: You hang on, for now.
       Raise: You successfully stabilize
+  Validation:
+    OnlyOneRace: You can only have one race at a time!
+    OnlyOneArchetype: You can only have one archetype at a time!
   BenniesSpendGM: Spend a GM Benny
   DocumentLink: Link
   DocumentTweaks: Tweaks
@@ -780,9 +783,6 @@ SWADE:
   DamageApplicator:
     ApplyDamage: Apply Damage
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
-    ChoosePlayerDialog:
-      Title: Choose a Player
-      Prompt: <p>Which player would like to manage the damage for {name}?</p>
     SoakDialog:
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?

@@ -2,13 +2,13 @@
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC, CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import { damageApplicator } from '../apps/DamageApplicator';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { damageApplicator } from '../apps/DamageApplicator';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
@@ -1197,11 +1197,15 @@ export default class SwadeCoreHooks {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
       if (subType === 'race' && !!item.actor?.race) {
-        ui.notifications.warn('You can only have one race at a time!');
+        ui.notifications.warn('SWADE.Validation.OnlyOneRace', {
+          localize: true,
+        });
         return false;
       }
       if (subType === 'archetype' && !!item.actor?.archetype) {
-        ui.notifications.warn('You can only have one archetype at a time!');
+        ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+          localize: true,
+        });
         return false;
       }
     }

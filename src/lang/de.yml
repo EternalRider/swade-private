@@ -276,7 +276,7 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: #TODO Needs Translation
+  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel
   WildDieTheme: Wildcard Würfel Thema
   WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
@@ -661,11 +661,14 @@ SWADE:
       Name: Narrenglück
       Hint: Schaltet die Narrenglück Settingregel ein
     WoundCap:
-      Name: #TODO - Translate
-      Hint: #TODO - Translate
+      Name: Wundobergrenze
+      Hint: Schaltet die Wundobergrenze Settingregel ein
     GrittyDamage:
-      Name: #TODO - Translate
-      Hint: #TODO - Translate
+      Name: Fieser Schaden
+      Hint: Schaltet die Fieser Schaden Settingregel ein
+  Validation:
+    OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
+    OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -792,11 +795,8 @@ SWADE:
       ConfirmDie: Bestätigungswürfel
   LoadedAmmo: Geladene Munition
   DamageApplicator: #TODO: The subitems below need translations
-    ApplyDamage: Apply Damage
+    ApplyDamage: Schaden Anwenden
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
-    ChoosePlayerDialog:
-      Title: Choose a Player
-      Prompt: <p>Which player would like to manage the damage for {name}?</p>
     SoakDialog:
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?
@@ -807,9 +807,9 @@ SWADE:
       GMBenny: Spend a GM Benny to Soak
       Free: Soak for Free
       TakeWounds: Take {wounds}
-      AdjustDamage: Adjust Damage
+      AdjustDamage: Schaden anpassen
       ApplyShaken: Apply Shaken Status
-      Accept: Accept
+      Accept: Annehmen
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
       Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
