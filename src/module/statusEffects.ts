@@ -169,6 +169,13 @@ export const statusEffects: StatusEffect[] = [
     icon: 'systems/swade/assets/icons/status/status_encumbered.svg',
     id: 'encumbered',
     label: 'SWADE.Encumbered',
+    changes: [
+      {
+        key: 'system.details.encumbrance.isEncumbered',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'true',
+      },
+    ],
   },
   {
     icon: 'systems/swade/assets/icons/status/status_prone.svg',
@@ -188,21 +195,17 @@ export const statusEffects: StatusEffect[] = [
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
-      {
-        key: 'system.status.isDistracted',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-      {
-        key: 'system.status.isVulnerable',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
     ],
     flags: {
       swade: {
         expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
         loseTurnOnHold: true,
+        related: {
+          distracted: {},
+          prone: {},
+          //@ts-expect-error The types don't include deletion syntax but this is valid
+          vulnerable: { '-=duration': null },
+        },
       },
     },
   },

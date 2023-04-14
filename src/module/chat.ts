@@ -1,158 +1,13 @@
 import { SWADE } from './config';
 import SwadeActor from './documents/actor/SwadeActor';
 import ItemChatCardHelper from './ItemChatCardHelper';
-import { Logger } from './Logger';
-
-export async function formatRoll(
-  chatMessage: ChatMessage,
-  html: JQuery<HTMLElement>,
-  _data: any,
-) {
-  const colorMessage = chatMessage.getFlag('swade', 'colorMessage') as boolean;
-
-  // Little helper function
-  const pushDice = (
-    data: DiceResults,
-    total: number,
-    faces: number,
-    red?: boolean,
-  ) => {
-    let color = 'black';
-    if (total > faces) color = 'green';
-    if (red) color = 'red';
-    let img = '';
-    if ([4, 6, 8, 10, 12, 20].indexOf(faces) !== -1) {
-      img = `icons/svg/d${faces}-grey.svg`;
-    }
-    data.dice.push({
-      img: img,
-      result: total,
-      color: color,
-      dice: true,
-    });
-  };
-
-  //helper function that determines if a roll contained at least one result of 1
-  const rollIsRed = (roll: Roll) => {
-    const retVal = roll.terms.some((d: Die) => {
-      if (d['class'] !== 'Die') return false;
-      return d.results[0]['result'] === 1;
-    });
-    return retVal;
-  };
-
-  //helper function that determines if a roll contained at least one result of 1
-  const dieIsRed = (die?: Die) => {
-    if (!(die instanceof Die)) return false;
-    return die.results[0]['result'] === 1;
-  };
-
-  const roll = chatMessage.rolls[0];
-  const chatData: DiceResults = { dice: [], modifiers: [], result: 0 };
-
-  for (const term of roll.terms) {
-    if (term instanceof PoolTerm) {
-      // Compute dice from the pool
-      term.rolls.forEach((roll: Roll) => {
-        const faces = roll.terms[0]['faces'];
-        pushDice(
-          chatData,
-          roll.total ?? 0,
-          faces,
-          colorMessage && rollIsRed(roll),
-        );
-      });
-    } else if (term instanceof Die) {
-      // Grab the right dice
-      const faces = term.faces;
-      let totalDice = 0;
-      term.results.forEach((result) => {
-        totalDice += result.result;
-      });
-      pushDice(chatData, totalDice, faces, colorMessage && dieIsRed(term));
-    } else {
-      chatData.dice.push({
-        img: null,
-        result: term.expression,
-        color: 'black',
-        dice: false,
-      });
-    }
-  }
-  // Replace default dice-formula with custom html;
-  const formulaTemplate = 'systems/swade/templates/chat/roll-formula.hbs';
-  html
-    .find('.dice-formula')
-    .replaceWith(await renderTemplate(formulaTemplate, chatData));
-
-  const results: DiceResults = { dice: [], total: 0 };
-  const modifiers: (string | number)[] = [];
-  let conviction = 0;
-
-  for (const term of roll.terms) {
-    if (term instanceof PoolTerm) {
-      // Compute dice from the pool
-      for (let i = 0; i < term.rolls.length; i++) {
-        const roll = term.rolls[i];
-        const faces = roll.terms[0]['faces'];
-        if (!term.results[i].discarded) {
-          const color = colorMessage && rollIsRed(roll);
-          pushDice(results, roll.total!, faces, color);
-        }
-      }
-    } else if (term instanceof Die) {
-      if (term.flavor === game.i18n.localize('SWADE.Conv')) {
-        conviction = term.total!;
-      } else {
-        modifiers.push(term.total!);
-      }
-    } else if (term instanceof Roll) {
-      results.total! += term.total!;
-    } else {
-      modifiers.push(term.expression);
-    }
-  }
-
-  //add conviction modifier
-  let mod = 0;
-  const modString = `0+${modifiers.join('')}`
-    .replace(/\s*/g, '') //cut out the whitespace
-    .replace(/\+{2,}/g, '+') //replace double plusses with single plus
-    .replace(/[+-]*$/, '') //remove any plus or minus at the end of the string
-    .replace('+-', '-'); //turn all +- into just minuses
-  try {
-    if (modString.length > 2) {
-      mod = Roll.safeEval(modString);
-    }
-  } catch (err) {
-    Logger.error(err);
-  } finally {
-    if (results.dice.length > 0) {
-      for (const die of results.dice) {
-        die.result += conviction;
-        die.result += mod;
-      }
-    } else {
-      results.total! += mod + conviction;
-    }
-  }
-  const resultTemplate = 'systems/swade/templates/chat/roll-result.hbs';
-  html
-    .find('.dice-total')
-    .replaceWith(await renderTemplate(resultTemplate, results));
-}
 
 export function chatListeners(html: JQuery<HTMLElement>) {
   html.on('click', '.card-header .item-name', (event) => {
-    const target = $(event.currentTarget).parents('.item-card');
-    const actor = game.actors!.get(target.data('actorId'))!;
-    if (
-      actor &&
-      (game.user!.isGM || actor.testUserPermission(game.user!, 'OBSERVER'))
-    ) {
-      const desc = target.find('.card-content');
-      desc.slideToggle();
-    }
+    $(event.currentTarget)
+      .parents('.item-card')
+      .find('.card-content')
+      .slideToggle();
   });
 
   html.on('click', '.card-buttons button', async (event) => {
@@ -214,12 +69,11 @@ export function hideChatActionButtons(
   html: JQuery<HTMLElement>,
   _data: any,
 ) {
+  // If the user is the message author or the actor owner, proceed
+  const actor = game.actors?.get(msg.speaker.actor);
+  if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
   const chatCard = html.find('.swade.chat-card');
   if (chatCard.length > 0) {
-    // If the user is the message author or the actor owner, proceed
-    const actor = game.actors?.get(msg.speaker.actor);
-    if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
-
     // Otherwise conceal all action button sections except for
     // resistance rolls (which can be rolled by other actors as a defense)
     const toHide = [
@@ -236,6 +90,42 @@ export function hideChatActionButtons(
       chatCard.find(group)?.css({ display: 'none' });
     }
   }
+
+  const rollCard = html.find('.swade-roll');
+  if (rollCard.length > 0) {
+    const toHide = ['.benny-reroll', '.free-reroll'];
+    for (const group of toHide) {
+      rollCard.find(group)?.css({ display: 'none' });
+    }
+  }
+}
+
+export function createMagazineTooltip(
+  _msg: ChatMessage,
+  html: JQuery<HTMLElement>,
+) {
+  const card = html[0];
+  const magazine = card.querySelector<HTMLElement>(
+    '.swade.chat-card .magazine',
+  );
+
+  magazine?.addEventListener('mouseenter', async () => {
+    const actor = ItemChatCardHelper.getChatCardActor(
+      card.querySelector('.swade.chat-card')!,
+    );
+    const itemId =
+      card.querySelector<HTMLElement>('[data-item-id]')?.dataset.itemId;
+    const loadedAmmo = actor?.items
+      .get(itemId as string)
+      ?.getFlag('swade', 'loadedAmmo');
+    let content = 'No Magazine loaded';
+    if (loadedAmmo) {
+      content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
+    }
+    game.tooltip.activate(magazine, {
+      text: await TextEditor.enrichHTML(content, { async: true }),
+    });
+  });
 }
 
 /**
@@ -276,55 +166,4 @@ export async function createGmBennyAddMessage(
     content: message,
   };
   ChatMessage.create(chatData);
-}
-
-export async function rerollFromChat(
-  li: JQuery<HTMLElement>,
-  spendBenny: boolean,
-) {
-  const message = game.messages?.get(li.data('messageId'))!;
-  const flavor = new DOMParser().parseFromString(message.flavor, 'text/html');
-  const speaker = message.speaker;
-  const roll = message.rolls[0]!;
-  const actor = ChatMessage.getSpeakerActor(speaker)!;
-  const currentBennies = actor.bennies;
-  const doSpendBenny = spendBenny && actor?.isWildcard;
-
-  if (doSpendBenny && currentBennies <= 0) {
-    ui.notifications.warn('SWADE.NoBennies', { localize: true });
-    return;
-  }
-
-  const prefix = doSpendBenny
-    ? game.i18n.localize('SWADE.RerollWithBenny')
-    : game.i18n.localize('SWADE.FreeReroll');
-
-  const prefixes = flavor.querySelectorAll<HTMLElement>('.prefix');
-  if (prefixes.length > 0) {
-    prefixes.forEach((el) => (el.innerText = prefix));
-  } else {
-    flavor.body.innerHTML = `<strong class="prefix">${prefix}</strong><br>${flavor.body.innerHTML}`;
-  }
-  const newRollData = {
-    speaker: speaker,
-    flavor: flavor.body.innerHTML,
-  };
-
-  if (doSpendBenny) await actor.spendBenny();
-  const evaluated = await roll.reroll({ async: true });
-  evaluated.toMessage(newRollData);
-}
-
-interface ChatDie {
-  img: string | null;
-  result: number;
-  color: string;
-  dice: boolean;
-}
-
-interface DiceResults {
-  dice: ChatDie[];
-  modifiers?: (string | number)[];
-  result?: number | string;
-  total?: number;
 }

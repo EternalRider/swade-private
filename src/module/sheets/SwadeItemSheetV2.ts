@@ -209,6 +209,14 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     html
       .find('.use-consumable')
       .on('click', async () => await this.item.consume());
+
+    html.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
+      const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
+      const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
+      game.tooltip.activate(ev.currentTarget, {
+        text: await TextEditor.enrichHTML(content, { async: true }),
+      });
+    });
   }
 
   override async getData(
@@ -250,10 +258,50 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     }
 
     if (this.type === 'weapon') {
+      data.ppReload = false;
       data.trademarkWeaponOptions = this._trademarkWeaponOptions();
-      data.ammoList = this.actor?.itemTypes.gear
-        .filter((i) => i.system.isAmmo)
-        .map((i) => i.name) as string[];
+      switch (this.item.system.reloadType) {
+        case constants.RELOAD_TYPE.NONE:
+        case constants.RELOAD_TYPE.SINGLE:
+        case constants.RELOAD_TYPE.FULL:
+          data.ammoList = this.actor?.itemTypes.gear
+            .filter((i) => i.system.isAmmo)
+            .map((i) => i.name) as string[];
+          break;
+        case constants.RELOAD_TYPE.MAGAZINE:
+          data.ammoList = this.actor?.itemTypes.consumable
+            .filter(
+              (i) =>
+                i.type === 'consumable' &&
+                i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE,
+            )
+            .map((i) => i.name) as string[];
+          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
+          break;
+        case constants.RELOAD_TYPE.PP:
+          data.ammoList = Object.keys(this.actor?.system?.powerPoints);
+          data.ppReload = true;
+          break;
+        case constants.RELOAD_TYPE.BATTERY:
+          data.ammoList = this.actor?.itemTypes.consumable
+            .filter(
+              (i) =>
+                i.type === 'consumable' &&
+                i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY,
+            )
+            .map((i) => i.name) as string[];
+          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
+          break;
+      }
+      data.reloadTypeOptions = this._reloadTypeOptions();
+    }
+
+    if (this.type === 'consumable') {
+      data.subtypes = {
+        [constants.CONSUMABLE_TYPE.REGULAR]: 'SWADE.ConsumableType.Regular',
+        [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
+        [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
+      };
     }
 
     if (this.item.isArcaneDevice) {
@@ -666,9 +714,20 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
   private _trademarkWeaponOptions(): Record<number, string> {
     return {
-      0: 'None',
+      0: 'SWADE.TrademarkWeapon.None',
       1: 'SWADE.TrademarkWeapon.Regular',
       2: 'SWADE.TrademarkWeapon.Improved',
+    };
+  }
+
+  private _reloadTypeOptions(): Record<string, string> {
+    return {
+      [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
+      [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
+      [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
+      [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
+      [constants.RELOAD_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
+      [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
   }
 }
@@ -691,14 +750,18 @@ interface SwadeItemSheetData extends OptionsPartial {
   equipStatusOptions: Record<EquipState, string>;
   ranges: string[];
   trademarkWeaponOptions?: Record<number, string>;
+  reloadTypeOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemDataSource>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
+  ammoLoaded?: string;
+  ppReload: boolean;
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
     isRaceOrArchetype: boolean;
   };
+  subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
 }
 

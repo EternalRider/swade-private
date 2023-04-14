@@ -33,6 +33,7 @@ export interface UsageUpdatesContext {
   useQuantity: boolean;
   /** Use up any resources linked to this item? */
   useResource: boolean;
+  useAmmo: boolean;
 }
 
 export interface UsageUpdates {

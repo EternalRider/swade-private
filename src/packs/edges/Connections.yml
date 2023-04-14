@@ -2,7 +2,7 @@ name: Connections
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.50</p>
   notes: ''
   isArcaneBackground: false

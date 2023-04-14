@@ -112,6 +112,7 @@
     <span class="checkmark"></span>
   </label>
 </div>
+{{#if actor.isWildcard}}
 <div class="bennies">
   <header class="counter-header">
     <button type="button" class="adjust-counter" data-action="spend-benny">
@@ -126,13 +127,14 @@
     {{#unless (gte @index 5) }}
       <span
         title="{{localize 'SWADE.BenniesSpend'}}"
-        class="benny spend-benny adjust-counter"
+        class="benny adjust-counter"
         data-action="spend-benny"
         style="z-index: {{@index}}; grid-column: {{benny}} / span 8; background-image: url({{@root.bennyImageURL}});"
       ></span>
     {{/unless}}
   {{/each}}
 </div>
+{{/if}}
 
 <span class="attributes primary">
   {{> "systems/swade/templates/official/partials/attributes.hbs"}}
@@ -346,7 +348,7 @@
           {{> "systems/swade/templates/official/partials/item-card.hbs"}}
         {{/if}}
       {{/each}}
-    </ol>    
+    </ol>
   </div>
   <div class="note-footer">&nbsp;</div>
 </span>

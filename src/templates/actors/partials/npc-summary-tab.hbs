@@ -77,9 +77,8 @@
       <ul class="items-list skills-list">
         {{#each sortedSkills}}
           <li class="skill item" data-item-id="{{id}}">
-            <a class="contextmenu-edit" title="Right Click to {{localize 'SWADE.EditSkill'}}">
-              {{#unless @first}}&nbsp;{{/unless}}{{name}}
-              d{{system.die.sides}}{{modifier system.die.modifier}}{{#unless @last}},{{/unless}}
+            <a>
+              {{name}}&nbsp;d{{system.die.sides}}{{modifier system.die.modifier}}
             </a>
           </li>
         {{/each}}
@@ -96,9 +95,9 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.edge}}
-        <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
+        <li class="edge item" data-item-id="{{id}}">
+          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+            {{name}}
           </a>
         </li>
         {{/each}}
@@ -115,9 +114,9 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.hindrance}}
-        <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{name}} {{#if system.major}}{{localize "SWADE.Major"}}{{/if}}{{#unless @last}},{{/unless}}
+        <li class="hindrance item" data-item-id="{{id}}">
+          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+            {{name}}&nbsp;{{#if system.major}}{{localize "SWADE.Major"}}{{/if}}
           </a>
         </li>
         {{/each}}
@@ -133,12 +132,28 @@
         </div>
       </header>
       <ul class="items-list">
+        {{#if actor.race}}
+          <li class="ability item" data-item-id="{{actor.race.id}}">
+            <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+              {{actor.race.name}}&nbsp;({{localize "SWADE.Race"}})
+            </a>
+          </li>
+        {{/if}}
+        {{#if actor.archetype}}
+          <li class="ability item" data-item-id="{{actor.archetype.id}}">
+            <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+              {{actor.archetype.name}}&nbsp;({{localize "SWADE.Archetype"}})
+            </a>
+          </li>
+        {{/if}}
         {{#each actor.itemTypes.ability}}
-        <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
-          </a>
-        </li>
+          {{#if (eq system.subtype "special")}}
+            <li class="ability item" data-item-id="{{id}}">
+              <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+                {{name}}
+              </a>
+            </li>
+          {{/if}}
         {{/each}}
       </ul>
     </section>
@@ -153,9 +168,9 @@
       </header>
       <ul class="items-list">
         {{#each actor.itemTypes.action}}
-        <li class="item edge-hindrance" data-item-id="{{id}}">
-          <a class="contextmenu-edit item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{#unless @first}}&nbsp;{{/unless}}{{name}}{{#unless @last}},{{/unless}}
+        <li class="action item" data-item-id="{{id}}">
+          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+            {{name}}
           </a>
         </li>
         {{/each}}

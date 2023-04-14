@@ -2,20 +2,24 @@ import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
 import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
-import CompendiumTOC from './module/apps/CompendiumTOC';
+import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
 import Benny from './module/dice/Benny';
+import { DamageRoll } from './module/dice/DamageRoll';
+import { SwadeRoll } from './module/dice/SwadeRoll';
+import { TraitRoll } from './module/dice/TraitRoll';
 import WildDie from './module/dice/WildDie';
+import SwadeActiveEffect from './module/documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './module/documents/actor/SwadeActor';
+import SwadeCards from './module/documents/card/SwadeCards';
+import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
+import SwadeCombat from './module/documents/combat/SwadeCombat';
+import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
-import SwadeActiveEffect from './module/documents/SwadeActiveEffect';
-import SwadeCards from './module/documents/SwadeCards';
-import SwadeCombat from './module/documents/SwadeCombat';
-import SwadeCombatant from './module/documents/SwadeCombatant';
 import SwadeMeasuredTemplate from './module/documents/SwadeMeasuredTemplate';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
@@ -102,6 +106,7 @@ Hooks.once('init', () => {
   CONFIG.ActiveEffect.documentClass = SwadeActiveEffect;
   CONFIG.User.documentClass = SwadeUser;
   CONFIG.Cards.documentClass = SwadeCards;
+  CONFIG.ChatMessage.documentClass = SwadeChatMessage;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -199,7 +204,7 @@ Hooks.once('init', () => {
   Items.unregisterSheet('core', ItemSheet);
 
   Actors.registerSheet('swade', CharacterSheet, {
-    types: ['character'],
+    types: ['character', 'npc'],
     makeDefault: true,
     label: 'SWADE.OfficialSheet',
   });
@@ -218,7 +223,17 @@ Hooks.once('init', () => {
     label: 'SWADE.ItemSheet',
   });
 
+  //@ts-expect-error Types don't allow it but is possible and feasible
+  CONFIG.Dice.SwadeRoll = SwadeRoll;
+  //@ts-expect-error Types don't allow it but is possible and feasible
+  CONFIG.Dice.TraitRoll = TraitRoll;
+  //@ts-expect-error Types don't allow it but is possible and feasible
+  CONFIG.Dice.DamageRoll = DamageRoll;
+
   CONFIG.Dice.terms.b = Benny;
+  //@ts-expect-error Types don't allow it but is possible and feasible
+  CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
+  CONFIG.Dice.types.push(WildDie);
 });
 
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -256,7 +271,6 @@ Hooks.on(
 /* ------------------------------------ */
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
 Hooks.on('getActorEntryContext', SwadeCoreHooks.onGetCombatTrackerEntryContext);
-Hooks.on('getChatLogEntryContext', SwadeCoreHooks.onGetChatLogEntryContext);
 Hooks.on(
   'getActorDirectoryEntryContext',
   SwadeCoreHooks.onGetActorDirectoryEntryContext,
@@ -273,6 +287,11 @@ Hooks.on(
   'getCompendiumDirectoryEntryContext',
   SwadeCoreHooks.onGetCompendiumDirectoryEntryContext,
 );
+
+/* ------------------------------------ */
+/* System Hooks              	          */
+/* ------------------------------------ */
+// Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
 
 /* ------------------------------------ */
 /* Third Party Integrations		          */

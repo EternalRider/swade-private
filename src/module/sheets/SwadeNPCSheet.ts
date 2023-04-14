@@ -1,4 +1,5 @@
 import { constants } from '../constants';
+import SwadeItem from '../documents/item/SwadeItem';
 import { getStatusEffectDataById } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
@@ -55,64 +56,33 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     return html;
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
-    // Drag events for macros.
-
-    if (this.actor.isOwner) {
-      const handler = (ev) => this._onDragStart(ev);
-      // Find all items on the character sheet.
-      html.find('li.item.skill').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.weapon').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.armor').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.shield').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.misc').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.power').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.edge-hindrance').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-    }
-
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    if (!this.isEditable) return;
 
-    // Update Item via right-click
-    html.find('.contextmenu-edit').on('contextmenu', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      this.actor.items.get(li.data('itemId'))?.sheet?.render(true);
+    // Drag events for macros.
+    // Find all items on the character sheet.
+    html.find('li.item').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
     });
+    html.find('li.active-effect').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
+    });
+
+    // Refresh
+    html[0]
+      .querySelectorAll('.adjust-counter')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+      );
+
+    this._setupItemContextMenu(html);
 
     // Delete Item
     html.find('.item-delete').on('click', (ev) => {
@@ -141,23 +111,37 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         const itemData = {
           name: name ? name : `New ${type.capitalize()}`,
           type: type,
-          data: deepClone(header.dataset),
+          system: header.dataset,
         };
-        delete itemData.data['type'];
+        delete itemData.system['type'];
         return itemData;
       };
 
       // Getting back to main logic
-      if (type == 'choice') {
+      if (type === 'choice') {
         const dialogInput = await this._chooseItemType();
         const itemData = createItem(dialogInput.type, dialogInput.name);
-        itemData.data.equipped = true;
-        await Item.create(itemData, { renderSheet: true, parent: this.actor });
+        foundry.utils.setProperty(
+          itemData,
+          'system.equipStatus',
+          constants.EQUIP_STATE.EQUIPPED,
+        );
+        await CONFIG.Item.documentClass.create(itemData, {
+          renderSheet: true,
+          parent: this.actor,
+        });
         return;
       } else {
         const itemData = createItem(type);
-        itemData.data.equipped = true;
-        await Item.create(itemData, { renderSheet: true, parent: this.actor });
+        foundry.utils.setProperty(
+          itemData,
+          'system.equipStatus',
+          constants.EQUIP_STATE.EQUIPPED,
+        );
+        await CONFIG.Item.documentClass.create(itemData, {
+          renderSheet: true,
+          parent: this.actor,
+        });
       }
     });
 
@@ -179,7 +163,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       .on('change', this._toggleStatusEffect.bind(this));
   }
 
-  async getData() {
+  override async getData() {
     const data: any = await super.getData();
 
     // Progress attribute abbreviation toggle
@@ -211,5 +195,143 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(data);
+  }
+
+  protected override async _onDropItem(
+    event: DragEvent,
+    data: ActorSheet.DropData.Item,
+  ): Promise<unknown> {
+    await super._onDropItem(event, data);
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
+    //check if it's the proper type and subtype
+    if (item.type !== 'ability') return;
+    const subType = item.system.subtype;
+    if (subType === 'special') return;
+
+    //process embedded documents
+    const map = item.embeddedAbilities;
+    const creationData = new Array<any>();
+    const duplicates = new Array<{ type: string; name: string }>();
+    for (const entry of map.values()) {
+      const existingItems = this.actor.items.filter(
+        (i) => i.type === entry.type && i.name === entry.name,
+      );
+      if (existingItems.length > 0) {
+        duplicates.push({
+          type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
+          name: entry.name,
+        });
+        entry.name += ` (${item.name})`;
+      }
+      creationData.push(entry);
+    }
+    if (creationData.length > 0) {
+      await this.actor.createEmbeddedDocuments('Item', creationData, {
+        //@ts-expect-error Normally the flag is a boolean
+        renderSheet: null,
+      });
+    }
+    if (duplicates.length > 0) {
+      Dialog.prompt({
+        title: game.i18n.localize('SWADE.Duplicates'),
+        rejectClose: false,
+        content: await renderTemplate(
+          '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
+          {
+            duplicates: duplicates.sort((a, b) => a.type.localeCompare(b.type)),
+            bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
+              type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
+              name: item.name,
+              target: this.actor.name,
+            }),
+          },
+        ),
+        callback: () => {},
+      });
+    }
+  }
+
+  protected async _handleCounterAdjust(ev: MouseEvent) {
+    const target = ev.currentTarget as HTMLElement;
+    const action = target.dataset.action;
+
+    switch (action) {
+      case 'pp-refresh': {
+        const arcane = target.dataset.arcane;
+        const valueKey = 'system.powerPoints.' + arcane + '.value';
+        const maxKey = 'system.powerPoints.' + arcane + '.max';
+        const currentPP = foundry.utils.getProperty(this.actor, valueKey);
+        const maxPP = foundry.utils.getProperty(this.actor, maxKey);
+        if (currentPP >= maxPP) return;
+        await this.actor.update({
+          [valueKey]: Math.min(currentPP + 5, maxPP),
+        });
+        break;
+      }
+      default:
+        throw new Error('Unknown action!');
+    }
+  }
+
+  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
+    const items: ContextMenuEntry[] = [
+      {
+        name: 'SWADE.Reload',
+        icon: '<i class="fa-solid fa-right-to-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          return (
+            item?.type === 'weapon' &&
+            !!item.system.shots &&
+            game.settings.get('swade', 'ammoManagement')
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
+      },
+      {
+        name: 'SWADE.RemoveAmmo',
+        icon: '<i class="fa-solid fa-right-from-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const isWeapon = item?.type === 'weapon';
+          const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
+          return (
+            isWeapon &&
+            !!loadedAmmo &&
+            item.needsFullReloadProcedure() &&
+            (item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE ||
+              item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.removeAmmo(),
+      },
+      {
+        name: 'SWADE.Ed',
+        icon: '<i class="fa-solid fa-edit"></i>',
+        callback: (i) =>
+          this.actor.items.get(i.data('itemId'))?.sheet?.render(true),
+      },
+      {
+        name: 'SWADE.Duplicate',
+        icon: '<i class="fa-solid fa-copy"></i>',
+        condition: (i) =>
+          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
+        callback: async (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const cloned = await item?.clone(
+            { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
+            { save: true },
+          );
+          cloned?.sheet?.render(true);
+        },
+      },
+      {
+        name: 'SWADE.Del',
+        icon: '<i class="fa-solid fa-trash"></i>',
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+      },
+    ];
+
+    ContextMenu.create(this, html, 'li.item', items);
   }
 }

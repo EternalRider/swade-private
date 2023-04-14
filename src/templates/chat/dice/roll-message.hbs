@@ -1,0 +1,103 @@
+<section class='swade-roll-message'>
+  {{#unless isPrivate}}
+    {{#if content}}
+      <section class='content'>{{{content}}}</section>
+    {{/if}}
+    <section>
+      {{#if targets.length}}
+        <span>{{localize 'SWADE.Targets'}}</span>
+        <ul class='targets'>
+          {{#each targets}}
+            <li>
+              <button class='target' data-token-uuid='{{uuid}}'>
+                {{name}}
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+    {{#if modifiers.length}}
+      <details class='modifiers'>
+        <summary>{{localize 'SWADE.Modifiers'}}</summary>
+        <span class='content'>
+          <ul class='modifier-list'>
+            {{#each modifiers}}
+              <li>{{label}}: {{value}}</li>
+            {{/each}}
+          </ul>
+        </span>
+      </details>
+    {{/if}}
+    <div class='roll-metadata flexrow'>
+      <div class='reroll'>
+        {{#if rerolled}}{{rerolled}}{{/if}}
+      </div>
+      <div class='group-roll'>
+        {{#if groupRoll}}
+          <i class='fa-duotone fa-user-group'></i>
+          {{localize 'SWADE.GroupRoll'}}
+        {{/if}}
+      </div>
+    </div>
+    {{#if isCritfail}}
+      <p class='critical-failure'>
+        {{localize 'SWADE.Rolls.Critfail.Critfail'}}
+      </p>
+    {{/if}}
+  {{/unless}}
+  {{{rolls}}}
+  {{#if isDamageRoll}}
+    <div class='wounds-calc'>
+      <button
+        type='button'
+        class='calculate-wounds'
+        data-tooltip='{{localize "SWADE.DamageApplicator.ApplyDamage"}}'
+        aria-label='{{localize "SWADE.DamageApplicator.ApplyDamage"}}'
+        {{disabled lockReroll}}
+      >
+        <i class='fa-solid fa-meter-droplet'></i>
+        {{localize 'SWADE.DamageApplicator.ApplyDamage'}}
+      </button>
+    </div>
+  {{/if}}
+  <footer class='roll-interaction'>
+    {{#unless isPrivate}}
+      {{#if isGM}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-gm-benny='true'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          GM Benny
+        </button>
+      {{/if}}
+      {{#if isAuthor}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          Benny
+        </button>
+        <button
+          type='button'
+          class='free-reroll'
+          data-tooltip='{{localize "SWADE.FreeReroll"}}'
+          aria-label='{{localize "SWADE.FreeReroll"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          Free
+        </button>
+      {{/if}}
+    {{/unless}}
+  </footer>
+</section>

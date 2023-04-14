@@ -9,9 +9,10 @@ import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
 import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
+import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../../documents/item/SwadeItem';
-import SwadeActiveEffect from '../../documents/SwadeActiveEffect';
 import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
@@ -27,7 +28,6 @@ export default class CharacterSheet extends ActorSheet<
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      ...super.defaultOptions,
       classes: ['swade-official', 'sheet', 'actor'],
       width: 650,
       height: 700,
@@ -62,6 +62,7 @@ export default class CharacterSheet extends ActorSheet<
 
     this._setupEquipStatusMenu(html);
     this._setupEffectCreateMenu(html);
+    this._setupItemContextMenu(html);
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
@@ -83,54 +84,22 @@ export default class CharacterSheet extends ActorSheet<
       .on('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
-    if (this.actor.isOwner) {
-      const handler = (ev) => this._onDragStart(ev);
-      // Find all items on the character sheet.
-      html.find('li.item.skill').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('.inventory li.item').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.power').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html.find('li.item.edge-hindrance').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-      html
-        .find('.status input[type="checkbox"]')
-        .on('change', this._toggleStatusEffect.bind(this));
-    }
+    // Find all items on the character sheet.
+    html.find('li.item').each((i, li) => {
+      // Add draggable attribute and dragstart listener.
+      li.setAttribute('draggable', 'true');
+      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
+    });
+
+    html
+      .find('.status input[type="checkbox"]')
+      .on('change', this._toggleStatusEffect.bind(this));
 
     //Display Advances on About tab
     html.find('.character-detail.advances a').on('click', async () => {
       this._tabs[0].activate('about');
       this._tabs[1].activate('advances');
     });
-
-    //Toggle char detail inputs
-    html
-      .find('.character-detail button')
-      .on('click', this._setupCharacterDetailInput.bind(this));
 
     //Toggle Conviction
     html.find('.conviction-toggle').on('click', async () => {
@@ -374,17 +343,32 @@ export default class CharacterSheet extends ActorSheet<
       }
     });
 
-    html.find('.profile-img').on('contextmenu', () => {
-      if (!this.actor.img) return;
-      new ImagePopout(this.actor.img, {
-        title: this.actor.name!,
-        shareable: this.actor.isOwner ?? game.user?.isGM,
-      }).render(true);
-    });
+    html[0]
+      .querySelector<HTMLImageElement>('.profile-img')
+      ?.addEventListener('contextmenu', () => {
+        if (!this.actor.img) return;
+        new ImagePopout(this.actor.img, {
+          title: this.actor.name!,
+          shareable: this.actor.isOwner ?? game.user?.isGM,
+        }).render(true);
+      });
 
-    html
-      .find('.adjust-counter')
-      .on('click', this._handleCounterAdjust.bind(this));
+    html[0]
+      .querySelectorAll('.adjust-counter')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
+      );
+
+    html[0]
+      .querySelectorAll(
+        '.character-detail.race button, .character-detail.archetype button',
+      )
+      .forEach((btn) => {
+        btn.addEventListener('click', (ev) => {
+          const id = ev.currentTarget.dataset.itemId as string;
+          this.actor.items.get(id)?.sheet?.render(true);
+        });
+      });
   }
 
   override async getData(
@@ -418,16 +402,18 @@ export default class CharacterSheet extends ActorSheet<
         getProperty(system, 'actions.skill') ||
         !!actions.find((action) => action.type === 'skill');
       const hasSkillRoll =
-        ['weapon', 'power', 'shield'].includes(item.type) &&
+        ['weapon', 'power', 'shield', 'action'].includes(item.type) &&
         getProperty(system, 'actions.skill');
       const hasActionRoll = ['action'].includes(item.type);
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
         !item.isMeleeWeapon &&
-        !system.autoReload;
+        system.reloadType !== constants.RELOAD_TYPE.NONE;
       const hasReloadButton =
-        ammoManagement && system.shots > 0 && !system.autoReload;
+        ammoManagement &&
+        system.shots > 0 &&
+        system.reloadType !== constants.RELOAD_TYPE.NONE;
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
@@ -449,35 +435,6 @@ export default class CharacterSheet extends ActorSheet<
       itemTypes[type].push(item);
     }
 
-    //Deal with ABs and Powers
-    const powers: SheetPowers = {
-      arcaneBackgrounds: {},
-      hasPowersWithoutArcane: this.actor.itemTypes.power.some(
-        (p) => !p.system['arcane'],
-      ),
-      showGeneral: true,
-    };
-
-    powers.showGeneral =
-      powers.hasPowersWithoutArcane ||
-      game.settings.get('swade', 'alwaysGeneralPP');
-
-    for (const power of this.actor.itemTypes.power) {
-      if (power.type !== 'power') continue;
-      const ab = power.system.arcane;
-      if (!ab) continue;
-      if (!powers.arcaneBackgrounds[ab]) {
-        powers.arcaneBackgrounds[ab] = {
-          valuePath: `system.powerPoints.${ab}.value`,
-          value: getProperty(this.actor.system, `powerPoints.${ab}.value`),
-          maxPath: `system.powerPoints.${ab}.max`,
-          max: getProperty(this.actor.system, `powerPoints.${ab}.max`),
-          powers: [],
-        };
-      }
-      powers.arcaneBackgrounds[ab].powers.push(power);
-    }
-
     const parry = this.actor.itemTypes.shield.reduce((acc, cur) => {
       if (
         cur.type !== 'shield' &&
@@ -493,7 +450,7 @@ export default class CharacterSheet extends ActorSheet<
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
       parry: parry,
-      powers: powers,
+      powers: this._getPowers(),
       additionalStats: additionalStats,
       hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
       currentBennies: Array.fromRange(this.actor.bennies, 1),
@@ -504,29 +461,6 @@ export default class CharacterSheet extends ActorSheet<
       ),
       sheetEffects: await this._getEffects(),
       enrichedText: await this._getEnrichedText(),
-      archetype: {
-        value: this.actor.system.details.archetype
-          ? new Handlebars.SafeString(
-              await TextEditor.enrichHTML(this.actor.system.details.archetype, {
-                async: true,
-              }),
-            )
-          : game.i18n.localize('SWADE.Archetype'),
-        label: 'SWADE.Archetype',
-      },
-      species: {
-        value: this.actor.system.details.species.name
-          ? new Handlebars.SafeString(
-              await TextEditor.enrichHTML(
-                this.actor.system.details.species.name,
-                {
-                  async: true,
-                },
-              ),
-            )
-          : game.i18n.localize('SWADE.Race'),
-        label: 'SWADE.Race',
-      },
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -544,6 +478,60 @@ export default class CharacterSheet extends ActorSheet<
     };
 
     return foundry.utils.mergeObject(await super.getData(options), data);
+  }
+
+  protected override async _onDropItem(
+    event: DragEvent,
+    data: ActorSheet.DropData.Item,
+  ): Promise<unknown> {
+    await super._onDropItem(event, data);
+    const item = (await fromUuid(data.uuid)) as SwadeItem;
+    //check if it's the proper type and subtype
+    if (item.type !== 'ability') return;
+    const subType = item.system.subtype;
+    if (subType === 'special') return;
+
+    //process embedded documents
+    const map = item.embeddedAbilities;
+    const creationData = new Array<any>();
+    const duplicates = new Array<{ type: string; name: string }>();
+    for (const entry of map.values()) {
+      const existingItems = this.actor.items.filter(
+        (i) => i.type === entry.type && i.name === entry.name,
+      );
+      if (existingItems.length > 0) {
+        duplicates.push({
+          type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
+          name: entry.name,
+        });
+        entry.name += ` (${item.name})`;
+      }
+      creationData.push(entry);
+    }
+    if (creationData.length > 0) {
+      await this.actor.createEmbeddedDocuments('Item', creationData, {
+        //@ts-expect-error Normally the flag is a boolean
+        renderSheet: null,
+      });
+    }
+    if (duplicates.length > 0) {
+      Dialog.prompt({
+        title: game.i18n.localize('SWADE.Duplicates'),
+        rejectClose: false,
+        content: await renderTemplate(
+          '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
+          {
+            duplicates: duplicates.sort((a, b) => a.type.localeCompare(b.type)),
+            bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
+              type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
+              name: item.name,
+              target: this.actor.name,
+            }),
+          },
+        ),
+        callback: () => {},
+      });
+    }
   }
 
   private _getAdvances() {
@@ -878,34 +866,10 @@ export default class CharacterSheet extends ActorSheet<
     });
   }
 
-  private _setupCharacterDetailInput(ev: JQuery.ClickEvent) {
-    if (this.actor.type === 'vehicle') return;
-    //gather data
-    const display = $(ev.currentTarget).parent().find('span.display');
-    const detail = display.data().detail;
-    const label = game.i18n.localize(display.data().label);
-    const value = getProperty(this.actor, detail);
-    //create element
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = detail;
-    input.value = value;
-    input.placeholder = label;
-    input.addEventListener('focusout', async () => {
-      await this.actor.update({ [detail]: input.value }, { diff: false });
-    });
-    //set up the new input in the sheet
-    display.replaceWith(input);
-    //focus the input
-    input.focus();
-    //remove the button;
-    ev.currentTarget.remove();
-  }
-
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(
+    const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
-    ) as AdditionalStats;
+    );
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
@@ -916,6 +880,41 @@ export default class CharacterSheet extends ActorSheet<
       }
     }
     return stats;
+  }
+
+  private _getPowers(): SheetPowers {
+    //Deal with ABs and Powers
+    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
+
+    for (const power of this.actor.itemTypes.power) {
+      const ab = power.system.arcane || 'general';
+      if (!arcaneBackgrounds[ab]) {
+        arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
+          powers: [],
+        };
+      }
+      arcaneBackgrounds[ab].powers.push(power);
+    }
+
+    //sort the powers by their sort value
+    for (const entry of Object.values(arcaneBackgrounds)) {
+      entry.powers.sort((a, b) => a.sort - b.sort);
+    }
+
+    const hasPowersWithoutArcane =
+      arcaneBackgrounds?.general?.powers.length > 0;
+    const showGeneral =
+      hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
+
+    return {
+      arcaneBackgrounds,
+      hasPowersWithoutArcane,
+      showGeneral,
+    };
   }
 
   /**
@@ -943,8 +942,9 @@ export default class CharacterSheet extends ActorSheet<
     await this.actor.toggleActiveEffect(data);
   }
 
-  protected async _handleCounterAdjust(ev: JQuery.ClickEvent) {
-    const action = ev.currentTarget.dataset.action;
+  protected async _handleCounterAdjust(ev: MouseEvent) {
+    const target = ev.currentTarget as HTMLElement;
+    const action = target.dataset.action;
 
     switch (action) {
       case 'fatigue-plus':
@@ -979,6 +979,20 @@ export default class CharacterSheet extends ActorSheet<
       case 'get-benny':
         await this.actor.getBenny();
         break;
+      case 'pp-refresh': {
+        const arcane = target.dataset.arcane;
+        const valueKey = 'system.powerPoints.' + arcane + '.value';
+        const maxKey = 'system.powerPoints.' + arcane + '.max';
+        const currentPP = foundry.utils.getProperty(this.actor, valueKey);
+        const maxPP = foundry.utils.getProperty(this.actor, maxKey);
+        if (currentPP >= maxPP) return;
+        await this.actor.update({
+          [valueKey]: Math.min(currentPP + 5, maxPP),
+        });
+        break;
+      }
+      default:
+        throw new Error('Unknown action!');
     }
   }
 
@@ -1093,6 +1107,68 @@ export default class CharacterSheet extends ActorSheet<
       { eventName: 'click' },
     );
   }
+
+  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
+    const items: ContextMenuEntry[] = [
+      {
+        name: 'SWADE.Reload',
+        icon: '<i class="fa-solid fa-right-to-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          return (
+            item?.type === 'weapon' &&
+            !!item.system.shots &&
+            game.settings.get('swade', 'ammoManagement')
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
+      },
+      {
+        name: 'SWADE.RemoveAmmo',
+        icon: '<i class="fa-solid fa-right-from-bracket"></i>',
+        condition: (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const isWeapon = item?.type === 'weapon';
+          const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
+          return (
+            isWeapon &&
+            !!loadedAmmo &&
+            item.needsFullReloadProcedure() &&
+            (item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE ||
+              item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
+          );
+        },
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.removeAmmo(),
+      },
+      {
+        name: 'SWADE.Ed',
+        icon: '<i class="fa-solid fa-edit"></i>',
+        callback: (i) =>
+          this.actor.items.get(i.data('itemId'))?.sheet?.render(true),
+      },
+      {
+        name: 'SWADE.Duplicate',
+        icon: '<i class="fa-solid fa-copy"></i>',
+        condition: (i) =>
+          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
+        callback: async (i) => {
+          const item = this.actor.items.get(i.data('itemId'));
+          const cloned = await item?.clone(
+            { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
+            { save: true },
+          );
+          cloned?.sheet?.render(true);
+        },
+      },
+      {
+        name: 'SWADE.Del',
+        icon: '<i class="fa-solid fa-trash"></i>',
+        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+      },
+    ];
+
+    ContextMenu.create(this, html, 'li.item', items);
+  }
 }
 
 interface SheetEffect {
@@ -1137,14 +1213,6 @@ interface SwadeActorSheetData extends OptionsPartial {
     notes: string;
     biography: string;
     advances?: string;
-  };
-  species: {
-    label: string;
-    value: Handlebars.SafeString | string;
-  };
-  archetype: {
-    label: string;
-    value: Handlebars.SafeString | string;
   };
   advances: {
     expanded: boolean;

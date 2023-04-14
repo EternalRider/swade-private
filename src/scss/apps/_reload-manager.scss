@@ -1,0 +1,36 @@
+.magazine-manager {
+  .discard {
+    flex: 0 0 20px;
+  }
+  ul.unmarked-list {
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+    padding: 0;
+    li + li {
+      margin-top: 0.5rem;
+    }
+  }
+  .magazine {
+    padding: 0 0.5rem;
+    line-height: unset;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'name counter'
+      'name meter';
+    .name {
+      grid-area: name;
+      display: flex;
+      align-items: center;
+      text-align: start;
+    }
+    .counter {
+      grid-area: counter;
+    }
+    .meter {
+      grid-area: meter;
+    }
+  }
+}

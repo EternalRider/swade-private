@@ -139,10 +139,13 @@ export default class ActiveEffectWizard extends FormApplication {
         label: game.i18n.localize('SWADE.Pace'),
         key: 'system.stats.speed.value',
       },
-
       {
         label: game.i18n.localize('SWADE.RunningDie'),
         key: 'system.stats.speed.runningDie',
+      },
+      {
+        label: game.i18n.localize('SWADE.RunningMod'),
+        key: 'system.stats.speed.runningMod',
       },
       {
         label: game.i18n.localize('SWADE.EncumbranceSteps'),
@@ -153,9 +156,37 @@ export default class ActiveEffectWizard extends FormApplication {
         key: 'system.wounds.ignored',
       },
       {
+        label: game.i18n.localize('SWADE.WoundsMax'),
+        key: 'system.wounds.max',
+      },
+      {
+        label: game.i18n.localize('SWADE.BenniesMax'),
+        key: 'system.bennies.max',
+      },
+      {
+        label: game.i18n.localize('SWADE.FatigueMax'),
+        key: 'system.fatigue.max',
+      },
+      {
+        label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.UnshakeModifier'),
+        key: 'system.attributes.spirit.unShakeBonus',
+      },
+      {
+        label: game.i18n.localize('SWADE.EffectCallbacks.Stunned.UnStunModifier'),
+        key: 'system.attributes.vigor.unStunBonus',
+      },
+      {
         label: game.i18n.localize('SWADE.WealthDie.Sides'),
         key: 'system.details.wealth.die',
       },
+      {
+        label: game.i18n.localize('SWADE.WealthDie.WildSides'),
+        key: 'system.details.wealth.wild-die',
+      },
+      {
+        label: game.i18n.localize('SWADE.WealthDie.Modifier'),
+        key: 'system.details.wealth.modifier',
+      }
     ];
   }
 

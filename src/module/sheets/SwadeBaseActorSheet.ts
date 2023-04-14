@@ -13,7 +13,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    if (!this.isEditable) return;
 
     const inputs = html.find('input');
     inputs.on('focus', (ev) => ev.currentTarget.select());
@@ -458,9 +458,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   }
 
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(
+    const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
-    ) as AdditionalStats;
+    );
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;

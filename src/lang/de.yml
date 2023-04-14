@@ -97,6 +97,7 @@ SWADE:
   DmgModUni: Schadensmodifikator
   SkillModUni: Eigenschaftsmodifikator
   ShotsUsed: Schuss verbraucht
+  Duplicate: Duplizieren
   NaturalArmor: Natürliche Rüstung
   HitLocations: Trefferzonen
   Head: Kopf
@@ -214,7 +215,6 @@ SWADE:
   Curr: Aktuell
   Aiming: Zielen
   Ammo: Munition
-  AutoReload: Braucht keine Aktion zum nachladen
   Berserk: Berserkerrausch
   BleedingOut: Verblutend
   DSNNone: '- Kein -'
@@ -242,7 +242,21 @@ SWADE:
   ActBeforeCurrentCombatant: Jetzt handeln
   ActAfterCurrentCombatant: Nach aktuellem Teilnehmer handeln
   LoseTurn: Zug aussetzen umschalten
+  ReloadType:
+    Label: NachladeTyp
+    None: Kein
+    Single: Einzel
+    Full: Voll
+    Magazine: Magazin
+    Battery: Batterie
+    PP: Machtpunkte
+  ConsumableType:
+    Label: Subtyp
+    Regular: Regulär
   NoAmmoSet: Keine Munition ausgewählt
+  NoAmmoPP: Nicht genug Machtpunkte vorhanden
+  NoMags: Keine Magazine vorhanden
+  RemoveAmmo: Munition entfernen
   NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
@@ -254,6 +268,7 @@ SWADE:
   Refresh: Aktualisiere diese Karte
   Reload: Nachladen
   ReloadSuccess: Die Waffe wurde erfolgreich nachgeladen
+  ReloadNotPossible: Nachladen nicht möglich!
   ReloadUnneeded: Die Waffe ist bereits voll geladen
   ShowBennyAnimation: Zeige die Benny Animation
   ShowBennyAnimationDesc: Spielt eine 3D Animation ab wenn ein Benny ausgegeben wird
@@ -261,7 +276,7 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: TODO Needs Translation
+  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel
   WildDieTheme: Wildcard Würfel Thema
   WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
@@ -618,7 +633,7 @@ SWADE:
         darzustellen
     HardChoices:
       Name: Schwere Entscheidungen
-      Hint: Schaltet die Schwere Entscheidungen Regel ein
+      Hint: Schaltet die Schwere Entscheidungen Settingregel ein
     UseAttributeShorts:
       Hint: >-
         Aktivieren Sie diese Option, wenn Sie abgekürzte Attributnamen auf den
@@ -642,6 +657,18 @@ SWADE:
       Hint: >-
         Wenn aktiviert, haben alle NSCs dieselben Währungsoptionen wie
         Spielercharaktere
+    DumbLuck:
+      Name: Narrenglück
+      Hint: Schaltet die Narrenglück Settingregel ein
+    WoundCap:
+      Name: Wundobergrenze
+      Hint: Schaltet die Wundobergrenze Settingregel ein
+    GrittyDamage:
+      Name: Fieser Schaden
+      Hint: Schaltet die Fieser Schaden Settingregel ein
+  Validation:
+    OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
+    OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
@@ -662,6 +689,7 @@ SWADE:
   DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
   TrademarkWeapon:
     Label: Lieblingswaffe
+    None: Keine Lieblingswaffe
     Regular: Lieblingswaffe
     Improved: Absolute Lieblingswaffe
   OffHandPenalty: Falsche Hand
@@ -752,6 +780,52 @@ SWADE:
     Header: Gewährte Items
     When: Items gewähren wen
   IgnFatigue: Erschöpfung ignorieren
+
+  BaseDamage: Basisschaden
+  RefreshPP: Machtpunkte auffrischen
+  Targets: 'Ziele:'
+  Rolls:
+    RollResult: Würfelergebniss
+    SwadeRoll: Wurf
+    DamageRoll: Schadenswurf
+    TraitRoll: Eigenschaftswurf
+    Critfail:
+      Critfail: KRITISCHER PATZER
+      Confirm: Bestätigung des kritischen Patzers
+      ConfirmDie: Bestätigungswürfel
+  LoadedAmmo: Geladene Munition
+  DamageApplicator: #TODO: The subitems below need translations
+    ApplyDamage: Schaden Anwenden
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
+    SoakDialog:
+      WoundedTitle: Roll to Soak Wounds for {name}?
+      UnwoundedTitle: Adjust Damage to Determine Status for {name}?
+      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
+      ShakenPrompt: <p>{name} is about to become Shaken.</p>
+      UnharmedPrompt: <p>{name} might be unharmed.</p>
+      Benny: Spend a Benny to Soak
+      GMBenny: Spend a GM Benny to Soak
+      Free: Soak for Free
+      TakeWounds: Take {wounds}
+      AdjustDamage: Schaden anpassen
+      ApplyShaken: Apply Shaken Status
+      Accept: Annehmen
+    RerollSoakDialog:
+      Title: Reroll to Soak Wounds for {name}?
+      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
+      Benny: Spend a Benny to Reroll
+      GMBenny: Spend a GM Benny to Reroll
+      Free: Reroll for Free
+      TakeWounds: Take {wounds}
+    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
+      SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
+      IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
+    NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
+    NoTargetsSelected: The User who rolled damage must select one or more Targets.
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

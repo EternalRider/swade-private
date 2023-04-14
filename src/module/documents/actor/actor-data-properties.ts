@@ -41,6 +41,7 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
     encumbrance: {
       max: number;
       value: number;
+      isEncumbered: boolean;
     };
   };
   advances: {

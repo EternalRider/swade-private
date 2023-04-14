@@ -1,0 +1,47 @@
+<div class='swade-roll'>
+  <div class='dice-roll trait-roll'>
+    {{#if flavor}}<div class='dice-flavor'>{{flavor}}</div>{{/if}}
+    <div class='dice-result'>
+      <div class='dice-formula'>
+        {{#if isPrivate}}???{{else}}
+          <ol class='formula-list'>
+            {{#each formulaParts}}
+              {{#if die}}
+                <li
+                  class='die'
+                  style='background-image: url({{img}});'
+                  data-tooltip='{{hint}}'
+                >
+                  <span class='{{class}}'>{{this.result}}</span>
+                </li>
+              {{else}}
+                <li data-tooltip='{{hint}}'>{{result}}</li>
+              {{/if}}
+            {{/each}}
+          </ol>
+        {{/if}}
+      </div>
+      {{#unless isPrivate}}{{{tooltip}}}{{/unless}}
+      {{#if displayResult}}
+        {{#if isPrivate}}
+          <div class='dice-total'>???</div>
+        {{else}}
+          <div class='dice-flavor'>{{localize 'SWADE.Rolls.RollResult'}}</div>
+          <div class='dice-total'>
+            <ol class='result-list'>
+              {{#each resultParts}}
+                <li
+                  class='die'
+                  style='background-image: url({{img}});'
+                  data-tooltip='{{hint}}'
+                >
+                  <span class='label {{class}}'>{{this.result}}</span>
+                </li>
+              {{/each}}
+            </ol>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  </div>
+</div>

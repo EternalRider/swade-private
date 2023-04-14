@@ -39,7 +39,11 @@ declare global {
       'swade.bennyImage3DFront': string;
       'swade.3dBennyFrontBump': string;
       'swade.3dBennyBackBump': string;
+      'swade.grittyDamage': boolean;
+      'swade.injuryTable': string;
+      'swade.woundCap': boolean;
       'swade.hardChoices': boolean;
+      'swade.dumbLuck': boolean;
       'swade.applyEncumbrance': boolean;
       'swade.highlightTemplate': boolean;
       'swade.fantasyCompanionEntangle': boolean;
@@ -402,9 +406,46 @@ export function registerSettingRules() {
     filePicker: 'image',
   });
 
+  game.settings.register('swade', 'woundCap', {
+    name: 'SWADE.Settings.UseWoundCap.Name',
+    hint: 'SWADE.Settings.UseWoundCap.Hint',
+    type: Boolean,
+    default: false,
+    scope: 'world',
+    config: false,
+  });
+
+  game.settings.register('swade', 'grittyDamage', {
+    name: 'SWADE.Settings.UseGrittyDamage.Name',
+    hint: 'SWADE.Settings.UseGrittyDamage.Hint',
+    type: Boolean,
+    default: false,
+    scope: 'world',
+    config: false,
+  });
+
+  game.settings.register('swade', 'injuryTable', {
+    name: 'SWADE.Settings.SelectInjuryTable.Name',
+    hint: 'SWADE.Settings.SelectInjuryTable.Hint',
+    type: String,
+    default: '',
+    scope: 'world',
+    config: false,
+    choices: {},
+  });
+
   game.settings.register('swade', 'hardChoices', {
     name: 'SWADE.Settings.HardChoices.Name',
     hint: 'SWADE.Settings.HardChoices.Hint',
+    scope: 'world',
+    type: Boolean,
+    default: false,
+    config: false,
+  });
+
+  game.settings.register('swade', 'dumbLuck', {
+    name: 'SWADE.Settings.DumbLuck.Name',
+    hint: 'SWADE.Settings.DumbLuck.Hint',
     scope: 'world',
     type: Boolean,
     default: false,

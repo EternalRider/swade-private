@@ -137,17 +137,8 @@
   }
 
   .editor-container {
-    overflow: hidden;
-    max-height: 100%;
-    .editor {
-      padding: 0 $medium-spacing;
-      // border: $solid-line;
-      height: 100%;
-      .editor-content {
-        height: 100%;
-        overflow-y: auto;
-        word-break: break-word;
-      }
+    .editor-content {
+      overflow-y: scroll;
     }
   }
 
@@ -383,6 +374,15 @@
         border-radius: 0;
         height: 24px;
       }
+    }
+  }
+
+  .loaded-ammo {
+    margin: 0;
+    padding-left: $medium-spacing;
+    padding-right: 0;
+    &-name {
+      text-decoration-style: dotted;
     }
   }
 }

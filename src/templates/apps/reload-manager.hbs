@@ -1,0 +1,36 @@
+<div>
+  {{#if canDiscard}}
+    <div class='flexrow'>
+      <label>Discard empty magazine</label>
+      <input type='checkbox' class='discard' />
+    </div>
+  {{/if}}
+  {{#each magazineGroups}}
+    <section>
+      <h3>{{@key}}</h3>
+      <ul class='unmarked-list'>
+        {{#each this}}
+          <li>
+            <button data-item-id='{{id}}' class='magazine'>
+              <div class='name'>
+                {{#if quantity}}x{{quantity}} {{/if}}{{name}}
+              </div>
+              <span class='counter'>{{charges}}/{{capacity}}</span>
+              <meter
+                class='meter'
+                min='0'
+                low='25'
+                high='75'
+                optimum='100'
+                max='100'
+                value='{{percentage}}'
+              >
+                {{charges}}/{{capacity}}
+              </meter>
+            </button>
+          </li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/each}}
+</div>

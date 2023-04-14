@@ -24,7 +24,10 @@
           value="{{actor.system.powerPoints.general.max}}"
           placeholder="{{localize 'SWADE.MaxPP'}}"
           data-dtype="Number"
-        />
+        />    
+        <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="general">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
       </div>
       <!-- Individual counters -->
       {{#each arcanes as |arcane|}}
@@ -45,7 +48,10 @@
               value="{{max}}"
               placeholder="{{localize 'SWADE.MaxPP'}}"
               data-dtype="Number"
-            />
+            />     
+            <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="{{arcane}}">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
           {{/with}}
         </div>
       {{/each}}

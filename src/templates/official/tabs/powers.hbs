@@ -10,7 +10,7 @@
     <span class="name">{{localize "SWADE.General"}}</span>
     {{#unless settingrules.noPowerPoints}}
     <span class="pp-counter controls">
-       {{localize "SWADE.PPAbbreviation"}}:&nbsp;
+       <span class="pp-label" data-arcane="general">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
       <label>
         <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
         <input
@@ -27,14 +27,23 @@
           name="system.powerPoints.general.max"
           value="{{actor.system.powerPoints.general.max}}"
         />
-      </label>
+      </label>    
+      <button 
+      type="button" 
+      class="adjust-counter" 
+      data-action="pp-refresh" 
+      data-arcane="general" 
+      data-tooltip="{{localize "SWADE.RefreshPP"}}"
+      >
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
     </span>
     {{/unless}}
   </header>
   {{/if}}
   {{#if powers.hasPowersWithoutArcane}}
   <ul>
-    {{#each actor.itemTypes.power}} {{#unless system.arcane}}
+    {{#each powers.arcaneBackgrounds.general.powers}}
     <li class="power item" data-item-id="{{id}}">
       <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"/>
       <button type="button" class="name item-name" title="{{localize "SWADE.ExpandDescription"}}">{{name}}</button>
@@ -75,74 +84,85 @@
         </div>
       </div>
     </li>
-    {{/unless}} {{/each}}
+  {{/each}}
   </ul>
   {{/if}} 
   {{#each powers.arcaneBackgrounds as |background key|}}
-  <header class="section-header">
-    <span class="name">{{key}}</span>
-    {{#unless @root.settingrules.noPowerPoints}}
-    <span class="pp-counter controls">
-      {{localize "SWADE.PPAbbreviation"}}:&nbsp;
-      <label>
-        <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
-        <input
-          type="number"
-          name="{{background.valuePath}}"
-          value="{{background.value}}"
-        />
-      </label>
-      /
-      <label>
-        <span class="sr-only">{{localize "SWADE.MaxPP"}}</span>
-        <input type="number" name="{{background.maxPath}}" value="{{background.max}}" />
-      </label>
-    </span>
-    {{/unless}}
-  </header>
-  <ul>
-    {{#each background.powers}}
-    <li class="power item" data-item-id="{{id}}">
-      <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"/>
-      <button type="button" class="name item-name" title="{{localize "SWADE.ExpandDescription"}}">{{name}}</button>
-      <div class="item-controls">
-        {{#if isOwner}}
-        <button
-          type="button"
-          class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
-          data-toggle="system.favorite"
-          title="{{localize "SWADE.Favorite"}}"
+  {{#unless (eq key "general")}}
+    <header class="section-header">
+      <span class="name">{{key}}</span>
+      {{#unless @root.settingrules.noPowerPoints}}
+      <span class="pp-counter controls">
+        <span class="pp-label" data-arcane="{{key}}">{{localize "SWADE.PPAbbreviation"}}</span>:&nbsp;
+        <label>
+          <span class="sr-only">{{localize "SWADE.CurPP"}}</span>
+          <input
+            type="number"
+            name="{{background.valuePath}}"
+            value="{{background.value}}"
+          />
+        </label>
+        /
+        <label>
+          <span class="sr-only">{{localize "SWADE.MaxPP"}}</span>
+          <input type="number" name="{{background.maxPath}}" value="{{background.max}}" />
+        </label>    
+        <button 
+          type="button" 
+          class="adjust-counter" 
+          data-action="pp-refresh" 
+          data-arcane="{{key}}"  
+          data-tooltip="{{localize "SWADE.RefreshPP"}}"
         >
-          <i class="fas fa-star"></i>
+          <i class="fa-solid fa-arrows-rotate"></i>
         </button>
-        <button type="button" class="item-edit" title="{{localize 'SWADE.Ed'}}">
-          <i class="fas fa-edit"></i>
-        </button>
-        {{/if}}
-      </div>
-      <div class="description">
-        <div class="description-grid">
-          <span class="power-details">
-            {{#if system.damage}}
-            <button type="button" class="damage-roll">
-              {{localize "SWADE.Dmg"}}: {{system.damage}}
-            </button>
-            {{/if}}
-            <span>{{localize "SWADE.Ap"}}: {{system.ap}}&nbsp;</span>
-            <span>{{localize "SWADE.Rank"}}: {{system.rank}}&nbsp;</span>
-            <span>{{localize "SWADE.PP"}}: {{system.pp}}&nbsp;</span>
-            <span>{{localize "SWADE.Range._name"}}: {{system.range}}&nbsp;</span>
-            <span>{{localize "SWADE.Dur"}}: {{system.duration}}&nbsp;</span>
-          </span>
-          <div class="trapping">
-            {{localize "SWADE.Trapping"}}: {{system.trapping}}
-          </div>
-          <div class="enriched-description">{{enrich system.description}}</div>
-          {{> "systems/swade/templates/shared-partials/action-card.hbs" item=this powersTab=true}}
+      </span>
+      {{/unless}}
+    </header>
+    <ul>
+      {{#each background.powers}}
+      <li class="power item" data-item-id="{{id}}">
+        <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"/>
+        <button type="button" class="name item-name" title="{{localize "SWADE.ExpandDescription"}}">{{name}}</button>
+        <div class="item-controls">
+          {{#if isOwner}}
+          <button
+            type="button"
+            class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
+            data-toggle="system.favorite"
+            title="{{localize "SWADE.Favorite"}}"
+          >
+            <i class="fas fa-star"></i>
+          </button>
+          <button type="button" class="item-edit" title="{{localize 'SWADE.Ed'}}">
+            <i class="fas fa-edit"></i>
+          </button>
+          {{/if}}
         </div>
-      </div>
-    </li>
-    {{/each}}
-  </ul>
+        <div class="description">
+          <div class="description-grid">
+            <span class="power-details">
+              {{#if system.damage}}
+              <button type="button" class="damage-roll">
+                {{localize "SWADE.Dmg"}}: {{system.damage}}
+              </button>
+              {{/if}}
+              <span>{{localize "SWADE.Ap"}}: {{system.ap}}&nbsp;</span>
+              <span>{{localize "SWADE.Rank"}}: {{system.rank}}&nbsp;</span>
+              <span>{{localize "SWADE.PP"}}: {{system.pp}}&nbsp;</span>
+              <span>{{localize "SWADE.Range._name"}}: {{system.range}}&nbsp;</span>
+              <span>{{localize "SWADE.Dur"}}: {{system.duration}}&nbsp;</span>
+            </span>
+            <div class="trapping">
+              {{localize "SWADE.Trapping"}}: {{system.trapping}}
+            </div>
+            <div class="enriched-description">{{enrich system.description}}</div>
+            {{> "systems/swade/templates/shared-partials/action-card.hbs" item=this powersTab=true}}
+          </div>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+  {{/unless}}
   {{/each}}
 </span>

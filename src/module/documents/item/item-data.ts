@@ -1,8 +1,10 @@
 import {
   AbilitySubType,
   AdditionalStats,
+  ConsumableType,
   EquipState,
   LinkedAttribute,
+  ReloadType,
 } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
@@ -75,6 +77,7 @@ interface Actions {
     skillMod: string;
     dmgMod: string;
     additional: Partial<Record<string, ItemAction>>;
+    isHeavyWeapon: boolean;
   };
 }
 
@@ -85,6 +88,7 @@ interface GrantEmbedded {
 
 interface BonusDamage {
   bonusDamageDie: number;
+  bonusDamageDice: number;
 }
 
 interface Templates {
@@ -121,7 +125,9 @@ interface WeaponData
   shots: number;
   currentShots: number;
   ammo: string;
+  /** @deprecated */
   autoReload: boolean;
+  reloadType: ReloadType;
   parry: number;
   trademark: 0 | 1 | 2;
   isHeavyWeapon: boolean;
@@ -189,6 +195,7 @@ interface ConsumableData
     max: number;
     value: number;
   };
+  subtype: ConsumableType;
   messageOnUse: boolean;
   destroyOnEmpty: boolean;
 }

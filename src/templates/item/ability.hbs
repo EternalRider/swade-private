@@ -38,13 +38,11 @@
       <div class="form-group">
         <label>{{localize "SWADE.Subtype"}}</label>
         <span class="form-fields">
-          <select name="system.subtype">
+          <select name="system.subtype" {{disabled item.isOwned}}>
           {{#select item.system.subtype}}
             <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
-            {{#unless item.isOwned}}
               <option value="race">{{localize abilityConfig.localization.race.dropdown}}</option>
               <option value="archetype">{{localize abilityConfig.localization.archetype.dropdown}}</option>
-            {{/unless}}
           {{/select}}
           </select>
         </span>

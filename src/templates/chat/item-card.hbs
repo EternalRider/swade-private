@@ -17,10 +17,20 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
     <div class='ammo-counter'>
       <i class='fas fa-dot-circle'></i>
       {{localize 'SWADE.Mag'}}:
-      <span class='current-shots'>{{item.system.currentShots}}</span>
-      &nbsp;/&nbsp;
-      <span class='max-shots'>{{item.system.shots}}</span>
-      {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
+      <span class='shots'>
+        <span class='current-shots'>{{item.system.currentShots}}</span>
+        &nbsp;/&nbsp;
+        <span class='max-shots'>{{item.system.shots}}</span>
+      </span>
+      {{#if item.system.ammo}}
+        <span class='ammo-name'>
+          {{#if hasMagazine}}
+            <u class='magazine'>{{item.system.ammo}}</u>
+          {{else}}
+            {{item.system.ammo}}
+          {{/if}}
+        </span>
+      {{/if}}
     </div>
   {{/if}}
 

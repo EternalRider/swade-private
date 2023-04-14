@@ -1,22 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
-import CompendiumTOC, { CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import { CompendiumTOC, CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import { damageApplicator } from '../apps/DamageApplicator';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
+import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import SwadeItem from '../documents/item/SwadeItem';
-import SwadeCombatant from '../documents/SwadeCombatant';
 import { Logger } from '../Logger';
 import * as migrations from '../migration';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
+import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
@@ -108,7 +112,7 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '2.2.0';
+      const needsMigrationVersion = '2.3.0';
       //Minimal compatible version needed for the migration
       const compatibleMigrationVersion = '2.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
@@ -183,25 +187,35 @@ export default class SwadeCoreHooks {
 
     //create system links
     const systemLinks = $('<li>').addClass('system-links');
-    const links: Array<{ label: string; url: string }> = [
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
-        url: 'https://gitlab.com/peginc/swade/-/issues/new',
-      },
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
-        url: game.system.changelog as string,
-      },
-      {
-        label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
-        url: game.system.readme as string,
-      },
-    ];
+    const links: Array<{ label: string; url?: string; click?: EventListener }> =
+      [
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
+          url: 'https://gitlab.com/peginc/swade/-/issues/new',
+        },
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
+          url: game.system.changelog as string,
+        },
+        {
+          label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
+          click: (_ev) => game.packs.get('swade.system-docs')?.render(true),
+        },
+      ];
 
     //insert links links
-    links.forEach((link) =>
-      systemLinks.append(`<a href="${link.url}">${link.label}</a>`),
-    );
+    links.forEach((link) => {
+      const anchor = document.createElement('a');
+      anchor.innerText = link.label;
+      if (link.url) {
+        anchor.href = link.url;
+      }
+      if (link.click) {
+        anchor.addEventListener('click', link.click);
+      }
+
+      systemLinks.append(anchor);
+    });
 
     systemInfo.after(systemLinks);
   }
@@ -510,47 +524,63 @@ export default class SwadeCoreHooks {
   }
 
   /** Add roll data to the message for formatting of dice pools*/
-  static async onRenderChatMessage(
-    message: ChatMessage,
+  static onRenderChatMessage(
+    message: SwadeChatMessage,
     html: JQuery<HTMLElement>,
-    data: any,
+    data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    if (message.isRoll && message.isContentVisible) {
-      await chat.formatRoll(message, html, data);
-    }
-
     chat.hideChatActionButtons(message, html, data);
-  }
-
-  static onGetChatLogEntryContext(
-    html: JQuery<HTMLElement>,
-    options: ContextMenuEntry[],
-  ) {
-    const canApply = (li: JQuery<HTMLElement>) => {
-      const message = game.messages?.get(li.data('messageId'))!;
-      const actor = ChatMessage.getSpeakerActor(message.speaker);
-      const isRightMessageType =
-        message?.isRoll &&
-        message?.isContentVisible &&
-        !message.getFlag('core', 'RollTable');
-      return (
-        isRightMessageType && !!actor && (game.user?.isGM! || actor.isOwner)
-      );
-    };
-    options.push(
-      {
-        name: game.i18n.localize('SWADE.RerollWithBenny'),
-        icon: '<i class="fa-solid fa-dice"></i>',
-        condition: canApply,
-        callback: (li) => chat.rerollFromChat(li, true),
-      },
-      {
-        name: game.i18n.localize('SWADE.FreeReroll'),
-        icon: '<i class="fa-solid fa-dice"></i>',
-        condition: canApply,
-        callback: (li) => chat.rerollFromChat(li, false),
-      },
-    );
+    chat.createMagazineTooltip(message, html);
+    html
+      .find('.swade-roll-message button.free-reroll')
+      .on('click', SwadeRoll.rerollFree.bind(this));
+    html
+      .find('.swade-roll-message button.benny-reroll')
+      .on('click', SwadeRoll.rerollBenny.bind(this));
+    html[0]
+      .querySelectorAll('.swade-roll-message button.calculate-wounds')
+      .forEach((target) => {
+        target.addEventListener('click', async () => {
+          await damageApplicator(message);
+        });
+      });
+    html[0]
+      .querySelectorAll<HTMLDetailsElement>('details.modifiers')
+      .forEach((detail) => new Accordion(detail));
+    html[0]
+      .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
+      .forEach((target) => {
+        target.addEventListener('mouseenter', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          const tokenObj = tokenDoc?.object;
+          if (tokenObj?.isVisible && !tokenObj?.controlled) {
+            tokenObj?._onHoverIn(ev);
+          }
+        });
+        target.addEventListener('mouseleave', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          const tokenObj = tokenDoc?.object;
+          if (tokenObj?.isVisible && !tokenObj?.controlled) {
+            tokenObj?._onHoverOut(ev);
+          }
+        });
+        target.addEventListener('click', (ev) => {
+          if (!canvas.ready) return;
+          const target = ev.currentTarget as HTMLLIElement;
+          const tokenDoc = fromUuidSync(
+            target.dataset.tokenUuid,
+          ) as TokenDocument | null;
+          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
+        });
+      });
   }
 
   static async onGetCombatTrackerEntryContext(
@@ -845,9 +875,9 @@ export default class SwadeCoreHooks {
     html: JQuery<HTMLElement>,
     options: any,
   ) {
-    html.find('.player').each((_index, player) => {
-      new PlayerBennyDisplay(player);
-    });
+    html[0]
+      .querySelectorAll<HTMLLIElement>('.player')
+      .forEach((player) => new PlayerBennyDisplay(player));
   }
 
   static onRenderUserConfig(
@@ -976,78 +1006,10 @@ export default class SwadeCoreHooks {
     sheet: ActorSheet,
     data: { type: string; uuid: string },
   ) {
-    const sheetIsVehicleSheet = sheet instanceof SwadeVehicleSheet;
-
-    if (data.type === 'Actor' && sheetIsVehicleSheet) {
+    if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'summary') {
-        await sheet.actor.update({ 'system.driver.id': data.uuid });
-      }
-    }
-
-    //handle race item creation
-    const isNewItemDrop = data.type === 'Item';
-    if (isNewItemDrop && !sheetIsVehicleSheet) {
-      const item = (await fromUuid(data.uuid)) as SwadeItem;
-      //check if it's the proper type and subtype
-      if (item.type !== 'ability') return;
-      const subType = item.system.subtype;
-      if (subType === 'special') return;
-      //set name from archetype/race
-      if (subType === 'race') {
-        await actor.update({ 'system.details.species.name': item.link });
-      } else if (subType === 'archetype') {
-        await actor.update({ 'system.details.archetype': item.link });
-      }
-      //process embedded documents
-      const map = item.embeddedAbilities;
-      const creationData = new Array<any>();
-      const duplicates = new Array<{ type: string; name: string }>();
-      for (const entry of map.values()) {
-        const existingItems = actor.items.filter(
-          (i) => i.type === entry.type && i.name === entry.name,
-        );
-        if (existingItems.length > 0) {
-          duplicates.push({
-            type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
-            name: entry.name,
-          });
-          entry.name += ` (${item.name})`;
-        }
-        creationData.push(entry);
-      }
-      if (creationData.length > 0) {
-        await actor.createEmbeddedDocuments('Item', creationData, {
-          //@ts-expect-error Normally the flag is a boolean
-          renderSheet: null,
-        });
-      }
-      if (duplicates.length > 0) {
-        Dialog.prompt({
-          title: game.i18n.localize('SWADE.Duplicates'),
-          rejectClose: false,
-          content: await renderTemplate(
-            '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
-            {
-              duplicates: duplicates.sort((a, b) =>
-                a.type.localeCompare(b.type),
-              ),
-              bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
-                type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
-                name: item.name,
-                target: actor.name,
-              }),
-            },
-          ),
-          callback: () => {
-            /*NO-OP*/
-          },
-        });
-      }
-      //copy active effects
-      const effects = item.effects.map((ae) => ae.toObject());
-      if (effects.length > 0) {
-        await actor.createEmbeddedDocuments('ActiveEffect', effects);
+        await actor.update({ 'system.driver.id': data.uuid });
       }
     }
   }
@@ -1174,30 +1136,30 @@ export default class SwadeCoreHooks {
     const expiration = app.document.getFlag('swade', 'expiration');
     const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
     const createOption = (
-      exp: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION> | undefined,
       label: string,
+      exp?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>,
     ) => {
       return `<option value="${exp}" ${
         exp === expiration ? 'selected' : ''
       }>${label}</option>`;
     };
     const expirationOpt = [
-      createOption(undefined, game.i18n.localize('SWADE.Expiration.None')),
+      createOption(game.i18n.localize('SWADE.Expiration.None')),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.BeginAuto'),
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.BeginPrompt'),
+        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
         game.i18n.localize('SWADE.Expiration.EndAuto'),
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
       ),
       createOption(
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
         game.i18n.localize('SWADE.Expiration.EndPrompt'),
+        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
       ),
     ];
     const tab = `
@@ -1230,11 +1192,22 @@ export default class SwadeCoreHooks {
     html.find('section[data-tab="duration"]').after(section);
   }
 
-  /** This hook only really exists to stop Races from being added to the actor as an item */
-  static onPreCreateItem(item: SwadeItem, options: object, userId: string) {
+  /** This hook only really exists to stop Races from being added to the actor as an item if the actor already HAS one */
+  static onPreCreateItem(item: SwadeItem, _options: object, _userId: string) {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
-      if (subType === 'race' || subType === 'archetype') return false; //return early if we're doing race stuff
+      if (subType === 'race' && !!item.actor?.race) {
+        ui.notifications.warn('SWADE.Validation.OnlyOneRace', {
+          localize: true,
+        });
+        return false;
+      }
+      if (subType === 'archetype' && !!item.actor?.archetype) {
+        ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+          localize: true,
+        });
+        return false;
+      }
     }
   }
 }

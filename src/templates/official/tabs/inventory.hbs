@@ -82,7 +82,9 @@
                 type='button'
                 class='damage-roll rollable'
                 title='{{localize "SWADE.RollDamage"}}'
-              >{{system.damage}}</button>
+              >
+              {{system.damage}}{{signedString system.actions.dmgMod}}
+              </button>
             {{/if}}
           </span>
           <span class='ap'>{{system.ap}}</span>
@@ -315,9 +317,13 @@
           (x{{system.quantity}}) {{name}}
         </button>
         <span class="charges">
-          <button type="button" class='rollable use-consumable' title="{{localize "SWADE.Consumable.Use"}}">
+          {{#unless (eq system.subtype "regular")}}
             {{system.charges.value}}/{{system.charges.max}}
-          </button>
+          {{else}}
+            <button type="button" class='rollable use-consumable' title="{{localize "SWADE.Consumable.Use"}}">
+              {{system.charges.value}}/{{system.charges.max}}
+            </button>
+          {{/unless}}
         </span>
         <span class='weight'>
           {{formatNumber (times system.weight system.quantity)}}

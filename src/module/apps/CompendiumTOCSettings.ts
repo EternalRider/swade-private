@@ -1,4 +1,4 @@
-import CompendiumTOC from './CompendiumTOC';
+import { CompendiumTOC } from './CompendiumTOC';
 
 export default class CompendiumTOCSettings extends FormApplication<
   FormApplicationOptions,

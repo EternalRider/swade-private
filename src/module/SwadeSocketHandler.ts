@@ -1,4 +1,4 @@
-import SwadeActiveEffect from './documents/SwadeActiveEffect';
+import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import { isFirstGM, isFirstOwner } from './util';
 
 export default class SwadeSocketHandler {

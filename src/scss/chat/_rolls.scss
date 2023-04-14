@@ -1,0 +1,119 @@
+.swade-roll-message {
+  --critfail-color: rgb(200, 0, 0);
+  .critical-failure {
+    color: var(--critfail-color);
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+    background: rgba(128, 0, 0, 0.2);
+    border: 1px solid var(--color-border-light-2);
+    border-radius: 3px;
+    box-shadow: 0 0 2px #fff inset;
+    margin-bottom: 0.25rem;
+  }
+
+  .modifiers,
+  .reroll,
+  .group-roll {
+    font-size: var(--font-size-14);
+  }
+
+  .modifier-list {
+    list-style: disc;
+    margin-top: 0;
+  }
+
+  .targets {
+    list-style: none;
+    padding-left: 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: $small-spacing;
+    li {
+      .target {
+        padding: 3px;
+        line-height: 1;
+      }
+    }
+  }
+
+  .wounds-calc {
+    margin-top: 5px;
+  }
+
+  .group-roll {
+    text-align: end;
+  }
+
+  .roll-interaction {
+    margin-top: $small-spacing;
+    display: flex;
+    flex-direction: row;
+    button {
+      width: auto;
+      flex-grow: 1;
+      font-size: var(--font-size-14);
+      line-height: var(--font-size-20);
+    }
+  }
+}
+
+.swade-roll {
+  --exploded-color: rgb(0, 100, 0);
+  --min-color: rgb(200, 0, 0);
+
+  .die {
+    .min {
+      color: var(--min-color);
+      position: relative;
+      &:before {
+        font-size: 0.5em;
+        font-family: var(--font-awesome);
+        content: '\f00d';
+        position: absolute;
+        top: -1em;
+        right: 1em;
+      }
+    }
+    .exploded {
+      color: var(--exploded-color);
+      position: relative;
+      &:before {
+        font-size: 0.5em;
+        font-family: var(--font-awesome);
+        content: '\f666';
+        position: absolute;
+        top: -1em;
+        right: -0.8em;
+      }
+    }
+  }
+
+  .result-list,
+  .formula-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .result-list,
+  .formula-list {
+    li {
+      margin: 2px;
+      display: inline-flex;
+      justify-content: center;
+      font-weight: bold;
+      &.die {
+        width: 25px;
+        height: 25px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    }
+  }
+
+  .dice-roll {
+    flex-direction: column;
+  }
+}

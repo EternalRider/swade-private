@@ -172,6 +172,7 @@ export function migrateItemData(data: ItemDataSource) {
   _migrateWeaponAPToNumber(data, updateData);
   _migratePowerEquipToFavorite(data, updateData);
   _migrateItemEquipState(data, updateData);
+  _migrateWeaponAutoReload(data, updateData);
   return updateData;
 }
 
@@ -357,6 +358,21 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
   };
 
   return updateData;
+}
+
+function _migrateWeaponAutoReload(
+  data: ItemDataSource,
+  updateData: UpdateData,
+) {
+  if (data.type !== 'weapon') return;
+  const hasOld = foundry.utils.hasProperty(data, 'system.autoReload');
+  if (!hasOld) return;
+  const autoReload = data.system.autoReload;
+  updateData['system.reloadType'] = autoReload
+    ? constants.RELOAD_TYPE.NONE
+    : constants.RELOAD_TYPE.FULL;
+  //remove the old propert
+  updateData['-=system.autoReload'] = null;
 }
 
 type UpdateData = Record<string, unknown>;

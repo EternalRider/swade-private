@@ -6,11 +6,15 @@
 @import 'scss/npc';
 @import 'scss/vehicle';
 @import 'scss/items-v2';
+//chat
 @import 'scss/chat';
 @import 'scss/item-cards';
+@import 'scss/chat/rolls';
+
 @import 'scss/core';
 @import 'scss/swade-app';
 //applications
+
 @import 'scss/apps/tweaks';
 @import 'scss/apps/setting-config';
 @import 'scss/apps/combat-tracker';
@@ -21,6 +25,8 @@
 @import 'scss/apps/attribute-manager';
 @import 'scss/apps/compendium-toc-settings';
 @import 'scss/apps/active-effect-wizard';
+@import 'scss/apps/reload-manager';
+
 //official sheet
 @import 'scss/official/mixins';
 @import 'scss/official/sheet';

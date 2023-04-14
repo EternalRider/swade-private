@@ -1,9 +1,10 @@
 import copy from '@guanghechen/rollup-plugin-copy';
 import typescript from '@rollup/plugin-typescript';
+import autoprefixer from 'autoprefixer';
 import * as yaml from 'js-yaml';
-import livereload from 'rollup-plugin-livereload';
-import styles from 'rollup-plugin-styles';
 import { defineConfig } from 'rollup';
+import livereload from 'rollup-plugin-livereload';
+import postcss from 'rollup-plugin-postcss';
 
 const name = 'swade';
 const distDirectory = 'dist';
@@ -47,11 +48,12 @@ export default defineConfig({
   plugins: [
     environment(process.env.NODE_ENV),
     typescript({ noEmitOnError: false }),
-    styles({
-      mode: ['extract', `${name}.css`],
-      url: false,
-      sourceMap: true,
+    postcss({
+      extract: true,
       minimize: isProd,
+      sourceMap: true,
+      use: ['sass'],
+      plugins: [autoprefixer()]
     }),
     copy({
       targets: [

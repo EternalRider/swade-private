@@ -205,6 +205,8 @@ export default class CharacterSummarizer {
         case 'consumable':
           consumables.push(item.name as string);
           break;
+        case 'action':
+          continue; //skip the rendering of actions
         default:
           Logger.error(`Item ${item.name} has unknown type ${item.type}`, {
             toast: true,
@@ -239,6 +241,7 @@ export default class CharacterSummarizer {
     for (const key in this.actor.system.additionalStats) {
       const stat = this.actor.system.additionalStats[key] as AdditionalStat;
       switch (stat.dtype) {
+        case 'Selection':
         case 'String':
           additionalStats.push(`${stat.label}: ${stat.value}`);
           break;
@@ -286,7 +289,7 @@ export default class CharacterSummarizer {
     if (list.length === 0) {
       list.push('&mdash;');
     }
-    list.sort();
+    list.sort((a, b) => a.localeCompare(b));
     let val = `<p><strong>${name}</strong>: `;
     val += list.join(', ');
     val += '</p>';

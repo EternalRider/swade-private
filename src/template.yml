@@ -206,6 +206,7 @@ Item:
         additional: {}
     bonusDamage:
       bonusDamageDie: 6
+      bonusDamageDice: 1
     favorite:
       favorite: false
     templates:
@@ -254,7 +255,8 @@ Item:
     shots: 0
     currentShots: 0
     ammo: ''
-    autoReload: false
+    reloadType: 'none'
+    ppReloadCost: 2
     trademark: 0
     isHeavyWeapon: false
   armor:
@@ -305,6 +307,7 @@ Item:
       max: 1
     messageOnUse: true
     destroyOnEmpty: false
+    subtype: regular
   edge:
     templates:
       - itemDescription

@@ -1,4 +1,7 @@
 import { TraitRollModifier } from '../../interfaces/additional.interface';
+import { DamageRoll } from '../dice/DamageRoll';
+import { SwadeRoll } from '../dice/SwadeRoll';
+import { TraitRoll } from '../dice/TraitRoll';
 import WildDie from '../dice/WildDie';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -9,15 +12,15 @@ export default class RollDialog extends FormApplication<
   object,
   RollDialogContext
 > {
-  resolve: (roll: Roll | null) => void;
-  isResolved = false;
-  extraButtonUsed = false;
+  #callback: (roll: SwadeRoll | null) => void;
+  #isResolved = false;
+  #extraButtonUsed = false;
 
-  static asPromise(ctx: RollDialogContext): Promise<Roll | null> {
+  static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
     return new Promise((resolve) => new RollDialog(ctx, resolve));
   }
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/rollDialog.hbs',
       classes: ['swade', 'roll-dialog', 'swade-app'],
@@ -37,11 +40,11 @@ export default class RollDialog extends FormApplication<
 
   constructor(
     ctx: RollDialogContext,
-    resolve: (roll: Roll | null) => void,
+    resolve: (roll: SwadeRoll | null) => void,
     options?: Partial<FormApplicationOptions>,
   ) {
     super(ctx, options);
-    this.resolve = resolve;
+    this.#callback = resolve;
     this.render(true);
   }
 
@@ -49,48 +52,79 @@ export default class RollDialog extends FormApplication<
     return this.object;
   }
 
+  get rollCls(): typeof SwadeRoll {
+    //@ts-expect-error JS somehow resolves that as a function
+    return this.ctx.roll.constructor as SwadeRoll;
+  }
+
   get title(): string {
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
   get rollMode(): foundry.CONST.DICE_ROLL_MODES {
-    const select = this.form?.querySelector<HTMLSelectElement>('#rollMode');
-    return (
-      (select?.value as foundry.CONST.DICE_ROLL_MODES) ??
-      game.settings.get('core', 'rollMode')
-    );
+    return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
+      .value as foundry.CONST.DICE_ROLL_MODES;
   }
 
-  activateListeners(html: JQuery<HTMLElement>): void {
+  get isTraitRoll(): boolean {
+    return this.ctx.roll instanceof TraitRoll;
+  }
+
+  get modifiers(): TraitRollModifier[] {
+    return this.ctx.mods;
+  }
+
+  override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
-    $(document).on('keydown.chooseDefault', this._onKeyDown.bind(this));
-    html.find('button#close').on('click', this.close.bind(this));
-    html.find('button.add-modifier').on('click', () => {
-      this._addModifier();
-      this.render();
-    });
-    html.find('.modifier .add-preset').on('click', (ev) => {
-      this._addPreset(ev);
-      this.render();
-    });
-    html.find('button.toggle-list').on('click', (ev) => {
-      const target = ev.currentTarget as HTMLButtonElement;
-      const width = getComputedStyle(target).width;
-      html.find('.fas.fa-caret-right').toggleClass('rotate');
-      html.find('.searchBox').outerWidth(width, true);
-      html.find('.dropdown').outerWidth(width).slideToggle({ duration: 200 });
-    });
-    html.find('button.submit-roll').on('click', (ev) => {
-      const type = ev.currentTarget.dataset.type;
-      this.extraButtonUsed = type === 'extra';
-      this.submit();
-    });
-    html.find('input[type="checkbox"]').on('change', (ev) => {
-      const target = ev.currentTarget as HTMLInputElement;
-      const index = Number(target.dataset.index);
-      this.ctx.mods[index].ignore = target.checked;
-      this.render();
-    });
+    $(document).on('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    html[0]
+      .querySelector<HTMLButtonElement>('button#close')
+      ?.addEventListener('click', this.close.bind(this));
+    html[0]
+      .querySelector<HTMLButtonElement>('button.add-modifier')
+      ?.addEventListener('click', () => {
+        this.#addModifier();
+        this.render();
+      });
+    html[0]
+      .querySelectorAll<HTMLButtonElement>('.modifier .add-preset')
+      .forEach((btn) => {
+        btn.addEventListener('click', (ev) => {
+          this.#addPreset(ev);
+          this.render();
+        });
+      });
+    html[0]
+      .querySelector<HTMLButtonElement>('button.toggle-list')
+      ?.addEventListener('click', (ev) => {
+        const target = ev.currentTarget as HTMLButtonElement;
+        const width = getComputedStyle(target).width;
+        html[0]
+          .querySelector('.fas.fa-caret-right')
+          ?.classList.toggle('rotate');
+        html.find('.searchBox').outerWidth(width, true);
+        html.find('.dropdown').outerWidth(width).slideToggle({ duration: 200 });
+      });
+    html[0]
+      .querySelectorAll<HTMLButtonElement>('button.submit-roll')
+      .forEach((btn) => {
+        btn.addEventListener('click', (ev) => {
+          const target = ev.currentTarget as HTMLButtonElement;
+          this.#extraButtonUsed = target.dataset.type === 'extra';
+          this.submit();
+        });
+      });
+
+    html[0]
+      .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+      .forEach((el) =>
+        el.addEventListener('change', (ev) => {
+          const target = ev.currentTarget as HTMLInputElement;
+          const index = Number(target.dataset.index);
+          this.modifiers[index].ignore = target.checked;
+          this.render();
+        }),
+      );
   }
 
   async getData() {
@@ -101,18 +135,14 @@ export default class RollDialog extends FormApplication<
       modGroups: CONFIG.SWADE.prototypeRollGroups,
       extraButtonLabel: '',
       rollMode: game.settings.get('core', 'rollMode'),
-      modifiers: this.ctx.mods.map(normalizeRollModifiers),
-      formula: this._buildRollForEvaluation().formula,
-      isTraitRoll: this._isTraitRoll(),
+      modifiers: this.modifiers.map(normalizeRollModifiers),
+      formula: this.#buildRollForEvaluation().formula,
+      isTraitRoll: this.isTraitRoll,
     };
 
     if (this.ctx.item) {
       data.extraButtonLabel = game.i18n.localize('SWADE.RollRaise');
-    } else if (
-      this.ctx.actor &&
-      !this.ctx.actor.isWildcard &&
-      this.ctx.allowGroup
-    ) {
+    } else if (this.isTraitRoll && !this.ctx.actor?.isWildcard) {
       data.extraButtonLabel = game.i18n.localize('SWADE.GroupRoll');
     } else {
       data.displayExtraButton = false;
@@ -124,95 +154,74 @@ export default class RollDialog extends FormApplication<
   protected override async _updateObject(ev: Event, formData: FormData) {
     const expanded = foundry.utils.expandObject(formData) as RollDialogFormData;
     Object.values(expanded.modifiers ?? []).forEach(
-      (v, i) => (this.ctx.mods[i].ignore = v.ignore),
+      (v, i) => (this.modifiers[i].ignore = v.ignore),
     );
     if (expanded.map && expanded.map !== 0) {
-      this.ctx.mods.push({
+      this.modifiers.push({
         label: game.i18n.localize('SWADE.MAPenalty.Label'),
         value: expanded.map,
       });
     }
 
-    //add any unsubmitted modifiers
-    this._addModifier();
-    const roll = await this._evaluateRoll();
-    this._resolve(roll);
+    //add any unsubmitted modifiers, evaluate and resolve the promise
+    this.#addModifier();
+    this.#resolve(await this.#evaluateRoll());
   }
 
-  private _onKeyDown(event) {
-    // Close dialog
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      event.stopPropagation();
-      return this.close();
-    }
-
-    // Confirm default choice or add a modifier
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      event.stopPropagation();
-      const modValue = this.form!.querySelector<HTMLInputElement>(
-        '.new-modifier-value',
-      )?.value;
-      if (modValue) {
-        this._addModifier();
-        return this.render();
-      }
-      return this.submit();
-    }
+  override close(options?: Application.CloseOptions): Promise<void> {
+    //fallback if the roll has not yet been resolved
+    if (!this.#isResolved) this.#callback(null);
+    $(document).off('keydown.chooseDefault');
+    return super.close(options);
   }
 
-  private _resolve(roll: Roll) {
-    this.isResolved = true;
-    this.resolve(roll);
-    this.close();
-  }
+  async #evaluateRoll(): Promise<SwadeRoll> {
+    this.#checkForAndAddBonusDamage();
 
-  async _evaluateRoll(): Promise<Roll> {
-    //Raise Damage
-    if (this.extraButtonUsed && this.ctx.item && !this.ctx.actor) {
-      this.ctx.mods.push({
-        label: game.i18n.localize('SWADE.BonusDamage'),
-        value: `+1d${this.ctx.item.system['bonusDamageDie']}x`,
-      });
-    }
-
-    const roll = this._buildRollForEvaluation();
+    const roll = this.#buildRollForEvaluation();
     const terms = roll.terms;
-    let flavor = this.ctx.flavor;
 
     //Add the Wild Die for a group roll of
     if (
-      this.extraButtonUsed &&
-      this.ctx.allowGroup &&
-      this.ctx.actor &&
-      !this.ctx.actor.isWildcard
+      this.#extraButtonUsed &&
+      this.isTraitRoll &&
+      !this.ctx.actor?.isWildcard
     ) {
       const traitPool = terms[0];
       if (traitPool instanceof PoolTerm) {
         const wildDie = new WildDie();
-        const wildRoll = Roll.fromTerms([wildDie]);
+        const wildRoll = this.rollCls.fromTerms([wildDie]);
         traitPool.rolls.push(wildRoll);
         traitPool.terms.push(wildRoll.formula);
-        flavor += `<br>${game.i18n.localize('SWADE.GroupRoll')}`;
       }
     }
 
     //recreate the roll
-    const finalizedRoll = Roll.fromTerms(terms, roll.options);
+    const finalizedRoll = this.rollCls.fromTerms(
+      terms,
+      roll.options,
+    ) as SwadeRoll;
+    if (finalizedRoll instanceof TraitRoll) {
+      finalizedRoll.groupRoll =
+        this.#extraButtonUsed && !this.ctx.actor?.isWildcard;
+    }
 
     //evaluate
     await finalizedRoll.evaluate({ async: true });
 
+    if (finalizedRoll instanceof DamageRoll) {
+      finalizedRoll.ap = this.ctx.ap ?? 0;
+    }
+
     // Convert the roll to a chat message and return it
     await finalizedRoll.toMessage(
       {
-        flavor: flavor + this._buildModifierFlavor(),
+        flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
-        flags: this.ctx.flags ?? {},
       },
       { rollMode: this.rollMode },
     );
+
     return finalizedRoll;
   }
 
@@ -231,48 +240,52 @@ export default class RollDialog extends FormApplication<
     }
   }
 
-  private _buildRollForEvaluation() {
-    return Roll.fromTerms([
+  #buildRollForEvaluation(): SwadeRoll {
+    const roll = this.rollCls.fromTerms([
       ...this.ctx.roll.terms,
-      ...Roll.parse(
-        this.ctx.mods
+      ...this.rollCls.parse(
+        this.modifiers
           .filter((v) => !v.ignore) //remove the disabled modifiers
           .map(normalizeRollModifiers)
           .reduce(modifierReducer, ''),
-        this._getRollData(),
+        this.#getRollData(),
       ),
-    ]);
+    ]) as SwadeRoll;
+    roll.modifiers = this.modifiers;
+    return roll;
+  }
+
+  #resolve(roll: SwadeRoll) {
+    this.#isResolved = true;
+    this.#callback(roll);
+    this.close();
   }
 
   /** add a + if no +/- is present in the situational mod */
-  private _sanitizeModifierInput(modifier: string): string {
+  #sanitizeModifierInput(modifier: string): string {
     if (modifier.startsWith('@')) return modifier;
     if (!modifier[0].match(/[+-]/)) return '+' + modifier;
     return modifier;
   }
 
-  private _buildModifierFlavor() {
-    return this.ctx.mods
-      .filter((v) => !v.ignore) //remove the disabled modifiers
-      .map(normalizeRollModifiers)
-      .reduce((acc: string, cur: TraitRollModifier) => {
-        const value =
-          typeof cur.value === 'number' ? cur.value.signedString() : cur.value;
-        return (acc += `<br>${cur.label}: ${value}`);
-      }, '');
-  }
-
-  private _getRollData() {
+  #getRollData() {
     if (this.ctx.actor) return this.ctx.actor.getRollData();
     return this.ctx.item?.actor?.getRollData() ?? {};
   }
 
-  private _isTraitRoll(): boolean {
-    return !!this.ctx.actor;
+  #checkForAndAddBonusDamage() {
+    if (this.#extraButtonUsed && this.ctx.item && !this.ctx.actor) {
+      const bonusDamageDice = this.ctx.item?.['system']['bonusDamageDice'];
+      const bonusDamageDieType = this.ctx.item?.['system']['bonusDamageDie'];
+      this.modifiers.push({
+        label: game.i18n.localize('SWADE.BonusDamage'),
+        value: `+${bonusDamageDice ?? 1}d${bonusDamageDieType}x`,
+      });
+    }
   }
 
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
-  private _addModifier() {
+  #addModifier() {
     const label = this.form?.querySelector<HTMLInputElement>(
       '.new-modifier-label',
     )?.value;
@@ -280,45 +293,60 @@ export default class RollDialog extends FormApplication<
       '.new-modifier-value',
     )?.value;
     if (value) {
-      this.ctx.mods.push({
+      this.modifiers.push({
         label: label || game.i18n.localize('SWADE.Addi'),
-        value: this._sanitizeModifierInput(value),
+        value: this.#sanitizeModifierInput(value),
       });
     }
   }
 
-  private _addPreset(ev: JQuery.ClickEvent) {
+  #addPreset(ev: MouseEvent): void {
     const target = ev.currentTarget as HTMLButtonElement;
     const group = CONFIG.SWADE.prototypeRollGroups.find(
       (v) => v.name === target.dataset.group,
     );
     const modifier = group?.modifiers[Number(target.dataset.index)];
     if (modifier) {
-      this.ctx.mods.push({
+      this.modifiers.push({
         label: modifier.label,
         value: modifier.value,
       });
     }
   }
 
-  override close(options?: Application.CloseOptions): Promise<void> {
-    //fallback if the roll has not yet been resolved
-    if (!this.isResolved) this.resolve(null);
-    $(document).off('keydown.chooseDefault');
-    return super.close(options);
+  #onKeyDown(event) {
+    // Close dialog
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      return this.close();
+    }
+
+    // Confirm default choice or add a modifier
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.stopPropagation();
+      const modValue = this.form!.querySelector<HTMLInputElement>(
+        '.new-modifier-value',
+      )?.value;
+      if (modValue) {
+        this.#addModifier();
+        return this.render();
+      }
+      return this.submit();
+    }
   }
 }
 
 interface RollDialogContext {
-  roll: Roll;
+  roll: SwadeRoll;
   mods: TraitRollModifier[];
   speaker: foundry.data.ChatMessageData['speaker']['_source'];
   flavor: string;
   title: string;
   item?: SwadeItem;
   actor?: SwadeActor;
-  allowGroup?: boolean;
-  flags?: Record<string, unknown>;
+  ap?: number;
 }
 
 interface RollDialogFormData {

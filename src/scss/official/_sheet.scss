@@ -131,8 +131,12 @@
     border-radius: 0;
     margin: 0;
     border-bottom: $solid-line;
-    span.display {
+    button {
+      white-space: nowrap;
       overflow-x: clip;
+      text-overflow: ellipsis;
+      width: 100% !important;
+      text-align: start;
     }
     input[type] {
       background: transparent;
@@ -280,8 +284,6 @@
   }
 
   .editor {
-    width: 100%;
-
     .editor-menu button span {
       text-shadow: none;
 
@@ -1182,6 +1184,9 @@
   .powers {
     .section-header {
       font-size: $large-font;
+      button.adjust-counter {
+        font-size: 0.9em;
+      }
     }
     ul {
       list-style: none;
@@ -1286,9 +1291,11 @@
     display: grid;
     grid-template-rows: max-content auto;
     .editor {
-      padding: 0 $medium-spacing;
       border: $solid-line;
       height: 100%;
+      .editor-content {
+        padding: 0 $medium-spacing;
+      }
     }
     .about-body {
       overflow: hidden;
@@ -1337,6 +1344,7 @@
         display: grid;
         grid-template-rows: max-content auto;
         overflow: hidden;
+        margin: 0;
         &:last-of-type {
           grid-column: 1 / span 2;
         }

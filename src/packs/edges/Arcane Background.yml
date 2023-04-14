@@ -2,7 +2,7 @@ name: Arcane Background
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.37</p>
   notes: ''
   isArcaneBackground: true

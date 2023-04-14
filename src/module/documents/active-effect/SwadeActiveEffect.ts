@@ -6,10 +6,10 @@ import {
 import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
 import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
-import { constants } from '../constants';
-import { isFirstOwner } from '../util';
-import SwadeActor from './actor/SwadeActor';
-import SwadeItem from './item/SwadeItem';
+import { constants } from '../../constants';
+import { isFirstOwner } from '../../util';
+import SwadeActor from '../actor/SwadeActor';
+import SwadeItem from '../item/SwadeItem';
 
 declare global {
   interface DocumentClassConfig {
@@ -22,6 +22,7 @@ declare global {
         expiration?: number;
         loseTurnOnHold?: boolean;
         favorite?: boolean;
+        related?: Record<string, ActiveEffectDataConstructorData>;
       };
     };
   }
@@ -345,6 +346,30 @@ export default class SwadeActiveEffect extends ActiveEffect {
           combatant?.setFlag('swade', 'turnLost', true),
           combatant?.unsetFlag('swade', 'roundHeld'),
         ]);
+      }
+    }
+  }
+
+  protected override _onCreate(
+    data: PropertiesToSource<ActiveEffectDataProperties>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ): void {
+    super._onCreate(data, options, userId);
+    const relatedEffects = this.getFlag('swade', 'related');
+    if (relatedEffects && this.parent?.documentName === 'Actor') {
+      const isStatusEffect = !!this.statusId;
+      for (const [id, mutation] of Object.entries(relatedEffects)) {
+        const statusEffect = CONFIG.statusEffects.find((v) => v.id === id);
+        if (!statusEffect) continue; //skip if we can't find the effect
+        //apply the mutation if one exists
+        const effect = foundry.utils.isEmpty(mutation)
+          ? statusEffect
+          : foundry.utils.mergeObject(statusEffect, mutation, {
+              performDeletions: true,
+            });
+        setProperty(effect, 'flags.swade.favorite', isStatusEffect);
+        this.parent.toggleActiveEffect(effect, { active: true });
       }
     }
   }

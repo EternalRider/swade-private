@@ -46,7 +46,7 @@ export default class SwadeUser extends User {
         content: message,
       };
       if (game.settings.get('swade', 'notifyBennies')) {
-        ChatMessage.create(chatData);
+        await CONFIG.ChatMessage.documentClass.create(chatData);
       }
       await this.setFlag('swade', 'bennies', this.bennies - 1);
 

@@ -2,7 +2,7 @@ name: Work The Room
 permission:
   default: 0
 type: edge
-data:
+system:
   description: <p>See SWADE p.51</p>
   notes: ''
   isArcaneBackground: false

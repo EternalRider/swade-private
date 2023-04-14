@@ -3,7 +3,7 @@ permission:
   default: 0
   XGltUb0dWlJLkvbE: 3
 type: skill
-data:
+system:
   description: See SWADE p.30
   notes: ''
   attribute: spirit

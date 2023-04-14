@@ -1,6 +1,6 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { CombatantDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/combatantData';
-import { SWADE } from '../config';
+import { SWADE } from '../../config';
 
 declare global {
   interface DocumentClassConfig {
