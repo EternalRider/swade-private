@@ -867,9 +867,9 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(
+    const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
-    ) as AdditionalStats;
+    );
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
@@ -943,7 +943,8 @@ export default class CharacterSheet extends ActorSheet<
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {
-    const action = ev?.currentTarget?.dataset?.action;
+    const target = ev.currentTarget as HTMLElement;
+    const action = target.dataset.action;
 
     switch (action) {
       case 'fatigue-plus':
@@ -979,10 +980,14 @@ export default class CharacterSheet extends ActorSheet<
         await this.actor.getBenny();
         break;
       case 'pp-refresh': {
-        const arcane = ev?.currentTarget?.dataset?.arcane;
+        const arcane = target.dataset.arcane;
+        const valueKey = 'system.powerPoints.' + arcane + '.value';
+        const maxKey = 'system.powerPoints.' + arcane + '.max';
+        const currentPP = foundry.utils.getProperty(this.actor, valueKey);
+        const maxPP = foundry.utils.getProperty(this.actor, maxKey);
+        if (currentPP >= maxPP) return;
         await this.actor.update({
-          ['system.powerPoints.' + arcane + '.value']:
-            this.actor.system.powerPoints[arcane].max,
+          [valueKey]: Math.min(currentPP + 5, maxPP),
         });
         break;
       }

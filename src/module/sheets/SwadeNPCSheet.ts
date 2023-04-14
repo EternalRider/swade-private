@@ -1,4 +1,5 @@
 import { constants } from '../constants';
+import SwadeItem from '../documents/item/SwadeItem';
 import { getStatusEffectDataById } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
@@ -110,9 +111,9 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         const itemData = {
           name: name ? name : `New ${type.capitalize()}`,
           type: type,
-          data: deepClone(header.dataset),
+          system: header.dataset,
         };
-        delete itemData.data['type'];
+        delete itemData.system['type'];
         return itemData;
       };
 
@@ -120,7 +121,11 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       if (type === 'choice') {
         const dialogInput = await this._chooseItemType();
         const itemData = createItem(dialogInput.type, dialogInput.name);
-        foundry.utils.setProperty(itemData, 'system.equipStatus', constants.EQUIP_STATE.EQUIPPED);
+        foundry.utils.setProperty(
+          itemData,
+          'system.equipStatus',
+          constants.EQUIP_STATE.EQUIPPED,
+        );
         await CONFIG.Item.documentClass.create(itemData, {
           renderSheet: true,
           parent: this.actor,
@@ -128,7 +133,11 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         return;
       } else {
         const itemData = createItem(type);
-        foundry.utils.setProperty(itemData, 'system.equipStatus', constants.EQUIP_STATE.EQUIPPED);
+        foundry.utils.setProperty(
+          itemData,
+          'system.equipStatus',
+          constants.EQUIP_STATE.EQUIPPED,
+        );
         await CONFIG.Item.documentClass.create(itemData, {
           renderSheet: true,
           parent: this.actor,
@@ -243,14 +252,19 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {
-    const action = ev?.currentTarget?.dataset?.action;
+    const target = ev.currentTarget as HTMLElement;
+    const action = target.dataset.action;
 
     switch (action) {
       case 'pp-refresh': {
-        const arcane = ev?.currentTarget?.dataset?.arcane;
+        const arcane = target.dataset.arcane;
+        const valueKey = 'system.powerPoints.' + arcane + '.value';
+        const maxKey = 'system.powerPoints.' + arcane + '.max';
+        const currentPP = foundry.utils.getProperty(this.actor, valueKey);
+        const maxPP = foundry.utils.getProperty(this.actor, maxKey);
+        if (currentPP >= maxPP) return;
         await this.actor.update({
-          ['system.powerPoints.' + arcane + '.value']:
-            this.actor.system.powerPoints[arcane].max,
+          [valueKey]: Math.min(currentPP + 5, maxPP),
         });
         break;
       }

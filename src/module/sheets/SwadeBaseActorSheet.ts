@@ -458,9 +458,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   }
 
   private _getAdditionalStats(): AdditionalStats {
-    const stats = foundry.utils.deepClone(
+    const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
-    ) as AdditionalStats;
+    );
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
