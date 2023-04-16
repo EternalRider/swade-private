@@ -35,11 +35,13 @@ export default class CharacterSheet extends ActorSheet<
       scrollY: ['section.tab'],
       tabs: [
         {
+          group: 'primary',
           navSelector: '.tabs',
           contentSelector: '.sheet-body',
           initial: 'summary',
         },
         {
+          group: 'about',
           navSelector: '.about-tabs',
           contentSelector: '.about-body',
           initial: 'advances',
@@ -97,8 +99,8 @@ export default class CharacterSheet extends ActorSheet<
 
     //Display Advances on About tab
     html.find('.character-detail.advances a').on('click', async () => {
-      this._tabs[0].activate('about');
-      this._tabs[1].activate('advances');
+      this.activateTab('about', { group: 'primary' });
+      this.activateTab('advances', { group: 'about' });
     });
 
     //Toggle Conviction
@@ -197,7 +199,6 @@ export default class CharacterSheet extends ActorSheet<
       const effect = this.actor.effects.get(effectId, { strict: true });
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
-      let item: SwadeItem | null = null;
 
       switch (action) {
         case 'edit':
@@ -206,10 +207,11 @@ export default class CharacterSheet extends ActorSheet<
           return effect.deleteDialog();
         case 'toggle':
           return effect.update(this._toggleItem(effect, toggle));
-        case 'open-origin':
-          item = (await fromUuid(effect.data.origin!)) as SwadeItem;
+        case 'open-origin': {
+          const item = await fromUuid(effect.origin!);
           if (item) item?.sheet?.render(true);
           break;
+        }
         default:
           Logger.warn(`The action ${action} is not currently supported`);
           break;
@@ -319,7 +321,7 @@ export default class CharacterSheet extends ActorSheet<
     html.find('.currency .roll').on('click', () => this.actor.rollWealthDie());
 
     //Advances
-    html.find('.advance-action').on('click', (ev) => {
+    html.find('.advance-action').on('click', async (ev) => {
       if (this.actor.type === 'vehicle') return;
       const button = ev.currentTarget;
       const id = $(button).parents('li.advance').data().advanceId;
@@ -333,10 +335,10 @@ export default class CharacterSheet extends ActorSheet<
           }).render(true);
           break;
         case 'delete':
-          this._deleteAdvance(id);
+          await this._deleteAdvance(id);
           break;
         case 'toggle-planned':
-          this._toggleAdvancePlanned(id);
+          await this._toggleAdvancePlanned(id);
           break;
         default:
           throw new Error(`Action ${button.dataset.action} not supported`);
@@ -852,14 +854,14 @@ export default class CharacterSheet extends ActorSheet<
         </div>
       </form>`,
       defaultYes: false,
-      yes: () => {
+      yes: async () => {
         if (this.actor.type === 'vehicle') return;
         const advances = this.actor.system.advances.list;
         const advance = advances.get(id, { strict: true });
         advance.planned = !advance.planned;
         advances.set(id, advance);
-        this.actor.update(
-          { 'syste,.advances.list': advances.toJSON() },
+        await this.actor.update(
+          { 'system.advances.list': advances.toJSON() },
           { diff: false },
         );
       },

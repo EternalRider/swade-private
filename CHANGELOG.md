@@ -22,6 +22,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.1
+
+### Added
+
+- Added the option to force migration on an Item, Actor or Scene compendium. You can find this option by right-clicking a compendium in the sidebar.
+
+### Changed
+
+- Closing the roll dialog when soaking counts the same as rolling a 0.
+- Consumables will not automatically be set to have a max of 100 charges when they are set to be batteries.
+- Improved the reload UI for batteries. They now display the battery charge percentage instead of charges like magazines.
+
+### Fixed
+
+- Dropping items onto the Properties tab of item sheets should now be properly recognized on the whole tab
+- Fixed an issue where reloads would stop early when the actor was not set to reload from the inventory
+
 ## 2.3.0
 
 ### Added

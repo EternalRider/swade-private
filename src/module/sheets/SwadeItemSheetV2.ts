@@ -388,13 +388,14 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       });
     }
 
-    const tab = event.target as HTMLElement;
+    const target = event.target as HTMLElement;
+    const tab = target.closest('.tab.active');
 
-    if (tab.classList?.contains('properties')) {
+    if (tab?.classList?.contains('properties')) {
       await this._addGrantedItem(item);
-    } else if (tab.classList?.contains('embedded')) {
+    } else if (tab?.classList?.contains('embedded')) {
       await this._addEmbedded(item);
-    } else if (tab.classList?.contains('powers')) {
+    } else if (tab?.classList?.contains('powers')) {
       await this._addArcaneDevicePower(item);
     }
   }

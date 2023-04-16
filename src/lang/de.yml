@@ -310,6 +310,8 @@ SWADE:
       Label: Pleite
       Hint: Du bist pleite!
     Sides: Wohlstandswürfelseiten
+    WildSides: Wohlstandswürfel Seitenzahl
+    Modifier: Wohlstandswürfel Modifikator
   WealthSelectionNoneOther: Keines / Anderes
   TraitRolls: Eigenschaftswürfe
   Trait: Eigenschaft
@@ -387,7 +389,8 @@ SWADE:
   UnstablePlatform: Unsicheren Grund
   NoSceneAvailable: Es ist keine Szene verfügbar oder der Canvas wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
-  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck zu handeln
+  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
+    zu handeln
   ConvertToDeck: Zu Deck konvertieren
   PPAbbreviation: MP
   ShowInChat: Im Chat anzeigen
@@ -431,6 +434,8 @@ SWADE:
     Add: Active Effect Hinzufügen
     Source: Quelle
     ResetDuration: Dauer zurücksetzen
+    AddGuided: Wizard öffnen
+    AddUnguided: Leeren Effekt hinzufügen
   EffectCallbacks:
     Shaken:
       RollSpirit: Willenskraft würfeln
@@ -477,10 +482,13 @@ SWADE:
     <strong>{parent}</strong>entfernen?</p>
   WorldBasics: Basiseinstellungen
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
-  NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird einer erstellt
+  NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird
+    einer erstellt
   Subtract: Abziehen
-  ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen in Kraft treten
-  CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
+  ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen
+    in Kraft treten
+  CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt
+    werden
   Keybindings:
     Bennies:
       Name: Benny bekommen oder Ausgeben
@@ -683,6 +691,7 @@ SWADE:
   DocumentTweaks: Tweaks
   ItemType: Typ
   Source: Quelle
+  MigrateCompendium: Kompendium migration erzwingen
   Properties: Eigenschaften
   AddAction: Aktion hinzufügen
   DeleteEmbeddedActionPrompt: Bist du sicher das du die Aktion {action} löschen willst?
@@ -710,7 +719,8 @@ SWADE:
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
   EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
-  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe zu machen
+  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe
+    zu machen
   Templates:
     Cone:
       Short: Kegel
@@ -769,7 +779,8 @@ SWADE:
         Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
-  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
+  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren
+    gehören!
   AdditionalStats:
     SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
   MessageOnUse:
@@ -800,7 +811,8 @@ SWADE:
     SoakDialog:
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?
-      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
+      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to
+        Soak?</p>
       ShakenPrompt: <p>{name} is about to become Shaken.</p>
       UnharmedPrompt: <p>{name} might be unharmed.</p>
       Benny: Spend a Benny to Soak
@@ -812,20 +824,27 @@ SWADE:
       Accept: Annehmen
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
-      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
+      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
+        roll?</p>
       Benny: Spend a Benny to Reroll
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
-    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
+    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might
+      have.</p>
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
       SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
       IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
-      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with <strong>{wounds}</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with
+        <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: The User who rolled damage must select one or more Targets.
+  CustomWildDie: '- Persönlicher Wildcard Würfel -'
+  RunningMod: Sprintmodifikator
+  ColdBodied: Kalt
+  ppReload: Zum nachladen benötigte MP
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
