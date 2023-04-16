@@ -683,6 +683,7 @@ SWADE:
   DocumentTweaks: Tweaks
   ItemType: Typ
   Source: Quelle
+  MigrateCompendium: Kompendium migration erzwingen
   Properties: Eigenschaften
   AddAction: Aktion hinzufügen
   DeleteEmbeddedActionPrompt: Bist du sicher das du die Aktion {action} löschen willst?

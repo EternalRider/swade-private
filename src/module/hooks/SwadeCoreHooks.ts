@@ -112,7 +112,7 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '2.3.0';
+      const needsMigrationVersion = '2.3.1';
       //Minimal compatible version needed for the migration
       const compatibleMigrationVersion = '2.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
@@ -430,13 +430,28 @@ export default class SwadeCoreHooks {
           deck?.sheet?.render(true);
         },
       },
+      {
+        name: 'SWADE.MigrateCompendium',
+        icon: '<i class="fa-solid fa-right-left"></i>',
+        condition: (li) => {
+          const pack = game.packs.get(li.data('pack'), { strict: true });
+          const isRightPackType = ['Actor', 'Item', 'Scene'].includes(
+            pack.metadata.type,
+          );
+          return !!game.user?.isGM && isRightPackType;
+        },
+        callback: async (li) =>
+          await migrations.migrateCompendium(
+            game.packs.get(li.data('pack'), { strict: true }),
+          ),
+      },
     );
   }
 
   static onRenderCombatTracker(
-    app: SwadeCombatTracker,
+    _app: SwadeCombatTracker,
     html: JQuery<HTMLElement>,
-    data: any,
+    _data: any,
   ) {
     let draggedEl, draggedId, draggedCombatant;
     html.find('.combatant').each((i, el) => {

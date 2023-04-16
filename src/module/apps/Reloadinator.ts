@@ -127,8 +127,11 @@ export default class Reloadinator extends Application<ApplicationOptions> {
     );
 
     for (const mag of filteredMags) {
+      if (mag.type !== 'consumable') continue;
       const charges = getProperty(mag, 'system.charges.value') as number;
       const capacity = getProperty(mag, 'system.charges.max') as number;
+      const isBattery =
+        mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
 
       groups[mag.name!].push({
         id: mag.id!,
@@ -137,6 +140,7 @@ export default class Reloadinator extends Application<ApplicationOptions> {
         capacity,
         percentage: Math.round((charges / capacity) * 100),
         quantity: mag.system.quantity > 1 ? mag.system.quantity : undefined,
+        showPercentage: isBattery,
       });
     }
 
@@ -228,6 +232,7 @@ interface RenderedMagazine {
   charges: number;
   capacity: number;
   percentage: number;
+  showPercentage: boolean;
   quantity?: number;
 }
 

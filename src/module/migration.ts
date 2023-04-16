@@ -47,9 +47,8 @@ export async function migrateWorld() {
     }
   }
 
-  // Migrate World Compendium Packs
+  // Migrate Compendium Packs
   for (const p of game.packs) {
-    if (p.metadata.package !== 'world') continue;
     if (!['Actor', 'Item', 'Scene'].includes(p.metadata.type)) continue;
     await migrateCompendium(p);
   }
@@ -173,6 +172,7 @@ export function migrateItemData(data: ItemDataSource) {
   _migratePowerEquipToFavorite(data, updateData);
   _migrateItemEquipState(data, updateData);
   _migrateWeaponAutoReload(data, updateData);
+  _ensureBatteryMaxCharges(data, updateData);
   return updateData;
 }
 
@@ -334,6 +334,8 @@ function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
   ) {
     return;
   }
+  const isOld = foundry.utils.hasProperty(data, 'system.equipped');
+  if (!isOld) return;
   updateData['system.-=equipped'] = null;
   if (data.type === 'weapon') {
     updateData['system.equipStatus'] = data.system.equipped
@@ -371,8 +373,18 @@ function _migrateWeaponAutoReload(
   updateData['system.reloadType'] = autoReload
     ? constants.RELOAD_TYPE.NONE
     : constants.RELOAD_TYPE.FULL;
-  //remove the old propert
-  updateData['-=system.autoReload'] = null;
+  //remove the old property
+  updateData['system.-=autoReload'] = null;
+}
+
+function _ensureBatteryMaxCharges(
+  data: ItemDataSource,
+  updateData: UpdateData,
+) {
+  if (data.type !== 'consumable') return;
+  if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
+    updateData['system.charges.max'] = 100;
+  }
 }
 
 type UpdateData = Record<string, unknown>;
