@@ -761,7 +761,11 @@ export default class SwadeItem extends Item {
     const missingAmmo = this.system.shots - this.system.currentShots;
     const reloadType = this.system.reloadType;
 
-    if (!ammo && reloadType !== constants.RELOAD_TYPE.PP) {
+    if (
+      this.needsFullReloadProcedure() &&
+      !ammo &&
+      reloadType !== constants.RELOAD_TYPE.PP
+    ) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
@@ -790,7 +794,7 @@ export default class SwadeItem extends Item {
         break;
       case constants.RELOAD_TYPE.MAGAZINE:
       case constants.RELOAD_TYPE.BATTERY:
-        await this._handleMagazineBatteryReload(reloadType);
+        await this._handleReloadFromConsumable(reloadType);
         break;
       case constants.RELOAD_TYPE.PP:
         await this._handlePowerPointReload();
@@ -1208,7 +1212,7 @@ export default class SwadeItem extends Item {
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
   }
 
-  private async _handleMagazineBatteryReload(reloadType: ReloadType) {
+  private async _handleReloadFromConsumable(reloadType: ReloadType) {
     if (!this.needsFullReloadProcedure()) {
       return this._handleSimpleReload();
     }
@@ -1375,6 +1379,12 @@ export default class SwadeItem extends Item {
       if (
         foundry.utils.hasProperty(changed, 'system.charges.max') &&
         this.system.subtype === constants.CONSUMABLE_TYPE.BATTERY
+      ) {
+        foundry.utils.setProperty(changed, 'system.charges.max', 100);
+      }
+      if (
+        foundry.utils.getProperty(changed, 'system.subtype') ===
+        constants.CONSUMABLE_TYPE.BATTERY
       ) {
         foundry.utils.setProperty(changed, 'system.charges.max', 100);
       }

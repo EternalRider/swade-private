@@ -15,7 +15,11 @@
               <div class='name'>
                 {{#if quantity}}x{{quantity}} {{/if}}{{name}}
               </div>
-              <span class='counter'>{{charges}}/{{capacity}}</span>
+              {{#if showPercentage}}
+                <span class='counter'>{{percentage}}%</span>
+              {{else}}
+                <span class='counter'>{{charges}}/{{capacity}}</span>
+              {{/if}}
               <meter
                 class='meter'
                 min='0'

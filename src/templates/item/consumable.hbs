@@ -30,6 +30,7 @@
           type='number'
           value='{{item.system.charges.max}}'
           data-dtype="Number"
+          {{disabled (eq item.system.subtype "battery")}}
         />
       </span>
     </div>
