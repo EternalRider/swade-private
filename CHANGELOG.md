@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.2
+
+### Fixed
+
+- Fixed an issue where reloads would not be properly processed when set to full or single reloads and no ammo was set
+
 ## 2.3.1
 
 ### Added
@@ -31,7 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Closing the roll dialog when soaking counts the same as rolling a 0.
-- Consumables will not automatically be set to have a max of 100 charges when they are set to be batteries.
+- Consumables will now automatically be set to have a max of 100 charges when they are set to be batteries.
 - Improved the reload UI for batteries. They now display the battery charge percentage instead of charges like magazines.
 
 ### Fixed
