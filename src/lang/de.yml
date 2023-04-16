@@ -152,11 +152,11 @@ SWADE:
   WoundsMax: Maximale Wunden
   Fatigue: Erschöpfung
   FatigueMax: Maximale Erschöpfung
-  Incap: Ausgeschaltet!
+  Incap: Ausgeschaltet
   Init: Initiative
   ActionDeckReset: Aktionsdeck zurücksetzen
   ActionDeckResetNotification: Aktionsdeck wurde zurückgesetzt
-  InitDraw: zog...
+  InitDraw: zog…
   Addi: Zusätzlich
   Status: Status
   Handling: Manövrierf.
@@ -169,7 +169,7 @@ SWADE:
   CargoWeight: Fracht-Gewicht
   Mods: Mods
   ModSlots: Mod-Plätze
-  MaxMods: Maximum Mods
+  MaxMods: Maximale Mods
   Operator: Operator
   ManCheck: Manöver-Probe
   AltSkill: Fertigkeitsname
@@ -276,7 +276,7 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel
+  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel.
   WildDieTheme: Wildcard Würfel Thema
   WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
@@ -363,7 +363,7 @@ SWADE:
       Add: Eigenen Modifikator hinzufügen
     Support: Unterstützung
     Preset:
-      Choose: Voreinstellung auswählen...
+      Choose: Voreinstellung auswählen…
       Add: Voreinstellung hinzufügen
     Value: Wert
     Ignore: Ignorieren?
@@ -674,6 +674,10 @@ SWADE:
     GrittyDamage:
       Name: Fieser Schaden
       Hint: Schaltet die Fieser Schaden Settingregel ein
+    InjuryTable:
+      Name: Verletzungstabelle
+      Hint: Wähle die Tabelle aus welche für Verletzungen bei Fiesem Schaden verwendet
+        werden soll.
   Validation:
     OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
@@ -746,6 +750,7 @@ SWADE:
         Damit die Änderung wirksam wird, werden Foundry VTT und alle verbundenen
         Clients neu geladen. Bitte bestätigen.
     Header: Inhalt
+    Toggle: Compendium TOC aus-/einschalten
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
   Vision:
@@ -845,6 +850,7 @@ SWADE:
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
   ppReload: Zum nachladen benötigte MP
+  UsesTOC: Compendium TOC Verwenden
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
