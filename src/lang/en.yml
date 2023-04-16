@@ -194,7 +194,7 @@ SWADE:
   DrawInit: Draw Initiative
   ActionDeckReset: Reshuffle Action Deck
   ActionDeckResetNotification: Action Deck reshuffled
-  InitDraw: drew the...
+  InitDraw: drew the…
   General: General
   Addi: Additional
   Status: Status
@@ -230,7 +230,7 @@ SWADE:
     by you. Other players will see them differently.
   SettingConf: Setting Configurator
   SettingConfLabel: Open Setting Configurator
-  SettingConfDesc: Fine tune the system to fit the setting you're playing
+  SettingConfDesc: Fine tune the system to fit the setting you're playing.
   DiceConf: Wild Die Configuration
   DiceConfDesc: Configure the settings for the SWADE/Dice So Nice integration
   DiceConfLabel: Open Wild Die Configuration
@@ -382,7 +382,7 @@ SWADE:
       Add: Add Custom Modifier
     Support: Support
     Preset:
-      Choose: Choose a Preset...
+      Choose: Choose a Preset…
       Add: Add Preset
     Value: Value
     Ignore: Ignore?
@@ -631,10 +631,12 @@ SWADE:
       Hint: Checking this will enable the Dumb Luck Setting Rule
     WoundCap:
       Name: Wound Cap
-      Hint: Checking this will enable the Wound Cap Setting Rule when calculating Wounds.
+      Hint: Checking this will enable the Wound Cap Setting Rule when calculating
+        Wounds.
     GrittyDamage:
       Name: Gritty Damage
-      Hint: Checking this will enable the Gritty Damage Setting Rule and allow for selecting the Injury Table to roll.
+      Hint: Checking this will enable the Gritty Damage Setting Rule and allow for
+        selecting the Injury Table to roll.
     InjuryTable:
       Name: Injury Table
       Hint: Select the appropriate RollTable to automatically roll for Gritty Damage.
@@ -787,7 +789,8 @@ SWADE:
     SoakDialog:
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?
-      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
+      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to
+        Soak?</p>
       ShakenPrompt: <p>{name} is about to become Shaken.</p>
       UnharmedPrompt: <p>{name} might be unharmed.</p>
       Benny: Spend a Benny to Soak
@@ -799,17 +802,20 @@ SWADE:
       Accept: Accept
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
-      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
+      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
+        roll?</p>
       Benny: Spend a Benny to Reroll
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
-    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
+    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might
+      have.</p>
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
       SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
       IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
-      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with <strong>{wounds}</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with
+        <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: Please select a target to apply the damage to.
