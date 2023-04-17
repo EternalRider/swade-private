@@ -63,7 +63,7 @@ export default class SwadeItem extends Item {
     if (this.type !== 'weapon') return false;
     const shots = this.system.shots;
     const currentShots = this.system.currentShots;
-    return (!shots && !currentShots) || (shots === 0 && currentShots === 0);
+    return !Number(shots) && !Number(currentShots);
   }
 
   get range() {

@@ -324,10 +324,9 @@ async function attemptSoak(
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   // Roll Vigor and get the data.
   const vigorRoll = await actor.rollAttribute('vigor');
-  //TODO figure out what to do if the roll is null i.e. cancelled
   let message = '';
   // Calculate how many Wounds have been Soaked with the roll
-  const woundsSoaked = Math.floor(vigorRoll?.total ?? 0 / 4);
+  const woundsSoaked = Math.floor((vigorRoll?.total ?? 0) / 4);
   // Get the number of current Wounds the Actor has.
   const existingWounds = actor.system.wounds.value;
   // Get the maximum amount of Wounds the Actor can suffer before Incapacitation.

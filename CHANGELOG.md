@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.3
+
+### Fixed
+
+- Fixed an issue where the result of a vigor soak roll was not properly recognized. (#738)
+- Fixed an issue where weapons would not be properly recognized as melee weapons. (#737)
+
 ## 2.3.2
 
 ### Fixed
