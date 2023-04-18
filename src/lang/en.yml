@@ -279,7 +279,7 @@ SWADE:
   NotEnoughAmmo: You don't have enough ammunition for this action!
   NotEnoughAmmoToReload: There's not enough ammo for a full reload
   ReloadType:
-    Label: Reload Type
+    Label: Reload Procedure
     None: None
     Single: Single
     Full: Full
