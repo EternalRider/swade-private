@@ -179,8 +179,8 @@ SWADE:
   SettingConf: Setting-Konfigurator
   SettingConfLabel: Öffne Setting-Konfigurator
   SettingConfDesc: >-
-    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten,
-    Settingregeln, usw. einstellen.
+    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten, Settingregeln,
+    usw. einstellen.
   Formula: Formel
   SitMod: Situativer Mod
   RollMode: Wurfmodus
@@ -243,7 +243,7 @@ SWADE:
   ActAfterCurrentCombatant: Nach aktuellem Teilnehmer handeln
   LoseTurn: Zug aussetzen umschalten
   ReloadType:
-    Label: NachladeTyp
+    Label: Nachladeprozedere
     None: Kein
     Single: Einzel
     Full: Voll
@@ -257,7 +257,7 @@ SWADE:
   NoAmmoPP: Nicht genug Machtpunkte vorhanden
   NoMags: Keine Magazine vorhanden
   RemoveAmmo: Munition entfernen
-  NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
+  NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion!
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
   OnFire: Brennend
@@ -302,7 +302,7 @@ SWADE:
   Crew: Besatzung
   String: Text
   Number: Nummer
-  Checkbox: Checkbox
+  Checkbox: Kontrollkästchen
   Selection: Auswahl
   WealthDie:
     Label: Wohlstandswürfel
@@ -327,10 +327,9 @@ SWADE:
   AddPPDesc: MP-Kosten zu den verfügbaren MP hinzurechnen
   RightClickZoom: Für eine größere Ansicht rechtsklicken
   SysMigrationWarning: >-
-    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und
-    können nicht zuverlässig auf die neueste Version migriert werden.
-
-    Der Vorgang wird versucht, es können jedoch Fehler auftreten.
+    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und können
+    nicht zuverlässig auf die neueste Version migriert werden. Der Vorgang wird versucht,
+    es können jedoch Fehler auftreten.
   DeckShuffled: Kartens automatisch gemischt
   BasePace: Basisbewegung
   WarningPackLocked: >-
