@@ -76,7 +76,7 @@ export async function calcWounds(
   // If damage meets or beats Toughness without a raise.
   if (excess >= 0 && excess < 4) {
     // Set status to Shaken.
-    statusToApply = Status.NONE;
+    statusToApply = Status.SHAKEN;
     // If already shaken, set status to wounded and wounds inflicted to 1.
     if (actor.system.status.isShaken && woundsInflicted === 0) {
       woundsInflicted = 1;
@@ -326,7 +326,7 @@ async function attemptSoak(
   const vigorRoll = await actor.rollAttribute('vigor');
   let message = '';
   // Calculate how many Wounds have been Soaked with the roll
-  const woundsSoaked = Math.floor((vigorRoll?.total ?? 0) / 4);
+  const woundsSoaked = Math.max(Math.floor((vigorRoll?.total ?? 0) / 4), 0);
   // Get the number of current Wounds the Actor has.
   const existingWounds = actor.system.wounds.value;
   // Get the maximum amount of Wounds the Actor can suffer before Incapacitation.
@@ -368,33 +368,28 @@ async function attemptSoak(
         callback: async () => {
           // Construct text for the new Wounds value to be accepted (singular or plural Wounds).
           const newWoundsValueText = `${newWoundsValue} ${
-            newWoundsValue > 1 || newWoundsValue === 0
+            newWoundsValue > 1 || newWoundsValue === 0 // newWoundsValue should never be zero here
               ? game.i18n.localize('SWADE.Wounds')
               : game.i18n.localize('SWADE.Wound')
           }`;
-          // If Shaken, apply it
-          if (statusToApply === Status.SHAKEN) {
+          // Update Wounds on the Actor
+          await actor.update({
+            'system.wounds.value': newWoundsValue,
+          });
+          // Apply status effects based on Shaken or Incapacitated.
+          if (totalWounds > maxWounds) {
+            // If their total Wounds is greater than their max Wounds, apply Status Effects: Incapacitated.
+            await applyIncapacitated(actor);
+            message = game.i18n.format(
+              'SWADE.DamageApplicator.Result.IsIncapacitated',
+              {
+                name: actor.name,
+              },
+            );
+            await ChatMessage.create({ content: message });
+          } else {
+            // If their total Wounds not greater than their max Wounds, apply Status Effects: Shaken.
             await applyShaken(actor);
-            // If Actor is already Shaken, change status to wounded.
-            if (actor.system.status.isShaken) {
-              statusToApply = Status.WOUNDED;
-            } else {
-              // Set message to indicate they are now Shaken.
-              message = game.i18n.format(
-                'SWADE.DamageApplicator.Result.IsShaken',
-                {
-                  name: actor.name,
-                },
-              );
-            }
-          }
-          // If status is wounded
-          if (statusToApply === Status.WOUNDED) {
-            // Update Wounds on the Actor
-            await actor.update({
-              'system.wounds.value': newWoundsValue,
-            });
-            // Change message to Shaken with Wounds
             message = game.i18n.format(
               'SWADE.DamageApplicator.Result.IsShakenWithWounds',
               {
@@ -402,37 +397,15 @@ async function attemptSoak(
                 wounds: newWoundsValueText,
               },
             );
-            // Apply status effects based on Shaken or Incapacitated.
-            if (totalWounds > maxWounds) {
-              // If their total Wounds is greater than their max Wounds, apply Status Effects: Incapacitated.
-              await applyIncapacitated(actor);
-              message = game.i18n.format(
-                'SWADE.DamageApplicator.Result.IsIncapacitated',
-                {
-                  name: actor.name,
-                },
-              );
-              await ChatMessage.create({ content: message });
-            } else {
-              // If their total Wounds not greater than their max Wounds, apply Status Effects: Shaken.
-              await applyShaken(actor);
-              message = game.i18n.format(
-                'SWADE.DamageApplicator.Result.IsShakenWithWounds',
-                {
-                  name: actor.name,
-                  wounds: newWoundsValueText,
-                },
-              );
-            }
-            // Output Chat Message.
-            await ChatMessage.create({ content: message });
-            // If Gritty Damage is in play, roll on the Injury Table.
-            if (
-              actor.type !== 'vehicle' &&
-              game.settings.get('swade', 'grittyDamage')
-            ) {
-              await rollInjuryTable();
-            }
+          }
+          // Output Chat Message.
+          await ChatMessage.create({ content: message });
+          // If Gritty Damage is in play, roll on the Injury Table.
+          if (
+            actor.type !== 'vehicle' &&
+            game.settings.get('swade', 'grittyDamage')
+          ) {
+            await rollInjuryTable();
           }
         },
       },
