@@ -287,7 +287,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       });
     }
 
-    const fInitiative = leader.data.initiative;
+    const fInitiative = leader.initiative;
     const fCardValue = leader.cardValue;
     const fSuitValue = leader.suitValue! - 0.01;
     const fHasJoker = leader.hasJoker;

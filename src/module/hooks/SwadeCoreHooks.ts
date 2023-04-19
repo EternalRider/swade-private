@@ -376,7 +376,7 @@ export default class SwadeCoreHooks {
           }) as CompendiumCollection<JournalMetadata>;
           const docs = await pack.getDocuments();
           const allDocsHaveCardFlags = docs.every((c) =>
-            hasProperty(c, 'data.flags.swade'),
+            hasProperty(c, 'flags.swade'),
           );
           if (!allDocsHaveCardFlags) {
             return ui.notifications.warn('SWADE.NotADeckCompendium', {
@@ -525,21 +525,21 @@ export default class SwadeCoreHooks {
       icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
-        const combatant = game.combat!.combatants.get(targetCombatantId)!;
+        const combatant = game.combat!.combatants.get(targetCombatantId, {
+          strict: true,
+        });
         return (
-          !hasProperty(combatant, 'data.flags.swade.isGroupLeader') &&
-          combatant!.actor!.isOwner
+          !hasProperty(combatant, 'flags.swade.isGroupLeader') &&
+          !!combatant?.actor?.isOwner
         );
       },
       callback: async (li) => {
         const targetCombatantId = li.attr('data-combatant-id') as string;
         const targetCombatant = game.combat!.combatants.get(targetCombatantId)!;
         await targetCombatant.update({
-          flags: {
-            swade: {
-              isGroupLeader: true,
-              '-=groupId': null,
-            },
+          'flags.swade': {
+            isGroupLeader: true,
+            '-=groupId': null,
           },
         });
       },
