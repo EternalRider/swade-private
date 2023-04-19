@@ -182,8 +182,7 @@ export default class ItemChatCardHelper {
     const roll = await this.doTraitAction(trait, actor, {
       additionalMods,
     });
-    if (roll) await item.consume();
-    // if (roll) await this.subtractShots(actor, item.id!);
+    if (roll && !item.isMeleeWeapon) await item.consume();
     this.callActionHook(actor, item, 'formula', roll);
     return roll;
   }
@@ -377,15 +376,13 @@ export default class ItemChatCardHelper {
   }
 
   /** @internal */
-  static callActionHook(
+  private static callActionHook(
     actor: SwadeActor,
     item: SwadeItem,
     action: string,
     roll: SwadeRoll | null,
   ) {
-    /**
-     * @category Hooks
-     */
+    /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);
   }
 }
