@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue where the Damage Application would not identify damage as being enough to Shake the target. (#740)
 - The drag&drop workflow for combatants has been restored on the popped-out combat tracker. (#750)
 - Melee weapons should no longer throw a warning about ammo consumption. (#748)
+- Item Grants should now properly reflect name and image changes in the source item. (#696)
 
 ## 2.3.3
 

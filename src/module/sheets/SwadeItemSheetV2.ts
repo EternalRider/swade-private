@@ -560,12 +560,12 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     if (!this.item.canGrantItems) return [];
     const grants = this.item.grantsItems;
     const enriched = new Array<ItemGrant>();
-    for (const item of grants) {
-      const grant = fromUuidSync(item.uuid) as SwadeItem;
+    for (const grant of grants) {
+      const item = fromUuidSync(grant.uuid) as SwadeItem | null;
       enriched.push({
-        name: item.name,
-        img: item.img,
-        uuid: item.uuid,
+        name: item.name ?? grant.name,
+        img: item.img ?? grant.img,
+        uuid: grant.uuid,
         missing: !grant,
       });
     }
