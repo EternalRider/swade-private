@@ -19,7 +19,6 @@ import * as migrations from '../migration';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
-import SwadeCombatTracker from '../sidebar/SwadeCombatTracker';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { setupFantasyCompanionEntangle } from '../util';
@@ -446,96 +445,6 @@ export default class SwadeCoreHooks {
           ),
       },
     );
-  }
-
-  static onRenderCombatTracker(
-    _app: SwadeCombatTracker,
-    html: JQuery<HTMLElement>,
-    _data: any,
-  ) {
-    let draggedEl, draggedId, draggedCombatant;
-    html.find('.combatant').each((i, el) => {
-      // Drag and drop listeners
-      // On dragstart
-      el.addEventListener(
-        'dragstart',
-        (e) => {
-          // store the dragged item
-          draggedEl = e.target as HTMLLIElement;
-          draggedId = draggedEl.dataset.combatantId;
-          draggedCombatant = game.combat?.combatants.get(draggedId);
-        },
-        false,
-      );
-
-      // On drop
-      el.addEventListener(
-        'drop',
-        async (e) => {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          const leaderId = $(e.target!)
-            .closest('li.combatant')
-            .attr('data-combatant-id')!;
-
-          const leader = game.combat?.combatants.get(leaderId)!;
-          if (!leader.canUserModify(game.user!, 'update')) return;
-          // If a follower, set as group leader
-          if (draggedCombatant.id !== leaderId) {
-            if (!leader.isGroupLeader) {
-              await leader.update({
-                flags: {
-                  swade: {
-                    isGroupLeader: true,
-                    '-=groupId': null,
-                  },
-                },
-              });
-            }
-            const fInitiative = leader.data.initiative;
-            const fCardValue = leader.cardValue;
-            const fSuitValue = leader.suitValue! - 0.01;
-            const fHasJoker = leader.hasJoker;
-            // Set groupId of dragged combatant to the selected target's id
-
-            await draggedCombatant.update({
-              initiative: fInitiative,
-              flags: {
-                swade: {
-                  cardValue: fCardValue,
-                  suitValue: fSuitValue,
-                  hasJoker: fHasJoker,
-                  groupId: leaderId,
-                },
-              },
-            });
-            // If a leader, update its followers
-            if (draggedCombatant.isGroupLeader) {
-              const followers =
-                game.combat?.combatants.filter(
-                  (f) => f.groupId === draggedCombatant.id,
-                ) ?? [];
-
-              for (const f of followers) {
-                await f.update({
-                  initiative: fInitiative,
-                  flags: {
-                    swade: {
-                      cardValue: fCardValue,
-                      suitValue: fSuitValue,
-                      hasJoker: fHasJoker,
-                      groupId: leaderId,
-                    },
-                  },
-                });
-              }
-              await draggedCombatant.unsetIsGroupLeader();
-            }
-          }
-        },
-        false,
-      );
-    });
   }
 
   /** Add roll data to the message for formatting of dice pools*/

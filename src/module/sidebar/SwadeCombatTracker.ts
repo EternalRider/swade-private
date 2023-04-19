@@ -6,37 +6,34 @@ import * as utils from '../util';
  */
 export default class SwadeCombatTracker extends CombatTracker {
   static get defaultOptions() {
-    return {
-      ...super.defaultOptions,
+    return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/sidebar/combat-tracker.hbs',
       classes: ['tab', 'sidebar-tab', 'swade'],
-    };
+    });
   }
   activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
-
     //make combatants draggable for GMs
-    html
-      .find('#combat-tracker li.combatant')
-      .each((i: number, li: HTMLLIElement) => {
-        const id = li.dataset.combatantId!;
-        const comb = this.viewed?.combatants.get(id, { strict: true });
-        if (comb?.actor?.isOwner || game.user?.isGM) {
-          // Add draggable attribute and dragstart listener.
-          li.setAttribute('draggable', 'true');
-          li.classList.add('draggable');
-          //On dragStart
-          li.addEventListener('dragstart', this._onDragStart, false);
-          // On dragOver
-          li.addEventListener('dragover', (e) =>
-            $(e.target!).closest('li.combatant').addClass('dropTarget'),
-          );
-          // On dragleave
-          li.addEventListener('dragleave', (e) =>
-            $(e.target!).closest('li.combatant').removeClass('dropTarget'),
-          );
-        }
-      });
+    html.find('.combatant').each((i, li) => {
+      const id = li.dataset.combatantId!;
+      const comb = this.viewed?.combatants.get(id, { strict: true });
+      if (comb?.actor?.isOwner || game.user?.isGM) {
+        // Add draggable attribute and dragstart listener.
+        li.setAttribute('draggable', 'true');
+        li.classList.add('draggable');
+        //On dragStart
+        li.addEventListener('dragstart', this._onDragStart.bind(this));
+        li.addEventListener('drop', this._onDrop.bind(this));
+        // On dragOver
+        li.addEventListener('dragover', (e) =>
+          $(e.target!).closest('li.combatant').addClass('dropTarget'),
+        );
+        // On dragleave
+        li.addEventListener('dragleave', (e) =>
+          $(e.target!).closest('li.combatant').removeClass('dropTarget'),
+        );
+      }
+    });
 
     html
       .find('.combatant-control')
@@ -254,4 +251,78 @@ export default class SwadeCombatTracker extends CombatTracker {
   async _getFollowers(c: SwadeCombatant) {
     return game.combat?.combatants.filter((f) => f.groupId === c.id) ?? [];
   }
+
+  protected override _onDragStart(ev: DragEvent): void {
+    const target = ev.currentTarget as HTMLLIElement;
+    if (!this.viewed) return;
+
+    const dragData: CombatantDragData = {
+      combatId: this.viewed.id,
+      combatantId: target.dataset.combatantId as string,
+    };
+
+    ev.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+  }
+
+  protected override async _onDrop(ev: DragEvent) {
+    const data = JSON.parse(
+      ev.dataTransfer!.getData('text/plain'),
+    ) as CombatantDragData;
+    const target = ev.currentTarget as HTMLLIElement;
+    const combatantId = data.combatantId;
+    const leaderId = target.dataset.combatantId!;
+    if (combatantId === leaderId) return;
+
+    const combat = game.combats!.get(data.combatId, { strict: true });
+    const leader = combat?.combatants.get(leaderId, { strict: true });
+    if (!leader.canUserModify(game.user!, 'update')) return;
+    const combatant = combat?.combatants.get(combatantId, { strict: true });
+    // If a follower, set as group leader
+    if (!leader.isGroupLeader) {
+      await leader.update({
+        'flags.swade': {
+          isGroupLeader: true,
+          '-=groupId': null,
+        },
+      });
+    }
+
+    const fInitiative = leader.data.initiative;
+    const fCardValue = leader.cardValue;
+    const fSuitValue = leader.suitValue! - 0.01;
+    const fHasJoker = leader.hasJoker;
+    // Set groupId of dragged combatant to the selected target's id
+    await combatant.update({
+      initiative: fInitiative,
+      'flags.swade': {
+        cardValue: fCardValue,
+        suitValue: fSuitValue,
+        hasJoker: fHasJoker,
+        groupId: leaderId,
+      },
+    });
+    // If a leader, update its followers
+    if (combatant.isGroupLeader) {
+      const followers = combat.combatants.filter(
+        (f) => f.groupId === combatant.id,
+      );
+      for (const f of followers) {
+        await f.update({
+          initiative: fInitiative,
+          'flags.swade': {
+            cardValue: fCardValue,
+            suitValue: fSuitValue,
+            hasJoker: fHasJoker,
+            groupId: leaderId,
+          },
+        });
+      }
+      await combatant.unsetIsGroupLeader();
+    }
+  }
+}
+
+interface CombatantDragData {
+  combatId: string;
+  combatantId: string;
 }

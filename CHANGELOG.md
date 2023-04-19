@@ -22,6 +22,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.4
+
+## Fixed
+
+- Fixed an issue that would cause the vehicle sheet to throw an error when trying to open the driver sheet but no driver was set. (#752)
+- Fixed an issue where the Damage Application would not identify damage as being enough to Shake the target. (#740)
+- The drag&drop workflow for combatants has been restored on the popped-out combat tracker. (#750)
+- Melee weapons should no longer throw a warning about ammo consumption. (#748)
+
 ## 2.3.3
 
 ### Fixed

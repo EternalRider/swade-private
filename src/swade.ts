@@ -258,7 +258,6 @@ Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 /* ------------------------------------ */
 Hooks.on('renderActorDirectory', SwadeCoreHooks.onRenderActorDirectory);
 Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
-Hooks.on('renderCombatTracker', SwadeCoreHooks.onRenderCombatTracker);
 Hooks.on('renderChatLog', SwadeCoreHooks.onRenderChatLog);
 Hooks.on('renderChatPopout', SwadeCoreHooks.onRenderChatLog);
 Hooks.on(

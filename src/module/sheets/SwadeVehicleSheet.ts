@@ -254,10 +254,9 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   private async _openDriverSheet() {
     if (this.actor.type !== 'vehicle') return;
     const driverId = this.actor.system.driver.id;
-    const driver = (await fromUuid(driverId)) as SwadeActor;
-    if (driver) {
-      driver.sheet?.render(true);
-    }
+    if (!driverId) return;
+    const driver = (await fromUuid(driverId)) as SwadeActor | null;
+    driver?.sheet?.render(true);
   }
 
   // item creation helper func
