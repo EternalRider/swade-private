@@ -181,6 +181,18 @@ export const statusEffects: StatusEffect[] = [
     icon: 'systems/swade/assets/icons/status/status_prone.svg',
     id: 'prone',
     label: 'SWADE.Prone',
+    changes: [
+      {
+        key: 'system.stats.parry.modifier',
+        value: '-2',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
+      },
+      {
+        key: '@Skill{Fighting}[system.die.modifier]',
+        value: '-2',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
+      },
+    ],
   },
   {
     icon: 'systems/swade/assets/icons/status/status_stunned.svg',
