@@ -6,6 +6,8 @@ import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import RollDialog from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
+import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
+import SwadeToken from './module/canvas/SwadeToken';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
 import Benny from './module/dice/Benny';
@@ -20,7 +22,6 @@ import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
 import SwadeCombat from './module/documents/combat/SwadeCombat';
 import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
-import SwadeMeasuredTemplate from './module/documents/SwadeMeasuredTemplate';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
@@ -110,6 +111,7 @@ Hooks.once('init', () => {
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
+  CONFIG.Token.objectClass = SwadeToken;
 
   //register custom sidebar tabs
   CONFIG.ui.combat = SwadeCombatTracker;

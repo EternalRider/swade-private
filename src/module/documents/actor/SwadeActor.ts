@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import {
   Context,
-  DocumentModificationOptions
+  DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
@@ -18,8 +18,9 @@ import WildDie from '../../dice/WildDie';
 import { Logger } from '../../Logger';
 import {
   getRankFromAdvanceAsString,
+  mapRange,
   modifierReducer,
-  shouldShowBennyAnimation
+  shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -32,6 +33,25 @@ declare global {
 }
 
 export default class SwadeActor extends Actor {
+  static getWoundsColor(current: number, max: number) {
+    const minDegrees = 30;
+    const maxDegrees = 120;
+    //get the degrees on the HSV wheel, going from 30° (greenish-yellow) to 120° (green)
+    const degrees = mapRange(current, 0, max, minDegrees, maxDegrees);
+    //invert the degrees and map them from 0 to a third
+    const hue = mapRange(maxDegrees - degrees, 0, maxDegrees, 0, 1 / 3);
+    //get a usable color value with 100% saturation and 90% value
+    return Color.fromHSV([hue, 1, 0.9]);
+  }
+
+  static getFatigueColor(current: number, max: number) {
+    //get the angle (200°) and map it into the proper range
+    const hue = mapRange(200, 0, 360, 0, 1);
+    //get the value from the parameter
+    const value = mapRange(current, 0, max, 0, 1);
+    return Color.fromHSV([hue, value, 0.75]);
+  }
+
   constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(

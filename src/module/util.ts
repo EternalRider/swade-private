@@ -265,6 +265,7 @@ export function isObject(value) {
   return !!value && typeof value === 'object';
 }
 
+/** Separates an array into a series of smaller arrays of a given size */
 export function chunkArray<T>(array: T[], size: number): Array<T[]> {
   const result: Array<T[]> = [];
   for (let i = 0; i < array.length; i += size) {
@@ -272,6 +273,18 @@ export function chunkArray<T>(array: T[], size: number): Array<T[]> {
     result.push(chunk);
   }
   return result;
+}
+
+/** Maps a number from a given range to an equivalent number of another range */
+export function mapRange(
+  num: number,
+  inMin: number,
+  inMax: number,
+  outMin: number,
+  outMax: number,
+): number {
+  const mapped = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+  return Math.clamped(mapped, outMin, outMax);
 }
 
 type Ownership = Record<string, number>;

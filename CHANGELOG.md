@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.4
+
+### Changed
+
+- Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
+- Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
+
 ## 2.3.4
 
 ## Fixed

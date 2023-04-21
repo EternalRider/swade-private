@@ -3,8 +3,8 @@ import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { AbilitySubType } from '../globals';
 import { TraitRollModifierGroup } from '../interfaces/additional.interface';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
+import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { constants } from './constants';
-import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 import { statusEffects } from './statusEffects';
 
 /** @internal */
