@@ -70,7 +70,9 @@
               {{localize "SWADE.Dmg"}}: {{system.damage}}
             </button>
             {{/if}}
-            <span>{{localize "SWADE.Ap"}}: {{system.ap}}</span>
+            {{#if system.ap}}
+              <span>{{localize "SWADE.Ap"}}: {{system.ap}}</span>
+            {{/if}}
             <span>{{localize "SWADE.Rank"}}: {{system.rank}}</span>
             <span>{{localize "SWADE.PP"}}: {{system.pp}}</span>
             <span>{{localize "SWADE.Range._name"}}: {{system.range}}</span>
