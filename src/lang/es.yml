@@ -132,7 +132,7 @@
     "ShowCharacterSummary": "Mostrar resumen de personajes", "CharacterSummary": "Resumen\
       \ del personaje", "CopyHtml": "Copia HTML", "CopyMarkdown": "Copia Markdown",
     "Imperial": "Imperial", "Metric": "Métrico", "ChangeBennyWarning": "Para cambiar\
-      \ estos ajustes es necesario actualizar la página.", "3DBennies": "Benis en\
+      \ estos ajustes es necesario actualizar la página!", "3DBennies": "Benis en\
       \ 3D", "WealthSelectionNoneOther": "Ninguno/Otros", "Modifiers": "Modificadores",
     "ActionTraitMod": "Modificador de rasgo de acción", "ActionDmgMod": "Modif. de\
       \ daño", "ItemTraitMod": "Mod. de rasgo de objeto", "ItemDmgMod": "Mod. de daño\
@@ -316,21 +316,21 @@
         \ una lista de opciones, separadas por punto y coma"}, "MessageOnUse": {"Label": "Mensaje\
         \ sobre el uso", "Hint": "Mostrar un mensaje de chat cuando se utiliza este\
         \ elemento"}, "ItemGrants": {"EmptyHint": "Este item actualmente no contiene\
-        \ ningún item", "Header": "Ayudas de items", "When": "Grant Items When"},
-    "IgnFatigue": "Ignorar Fatiga", ReloadType: {Label: Procedimiento de recarga,
-      None: No, Single: Único, Full: Lleno, Battery: Batería, PP: Puntos de poder,
-      Magazine: Cargador}, DamageApplicator: {SoakDialog: {Accept: Aceptar, WoundedTitle: 'Tirada
-          de absorción para {name}?', UnwoundedTitle: '¿Ajustar el daño para determinar
-          el estado de {name}?', WoundedPrompt: '<p>{name} va a recibir {wounds}.
-          ¿Quieres intentar absorber?</p>', ShakenPrompt: '<p>{name} ha quedado aturdido.</p>',
-        UnharmedPrompt: '<p>{nombre} está ileso.</p>', ApplyShaken: Aplica el estado
-          de aturdido, Benny: Gasta un Beni para absorber, GMBenny: Gasta un Beni
-          del DJ para absorber, Free: Absorber gratis, TakeWounds: 'Recibe {wounds}',
-        AdjustDamage: Ajuste del daño}, RerollSoakDialog: {Title: '¿Volver a tirar
-          absorber heridas para {name}?', Prompt: '<p>{name} va a recibir {wounds}.
-          ¿Quieres repetir la tirada de absorción?</p>', Benny: Gasta un Beni para
-          volver a tirar, GMBenny: Gasta un Beni del DJ para volver a tirar, Free: Repetir
-          tirada gratis, TakeWounds: 'Recibir {wounds}'}, AdjustDamagePrompt: '<p>Ajusta
+        \ ningún item", "Header": "Objectos dados", "When": "Objetos dados cuando\
+        \ son"}, "IgnFatigue": "Ignorar Fatiga", ReloadType: {Label: Procedimiento
+        de recarga, None: No, Single: Único, Full: Lleno, Battery: Batería, PP: Puntos
+        de poder, Magazine: Cargador}, DamageApplicator: {SoakDialog: {Accept: Aceptar,
+        WoundedTitle: 'Tirada de absorción para {name}?', UnwoundedTitle: '¿Ajustar
+          el daño para determinar el estado de {name}?', WoundedPrompt: '<p>{name}
+          va a recibir {wounds}. ¿Quieres intentar absorber?</p>', ShakenPrompt: '<p>{name}
+          ha quedado aturdido.</p>', UnharmedPrompt: '<p>{nombre} está ileso.</p>',
+        ApplyShaken: Aplica el estado de aturdido, Benny: Gasta un Beni para absorber,
+        GMBenny: Gasta un Beni del DJ para absorber, Free: Absorber gratis, TakeWounds: 'Recibe
+          {wounds}', AdjustDamage: Ajuste del daño}, RerollSoakDialog: {Title: '¿Volver
+          a tirar absorber heridas para {name}?', Prompt: '<p>{name} va a recibir
+          {wounds}. ¿Quieres repetir la tirada de absorción?</p>', Benny: Gasta un
+          Beni para volver a tirar, GMBenny: Gasta un Beni del DJ para volver a tirar,
+        Free: Repetir tirada gratis, TakeWounds: 'Recibir {wounds}'}, AdjustDamagePrompt: '<p>Ajusta
         el daño para las habilidades y efectos que pueda tener {name}.</p>', ApplyDamage: Aplicar
         daño, WoundsAboutToBeTaken: '<p><strong>{name}</strong> va a recibir <strong>{wounds}</strong>!</p>',
       Result: {NoSignificantDamage: '<p><strong>{name}</strong> no sufre daños significativos.</p>',
