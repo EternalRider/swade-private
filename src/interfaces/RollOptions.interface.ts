@@ -5,6 +5,7 @@ export default interface IRollOptions {
   flavour?: string;
   title?: string;
   dmgOverride?: string;
+  isHeavyWeapon?: boolean;
   additionalMods?: TraitRollModifier[];
   suppressChat?: boolean;
 }

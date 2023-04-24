@@ -22,6 +22,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.5
+
+### Added
+
+- Added additional translation strings
+- Added a the `swadeTakeDamage` hook that is called after damage is applied. (#733)
+
+### Changed
+
+- Changed "Equipped" to "Installed" for vehicle mods and weapons. (#758)
+- Successfully soaking all wounds from an attack now clears the Shaken condition if the targeted actor was already Shaken. (#741)
+- Rolling a critical failure on a soak roll now stops rerolls, unless the Dumb Luck setting rule is enabled. (#744)
+
+### Fixed
+
+- Fixed an issue that could stop weapon sheets from rendering if their reload type was set to PP Reload without having a parent actor. (#761)
+- Fixed an issue that could cause a status effect to apply related effects multiple times. (#762)
+- Fixed a broken translation string in the Tweaks window. (#759)
+
 ## 2.3.4
 
 ## Fixed
