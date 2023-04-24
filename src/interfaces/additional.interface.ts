@@ -22,6 +22,7 @@ export interface ItemAction {
   skillOverride?: string;
   dmgMod?: string;
   dmgOverride?: string;
+  isHeavyWeapon?: boolean;
 }
 
 /** A single trait roll modifier, containing a label and a value */
