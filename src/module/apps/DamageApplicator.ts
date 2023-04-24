@@ -22,22 +22,33 @@ export async function damageApplicator(message: SwadeChatMessage) {
   }
 
   // Get the damage and ap from the roll data
-  const damage = roll.total ?? 0;
-  const ap = roll.ap;
+  const damageContext: DamageContext = {
+    isHeavyWeapon: roll.isHeavyWeapon,
+    status: Status.NONE,
+    wounds: {
+      applied: 0,
+      taken: 0,
+      soaked: 0,
+    },
+    damage: {
+      total: roll.total ?? 0,
+      ap: roll.ap ?? 0,
+    },
+  };
+
   // For each token controlled...
   for (const token of controlledTokens) {
     // Get the actor from the token data.
     const actor = token.actor!;
     // Trigger calculation of Wounds
-    calcWounds(actor.uuid, damage, ap);
+    calcWounds(actor.uuid, damageContext);
   }
 }
 
 // Function for translating damage to Wounds.
 export async function calcWounds(
   targetUuid: string,
-  damage: number,
-  ap: number,
+  damageContext: DamageContext,
 ) {
   // Get the target of the damage.
   const target = (await fromUuid(targetUuid)) as SwadeActor | TokenDocument;
@@ -58,11 +69,11 @@ export async function calcWounds(
     value = Number(actor.system.toughness.total);
   }
   // AP vs Armor
-  const apNeg = Math.min(ap, armor);
+  const apNeg = Math.min(damageContext.damage.ap, armor);
   // Calculate Toughness after subtracting AP.
   const newT = value - apNeg;
   // Calculate how much the damage is over the relative Toughness.
-  const excess = damage - newT;
+  const excess = damageContext.damage.total - newT;
   // Translate damage raises to Wounds.
   let woundsInflicted = Math.floor(excess / 4);
   // Check if Wound Cap is in play.
@@ -88,14 +99,13 @@ export async function calcWounds(
   }
 
   // Trigger Soak prompt.
-  await soakPrompt(actor, damage, ap, woundsInflicted, statusToApply);
+  await soakPrompt(actor, damageContext, woundsInflicted, statusToApply);
 }
 
 // Function for prompting to Soak.
 async function soakPrompt(
   actor: SwadeActor,
-  damage: number,
-  ap: number,
+  damageContext: DamageContext,
   woundsInflicted: number,
   statusToApply: Status,
 ) {
@@ -126,10 +136,10 @@ async function soakPrompt(
       ),
       icon: '<i class="fas fa-plus-minus"></i>',
       callback: async (html: JQuery<HTMLElement>) => {
-        const damage = Number(html.find('#damage').val());
-        const ap = Number(html.find('#ap').val());
+        damageContext.damage.ap = Number(html.find('#ap').val());
+        damageContext.damage.total = Number(html.find('#damage').val());
         // Calculate the Wounds.
-        await calcWounds(actor.uuid, damage, ap);
+        await calcWounds(actor.uuid, damageContext);
       },
     },
     take: {
@@ -169,6 +179,17 @@ async function soakPrompt(
         ) {
           await rollInjuryTable();
         }
+        /**
+         * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+         * @category Hooks
+         * @param {SwadeActor} actor            The actor taking the damage
+         * @param {DamageContext} damageContext Additional information people calling the hook might need
+         */
+        damageContext.status = statusToApply;
+        damageContext.wounds.applied = woundsInflicted;
+        damageContext.wounds.taken = totalWounds - existingWounds;
+
+        Hooks.call('swadeTakeDamage', actor, damageContext);
       },
     },
     applyShaken: {
@@ -183,6 +204,17 @@ async function soakPrompt(
         await applyShaken(actor);
         // Output chat message.
         await ChatMessage.create({ content: message });
+
+        /**
+         * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+         * @category Hooks
+         * @param {SwadeActor} actor            The actor taking the damage
+         * @param {DamageContext} damageContext Additional information people calling the hook might need
+         */
+
+        damageContext.status = statusToApply;
+
+        Hooks.call('swadeTakeDamage', actor, damageContext);
       },
     },
     accept: {
@@ -197,6 +229,17 @@ async function soakPrompt(
             },
           ),
         });
+
+        /**
+         * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+         * @category Hooks
+         * @param {SwadeActor} actor            The actor taking the damage
+         * @param {DamageContext} damageContext Additional information people calling the hook might need
+         */
+
+        damageContext.status = statusToApply;
+
+        Hooks.call('swadeTakeDamage', actor, damageContext);
       },
     },
     soakBenny: {
@@ -204,7 +247,13 @@ async function soakPrompt(
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
         actor.spendBenny();
-        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText);
+        await attemptSoak(
+          actor,
+          woundsInflicted,
+          statusToApply,
+          woundsText,
+          damageContext,
+        );
       },
     },
     soakGmBenny: {
@@ -212,14 +261,26 @@ async function soakPrompt(
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
         game.user?.spendBenny();
-        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText);
+        await attemptSoak(
+          actor,
+          woundsInflicted,
+          statusToApply,
+          woundsText,
+          damageContext,
+        );
       },
     },
     soakFree: {
       label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Free'),
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
-        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText);
+        await attemptSoak(
+          actor,
+          woundsInflicted,
+          statusToApply,
+          woundsText,
+          damageContext,
+        );
       },
     },
   };
@@ -300,7 +361,7 @@ async function soakPrompt(
   );
   const content = await renderTemplate(
     'systems/swade/templates/apps/damage/soak.hbs',
-    { ap, damage, adjustDamage, prompt: new Handlebars.SafeString(prompt) },
+    { damageContext, adjustDamage, prompt: new Handlebars.SafeString(prompt) },
   );
   new Dialog(
     {
@@ -319,11 +380,14 @@ async function attemptSoak(
   woundsInflicted: number,
   statusToApply: Status,
   woundsText: string,
-  bestSoakAttempt = 0,
+  damageContext: DamageContext,
+  bestSoakAttempt: number = 0,
 ) {
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   // Roll Vigor and get the data.
-  const vigorRoll = await actor.rollAttribute('vigor');
+  const vigorRoll = await actor.rollAttribute('vigor', {
+    flavour: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.SoakRoll'),
+  });
   let message = '';
   // Calculate how many Wounds have been Soaked with the roll
   const woundsSoaked = Math.max(Math.floor((vigorRoll?.total ?? 0) / 4), 0);
@@ -335,10 +399,32 @@ async function attemptSoak(
   let woundsRemaining = woundsInflicted - woundsSoaked;
   // If there are no remaining Wounds, output message that they Soaked all the Wounds.
   if (woundsRemaining <= 0) {
+    statusToApply = Status.NONE;
     message = game.i18n.format('SWADE.DamageApplicator.Result.SoakedAll', {
       name: actor.name,
     });
     await ChatMessage.create({ content: message });
+
+    const isShaken = actor.system.status.isShaken;
+    // If they're already Shaken, remove the Status Effect.
+    if (isShaken) {
+      const data = CONFIG.SWADE.statusEffects.find(
+        (s) => s.id === 'shaken',
+      ) as StatusEffect;
+      await actor.toggleActiveEffect(data, { active: false });
+    }
+
+    /**
+     * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+     * @category Hooks
+     * @param {SwadeActor} actor            The actor taking the damage
+     * @param {DamageContext} damageContext Additional information people calling the hook might need
+     */
+
+    damageContext.status = statusToApply;
+    damageContext.wounds.soaked = woundsSoaked;
+
+    Hooks.call('swadeTakeDamage', actor, damageContext);
   } else {
     // Otherwise, calculate how many Wounds the Actor now has.
     const totalWounds = existingWounds + woundsRemaining;
@@ -407,6 +493,20 @@ async function attemptSoak(
           ) {
             await rollInjuryTable();
           }
+
+          /**
+           * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+           * @category Hooks
+           * @param {SwadeActor} actor            The actor taking the damage
+           * @param {DamageContext} damageContext Additional information people calling the hook might need
+           */
+
+          damageContext.status = statusToApply;
+          damageContext.wounds.applied = woundsRemaining;
+          damageContext.wounds.taken = newWoundsValue - existingWounds;
+          damageContext.wounds.soaked = Math.min(woundsSoaked, woundsInflicted);
+
+          Hooks.call('swadeTakeDamage', actor, damageContext);
         },
       },
       rerollBenny: {
@@ -421,6 +521,7 @@ async function attemptSoak(
             woundsInflicted,
             statusToApply,
             woundsText,
+            damageContext,
             woundsRemaining,
           );
         },
@@ -437,6 +538,7 @@ async function attemptSoak(
             woundsInflicted,
             statusToApply,
             woundsText,
+            damageContext,
             woundsRemaining,
           );
         },
@@ -452,6 +554,7 @@ async function attemptSoak(
             woundsInflicted,
             statusToApply,
             woundsText,
+            damageContext,
             woundsRemaining,
           );
         },
@@ -468,6 +571,32 @@ async function attemptSoak(
     if (!actorHasBennies) delete buttons.rerollBenny;
     // If the user is a GM and does not have Bennies, delete the button for spending GM Bennies.
     if (!gmHasBennies) delete buttons.rerollGmBenny;
+
+
+    let content = game.i18n.format(
+      'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
+      {
+        name: actor.name,
+        wounds: woundsRemainingText,
+      },
+    )
+
+    // Crit fail check to deny rerolling soaks. Per RAW Extras can't soak,
+    //  so no need to handle the confirmation die
+    if (vigorRoll?.isCritfail && !game.settings.get('swade', 'dumbLuck')) {
+      delete buttons.rerollBenny;
+      delete buttons.rerollGmBenny;
+      delete buttons.rerollFree;
+
+      content = game.i18n.format(
+        'SWADE.DamageApplicator.RerollSoakDialog.PromptCritFail',
+        {
+          name: actor.name,
+          wounds: woundsRemainingText,
+        },
+      )
+    }
+
     // Create and render Dialog.
     new Dialog(
       {
@@ -477,13 +606,7 @@ async function attemptSoak(
             name: actor.name,
           },
         ),
-        content: game.i18n.format(
-          'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
-          {
-            name: actor.name,
-            wounds: woundsRemainingText,
-          },
-        ),
+        content: content,
         buttons: buttons,
         default: 'take',
       },
@@ -544,3 +667,37 @@ enum Status {
   SHAKEN,
   WOUNDED,
 }
+
+/**
+ * An interface that supports the swadeTakeDamage hook
+ * @category Interfaces
+ */
+interface DamageContext {
+  /** Whether or not the damage source is flagged as a heavy weapon */
+  isHeavyWeapon?: boolean;
+  /** The Status inflicted by the damage */
+  status?: Status;
+  wounds: {
+    /** The number of wounds the actor would outright take */
+    applied?: number;
+    /** The actual final number of wounds the actor is taking, mitigated by the actor's max wounds */
+    taken?: number;
+    /** The number of wounds soaked by the actor, capped by the wounds inflicted */
+    soaked?: number;
+  };
+  damage: {
+    /** Raw damage value, after adjustments */
+    total: number;
+    /** AP value, after adjustments */
+    ap: number;
+  };
+}
+
+/** Hooks.call('swadeTakeDamage', actor, damageContext)
+ * Implemented primarily for RIFTS Blood & Guts variant on Gritty Damage
+ * JS objects are passed by reference, so as things are added to damageContext
+ *  it can be the only item passed throughout the DamageApplicator
+ * Future hooks should be implemented by expanding damageContext and then
+ *  passing it as an argument, allowing for future developers calling the hook
+ *  to access the information they ned
+ */

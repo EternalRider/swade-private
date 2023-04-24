@@ -35,8 +35,17 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   set ap(ap: number) {
     this.options['ap'] = ap;
   }
+
+  get isHeavyWeapon() {
+    return this.options['isHeavyWeapon'] ?? false;
+  }
+
+  set isHeavyWeapon(isHeavyWeapon: boolean) {
+    this.options['isHeavyWeapon'] = isHeavyWeapon;
+  }
 }
 
 interface DamageRollOptions extends SwadeRollOptions {
   ap?: number;
+  isHeavyWeapon?: boolean;
 }

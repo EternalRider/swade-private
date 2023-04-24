@@ -360,7 +360,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (relatedEffects && this.parent?.documentName === 'Actor') {
       const isStatusEffect = !!this.statusId;
       for (const [id, mutation] of Object.entries(relatedEffects)) {
-        const statusEffect = CONFIG.statusEffects.find((v) => v.id === id);
+        const statusEffect = CONFIG.statusEffects.find((e) => e.id === id);
         if (!statusEffect) continue; //skip if we can't find the effect
         //apply the mutation if one exists
         const effect = foundry.utils.isEmpty(mutation)
@@ -368,6 +368,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
           : foundry.utils.mergeObject(statusEffect, mutation, {
               performDeletions: true,
             });
+        if (this.parent.effects.find((e) => e.statusId === id)) continue; //skip if the effect is already present
         setProperty(effect, 'flags.swade.favorite', isStatusEffect);
         this.parent.toggleActiveEffect(effect, { active: true });
       }
