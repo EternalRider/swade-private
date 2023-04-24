@@ -116,7 +116,7 @@
         {{#each actor.itemTypes.hindrance}}
         <li class="hindrance item" data-item-id="{{id}}">
           <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{name}}&nbsp;{{#if system.major}}{{localize "SWADE.Major"}}{{/if}}
+            {{name}}{{#if system.major}}&nbsp;{{localize "SWADE.Major"}}{{/if}}
           </a>
         </li>
         {{/each}}
