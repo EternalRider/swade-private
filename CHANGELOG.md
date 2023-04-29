@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 2.3.6
+
+### Fixed
+
+- Fixed an issue that would cause status effects to apply multiple times. (#766)
+
 ## 2.3.5
 
 ### Added
