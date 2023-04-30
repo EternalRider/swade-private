@@ -42,6 +42,7 @@ declare global {
       'swade.grittyDamage': boolean;
       'swade.injuryTable': string;
       'swade.woundCap': boolean;
+      'swade.unarmoredHero': boolean;
       'swade.hardChoices': boolean;
       'swade.dumbLuck': boolean;
       'swade.applyEncumbrance': boolean;
@@ -146,8 +147,8 @@ export function registerSettings() {
     scope: 'world',
     type: String,
     choices: {
-      imperial: 'SWADE.Imperial',
-      metric: 'SWADE.Metric',
+      imperial: game.i18n.localize('SWADE.Imperial'),
+      metric: game.i18n.localize('SWADE.Metric'),
     },
     config: true,
   });
@@ -249,8 +250,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'npcsUseCurrency', {
-    name: game.i18n.localize('SWADE.Settings.NPCCurrency.Name'),
-    hint: game.i18n.localize('SWADE.Settings.NPCCurrency.Hint'),
+    name: 'SWADE.Settings.NPCCurrency.Name',
+    hint: 'SWADE.Settings.NPCCurrency.Hint',
     scope: 'world',
     type: Boolean,
     default: true,
@@ -376,7 +377,7 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'settingFields', {
-    name: 'Arbitrary Setting Fields',
+    name: 'SWADE.Settings.ArbitFields',
     default: { actor: {}, item: {} },
     scope: 'world',
     //@ts-expect-error The types can't really cope with this but Foundry can
@@ -385,7 +386,7 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'tocBlockList', {
-    name: 'Compendium TOC Blocklist',
+    name: 'SWADE.TOCBlockList',
     default: {},
     scope: 'world',
     //@ts-expect-error The types can't really cope with this but Foundry can
@@ -407,8 +408,17 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'woundCap', {
-    name: 'SWADE.Settings.UseWoundCap.Name',
-    hint: 'SWADE.Settings.UseWoundCap.Hint',
+    name: 'SWADE.Settings.WoundCap.Name',
+    hint: 'SWADE.Settings.WoundCap.Hint',
+    type: Boolean,
+    default: false,
+    scope: 'world',
+    config: false,
+  });
+
+  game.settings.register('swade', 'unarmoredHero', {
+    name: 'SWADE.Settings.UnarmoredHero.Name',
+    hint: 'SWADE.Settings.UnarmoredHero.Hint',
     type: Boolean,
     default: false,
     scope: 'world',
@@ -416,8 +426,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'grittyDamage', {
-    name: 'SWADE.Settings.UseGrittyDamage.Name',
-    hint: 'SWADE.Settings.UseGrittyDamage.Hint',
+    name: 'SWADE.Settings.GrittyDamage.Name',
+    hint: 'SWADE.Settings.GrittyDamage.Hint',
     type: Boolean,
     default: false,
     scope: 'world',
@@ -425,8 +435,8 @@ export function registerSettingRules() {
   });
 
   game.settings.register('swade', 'injuryTable', {
-    name: 'SWADE.Settings.SelectInjuryTable.Name',
-    hint: 'SWADE.Settings.SelectInjuryTable.Hint',
+    name: 'SWADE.Settings.InjuryTable.Name',
+    hint: 'SWADE.Settings.InjuryTable.Hint',
     type: String,
     default: '',
     scope: 'world',

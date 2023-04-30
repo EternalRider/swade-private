@@ -99,16 +99,17 @@ pages:
         <code>system.attributes.&lt;attribute&gt;.wild-die.sides</code></li><li>Modifier:
         <code>system.attributes.&lt;attribute&gt;.die.modifier</code></li><li>Encumbrance
         die step modifier:
-        <code>system.attributes.strength.encumbranceSteps</code></li><li>Unshake
-        bonus: <code>system.attributes.spirit.unShakeBonus</code></li><li>Animal
-        Smarts:
-        <code>system.attributes.smarts.animal</code></li></ul><h4>Derived
-        Stats</h4><ul><li>Size: <code>system.stats.size</code></li><li>Pace:
-        <code>system.stats.speed.value</code></li><li>Parry:
-        <code>system.stats.parry.value</code></li><li>Toughness:
-        <code>system.stats.toughness.value</code></li><li>Armor:
-        <code>system.stats.toughness.armor</code></li><li>Parry mod and
-        toughness mod become obsolete with the introduction of Active
+        <code>system.attributes.strength.encumbranceSteps</code></li>
+        <li>Unshake bonus: <code>system.attributes.spirit.unShakeBonus</code></li>
+        <li>Soak Bonus: <code>system.attributes.vigor.soakBonus</code></li>
+        <li>Animal Smarts: <code>system.attributes.smarts.animal</code></li></ul>
+        <h4>Derived Stats</h4><ul>
+        <li>Size: <code>system.stats.size</code></li>
+        <li>Pace: <code>system.stats.speed.value</code></li>
+        <li>Parry: <code>system.stats.parry.value</code></li>
+        <li>Toughness: <code>system.stats.toughness.value</code></li>
+        <li>Armor: <code>system.stats.toughness.armor</code></li>
+        <li>Parry mod and toughness mod become obsolete with the introduction of Active
         Effects</li></ul><h4>Additional Stats</h4><ul><li>Value:
         <code>system.additionalStats.[*key of the Additional
         Stat*].value</code></li><li>Maximum (if applicable):
