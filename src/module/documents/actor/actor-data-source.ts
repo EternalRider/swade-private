@@ -58,6 +58,7 @@ export interface CharacterDataSourceData {
     };
     vigor: {
       unStunBonus: number;
+      soakBonus: number;
       die: TraitDie;
       'wild-die': WildDie;
     };
