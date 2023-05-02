@@ -309,7 +309,7 @@ SWADE:
       Name: Bene
     HardChoices:
       Name: Escolhas Difíceis
-      Hint: Marcar isto irá habilitar a regra Escolhas Difíceis
+      Hint: Marcar isto irá habilitar a Regra de Ambientação Escolhas Difíceis
     CardSound:
       Name: Som de Carta
       Hint: Toque um som de carta curto ao sacar Iniciativa
@@ -362,6 +362,11 @@ SWADE:
       Name: Tabela de Lesões
       Hint: Selecione a Tabela de Rolagem apropriada para rolar automaticamente para
         Dano Severo.
+    UnarmoredHero:
+      Hint: Marcar isto irá habilitar a Regra de Ambientação Heróis Sem Armadura quando
+        rolar para absorver
+      Name: Heróis Sem Armadura
+    ArbitFields: Campos de Configuração Arbitrária
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -427,6 +432,7 @@ SWADE:
     Carried: Carregado
     Readied: Preparado
     Added: Adicionado
+    Installed: Instalado
   DestroyOnEmpty: Destruir quando Vazio
   Charges: Cargas
   Consumable:
@@ -500,6 +506,7 @@ SWADE:
       AdjustDamage: Ajustar Dano
       ApplyShaken: Aplicar Estado Abalado
       Accept: Aceitar
+      SoakRoll: Teste de Vigor para Absorver
     RerollSoakDialog:
       Title: Rerrolar para Absorver Ferimentos para [name}?
       Prompt: <p>{name} está prestes a sofrer {wounds}. Você quer rerrolar a Absorção?</p>
@@ -507,6 +514,8 @@ SWADE:
       Benny: Gastar um Bene para Rerrolar
       Free: Rerollar de Graça
       TakeWounds: Sofrer {wounds}
+      PromptCritFail: <p>{name} está prestes a sofrer {wounds}. Uma falha crítica
+        está impedindo a nova rolagem.</p>
     AdjustDamagePrompt: <p>Ajustar o dano para quaisquer habilidades e efeitos que
       o {name} possa ter.</p>
     Result:
@@ -520,6 +529,7 @@ SWADE:
     NoInjuryTable: Nenhuma Tabela de Lesões foi selecionado. Veja as Configurações
       Gerais do SWADE
     NoTargetsSelected: Por favor, seleciona um alvo para aplicar o dano.
+    SoakModifier: Modificador de Absorção
   FreeReroll: Rerrolagem Grátis
   BenniesSpendGM: Gastar um Bene de MJ
   SettingConfDesc: Ajuste o sistema para se adequar ao cenário que está jogando.
@@ -804,6 +814,7 @@ SWADE:
     se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado Selvagem
     pareça diferente. Por favor, tenha em mente que os Dados Selvagens auto-criados
     atualmente só podem ser vistos por você. Outros jogadores os verão de forma diferente.
+  TOCBlockList: Lista de Bloqueio de Sumário de Compêndios
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
