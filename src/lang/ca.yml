@@ -1,1 +1,789 @@
-{}
+{
+    "SWADE": {
+        "ButtonReset": "Reiniciar",
+        "ButtonSubmit": "Enviar canvis",
+        "CommunityCharSheet": "Fitxa de PJ comunitària",
+        "CommunityNPCSheet": "Fitxa de PNJ comunitària",
+        "CommunityVicSheet": "Fitxa de vehicle comunitària",
+        "CommunityItemSheet": "Fitxa d'objecte comunitària",
+        "ItemSheet": "Fitxa d'objectes de Savage Worlds",
+        "Expand": "Expandre",
+        "OfficialSheet": "Savage Worlds fitxa oficial PEG",
+        "ModHint": "Assegureu-vos que el modificador inclogui un + o un -",
+        "ActionDeckPresetLight": "Baralla d'acció (clar)",
+        "ActionDeckPresetDark": "Baralla d'acció (fosca)",
+        "Name": "Nom",
+        "Tough": "Duresa",
+        "Race": "Raça",
+        "Archetype": "Arquetip",
+        "Pace": "Pas",
+        "Running": "Córrer",
+        "RunningDie": "Dau de córrer",
+        "RollRun": "Clica per córrer",
+        "Adv": "Avanç",
+        "Rank": "Rang",
+        "Inv": "Equip",
+        "Summary": "Trets",
+        "Pow": "Poders",
+        "WildCard": "Comodí",
+        "Extra": "Extra",
+        "Bennies": "Benis",
+        "TraitMod": "Mod. de trets",
+        "SkillTest": "Tirada d'habilitat",
+        "AttributeTest": "Tirada d'atribut",
+        "Attributes": "Atributs",
+        "Derived": "Derivades",
+        "AttrAgi": "Agilitat",
+        "AttrSma": "Astúcia",
+        "AnimalSmarts": "Astúcia animal",
+        "AnimalSmartsMarker": "A",
+        "AttrSpr": "Esperit",
+        "AttrStr": "Força",
+        "AttrVig": "Vigor",
+        "Tweaks": "Paràmetres",
+        "AttrAgiShort": "Agi",
+        "AttrSmaShort": "Ast",
+        "AttrSprShort": "Esp",
+        "AttrStrShort": "For",
+        "AttrVigShort": "Vig",
+        "Skills": "Habilitats",
+        "Unskilled": "Sense entrenament",
+        "CoreSkill": "Habilitat bàsica",
+        "CoreSkills": "Habilitats bàsiques",
+        "LinkAttr": "Atribut associat",
+        "ArcaneSkill": "Habilitat arcana",
+        "ActivateArcaneDevice": "Activar artefacte",
+        "Die": "Dau",
+        "WildDie": "Dau Salvatge",
+        "Modifier": "Modificador",
+        "BenniesSpend": "Gasta un Beni",
+        "BenniesGive": "Dona un Beni",
+        "BenniesRefresh": "Reiniciar Benis",
+        "AllBenniesRefresh": "Reiniciar Benis",
+        "BenniesRefreshMessage": "Els benis s'han reiniciat!",
+        "BenniesRefreshAllMessage": "S'han reiniciat tots els benis!",
+        "BenniesGMRefreshMessage": "Els Benis del DJ s'han reiniciat!",
+        "BenniesAddMessage": "aconsegueix un Beni!",
+        "BenniesGMAddMessage": "s'ha afegit un Beni!",
+        "BenniesSpendMessage": "gasta un Beni!",
+        "BenniesMax": "Reiniciar benis",
+        "EditSkill": "Editar Habilitat",
+        "EdEdge": "Editar Avantatge",
+        "EdHind": "Editar Desavantatge",
+        "Ed": "Editar",
+        "Del": "Esborrar",
+        "Arcane": "Arcà",
+        "All": "Tot",
+        "HasPowers": "Té Poders",
+        "Weapons": "Armes",
+        "MeleeWeapons": "Armes CaC",
+        "RangedWeapons": "Armes a distància",
+        "Armors": "Armadures",
+        "WeaponsAndArmor": "Armes i armadures",
+        "Shields": "Escuts",
+        "Biography": "Biografia",
+        "Shaken": "Atordit",
+        "Distr": "Distret",
+        "Vuln": "Vulnerable",
+        "Stunned": "Conmocionat",
+        "Entangled": "Aferrat",
+        "Bound": "Immobilitzat",
+        "Aiming": "apuntant",
+        "Berserk": "berserk",
+        "Defending": "defensant",
+        "Flying": "volant",
+        "Follow": "Seguir {name}",
+        "Unfollow": "Deixar de seguir {name}",
+        "MakeGroupLeader": "Fer líder de grup",
+        "RemoveGroupLeader": "Elimina el líder del grup",
+        "AddTokenFollowers": "Afegeix les fitxes seleccionades com a seguidors",
+        "GroupByName": "Grup per nom",
+        "SetGroupColor": "Estableix el color del grup",
+        "SelectColor": "Tria un color",
+        "Holding": "En espera",
+        "Hold": "Espera",
+        "ActAfterCurrentCombatant": "Actuar després del combatent actual",
+        "ActBeforeCurrentCombatant": "Actuar ara",
+        "LoseTurn": "Commuta la pèrdua de torn",
+        "Frightened": "Espantat",
+        "Encumbered": "Sobrecarregat",
+        "Prone": "Prostrat",
+        "BleedingOut": "Sagnant",
+        "Diseased": "Malalt",
+        "HeartAttack": "Atac de cor",
+        "OnFire": "En flames",
+        "Poisoned": "Enverinat",
+        "Reach": "Abast",
+        "Torch": "Torxa",
+        "Invisible": "Invisible",
+        "ColdBodied": "Congelació",
+        "Smite": "Càstig",
+        "Armor": "Armadura",
+        "Protection": "Protecció",
+        "Dmg": "Mal",
+        "DmgOver": "Anul·lació de mal",
+        "Resist": "Resistir",
+        "ResistRolls": "Tirada de resistencia",
+        "Ap": "PA",
+        "APLong": "Penetració d'armadura",
+        "RoF": "CdF",
+        "Mag": "Trets",
+        "Parry": "Parada",
+        "Notes": "Notes",
+        "ActionsEffects": "Accions i efectes",
+        "Actions": "Accions",
+        "DmgModUni": "Modificador de mal (universal)",
+        "SkillModUni": "Modificador de tret (universal)",
+        "ShotsUsed": "Trets fets",
+        "NaturalArmor": "Armadura natural",
+        "HitLocations": "Localitzacions",
+        "Head": "Cap",
+        "Torso": "Tors",
+        "Arms": "Braços",
+        "Legs": "Cames",
+        "MinStrLong": "Força Mínima",
+        "MinStr": "For. Min.",
+        "MinStrShort": "For.Min",
+        "Desc": "Descripció",
+        "Special": "Capacitats especials",
+        "Details": "Detalls",
+        "Equippable": "Equipable",
+        "ArcaneDevice": "Artefacte arcà",
+        "Misc": "Misc",
+        "QuickAccess": "Dreceres i Efectes",
+        "Effects": "Efectes actius",
+        "Hindrances": "Desavantatges",
+        "MajHind": "Desavantatge Major",
+        "Major": "(Major)",
+        "Minor": "(Menor)",
+        "Edges": "Avantatges",
+        "ArcBack": "Coneixements Arcans",
+        "Req": "Requisits",
+        "Conv": "Convicció",
+        "UseConv": "Fer servir la seva Convicció!",
+        "Hesitant": "Dubitatiu",
+        "LevelHeaded": "Fermesa",
+        "ImprovedLevelHeaded": "Fermesa millorada",
+        "AutoCalc": "Càlculs automàtics",
+        "InclArmor": "Calcular automàticament la duresa (inclosa l'armadura)",
+        "Label": "Etiqueta",
+        "HasMaxValue": "Té màxim",
+        "Enabled": "Activat",
+        "Currency": "Moneda",
+        "CarryWeight": "Càrrega",
+        "Eqd": "Eqd",
+        "Equipped": "Equipat",
+        "Unequipped": "No equipat",
+        "Quantity": "Quantitat",
+        "Weight": "Pes",
+        "Price": "Preu",
+        "PP": "PP",
+        "PPShort": "PP",
+        "PPCost": "Cost de PP",
+        "CurPP": "Punts de Poder Actuals",
+        "MaxPP": "Punts de Poder màxims",
+        "Dur": "Duració",
+        "Trap": "Guarniments",
+        "Wound": "Ferida",
+        "Wounds": "Ferides",
+        "WoundsMax": "Feridas màximes",
+        "Fatigue": "Fatiga",
+        "FatigueMax": "Fatiga màxima",
+        "Incap": "Incapacitat",
+        "Init": "Iniciativa",
+        "DrawInit": "Repartir iniciativa",
+        "ActionDeckReset": "Reinicia la taula del joc de cartes d'acció",
+        "ActionDeckResetNotification": "Reinicia el joc de cartes d'acció",
+        "InitDraw": "reps una carta!",
+        "General": "General",
+        "Addi": "Adiccional",
+        "Status": "Estat",
+        "Handling": "Maniobra",
+        "Topspeed": "Vel. Màx.",
+        "OutOfControl": "Fora de control",
+        "Wrecked": "Destruït",
+        "Item": "Objecte",
+        "Cargo": "Càrrega",
+        "MaxCargo": "Càrrega màxima",
+        "CargoWeight": "Pes (Càrerga)",
+        "Mods": "Mods",
+        "ModSlots": "Espais de Mods.",
+        "MaxMods": "Mods. màxims",
+        "Operator": "Operador",
+        "ManCheck": "Tirada de maniobra",
+        "AltSkill": "Habilitat alternativa",
+        "Class": "Classificació",
+        "Vehicular": "Armes de vehicle",
+        "VehicleMod": "Mod. de vehicle",
+        "OpSkill": "Habilitat d’operació",
+        "ShowBennyAnimation": "Mostra l'animació del Beni",
+        "ShowBennyAnimationDesc": "Reprodueix una animació en gastar un Beni. Només disponible si Dice So Nice! està instal·lat",
+        "WildDiePreset": "Tema del dau salvatge",
+        "WildDiePresetDesc": "Seleccioneu un tema DSN per al vostre dau salvatge. Seleccioneu \"Personalitzat\" si voleu crear el vostre o \"Cap\" si no voleu que tingui un aspecte diferent. Tingueu en compte que els daus creats per vosaltres mateixos, actualment només els podeu veure vosaltres. Altres jugadors els veuran de manera diferent.",
+        "WildDieTheme": "Tema del dau salvatge",
+        "WildDieThemeDesc": "trieu un Tema DSN pel teu dau salvatge. Selecciona personalitzat si voleu crear el vostre propi o cap si no voleu que el vostre dau salvatge tingui un aspecte diferent. Si us plau, tingues en compte que els dau salvatge creats per tu mateix només els pots veure tu. Els altres jugadors els veuran de manera diferent.",
+        "SettingConf": "Configuració d'ambientació",
+        "SettingConfLabel": "Configuració d'ambientacions obertes",
+        "SettingConfDesc": "Ajustar el sistema a l'ambientació que s'està jugant",
+        "DiceConf": "Configuració de daus",
+        "DiceConfDesc": "Configureu la configuració de la integració SWADE / Dice So Nice",
+        "DiceConfLabel": "Obriu la configuració de daus",
+        "Formula": "Fórmula",
+        "SitMod": "Modificar Tirada",
+        "RollMode": "Mode",
+        "RollExample": "ex. +1d6x ó -2",
+        "Roll": "Tirar",
+        "RollRaise": "Tirar amb augment",
+        "GroupRoll": "Tirada de grup",
+        "Ok": "D'acord",
+        "Cancel": "Anul·lar",
+        "Redraw": "Roba carta",
+        "Add": "Afegir",
+        "ConfigInit": "Configurar Iniciativa",
+        "IgnWounds": "Ignorar Ferides",
+        "Size": "Tamany",
+        "Scale": "Escala",
+        "PickACard": "Tria una carta",
+        "NoCardsLeft": "No hi ha prou cartes a la pila!",
+        "OldCard": "Carta anterior",
+        "ActionCard": "Carta d'acció",
+        "ConvictionActive": "Convicció activa",
+        "ConvictionActivate": "Convicció activada",
+        "ConvictionExtend": "Voleu ampliar la vostra convicció?",
+        "ConvictionEnd": "Dubta de la seva convicció",
+        "NoBennies": "No tens cap Beni!",
+        "GM": "DJ",
+        "Vehicles": "Vehicles",
+        "AddStats": "Camps adicionals",
+        "Actors": "Actors",
+        "Items": "Objectes",
+        "Max": "Màx",
+        "Curr": "Actual",
+        "DSNNone": "- Cap -",
+        "Reload": "Recarregar",
+        "Refresh": "Actualitzeu aquesta targeta",
+        "Ammo": "Munició",
+        "ReloadUnneeded": "L’arma ja està completament carregada",
+        "ReloadSuccess": "L'arma s'ha recarregat correctament",
+        "NotEnoughAmmo": "No tens prou munició per aquesta acció!",
+        "NotEnoughAmmoToReload": "No hi ha prou munició per una recàrrega completa",
+        "AutoReload": "No necessita l'acció Recarregar",
+        "NoAmmoSet": "No hi ha munició configurada",
+        "Trapping": "Adorns",
+        "AddBenny": "Afegeix un Beni",
+        "CurrentBennies": "Benis actuals",
+        "RerollWithBenny": "Torna a tirar amb un Beni",
+        "FreeReroll": "Nova tirada gratuïta",
+        "AutoCalcParry": "Calcula la Parada automàticament, incloent Escuts",
+        "Subtype": "Subtipus",
+        "SpecialAbility": "Habilitat especial",
+        "SpecialAbilities": "Habilitats especials",
+        "RacialAbilities": "Habilitats racials",
+        "ArchetypeAbilities": "Habilitats d'arquetip",
+        "About": "Historial",
+        "EdgesHindrances": "Avantatges i Desavantatges",
+        "GrantsPowers": "Dona poders",
+        "Crew": "Tripulació requerida",
+        "Passengers": "Passatgers opcionals",
+        "String": "Text",
+        "Number": "Número",
+        "Checkbox": "Casella",
+        "Selection": "Tria",
+        "WealthDie": {
+            "Label": "Riquesa",
+            "Broke": {
+                "Label": "Trencat",
+                "Hint": "Està trencat!"
+            },
+            "Sides": "Riquesa"
+        },
+        "TraitRolls": "Tirades de tret",
+        "Trait": "Tret",
+        "AltTrait": "Tret alternatiu",
+        "ClickSuggestions": "Fes clic per suggeriments",
+        "Quick": "Ràpid",
+        "BonusDamage": "Dany addicional",
+        "Joker": "Comodí",
+        "CustomWildDie": "- Dau salvatge personalitzat -",
+        "Subtract": "Resta",
+        "DmgRolls": "Tirades de dany",
+        "SubtractPPDesc": "Resta el cost de PP dels PP disponibles",
+        "AddPPDesc": "Suma el cost de PP als PP disponibles",
+        "RightClickZoom": "Clic dret per augmentar",
+        "SysMigrationWarning": "Les dades del vostre sistema SWADE provenen d’una versió de Foundry massa antiga i no es poden migrar de manera fiable a la versió més recent. S'intentarà el procés, però es poden produir errors.",
+        "DeckShuffled": "El joc de cartes es barreja automàticament",
+        "BasePace": "Pas base",
+        "WarningPackLocked": "No podeu editar un compendi bloquejat. Desbloqueu-lo primer",
+        "ActionCardEditor": "Editor de cartas d'acció",
+        "CardFace": "Revers de la carta",
+        "CardValue": "Valor",
+        "CardSuit": "Coll (pal)",
+        "IsJoker": "És joker",
+        "OpenACEditor": "Obre en l'editor de cartes d'acció",
+        "Yes": "Si",
+        "No": "No",
+        "ShowCharacterSummary": "Mostra el resum del personatge",
+        "CharacterSummary": "Resum de personatges",
+        "CopyHtml": "Copia HTML",
+        "CopyMarkdown": "Copia Markdown",
+        "Imperial": "Imperial",
+        "Metric": "Mètric",
+        "ChangeBennyWarning": "Per canviar aquesta configuració, caldrà que actualitzeu la pàgina.",
+        "3DBennies": "Benis en 3D",
+        "WealthSelectionNoneOther": "Cap / Altres",
+        "Modifiers": "Modificadors",
+        "ActionTraitMod": "Modificador de trets",
+        "ActionDmgMod": "Modificador de mal",
+        "ItemTraitMod": "Modificador d'objectes",
+        "ItemDmgMod": "Mod. mal d'objectes",
+        "Duplicates": "S'han trobat duplicats",
+        "DuplicateItemsBodyText": "Mentre s'afegeix el {type} <strong>{name}</strong> a l'actor {target}, s'han trobat els duplicats següents (per nom i tipus). Els nous elements s'han canviat de nom per reflectir la seva font.",
+        "NoActionDeckFound": "No s'ha trobat cap baralla d'acció, creant-ne una",
+        "NoActionDeckDiscardPileFound": "No s'ha trobat cap pila de descart de la baralla d'acció, creant-ne una",
+        "Wealth": "Riquesa",
+        "Characters": "Personatges",
+        "SettingRules": "Configuració de regles",
+        "WorldBasics": "Conceptes bàsics",
+        "MAPenalty": {
+            "Label": "Penalització d'acció múltiple",
+            "None": "No"
+        },
+        "Mod": {
+            "Custom": {
+                "Add": "Afegeix un modificador personalitzat"
+            },
+            "Support": "Suport",
+            "Preset": {
+                "Choose": "Tria un paràmetre predefinit...",
+                "Add": "Afegeix predefinit"
+            },
+            "Value": "Valor",
+            "Ignore": "Ignorar?"
+        },
+        "Illumination": {
+            "_name": "Il·luminació",
+            "Dim": "Penombra",
+            "Dark": "Foscor",
+            "Pitch": "Foscor absoluta"
+        },
+        "Cover": {
+            "_name": "Cobertura",
+            "Shield": "Cobertura- escut",
+            "Light": "Cobertura lleugera",
+            "Medium": "Cobertura mitja",
+            "Heavy": "Cobertura pesada",
+            "Total": "Cobertura total"
+        },
+        "Range": {
+            "_name": "Abast",
+            "Medium": "Abast mitjà",
+            "Long": "Llarg abast",
+            "Extreme": "Abast extrem"
+        },
+        "ModOther": "Altres modificadors",
+        "Snapfire": "Penalització per moviment",
+        "UnstablePlatform": "Plataforma inestable",
+        "CannotAddRaceToRace": "No pots afegir una raça/arquetip a una raça/arquetip!",
+        "LayOutChaseWithDeck": "Fer servir la baralla de persecucions",
+        "ClearChaseCards": "Esborrar les cartes de persecució de l'escena",
+        "NoSceneAvailable": "No hi ha cap escena disponible o heu desactivat el llenç",
+        "ChaseCardsCleared": "Totes les cartes de persecució s'han eliminat de l'escena.",
+        "SetUpChase": "Configura la persecució",
+        "NotADeckCompendium": "El compendi que heu seleccionat no sembla ser una baralla antiga",
+        "ConvertToDeck": "Converteix en baralla",
+        "Expiration": {
+            "TabLabel": "Comportament dels torns",
+            "Description": "<p>Els efectes expiren en l'objectiu <em>següent torn o després</em>.</p>",
+            "Behavior": "Comportament de caducitat",
+            "BeginAuto": "Inici de torn, automàtic",
+            "BeginPrompt": "Inici de torn, immediat",
+            "EndAuto": "Final del proper torn, automàtic",
+            "EndPrompt": "Final del proper torn, inmediat",
+            "None": "Cap",
+            "LooseTurnOnHold": "Perdre el torn d'espera"
+        },
+        "RemoveEffectTitle": "Eliminar {label} ?",
+        "RemoveEffectBody": "<p style=\"text-align: center;\">Eliminar <strong>{label}</strong> de <strong>{parent}</strong>?</p>",
+        "PPAbbreviation": "PP",
+        "ShowInChat": "Mostrar al xat",
+        "ExpandDescription": "Expandre per mostrar descripció",
+        "Favorite": "Favorit",
+        "Equip": "Equipar",
+        "RollDamage": "Tirada de mal",
+        "SystemLinks": {
+            "Changelog": "Registre de canvis",
+            "Wiki": "Viqui",
+            "ReportAnIssue": "Informar d'un problema"
+        },
+        "OpenOrigin": "Obrir origen",
+        "EffectsTemporary": "Efectes temporals",
+        "EffectsPermanent": "Efectes permanents",
+        "Ranks": {
+            "Novice": "Novell",
+            "Seasoned": "Experimentat",
+            "Veteran": "Veterà",
+            "Heroic": "Heroic",
+            "Legendary": "Llegendari"
+        },
+        "Advances": {
+            "EditorTitle": "Editor d'avanços",
+            "Toggle": "Canvia de planificat a actiu",
+            "Delete": "Esborrar avanç",
+            "Planned": "Planificat",
+            "Modes": {
+                "Legacy": "Heretada",
+                "Expanded": "Ampliat"
+            },
+            "Types": {
+                "Edge": "Nova avantatge",
+                "SingleSkill": "Augmentar una habilitat",
+                "TwoSkills": "Augmentar dos habilitats",
+                "Attribute": "Augmentar un atribut",
+                "Hindrance": "Eliminar un desavantatge"
+            },
+            "Number": "Número d'avanços"
+        },
+        "AddAdvance": "Afegir un avanç",
+        "Appearance": "Aparença",
+        "CharacterGoals": "Objectius",
+        "Background": "Rerefons",
+        "ActiveEffects": {
+            "Add": "Afegir efecte actiu",
+            "Source": "Font",
+            "ResetDuration": "Restablir la duració",
+            "AddGuided": "Obrir assistent",
+            "AddUnguided": "Afegir efecte"
+        },
+        "Keybindings": {
+            "OpenFavoriteCards": {
+                "Name": "Obrir el joc de cartes preferit",
+                "UserConfigLabel": "Joc de cartes preferit",
+                "Hint": "Pots configurar el teu joc de cartes predilecte a la configuració d'usuari",
+                "NoCardsWarning": "No tens cap joc de cartes predilecte!"
+            },
+            "Bennies": {
+                "Name": "Gastar/Rebre un beni",
+                "Hint": "Prem per gastar un beni, manté la tecla Alt mentre prems la tecla per rebre un beni"
+            }
+        },
+        "Settings": {
+            "HighlightTemplate": {
+                "Name": "Destacar sempre les plantilles",
+                "Hint": "Quan està activat, les plantilles de mesura sempre es destaquen a si mateixes en lloc de la graella."
+            },
+            "FantasyCompanionEntangle": {
+                "Name": "Aferrat del Fantasy Companion",
+                "Hint": "Utilitzeu l'estat d'aferrat del Fantasy Companion en lloc de la versió del bàsic. Requereix recarregar perquè tingui efecte"
+            },
+            "InitDiscardPile": {
+                "Name": "Pila de descart d'iniciativa"
+            },
+            "InitCardDeck": {
+                "Name": "Baralla de cartes per a la iniciativa"
+            },
+            "ParryBase": {
+                "Name": "Nom localitzat de l'habilitat de lluita",
+                "Hint": "Habilitat que s'utilitzarà per calcular la parada del PJ"
+            },
+            "UseAttributeShorts": {
+                "Name": "Utilitzeu noms d'atributs escurçats",
+                "Hint": "Activeu aquesta opció si voleu veure noms d'atributs abreujats als fulls de PJ i PNJ, és a dir, Agi en lloc d'Agility, Ast en lloc d'astúcia, etc. Haureu de tancar i tornar a obrir tots les fitxes obertes perquè aquesta opció tingui efecte."
+            },
+            "WeightUnit": {
+                "Name": "Unitat de pes",
+                "Hint": "Estableix si els pesos es mesuren en lliures o quilograms. Canviar això NO canviarà els pesos dels objectes, només com es calcula la càrrega"
+            },
+            "HideNpcItemChatCards": {
+                "Name": "Amaga les targetes de xat d'objectes dels PNJ",
+                "Hint": "Quan s'activa, les targetes de xat d'objectes PNJ s'envien automàticament com a xiuxiueig a tots els DJ en lloc de publicar-se perquè tothom les vegi"
+            },
+            "EnableBennyNotify": {
+                "Name": "Notificació de benis",
+                "Hint": "Mostra missatges de xat quan es gasten, es donen o s'actualitzen benis."
+            },
+            "HideWC": {
+                "Name": "Amaga els comodins PNJ",
+                "Hint": "No mostris quins PNJ són comodins als jugadors"
+            },
+            "CreateInitChat": {
+                "Name": "Crea un missatge de xat per a la iniciativa"
+            },
+            "AutoInit": {
+                "Name": "Iniciativa automàtica",
+                "Hint": "Dona automàticament cartes d'acció cada ronda"
+            },
+            "Benny3DFront": {
+                "Name": "Textura frontal",
+                "Hint": "Textura frontal 3D del beni"
+            },
+            "Benny3DBack": {
+                "Name": "Textura posterior",
+                "Hint": "Textura posterior del beni 3D"
+            },
+            "Benny3DBackBump": {
+                "Name": "Mapa posterior del Bump",
+                "Hint": "Mapa de la part posterior del beni"
+            },
+            "Benny3DFrontBump": {
+                "Hint": "Mapa davanter del bump del beni",
+                "Name": "Mapa frontal del bump"
+            },
+            "CoreSkillsList": {
+                "Name": "Llista d'habilitats bàsiques",
+                "Hint": "Introduïu una llista separada per comes d'habilitats per definir com a habilitats bàsiques per a tots els actors"
+            },
+            "CoreSkillsPack": {
+                "Name": "Compendi d'habilitats bàsiques",
+                "Hint": "Trieu de quin compendi es trauran les habilitats bàsiques"
+            },
+            "WealthType": {
+                "Name": "Tipus de riquesa",
+                "Hint": "Trieu com fer un seguiment de la riquesa i la moneda dels PJ"
+            },
+            "CurrencyName": {
+                "Name": "Nom de la moneda",
+                "Hint": "Anomena la teva moneda"
+            },
+            "JokersWild": {
+                "Name": "Jòquer salvatge",
+                "Hint": "Ofereix un beni a cada PJ quan un d'ells rep un jòquer"
+            },
+            "AmmoManagement": {
+                "Name": "Gestió de municions",
+                "Hint": "Quan s'activa, i és aplicable, les accions resten munició del carregador de l'arma. Les cartes d'objecte també obtenen un nou botó de recàrrega i no podreu llançar un atac si no hi ha prou munició disponible"
+            },
+            "PCAmmoFromInventory": {
+                "Name": "Els PJ utilitzen munició de l'inventari",
+                "Hint": "Quan està activada, l'opció per configurar un objecte \"Equipable\" es pot configurar per utilitzar-lo com a munició i s'utilitzarà quan es recarregui l'arma"
+            },
+            "NPCAmmoFromInventory": {
+                "Name": "Els PNJ utilitzen munició del seu inventari"
+            },
+            "VehicleAmmoFromInventory": {
+                "Name": "Els vehicles utilitzen munició del seu inventari"
+            },
+            "EnableWoundPace": {
+                "Name": "Ajustar el pas amb les ferides",
+                "Hint": "Quan està activat, el pas es veu afectat automàticament per les ferides"
+            },
+            "EnableConv": {
+                "Name": "Convicció",
+                "Hint": "Activar la regla de convicció"
+            },
+            "NoPowerPoints": {
+                "Name": "Sense punts de poder",
+                "Hint": "Quan està activada, aquesta opció amaga totes les interaccions de Punts de poder"
+            },
+            "AlwaysGeneralPP": {
+                "Name": "Mostrar sempre els punts de poder",
+                "Hint": "Quan està activada, la secció Poders sempre es mostra encara que tots els poders tinguin un rerefons arcà associat."
+            },
+            "ApplyEncumbrance": {
+                "Name": "Aplicar penalitzacions de càrrega",
+                "Hint": "Aplicar penalitzacions de càrrega. Si us plau, tingueu en compte que actualment NO admet les tirades de {vigor} per resistir la {fatigue}!"
+            },
+            "GmBennies": {
+                "Name": "Benis del DJ",
+                "Hint": "Estableix quants benis rep el DJ al reiniciar"
+            },
+            "VehicleMods": {
+                "Name": "Modificadors de vehicles",
+                "Hint": "Els vehicles utilitzen modificadors"
+            },
+            "VehicleEdges": {
+                "Name": "Avantages de vehicles",
+                "Hint": "Els vehicles utilitzen avantatges i desavantatges"
+            },
+            "BennyImageSheet": {
+                "Name": "Beni",
+                "Hint": "Selecciona quina imatge vols utilitzar pels benis a la fitxa de PJ"
+            },
+            "HardChoices": {
+                "Name": "Eleccions difícils",
+                "Hint": "Si marques això, s'habilitarà la regla Eleccions difícils"
+            },
+            "CardSound": {
+                "Name": "So de la carta",
+                "Hint": "Reprodueix un so de carta en repartir Iniciativa"
+            },
+            "StartingCurrency": {
+                "PC": {
+                    "Name": "Moneda inicial del PJ",
+                    "Hint": "Estableix la quantitat de diners que els PJ reben en ser creats."
+                },
+                "NPC": {
+                    "Hint": "Estableix la quantitat de diners que els actors PNJ reben en ser creats.",
+                    "Name": "Moneda inicial dels PNJ"
+                }
+            },
+            "NPCCurrency": {
+                "Name": "Els PNJs utilitzen moneda",
+                "Hint": "Quan s'activi, tots els PNJ tenen les mateixes opcions de moneda que els Personatges Jugadors."
+            }
+        },
+        "EffectCallbacks": {
+            "Shaken": {
+                "RollSpirit": "Tirada d'esperit",
+                "Title": "Treure l'atordit d'en {name}",
+                "Flavor": "Tirada d'esperit per treure l'atordit",
+                "UnshakeModifier": "Modificador per sortir de l'atordiment",
+                "Question": "Què vols fer?",
+                "Success": "Ja no estàs atordit"
+            },
+            "Stunned": {
+                "Title": "Tirada de vigor per deixar d'estar conmocionat",
+                "Fail": "Et quedes conmocionat",
+                "Success": "Ja no estàs conmocionat, però segueixes sent Vulnerable",
+                "Raise": "Ja no estàs conmocionat ni vulnerable",
+                "UnStunModifier": "Modificador de conmocionat"
+            },
+            "BleedingOut": {
+                "Title": "Tirada de vigor per resistir el sagnat",
+                "Fail": "Morts",
+                "Success": "Aguanta, de moment.",
+                "Raise": "T'has estabilitzat amb èxit"
+            }
+        },
+        "BenniesSpendGM": "Gasta un beni del DJ",
+        "DocumentLink": "Enllaç",
+        "DocumentTweaks": "Paràmetres",
+        "TargetVulnerable": "L'objectiu és vulnerable",
+        "WildAttack": "Atac salvatge",
+        "ItemType": "Tipus d'objecte",
+        "Source": "Font",
+        "Properties": "Propietats",
+        "AddAction": "Afegir acció",
+        "DeleteEmbeddedActionPrompt": "Estàs segur que vols esborrar l'acció {action}",
+        "DeleteEmbeddedPowerPrompt": "Estàs segur que vols esborrar el poder {power}?",
+        "TrademarkWeapon": {
+            "Label": "Arma distintiva",
+            "Regular": "Regular",
+            "Improved": "Millorada"
+        },
+        "OffHandPenalty": "Mà dolenta",
+        "ItemEquipStatus": {
+            "Label": "Localització",
+            "Stored": "Emmagatzemada",
+            "Carried": "Portada",
+            "Equipped": "Equipada",
+            "OffHand": "Mà dolenta",
+            "MainHand": "Mà principal",
+            "TwoHands": "a dos mans",
+            "Added": "Afegida",
+            "Readied": "Preparada"
+        },
+        "DestroyOnEmpty": "Destrueix quan estigui buit",
+        "Charges": "Càrregues",
+        "Consumable": {
+            "Use": "Ús",
+            "Consumables": "Consumibles"
+        },
+        "EmptyRacialAbilitiesHint": "Aquesta {race} o {archetype} encara no té cap habilitat. Arrossegueu i deixeu anar alguna cosa a la fitxa per començar.",
+        "NoTokenSelectedForResistRoll": "Per fer una tirada de resistència, primer selecciona un token",
+        "Templates": {
+            "Cone": {
+                "Short": "Con",
+                "Long": "Plantilla de Con"
+            },
+            "Stream": {
+                "Short": "Stream",
+                "Long": "Plantilla de stream"
+            },
+            "Small": {
+                "Short": "PAP",
+                "Long": "Plantilla d'àrea petita"
+            },
+            "Medium": {
+                "Short": "PAM",
+                "Long": "Plantilla d'àrea mitjana"
+            },
+            "Large": {
+                "Short": "PAG",
+                "Long": "Plantilla d'àrea gran"
+            },
+            "Available": "Plantilles disponibles",
+            "Possible": "Plantilles possibles"
+        },
+        "CompendiumTOC": {
+            "Toggle": "Interrompre l'ús del Compendi TOC",
+            "Dialog": {
+                "Title": "Confirma l'interruptor",
+                "Content": "Perquè el canvi tingui efecte, Foundry VTT i tots els clients connectats es tornaran a carregar. Si us plau confirma."
+            },
+            "Header": "Continguts"
+        },
+        "Category": "Categoria d'objectes",
+        "ItemIsAmmo": "És munició",
+        "Vision": {
+            "SeeHeat": "Visió tèrmica",
+            "SenseHeat": "sentit térmic",
+            "Infravision": "Infrarojos"
+        },
+        "Attribute": "Atribut",
+        "BaseDie": "Nivell de dau",
+        "AttributeManager": {
+            "Title": "Gestió d'atributs por {name}",
+            "Open": "Gestiona atributos"
+        },
+        "HeavyArmor": "Armadura pesada",
+        "HeavyWeapon": "Armadura pesada",
+        "UsesTOC": "Fer servir el compendi TOC",
+        "TOCSettings": {
+            "Label": "Obrir la configuració de compendis TOC",
+            "Name": "Configuració de compendis TOC",
+            "Hint": "Configura l'aplicació de compendis TOC"
+        },
+        "DieSides": "Passos de daus",
+        "WildDieSides": "Dau salvatge",
+        "EncumbranceSteps": "Passos de Càrrega",
+        "EffectWizard": {
+            "Preview": "Vista prèvia",
+            "Change": "Canviar",
+            "Mode": "Mode",
+            "Value": "Valor",
+            "Changes": "Canvis",
+            "SelectAttribute": "Tria atribut",
+            "EnterSkill": {
+                "Label": "Introduïu habilitat",
+                "Hint": "Pots introduir qualsevol nom d'habilitat que vulgueu o seleccionar-ne un de la llista de suggeriments"
+            }
+        },
+        "OtherStats": "Altres estadístiques",
+        "HotbarDropOwnedItemWarning": "Només es poden crear macros pels elements propis",
+        "AdditionalStats": {
+            "SelectHint": "Introdueix una llista d'opcions, separades per punt i coma"
+        },
+        "MessageOnUse": {
+            "Label": "Missatge sobre l'ús",
+            "Hint": "Mostra un missatge de xat quan utilitzeu aquest element"
+        },
+        "ItemGrants": {
+            "EmptyHint": "Aquest item actualment no conté cap item",
+            "Header": "Ajudes de item",
+            "When": "Grant Items When"
+        },
+        "IgnFatigue": "Ignorar Fatiga"
+    },
+    "ACTOR": {
+        "TypeCharacter": "Personatge (PJ)",
+        "TypeNpc": "Personatge no jugador (PNJ)",
+        "TypeVehicle": "Vehicle"
+    },
+    "ITEM": {
+        "TypeWeapon": "Arma",
+        "TypeArmor": "Armadura",
+        "TypeShield": "Escut",
+        "TypeGear": "Equip",
+        "TypeEdge": "Avantatge",
+        "TypeHindrance": "Desavantatge",
+        "TypeSkill": "Habilitat",
+        "TypePower": "Poder",
+        "TypeAbility": "Capacitat",
+        "TypeConsumable": "Consumibles",
+        "TypeAction": "++Action"
+    },
+    "CARD": {
+        "TypeAdventure": "Cartes d'aventura",
+        "TypePoker": "Cartes de poker"
+    }
+}
