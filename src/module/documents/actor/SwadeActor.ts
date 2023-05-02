@@ -1,7 +1,7 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import {
   Context,
-  DocumentModificationOptions
+  DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
@@ -19,7 +19,7 @@ import { Logger } from '../../Logger';
 import {
   getRankFromAdvanceAsString,
   modifierReducer,
-  shouldShowBennyAnimation
+  shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -226,6 +226,18 @@ export default class SwadeActor extends Actor {
       attribute['wild-die'].sides = Math.min(attribute['wild-die'].sides, 12);
     }
 
+    let pace = this.system.stats.speed.value;
+
+    //modify pace with wounds
+    if (game.settings.get('swade', 'enableWoundPace')) {
+      //bound maximum wound penalty to -3
+      const wounds = Math.min(this.system.wounds.value, 3);
+      //subtract wounds
+      pace -= wounds;
+      //make sure the pace doesn't go below 1 from wounds
+      pace = Math.max(pace, 1);
+    }
+
     //handle carry capacity
     foundry.utils.setProperty(
       this,
@@ -237,6 +249,12 @@ export default class SwadeActor extends Actor {
       'system.details.encumbrance.max',
       this.calcMaxCarryCapacity(),
     );
+
+    //subtract encumbrance, if necessary
+    if (this.isEncumbered) pace -= 2;
+
+    //Clamp the pace so it's not a negative value
+    this.system.stats.speed.adjusted = Math.max(pace, 0);
 
     //handle advances
     const advances = this.system.advances;
@@ -252,21 +270,6 @@ export default class SwadeActor extends Actor {
       advances.value = activeAdvances;
       advances.rank = getRankFromAdvanceAsString(activeAdvances);
     }
-
-    let pace = this.system.stats.speed.value;
-
-    //subtract encumbrance, if necessary
-    if (this.isEncumbered) pace -= 2;
-
-    //modify pace with wounds
-    if (game.settings.get('swade', 'enableWoundPace')) {
-      //bound maximum wound penalty to -3
-      const wounds = Math.min(this.system.wounds.value, 3);
-      //subtract wounds
-      pace -= wounds;
-    }
-    //make sure the pace doesn't go below 1
-    this.system.stats.speed.adjusted = Math.max(pace, 1);
 
     //set scale
     this.system.stats.scale = this.calcScale(this.system.stats.size);

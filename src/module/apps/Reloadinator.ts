@@ -32,7 +32,7 @@ export default class Reloadinator extends Application<ApplicationOptions> {
     return this.weapon.getFlag('swade', 'loadedAmmo');
   }
 
-  get weaponIsEmpty() {
+  get noShotsInWeapon() {
     return (
       this.weapon.type === 'weapon' && this.weapon.system.currentShots === 0
     );
@@ -92,19 +92,20 @@ export default class Reloadinator extends Application<ApplicationOptions> {
 
     const stackSize = selected.system.quantity;
     const discardEmpty =
-      this.#wantsToDiscard && this.weaponIsEmpty && this.loadedAmmo;
+      this.#wantsToDiscard && this.noShotsInWeapon && this.loadedAmmo;
 
     //discard empty magazine if desired
     if (discardEmpty || !this.loadedAmmo) {
       await this.#loadFromInventory(selected, stackSize);
-    } else if (stackSize > 1) {
+      await this.#loadIntoWeapon(selected);
+    } else if (stackSize > 0) {
       await this.#exchangeMagWithStack(selected, stackSize);
+      await this.#loadIntoWeapon(selected);
     } else {
       //last resort: just update the charges
-      await selected.update({ 'system.charges.value': currentShots });
+      await this.#loadIntoWeapon(selected);
+      await this.#updateSelectedMag(selected, currentShots);
     }
-
-    await this.#loadIntoWeapon(selected);
     this.#resolve();
   }
 
@@ -179,36 +180,57 @@ export default class Reloadinator extends Application<ApplicationOptions> {
 
   async #exchangeMagWithStack(selected: SwadeItem, stackSize: number) {
     if (selected.type !== 'consumable') return;
-    //take from the stack, and put the remaining shots into a new mag
-    await selected.update({ 'system.quantity': stackSize - 1 });
+
+    //find an existing magazine stack we can add to
     const emptyMagStack = this.magazines.find(
       (m) => m.type === 'consumable' && m.system.charges.value === 0,
     );
-    if (!emptyMagStack || (!this.weaponIsEmpty && this.loadedAmmo)) {
+    //if there's no existing stack or we're doing a partial reload.
+    if (!emptyMagStack || (!this.noShotsInWeapon && this.loadedAmmo)) {
       const subtype = selected.system.subtype;
       let newCharges = 0;
-      if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
-        newCharges = this.#getBatteryFillFromWeapon();
-      } else if (subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
-        newCharges = this.weapon.system.currentShots;
+      const currentShots = this.weapon.system.currentShots;
+      //get the new charges value based on current shots and consumable subtype.
+      if (subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
+        newCharges = currentShots;
+      } else if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
+        newCharges = this.#getBatteryFillFromShots(currentShots);
       }
-      //Otherwise just clone the magazine and update the data
+      //copy the selected consumable and set the new charges on the clone.
       await selected.clone(
         { system: { quantity: 1, 'charges.value': newCharges } },
         { save: true },
       );
     } else {
-      //check if there's a stack we can add to
+      //else increase the stack by 1
       await emptyMagStack.update({
         'system.quantity': emptyMagStack.system.quantity + 1,
       });
     }
+
+    //lastly, decrease the stack size of the selected mag or delete it entirely.
+    const newStackSize = stackSize - 1;
+    if (newStackSize > 0) {
+      await selected.update({ 'system.quantity': newStackSize });
+    } else {
+      await selected.delete();
+    }
   }
 
-  #getBatteryFillFromWeapon(): number {
+  async #updateSelectedMag(selected: SwadeItem, currentShots: number) {
+    let shots = 0;
+    const subtype = selected.system.subtype;
+    if (subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
+      shots = currentShots;
+    } else if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
+      shots = this.#getBatteryFillFromShots(currentShots);
+    }
+    await selected.update({ 'system.charges.value': shots });
+  }
+
+  #getBatteryFillFromShots(currentShots: number): number {
     if (this.weapon.type !== 'weapon') return 0;
-    const per =
-      (this.weapon.system.currentShots / this.weapon.system.shots) * 100;
+    const per = (currentShots / this.weapon.system.shots) * 100;
     return Math.ceil(per);
   }
 
