@@ -484,6 +484,7 @@ SWADE:
         Press to spend a Benny, hold down Alt while you press the key to receive
         a Benny instead
   Settings:
+    ArbitFields: Arbitrary Setting Fields
     HighlightTemplate:
       Name: Always Highlight Templates
       Hint: >-
@@ -631,8 +632,10 @@ SWADE:
       Hint: Checking this will enable the Dumb Luck Setting Rule
     WoundCap:
       Name: Wound Cap
-      Hint: Checking this will enable the Wound Cap Setting Rule when calculating
-        Wounds.
+      Hint: Checking this will enable the Wound Cap Setting Rule when calculating Wounds.
+    UnarmoredHero:
+      Name: Unarmored Hero
+      Hint: Checking this will enable the Unarmored Hero setting rule when rolling to soak
     GrittyDamage:
       Name: Gritty Damage
       Hint: Checking this will enable the Gritty Damage Setting Rule and allow for
@@ -685,6 +688,7 @@ SWADE:
     Stored: Stored
     Carried: Carried
     Equipped: Equipped
+    Installed: Installed
     OffHand: Off-Hand
     MainHand: Main Hand
     TwoHands: Two Hands
@@ -739,6 +743,7 @@ SWADE:
   HeavyArmor: Heavy Armor
   HeavyWeapon: Heavy Weapon
   UsesTOC: Use Compendium TOC
+  TOCBlockList: Compendium TOC Blocklist
   TOCSettings:
     Label: Open Compendium TOC Settings
     Name: Compendium TOC Settings
@@ -785,8 +790,10 @@ SWADE:
   LoadedAmmo: Loaded Ammmunition
   DamageApplicator:
     ApplyDamage: Apply Damage
+    SoakModifier: Soak Modifier
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
     SoakDialog:
+      SoakRoll: Vigor Test to Soak
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?
       WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to
@@ -802,8 +809,8 @@ SWADE:
       Accept: Accept
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
-      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
-        roll?</p>
+      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak roll?</p>
+      PromptCritFail: <p>{name} is about to take {wounds}. A critical fail is preventing rerolls.</p>
       Benny: Spend a Benny to Reroll
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free

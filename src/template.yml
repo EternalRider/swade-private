@@ -35,6 +35,7 @@ Actor:
           encumbranceSteps: 0
         vigor:
           unStunBonus: 0
+          soakBonus: 0
           die:
             sides: 4
             modifier: 0

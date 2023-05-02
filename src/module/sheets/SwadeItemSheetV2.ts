@@ -279,7 +279,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
           break;
         case constants.RELOAD_TYPE.PP:
-          data.ammoList = Object.keys(this.actor?.system?.powerPoints);
+          data.ammoList = Object.keys(this.actor?.system?.powerPoints ?? {});
           data.ppReload = true;
           break;
         case constants.RELOAD_TYPE.BATTERY:
@@ -563,8 +563,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     for (const grant of grants) {
       const item = fromUuidSync(grant.uuid) as SwadeItem | null;
       enriched.push({
-        name: item.name ?? grant.name,
-        img: item.img ?? grant.img,
+        name: item?.name ?? grant.name,
+        img: item?.img ?? grant.img,
         uuid: grant.uuid,
         missing: !grant,
       });
@@ -689,7 +689,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       if (this.item.system.isVehicular && this.actor?.type === 'vehicle') {
         states = {
           ...states,
-          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
+          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Installed',
         };
       } else {
         states = {
@@ -699,16 +699,23 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           [constants.EQUIP_STATE.TWO_HANDS]: 'SWADE.ItemEquipStatus.TwoHands',
         };
       }
-    } else if (
-      this.item.type === 'armor' ||
-      this.item.type === 'shield' ||
-      (this.item.type === 'gear' &&
-        (this.item.system.equippable || this.item.system.isVehicular))
-    ) {
+    } else if (this.item.type === 'armor' || this.item.type === 'shield') {
       states = {
         ...states,
         [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
       };
+    } else if (this.item.type === 'gear') {
+      if (this.item.system.equippable) {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Equipped',
+        };
+      } else if (this.item.system.isVehicular) {
+        states = {
+          ...states,
+          [constants.EQUIP_STATE.EQUIPPED]: 'SWADE.ItemEquipStatus.Installed',
+        };
+      }
     }
     return states;
   }

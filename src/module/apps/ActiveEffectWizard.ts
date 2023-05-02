@@ -172,6 +172,10 @@ export default class ActiveEffectWizard extends FormApplication {
         key: 'system.attributes.spirit.unShakeBonus',
       },
       {
+        label: game.i18n.localize('SWADE.DamageApplicator.SoakModifier'),
+        key: 'system.attributes.vigor.soakBonus',
+      },
+      {
         label: game.i18n.localize('SWADE.EffectCallbacks.Stunned.UnStunModifier'),
         key: 'system.attributes.vigor.unStunBonus',
       },

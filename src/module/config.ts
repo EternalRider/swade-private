@@ -82,6 +82,7 @@ export const SWADE: SwadeConfig = {
       'dumbLuck',
       'grittyDamage',
       'woundCap',
+      'unarmoredHero',
       'injuryTable',
       'actionDeck',
       'applyEncumbrance',

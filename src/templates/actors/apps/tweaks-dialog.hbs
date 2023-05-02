@@ -144,9 +144,10 @@
             data-dtype='Number'
           />
         </span>
+      </div>
       <div class='form-group' id='bonusUnshake'>
-        <label for='system.fatigue.ignored'>
-          {{localize 'SWADE.UnshakeModifier'}}
+        <label for='system.attributes.spirit.unShakeBonus'>
+          {{localize 'SWADE.EffectCallbacks.Shaken.UnshakeModifier'}}
         </label>
         <span class='form-fields'>
           <input
@@ -154,6 +155,20 @@
             name='system.attributes.spirit.unShakeBonus'
             type='number'
             value='{{doc.system.attributes.spirit.unShakeBonus}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group' id='bonusSoak'>
+        <label for='system.attributes.vigor.soakBonus'>
+          {{localize 'SWADE.DamageApplicator.SoakModifier'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='system.attributes.vigor.soakBonus'
+            name='system.attributes.vigor.soakBonus'
+            type='number'
+            value='{{doc.system.attributes.vigor.soakBonus}}'
             data-dtype='Number'
           />
         </span>

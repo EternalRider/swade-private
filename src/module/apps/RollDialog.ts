@@ -211,6 +211,7 @@ export default class RollDialog extends FormApplication<
 
     if (finalizedRoll instanceof DamageRoll) {
       finalizedRoll.ap = this.ctx.ap ?? 0;
+      finalizedRoll.isHeavyWeapon = this.ctx.isHeavyWeapon ?? false;
     }
 
     // Convert the roll to a chat message and return it
@@ -347,6 +348,7 @@ interface RollDialogContext {
   item?: SwadeItem;
   actor?: SwadeActor;
   ap?: number;
+  isHeavyWeapon?: boolean;
 }
 
 interface RollDialogFormData {

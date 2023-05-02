@@ -276,6 +276,7 @@ export default class ItemChatCardHelper {
       }
       roll = await item.rollDamage({
         dmgOverride: action.dmgOverride,
+        isHeavyWeapon: action.isHeavyWeapon,
         flavour: action.name,
         additionalMods,
       });

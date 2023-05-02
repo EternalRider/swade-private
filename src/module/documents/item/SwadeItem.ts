@@ -199,6 +199,7 @@ export default class SwadeItem extends Item {
     }
     const label = this.name;
     const ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    const isHeavyWeapon: boolean = foundry.utils.getProperty(this, 'system.isHeavyWeapon') || options.isHeavyWeapon;
     let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
 
     if (ap) {
@@ -299,6 +300,7 @@ export default class SwadeItem extends Item {
       title: `${label} ${game.i18n.localize('SWADE.Dmg')}`,
       item: this,
       ap: ap,
+      isHeavyWeapon: isHeavyWeapon,
     }) as Promise<DamageRoll | null>;
   }
 
