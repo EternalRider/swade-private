@@ -199,7 +199,9 @@ export default class SwadeItem extends Item {
     }
     const label = this.name;
     const ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
-    const isHeavyWeapon: boolean = foundry.utils.getProperty(this, 'system.isHeavyWeapon') || options.isHeavyWeapon;
+    const isHeavyWeapon: boolean =
+      foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
+      options.isHeavyWeapon;
     let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
 
     if (ap) {
@@ -1221,7 +1223,8 @@ export default class SwadeItem extends Item {
           (i) =>
             i.type === 'consumable' &&
             i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE &&
-            i.name === this.system.ammo,
+            i.name === this.system.ammo &&
+            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED,
         ) ?? [];
     } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
       magazines =
@@ -1229,7 +1232,8 @@ export default class SwadeItem extends Item {
           (i) =>
             i.type === 'consumable' &&
             i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY &&
-            i.name === this.system.ammo,
+            i.name === this.system.ammo &&
+            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED,
         ) ?? [];
     }
 

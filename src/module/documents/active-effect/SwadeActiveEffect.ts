@@ -356,10 +356,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    const relatedEffects = this.getFlag('swade', 'related');
-    if (relatedEffects && this.parent?.documentName === 'Actor') {
-      const isStatusEffect = !!this.statusId;
-      for (const [id, mutation] of Object.entries(relatedEffects)) {
+    const related = this.getFlag('swade', 'related');
+    if (related && this.parent?.documentName === 'Actor' && !!this.statusId) {
+      for (const [id, mutation] of Object.entries(related)) {
         if (this.parent.effects.find((e) => id === e.statusId)) continue; //skip if the effect already exists on the actor
         const statusEffect = getStatusEffectDataById(id);
         if (!statusEffect) continue; //skip if we can't find the effect
@@ -369,7 +368,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
           : foundry.utils.mergeObject(statusEffect, mutation, {
               performDeletions: true,
             });
-        setProperty(effect, 'flags.swade.favorite', isStatusEffect);
+        setProperty(effect, 'flags.swade.favorite', true);
         this.parent.toggleActiveEffect(effect, { active: true });
       }
     }
