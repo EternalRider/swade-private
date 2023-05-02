@@ -29,6 +29,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
 - Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
 
+## 2.3.6
+
+### Fixed
+
+- Fixed an issue that would cause status effects to apply multiple times. (#766)
+- Fixed an issue that would cause battery reloads to behave abnormally under certain conditions. (#764)
+- Pace is no longer clamped to a minimum of 1 but wound penalties alone cannot reduce it below 1. (#768)
+- Fixed a display issue in the document tweaks.
+- Fixed an issue which could allow characters to reload with magazines/batteries that are not actually in their inventory.
+
 ## 2.3.5
 
 ### Added
