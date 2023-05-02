@@ -1,1 +1,318 @@
-{}
+SWADE.PPShort: BP
+SWADE.Init: Iniziatiba
+SWADE.MaxCargo: Gehienezko Karga
+SWADE.CardSoundDesc: Karta soinua Iniazitiba banatzean
+SWADE.HideWCDesc: PEJak komodin diren ezkutatu jokalariei
+SWADE.SettingConfLabel: Giropen Konfiguratzailea Ireki
+SWADE.CommunityCharSheet: Komunitate Pertsonaia Orria
+SWADE.CommunityNPCSheet: Komunitate PEJ Orria
+SWADE.CommunityVicSheet: Komunitate Ibilgailu Orria
+SWADE.CommunityItemSheet: Komunitate Objektu Orria
+ACTOR.TypeNpc: PEJ
+ACTOR.TypeVehicle: Ibilgailua
+ITEM.TypeWeapon: Arma
+ITEM.TypeArmor: Armadura
+ITEM.TypeShield: Ezkutua
+ITEM.TypeGear: Ekipamendua
+ITEM.TypeEdge: Abantaila
+ITEM.TypeHindrance: Desabantaila
+ITEM.TypeSkill: Trebezia
+ITEM.TypePower: Boterea
+SWADE.Name: Izena
+SWADE.Tough: Gogortasuna
+SWADE.Race: Arraza
+SWADE.Pace: Pausoa
+SWADE.Running: Korrika
+SWADE.RunningDie: Korrika dadoa
+SWADE.RollRun: Klik egin korrika egiteko
+SWADE.Adv: Aurrerapenak
+SWADE.Rank: Maila
+SWADE.Inv: Inbentarioa
+SWADE.Summary: Orokorra
+SWADE.Pow: Botereak
+SWADE.Extra: Extra
+SWADE.Bennies: Beniak
+SWADE.WildCard: Komodina
+SWADE.Label: Etiketa
+SWADE.GmBennies: JM Beniak
+ACTOR.TypeCharacter: Pertsonaia Jokalaria
+SWADE.TraitMod: Ezaugarri Mod
+SWADE.SkillTest: Trebezia Proba
+SWADE.AttributeTest: Atributu Proba
+SWADE.Attributes: Atributuak
+SWADE.Derived: Atributu eratorriak
+SWADE.AttrAgi: Arintasuna
+SWADE.AttrSma: Adimena
+SWADE.AnimalSmarts: Animalia adimena
+SWADE.AttrSpr: Izpiritua
+SWADE.AttrStr: Indarra
+SWADE.AttrVig: Sendotasuna
+SWADE.Tweaks: Ezarpenak
+SWADE.AttrAgiShort: Ari
+SWADE.AttrSmaShort: Argi
+SWADE.AttrSprShort: Izp
+SWADE.AttrStrShort: Ind
+SWADE.AttrVigShort: Sen
+SWADE.Skills: Habilitateak
+SWADE.Unskilled: Trebatu gabe
+SWADE.LinkAttr: Lotutako Atributua
+SWADE.Die: Dado
+SWADE.WildDie: Dado Basatia
+SWADE.Mod: Aldatzailea
+SWADE.BenniesSpend: Benia Gastatu
+SWADE.BenniesGive: Benia Eman
+SWADE.BenniesRefresh: Beniak Berriztu
+SWADE.AllBenniesRefresh: Hasieratu Benni Guztiak
+SWADE.BenniesRefreshMessage: Beniak hasieratu egin dira!
+SWADE.BenniesRefreshAllMessage: Beni guztiak hasieratu dira!
+SWADE.BenniesGMRefreshMessage: JMaren Beniak hasieratu dira!
+SWADE.BenniesAddMessage: "(e)k Beni bat jaso du!"
+SWADE.BenniesGMAddMessage: "(e)k Beni bat hartu du!"
+SWADE.BenniesSpendMessage: "(e)k Beni bat erabili du!"
+SWADE.BenniesMax: Beniak Berrezarri
+SWADE.EditSkill: Trebezia Editatu
+SWADE.EdEdge: Abantaila Editatu
+SWADE.EdHind: Desabantaila Editatu
+SWADE.Ed: Editatu
+SWADE.Del: Ezabatu
+SWADE.Arcane: Arkanoa
+SWADE.All: Guztia
+SWADE.HasPowers: Botereak Ditu
+SWADE.Weapons: Armak
+SWADE.MeleeWeapons: BB Armak
+SWADE.RangedWeapons: Irismendun Armak
+SWADE.Armors: Armadurak
+SWADE.Shields: Ezkututak
+SWADE.Shaken: Lelotuta
+SWADE.Distr: Oharkabe
+SWADE.Vuln: Zaurgarri
+SWADE.Stunned: Txundituta
+SWADE.Entangled: Atxikitua
+SWADE.Bound: Inmobilizatua
+SWADE.Aiming: Apuntatzen
+SWADE.Berserk: Berserk
+SWADE.Defending: Defendatuz
+SWADE.Flying: Hegaz
+SWADE.Holding: Itxaroten
+SWADE.Encumbered: Gainkargatua
+SWADE.Prone: Etzana
+SWADE.BleedingOut: Odolhusten
+SWADE.Diseased: Gaixorik
+SWADE.HeartAttack: Bihotzekoa
+SWADE.OnFire: Sutan
+SWADE.Poisoned: Pozoituta
+SWADE.Reach: Irismena
+SWADE.Torch: Zuzia
+SWADE.Invisible: Ikusezina
+SWADE.Smite: Zigorra
+SWADE.Armor: Armadura
+SWADE.Dmg: Mina
+SWADE.Rng: Irismena
+SWADE.Ap: AP
+SWADE.RoF: Kadentzia
+SWADE.Mag: Munizioa
+SWADE.Parry: Gelditu
+SWADE.Notes: Oharrak
+SWADE.ActionsEffects: Akzioak eta Efektuak
+SWADE.Actions: Akzioak
+SWADE.DmgModUni: Kalte Modifikadorea (universal)
+SWADE.ShotsUsed: Bala erabiliak
+SWADE.NaturalArmor: Berezko Armadura
+SWADE.HitLocations: Golpe Kokapena
+SWADE.Head: Burua
+SWADE.Torso: Enborra
+SWADE.Arms: Besoak
+SWADE.Legs: Hankak
+SWADE.MinStrLong: Gutxieneko Indarra
+SWADE.MinStr: Gutx. Indarra
+SWADE.MinStrShort: Gutx.Ind
+SWADE.Desc: Deskribapena
+SWADE.Special: Gaitasun Bereziak
+SWADE.Details: Xehetasunak
+SWADE.Misc: Den.
+SWADE.QuickAccess: Sarbide Azkarra
+SWADE.Effects: Efektu Aktiboak
+SWADE.Hindrances: Desabantailak
+SWADE.HasMaxValue: Balio Maximoa Du
+SWADE.Enabled: Gaitua
+SWADE.Currency: Moneta
+SWADE.CarryWeight: Karga
+SWADE.Equipped: Ekipatua
+SWADE.Unequipped: Ekipatu Gabea
+SWADE.Quantity: Kantitatea
+SWADE.Weight: Pisua
+SWADE.Price: Prezioa
+SWADE.PP: Botere Puntuak
+SWADE.CurPP: Uneko Botere Puntuak
+SWADE.MaxPP: Gehienezko Botere Puntuak
+SWADE.Dur: Iraupena
+SWADE.Major: "(Nagusia)"
+SWADE.Minor: "(Txikia)"
+SWADE.Edges: Abantailak
+SWADE.ArcBack: Aurrekari Arkanoak
+SWADE.Req: Betebeharrak
+SWADE.Conv: Ziurtasuna
+SWADE.UseConv: Bere Ziurtasuna darabil!
+SWADE.Hesitant: Zalantzatia
+SWADE.LevelHeaded: Sendoa
+SWADE.AutoCalc: Kalkulu Automatikoak
+SWADE.InclArmor: Gogortasuna automatikoki kalkultzen du (armadura barne).
+SWADE.Trap: Apaingarria
+SWADE.Wound: Zauria
+SWADE.Wounds: Zauriak
+SWADE.WoundsMax: Gehienezko Zauriak
+SWADE.Fatigue: Nekea
+SWADE.FatigueMax: Gehienezko Nekea
+SWADE.Incap: Ezgaitua
+SWADE.InitDraw: Iniziatiba karta jasotzen du!
+SWADE.JokersWild: Joker Basatia dagokio!
+SWADE.Addi: Gehigarria
+SWADE.Status: Estatus
+SWADE.Handling: Maniobra
+SWADE.Topspeed: Gehi. Abi.
+SWADE.OutOfControl: Kontrolik Gabe
+SWADE.Wrecked: Hondatua
+SWADE.Item: Objektua
+SWADE.Cargo: Karga
+SWADE.CargoWeight: Karga Pisua
+SWADE.Mods: Mod-ak
+SWADE.ModSlots: Mod Tartea
+SWADE.MaxMods: Gehienezko Mod-ak
+SWADE.Operator: Operatzailea
+SWADE.ManCheck: Maniobra Proba
+SWADE.AltSkill: Trebezia Alternatiboa
+SWADE.Class: Klasifikazioa
+SWADE.Vehicular: Ibilgailu Arma
+SWADE.VehicleMod: Ibilgailu Mod-a
+SWADE.CardSound: Karta Hotsa
+SWADE.AutoInit: Iniziatiba Automatikoa
+SWADE.AutoInitDesc: Akzio Kartak automatikoki banatu txanda bakoitzean
+SWADE.CreateInitChat: Erakutsi Iniziatiba txat mezua
+SWADE.HideWC: Ezkutatu PEJ komodinak
+SWADE.EnableConv: Gaitu Ziurtasuna
+SWADE.EnableConvDesc: Gaitu Konbentzimendu ezarpen araua
+SWADE.EnableWoundPace: Egokitu Erritmoa zaurien arabera
+SWADE.EnableWoundPaceDesc:
+  Gaitua dagoenean Zauriek Pausuan automatikoki eragiten
+  dute
+SWADE.GmBenniesDesc: Berrezartzean JMak jasoko duen Beni kopurua
+SWADE.EnableBennyNotify: Beni jakinarazpenak
+SWADE.EnableBennyNotifyDesc: Txat mezua erakutsi beniak jaso, eman edo berrezartzean.
+SWADE.VehicleMods: Ibilgailu Mod-ak
+SWADE.VehicleModsDesc: Ibilgailuek Mod Tarteak darabiltzate
+SWADE.VehicleEdges: Ibilgailu Abantailak
+SWADE.VehicleEdgesDesc: Ibilgailuek Abantaila eta Desabantailak darabiltzate
+SWADE.SettingConf: Giropen Konfiguratzailea
+SWADE.SettingConfDesc: Sistema jolasten ari zaren giropenera doitu
+SWADE.Formula: Formula
+SWADE.SitMod: Proba Mod-a
+SWADE.RollMode: Proba Modua
+SWADE.RollExample: adib. +1d6x edo -2
+SWADE.Roll: Jaurti
+SWADE.RollRaise: Gorapenarekin Bota
+SWADE.WealthDie.Label: Aberastasuna
+SWADE.MAPenalty.Label: Ekintza Anitzeko Zigorra
+SWADE.Frightened: Beldurtuta
+SWADE.APLong: Armadura Zulatzailea
+SWADE.SkillModUni: Trebezia Modifikatzailea (unibertsala)
+SWADE.Equippable: Ekipagarria
+SWADE.MajHind: Desabantaila Nagusia
+SWADE.ImprovedLevelHeaded: Sendotasun Hobetua
+SSO.Size: Tamaina
+SWADE.GroupRoll: Taldeko Proba
+SSO.Roll: Bota
+SSO.Edit: Editatu
+SSO.General: Orokorra
+SWADE.ConfigInit: Iniziatiba Konfiguratu
+SWADE.ConvictionActivate: Konbentzimendua darabil!
+SWADE.Vehicles: Ibilgailuak
+SWADE.Curr: Unekoa
+SSO.OfficialSheet: Pinnacle-ren Savage Worlds Orri Ofiziala
+SSO.AddBennie: Benia Gehitu
+SSO.Parry: Gelditu
+SSO.Armor: Armadura
+SSO.Conviction: Ziurtasuna
+SWADE.Cancel: Ezeztatu
+SWADE.Redraw: Berriz Jaso
+SWADE.Add: Gehitu
+SWADE.IgnWounds: Zuriak Baztertu
+SWADE.Size: Tamaina
+SWADE.Scale: Eskala
+SWADE.NoCardsLeft: Ez da nahiko karta gelditzen piloan!
+SWADE.OldCard: Aurreko karta
+SWADE.ActionCard: Akzio Karta
+SWADE.ConvictionEnd: konbentzimenduan zalantza du
+SWADE.NoBennies: Ez duzu nahikoa Beni!
+SSWADE.Templates.Small.Long: Area Txantiloi Txikia
+SWADE.Templates.Medium.Long: Area Ertain Txantiloia
+SWADE.Templates.Short.Long: Area Handi Txantiloia
+SWADE.Templates.Cone.Long: Kono Txantiloia
+SWADE.GM: Joko Maizterra
+SWADE.AddStats: Eremu Osagarriak
+SWADE.Actors: Aktoreak
+SWADE.Max: Max
+SSO.Add: Gehitu
+SSO.Expand: Zabaldu
+SSO.Race: Arraza
+SSO.Advances: Aurrerapenak
+SSO.Active: Aktiboa
+SSO.SWADELogo: Savage Worlds Adventure Edition Logoa
+SSO.ConvictionActivate: Something something Konbentzimendua Aktibatua
+SSO.Summary: Orokorra
+SSO.Edges: Abantailak
+SSO.Inventory: Inbentarioa
+SSO.Powers: Botereak
+SSO.Desc: Deskribapena
+SSO.Attributes: Atributuak
+SSO.Derived: Eratorriak
+SSO.QuickAccess: Lasterbideak eta Efektuak
+SSO.Wounds: Zauriak
+SSO.Fatigue: Nekea
+SSO.Bennies: Beniak
+SSO.SpendBennie: Benia Erabili
+SSO.CurrentBennies: Uneko Beniak
+SSO.Shaken: Lelotuta
+SSO.Distr: Oharkabe
+SSO.Stunned: Txundituta
+SSO.Bound: Inmobilizatua
+SSO.Entangled: Atxikitua
+SSO.AttrAgi: Arintasuna
+SSO.AttrSma: Adimena
+SSO.AttrSpi: Izpiritua
+SSO.AttrStr: Indarra
+SSO.AttrVig: Sendotasuna
+SSO.Tough: Gogortasuna
+SSO.Pace: Pausoa
+SSO.Dmg: Mina
+SSO.Mag: Munizioa
+SSO.Rng: Irismena
+SSO.RoF: SK
+SSO.Ap: AP
+SSO.PP: BP
+SSO.Dur: Iraupena
+SSO.Notes: Oharrak
+SSO.MinStr: Ind.Min.
+SSO.Currency: Txanpona
+SSO.CarryWeight: Karga
+SSO.Biography: Biografia
+SSO.Weapons: Armak
+SSO.Armors: Armadurak
+SSO.Shields: Ezkutuak
+SSO.Misc: Misz
+SSO.Weight: Pisua
+SSO.Hindrances: Desabantailak
+SSO.CurPP: Uneko Botere Puntuak
+SSO.MaxPP: Botere Puntu Maximoak
+SSO.Trapping: Apaingarria
+SSO.Power: Boterea
+SWADE.Ok: Ados
+SWADE.PickACard: Aukeratu karta bat
+SWADE.ConvictionExtend: Zure konbikzioa zabaldu nahi duzu?
+SWADE.Items: Objektuak
+SSO.Rank: Maila
+SSO.PEGLogo: Pinnacle Entertainment Group Logoa
+SSO.Skills: Haibilitateak
+SSO.Vuln: Zaurgarri
+SSO.Running: Korrika
+SWADE.DmgOver: kalteak baliogabetu
+SWADE.Eqd: Eqd
