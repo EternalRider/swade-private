@@ -857,6 +857,7 @@ SWADE:
   ColdBodied: Kalt
   ppReload: Zum nachladen benötigte MP
   UsesTOC: Compendium TOC Verwenden
+  TOCBlockList: Compendium TOC Blockliste
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC
