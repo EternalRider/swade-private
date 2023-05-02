@@ -1,0 +1,825 @@
+SWADE:
+  DiceConf: Configuração de Dados
+  DiceConfDesc: Configure a integração do SWADE/Dice So Nice
+  DiceConfLabel: Abrir Configuração de Dados
+  WildDiePresetDesc: Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado'
+    se quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado Selvagem
+    seja diferente. Esteja ciente de que a configuração de Dado Selvagem só pode ser
+    vista por você, outros jogadores verão diferente.
+  SettingConf: Configurações Gerais
+  SettingConfLabel: Abrir Configurações Gerais
+  Formula: Fórmula
+  SitMod: Mod Situacional
+  RollMode: Modo de Rolagem
+  RollExample: ex. +1d6x ou -2
+  Roll: Rolar
+  RollRaise: Ampliação
+  GroupRoll: Grupo
+  Ok: Ok
+  Cancel: Cancelar
+  ConvictionEnd: oscila na sua convicção
+  NoBennies: Você não tem Benes suficientes!
+  GM: Mestre
+  Redraw: Re-Sacar
+  Add: Adc
+  ConfigInit: Configurar Iniciativa
+  IgnWounds: Ignorar Ferimentos
+  Size: Tamanho
+  Scale: Escala
+  PickACard: Escolha uma carta para {name}
+  NoCardsLeft: Não há cartas restantes no baralho! Apenas {current} cartas de {needed}
+    necessárias estão disponíveis
+  OldCard: Carta Anterior
+  ActionCard: Carta de Ação
+  ConvictionActive: Convicção Ativa
+  ConvictionActivate: Usa sua Convicção!
+  ConvictionExtend: Você quer estender sua convicção?
+  Vehicles: Veículos
+  AddStats: Carac. Adicionais
+  Curr: Atual
+  DSNNone: '- Nenhum -'
+  Reload: Recarregar
+  Trapping: Manifestações
+  Refresh: Atualizar essa Carta
+  Ammo: Munição
+  ReloadUnneeded: A arma já está carregada
+  ReloadSuccess: A arma foi recarregada
+  NotEnoughAmmo: Você não tem munição suficiente para essa ação!
+  NotEnoughAmmoToReload: Não há munição suficiente para recarregar no máximo
+  NoAmmoSet: Não há munição configurada
+  AddBenny: Adicionar um Bene
+  CurrentBennies: Benes Atuais
+  RerollWithBenny: Rerrolar com Bene
+  AutoCalcParry: Calcula Aparar automaticamente, incluindo Escudos
+  Subtype: Subtipo
+  SpecialAbility: Habilidade Especial
+  SpecialAbilities: Habilidades Especiais
+  RacialAbilities: Habilidades Raciais
+  ArchetypeAbilities: Habilidades de Arquétipo
+  About: Sobre
+  EdgesHindrances: Vant & Comp
+  Crew: Tripulação Requerida
+  Passengers: Passageiros Opcionais
+  String: Texto
+  Number: Número
+  Checkbox: Caixa de seleção
+  WealthDie:
+    Broke:
+      Label: Falido
+      Hint: Você está Falido!
+    Label: Riqueza
+    Sides: Faces do Dado de Riqueza
+    WildSides: Lados de Dado Selvagem de Fortuna
+    Modifier: Dado Modificador de Fortuna
+  TraitRolls: Rolagens de Característica
+  Trait: Característica
+  AltTrait: Característica Alternativa
+  SubtractPPDesc: Subtraia o custo de PP do PP disponível
+  AddPPDesc: Adicionar o custo de PP ao PP disponível
+  RightClickZoom: Clique do botão direito para zoom
+  CardFace: Face da Carta
+  CardValue: Valor
+  ClickSuggestions: Clique para sugestões
+  Quick: Rápido
+  BonusDamage: Bônus de Dano
+  Joker: Curinga
+  CustomWildDie: '- Dado Selvagem Personalizado -'
+  Subtract: Subtrair
+  DmgRolls: Rolagem de Dano
+  CardSuit: Naipe
+  IsJoker: É Curinga
+  OpenACEditor: Abrir no Editor de Carta de Ação
+  'Yes': Sim
+  'No': Não
+  ShowCharacterSummary: Mostrar Resumo do Personagem
+  CharacterSummary: Resumo do Personagem
+  CopyHtml: Copiar HTML
+  CopyMarkdown: Copiar Markdown
+  Imperial: Imperial
+  NoActionDeckFound: Nenhum Baralho de Ação encontrado, criando um
+  Metric: Métrico
+  3DBennies: Benes 3D
+  WealthSelectionNoneOther: Nenhum/Outro
+  Modifiers: Modificadores
+  ActionTraitMod: Mod. Característica da Ação
+  ActionDmgMod: Mod. de Dano da Ação
+  ItemTraitMod: Mod. Característica do Item
+  ItemDmgMod: Mod. de Dano do Item
+  Duplicates: Duplicatas Encontradas
+  DuplicateItemsBodyText: Ao adicionar o {type} <strong>{name}</strong> ao Ator {target}
+    as seguintes duplicatas foram encontradas (por nome e tipo). Os novos items foram
+    renomeados para refletir sua origem.
+  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada,
+    criando uma
+  Characters: Personagens
+  SettingRules: Regras de Ambientação
+  WorldBasics: Base do Mundo
+  MAPenalty:
+    Label: Penalidade de Ação Múltipla
+    None: Nenhuma
+  Mod:
+    Custom:
+      Add: Adicionar Modificador Personalizado
+    Support: Suporte
+    Preset:
+      Choose: Escolha uma Predefinição…
+      Add: Adicionar Predefinição
+    Value: Valor
+    Ignore: Ignorar?
+  Illumination:
+    _name: Iluminação
+    Dim: Penumbra
+    Dark: Escuridão
+    Pitch: Escuro como Breu
+  Cover:
+    _name: Cobertura
+    Shield: Cobertura - Escudo
+    Light: Cobertura Leve
+    Medium: Cobertura Média
+    Heavy: Cobertura Pesada
+    Total: Cobertura Total
+  Range:
+    _name: Distância
+    Medium: Distância Média
+    Long: Distância Longa
+    Extreme: Distância Extrema
+  Snapfire: Tiro Rápido
+  UnstablePlatform: Plataforma Instável
+  CannotAddRaceToRace: Você não pode adicionar uma raça/arquétipo a uma raça/arquétipo!
+  LayOutChaseWithDeck: Usar Baralho para montar Perseguição
+  SetUpChase: Configurar Perseguição
+  NotADeckCompendium: O compêndio que você selecionou não parece ser um Baralho
+  ConvertToDeck: Converter para Baralho
+  Expiration:
+    TabLabel: Comportamento do Turno
+    Description: <p>Efeitos expiram no <em>próximo turno do alvo ou depois</em>.</p>
+    Behavior: Expiração
+    BeginAuto: Início do Turno, Automático
+    BeginPrompt: Início do Turno, Perguntar
+    EndAuto: Fim do Turno, Automático
+    EndPrompt: Fim do Turno, Perguntar
+    None: Nenhum
+    LooseTurnOnHold: Perder Turno ao Aguardar
+  RemoveEffectTitle: Remover {label} ?
+  RemoveEffectBody: '<p style="text-align: center;">Remover<strong>{label}</strong>
+    de <strong>{parent}</strong>?</p>'
+  PPAbbreviation: PP
+  ShowInChat: Mostrar no chat
+  ExpandDescription: Expandir para mostrar a descrição
+  Favorite: Favorito
+  Equip: Equipar
+  RollDamage: Rolar Dano
+  SystemLinks:
+    Changelog: Mudanças
+    Wiki: Wiki
+    ReportAnIssue: Relatar um problema
+  OpenOrigin: Abrir origem
+  EffectsTemporary: Efeitos Temporários
+  EffectsPermanent: Efeitos Permanentes
+  Ranks:
+    Novice: Novato
+    Seasoned: Experiente
+    Veteran: Veterano
+    Heroic: Heroico
+    Legendary: Lendário
+  Advances:
+    EditorTitle: Editor de Progresso
+    Toggle: Ativar estado de Progresso Planejado
+    Delete: Deletar Progresso
+    Planned: Planejado
+    Modes:
+      Legacy: Legado
+      Expanded: Expandido
+    Types:
+      Hindrance: Redução de Complicação
+      Edge: Nova Vantagem
+      SingleSkill: Aumento de Uma Perícia
+      TwoSkills: Aumento de Duas Perícias
+      Attribute: Aumento de Atributo
+    Number: Número do Progresso
+  AddAdvance: Adc Progresso
+  Appearance: Aparência
+  CharacterGoals: Objetivos
+  Background: Antecedentes
+  ActiveEffects:
+    Add: Adc Efeito Ativo
+    Source: Origem
+    ResetDuration: Resetar Duração
+    AddGuided: Abrir Assistente
+    AddUnguided: Adc Efeito Vazio
+  Keybindings:
+    OpenFavoriteCards:
+      Name: Abrir Mão de Cartas favorita
+      UserConfigLabel: Mão de Cartas favorita
+      Hint: Você pode definir sua mão favorita na configuração de usuário
+      NoCardsWarning: Você não tem uma Mão de Cartas favorita!
+    Bennies:
+      Name: Gastar/Receber um Bene
+      Hint: Pressione para gastar um Bene, segure Alt enquanto pressiona a tecla para
+        receber um Bene
+  Settings:
+    FantasyCompanionEntangle:
+      Name: Enredado do Fantasy Companion
+      Hint: Usa o estado Enredado do Fantasy Companion em vez da versão do Livro Básico.
+        Requer recarregamento para surtir efeito
+    InitDiscardPile:
+      Name: Pilha de Descarte de Iniciativa
+    InitCardDeck:
+      Name: Baralho a ser usado para Iniciativa
+    ParryBase:
+      Name: Perícia base de Aparar
+      Hint: O nome da perícia usada para calcular Aparar
+    UseAttributeShorts:
+      Hint: Ative esta opção se você quiser ver os nomes de atributos abreviados nas
+        fichas de pc e npc, ou seja, Agi em vez de Agildade, Ast em vez de Astúcia,
+        etc. Você precisará fechar e reabrir todas as fichas abertas para que esta
+        opção entre em vigor.
+      Name: Usar nomes de atributos abreviados
+    WeightUnit:
+      Name: Unidade de peso
+      Hint: Define se os pesos são medidos em libras ou quilogramas. Alterando isto
+        NÃO mudará os pesos dos itens, apenas como a sobrecarga é calculada
+    EnableBennyNotify:
+      Name: Notificações de Bene
+      Hint: Mostra mensagens no chat quando os benes são usados, dados ou resetados.
+    HideWC:
+      Name: Esconder NPCs Cartas Selvagens
+      Hint: Não mostrar aos jogadores quais NPCs são Cartas Selvagens
+    CreateInitChat:
+      Name: Criar Mensagem no Chat para Iniciativa
+    AutoInit:
+      Name: Iniciativa Automática
+      Hint: Saca Cartas de Ação automaticamente a cada rodada
+    Benny3DFront:
+      Name: Textura frontal
+      Hint: Textura frontal do Bene 3D
+    Benny3DBack:
+      Name: Textura de Trás
+      Hint: Textura de trás do Bene 3D
+    Benny3DBackBump:
+      Name: Mapa de Colisão Traseiro
+      Hint: Mapa de Colisão Traseiro do Bene
+    Benny3DFrontBump:
+      Hint: Mapa de Colisão Dianteiro do bene
+      Name: Mapa de Colisão Dianteiro
+    CoreSkillsList:
+      Name: Lista de Perícias Básicas
+      Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
+        como Perícias Básicas para todos os atores
+    CoreSkillsPack:
+      Name: Compêndio das Perícias Básicas
+      Hint: Escolha de qual compêndio as perícias básicas serão selecionadas
+    WealthType:
+      Name: Tipo de Riqueza
+      Hint: Escolha como controlar a riqueza e moeda dos personagens
+    CurrencyName:
+      Name: Nome da Moeda
+      Hint: Nomeie sua moeda
+    JokersWild:
+      Name: Coringa Selvagem
+      Hint: Entrega um Bene a cada jogador quando um deles sacou um Curinga
+    AmmoManagement:
+      Name: Gerenciamento de Munição
+      Hint: Quando ligado e aplicável, ações removem munição da arma. Cartas de Item
+        também ganham um botão de Recarregar e você não será capaz de rolar um ataque
+        se não tiver munição suficiente.
+    PCAmmoFromInventory:
+      Name: PJs usam munição do Inventário
+      Hint: Quando ativado, um Equipamento ou Consumível que está definido como munição
+        será usado ao recarregar uma arma
+    NPCAmmoFromInventory:
+      Name: NPCs usam munição de seu Inventário
+    VehicleAmmoFromInventory:
+      Name: Veículos usam munição de seu Inventário
+    EnableWoundPace:
+      Name: Diminuir Movimento por Ferimentos
+      Hint: Quando habilitado, Movimento é automaticamente afetado pelos Ferimentos
+        sofridos
+    EnableConv:
+      Name: Convicção
+      Hint: Habilita a Regra de Ambientação Convicção
+    VehicleMods:
+      Hint: Veículos usam Espaços de Modificações
+      Name: Modificações de Veículos
+    VehicleEdges:
+      Name: Vantagens de Veículo
+      Hint: Veículos usam Vantagens e Complicações
+    BennyImageSheet:
+      Hint: Selecione a imagem a ser usada para os Benes na Ficha de Personagem
+      Name: Bene
+    HardChoices:
+      Name: Escolhas Difíceis
+      Hint: Marcar isto irá habilitar a regra Escolhas Difíceis
+    CardSound:
+      Name: Som de Carta
+      Hint: Toque um som de carta curto ao sacar Iniciativa
+    StartingCurrency:
+      PC:
+        Name: Riqueza inicial dos Personagens de Jogador
+        Hint: Define a quantidade de riqueza que os Atores de Personagens de Jogador
+          recebem ao serem criados
+      NPC:
+        Hint: Define a quantidade de riqueza que os Atores de Personagens do Mestre
+          recebem ao serem criados
+        Name: Riqueza inicial dos NPC
+    HideNpcItemChatCards:
+      Hint: Quando habilitado, as mensagens de chat de Itens de NPCs serão enviadas
+        como sussurros a todos os Mestre em vez de postadas para todos verem
+      Name: Esconder Cartas de NPC do Chat
+    HighlightTemplate:
+      Name: Sempre destacar modelos
+      Hint: Quando ativado, os modelos medidos sempre destacam-se ao invés da grade.
+    NoPowerPoints:
+      Name: Sem Pontos de Poder
+      Hint: Quando habilitado, esconde todas as interações de Pontos de Poder
+    AlwaysGeneralPP:
+      Name: Sempre Mostrar Pontos de Poder Gerais
+      Hint: Quando habilidade, a seção de Poderes Gerais sempre aparecerá, mesmo se
+        todos os poderes tiverem um Antecedente Arcano associado
+    ApplyEncumbrance:
+      Name: Aplicar penalidades de Sobrecarga
+      Hint: Aplica penalidades de sobrecarga. Por favor, tenha em mente que atualmente
+        NÃO SUPORTA rolagens de {vigor} para resistir a {fatigue}!
+    GmBennies:
+      Name: Benes do Mestre
+      Hint: Configura quantos Benes o Mestre recebe ao resetar
+    NPCCurrency:
+      Name: NPCs usam dinheiro
+      Hint: Quando ativado, todos os NPCs têm as mesmas opções de dinheiro que os
+        Personagens de Jogador
+    DumbLuck:
+      Name: Pura Sorte
+      Hint: Ativar isso irá habilitar a Regra de Ambientação Pura Sorte
+    WoundCap:
+      Name: Limite de Ferimentos
+      Hint: Ativar isso irá habilitar a Regra de Ambientação Limite de Ferimentos
+        quando calcular Ferimentos.
+    GrittyDamage:
+      Name: Dano Severo
+      Hint: Ativar isso irá habilitar a Regra de Ambientação Dano Severo e permitirá
+        selecionar a Tabela de Lesões para rolar.
+    InjuryTable:
+      Name: Tabela de Lesões
+      Hint: Selecione a Tabela de Rolagem apropriada para rolar automaticamente para
+        Dano Severo.
+  EffectCallbacks:
+    Shaken:
+      RollSpirit: Rolar Espírito
+      Title: Remover Abalado de {name}
+      Flavor: Teste de Espírito para remover Abalado
+      UnshakeModifier: Modificador de Desabalar
+      Question: O que você quer fazer?
+      Success: Você não está mais Abalado
+    Stunned:
+      Title: Teste de Vigor para remover Atordoado
+      Fail: Você continua Atordoado
+      Success: Você não está mais Atordoado, mas continua Vulnerável
+      Raise: Você está mais Abalado e nem Vulnerável
+      UnStunModifier: Modificador para Desatordoar
+    BleedingOut:
+      Title: Teste de Vigor para resistir Sangramento
+      Fail: Você morre
+      Success: Você aguenta, por enquanto.
+      Raise: Você é estabilizado com sucesso
+  DocumentLink: Link
+  DocumentTweaks: Ajustes
+  TargetVulnerable: Alvo está Vulnerável
+  WildAttack: Ataque Selvagem
+  ItemType: Tipo de Item
+  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token
+    primeiro
+  Templates:
+    Cone:
+      Short: Cone
+      Long: Modelo de Cone
+    Stream:
+      Short: Fluxo
+      Long: Modelo de Fluxo
+    Small:
+      Short: MEP
+      Long: Modelo de Explosão Pequeno
+    Medium:
+      Short: MEM
+      Long: Modelo de Explosão Médio
+    Large:
+      Short: MEG
+      Long: Modelo de Explosão Grande
+    Available: Modelos Disponíveis
+    Possible: Modelos Possíveis
+  Source: Fonte
+  Properties: Propriedades
+  AddAction: Adc Ação
+  DeleteEmbeddedActionPrompt: Você tem certeza de que quer deletar a ação {action}
+  DeleteEmbeddedPowerPrompt: Você tem certeza de que quer deletar o poder {power}?
+  TrademarkWeapon:
+    Label: Arma Predileta
+    Improved: Aprimorada
+    Regular: Normal
+    None: Nenhuma
+  OffHandPenalty: Penalidade de Mão Inábil
+  ItemEquipStatus:
+    Label: Local
+    Stored: Guardado
+    Equipped: Equipado
+    OffHand: Mão Inábil
+    MainHand: Mão Principal
+    TwoHands: Duas Mãos
+    Carried: Carregado
+    Readied: Preparado
+    Added: Adicionado
+  DestroyOnEmpty: Destruir quando Vazio
+  Charges: Cargas
+  Consumable:
+    Use: Usar
+    Consumables: Consumíveis
+  EmptyRacialAbilitiesHint: Esta {race} ou {archetype} ainda não tem nenhuma habilidade.
+    Arraste & Solte alguma coisa na ficha para começar.
+  CompendiumTOC:
+    Toggle: Altenar uso do Índice de Compêndio
+    Dialog:
+      Title: Confirmar
+      Content: Para essa mudança surtir efeito, Foundry VTT e todos os clientes conectados
+        devem ser recarregados. Por favor, confirme.
+    Header: Conteúdo
+  Category: Categoria de Item
+  ItemIsAmmo: É Munição
+  Vision:
+    SeeHeat: Enxerga Calor
+    SenseHeat: Sente Calor
+    Infravision: Infravisão
+  Attribute: Atributo
+  BaseDie: Dado Base
+  AttributeManager:
+    Title: Gerenciar Atributos para {name}
+    Open: Gerenciar Atributos
+  HeavyArmor: Armadura Pesada
+  HeavyWeapon: Arma Pesada
+  UsesTOC: Usar Índice de Compêndio
+  TOCSettings:
+    Label: Abrir Config. Índice de Compêndio
+    Name: Config. Índice de Compêndio
+    Hint: Configure a aplicação de Índice de Compêndio
+  DieSides: Faces do Dado
+  WildDieSides: Faces do Dado Selvagem
+  EncumbranceSteps: Passos de Sobrecarga
+  EffectWizard:
+    Preview: Previsão
+    Change: Mudança
+    Mode: Modo
+    Value: Valor
+    Changes: Mudanças
+    SelectAttribute: Selecionar Atributo
+    EnterSkill:
+      Label: Adicionar perícia
+      Hint: Você pode adicionar qualquer nome de perícia que você quiser ou selecionar
+        uma da lista de sugestões
+  OtherStats: Outros Atributos
+  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos
+    por alguém
+  MessageOnUse:
+    Label: Mensagem ao Usar
+    Hint: Mostra uma mensagem de chat quando este item for usado
+  ItemGrants:
+    EmptyHint: Este item atualmente não concede nenhum item
+    Header: Concessão de Itens
+    When: Concede Itens Quando
+  RefreshPP: Restaurar Pontos de Poder
+  DamageApplicator:
+    ApplyDamage: Aplicar Dano
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> está prestes a sofrer <strong>{wounds}</strong>!</p>
+    SoakDialog:
+      WoundedTitle: Rolar para Absorver Ferimentos para {name}?
+      UnwoundedTitle: Ajustar o Dano para Determinar Estado para {name]?
+      GMBenny: Gastar um Bene de MJ para Absorver
+      TakeWounds: Sofrer {wounds}
+      WoundedPrompt: <p>{name} está prestes a sofrer {wounds}. Você quer tentar Absorver?</p>
+      ShakenPrompt: <p>{name} está prestes a ficar Abalado.</p>
+      UnharmedPrompt: <p>{name} pode estar ileso.</p>
+      Benny: Gastar um Bene para Absorver
+      Free: Absorver de Graça
+      AdjustDamage: Ajustar Dano
+      ApplyShaken: Aplicar Estado Abalado
+      Accept: Aceitar
+    RerollSoakDialog:
+      Title: Rerrolar para Absorver Ferimentos para [name}?
+      Prompt: <p>{name} está prestes a sofrer {wounds}. Você quer rerrolar a Absorção?</p>
+      GMBenny: Gastar um Bene de MJ para Rerrolar
+      Benny: Gastar um Bene para Rerrolar
+      Free: Rerollar de Graça
+      TakeWounds: Sofrer {wounds}
+    AdjustDamagePrompt: <p>Ajustar o dano para quaisquer habilidades e efeitos que
+      o {name} possa ter.</p>
+    Result:
+      SoakedAll: <p><strong>{name}</strong> Absorveu todos os Ferimentos e não está
+        Abalado!</p>
+      IsShaken: <p><strong>{name}</strong> está <strong>Abalado</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> está <strong>Abalado</strong>
+        com <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> está <strong>Incapacitado!</strong></p>
+      NoSignificantDamage: <p><strong>{name}</strong> não sofre danos significativos.</p>
+    NoInjuryTable: Nenhuma Tabela de Lesões foi selecionado. Veja as Configurações
+      Gerais do SWADE
+    NoTargetsSelected: Por favor, seleciona um alvo para aplicar o dano.
+  FreeReroll: Rerrolagem Grátis
+  BenniesSpendGM: Gastar um Bene de MJ
+  SettingConfDesc: Ajuste o sistema para se adequar ao cenário que está jogando.
+  MaxMods: Máximo de Modificações
+  ButtonReset: Resetar
+  ButtonSubmit: Enviar
+  CommunityCharSheet: Ficha de Personagem da Comunidade
+  CommunityNPCSheet: Ficha de NPC da Comunidade
+  CommunityVicSheet: Ficha de Veículo da Comunidade
+  CommunityItemSheet: Ficha de Item da Comunidade
+  ItemSheet: Ficha de Item Savage Worlds
+  Expand: Expandir
+  OfficialSheet: Savage Worlds Ficha Oficial por Pinnacle
+  ModHint: Modificadores devem incluir + ou -
+  ActionDeckPresetLight: Baralho de Ação (Claro)
+  ActionDeckPresetDark: Baralho de Ação (Escuro)
+  Name: Nome
+  Tough: Resistência
+  Race: Raça
+  Archetype: Arquétipo
+  Pace: Mov.
+  Running: Corrida
+  RunningDie: Dado de Corrida
+  RollRun: Clique para correr
+  Adv: Progressos
+  Rank: Estágio
+  Inv: Equip.
+  Summary: Carac.
+  Pow: Poderes
+  WildCard: Carta Selvagem
+  Extra: Extra
+  Bennies: Benes
+  TraitMod: Mod. Característica
+  AttrAgi: Agilidade
+  AttrSma: Astúcia
+  AnimalSmarts: Inteligência Animal
+  AnimalSmartsMarker: A
+  AttrSpr: Espírito
+  AttrStr: Força
+  AttrVig: Vigor
+  Tweaks: Ajustes
+  AttrSmaShort: Ast
+  AttrSprShort: Esp
+  AttrStrShort: For
+  AttrVigShort: Vig
+  Skills: Perícias
+  Unskilled: Sem Perícia
+  CoreSkill: Perícia Básica
+  CoreSkills: Perícias Básicas
+  LinkAttr: Atributo Associado
+  ArcaneSkill: Perícia Arcana
+  ActivateArcaneDevice: Ativar Dispositivo
+  Die: Dado
+  WildDie: Dado Selvagem
+  Modifier: Modificador
+  BenniesSpend: Gastar um Bene
+  BenniesGive: Dar um Bene
+  BenniesRefresh: Resetar Benes
+  AllBenniesRefresh: Resetar todos os Benes
+  BenniesRefreshMessage: Benes foram resetados!
+  BenniesRefreshAllMessage: Todos os Benes foram resetados!
+  BenniesGMRefreshMessage: Os Benes do Mestre foram resetados!
+  BenniesAddMessage: ganhou um Bene!
+  BenniesGMAddMessage: ganhou um Bene adicional!
+  BenniesSpendMessage: gastou um Bene!
+  BenniesMax: Benes ao Resetar
+  EditSkill: Editar Perícia
+  EdEdge: Editar Vantagem
+  EdHind: Editar Complicação
+  Ed: Editar
+  Arcane: Arcano
+  All: Todos
+  HasPowers: Tem Poderes
+  Weapons: Armas
+  MeleeWeapons: Armas Corpo-a-Corpo
+  RangedWeapons: Armas à Distância
+  Armors: Armaduras
+  WeaponsAndArmor: Armas e Armadura
+  Shields: Escudos
+  Biography: Biografia
+  Shaken: Abalado
+  Distr: Distraído
+  Vuln: Vulnerável
+  Stunned: Atordoado
+  Entangled: Enredado
+  Bound: Preso
+  Aiming: Mirando
+  Berserk: Em Fúria
+  Defending: Defendendo
+  Flying: Voando
+  Follow: Seguir {name}
+  Unfollow: Deixar de seguir {name}
+  MakeGroupLeader: Tornar Líder de Grupo
+  RemoveGroupLeader: Remover Líder de Grupo
+  AddTokenFollowers: Adicionar os Tokens selecionados como Seguidores
+  GroupByName: Agrupar por Nome
+  SetGroupColor: Definir Cor do Grupo
+  SelectColor: Selecionar uma cor
+  Holding: Aguardando
+  Hold: Aguardar
+  ActAfterCurrentCombatant: Agir depois do Combatente Atual
+  ActBeforeCurrentCombatant: Agir agora
+  LoseTurn: Alternar Perder Turno
+  Frightened: Amedrontado
+  Encumbered: Sobrecarga
+  Prone: Prostrado
+  BleedingOut: Sangrando
+  Diseased: Doente
+  HeartAttack: Ataque Cardíaco
+  OnFire: Pegando Fogo
+  Poisoned: Envenenado
+  Reach: Alcance
+  Torch: Tocha
+  Invisible: Invisível
+  ColdBodied: Corpo Frio
+  Smite: Ferir
+  Armor: Armadura
+  Protection: Proteção
+  Dmg: Dano
+  DmgOver: Substituição de Dano
+  Resist: Resistir
+  ResistRolls: Rolagem de Resistência
+  Ap: PA
+  APLong: Perfurante de Armadura
+  RoF: CdT
+  Mag: Tiros
+  ActionsEffects: Ações e Efeitos
+  Actions: Ações
+  DmgModUni: Modificador de Dano
+  SkillModUni: Modificador de Perícia
+  ShotsUsed: Tiros Usados
+  NaturalArmor: Armadura Natural
+  HitLocations: Locais de Acerto
+  Head: Cabeça
+  Torso: Torso
+  Arms: Braços
+  Legs: Pernas
+  MinStrLong: Força Mínima
+  MinStr: Força Mín.
+  MinStrShort: For.Mín
+  Desc: Descrição
+  Special: Habilidades Especiais
+  Details: Detalhes
+  Equippable: Equipável
+  ArcaneDevice: Dispositivo Arcano
+  Misc: Misc
+  QuickAccess: Acesso Rápido
+  Effects: Efeitos
+  Hindrances: Complicações
+  MajHind: Complicação Maior
+  Major: (Maior)
+  Minor: (Menor)
+  Edges: Vantagens
+  ArcBack: Antecedente Arcano
+  Req: Requisitos
+  Conv: Convicção
+  UseConv: Usa sua Convicção!
+  Hesitant: Hesitante
+  LevelHeaded: Focado
+  ImprovedLevelHeaded: Extremamente Focado
+  AutoCalc: Cálculos Automáticos
+  InclArmor: Calcula Resistência automaticamente, incluindo Armadura
+  Label: Nome
+  HasMaxValue: Tem valor Máximo
+  Enabled: Habilitado
+  Currency: Moeda
+  CarryWeight: Sobrecarga
+  Eqd: Eqdo
+  Equipped: Equipado
+  Unequipped: Desequipado
+  Quantity: Quantidade
+  Weight: Peso
+  Price: Custo
+  PP: Pontos de Poder
+  PPShort: P. de Poder
+  PPCost: Custo PP
+  CurPP: Pontos de Poder Atuais
+  MaxPP: Pontos de Poder Máximo
+  Dur: Duração
+  Trap: Manifestação
+  Wound: Ferimento
+  Wounds: Ferimentos
+  WoundsMax: Máx de Ferimentos
+  Fatigue: Fadiga
+  FatigueMax: Máx de Fadiga
+  Incap: Incapacitado
+  Init: Iniciativa
+  DrawInit: Sacar Iniciativa
+  ActionDeckReset: Resetar a Tabela de Cartas de Ação
+  ActionDeckResetNotification: Cartas de Ação resetadas
+  Topspeed: Velocidade Máxima
+  OutOfControl: Fora de Controle
+  Wrecked: Avariado
+  Item: Item
+  Cargo: Carga
+  MaxCargo: Carga Máxima
+  CargoWeight: Peso da Carga
+  Operator: Operador
+  ManCheck: Rolagem de Manobra
+  AltSkill: Perícia Alternativa
+  Class: Classificação
+  Vehicular: Arma Veicular
+  VehicleMod: Mod. Veículo
+  OpSkill: Perícia de Manobra
+  InitDraw: saca a…
+  Mods: Modificações
+  ModSlots: Espaços de Modificação
+  ShowBennyAnimation: Mostrar Animação de Bene
+  ShowBennyAnimationDesc: Mostra uma animação quando gastar um Bene. Só disponível
+    se Dice So Nice! estiver instalado
+  WildDiePreset: Tema do Dado Selvagem
+  RunningMod: Modificador de Corrida
+  SkillTest: Teste de Perícia
+  AttributeTest: Teste de Atributo
+  Attributes: Atributos
+  Derived: Características Derivadas
+  AttrAgiShort: Agi
+  Del: Deletar
+  Parry: Aparar
+  Notes: Notas
+  General: Geral
+  Addi: Adicional
+  Status: Estado
+  Handling: Manobrabilidade
+  WildDieTheme: Tema do Dado Selvagem
+  Actors: Atores
+  Items: Itens
+  Max: Máx
+  Duplicate: Duplicar
+  ppReload: Pontos de Poder para Recarregar
+  ReloadNotPossible: Este tipo de ator não recarrega
+  ReloadType:
+    Label: Procedimento de Recarga
+    None: Nenhum
+    Magazine: Carregador
+    Battery: Bateria
+    PP: Pontos de Poder
+    Full: Completa
+    Single: Uma por vez
+  NoAmmoPP: Não foi possível encontrar pontos de poder correspondetes à munição definida
+  NoMags: Você não tem nenhum consumível marcado como carregador em seu inventário
+  RemoveAmmo: Remover Munição
+  ConsumableType:
+    Label: Subtipo
+    Regular: Normal
+  GrantsPowers: Concede Poderes
+  Selection: Seleção
+  SysMigrationWarning: Os dados do seu sistema SWADE é de uma versão muito antiga
+    do Foundry e não pode ser migrada de forma confiável para a última versão. A conversão
+    será tentada, mas erros podem ocorrer.
+  DeckShuffled: Baralho de Cartas automaticamente embaralhado
+  BasePace: Movimentação Base
+  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie
+    primeiro
+  ActionCardEditor: Editor de Carta de Ação
+  ChangeBennyWarning: Alterar estas configurações requer que você atualize a página!
+  Wealth: Riqueza
+  ModOther: Outros Modificadores
+  ClearChaseCards: Limpar cartas de Perseguição da cena
+  NoSceneAvailable: Não há cena disponível ou você desativou a tela de jogo
+  ChaseCardsCleared: Todas as cartas de perseguição foram removidas da cena.
+  Validation:
+    OnlyOneRace: Você só pode ter uma raça de cada vez!
+    OnlyOneArchetype: Você só pode ter um arquétipo de cada vez!
+  MigrateCompendium: Forçar a migração do compêndio
+  AdditionalStats:
+    SelectHint: Insita uma lista de opções, separadas por ponto-e-vírgula
+  IgnFatigue: Ignorar Fadiga
+  BaseDamage: Dano Base
+  Targets: 'Alvos:'
+  Rolls:
+    RollResult: Resultado da Rolagem
+    SwadeRoll: Rolagem
+    DamageRoll: Rolagem de Dano
+    TraitRoll: Rolagem de Característica
+    Critfail:
+      Critfail: FALHA CRÍTICA
+      Confirm: Confirmação de Falha Crítica
+      ConfirmDie: Dado de Confirmação
+  LoadedAmmo: Munição Carregada
+  WildDieThemeDesc: Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
+    se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado Selvagem
+    pareça diferente. Por favor, tenha em mente que os Dados Selvagens auto-criados
+    atualmente só podem ser vistos por você. Outros jogadores os verão de forma diferente.
+ITEM:
+  TypeWeapon: Arma
+  TypeArmor: Armadura
+  TypeShield: Escudo
+  TypeGear: Equipamento
+  TypeEdge: Vantagem
+  TypeHindrance: Complicação
+  TypeSkill: Perícia
+  TypePower: Poder
+  TypeAbility: Habilidade
+  TypeConsumable: Consumível
+  TypeAction: Ação
+ACTOR:
+  TypeCharacter: Personagem Jogador
+  TypeNpc: NPC
+  TypeVehicle: Veículo
+CARD:
+  TypeAdventure: Carta de Aventura
+  TypePoker: Carta de Poker
