@@ -149,7 +149,7 @@ export default class SwadeActor extends Actor {
     return this.itemTypes.armor.every(
       (a) =>
         foundry.utils.getProperty(a, 'system.equipStatus') <
-          constants.EQUIP_STATE.EQUIPPED,
+        constants.EQUIP_STATE.EQUIPPED,
     );
   }
 
@@ -369,11 +369,12 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    const roll = TraitRoll.fromTerms([basePool]);
+    const roll = TraitRoll.fromTerms([basePool]) as TraitRoll;
     roll.modifiers = modifiers;
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
@@ -381,7 +382,15 @@ export default class SwadeActor extends Actor {
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    Hooks.call('swadeRollAttribute', this, attribute, roll, modifiers, options);
+    const permitContinue = Hooks.callAll(
+      'swadePreRollAttribute',
+      this,
+      attribute,
+      roll,
+      modifiers,
+      options,
+    );
+    if (!permitContinue) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
@@ -390,11 +399,11 @@ export default class SwadeActor extends Actor {
           roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
-      ]);
+      ]) as TraitRoll;
     }
 
     // Roll and return
-    return RollDialog.asPromise({
+    const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -409,7 +418,27 @@ export default class SwadeActor extends Actor {
           'SWADE.AttributeTest',
         )}`,
       actor: this,
-    }) as Promise<TraitRoll | null>;
+    });
+
+    /**
+     * A hook event that is fired after an attribute is rolled
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the attribute
+     * @param {String} attribute                The name of the attribute, in lower case
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
+     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {IRollOptions} options            The options passed into the roll function
+     */
+    Hooks.callAll(
+      'swadeRollAttribute',
+      this,
+      attribute,
+      roll,
+      modifiers,
+      options,
+    );
+
+    return retVal as TraitRoll | null;
   }
 
   async rollSkill(
@@ -440,6 +469,7 @@ export default class SwadeActor extends Actor {
 
     /**
      * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the skill
      * @param {SwadeItem} skill                 The Skill item that is being rolled
@@ -447,7 +477,16 @@ export default class SwadeActor extends Actor {
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    Hooks.call('swadeRollSkill', this, skill, roll, modifiers, options);
+    const permitContinue = Hooks.call(
+      'swadePreRollSkill',
+      this,
+      skill,
+      roll,
+      modifiers,
+      options,
+    );
+
+    if (!permitContinue) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
@@ -456,11 +495,11 @@ export default class SwadeActor extends Actor {
           roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
-      ]);
+      ]) as TraitRoll;
     }
 
     // Roll and return
-    return RollDialog.asPromise({
+    const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -471,7 +510,20 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-    }) as Promise<TraitRoll | null>;
+    });
+
+    /**
+     * A hook event that is fired after a skill is rolled
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the skill
+     * @param {SwadeItem} skill                 The Skill item that is being rolled
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
+     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {IRollOptions} options            The options passed into the roll function
+     */
+    Hooks.callAll('swadeRollSkill', this, skill, roll, modifiers, options);
+
+    return retVal as TraitRoll | null;
   }
 
   async rollWealthDie() {

@@ -30,11 +30,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Shift: Weapons and other equippables are equipped.
   - Ctrl: Items are set to be carried
   - Alt: Items are set to be Stored
+- Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757)
 
 ### Changed
 
 - Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
 - Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
+- **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757)
 
 ### Known Issues
 
