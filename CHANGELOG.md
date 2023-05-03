@@ -24,10 +24,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 2.4
 
+### Added
+
+- Added the ability to set the equip status/location by holding modifier keys (Ctrl, Shift, Alt) when dropping inventory items onto the official Character and Vehicle sheets. (#727)
+  - Shift: Weapons and other equippables are equipped.
+  - Ctrl: Items are set to be carried
+  - Alt: Items are set to be Stored
+
 ### Changed
 
 - Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
 - Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
+
+### Known Issues
+
+- Holding down Shift when dragging an item from the sidebar will prevent the drag event. This is seems to be a foundry or browser quirk.
 
 ## 2.3.6
 

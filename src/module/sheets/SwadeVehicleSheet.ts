@@ -1,3 +1,4 @@
+import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import IDriverData from '../../interfaces/DriverData.interface';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -189,6 +190,66 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       { async: true, secrets: this.options.editable },
     );
     return data;
+  }
+
+  protected override async _onDropItem(
+    event: DragEvent,
+    data: ActorSheet.DropData.Item,
+  ): Promise<Item[] | boolean> {
+    if (!this.actor.isOwner) return false;
+    const item = await SwadeItem.fromDropData(data)!;
+    if (!item) return false;
+
+    const itemData = item.toObject();
+
+    //outright reject power and ability items
+    if (['power', 'ability'].includes(item.type)) return false;
+
+    //return early if it's an edge/hindrance and we're not using that setting rule or if it's not a phyiscal item
+    if (
+      ['edge', 'hindrance'].includes(item.type) &&
+      !game.settings.get('swade', 'vehicleEdges')
+    ) {
+      return false;
+    }
+
+    //handle relative item sorting
+    if (this.actor.uuid === item.parent?.uuid) {
+      return this._onSortItem(event, itemData) as Promise<SwadeItem[]>;
+    }
+
+    //handle keyboard modifiers on drop
+    if (item.isPhysicalItem) {
+      this._handleDropModifierKeys(event, itemData);
+    }
+
+    return this._onDropItemCreate(itemData);
+  }
+
+  protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
+    const equipKey = 'system.equipStatus';
+    const isEquippable =
+      item.type === 'gear' &&
+      foundry.utils.getProperty(item, 'system.equippable');
+
+    if (event.shiftKey) {
+      if (item.type === 'weapon' || isEquippable) {
+        foundry.utils.mergeObject(
+          item,
+          {
+            system: {
+              isVehicular: true,
+              equipStatus: constants.EQUIP_STATE.EQUIPPED,
+            },
+          },
+          { inplace: true },
+        );
+      }
+    } else if (event.ctrlKey) {
+      foundry.utils.setProperty(item, equipKey, constants.EQUIP_STATE.CARRIED);
+    } else if (event.altKey) {
+      foundry.utils.setProperty(item, equipKey, constants.EQUIP_STATE.STORED);
+    }
   }
 
   /**
