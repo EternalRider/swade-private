@@ -38,6 +38,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
 - **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757)
 
+### Fixed
+
+- Fixed a small issue with a label in the Tweaks window. (#780)
+
 ### Known Issues
 
 - Holding down Shift when dragging an item from the sidebar will prevent the drag event. This is seems to be a foundry or browser quirk.
