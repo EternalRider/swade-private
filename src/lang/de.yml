@@ -677,6 +677,8 @@ SWADE:
       Name: Verletzungstabelle
       Hint: Wähle die Tabelle aus welche für Verletzungen bei Fiesem Schaden verwendet
         werden soll.
+    UnarmoredHero:
+      Name: Ungepanzerter Held
   Validation:
     OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
@@ -827,6 +829,7 @@ SWADE:
       AdjustDamage: Schaden anpassen
       ApplyShaken: Apply Shaken Status
       Accept: Annehmen
+      SoakRoll: Erholungsprobe (Konstitution)
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
       Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
@@ -835,6 +838,8 @@ SWADE:
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
+      PromptCritFail: <p>{name} ist kurz davor {wounds} zu erleiden. Ein kritischer
+        Fehlschlag verhindert Wiederholungswürfe.</p>
     AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might
       have.</p>
     Result:
@@ -846,11 +851,13 @@ SWADE:
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: The User who rolled damage must select one or more Targets.
+    SoakModifier: Erholungsprobenmodifikator
   CustomWildDie: '- Persönlicher Wildcard Würfel -'
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
   ppReload: Zum nachladen benötigte MP
   UsesTOC: Compendium TOC Verwenden
+  TOCBlockList: Compendium TOC Blockliste
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

@@ -1,4 +1,3 @@
----
 SWADE:
   ButtonReset: Reinicio
   ButtonSubmit: Enviar
@@ -217,18 +216,15 @@ SWADE:
   VehicleMod: Mod. de Vehículo
   OpSkill: Habilidad de operación
   ShowBennyAnimation: Mostrar animación de Beni
-  ShowBennyAnimationDesc:
-    Reproducir animación al usar un Beni. Solo si Dice So Nice!
+  ShowBennyAnimationDesc: Reproducir animación al usar un Beni. Solo si Dice So Nice!
     esta instalado
   WildDiePreset: Tema del dado salvaje
-  WildDiePresetDesc:
-    Selecciona un tema DSN para tu dado salvaje. Selecciona 'Personalizado'
+  WildDiePresetDesc: Selecciona un tema DSN para tu dado salvaje. Selecciona 'Personalizado'
     si deseas crear el tuyo propio o 'Ninguno' si no deseas que tu dado salvaje se
     vea diferente. Ten en cuenta que actualmente solo puedes ver los dados salvajes
     creados por ti mismo. Otros jugadores los verán de manera diferente.
   WildDieTheme: Tema del dado salvaje
-  WildDieThemeDesc:
-    elija un Tema DSN para su dado salvaje. Seleccione personalizado
+  WildDieThemeDesc: elija un Tema DSN para su dado salvaje. Seleccione personalizado
     si desea crear el suyo propio o Ninguno si no desea que su dado salvaje tenga
     un aspecto diferente. Por favor, ten en cuenta que los dado salvaje creados por
     ti mismo sólo los puedes ver tú. Los demás jugadores los verán de forma diferente.
@@ -305,6 +301,8 @@ SWADE:
       Label: Roto
       Hint: Estás roto!
     Sides: Riqueza
+    WildSides: Paso del dado de riqueza
+    Modifier: Modificador al dado de riqueza
   TraitRolls: Tiradas de rasgo
   Trait: Rasgos
   AltTrait: Rasgo alternativo
@@ -318,8 +316,7 @@ SWADE:
   SubtractPPDesc: Resta el coste de PP de los PP disponibles
   AddPPDesc: Añade el coste de PP a los PP disponibles
   RightClickZoom: Clic derecho para hacer zoom
-  SysMigrationWarning:
-    Los datos de su sistema SWADE provienen de una versión de Foundry
+  SysMigrationWarning: Los datos de su sistema SWADE provienen de una versión de Foundry
     demasiado antigua y no se pueden migrar de manera fiable a la última versión.
     Se intentará el proceso, pero pueden producirse errores.
   DeckShuffled: Mazo de cartas barajado automáticamente
@@ -348,13 +345,11 @@ SWADE:
   ItemTraitMod: Mod. de rasgo de objeto
   ItemDmgMod: Mod. de daño de objetos
   Duplicates: Duplicados encontrados
-  DuplicateItemsBodyText:
-    Al agregar {type} <strong>{name}</strong> al Actor {target},
+  DuplicateItemsBodyText: Al agregar {type} <strong>{name}</strong> al Actor {target},
     se encontraron los siguientes duplicados (por nombre y tipo). Se ha cambiado el
     nombre de los nuevos elementos para reflejar su origen.
   NoActionDeckFound: No se encontró ningún mazo de acción, creando uno
-  NoActionDeckDiscardPileFound:
-    No se encontró ninguna pila de descarte del mazo de
+  NoActionDeckDiscardPileFound: No se encontró ninguna pila de descarte del mazo de
     acción, creando una
   Wealth: Riqueza
   Characters: Personajes
@@ -402,9 +397,8 @@ SWADE:
   ConvertToDeck: Convertir en mazo
   Expiration:
     TabLabel: Comportamiento en turnos
-    Description:
-      "<p>Los efectos expiran en el objetivo <em>en el próximo turno o
-      después</em>.</p>"
+    Description: "<p>Los efectos expiran en el objetivo <em>en el próximo turno o\
+      \ después</em>.</p>"
     Behavior: Comportamiento de la caducidad
     BeginAuto: Inicio de turno, automático
     BeginPrompt: Inicio de turno, Inmediato
@@ -413,8 +407,7 @@ SWADE:
     None: Ninguno
     LooseTurnOnHold: Perder el turno en espera
   RemoveEffectTitle: Eliminar {label} ?
-  RemoveEffectBody:
-    '<p style="text-align: center;">Eliminar <strong>{label}</strong>
+  RemoveEffectBody: '<p style="text-align: center;">Eliminar <strong>{label}</strong>
     de <strong>{parent}</strong>?</p>'
   PPAbbreviation: PP
   ShowInChat: Mostrar en el chat
@@ -468,19 +461,16 @@ SWADE:
       NoCardsWarning: "¡No tienes un juego de manos de cartas favorito!"
     Bennies:
       Name: Gastar/recibir un Beni
-      Hint:
-        Pulsa para gastar un Beni, mantén pulsado Alt mientras pulsas la tecla
+      Hint: Pulsa para gastar un Beni, mantén pulsado Alt mientras pulsas la tecla
         para recibir un Beni en su lugar
   Settings:
     HighlightTemplate:
       Name: Destacar siempre las plantillas
-      Hint:
-        Cuando se activa, las plantillas de medición siempre se resaltan a sí
+      Hint: Cuando se activa, las plantillas de medición siempre se resaltan a sí
         mismas en lugar de la rejilla.
     FantasyCompanionEntangle:
       Name: Fantasy Companion aferrado
-      Hint:
-        Utiliza el estado de aferrado de Fantasy Companion en lugar de la versión
+      Hint: Utiliza el estado de aferrado de Fantasy Companion en lugar de la versión
         Core. Requiere una recarga para que surta efecto
     InitDiscardPile:
       Name: Pila de descartes de iniciativa
@@ -488,31 +478,26 @@ SWADE:
       Name: Mazo de cartas para usar en la iniciativa
     ParryBase:
       Name: Nombre de la habilidad de combate localizada
-      Hint:
-        Nombre de la habilidad que se utilizará para calcular la parada de un
+      Hint: Nombre de la habilidad que se utilizará para calcular la parada de un
         personaje
     UseAttributeShorts:
       Name: Utilizar nombres de atributos acortados
-      Hint:
-        Activa esta opción si quieres ver los nombres de los atributos abreviados
+      Hint: Activa esta opción si quieres ver los nombres de los atributos abreviados
         en las hojas de PJ y PNJ, es decir, Agi en lugar de Agilidad, Ast en lugar
         de Astucia, etc. Tendrás que cerrar y volver a abrir todas las hojas abiertas
         para que esta opción tenga efecto.
     WeightUnit:
       Name: Unidad de peso
-      Hint:
-        Establece si los pesos se miden en libras o en kilogramos. Cambiar esto
+      Hint: Establece si los pesos se miden en libras o en kilogramos. Cambiar esto
         NO cambiará los pesos de los objetos, sólo cómo se calcula la carga
     HideNpcItemChatCards:
       Name: Ocultar tarjetas de chat de objetos de PNJ
-      Hint:
-        Cuando se activan, las tarjetas de chat de objetos de PNJ se envían automáticamente
+      Hint: Cuando se activan, las tarjetas de chat de objetos de PNJ se envían automáticamente
         como un susurro a todos los Gamemasters en lugar de ser publicadas para que
         todos las vean
     EnableBennyNotify:
       Name: Notificaciones de Beni
-      Hint:
-        Muestra mensajes de chat cuando se gastan, se dan o se actualizan los
+      Hint: Muestra mensajes de chat cuando se gastan, se dan o se actualizan los
         bennies.
     HideWC:
       Name: Ocultar los Comodines PNJ
@@ -536,8 +521,7 @@ SWADE:
       Name: Mapa frontal del bump
     CoreSkillsList:
       Name: Lista de habilidades básicas
-      Hint:
-        Introduzca una lista separada por comas de las habilidades que se definirán
+      Hint: Introduzca una lista separada por comas de las habilidades que se definirán
         como competencias básicas para todos los actores
     CoreSkillsPack:
       Name: Compendio de habilidades básicas
@@ -553,14 +537,12 @@ SWADE:
       Hint: Da un beni a cada PJ cuando uno de ellos recibe un comodín
     AmmoManagement:
       Name: Gestión de la munición
-      Hint:
-        Cuando se activa, y es aplicable, las acciones restan munición del cargador
+      Hint: Cuando se activa, y es aplicable, las acciones restan munición del cargador
         del arma. Las cartas de objetos también ganan un nuevo botón de recarga y
         no podrás lanzar un ataque si no hay suficiente munición disponible
     PCAmmoFromInventory:
       Name: Los PJ utilizan la munición del inventario
-      Hint:
-        Cuando se activa la opción de establecer un elemento `Equipable` se puede
+      Hint: Cuando se activa la opción de establecer un elemento `Equipable` se puede
         establecer para ser utilizado como munición y se utilizará al recargar el
         arma
     NPCAmmoFromInventory:
@@ -575,18 +557,15 @@ SWADE:
       Hint: Habilitar la regla de convicción
     NoPowerPoints:
       Name: Sin puntos de poder
-      Hint:
-        Cuando se activa esta opción se ocultan todas las interacciones de Puntos
+      Hint: Cuando se activa esta opción se ocultan todas las interacciones de Puntos
         de poder
     AlwaysGeneralPP:
       Name: Mostrar siempre los puntos de poder
-      Hint:
-        Cuando está activada, la sección Poderes siempre se muestra aunque todos
+      Hint: Cuando está activada, la sección Poderes siempre se muestra aunque todos
         los poderes tengan un trasfondo arcano asociado.
     ApplyEncumbrance:
       Name: Aplicar penalizaciones de carga
-      Hint:
-        Aplicar penalizaciones por sobrecarga. Por favor, ten en cuenta que esto
+      Hint: Aplicar penalizaciones por sobrecarga. Por favor, ten en cuenta que esto
         actualmente NO ESTÁ SOPORTADO para las pruebas de {vigor} para resistir la
         {fatiga}
     GmBennies:
@@ -616,9 +595,22 @@ SWADE:
         Name: Moneda inicial de los PNJ
     NPCCurrency:
       Name: Los PNJs utilizan moneda
-      Hint:
-        Cuando se activa, todos los PNJ tienen las mismas opciones de moneda que
+      Hint: Cuando se activa, todos los PNJ tienen las mismas opciones de moneda que
         los Personajes Jugadores.
+    DumbLuck:
+      Name: Potra
+      Hint: Si marca esta casilla, se activará la regla de Potra
+    WoundCap:
+      Name: Límite de heridas
+      Hint: Al marcar esta casilla se activará la Regla de Límite de heridas al calcular
+        las heridas.
+    GrittyDamage:
+      Name: Daño descarnado
+      Hint: Al marcar esta casilla se activará la Regla Daño descarnado y permitirá
+        seleccionar la Tabla de Heridas para tirar.
+    InjuryTable:
+      Name: Tabla de lesiones
+      Hint: Selecciona la tabla apropiada para obtener automáticamente el Daño descarnado.
   EffectCallbacks:
     Shaken:
       RollSpirit: Tirada de Espíritu
@@ -653,6 +645,7 @@ SWADE:
     Label: Arma distintiva
     Regular: Regular
     Improved: Mejorada
+    None: No
   OffHandPenalty: Penalización por mano mala
   ItemEquipStatus:
     Label: Localización
@@ -664,16 +657,15 @@ SWADE:
     TwoHands: A dos manos
     Added: Añadida
     Readied: Preparada
+    Installed: Instalado
   DestroyOnEmpty: Destruir cuando esté vacío
   Charges: Cargas
   Consumable:
     Use: Usar
     Consumables: Consumibles
-  EmptyRacialAbilitiesHint:
-    Esta {race} o {archetype} aún no tiene ninguna habilidad.
+  EmptyRacialAbilitiesHint: Esta {race} o {archetype} aún no tiene ninguna habilidad.
     Arrastra y suelta algo en la hoja para empezar.
-  NoTokenSelectedForResistRoll:
-    Para hacer una tirada de resistencia, primero selecciona
+  NoTokenSelectedForResistRoll: Para hacer una tirada de resistencia, primero selecciona
     un token
   Templates:
     Cone:
@@ -697,8 +689,7 @@ SWADE:
     Toggle: interrumpir el uso del Compendio TOC
     Dialog:
       Title: Confirmar la alternancia
-      Content:
-        Para que el cambio surta efecto, se recargará Foundry VTT y todos los
+      Content: Para que el cambio surta efecto, se recargará Foundry VTT y todos los
         clientes conectados. Por favor, confirmalo.
     Header: Contenido
   Category: Categoría de objeto
@@ -744,6 +735,80 @@ SWADE:
     Header: Ayudas de items
     When: Grant Items When
   IgnFatigue: Ignorar Fatiga
+  ReloadType:
+    Label: Procedimiento de recarga
+    None: No
+    Single: Único
+    Full: Lleno
+    Magazine: Cargador
+    Battery: Batería
+    PP: Puntos de poder
+  DamageApplicator:
+    SoakDialog:
+      Accept: Aceptar
+      WoundedTitle: Tirada de absorción para {name}?
+      GMBenny: Gasta un Beni del DJ para absorber
+      Free: Absorber gratis
+      TakeWounds: Recibe {wounds}
+      AdjustDamage: Ajuste del daño
+      ApplyShaken: Aplica el estado de aturdido
+      WoundedPrompt: <p>{name} va a recibir {wounds}. ¿Quieres intentar absorber?</p>
+      ShakenPrompt: <p>{name} ha quedado aturdido.</p>
+      UnharmedPrompt: <p>{nombre} está ileso.</p>
+      UnwoundedTitle: ¿Ajustar el daño para determinar el estado de {name}?
+      Benny: Gasta un Beni para absorber
+      SoakRoll: Tirada de Vigor para absorción
+    AdjustDamagePrompt: <p>Ajusta el daño para las habilidades y efectos que pueda
+      tener {name}.</p>
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> va a recibir <strong>{wounds}</strong>!</p>
+    RerollSoakDialog:
+      Prompt: <p>{name} va a recibir {wounds}. ¿Quieres repetir la tirada de absorción?</p>
+      GMBenny: Gasta un Beni del DJ para volver a tirar
+      Free: Repetir tirada gratis
+      TakeWounds: Recibir {wounds}
+      Title: ¿Volver a tirar absorber heridas para {name}?
+      Benny: Gasta un Beni para volver a tirar
+      PromptCritFail: <p>{name} está a punto de recibir {wounds}. Un error crítico
+        impide que se vuelvan a realizar las tiradas.</p>
+    Result:
+      SoakedAll: <p><strong>{name}</strong> Absorbe todas las heridas y no se aturde!</p>
+      NoSignificantDamage: <p><strong>{name}</strong> no sufre daños significativos.</p>
+      IsShaken: <p><strong>{name}</strong> está <strong>aturdido</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> está <strong>aturdido</strong>
+        con <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> está <strong>incapacitado!</strong></p>
+    ApplyDamage: Aplicar daño
+    NoInjuryTable: No se ha seleccionado ninguna tabla de lesiones. Véase Configuración
+      de los ajustes de SWADE
+    NoTargetsSelected: Selecciona un objetivo al que aplicar el daño.
+    SoakModifier: Modificador para absorción
+  Rolls:
+    Critfail:
+      Critfail: PIFIA
+      Confirm: Confirmación de Pifia
+      ConfirmDie: Dado de confirmación
+    DamageRoll: Tirada de daño
+    TraitRoll: Tirada de atributo
+    RollResult: Resultado de la tirada
+    SwadeRoll: Tirada
+  ppReload: Puntos de Poder para recargar
+  NoAmmoPP: No se encontraron puntos de poder que coincidieran con la munición fijada
+  RemoveAmmo: Quitar munición
+  ConsumableType:
+    Label: Subtipo
+    Regular: Regular
+  Validation:
+    OnlyOneRace: Sólo se puede correr una vez!
+    OnlyOneArchetype: Sólo puedes tener un arquetipo a la vez!
+  MigrateCompendium: Forzar la migración del compendio
+  LoadedAmmo: Munición cargada
+  RunningMod: Modificador de correr
+  ReloadNotPossible: Este tipo de personaje no se recarga
+  NoMags: No tienes artículos marcados como cargadores en tu inventario
+  Duplicate: Duplicado
+  RefreshPP: Refrescar los puntos de poder
+  Targets: 'Objetivos:'
+  BaseDamage: Daño básico
 ACTOR:
   TypeCharacter: Personaje Jugador
   TypeNpc: PNJ
