@@ -642,6 +642,7 @@ SWADE:
     Label: Arma distintiva
     Regular: Regular
     Improved: Millorada
+    None: No
   OffHandPenalty: Mà dolenta
   ItemEquipStatus:
     Label: Localització
@@ -653,6 +654,7 @@ SWADE:
     TwoHands: a dos mans
     Added: Afegida
     Readied: Preparada
+    Installed: Instal·lat
   DestroyOnEmpty: Destrueix quan estigui buit
   Charges: Càrregues
   Consumable:
@@ -751,6 +753,62 @@ SWADE:
   NoMags: No teniu res marcat com a carregador al vostre inventari
   DamageApplicator:
     SoakModifier: Modificador per absorció
+    SoakDialog:
+      UnwoundedTitle: Ajustar el mal per determinar l'estat de {name}?
+      WoundedPrompt: <p>{name} està a punt de rebre {wounds}. Vols provar d'absorbir?</p>
+      AdjustDamage: Ajustar el mal
+      TakeWounds: Rep {wounds}
+      Accept: Acceptar
+      ApplyShaken: Aplica l'estat d'atordit
+      SoakRoll: Tirada de vigor per absorbir
+      WoundedTitle: Tirada d'absorció de ferides per {name}?
+      ShakenPrompt: <p>{name} està apunt de quedar atordit.</p>
+      UnharmedPrompt: <p>{name} està il·lès.</p>
+      Benny: Gasta un beni per absorbir
+      GMBenny: Gasta un beni del DJ per absorbir
+      Free: Absorbeix sense cost
+    ApplyDamage: Aplicar el mal
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> està a punt de rebre <strong>{wounds}</strong>!</p>
+    RerollSoakDialog:
+      Title: Tornar a tirar absorbir ferides per {name}?
+      Prompt: <p>{name} està a punt de rebre {wounds}. Voleu tornar a tirar per absorbir?</p>
+      PromptCritFail: <p>{name} està apunt de rebre {wounds}. Un error crític impedeix
+        que es tornin a fer els tiratges.</p>
+      Benny: Gasta un beni per tornar a tirar
+      GMBenny: Gasta un beni del DJ per tornar a tirar
+      Free: Tornar a tirar sense cost
+      TakeWounds: Rebre{wounds}
+    AdjustDamagePrompt: <p>Ajusta el mal per a qualsevol habilitat i efecte que pugui
+      tenir {name}.</p>
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> no pateix cap mal d'importància.</p>
+      SoakedAll: <p><strong>{name}</strong> ha absorbit totes les ferides i no està
+        atordit!</p>
+      IsShaken: <p><strong>{name}</strong> està <strong>atordit</strong>!</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> està <strong>atordit</strong>
+        amb <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> està <strong>incapacitat!</strong></p>
+    NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració
+      de SWADE
+    NoTargetsSelected: Selecciona un objectiu per aplicar-hi el mal.
+  Validation:
+    OnlyOneRace: Només es pot triar una espècie!
+    OnlyOneArchetype: Només pots tenir un arquetip alhora!
+  MigrateCompendium: Força la migració del compendi
+  TOCBlockList: Compendi TOC Blocklist
+  BaseDamage: Mal bàsic
+  RefreshPP: Actualitzar punts de poder
+  Targets: 'Objectius:'
+  Rolls:
+    RollResult: Resultat de tirada
+    SwadeRoll: Tirada
+    DamageRoll: Tirada de mal
+    TraitRoll: Tirada de trets
+    Critfail:
+      Critfail: Pífia
+      Confirm: Confirmació de pífia
+      ConfirmDie: Dau de confirmació
+  LoadedAmmo: Munició carregada
 ACTOR:
   TypeCharacter: Personatge (PJ)
   TypeNpc: Personatge no jugador (PNJ)
