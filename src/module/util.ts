@@ -109,10 +109,12 @@ export function normalizeRollModifiers(
   let normalizedValue: string;
   if (typeof mod.value === 'string') {
     //if the modifier starts with a reserved symbol take it as is
-    if (mod.value.match(/[@+-]/)) {
+    if (mod.value[0].match(/[@+-]/)) {
       normalizedValue = mod.value;
+    } else if (Number.isNumeric(mod.value)) {
+      normalizedValue = mod.value ? Number(mod.value).signedString() : '+0';
     } else {
-      normalizedValue = mod.value ? '+0' : Number(mod.value).signedString();
+      normalizedValue = '+' + mod.value;
     }
   } else if (typeof mod.value === 'number') {
     normalizedValue = mod.value.signedString();
