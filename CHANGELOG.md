@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed a small issue with a label in the Tweaks window. (#780)
 - Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782)
+- Shields should once again display their notes in the inventory tab of the Character Sheet. (#783)
 
 ### Known Issues
 

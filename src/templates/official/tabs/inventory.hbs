@@ -49,9 +49,7 @@
     <span class='header-name'>{{localize 'SWADE.Weapons'}}</span>
     <span class='damage'>{{localize 'SWADE.Dmg'}}</span>
     <span class='ap'>{{localize 'SWADE.Ap'}}</span>
-    <span class='note' style='text-align: center'>{{localize
-        'SWADE.Notes'
-      }}</span>
+    <span class='note'>{{localize 'SWADE.Notes'}}</span>
     <span class='weight'>{{localize 'SWADE.Weight'}}</span>
     <span class='item-controls'>
       <button type='button' class='item-create' data-type='weapon'>
@@ -140,9 +138,7 @@
     <span class='header-name'>{{localize 'SWADE.Armors'}}</span>
     <span class='bonus'>{{localize 'SWADE.Armor'}}</span>
     <span class='min-str'>{{localize 'SWADE.MinStrShort'}}</span>
-    <span class='note' style='text-align: center'>{{localize
-        'SWADE.Notes'
-      }}</span>
+    <span class='note'>{{localize 'SWADE.Notes'}}</span>
     <span class='weight'>{{localize 'SWADE.Weight'}}</span>
     <span class='item-controls'>
       <button type='button' class='item-create' data-type='armor'>
@@ -217,9 +213,7 @@
     <span class='header-name'>{{localize 'SWADE.Shields'}}</span>
     <span class='parry'>{{localize 'SWADE.Parry'}}</span>
     <span class='cover'>{{localize 'SWADE.Cover._name'}}</span>
-    <span class='note' style='text-align: center'>
-      {{localize 'SWADE.Notes'}}
-    </span>
+    <span class='note'>{{localize 'SWADE.Notes'}}</span>
     <span class='weight'>{{localize 'SWADE.Weight'}}</span>
     <span class='item-controls'>
       <button type='button' class='item-create' data-type='shield'>
@@ -246,6 +240,7 @@
           </button>
           <span class='parry'>{{system.parry}}</span>
           <span class='cover'>{{system.cover}}</span>
+          <span class='note'>{{enrich system.notes}}</span>
           <span class='weight'>
             {{formatNumber (times system.weight system.quantity) }}
           </span>
