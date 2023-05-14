@@ -299,7 +299,7 @@ SWADE:
     Label: Riqueza
     Broke:
       Label: Roto
-      Hint: Estás roto!
+      Hint: Está roto!
     Sides: Riqueza
     WildSides: Paso del dado de riqueza
     Modifier: Modificador al dado de riqueza
