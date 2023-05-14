@@ -203,6 +203,7 @@ export function registerSettings() {
     type: Boolean,
     default: false,
     config: true,
+    requiresReload: true,
   });
 }
 

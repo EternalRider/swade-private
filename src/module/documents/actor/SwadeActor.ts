@@ -824,9 +824,7 @@ export default class SwadeActor extends Actor {
   calcStatusPenalties(): number {
     let retVal = 0;
     const isDistracted = getProperty(this, 'system.status.isDistracted');
-    const isEntangled = getProperty(this, 'system.status.isEntangled');
-    const isBound = getProperty(this, 'system.status.isBound');
-    if (isDistracted || isEntangled || isBound) {
+    if (isDistracted) {
       retVal -= 2;
     }
     return retVal;
@@ -1214,17 +1212,7 @@ export default class SwadeActor extends Actor {
 
     if (this.type !== 'vehicle') {
       //Status penalties
-      if (this.system.status.isEntangled) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Entangled'),
-          value: -2,
-        });
-      } else if (this.system.status.isBound) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Bound'),
-          value: -2,
-        });
-      } else if (this.system.status.isDistracted) {
+      if (this.system.status.isDistracted) {
         mods.push({
           label: game.i18n.localize('SWADE.Distr'),
           value: -2,

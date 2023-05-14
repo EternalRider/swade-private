@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
 - Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
+- Changing the _Fantasy Companion Entangle_ setting will now properly ask for a client reload.
 - **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757)
 
 ### Fixed
@@ -43,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed a small issue with a label in the Tweaks window. (#780)
 - Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782)
 - Shields should once again display their notes in the inventory tab of the Character Sheet. (#783)
+- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784)
 
 ### Known Issues
 
