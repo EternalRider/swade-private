@@ -27,10 +27,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added the ability to set the equip status/location by holding modifier keys (Ctrl, Shift, Alt) when dropping inventory items onto the official Character and Vehicle sheets. (#727) **by @florad92**
-  - Shift: Weapons and other equippables are equipped.
+  - Shift: Weapons and other equippable items are equipped.
   - Ctrl: Items are set to be carried
   - Alt: Items are set to be Stored
-- Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757) **by @jpmeehan5**
+- Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757) **by @florad92**
 - Added a soak modifier. This value can be found in the tweaks dialog and the AE Key is `system.attributes.vigor.soakBonus`. (#745) **by @jpmeehan5**
 - Added support for the `Unarmored Hero` Setting Rule. The toggle for this rule can be found in the _Setting Configurator_. (#756) **by @jpmeehan5**
 - Added Support for the following languages, through the Foundry-Hub Weblate integration.
