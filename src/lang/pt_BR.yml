@@ -372,7 +372,7 @@ SWADE:
       RollSpirit: Rolar Espírito
       Title: Remover Abalado de {name}
       Flavor: Teste de Espírito para remover Abalado
-      UnshakeModifier: Modificador de Desabalar
+      UnshakeModifier: Resistência ao Estado Abalado
       Question: O que você quer fazer?
       Success: Você não está mais Abalado
     Stunned:
@@ -380,7 +380,7 @@ SWADE:
       Fail: Você continua Atordoado
       Success: Você não está mais Atordoado, mas continua Vulnerável
       Raise: Você está mais Abalado e nem Vulnerável
-      UnStunModifier: Modificador para Desatordoar
+      UnStunModifier: Resistência ao Estado Atordoado
     BleedingOut:
       Title: Teste de Vigor para resistir Sangramento
       Fail: Você morre
