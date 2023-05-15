@@ -1,5 +1,6 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { DamageRoll } from '../dice/DamageRoll';
+import { TraitRollModifier } from '../../interfaces/additional.interface'
 import type SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 
@@ -384,9 +385,28 @@ async function attemptSoak(
   bestSoakAttempt: number = 0,
 ) {
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
+  const soakModifiers: TraitRollModifier[] = [
+    {
+      label: game.i18n.localize('SWADE.DamageApplicator.SoakModifier'),
+      value: actor.system.attributes.vigor.soakBonus,
+    },
+  ]
+  if (
+    game.settings.get('swade', 'unarmoredHero') &&
+    actor.isUnarmored
+  ){ 
+    soakModifiers.push(
+      {
+        label: game.i18n.localize('SWADE.Settings.UnarmoredHero.Name'),
+        value: 2
+      }
+    )
+  }
   // Roll Vigor and get the data.
   const vigorRoll = await actor.rollAttribute('vigor', {
+    title: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.SoakRoll'),
     flavour: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.SoakRoll'),
+    additionalMods: soakModifiers,
   });
   let message = '';
   // Calculate how many Wounds have been Soaked with the roll

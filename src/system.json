@@ -72,6 +72,31 @@
       "lang": "de",
       "name": "Deutsch",
       "path": "lang/de.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "ca",
+      "name": "Català",
+      "path": "lang/ca.json"
+    },
+    {
+      "lang": "gl",
+      "name": "Galego",
+      "path": "lang/gl.json"
+    },
+    {
+      "lang": "eu",
+      "name": "Euskera",
+      "path": "lang/eu.json"
+    },
+    {
+      "lang": "pt_BR",
+      "name": "Português (Brasil)",
+      "path": "lang/pt_BR.json"
     }
   ],
   "socket": true,

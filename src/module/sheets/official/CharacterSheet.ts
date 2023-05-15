@@ -1,4 +1,5 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
+import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
@@ -9,11 +10,11 @@ import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../../apps/AdvanceEditor';
 import AttributeManager from '../../apps/AttributeManager';
 import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
+import SwadeMeasuredTemplate from '../../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../../documents/item/SwadeItem';
-import SwadeMeasuredTemplate from '../../documents/SwadeMeasuredTemplate';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
 import PopUpMenu from '../../PopUpMenu';
@@ -485,15 +486,36 @@ export default class CharacterSheet extends ActorSheet<
   protected override async _onDropItem(
     event: DragEvent,
     data: ActorSheet.DropData.Item,
-  ): Promise<unknown> {
-    await super._onDropItem(event, data);
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
+  ): Promise<Item[] | boolean> {
+    if (!this.actor.isOwner) return false;
+    const item = await SwadeItem.fromDropData(data)!;
+    if (!item) return false;
+
+    const itemData = item.toObject();
+
+    //handle relative item sorting
+    if (this.actor.uuid === item.parent?.uuid) {
+      return this._onSortItem(event, itemData) as Promise<SwadeItem[]>;
+    }
+
+    //handle keyboard modifiers on drop
+    if (item.isPhysicalItem) {
+      this._handleDropModifierKeys(event, itemData);
+    }
+
+    //process embedded documents, if any exist
+    if (item.embeddedAbilities.size > 0) {
+      await this._handleEmbeddedAbilities(item);
+    }
+
+    return this._onDropItemCreate(itemData);
+  }
+
+  protected async _handleEmbeddedAbilities(item: SwadeItem) {
     //check if it's the proper type and subtype
     if (item.type !== 'ability') return;
     const subType = item.system.subtype;
     if (subType === 'special') return;
-
-    //process embedded documents
     const map = item.embeddedAbilities;
     const creationData = new Array<any>();
     const duplicates = new Array<{ type: string; name: string }>();
@@ -533,6 +555,21 @@ export default class CharacterSheet extends ActorSheet<
         ),
         callback: () => {},
       });
+    }
+  }
+
+  protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
+    const key = 'system.equipStatus';
+    if (event.shiftKey) {
+      if (item.type === 'weapon') {
+        foundry.utils.setProperty(item, key, constants.EQUIP_STATE.MAIN_HAND);
+      } else if (foundry.utils.getProperty(item, 'system.equippable')) {
+        foundry.utils.setProperty(item, key, constants.EQUIP_STATE.EQUIPPED);
+      }
+    } else if (event.ctrlKey) {
+      foundry.utils.setProperty(item, key, constants.EQUIP_STATE.CARRIED);
+    } else if (event.altKey) {
+      foundry.utils.setProperty(item, key, constants.EQUIP_STATE.STORED);
     }
   }
 

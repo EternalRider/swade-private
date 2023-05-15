@@ -152,11 +152,11 @@ SWADE:
   WoundsMax: Maximale Wunden
   Fatigue: Erschöpfung
   FatigueMax: Maximale Erschöpfung
-  Incap: Ausgeschaltet!
+  Incap: Ausgeschaltet
   Init: Initiative
   ActionDeckReset: Aktionsdeck zurücksetzen
   ActionDeckResetNotification: Aktionsdeck wurde zurückgesetzt
-  InitDraw: zog...
+  InitDraw: zog…
   Addi: Zusätzlich
   Status: Status
   Handling: Manövrierf.
@@ -169,7 +169,7 @@ SWADE:
   CargoWeight: Fracht-Gewicht
   Mods: Mods
   ModSlots: Mod-Plätze
-  MaxMods: Maximum Mods
+  MaxMods: Maximale Mods
   Operator: Operator
   ManCheck: Manöver-Probe
   AltSkill: Fertigkeitsname
@@ -179,8 +179,8 @@ SWADE:
   SettingConf: Setting-Konfigurator
   SettingConfLabel: Öffne Setting-Konfigurator
   SettingConfDesc: >-
-    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten,
-    Settingregeln, usw. einstellen.
+    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten, Settingregeln,
+    usw. einstellen.
   Formula: Formel
   SitMod: Situativer Mod
   RollMode: Wurfmodus
@@ -243,7 +243,7 @@ SWADE:
   ActAfterCurrentCombatant: Nach aktuellem Teilnehmer handeln
   LoseTurn: Zug aussetzen umschalten
   ReloadType:
-    Label: NachladeTyp
+    Label: Nachladeprozedere
     None: Kein
     Single: Einzel
     Full: Voll
@@ -257,7 +257,7 @@ SWADE:
   NoAmmoPP: Nicht genug Machtpunkte vorhanden
   NoMags: Keine Magazine vorhanden
   RemoveAmmo: Munition entfernen
-  NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion
+  NotEnoughAmmo: Du hast nicht genug Munition für diese Aktion!
   NotEnoughAmmoToReload: Es gibt nicht genug Munition zum nachladen
   OfficialSheet: Offizieller Charakterbogen
   OnFire: Brennend
@@ -276,7 +276,7 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel
+  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel.
   WildDieTheme: Wildcard Würfel Thema
   WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
@@ -302,7 +302,7 @@ SWADE:
   Crew: Besatzung
   String: Text
   Number: Nummer
-  Checkbox: Checkbox
+  Checkbox: Kontrollkästchen
   Selection: Auswahl
   WealthDie:
     Label: Wohlstandswürfel
@@ -327,10 +327,9 @@ SWADE:
   AddPPDesc: MP-Kosten zu den verfügbaren MP hinzurechnen
   RightClickZoom: Für eine größere Ansicht rechtsklicken
   SysMigrationWarning: >-
-    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und
-    können nicht zuverlässig auf die neueste Version migriert werden.
-
-    Der Vorgang wird versucht, es können jedoch Fehler auftreten.
+    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und können
+    nicht zuverlässig auf die neueste Version migriert werden. Der Vorgang wird versucht,
+    es können jedoch Fehler auftreten.
   DeckShuffled: Kartens automatisch gemischt
   BasePace: Basisbewegung
   WarningPackLocked: >-
@@ -363,7 +362,7 @@ SWADE:
       Add: Eigenen Modifikator hinzufügen
     Support: Unterstützung
     Preset:
-      Choose: Voreinstellung auswählen...
+      Choose: Voreinstellung auswählen…
       Add: Voreinstellung hinzufügen
     Value: Wert
     Ignore: Ignorieren?
@@ -674,6 +673,12 @@ SWADE:
     GrittyDamage:
       Name: Fieser Schaden
       Hint: Schaltet die Fieser Schaden Settingregel ein
+    InjuryTable:
+      Name: Verletzungstabelle
+      Hint: Wähle die Tabelle aus welche für Verletzungen bei Fiesem Schaden verwendet
+        werden soll.
+    UnarmoredHero:
+      Name: Ungepanzerter Held
   Validation:
     OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
@@ -747,6 +752,7 @@ SWADE:
         Damit die Änderung wirksam wird, werden Foundry VTT und alle verbundenen
         Clients neu geladen. Bitte bestätigen.
     Header: Inhalt
+    Toggle: Compendium TOC aus-/einschalten
   Category: Item Kategorie
   ItemIsAmmo: Ist Munition
   Vision:
@@ -823,6 +829,7 @@ SWADE:
       AdjustDamage: Schaden anpassen
       ApplyShaken: Apply Shaken Status
       Accept: Annehmen
+      SoakRoll: Erholungsprobe (Konstitution)
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
       Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
@@ -831,6 +838,8 @@ SWADE:
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
+      PromptCritFail: <p>{name} ist kurz davor {wounds} zu erleiden. Ein kritischer
+        Fehlschlag verhindert Wiederholungswürfe.</p>
     AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might
       have.</p>
     Result:
@@ -842,10 +851,13 @@ SWADE:
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: The User who rolled damage must select one or more Targets.
+    SoakModifier: Erholungsprobenmodifikator
   CustomWildDie: '- Persönlicher Wildcard Würfel -'
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
   ppReload: Zum nachladen benötigte MP
+  UsesTOC: Compendium TOC Verwenden
+  TOCBlockList: Compendium TOC Blockliste
 ACTOR:
   TypeCharacter: Charakter
   TypeNpc: NSC

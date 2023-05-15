@@ -18,6 +18,7 @@ import WildDie from '../../dice/WildDie';
 import { Logger } from '../../Logger';
 import {
   getRankFromAdvanceAsString,
+  mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
@@ -32,6 +33,25 @@ declare global {
 }
 
 export default class SwadeActor extends Actor {
+  static getWoundsColor(current: number, max: number) {
+    const minDegrees = 30;
+    const maxDegrees = 120;
+    //get the degrees on the HSV wheel, going from 30° (greenish-yellow) to 120° (green)
+    const degrees = mapRange(current, 0, max, minDegrees, maxDegrees);
+    //invert the degrees and map them from 0 to a third
+    const hue = mapRange(maxDegrees - degrees, 0, maxDegrees, 0, 1 / 3);
+    //get a usable color value with 100% saturation and 90% value
+    return Color.fromHSV([hue, 1, 0.9]);
+  }
+
+  static getFatigueColor(current: number, max: number) {
+    //get the angle (200°) and map it into the proper range
+    const hue = mapRange(200, 0, 360, 0, 1);
+    //get the value from the parameter
+    const value = mapRange(current, 0, max, 0, 1);
+    return Color.fromHSV([hue, value, 0.75]);
+  }
+
   constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
@@ -122,6 +142,14 @@ export default class SwadeActor extends Actor {
         !!foundry.utils.getProperty(a, 'system.isHeavyArmor') &&
         foundry.utils.getProperty(a, 'system.equipStatus') >=
           constants.EQUIP_STATE.EQUIPPED,
+    );
+  }
+
+  get isUnarmored(): boolean {
+    return this.itemTypes.armor.every(
+      (a) =>
+        foundry.utils.getProperty(a, 'system.equipStatus') <
+        constants.EQUIP_STATE.EQUIPPED,
     );
   }
 
@@ -341,11 +369,12 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    const roll = TraitRoll.fromTerms([basePool]);
+    const roll = TraitRoll.fromTerms([basePool]) as TraitRoll;
     roll.modifiers = modifiers;
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
@@ -353,7 +382,15 @@ export default class SwadeActor extends Actor {
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    Hooks.call('swadeRollAttribute', this, attribute, roll, modifiers, options);
+    const permitContinue = Hooks.callAll(
+      'swadePreRollAttribute',
+      this,
+      attribute,
+      roll,
+      modifiers,
+      options,
+    );
+    if (!permitContinue) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
@@ -362,11 +399,11 @@ export default class SwadeActor extends Actor {
           roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
-      ]);
+      ]) as TraitRoll;
     }
 
     // Roll and return
-    return RollDialog.asPromise({
+    const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -381,7 +418,27 @@ export default class SwadeActor extends Actor {
           'SWADE.AttributeTest',
         )}`,
       actor: this,
-    }) as Promise<TraitRoll | null>;
+    });
+
+    /**
+     * A hook event that is fired after an attribute is rolled
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the attribute
+     * @param {String} attribute                The name of the attribute, in lower case
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
+     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {IRollOptions} options            The options passed into the roll function
+     */
+    Hooks.callAll(
+      'swadeRollAttribute',
+      this,
+      attribute,
+      roll,
+      modifiers,
+      options,
+    );
+
+    return retVal as TraitRoll | null;
   }
 
   async rollSkill(
@@ -412,6 +469,7 @@ export default class SwadeActor extends Actor {
 
     /**
      * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that rolls the skill
      * @param {SwadeItem} skill                 The Skill item that is being rolled
@@ -419,7 +477,16 @@ export default class SwadeActor extends Actor {
      * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    Hooks.call('swadeRollSkill', this, skill, roll, modifiers, options);
+    const permitContinue = Hooks.call(
+      'swadePreRollSkill',
+      this,
+      skill,
+      roll,
+      modifiers,
+      options,
+    );
+
+    if (!permitContinue) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
@@ -428,11 +495,11 @@ export default class SwadeActor extends Actor {
           roll.modifiers.reduce(modifierReducer, ''),
           this.getRollData(),
         ),
-      ]);
+      ]) as TraitRoll;
     }
 
     // Roll and return
-    return RollDialog.asPromise({
+    const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -443,7 +510,20 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-    }) as Promise<TraitRoll | null>;
+    });
+
+    /**
+     * A hook event that is fired after a skill is rolled
+     * @category Hooks
+     * @param {SwadeActor} actor                The actor that rolls the skill
+     * @param {SwadeItem} skill                 The Skill item that is being rolled
+     * @param {TraitRoll} roll                  The built base roll, without any modifiers
+     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {IRollOptions} options            The options passed into the roll function
+     */
+    Hooks.callAll('swadeRollSkill', this, skill, roll, modifiers, options);
+
+    return retVal as TraitRoll | null;
   }
 
   async rollWealthDie() {
@@ -744,9 +824,7 @@ export default class SwadeActor extends Actor {
   calcStatusPenalties(): number {
     let retVal = 0;
     const isDistracted = getProperty(this, 'system.status.isDistracted');
-    const isEntangled = getProperty(this, 'system.status.isEntangled');
-    const isBound = getProperty(this, 'system.status.isBound');
-    if (isDistracted || isEntangled || isBound) {
+    if (isDistracted) {
       retVal -= 2;
     }
     return retVal;
@@ -1134,17 +1212,7 @@ export default class SwadeActor extends Actor {
 
     if (this.type !== 'vehicle') {
       //Status penalties
-      if (this.system.status.isEntangled) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Entangled'),
-          value: -2,
-        });
-      } else if (this.system.status.isBound) {
-        mods.push({
-          label: game.i18n.localize('SWADE.Bound'),
-          value: -2,
-        });
-      } else if (this.system.status.isDistracted) {
+      if (this.system.status.isDistracted) {
         mods.push({
           label: game.i18n.localize('SWADE.Distr'),
           value: -2,

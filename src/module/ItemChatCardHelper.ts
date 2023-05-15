@@ -4,12 +4,12 @@ import {
   TraitRollModifier,
 } from '../interfaces/additional.interface';
 import IRollOptions from '../interfaces/RollOptions.interface';
+import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { SWADE } from './config';
 import { SwadeRoll } from './dice/SwadeRoll';
 import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-import SwadeMeasuredTemplate from './documents/SwadeMeasuredTemplate';
 import { Logger } from './Logger';
 import { getTrait } from './util';
 
