@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+### 2.4.1
+
+### Fixed
+
+- Fixed the locale code for brazilian protuguese.
+
 ## 2.4
 
 ### Added
