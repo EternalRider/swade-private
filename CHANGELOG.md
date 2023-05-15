@@ -26,25 +26,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added the ability to set the equip status/location by holding modifier keys (Ctrl, Shift, Alt) when dropping inventory items onto the official Character and Vehicle sheets. (#727)
+- Added the ability to set the equip status/location by holding modifier keys (Ctrl, Shift, Alt) when dropping inventory items onto the official Character and Vehicle sheets. (#727) **by @florad92**
   - Shift: Weapons and other equippables are equipped.
   - Ctrl: Items are set to be carried
   - Alt: Items are set to be Stored
-- Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757)
+- Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757) **by @jpmeehan5**
+- Added a soak modifier. This value can be found in the tweaks dialog and the AE Key is `system.attributes.vigor.soakBonus`. (#745) **by @jpmeehan5**
+- Added support for the `Unarmored Hero` Setting Rule. The toggle for this rule can be found in the _Setting Configurator_. (#756) **by @jpmeehan5**
 
 ### Changed
 
-- Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742)
-- Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742)
-- Changing the _Fantasy Companion Entangle_ setting will now properly ask for a client reload.
-- **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757)
+- Token attribute bars for wounds now properly go from green to yellow to red as wounds accumulate. (#742) **by @florad92**
+- Token attribute bars for fatigue now go from light to dark blue as fatigue accumulates. (#742) **by @florad92**
+- Changing the _Fantasy Companion Entangle_ setting will now properly ask for a client reload. **by @florad92**
+- **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757) **by @florad92**
+- The Prone status effect now applies the proper penalties. (#251) **by @jpmeehan5**
+- A power's AP now only displays if a value is actually present. (#551) **by @jpmeehan5**
+-
 
 ### Fixed
 
-- Fixed a small issue with a label in the Tweaks window. (#780)
-- Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782)
-- Shields should once again display their notes in the inventory tab of the Character Sheet. (#783)
-- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784)
+- Fixed a small issue with a label in the Tweaks window. (#780) **by @florad92**
+- Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782) **by @florad92**
+- Shields should once again display their notes in the inventory tab of the Character Sheet. (#783) **by @florad92**
+- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784) **by @florad92**
+- Fixed a small spacing issue on the NPC sheet. (#760) **by @jpmeehan5**
 
 ### Known Issues
 
