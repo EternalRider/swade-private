@@ -80,7 +80,7 @@
     },
     {
       "lang": "ca",
-      "name": "català",
+      "name": "Català",
       "path": "lang/ca.json"
     },
     {
@@ -92,6 +92,11 @@
       "lang": "eu",
       "name": "Euskera",
       "path": "lang/eu.json"
+    },
+    {
+      "lang": "pt_BR",
+      "name": "Portuguese (Brazil)",
+      "path": "lang/pt_BR.json"
     }
   ],
   "socket": true,

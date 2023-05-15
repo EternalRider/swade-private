@@ -33,6 +33,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `swadePreRollSkill` and `swadePreRollAttribute` hooks. (#757) **by @jpmeehan5**
 - Added a soak modifier. This value can be found in the tweaks dialog and the AE Key is `system.attributes.vigor.soakBonus`. (#745) **by @jpmeehan5**
 - Added support for the `Unarmored Hero` Setting Rule. The toggle for this rule can be found in the _Setting Configurator_. (#756) **by @jpmeehan5**
+- Added Support for the following languages, through the Foundry-Hub Weblate integration.
+  - Español
+  - Català
+  - Galego
+  - Euskera
+  - Portuguese (Brazil)
 
 ### Changed
 
@@ -42,7 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - **[BREAKING]** the the `swadeRollSkill` and `swadeRollAttribute` hooks now fire AFTER the roll has been constructed evaluated through the Roll Dialog. (#757) **by @florad92**
 - The Prone status effect now applies the proper penalties. (#251) **by @jpmeehan5**
 - A power's AP now only displays if a value is actually present. (#551) **by @jpmeehan5**
--
+- Updated translations.
 
 ### Fixed
 
