@@ -67,24 +67,23 @@ export default class CharacterSheet extends ActorSheet<
     this._setupEffectCreateMenu(html);
     this._setupItemContextMenu(html);
 
-    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
-      const target = ev.target as HTMLButtonElement;
-      const targetIsButton = 'button' === target?.type;
-      if (!targetIsButton && ev.key === 'Enter') {
-        ev.preventDefault();
-        this.submit({ preventClose: true });
-        return false;
-      }
-    });
-
     // Input focus and update
     const inputs = html.find('input');
     inputs.on('focus', (ev) => ev.currentTarget.select());
 
     inputs
       .addBack()
-      .find('[data-dtype="Number"]')
+      .find('[name="system.details.currency"]')
       .on('change', this._onChangeInputDelta.bind(this));
+
+    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
+      const targetIsButton = ev.target instanceof HTMLButtonElement;
+      if (!targetIsButton && ev.key === 'Enter') {
+        ev.preventDefault();
+        this.submit({ preventClose: true });
+        return false;
+      }
+    });
 
     // Drag events for macros.
     // Find all items on the character sheet.

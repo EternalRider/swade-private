@@ -22,11 +22,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-### 2.4.1
+## 2.4.2
+
+### Added
+
+- Added the `Upgrade` option to the possible modes in the AEGIS. (#786) **by @florad92**
+- Added an input for the Soak Bonus to the Tweaks window. (#790) **by @florad92**
+
+### Changed
+
+- Restricted the input calculation to only affect the currency field on the NPC and Character sheet. (#772) **by @florad92**
 
 ### Fixed
 
-- Fixed the locale code for brazilian protuguese.
+- Fixed an issue with token bars which could lead to errors when maximum wounds or maximum fatigue are 0. (#787) **by @florad92**
+- Roll results should no longer linewrap if they are too long. (#776) **by @florad92**
+
+## 2.4.1
+
+### Fixed
+
+- Fixed the locale code for brazilian portuguese.
 
 ## 2.4
 
