@@ -80,6 +80,7 @@ export default class ActiveEffectWizard extends FormApplication {
       changeModes: {
         [foundry.CONST.ACTIVE_EFFECT_MODES.ADD]: 'EFFECT.MODE_ADD',
         [foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE]: 'EFFECT.MODE_OVERRIDE',
+        [foundry.CONST.ACTIVE_EFFECT_MODES.UPGRADE]: 'EFFECT.MODE_UPGRADE',
       },
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
@@ -168,7 +169,9 @@ export default class ActiveEffectWizard extends FormApplication {
         key: 'system.fatigue.max',
       },
       {
-        label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.UnshakeModifier'),
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
+        ),
         key: 'system.attributes.spirit.unShakeBonus',
       },
       {
@@ -176,7 +179,9 @@ export default class ActiveEffectWizard extends FormApplication {
         key: 'system.attributes.vigor.soakBonus',
       },
       {
-        label: game.i18n.localize('SWADE.EffectCallbacks.Stunned.UnStunModifier'),
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.Stunned.UnStunModifier',
+        ),
         key: 'system.attributes.vigor.unStunBonus',
       },
       {
@@ -190,7 +195,7 @@ export default class ActiveEffectWizard extends FormApplication {
       {
         label: game.i18n.localize('SWADE.WealthDie.Modifier'),
         key: 'system.details.wealth.modifier',
-      }
+      },
     ];
   }
 

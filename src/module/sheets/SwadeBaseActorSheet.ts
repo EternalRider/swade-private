@@ -15,11 +15,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    const inputs = html.find('input');
+    const inputs = html.find<HTMLInputElement>('input');
     inputs.on('focus', (ev) => ev.currentTarget.select());
     inputs
       .addBack()
-      .find('[data-dtype="Number"]')
+      .find('[name="system.details.currency"]')
       .on('change', this._onChangeInputDelta.bind(this));
 
     if (this.actor.isOwner) {
@@ -443,7 +443,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor.data, input.name) + delta;
+      input.value = getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }

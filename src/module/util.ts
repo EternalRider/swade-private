@@ -285,6 +285,7 @@ export function mapRange(
   outMin: number,
   outMax: number,
 ): number {
+  if (inMin === inMax || outMin === outMax) return 0;
   const mapped = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
   return Math.clamped(mapped, outMin, outMax);
 }
