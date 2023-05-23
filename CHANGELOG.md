@@ -22,9 +22,39 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.0.0
+
+### Added
+
+- Increased FVTT maximum version to 11. (#715) **by @jpmeehan5**
+- Added module recommendations to the system manifest. (#791) **by @florad92**
+- Added the `category` property to Action and Ability items. (#805) **by @jpmeehan5**
+- You can view an effect's duration and description by clicking on its name in the Effects tab. (Courtesy of Foundry v11, Effects now have a rich text editor to add descriptions). (#769) **by @jpmeehan5**
+- Wild Attack has been added as a status that provides a global attack and damage boost. (#613) **by @jpmeehan5**
+- You may now apply global modifiers to trait rolls, attack rolls, damage rolls, or attributes & their linked skills. (#420) **by @jpmeehan5**
+  - AE key is `system.stats.globalMods` with properties `trait`, `agility`, `smarts`, `spirit`, `strength`, `vigor`, `trait`, `attack`, `damage`, and 'AP', so a bonus to say agility and all agility-linked skills would call `system.stats.globalMods.agility`.
+- Wild Cards who are incapacitated by damage are now prompted to resist injury, bleeding out, and possible death (#249) **by @jpmeehan5**
+- Added support for the Heroes Never Die setting rule (#756) **by @jpmeehan5**
+- Added new "swadeIncapacitation" hook that triggers when an actor is incapacitated by damage (#756) **by @jpmeehan5**
+- `MeasuredTemplate` placables now contain the UUID of the triggering item as a flag under `swade.origin` (#796) **by @mclemente**
+
+### Changed
+
+- Addressed deprecation warnings pertinent to v11. (#715) **by @jpmeehan5**
+- The base system compendiums now come in a folder, courtesy of FVTT version 11's built-in compendium folders. (#781) **by @jpmeehan5**
+  You may now edit active effects on an item that is on an actor (#770) **by @jpmeehan5**
+- Active Effects attached to an item no longer transfer to the actor when applied. Instead, they remain on the item and can be favorited to show up in the Quick Access menu. (#770) **by @jpmeehan5**
+- **[Breaking]** Trait roll modifiers from active effects that ADD to trait.die.modifier no longer directly increase that value. Instead, they are saved in an array that is applied during the roll dialog, allowing you to see each modifier individually and toggle them with the Ignore checkbox. (#447) **by @jpmeehan5**
+
+### Fixed
+
+- Addressed compendium bugs created in the update to v11 (#793) **by @jpmeehan5**
+
 ## 2.4.2
 
 ### Added
+
+m
 
 - Added the `Upgrade` option to the possible modes in the AEGIS. (#786) **by @florad92**
 - Added an input for the Soak Bonus to the Tweaks window. (#790) **by @florad92**

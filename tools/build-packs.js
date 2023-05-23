@@ -1,50 +1,56 @@
-import path from 'node:path';
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
-import { load as yamlLoad } from 'js-yaml';
-import { existsSync } from 'node:fs';
 import chalk from 'chalk';
+import { ClassicLevel } from 'classic-level';
+import { existsSync, promises as fs } from 'fs';
+import { load as yamlLoad } from 'js-yaml';
+import path from 'path';
 
 const src = 'src/packs';
 const dest = 'dist/packs';
 
+//check if the output directory exists, and create it if necessary
+const outputDir = path.resolve(dest);
+if (!existsSync) await fs.mkdir(outputDir, { recursive: true });
+
 //load the subdirectories
 const inputDir = path.resolve(src);
-const packs = await readdir(inputDir);
+const packs = await fs.readdir(inputDir);
+
 //go through each subdirectory
 for (const pack of packs) {
-  console.log(chalk.green('Building pack ' + chalk.bold(pack)));
-  let packData = '';
+  console.log(chalk.green('Building pack ' + chalk.bold(pack) + '...'));
+  const dbPath = path.join(outputDir, pack);
+  //attempt to clear the DB files if they already exist.
+  if (existsSync(dbPath)) await fs.rm(dbPath, { recursive: true })
+  //create DB and grab a transaction
+  const db = new ClassicLevel(dbPath, { keyEncoding: 'utf8', valueEncoding: 'json' });
+  const batch = db.batch();
   const packPath = path.resolve(inputDir, pack);
-  const entries = await readdir(packPath);
-  //read each file in a subdirectory and push it into the array
+  const entries = await fs.readdir(packPath);
+  //read each file in a subdirectory and put it into the transaction
   for (const entry of entries) {
-    const entryPath = path.resolve(packPath, entry);
-    //load the YAML
-    const file = await readFile(entryPath, 'utf-8');
-    const content = yamlLoad(file, { filename: entry });
-    //add ID if necessary
-    if (!content._id) content._id = makeid();
-    //add it to the complete DB string
-    packData += JSON.stringify(content);
-    packData += '\n';
+    const filePath = path.resolve(packPath, entry)
+    const file = await fs.readFile(filePath, 'utf-8'); //load the YAML
+    const doc = yamlLoad(file, { filename: entry });
+    if (!doc._id) doc._id = makeid(); //add ID if necessary
+    let key = `!items!${doc._id}`;
+    if (doc._key) { //generate a key if necessary
+      key = doc._key;
+      delete doc._key;
+    }
+    batch.put(key, doc); //add it to the DB transaction
   }
-
-  //check if the output directory exists, and create it if necessary
-  const outputDir = path.resolve(dest);
-  if (!existsSync(outputDir)) await mkdir(outputDir, { recursive: true });
-
-  //write the contents to the pack file
-  const outputPath = path.resolve(outputDir, pack);
-  await writeFile(`${outputPath}.db`, packData, { flag: 'w' });
+  //commit and close the DB
+  await batch.write();
+  await db.close();
+  console.log(chalk.green('Packed ' + chalk.bold(pack) + '!'));
 }
 
 function makeid(length = 16) {
-  var result = '';
-  var characters =
+  let result = '';
+  const chars =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
 }

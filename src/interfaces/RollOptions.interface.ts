@@ -1,4 +1,5 @@
-import { TraitRollModifier } from './additional.interface';
+import SwadeItem from '../module/documents/item/SwadeItem';
+import { RollModifier } from './additional.interface';
 
 export default interface IRollOptions {
   rof?: number;
@@ -6,6 +7,9 @@ export default interface IRollOptions {
   title?: string;
   dmgOverride?: string;
   isHeavyWeapon?: boolean;
-  additionalMods?: TraitRollModifier[];
+  additionalMods?: RollModifier[];
   suppressChat?: boolean;
+  isRerollable?: boolean;
+  ignoreWounds?: boolean;
+  item?: SwadeItem;
 }

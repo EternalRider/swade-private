@@ -858,22 +858,23 @@ SWADE:
   ppReload: Zum nachladen benötigte MP
   UsesTOC: Compendium TOC Verwenden
   TOCBlockList: Compendium TOC Blockliste
-ACTOR:
-  TypeCharacter: Charakter
-  TypeNpc: NSC
-  TypeVehicle: Fahrzeug
-ITEM:
-  TypeWeapon: Waffe
-  TypeArmor: Rüstung
-  TypeShield: Schild
-  TypeGear: Ausrüstung
-  TypeEdge: Talent
-  TypeHindrance: Handicap
-  TypeSkill: Fertigkeit
-  TypePower: Macht
-  TypeAbility: Eigenschaft
-  TypeConsumable: Verbrauchsgegenstand
-  TypeAction: Aktion
-CARD:
-  TypeAdventure: Abenteuerkarte
-  TypePoker: Pokerkarte
+TYPES:
+  Actor:
+    Character: Charakter
+    Npc: NSC
+    Vehicle: Fahrzeug
+  Item:
+    Weapon: Waffe
+    Armor: Rüstung
+    Shield: Schild
+    Gear: Ausrüstung
+    Edge: Talent
+    Hindrance: Handicap
+    Skill: Fertigkeit
+    Power: Macht
+    Ability: Eigenschaft
+    Consumable: Verbrauchsgegenstand
+    Action: Aktion
+  Card:
+    Adventure: Abenteuerkarte
+    Poker: Pokerkarte

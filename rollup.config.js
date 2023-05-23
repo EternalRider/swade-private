@@ -3,17 +3,16 @@ import typescript from '@rollup/plugin-typescript';
 import autoprefixer from 'autoprefixer';
 import * as yaml from 'js-yaml';
 import { defineConfig } from 'rollup';
-import livereload from 'rollup-plugin-livereload';
 import postcss from 'rollup-plugin-postcss';
 
 const name = 'swade';
 const distDirectory = 'dist';
 const srcDirectory = 'src';
 
-const staticFiles = ['fonts', 'assets', 'templates', 'cards', 'system.json'];
+const staticFiles = ['fonts', 'assets', 'templates', 'cards', 'media', 'system.json'];
 
 const isProd = process.env.NODE_ENV === 'production';
-const isDev = !isProd;
+// const isDev = !isProd;
 
 const banner = `/**
 * Author: FloRad
@@ -36,7 +35,9 @@ const environment = (environment) => {
   return plugin;
 };
 
+
 export default defineConfig({
+  strictDeprecations: true,
   input: { [`${name}`]: `${srcDirectory}/${name}.ts` },
   output: {
     dir: distDirectory,
@@ -83,7 +84,10 @@ export default defineConfig({
         },
       ],
     }),
-    isDev && livereload(distDirectory),
+    // isDev && livereload({
+    //   watch: distDirectory,
+    //   exts: ['js'],
+    //   extraExts: []
+    // }),
   ],
-  strictDeprecations: true
 });

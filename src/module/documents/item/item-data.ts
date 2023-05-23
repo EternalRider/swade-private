@@ -6,7 +6,10 @@ import {
   LinkedAttribute,
   ReloadType,
 } from '../../../globals';
-import { ItemAction } from '../../../interfaces/additional.interface';
+import {
+  ItemAction,
+  RollModifier,
+} from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 import { ItemGrant } from './SwadeItem.interface';
 
@@ -231,19 +234,20 @@ interface PowerData
   innate: boolean;
 }
 
-interface AbilityData extends ItemDescription, Favorite {
+interface AbilityData extends ItemDescription, Favorite, Category {
   subtype: AbilitySubType;
   grantsPowers: boolean;
   grants: Array<ItemGrant>;
 }
 
-interface ActionData extends ItemDescription, Favorite, Actions {}
+interface ActionData extends ItemDescription, Favorite, Actions, Category {}
 
 interface SkillData extends ItemDescription {
   attribute: LinkedAttribute;
   isCoreSkill: boolean;
   die: TraitDie;
   'wild-die': WildDie;
+  effects: RollModifier[];
 }
 
 interface WeaponItemDataSource {

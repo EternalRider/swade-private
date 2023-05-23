@@ -10,11 +10,11 @@ import {
 import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier,
+  RollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import Reloadinator from '../../apps/Reloadinator';
-import RollDialog from '../../apps/RollDialog';
+import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
@@ -126,7 +126,7 @@ export default class SwadeItem extends Item {
   }
 
   get canHaveCategory(): boolean {
-    const types = ['edge'];
+    const types = ['edge', 'action', 'ability'];
     return types.includes(this.type) || this.isPhysicalItem;
   }
 
@@ -188,7 +188,7 @@ export default class SwadeItem extends Item {
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
-    const modifiers = new Array<TraitRollModifier>();
+    const modifiers = new Array<RollModifier>();
     let damage = '';
     if (options.dmgOverride) {
       damage = options.dmgOverride;
@@ -198,11 +198,15 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    const ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
     const isHeavyWeapon: boolean =
       foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
       options.isHeavyWeapon;
     let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
+
+    this.actor.system.stats.globalMods.ap.forEach((e) => {
+      ap += Number(e.value);
+    });
 
     if (ap) {
       apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -210,6 +214,7 @@ export default class SwadeItem extends Item {
     const rollParts = [damage];
 
     //Additional Mods
+    modifiers.push(...this.actor.system.stats.globalMods.damage);
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
@@ -267,14 +272,14 @@ export default class SwadeItem extends Item {
         modifiers: modifiers,
       },
     );
-
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
      * @category Hooks
      * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
      * @param {SwadeItem} item                  The item that is used to create the damage value
      * @param {DamageRoll} roll                 The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.call('swadeRollDamage', this.actor, this, roll, modifiers, options);
@@ -642,8 +647,8 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
-  getTraitModifiers(): TraitRollModifier[] {
-    const modifiers = new Array<TraitRollModifier>();
+  getTraitModifiers(): RollModifier[] {
+    const modifiers = new Array<RollModifier>();
     if (getProperty(this, 'system.actions.skillMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
@@ -651,6 +656,7 @@ export default class SwadeItem extends Item {
       });
     }
     if (this.type === 'weapon') {
+      modifiers.push(...this.actor.system.stats.globalMods.attack);
       if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),

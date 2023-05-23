@@ -151,7 +151,6 @@
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
       </div>
-      {{#if settingRules.grittyDamage}}
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.InjuryTable.Name'}}</label>
         <div class='form-fields'>
@@ -163,7 +162,19 @@
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.InjuryTable.Hint'}}</p>
       </div>
-      {{/if}}
+      <!-- Heroes Never Die -->
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.HeroesNeverDie.Name'}}</label>
+        <div class='form-fields'>
+          <input
+            type='checkbox'
+            name='settingRules.heroesNeverDie'
+            data-dtype='Boolean'
+            {{checked settingRules.heroesNeverDie}}
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.HeroesNeverDie.Hint'}}</p>
+      </div>
       <!-- Conviction -->
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.EnableConv.Name'}}</label>

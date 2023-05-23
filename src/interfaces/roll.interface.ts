@@ -1,12 +1,13 @@
 import SwadeActor from '../module/documents/actor/SwadeActor';
 import SwadeItem from '../module/documents/item/SwadeItem';
-import { TraitRollModifier } from './additional.interface';
+import { RollModifier } from './additional.interface';
 
 export interface SwadeRollOptions
   extends InexactPartial<RollTerm.EvaluationOptions> {
-  modifiers?: TraitRollModifier[];
+  modifiers?: RollModifier[];
   rerollMode?: 'benny' | 'free';
   critfailConfirmationRoll?: boolean;
+  rerollable?: boolean;
 }
 
 export interface RollRenderOptions {

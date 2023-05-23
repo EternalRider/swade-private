@@ -129,7 +129,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           });
           break;
         default:
-          console.warn(`The action ${action} is not currently supported`);
+          Logger.warn(`The action ${action} is not currently supported`);
           break;
       }
     });
@@ -139,7 +139,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       if (ev.shiftKey) {
         await CONFIG.ActiveEffect.documentClass.create(
           {
-            label: game.i18n.format('DOCUMENT.New', {
+            name: game.i18n.format('DOCUMENT.New', {
               type: game.i18n.localize('DOCUMENT.ActiveEffect'),
             }),
             icon: 'systems/swade/assets/icons/active-effect.svg',
@@ -284,10 +284,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   ): Promise<{ type: string; name: string }> {
     if (!choices) {
       choices = {
-        weapon: game.i18n.localize('ITEM.TypeWeapon'),
-        armor: game.i18n.localize('ITEM.TypeArmor'),
-        shield: game.i18n.localize('ITEM.TypeShield'),
-        gear: game.i18n.localize('ITEM.TypeGear'),
+        weapon: game.i18n.localize('TYPES.Item.Weapon'),
+        armor: game.i18n.localize('TYPES.Item.Armor'),
+        shield: game.i18n.localize('TYPES.Item.Shield'),
+        gear: game.i18n.localize('TYPES.Item.Gear'),
       };
     }
     const templateData = {

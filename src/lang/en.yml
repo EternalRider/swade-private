@@ -51,6 +51,17 @@ SWADE:
   CoreSkill: Core Skill
   CoreSkills: Core Skills
   LinkAttr: Linked Attribute
+  GlobalMod: 
+    Label: Global Modifiers
+    Trait: All Traits
+    Agility: Agility and linked Skills
+    Smarts: Smarts and linked Skills
+    Spirit: Spirit and linked Skills
+    Strength: Strength and linked Skills
+    Vigor: Vigor and linked Skills
+    Attack: All Attacks
+    Damage: All Damage
+    AP: All Armor Piercing
   ArcaneSkill: Arcane Skill
   ActivateArcaneDevice: Activate Device
   Die: Die
@@ -382,6 +393,7 @@ SWADE:
       Add: Add Custom Modifier
     Support: Support
     Preset:
+      Settings: Preset Modifiers
       Choose: Choose a Modifier…
       Add: Add Preset
     Value: Value
@@ -404,8 +416,13 @@ SWADE:
     Long: Long Range
     Extreme: Extreme Range
   ModOther: Other Modifiers
+  ModTrait: Trait Modifiers
+  ModAttack: Attack Modifiers
+  ModDamage: Damage Modifiers
   Snapfire: Snapfire
   UnstablePlatform: Unstable Platform
+  Weakness: Weakness
+  Resistance: Resistance
   CannotAddRaceToRace: You cannot add a race/archetype to a race/archetype!
   LayOutChaseWithDeck: Use Deck to lay out Chase
   ClearChaseCards: Clear Chase cards from Scene
@@ -424,6 +441,7 @@ SWADE:
     EndPrompt: End of Turn, Prompt
     None: None
     LooseTurnOnHold: Lose Turn on Hold
+    Remaining: Remaining
   RemoveEffectTitle: Remove {label} ?
   RemoveEffectBody: >-
     <p style="text-align: center;">Remove <strong>{label}</strong> from
@@ -643,6 +661,9 @@ SWADE:
     InjuryTable:
       Name: Injury Table
       Hint: Select the appropriate RollTable to automatically roll for Gritty Damage.
+    HeroesNeverDie:
+      Name: Heroes Never Die
+      Hint: Checking this will enable the Heroes Never Die Setting Rule when determining incapacitation
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
@@ -662,6 +683,8 @@ SWADE:
       Fail: You perish
       Success: You hang on, for now.
       Raise: You successfully stabilize
+      BleedOutModifier: Bleeding Out Modifier
+      IgnoreWounds: "Bleeding Out Ignore Wounds"
   Validation:
     OnlyOneRace: You can only have one race at a time!
     OnlyOneArchetype: You can only have one archetype at a time!
@@ -670,6 +693,10 @@ SWADE:
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
+  CalledShot:
+    HeadOrVitals: "Called Shot: Head or Vitals"
+    Hand: "Called Shot: Hand"
+    Limbs: "Called Shot: Limbs"
   ItemType: Item Type
   Source: Source
   MigrateCompendium: Force compendium migration
@@ -824,24 +851,36 @@ SWADE:
       IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with
         <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
+    Incapacitation:
+      InjuryRoll: Vigor Roll to resist injury upon incapacitation
+      Dies: <p><strong>{name}</strong> dies from the damage!</p>
+      PermanentInjury: <p><strong>{name}</strong> suffers a permanent injury and is <strong>Bleeding Out!</strong></p>
+      PermanentInjuryHND: <p><strong>{name}</strong> suffers a permanent injury!</p>
+      TemporaryInjury: <p><strong>{name}</strong> suffers an injury that will go away when all Wounds are healed.</p>
+      ShortInjury: <p><strong>{name}</strong> suffers an injury that will go away in 24 hours, or when all Wounds are healed (whichever is sooner).</p>
+      TakeFail: Suffer a permanent injury
+      TakeSuccess: Suffer an injury that goes away when all wounds are healed
+      Title: Reroll injury severity for {name}?
+      Prompt: <p>{name} is about to be injured. Do you want to reroll the Vigor roll?</p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: Please select a target to apply the damage to.
-ACTOR:
-  TypeCharacter: Player Character
-  TypeNpc: NPC
-  TypeVehicle: Vehicle
-ITEM:
-  TypeWeapon: Weapon
-  TypeArmor: Armor
-  TypeShield: Shield
-  TypeGear: Gear
-  TypeEdge: Edge
-  TypeHindrance: Hindrance
-  TypeSkill: Skill
-  TypePower: Power
-  TypeAbility: Ability
-  TypeConsumable: Consumable
-  TypeAction: Action
-CARD:
-  TypeAdventure: Adventure Card
-  TypePoker: Poker Card
+TYPES:
+  Actor:
+    Character: Player Character
+    Npc: NPC
+    Vehicle: Vehicle
+  Item:
+    Weapon: Weapon
+    Armor: Armor
+    Shield: Shield
+    Gear: Gear
+    Edge: Edge
+    Hindrance: Hindrance
+    Skill: Skill
+    Power: Power
+    Ability: Ability
+    Consumable: Consumable
+    Action: Action
+  Card:
+    Adventure: Adventure Card
+    Poker: Poker Card

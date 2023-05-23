@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { AbilitySubType } from '../globals';
-import { TraitRollModifierGroup } from '../interfaces/additional.interface';
+import { RollModifierGroup } from '../interfaces/additional.interface';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { constants } from './constants';
@@ -83,6 +83,7 @@ export const SWADE: SwadeConfig = {
       'grittyDamage',
       'woundCap',
       'unarmoredHero',
+      'heroesNeverDie',
       'injuryTable',
       'actionDeck',
       'applyEncumbrance',
@@ -199,12 +200,42 @@ export const SWADE: SwadeConfig = {
 
   prototypeRollGroups: [
     {
+      name: 'SWADE.ModTrait',
+      modifiers: [
+        { label: 'SWADE.TargetVulnerable', value: '+2' },
+        { label: 'SWADE.Encumbered', value: -2 },
+      ],
+      rollType: constants.ROLL_TYPE.TRAIT,
+    },
+    {
+      name: 'SWADE.ModAttack',
+      modifiers: [
+        { label: 'SWADE.Aiming', value: '+2' },
+        { label: 'SWADE.Snapfire', value: -2 },
+        { label: 'SWADE.UnstablePlatform', value: -2 },
+        { label: 'SWADE.CalledShot.Hand', value: '-4'},
+        { label: 'SWADE.CalledShot.HeadOrVitals', value: '-4'},
+        { label: 'SWADE.CalledShot.Limb', value: '-2'},
+      ],
+      rollType: constants.ROLL_TYPE.ATTACK,
+    },
+    {
+      name: 'SWADE.ModDamage',
+      modifiers: [
+        { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4'},
+        { label: 'SWADE.Weakness', value: '+4' },
+        { label: 'SWADE.Resistance', value: '-4' },
+      ],
+      rollType: constants.ROLL_TYPE.DAMAGE,
+    },
+    {
       name: 'SWADE.Range._name',
       modifiers: [
         { label: 'SWADE.Range.Medium', value: -2 },
         { label: 'SWADE.Range.Long', value: -4 },
         { label: 'SWADE.Range.Extreme', value: -8 },
       ],
+      rollType: constants.ROLL_TYPE.TRAIT,
     },
     {
       name: 'SWADE.Cover._name',
@@ -214,6 +245,7 @@ export const SWADE: SwadeConfig = {
         { label: 'SWADE.Cover.Heavy', value: -6 },
         { label: 'SWADE.Cover.Total', value: -8 },
       ],
+      rollType: constants.ROLL_TYPE.TRAIT,
     },
     {
       name: 'SWADE.Illumination._name',
@@ -222,18 +254,7 @@ export const SWADE: SwadeConfig = {
         { label: 'SWADE.Illumination.Dark', value: -4 },
         { label: 'SWADE.Illumination.Pitch', value: -6 },
       ],
-    },
-    {
-      name: 'SWADE.ModOther',
-      modifiers: [
-        { label: 'SWADE.TargetVulnerable', value: '+2' },
-        { label: 'SWADE.WildAttack', value: '+2' },
-        { label: 'SWADE.Aiming', value: '+2' },
-        { label: 'SWADE.Snapfire', value: -2 },
-        { label: 'SWADE.UnstablePlatform', value: -2 },
-        { label: 'SWADE.Encumbered', value: -2 },
-        { label: 'SWADE.OffHandPenalty', value: -2 },
-      ],
+      rollType: constants.ROLL_TYPE.TRAIT,
     },
   ],
 
@@ -316,7 +337,7 @@ export interface SwadeConfig {
 
   abilitySheet: Record<AbilitySubType, { dropdown: string; abilities: string }>;
 
-  prototypeRollGroups: TraitRollModifierGroup[];
+  prototypeRollGroups: RollModifierGroup[];
 
   ranks: string[];
 }

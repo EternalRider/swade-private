@@ -1,5 +1,5 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { TraitRollModifier } from '../interfaces/additional.interface';
+import { RollModifier } from '../interfaces/additional.interface';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
@@ -98,14 +98,12 @@ export async function reshuffleActionDeck() {
  * @param cur The current trait roll modifier
  * @returns A string which contains all trait roll modifiers, reduced into a parsable string
  */
-export function modifierReducer(acc: string, cur: TraitRollModifier): string {
+export function modifierReducer(acc: string, cur: RollModifier): string {
   return (acc += `${cur.value}[${cur.label}]`);
 }
 
 /** Normalize a given modifier value to a string for display and evaluation */
-export function normalizeRollModifiers(
-  mod: TraitRollModifier,
-): TraitRollModifier {
+export function normalizeRollModifiers(mod: RollModifier): RollModifier {
   let normalizedValue: string;
   if (typeof mod.value === 'string') {
     //if the modifier starts with a reserved symbol take it as is
@@ -193,29 +191,10 @@ export function getRankFromAdvanceAsString(advance: number): string {
 
 /**
  * @internal
- * @see  https://stackoverflow.com/a/65996386
  * @param textToCopy
  */
-export function copyToClipboard(textToCopy: string) {
-  // navigator clipboard api needs a secure context (https)
-  if (navigator.clipboard && window.isSecureContext) {
-    // navigator clipboard api method
-    return navigator.clipboard.writeText(textToCopy);
-  } else {
-    // text area method
-    const textArea = document.createElement('textarea');
-    textArea.value = textToCopy;
-    // make the textarea out of viewport
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    // eslint-disable-next-line deprecation/deprecation
-    document.execCommand('copy');
-    textArea.remove();
-  }
+export async function copyToClipboard(textToCopy: string) {
+  await game.clipboard.copyPlainText(textToCopy);
   ui.notifications.info('Copied to clipboard');
 }
 
