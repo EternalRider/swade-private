@@ -49,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Addressed compendium bugs created in the update to v11 (#793) **by @jpmeehan5**
+- Extras using the Character sheet can now once again set their Max bennies via the tweaks window. (!342) **by @kristianserrano**
 
 ## 2.4.2
 
