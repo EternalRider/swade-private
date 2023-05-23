@@ -1,0 +1,193 @@
+_id: CS16YycneYYnmWVZ
+flags: {}
+image: {}
+name: Active Effects
+ownership:
+  default: -1
+sort: 400000
+src: null
+system: {}
+text:
+  content: >-
+    <h2>What are Active Effects?</h2>
+    <p>
+      Active Effects (or AE for short) is a part of the core Foundry experience
+      which allow <code>Items</code> i.e. Edges, Hindrances, equipment, etc to
+      affect a character. This can enable such things as Edges directly affecting a
+      characters stats, like the Fleet-Footed Edge.
+    </p>
+    <h3>Limitations</h3>
+    <p>Currently there are a few limitations to Active Effects</p>
+    <ul>
+      <li>
+        You can only add, delete or edit an Active Effect on an item when it is not
+        on a character, which means you can only make changes to the item in the
+        sidebar.
+      </li>
+      <li>
+        Active Effects can only affect the character they are on, not other
+        <code>Items</code> the character owns. This means you cannot at this time
+        create an Ability that changes a skill, as both are owned by the character,
+        but not directly part of the character.
+      </li>
+    </ul>
+    <h2>How to use Active Effects</h2>
+    <p>Active Effects broadly speaking come in two flavours</p>
+    <ul>
+      <li>On an <code>Item</code> such as an Edge or Hindrance</li>
+      <li>On the character directly</li>
+    </ul>
+    <p>For a list of attribute keys please look down below</p>
+    <h3>Active Effects on Actors</h3>
+    <h4>Player Characters</h4>
+    <p>
+      To add an AE to a character, go to the <code>Traits</code> page and click the
+      <strong>+ Add</strong> button next to <strong>Quick Access</strong>.
+    </p>
+    <img src="systems/swade/assets/docs/PC_QuickAccess_Dropdown.png" />
+    <p>Select the type <strong>Active Effect</strong> and enter a name.</p>
+    <img src="systems/swade/assets/docs/PC_QuickAccess_AddEffect.png" />
+    <p>
+      Once you click <em>Create New</em> a new AE will be created on the character
+      and its sheet will be opened. From there you can set an icon, duration, etc.
+      At this point in time the AE will not actually do anything. To add an Effect
+      to the AE navigate to the <strong>Effects</strong> tab and click the plus
+      sign. This will add an empty change you can fill out. In most cases you can
+      leave the change mode to <em>Add</em>, which adds (or subtracts) the entered
+      value from the property selected by the attribute key.
+    </p>
+    <ul>
+      <li>To toggle the AE click the on/off symbol next to its name in the list</li>
+      <li>To edit the AE, click the edit icon next to its name in the list</li>
+      <li>
+        To delete the AE, click the trash bin icon next to its name in the list
+      </li>
+    </ul>
+    <h4>NPC Characters</h4>
+    <p>
+      Working with Active Effects on NPCs works exactly the same as on player
+      characters, except that the AE have their own section on the NPC sheet and
+      click on the <strong>+</strong> symbol there will quickly create a new AE.
+    </p>
+    <h3>Active Effects on Items</h3>
+    <blockquote>
+      <p>
+        You can currently add Active Effects to every type of Item except
+        <em>Skills</em>. You can only add, delete or &gt; edit an Active Effect on
+        an item when it is not on a character, which means you can only make changes
+        to &gt; the item in the sidebar.
+      </p>
+    </blockquote>
+    <p>
+      To add an Active Effect to an <code>Item</code> first find the
+      <em>Active Effects</em> header on the item sheet. If the item has an
+      <em>Actions &amp; Effects</em> tab then you can find it there. To add an
+      Active Effect simply click the <strong>+</strong> Icon at the right side of
+      the header.
+    </p>
+    <img src="systems/swade/assets/docs/NPC_QuickAccess_AddEffect.png" />
+    <p>
+      Clicking this icon will add a new Active Effect and open it's sheet so you can
+      add the information and effects you require. For a list of attribute keys
+      please look down below.
+    </p>
+    <h3>Active Effects that affect Items.</h3>
+    <p>
+      Active Effects can also now affect other items. This is done via special
+      syntax in the attribute key. Use Change Mode and Value as usual.
+    </p>
+    <p>
+      The syntax is <code>@ItemType{Item Name or ID}[attribute key]</code> so if you
+      want to add AP to an M-16 you do <code>@Weapon{M-16}[system.ap]</code> If you
+      want to improve a skill you do <code>@Skill{Shooting}[system.die.sides]</code>
+    </p>
+    <h2>Attribute Keys</h2>
+    <h3>Actors</h3>
+    <h4>General</h4>
+    <ul>
+      <li>Default Bennies: <code>system.bennies.max</code></li>
+      <li>Current Bennies: <code>system.bennies.value</code></li>
+      <li>Max Wounds: <code>system.wounds.max</code></li>
+      <li>Current Wounds: <code>system.wounds.value</code></li>
+      <li>Max Fatigue: <code>system.fatigue.max</code></li>
+      <li>Current Fatigue: <code>system.fatigue.value</code></li>
+      <li>Ignored Wounds: <code>system.wounds.ignored</code></li>
+      <li>Running Die: <code>system.stats.speed.runningDie</code></li>
+      <li>Running Modifier: <code>system.stats.speed.runningMod</code></li>
+      <li>
+        <p>Wealth Die</p>
+        <ul>
+          <li>Die Sides: <code>system.details.wealth.die</code></li>
+          <li>Modifier: <code>system.details.wealth.modifier</code></li>
+          <li>Wild-Die Sides: <code>system.details.wealth.wild-die</code></li>
+        </ul>
+      </li>
+    </ul>
+    <h4>Initiative</h4>
+    <ul>
+      <li>Level Headed: <code>system.initiative.hasLevelHeaded</code></li>
+      <li>
+        Improved Level Headed: <code>system.initiative.hasImpLevelHeaded</code>
+      </li>
+      <li>Hesitant: <code>system.initiative.hasHesitant</code></li>
+      <li>Quick: <code>system.initiative.hasQuick</code></li>
+    </ul>
+    <h4>Status</h4>
+    <ul>
+      <li>Shaken: <code>system.status.isShaken</code></li>
+      <li>Distracted: <code>system.status.isDistracted</code></li>
+      <li>Vulnerable: <code>system.status.isVulnerable</code></li>
+      <li>Stunned: <code>system.status.isStunned</code></li>
+      <li>Entangled: <code>system.status.isEntangled</code></li>
+      <li>Bound: <code>system.status.isBound</code></li>
+    </ul>
+    <h4>Attributes</h4>
+    <ul>
+      <li>Die Type: <code>system.attributes.&lt;attribute&gt;.die.sides</code></li>
+      <li>
+        Wild Die: <code>system.attributes.&lt;attribute&gt;.wild-die.sides</code>
+      </li>
+      <li>
+        Modifier: <code>system.attributes.&lt;attribute&gt;.die.modifier</code>
+      </li>
+      <li>
+        Encumbrance die step modifier:
+        <code>system.attributes.strength.encumbranceSteps</code>
+      </li>
+      <li>Unshake bonus: <code>system.attributes.spirit.unShakeBonus</code></li>
+      <li>Soak Bonus: <code>system.attributes.vigor.soakBonus</code></li>
+      <li>Animal Smarts: <code>system.attributes.smarts.animal</code></li>
+    </ul>
+    <h4>Derived Stats</h4>
+    <ul>
+      <li>Size: <code>system.stats.size</code></li>
+      <li>Pace: <code>system.stats.speed.value</code></li>
+      <li>Parry: <code>system.stats.parry.value</code></li>
+      <li>Toughness: <code>system.stats.toughness.value</code></li>
+      <li>Armor: <code>system.stats.toughness.armor</code></li>
+      <li>
+        Parry mod and toughness mod become obsolete with the introduction of Active
+        Effects
+      </li>
+    </ul>
+    <h4>Additional Stats</h4>
+    <ul>
+      <li>
+        Value:
+        <code>system.additionalStats.[*key of the Additional Stat*].value</code>
+      </li>
+      <li>
+        Maximum (if applicable):
+        <code>system.additionalStats.[*key of the Additional Stat*].max</code>
+      </li>
+    </ul>
+  format: 1
+  markdown: ''
+title:
+  level: 1
+  show: true
+type: text
+video:
+  controls: true
+  volume: 0.5
+_key: '!journal.pages!8uC7RTgJOg8SW4cf.CS16YycneYYnmWVZ'

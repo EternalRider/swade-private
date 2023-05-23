@@ -1,5 +1,5 @@
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
-import { TraitRollModifier } from '../../interfaces/additional.interface';
+import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
   RollRenderOptions,
@@ -77,7 +77,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return this.options['rerollMode'];
   }
 
-  set modifiers(mods: TraitRollModifier[]) {
+  set modifiers(mods: RollModifier[]) {
     this.options['modifiers'] = mods;
   }
 
@@ -86,8 +86,12 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return mods.map(normalizeRollModifiers);
   }
 
-  get isRerollable(): boolean {
-    return false;
+  setRerollable(rerollable: boolean) {
+    this.options['rerollable'] = rerollable;
+  }
+
+  get isRerollable() {
+    return this.options['rerollable'] ?? false;
   }
 
   get isCritfail(): boolean | undefined {
@@ -112,6 +116,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
       tooltip: isPrivate ? '' : await this.getTooltip(),
       total: this.total,
       formulaParts: this._formatFormulaParts(),
+      rerollable: this.isRerollable,
     };
     return chatData;
   }

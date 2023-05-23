@@ -3,7 +3,7 @@ import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
-import RollDialog from './module/apps/RollDialog';
+import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
@@ -137,6 +137,9 @@ Hooks.once('init', () => {
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
   CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
 
+  // v11 Active Effect handling
+  CONFIG.ActiveEffect.legacyTransferral = false;
+
   //register detection modes
   CONFIG.Canvas.detectionModes.seeHeat = new DetectionModeInfravision({
     id: 'seeHeat',
@@ -240,6 +243,7 @@ Hooks.once('init', () => {
 
 Hooks.once('setup', SwadeCoreHooks.onSetup);
 Hooks.once('ready', SwadeCoreHooks.onReady);
+Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
 Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);

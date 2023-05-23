@@ -66,4 +66,18 @@ export const constants = {
     MAGAZINE: 'magazine',
     BATTERY: 'battery',
   } as const,
+  /** @enum */
+  ROLL_RESULT: {
+    CRITFAIL: -1,
+    FAIL: 0,
+    SUCCESS: 1,
+    RAISE: 2,
+  } as const,
+  /** @enum */
+  ROLL_TYPE: {
+    ANY: 0,
+    TRAIT: 1,
+    ATTACK: 2,
+    DAMAGE: 3,
+  } as const
 };

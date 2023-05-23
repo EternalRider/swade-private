@@ -325,7 +325,7 @@
     padding: 0;
     li {
       display: grid;
-      grid-template-columns: 24px 1fr 60px;
+      grid-template-columns: 24px 1fr 80px;
       column-gap: $medium-spacing;
       line-height: 24px;
       border-bottom: var(--input-border-line);
@@ -346,6 +346,9 @@
     .effect-action {
       padding: 0;
       text-align: center;
+    }
+    .item-unequipped {
+      color: rgba(0, 0, 0, 0.2);
     }
   }
 

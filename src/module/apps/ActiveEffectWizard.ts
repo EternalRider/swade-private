@@ -76,6 +76,7 @@ export default class ActiveEffectWizard extends FormApplication {
       collapsibleStates: this.collapsibleStates,
       skillSuggestions: this._getSkillSuggestions(),
       derivedPresets: this._getDerivedPresets(),
+      globalModPresets: this._getGlobalModPresets(),
       otherPresets: this._getOtherStatsPresets(),
       changeModes: {
         [foundry.CONST.ACTIVE_EFFECT_MODES.ADD]: 'EFFECT.MODE_ADD',
@@ -126,6 +127,47 @@ export default class ActiveEffectWizard extends FormApplication {
       {
         label: game.i18n.localize('SWADE.Parry'),
         key: 'system.stats.parry.value',
+      },
+    ];
+  }
+
+  private _getGlobalModPresets(): ActiveEffectPreset[] {
+    return [
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Trait'),
+        key: 'system.stats.globalMods.trait',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Agility'),
+        key: 'system.stats.globalMods.agility',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Smarts'),
+        key: 'system.stats.globalMods.smarts',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Spirit'),
+        key: 'system.stats.globalMods.spirit',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Strength'),
+        key: 'system.stats.globalMods.strength',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Vigor'),
+        key: 'system.stats.globalMods.vigor',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Attack'),
+        key: 'system.stats.globalMods.attack',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.Damage'),
+        key: 'system.stats.globalMods.damage',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.AP'),
+        key: 'system.stats.globalMods.ap',
       },
     ];
   }
@@ -183,6 +225,14 @@ export default class ActiveEffectWizard extends FormApplication {
           'SWADE.EffectCallbacks.Stunned.UnStunModifier',
         ),
         key: 'system.attributes.vigor.unStunBonus',
+      },
+      {
+        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
+        key: 'system.attributes.vigor.bleedOut.modifier',
+      },
+      {
+        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.IgnoreWounds'),
+        key: 'system.attributes.vigor.bleedOut.ignoreWounds',
       },
       {
         label: game.i18n.localize('SWADE.WealthDie.Sides'),

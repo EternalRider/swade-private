@@ -218,7 +218,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       );
       if (existingItems.length > 0) {
         duplicates.push({
-          type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
+          type: game.i18n.localize(`TYPES.Item.${entry.type.capitalize()}`),
           name: entry.name,
         });
         entry.name += ` (${item.name})`;

@@ -72,6 +72,36 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
+    icon: 'systems/swade/assets/icons/status/status_wild_attack.svg',
+    id: 'wild-attack',
+    label: 'SWADE.WildAttack',
+    duration: {
+      rounds: 0
+    },
+    changes: [
+      {
+        key: 'system.status.isVulnerable',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'true',
+      },
+      {
+        key: 'system.stats.globalMods.attack',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: '2',
+      },
+      {
+        key: 'system.stats.globalMods.damage',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: '2',
+      },
+    ],
+    flags: {
+      swade: {
+        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+      },
+    },
+  },
+  {
     icon: 'systems/swade/assets/icons/status/status_defending.svg',
     id: 'defending',
     label: 'SWADE.Defending',

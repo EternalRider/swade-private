@@ -444,6 +444,15 @@ export function registerSettingRules() {
     config: false,
     choices: {},
   });
+  
+  game.settings.register('swade', 'heroesNeverDie', {
+    name: 'SWADE.Settings.HeroesNeverDie.Name',
+    hint: 'SWADE.Settings.HeroesNeverDie.Hint',
+    type: Boolean,
+    default: false,
+    scope: 'world',
+    config: false,
+  });
 
   game.settings.register('swade', 'hardChoices', {
     name: 'SWADE.Settings.HardChoices.Name',

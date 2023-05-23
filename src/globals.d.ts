@@ -21,6 +21,14 @@ declare global {
   }
 }
 
+export interface HotReloadData {
+  packageType: string;
+  packageId: string;
+  content: string;
+  path: string;
+  extension: string;
+}
+
 export type AbilitySubType = 'special' | 'race' | 'archetype';
 
 export type ActorMetadata = CompendiumCollection.Metadata & { type: 'Actor' };

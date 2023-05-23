@@ -1,0 +1,171 @@
+_id: xXe8NXRCtmpUUigh
+flags: {}
+image: {}
+name: Vehicle Sheet
+ownership:
+  default: -1
+sort: 800000
+src: null
+system: {}
+text:
+  content: >-
+    <p>
+      In the <em>Savage Worlds Adventure Edition</em> system for Foundry VTT,
+      vehicles are created as Actors rather than items.
+    </p>
+    <h2>Tweaks</h2>
+    <p>
+      As expected, the settings under Tweaks for vehicle sheets have some
+      differences from Character Sheet and NPC Sheet.
+    </p>
+    <ul>
+      <li>
+        <strong>Max Wounds:</strong> The Maximum number of Wounds the vehicle can
+        take before it is Wrecked.
+      </li>
+      <li>
+        <strong>Ignore Wounds:</strong> The number of Wound penalties the vehicle
+        can ignore for the operator’s maneuvering rolls.
+      </li>
+      <li>
+        <strong>Maximum Cargo Weight:</strong> The maximum cargo weight a vehicle
+        can hold before becoming encumbered. The system does not apply any Trait
+        penalties if the cargo weight exceeds this value. (This is an unofficial
+        stat not present in the core rules, but some GMs might find this useful for
+        more realistic settings.)
+      </li>
+      <li>
+        <strong>Maximum Mods:</strong> The maximum number of Mods allowed on the
+        vehicle. See Vehicles in System Settings.
+      </li>
+    </ul>
+    <h3>Initiative</h3>
+    <p>
+      These options affect how drawing Action Cards for Initiative is handled for
+      the given character, respecting the rules for those Edges and Hindrances
+      accordingly. See Running Savage Worlds in Foundry VTT for more details.
+    </p>
+    <h3>Additional Stats</h3>
+    <p>
+      Displays fields for Additional Stats as defined in the System Settings’
+      Setting Configurator.
+    </p>
+    <h2>Prototype Token</h2>
+    <p>
+      You can configure a default token directly from the sheet via the Prototype
+      Token option in the character sheet’s title bar.
+    </p>
+    <p>
+      Details about Prototype Tokens can be found on the
+      <a
+        rel="nofollow noreferrer noopener"
+        href="https://foundryvtt.com/article/tokens/"
+        target="_blank"
+        >Foundry VTT website</a
+      >.
+    </p>
+    <h2>Vehicle Sheet Header</h2>
+    <p>
+      The vehicle sheet header contains the majority of the vehicle’s stats,
+      specifically the following:
+    </p>
+    <ul>
+      <li>Handling</li>
+      <li>Top Speed</li>
+      <li>Size</li>
+      <li>Toughness</li>
+      <li>Armor</li>
+      <li>Scale</li>
+      <li>Classification</li>
+    </ul>
+    <h3>Statuses</h3>
+    <p>The vehicle sheet also contains checkboxes for the following statuses:</p>
+    <ul>
+      <li>Out of Control</li>
+      <li>Wrecked</li>
+    </ul>
+    <h2>Summary Tab</h2>
+    <h3>Operator</h3>
+    <p>
+      The operator is the individual making the maneuvering rolls for the vehicle.
+      You can drag any NPC or character from the Actors Directory onto the vehicle
+      sheet to assign the operator for the vehicle.
+    </p>
+    <h3>Wounds</h3>
+    <p>
+      This field displays the current number of Wounds the Vehicle has. The slider
+      increases and decreases the Wounds with a range of 0 to its maximum number of
+      Wounds before being Wrecked.
+    </p>
+    <h3>Maneuver Check</h3>
+    <p>
+      When the Maneuver Check button is clicked, the system rolls the Operation
+      Skill based on the operator’s Skill die type. If the operator does not have
+      the associated Skill, it rolls an Unskilled Attempt.
+    </p>
+    <h3>Required Crew</h3>
+    <p>
+      This pair of fields includes the minimum required crew needed to operate the
+      vehicle and the current number of required crew available.
+    </p>
+    <p>
+      With a crew notation of “2+8”, the first number is the minimum number needed
+      and would be entered into the field on the right.
+    </p>
+    <h3>Optional Passengers</h3>
+    <p>
+      This pair of fields includes the maximum number of passengers that can be
+      accommodated on the vehicle and how many are currently present.
+    </p>
+    <p>
+      With a crew notation of “2+8”, the second number is the maximum number allowed
+      and would be entered into the field on the right.
+    </p>
+    <h3>Mods</h3>
+    <p>Modifications added to the vehicle are listed in this section.</p>
+    <h3>Weapons</h3>
+    <p>
+      The weapons list is populated by marking any weapons in the Cargo tab as
+      Vehicular and Equipped.
+    </p>
+    <p>
+      <strong>Chat Card:</strong> As with the eye or chat icons on other sheets, the
+      eye icon to the right of the weapon listing will create an interactive card in
+      the Chat displaying any actions assigned to the weapon.
+    </p>
+    <h2>Cargo Tab</h2>
+    <p>
+      The Cargo tab is where all inventory for the vehicle is initially listed.
+      Vehicular weapons that are equipped are relocated to the Weapons section of
+      the Summary tab.
+    </p>
+    <p>
+      Cargo can be added by either the “+Add” button or by dragging items from the
+      Items Directory in the sidebar.
+    </p>
+    <h2>Description Tab</h2>
+    <p>The Description Tab contains three fields.</p>
+    <ul>
+      <li>
+        <strong>Operation Skill:</strong> Select from Boating, Driving, Piloting, or
+        Riding.
+      </li>
+      <li>
+        <strong>Alternative Skill:</strong> If no redefined Skill is selected, you
+        may enter a custom Skill name.
+      </li>
+      <li>
+        <strong>Description:</strong> You can add any special notes about this
+        vehicle in this field.
+      </li>
+    </ul>
+  format: 1
+  markdown: ''
+title:
+  level: 1
+  show: true
+type: text
+video:
+  controls: true
+  volume: 0.5
+_key: '!journal.pages!8uC7RTgJOg8SW4cf.xXe8NXRCtmpUUigh'

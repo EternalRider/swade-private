@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { JournalMetadata, Updates } from '../../globals';
+import { HotReloadData, JournalMetadata, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
-import { CompendiumTOC, CompendiumTOCMetadata } from '../apps/CompendiumTOC';
+import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
@@ -54,11 +54,7 @@ export default class SwadeCoreHooks {
       const tocBlockList = game.settings.get('swade', 'tocBlockList');
       const isBlocked = tocBlockList[pack.collection];
       if (isRightType && !isBlocked) {
-        pack.apps = [
-          new CompendiumTOC(
-            pack as CompendiumCollection<CompendiumTOCMetadata>,
-          ),
-        ];
+        pack.apps = [new CompendiumTOC({ collection: pack })];
       }
     }
 
@@ -268,11 +264,12 @@ export default class SwadeCoreHooks {
       return;
     //Mark Wildcards in the compendium
     if (app.metadata.type === 'Actor') {
-      const content = data.index;
+      //@ts-expect-error collection is now a CompendiumCollection
+      const content = app.collection.index;
       const ids: string[] = content
         .filter(
-          (a) =>
-            getProperty(a, 'data.wildcard') && a.name !== '#[CF_tempEntity]',
+          (a: SwadeActor) =>
+            getProperty(a, 'system.wildcard') && a.name !== '#[CF_tempEntity]',
         )
         .map((actor) => actor._id);
 
@@ -1132,6 +1129,22 @@ export default class SwadeCoreHooks {
         });
         return false;
       }
+    }
+  }
+
+  static onHotReload({
+    packageType,
+    packageId,
+    content,
+    path,
+    extension,
+  }: HotReloadData) {
+    if (
+      packageType === 'system' &&
+      packageId === 'swade' &&
+      extension === 'js'
+    ) {
+      location.reload();
     }
   }
 }

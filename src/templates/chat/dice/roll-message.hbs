@@ -62,7 +62,7 @@
     </div>
   {{/if}}
   <footer class='roll-interaction'>
-    {{#unless isPrivate}}
+    {{#unless (or isPrivate notRerollable)}}
       {{#if isGM}}
         <button
           type='button'
