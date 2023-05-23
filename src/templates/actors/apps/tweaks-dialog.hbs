@@ -103,20 +103,18 @@
           </span>
         </div>
       {{/unless}}
-      {{#if isCharacter}}
-        <div class='form-group' id='maxBennies'>
-          <label>{{localize 'SWADE.BenniesMax'}}</label>
-          <span class='form-fields'>
-            <input
-              class='bennies-max'
-              name='system.bennies.max'
-              type='text'
-              value='{{doc.system.bennies.max}}'
-              data-dtype='Number'
-            />
-          </span>
-        </div>
-      {{/if}}
+      <div class='form-group' id='maxBennies'>
+        <label>{{localize 'SWADE.BenniesMax'}}</label>
+        <span class='form-fields'>
+          <input
+            class='bennies-max'
+            name='system.bennies.max'
+            type='text'
+            value='{{doc.system.bennies.max}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
       <div class='form-group' id='ignoredWounds'>
         <label for='system.wounds.ignored'>
           {{localize 'SWADE.IgnWounds'}}
