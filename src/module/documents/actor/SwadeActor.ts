@@ -531,7 +531,7 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-    }
+    };
 
     if (options.item) rollDialogContext.item = options.item;
 
@@ -1352,6 +1352,15 @@ export default class SwadeActor extends Actor {
     await super._preCreate(createData, options, user);
     //return early if it's a vehicle
     if (createData.type === 'vehicle') return;
+
+    if (this.type === 'character') {
+      this.updateSource({
+        prototypeToken: {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        },
+      });
+    }
 
     const isImported = foundry.utils.hasProperty(
       createData,
