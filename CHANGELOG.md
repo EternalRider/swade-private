@@ -22,12 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## 3.1.0
-
-## Added
-
-- Player character actors are now automatically created with linked actor data the Token disposition set to Friendly in all cases. (#808) **by @florad92**
-
 ## 3.0.0
 
 ### Added
@@ -43,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added support for the Heroes Never Die setting rule (#756) **by @jpmeehan5**
 - Added new "swadeIncapacitation" hook that triggers when an actor is incapacitated by damage (#756) **by @jpmeehan5**
 - `MeasuredTemplate` placables now contain the UUID of the triggering item as a flag under `swade.origin` (#796) **by @mclemente**
+- Player character actors are now automatically created with linked actor data the Token disposition set to Friendly in all cases. (#808) **by @florad92**
 
 ### Changed
 
@@ -56,6 +51,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Addressed compendium bugs created in the update to v11 (#793) **by @jpmeehan5**
 - Extras using the Character sheet can now once again set their Max bennies via the tweaks window. (!342) **by @kristianserrano**
+- Added missing translation keys for Additional Stats. (#809) **by @florad92**
+- Improved translation keys for Additional Stats placeholders (#810) **by @florad92**
 
 ## 2.4.2
 
