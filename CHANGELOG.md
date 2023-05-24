@@ -43,7 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Addressed deprecation warnings pertinent to v11. (#715) **by @jpmeehan5**
 - The base system compendiums now come in a folder, courtesy of FVTT version 11's built-in compendium folders. (#781) **by @jpmeehan5**
-  You may now edit active effects on an item that is on an actor (#770) **by @jpmeehan5**
+- You may now edit active effects on an item that is on an actor (#770) **by @jpmeehan5**
 - Active Effects attached to an item no longer transfer to the actor when applied. Instead, they remain on the item and can be favorited to show up in the Quick Access menu. (#770) **by @jpmeehan5**
 - **[Breaking]** Trait roll modifiers from active effects that ADD to trait.die.modifier no longer directly increase that value. Instead, they are saved in an array that is applied during the roll dialog, allowing you to see each modifier individually and toggle them with the Ignore checkbox. (#447) **by @jpmeehan5**
 
