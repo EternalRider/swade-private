@@ -57,7 +57,10 @@
               name='system.additionalStats.{{key}}.value'
               data-dtype='{{attr.dtype}}'
               value='{{attr.value}}'
-              placeholder='{{localize "SWADE.Curr"}} {{attr.label}}'
+              placeholder='{{localize
+                "SWADE.AdditionalStats.Current"
+                stat=attr.label
+              }}'
             />
             {{#if attr.hasMaxValue}}
               <input
@@ -65,7 +68,10 @@
                 name='system.additionalStats.{{key}}.max'
                 data-dtype='{{attr.dtype}}'
                 value='{{attr.max}}'
-                placeholder='{{localize "SWADE.Max"}} {{attr.label}}'
+                placeholder='{{localize
+                  "SWADE.AdditionalStats.Current"
+                  stat=attr.label
+                }}'
               />
             {{/if}}
           </span>
