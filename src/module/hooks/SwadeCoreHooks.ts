@@ -1142,7 +1142,7 @@ export default class SwadeCoreHooks {
     //return the hook early if it's not a swade system change;
     if (packageType !== 'system' && packageId !== 'swade') return;
     //stop the hook on empty changes
-    if (extension === 'json' && !content) return false;
+    if (!content) return false;
     if (extension === 'js') location.reload();
   }
 }
