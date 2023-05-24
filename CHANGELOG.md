@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.0
+
+## Added
+
+- Player character actors are now automatically created with linked actor data the Token disposition set to Friendly in all cases. (#808) **by @florad92**
+
 ## 3.0.0
 
 ### Added
