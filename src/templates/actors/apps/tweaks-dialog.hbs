@@ -290,8 +290,10 @@
   <section id='additionalStats'>
     <h2>{{localize 'SWADE.AddStats'}}</h2>
     <header class='form-group flexrow additionalStats-header'>
-      <div>{{localize 'SWADE.Label'}}</div>
-      <div class='centered'>{{localize 'SWADE.HasMaxValue'}}</div>
+      <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
+      <div class='centered'>
+        {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+      </div>
       <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
     </header>
     {{#each settingFields as |attr key|}}

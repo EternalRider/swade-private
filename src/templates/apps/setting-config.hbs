@@ -131,7 +131,12 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.WoundCap.Name'}}</label>
         <div class='form-fields'>
-          <input type='checkbox' name='settingRules.woundCap' data-dtype='Boolean' {{checked settingRules.woundCap}} />
+          <input
+            type='checkbox'
+            name='settingRules.woundCap'
+            data-dtype='Boolean'
+            {{checked settingRules.woundCap}}
+          />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.WoundCap.Hint'}}</p>
       </div>
@@ -139,7 +144,12 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.UnarmoredHero.Name'}}</label>
         <div class='form-fields'>
-          <input type='checkbox' name='settingRules.unarmoredHero' data-dtype='Boolean' {{checked settingRules.unarmoredHero}} />
+          <input
+            type='checkbox'
+            name='settingRules.unarmoredHero'
+            data-dtype='Boolean'
+            {{checked settingRules.unarmoredHero}}
+          />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.UnarmoredHero.Hint'}}</p>
       </div>
@@ -147,7 +157,12 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.Settings.GrittyDamage.Name'}}</label>
         <div class='form-fields'>
-          <input type='checkbox' name='settingRules.grittyDamage' data-dtype='Boolean' {{checked settingRules.grittyDamage}} />
+          <input
+            type='checkbox'
+            name='settingRules.grittyDamage'
+            data-dtype='Boolean'
+            {{checked settingRules.grittyDamage}}
+          />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
       </div>
@@ -156,7 +171,7 @@
         <div class='form-fields'>
           <select name='settingRules.injuryTable'>
             {{#select settingRules.injuryTable}}
-            {{selectOptions injuryTableChoices}}
+              {{selectOptions injuryTableChoices}}
             {{/select}}
           </select>
         </div>
@@ -518,10 +533,18 @@
       <h2>{{localize 'SWADE.Actors'}}</h2>
       <ul class='stats-container'>
         <li class='attribute attributes-header'>
-          <span class='attribute-key'>Stat Key</span>
-          <span class='attribute-label'>Label</span>
-          <span class='attribute-dtype'>Data Type</span>
-          <span class='attribute-maxValue'>Has Max Value</span>
+          <span class='attribute-key'>
+            {{localize 'SWADE.AdditionalStats.Key'}}
+          </span>
+          <span class='attribute-label'>
+            {{localize 'SWADE.AdditionalStats.Label'}}
+          </span>
+          <span class='attribute-dtype'>
+            {{localize 'SWADE.AdditionalStats.Type'}}
+          </span>
+          <span class='attribute-maxValue'>
+            {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+          </span>
           <a class='attribute-control' data-action='createChar'>
             <i class='fas fa-plus'></i>
           </a>
@@ -573,10 +596,18 @@
       <h2>{{localize 'SWADE.Items'}}</h2>
       <ul class='stats-container'>
         <li class='attribute attributes-header'>
-          <span class='attribute-key'>Stat Key</span>
-          <span class='attribute-label'>Label</span>
-          <span class='attribute-dtype'>Data Type</span>
-          <span class='attribute-maxValue'>Has Max Value</span>
+          <span class='attribute-key'>
+            {{localize 'SWADE.AdditionalStats.Key'}}
+          </span>
+          <span class='attribute-label'>
+            {{localize 'SWADE.AdditionalStats.Label'}}
+          </span>
+          <span class='attribute-dtype'>
+            {{localize 'SWADE.AdditionalStats.Type'}}
+          </span>
+          <span class='attribute-maxValue'>
+            {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+          </span>
           <a class='attribute-control' data-action='createItem'>
             <i class='fas fa-plus'></i>
           </a>
