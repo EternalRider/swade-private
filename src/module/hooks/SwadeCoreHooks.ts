@@ -1139,12 +1139,10 @@ export default class SwadeCoreHooks {
     path,
     extension,
   }: HotReloadData) {
-    if (
-      packageType === 'system' &&
-      packageId === 'swade' &&
-      extension === 'js'
-    ) {
-      location.reload();
-    }
+    //return the hook early if it's not a swade system change;
+    if (packageType !== 'system' && packageId !== 'swade') return;
+    //stop the hook on empty changes
+    if (extension === 'json' && !content) return false;
+    if (extension === 'js') location.reload();
   }
 }
