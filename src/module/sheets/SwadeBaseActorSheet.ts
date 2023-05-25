@@ -47,8 +47,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     html.find('.armor-value').on('click', (ev) => {
       let target = ev.currentTarget.dataset.target ?? '';
       const shouldAutoCalcArmor = getProperty(
-        this.actor.data,
-        'data.details.autoCalcToughness',
+        this.actor,
+        'system.details.autoCalcToughness',
       );
       if (target === 'armor' && shouldAutoCalcArmor) {
         target = 'toughness';
@@ -284,10 +284,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   ): Promise<{ type: string; name: string }> {
     if (!choices) {
       choices = {
-        weapon: game.i18n.localize('TYPES.Item.Weapon'),
-        armor: game.i18n.localize('TYPES.Item.Armor'),
-        shield: game.i18n.localize('TYPES.Item.Shield'),
-        gear: game.i18n.localize('TYPES.Item.Gear'),
+        weapon: game.i18n.localize('TYPES.Item.weapon'),
+        armor: game.i18n.localize('TYPES.Item.armor'),
+        shield: game.i18n.localize('TYPES.Item.shield'),
+        gear: game.i18n.localize('TYPES.Item.gear'),
       };
     }
     const templateData = {
@@ -377,10 +377,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     }
 
     const targetPropertyPath = `system.stats.${targetProperty}`;
-    const targetPropertyValue = getProperty(
-      this.actor.data,
-      targetPropertyPath,
-    );
+    const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
 
     const title = `${game.i18n.localize('SWADE.Ed')} ${
       this.actor.name

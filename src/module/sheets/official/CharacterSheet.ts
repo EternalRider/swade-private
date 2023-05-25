@@ -537,7 +537,7 @@ export default class CharacterSheet extends ActorSheet<
       );
       if (existingItems.length > 0) {
         duplicates.push({
-          type: game.i18n.localize(`TYPES.Item.${entry.type.capitalize()}`),
+          type: game.i18n.localize(`TYPES.Item.${entry.type}`),
           name: entry.name,
         });
         entry.name += ` (${item.name})`;
@@ -645,10 +645,10 @@ export default class CharacterSheet extends ActorSheet<
   protected async _chooseItemType(choices?: any) {
     if (!choices) {
       choices = {
-        weapon: game.i18n.localize('TYPES.Item.Weapon'),
-        armor: game.i18n.localize('TYPES.Item.Armor'),
-        shield: game.i18n.localize('TYPES.Item.Shield'),
-        gear: game.i18n.localize('TYPES.Item.Gear'),
+        weapon: game.i18n.localize('TYPES.Item.weapon'),
+        armor: game.i18n.localize('TYPES.Item.armor'),
+        shield: game.i18n.localize('TYPES.Item.shield'),
+        gear: game.i18n.localize('TYPES.Item.gear'),
         effect: 'Active Effect',
       };
     }
@@ -791,13 +791,13 @@ export default class CharacterSheet extends ActorSheet<
       let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
       modifier = Math.min(modifier * -1, modifier);
       const actionObj = getProperty(
-        item.data,
-        `data.actions.additional.${action}.skillOverride`,
+        item,
+        `system.actions.additional.${action}.skillOverride`,
       ) as ItemAction;
       //filter down further to make sure we only apply the penalty to a trait roll
       if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
         additionalMods.push({
-          label: game.i18n.localize('TYPES.Item.Power'),
+          label: game.i18n.localize('TYPES.Item.power'),
           value: modifier.signedString(),
         });
       }

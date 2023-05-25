@@ -891,21 +891,21 @@ SWADE:
     NoTargetsSelected: Please select a target to apply the damage to.
 TYPES:
   Actor:
-    Character: Player Character
-    Npc: NPC
-    Vehicle: Vehicle
+    character: Player Character
+    npc: NPC
+    vehicle: Vehicle
   Item:
-    Weapon: Weapon
-    Armor: Armor
-    Shield: Shield
-    Gear: Gear
-    Edge: Edge
-    Hindrance: Hindrance
-    Skill: Skill
-    Power: Power
-    Ability: Ability
-    Consumable: Consumable
-    Action: Action
+    weapon: Weapon
+    armor: Armor
+    shield: Shield
+    gear: Gear
+    edge: Edge
+    hindrance: Hindrance
+    skill: Skill
+    power: Power
+    ability: Ability
+    consumable: Consumable
+    action: Action
   Card:
-    Adventure: Adventure Card
-    Poker: Poker Card
+    adventure: Adventure Card
+    poker: Poker Card
