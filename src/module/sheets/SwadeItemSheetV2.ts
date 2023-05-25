@@ -169,7 +169,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       const effect = this.item.effects.get(effectId, { strict: true });
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
-      
+
       switch (action) {
         case 'edit':
           return effect.sheet?.render(true);
@@ -513,7 +513,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       const type =
         val.type === 'ability'
           ? game.i18n.localize('SWADE.SpecialAbility')
-          : game.i18n.localize(`TYPES.Item.${val.type.capitalize()}`);
+          : game.i18n.localize(`TYPES.Item.${val.type}`);
 
       let majorMinor = '';
       if (val.type === 'hindrance') {
@@ -586,7 +586,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           return SWADE.abilitySheet.special.dropdown;
       }
     }
-    return `TYPES.Item.${this.type.capitalize()}`;
+    return `TYPES.Item.${this.type}`;
   }
 
   private async _enrichText(text: string): Promise<string> {
@@ -667,7 +667,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     toggle: string,
   ): Record<string, unknown> {
     const oldVal = !!getProperty(doc, toggle);
-    return {[toggle]: !oldVal };
+    return { [toggle]: !oldVal };
   }
 
   private _rangeSuggestions() {

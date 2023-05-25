@@ -76,7 +76,7 @@ export default class ItemChatCardHelper {
       modifier = Math.min(modifier * -1, modifier);
       if (action === 'formula' || (actionObj && actionObj.type === 'skill')) {
         additionalMods.push({
-          label: game.i18n.localize('TYPES.Item.Power'),
+          label: game.i18n.localize('TYPES.Item.power'),
           value: modifier,
         });
       }
