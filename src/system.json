@@ -125,8 +125,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "systems/swade/assets/official/SWADE_Logo.png",
-      "thumbnail": "systems/swade/assets/official/SWADE_Logo.png"
+      "url": "systems/swade/assets/official/SWADE_Logo.webp",
+      "thumbnail": "systems/swade/assets/official/SWADE_Logo.webp"
     }
   ],
   "flags": {
