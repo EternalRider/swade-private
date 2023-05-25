@@ -122,7 +122,13 @@
       }
     ]
   },
-  "media": [],
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/swade/assets/official/SWADE_Logo.png",
+      "thumbnail": "systems/swade/assets/official/SWADE_Logo.png"
+    }
+  ],
   "flags": {
     "hotReload": {
       "extensions": ["js", "css", "html", "hbs", "json"],
