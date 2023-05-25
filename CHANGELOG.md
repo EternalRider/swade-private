@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Increased FVTT maximum version to 11. (#715) **by @jpmeehan5**
 - Added module recommendations to the system manifest. (#791) **by @florad92**
+- Added system thumbnail image for the setup screen (#813) **by @jpmeehan5**
 - Added the `category` property to Action and Ability items. (#805) **by @jpmeehan5**
 - You can view an effect's duration and description by clicking on its name in the Effects tab. (Courtesy of Foundry v11, Effects now have a rich text editor to add descriptions). (#769) **by @jpmeehan5**
 - Wild Attack has been added as a status that provides a global attack and damage boost. (#613) **by @jpmeehan5**
