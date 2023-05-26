@@ -568,7 +568,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         name: item?.name ?? grant.name,
         img: item?.img ?? grant.img,
         uuid: grant.uuid,
-        missing: !grant,
+        missing: !item,
       });
     }
     return enriched;
