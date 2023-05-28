@@ -1,4 +1,7 @@
-import { RollModifier, RollModifierGroup } from '../../interfaces/additional.interface';
+import {
+  RollModifier,
+  RollModifierGroup,
+} from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
 import { SwadeRoll } from '../dice/SwadeRoll';
@@ -139,7 +142,7 @@ export class RollDialog extends FormApplication<
       baseDice: this.ctx.roll.formula,
       displayExtraButton: true,
       rollModes: CONFIG.Dice.rollModes,
-      modGroups: new Array<RollModifierGroup>,
+      modGroups: new Array<RollModifierGroup>(),
       extraButtonLabel: '',
       rollMode: game.settings.get('core', 'rollMode'),
       modifiers: this.modifiers.map(normalizeRollModifiers),
@@ -150,11 +153,12 @@ export class RollDialog extends FormApplication<
     CONFIG.SWADE.prototypeRollGroups.forEach((m) => {
       if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) return;
       if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) return;
-      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll) return;
+      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll)
+        return;
       data.modGroups.push(m);
-    })
+    });
 
-    if (this.ctx.item) {
+    if (this.isDamageRoll) {
       data.extraButtonLabel = game.i18n.localize('SWADE.RollRaise');
     } else if (this.isTraitRoll && !this.ctx.actor?.isWildcard) {
       data.extraButtonLabel = game.i18n.localize('SWADE.GroupRoll');

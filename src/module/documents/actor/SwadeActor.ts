@@ -228,7 +228,7 @@ export default class SwadeActor extends Actor {
     Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
-  private _prepareCharacterBaseData() {
+  protected _prepareCharacterBaseData() {
     //typeguard against vehicles
     if (this.type === 'vehicle') return;
     //auto calculations
@@ -256,7 +256,7 @@ export default class SwadeActor extends Actor {
     };
   }
 
-  private _prepareCharacterDerivedData() {
+  protected _prepareCharacterDerivedData() {
     //typeguard against vehicles
     if (this.type === 'vehicle') return;
 
