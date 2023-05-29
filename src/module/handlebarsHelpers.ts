@@ -88,7 +88,7 @@ export function registerCustomHelpers() {
       const type =
         val.type === 'ability'
           ? game.i18n.localize('SWADE.SpecialAbility')
-          : game.i18n.localize(`ITEM.Type${val.type.capitalize()}`);
+          : game.i18n.localize(`TYPES.Item.${val.type}`);
 
       let majorMinor = '';
       if (val.type === 'hindrance') {

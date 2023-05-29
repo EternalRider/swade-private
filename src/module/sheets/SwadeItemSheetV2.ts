@@ -165,16 +165,18 @@ export default class SwadeItemSheetV2 extends ItemSheet<
 
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId!;
+      const effectId = a.closest('li')!.dataset.effectId! as string;
       const effect = this.item.effects.get(effectId, { strict: true });
-      const action = a.dataset.action;
+      const action = a.dataset.action as string;
+      const toggle = a.dataset.toggle as string;
+
       switch (action) {
         case 'edit':
           return effect.sheet?.render(true);
         case 'delete':
           return effect.delete();
         case 'toggle':
-          return effect.update({ disabled: !effect.disabled });
+          return effect.update(this._toggleEffect(effect, toggle));
       }
     });
 
@@ -511,7 +513,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       const type =
         val.type === 'ability'
           ? game.i18n.localize('SWADE.SpecialAbility')
-          : game.i18n.localize(`ITEM.Type${val.type.capitalize()}`);
+          : game.i18n.localize(`TYPES.Item.${val.type}`);
 
       let majorMinor = '';
       if (val.type === 'hindrance') {
@@ -566,7 +568,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
         name: item?.name ?? grant.name,
         img: item?.img ?? grant.img,
         uuid: grant.uuid,
-        missing: !grant,
+        missing: !item,
       });
     }
     return enriched;
@@ -584,7 +586,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
           return SWADE.abilitySheet.special.dropdown;
       }
     }
-    return `ITEM.Type${this.type.capitalize()}`;
+    return `TYPES.Item.${this.type}`;
   }
 
   private async _enrichText(text: string): Promise<string> {
@@ -650,7 +652,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   private async _createActiveEffect() {
     const newEffect = await CONFIG.ActiveEffect.documentClass.create(
       {
-        label: game.i18n.format('DOCUMENT.New', {
+        name: game.i18n.format('DOCUMENT.New', {
           type: game.i18n.localize('DOCUMENT.ActiveEffect'),
         }),
         transfer: true,
@@ -658,6 +660,14 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       { parent: this.item },
     );
     newEffect?.sheet?.render(true);
+  }
+
+  protected _toggleEffect(
+    doc: SwadeActiveEffect,
+    toggle: string,
+  ): Record<string, unknown> {
+    const oldVal = !!getProperty(doc, toggle);
+    return { [toggle]: !oldVal };
   }
 
   private _rangeSuggestions() {

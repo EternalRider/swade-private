@@ -5,10 +5,10 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
-import { TraitRollModifier } from '../../../interfaces/additional.interface';
+import { RollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
-import RollDialog from '../../apps/RollDialog';
+import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
@@ -228,7 +228,7 @@ export default class SwadeActor extends Actor {
     Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
-  private _prepareCharacterBaseData() {
+  protected _prepareCharacterBaseData() {
     //typeguard against vehicles
     if (this.type === 'vehicle') return;
     //auto calculations
@@ -241,9 +241,22 @@ export default class SwadeActor extends Actor {
       //same procedure as with Toughness
       this.system.stats.parry.value = 0;
     }
+
+    //setup the global modifier container object
+    this.system.stats.globalMods = {
+      trait: [],
+      agility: [],
+      smarts: [],
+      spirit: [],
+      strength: [],
+      vigor: [],
+      attack: [],
+      damage: [],
+      ap: [],
+    };
   }
 
-  private _prepareCharacterDerivedData() {
+  protected _prepareCharacterDerivedData() {
     //typeguard against vehicles
     if (this.type === 'vehicle') return;
 
@@ -340,20 +353,26 @@ export default class SwadeActor extends Actor {
     const abl = this.system.attributes[attribute];
     const rolls = new Array<Roll>();
 
-    const attrRoll = new Roll('');
-    attrRoll.terms.push(
-      this._buildTraitDie(abl.die.sides, game.i18n.localize(label)),
+    rolls.push(
+      Roll.fromTerms([
+        this._buildTraitDie(abl.die.sides, game.i18n.localize(label)),
+      ]),
     );
-    rolls.push(attrRoll);
 
     if (this.isWildcard) {
-      const wildRoll = new Roll('');
-      wildRoll.terms.push(this._buildWildDie(abl['wild-die'].sides));
-      rolls.push(wildRoll);
+      rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
     }
 
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
+
+    const effectArray = [
+      ...abl.effects,
+      ...this.system.stats.globalMods[attribute],
+      ...this.system.stats.globalMods.trait,
+    ];
+    if (options.additionalMods) options.additionalMods.push(effectArray);
+    else options.additionalMods = effectArray;
 
     const modifiers = this.getTraitRollModifiers(
       abl.die,
@@ -371,6 +390,7 @@ export default class SwadeActor extends Actor {
 
     const roll = TraitRoll.fromTerms([basePool]) as TraitRoll;
     roll.modifiers = modifiers;
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
@@ -379,7 +399,7 @@ export default class SwadeActor extends Actor {
      * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
      * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     const permitContinue = Hooks.callAll(
@@ -393,6 +413,7 @@ export default class SwadeActor extends Actor {
     if (!permitContinue) return null;
 
     if (options.suppressChat) {
+      // @ts-expect-error Error checking is wrong here roll is a TraitRoll
       return TraitRoll.fromTerms([
         ...roll.terms,
         ...TraitRoll.parse(
@@ -426,7 +447,7 @@ export default class SwadeActor extends Actor {
      * @param {SwadeActor} actor                The actor that rolls the attribute
      * @param {String} attribute                The name of the attribute, in lower case
      * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.callAll(
@@ -460,6 +481,7 @@ export default class SwadeActor extends Actor {
     const roll = skillRoll[0];
     const modifiers = skillRoll[1];
     roll.modifiers = modifiers;
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
 
     //Build Flavour
     let flavour = '';
@@ -474,7 +496,7 @@ export default class SwadeActor extends Actor {
      * @param {SwadeActor} actor                The actor that rolls the skill
      * @param {SwadeItem} skill                 The Skill item that is being rolled
      * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     const permitContinue = Hooks.call(
@@ -498,8 +520,7 @@ export default class SwadeActor extends Actor {
       ]) as TraitRoll;
     }
 
-    // Roll and return
-    const retVal = await RollDialog.asPromise({
+    const rollDialogContext: RollDialogContext = {
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -510,7 +531,12 @@ export default class SwadeActor extends Actor {
         options.title ??
         `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
-    });
+    };
+
+    if (options.item) rollDialogContext.item = options.item;
+
+    // Roll and return
+    const retVal = await RollDialog.asPromise(rollDialogContext);
 
     /**
      * A hook event that is fired after a skill is rolled
@@ -518,7 +544,7 @@ export default class SwadeActor extends Actor {
      * @param {SwadeActor} actor                The actor that rolls the skill
      * @param {SwadeItem} skill                 The Skill item that is being rolled
      * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.callAll('swadeRollSkill', this, skill, roll, modifiers, options);
@@ -571,7 +597,7 @@ export default class SwadeActor extends Actor {
       'SWADE.RunningDie',
     )}]`;
 
-    const mods: TraitRollModifier[] = [
+    const mods: RollModifier[] = [
       { label: game.i18n.localize('SWADE.Pace'), value: pace },
     ];
 
@@ -614,7 +640,7 @@ export default class SwadeActor extends Actor {
         },
       },
     });
-    const modifier: TraitRollModifier = {
+    const modifier: RollModifier = {
       label: game.i18n.localize('SWADE.Unskilled'),
       value: -2,
     };
@@ -759,7 +785,7 @@ export default class SwadeActor extends Actor {
         effectData,
       ) as Partial<StatusEffect>;
       //set the status id
-      setProperty(createData, 'flags.core.statusId', effectData.id);
+      setProperty(createData, 'statuses', [effectData.id]);
       if (options.overlay) setProperty(createData, 'flags.core.overlay', true);
       //remove id property to not violate validation
       delete createData.id;
@@ -797,7 +823,8 @@ export default class SwadeActor extends Actor {
   }
 
   /** Calculates the total Wound Penalties */
-  calcWoundPenalties(): number {
+  calcWoundPenalties(ignoreAll: boolean = false): number {
+    if (ignoreAll) return 0;
     let total = 0;
     const wounds = getProperty(this, 'system.wounds.value') as number;
     const ignoredWounds = getProperty(this, 'system.wounds.ignored') as number;
@@ -1073,7 +1100,7 @@ export default class SwadeActor extends Actor {
   private _handleComplexSkill(
     skill: SwadeItem,
     options: IRollOptions,
-  ): [TraitRoll, TraitRollModifier[]] {
+  ): [TraitRoll, RollModifier[]] {
     if (this.type === 'vehicle') {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
@@ -1102,6 +1129,16 @@ export default class SwadeActor extends Actor {
     const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
+    const attGlobalMods: RollModifier[] =
+      this.system.stats.globalMods[skill.system.attribute] ?? [];
+    const effectArray: RollModifier[] = [
+      ...this.system.stats.globalMods.trait,
+      ...attGlobalMods,
+      ...skillData.effects,
+    ];
+
+    if (options.additionalMods) options.additionalMods.push(...effectArray);
+    else options.additionalMods = effectArray;
 
     const rollMods = this.getTraitRollModifiers(
       skillData.die,
@@ -1160,8 +1197,8 @@ export default class SwadeActor extends Actor {
     die: TraitDie,
     options: IRollOptions,
     name?: string | null,
-  ): TraitRollModifier[] {
-    const mods = new Array<TraitRollModifier>();
+  ): RollModifier[] {
+    const mods = new Array<RollModifier>();
 
     //Trait modifier
     if (die.modifier !== 0) {
@@ -1173,7 +1210,7 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    const wounds = this.calcWoundPenalties();
+    const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
     const numbness = this.system.woundsOrFatigue.ignored;
     if (numbness > 0) {
@@ -1315,6 +1352,15 @@ export default class SwadeActor extends Actor {
     await super._preCreate(createData, options, user);
     //return early if it's a vehicle
     if (createData.type === 'vehicle') return;
+
+    if (this.type === 'character') {
+      this.updateSource({
+        prototypeToken: {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        },
+      });
+    }
 
     const isImported = foundry.utils.hasProperty(
       createData,

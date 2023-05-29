@@ -155,6 +155,10 @@
       text-decoration-thickness: $small-spacing;
     }
   }
+
+  .remaining {
+    text-decoration: underline;
+  }
 }
 
 .item.skill {

@@ -25,7 +25,10 @@
             name='system.additionalStats.{{key}}.value'
             value='{{stat.value}}'
             data-dtype='{{stat.dtype}}'
-            placeholder='{{localize "SWADE.Curr"}} {{stat.label}}'
+            placeholder='{{localize
+              "SWADE.AdditionalStats.Current"
+              stat=stat.label
+            }}'
           />
           {{#if stat.hasMaxValue}}
             <strong class='flex-separator'>/</strong>
@@ -34,7 +37,10 @@
               name='system.additionalStats.{{key}}.max'
               value='{{stat.max}}'
               data-dtype='{{stat.dtype}}'
-              placeholder='{{localize "SWADE.Max"}} {{stat.label}}'
+              placeholder='{{localize
+                "SWADE.AdditionalStats.Current"
+                stat=stat.label
+              }}'
             />
           {{/if}}
         {{else if (eq stat.dtype 'String')}}
@@ -43,7 +49,10 @@
             name='system.additionalStats.{{key}}.value'
             value='{{stat.value}}'
             data-dtype='{{stat.dtype}}'
-            placeholder='{{localize "SWADE.Curr"}} {{stat.label}}'
+            placeholder='{{localize
+              "SWADE.AdditionalStats.Current"
+              stat=stat.label
+            }}'
           />
           {{#if stat.hasMaxValue}}
             <strong class='flex-separator'>/</strong>
@@ -52,7 +61,10 @@
               name='system.additionalStats.{{key}}.max'
               value='{{stat.max}}'
               data-dtype='{{stat.dtype}}'
-              placeholder='{{localize "SWADE.Max"}} {{stat.label}}'
+              placeholder='{{localize
+                "SWADE.AdditionalStats.Current"
+                stat=stat.label
+              }}'
             />
           {{/if}}
         {{else if (eq stat.dtype 'Die')}}

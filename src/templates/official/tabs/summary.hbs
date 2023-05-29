@@ -254,27 +254,30 @@
       </button>
     </header>
     <ol class="quick-list">
-      {{#each actor.effects}}
-        {{#if flags.swade.favorite}}
-          <li class="gear-card item {{#if disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}">
-            <div class="card-header flexrow">
-              <div class="item-image" style="background-image: url('{{icon}}')"></div>
-              {{#if origin}}
-                <button type="button" class="item-name effect-action" data-action="open-origin" title="{{localize "SWADE.OpenOrigin"}}">{{label}}</button>
-              {{else}}
-                <div class="item-name">{{label}}</div>
-              {{/if}}
-              <div class="item-controls">
-                <button type="button" class="item-control effect-action" data-action="toggle" data-toggle="disabled">
-                  <i class="fas fa-power-off"></i>
-                </button>
-                <button type="button" class="effect-action" data-action="toggle" data-toggle="flags.swade.favorite" title="{{localize " SWADE.Favorite"}}">
-                  <i class="fas fa-star"></i>
-                </button>
+      {{#each sheetEffects.favorite}}
+        <li class="gear-card item {{#if disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}">
+          <header class="card-header flexrow">
+            <div class="item-image" style="background-image: url('{{icon}}')"></div>
+            {{#if origin}}
+              <button type="button" class="item-name effect-action" data-action="open-origin" title="{{localize "SWADE.OpenOrigin"}}">{{name}}</button>
+            {{else}}
+              <button class="item-name">{{name}}</button>
+            {{/if}}
+            <div class="item-controls">
+              <button type="button" class="item-control effect-action" data-action="toggle" data-toggle="disabled">
+                <i class="fas fa-power-off"></i>
+              </button>
+              <button type="button" class="effect-action" data-action="toggle" data-toggle="flags.swade.favorite" title="{{localize "SWADE.Favorite"}}">
+                <i class="fas fa-star"></i>
+              </button>
             </div>
-            </div>
-          </li>
-        {{/if}}
+          </header>
+          <div class="card-content" style="display: none">
+          {{#if description}}
+            {{{enrich description}}}
+          {{/if}}
+          </div>
+        </li>
       {{/each}}
     </ol>
     <ol class="quick-list">

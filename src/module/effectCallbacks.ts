@@ -1,4 +1,5 @@
 import { TraitRoll } from './dice/TraitRoll';
+import { constants } from './constants';
 import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
@@ -10,6 +11,15 @@ export function registerEffectCallbacks() {
   effectCallbacks.set('shaken', removeShaken);
   effectCallbacks.set('stunned', removeStunned);
   effectCallbacks.set('bleeding-out', bleedOut);
+  effectCallbacks.set('wild-attack', wildAttack)
+}
+
+async function wildAttack(effect: SwadeActiveEffect) {
+  const parent = effect.parent;
+  if (!parent || parent instanceof SwadeItem) return;
+  const data = getStatusEffectDataById('vulnerable');
+  await parent.toggleActiveEffect(data);
+  await effect.delete()
 }
 
 async function removeShaken(effect: SwadeActiveEffect) {
@@ -45,7 +55,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
               },
             ],
           });
-          if ((roll?.total as number) >= 4) {
+          if ((roll?.successes ?? constants.ROLL_RESULT.FAIL) >= constants.ROLL_RESULT.SUCCESS) {
             await effect.delete();
             ui.notifications.info('SWADE.EffectCallbacks.Shaken.Success', {
               localize: true,
@@ -129,22 +139,22 @@ async function removeStunned(effect: SwadeActiveEffect) {
       },
     ],
   });
-  const result = roll?.total ?? 0;
+  const result = roll?.successes ?? constants.ROLL_RESULT.FAIL;
   //no roll or failed
-  if (result < 4) {
+  if (result < constants.ROLL_RESULT.SUCCESS) {
     return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Fail', {
       localize: true,
     });
   }
   //normal success, still vulnerable
-  if (result.between(4, 7)) {
+  if (result === constants.ROLL_RESULT.SUCCESS) {
     await effect.delete();
     return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Success', {
       localize: true,
     });
   }
 
-  if (result > 7) {
+  if (result >= constants.ROLL_RESULT.RAISE) {
     await effect.delete();
     return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Raise', {
       localize: true,
@@ -160,10 +170,17 @@ async function bleedOut(effect: SwadeActiveEffect) {
   const roll = await parent.rollAttribute('vigor', {
     title: flavor,
     flavour: flavor,
+    additionalMods: [
+      {
+        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
+        value: parent.system.attributes.vigor.bleedOut.modifier
+      }
+    ],
+    ignoreWounds: parent.system.attributes.vigor.bleedOut.ignoreWounds
   });
-  const result = roll?.total ?? 0;
+  const result = roll?.successes ?? constants.ROLL_RESULT.FAIL;
   //death
-  if (result < 4) {
+  if (result < constants.ROLL_RESULT.SUCCESS) {
     //delete existing temporary effects so that they don't interfere
     const toDelete = parent.effects
       .filter((e) => e.isTemporary)
@@ -189,14 +206,14 @@ async function bleedOut(effect: SwadeActiveEffect) {
     });
   }
   //hanging on
-  if (result.between(4, 7)) {
+  if (result === constants.ROLL_RESULT.SUCCESS) {
     return ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Success', {
       localize: true,
     });
   }
 
   //stabilizing
-  if (result >= 8) {
+  if (result >= constants.ROLL_RESULT.RAISE) {
     await effect.delete();
     return ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Raise', {
       localize: true,

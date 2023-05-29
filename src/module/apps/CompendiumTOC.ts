@@ -176,7 +176,7 @@ export class CompendiumTOC extends Compendium<
     for (const type in actorsByType) {
       const actors = actorsByType[type];
       categories.push({
-        category: game.i18n.localize(`ACTOR.Type${type.capitalize()}`),
+        category: game.i18n.localize(`TYPES.Actor.${type}`),
         entries: await this._groupUnCategorized(actors),
       });
     }
@@ -200,21 +200,21 @@ export class CompendiumTOC extends Compendium<
     const powers = items.filter((i) => i.type === 'power');
     if (powers.length) {
       categories.push({
-        category: game.i18n.localize('ITEM.TypePower'),
+        category: game.i18n.localize('TYPES.Item.power'),
         groups: this._groupPowers(powers),
       });
     }
     const edges = items.filter((i) => i.type === 'edge');
     if (edges.length) {
       categories.push({
-        category: game.i18n.localize('ITEM.TypeEdge'),
+        category: game.i18n.localize('TYPES.Item.edge'),
         groups: this._groupEdges(edges),
       });
     }
     const hindrances = items.filter((i) => i.type === 'hindrance');
     if (hindrances.length) {
       categories.push({
-        category: game.i18n.localize('ITEM.TypeHindrance'),
+        category: game.i18n.localize('TYPES.Item.hindrance'),
         entries: this._groupHindrances(hindrances),
       });
     }
@@ -235,7 +235,7 @@ export class CompendiumTOC extends Compendium<
     //first we handle items by type
     for (const type in itemsByType) {
       const items = itemsByType[type];
-      const typeLabel = game.i18n.localize(`ITEM.Type${type.capitalize()}`);
+      const typeLabel = game.i18n.localize(`TYPES.Item.${type}`);
 
       const [unCategorized, categorized] = items.partition(
         (i) => i.canHaveCategory && !!getProperty(i, 'system.category'),

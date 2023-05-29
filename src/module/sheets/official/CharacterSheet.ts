@@ -3,7 +3,7 @@ import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/
 import { AdditionalStats, Attribute } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier,
+  RollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
@@ -195,8 +195,12 @@ export default class CharacterSheet extends ActorSheet<
 
     html.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId as string;
-      const effect = this.actor.effects.get(effectId, { strict: true });
+      const effectId = a.closest('li')!.dataset.effectId! as string;
+      const sourceId = a.closest('li')!.dataset.sourceId ?? ('' as string);
+      const sourceItem = this.actor.items.get(sourceId) as SwadeItem;
+      const effect = sourceId
+        ? sourceItem.effects.get(effectId)
+        : (this.actor.effects.get(effectId) as SwadeActiveEffect);
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
 
@@ -207,11 +211,16 @@ export default class CharacterSheet extends ActorSheet<
           return effect.deleteDialog();
         case 'toggle':
           return effect.update(this._toggleItem(effect, toggle));
-        case 'open-origin': {
-          const item = await fromUuid(effect.origin!);
-          if (item) item?.sheet?.render(true);
+        case 'open-origin':
+          if (sourceItem) {
+            sourceItem.sheet?.render(true);
+          } else {
+            fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
+              this.actor.items.get(item.id!)?.sheet?.render(true);
+            });
+          }
+
           break;
-        }
         default:
           Logger.warn(`The action ${action} is not currently supported`);
           break;
@@ -219,6 +228,10 @@ export default class CharacterSheet extends ActorSheet<
     });
 
     html.find('.item .item-name').on('click', (ev) => {
+      $(ev.currentTarget).parents('.item').find('.description').slideToggle();
+    });
+
+    html.find('.item .effect-label').on('click', (ev) => {
       $(ev.currentTarget).parents('.item').find('.description').slideToggle();
     });
 
@@ -524,7 +537,7 @@ export default class CharacterSheet extends ActorSheet<
       );
       if (existingItems.length > 0) {
         duplicates.push({
-          type: game.i18n.localize(`ITEM.Type${entry.type.capitalize()}`),
+          type: game.i18n.localize(`TYPES.Item.${entry.type}`),
           name: entry.name,
         });
         entry.name += ` (${item.name})`;
@@ -632,10 +645,10 @@ export default class CharacterSheet extends ActorSheet<
   protected async _chooseItemType(choices?: any) {
     if (!choices) {
       choices = {
-        weapon: game.i18n.localize('ITEM.TypeWeapon'),
-        armor: game.i18n.localize('ITEM.TypeArmor'),
-        shield: game.i18n.localize('ITEM.TypeShield'),
-        gear: game.i18n.localize('ITEM.TypeGear'),
+        weapon: game.i18n.localize('TYPES.Item.weapon'),
+        armor: game.i18n.localize('TYPES.Item.armor'),
+        shield: game.i18n.localize('TYPES.Item.shield'),
+        gear: game.i18n.localize('TYPES.Item.gear'),
         effect: 'Active Effect',
       };
     }
@@ -680,7 +693,7 @@ export default class CharacterSheet extends ActorSheet<
 
   protected async _createActiveEffect(
     data: ActiveEffectDataConstructorData = {
-      label: game.i18n.format('DOCUMENT.New', {
+      name: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),
     },
@@ -716,24 +729,46 @@ export default class CharacterSheet extends ActorSheet<
   protected async _getEffects() {
     const temporary = new Array<SheetEffect>();
     const permanent = new Array<SheetEffect>();
-    for (const effect of this.actor.effects) {
+    const favorite = new Array<SheetEffect>();
+    for (const effect of this.actor.allApplicableEffects()) {
       const val: SheetEffect = {
         id: effect.id!,
-        label: effect.label,
+        name: effect.name,
         icon: effect.icon,
         disabled: effect.disabled,
+        //@ts-expect-error New v11 property
+        description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
-      if (effect.origin) {
-        val.origin = await effect.getSourceName();
+      if (effect.parent !== this.actor) {
+        val.origin = effect.sourceName; // legacy inclusion to maintain NPC/Vehicle sheets until they can be upgraded
+        val.source = {
+          // modern character sheet style supporting v11 non-transferred Active Effects
+          name: effect.parent.name,
+          id: effect.parent.id,
+        };
       }
       if (effect.isTemporary) {
+        if (effect.duration.type === 'turns') {
+          val.duration = {
+            expiration: effect.expirationText, // constants.STATUS_EFFECT_EXPIRATION
+            rounds: effect.duration.rounds,
+            startRound: effect.duration.startRound,
+            startTurn: effect.duration.startTurn,
+            remaining: effect.duration.remaining,
+            //@ts-expect-error New v11 property
+            label: effect.duration.label,
+          };
+        }
         temporary.push(val);
       } else {
         permanent.push(val);
       }
+      if (val.favorite) {
+        favorite.push(val);
+      }
     }
-    return { temporary, permanent };
+    return { temporary, permanent, favorite };
   }
 
   protected async _handleItemActions(ev: JQuery.ClickEvent) {
@@ -741,7 +776,7 @@ export default class CharacterSheet extends ActorSheet<
     const action = button.dataset.action!;
     const itemId = $(button).parents('.chat-card.item-card').data().itemId;
     const item = this.actor.items.get(itemId, { strict: true });
-    const additionalMods = new Array<TraitRollModifier>();
+    const additionalMods = new Array<RollModifier>();
     const ppToAdjust = $(button)
       .parents('.chat-card.item-card')
       .find('input.pp-adjust')
@@ -756,13 +791,13 @@ export default class CharacterSheet extends ActorSheet<
       let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
       modifier = Math.min(modifier * -1, modifier);
       const actionObj = getProperty(
-        item.data,
-        `data.actions.additional.${action}.skillOverride`,
+        item,
+        `system.actions.additional.${action}.skillOverride`,
       ) as ItemAction;
       //filter down further to make sure we only apply the penalty to a trait roll
       if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
         additionalMods.push({
-          label: game.i18n.localize('ITEM.TypePower'),
+          label: game.i18n.localize('TYPES.Item.power'),
           value: modifier.signedString(),
         });
       }
@@ -794,7 +829,7 @@ export default class CharacterSheet extends ActorSheet<
     } else if (action === 'template') {
       //Handle template placement
       const template = button.dataset.template!;
-      SwadeMeasuredTemplate.fromPreset(template);
+      SwadeMeasuredTemplate.fromPreset(template, item);
     } else {
       ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
     }
@@ -819,7 +854,7 @@ export default class CharacterSheet extends ActorSheet<
       case 'choice':
         this._chooseItemType().then(async (dialogInput: any) => {
           if (dialogInput.type === 'effect') {
-            this._createActiveEffect({ label: dialogInput.name });
+            this._createActiveEffect({ name: dialogInput.name });
           } else {
             const itemData = createItem(dialogInput.type, dialogInput.name);
             await CONFIG.Item.documentClass.create(itemData, {
@@ -1215,7 +1250,18 @@ interface SheetEffect {
   disabled: boolean;
   favorite: boolean;
   origin?: string;
-  label: string;
+  source?: {
+    name: string;
+    id: string;
+  };
+  name: string;
+  duration?: {
+    expiration: number; // constants.STATUS_EFFECT_EXPIRATION
+    rounds: number;
+    startRound: number;
+    startTurn: number;
+    remaining: number;
+  };
 }
 
 interface SheetPowers {
@@ -1262,5 +1308,6 @@ interface SwadeActorSheetData extends OptionsPartial {
   sheetEffects: {
     temporary: SheetEffect[];
     permanent: SheetEffect[];
+    favorite: SheetEffect[];
   };
 }

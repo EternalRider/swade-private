@@ -1,13 +1,15 @@
-import { TraitRollModifier } from '../../interfaces/additional.interface';
+import {
+  RollModifier,
+  RollModifierGroup,
+} from '../../interfaces/additional.interface';
+import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import WildDie from '../dice/WildDie';
-import SwadeActor from '../documents/actor/SwadeActor';
-import SwadeItem from '../documents/item/SwadeItem';
 import { modifierReducer, normalizeRollModifiers } from '../util';
 
-export default class RollDialog extends FormApplication<
+export class RollDialog extends FormApplication<
   FormApplicationOptions,
   object,
   RollDialogContext
@@ -70,7 +72,15 @@ export default class RollDialog extends FormApplication<
     return this.ctx.roll instanceof TraitRoll;
   }
 
-  get modifiers(): TraitRollModifier[] {
+  get isDamageRoll(): boolean {
+    return this.ctx.roll instanceof DamageRoll;
+  }
+
+  get isAttack(): boolean {
+    return (this.ctx?.item?.type === 'weapon' ?? false) && this.isTraitRoll;
+  }
+
+  get modifiers(): RollModifier[] {
     return this.ctx.mods;
   }
 
@@ -132,7 +142,7 @@ export default class RollDialog extends FormApplication<
       baseDice: this.ctx.roll.formula,
       displayExtraButton: true,
       rollModes: CONFIG.Dice.rollModes,
-      modGroups: CONFIG.SWADE.prototypeRollGroups,
+      modGroups: new Array<RollModifierGroup>(),
       extraButtonLabel: '',
       rollMode: game.settings.get('core', 'rollMode'),
       modifiers: this.modifiers.map(normalizeRollModifiers),
@@ -140,7 +150,15 @@ export default class RollDialog extends FormApplication<
       isTraitRoll: this.isTraitRoll,
     };
 
-    if (this.ctx.item) {
+    CONFIG.SWADE.prototypeRollGroups.forEach((m) => {
+      if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) return;
+      if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) return;
+      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll)
+        return;
+      data.modGroups.push(m);
+    });
+
+    if (this.isDamageRoll) {
       data.extraButtonLabel = game.i18n.localize('SWADE.RollRaise');
     } else if (this.isTraitRoll && !this.ctx.actor?.isWildcard) {
       data.extraButtonLabel = game.i18n.localize('SWADE.GroupRoll');
@@ -190,6 +208,7 @@ export default class RollDialog extends FormApplication<
       const traitPool = terms[0];
       if (traitPool instanceof PoolTerm) {
         const wildDie = new WildDie();
+        // @ts-expect-error Roll Class
         const wildRoll = this.rollCls.fromTerms([wildDie]);
         traitPool.rolls.push(wildRoll);
         traitPool.terms.push(wildRoll.formula);
@@ -197,6 +216,7 @@ export default class RollDialog extends FormApplication<
     }
 
     //recreate the roll
+    //@ts-expect-error rollCls works here
     const finalizedRoll = this.rollCls.fromTerms(
       terms,
       roll.options,
@@ -213,6 +233,8 @@ export default class RollDialog extends FormApplication<
       finalizedRoll.ap = this.ctx.ap ?? 0;
       finalizedRoll.isHeavyWeapon = this.ctx.isHeavyWeapon ?? false;
     }
+
+    finalizedRoll.setRerollable(this.ctx.roll.isRerollable);
 
     // Convert the roll to a chat message and return it
     await finalizedRoll.toMessage(
@@ -242,6 +264,7 @@ export default class RollDialog extends FormApplication<
   }
 
   #buildRollForEvaluation(): SwadeRoll {
+    //@ts-expect-error rollCls is correct here
     const roll = this.rollCls.fromTerms([
       ...this.ctx.roll.terms,
       ...this.rollCls.parse(
@@ -339,9 +362,9 @@ export default class RollDialog extends FormApplication<
   }
 }
 
-interface RollDialogContext {
+export interface RollDialogContext {
   roll: SwadeRoll;
-  mods: TraitRollModifier[];
+  mods: RollModifier[];
   speaker: foundry.data.ChatMessageData['speaker']['_source'];
   flavor: string;
   title: string;
@@ -350,9 +373,8 @@ interface RollDialogContext {
   ap?: number;
   isHeavyWeapon?: boolean;
 }
-
 interface RollDialogFormData {
-  modifiers?: TraitRollModifier[];
+  modifiers?: RollModifier[];
   map?: number;
   rollMode: foundry.CONST.DICE_ROLL_MODES;
 }
