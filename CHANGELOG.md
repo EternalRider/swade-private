@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.0.1
+
+### Fixed
+
+- The `Called Shot: Limbs` modifier should once again be localized properly (#817) **by @florad92**
+- The Ranks should now be properly localized again in the character sheet. (#818) **by @florad92**
+- The wild attack and coldbodied icon SVGs were missing their width and height attributes which could make foundry fail to load scenes on Firefox. **by @florad92**
+
 ## 3.0.0
 
 ### Added
