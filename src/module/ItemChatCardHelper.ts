@@ -1,8 +1,5 @@
 import { Attribute } from '../globals';
-import {
-  ItemAction,
-  TraitRollModifier,
-} from '../interfaces/additional.interface';
+import { ItemAction, RollModifier } from '../interfaces/additional.interface';
 import IRollOptions from '../interfaces/RollOptions.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { SWADE } from './config';
@@ -27,7 +24,7 @@ export default class ItemChatCardHelper {
     const messageId = card.closest('.message').dataset.messageId;
     const message = game.messages?.get(messageId)!;
     const action = button.dataset.action;
-    const additionalMods = new Array<TraitRollModifier>();
+    const additionalMods = new Array<RollModifier>();
 
     //save the message ID if we're doing automated ammo management
     SWADE['itemCardMessageId'] = messageId;
@@ -79,7 +76,7 @@ export default class ItemChatCardHelper {
       modifier = Math.min(modifier * -1, modifier);
       if (action === 'formula' || (actionObj && actionObj.type === 'skill')) {
         additionalMods.push({
-          label: game.i18n.localize('ITEM.TypePower'),
+          label: game.i18n.localize('TYPES.Item.power'),
           value: modifier,
         });
       }
@@ -87,7 +84,7 @@ export default class ItemChatCardHelper {
 
     if (action === 'template') {
       const template = button.dataset.template;
-      SwadeMeasuredTemplate.fromPreset(template);
+      SwadeMeasuredTemplate.fromPreset(template, item);
       button.disabled = false;
       return null;
     }
@@ -129,7 +126,7 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     action: string,
-    additionalMods: TraitRollModifier[] = [],
+    additionalMods: RollModifier[] = [],
   ): Promise<SwadeRoll | null> {
     let roll: SwadeRoll | null = null;
 
@@ -170,7 +167,7 @@ export default class ItemChatCardHelper {
   static async handleFormulaAction(
     item: SwadeItem,
     actor: SwadeActor,
-    additionalMods: TraitRollModifier[] = [],
+    additionalMods: RollModifier[] = [],
   ) {
     const traitName = getProperty(item, 'system.actions.skill');
     if (!item.canExpendResources()) {
@@ -181,6 +178,7 @@ export default class ItemChatCardHelper {
     const trait = getTrait(traitName, actor);
     const roll = await this.doTraitAction(trait, actor, {
       additionalMods,
+      item: item,
     });
     if (roll && !item.isMeleeWeapon) await item.consume();
     this.callActionHook(actor, item, 'formula', roll);
@@ -190,7 +188,7 @@ export default class ItemChatCardHelper {
   static async handleDamageAction(
     item: SwadeItem,
     actor: SwadeActor,
-    additionalMods: TraitRollModifier[] = [],
+    additionalMods: RollModifier[] = [],
   ) {
     if (getProperty(item, 'system.actions.dmgMod')) {
       additionalMods.push({
@@ -214,7 +212,7 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     actionKey: string,
-    additionalMods: TraitRollModifier[] = [],
+    additionalMods: RollModifier[] = [],
   ): Promise<SwadeRoll | null> {
     const action = getProperty(
       item,
@@ -254,6 +252,7 @@ export default class ItemChatCardHelper {
         flavour: action.name,
         rof: action.rof,
         additionalMods,
+        item: item,
       });
 
       if (roll && item.type === 'weapon') {

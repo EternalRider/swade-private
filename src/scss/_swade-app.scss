@@ -30,6 +30,15 @@
     color: var(--font-color);
   }
 
+  &.compendium-toc .window-content {
+    //sheet background
+    background-image: var(--content-background-image);
+    background-repeat: repeat;
+    background-position: left top;
+    color: var(--font-color);
+    padding: 8px;
+  }
+
   input[type],
   select {
     color: var(--font-color);

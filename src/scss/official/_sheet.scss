@@ -1179,6 +1179,18 @@
         padding: 0;
       }
     }
+    .description {
+      display: none;
+      margin: $small-spacing;
+      padding: $small-spacing;
+      font-size: $small-font;
+      font-family: 'Signika', serif;
+      max-height: 300px;
+      overflow-y: scroll;
+      grid-column: 1 / -1;
+      white-space: normal;
+      line-height: normal;
+    }
   }
 
   //#######################

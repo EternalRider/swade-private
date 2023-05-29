@@ -1,10 +1,20 @@
 {{#*inline "effectPartial"}}
-  <li class="item effect {{#if effect.disabled}}disabled-effect{{/if}}" data-effect-id="{{effect.id}}" >
-    <img src="{{effect.icon}}" alt="{{effect.label}}" class="effect-icon" />
-    <span class="effect-label">{{effect.label}}</span>
-    {{#if effect.origin}}
+  <li class="item effect 
+    {{#if effect.disabled}}disabled-effect{{/if}}" 
+    data-effect-id="{{effect.id}}" 
+    {{#if effect.source}}data-source-id="{{effect.source.id}}"{{/if}}
+  >
+    <img src="{{effect.icon}}" alt="{{effect.name}}" class="effect-icon" />
+    <button
+      type='button' 
+      class="effect-label"
+      title='{{localize "SWADE.ExpandDescription"}}'
+      >
+      {{effect.name}}
+    </button>
+    {{#if effect.source}}
     <button type="button" class="effect-source effect-action" data-action="open-origin">
-      {{effect.origin}}
+      {{effect.source.name}}
     </button>
     {{else}}
     <span class="effect-source"></span>
@@ -29,6 +39,16 @@
         <i class="fas fa-trash"></i>
       </button>
     </span>
+    <div class="description">
+      {{#if effect.duration}}
+        <span class="effect-duration">
+          <span class="remaining">{{effect.duration.label}} {{localize 'SWADE.Expiration.Remaining'}}</span>
+        </span>
+      {{/if}}
+      {{#if effect.description}}
+        {{{enrich effect.description}}}
+      {{/if}}
+    </div>
   </li>
 {{/inline}}
 

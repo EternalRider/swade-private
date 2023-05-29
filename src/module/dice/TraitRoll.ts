@@ -7,6 +7,8 @@ import {
 import { chunkArray } from '../util';
 import { SwadeRoll } from './SwadeRoll';
 import WildDie from './WildDie';
+import SwadeActor from '../documents/actor/SwadeActor';
+import { constants } from '../constants';
 
 export class TraitRoll extends SwadeRoll<ActorRollData> {
   constructor(
@@ -41,12 +43,28 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     this.options['groupRoll'] = groupRoll;
   }
 
-  override get isRerollable(): boolean {
-    return true;
+  override get isRerollable() {
+    return this.options['rerollable'] ?? true;
   }
 
   override get isCritFailConfirmationRoll() {
     return false;
+  }
+
+  set targetNumber(tn: number) {
+    this.options['targetNumber'] = tn;
+  }
+
+  get targetNumber() {
+    return this.options['targetNumber'] ?? 4;
+  }
+
+  // Returns -1 on a CritFail, 0 on a fail, 1 on a success, 2 or more for raises
+  get successes(): number {
+    if (this.isCritfail) return constants.ROLL_RESULT.CRITFAIL;
+    if ((this.total ?? 0) < this.targetNumber) return constants.ROLL_RESULT.FAIL;
+    if ((this.total ?? 0) < this.targetNumber + 4) return constants.ROLL_RESULT.SUCCESS;
+    return Math.max(Math.floor((((this.total ?? 0) - this.targetNumber) / 4)) + 1, 0) // raises get to be 2+
   }
 
   override async getRenderData(flavor?: string, isPrivate = false) {
@@ -138,7 +156,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     data: DeepPartial<ChatMessageDataConstructorData>,
   ): Promise<SwadeRoll | undefined> {
     if (!data.speaker) return;
-    const actor = ChatMessage.getSpeakerActor(data['speaker']);
+    const actor = ChatMessage.getSpeakerActor(data['speaker']) as SwadeActor;
     if (
       actor?.type === 'npc' &&
       !actor.isWildcard &&
@@ -156,4 +174,5 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
 
 interface TraitRollOptions extends SwadeRollOptions {
   groupRoll?: boolean;
+  targetNumber?: number;
 }

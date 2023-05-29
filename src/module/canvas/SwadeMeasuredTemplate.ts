@@ -1,4 +1,5 @@
 import { MeasuredTemplateConstructorDataData } from '../../interfaces/TemplateConfig.interface';
+import SwadeItem from '../documents/item/SwadeItem';
 
 declare global {
   interface PlaceableObjectClassConfig {
@@ -12,20 +13,24 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
    * @param preset the preset to use.
+   * @param item the item the preset is attached to.
    * @returns SwadeTemplate | null
    */
-  static fromPreset(preset: string) {
+  static fromPreset(preset: string, item?: SwadeItem) {
     const existingPreview = CONFIG.SWADE.activeMeasuredTemplatePreview;
     if (existingPreview && !existingPreview._destroyed) {
       existingPreview.destroy({ children: true });
     }
 
-    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(preset);
+    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(
+      preset,
+      item,
+    );
     if (CONFIG.SWADE.activeMeasuredTemplatePreview)
       CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
   }
 
-  protected static _constructPreset(preset: string) {
+  protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
     const templateBaseData: MeasuredTemplateConstructorDataData = {
       user: game.user?.id,
@@ -33,7 +38,8 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       direction: 0,
       x: 0,
       y: 0,
-      fillColor: game?.user.color,
+      fillColor: game.user?.color,
+      flags: item ? { swade: { origin: item.uuid } } : {},
     };
 
     const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find(
@@ -203,6 +209,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
     //get the highlight layer and prep it
     const layer = grid.getHighlightLayer(this.highlightId);
+    if (!layer) return;
     layer.clear();
 
     //get the shape of the template and prep it

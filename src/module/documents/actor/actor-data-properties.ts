@@ -1,3 +1,4 @@
+import { RollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
   CharacterDataSourceData,
@@ -36,6 +37,17 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
       adjusted: number;
     };
     scale: number;
+    globalMods: {
+      trait: RollModifier[];
+      agility: RollModifier[];
+      smarts: RollModifier[];
+      spirit: RollModifier[];
+      strength: RollModifier[];
+      vigor: RollModifier[];
+      attack: RollModifier[];
+      damage: RollModifier[];
+      ap: RollModifier[];
+    };
   };
   details: {
     encumbrance: {

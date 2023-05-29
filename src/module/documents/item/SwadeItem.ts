@@ -10,11 +10,11 @@ import {
 import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
-  TraitRollModifier,
+  RollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import Reloadinator from '../../apps/Reloadinator';
-import RollDialog from '../../apps/RollDialog';
+import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
@@ -22,12 +22,14 @@ import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
+import { SwadeItemDataSource } from './item-data';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
   ItemChatCardData,
   ItemChatCardPowerPoints,
   ItemGrant,
+  ItemGrantChainLink,
   UsageUpdates,
   UsageUpdatesContext,
 } from './SwadeItem.interface';
@@ -53,6 +55,20 @@ export default class SwadeItem extends Item {
   overrides: DeepPartial<Record<string, string | number | boolean>> = {};
 
   static RANGE_REGEX = /[0-9]+\/*/g;
+
+  static override migrateData(data: SwadeItemDataSource) {
+    super.migrateData(data);
+    if (!foundry.utils.hasProperty(data, 'system.grants')) return data;
+    for (const grant of data.system.grants as ItemGrant[]) {
+      const uuid = grant.uuid;
+      const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
+      if (isNew) continue;
+      const arr = uuid.split('.');
+      arr.splice(arr.length - 1, 0, 'Item');
+      grant.uuid = arr.join('.');
+    }
+    return data;
+  }
 
   constructor(data?: ItemDataConstructorData, context?: Context<SwadeActor>) {
     super(data, context);
@@ -126,7 +142,7 @@ export default class SwadeItem extends Item {
   }
 
   get canHaveCategory(): boolean {
-    const types = ['edge'];
+    const types = ['edge', 'action', 'ability'];
     return types.includes(this.type) || this.isPhysicalItem;
   }
 
@@ -188,7 +204,7 @@ export default class SwadeItem extends Item {
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
-    const modifiers = new Array<TraitRollModifier>();
+    const modifiers = new Array<RollModifier>();
     let damage = '';
     if (options.dmgOverride) {
       damage = options.dmgOverride;
@@ -198,11 +214,15 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    const ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
     const isHeavyWeapon: boolean =
       foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
       options.isHeavyWeapon;
     let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
+
+    this.actor.system.stats.globalMods.ap.forEach((e) => {
+      ap += Number(e.value);
+    });
 
     if (ap) {
       apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -210,6 +230,7 @@ export default class SwadeItem extends Item {
     const rollParts = [damage];
 
     //Additional Mods
+    modifiers.push(...this.actor.system.stats.globalMods.damage);
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
@@ -267,14 +288,14 @@ export default class SwadeItem extends Item {
         modifiers: modifiers,
       },
     );
-
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
      * @category Hooks
      * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
      * @param {SwadeItem} item                  The item that is used to create the damage value
      * @param {DamageRoll} roll                 The built base roll, without any modifiers
-     * @param {TraitRollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
     Hooks.call('swadeRollDamage', this.actor, this, roll, modifiers, options);
@@ -642,8 +663,8 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
-  getTraitModifiers(): TraitRollModifier[] {
-    const modifiers = new Array<TraitRollModifier>();
+  getTraitModifiers(): RollModifier[] {
+    const modifiers = new Array<RollModifier>();
     if (getProperty(this, 'system.actions.skillMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
@@ -651,6 +672,7 @@ export default class SwadeItem extends Item {
       });
     }
     if (this.type === 'weapon') {
+      modifiers.push(...this.actor.system.stats.globalMods.attack);
       if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),
@@ -1136,7 +1158,7 @@ export default class SwadeItem extends Item {
   /** returns a flattened array of item grants, going down the chain of grants */
   async getItemGrantChain(
     ignored = new Set<string>(),
-  ): Promise<{ grant: ItemGrant; item: SwadeItem }[]> {
+  ): Promise<ItemGrantChainLink[]> {
     if (!this.canGrantItems || ignored.has(this.uuid)) return [];
     ignored.add(this.uuid);
     const grantedItems = (await Promise.all(

@@ -313,19 +313,4 @@ export default class CharacterSummarizer {
     }
     return modifier;
   }
-
-  // This is currently unused but will be used later
-  private _getSkillAboveAttributeInSteps(skill: SwadeItem) {
-    const linkedAttributeName = getProperty(skill.data, 'data.attribute');
-    if (linkedAttributeName === undefined || linkedAttributeName === '') {
-      return 0;
-    }
-    const sidesDelta =
-      getProperty(skill.data, 'data.die.sides') -
-      getProperty(
-        this.actor.data,
-        `data.attributes.${linkedAttributeName}.die.sides`,
-      );
-    return sidesDelta / 2;
-  }
 }

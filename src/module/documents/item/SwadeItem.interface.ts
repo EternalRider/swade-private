@@ -50,6 +50,11 @@ export interface ItemGrant {
   missing?: boolean;
 }
 
+export interface ItemGrantChainLink {
+  item: SwadeItem;
+  grant: ItemGrant;
+}
+
 export type SwadeConsumeItemHook = (
   item: SwadeItem,
   charges: number,

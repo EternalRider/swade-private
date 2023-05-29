@@ -4,13 +4,13 @@
     class="flexrow {{#unless origin}}active-effect{{/unless}} {{#if disabled}}disabled-effect{{/if}}"
     data-effect-id="{{_id}}"
   >
-    <img src="{{icon}}" alt="{{label}}" class="effect-icon" />
+    <img src="{{icon}}" alt="{{name}}" class="effect-icon" />
     {{#if origin}}
     <a class="effect-label effect-action" data-action="open-origin"
-      >{{label}}</a
+      >{{name}}</a
     >
     {{else}}
-    <span class="effect-label">{{label}}</span>
+    <span class="effect-label">{{name}}</span>
     {{/if}} {{#unless ../data.isOwned}}
     <span class="effect-controls">
       <a class="effect-action" data-action="toggle">

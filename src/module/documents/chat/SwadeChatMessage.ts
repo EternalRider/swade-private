@@ -1,4 +1,4 @@
-import { TraitRollModifier } from '../../../interfaces/additional.interface';
+import { RollModifier } from '../../../interfaces/additional.interface';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
@@ -95,7 +95,7 @@ export default class SwadeChatMessage extends ChatMessage {
     return html;
   }
 
-  #formatModifiers(): TraitRollModifier[] {
+  #formatModifiers(): RollModifier[] {
     return this.significantRoll?.modifiers.filter((v) => !v.ignore) ?? []; //remove the disabled modifiers
   }
 
@@ -114,6 +114,7 @@ export default class SwadeChatMessage extends ChatMessage {
         isCritfail: this.isCritfail && !isPrivate,
         isDamageRoll: roll instanceof DamageRoll && !isPrivate,
         isPrivate: isPrivate,
+        notRerollable: !roll?.isRerollable,
         isGM: game.user?.isGM,
         isAuthor: this.isAuthor || game.user?.isGM,
         rolls: await this.#renderRolls(isPrivate),

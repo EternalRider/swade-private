@@ -47,8 +47,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     html.find('.armor-value').on('click', (ev) => {
       let target = ev.currentTarget.dataset.target ?? '';
       const shouldAutoCalcArmor = getProperty(
-        this.actor.data,
-        'data.details.autoCalcToughness',
+        this.actor,
+        'system.details.autoCalcToughness',
       );
       if (target === 'armor' && shouldAutoCalcArmor) {
         target = 'toughness';
@@ -129,7 +129,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           });
           break;
         default:
-          console.warn(`The action ${action} is not currently supported`);
+          Logger.warn(`The action ${action} is not currently supported`);
           break;
       }
     });
@@ -139,7 +139,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       if (ev.shiftKey) {
         await CONFIG.ActiveEffect.documentClass.create(
           {
-            label: game.i18n.format('DOCUMENT.New', {
+            name: game.i18n.format('DOCUMENT.New', {
               type: game.i18n.localize('DOCUMENT.ActiveEffect'),
             }),
             icon: 'systems/swade/assets/icons/active-effect.svg',
@@ -284,10 +284,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   ): Promise<{ type: string; name: string }> {
     if (!choices) {
       choices = {
-        weapon: game.i18n.localize('ITEM.TypeWeapon'),
-        armor: game.i18n.localize('ITEM.TypeArmor'),
-        shield: game.i18n.localize('ITEM.TypeShield'),
-        gear: game.i18n.localize('ITEM.TypeGear'),
+        weapon: game.i18n.localize('TYPES.Item.weapon'),
+        armor: game.i18n.localize('TYPES.Item.armor'),
+        shield: game.i18n.localize('TYPES.Item.shield'),
+        gear: game.i18n.localize('TYPES.Item.gear'),
       };
     }
     const templateData = {
@@ -377,10 +377,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     }
 
     const targetPropertyPath = `system.stats.${targetProperty}`;
-    const targetPropertyValue = getProperty(
-      this.actor.data,
-      targetPropertyPath,
-    );
+    const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
 
     const title = `${game.i18n.localize('SWADE.Ed')} ${
       this.actor.name

@@ -1,0 +1,108 @@
+_id: BrbvJQ3OnkmO3cip
+flags: {}
+image: {}
+name: System API
+ownership:
+  default: -1
+sort: 1000000
+src: null
+system: {}
+text:
+  content: >-
+    <p>THIS IS A WORK IN PROGRESS</p>
+    <h2>SWADE Hooks</h2>
+    <ul>
+      <li>
+        <p><code>swadeChatCard(actor, item, html, userId)</code></p>
+        <p>
+          Called when a new chat card is created. Contains the chat card author's
+          actor, the item, and the html of the card.
+        </p>
+      </li>
+      <li>
+        <p><code>swadeAction(actor, item, action, roll, userId)</code></p>
+        <p>
+          Called when an action is called on an item card. Contains information
+          about the chat card, the action, and the roll.
+        </p>
+      </li>
+      <li>
+        <p><code>swadeRollDamage(actor, item, roll, modifiers, options)</code></p>
+        <p>
+          A hook event that is fired before damage is rolled, giving the opportunity
+          to programatically adjust a roll and its modifiers
+        </p>
+      </li>
+      <li>
+        <p>
+          <code
+            >swadeRollAttribute(actor, attribute, roll, modifiers, options)</code
+          >
+        </p>
+        <p>
+          A hook event that is fired before an attribute is rolled, giving the
+          opportunity to programmatically adjust a roll and its modifiers
+        </p>
+      </li>
+      <li>
+        <p><code>swadeRollSkill(actor, skill, roll, modifiers, options)</code></p>
+        <p>
+          A hook event that is fired before a skill is rolled, giving the
+          opportunity to programmatically adjust a roll and its modifiers
+        </p>
+      </li>
+    </ul>
+    <h2>Classes</h2>
+    <h3>ItemChatCardHelper</h3>
+    <p>
+      The <code>ItemChatCardHelper</code> is a helper class originally created for
+      Item Chat Cards. You can find the class in the global <code>game</code> object
+      under <code>game.swade.itemChatCardHelper</code>.
+    </p>
+    <h4>static async handleAction</h4>
+    <p><strong>Params</strong></p>
+    <table>
+      <thead>
+        <tr>
+          <th>param</th>
+          <th>type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>item</code></td>
+          <td>SwadeItem</td>
+        </tr>
+        <tr>
+          <td><code>actor</code></td>
+          <td>SwadeActor</td>
+        </tr>
+        <tr>
+          <td><code>action</code></td>
+          <td>string</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      handleAction is the centrally used function to handle basic and additional
+      actions. The <code>action</code> parameter has a few preconfigured options.
+    </p>
+    <ul>
+      <li>formula: a basic Skill test on a weapon, shield or power</li>
+      <li>damage: basic Damage on a weapon, shield or power</li>
+      <li>reload: reloading a weapon</li>
+    </ul>
+    <p>
+      Any other strings passed will be treated as an additional action. If no action
+      with the name/id exists then the function ends without doing anything.
+    </p>
+  format: 1
+  markdown: ''
+title:
+  level: 1
+  show: true
+type: text
+video:
+  controls: true
+  volume: 0.5
+_key: '!journal.pages!8uC7RTgJOg8SW4cf.BrbvJQ3OnkmO3cip'
