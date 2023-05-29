@@ -95,13 +95,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static GLOBAL_REGEXP = /system\.stats\.globalMods\.(\w+)/;
 
-  static override migrateData(data) {
+  static override migrateData(data: ActiveEffectDataProperties) {
     super.migrateData(data);
     if ('changes' in data) {
       for (const change of data.changes) {
-        const match: RegExpMatchArray = change.key.match(
-          SwadeActiveEffect.ITEM_REGEXP,
-        );
+        const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (match) {
           const newKey = match[3].trim().replace(/^data\./, 'system.');
           change.key = `@${match[1].trim()}{${match[2].trim()}}[${newKey}]`;

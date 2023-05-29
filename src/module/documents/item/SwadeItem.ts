@@ -22,12 +22,14 @@ import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
+import { SwadeItemDataSource } from './item-data';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
   ItemChatCardData,
   ItemChatCardPowerPoints,
   ItemGrant,
+  ItemGrantChainLink,
   UsageUpdates,
   UsageUpdatesContext,
 } from './SwadeItem.interface';
@@ -53,6 +55,20 @@ export default class SwadeItem extends Item {
   overrides: DeepPartial<Record<string, string | number | boolean>> = {};
 
   static RANGE_REGEX = /[0-9]+\/*/g;
+
+  static override migrateData(data: SwadeItemDataSource) {
+    super.migrateData(data);
+    if (!foundry.utils.hasProperty(data, 'system.grants')) return data;
+    for (const grant of data.system.grants as ItemGrant[]) {
+      const uuid = grant.uuid;
+      const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
+      if (isNew) continue;
+      const arr = uuid.split('.');
+      arr.splice(arr.length - 1, 0, 'Item');
+      grant.uuid = arr.join('.');
+    }
+    return data;
+  }
 
   constructor(data?: ItemDataConstructorData, context?: Context<SwadeActor>) {
     super(data, context);
@@ -1142,7 +1158,7 @@ export default class SwadeItem extends Item {
   /** returns a flattened array of item grants, going down the chain of grants */
   async getItemGrantChain(
     ignored = new Set<string>(),
-  ): Promise<{ grant: ItemGrant; item: SwadeItem }[]> {
+  ): Promise<ItemGrantChainLink[]> {
     if (!this.canGrantItems || ignored.has(this.uuid)) return [];
     ignored.add(this.uuid);
     const grantedItems = (await Promise.all(
