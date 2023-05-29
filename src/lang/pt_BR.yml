@@ -124,6 +124,7 @@ SWADE:
     Preset:
       Choose: Escolha um modificador…
       Add: Adicionar Predefinição
+      Settings: Modificadores Predefinidos
     Value: Valor
     Ignore: Ignorar?
   Illumination:
@@ -160,6 +161,7 @@ SWADE:
     EndPrompt: Fim do Turno, Perguntar
     None: Nenhum
     LooseTurnOnHold: Perder Turno ao Aguardar
+    Remaining: Restante
   RemoveEffectTitle: Remover {label} ?
   RemoveEffectBody: '<p style="text-align: center;">Remover<strong>{label}</strong>
     de <strong>{parent}</strong>?</p>'
@@ -367,6 +369,10 @@ SWADE:
         rolar para absorver
       Name: Heróis Sem Armadura
     ArbitFields: Campos de Configuração Arbitrária
+    HeroesNeverDie:
+      Name: Heróis Nunca Morrem
+      Hint: Marcar essa opção ativará a regra de configuração Heróis Nunca Morrem
+        ao determinar a incapacitação
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -386,6 +392,8 @@ SWADE:
       Fail: Você morre
       Success: Você aguenta, por enquanto.
       Raise: Você é estabilizado com sucesso
+      BleedOutModifier: Modificador de Sangramento
+      IgnoreWounds: Sangramento Ignora Ferimentos
   DocumentLink: Link
   DocumentTweaks: Ajustes
   TargetVulnerable: Alvo está Vulnerável
@@ -530,6 +538,20 @@ SWADE:
       Gerais do SWADE
     NoTargetsSelected: Por favor, seleciona um alvo para aplicar o dano.
     SoakModifier: Modificador de Absorção
+    Incapacitation:
+      InjuryRoll: Rolagem de Vigor para resistir a lesão em caso de incapacitação
+      Dies: <p><strong>{name}</strong> morre com o dano!</p>
+      PermanentInjury: <p><strong>{name}</strong> sofre uma lesão permanente e está
+        <strong>Sangrando!</strong></p>
+      PermanentInjuryHND: <p><strong>{name}</strong> sofre uma lesão permanente!</p>
+      TemporaryInjury: <p><strong>{name}</strong> sofre uma lesão que desaparecerá
+        quando todos os ferimentos forem curados.</p>
+      ShortInjury: <p><strong>{name}</strong> sofre uma lesão que desaparecerá em
+        24 horas ou quando todos os ferimentos forem curados (o que ocorrer primeiro).</p>
+      TakeFail: Sofrer uma lesão permanente
+      TakeSuccess: Sofrer uma lesão que desaparece quando todas as feridas forem curadas
+      Title: Rerrolar a gravidade da lesão de {name}?
+      Prompt: <p>{name} está prestes a ser ferido. Deseja rerrolar a rolagem de Vigor?</p>
   FreeReroll: Rerrolagem Grátis
   BenniesSpendGM: Gastar um Bene de MJ
   SettingConfDesc: Ajuste o sistema para se adequar ao cenário que está jogando.
@@ -797,6 +819,12 @@ SWADE:
   MigrateCompendium: Forçar a migração do compêndio
   AdditionalStats:
     SelectHint: Insita uma lista de opções, separadas por ponto-e-vírgula
+    Key: Chave de Característica
+    Max: '{stat} Máximo'
+    Label: Nome
+    Type: Tipo
+    HasMaxValue: Tem Valor Máximo
+    Current: '{stat} Atual'
   IgnFatigue: Ignorar Fadiga
   BaseDamage: Dano Base
   Targets: 'Alvos:'
@@ -815,6 +843,26 @@ SWADE:
     pareça diferente. Por favor, tenha em mente que os Dados Selvagens auto-criados
     atualmente só podem ser vistos por você. Outros jogadores os verão de forma diferente.
   TOCBlockList: Lista de Bloqueio de Sumário de Compêndios
+  CalledShot:
+    Hand: 'Ataque Localizado: Mão'
+    Limbs: 'Ataque Localizado: Membros'
+    HeadOrVitals: 'Ataque Localizado: Cabeça ou Órgãos Vitais'
+  GlobalMod:
+    Label: Modificadores Globais
+    Agility: Agilidade e Perícias associadas
+    Trait: Todas as Características
+    Smarts: Astúcia e Perícias associadas
+    Spirit: Espírito e Perícias associadas
+    Strength: Força e Perícias associadas
+    Vigor: Vigor e Perícias associadas
+    Attack: Todos os Ataques
+    Damage: Todo Dano
+    AP: Toda Perfuração de Armadura
+  ModTrait: Modificadores de Característica
+  ModAttack: Modificadores de Ataque
+  ModDamage: Modificadores de Dano
+  Weakness: Fraqueza
+  Resistance: Resistência
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
@@ -834,3 +882,23 @@ ACTOR:
 CARD:
   TypeAdventure: Carta de Aventura
   TypePoker: Carta de Poker
+TYPES:
+  Actor:
+    character: Personagem de Jogador
+    npc: NPC
+    vehicle: Veículo
+  Item:
+    weapon: Arma
+    armor: Armadura
+    shield: Escudo
+    gear: Equipamento
+    edge: Vantagem
+    hindrance: Complicação
+    skill: Perícia
+    power: Poder
+    ability: Habilidade
+    consumable: Consumível
+    action: Ação
+  Card:
+    adventure: Carta de Aventura
+    poker: Carta de Poker
