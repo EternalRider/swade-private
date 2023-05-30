@@ -809,6 +809,8 @@ SWADE:
       Confirm: Confirmació de pífia
       ConfirmDie: Dau de confirmació
   LoadedAmmo: Munició carregada
+  GlobalMod:
+    Label: modificadors globals
 ACTOR:
   TypeCharacter: Personatge (PJ)
   TypeNpc: Personatge no jugador (PNJ)
