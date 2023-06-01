@@ -973,9 +973,7 @@ export default class SwadeCoreHooks {
         options.document.cardValue === cardValue &&
         options.document.suitValue === suitValue;
 
-      const isAvailable = card?.data.drawn
-        ? 'text-decoration: line-through;'
-        : '';
+      const isAvailable = card?.drawn ? 'text-decoration: line-through;' : '';
 
       cardList.push({
         id: card.id,
@@ -983,7 +981,7 @@ export default class SwadeCoreHooks {
         color,
         isAvailable,
         name: card.name,
-        cardString: card.data.description,
+        cardString: card.description,
         isJoker: card.system['isJoker'],
       });
     }
@@ -1013,7 +1011,7 @@ export default class SwadeCoreHooks {
       const cardValue = card.value as number;
       const suitValue = card.system['suit'] as number;
       const hasJoker = card.system['isJoker'] as boolean;
-      const cardString = card.data.description;
+      const cardString = card.description;
 
       //move the card to the discard pile
       const discardPileId = game.settings.get('swade', 'actionDeckDiscardPile');

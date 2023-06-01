@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.0.2
+
+### Fixed
+
+- The cone template should once again have the expected shape. (#819) **by @florad92**
+- Took care of depreciation warnings which could happen in the combatant config. (#820) **by @florad92**
+- Updated localizations.
+
 ## 3.0.1
 
 ### Fixed
