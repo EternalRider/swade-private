@@ -141,7 +141,16 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     canvas.app!.view.onwheel = null;
   }
 
-  protected override _getConeShape(
+  override _computeShape(): MeasuredTemplateShape {
+    const shape = super._computeShape() as MeasuredTemplateShape;
+    const { angle, t } = this.document;
+    const { angle: direction, distance } = this.ray;
+    if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
+      return this._getConeShape(direction, angle, distance);
+    return shape;
+  }
+
+  protected _getConeShape(
     direction: number,
     angle: number,
     distance: number,
@@ -250,3 +259,5 @@ interface IGridHighLightOptions {
     | PIXI.Rectangle
     | PIXI.RoundedRectangle;
 }
+
+type MeasuredTemplateShape = PIXI.Circle | PIXI.Rectangle | PIXI.Polygon;
