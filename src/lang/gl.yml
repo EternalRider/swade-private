@@ -59,6 +59,7 @@ SWADE:
     Preset:
       Choose: Elixe un axuste predefinido…
       Add: Engade preestablecido
+      Settings: Modificadores predefinidos
   BenniesSpend: Gastar un Beni
   BenniesGive: Dar un Beni
   BenniesRefresh: Actualizar benis
@@ -236,6 +237,18 @@ SWADE:
   Advances:
     Modes:
       Legacy: Heredado
+      Expanded: Expandido
+    EditorTitle: Editor avanzado
+    Toggle: Alternar o estado planificado avanzado
+    Delete: Elimina Avance
+    Planned: Planeado
+    Types:
+      Edge: Novo vantaxe
+      SingleSkill: Aumentar habilidade única
+      TwoSkills: Aumenta dúas habilidades
+      Attribute: Elevar atributo
+      Hindrance: Diminuír desvantaxe
+    Number: Número de avance
   Conviction: Convencemento
   Active: Activo
   PEGLogo: Logotipo de Pinnacle Entertainment Group
@@ -709,6 +722,7 @@ SWADE:
     Label: Penalización de acción múltiple
   ActiveEffects:
     ResetDuration: Restablecer la duración
+    Add: Engadir efecto activo
   ColdBodied: Conxelación
   Resist: Resistir
   ResistRolls: Tirada de resistencia
@@ -754,5 +768,47 @@ SWADE:
     BeginAuto: Inicio de quenda, automático
     BeginPrompt: Inicio de quenda, Inmediato
     EndAuto: Fin de quenda, automático
+    None: Non
+    LooseTurnOnHold: Perder quenda en espera
+    Remaining: Restante
+    EndPrompt: Fin da quenda, aviso
+  ModTrait: Modificadores de trazos
+  ModAttack: Modificadores de ataque
+  PPAbbreviation: PP
+  ShowInChat: Mostrar no chat
+  ExpandDescription: Expande para mostrar descrición
+  Favorite: Favorito
+  RollDamage: Dano por rolo
+  SystemLinks:
+    Changelog: Rexistro de cambios
+    Wiki: Wiki
+    ReportAnIssue: Informar dun problema
+  OpenOrigin: Orixe aberta
+  EffectsTemporary: Efectos temporais
+  Ranks:
+    Seasoned: Aderezado
+    Veteran: Veterano
+    Heroic: Heroico
+    Legendary: Lendario
+    Novice: Novizo
+  AddAdvance: Engadir Advance
+  Appearance: Aparencia
+  CharacterGoals: Obxectivos
+  Background: Fondo
+  GlobalMod:
+    Label: Modificadores globais
+    Trait: Todos os trazos
+    Agility: Axilidade e habilidades vinculadas
+    Smarts: Intelixencias e habilidades vinculadas
+    Spirit: Espírito e habilidades vinculadas
+    Attack: Todos os ataques
+    Strength: Forza e habilidades vinculadas
+    Vigor: Vigor e Habilidades vinculadas
+    Damage: Todo dano
+  Weakness: Debilidade
+  Resistance: Resistencia
+  Equip: Equipa
+  ModDamage: Modificadores de danos
+  EffectsPermanent: Efectos Permanentes
 ITEM:
   TypeConsumable: Consumibles
