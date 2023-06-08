@@ -365,8 +365,9 @@ SWADE:
       Add: Afegeix un modificador personalitzat
     Support: Suport
     Preset:
-      Choose: Tria un paràmetre predefinit...
+      Choose: Tria un modificador…
       Add: Afegeix predefinit
+      Settings: Modificadors predeterminats
     Value: Valor
     Ignore: Ignorar?
   Illumination:
@@ -407,6 +408,7 @@ SWADE:
     EndPrompt: Final del proper torn, inmediat
     None: Cap
     LooseTurnOnHold: Perdre el torn d'espera
+    Remaining: Restant
   RemoveEffectTitle: Eliminar {label} ?
   RemoveEffectBody: '<p style="text-align: center;">Eliminar <strong>{label}</strong>
     de <strong>{parent}</strong>?</p>'
@@ -608,6 +610,15 @@ SWADE:
     InjuryTable:
       Name: Taula de lesions
       Hint: Selecciona la taula de tirades per Danys Greus.
+    UnarmoredHero:
+      Name: Heroi sense armadura
+      Hint: Si marqueu-ho, s'habilitarà la regla de heroi sense armadura quan tireu
+        per absorbir
+    ArbitFields: Camps de configuració arbitraria
+    HeroesNeverDie:
+      Name: Els herois mai moren
+      Hint: Si marqueu això, s'habilitarà la regla de "Els herois mai moren" quan
+        es determina la incapacitat
   EffectCallbacks:
     Shaken:
       RollSpirit: Tirada d'esperit
@@ -627,6 +638,8 @@ SWADE:
       Fail: Morts
       Success: Aguanta, de moment.
       Raise: T'has estabilitzat amb èxit
+      BleedOutModifier: Modificador de dessagnament
+      IgnoreWounds: Ignora les ferides per dessagnament
   BenniesSpendGM: Gasta un beni del DJ
   DocumentLink: Enllaç
   DocumentTweaks: Paràmetres
@@ -725,6 +738,12 @@ SWADE:
   HotbarDropOwnedItemWarning: Només es poden crear macros pels elements propis
   AdditionalStats:
     SelectHint: Introdueix una llista d'opcions, separades per punt i coma
+    Key: Clau d'estadístiques
+    Current: Actual {stat}
+    Max: Màxim {stat}
+    Label: etiqueta
+    Type: Tipus
+    HasMaxValue: Té valor màxim
   MessageOnUse:
     Label: Missatge sobre l'ús
     Hint: Mostra un missatge de xat quan utilitzeu aquest element
@@ -791,6 +810,20 @@ SWADE:
     NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració
       de SWADE
     NoTargetsSelected: Selecciona un objectiu per aplicar-hi el mal.
+    Incapacitation:
+      InjuryRoll: Tirada de vigor per resistir lesions en cas d'incapacitat
+      PermanentInjury: <p><strong>{name}</strong> pateix una lesió permanent i s'està
+        <strong>dessagnant!</strong></p>
+      ShortInjury: <p><strong>{name}</strong> pateix una lesió que desapareixerà en
+        24 hores, o quan totes les ferides es curen (el que sigui abans).</p>
+      Dies: <p><strong>{name}</strong> mor pels danys!</p>
+      PermanentInjuryHND: <p><strong>{name}</strong> pateix una lesió permanent!</p>
+      TemporaryInjury: <p><strong>{name}</strong> pateix una lesió que desapareixerà
+        quan totes les ferides es curin.</p>
+      TakeFail: Pateix una lesió permanent
+      TakeSuccess: Patir una lesió que desapareix quan totes les ferides es curen
+      Title: Tornar a tirar per veure la gravetat de la lesió per a {name}?
+      Prompt: <p>{name} està a punt de ser ferit. Vols repetir la tirada de Vigor?</p>
   Validation:
     OnlyOneRace: Només es pot triar una espècie!
     OnlyOneArchetype: Només pots tenir un arquetip alhora!
@@ -811,6 +844,23 @@ SWADE:
   LoadedAmmo: Munició carregada
   GlobalMod:
     Label: modificadors globals
+    Trait: Tots els trets
+    Agility: Agilitat i habilitats vinculades
+    Smarts: Astúcia i habilitats vinculades
+    Spirit: Esperit i habilitats vinculades
+    Strength: Força i habilitats vinculades
+    Vigor: Vigor i habilitats vinculades
+    Attack: Tots els atacs
+    Damage: Tot el mal
+  ModTrait: Modificadors als trets
+  ModAttack: Modificadors a l'atac
+  ModDamage: Modificador al mal
+  Weakness: Debilitat
+  Resistance: Resistència
+  CalledShot:
+    HeadOrVitals: 'Tret apuntat: Cap o Vitals'
+    Hand: 'Tret apuntat: mà'
+    Limbs: 'Tret apuntat: Extremitats'
 ACTOR:
   TypeCharacter: Personatge (PJ)
   TypeNpc: Personatge no jugador (PNJ)
@@ -830,3 +880,23 @@ ITEM:
 CARD:
   TypeAdventure: Cartes d'aventura
   TypePoker: Cartes de poker
+TYPES:
+  Actor:
+    character: Personatge jugador
+    npc: PNJ
+    vehicle: Vehicle
+  Item:
+    weapon: Arma
+    armor: Armadura
+    shield: Escut
+    gear: Equip
+    edge: Avantatge
+    hindrance: Desavantatge
+    skill: Habilitat
+    power: Poder
+    ability: Capacitat
+    consumable: Consumibles
+    action: Acció
+  Card:
+    adventure: Carta d'aventura
+    poker: Carta d'acció
