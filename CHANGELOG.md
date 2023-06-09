@@ -22,6 +22,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.0.3
+
+### Added
+
+- Added additional translation strings.
+
+### Changed
+
+- Refactored the detection of jokers to better take advantage of core foundry methods. **by @florad92**
+- Other refactors and optimizations to the `isWildcard` and `hasArcaneBackground` getters. **by @florad92**
+- Refactored the way critical failures are detected. Single-die rolls made by extras now request the critical failure to be confirmed, while multi-die rolls are automatically detected as critical failures. This gives GMs the option to leave the roll as a regular failure, in case a critical failure offers no different outcome. Critical Failures for wildcards should now also be detected more accurate to the rules. **by @florad92**
+
+### Fixed
+
+- Fixed related status effects not applying properly. **by @florad92**
+
 ## 3.0.2
 
 ### Fixed

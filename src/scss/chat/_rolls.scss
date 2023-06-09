@@ -1,15 +1,25 @@
 .swade-roll-message {
   --critfail-color: rgb(200, 0, 0);
+  --critfail-bg: rgba(200, 100, 0, 0.2);
+  --possible-critfail-color: rgb(220, 100, 0);
+  --possible-critfail-bg: rgba(0, 0, 0, 0.1);
   .critical-failure {
     color: var(--critfail-color);
+    background: var(--critfail-bg);
     font-weight: bold;
     line-height: 24px;
     text-align: center;
-    background: rgba(128, 0, 0, 0.2);
     border: 1px solid var(--color-border-light-2);
     border-radius: 3px;
     box-shadow: 0 0 2px #fff inset;
     margin-bottom: 0.25rem;
+    &.possible {
+      color: var(--possible-critfail-color);
+      background: var(--possible-critfail-bg);
+    }
+  }
+  .confirm-critfail {
+    margin: 0;
   }
 
   .modifiers,

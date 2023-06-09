@@ -2,6 +2,7 @@ import { RollModifier } from '../../../interfaces/additional.interface';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
+import { count } from '../../util';
 
 declare global {
   interface DocumentClassConfig {
@@ -84,9 +85,13 @@ export default class SwadeChatMessage extends ChatMessage {
       const roll = this['rolls'][i] as Roll;
       const displayResult = roll === this.significantRoll;
       if (roll instanceof SwadeRoll) {
-        const flavor = roll.isCritFailConfirmationRoll
-          ? game.i18n.localize('SWADE.Rolls.Critfail.Confirm')
-          : game.i18n.localize(`SWADE.Rolls.${roll.constructor.name}`);
+        let flavor = game.i18n.localize(`SWADE.Rolls.${roll.constructor.name}`);
+        if (roll.isCritFailConfirmationRoll) {
+          flavor =
+            roll.total === 1
+              ? game.i18n.localize('SWADE.Rolls.Critfail.Confirmed')
+              : game.i18n.localize('SWADE.Rolls.Critfail.Unconfirmed');
+        }
         html += await roll.render({ isPrivate, displayResult, flavor });
       } else {
         html += await roll.render({ isPrivate });
@@ -101,17 +106,18 @@ export default class SwadeChatMessage extends ChatMessage {
 
   async #renderMessageBody(isPrivate: boolean, content?: string) {
     const roll = this.significantRoll;
-    const targets =
-      roll instanceof TraitRoll ? this.getFlag('swade', 'targets') : [];
-
+    const isTraitRoll = roll instanceof TraitRoll;
+    const targets = isTraitRoll ? this.getFlag('swade', 'targets') : [];
     return renderTemplate(
       'systems/swade/templates/chat/dice/roll-message.hbs',
       {
         lockReroll: this.isCritfail && !game.settings.get('swade', 'dumbLuck'),
         modifiers: this.#formatModifiers(),
         rerolled: roll?.getRerollLabel(),
-        groupRoll: roll instanceof TraitRoll && roll.groupRoll,
+        groupRoll: isTraitRoll && roll.groupRoll,
         isCritfail: this.isCritfail && !isPrivate,
+        hasConfirmedCritfail: this.hasConfirmedCritfail(),
+        isWildCard: this.speakerActor?.isWildcard,
         isDamageRoll: roll instanceof DamageRoll && !isPrivate,
         isPrivate: isPrivate,
         notRerollable: !roll?.isRerollable,
@@ -122,5 +128,21 @@ export default class SwadeChatMessage extends ChatMessage {
         content: content,
       },
     );
+  }
+
+  hasConfirmedCritfail(): boolean {
+    const roll = this.significantRoll;
+    const isTraitRoll = roll instanceof TraitRoll;
+    if (!roll || !isTraitRoll) return false;
+    if (this.speakerActor?.isWildcard) return !!roll.isCritfail;
+    const pool = roll.terms[0] as PoolTerm;
+    const hasMultipleTraitDice = pool.dice.length > 1;
+    const hasConfirmedCritfail = this['rolls'].find(
+      (r) => r.isCritFailConfirmationRoll && r.total === 1,
+    );
+    if (hasMultipleTraitDice) {
+      return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;
+    }
+    return hasConfirmedCritfail;
   }
 }

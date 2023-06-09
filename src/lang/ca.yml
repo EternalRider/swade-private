@@ -153,8 +153,8 @@ SWADE:
   Effects: Efectes actius
   Hindrances: Desavantatges
   MajHind: Desavantatge Major
-  Major: "(Major)"
-  Minor: "(Menor)"
+  Major: (Major)
+  Minor: (Menor)
   Edges: Avantatges
   ArcBack: Coneixements Arcans
   Req: Requisits
@@ -216,19 +216,23 @@ SWADE:
   VehicleMod: Mod. de vehicle
   OpSkill: Habilitat d’operació
   ShowBennyAnimation: Mostra l'animació del Beni
-  ShowBennyAnimationDesc: Reprodueix una animació en gastar un Beni. Només disponible
-    si Dice So Nice! està instal·lat
+  ShowBennyAnimationDesc: >-
+    Reprodueix una animació en gastar un Beni. Només disponible si Dice So Nice!
+    està instal·lat
   WildDiePreset: Tema del dau salvatge
-  WildDiePresetDesc: Seleccioneu un tema DSN per al vostre dau salvatge. Seleccioneu
-    "Personalitzat" si voleu crear el vostre o "Cap" si no voleu que tingui un aspecte
-    diferent. Tingueu en compte que els daus creats per vosaltres mateixos, actualment
-    només els podeu veure vosaltres. Altres jugadors els veuran de manera diferent.
+  WildDiePresetDesc: >-
+    Seleccioneu un tema DSN per al vostre dau salvatge. Seleccioneu
+    "Personalitzat" si voleu crear el vostre o "Cap" si no voleu que tingui un
+    aspecte diferent. Tingueu en compte que els daus creats per vosaltres
+    mateixos, actualment només els podeu veure vosaltres. Altres jugadors els
+    veuran de manera diferent.
   WildDieTheme: Tema del dau salvatge
-  WildDieThemeDesc: trieu un Tema DSN pel teu dau salvatge. Selecciona personalitzat
-    si voleu crear el vostre propi o cap si no voleu que el vostre dau salvatge tingui
-    un aspecte diferent. Si us plau, tingues en compte que els dau salvatge creats
-    per tu mateix només els pots veure tu. Els altres jugadors els veuran de manera
-    diferent.
+  WildDieThemeDesc: >-
+    trieu un Tema DSN pel teu dau salvatge. Selecciona personalitzat si voleu
+    crear el vostre propi o cap si no voleu que el vostre dau salvatge tingui un
+    aspecte diferent. Si us plau, tingues en compte que els dau salvatge creats
+    per tu mateix només els pots veure tu. Els altres jugadors els veuran de
+    manera diferent.
   SettingConf: Configuració d'ambientació
   SettingConfLabel: Configuració d'ambientacions obertes
   SettingConfDesc: Ajustar el sistema a l'ambientació que s'està jugant
@@ -266,7 +270,7 @@ SWADE:
   Items: Objectes
   Max: Màx
   Curr: Actual
-  DSNNone: "- Cap -"
+  DSNNone: '- Cap -'
   Reload: Recarregar
   Refresh: Actualitzeu aquesta targeta
   Ammo: Munició
@@ -311,14 +315,15 @@ SWADE:
   Quick: Ràpid
   BonusDamage: Dany addicional
   Joker: Comodí
-  CustomWildDie: "- Dau salvatge personalitzat -"
+  CustomWildDie: '- Dau salvatge personalitzat -'
   Subtract: Resta
   DmgRolls: Tirades de dany
   SubtractPPDesc: Resta el cost de PP dels PP disponibles
   AddPPDesc: Suma el cost de PP als PP disponibles
   RightClickZoom: Clic dret per augmentar
-  SysMigrationWarning: Les dades del vostre sistema SWADE provenen d’una versió de
-    Foundry massa antiga i no es poden migrar de manera fiable a la versió més recent.
+  SysMigrationWarning: >-
+    Les dades del vostre sistema SWADE provenen d’una versió de Foundry massa
+    antiga i no es poden migrar de manera fiable a la versió més recent.
     S'intentarà el procés, però es poden produir errors.
   DeckShuffled: El joc de cartes es barreja automàticament
   BasePace: Pas base
@@ -329,16 +334,15 @@ SWADE:
   CardSuit: Coll (pal)
   IsJoker: És joker
   OpenACEditor: Obre en l'editor de cartes d'acció
-  "Yes": Si
-  "No": "No"
+  'Yes': Si
+  'No': 'No'
   ShowCharacterSummary: Mostra el resum del personatge
   CharacterSummary: Resum de personatges
   CopyHtml: Copia HTML
   CopyMarkdown: Copia Markdown
   Imperial: Imperial
   Metric: Mètric
-  ChangeBennyWarning: Per canviar aquesta configuració, caldrà que actualitzeu la
-    pàgina.
+  ChangeBennyWarning: Per canviar aquesta configuració, caldrà que actualitzeu la pàgina.
   3DBennies: Benis en 3D
   WealthSelectionNoneOther: Cap / Altres
   Modifiers: Modificadors
@@ -347,19 +351,19 @@ SWADE:
   ItemTraitMod: Modificador d'objectes
   ItemDmgMod: Mod. mal d'objectes
   Duplicates: S'han trobat duplicats
-  DuplicateItemsBodyText: Mentre s'afegeix el {type} <strong>{name}</strong> a l'actor
-    {target}, s'han trobat els duplicats següents (per nom i tipus). Els nous elements
-    s'han canviat de nom per reflectir la seva font.
+  DuplicateItemsBodyText: >-
+    Mentre s'afegeix el {type} <strong>{name}</strong> a l'actor {target}, s'han
+    trobat els duplicats següents (per nom i tipus). Els nous elements s'han
+    canviat de nom per reflectir la seva font.
   NoActionDeckFound: No s'ha trobat cap baralla d'acció, creant-ne una
-  NoActionDeckDiscardPileFound: No s'ha trobat cap pila de descart de la baralla d'acció,
-    creant-ne una
+  NoActionDeckDiscardPileFound: No s'ha trobat cap pila de descart de la baralla d'acció, creant-ne una
   Wealth: Riquesa
   Characters: Personatges
   SettingRules: Configuració de regles
   WorldBasics: Conceptes bàsics
   MAPenalty:
     Label: Penalització d'acció múltiple
-    None: "No"
+    None: 'No'
   Mod:
     Custom:
       Add: Afegeix un modificador personalitzat
@@ -400,7 +404,7 @@ SWADE:
   ConvertToDeck: Converteix en baralla
   Expiration:
     TabLabel: Comportament dels torns
-    Description: "<p>Els efectes expiren en l'objectiu <em>següent torn o després</em>.</p>"
+    Description: <p>Els efectes expiren en l'objectiu <em>següent torn o després</em>.</p>
     Behavior: Comportament de caducitat
     BeginAuto: Inici de torn, automàtic
     BeginPrompt: Inici de torn, immediat
@@ -410,8 +414,9 @@ SWADE:
     LooseTurnOnHold: Perdre el torn d'espera
     Remaining: Restant
   RemoveEffectTitle: Eliminar {label} ?
-  RemoveEffectBody: '<p style="text-align: center;">Eliminar <strong>{label}</strong>
-    de <strong>{parent}</strong>?</p>'
+  RemoveEffectBody: >-
+    <p style="text-align: center;">Eliminar <strong>{label}</strong> de
+    <strong>{parent}</strong>?</p>
   PPAbbreviation: PP
   ShowInChat: Mostrar al xat
   ExpandDescription: Expandre per mostrar descripció
@@ -460,20 +465,25 @@ SWADE:
     OpenFavoriteCards:
       Name: Obrir el joc de cartes preferit
       UserConfigLabel: Joc de cartes preferit
-      Hint: Pots configurar el teu joc de cartes predilecte a la configuració d'usuari
+      Hint: >-
+        Pots configurar el teu joc de cartes predilecte a la configuració
+        d'usuari
       NoCardsWarning: No tens cap joc de cartes predilecte!
     Bennies:
       Name: Gastar/Rebre un beni
-      Hint: Prem per gastar un beni, manté la tecla Alt mentre prems la tecla per
+      Hint: >-
+        Prem per gastar un beni, manté la tecla Alt mentre prems la tecla per
         rebre un beni
   Settings:
     HighlightTemplate:
       Name: Destacar sempre les plantilles
-      Hint: Quan està activat, les plantilles de mesura sempre es destaquen a si mateixes
-        en lloc de la graella.
+      Hint: >-
+        Quan està activat, les plantilles de mesura sempre es destaquen a si
+        mateixes en lloc de la graella.
     FantasyCompanionEntangle:
       Name: Aferrat del Fantasy Companion
-      Hint: Utilitzeu l'estat d'aferrat del Fantasy Companion en lloc de la versió
+      Hint: >-
+        Utilitzeu l'estat d'aferrat del Fantasy Companion en lloc de la versió
         del bàsic. Requereix recarregar perquè tingui efecte
     InitDiscardPile:
       Name: Pila de descart d'iniciativa
@@ -484,18 +494,22 @@ SWADE:
       Hint: Habilitat que s'utilitzarà per calcular la parada del PJ
     UseAttributeShorts:
       Name: Utilitzeu noms d'atributs escurçats
-      Hint: Activeu aquesta opció si voleu veure noms d'atributs abreujats als fulls
-        de PJ i PNJ, és a dir, Agi en lloc d'Agility, Ast en lloc d'astúcia, etc.
-        Haureu de tancar i tornar a obrir tots les fitxes obertes perquè aquesta opció
-        tingui efecte.
+      Hint: >-
+        Activeu aquesta opció si voleu veure noms d'atributs abreujats als fulls
+        de PJ i PNJ, és a dir, Agi en lloc d'Agility, Ast en lloc d'astúcia,
+        etc. Haureu de tancar i tornar a obrir tots les fitxes obertes perquè
+        aquesta opció tingui efecte.
     WeightUnit:
       Name: Unitat de pes
-      Hint: Estableix si els pesos es mesuren en lliures o quilograms. Canviar això
+      Hint: >-
+        Estableix si els pesos es mesuren en lliures o quilograms. Canviar això
         NO canviarà els pesos dels objectes, només com es calcula la càrrega
     HideNpcItemChatCards:
       Name: Amaga les targetes de xat d'objectes dels PNJ
-      Hint: Quan s'activa, les targetes de xat d'objectes PNJ s'envien automàticament
-        com a xiuxiueig a tots els DJ en lloc de publicar-se perquè tothom les vegi
+      Hint: >-
+        Quan s'activa, les targetes de xat d'objectes PNJ s'envien
+        automàticament com a xiuxiueig a tots els DJ en lloc de publicar-se
+        perquè tothom les vegi
     EnableBennyNotify:
       Name: Notificació de benis
       Hint: Mostra missatges de xat quan es gasten, es donen o s'actualitzen benis.
@@ -521,7 +535,8 @@ SWADE:
       Name: Mapa frontal del bump
     CoreSkillsList:
       Name: Llista d'habilitats bàsiques
-      Hint: Introduïu una llista separada per comes d'habilitats per definir com a
+      Hint: >-
+        Introduïu una llista separada per comes d'habilitats per definir com a
         habilitats bàsiques per a tots els actors
     CoreSkillsPack:
       Name: Compendi d'habilitats bàsiques
@@ -537,14 +552,16 @@ SWADE:
       Hint: Ofereix un beni a cada PJ quan un d'ells rep un jòquer
     AmmoManagement:
       Name: Gestió de municions
-      Hint: Quan s'activa, i és aplicable, les accions resten munició del carregador
-        de l'arma. Les cartes d'objecte també obtenen un nou botó de recàrrega i no
-        podreu llançar un atac si no hi ha prou munició disponible
+      Hint: >-
+        Quan s'activa, i és aplicable, les accions resten munició del carregador
+        de l'arma. Les cartes d'objecte també obtenen un nou botó de recàrrega i
+        no podreu llançar un atac si no hi ha prou munició disponible
     PCAmmoFromInventory:
       Name: Els PJ utilitzen munició de l'inventari
-      Hint: Quan està activada, l'opció per configurar un objecte "Equipable" es pot
-        configurar per utilitzar-lo com a munició i s'utilitzarà quan es recarregui
-        l'arma
+      Hint: >-
+        Quan està activada, l'opció per configurar un objecte "Equipable" es pot
+        configurar per utilitzar-lo com a munició i s'utilitzarà quan es
+        recarregui l'arma
     NPCAmmoFromInventory:
       Name: Els PNJ utilitzen munició del seu inventari
     VehicleAmmoFromInventory:
@@ -557,16 +574,19 @@ SWADE:
       Hint: Activar la regla de convicció
     NoPowerPoints:
       Name: Sense punts de poder
-      Hint: Quan està activada, aquesta opció amaga totes les interaccions de Punts
+      Hint: >-
+        Quan està activada, aquesta opció amaga totes les interaccions de Punts
         de poder
     AlwaysGeneralPP:
       Name: Mostrar sempre els punts de poder
-      Hint: Quan està activada, la secció Poders sempre es mostra encara que tots
+      Hint: >-
+        Quan està activada, la secció Poders sempre es mostra encara que tots
         els poders tinguin un rerefons arcà associat.
     ApplyEncumbrance:
       Name: Aplicar penalitzacions de càrrega
-      Hint: Aplicar penalitzacions de càrrega. Si us plau, tingueu en compte que actualment
-        NO admet les tirades de {vigor} per resistir la {fatigue}!
+      Hint: >-
+        Aplicar penalitzacions de càrrega. Si us plau, tingueu en compte que
+        actualment NO admet les tirades de {vigor} per resistir la {fatigue}!
     GmBennies:
       Name: Benis del DJ
       Hint: Estableix quants benis rep el DJ al reiniciar
@@ -590,22 +610,27 @@ SWADE:
         Name: Moneda inicial del PJ
         Hint: Estableix la quantitat de diners que els PJ reben en ser creats.
       NPC:
-        Hint: Estableix la quantitat de diners que els actors PNJ reben en ser creats.
+        Hint: >-
+          Estableix la quantitat de diners que els actors PNJ reben en ser
+          creats.
         Name: Moneda inicial dels PNJ
     NPCCurrency:
       Name: Els PNJs utilitzen moneda
-      Hint: Quan s'activi, tots els PNJ tenen les mateixes opcions de moneda que els
+      Hint: >-
+        Quan s'activi, tots els PNJ tenen les mateixes opcions de moneda que els
         Personatges Jugadors.
     DumbLuck:
       Name: Bona sort
       Hint: Si marques això, s'habilitarà la regla de Bona sort
     WoundCap:
       Name: Límit de ferides
-      Hint: Si ho marques, s'habilitarà la regla de configuració de límit de ferides
+      Hint: >-
+        Si ho marques, s'habilitarà la regla de configuració de límit de ferides
         a l'hora de calcular-les.
     GrittyDamage:
       Name: Mal greu
-      Hint: Si ho marqueu, s'habilitarà la regla de configuració de Danys greus i
+      Hint: >-
+        Si ho marqueu, s'habilitarà la regla de configuració de Danys greus i
         permetrà seleccionar la taula de lesions per tirar.
     InjuryTable:
       Name: Taula de lesions
@@ -655,7 +680,7 @@ SWADE:
     Label: Arma distintiva
     Regular: Regular
     Improved: Millorada
-    None: No
+    None: 'No'
   OffHandPenalty: Mà dolenta
   ItemEquipStatus:
     Label: Localització
@@ -673,10 +698,10 @@ SWADE:
   Consumable:
     Use: Ús
     Consumables: Consumibles
-  EmptyRacialAbilitiesHint: Aquesta {race} o {archetype} encara no té cap habilitat.
-    Arrossegueu i deixeu anar alguna cosa a la fitxa per començar.
-  NoTokenSelectedForResistRoll: Per fer una tirada de resistència, primer selecciona
-    un token
+  EmptyRacialAbilitiesHint: >-
+    Aquesta {race} o {archetype} encara no té cap habilitat. Arrossegueu i
+    deixeu anar alguna cosa a la fitxa per començar.
+  NoTokenSelectedForResistRoll: Per fer una tirada de resistència, primer selecciona un token
   Templates:
     Cone:
       Short: Con
@@ -699,7 +724,8 @@ SWADE:
     Toggle: Interrompre l'ús del Compendi TOC
     Dialog:
       Title: Confirma l'interruptor
-      Content: Perquè el canvi tingui efecte, Foundry VTT i tots els clients connectats
+      Content: >-
+        Perquè el canvi tingui efecte, Foundry VTT i tots els clients connectats
         es tornaran a carregar. Si us plau confirma.
     Header: Continguts
   Category: Categoria d'objectes
@@ -732,8 +758,9 @@ SWADE:
     SelectAttribute: Tria atribut
     EnterSkill:
       Label: Introduïu habilitat
-      Hint: Pots introduir qualsevol nom d'habilitat que vulgueu o seleccionar-ne
-        un de la llista de suggeriments
+      Hint: >-
+        Pots introduir qualsevol nom d'habilitat que vulgueu o seleccionar-ne un
+        de la llista de suggeriments
   OtherStats: Altres estadístiques
   HotbarDropOwnedItemWarning: Només es poden crear macros pels elements propis
   AdditionalStats:
@@ -758,13 +785,15 @@ SWADE:
   ReloadNotPossible: Aquest tipus d'error no es recarrega
   ReloadType:
     Label: Procediment de recàrrega
-    None: No
+    None: 'No'
     Single: Sol
     Full: Ple
     Magazine: Carregador
     Battery: Bateria
     PP: Punts de poder
-  NoAmmoPP: No s'han pogut trobar punts de poder que coincideixin amb la munició establerta
+  NoAmmoPP: >-
+    No s'han pogut trobar punts de poder que coincideixin amb la munició
+    establerta
   RemoveAmmo: Elimina munició
   ConsumableType:
     Label: Subtipus
@@ -787,28 +816,35 @@ SWADE:
       GMBenny: Gasta un beni del DJ per absorbir
       Free: Absorbeix sense cost
     ApplyDamage: Aplicar el mal
-    WoundsAboutToBeTaken: <p><strong>{name}</strong> està a punt de rebre <strong>{wounds}</strong>!</p>
+    WoundsAboutToBeTaken: >-
+      <p><strong>{name}</strong> està a punt de rebre
+      <strong>{wounds}</strong>!</p>
     RerollSoakDialog:
       Title: Tornar a tirar absorbir ferides per {name}?
-      Prompt: <p>{name} està a punt de rebre {wounds}. Voleu tornar a tirar per absorbir?</p>
-      PromptCritFail: <p>{name} està apunt de rebre {wounds}. Un error crític impedeix
-        que es tornin a fer els tiratges.</p>
+      Prompt: >-
+        <p>{name} està a punt de rebre {wounds}. Voleu tornar a tirar per
+        absorbir?</p>
+      PromptCritFail: >-
+        <p>{name} està apunt de rebre {wounds}. Un error crític impedeix que es
+        tornin a fer els tiratges.</p>
       Benny: Gasta un beni per tornar a tirar
       GMBenny: Gasta un beni del DJ per tornar a tirar
       Free: Tornar a tirar sense cost
       TakeWounds: Rebre{wounds}
-    AdjustDamagePrompt: <p>Ajusta el mal per a qualsevol habilitat i efecte que pugui
-      tenir {name}.</p>
+    AdjustDamagePrompt: >-
+      <p>Ajusta el mal per a qualsevol habilitat i efecte que pugui tenir
+      {name}.</p>
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> no pateix cap mal d'importància.</p>
-      SoakedAll: <p><strong>{name}</strong> ha absorbit totes les ferides i no està
+      SoakedAll: >-
+        <p><strong>{name}</strong> ha absorbit totes les ferides i no està
         atordit!</p>
       IsShaken: <p><strong>{name}</strong> està <strong>atordit</strong>!</p>
-      IsShakenWithWounds: <p><strong>{name}</strong> està <strong>atordit</strong>
-        amb <strong>{wounds}</strong>!</p>
+      IsShakenWithWounds: >-
+        <p><strong>{name}</strong> està <strong>atordit</strong> amb
+        <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> està <strong>incapacitat!</strong></p>
-    NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració
-      de SWADE
+    NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració de SWADE
     NoTargetsSelected: Selecciona un objectiu per aplicar-hi el mal.
     Incapacitation:
       InjuryRoll: Tirada de vigor per resistir lesions en cas d'incapacitat
@@ -839,8 +875,8 @@ SWADE:
     TraitRoll: Tirada de trets
     Critfail:
       Critfail: Pífia
-      Confirm: Confirmació de pífia
       ConfirmDie: Dau de confirmació
+      Confirmed: Confirmació de pífia
   LoadedAmmo: Munició carregada
   GlobalMod:
     Label: modificadors globals
@@ -876,7 +912,7 @@ ITEM:
   TypePower: Poder
   TypeAbility: Capacitat
   TypeConsumable: Consumibles
-  TypeAction: "++Action"
+  TypeAction: ++Action
 CARD:
   TypeAdventure: Cartes d'aventura
   TypePoker: Cartes de poker

@@ -1,8 +1,5 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import {
-  Context,
-  DocumentModificationOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
 import { RollModifier } from '../../../interfaces/additional.interface';
@@ -22,9 +19,8 @@ import {
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
-import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { SwadeActorDataSource, TraitDie } from './actor-data-source';
+import { TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -79,41 +75,22 @@ export default class SwadeActor extends Actor {
    * @returns true when the actor is a Wild Card
    */
   get isWildcard(): boolean {
-    if (this.type === 'vehicle') {
-      return false;
-    } else {
-      return this.system.wildcard || this.type === 'character';
-    }
+    if (this.type === 'vehicle') return false;
+    return this.system.wildcard || this.type === 'character';
   }
 
   /** @returns true when the actor has an arcane background or a special ability that grants powers. */
   get hasArcaneBackground(): boolean {
-    const abEdge = this.itemTypes.edge.find(
-      (i) => i.type === 'edge' && i.system.isArcaneBackground,
+    return !!this.items.find(
+      (i) =>
+        (i.type === 'edge' && i.system.isArcaneBackground) ||
+        (i.type === 'ability' && i.system.grantsPowers),
     );
-    const abAbility = this.itemTypes.ability.find(
-      (i) => i.type === 'ability' && i.system.grantsPowers,
-    );
-    return !!abEdge || !!abAbility;
   }
 
   /** @returns true when the actor is currently in combat and has drawn a joker */
   get hasJoker(): boolean {
-    //return early if no combat is running
-    if (!game?.combats?.active) return false;
-
-    let combatant: SwadeCombatant | undefined;
-    const hasToken = !!this.token;
-    const isLinked = this.prototypeToken.actorLink;
-    if (isLinked || !hasToken) {
-      //linked token
-      combatant = game.combat?.combatants.find((c) => c.actor?.id === this.id);
-    } else {
-      //unlinked token
-      combatant = game.combat?.combatants.find(
-        (c) => c.token?.id === this.token?.id,
-      );
-    }
+    const combatant = game.combats?.active?.getCombatantByActor(this.id!);
     return combatant?.hasJoker ?? false;
   }
 
@@ -769,28 +746,34 @@ export default class SwadeActor extends Actor {
 
   async toggleActiveEffect(
     effectData: StatusEffect,
-    options: { overlay?: boolean; active?: boolean } = { overlay: false },
+    { overlay = false, active }: { overlay?: boolean; active?: boolean } = {},
   ) {
-    //toggle the effect directly on the actor
-    const existingEffect = this.effects.find(
-      (e) => e.statusId === effectData.id,
-    );
-    const state = options.active ?? !existingEffect;
-    if (!state && existingEffect) {
-      //remove the existing effect
-      await existingEffect.delete();
-    } else if (state) {
-      //add new effect
-      const createData = foundry.utils.deepClone(
-        effectData,
-      ) as Partial<StatusEffect>;
-      //set the status id
-      setProperty(createData, 'statuses', [effectData.id]);
-      if (options.overlay) setProperty(createData, 'flags.core.overlay', true);
-      //remove id property to not violate validation
-      delete createData.id;
-      await this.createEmbeddedDocuments('ActiveEffect', [createData]);
+    if (!effectData.id) return false;
+
+    // Remove existing single-status effects.
+    const existing = this.effects.reduce((acc, cur) => {
+      if (cur.statuses.size === 1 && cur.statuses.has(effectData.id)) {
+        acc.push(cur.id);
+      }
+      return acc;
+    }, new Array<string>());
+    const state = active ?? !existing.length;
+    if (!state && existing.length) {
+      await this.deleteEmbeddedDocuments('ActiveEffect', existing);
     }
+    // Add a new effect
+    else if (state) {
+      const aeClass = CONFIG.ActiveEffect.documentClass;
+      const data = foundry.utils.deepClone(effectData);
+      foundry.utils.setProperty(data, 'statuses', [effectData.id]);
+      delete data.id; //remove the ID to not trigger validation errors
+      aeClass.migrateDataSafe(data);
+      aeClass.cleanData(data);
+      data.name = game.i18n.localize(data.name);
+      if (overlay) foundry.utils.setProperty(data, 'flags.core.overlay', true);
+      await aeClass.create(data, { parent: this });
+    }
+    return state;
   }
 
   /**
