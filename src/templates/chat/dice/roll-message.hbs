@@ -41,9 +41,20 @@
       </div>
     </div>
     {{#if isCritfail}}
-      <p class='critical-failure'>
-        {{localize 'SWADE.Rolls.Critfail.Critfail'}}
-      </p>
+      {{#if (or isWildCard hasConfirmedCritfail)}}
+        <p class='critical-failure'>
+          {{localize 'SWADE.Rolls.Critfail.Critfail'}}
+        </p>
+      {{else if isAuthor}}
+        <p class='critical-failure possible'>
+          {{localize 'SWADE.Rolls.Critfail.Possible'}}
+        </p>
+        <span class='roll-interaction'>
+          <button class='confirm-critfail'>
+            {{localize 'SWADE.Rolls.Critfail.Confirm'}}
+          </button>
+        </span>
+      {{/if}}
     {{/if}}
   {{/unless}}
   {{{rolls}}}
@@ -73,20 +84,22 @@
           {{disabled lockReroll}}
         >
           <i class='fa-solid fa-dice'></i>
-          GM Benny
+          {{localize 'SWADE.Rolls.GMBenny'}}
         </button>
       {{/if}}
       {{#if isAuthor}}
-        <button
-          type='button'
-          class='benny-reroll'
-          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
-          aria-label='{{localize "SWADE.RerollWithBenny"}}'
-          {{disabled lockReroll}}
-        >
-          <i class='fa-solid fa-dice'></i>
-          Benny
-        </button>
+        {{#if isWildCard}}
+          <button
+            type='button'
+            class='benny-reroll'
+            data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+            aria-label='{{localize "SWADE.RerollWithBenny"}}'
+            {{disabled lockReroll}}
+          >
+            <i class='fa-solid fa-dice'></i>
+            {{localize 'SWADE.Rolls.Benny'}}
+          </button>
+        {{/if}}
         <button
           type='button'
           class='free-reroll'
@@ -95,7 +108,7 @@
           {{disabled lockReroll}}
         >
           <i class='fa-solid fa-dice'></i>
-          Free
+          {{localize 'SWADE.Rolls.Free'}}
         </button>
       {{/if}}
     {{/unless}}

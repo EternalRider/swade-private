@@ -254,6 +254,24 @@ export default class SwadeActiveEffect extends ActiveEffect {
     return true;
   }
 
+  private async _applyRelatedEffects() {
+    const related = this.getFlag('swade', 'related');
+    if (!related || this.parent?.documentName !== 'Actor' || !this.statusId)
+      return;
+    for (const [id, mutation] of Object.entries(related)) {
+      const statusEffect = getStatusEffectDataById(id);
+      //skip if the effect already exists on the actor
+      if (this.parent.statuses.has(id) || !statusEffect) continue;
+      //apply the mutation if one exists
+      const effect = foundry.utils.isEmpty(mutation)
+        ? statusEffect
+        : foundry.utils.mergeObject(statusEffect, mutation, {
+            performDeletions: true,
+          });
+      await this.parent.toggleActiveEffect(effect, { active: true });
+    }
+  }
+
   /** This functions checks the effect expiration behavior and either auto-deletes or prompts for deletion */
   async expire() {
     if (!isFirstOwner(this.parent)) {
@@ -423,7 +441,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ name: game.i18n.localize(this.name) });
 
     //automatically favorite status effects
-    if (data.flags?.core?.statusId) {
+    if (this.statusId) {
       this.updateSource({ 'flags.swade.favorite': true });
     }
 
@@ -454,21 +472,6 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    const related = this.getFlag('swade', 'related');
-    if (related && this.parent?.documentName === 'Actor' && !!this.statusId) {
-      for (const [id, mutation] of Object.entries(related)) {
-        if (this.parent.effects.find((e) => id === e.statusId)) continue; //skip if the effect already exists on the actor
-        const statusEffect = getStatusEffectDataById(id);
-        if (!statusEffect) continue; //skip if we can't find the effect
-        //apply the mutation if one exists
-        const effect = foundry.utils.isEmpty(mutation)
-          ? statusEffect
-          : foundry.utils.mergeObject(statusEffect, mutation, {
-              performDeletions: true,
-            });
-        setProperty(effect, 'flags.swade.favorite', true);
-        this.parent.toggleActiveEffect(effect, { active: true });
-      }
-    }
+    this._applyRelatedEffects();
   }
 }

@@ -22,7 +22,6 @@ import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
-import { SwadeItemDataSource } from './item-data';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -56,16 +55,33 @@ export default class SwadeItem extends Item {
 
   static RANGE_REGEX = /[0-9]+\/*/g;
 
-  static override migrateData(data: SwadeItemDataSource) {
+  static override migrateData(data: ItemDataConstructorData) {
     super.migrateData(data);
-    if (!foundry.utils.hasProperty(data, 'system.grants')) return data;
-    for (const grant of data.system.grants as ItemGrant[]) {
-      const uuid = grant.uuid;
-      const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
-      if (isNew) continue;
-      const arr = uuid.split('.');
-      arr.splice(arr.length - 1, 0, 'Item');
-      grant.uuid = arr.join('.');
+    if (data.flags?.swade?.embeddedAbilities) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [key, item] of data.flags.swade.embeddedAbilities) {
+        if (item.system && !item.data) continue;
+        item.system = { ...item.data };
+        delete item.data;
+      }
+    }
+    if (data.flags?.swade?.embeddedPowers) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [key, item] of data.flags.swade.embeddedPowers) {
+        if (item.system && !item.data) continue;
+        item.system = { ...item.data };
+        delete item.data;
+      }
+    }
+    if (data?.system?.grants) {
+      for (const grant of data.system.grants as ItemGrant[]) {
+        const uuid = grant.uuid;
+        const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
+        if (isNew) continue;
+        const arr = uuid.split('.');
+        arr.splice(arr.length - 1, 0, 'Item');
+        grant.uuid = arr.join('.');
+      }
     }
     return data;
   }
@@ -176,31 +192,6 @@ export default class SwadeItem extends Item {
     if (this.parent) {
       return this.parent.items.find((i) => i.hasGranted.includes(this.id!));
     }
-  }
-
-  static override migrateData(data) {
-    super.migrateData(data);
-    if (data.flags?.swade?.embeddedAbilities) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [key, item] of data.flags.swade.embeddedAbilities) {
-        if (item.system && !item.data) continue;
-        item.system = {
-          ...item.data,
-        };
-        delete item.data;
-      }
-    }
-    if (data.flags?.swade?.embeddedPowers) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [key, item] of data.flags.swade.embeddedPowers) {
-        if (item.system && !item.data) continue;
-        item.system = {
-          ...item.data,
-        };
-        delete item.data;
-      }
-    }
-    return data;
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {

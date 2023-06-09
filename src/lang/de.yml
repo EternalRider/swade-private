@@ -179,8 +179,8 @@ SWADE:
   SettingConf: Setting-Konfigurator
   SettingConfLabel: Öffne Setting-Konfigurator
   SettingConfDesc: >-
-    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten, Settingregeln,
-    usw. einstellen.
+    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten,
+    Settingregeln, usw. einstellen.
   Formula: Formel
   SitMod: Situativer Mod
   RollMode: Wurfmodus
@@ -327,9 +327,9 @@ SWADE:
   AddPPDesc: MP-Kosten zu den verfügbaren MP hinzurechnen
   RightClickZoom: Für eine größere Ansicht rechtsklicken
   SysMigrationWarning: >-
-    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und können
-    nicht zuverlässig auf die neueste Version migriert werden. Der Vorgang wird versucht,
-    es können jedoch Fehler auftreten.
+    Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und
+    können nicht zuverlässig auf die neueste Version migriert werden. Der
+    Vorgang wird versucht, es können jedoch Fehler auftreten.
   DeckShuffled: Kartens automatisch gemischt
   BasePace: Basisbewegung
   WarningPackLocked: >-
@@ -388,8 +388,7 @@ SWADE:
   UnstablePlatform: Unsicheren Grund
   NoSceneAvailable: Es ist keine Szene verfügbar oder der Canvas wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
-  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
-    zu handeln
+  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck zu handeln
   ConvertToDeck: Zu Deck konvertieren
   PPAbbreviation: MP
   ShowInChat: Im Chat anzeigen
@@ -481,13 +480,10 @@ SWADE:
     <strong>{parent}</strong>entfernen?</p>
   WorldBasics: Basiseinstellungen
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
-  NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird
-    einer erstellt
+  NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird einer erstellt
   Subtract: Abziehen
-  ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen
-    in Kraft treten
-  CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt
-    werden
+  ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen in Kraft treten
+  CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
   Keybindings:
     Bennies:
       Name: Benny bekommen oder Ausgeben
@@ -675,8 +671,9 @@ SWADE:
       Hint: Schaltet die Fieser Schaden Settingregel ein
     InjuryTable:
       Name: Verletzungstabelle
-      Hint: Wähle die Tabelle aus welche für Verletzungen bei Fiesem Schaden verwendet
-        werden soll.
+      Hint: >-
+        Wähle die Tabelle aus welche für Verletzungen bei Fiesem Schaden
+        verwendet werden soll.
     UnarmoredHero:
       Name: Ungepanzerter Held
   Validation:
@@ -725,8 +722,7 @@ SWADE:
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
   EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
-  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe
-    zu machen
+  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe zu machen
   Templates:
     Cone:
       Short: Kegel
@@ -786,8 +782,7 @@ SWADE:
         Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
-  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren
-    gehören!
+  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
   AdditionalStats:
     SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
   MessageOnUse:
@@ -798,7 +793,6 @@ SWADE:
     Header: Gewährte Items
     When: Items gewähren wen
   IgnFatigue: Erschöpfung ignorieren
-
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
   Targets: 'Ziele:'
@@ -809,17 +803,17 @@ SWADE:
     TraitRoll: Eigenschaftswurf
     Critfail:
       Critfail: KRITISCHER PATZER
-      Confirm: Bestätigung des kritischen Patzers
       ConfirmDie: Bestätigungswürfel
+      Confirmed: Bestätigung des kritischen Patzers
+      Confirm: Bestätigen
   LoadedAmmo: Geladene Munition
-  DamageApplicator: #TODO: The subitems below need translations
+  DamageApplicator:
     ApplyDamage: Schaden Anwenden
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
     SoakDialog:
       WoundedTitle: Roll to Soak Wounds for {name}?
       UnwoundedTitle: Adjust Damage to Determine Status for {name}?
-      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to
-        Soak?</p>
+      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
       ShakenPrompt: <p>{name} is about to become Shaken.</p>
       UnharmedPrompt: <p>{name} might be unharmed.</p>
       Benny: Spend a Benny to Soak
@@ -832,21 +826,23 @@ SWADE:
       SoakRoll: Erholungsprobe (Konstitution)
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
-      Prompt: <p>{name} is about to take {wounds}. Do you want to reroll the Soak
+      Prompt: >-
+        <p>{name} is about to take {wounds}. Do you want to reroll the Soak
         roll?</p>
       Benny: Spend a Benny to Reroll
       GMBenny: Spend a GM Benny to Reroll
       Free: Reroll for Free
       TakeWounds: Take {wounds}
-      PromptCritFail: <p>{name} ist kurz davor {wounds} zu erleiden. Ein kritischer
-        Fehlschlag verhindert Wiederholungswürfe.</p>
-    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might
-      have.</p>
+      PromptCritFail: >-
+        <p>{name} ist kurz davor {wounds} zu erleiden. Ein kritischer Fehlschlag
+        verhindert Wiederholungswürfe.</p>
+    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
       SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
       IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
-      IsShakenWithWounds: <p><strong>{name}</strong> is <strong>Shaken</strong> with
+      IsShakenWithWounds: >-
+        <p><strong>{name}</strong> is <strong>Shaken</strong> with
         <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
