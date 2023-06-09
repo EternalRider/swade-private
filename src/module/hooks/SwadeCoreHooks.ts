@@ -10,6 +10,7 @@ import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { SwadeRoll } from '../dice/SwadeRoll';
+import { TraitRoll } from '../dice/TraitRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
@@ -447,28 +448,29 @@ export default class SwadeCoreHooks {
   /** Add roll data to the message for formatting of dice pools*/
   static onRenderChatMessage(
     message: SwadeChatMessage,
-    html: JQuery<HTMLElement>,
+    jquery: JQuery<HTMLElement>,
     data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    chat.hideChatActionButtons(message, html, data);
-    chat.createMagazineTooltip(message, html);
+    chat.hideChatActionButtons(message, jquery, data);
+    chat.createMagazineTooltip(message, jquery);
+    const html = jquery[0];
     html
-      .find('.swade-roll-message button.free-reroll')
-      .on('click', SwadeRoll.rerollFree.bind(this));
+      .querySelector('.swade-roll-message button.free-reroll')
+      ?.addEventListener('click', SwadeRoll.rerollFree);
     html
-      .find('.swade-roll-message button.benny-reroll')
-      .on('click', SwadeRoll.rerollBenny.bind(this));
-    html[0]
-      .querySelectorAll('.swade-roll-message button.calculate-wounds')
-      .forEach((target) => {
-        target.addEventListener('click', async () => {
-          await damageApplicator(message);
-        });
-      });
-    html[0]
+      .querySelectorAll('.swade-roll-message button.benny-reroll')
+      .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
+    html
+      .querySelector('.swade-roll-message .confirm-critfail')
+      ?.addEventListener('click', () => TraitRoll.confirmCritfail(message));
+
+    html
+      .querySelector('.swade-roll-message button.calculate-wounds')
+      ?.addEventListener('click', () => damageApplicator(message));
+    html
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
-    html[0]
+    html
       .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
       .forEach((target) => {
         target.addEventListener('mouseenter', (ev) => {

@@ -4,13 +4,30 @@ import {
   RollPart,
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
-import { chunkArray } from '../util';
+import { constants } from '../constants';
+import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+import { chunkArray, count } from '../util';
 import { SwadeRoll } from './SwadeRoll';
 import WildDie from './WildDie';
-import SwadeActor from '../documents/actor/SwadeActor';
-import { constants } from '../constants';
 
 export class TraitRoll extends SwadeRoll<ActorRollData> {
+  static async confirmCritfail(msg: SwadeChatMessage) {
+    const label = game.i18n.localize('SWADE.Rolls.Critfail.ConfirmDie');
+    const options = { critfailConfirmationRoll: true };
+    const roll = await new SwadeRoll(`1d6[${label}]`, {}, options).evaluate({
+      async: true,
+    });
+    await game.dice3d?.showForRoll(
+      roll,
+      game.user,
+      true,
+      msg['whisper'] || null,
+      msg['blind'],
+      null,
+      msg['speaker'],
+    );
+    await msg.update({ rolls: [roll, ...msg['rolls']] });
+  }
   constructor(
     formula: string,
     data: ActorRollData = {},
@@ -27,12 +44,13 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   }
 
   override get isCritfail() {
-    if (!this.isValidTraitRoll || !this._evaluated) return undefined;
     const term = this.terms[0];
-    return (
-      this.#termIsPoolTerm(term) &&
-      term.dice.filter((d) => d.total === 1).length > term.dice.length / 2
-    );
+    if (!this.#termIsPoolTerm(term) || !this._evaluated) return undefined;
+    const wildDie = term.dice.find((d) => d instanceof WildDie);
+    const majorityOfDiceAreOne =
+      count(term.dice, (d) => d.total === 1) > term.dice.length / 2;
+    if (wildDie) return majorityOfDiceAreOne && wildDie.total === 1;
+    return majorityOfDiceAreOne;
   }
 
   get groupRoll() {
@@ -62,9 +80,14 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   // Returns -1 on a CritFail, 0 on a fail, 1 on a success, 2 or more for raises
   get successes(): number {
     if (this.isCritfail) return constants.ROLL_RESULT.CRITFAIL;
-    if ((this.total ?? 0) < this.targetNumber) return constants.ROLL_RESULT.FAIL;
-    if ((this.total ?? 0) < this.targetNumber + 4) return constants.ROLL_RESULT.SUCCESS;
-    return Math.max(Math.floor((((this.total ?? 0) - this.targetNumber) / 4)) + 1, 0) // raises get to be 2+
+    if ((this.total ?? 0) < this.targetNumber)
+      return constants.ROLL_RESULT.FAIL;
+    if ((this.total ?? 0) < this.targetNumber + 4)
+      return constants.ROLL_RESULT.SUCCESS;
+    return Math.max(
+      Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1,
+      0,
+    ); // raises get to be 2+
   }
 
   override async getRenderData(flavor?: string, isPrivate = false) {
@@ -102,9 +125,6 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       create?: boolean | undefined;
     } = {},
   ) {
-    const roll = await this._handleExtraCritfail(messageData);
-    if (roll) messageData['rolls'] = [roll];
-
     foundry.utils.setProperty(
       messageData,
       'flags.swade.targets',
@@ -150,25 +170,6 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
 
   #termIsPoolTerm(term: RollTerm): term is PoolTerm {
     return term instanceof PoolTerm;
-  }
-
-  protected async _handleExtraCritfail(
-    data: DeepPartial<ChatMessageDataConstructorData>,
-  ): Promise<SwadeRoll | undefined> {
-    if (!data.speaker) return;
-    const actor = ChatMessage.getSpeakerActor(data['speaker']) as SwadeActor;
-    if (
-      actor?.type === 'npc' &&
-      !actor.isWildcard &&
-      !this.groupRoll &&
-      this.total === 1
-    ) {
-      return new SwadeRoll(
-        `1d6[${game.i18n.localize('SWADE.Rolls.Critfail.ConfirmDie')}]`,
-        {},
-        { critfailConfirmationRoll: true },
-      ).evaluate({ async: true });
-    }
   }
 }
 

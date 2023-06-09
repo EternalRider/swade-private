@@ -269,4 +269,13 @@ export function mapRange(
   return Math.clamped(mapped, outMin, outMax);
 }
 
+/**
+ * @param arr The array to count in
+ * @param condition A function that represents a condition and returns a boolean
+ * @returns the number of items in the array that fulfill the condition
+ */
+export function count<T>(arr: Array<T>, condition: (e: T) => boolean): number {
+  return arr.filter(condition).length;
+}
+
 type Ownership = Record<string, number>;

@@ -2,10 +2,11 @@ SWADE:
   DiceConf: Configuração de Dados
   DiceConfDesc: Configure a integração do SWADE/Dice So Nice
   DiceConfLabel: Abrir Configuração de Dados
-  WildDiePresetDesc: Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado'
-    se quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado Selvagem
-    seja diferente. Esteja ciente de que a configuração de Dado Selvagem só pode ser
-    vista por você, outros jogadores verão diferente.
+  WildDiePresetDesc: >-
+    Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado'
+    se quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado
+    Selvagem seja diferente. Esteja ciente de que a configuração de Dado
+    Selvagem só pode ser vista por você, outros jogadores verão diferente.
   SettingConf: Configurações Gerais
   SettingConfLabel: Abrir Configurações Gerais
   Formula: Fórmula
@@ -27,7 +28,8 @@ SWADE:
   Size: Tamanho
   Scale: Escala
   PickACard: Escolha uma carta para {name}
-  NoCardsLeft: Não há cartas restantes no baralho! Apenas {current} cartas de {needed}
+  NoCardsLeft: >-
+    Não há cartas restantes no baralho! Apenas {current} cartas de {needed}
     necessárias estão disponíveis
   OldCard: Carta Anterior
   ActionCard: Carta de Ação
@@ -106,11 +108,11 @@ SWADE:
   ItemTraitMod: Mod. Característica do Item
   ItemDmgMod: Mod. de Dano do Item
   Duplicates: Duplicatas Encontradas
-  DuplicateItemsBodyText: Ao adicionar o {type} <strong>{name}</strong> ao Ator {target}
-    as seguintes duplicatas foram encontradas (por nome e tipo). Os novos items foram
+  DuplicateItemsBodyText: >-
+    Ao adicionar o {type} <strong>{name}</strong> ao Ator {target} as seguintes
+    duplicatas foram encontradas (por nome e tipo). Os novos items foram
     renomeados para refletir sua origem.
-  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada,
-    criando uma
+  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada, criando uma
   Characters: Personagens
   SettingRules: Regras de Ambientação
   WorldBasics: Base do Mundo
@@ -163,8 +165,9 @@ SWADE:
     LooseTurnOnHold: Perder Turno ao Aguardar
     Remaining: Restante
   RemoveEffectTitle: Remover {label} ?
-  RemoveEffectBody: '<p style="text-align: center;">Remover<strong>{label}</strong>
-    de <strong>{parent}</strong>?</p>'
+  RemoveEffectBody: >-
+    <p style="text-align: center;">Remover<strong>{label}</strong> de
+    <strong>{parent}</strong>?</p>
   PPAbbreviation: PP
   ShowInChat: Mostrar no chat
   ExpandDescription: Expandir para mostrar a descrição
@@ -217,13 +220,15 @@ SWADE:
       NoCardsWarning: Você não tem uma Mão de Cartas favorita!
     Bennies:
       Name: Gastar/Receber um Bene
-      Hint: Pressione para gastar um Bene, segure Alt enquanto pressiona a tecla para
-        receber um Bene
+      Hint: >-
+        Pressione para gastar um Bene, segure Alt enquanto pressiona a tecla
+        para receber um Bene
   Settings:
     FantasyCompanionEntangle:
       Name: Enredado do Fantasy Companion
-      Hint: Usa o estado Enredado do Fantasy Companion em vez da versão do Livro Básico.
-        Requer recarregamento para surtir efeito
+      Hint: >-
+        Usa o estado Enredado do Fantasy Companion em vez da versão do Livro
+        Básico. Requer recarregamento para surtir efeito
     InitDiscardPile:
       Name: Pilha de Descarte de Iniciativa
     InitCardDeck:
@@ -232,14 +237,16 @@ SWADE:
       Name: Perícia base de Aparar
       Hint: O nome da perícia usada para calcular Aparar
     UseAttributeShorts:
-      Hint: Ative esta opção se você quiser ver os nomes de atributos abreviados nas
-        fichas de pc e npc, ou seja, Agi em vez de Agildade, Ast em vez de Astúcia,
-        etc. Você precisará fechar e reabrir todas as fichas abertas para que esta
-        opção entre em vigor.
+      Hint: >-
+        Ative esta opção se você quiser ver os nomes de atributos abreviados nas
+        fichas de pc e npc, ou seja, Agi em vez de Agildade, Ast em vez de
+        Astúcia, etc. Você precisará fechar e reabrir todas as fichas abertas
+        para que esta opção entre em vigor.
       Name: Usar nomes de atributos abreviados
     WeightUnit:
       Name: Unidade de peso
-      Hint: Define se os pesos são medidos em libras ou quilogramas. Alterando isto
+      Hint: >-
+        Define se os pesos são medidos em libras ou quilogramas. Alterando isto
         NÃO mudará os pesos dos itens, apenas como a sobrecarga é calculada
     EnableBennyNotify:
       Name: Notificações de Bene
@@ -266,7 +273,8 @@ SWADE:
       Name: Mapa de Colisão Dianteiro
     CoreSkillsList:
       Name: Lista de Perícias Básicas
-      Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
+      Hint: >-
+        Insira uma lista de perícias separadas por vírgula para serem definidas
         como Perícias Básicas para todos os atores
     CoreSkillsPack:
       Name: Compêndio das Perícias Básicas
@@ -282,20 +290,23 @@ SWADE:
       Hint: Entrega um Bene a cada jogador quando um deles sacou um Curinga
     AmmoManagement:
       Name: Gerenciamento de Munição
-      Hint: Quando ligado e aplicável, ações removem munição da arma. Cartas de Item
-        também ganham um botão de Recarregar e você não será capaz de rolar um ataque
-        se não tiver munição suficiente.
+      Hint: >-
+        Quando ligado e aplicável, ações removem munição da arma. Cartas de Item
+        também ganham um botão de Recarregar e você não será capaz de rolar um
+        ataque se não tiver munição suficiente.
     PCAmmoFromInventory:
       Name: PJs usam munição do Inventário
-      Hint: Quando ativado, um Equipamento ou Consumível que está definido como munição
-        será usado ao recarregar uma arma
+      Hint: >-
+        Quando ativado, um Equipamento ou Consumível que está definido como
+        munição será usado ao recarregar uma arma
     NPCAmmoFromInventory:
       Name: NPCs usam munição de seu Inventário
     VehicleAmmoFromInventory:
       Name: Veículos usam munição de seu Inventário
     EnableWoundPace:
       Name: Diminuir Movimento por Ferimentos
-      Hint: Quando habilitado, Movimento é automaticamente afetado pelos Ferimentos
+      Hint: >-
+        Quando habilitado, Movimento é automaticamente afetado pelos Ferimentos
         sofridos
     EnableConv:
       Name: Convicção
@@ -318,14 +329,17 @@ SWADE:
     StartingCurrency:
       PC:
         Name: Riqueza inicial dos Personagens de Jogador
-        Hint: Define a quantidade de riqueza que os Atores de Personagens de Jogador
+        Hint: >-
+          Define a quantidade de riqueza que os Atores de Personagens de Jogador
           recebem ao serem criados
       NPC:
-        Hint: Define a quantidade de riqueza que os Atores de Personagens do Mestre
+        Hint: >-
+          Define a quantidade de riqueza que os Atores de Personagens do Mestre
           recebem ao serem criados
         Name: Riqueza inicial dos NPC
     HideNpcItemChatCards:
-      Hint: Quando habilitado, as mensagens de chat de Itens de NPCs serão enviadas
+      Hint: >-
+        Quando habilitado, as mensagens de chat de Itens de NPCs serão enviadas
         como sussurros a todos os Mestre em vez de postadas para todos verem
       Name: Esconder Cartas de NPC do Chat
     HighlightTemplate:
@@ -336,43 +350,51 @@ SWADE:
       Hint: Quando habilitado, esconde todas as interações de Pontos de Poder
     AlwaysGeneralPP:
       Name: Sempre Mostrar Pontos de Poder Gerais
-      Hint: Quando habilidade, a seção de Poderes Gerais sempre aparecerá, mesmo se
+      Hint: >-
+        Quando habilidade, a seção de Poderes Gerais sempre aparecerá, mesmo se
         todos os poderes tiverem um Antecedente Arcano associado
     ApplyEncumbrance:
       Name: Aplicar penalidades de Sobrecarga
-      Hint: Aplica penalidades de sobrecarga. Por favor, tenha em mente que atualmente
-        NÃO SUPORTA rolagens de {vigor} para resistir a {fatigue}!
+      Hint: >-
+        Aplica penalidades de sobrecarga. Por favor, tenha em mente que
+        atualmente NÃO SUPORTA rolagens de {vigor} para resistir a {fatigue}!
     GmBennies:
       Name: Benes do Mestre
       Hint: Configura quantos Benes o Mestre recebe ao resetar
     NPCCurrency:
       Name: NPCs usam dinheiro
-      Hint: Quando ativado, todos os NPCs têm as mesmas opções de dinheiro que os
+      Hint: >-
+        Quando ativado, todos os NPCs têm as mesmas opções de dinheiro que os
         Personagens de Jogador
     DumbLuck:
       Name: Pura Sorte
       Hint: Ativar isso irá habilitar a Regra de Ambientação Pura Sorte
     WoundCap:
       Name: Limite de Ferimentos
-      Hint: Ativar isso irá habilitar a Regra de Ambientação Limite de Ferimentos
+      Hint: >-
+        Ativar isso irá habilitar a Regra de Ambientação Limite de Ferimentos
         quando calcular Ferimentos.
     GrittyDamage:
       Name: Dano Severo
-      Hint: Ativar isso irá habilitar a Regra de Ambientação Dano Severo e permitirá
+      Hint: >-
+        Ativar isso irá habilitar a Regra de Ambientação Dano Severo e permitirá
         selecionar a Tabela de Lesões para rolar.
     InjuryTable:
       Name: Tabela de Lesões
-      Hint: Selecione a Tabela de Rolagem apropriada para rolar automaticamente para
+      Hint: >-
+        Selecione a Tabela de Rolagem apropriada para rolar automaticamente para
         Dano Severo.
     UnarmoredHero:
-      Hint: Marcar isto irá habilitar a Regra de Ambientação Heróis Sem Armadura quando
-        rolar para absorver
+      Hint: >-
+        Marcar isto irá habilitar a Regra de Ambientação Heróis Sem Armadura
+        quando rolar para absorver
       Name: Heróis Sem Armadura
     ArbitFields: Campos de Configuração Arbitrária
     HeroesNeverDie:
       Name: Heróis Nunca Morrem
-      Hint: Marcar essa opção ativará a regra de configuração Heróis Nunca Morrem
-        ao determinar a incapacitação
+      Hint: >-
+        Marcar essa opção ativará a regra de configuração Heróis Nunca Morrem ao
+        determinar a incapacitação
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -399,8 +421,7 @@ SWADE:
   TargetVulnerable: Alvo está Vulnerável
   WildAttack: Ataque Selvagem
   ItemType: Tipo de Item
-  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token
-    primeiro
+  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token primeiro
   Templates:
     Cone:
       Short: Cone
@@ -446,14 +467,16 @@ SWADE:
   Consumable:
     Use: Usar
     Consumables: Consumíveis
-  EmptyRacialAbilitiesHint: Esta {race} ou {archetype} ainda não tem nenhuma habilidade.
-    Arraste & Solte alguma coisa na ficha para começar.
+  EmptyRacialAbilitiesHint: >-
+    Esta {race} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
+    alguma coisa na ficha para começar.
   CompendiumTOC:
     Toggle: Altenar uso do Índice de Compêndio
     Dialog:
       Title: Confirmar
-      Content: Para essa mudança surtir efeito, Foundry VTT e todos os clientes conectados
-        devem ser recarregados. Por favor, confirme.
+      Content: >-
+        Para essa mudança surtir efeito, Foundry VTT e todos os clientes
+        conectados devem ser recarregados. Por favor, confirme.
     Header: Conteúdo
   Category: Categoria de Item
   ItemIsAmmo: É Munição
@@ -485,11 +508,11 @@ SWADE:
     SelectAttribute: Selecionar Atributo
     EnterSkill:
       Label: Adicionar perícia
-      Hint: Você pode adicionar qualquer nome de perícia que você quiser ou selecionar
-        uma da lista de sugestões
+      Hint: >-
+        Você pode adicionar qualquer nome de perícia que você quiser ou
+        selecionar uma da lista de sugestões
   OtherStats: Outros Atributos
-  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos
-    por alguém
+  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos por alguém
   MessageOnUse:
     Label: Mensagem ao Usar
     Hint: Mostra uma mensagem de chat quando este item for usado
@@ -500,7 +523,9 @@ SWADE:
   RefreshPP: Restaurar Pontos de Poder
   DamageApplicator:
     ApplyDamage: Aplicar Dano
-    WoundsAboutToBeTaken: <p><strong>{name}</strong> está prestes a sofrer <strong>{wounds}</strong>!</p>
+    WoundsAboutToBeTaken: >-
+      <p><strong>{name}</strong> está prestes a sofrer
+      <strong>{wounds}</strong>!</p>
     SoakDialog:
       WoundedTitle: Rolar para Absorver Ferimentos para {name}?
       UnwoundedTitle: Ajustar o Dano para Determinar Estado para {name]?
@@ -517,41 +542,54 @@ SWADE:
       SoakRoll: Teste de Vigor para Absorver
     RerollSoakDialog:
       Title: Rerrolar para Absorver Ferimentos para [name}?
-      Prompt: <p>{name} está prestes a sofrer {wounds}. Você quer rerrolar a Absorção?</p>
+      Prompt: >-
+        <p>{name} está prestes a sofrer {wounds}. Você quer rerrolar a
+        Absorção?</p>
       GMBenny: Gastar um Bene de MJ para Rerrolar
       Benny: Gastar um Bene para Rerrolar
       Free: Rerollar de Graça
       TakeWounds: Sofrer {wounds}
-      PromptCritFail: <p>{name} está prestes a sofrer {wounds}. Uma falha crítica
-        está impedindo a nova rolagem.</p>
-    AdjustDamagePrompt: <p>Ajustar o dano para quaisquer habilidades e efeitos que
-      o {name} possa ter.</p>
+      PromptCritFail: >-
+        <p>{name} está prestes a sofrer {wounds}. Uma falha crítica está
+        impedindo a nova rolagem.</p>
+    AdjustDamagePrompt: >-
+      <p>Ajustar o dano para quaisquer habilidades e efeitos que o {name} possa
+      ter.</p>
     Result:
-      SoakedAll: <p><strong>{name}</strong> Absorveu todos os Ferimentos e não está
+      SoakedAll: >-
+        <p><strong>{name}</strong> Absorveu todos os Ferimentos e não está
         Abalado!</p>
       IsShaken: <p><strong>{name}</strong> está <strong>Abalado</strong>!</p>
-      IsShakenWithWounds: <p><strong>{name}</strong> está <strong>Abalado</strong>
-        com <strong>{wounds}</strong>!</p>
+      IsShakenWithWounds: >-
+        <p><strong>{name}</strong> está <strong>Abalado</strong> com
+        <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> está <strong>Incapacitado!</strong></p>
       NoSignificantDamage: <p><strong>{name}</strong> não sofre danos significativos.</p>
-    NoInjuryTable: Nenhuma Tabela de Lesões foi selecionado. Veja as Configurações
-      Gerais do SWADE
+    NoInjuryTable: >-
+      Nenhuma Tabela de Lesões foi selecionado. Veja as Configurações Gerais do
+      SWADE
     NoTargetsSelected: Por favor, seleciona um alvo para aplicar o dano.
     SoakModifier: Modificador de Absorção
     Incapacitation:
       InjuryRoll: Rolagem de Vigor para resistir a lesão em caso de incapacitação
       Dies: <p><strong>{name}</strong> morre com o dano!</p>
-      PermanentInjury: <p><strong>{name}</strong> sofre uma lesão permanente e está
+      PermanentInjury: >-
+        <p><strong>{name}</strong> sofre uma lesão permanente e está
         <strong>Sangrando!</strong></p>
       PermanentInjuryHND: <p><strong>{name}</strong> sofre uma lesão permanente!</p>
-      TemporaryInjury: <p><strong>{name}</strong> sofre uma lesão que desaparecerá
-        quando todos os ferimentos forem curados.</p>
-      ShortInjury: <p><strong>{name}</strong> sofre uma lesão que desaparecerá em
-        24 horas ou quando todos os ferimentos forem curados (o que ocorrer primeiro).</p>
+      TemporaryInjury: >-
+        <p><strong>{name}</strong> sofre uma lesão que desaparecerá quando todos
+        os ferimentos forem curados.</p>
+      ShortInjury: >-
+        <p><strong>{name}</strong> sofre uma lesão que desaparecerá em 24 horas
+        ou quando todos os ferimentos forem curados (o que ocorrer
+        primeiro).</p>
       TakeFail: Sofrer uma lesão permanente
       TakeSuccess: Sofrer uma lesão que desaparece quando todas as feridas forem curadas
       Title: Rerrolar a gravidade da lesão de {name}?
-      Prompt: <p>{name} está prestes a ser ferido. Deseja rerrolar a rolagem de Vigor?</p>
+      Prompt: >-
+        <p>{name} está prestes a ser ferido. Deseja rerrolar a rolagem de
+        Vigor?</p>
   FreeReroll: Rerrolagem Grátis
   BenniesSpendGM: Gastar um Bene de MJ
   SettingConfDesc: Ajuste o sistema para se adequar ao cenário que está jogando.
@@ -760,8 +798,9 @@ SWADE:
   Mods: Modificações
   ModSlots: Espaços de Modificação
   ShowBennyAnimation: Mostrar Animação de Bene
-  ShowBennyAnimationDesc: Mostra uma animação quando gastar um Bene. Só disponível
-    se Dice So Nice! estiver instalado
+  ShowBennyAnimationDesc: >-
+    Mostra uma animação quando gastar um Bene. Só disponível se Dice So Nice!
+    estiver instalado
   WildDiePreset: Tema do Dado Selvagem
   RunningMod: Modificador de Corrida
   SkillTest: Teste de Perícia
@@ -799,13 +838,13 @@ SWADE:
     Regular: Normal
   GrantsPowers: Concede Poderes
   Selection: Seleção
-  SysMigrationWarning: Os dados do seu sistema SWADE é de uma versão muito antiga
-    do Foundry e não pode ser migrada de forma confiável para a última versão. A conversão
-    será tentada, mas erros podem ocorrer.
+  SysMigrationWarning: >-
+    Os dados do seu sistema SWADE é de uma versão muito antiga do Foundry e não
+    pode ser migrada de forma confiável para a última versão. A conversão será
+    tentada, mas erros podem ocorrer.
   DeckShuffled: Baralho de Cartas automaticamente embaralhado
   BasePace: Movimentação Base
-  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie
-    primeiro
+  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie primeiro
   ActionCardEditor: Editor de Carta de Ação
   ChangeBennyWarning: Alterar estas configurações requer que você atualize a página!
   Wealth: Riqueza
@@ -835,13 +874,15 @@ SWADE:
     TraitRoll: Rolagem de Característica
     Critfail:
       Critfail: FALHA CRÍTICA
-      Confirm: Confirmação de Falha Crítica
       ConfirmDie: Dado de Confirmação
+      Confirmed: Confirmação de Falha Crítica
   LoadedAmmo: Munição Carregada
-  WildDieThemeDesc: Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
-    se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado Selvagem
-    pareça diferente. Por favor, tenha em mente que os Dados Selvagens auto-criados
-    atualmente só podem ser vistos por você. Outros jogadores os verão de forma diferente.
+  WildDieThemeDesc: >-
+    Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
+    se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado
+    Selvagem pareça diferente. Por favor, tenha em mente que os Dados Selvagens
+    auto-criados atualmente só podem ser vistos por você. Outros jogadores os
+    verão de forma diferente.
   TOCBlockList: Lista de Bloqueio de Sumário de Compêndios
   CalledShot:
     Hand: 'Ataque Localizado: Mão'

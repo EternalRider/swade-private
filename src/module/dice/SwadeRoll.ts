@@ -22,13 +22,11 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return newRoll;
   }
 
-  static async rerollFree(event: JQuery.ClickEvent) {
+  static async rerollFree(event: MouseEvent) {
     event.preventDefault();
-
-    const msg = game.messages!.get(
-      event.currentTarget.closest('.message').dataset.messageId,
-      { strict: true },
-    );
+    const target = event.currentTarget as HTMLButtonElement;
+    const id = target.closest<HTMLElement>('.message')!.dataset.messageId!;
+    const msg = game.messages!.get(id, { strict: true });
     const speaker = msg['speaker'];
     const roll = msg['rolls'][0] as SwadeRoll;
 
@@ -41,18 +39,16 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     });
   }
 
-  static async rerollBenny(event: JQuery.ClickEvent) {
+  static async rerollBenny(event: MouseEvent) {
     event.preventDefault();
-    const target = event.currentTarget;
-    const isGmBenny = target.dataset.gmBenny;
-    const msg = game.messages!.get(
-      target.closest('.message').dataset.messageId,
-      { strict: true },
-    );
+    const target = event.currentTarget as HTMLButtonElement;
+    const id = target.closest<HTMLElement>('.message')!.dataset.messageId!;
+    const msg = game.messages!.get(id, { strict: true });
     const speaker = msg['speaker'];
     const roll = msg['rolls'][0] as SwadeRoll;
     const actor = ChatMessage.getSpeakerActor(speaker);
 
+    const isGmBenny = target.dataset.gmBenny;
     const spender = isGmBenny && game.user?.isGM ? game.user : actor;
 
     if (!spender?.bennies) {
