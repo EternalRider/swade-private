@@ -77,18 +77,6 @@ npm run build:packs
 
 Please make sure that foundry is **NOT** running when building packs or the process will fail.
 
-## Issues
-
-Before submitting an issue, please check your issue isn't a duplicate of an existing issue (please make sure to also check closed issues, as work which handles an issue can close it, even if it is not yet released). Issues which are assigned to a milestone are considered a higher priority for implementation, however milestones are not permanent and issues may be reassigned or pushed out of milestones at any time.
-
-### Bugs
-
-Before submitting a bug report please make sure you fulfill the following guidelines:
-
-- Make sure bugs are reproducible without any active modules. If a bug only occurs with active modules we ask you to talk to the module author first. If it is something we can help with the module author can contact us via the channels mentioned above.
-- Provide hosting details as they may be relevant.
-- Provide clear instructions on how to reproduce the issue as well as Expected vs Actual outcome.
-
 ## Code
 
 To contribute code to the repository please first [fork the repository](https://docs.gitlab.com/ee/user/project/repository/forking_workflow.html) and submit a [merge request](https://docs.gitlab.com/ee/user/project/repository/forking_workflow.html#merge-changes-back-upstream)
