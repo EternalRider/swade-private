@@ -112,7 +112,8 @@ SWADE:
     Ao adicionar o {type} <strong>{name}</strong> ao Ator {target} as seguintes
     duplicatas foram encontradas (por nome e tipo). Os novos items foram
     renomeados para refletir sua origem.
-  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada, criando uma
+  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada,
+    criando uma
   Characters: Personagens
   SettingRules: Regras de Ambientação
   WorldBasics: Base do Mundo
@@ -421,7 +422,8 @@ SWADE:
   TargetVulnerable: Alvo está Vulnerável
   WildAttack: Ataque Selvagem
   ItemType: Tipo de Item
-  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token primeiro
+  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token
+    primeiro
   Templates:
     Cone:
       Short: Cone
@@ -512,7 +514,8 @@ SWADE:
         Você pode adicionar qualquer nome de perícia que você quiser ou
         selecionar uma da lista de sugestões
   OtherStats: Outros Atributos
-  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos por alguém
+  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos
+    por alguém
   MessageOnUse:
     Label: Mensagem ao Usar
     Hint: Mostra uma mensagem de chat quando este item for usado
@@ -844,7 +847,8 @@ SWADE:
     tentada, mas erros podem ocorrer.
   DeckShuffled: Baralho de Cartas automaticamente embaralhado
   BasePace: Movimentação Base
-  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie primeiro
+  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie
+    primeiro
   ActionCardEditor: Editor de Carta de Ação
   ChangeBennyWarning: Alterar estas configurações requer que você atualize a página!
   Wealth: Riqueza
@@ -876,6 +880,12 @@ SWADE:
       Critfail: FALHA CRÍTICA
       ConfirmDie: Dado de Confirmação
       Confirmed: Confirmação de Falha Crítica
+      Unconfirmed: Falha Crítica não confirmada
+      Possible: POSSÍVEL FALHA CRÍTICA
+      Confirm: Confirmar
+    Free: Gratuita
+    Benny: Bene
+    GMBenny: Bene de GM
   LoadedAmmo: Munição Carregada
   WildDieThemeDesc: >-
     Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
