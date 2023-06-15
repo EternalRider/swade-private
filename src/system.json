@@ -101,6 +101,16 @@
       "lang": "pt-BR",
       "name": "Português (Brasil)",
       "path": "lang/pt_BR.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Française",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "zh-Hans",
+      "name": "Chinese (Simplified)",
+      "path": "lang/zh_Hans.json"
     }
   ],
   "relationships": {
