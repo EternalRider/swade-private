@@ -60,7 +60,7 @@ npm run build:watch
 or
 
 ```
-nm run build:watch
+npm run build
 ```
 
 for a one-time build
@@ -85,7 +85,7 @@ To contribute code to the repository please first [fork the repository](https://
 
 Please follow the code-style and linting guidelines set by the project. To this end the project provides extensive ESLint and prettier rules. All linting issues and warnings should be resolved before submitting an MR.
 
-- `npm run lint` - Run the linter and display any found issues
+- `npm run check:lint` - Run the linter and display any found issues
 - `npm run lint:fix` - Attempts to fix code style issues.
 
 ### Linked Issues
