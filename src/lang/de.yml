@@ -854,6 +854,7 @@ SWADE:
   ppReload: Zum nachladen benötigte MP
   UsesTOC: Compendium TOC Verwenden
   TOCBlockList: Compendium TOC Blockliste
+  RollNoun: Würfelwurf
 TYPES:
   Actor:
     Character: Charakter

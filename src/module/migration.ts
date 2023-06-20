@@ -6,11 +6,13 @@ import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/
 import {
   ActorData,
   ItemData,
-  SceneData,
+  SceneData
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
 import { Updates } from '../globals';
 import { constants } from './constants';
-import SwadeUser from './documents/SwadeUser';
+import type SwadeActor from './documents/actor/SwadeActor';
+import SwadeItem from './documents/item/SwadeItem';
+import type SwadeUser from './documents/SwadeUser';
 import { Logger } from './Logger';
 
 export async function migrateWorld() {
@@ -27,6 +29,7 @@ export async function migrateWorld() {
         Logger.info(`Migrating Actor document ${actor.name}`);
         await actor.update(updateData, { enforceTypes: false });
       }
+      await dedupeActorActiveEffects(actor);
     } catch (err) {
       err.message = `Failed swade system migration for Actor ${actor.name}: ${err.message}`;
       Logger.error(err);
@@ -67,6 +70,23 @@ export async function migrateWorld() {
     }
   }
 
+  for (const scene of game.scenes!) {
+    try {
+      const updateData = migrateSceneData(scene.toObject() as SceneData);
+      if (!foundry.utils.isEmpty(updateData)) {
+        Logger.info(`Migrating Scene document ${scene.name}`);
+        await scene.update(updateData, { enforceTypes: false });
+      }
+      for (const token of scene.tokens) {
+        if (!token.actor) continue;
+        await dedupeActorActiveEffects(token.actor);
+      }
+    } catch (err) {
+      err.message = `Failed swade system migration for Item ${scene.name}: ${err.message}`;
+      Logger.error(err);
+    }
+  }
+
   // Set the migration as complete
   const version = game.system.version;
   await game.settings.set('swade', 'systemMigrationVersion', version);
@@ -98,15 +118,20 @@ export async function migrateCompendium(
   for (const doc of documents) {
     let updateData: Record<string, any> = {};
     try {
-      switch (type) {
+      switch (doc.documentName) {
         case 'Actor':
-          updateData = migrateActorData(doc.toObject() as ActorDataSource);
+          updateData = migrateActorData(doc.toObject());
+          await dedupeActorActiveEffects(doc as SwadeActor);
           break;
         case 'Item':
-          updateData = migrateItemData(doc.toObject() as ItemDataSource);
+          updateData = migrateItemData(doc.toObject());
           break;
         case 'Scene':
-          updateData = migrateSceneData(doc.data as SceneData);
+          updateData = migrateSceneData(doc.toObject());
+          for (const token of doc.tokens) {
+            if (!token.actor) continue;
+            await dedupeActorActiveEffects(token.actor);
+          }
           break;
       }
       if (foundry.utils.isEmpty(updateData)) continue;
@@ -235,6 +260,20 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
     }
   }
   return data;
+}
+
+export async function dedupeActorActiveEffects(actor: SwadeActor) {
+  const toDelete = new Array<string>();
+  const filteredEffects = actor.appliedEffects.filter(
+    (e) => e.parent instanceof SwadeItem,
+  );
+  for (const effect of filteredEffects) {
+    const nativeEffects = actor.effects.filter((e) => e.name === effect.name);
+    nativeEffects.forEach((e) => {
+      if (e.origin.includes('Item.' + e.id!)) toDelete.push(e.id!);
+    });
+  }
+  await actor.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 }
 
 function _migrateVehicleOperator(

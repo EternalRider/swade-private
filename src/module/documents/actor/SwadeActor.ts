@@ -181,6 +181,7 @@ export default class SwadeActor extends Actor {
 
   override prepareBaseData() {
     this._prepareCharacterBaseData();
+    this._prepareVehicleBaseData();
   }
 
   override prepareEmbeddedDocuments() {
@@ -314,6 +315,17 @@ export default class SwadeActor extends Actor {
       const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
       this.system.stats.parry.value = completeParry;
     }
+  }
+
+  protected _prepareVehicleBaseData() {
+    if (this.type !== 'vehicle') return;
+    //setup the global modifier container object
+    this.system.stats = {
+      globalMods: {
+        damage: [],
+        ap: [],
+      },
+    };
   }
 
   async rollAttribute(

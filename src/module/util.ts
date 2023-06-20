@@ -220,10 +220,9 @@ export function deepFreeze<T>(o: T) {
 
 /** @internal */
 export function setupFantasyCompanionEntangle() {
-  const index = CONFIG.statusEffects.findIndex((v) => v.id === 'entangled');
-  const entangled = CONFIG.statusEffects[index];
-  if (index < 0) return;
-  const changes = [
+  const entangled = CONFIG.statusEffects.find((v) => v.id === 'entangled');
+  if (!entangled) return;
+  entangled.changes = [
     {
       key: 'data.status.isEntangled',
       mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
@@ -235,10 +234,6 @@ export function setupFantasyCompanionEntangle() {
       value: 'true',
     },
   ];
-
-  CONFIG.statusEffects[index] = foundry.utils.mergeObject(entangled, {
-    changes,
-  });
 }
 
 /** @internal */
