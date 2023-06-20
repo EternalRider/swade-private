@@ -727,7 +727,7 @@ SWADE:
   NaturalArmor: Armadura Natural
   HitLocations: Locais de Acerto
   Head: Cabeça
-  Torso: Torso
+  Torso: Tronco
   Arms: Braços
   Legs: Pernas
   MinStrLong: Força Mínima
@@ -738,7 +738,7 @@ SWADE:
   Details: Detalhes
   Equippable: Equipável
   ArcaneDevice: Dispositivo Arcano
-  Misc: Misc
+  Misc: Equipamento
   QuickAccess: Acesso Rápido
   Effects: Efeitos
   Hindrances: Complicações
@@ -914,6 +914,7 @@ SWADE:
   ModDamage: Modificadores de Dano
   Weakness: Fraqueza
   Resistance: Resistência
+  RollNoun: Rolagem
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
