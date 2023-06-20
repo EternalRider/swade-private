@@ -195,14 +195,15 @@ export default class CharacterSheet extends ActorSheet<
 
     html.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId! as string;
-      const sourceId = a.closest('li')!.dataset.sourceId ?? ('' as string);
-      const sourceItem = this.actor.items.get(sourceId) as SwadeItem;
+      const effectId = a.closest('li')!.dataset.effectId as string;
+      const sourceId = a.closest('li')!.dataset.sourceId as string;
+      const sourceItem = this.actor.items.get(sourceId)!;
       const effect = sourceId
         ? sourceItem.effects.get(effectId)
-        : (this.actor.effects.get(effectId) as SwadeActiveEffect);
+        : this.actor.effects.get(effectId);
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
+      if (!effect) return;
 
       switch (action) {
         case 'edit':
@@ -395,7 +396,6 @@ export default class CharacterSheet extends ActorSheet<
     const items = Array.from(this.actor.items.values()).sort(
       (a, b) => a.sort - b.sort,
     );
-
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     for (const item of items) {
       // Basic template rendering data
@@ -417,9 +417,7 @@ export default class CharacterSheet extends ActorSheet<
         getProperty(system, 'actions.skill') ||
         !!actions.find((action) => action.type === 'skill');
       const hasSkillRoll =
-        ['weapon', 'power', 'shield', 'action'].includes(item.type) &&
-        getProperty(system, 'actions.skill');
-      const hasActionRoll = ['action'].includes(item.type);
+        actions.length || getProperty(system, 'actions.skill');
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
@@ -436,7 +434,6 @@ export default class CharacterSheet extends ActorSheet<
       foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
-      foundry.utils.setProperty(item, 'hasActionRoll', hasActionRoll);
       if (item.type === 'power') {
         const powerPoints = this._getPowerPoints(item);
         foundry.utils.setProperty(item, 'powerPoints', powerPoints);
@@ -491,8 +488,7 @@ export default class CharacterSheet extends ActorSheet<
         list: this._getAdvances(),
       },
     };
-
-    return foundry.utils.mergeObject(await super.getData(options), data);
+    return { ...(await super.getData(options)), ...data };
   }
 
   protected override async _onDropItem(
