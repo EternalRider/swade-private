@@ -28,6 +28,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (!355) **by @florad92**
 
+### Deprecated
+
+- Started depreciation of Embedded Abilities in favor of Item Grants. (#827) **by @florad92**
+
 ### Fixed
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
