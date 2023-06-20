@@ -32,6 +32,23 @@ interface SwadeVehicleDataSource {
 }
 
 export type CharacterDataPropertiesData = CharacterDataSourceData & {
+  attributes: {
+    agility: {
+      effects: RollModifier[];
+    };
+    smarts: {
+      effects: RollModifier[];
+    };
+    spirit: {
+      effects: RollModifier[];
+    };
+    strength: {
+      effects: RollModifier[];
+    };
+    vigor: {
+      effects: RollModifier[];
+    };
+  };
   stats: {
     speed: {
       adjusted: number;

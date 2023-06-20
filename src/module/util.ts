@@ -126,6 +126,11 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
   };
 }
 
+export function addUpModifiers(acc: number, cur: RollModifier) {
+  if (cur.ignore) return acc;
+  return (acc += Number(cur.value));
+}
+
 /** @internal */
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */

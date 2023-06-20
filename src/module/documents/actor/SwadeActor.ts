@@ -209,6 +209,12 @@ export default class SwadeActor extends Actor {
   protected _prepareCharacterBaseData() {
     //typeguard against vehicles
     if (this.type === 'vehicle') return;
+
+    for (const key in this.system.attributes) {
+      const attribute = this.system.attributes[key];
+      attribute.effects = new Array<RollModifier>();
+    }
+
     //auto calculations
     if (this.system.details.autoCalcToughness) {
       //if we calculate the toughness then we set the values to 0 beforehand so the active effects can be applies
@@ -355,11 +361,11 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
 
-    const effectArray = [
+    const effectArray = structuredClone<RollModifier[]>([
       ...abl.effects,
       ...this.system.stats.globalMods[attribute],
       ...this.system.stats.globalMods.trait,
-    ];
+    ]);
     if (options.additionalMods) options.additionalMods.push(effectArray);
     else options.additionalMods = effectArray;
 
@@ -1126,11 +1132,11 @@ export default class SwadeActor extends Actor {
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
       this.system.stats.globalMods[skill.system.attribute] ?? [];
-    const effectArray: RollModifier[] = [
+    const effectArray = structuredClone<RollModifier[]>([
       ...this.system.stats.globalMods.trait,
       ...attGlobalMods,
-      ...skillData.effects,
-    ];
+      ...(skillData.effects ?? []),
+    ]);
 
     if (options.additionalMods) options.additionalMods.push(...effectArray);
     else options.additionalMods = effectArray;

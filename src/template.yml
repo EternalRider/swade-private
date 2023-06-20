@@ -12,14 +12,12 @@ Actor:
             modifier: 0
           wild-die:
             sides: 6
-          effects: []
         smarts:
           die:
             sides: 4
             modifier: 0
           wild-die:
             sides: 6
-          effects: []
           animal: false
         spirit:
           unShakeBonus: 0
@@ -28,14 +26,12 @@ Actor:
             modifier: 0
           wild-die:
             sides: 6
-          effects: []
         strength:
           die:
             sides: 4
             modifier: 0
           wild-die:
             sides: 6
-          effects: []
           encumbranceSteps: 0
         vigor:
           unStunBonus: 0
@@ -48,7 +44,6 @@ Actor:
             modifier: 0
           wild-die:
             sides: 6
-          effects: []
       stats:
         speed:
           runningDie: 6
@@ -359,7 +354,6 @@ Item:
       modifier: 0
     wild-die:
       sides: 6
-    effects: []
   ability:
     templates:
       - itemDescription

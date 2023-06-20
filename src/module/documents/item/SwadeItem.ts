@@ -18,7 +18,12 @@ import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
-import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
+import {
+  addUpModifiers,
+  getKeyByValue,
+  modifierReducer,
+  notificationExists,
+} from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
@@ -51,8 +56,7 @@ declare global {
 }
 
 export default class SwadeItem extends Item {
-  overrides: DeepPartial<Record<string, string | number | boolean>> = {};
-
+  overrides: DeepPartial<ItemDataConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
   static override migrateData(data: ItemDataConstructorData) {
@@ -192,6 +196,21 @@ export default class SwadeItem extends Item {
     if (this.parent) {
       return this.parent.items.find((i) => i.hasGranted.includes(this.id!));
     }
+  }
+
+  get modifier(): number {
+    if (this.type !== 'skill') return 0;
+
+    let mod = this.system.die.modifier;
+    const attribute = this.system.attribute;
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    mod += this.system.effects.reduce(addUpModifiers, 0);
+    mod += globals.trait?.reduce(addUpModifiers, 0) ?? 0;
+    if (attribute) mod += globals[attribute]?.reduce(addUpModifiers, 0);
+    return mod;
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
@@ -531,7 +550,12 @@ export default class SwadeItem extends Item {
     return data;
   }
 
+  override prepareBaseData() {
+    super.prepareBaseData();
+  }
+
   override prepareDerivedData() {
+    super.prepareBaseData();
     if (this.type === 'skill') {
       this.system.die = this._boundTraitDie(this.system.die);
       this.system['wild-die'].sides = Math.min(
