@@ -1198,6 +1198,9 @@ export default class SwadeItem extends Item {
     if (!this.needsFullReloadProcedure()) {
       return this._handleSimpleReload();
     }
+    if (ammo.type === 'consumable') {
+      return this._handleConsumableReload(ammo, missingAmmo);
+    }
     if (ammo.system.quantity <= 0) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
@@ -1212,6 +1215,37 @@ export default class SwadeItem extends Item {
       // partial reload
       ammoInMagazine = this.system.currentShots + ammo.system.quantity;
       await ammo.consume(ammo.system.quantity);
+      if (!notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
+        Logger.warn('SWADE.NotEnoughAmmoToReload', {
+          toast: true,
+          localize: true,
+        });
+      }
+    } else {
+      await ammo.consume(missingAmmo);
+    }
+    await this.update({ 'system.currentShots': ammoInMagazine });
+    Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+  }
+
+  private async _handleConsumableReload(ammo: SwadeItem, missingAmmo: number) {
+    if (ammo.system.charges.value <= 0) {
+      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
+        Logger.warn('SWADE.NotEnoughAmmo', {
+          toast: true,
+          localize: true,
+        });
+      }
+      return;
+    }
+
+    const allCharges = ammo.system.charges.value * ammo.system.quantity;
+
+    let ammoInMagazine = this.system.shots;
+    if (allCharges < missingAmmo) {
+      // partial reload
+      ammoInMagazine = this.system.currentShots + allCharges;
+      await ammo.consume(allCharges);
       if (!notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
         Logger.warn('SWADE.NotEnoughAmmoToReload', {
           toast: true,
@@ -1331,20 +1365,6 @@ export default class SwadeItem extends Item {
     }
   }
 
-  protected override async _preDelete(
-    options: DocumentModificationOptions,
-    user: SwadeUser,
-  ) {
-    await super._preDelete(options, user);
-    //delete all transferred active effects from the actor
-    if (this.parent) {
-      const toDelete = this.parent.effects
-        .filter((e) => e.origin === this.uuid)
-        .map((ae) => ae.id!);
-      await this.parent.deleteEmbeddedDocuments('ActiveEffect', toDelete);
-    }
-  }
-
   protected override _onDelete(
     options: DocumentModificationOptions,
     userId: string,
@@ -1363,15 +1383,13 @@ export default class SwadeItem extends Item {
     if (this.parent && hasProperty(changed, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
       const newState = getProperty(changed, 'system.equipStatus') as EquipState;
-      const updates = this.parent.effects
-        .filter((ae) => ae.origin === this.uuid)
-        .map((ae) => {
-          return {
-            _id: ae.id,
-            disabled: newState < constants.EQUIP_STATE.OFF_HAND,
-          };
-        });
-      await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
+      const updates = this.effects.map((ae) => {
+        return {
+          _id: ae.id,
+          disabled: newState < constants.EQUIP_STATE.OFF_HAND,
+        };
+      });
+      await this.updateEmbeddedDocuments('ActiveEffect', updates);
     }
     //handle and potentially reject magazine/battery updates
     if (this.type === 'consumable') {

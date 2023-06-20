@@ -62,5 +62,8 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
 };
 
 export type VehicleDataPropertiesData = VehicleDataSourceData & {
-  //add derived data here
+  globalMods: {
+    damage: RollModifier[];
+    ap: RollModifier[];
+  };
 };

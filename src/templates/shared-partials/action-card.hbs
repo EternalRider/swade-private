@@ -4,69 +4,45 @@
   data-item-id='{{item.id}}'
   data-token-id='{{tokenId}}'
 >
-  {{#if item.system.notes}}
-    <div class='chips'>
-      <p>
-        <span class='bold'>
-          <i class='fas fa-sticky-note'></i>
-          {{localize 'SWADE.Notes'}}:
-        </span>
-        {{item.system.notes}}
-      </p>
-    </div>
-  {{/if}}
-
-  {{#if (eq item.type 'armor')}}
-    <div class='chips'>
-      <p>
-        <span class='bold'>
-          <i class='fas fa-shield-alt'></i>
-          {{localize 'SWADE.Armor'}}:
-        </span>
+  <div class='chips'>
+    {{#if (eq item.type 'armor')}}
+      <span class="chip">
+        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize 'SWADE.Armor'}}:</span>
         {{item.system.armor}}
-      </p>
-    </div>
-  {{/if}}
-
-  {{#if (and (eq item.type 'weapon') item.system.range)}}
-    <div class='chips'>
-      <p>
-        <span class='bold'><i class='fas fa-ruler-combined'></i> {{localize "SWADE.Range._name"}}:</span>
-        {{item.system.range}}
-      </p>
-    </div>
-  {{/if}}
-
-  {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
-    <div class='chips'>
-      <p>
+      </span>
+    {{/if}}
+    {{#if (and (eq item.type 'weapon') item.system.range)}}
+      <span class="chip">
+          <span class='bold'> <i class='fas fa-ruler-combined'></i> {{localize "SWADE.Range._name"}}:</span>
+          {{item.system.range}}
+        </span>
+    {{/if}}
+    {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
+      <span class="chip">
         <span class='bold'><i class='fas fa-shield-alt'></i> {{localize "SWADE.Ap"}}:</span>
         {{item.system.ap}}
-      </p>
-    </div>
-  {{/if}}
-
-  {{#if (eq item.type 'shield')}}
-    <div class='chips'>
-      <p>
+      </span>
+    {{/if}}
+    {{#if (eq item.type 'shield')}}
+      <span class="chip">
         <span class='bold'><i class='fas fa-shield-alt'></i> {{localize 'SWADE.Parry'}}:</span>
         {{item.system.parry}}
-      </p>
-    </div>
-  {{/if}}
+      </span>
+    {{/if}}
+    {{#if item.system.notes}}
+      <span class="chip">
+        <span class='bold'><i class='fas fa-sticky-note'></i> {{localize 'SWADE.Notes'}}:</span>
+        {{item.system.notes}}
+      </span>
+    {{/if}}
+  </div>
 
   {{#if hasAmmoManagement}}
     <div class='ammo-counter'>
-      <p>
-        <span class='bold'><i class='fas fa-dot-circle'></i>
-          {{localize 'SWADE.Mag'}}:</span>
-        <span
-          class='current-shots'
-        >{{item.system.currentShots}}</span>&nbsp;/&nbsp;<span
-          class='max-shots'
-        >{{item.system.shots}}</span>
-        {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
-      </p>
+      <span class='bold'><i class='fas fa-dot-circle'></i> {{localize 'SWADE.Mag'}}:</span>
+      <span class='current-shots'>{{item.system.currentShots}}</span>&nbsp;/&nbsp;
+      <span class='max-shots'>{{item.system.shots}}</span>
+      {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
     </div>
   {{/if}}
 
@@ -206,7 +182,7 @@
       {{/if}}
     {{/unless}}
 
-    {{#if hasSkillRoll}}
+    {{#if (and hasSkillRoll system.actions.skill)}}
       <button class='card-button' data-action='formula'>
         {{#if powersTab}}<i class='fas fa-hand-sparkles'></i> {{/if}}{{skill}}
       </button>
@@ -252,9 +228,9 @@
       {{/if}}
     {{/each}}
 
-      <!-- Template Controls -->
+  <!-- Template Controls -->
   {{#if item.system.templates}}
-    <div class='card-buttons'>
+    <div class='card-buttons templates'>
       <h4 class='actions-subheading'>
         <i class='fas fa-bullseye'></i>
         {{localize 'SWADE.Templates.Available'}}

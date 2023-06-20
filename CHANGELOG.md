@@ -22,6 +22,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.0.4
+
+### Added
+
+- Added A migration that should de-duplicate active effects, deleting v10 active effects that were copied from an Item.
+
+### Changed
+
+- Enabled the display of an item's description in the quickaccess independent of whether it has actions or not. **by @florad92**
+
+### Fixed
+
+- Fixed an issue that prevented vehicle actors from using weapons. (#833) **by @florad92**
+- The ability to toggle all AE from quickaccess has been restored. (#831) **by @florad92**
+- Added a translation string to differentiate between roll as a verb and as a noun. (#828) **by @florad92**
+- Full Reloads with base consumables should now work as expected again. (#835) **by @florad92**
+- The `Prone` condition should now use the localized Parry Base skill, as defined in the settings. (#838) **by @florad92**
+
 ## 3.0.3
 
 ### Added
