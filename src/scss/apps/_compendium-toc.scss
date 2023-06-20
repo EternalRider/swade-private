@@ -40,6 +40,10 @@
       height: 100%;
     }
 
+    .category-header {
+      break-after: avoid-column;
+    }
+
     .category + .category {
       .category-header {
         margin-top: 0.5rem;
