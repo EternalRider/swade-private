@@ -5,6 +5,7 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -419,15 +420,16 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     await this.item.update({ 'system.grants': grants });
   }
 
-  private async _addEmbedded(item: SwadeItem) {
-    if (
-      this.item.type === 'ability' &&
-      this.item.system.subtype !== 'special'
-    ) {
-      const collection = this.item.embeddedAbilities;
-      collection.set(foundry.utils.randomID(), item.toObject());
-      await this._saveEmbeddedAbilities(collection);
-    }
+  private async _addEmbedded(_item: SwadeItem) {
+    const msg =
+      'Embedded Abilities have been deprecated in favor of Item Grants';
+    ui.notifications.warn(msg, { permanent: true, console: false });
+    foundry.utils.logCompatibilityWarning(msg, {
+      since: '3.1',
+      until: '4.0',
+      details:
+        'You can no longer add Embedded Abilities to items but they will still be able to be transfered to actors until the depreciation period ends.',
+    });
   }
 
   private async _addArcaneDevicePower(item: SwadeItem) {
@@ -506,6 +508,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     this.item.setFlag('swade', flagKey[type], Array.from(map));
   }
 
+  /** @deprecated */
   private _prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
     const collection = this.item.embeddedAbilities;
     const items = new Array<Record<string, unknown>>();
@@ -532,10 +535,6 @@ export default class SwadeItemSheetV2 extends ItemSheet<
       });
     }
     return items;
-  }
-
-  private async _saveEmbeddedAbilities(map: Map<string, ItemDataSource>) {
-    return this.item.setFlag('swade', 'embeddedAbilities', Array.from(map));
   }
 
   private async _saveEmbeddedPowers(map: Map<string, ItemDataSource>) {
