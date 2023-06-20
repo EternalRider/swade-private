@@ -43,6 +43,19 @@ export default class SwadeCoreHooks {
     if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
       setupFantasyCompanionEntangle();
     }
+
+    //set the localized parry skill
+    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
+      const proneParryModifier = arr
+        .find((e) => e.id === 'prone')
+        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
+      if (proneParryModifier) {
+        proneParryModifier.key = `@Skill{${game.settings.get(
+          'swade',
+          'parryBaseSkill',
+        )}}[system.die.modifier]`;
+      }
+    });
     registerCompendiumArt();
   }
 
@@ -108,7 +121,7 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '2.3.1';
+      const needsMigrationVersion = '3.0.4';
       //Minimal compatible version needed for the migration
       const compatibleMigrationVersion = '2.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world

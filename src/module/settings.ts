@@ -167,6 +167,7 @@ export function registerSettings() {
     hint: 'SWADE.Settings.ParryBase.Hint',
     default: 'Fighting',
     scope: 'world',
+    requiresReload: true,
     type: String,
     config: true,
   });
@@ -393,9 +394,6 @@ export function registerSettingRules() {
     //@ts-expect-error The types can't really cope with this but Foundry can
     type: Object,
     config: false,
-    onChange: (v) => {
-      console.log(v);
-    },
   });
 
   game.settings.register('swade', 'bennyImageSheet', {
@@ -444,7 +442,7 @@ export function registerSettingRules() {
     config: false,
     choices: {},
   });
-  
+
   game.settings.register('swade', 'heroesNeverDie', {
     name: 'SWADE.Settings.HeroesNeverDie.Name',
     hint: 'SWADE.Settings.HeroesNeverDie.Hint',

@@ -29,7 +29,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
    * @type {String}
    */
   get title() {
-    return `${this.object.name}: SWADE Tweaks`;
+    return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
   }
 
   /**
