@@ -231,7 +231,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   private _updateTraitRollEffects(
     effectsArray: RollModifier[],
     value: number | string,
-    ignore = true,
+    ignore = false,
   ): boolean {
     if (!this.id) {
       // Handling null ID - don't want to make un-deletable override

@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.0
+
+### Changed
+
+- The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (!355) **by @florad92**
+
 ## 3.0.4
 
 ### Added

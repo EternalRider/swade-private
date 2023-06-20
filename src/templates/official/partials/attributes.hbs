@@ -20,15 +20,15 @@
     <button
       type='button'
       class='attribute-value flexrow rollable'
-      title='{{localize "SWADE.Roll"}}'
+      data-tooltip='{{attributes.agility.tooltip}}'
       data-attribute='agility'
     >
       <img
         class='die'
-        src='systems/swade/assets/official/dice/d{{actor.system.attributes.agility.die.sides}}.svg'
+        src='systems/swade/assets/official/dice/d{{attributes.agility.die}}.svg'
       />
       <span class='modifier'>
-        {{signedString actor.system.attributes.agility.die.modifier}}
+        {{signedString attributes.agility.modifier}}
       </span>
     </button>
   </div>
@@ -46,15 +46,15 @@
     <button
       type='button'
       class='attribute-value flexrow rollable'
-      title='{{localize "SWADE.Roll"}}'
+      data-tooltip='{{attributes.smarts.tooltip}}'
       data-attribute='smarts'
     >
       <img
         class='die'
-        src='systems/swade/assets/official/dice/d{{actor.system.attributes.smarts.die.sides}}.svg'
+        src='systems/swade/assets/official/dice/d{{attributes.smarts.die}}.svg'
       />
       <span class='modifier'>
-        {{signedString actor.system.attributes.smarts.die.modifier}}
+        {{signedString attributes.smarts.modifier}}
       </span>
     </button>
   </div>
@@ -69,15 +69,15 @@
     <button
       type='button'
       class='attribute-value flexrow rollable'
-      title='{{localize "SWADE.Roll"}}'
+      data-tooltip='{{attributes.spirit.tooltip}}'
       data-attribute='spirit'
     >
       <img
         class='die'
-        src='systems/swade/assets/official/dice/d{{actor.system.attributes.spirit.die.sides}}.svg'
+        src='systems/swade/assets/official/dice/d{{attributes.spirit.die}}.svg'
       />
       <span class='modifier'>
-        {{signedString actor.system.attributes.spirit.die.modifier}}
+        {{signedString attributes.spirit.modifier}}
       </span>
     </button>
   </div>
@@ -92,15 +92,15 @@
     <button
       type='button'
       class='attribute-value flexrow rollable'
-      title='{{localize "SWADE.Roll"}}'
+      data-tooltip='{{attributes.strength.tooltip}}'
       data-attribute='strength'
     >
       <img
         class='die'
-        src='systems/swade/assets/official/dice/d{{actor.system.attributes.strength.die.sides}}.svg'
+        src='systems/swade/assets/official/dice/d{{attributes.strength.die}}.svg'
       />
       <span class='modifier'>
-        {{signedString actor.system.attributes.strength.die.modifier}}
+        {{signedString attributes.strength.modifier}}
       </span>
     </button>
   </div>
@@ -115,15 +115,15 @@
     <button
       type='button'
       class='attribute-value flexrow rollable'
-      title='{{localize "SWADE.Roll"}}'
+      data-tooltip='{{attributes.vigor.tooltip}}'
       data-attribute='vigor'
     >
       <img
         class='die'
-        src='systems/swade/assets/official/dice/d{{actor.system.attributes.vigor.die.sides}}.svg'
+        src='systems/swade/assets/official/dice/d{{attributes.vigor.die}}.svg'
       />
       <span class='modifier'>
-        {{signedString actor.system.attributes.vigor.die.modifier}}
+        {{signedString attributes.vigor.modifier}}
       </span>
     </button>
   </div>

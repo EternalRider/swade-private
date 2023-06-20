@@ -1,7 +1,4 @@
-import {
-  AdditionalStat,
-  RollModifier,
-} from '../../../interfaces/additional.interface';
+import { AdditionalStat } from '../../../interfaces/additional.interface';
 
 declare global {
   interface SourceConfig {
@@ -43,24 +40,20 @@ export interface CharacterDataSourceData {
     agility: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
     smarts: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
       animal: boolean;
     };
     spirit: {
       unShakeBonus: number;
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
     strength: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
       encumbranceSteps: number;
     };
     vigor: {
@@ -72,7 +65,6 @@ export interface CharacterDataSourceData {
       };
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
   };
   stats: {
