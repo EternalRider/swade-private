@@ -578,6 +578,90 @@ export default class CharacterSheet extends ActorSheet<
     return skills.sort((a, b) => a.label.localeCompare(b.label));
   }
 
+  private _getAttributesForDisplay(): Record<string, TraitDisplay> {
+    if (this.actor.type === 'vehicle') throw Error();
+    const attributes: Record<string, TraitDisplay> = {};
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    for (const key in this.actor.system.attributes) {
+      const attr = this.actor.system.attributes[key];
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: attr.die.modifier,
+        },
+        ...attr.effects,
+        ...globals[key],
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${game.i18n.localize(
+        SWADE.attributes[key].long,
+      )}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      attributes[key] = {
+        die: attr.die.sides,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        tooltip,
+      };
+    }
+
+    return attributes;
+  }
+
+  private async _getSkillsForDisplay(): Promise<SkillDisplay[]> {
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    const skills: SkillDisplay[] = [];
+
+    for (const skill of this.actor.items.filter((i) => i.type === 'skill')) {
+      const attribute = skill.system.attribute;
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: skill.system.die.modifier,
+        },
+        ...skill.system.effects,
+        ...(globals[attribute] ?? []),
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${skill.name}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      skills.push({
+        label: skill.name as string,
+        die: skill.system.die.sides as number,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        description: await this._enrichText(skill.system.description),
+        isCoreSkill: skill.system.isCoreSkill,
+        isOwner: skill.isOwner,
+        id: skill.id,
+        attribute,
+        tooltip,
+      });
+    }
+
+    return skills.sort((a, b) => a.label.localeCompare(b.label));
+  }
+
   protected override async _onDropItem(
     event: DragEvent,
     data: ActorSheet.DropData.Item,
