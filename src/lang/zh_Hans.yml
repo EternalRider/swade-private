@@ -792,6 +792,8 @@ SWADE:
       Label: 破产
       Hint: 你破产了！
     Sides: 财富骰面
+    WildSides: 财富狂野骰子面数
+    Modifier: 财富骰子修正
   TraitRolls: 特性投骰
   Trait: 特性
   ClickSuggestions: 点击获取建议
@@ -846,6 +848,7 @@ SWADE:
     Preset:
       Choose: 选择一项预设……
       Add: 添加预设
+      Settings: 预设修正
     Value: 数值
     Ignore: 忽略？
   Illumination:
@@ -886,6 +889,7 @@ SWADE:
     EndPrompt: 回合手动结束
     None: 无
     LooseTurnOnHold: 失去待机回合
+    Remaining: 剩余时间
   NoCardsLeft: 牌组中没有足够的牌了！只有 {needed} 的 {current}需要的卡可用
   Max: 上限
   SysMigrationWarning: 你的SWADE系统数据来自于过旧的Foundry版本，无法可靠地整合至最新版中，尽管仍会尝试此过程，但可能会发生错误。
@@ -1058,6 +1062,27 @@ SWADE:
       PC:
         Name: 玩家角色起始资金
         Hint: 设定玩家角色演员创建时具备的资金数量
+    ArbitFields: 任意设置字段
+    NPCCurrency:
+      Name: NPC使用货币
+      Hint: 启用后，所有NPC都具有与玩家角色相同的货币选项
+    DumbLuck:
+      Name: 愚蠢的运气
+    WoundCap:
+      Name: 伤口上限
+      Hint: 勾选此项将在计算伤口时启用伤口上限设置规则。
+    UnarmoredHero:
+      Name: 无甲英雄
+      Hint: 勾选此项将在投掷吸收时启用无甲英雄设置规则
+    GrittyDamage:
+      Name: 严酷伤害
+      Hint: 勾选此项将启用严酷伤害设置规则并允许选择受伤表进行投掷。
+    InjuryTable:
+      Name: 受伤表
+      Hint: 选择适当的RollTable以自动投掷严酷伤害。
+    HeroesNeverDie:
+      Name: 英雄永不死亡
+      Hint: 勾选此项将在确定无力时启用英雄永不死亡设置规则
   EffectCallbacks:
     Shaken:
       RollSpirit: 投骰心魂
@@ -1071,11 +1096,13 @@ SWADE:
       Fail: 你仍处于震慑
       Success: 你不再处于震慑，但仍处于脆弱
       Raise: 你不再处于震慑或脆弱
+      UnStunModifier: 解除眩晕修正
     BleedingOut:
       Title: 抵抗失血的活力检定
       Fail: 你死亡了
       Raise: 你成功得以稳定
       Success: 你暂时苟延残喘。
+      IgnoreWounds: 失血忽略伤口
   BenniesSpendGM: 使用1GM助力点
   DocumentLink: 关联
   DocumentTweaks: 微调
@@ -1090,6 +1117,7 @@ SWADE:
     Label: 招牌武器
     Regular: 普通
     Improved: 精通
+    None: 无效值
   OffHandPenalty: 副手减值
   ItemEquipStatus:
     Label: 位置
@@ -1099,6 +1127,9 @@ SWADE:
     OffHand: 副手
     MainHand: 主手
     TwoHands: 双手
+    Installed: 已安装
+    Added: 已添加
+    Readied: 已准备好
   DestroyOnEmpty: 清空时消灭
   Charges: 次数
   Consumable:
@@ -1141,6 +1172,7 @@ SWADE:
   Vision:
     SeeHeat: 看见热量
     SenseHeat: 感知热量
+    Infravision: 红外线视觉
   Attribute: 属性
   BaseDie: 基础骰
   AttributeManager:
@@ -1168,6 +1200,134 @@ SWADE:
       Hint: 你可以输入喜欢的技能名称或是从建议列表中选择一项
   OtherStats: 其他数值
   HotbarDropOwnedItemWarning: 你只能为拥有的物品创建宏
+  RollNoun: 投掷
+  Rolls:
+    TraitRoll: 特征投掷
+    RollResult: 投掷结果
+    SwadeRoll: 投掷
+    DamageRoll: 伤害投掷
+    Critfail:
+      Critfail: 严重失败
+      ConfirmDie: 确认骰子
+      Unconfirmed: 未确认的严重失败
+      Possible: 可能的严重失败
+      Confirmed: 确认严重失败
+      Confirm: 确认
+    Free: 免费
+    Benny: 本尼
+    GMBenny: GM本尼
+  ConsumableType:
+    Regular: 常规
+    Label: 子类型
+  MessageOnUse:
+    Label: 使用时显示消息
+    Hint: 使用此物品时显示聊天消息
+  GlobalMod:
+    Label: 全局修正
+    Trait: 所有特征
+    Agility: 敏捷和相关技能
+    Smarts: 智力和相关技能
+    Spirit: 精神和相关技能
+    Strength: 力量和相关技能
+    Vigor: 活力和相关技能
+    Attack: 所有攻击
+    Damage: 所有伤害
+    AP: 所有穿甲
+  ItemGrants:
+    EmptyHint: 此物品目前未授予任何物品
+    Header: 物品授予
+    When: 何时授予物品
+  IgnFatigue: 忽略疲劳
+  BaseDamage: 基础伤害
+  RefreshPP: 刷新动力点数
+  Targets: 目标：
+  DamageApplicator:
+    ApplyDamage: 应用伤害
+    SoakModifier: 吸收修正
+    WoundsAboutToBeTaken: <p><strong>{name}</strong>即将受到<strong>{wounds}</strong>！</p>
+    SoakDialog:
+      WoundedTitle: 为{name}投掷吸收伤口？
+      UnwoundedTitle: 调整伤害以确定{name}的状态？
+      ShakenPrompt: <p>{name}即将变得不安。</p>
+      UnharmedPrompt: <p>{name}可能未受伤。</p>
+      Benny: 花费一个本尼来吸收
+      GMBenny: 花费一个GM本尼来吸收
+      Free: 免费吸收
+      TakeWounds: 承受 {wounds} 点伤害
+      AdjustDamage: 调整伤害
+      ApplyShaken: 应用震慑状态
+      Accept: 接受
+      SoakRoll: 吸收的活力测试
+    RerollSoakDialog:
+      Title: 为 {name} 重新投掷吸收伤害？
+      Prompt: <p>{name} 即将承受 {wounds} 点伤害。您是否想重新投掷吸收伤害？</p>
+      PromptCritFail: <p>{name} 即将承受 {wounds} 点伤害。重大失败阻止了重新投掷。</p>
+      Benny: 花费一枚命运币重新投掷
+      GMBenny: 花费一枚GM命运币重新投掷
+      Free: 免费重新投掷
+      TakeWounds: 承受 {wounds} 点伤害
+    AdjustDamagePrompt: <p>根据 {name} 可能拥有的能力和效果调整伤害。</p>
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> 没有遭受重大伤害。</p>
+      SoakedAll: <p><strong>{name}</strong> 吸收了所有伤害并且没有被震慑！</p>
+      IsShaken: <p><strong>{name}</strong> 处于 <strong>震慑</strong> 状态！</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> 处于 <strong>震慑</strong> 状态并且承受了
+        <strong>{wounds}</strong> 点伤害！</p>
+      IsIncapacitated: <p><strong>{name}</strong> 处于 <strong>无力</strong> 状态！</p>
+    Incapacitation:
+      InjuryRoll: 在无力状态下进行体质检定以抵抗伤害
+      Dies: <p><strong>{name}</strong> 因伤害而死亡！</p>
+      PermanentInjury: <p><strong>{name}</strong> 遭受永久性伤害并且 <strong>失血过多！</strong></p>
+      PermanentInjuryHND: <p><strong>{name}</strong> 遭受永久性伤害！</p>
+      TemporaryInjury: <p><strong>{name}</strong> 遭受一次性伤害，当所有伤口愈合时会消失。</p>
+      ShortInjury: <p><strong>{name}</strong> 遭受一次性伤害，将在24小时内消失，或者当所有伤口愈合时消失（以先到者为准）。</p>
+      TakeFail: 遭受永久性伤害
+      TakeSuccess: 遭受一次性伤害，当所有伤口愈合时消失
+      Title: 为 {name} 重新投掷伤害严重程度？
+      Prompt: <p>{name} 即将受伤。您是否想重新投掷体质检定？</p>
+    NoInjuryTable: 没有选择伤害表。请参阅 SWADE 设置配置
+    NoTargetsSelected: 请选择一个目标以应用伤害。
+  RunningMod: 奔跑调整值
+  WildDieTheme: 狂野骰子主题
+  WildDieThemeDesc: 为你的狂野骰子选择一个DSN主题。如果你想创建自己的或者不想让你的狂野骰子看起来不同，请选择'自定义'。请注意，目前只有你自己才能看到自己创建的狂野骰子。其他玩家会看到它们不同。
+  Duplicate: 复制
+  ppReload: 重装动力点数
+  ReloadNotPossible: 这种角色类型不能重装
+  ReloadType:
+    Label: 重装程序
+    None: 无效值
+    Single: 单发
+    Full: 全部
+    Magazine: 弹夹
+    Battery: 电池
+    PP: 动力点数
+  NoAmmoPP: 找不到与设定的弹药匹配的动力点数
+  NoMags: 你的库存中没有标记为弹夹的消耗品
+  RemoveAmmo: 移除弹药
+  Selection: 选择
+  ModTrait: 特征修正
+  ModAttack: 攻击修正
+  ModDamage: 伤害修正
+  Weakness: 弱点
+  Resistance: 抵抗力
+  Validation:
+    OnlyOneRace: 你一次只能有一个种族！
+    OnlyOneArchetype: 你一次只能有一个原型！
+  CalledShot:
+    HeadOrVitals: 瞄准射击：头部或要害
+    Hand: 瞄准射击：手
+    Limbs: 瞄准射击：四肢
+  MigrateCompendium: 强制升级百科全书
+  TOCBlockList: 百科全书目录阻止列表
+  AdditionalStats:
+    SelectHint: 输入一个由分号分隔的选项列表
+    Key: 统计键值
+    Label: 标签
+    Type: 类型
+    HasMaxValue: 具有最大值
+    Current: 当前{stat}
+    Max: 最大{stat}
+  LoadedAmmo: 已装弹药
 ITEM:
   TypeSkill: 技能
   TypePower: 奇术
@@ -1187,3 +1347,23 @@ ACTOR:
   TypeCharacter: 玩家角色
   TypeNpc: NPC
   TypeVehicle: 载具
+TYPES:
+  Card:
+    poker: 扑克牌
+    adventure: 冒险卡牌
+  Actor:
+    character: 玩家角色
+    npc: 非玩家角色
+    vehicle: 载具
+  Item:
+    weapon: 武器
+    armor: 护甲
+    shield: 盾牌
+    gear: 装备
+    edge: 优势
+    hindrance: 劣势
+    skill: 技能
+    power: 力量
+    ability: 能力
+    consumable: 消耗品
+    action: 动作
