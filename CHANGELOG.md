@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (!355) **by @florad92**
 - The `Entangled` status now applies the `Vulnerable` status instead of the `Distracted` status. (#846) **by @florad92**
+- Changed the label for the input which determines the amount of trait dice that are being rolled for actions to make it more universal. (#823) **by @florad92**
 
 ### Deprecated
 

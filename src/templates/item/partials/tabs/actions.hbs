@@ -51,17 +51,19 @@
                 value='{{action.skillOverride}}'
               />
             </div>
-            <div class='form-group right'>
+            <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
               <label>{{localize 'SWADE.TraitMod'}}</label>
               <input
                 type='text'
                 name='system.actions.additional.{{id}}.skillMod'
                 value='{{action.skillMod}}'
-                title='{{localize "SWADE.ModHint"}}'
               />
             </div>
-            <div class='form-group left'>
-              <label>{{localize 'SWADE.RoF'}}</label>
+            <div
+              class='form-group left'
+              title='{{localize "SWADE.NumberOfDice.Hint"}}'
+            >
+              <label>{{localize 'SWADE.NumberOfDice.Label'}}</label>
               <input
                 type='text'
                 name='system.actions.additional.{{id}}.rof'
@@ -87,16 +89,16 @@
                 value='{{action.skillOverride}}'
               />
             </div>
-            <div class='form-group right'>
+            <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
               <label>{{localize 'SWADE.TraitMod'}}</label>
               <input
                 type='text'
                 name='system.actions.additional.{{id}}.skillMod'
                 value='{{action.skillMod}}'
-                title='{{localize "SWADE.ModHint"}}'
               />
             </div>
-          {{else}} <!-- damage type -->
+          {{else}}
+            <!-- damage type -->
             <div class='form-group full-width'>
               <label>{{localize 'SWADE.DmgOver'}}</label>
               <input
@@ -105,20 +107,26 @@
                 value='{{action.dmgOverride}}'
               />
             </div>
-            <div class='form-group full-width'>
+            <div
+              class='form-group full-width'
+              title='{{localize "SWADE.ModHint"}}'
+            >
               <label>{{localize 'SWADE.Dmg'}}
                 {{localize 'SWADE.Modifier'}}</label>
               <input
                 type='text'
                 name='system.actions.additional.{{id}}.dmgMod'
                 value='{{action.dmgMod}}'
-                title='{{localize "SWADE.ModHint"}}'
               />
             </div>
             <div class='form-group full-width'>
-              <label>{{localize "SWADE.HeavyWeapon"}}</label>
-              <span class="form-fields">
-                <input type="checkbox" name="system.actions.additional.{{id}}.isHeavyWeapon" {{checked action.isHeavyWeapon}}/>
+              <label>{{localize 'SWADE.HeavyWeapon'}}</label>
+              <span class='form-fields'>
+                <input
+                  type='checkbox'
+                  name='system.actions.additional.{{id}}.isHeavyWeapon'
+                  {{checked action.isHeavyWeapon}}
+                />
               </span>
             </div>
           {{/if}}

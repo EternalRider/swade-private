@@ -894,6 +894,9 @@ SWADE:
         roll?</p>
     NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
     NoTargetsSelected: Please select a target to apply the damage to.
+  NumberOfDice:
+    Label: Dice
+    Hint: Determines how many Trait dice are rolled for this action
 TYPES:
   Actor:
     character: Player Character
