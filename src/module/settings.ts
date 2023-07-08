@@ -47,7 +47,6 @@ declare global {
       'swade.dumbLuck': boolean;
       'swade.applyEncumbrance': boolean;
       'swade.highlightTemplate': boolean;
-      'swade.fantasyCompanionEntangle': boolean;
       'swade.settingFields': {
         actor: Record<string, PrototypeAdditionalStat>;
         item: Record<string, PrototypeAdditionalStat>;
@@ -195,16 +194,6 @@ export function registerSettings() {
     type: Boolean,
     default: true,
     config: true,
-  });
-
-  game.settings.register('swade', 'fantasyCompanionEntangle', {
-    name: 'SWADE.Settings.FantasyCompanionEntangle.Name',
-    hint: 'SWADE.Settings.FantasyCompanionEntangle.Hint',
-    scope: 'world',
-    type: Boolean,
-    default: false,
-    config: true,
-    requiresReload: true,
   });
 }
 

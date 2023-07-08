@@ -22,7 +22,6 @@ import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
-import { setupFantasyCompanionEntangle } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -39,11 +38,6 @@ export default class SwadeCoreHooks {
       const element = SWADE.ranks[i];
       SWADE.ranks[i] = game.i18n.localize(element);
     }
-
-    if (game.settings.get('swade', 'fantasyCompanionEntangle')) {
-      setupFantasyCompanionEntangle();
-    }
-
     //set the localized parry skill
     [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
       const proneParryModifier = arr

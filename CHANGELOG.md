@@ -24,13 +24,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 3.1.0
 
+### Added
+
+- Added the `Desperate Attack` modifiers to the Roll Dialog (#847) **by @florad92**
+
 ### Changed
 
 - The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (!355) **by @florad92**
+- The `Entangled` status now applies the `Vulnerable` status instead of the `Distracted` status. (#846) **by @florad92**
 
 ### Deprecated
 
 - Started depreciation of Embedded Abilities in favor of Item Grants. (#827) **by @florad92**
+
+### Removed
+
+- Removed the setting that replaced the core `Entangled` effect with the version from the Fantasy Companion as that version has replaced the core version. (#846) **by @florad92**
+- Removed the `SWADE.Settings.FantasyCompanionEntangle` translation keys as they are no longer needed (#846) **by @florad92**
 
 ### Fixed
 

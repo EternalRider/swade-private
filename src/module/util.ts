@@ -224,24 +224,6 @@ export function deepFreeze<T>(o: T) {
 }
 
 /** @internal */
-export function setupFantasyCompanionEntangle() {
-  const entangled = CONFIG.statusEffects.find((v) => v.id === 'entangled');
-  if (!entangled) return;
-  entangled.changes = [
-    {
-      key: 'data.status.isEntangled',
-      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 'true',
-    },
-    {
-      key: 'data.status.isVulnerable',
-      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 'true',
-    },
-  ];
-}
-
-/** @internal */
 export function isObject(value) {
   return !!value && typeof value === 'object';
 }
