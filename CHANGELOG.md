@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The `Entangled` status now applies the `Vulnerable` status instead of the `Distracted` status. (#846) **by @florad92**
 - Changed the label for the input which determines the amount of trait dice that are being rolled for actions to make it more universal. (#823) **by @florad92**
 - The `swadeAction` Hook is no longer triggered if the trait or damage roll was cancelled. (#812) **by @florad92**
+- The `Frightened` statuseffect now applies the Hesitant Hindrance and also disables other intiative related edges. (#811) **by @florad92**
 
 ### Deprecated
 
