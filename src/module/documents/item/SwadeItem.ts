@@ -552,6 +552,9 @@ export default class SwadeItem extends Item {
 
   override prepareBaseData() {
     super.prepareBaseData();
+    if (this.type === 'skill') {
+      this.system.effects ??= new Array<RollModifier>();
+    }
   }
 
   override prepareDerivedData() {
