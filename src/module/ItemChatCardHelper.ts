@@ -382,6 +382,7 @@ export default class ItemChatCardHelper {
     action: string,
     roll: SwadeRoll | null,
   ) {
+    if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);
   }
