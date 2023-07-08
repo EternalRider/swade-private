@@ -76,7 +76,7 @@ export const statusEffects: StatusEffect[] = [
     id: 'wild-attack',
     label: 'SWADE.WildAttack',
     duration: {
-      rounds: 0
+      rounds: 0,
     },
     changes: [
       {
@@ -164,7 +164,7 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
       {
-        key: 'system.status.isDistracted',
+        key: 'system.status.isVulnerable',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },

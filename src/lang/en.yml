@@ -508,11 +508,6 @@ SWADE:
       Hint: >-
         When enabled, Measured Templates alway highlight themselves instead of
         the grid.
-    FantasyCompanionEntangle:
-      Name: Fantasy Companion Entangle
-      Hint: >-
-        Use the Fantasy Companion Entangle status instead of the Core version.
-        Requires a reload to take effect
     InitDiscardPile:
       Name: Initiative Discard Pile
     InitCardDeck:
@@ -702,6 +697,9 @@ SWADE:
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
+  DesperateAttack:
+    2: Desperate Attack (2)
+    4: Desperate Attack (4)
   CalledShot:
     HeadOrVitals: 'Called Shot: Head or Vitals'
     Hand: 'Called Shot: Hand'
