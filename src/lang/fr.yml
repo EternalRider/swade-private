@@ -213,8 +213,8 @@ SWADE:
   VehicleMod: Mod. de véhicule
   OpSkill: Compétence de manœuvre
   ShowBennyAnimation: Montrer l'animation du jeton
-  ShowBennyAnimationDesc: Joue une animation en dépensant un jeton. Seulement disponible
-    si Dice So Nice! est installé
+  ShowBennyAnimationDesc: Joue une animation lors de l'utilisation d'un jeton. Seulement
+    disponible si Dice So Nice! est installé
   WildDiePreset: Thème du dé joker
   WildDiePresetDesc: Sélectionnez un thème DSN pour votre dé joker. Sélectionnez «
     Personnalisé » si vous voulez créer le vôtre ou « Aucun » si vous ne voulez pas
@@ -344,7 +344,7 @@ SWADE:
   Duplicates: Doublons trouvés
   DuplicateItemsBodyText: En ajoutant le {type} <strong>{name}</strong> à l'acteur
     {target}, des éléments en double (nom/type) ont été trouvés. Les nouveaux objets
-    ont été renommés
+    ont été renommés pour signaler leur provenance.
   NoActionDeckFound: Aucun jeu de cartes d'action trouvé, création en cours
   NoActionDeckDiscardPileFound: Aucune défausse de carte d'action trouvée, création
     en cours
@@ -396,8 +396,8 @@ SWADE:
   ConvertToDeck: Convertir en jeu de cartes
   Expiration:
     TabLabel: Comportement du tour
-    Description: "<p>Les effets s'arrêtent lors <em>du prochain tour de la cible,\
-      \ ou plus tard</em></p>"
+    Description: "<p>Les effets s'arrêtent lors <em>du prochain tour de la cible,
+      ou plus tard</em></p>"
     Behavior: Comportement des fins d'effet
     BeginAuto: Début du tour automatique
     BeginPrompt: Début du tour sur demande
@@ -407,12 +407,12 @@ SWADE:
     LooseTurnOnHold: perte du tour En attente
     Remaining: Restant
   RemoveEffectTitle: Supprimer {label} ?
-  RemoveEffectBody: "<p style='text-align: center;'>Supprimer <strong>{label}</strong>\
-    \ de <strong>{parent}</strong> ?</p>"
+  RemoveEffectBody: "<p style='text-align: center;'>Supprimer <strong>{label}</strong>
+    de <strong>{parent}</strong> ?</p>"
   PPAbbreviation: PP
   ShowInChat: 'Afficher dans la discussion'
   ExpandDescription: Agrandir pour montrer la description
-  Favorite: Favorite
+  Favorite: Favoris
   Equip: Équiper
   RollDamage: Lancer les dégâts
   SystemLinks:
@@ -580,7 +580,7 @@ SWADE:
     CardSound:
       Name: Son lors de la pioche d’une carte
       Hint: Joue un son lorsqu’une carte d'initiative est piochée
-    ArbitFields: Données arbitraire de l'univers
+    ArbitFields: Données diverses de l'univers
     AlwaysGeneralPP:
       Name: Toujours afficher les Points de pouvoir génériques
       Hint: Quand l'option est cochée, les Point de pouvoirs générique sont toujours
@@ -696,7 +696,7 @@ SWADE:
         clients doivent être rafraîchis. Merci de confirmer.
       Title: Confirmer
     Header: Contenu
-    Toggle: cocher pour utiliser la tables des matières du Compendium
+    Toggle: Cocher pour utiliser la table des matières du Compendium
   CustomWildDie: "- Dé Joker spécial -"
   DieSides: Faces du dé
   EffectWizard:
@@ -889,6 +889,13 @@ SWADE:
     Limbs: 'Tir ciblé : membres'
   MigrateCompendium: Forcer la migration du Compendium
   NoAmmoPP: Impossible de trouver des Points de pouvoir correspondant au type de munition
+  RollNoun: Lancé
+  NumberOfDice:
+    Hint: Défini combien de dés de Trait sont lancés pour cette action
+    Label: Dé(s)
+  DesperateAttack:
+    2: Attaque désespérée (2)
+    4: Attaque désespérée (4)
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
