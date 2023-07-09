@@ -915,6 +915,12 @@ SWADE:
   Weakness: Fraqueza
   Resistance: Resistência
   RollNoun: Rolagem
+  DesperateAttack:
+    4: Ataque Desesperado (4)
+    2: Ataque Desesperado (2)
+  NumberOfDice:
+    Label: Dados
+    Hint: Determina quantos dados de Característica serão rolados para esta ação
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
