@@ -49,6 +49,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
 
+## 3.0.5
+
+### Added
+
+- Added a migration that will fix broken Item Grant UUIDs from world Items. Some grants have been broken by a previous migration which added an additional document type to the start of the UUID (#842) **by @florad92**
+
+### Fixed
+
+- Fixed an issue that would cause the effect duration dialog to display `undefined` instead of the name of the effect. (#844) **by @florad92, based on a solution by @SalieriC**
+- Fixed an i18n issue that would cause new item names to start with `New` regardless of language. (#840) **by @florad92**
+- Fixed an issue that prevented active effects from being deleted via the quickaccess. (#849) **by @florad92**
+- Fixed an issue with Item Grants ignoring name and image overrides (#848) by **by @florad92**
+
 ## 3.0.4
 
 ### Added

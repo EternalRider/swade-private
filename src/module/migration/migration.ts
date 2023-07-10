@@ -1,59 +1,134 @@
 /* eslint-disable deprecation/deprecation */
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
+import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs';
+import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
+import {
+  ActiveEffectDataConstructorData,
+  ActiveEffectDataSource,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { EffectChangeDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import {
   ActorData,
   ItemData,
-  SceneData
+  SceneData,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
-import { Updates } from '../globals';
-import { constants } from './constants';
-import type SwadeActor from './documents/actor/SwadeActor';
-import SwadeItem from './documents/item/SwadeItem';
-import type SwadeUser from './documents/SwadeUser';
-import { Logger } from './Logger';
+import { constants } from '../constants';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import type SwadeActor from '../documents/actor/SwadeActor';
+import SwadeItem from '../documents/item/SwadeItem';
+import { ItemGrant } from '../documents/item/SwadeItem.interface';
+import type SwadeUser from '../documents/SwadeUser';
+import { Logger } from '../Logger';
+import { MigrationCounter } from '../models/MigrationCounter';
+import { triggerServersideMigration } from './migrationUtils';
 
 export async function migrateWorld() {
+  const version = game.system.version;
+
   Logger.info(
-    `Applying SWADE System Migration for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`,
-    { toast: true },
+    `Applying SWADE System Migration for version ${version}. Please be patient and do not close your game or shut down your server.`,
+    { permanent: true, toast: true },
+  );
+
+  // Gather the World Actors/Items to migrate
+  const actors = game
+    .actors!.map((a) => [a, true])
+    .concat(
+      Array.from(game.actors.invalidDocumentIds).map((id) => [
+        game.actors!.getInvalid(id),
+        false,
+      ]),
+    );
+
+  const items = game
+    .items!.map((i) => [i, true])
+    .concat(
+      Array.from(game.items.invalidDocumentIds).map((id) => [
+        game.items!.getInvalid(id),
+        false,
+      ]),
+    );
+
+  const packs = game.packs.filter((p) =>
+    ['Actor', 'Item', 'Scene'].includes(p.documentName),
+  );
+
+  const counter = new MigrationCounter(
+    items.length +
+      actors.length +
+      packs.length +
+      game.scenes!.size +
+      game.users!.size,
   );
 
   // Migrate World Actors
-  for (const actor of game.actors!) {
+  for (const [actor, valid] of actors) {
     try {
-      const updateData = migrateActorData(actor.toObject());
-      if (!foundry.utils.isEmpty(updateData)) {
-        Logger.info(`Migrating Actor document ${actor.name}`);
-        await actor.update(updateData, { enforceTypes: false });
-      }
       await dedupeActorActiveEffects(actor);
+      const source = valid
+        ? actor.toObject()
+        : game.data.actors.find((a) => a._id === actor.id);
+      const updateData = migrateActorData(source);
+      if (!foundry.utils.isEmpty(updateData)) {
+        console.log(`Migrating Actor document ${actor.name}`);
+        await actor.update(updateData, { enforceTypes: false, diff: valid });
+      }
     } catch (err) {
       err.message = `Failed swade system migration for Actor ${actor.name}: ${err.message}`;
-      Logger.error(err);
+      console.error(err);
+    } finally {
+      counter.increment();
     }
   }
 
   // Migrate World Items
-  for (const item of game.items!) {
+  for (const [item, valid] of items) {
     try {
-      const updateData = migrateItemData(item.toObject());
+      const source = valid
+        ? item.toObject()
+        : game.data.items.find((i) => i._id === item.id);
+      const updateData = migrateItemData(source);
       if (!foundry.utils.isEmpty(updateData)) {
-        Logger.info(`Migrating Item document ${item.name}`);
-        await item.update(updateData, { enforceTypes: false });
+        console.log(`Migrating Item document ${item.name}`);
+        await item.update(updateData, { enforceTypes: false, diff: valid });
       }
     } catch (err) {
       err.message = `Failed swade system migration for Item ${item.name}: ${err.message}`;
-      Logger.error(err);
+      console.error(err);
+    } finally {
+      counter.increment();
     }
   }
 
-  // Migrate Compendium Packs
-  for (const p of game.packs) {
-    if (!['Actor', 'Item', 'Scene'].includes(p.metadata.type)) continue;
-    await migrateCompendium(p);
+  // Migrate Actor Override Tokens
+  for (const scene of game.scenes!) {
+    try {
+      for (const token of scene.tokens) {
+        token.delta._createSyntheticActor({ reinitializeCollections: true });
+        if (token.actorLink) continue; //skip linked tokens as they are already handled by the world actor migration
+        const actor = token.actor;
+        await dedupeActorActiveEffects(actor);
+        const updateData = migrateActorData(actor?.toObject());
+        if (foundry.utils.isEmpty(updateData)) continue;
+        await actor?.update(updateData);
+      }
+      const updateData = migrateSceneData(scene);
+      if (!foundry.utils.isEmpty(updateData)) {
+        console.log(`Migrating Scene document ${scene.name}`);
+        await scene.update(updateData, { enforceTypes: false });
+        // If we do not do this, then synthetic token actors remain in cache
+        // with the un-updated actorData.
+        for (const token of scene.tokens.filter((t) => !t.actorLink)) {
+          token.delta._createSyntheticActor({ reinitializeCollections: true });
+        }
+      }
+    } catch (err) {
+      err.message = `Failed swade system migration for Scene ${scene.name}: ${err.message}`;
+      console.error(err);
+    } finally {
+      counter.increment();
+    }
   }
 
   // Migrate users
@@ -67,34 +142,26 @@ export async function migrateWorld() {
     } catch (err) {
       err.message = `Failed swade system migration for user ${user.name}: ${err.message}`;
       Logger.error(err);
+    } finally {
+      counter.increment();
     }
   }
 
-  for (const scene of game.scenes!) {
-    try {
-      const updateData = migrateSceneData(scene.toObject() as SceneData);
-      if (!foundry.utils.isEmpty(updateData)) {
-        Logger.info(`Migrating Scene document ${scene.name}`);
-        await scene.update(updateData, { enforceTypes: false });
-      }
-      for (const token of scene.tokens) {
-        if (!token.actor) continue;
-        await dedupeActorActiveEffects(token.actor);
-      }
-    } catch (err) {
-      err.message = `Failed swade system migration for Item ${scene.name}: ${err.message}`;
-      Logger.error(err);
-    }
+  // Migrate Compendium Packs
+  for (const pack of packs) {
+    await migrateCompendium(pack);
+    counter.increment();
   }
 
   // Set the migration as complete
-  const version = game.system.version;
   await game.settings.set('swade', 'systemMigrationVersion', version);
   Logger.info(`SWADE System Migration to version ${version} completed!`, {
     permanent: true,
     toast: true,
   });
 }
+
+/* -------------------------------------------- */
 
 /**
  * Apply migration rules to all Entities within a single Compendium pack
@@ -103,43 +170,39 @@ export async function migrateWorld() {
 export async function migrateCompendium(
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
 ) {
-  const type = pack.metadata.type;
-  if (!['Actor', 'Item', 'Scene'].includes(type)) return;
+  const documentName = pack.documentName;
+  if (!['Actor', 'Item', 'Scene'].includes(documentName)) return;
 
   // Unlock the pack for editing
   const wasLocked = pack.locked;
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate();
+  await triggerServersideMigration(pack);
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
   for (const doc of documents) {
     let updateData: Record<string, any> = {};
     try {
-      switch (doc.documentName) {
+      switch (documentName) {
         case 'Actor':
-          updateData = migrateActorData(doc.toObject());
           await dedupeActorActiveEffects(doc as SwadeActor);
+          updateData = migrateActorData(doc.toObject());
           break;
         case 'Item':
           updateData = migrateItemData(doc.toObject());
           break;
         case 'Scene':
           updateData = migrateSceneData(doc.toObject());
-          for (const token of doc.tokens) {
-            if (!token.actor) continue;
-            await dedupeActorActiveEffects(token.actor);
-          }
           break;
       }
-      if (foundry.utils.isEmpty(updateData)) continue;
 
       // Save the entry, if data was changed
+      if (foundry.utils.isEmpty(updateData)) continue;
       await doc.update(updateData);
-      Logger.info(
-        `Migrated ${type} document ${doc.name} in Compendium ${pack.collection}`,
+      Logger.debug(
+        `Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`,
       );
     } catch (err) {
       // Handle migration failures
@@ -150,10 +213,86 @@ export async function migrateCompendium(
 
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  Logger.info(
-    `Migrated all ${type} documents from Compendium ${pack.metadata.label}`,
+  Logger.debug(
+    `Migrated all ${documentName} documents from Compendium ${pack.collection}`,
   );
 }
+
+/* -------------------------------------------- */
+
+export function migrateUser(user: SwadeUser) {
+  const updateData: UpdateData = {};
+  _migrateWildDieFlag(user, updateData);
+  return updateData;
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Migrate any active effects attached to the provided parent.
+ * @param {object} parent           Data of the parent being migrated.
+ * @returns {object[]}              Updates to apply on the embedded effects.
+ */
+export function migrateEffects(parent) {
+  if (!parent.effects) return {};
+  return parent.effects.reduce((arr, e) => {
+    const effectData =
+      e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
+    const effectUpdate = migrateEffectData(effectData);
+    if (!foundry.utils.isEmpty(effectUpdate)) {
+      effectUpdate._id = effectData._id;
+      arr.push(foundry.utils.expandObject(effectUpdate));
+    }
+    return arr;
+  }, []);
+}
+
+/* -------------------------------------------- */
+
+/* Update all compendium packs using the new system data model. */
+//TODO re-enable once datamodel has been implemented
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function refreshAllCompendiums() {
+  for (const pack of game.packs) {
+    await refreshCompendium(pack);
+  }
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Update all Documents in a compendium using the new system data model.
+ * @param {CompendiumCollection} pack  Pack to refresh.
+ */
+async function refreshCompendium(pack) {
+  if (!pack?.documentName) return;
+  // swade.moduleArt.suppressArt = true;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const DocumentClass = CONFIG[pack.documentName]
+    .documentClass as typeof Document<AnyDocumentData>;
+  const wasLocked = pack.locked;
+  await pack.configure({ locked: false });
+  await pack.migrate();
+
+  ui.notifications.info(`Beginning to refresh Compendium ${pack.collection}`);
+  const documents = await pack.getDocuments();
+  for (const doc of documents) {
+    const data = doc.toObject();
+    await doc.delete();
+    await DocumentClass.create(data, {
+      keepId: true,
+      keepEmbeddedIds: true,
+      pack: pack.collection,
+    });
+  }
+  await pack.configure({ locked: wasLocked });
+  // swade.moduleArt.suppressArt = false;
+  ui.notifications.info(
+    `Refreshed all documents from Compendium ${pack.collection}`,
+  );
+}
+
+/* -------------------------------------------- */
 
 /* -------------------------------------------- */
 /*  Document Type Migration Helpers             */
@@ -172,11 +311,18 @@ export function migrateActorData(actor: ActorDataSource) {
   _migrateVehicleOperator(actor, updateData);
   _migrateGeneralPowerPoints(actor, updateData);
 
+  // Migrate embedded effects
+  if (actor.effects) {
+    const effects = migrateEffects(actor);
+    if (effects.length > 0) updateData.effects = effects;
+  }
+
   // Migrate Owned Items
   if (!actor.items) return updateData;
   const items = actor.items.reduce((arr, i) => {
     // Migrate the Owned Item
-    const itemUpdate = migrateItemData(i);
+    const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
+    const itemUpdate = migrateItemData(itemData);
 
     // Update the Owned Item
     if (!foundry.utils.isEmpty(itemUpdate)) {
@@ -191,15 +337,33 @@ export function migrateActorData(actor: ActorDataSource) {
   return updateData;
 }
 
-export function migrateItemData(data: ItemDataSource) {
+/* -------------------------------------------- */
+
+/**
+ * Migrate a single Item document to incorporate latest data model changes
+ *
+ * @param {object} item             Item data to migrate
+ * @returns {object}                The updateData to apply
+ */
+export function migrateItemData(item: ItemDataSource) {
   const updateData: UpdateData = {};
-  _migrateWeaponAPToNumber(data, updateData);
-  _migratePowerEquipToFavorite(data, updateData);
-  _migrateItemEquipState(data, updateData);
-  _migrateWeaponAutoReload(data, updateData);
-  _ensureBatteryMaxCharges(data, updateData);
+  _migrateWeaponAPToNumber(item, updateData);
+  _migratePowerEquipToFavorite(item, updateData);
+  _migrateItemEquipState(item, updateData);
+  _migrateWeaponAutoReload(item, updateData);
+  _ensureBatteryMaxCharges(item, updateData);
+  _fixWorldItemGrants(item, updateData);
+
+  // Migrate embedded effects
+  if (item.effects) {
+    const effects = migrateEffects(item);
+    if (effects.length > 0) updateData.effects = effects;
+  }
+
   return updateData;
 }
+
+/* -------------------------------------------- */
 
 /**
  * Migrate a single Scene document to incorporate changes to the data model of it's actor data overrides
@@ -207,43 +371,24 @@ export function migrateItemData(data: ItemDataSource) {
  * @param {Object} scene  The Scene data to Update
  * @return {Object}       The updateData to apply
  */
-export function migrateSceneData(scene: SceneData) {
-  const tokens = scene.tokens.map((token) => {
-    const t = token.toObject();
-    const update: Updates = {};
-    if (Object.keys(update).length) foundry.utils.mergeObject(t, update);
-    if (!t.actorId || t.actorLink) {
-      t.actorData = {};
-    } else if (!game?.actors?.has(t.actorId)) {
-      t.actorId = null;
-      t.actorData = {};
-    } else if (!t.actorLink) {
-      const actorData = foundry.utils.duplicate(t.actorData) as ActorDataSource;
-      actorData.type = token.actor?.type;
-      const update = migrateActorData(actorData);
-      ['items', 'effects'].forEach((embeddedName) => {
-        if (!update[embeddedName]?.length) return;
-        const updates = new Map<string, any>(
-          update[embeddedName].map((u) => [u._id, u]),
-        );
-        t.actorData[embeddedName].forEach((original) => {
-          const update = updates.get(original._id);
-          if (update) foundry.utils.mergeObject(original, update);
-        });
-        delete update[embeddedName];
-      });
-      foundry.utils.mergeObject(t.actorData, update);
-    }
-    return t;
-  });
-  return { tokens };
-}
-
-export function migrateUser(user: SwadeUser) {
+export function migrateSceneData(_scene: Scene | SceneData) {
   const updateData: UpdateData = {};
-  _migrateWildDieFlag(user, updateData);
   return updateData;
 }
+
+/* -------------------------------------------- */
+
+/**
+ * Migrate the provided active effect data.
+ * @param {object} _effect           Effect data to migrate.
+ * @returns {object}                The updateData to apply.
+ */
+export function migrateEffectData(_effect: ActiveEffectDataSource) {
+  const updateData: UpdateData = {};
+  return updateData;
+}
+
+/* -------------------------------------------- */
 
 /**
  * Purge the data model of any inner objects which have been flagged as _deprecated.
@@ -264,14 +409,17 @@ export function removeDeprecatedObjects(data: ItemData | ActorData) {
 
 export async function dedupeActorActiveEffects(actor: SwadeActor) {
   const toDelete = new Array<string>();
-  const filteredEffects = actor.appliedEffects.filter(
+  const filteredEffects: SwadeActiveEffect[] = actor.appliedEffects.filter(
     (e) => e.parent instanceof SwadeItem,
   );
+
   for (const effect of filteredEffects) {
-    const nativeEffects = actor.effects.filter((e) => e.name === effect.name);
-    nativeEffects.forEach((e) => {
-      if (e.origin.includes('Item.' + e.id!)) toDelete.push(e.id!);
-    });
+    actor.effects
+      .filter((e) => e.name === effect.name)
+      .forEach((e) => {
+        const parentId = effect.parent.id as string;
+        if (e.origin.includes('.Item.' + parentId)) toDelete.push(e.id!);
+      });
   }
   await actor.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 }
@@ -281,7 +429,7 @@ function _migrateVehicleOperator(
   updateData: UpdateData,
 ) {
   if (data.type !== 'vehicle') return updateData;
-  const driverId = data.system.driver.id;
+  const driverId = data.system.driver?.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
   if (hasOldID) {
     updateData['system.driver.id'] = `Actor.${driverId}`;
@@ -423,6 +571,18 @@ function _ensureBatteryMaxCharges(
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
     updateData['system.charges.max'] = 100;
+  }
+}
+
+function _fixWorldItemGrants(item, updateData) {
+  if (!item.system.grants) return;
+  updateData['system.grants'] = structuredClone(item.system.grants);
+  for (const grant of updateData['system.grants'] as Array<ItemGrant>) {
+    if (grant.uuid.startsWith('Item.Item.')) {
+      const newUUID = grant.uuid.split('.');
+      newUUID.shift(); //discard the first part
+      grant.uuid = newUUID.join('.');
+    }
   }
 }
 

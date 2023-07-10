@@ -18,7 +18,7 @@ import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../../documents/item/SwadeItem';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
-import PopUpMenu from '../../PopUpMenu';
+import PopUpMenu from '../../models/PopUpMenu';
 import * as util from '../../util';
 
 export default class CharacterSheet extends ActorSheet<
@@ -1005,12 +1005,10 @@ export default class CharacterSheet extends ActorSheet<
   protected async _inlineItemCreate(button: HTMLButtonElement) {
     const type = button.dataset.type!;
     // item creation helper func
-    const createItem = function (
-      type: string,
-      name: string = `New ${type.capitalize()}`,
-    ): any {
+    const createItem = (type: string, name?: string) => {
       const itemData = {
-        name: name ? name : `New ${type.capitalize()}`,
+        name:
+          name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
         type: type,
         system: button.dataset,
       };
@@ -1113,7 +1111,7 @@ export default class CharacterSheet extends ActorSheet<
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
-        const optionString = options[key].optionString ?? '';
+        const optionString = options[key]?.optionString ?? '';
         attr.options = optionString
           .split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
@@ -1403,7 +1401,12 @@ export default class CharacterSheet extends ActorSheet<
       {
         name: 'SWADE.Del',
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+        callback: (i) => {
+          const itemId = i.data('itemId');
+          const effectId = i.data('effectId');
+          if (itemId) this.actor.items.get(itemId)?.deleteDialog();
+          if (effectId) this.actor.effects.get(effectId)?.deleteDialog();
+        },
       },
     ];
 
