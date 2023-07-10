@@ -315,10 +315,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   async promptEffectDeletion() {
     const title = game.i18n.format('SWADE.RemoveEffectTitle', {
-      name: this.name,
+      label: this.name,
     });
     const content = game.i18n.format('SWADE.RemoveEffectBody', {
-      name: this.name,
+      label: this.name,
       parent: this.parent?.name,
     });
     const buttons: Record<string, Dialog.Button> = {

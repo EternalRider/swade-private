@@ -565,8 +565,8 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     for (const grant of grants) {
       const item = fromUuidSync(grant.uuid) as SwadeItem | null;
       enriched.push({
-        name: item?.name ?? grant.name,
-        img: item?.img ?? grant.img,
+        name: grant.mutation?.name ?? item?.name ?? grant.name,
+        img: grant.mutation?.img ?? item?.img ?? grant.img,
         uuid: grant.uuid,
         missing: !item,
       });

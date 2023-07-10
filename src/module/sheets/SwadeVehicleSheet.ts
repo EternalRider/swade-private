@@ -103,7 +103,9 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
           itemData = this._createItemData('gear', header);
           itemData.system.isVehicular = true;
           itemData.system.equipStatus = constants.EQUIP_STATE.EQUIPPED;
-          itemData.name = `New ${type.capitalize()}`;
+          itemData.name = game.i18n.format('DOCUMENT.New', {
+            type: type.capitalize(),
+          });
           return CONFIG.Item.documentClass.create(itemData, {
             renderSheet: true,
             parent: this.actor,
@@ -321,13 +323,10 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   }
 
   // item creation helper func
-  private _createItemData(
-    type: string,
-    header: HTMLElement,
-    name?: string,
-  ): any {
+  private _createItemData(type: string, header: HTMLElement, name?: string) {
     const itemData = {
-      name: name ? name : `New ${type.capitalize()}`,
+      name:
+        name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
       type: type,
       img: `systems/swade/assets/icons/${type}.svg`,
       system: deepClone(header.dataset),

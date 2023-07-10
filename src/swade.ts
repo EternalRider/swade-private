@@ -30,7 +30,7 @@ import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { registerKeybindings } from './module/keybindings';
 import { Logger } from './module/Logger';
-import * as migrations from './module/migration';
+import * as migrations from './module/migration/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
 import {
   register3DBennySettings,

@@ -16,7 +16,7 @@ import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
-import * as migrations from '../migration';
+import * as migrations from '../migration/migration';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
@@ -121,7 +121,7 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '3.0.4';
+      const needsMigrationVersion = '3.0.5';
       //Minimal compatible version needed for the migration
       const compatibleMigrationVersion = '2.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
@@ -138,7 +138,7 @@ export default class SwadeCoreHooks {
             compatibleMigrationVersion,
           )
         ) {
-          Logger.error('SWADE.SysMigrationWarning', {
+          Logger.warn('SWADE.SysMigrationWarning', {
             toast: true,
             permanent: true,
             localize: true,
