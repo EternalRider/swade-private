@@ -617,6 +617,11 @@ SWADE:
     VehicleEdges:
       Name: Vehicle Edges
       Hint: Vehicles use Edges and Hindrances
+    VehicleSkills:
+      Name: Operation Skills
+      Hint: >-
+        Enter a comma-separated list of skill names to be defined as Operation skills
+        for all vehicle
     BennyImageSheet:
       Name: Benny
       Hint: Select which image to use for Bennies on the Character Sheet

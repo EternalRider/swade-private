@@ -370,10 +370,18 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   }
 
   private _buildOpSkillList() {
-    const opSkills = SWADE.vehicles.opSkills;
-    return opSkills.reduce((acc: Record<string, string>, cur: string) => {
-      acc[cur] = cur;
-      return acc;
-    }, {});
+    return ['']
+      .concat(
+        game.settings
+          .get('swade', 'vehicleSkills')
+          .split(/[,]/)
+          .map(function (skill) {
+            return skill.trim();
+          }),
+      )
+      .reduce((acc: Record<string, string>, cur: string) => {
+        acc[cur] = cur;
+        return acc;
+      }, {});
   }
 }

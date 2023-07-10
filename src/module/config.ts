@@ -56,7 +56,6 @@ export const SWADE: SwadeConfig = {
 
   vehicles: {
     maxHandlingPenalty: -4,
-    opSkills: ['', 'Boating', 'Driving', 'Piloting', 'Riding'],
   },
 
   settingConfig: {
@@ -67,6 +66,7 @@ export const SWADE: SwadeConfig = {
       'jokersWild',
       'vehicleMods',
       'vehicleEdges',
+      'vehicleSkills',
       'gmBennies',
       'enableWoundPace',
       'ammoManagement',
@@ -317,7 +317,6 @@ export interface SwadeConfig {
 
   vehicles: {
     maxHandlingPenalty: number;
-    opSkills: Array<string>;
   };
 
   settingConfig: {

@@ -34,6 +34,7 @@ declare global {
       'swade.gmBennies': number;
       'swade.vehicleMods': boolean;
       'swade.vehicleEdges': boolean;
+      'swade.vehicleSkills': string;
       'swade.bennyImageSheet': string;
       'swade.bennyImage3DBack': string;
       'swade.bennyImage3DFront': string;
@@ -364,6 +365,15 @@ export function registerSettingRules() {
     default: false,
     scope: 'world',
     type: Boolean,
+    config: false,
+  });
+
+  game.settings.register('swade', 'vehicleSkills', {
+    name: 'SWADE.Settings.VehicleSkills.Name',
+    hint: 'SWADE.Settings.VehicleSkills.Hint',
+    default: 'Boating, Driving, Piloting, Riding',
+    scope: 'world',
+    type: String,
     config: false,
   });
 
