@@ -396,6 +396,10 @@ SWADE:
       Hint: >-
         Marcar essa opção ativará a regra de configuração Heróis Nunca Morrem ao
         determinar a incapacitação
+    VehicleSkills:
+      Name: Perícias de Operação
+      Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
+        como perícias de Operação para todos os veículos
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
