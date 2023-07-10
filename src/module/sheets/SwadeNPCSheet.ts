@@ -104,45 +104,35 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       const type = header.dataset.type!;
 
       // item creation helper func
-      const createItem = function (
-        type: string,
-        name: string = `New ${type.capitalize()}`,
-      ): any {
+      const createItem = (type: string, name?: string) => {
         const itemData = {
-          name: name ? name : `New ${type.capitalize()}`,
+          name:
+            name ??
+            game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
           type: type,
-          system: header.dataset,
+          system: Object.assign({}, header.dataset),
         };
         delete itemData.system['type'];
         return itemData;
       };
 
+      let itemData: any;
+
       // Getting back to main logic
       if (type === 'choice') {
         const dialogInput = await this._chooseItemType();
-        const itemData = createItem(dialogInput.type, dialogInput.name);
-        foundry.utils.setProperty(
-          itemData,
-          'system.equipStatus',
-          constants.EQUIP_STATE.EQUIPPED,
-        );
-        await CONFIG.Item.documentClass.create(itemData, {
-          renderSheet: true,
-          parent: this.actor,
-        });
-        return;
+        itemData = createItem(dialogInput.type, dialogInput.name);
       } else {
-        const itemData = createItem(type);
-        foundry.utils.setProperty(
-          itemData,
-          'system.equipStatus',
-          constants.EQUIP_STATE.EQUIPPED,
-        );
-        await CONFIG.Item.documentClass.create(itemData, {
-          renderSheet: true,
-          parent: this.actor,
-        });
+        itemData = createItem(type);
       }
+      foundry.utils.setProperty(
+        itemData,
+        'system.equipStatus',
+        constants.EQUIP_STATE.EQUIPPED,
+      );
+      await this.actor.createEmbeddedDocuments('Item', [itemData], {
+        renderSheet: true,
+      });
     });
 
     //Toggle Equipmnent Card collapsible

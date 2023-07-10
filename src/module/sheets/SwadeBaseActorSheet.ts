@@ -461,8 +461,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     for (const [key, attr] of Object.entries(stats)) {
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
-        attr.options = options[key]
-          .optionString!.split(';')
+        attr.options = options[key].optionString
+          ?.split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
       }
     }

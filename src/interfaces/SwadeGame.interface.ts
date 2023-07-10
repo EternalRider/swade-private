@@ -10,7 +10,7 @@ import Benny from '../module/dice/Benny';
 import WildDie from '../module/dice/WildDie';
 import SwadeActiveEffect from '../module/documents/active-effect/SwadeActiveEffect';
 import ItemChatCardHelper from '../module/ItemChatCardHelper';
-import * as migrations from '../module/migration';
+import * as migrations from '../module/migration/migration';
 import CharacterSheet from '../module/sheets/official/CharacterSheet';
 import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';

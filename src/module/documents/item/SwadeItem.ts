@@ -531,6 +531,13 @@ export default class SwadeItem extends Item {
     return data;
   }
 
+  override prepareBaseData() {
+    super.prepareBaseData();
+    if (this.type === 'skill') {
+      this.system.effects ??= new Array<RollModifier>();
+    }
+  }
+
   override prepareDerivedData() {
     if (this.type === 'skill') {
       this.system.die = this._boundTraitDie(this.system.die);
