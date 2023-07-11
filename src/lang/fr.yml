@@ -619,6 +619,10 @@ SWADE:
     DumbLuck:
       Name: Chance insolente
       Hint: Cocher cette option activera la règle d'univers Chance insolente
+    VehicleSkills:
+      Name: Compétences de manœuvre
+      Hint: Saisissez une liste de compétences séparées par une virgule pour définir
+        les compétences de manœuvre pour chaque véhicule
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
