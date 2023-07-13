@@ -3,10 +3,7 @@ SWADE:
   DiceConfDesc: Configure a integração do SWADE/Dice So Nice
   DiceConfLabel: Abrir Configuração de Dados
   WildDiePresetDesc: >-
-    Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado'
-    se quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado
-    Selvagem seja diferente. Esteja ciente de que a configuração de Dado
-    Selvagem só pode ser vista por você, outros jogadores verão diferente.
+    Selecione uma Predefinição do DSN para seu Dado Selvagem.
   SettingConf: Configurações Gerais
   SettingConfLabel: Abrir Configurações Gerais
   Formula: Fórmula
@@ -69,7 +66,7 @@ SWADE:
     Broke:
       Label: Falido
       Hint: Você está Falido!
-    Label: Riqueza
+    Label: Dado de Riqueza
     Sides: Faces do Dado de Riqueza
     WildSides: Lados de Dado Selvagem de Fortuna
     Modifier: Dado Modificador de Fortuna
@@ -87,7 +84,7 @@ SWADE:
   Joker: Curinga
   CustomWildDie: '- Dado Selvagem Personalizado -'
   Subtract: Subtrair
-  DmgRolls: Rolagem de Dano
+  DmgRolls: Rolagens de Dano
   CardSuit: Naipe
   IsJoker: É Curinga
   OpenACEditor: Abrir no Editor de Carta de Ação
@@ -176,7 +173,7 @@ SWADE:
   Equip: Equipar
   RollDamage: Rolar Dano
   SystemLinks:
-    Changelog: Mudanças
+    Changelog: Log de Mudanças
     Wiki: Wiki
     ReportAnIssue: Relatar um problema
   OpenOrigin: Abrir origem
@@ -701,7 +698,7 @@ SWADE:
   ActBeforeCurrentCombatant: Agir agora
   LoseTurn: Alternar Perder Turno
   Frightened: Amedrontado
-  Encumbered: Sobrecarga
+  Encumbered: Sobrecarregado
   Prone: Prostrado
   BleedingOut: Sangrando
   Diseased: Doente
@@ -808,7 +805,7 @@ SWADE:
   ShowBennyAnimationDesc: >-
     Mostra uma animação quando gastar um Bene. Só disponível se Dice So Nice!
     estiver instalado
-  WildDiePreset: Tema do Dado Selvagem
+  WildDiePreset: Predefinição do Dado Selvagem
   RunningMod: Modificador de Corrida
   SkillTest: Teste de Perícia
   AttributeTest: Teste de Atributo
@@ -892,11 +889,10 @@ SWADE:
     GMBenny: Bene de GM
   LoadedAmmo: Munição Carregada
   WildDieThemeDesc: >-
-    Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
-    se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado
-    Selvagem pareça diferente. Por favor, tenha em mente que os Dados Selvagens
-    auto-criados atualmente só podem ser vistos por você. Outros jogadores os
-    verão de forma diferente.
+    Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado' se
+    quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado Selvagem seja
+    diferente. Tenha em mente que Dados Selvagens auto-criados só podem ser vistas
+    por você. Outros jogadores os verão de forma diferente.
   TOCBlockList: Lista de Bloqueio de Sumário de Compêndios
   CalledShot:
     Hand: 'Ataque Localizado: Mão'
