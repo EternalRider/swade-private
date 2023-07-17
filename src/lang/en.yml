@@ -701,9 +701,9 @@ SWADE:
     2: Desperate Attack (2)
     4: Desperate Attack (4)
   CalledShot:
-    HeadOrVitals: 'Called Shot: Head or Vitals'
-    Hand: 'Called Shot: Hand'
-    Limbs: 'Called Shot: Limbs'
+    HeadOrVitals: "Called Shot: Head or Vitals"
+    Hand: "Called Shot: Hand"
+    Limbs: "Called Shot: Limbs"
   ItemType: Item Type
   Source: Source
   MigrateCompendium: Force compendium migration

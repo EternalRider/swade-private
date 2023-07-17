@@ -948,7 +948,13 @@ export default class SwadeItem extends Item {
 
   async removeGranted(target = this.parent) {
     if (this.hasGranted.length < 1) return;
-    await target?.deleteEmbeddedDocuments('Item', this.hasGranted);
+    //grab the granted ids and put them into a set to filter possible duplicates
+    const granted = new Set(
+      //filter the list of granted items to only try and remove the ones that still exist on the parent
+      this.hasGranted.filter((grant) => this.parent?.items.has(grant)),
+    );
+    granted.delete(this.id as string); //delete self in case there are circular dependencies.
+    await target?.deleteEmbeddedDocuments('Item', Array.from(granted));
     await this.unsetFlag('swade', 'hasGranted');
   }
 
@@ -1482,14 +1488,14 @@ export default class SwadeItem extends Item {
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
+    const grantOn = getProperty(this, 'system.grantOn');
     if (
       this.canGrantItems &&
       this.parent &&
-      getProperty(this, 'system.grantOn') &&
+      grantOn &&
       hasProperty(changed, 'system.equipStatus')
     ) {
       const equipStatus = getProperty(this, 'system.equipStatus');
-      const grantOn = getProperty(this, 'system.grantOn');
       const shouldGrant =
         (grantOn === constants.GRANT_ON.CARRIED &&
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||
