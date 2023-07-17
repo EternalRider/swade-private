@@ -48,6 +48,7 @@ export const constants = {
   } as const,
   RELOAD_TYPE: {
     NONE: 'none',
+    SELF: 'self',
     SINGLE: 'single',
     FULL: 'full',
     MAGAZINE: 'magazine',

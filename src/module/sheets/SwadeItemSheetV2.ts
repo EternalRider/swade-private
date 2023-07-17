@@ -295,6 +295,9 @@ export default class SwadeItemSheetV2 extends ItemSheet<
             .map((i) => i.name) as string[];
           data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
           break;
+        case constants.RELOAD_TYPE.SELF:
+          // Doesn't use external ammo
+          break;
       }
       data.reloadTypeOptions = this._reloadTypeOptions();
     }
@@ -740,6 +743,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
   private _reloadTypeOptions(): Record<string, string> {
     return {
       [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
+      [constants.RELOAD_TYPE.SELF]: 'SWADE.ReloadType.Self',
       [constants.RELOAD_TYPE.SINGLE]: 'SWADE.ReloadType.Single',
       [constants.RELOAD_TYPE.FULL]: 'SWADE.ReloadType.Full',
       [constants.RELOAD_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
