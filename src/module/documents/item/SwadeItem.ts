@@ -602,7 +602,8 @@ export default class SwadeItem extends Item {
       ammoManagement &&
       this.type === 'weapon' &&
       getProperty(this, 'system.shots') > 0 &&
-      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE;
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE &&
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.SELF;
 
     const additionalActions: Record<string, ItemAction> =
       getProperty(this, 'system.actions.additional') || {};
@@ -715,6 +716,8 @@ export default class SwadeItem extends Item {
           return true;
 
         const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
+        const selfReload =
+          this.system.reloadType === constants.RELOAD_TYPE.SELF;
         const ammo = this?.parent.items.getName(this.system.ammo);
         if (noReload && !ammo) {
           return false;
@@ -724,6 +727,11 @@ export default class SwadeItem extends Item {
               ? ammo?.system['charges']['value']
               : ammo?.system['quantity'];
           return shotsUsed <= ammoCount;
+        } else if (selfReload) {
+          const usesRemaining =
+            this.system.shots * (this.system.quantity - 1) +
+            this.system.currentShots;
+          return shotsUsed <= usesRemaining;
         } else {
           return shotsUsed <= this.system.currentShots;
         }
@@ -840,6 +848,7 @@ export default class SwadeItem extends Item {
         await this._handlePowerPointReload();
         break;
       case constants.RELOAD_TYPE.NONE:
+      case constants.RELOAD_TYPE.SELF:
       default:
         // Shouldn't ever arrive here because the Reload button shouldn't display
         break;
@@ -1059,9 +1068,40 @@ export default class SwadeItem extends Item {
           'data.quantity': quantity - chargesToUse,
         });
       }
+    } else if (this.system.reloadType === constants.RELOAD_TYPE.SELF) {
+      const currentShots = this.system.currentShots;
+      const maxShots = this.system.shots;
+      const usesShots = !!maxShots && !!currentShots;
+      const usesRemaining =
+        maxShots * (this.system.quantity - 1) + currentShots;
+      if (!usesShots || chargesToUse > usesRemaining) {
+        Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
+        return false;
+      }
+
+      let newShots;
+      let newQuantity;
+      if (chargesToUse < currentShots) {
+        itemUpdates['system.currentShots'] = currentShots - chargesToUse;
+      } else {
+        const quantityUsed = Math.ceil(chargesToUse / maxShots);
+        const remainingQty = this.system.quantity - quantityUsed;
+        if (remainingQty < 1) {
+          newShots = 0;
+          newQuantity = 0;
+        } else {
+          const remainder =
+            chargesToUse - (currentShots + (quantityUsed - 1) * maxShots);
+          newShots = maxShots - remainder;
+          newQuantity = remainingQty;
+        }
+        itemUpdates['system.currentShots'] = newShots;
+        itemUpdates['system.quantity'] = newQuantity;
+      }
     } else {
       const currentShots = this.system.currentShots;
       const usesShots = !!this.system.shots && !!currentShots;
+
       if (!usesShots || chargesToUse > currentShots) {
         Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
         return false;

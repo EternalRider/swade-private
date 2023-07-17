@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added the `Desperate Attack` modifiers to the Roll Dialog (#847) **by @florad92**
+- Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack #763 **by @jpmeehan5**
 
 ### Changed
 

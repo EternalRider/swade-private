@@ -70,7 +70,7 @@ text:
       </li>
       <li>
         <p>
-          If Reload Type is set to <strong>none</strong>, using any trait roll will
+          If Reload Procedure is set to <strong>none</strong>, using any trait roll will
           directly pull from the linked ammunition, bypassing the Shots counter.
         </p>
         <ul>
@@ -89,14 +89,22 @@ text:
       </li>
       <li>
         <p>
-          If the Reload Type is set to <strong>single</strong>, each press of the
+          If the Reload Procedure is set to <strong>self</strong>, using the weapon will 
+          reduce its quantity and reset its shots counter whenever it runs out (e.g.
+          for a throwing axe set max shots to 1, but for a can of bear spray that has 5
+          uses per can set max shots to 5)
+        </p>
+      </li>
+      <li>
+        <p>
+          If the Reload Procedure is set to <strong>single</strong>, each press of the
           Reload button will reduce the quantity of the gear item by 1 and increase
           the shots counter by 1.
         </p>
       </li>
       <li>
         <p>
-          If the Reload Type is set to <strong>full</strong>, each press of the
+          If the Reload Procedure is set to <strong>full</strong>, each press of the
           Reload button will attempt to completely refill the shots counter and
           reduce the gear item by the corresponding amount. If there isn't enough
           ammo left in your inventory, it will conduct a partial reload and reduce
@@ -105,7 +113,25 @@ text:
       </li>
       <li>
         <p>
-          If the Reload Type is set to <strong>Power Points</strong>, each press of
+          If the Reload Procedure is set to <strong>magazine</strong>, you reload by
+          selecting specific consumables that both match the name listed in the Ammo
+          field as well as are themselves set to the Magazine subtype. In addition,
+          the magazine's max charges must be set to match the weapon's max shots. This
+          lets you select from magazines from a dialog that shows their current shots
+          remaining. This does not currently allow for ammo with special properties.
+        </p>
+      </li>
+      <li>
+        <p>
+          If the Reload Procedure is set to <strong>battery</strong>, it works similar
+          to a magazine but the consumable's max charges are always out of 100. A partially
+          used battery has its charges set proportional to the shots used (e.g. if you
+          discharge a battery after firing 10/20 shots, the battery will have 50/100 charges).
+        </p>
+      </li>
+      <li>
+        <p>
+          If the Reload Procedure is set to <strong>Power Points</strong>, each press of
           the Reload button will reduce the linked power points by the "Power Points
           to Reload" value and refresh the shots counter to max.
         </p>

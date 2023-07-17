@@ -292,6 +292,7 @@ SWADE:
   ReloadType:
     Label: Reload Procedure
     None: None
+    Self: Self
     Single: Single
     Full: Full
     Magazine: Magazine
