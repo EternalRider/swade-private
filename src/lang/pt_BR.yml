@@ -834,6 +834,7 @@ SWADE:
     PP: Pontos de Poder
     Full: Completa
     Single: Uma por vez
+    Self: Próprio
   NoAmmoPP: Não foi possível encontrar pontos de poder correspondetes à munição definida
   NoMags: Você não tem nenhum consumível marcado como carregador em seu inventário
   RemoveAmmo: Remover Munição
