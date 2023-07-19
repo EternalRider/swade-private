@@ -822,7 +822,7 @@ export default class SwadeCoreHooks {
     const possibleCardsDocs = game.cards!.filter(
       (c) =>
         c.type === 'hand' &&
-        c.permission === CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+        c.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
     );
 
     const actorDirectory = html.find('div.stacked.directory');

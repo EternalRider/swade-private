@@ -21,10 +21,7 @@ import { Logger } from '../../Logger';
 import PopUpMenu from '../../models/PopUpMenu';
 import * as util from '../../util';
 
-export default class CharacterSheet extends ActorSheet<
-  DocumentSheetOptions,
-  SwadeActorSheetData
-> {
+export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
   _effectCreateDropDown: ContextMenu;
 

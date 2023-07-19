@@ -287,7 +287,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     const driver = await this.actor.getDriver();
     const userCanViewDriver =
       game.user?.isGM ||
-      (driver && driver.permission >= CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED);
+      (driver && driver.permission >= CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED);
     const driverData: IDriverData = {
       img: 'icons/svg/mystery-man-black.svg',
       name: 'No Driver',

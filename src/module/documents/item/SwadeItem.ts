@@ -1,16 +1,16 @@
 import {
   Context,
-  DocumentModificationOptions,
+  DocumentModificationOptions
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import {
   ItemDataConstructorData,
-  ItemDataSource,
+  ItemDataSource
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
-  RollModifier,
+  RollModifier
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import Reloadinator from '../../apps/Reloadinator';
@@ -22,7 +22,7 @@ import {
   addUpModifiers,
   getKeyByValue,
   modifierReducer,
-  notificationExists,
+  notificationExists
 } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
@@ -35,13 +35,10 @@ import {
   ItemGrant,
   ItemGrantChainLink,
   UsageUpdates,
-  UsageUpdatesContext,
+  UsageUpdatesContext
 } from './SwadeItem.interface';
 
 declare global {
-  interface DocumentClassConfig {
-    Item: typeof SwadeItem;
-  }
   interface FlagConfig {
     Item: {
       swade: {

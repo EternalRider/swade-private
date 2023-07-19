@@ -1,4 +1,4 @@
-import { MeasuredTemplateConstructorDataData } from '../../interfaces/TemplateConfig.interface';
+import BaseMeasuredTemplate from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/measured-template.mjs';
 import SwadeItem from '../documents/item/SwadeItem';
 
 declare global {
@@ -9,7 +9,6 @@ declare global {
 
 export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
-
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
    * @param preset the preset to use.
@@ -32,7 +31,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: MeasuredTemplateConstructorDataData = {
+    const templateBaseData: BaseMeasuredTemplate.ConstructorData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,
@@ -142,12 +141,11 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   }
 
   override _computeShape(): MeasuredTemplateShape {
-    const shape = super._computeShape() as MeasuredTemplateShape;
     const { angle, t } = this.document;
     const { angle: direction, distance } = this.ray;
     if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
       return this._getConeShape(direction, angle, distance);
-    return shape;
+    return super._computeShape() as MeasuredTemplateShape;
   }
 
   protected _getConeShape(

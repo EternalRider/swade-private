@@ -68,6 +68,18 @@ export const constants = {
     BATTERY: 'battery',
   } as const,
   /** @enum */
+  ABILITY_TYPE: {
+    SPECIAL: 'special',
+    RACE: 'race',
+    ARCHETYPE: 'archetype',
+  } as const,
+  /** @enum */
+  ACTION_TYPE: {
+    SKILL: 'skill',
+    DAMAGE: 'damage',
+    RESIST: 'resist',
+  } as const,
+  /** @enum */
   ROLL_RESULT: {
     CRITFAIL: -1,
     FAIL: 0,
@@ -80,5 +92,13 @@ export const constants = {
     TRAIT: 1,
     ATTACK: 2,
     DAMAGE: 3,
-  } as const
+  } as const,
+  /** @enum */
+  ADDITIONAL_STATS_TYPE: {
+    STRING: 'String',
+    NUMBER: 'Number',
+    BOOLEAN: 'Boolean',
+    DIE: 'Die',
+    SELECT: 'Selection',
+  } as const,
 };
