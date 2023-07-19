@@ -23,6 +23,7 @@ cache: &global_cache
 lint:
   stage: tests
   before_script:
+    - npm pkg delete scripts.prepare
     - npm ci --cache .npm --prefer-offline --ignore-scripts
   script:
     - npm run check:lint
@@ -41,6 +42,7 @@ lint:
 build:
   stage: build
   before_script:
+    - npm pkg delete scripts.prepare
     - npm ci --cache .npm --prefer-offline --ignore-scripts
   script:
     - export NODE_ENV=production
