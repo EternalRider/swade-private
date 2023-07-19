@@ -10,6 +10,7 @@ import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
+import * as data from './module/data';
 import Benny from './module/dice/Benny';
 import { DamageRoll } from './module/dice/DamageRoll';
 import { SwadeRoll } from './module/dice/SwadeRoll';
@@ -109,6 +110,10 @@ Hooks.once('init', () => {
   CONFIG.Cards.documentClass = SwadeCards;
   CONFIG.ChatMessage.documentClass = SwadeChatMessage;
 
+  //register System Data Model
+  CONFIG.Actor.dataModels = data.actor.config;
+  CONFIG.Item.dataModels = data.item.config;
+
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
   CONFIG.Token.objectClass = SwadeToken;
@@ -180,7 +185,6 @@ Hooks.once('init', () => {
     },
   });
 
-  //@ts-expect-error Types don't properly recognize dotnotation
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
 
   //@ts-expect-error Types don't properly recognize dotnotation
@@ -236,7 +240,6 @@ Hooks.once('init', () => {
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });

@@ -25,29 +25,46 @@ export class Logger {
       case Logger.LOG_LEVEL.Error:
         console.error(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
-          ui.notifications.error(msg.toString(), { permanent, localize });
+          ui.notifications.error(msg.toString(), {
+            permanent,
+            localize,
+            console: false,
+          });
         break;
       case Logger.LOG_LEVEL.Warn:
         console.warn(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
-          ui.notifications.warn(msg.toString(), { permanent, localize });
+          ui.notifications.warn(msg.toString(), {
+            permanent,
+            localize,
+            console: false,
+          });
         break;
       case Logger.LOG_LEVEL.Info:
         console.info(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
-          ui.notifications.info(msg.toString(), { permanent, localize });
+          ui.notifications.info(msg.toString(), {
+            permanent,
+            localize,
+            console: false,
+          });
         break;
       case Logger.LOG_LEVEL.Debug:
         if (!force && !isDebugging) break;
         console.debug(prefix, localize ? game.i18n.localize(msg) : msg);
         if (toast)
-          ui.notifications.info(msg.toString(), { permanent, localize });
+          ui.notifications.info(msg.toString(), {
+            permanent,
+            localize,
+            console: false,
+          });
         break;
       case Logger.LOG_LEVEL.Log:
       default:
         if (!force && !isDebugging) break;
         console.log(prefix, localize ? game.i18n.localize(msg) : msg);
-        if (toast) ui.notifications.info(msg.toString(), { permanent });
+        if (toast)
+          ui.notifications.info(msg.toString(), { permanent, console: false });
         break;
     }
   }
@@ -77,7 +94,7 @@ interface LogMessage {
   level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
-interface LogMessageOptions extends Notifications.Options {
+interface LogMessageOptions extends Notifications.NotifyOptions {
   force?: boolean;
   toast?: boolean;
 }

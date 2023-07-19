@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@guanghechen/rollup-plugin-copy": "^4.7.3",
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.249.0",
+    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#62b6c4c",
     "@rollup/plugin-typescript": "^11.0.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",

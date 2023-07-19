@@ -143,7 +143,7 @@ export function firstOwner(doc) {
       return (
         user?.active &&
         !user.isGM &&
-        level === CONST.DOCUMENT_PERMISSION_LEVELS.OWNER
+        level === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
       );
     })
     .map(([id, _level]) => id);

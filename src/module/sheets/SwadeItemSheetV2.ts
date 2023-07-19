@@ -13,10 +13,7 @@ import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
 
-export default class SwadeItemSheetV2 extends ItemSheet<
-  DocumentSheetOptions,
-  SwadeItemSheetData
-> {
+export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = { powers: {}, actions: {} };
   _effectCreateDropDown: ContextMenu;
 
@@ -493,7 +490,7 @@ export default class SwadeItemSheetV2 extends ItemSheet<
     if (src.dataset.effectId) {
       const effect = this.item.effects.get(src.dataset.effectId);
       dragData.type = 'ActiveEffect';
-      dragData.data = effect?.data.toObject();
+      dragData.data = effect?.toObject();
     }
 
     // Set data transfer
