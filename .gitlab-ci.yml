@@ -18,7 +18,7 @@ cache: &global_cache
     files:
       - package-lock.json
   paths:
-    - .npm
+    - .npm/
 
 lint:
   stage: tests
