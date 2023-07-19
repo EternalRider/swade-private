@@ -14,6 +14,9 @@ stages:
   - publish
 
 cache: &global_cache
+  key:
+    files:
+      - package-lock.json
   paths:
     - .npm
 
