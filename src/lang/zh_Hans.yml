@@ -724,7 +724,8 @@ SWADE:
   CargoWeight: 载货重量
   Vehicular: 载具武器
   ShowBennyAnimationDesc: 使用助力点时播放动画，仅在安装了Dice So Nice!后生效
-  WildDiePresetDesc: 为不羁骰选择1项DSN主题，若是打算自创则选择“定制”，若是不想自己的不羁骰外表与别不同就选“无”。请记住自创不羁骰当前只有自己看得见，其他玩家所见的会有所不同。
+  WildDiePresetDesc: 
+    为不羁骰选择1项DSN主题，若是打算自创则选择“定制”，若是不想自己的不羁骰外表与别不同就选“无”。请记住自创不羁骰当前只有自己看得见，其他玩家所见的会有所不同。
   Formula: 公式
   SitMod: 情境调整值
   RollMode: 投骰宏
@@ -1084,6 +1085,9 @@ SWADE:
     HeroesNeverDie:
       Name: 英雄不灭
       Hint: 勾选此项将在确定无力化时启用英雄不灭设定规则
+    VehicleSkills:
+      Name: 操作技能
+      Hint: 输入一个以逗号分割的技能名称列表，定义为所有载具的操作技能
   EffectCallbacks:
     Shaken:
       RollSpirit: 投骰心魂
@@ -1291,7 +1295,8 @@ SWADE:
     NoTargetsSelected: 请选择一个目标以应用伤害。
   RunningMod: 奔跑调整值
   WildDieTheme: 不羁骰主题
-  WildDieThemeDesc: 为你的不羁骰选择一个DSN主题。如果你想创建自己的，请选择'自定义'，若不想让你的不羁骰看起来不同，请选择'无'。请注意，目前只有你自己才能看到自己创建的不羁骰。其他玩家看到的是不一样的。
+  WildDieThemeDesc: 
+    为你的不羁骰选择一个DSN主题。如果你想创建自己的，请选择'自定义'，若不想让你的不羁骰看起来不同，请选择'无'。请注意，目前只有你自己才能看到自己创建的不羁骰。其他玩家看到的是不一样的。
   Duplicate: 复制
   ppReload: 奇术点以装弹
   ReloadNotPossible: 该角色类型不能装弹
@@ -1303,6 +1308,7 @@ SWADE:
     Magazine: 弹匣
     Battery: 电池
     PP: 奇术点
+    Self: 自身
   NoAmmoPP: 找不到与设定的弹药匹配的奇术点
   NoMags: 你的库存中没有标记为弹匣的消耗品
   RemoveAmmo: 移除弹药
@@ -1330,6 +1336,12 @@ SWADE:
     Current: 当前{stat}
     Max: 最大{stat}
   LoadedAmmo: 已装填弹药
+  DesperateAttack:
+    2: 孤注一掷 (2)
+    4: 孤注一掷 (4)
+  NumberOfDice:
+    Label: 骰子
+    Hint: 决定该动作掷出多少颗特性骰子
 ITEM:
   TypeSkill: 技能
   TypePower: 奇术
