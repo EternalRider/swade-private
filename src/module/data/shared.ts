@@ -47,6 +47,7 @@ export function makeAdditionalStatsSchema() {
         initial: undefined,
       }),
     }),
+    { initial: {} },
   );
 }
 

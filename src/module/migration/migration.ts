@@ -1,18 +1,6 @@
 /* eslint-disable deprecation/deprecation */
 import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs';
 import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
-import {
-  ActiveEffectDataConstructorData,
-  ActiveEffectDataSource,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
-import { EffectChangeDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import {
-  ActorData,
-  ItemData,
-  SceneData,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/module.mjs';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import type SwadeActor from '../documents/actor/SwadeActor';
@@ -304,7 +292,7 @@ async function refreshCompendium(pack) {
  * @param {object} actor    The actor data object to update
  * @return {Object}         The updateData to apply
  */
-export function migrateActorData(actor: ActorDataSource) {
+export function migrateActorData(actor: ActorData) {
   const updateData: UpdateData = {};
 
   // Actor Data Updates
@@ -383,7 +371,7 @@ export function migrateSceneData(_scene: Scene | SceneData) {
  * @param {object} _effect           Effect data to migrate.
  * @returns {object}                The updateData to apply.
  */
-export function migrateEffectData(_effect: ActiveEffectDataSource) {
+export function migrateEffectData(_effect: ActiveEffectData) {
   const updateData: UpdateData = {};
   return updateData;
 }
@@ -424,10 +412,7 @@ export async function dedupeActorActiveEffects(actor: SwadeActor) {
   await actor.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 }
 
-function _migrateVehicleOperator(
-  data: ActorDataSource,
-  updateData: UpdateData,
-) {
+function _migrateVehicleOperator(data: ActorData, updateData: UpdateData) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.system.driver?.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
@@ -437,10 +422,7 @@ function _migrateVehicleOperator(
   return updateData;
 }
 
-function _migrateGeneralPowerPoints(
-  data: ActorDataSource,
-  updateData: UpdateData,
-) {
+function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
   if (data.type === 'vehicle') return updateData;
 
   const isOld =
@@ -464,9 +446,9 @@ function _migrateGeneralPowerPoints(
   }
 
   //check the active effects
-  const effects = new Array<ActiveEffectDataConstructorData>();
+  const effects = new Array<Partial<ActiveEffectData>>();
   for (const effect of data.effects) {
-    const changes = new Array<EffectChangeDataConstructorData>();
+    const changes = new Array<EffectChangeData>();
     for (const change of effect.changes) {
       if (change.key === 'system.powerPoints.value') {
         changes.push({
@@ -488,10 +470,7 @@ function _migrateGeneralPowerPoints(
   if (effects.length > 0) updateData.effects = effects;
 }
 
-function _migrateWeaponAPToNumber(
-  data: ItemDataSource,
-  updateData: UpdateData,
-) {
+function _migrateWeaponAPToNumber(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'weapon') return updateData;
 
   if (data.system.ap && typeof data.system.ap === 'string') {
@@ -499,10 +478,7 @@ function _migrateWeaponAPToNumber(
   }
 }
 
-function _migratePowerEquipToFavorite(
-  data: ItemDataSource,
-  updateData: UpdateData,
-) {
+function _migratePowerEquipToFavorite(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
@@ -512,7 +488,7 @@ function _migratePowerEquipToFavorite(
   }
 }
 
-function _migrateItemEquipState(data: ItemDataSource, updateData: UpdateData) {
+function _migrateItemEquipState(data: ItemData, updateData: UpdateData) {
   if (
     data.type !== 'armor' &&
     data.type !== 'weapon' &&
@@ -549,10 +525,7 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
   return updateData;
 }
 
-function _migrateWeaponAutoReload(
-  data: ItemDataSource,
-  updateData: UpdateData,
-) {
+function _migrateWeaponAutoReload(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'weapon') return;
   const hasOld = foundry.utils.hasProperty(data, 'system.autoReload');
   if (!hasOld) return;
@@ -564,19 +537,16 @@ function _migrateWeaponAutoReload(
   updateData['system.-=autoReload'] = null;
 }
 
-function _ensureBatteryMaxCharges(
-  data: ItemDataSource,
-  updateData: UpdateData,
-) {
+function _ensureBatteryMaxCharges(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
     updateData['system.charges.max'] = 100;
   }
 }
 
-function _fixWorldItemGrants(item, updateData) {
-  if (!item.system.grants) return;
-  updateData['system.grants'] = structuredClone(item.system.grants);
+function _fixWorldItemGrants(data: ItemData, updateData: UpdateData) {
+  if (!data.system.grants) return;
+  updateData['system.grants'] = structuredClone(data.system.grants);
   for (const grant of updateData['system.grants'] as Array<ItemGrant>) {
     if (grant.uuid.startsWith('Item.Item.')) {
       const newUUID = grant.uuid.split('.');
@@ -586,4 +556,36 @@ function _fixWorldItemGrants(item, updateData) {
   }
 }
 
-type UpdateData = Record<string, unknown>;
+export function _renameActionProperties(source: any) {
+  if (!source.actions) return;
+  const actions = source.actions;
+  if (actions.trait && actions.traitMod) return;
+  actions.trait = actions.skill;
+  actions.traitMod = actions.skillMod;
+  delete actions.skill;
+  delete actions.skillMod;
+  for (const [id, action] of Object.entries<any>(actions.additional ?? {})) {
+    if (id.startsWith('-=') && action === null) continue; //skip null actions, happens on delete
+    const isOld = new Set([
+      'shotsUsed',
+      'skillMod',
+      'skillOverride',
+      'rof',
+    ]).isSubset(new Set(Object.keys(action)));
+    if (!isOld) continue;
+    //set the new properties
+    action.resourcesUsed = action.shotsUsed;
+    action.traitMod = action.skillMod;
+    action.traitOverride = action.skillOverride;
+    action.dice = action.rof;
+    //remap skill to trait type actions
+    action.type = action.type === 'skill' ? 'trait' : action.type;
+    //remove the old properties
+    delete action['shotsUsed'];
+    delete action['skillMod'];
+    delete action['skillOverride'];
+    delete action['rof'];
+  }
+}
+
+type UpdateData = Record<string, any>;

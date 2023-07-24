@@ -1,3 +1,4 @@
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   arcaneDevice,
@@ -36,5 +37,11 @@ export class ShieldData extends foundry.abstract.DataModel<
       parry: new fields.NumberField({ initial: 0, integer: true }),
       cover: new fields.NumberField({ initial: 0, integer: true }),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }

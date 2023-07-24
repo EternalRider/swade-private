@@ -283,6 +283,14 @@ SWADE:
   Reload: Reload
   Refresh: Refresh this card
   Ammo: Ammunition
+  AddOrReplaceActions:
+    Title: Add or Replace Actions
+    Add: Add as new
+    Replace: Replace existing
+    Content: >-
+      <p>Do you want to add the actions from the {type}
+      <strong>{source}</strong> as new actions or replace the existing
+      actions?</p>
   ppReload: Power Points to Reload
   ReloadNotPossible: This actor type doesn't reload
   ReloadUnneeded: The weapon is already fully loaded
@@ -621,8 +629,8 @@ SWADE:
     VehicleSkills:
       Name: Operation Skills
       Hint: >-
-        Enter a comma-separated list of skill names to be defined as Operation skills
-        for all vehicle
+        Enter a comma-separated list of skill names to be defined as Operation
+        skills for all vehicle
     BennyImageSheet:
       Name: Benny
       Hint: Select which image to use for Bennies on the Character Sheet
@@ -704,12 +712,12 @@ SWADE:
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
   DesperateAttack:
-    2: Desperate Attack (2)
-    4: Desperate Attack (4)
+    '2': Desperate Attack (2)
+    '4': Desperate Attack (4)
   CalledShot:
-    HeadOrVitals: "Called Shot: Head or Vitals"
-    Hand: "Called Shot: Hand"
-    Limbs: "Called Shot: Limbs"
+    HeadOrVitals: 'Called Shot: Head or Vitals'
+    Hand: 'Called Shot: Hand'
+    Limbs: 'Called Shot: Limbs'
   ItemType: Item Type
   Source: Source
   MigrateCompendium: Force compendium migration
@@ -903,6 +911,10 @@ SWADE:
   NumberOfDice:
     Label: Dice
     Hint: Determines how many Trait dice are rolled for this action
+  ResourcesUsed:
+    Label: Resources Used
+    Hint: How much of an arbitrary resource is used for this action
+  CouldNotFindMacro: Could not find Macro with UUID {uuid}
 TYPES:
   Actor:
     character: Player Character

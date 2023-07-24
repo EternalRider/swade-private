@@ -1,5 +1,7 @@
+import { ActionType, AdditionalStatType } from '../globals';
+
 export interface PrototypeAdditionalStat {
-  dtype: 'String' | 'Number' | 'Boolean' | 'Die' | 'Selection';
+  dtype: AdditionalStatType;
   hasMaxValue: boolean;
   label: string;
   optionString?: string;
@@ -15,14 +17,15 @@ export interface AdditionalStat extends PrototypeAdditionalStat {
 
 export interface ItemAction {
   name: string;
-  type: 'skill' | 'damage' | 'resist';
-  rof?: number;
-  shotsUsed?: number;
-  skillMod?: string;
-  skillOverride?: string;
+  type: ActionType;
+  dice?: number;
+  resourcesUsed?: number;
+  traitMod?: string;
+  traitOverride?: string;
   dmgMod?: string;
   dmgOverride?: string;
   isHeavyWeapon?: boolean;
+  uuid?: string;
 }
 
 /** A single trait roll modifier, containing a label and a value */

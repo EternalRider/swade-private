@@ -36,23 +36,39 @@ export const vehicular = () => ({
 });
 export const actions = () => ({
   actions: new fields.SchemaField({
-    skill: new fields.StringField({ initial: '' }),
-    skillMod: new fields.StringField({ initial: '' }),
+    trait: new fields.StringField({ initial: '' }),
+    traitMod: new fields.StringField({ initial: '' }),
     dmgMod: new fields.StringField({ initial: '' }),
     additional: new MappingField(
       new fields.SchemaField({
         name: new fields.StringField({ initial: '' }),
         type: new fields.StringField({
-          initial: constants.ACTION_TYPE.SKILL,
+          initial: constants.ACTION_TYPE.TRAIT,
           choices: Object.values(constants.ACTION_TYPE),
         }),
-        rof: new fields.NumberField({ initial: 1, required: false }),
-        shotsUsed: new fields.NumberField({ initial: 1, required: false }),
-        skillMod: new fields.StringField({ initial: '', required: false }),
-        skillOverride: new fields.StringField({ initial: '', required: false }),
-        dmgMod: new fields.StringField({ initial: '', required: false }),
-        dmgOverride: new fields.StringField({ initial: '', required: false }),
-        isHeavyWeapon: new fields.BooleanField({ required: false }),
+        dice: new fields.NumberField({ initial: undefined, required: false }),
+        resourcesUsed: new fields.NumberField({
+          initial: undefined,
+          required: false,
+        }),
+        traitMod: new fields.StringField({
+          initial: undefined,
+          required: false,
+        }),
+        traitOverride: new fields.StringField({
+          initial: undefined,
+          required: false,
+        }),
+        dmgMod: new fields.StringField({ initial: undefined, required: false }),
+        dmgOverride: new fields.StringField({
+          initial: undefined,
+          required: false,
+        }),
+        uuid: new fields.StringField({ initial: undefined, required: false }),
+        isHeavyWeapon: new fields.BooleanField({
+          initial: false,
+          required: false,
+        }),
       }),
     ),
   }),

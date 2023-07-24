@@ -1,16 +1,16 @@
 import {
   Context,
-  DocumentModificationOptions
+  DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
 import {
   ItemDataConstructorData,
-  ItemDataSource
+  ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
-  RollModifier
+  RollModifier,
 } from '../../../interfaces/additional.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import Reloadinator from '../../apps/Reloadinator';
@@ -22,7 +22,7 @@ import {
   addUpModifiers,
   getKeyByValue,
   modifierReducer,
-  notificationExists
+  notificationExists,
 } from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
@@ -35,7 +35,7 @@ import {
   ItemGrant,
   ItemGrantChainLink,
   UsageUpdates,
-  UsageUpdatesContext
+  UsageUpdatesContext,
 } from './SwadeItem.interface';
 
 declare global {
@@ -594,7 +594,7 @@ export default class SwadeItem extends Item {
     const hasDamage = !!getProperty(this, 'system.damage');
     const hasTraitRoll =
       ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
-      !!getProperty(this, 'system.actions.skill');
+      !!getProperty(this, 'system.actions.trait');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
@@ -606,13 +606,16 @@ export default class SwadeItem extends Item {
       getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
-      (v) => v.type === 'skill',
+      (v) => v.type === constants.ACTION_TYPE.TRAIT,
     );
     const hasDamageActions = Object.values(additionalActions).some(
-      (v) => v.type === 'damage',
+      (v) => v.type === constants.ACTION_TYPE.DAMAGE,
     );
-    const hasResistRoll = Object.values(additionalActions).some(
-      (v) => v.type === 'resist',
+    const hasResistRolls = Object.values(additionalActions).some(
+      (v) => v.type === constants.ACTION_TYPE.RESIST,
+    );
+    const hasMacros = Object.values(additionalActions).some(
+      (v) => v.type === constants.ACTION_TYPE.MACRO,
     );
     const hasTemplates =
       !!this.system.templates &&
@@ -632,7 +635,8 @@ export default class SwadeItem extends Item {
       trait: getProperty(this, 'system.actions.skill'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
-      hasResistRoll: hasResistRoll,
+      hasResistRolls,
+      hasMacros,
       powerPoints: this._getPowerPoints(),
       settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -654,7 +658,16 @@ export default class SwadeItem extends Item {
         scene: token?.parent?.id,
         alias: this.parent?.name,
       },
-      flags: { core: { canPopout: true } },
+      flags: {
+        core: { canPopout: true },
+        swade: {
+          macros: Object.entries(additionalActions)
+            .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
+            .map(([k, v]) => {
+              return { id: k, uuid: v.uuid };
+            }),
+        },
+      },
     };
 
     if (
@@ -706,36 +719,39 @@ export default class SwadeItem extends Item {
     return modifiers;
   }
 
-  canExpendResources(shotsUsed = 1): boolean {
-    switch (this.type) {
-      case 'weapon': {
-        if (!game.settings.get('swade', 'ammoManagement') || this.isMeleeWeapon)
-          return true;
-
-        const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
-        const selfReload =
-          this.system.reloadType === constants.RELOAD_TYPE.SELF;
-        const ammo = this?.parent.items.getName(this.system.ammo);
-        if (noReload && !ammo) {
-          return false;
-        } else if (noReload) {
-          const ammoCount =
-            ammo?.type === 'consumable'
-              ? ammo?.system['charges']['value']
-              : ammo?.system['quantity'];
-          return shotsUsed <= ammoCount;
-        } else if (selfReload) {
-          const usesRemaining =
-            this.system.shots * (this.system.quantity - 1) +
-            this.system.currentShots;
-          return shotsUsed <= usesRemaining;
-        } else {
-          return shotsUsed <= this.system.currentShots;
-        }
-      }
-      default:
+  canExpendResources(resourcesUsed = 1): boolean {
+    if (this.type === 'weapon') {
+      if (!game.settings.get('swade', 'ammoManagement') || this.isMeleeWeapon)
         return true;
+
+      const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
+      const selfReload = this.system.reloadType === constants.RELOAD_TYPE.SELF;
+      const ammo = this?.parent.items.getName(this.system.ammo);
+      if (noReload && !ammo) {
+        return false;
+      } else if (noReload) {
+        const ammoCount =
+          ammo?.type === 'consumable'
+            ? ammo?.system['charges']['value']
+            : ammo?.system['quantity'];
+        return resourcesUsed <= ammoCount;
+      } else if (selfReload) {
+        const usesRemaining =
+          this.system.shots * (this.system.quantity - 1) +
+          this.system.currentShots;
+        return resourcesUsed <= usesRemaining;
+      } else {
+        return resourcesUsed <= this.system.currentShots;
+      }
     }
+    if (this.type === 'power') {
+      if (!this.actor) return false;
+      if (game.settings.get('swade', 'noPowerPoints')) return true;
+      const arcane = this.system.arcane || 'general';
+      const ab = this.actor.system.powerPoints[arcane];
+      return ab.value >= resourcesUsed;
+    }
+    return true;
   }
 
   async consume(charges = 1) {

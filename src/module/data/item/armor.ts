@@ -1,3 +1,4 @@
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   arcaneDevice,
@@ -44,5 +45,11 @@ export class ArmorData extends foundry.abstract.DataModel<
         legs: new fields.BooleanField(),
       }),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }

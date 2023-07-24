@@ -1,4 +1,5 @@
 import { constants } from '../../constants';
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   arcaneDevice,
@@ -23,7 +24,8 @@ export class WeaponData extends foundry.abstract.DataModel<
     ReturnType<(typeof WeaponData)['defineSchema']>
   >
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),
@@ -54,5 +56,11 @@ export class WeaponData extends foundry.abstract.DataModel<
       trademark: new fields.NumberField({ initial: 0 }),
       isHeavyWeapon: new fields.BooleanField(),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }

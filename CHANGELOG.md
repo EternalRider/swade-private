@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Added the `Desperate Attack` modifiers to the Roll Dialog (#847) **by @florad92**
 - Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack #763 **by @jpmeehan5**
+- Added the new action type `macro` which allows users to save the UUID of a macro to then later execute it. The triggering item is available in the macro context under the `item` variable. Please keep in mind that normal permission limitations for macros still apply! (#837) **by @florad92**
 
 ### Changed
 
@@ -36,6 +37,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the label for the input which determines the amount of trait dice that are being rolled for actions to make it more universal. (#823) **by @florad92**
 - The `swadeAction` Hook is no longer triggered if the trait or damage roll was cancelled. (#812) **by @florad92**
 - The `Frightened` statuseffect now applies the Hesitant Hindrance and also disables other intiative related edges. (#811) **by @florad92**
+- [BREAKING] Changed the property name of the default trait of an item from `skill` to `trait`. This means `system.actions.skill` has now become `system.actions.trait` A migration has been provided. (#837) **by @florad92**
+- [BREAKING] Changed the properties of additional actions to reflect their more universal nature, see the list below. A migration has been provided. (#837) **by @florad92**
+  - `rof` -> `dice`
+  - `shotsUsed` -> `resourcesUsed`
+  - `skillMod` -> `traitMod`
+  - `skillOverride` -> `traitOverride`
 
 ### Deprecated
 

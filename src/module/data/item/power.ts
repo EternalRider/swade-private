@@ -1,3 +1,4 @@
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   bonusDamage,
@@ -35,5 +36,11 @@ export class PowerData extends foundry.abstract.DataModel<
       innate: new fields.BooleanField(),
       modifiers: new fields.ArrayField(new fields.ObjectField()),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }
