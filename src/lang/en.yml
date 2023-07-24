@@ -438,8 +438,6 @@ SWADE:
   NoSceneAvailable: There is no scene available or you've disabled the canvas
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
-  NotADeckCompendium: The compendium you selected doesn't appear to be a legacy deck
-  ConvertToDeck: Convert to Deck
   Expiration:
     TabLabel: Turn Behavior
     Description: <p>Effects expire on the target's <em>next turn or later</em>.</p>

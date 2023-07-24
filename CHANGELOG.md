@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Removed the setting that replaced the core `Entangled` effect with the version from the Fantasy Companion as that version has replaced the core version. (#846) **by @florad92**
 - Removed the `SWADE.Settings.FantasyCompanionEntangle` translation keys as they are no longer needed (#846) **by @florad92**
+- Removed the ability to convert Journal compendiums to decks. (#858) **by @florad92**
 
 ### Fixed
 
