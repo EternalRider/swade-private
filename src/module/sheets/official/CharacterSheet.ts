@@ -413,12 +413,13 @@ export default class CharacterSheet extends ActorSheet {
       }
       const hasDamage =
         !!getProperty(system, 'damage') ||
-        !!actions.find((action) => action.type === 'damage');
-      const skill =
-        getProperty(system, 'actions.skill') ||
-        !!actions.find((action) => action.type === 'skill');
-      const hasSkillRoll =
-        actions.length || getProperty(system, 'actions.skill');
+        actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
+      const hasTraitRoll =
+        !!getProperty(system, 'actions.trait') ||
+        actions.some((a) => a.type === constants.ACTION_TYPE.TRAIT);
+      const hasMacros = actions.some(
+        (a) => a.type === constants.ACTION_TYPE.MACRO,
+      );
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
@@ -432,10 +433,10 @@ export default class CharacterSheet extends ActorSheet {
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
-      foundry.utils.setProperty(item, 'skill', skill);
-      foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
+      foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      foundry.utils.setProperty(item, 'hasMacros', hasMacros);
       if (item.type === 'power') {
         const powerPoints = this._getPowerPoints(item);
         foundry.utils.setProperty(item, 'powerPoints', powerPoints);
@@ -957,10 +958,13 @@ export default class CharacterSheet extends ActorSheet {
       modifier = Math.min(modifier * -1, modifier);
       const actionObj = getProperty(
         item,
-        `system.actions.additional.${action}.skillOverride`,
+        `system.actions.additional.${action}.traitOverride`,
       ) as ItemAction;
       //filter down further to make sure we only apply the penalty to a trait roll
-      if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
+      if (
+        action === 'formula' ||
+        actionObj?.type === constants.ACTION_TYPE.TRAIT
+      ) {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
           value: modifier.signedString(),

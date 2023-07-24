@@ -1,9 +1,11 @@
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   additionalStats,
   category,
   favorite,
   itemDescription,
+  templates,
 } from './common';
 
 export interface ActionData
@@ -16,13 +18,20 @@ export class ActionData extends foundry.abstract.DataModel<
     ReturnType<(typeof ActionData)['defineSchema']>
   >
 > {
-  static defineSchema() {
+  static override defineSchema() {
     return {
       ...itemDescription(),
       ...favorite(),
       ...category(),
+      ...templates(),
       ...actions(),
       ...additionalStats(),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }

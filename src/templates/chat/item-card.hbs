@@ -15,7 +15,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
   <!-- Ammo Management -->
   {{#if hasAmmoManagement}}
     <div class='ammo-counter'>
-      <i class='fas fa-dot-circle'></i>
+      <i class='fa-solid fa-circle-dot'></i>
       {{localize 'SWADE.Mag'}}:
       <span class='shots'>
         <span class='current-shots'>{{item.system.currentShots}}</span>
@@ -92,7 +92,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
       {{/if}}
 
       {{#each data.actions}}
-        {{#if (eq type 'skill')}}
+        {{#if (eq type 'trait')}}
           <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
         {{/if}}
       {{/each}}
@@ -106,7 +106,8 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
     </div>
   {{/if}}
 
-  {{#if hasResistRoll}}
+  <!-- Resistance Rolls -->
+  {{#if hasResistRolls}}
     <div class='card-buttons resist-rolls'>
       <h4 class='actions-subheading'>
         <i class='fa-solid fa-ban'></i>
@@ -126,7 +127,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
   {{#if showDamageRolls}}
     <div class='card-buttons damage-rolls'>
       <h4 class='actions-subheading'>
-        <i class='fas fa-tint'></i>
+        <i class='fa-solid fa-droplet'></i>
         {{localize 'SWADE.DmgRolls'}}
       </h4>
 
@@ -141,11 +142,26 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
     </div>
   {{/if}}
 
+  <!-- Macros -->
+  {{#if hasMacros}}
+    <div class='card-buttons macros'>
+      <h4 class='actions-subheading'>
+        <i class='fa-solid fa-code'></i>
+        {{localize 'DOCUMENT.Macros'}}
+      </h4>
+      {{#each data.actions}}
+        {{#if (eq type 'macro')}}
+          <button data-action='{{key}}'>{{name}}</button>
+        {{/if}}
+      {{/each}}
+    </div>
+  {{/if}}
+
   <!-- Template Controls -->
   {{#if hasTemplates}}
     <div class='card-buttons template-controls'>
       <h4 class='actions-subheading'>
-        <i class='fas fa-bullseye'></i>
+        <i class='fa-solid fa-bullseye'></i>
         {{localize 'SWADE.Templates.Available'}}
       </h4>
       <span class='flexrow'>
@@ -229,7 +245,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
               data-adjust='refresh'
               title='{{localize "SWADE.Refresh"}}'
             >
-              <i class='fas fa-sync'></i>
+              <i class='fa-solid fa-rotate'></i>
             </button>
           </span>
         {{/unless}}
@@ -279,7 +295,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
               data-adjust='refresh'
               title='{{localize "SWADE.Refresh"}}'
             >
-              <i class='fas fa-sync'></i>
+              <i class='fa-solid fa-rotate'></i>
             </button>
           </span>
         {{/unless}}
@@ -298,7 +314,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
           data-adjust='refresh'
           title='{{localize "SWADE.Refresh"}}'
         >
-          <i class='fas fa-sync'></i>
+          <i class='fa-solid fa-rotate'></i>
         </button>
       </span>
     </div>

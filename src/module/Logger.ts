@@ -83,6 +83,7 @@ export class Logger {
 
   static debug(msg: any | string, options?: LogMessageOptions) {
     Logger.log({ msg, level: Logger.LOG_LEVEL.Debug, options });
+    console.trace();
   }
 }
 

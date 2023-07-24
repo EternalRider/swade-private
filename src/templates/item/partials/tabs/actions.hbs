@@ -42,63 +42,71 @@
           >
             <i class='fas fa-trash fa-2x'></i>
           </button>
-          {{#if (eq action.type 'skill')}}
+          {{#if (eq action.type 'trait')}}
             <div class='form-group left'>
               <label> {{localize 'SWADE.AltTrait'}}</label>
               <input
                 type='text'
-                name='system.actions.additional.{{id}}.skillOverride'
-                value='{{action.skillOverride}}'
+                name='system.actions.additional.{{id}}.traitOverride'
+                value='{{action.traitOverride}}'
               />
             </div>
             <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
               <label>{{localize 'SWADE.TraitMod'}}</label>
               <input
                 type='text'
-                name='system.actions.additional.{{id}}.skillMod'
-                value='{{action.skillMod}}'
+                name='system.actions.additional.{{id}}.traitMod'
+                value='{{action.traitMod}}'
               />
             </div>
-            <div
-              class='form-group left'
-              title='{{localize "SWADE.NumberOfDice.Hint"}}'
-            >
+            <div class='form-group left'>
               <label>{{localize 'SWADE.NumberOfDice.Label'}}</label>
               <input
                 type='text'
-                name='system.actions.additional.{{id}}.rof'
-                value='{{action.rof}}'
+                name='system.actions.additional.{{id}}.dice'
+                value='{{action.dice}}'
                 data-dtype='Number'
+                data-tooltip='{{localize "SWADE.NumberOfDice.Hint"}}'
               />
             </div>
             <div class='form-group right'>
-              <label>{{localize 'SWADE.ShotsUsed'}}</label>
-              <input
-                type='number'
-                name='system.actions.additional.{{id}}.shotsUsed'
-                value='{{action.shotsUsed}}'
-                data-dtype='Number'
-              />
+              {{#if (eq @root.item.type 'weapon')}}
+                <label>{{localize 'SWADE.ShotsUsed'}}</label>
+                <input
+                  type='number'
+                  name='system.actions.additional.{{id}}.resourcesUsed'
+                  value='{{action.resourcesUsed}}'
+                  data-dtype='Number'
+                />
+              {{else}}
+                <label>{{localize 'SWADE.ResourcesUsed.Label'}}</label>
+                <input
+                  type='number'
+                  name='system.actions.additional.{{id}}.resourcesUsed'
+                  value='{{action.resourcesUsed}}'
+                  data-dtype='Number'
+                  data-tooltip='{{localize "SWADE.ResourcesUsed.Hint"}}'
+                />
+              {{/if}}
             </div>
           {{else if (eq action.type 'resist')}}
             <div class='form-group left'>
               <label> {{localize 'SWADE.AltTrait'}}</label>
               <input
                 type='text'
-                name='system.actions.additional.{{id}}.skillOverride'
-                value='{{action.skillOverride}}'
+                name='system.actions.additional.{{id}}.traitOverride'
+                value='{{action.traitOverride}}'
               />
             </div>
             <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
               <label>{{localize 'SWADE.TraitMod'}}</label>
               <input
                 type='text'
-                name='system.actions.additional.{{id}}.skillMod'
-                value='{{action.skillMod}}'
+                name='system.actions.additional.{{id}}.traitMod'
+                value='{{action.traitMod}}'
               />
             </div>
-          {{else}}
-            <!-- damage type -->
+          {{else if (eq action.type 'damage')}}
             <div class='form-group full-width'>
               <label>{{localize 'SWADE.DmgOver'}}</label>
               <input
@@ -128,6 +136,15 @@
                   {{checked action.isHeavyWeapon}}
                 />
               </span>
+            </div>
+          {{else if (eq action.type 'macro')}}
+            <div class='form-group full-width'>
+              <label>UUID</label>
+              <input
+                type='text'
+                name='system.actions.additional.{{id}}.uuid'
+                value='{{action.uuid}}'
+              />
             </div>
           {{/if}}
         </span>

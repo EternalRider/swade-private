@@ -13,6 +13,7 @@ declare global {
     ChatMessage: {
       swade?: {
         targets?: { name: string; uuid: string }[];
+        macros?: { id: string; uuid: string }[];
         [key: string]: unknown;
       };
       core?: {

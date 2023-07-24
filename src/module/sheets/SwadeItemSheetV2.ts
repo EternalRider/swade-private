@@ -1,5 +1,5 @@
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { AdditionalStats, EquipState } from '../../globals';
+import { AdditionalStats, EquipState, ItemActions } from '../../globals';
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
@@ -62,9 +62,10 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   get actionTypes(): Record<string, string> {
     return {
-      skill: 'SWADE.Trait',
+      trait: 'SWADE.Trait',
       damage: 'SWADE.Dmg',
       resist: 'SWADE.Resist',
+      macro: 'DOCUMENT.Macro',
     };
   }
 
@@ -97,12 +98,14 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     html.find('.inline-delete').on('click', () => this.item.delete());
 
     html.find('.add-action').on('click', () => {
-      const id = randomID(8);
+      const id = foundry.utils.randomID(8);
       this.collapsibleStates[id] = true;
       this.item.update({
         ['system.actions.additional.' + id]: {
-          name: 'New Action',
-          type: 'skill',
+          name: game.i18n.format('DOCUMENT.New', {
+            type: game.i18n.localize('TYPES.Item.action'),
+          }),
+          type: constants.ACTION_TYPE.TRAIT,
         },
       });
     });
@@ -361,6 +364,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         case 'Item':
           await this._onDropItem(event, data);
           break;
+        case 'Macro':
+          await this._onDropMacro(event, data);
+          break;
         default:
           break;
       }
@@ -392,15 +398,32 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
 
     const target = event.target as HTMLElement;
-    const tab = target.closest('.tab.active');
+    const classList = target.closest<HTMLElement>('.tab.active')?.classList;
 
-    if (tab?.classList?.contains('properties')) {
+    if (classList?.contains('properties')) {
       await this._addGrantedItem(item);
-    } else if (tab?.classList?.contains('embedded')) {
+    } else if (classList?.contains('embedded')) {
       await this._addEmbedded(item);
-    } else if (tab?.classList?.contains('powers')) {
+    } else if (classList?.contains('powers')) {
       await this._addArcaneDevicePower(item);
+    } else if (classList?.contains('actions')) {
+      const actions =
+        foundry.utils.getProperty(this.item, 'system.actions.additional') ?? {};
+      if (!foundry.utils.isEmpty(actions)) {
+        await this._addOrReplaceActions(item);
+      }
     }
+  }
+
+  private async _onDropMacro(event: DragEvent, data) {
+    const target = event.target as HTMLElement;
+    const actionId = target.closest<HTMLElement>('.tab.actions.active .action')
+      ?.dataset.actionId as string;
+    const action = this.item.system.actions.additional[actionId] as ItemAction;
+    if (action.type !== constants.ACTION_TYPE.MACRO) return;
+    await this.item.update({
+      [`system.actions.additional.${actionId}.uuid`]: data.uuid,
+    });
   }
 
   private async _addGrantedItem(item: SwadeItem) {
@@ -428,7 +451,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       since: '3.1',
       until: '4.0',
       details:
-        'You can no longer add Embedded Abilities to items but they will still be able to be transfered to actors until the depreciation period ends.',
+        'You can no longer add Embedded Abilities to items but they will still be able to be transferred to actors until the depreciation period ends.',
     });
   }
 
@@ -437,6 +460,55 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const collection = this.item.embeddedPowers;
     collection.set(foundry.utils.randomID(), item.toObject());
     await this._saveEmbeddedPowers(collection);
+  }
+
+  private async _addOrReplaceActions(item: SwadeItem) {
+    const actionKey = 'system.actions.additional';
+    const actions = (foundry.utils.getProperty(this.item, actionKey) ??
+      {}) as ItemActions;
+    if (foundry.utils.isEmpty(actions)) {
+      //if no actions are present then we simply copy the actions from the dropped item
+      await this.item.update({
+        [actionKey]: foundry.utils.getProperty(item, actionKey),
+      });
+    }
+    //otherwise we ask to copy or replace the current actions
+    const existingActions = foundry.utils.getProperty(
+      item,
+      actionKey,
+    ) as ItemActions;
+    const data: Dialog.Data = {
+      title: game.i18n.localize('SWADE.AddOrReplaceActions.Title'),
+      content: game.i18n.format('SWADE.AddOrReplaceActions.Content', {
+        source: item.name,
+        type: game.i18n.localize('TYPES.Item.' + item.type),
+      }),
+      default: 'add',
+      buttons: {
+        add: {
+          label: game.i18n.localize('SWADE.AddOrReplaceActions.Add'),
+          icon: '<i class="fa-solid fa-copy"></i>',
+          callback: () => {
+            const newActions: ItemActions = {};
+            //give the actions new keys to make sure there are no id collisions
+            for (const action of Object.values(existingActions)) {
+              newActions[randomID(8)] = action;
+            }
+            this.item.update({ [actionKey]: newActions });
+          },
+        },
+        replace: {
+          label: game.i18n.localize('SWADE.AddOrReplaceActions.Replace'),
+          icon: '<i class="fa-solid fa-rotate"></i>',
+          callback: () =>
+            this.item.update(
+              { [actionKey]: existingActions },
+              { recursive: false, diff: false },
+            ),
+        },
+      },
+    };
+    new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
   }
 
   /** Is the drop data coming from the same item? */

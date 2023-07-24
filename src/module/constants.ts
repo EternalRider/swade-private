@@ -75,9 +75,10 @@ export const constants = {
   } as const,
   /** @enum */
   ACTION_TYPE: {
-    SKILL: 'skill',
+    TRAIT: 'trait',
     DAMAGE: 'damage',
     RESIST: 'resist',
+    MACRO: 'macro',
   } as const,
   /** @enum */
   ROLL_RESULT: {

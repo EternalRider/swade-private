@@ -1,3 +1,4 @@
+import { _renameActionProperties } from '../../migration/migration';
 import {
   actions,
   arcaneDevice,
@@ -32,5 +33,11 @@ export class GearData extends foundry.abstract.DataModel<
       ...grantEmbedded(),
       isAmmo: new fields.BooleanField(),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    _renameActionProperties(source);
+    return super.migrateData(source);
   }
 }

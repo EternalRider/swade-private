@@ -76,10 +76,10 @@ interface Vehicular {
 
 interface Actions {
   actions: {
-    skill: string;
-    skillMod: string;
+    trait: string;
+    traitMod: string;
     dmgMod: string;
-    additional: Partial<Record<string, ItemAction>>;
+    additional: Record<string, ItemAction>;
     isHeavyWeapon: boolean;
   };
 }
