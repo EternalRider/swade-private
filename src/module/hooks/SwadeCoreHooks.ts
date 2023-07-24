@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HotReloadData, JournalMetadata, Updates } from '../../globals';
+import { HotReloadData, Updates } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
@@ -366,72 +366,6 @@ export default class SwadeCoreHooks {
           //reload all clients to load the new settings.
           if (game.user?.isGM) game.socket?.emit('reload');
           foundry.utils.debouncedReload();
-        },
-      },
-      {
-        name: 'SWADE.ConvertToDeck',
-        icon: '<i class="fa-solid fa-file-export"></i>',
-        condition: (li) => {
-          const pack = game.packs.get(li.data('pack'), { strict: true });
-          return !!game.user?.isGM && pack.metadata.type === 'JournalEntry';
-        },
-        callback: async (li) => {
-          const pack = game.packs.get(li.data('pack'), {
-            strict: true,
-          }) as CompendiumCollection<JournalMetadata>;
-          const docs = await pack.getDocuments();
-          const allDocsHaveCardFlags = docs.every((c) =>
-            hasProperty(c, 'flags.swade'),
-          );
-          if (!allDocsHaveCardFlags) {
-            return ui.notifications.warn('SWADE.NotADeckCompendium', {
-              localize: true,
-            });
-          }
-
-          const suits = ['', 'clubs', 'diamonds', 'hearts', 'spades'];
-          //get the vital information from the journal entry
-          const cards = docs.map((entry) => {
-            return {
-              name: entry.name,
-              text: entry.data.content,
-              img: entry.data.img,
-              suit: entry.getFlag('swade', 'suitValue') as number,
-              value: entry.getFlag('swade', 'cardValue') as number,
-            };
-          });
-          //create the empty deck
-          const deck = await Cards.create({
-            name: pack.metadata.label,
-            type: 'deck',
-          });
-          //map the journal entry data to the raw card data
-          const rawCardData = cards.map((card) => {
-            return {
-              name: card.name,
-              type: 'poker',
-              suit: suits[card.suit],
-              value: card.value,
-              description: card.text,
-              faces: [
-                {
-                  img: card.img,
-                  name: card.name,
-                },
-              ],
-              face: 0,
-              origin: deck?.id,
-              sort: card.suit * 13 + card.value,
-              data: {
-                suit: card.suit,
-                isJoker: card.value > 90,
-              },
-            };
-          });
-          //create the cards in the deck
-          deck?.createEmbeddedDocuments('Card', rawCardData);
-          //open the sheet once we're done
-          deck?.sheet?.render(true);
         },
       },
       {
