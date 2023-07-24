@@ -25,6 +25,12 @@
       &.top-row {
         grid-row: 1;
         grid-column: 9/-1;
+        display: flex;
+        justify-content: space-between;
+
+        input {
+          width: calc(100% - 20px)
+        }
       }
       &.second-row {
         grid-row: 2;

@@ -15,7 +15,7 @@ export class VehicleData extends foundry.abstract.DataModel<
     return {
       size: new fields.NumberField({ initial: 0 }),
       scale: new fields.NumberField({ initial: 0 }),
-      classification: new fields.StringField({ initial: '' }),
+      classification: new fields.StringField({ initial: '', textSearch: true }),
       handling: new fields.NumberField({ initial: 0 }),
       cost: new fields.NumberField({ initial: 0 }),
       topspeed: new fields.StringField({ initial: '' }),

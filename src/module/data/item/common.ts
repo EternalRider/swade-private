@@ -9,7 +9,8 @@ const fields = foundry.data.fields;
 
 export const itemDescription = () => ({
   description: new fields.HTMLField({ initial: '', textSearch: true }),
-  notes: new fields.StringField({ initial: '' }),
+  notes: new fields.StringField({ initial: '', textSearch: true }),
+  source: new fields.StringField({ initial: '', textSearch: true }),
   ...additionalStats(),
 });
 export const physicalItem = () => ({

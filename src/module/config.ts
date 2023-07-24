@@ -271,6 +271,34 @@ export const SWADE: SwadeConfig = {
     'SWADE.Ranks.Heroic',
     'SWADE.Ranks.Legendary',
   ],
+
+  textSearch: {
+    actor: [
+      'system.details.archetype',
+      'system.details.appearance',
+      'system.details.notes',
+      'system.details.goals',
+      'system.details.biography.value',
+      'system.details.species.name',
+      'system.details.advances.rank',
+      'classification',
+      'description'
+    ],
+    adventure: [],
+    cards: [],
+    item: [
+      'system.description',
+      'system.notes',
+      'system.subtype',
+      'system.arcane',
+      'system.trapping'
+    ],
+    journalentry: [],
+    macro: [],
+    playlist: [],
+    rolltable: [],
+    scene: []
+  }
 };
 
 /** @internal */
@@ -343,4 +371,16 @@ export interface SwadeConfig {
   prototypeRollGroups: RollModifierGroup[];
 
   ranks: string[];
+
+  textSearch: {
+    scene: Array<String>;
+    rolltable: Array<String>;
+    playlist: Array<String>;
+    macro: Array<String>;
+    journalentry: Array<String>;
+    item: Array<String>;
+    cards: Array<String>;
+    adventure: Array<String>;
+    actor: Array<String>;
+  }
 }

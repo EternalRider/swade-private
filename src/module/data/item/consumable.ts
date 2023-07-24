@@ -36,6 +36,7 @@ export class ConsumableData extends foundry.abstract.DataModel<
       subtype: new fields.StringField({
         initial: constants.CONSUMABLE_TYPE.REGULAR,
         choices: Object.values(constants.CONSUMABLE_TYPE),
+        textSearch: true
       }),
     };
   }

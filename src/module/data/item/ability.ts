@@ -28,6 +28,7 @@ export class AbilityData extends foundry.abstract.DataModel<
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
+        textSearch: true
       }),
       grantsPowers: new fields.BooleanField(),
     };

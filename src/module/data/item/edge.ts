@@ -17,7 +17,7 @@ export class EdgeData extends foundry.abstract.DataModel<
       ...grants(),
       isArcaneBackground: new fields.BooleanField(),
       requirements: new fields.SchemaField({
-        value: new fields.BooleanField(),
+        value: new fields.StringField({ initial: '', textSearch: true }),
       }),
     };
   }
