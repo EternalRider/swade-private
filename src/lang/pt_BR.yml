@@ -922,6 +922,16 @@ SWADE:
   NumberOfDice:
     Label: Dados
     Hint: Determina quantos dados de Característica serão rolados para esta ação
+  AddOrReplaceActions:
+    Title: Adicionar ou substituir ações
+    Add: Adicionar como nova
+    Replace: Substituir a existente
+    Content: <p>Você deseja adicionar as ações do {type} <strong>{source}</strong>
+      como novas ações ou substituir as ações existentes?</p>
+  ResourcesUsed:
+    Label: Recursos utilizados
+    Hint: Quanto de um recurso arbitrário é usado para essa ação
+  CouldNotFindMacro: Não foi possível encontrar a macro com a UUID {uuid}
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
