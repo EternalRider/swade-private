@@ -774,7 +774,8 @@ export default class SwadeItem extends Item {
 
     const ammoName = this.system.ammo;
     //return if there's no ammo set
-    if (!ammoName && this.needsFullReloadProcedure()) {
+    const needsFullReloadProcedure = this.needsFullReloadProcedure();
+    if (needsFullReloadProcedure && !ammoName) {
       if (!notificationExists('SWADE.NoAmmoSet', true)) {
         Logger.info('SWADE.NoAmmoSet', { toast: true, localize: true });
       }
@@ -785,7 +786,7 @@ export default class SwadeItem extends Item {
     const missingAmmo = this.system.shots - this.system.currentShots;
     const reloadType = this.system.reloadType;
 
-    if (this.needsFullReloadProcedure() && !ammo) {
+    if (needsFullReloadProcedure && !ammo) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
           toast: true,
@@ -1080,6 +1081,8 @@ export default class SwadeItem extends Item {
   needsFullReloadProcedure(): boolean {
     if (this.type !== 'weapon') return false;
     //gather general datapoints;
+
+    if (this.system.reloadType === constants.RELOAD_TYPE.PP) return false;
     const isPC = this.parent?.type === 'character';
     const isNPC = this.parent?.type === 'npc';
     const isVehicle = this.parent?.type === 'vehicle';

@@ -43,7 +43,6 @@ export default class SwadeCombat extends Combat {
       const c = this.combatants.get(id, { strict: true });
       const roundHeld = c.roundHeld;
       const inGroup = c.groupId;
-      const isRedraw = c.initiative !== null && !roundHeld;
 
       //Do not draw cards for defeated or holding combatants
       if (c.isDefeated || roundHeld || inGroup) continue;
@@ -59,7 +58,8 @@ export default class SwadeCombat extends Combat {
       // Draw initiative
       let card: Card;
       const cards = await this.drawCard(cardsToDraw);
-      if (isRedraw) {
+      if (!!c.initiative && !roundHeld) {
+        // handle redraws
         const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
           cards.push(oldCard);
@@ -78,11 +78,10 @@ export default class SwadeCombat extends Combat {
         card = cards[0];
       } else if (hasHesitant) {
         // Hesitant
-        if (cards.some((c) => c.system['isJoker'])) {
-          card = await this.pickACard({
-            cards: cards,
-            combatantName: c.name,
-          });
+        const joker = cards.find((c) => c.system['isJoker']);
+        if (joker) {
+          // if one of the cards drawn was a joker, simply use that
+          card = joker;
         } else {
           //sort cards to pick the lower one
           cards.sort((a, b) => {
@@ -531,6 +530,7 @@ export default class SwadeCombat extends Combat {
 
   protected _determineCardsToDraw(combatant: SwadeCombatant): number {
     let cardsToDraw = 1;
+    if (!!combatant.initiative && !combatant.roundHeld) return cardsToDraw;
     const actor = combatant.actor!;
     const initiative = actor.system.initiative;
     if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
