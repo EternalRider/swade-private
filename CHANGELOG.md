@@ -57,6 +57,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
+
+### 3.0.6
+
+### Changed
+
+- When an actor with the Hesitant hindrance draws a joker as one of their two cards they now get the joker automatically instead of choosing whether or not they receive that card. **by @florad92**
+
+### Fixed
+
+- Power Point reloads should now once again work regardless of whether reloading from the inventory is set. (#857) **by @florad92**
+- Redrawing cards in combat now correctly no longer applies Initiative edges. (#855) **by @florad92**
 - Fixed missing styles on the effect favorite button of the Item Sheet. (#860) **by @florad92**
 
 ## 3.0.5
