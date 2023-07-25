@@ -57,6 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
+- Fixed missing styles on the effect favorite button of the Item Sheet. (#860) **by @florad92**
 
 ## 3.0.5
 
