@@ -193,6 +193,7 @@ interface ConsumableData
     Favorite,
     EquipStatus,
     Category,
+    Actions,
     GrantEmbedded {
   charges: {
     max: number;
