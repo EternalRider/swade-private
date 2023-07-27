@@ -258,7 +258,7 @@
 
   button:not(section.secret > button.reveal) {
     border: none;
-    background: transparent;
+    background-color: transparent;
     border-radius: 0;
     line-height: 16px;
     font-family: var(--default-font);
@@ -547,7 +547,7 @@
   }
 
   .parry-display {
-    background-image: url('./assets/sheet_parry.svg');
+    background-image: url('./assets/sheet_armor.svg');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

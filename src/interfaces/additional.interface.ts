@@ -1,4 +1,6 @@
+import { ACTIVE_EFFECT_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
 import { ActionType, AdditionalStatType } from '../globals';
+import { constants } from '../module/constants';
 
 export interface PrototypeAdditionalStat {
   dtype: AdditionalStatType;
@@ -47,5 +49,21 @@ export interface RollModifierGroup {
   /** The array of possible modifiers in the group */
   modifiers: RollModifier[];
   /** Eligible roll types from constants.ts */
-  rollType: number;
+  rollType: ValueOf<typeof constants.ROLL_TYPE>;
+}
+/** Modifiers for derived stats like Parry and Toughness */
+export interface DerivedModifier {
+  /** The name of the modifier */
+  label: string;
+  /** The value of the modifier */
+  value: number;
+  /** For modifiers from active effects
+   *  CUSTOM: 0;
+   *  MULTIPLY: 1;
+   *  ADD: 2;
+   *  DOWNGRADE: 3;
+   *  UPGRADE: 4;
+   *  OVERRIDE: 5;
+   */
+  mode?: ValueOf<typeof ACTIVE_EFFECT_MODES>;
 }

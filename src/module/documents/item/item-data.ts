@@ -252,56 +252,56 @@ interface SkillData extends ItemDescription {
 }
 
 interface WeaponItemDataSource {
-  data: WeaponData;
+  system: WeaponData;
   type: 'weapon';
 }
 
 interface GearItemDataSource {
-  data: GearData;
+  system: GearData;
   type: 'gear';
 }
 
 interface ArmorItemDataSource {
-  data: ArmorData;
+  system: ArmorData;
   type: 'armor';
 }
 
 interface ShieldItemDataSource {
-  data: ShieldData;
+  system: ShieldData;
   type: 'shield';
 }
 
 interface EdgeItemDataSource {
-  data: EdgeData;
+  system: EdgeData;
   type: 'edge';
 }
 
 interface HindranceItemDataSource {
-  data: HindranceData;
+  system: HindranceData;
   type: 'hindrance';
 }
 
 interface PowerItemDataSource {
-  data: PowerData;
+  system: PowerData;
   type: 'power';
 }
 
 interface SkillItemDataSource {
-  data: SkillData;
+  system: SkillData;
   type: 'skill';
 }
 
 interface AbilityItemDataSource {
-  data: AbilityData;
+  system: AbilityData;
   type: 'ability';
 }
 
 interface ConsumableDataSource {
-  data: ConsumableData;
+  system: ConsumableData;
   type: 'consumable';
 }
 
 interface ActionItemDataSource {
-  data: ActionData;
+  system: ActionData;
   type: 'action';
 }

@@ -27,8 +27,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added the `Desperate Attack` modifiers to the Roll Dialog (#847) **by @florad92**
-- Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack #763 **by @jpmeehan5**
+- Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack (#763) **by @jpmeehan5**
 - Added the new action type `macro` which allows users to save the UUID of a macro to then later execute it. The triggering item is available in the macro context under the `item` variable. Please keep in mind that normal permission limitations for macros still apply! (#837) **by @florad92**
+- Added new property `shield` to `system.stats.parry` to represent a character's shield bonus to parry. (#712) **by @jpmeehan5**
+- Added tooltip to Parry and Toughness to list out their sources (#832) **by @jpmeehan5**
+- Added tooltip to Armor that shows both sources and armor by location (#137) **by @jpmeehan5**
+- Improved handling of off hand weapons and added support for Ambidextrous edge via `flags.swade.ambidextrous` (#590) **by @jpmeehan5**
 - Added the ability to read Active Effect descriptions in the item sheet. (#861) **by @florad92**
 - Added item actions to consumables. (#581) **by @florad92**
 
@@ -45,6 +49,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `shotsUsed` -> `resourcesUsed`
   - `skillMod` -> `traitMod`
   - `skillOverride` -> `traitOverride`
+- [BREAKING] Folded `system.stats.parry.modifier` and `system.stats.toughness.modifier` into the existing `system.stats.parry.value` and `system.stats.toughness.value` with a migration into becoming an Active Effect 
+- The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the actor, otherwise it's manually editable.
+- Overriding parry or toughness now works correctly when the fields are set to auto calculation.
+- [BREAKING] The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively (These properties were already accessible and were the correct avenue of access prior to this update).
 
 ### Deprecated
 

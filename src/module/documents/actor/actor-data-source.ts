@@ -21,17 +21,17 @@ export type SwadeActorDataSource =
   | SwadeVehicleDataSource;
 
 interface SwadeCharacterDataSource {
-  data: CharacterDataSourceData;
+  system: CharacterDataSourceData;
   type: 'character';
 }
 
 interface SwadeNpcDataSource {
-  data: CharacterDataSourceData;
+  system: CharacterDataSourceData;
   type: 'npc';
 }
 
 interface SwadeVehicleDataSource {
-  data: VehicleDataSourceData;
+  system: VehicleDataSourceData;
   type: 'vehicle';
 }
 
@@ -80,7 +80,7 @@ export interface CharacterDataSourceData {
     };
     parry: {
       value: number;
-      modifier: number;
+      shield: number;
     };
     size: number;
   };
