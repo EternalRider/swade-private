@@ -188,9 +188,14 @@
           data-dtype="Number"
           {{disabled
           actor.system.details.autoCalcParry}}
+          data-tooltip="{{parryTooltip}}"
         />
-        <button type="button" class="parry-display">
-          {{signedString actor.system.stats.parry.modifier}}
+        <button 
+          type="button" 
+          class="parry-display" 
+          {{disabled 
+          actor.system.details.autoCalcParry}}>
+          {{actor.system.stats.parry.shield}}
         </button>
       </span>
     </div>
@@ -206,12 +211,14 @@
           data-dtype="Number"
           {{disabled
           actor.system.details.autoCalcToughness}}
+          data-tooltip="{{toughnessTooltip}}"
         />
         <button
           type="button"
           class="armor-display"
           {{disabled
           actor.system.details.autoCalcToughness}}
+          data-tooltip="{{armorTooltip}}"
         >
           {{actor.system.stats.toughness.armor}}
         </button>

@@ -35,10 +35,15 @@
             placeholder="0"
             data-dtype="Number"
             {{disabled actor.system.details.autoCalcParry}}
+            data-tooltip="{{parryTooltip}}"
           />
-          <div class="armor-value" data-target="parry">
-            {{signedString actor.system.stats.parry.modifier}}
-          </div>
+          <button 
+            class="armor-value" 
+            data-target="parry"
+            {{disabled actor.system.details.autoCalcParry}}
+          >
+            {{actor.system.stats.parry.shield}}
+          </button>
         </div>
       </div>
       <div class="attribute flex3">
@@ -51,10 +56,16 @@
             placeholder="{{localize 'SWADE.Tough'}}"
             data-dtype="Number"
             {{disabled  actor.system.details.autoCalcToughness}}
+            data-tooltip="{{toughnessTooltip}}"
           />
-          <div class="armor-value" data-target="armor">
+          <button 
+            class="armor-value" 
+            data-target="armor"
+            data-tooltip="{{armorTooltip}}"
+            {{disabled actor.system.details.autoCalcToughness}}
+          >
             {{actor.system.stats.toughness.armor}}
-          </div>
+          </button>
         </div>
       </div>
     </div>

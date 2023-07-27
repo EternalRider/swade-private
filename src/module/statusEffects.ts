@@ -110,7 +110,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'system.stats.parry.modifier',
+        key: 'system.stats.parry.value',
         value: '4',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
@@ -239,7 +239,7 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Prone',
     changes: [
       {
-        key: 'system.stats.parry.modifier',
+        key: 'system.stats.parry.value',
         value: '-2',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },

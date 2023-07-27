@@ -3,13 +3,14 @@ import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types
 import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
-import type SwadeActor from '../documents/actor/SwadeActor';
+import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import type SwadeUser from '../documents/SwadeUser';
 import { Logger } from '../Logger';
 import { MigrationCounter } from '../models/MigrationCounter';
 import { triggerServersideMigration } from './migrationUtils';
+import { VehicleData } from '../data/actor';
 
 export async function migrateWorld() {
   const version = game.system.version;
@@ -54,6 +55,7 @@ export async function migrateWorld() {
   for (const [actor, valid] of actors) {
     try {
       await dedupeActorActiveEffects(actor);
+      await _migratePTModifiers(actor);
       const source = valid
         ? actor.toObject()
         : game.data.actors.find((a) => a._id === actor.id);
@@ -97,6 +99,7 @@ export async function migrateWorld() {
         if (token.actorLink) continue; //skip linked tokens as they are already handled by the world actor migration
         const actor = token.actor;
         await dedupeActorActiveEffects(actor);
+        await _migratePTModifiers(actor);
         const updateData = migrateActorData(actor?.toObject());
         if (foundry.utils.isEmpty(updateData)) continue;
         await actor?.update(updateData);
@@ -176,6 +179,7 @@ export async function migrateCompendium(
       switch (documentName) {
         case 'Actor':
           await dedupeActorActiveEffects(doc as SwadeActor);
+          await _migratePTModifiers(doc as SwadeActor);
           updateData = migrateActorData(doc.toObject());
           break;
         case 'Item':
@@ -373,6 +377,11 @@ export function migrateSceneData(_scene: Scene | SceneData) {
  */
 export function migrateEffectData(_effect: ActiveEffectData) {
   const updateData: UpdateData = {};
+  _effect.changes.forEach(c => {
+    if (c.key === 'system.stats.parry.modifier') c.key = 'system.stats.parry.value'
+    if (c.key === 'system.stats.toughness.modifier') c.key = 'system.stats.toughness.value'
+  })
+  updateData.changes = _effect.changes
   return updateData;
 }
 
@@ -410,6 +419,44 @@ export async function dedupeActorActiveEffects(actor: SwadeActor) {
       });
   }
   await actor.deleteEmbeddedDocuments('ActiveEffect', toDelete);
+}
+
+async function _migratePTModifiers(actor: SwadeActor) {
+  if (actor.system instanceof VehicleData) return;
+  const parryModifier = actor._source.system.stats.parry.modifier ?? 0;
+  const toughModifier = actor._source.system.stats.toughness.modifier ?? 0;
+  const effects = new Array<Partial<ActiveEffectData>>();
+  const updateData: UpdateData = {}
+  if (parryModifier) {
+    updateData['system.stats.parry.modifier'] = 0
+    effects.push({
+      name: game.i18n.localize('SWADE.Addi') + ' ' +  game.i18n.localize('SWADE.Parry'),
+      changes: [{
+        key: 'system.stats.parry.value',
+        value: parryModifier,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        priority: null
+      }],
+      description: 'Created by 3.1 Migration'
+    })
+  }
+  if (toughModifier) {
+    updateData['system.stats.toughness.modifier'] = 0
+    effects.push({
+      name: game.i18n.localize('SWADE.Addi') + ' ' +  game.i18n.localize('SWADE.Tough'),
+      changes: [{
+        key: 'system.stats.toughness.value',
+        value: toughModifier,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        priority: null
+      }],
+      description: 'Created by 3.1 Migration'
+    })
+  }
+  if (effects.length > 0) {
+    actor.createEmbeddedDocuments('ActiveEffect', effects)
+    actor.updateSource(updateData)
+  }
 }
 
 function _migrateVehicleOperator(data: ActorData, updateData: UpdateData) {
@@ -469,6 +516,8 @@ function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
   }
   if (effects.length > 0) updateData.effects = effects;
 }
+
+
 
 function _migrateWeaponAPToNumber(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'weapon') return updateData;

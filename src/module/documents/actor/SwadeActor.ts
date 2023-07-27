@@ -2,7 +2,7 @@ import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
-import { RollModifier } from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
@@ -21,6 +21,7 @@ import {
 } from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
+import { VehicleData } from '../../data/actor';
 
 declare global {
   interface DocumentClassConfig {
@@ -75,7 +76,7 @@ export default class SwadeActor extends Actor {
    * @returns true when the actor is a Wild Card
    */
   get isWildcard(): boolean {
-    if (this.type === 'vehicle') return false;
+    if (this.system instanceof VehicleData) return false;
     return this.system.wildcard || this.type === 'character';
   }
 
@@ -95,7 +96,7 @@ export default class SwadeActor extends Actor {
   }
 
   get bennies(): number {
-    if (this.type === 'vehicle') return 0;
+    if (this.system instanceof VehicleData) return 0;
     return this.system.bennies.value;
   }
 
@@ -133,7 +134,7 @@ export default class SwadeActor extends Actor {
   /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced */
   get isEncumbered(): boolean {
     const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');
-    if (this.type === 'vehicle' || !applyEncumbrance) {
+    if (this.system instanceof VehicleData || !applyEncumbrance) {
       return false;
     }
     if (this.system.details.encumbrance.isEncumbered) return true;
@@ -142,7 +143,7 @@ export default class SwadeActor extends Actor {
   }
 
   get race(): SwadeItem | undefined {
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
     const races = this.items.filter(
       (i) => i.type === 'ability' && i.system.subtype === 'race',
     );
@@ -153,7 +154,7 @@ export default class SwadeActor extends Actor {
   }
 
   get archetype(): SwadeItem | undefined {
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
     const archetypes = this.items.filter(
       (i) => i.type === 'ability' && i.system.subtype === 'archetype',
     );
@@ -208,7 +209,7 @@ export default class SwadeActor extends Actor {
 
   protected _prepareCharacterBaseData() {
     //typeguard against vehicles
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
 
     for (const key in this.system.attributes) {
       const attribute = this.system.attributes[key];
@@ -226,6 +227,13 @@ export default class SwadeActor extends Actor {
       this.system.stats.parry.value = 0;
     }
 
+    // Prepping the parry & toughness sources
+    this.system.stats.toughness.sources = new Array<DerivedModifier>()
+    this.system.stats.toughness.effects = new Array<DerivedModifier>()
+    this.system.stats.toughness.armorEffects = new Array<DerivedModifier>()
+    this.system.stats.parry.sources = new Array<DerivedModifier>()
+    this.system.stats.parry.effects = new Array<DerivedModifier>()
+
     //setup the global modifier container object
     this.system.stats.globalMods = {
       trait: [],
@@ -242,7 +250,7 @@ export default class SwadeActor extends Actor {
 
   protected _prepareCharacterDerivedData() {
     //typeguard against vehicles
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
 
     //die type bounding for attributes
     for (const key in this.system.attributes) {
@@ -300,31 +308,23 @@ export default class SwadeActor extends Actor {
     this.system.stats.scale = this.calcScale(this.system.stats.size);
 
     // Toughness calculation
-    const shouldAutoCalcToughness = this.system.details.autoCalcToughness;
-    if (shouldAutoCalcToughness) {
-      const adjustedTough = this.system.stats.toughness.value;
-      const adjustedArmor = this.system.stats.toughness.armor;
-
-      //add some sensible lower limits
-      const finalArmor = Math.max(this.calcArmor() + adjustedArmor, 0);
-      const finalTough = Math.max(
-        this.calcToughness(false) + adjustedTough + finalArmor,
-        1,
-      );
-      this.system.stats.toughness.value = finalTough;
-      this.system.stats.toughness.armor = finalArmor;
+    if (this.system.details.autoCalcToughness) {
+      const torsoArmor = this.calcArmor()
+      this.system.stats.toughness.armor = torsoArmor
+      this.system.stats.toughness.value = this.calcToughness() + torsoArmor
+      this.system.stats.toughness.sources.push({
+        label: game.i18n.localize('SWADE.Armor'),
+        value: torsoArmor
+      })
     }
 
-    const shouldAutoCalcParry = this.system.details.autoCalcParry;
-    if (shouldAutoCalcParry) {
-      const adjustedParry = this.system.stats.parry.value;
-      const completeParry = Math.max(this.calcParry() + adjustedParry, 0);
-      this.system.stats.parry.value = completeParry;
+    if (this.system.details.autoCalcParry) {
+      this.system.stats.parry.value = this.calcParry();
     }
   }
 
   protected _prepareVehicleBaseData() {
-    if (this.type !== 'vehicle') return;
+    if (!(this.system instanceof VehicleData)) return;
     //setup the global modifier container object
     this.system.stats = {
       globalMods: {
@@ -338,7 +338,7 @@ export default class SwadeActor extends Actor {
     attribute: Attribute,
     options: IRollOptions = {},
   ): Promise<TraitRoll | null> {
-    if (this.type === 'vehicle') return null;
+    if (this.system instanceof VehicleData) return null;
     if (options.rof && options.rof > 1) {
       ui.notifications.warn(
         'Attribute Rolls with RoF greater than 1 are not currently supported',
@@ -548,7 +548,7 @@ export default class SwadeActor extends Actor {
   }
 
   async rollWealthDie() {
-    if (this.type === 'vehicle') return null;
+    if (this.system instanceof VehicleData) return null;
     const die = this.system.details.wealth.die ?? 6;
     const mod = this.system.details.wealth.modifier ?? 0;
     const wildDie = this.system.details.wealth['wild-die'] ?? 6;
@@ -583,7 +583,7 @@ export default class SwadeActor extends Actor {
   }
 
   async rollRunningDie() {
-    if (this.type === 'vehicle') return null;
+    if (this.system instanceof VehicleData) return null;
 
     const runningDieSides = this.system.stats.speed.runningDie;
     const runningMod = this.system.stats.speed.runningMod;
@@ -702,7 +702,7 @@ export default class SwadeActor extends Actor {
   }
 
   async getBenny() {
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
     const combatant = this.token?.combatant;
     const notHiddenNPC =
       !combatant?.isNPC || (combatant?.isNPC && !combatant?.hidden);
@@ -739,7 +739,7 @@ export default class SwadeActor extends Actor {
   }
 
   async toggleConviction() {
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
     const current = this.system.details.conviction.value;
     const active = this.system.details.conviction.active;
     if (current > 0 && !active) {
@@ -799,7 +799,7 @@ export default class SwadeActor extends Actor {
    * @param displayToChat display a message to chat
    */
   async refreshBennies(displayToChat = true) {
-    if (this.type === 'vehicle') return;
+    if (this.system instanceof VehicleData) return;
     if (displayToChat) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this,
@@ -880,7 +880,7 @@ export default class SwadeActor extends Actor {
     };
 
     //return early if the actor is a vehicle
-    if (this.type === 'vehicle') {
+    if (this.type instanceof VehicleData) {
       out.topspeed = this.system.topspeed || 0;
       return out;
     }
@@ -913,52 +913,9 @@ export default class SwadeActor extends Actor {
     return out;
   }
 
-  /** Calculates the correct armor value based on SWADE v5.5 and returns that value */
-  calcArmor(): number {
-    return this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
-  }
-
-  /**
-   * Calculates the Toughness value and returns it, optionally with armor
-   * @param includeArmor include armor in final value (true/false). Default is true
-   */
-  calcToughness(includeArmor = true): number {
-    if (this.type === 'vehicle') return 0;
-    let finalToughness = 0;
-
-    //get the base values we need
-    const vigor = this.system.attributes.vigor.die.sides;
-    const vigMod = this.system.attributes.vigor.die.modifier;
-    const toughMod = this.system.stats.toughness.modifier;
-
-    finalToughness = Math.round(vigor / 2) + 2;
-
-    const size = this.system.stats.size ?? 0;
-    finalToughness += size;
-    finalToughness += toughMod;
-
-    if (vigMod > 0) {
-      finalToughness += Math.floor(vigMod / 2);
-    }
-
-    //add the toughness from the armor
-    for (const armor of this.itemTypes.armor) {
-      if (armor.type !== 'armor') continue;
-      if (armor.isReadied && armor.system.locations.torso) {
-        finalToughness += armor.system.toughness;
-      }
-    }
-
-    if (includeArmor) {
-      finalToughness += this.calcArmor();
-    }
-
-    return Math.max(finalToughness, 1);
-  }
-
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
   calcMaxCarryCapacity(): number {
-    if (this.type === 'vehicle') return 0;
+    if (this.system instanceof VehicleData) return 0;
     const unit = game.settings.get('swade', 'weightUnit');
     const strength = deepClone(this.system.attributes.strength);
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
@@ -986,7 +943,7 @@ export default class SwadeActor extends Actor {
         : null,
     );
     let retVal = 0;
-    if (this.type === 'vehicle') {
+    if (this.system instanceof VehicleData) {
       for (const item of items) {
         if (!item) continue;
         retVal += item.weight * item.quantity;
@@ -1002,54 +959,9 @@ export default class SwadeActor extends Actor {
     return retVal;
   }
 
-  calcParry(): number {
-    if (this.type === 'vehicle') return 0;
-    let parryTotal = 0;
-    const parryBase = game.settings.get('swade', 'parryBaseSkill');
-    const parryBaseSkill = this.itemTypes.skill.find(
-      (i) => i.name === parryBase,
-    );
-
-    let skillDie = 0;
-    let skillMod = 0;
-    if (parryBaseSkill) {
-      skillDie = getProperty(parryBaseSkill.system, 'die.sides') ?? 0;
-      skillMod = getProperty(parryBaseSkill.system, 'die.modifier') ?? 0;
-    }
-
-    //base parry calculation
-    parryTotal = skillDie / 2 + 2;
-
-    //add modifier if the skill die is 12
-    if (skillDie >= 12) {
-      parryTotal += Math.floor(skillMod / 2);
-    }
-
-    //add shields
-    for (const shield of this.itemTypes.shield) {
-      if (shield.type !== 'shield') continue;
-      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        parryTotal += shield.system.parry ?? 0;
-      }
-    }
-
-    //add equipped weapons
-    //TODO check for off-hand weapons and ambidexterity
-    for (const weapon of this.itemTypes.weapon) {
-      if (weapon.type !== 'weapon') continue;
-      if (weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED) {
-        parryTotal += weapon.system.parry ?? 0;
-        //add trademark weapon bonus
-        parryTotal += weapon.system.trademark;
-      }
-    }
-
-    return parryTotal;
-  }
-
   /** Helper Function for Vehicle Actors, to roll Maneuvering checks */
   async rollManeuverCheck() {
-    if (this.type !== 'vehicle') return;
+    if (!(this.system instanceof VehicleData)) return;
     const driver = await this.getDriver();
 
     //Return early if no driver was found
@@ -1085,7 +997,7 @@ export default class SwadeActor extends Actor {
   }
 
   async getDriver(): Promise<SwadeActor | undefined> {
-    if (this.type !== 'vehicle') return;
+    if (!(this.system instanceof VehicleData)) return;
     const driverId = this.system.driver.id;
     let driver: SwadeActor | undefined = undefined;
     if (driverId) {
@@ -1102,7 +1014,7 @@ export default class SwadeActor extends Actor {
     skill: SwadeItem,
     options: IRollOptions,
   ): [TraitRoll, RollModifier[]] {
-    if (this.type === 'vehicle') {
+    if (this.system instanceof VehicleData) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
     if (skill.type !== 'skill') {
@@ -1248,7 +1160,7 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    if (this.type !== 'vehicle') {
+    if (!(this.system instanceof VehicleData)) {
       //Status penalties
       if (this.system.status.isDistracted) {
         mods.push({
@@ -1285,12 +1197,208 @@ export default class SwadeActor extends Actor {
     return (strength.sides / 2 - 1 + modifier) * 10;
   }
 
+  /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
+  private calcArmor(): number {
+    const torsoArmor = this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
+    return this._calcDerivedEffects('armor', torsoArmor);
+  }
+
+  /**
+   * Calculates the Toughness value without armor and returns it
+   */
+  private calcToughness(): number {
+    if (this.system instanceof VehicleData) return 0;
+    let finalToughness = 0;
+    const sources: DerivedModifier[] = this.system.stats.toughness.sources;
+
+    //get the base values we need
+    const vigor: number = this.system.attributes.vigor.die.sides;
+    const vigMod: number = this.system.attributes.vigor.die.modifier;
+    // const toughMod = this.system.stats.toughness.modifier;
+
+    finalToughness = Math.round(vigor / 2) + 2;
+    if (vigMod > 0) {
+      finalToughness += Math.floor(vigMod / 2);
+    }
+    sources.push({
+      label: game.i18n.localize('SWADE.AttrVig'),
+      value: finalToughness
+    })
+
+    const size: number = this.system.stats.size ?? 0;
+    finalToughness += size;
+    if (size !== 0) {
+      sources.push({
+        label: game.i18n.localize('SWADE.Size'),
+        value: size
+      })
+    }
+    // finalToughness += toughMod;
+
+
+    //add the toughness from the armor
+    for (const armor of this.itemTypes.armor) {
+      if (armor.type !== 'armor') continue;
+      if (armor.isReadied && armor.system.locations.torso) {
+        finalToughness += armor.system.toughness;
+        sources.push({
+          label: armor.name,
+          value: armor.system.toughness
+        })
+      }
+    }
+    return this._calcDerivedEffects('toughness', finalToughness)
+  }
+
+  private calcParry(): number {
+    if (this.system instanceof VehicleData) return 0;
+    let parryTotal = 0;
+    const sources: DerivedModifier[] = this.system.stats.parry.sources;
+    const parryBase = game.settings.get('swade', 'parryBaseSkill');
+    const parryBaseSkill = this.itemTypes.skill.find(
+      (i) => i.name === parryBase,
+    );
+
+    let skillDie = 0;
+    let skillMod = 0;
+    if (parryBaseSkill) {
+      skillDie = getProperty(parryBaseSkill.system, 'die.sides') ?? 0;
+      skillMod = getProperty(parryBaseSkill.system, 'die.modifier') ?? 0;
+    }
+
+    //base parry calculation
+    parryTotal = skillDie / 2 + 2;
+
+    //add modifier if the skill die is 12
+    if (skillDie >= 12) {
+      parryTotal += Math.floor(skillMod / 2);
+    }
+
+    if (parryBaseSkill) {
+      sources.push({
+        label: getProperty(parryBaseSkill, 'name'),
+        value: parryTotal
+      })
+    }
+    else {
+      sources.push({
+        label: game.i18n.localize('SWADE.BaseParry'),
+        value: 2
+      })
+    }
+
+    this.system.stats.parry.shield = 0
+
+    //add shields
+    for (const shield of this.itemTypes.shield) {
+      if (shield.type !== 'shield') continue;
+      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
+        const shieldParry = shield.system.parry ?? 0;
+        parryTotal += shieldParry;
+        this.system.stats.parry.shield += shieldParry;
+        sources.push({
+          label: shield.name,
+          value: shieldParry
+        })
+      }
+    }
+
+    //add equipped weapons
+    const ambidextrous = this.getFlag('swade', 'ambidextrous')
+    for (const weapon of this.itemTypes.weapon) {
+      if (weapon.type !== 'weapon') continue;
+      let parryBonus = 0;
+
+      if (weapon.system.equipStatus >= constants.EQUIP_STATE.OFF_HAND) {
+
+        // only add parry bonus if it's in the main hand or actor is ambidextrous
+        if (weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED || 
+          ambidextrous) parryBonus += weapon.system.parry ?? 0;
+        
+        //add trademark weapon bonus
+        parryBonus += weapon.system.trademark;
+      }
+      if (parryBonus !== 0) {
+        sources.push({
+          label: weapon.name,
+          value: parryBonus
+        })
+      }
+      parryTotal += parryBonus;
+    }
+
+    return this._calcDerivedEffects('parry', parryTotal);
+  }
+  
+  private _calcDerivedEffects(target: 'parry' | 'toughness' | 'armor', derivedStat: number): number {
+    if (this.system instanceof VehicleData) return 0 // typeguarding
+    const effects: DerivedModifier[] = (target === 'armor') ? 
+      this.system.stats.toughness.armorEffects :
+      this.system.stats[target].effects
+    const sources: DerivedModifier[] = (target === 'armor') ? 
+      new Array<DerivedModifier>() : // currently gets discarded
+      this.system.stats[target].sources
+    
+    effects.forEach((e: DerivedModifier) => {
+      switch (e.mode) {
+        case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+          derivedStat *= e.value;
+          sources.push({
+            label: e.label,
+            value: e.value,
+            mode: e.mode
+          })
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.ADD:
+          derivedStat += e.value;
+          sources.push({
+            label: e.label,
+            value: e.value,
+            mode: e.mode
+          })
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+          if (derivedStat > e.value) {
+            derivedStat = e.value;
+            sources.length = 0
+            sources.push({
+              label: e.label,
+              value: e.value,
+              mode: e.mode
+            })
+          }
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+          if (derivedStat < e.value) {
+            derivedStat = e.value;
+            sources.length = 0
+            sources.push({
+              label: e.label,
+              value: e.value,
+              mode: e.mode
+            })
+          }
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+          derivedStat = e.value;
+          sources.length = 0
+          sources.push({
+            label: e.label,
+            value: e.value,
+            mode: e.mode
+          })
+          break;
+    }
+    })
+    return derivedStat
+  }
+
   /**
    * @param location The location of the armor such as head, torso, arms or legs
    * @returns The total amount of armor for that location
    */
   private _getArmorForLocation(location: ArmorLocation): number {
-    if (this.type === 'vehicle') return 0;
+    if (this.system instanceof VehicleData) return 0;
 
     let totalArmorVal = 0;
 
@@ -1333,6 +1441,64 @@ export default class SwadeActor extends Actor {
       });
 
     return totalArmorVal;
+  }
+
+  getPTTooltip(target:  'parry' | 'toughness' ): string {
+    if (this.system instanceof VehicleData) return ''
+    let tooltip = (target === 'parry') ? 
+      `<h4>${game.i18n.localize('SWADE.Parry')}
+       ${this.system.stats.parry.value}
+      (${this.system.stats.parry.shield})</h4>` : 
+      `<h4>${game.i18n.localize('SWADE.Tough')}
+       ${this.system.stats.toughness.value}
+      (${this.system.stats.toughness.armor})</h4>`
+
+    tooltip += this._sourcesToTooltip(this.system.stats[target].sources)
+
+    return tooltip
+  }
+
+  getArmorTooltip(): string {
+    if (this.system instanceof VehicleData) return ''
+    let tooltip = ''
+
+    const armor = this.armorPerLocation
+    tooltip += game.i18n.localize('SWADE.Head') + `: ${armor.head}<br>`
+    tooltip += game.i18n.localize('SWADE.Torso') + `: ${armor.torso}<br>`
+    tooltip += game.i18n.localize('SWADE.Arms') + `: ${armor.arms}<br>`
+    tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`
+
+    tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects)
+
+    return tooltip
+  }
+
+  private _sourcesToTooltip(sources: DerivedModifier[]): string {
+    let tooltip = ''
+
+    sources.forEach(source => {
+      let effect = ''
+      switch (source.mode) {
+        case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+          effect = 'x' + source.value
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+          effect = game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+          effect = game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+          effect = game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value
+          break;
+        case CONST.ACTIVE_EFFECT_MODES.ADD:
+        default:
+          effect = source.value.signedString()
+      }
+      tooltip += `${source.label}: ${effect}<br>`
+    })
+
+    return tooltip
   }
 
   private _filterOverrides() {

@@ -48,11 +48,12 @@ const commonActorData = (baseBennies = 3, maxWounds = 3, wildcard = true) => ({
     toughness: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0, integer: true }),
       armor: new fields.NumberField({ initial: 0, integer: true }),
-      modifier: new fields.NumberField({ initial: 0, integer: true }),
+      modifier: new fields.NumberField({ initial: 0, integer: true, required: false }),
     }),
     parry: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0, integer: true }),
-      modifier: new fields.NumberField({ initial: 0, integer: true }),
+      shield: new fields.NumberField({ initial: 0, integer: true }),
+      modifier: new fields.NumberField({ initial: 0, integer: true, required: false }),
     }),
     size: new fields.NumberField({ initial: 0, integer: true }),
   }),

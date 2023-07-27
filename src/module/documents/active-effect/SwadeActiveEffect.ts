@@ -12,6 +12,7 @@ import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
+import { VehicleData } from '../../data/actor';
 
 declare global {
   interface DocumentClassConfig {
@@ -90,6 +91,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static GLOBAL_REGEXP = /system\.stats\.globalMods\.(\w+)/;
 
+  static PT_REGEXP = /system\.stats\.(parry|toughness)\.(value|armor)/
+
   static override migrateData(data: ActiveEffectDataProperties) {
     super.migrateData(data);
     if ('changes' in data) {
@@ -108,12 +111,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
+    const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP)
     if (itemMatch) {
       this._handelItemMatch(itemMatch, change, doc);
-    } else if (attrMatch && change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
+    } else if (attrMatch && 
+      change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
+      doc instanceof SwadeActor) {
       this._handleAttributeMatch(attrMatch, change, doc);
-    } else if (globalMatch) {
+    } else if (globalMatch &&
+      doc instanceof SwadeActor) {
       this._handleGlobalModifierMatch(globalMatch, change, doc);
+    } else if (ptMatch &&
+      doc instanceof SwadeActor) {
+      this._handlePTModifierMatch(ptMatch, change, doc);
     } else {
       //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
       return super.apply(doc, change);
@@ -261,7 +271,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   private _handleAttributeMatch(
     match: RegExpMatchArray,
     change: EffectChangeData,
-    doc: SwadeActor | SwadeItem,
+    doc: SwadeActor,
   ) {
     const overrides = foundry.utils.flattenObject(doc.overrides);
     const effectKey = 'system.attributes.' + match[1] + '.effects';
@@ -276,11 +286,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
   private _handleGlobalModifierMatch(
     match: RegExpMatchArray,
     change: EffectChangeData,
-    doc: SwadeActor | SwadeItem,
+    doc: SwadeActor,
   ) {
+    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-      doc instanceof SwadeActor &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])
     ) {
       const overrides = foundry.utils.flattenObject(doc.overrides);
@@ -296,6 +306,27 @@ export default class SwadeActiveEffect extends ActiveEffect {
         'Invalid Global Modifier ' + change.key + 'on effect ' + this.id,
       );
     }
+  }
+
+  private _handlePTModifierMatch(
+    match: RegExpMatchArray,
+    change: EffectChangeData,
+    doc: SwadeActor,
+  ) {
+    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
+    if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+      super.apply(doc, change)
+      return;
+    }
+    const autoCalc = (match[1] === 'parry') ? doc.system.details.autoCalcParry : doc.system.details.autoCalcToughness
+    const target = (match[2] === 'armor') ?
+      'armorEffects' : // Armor gets its own display
+      (autoCalc ? 'effects' : 'sources');
+    doc.system.stats[match[1]][target].push({
+      label: this.name,
+      value: Number(change.value),
+      mode: change.mode
+    })
   }
 
   /** This functions checks the effect expiration behavior and either auto-deletes or prompts for deletion */

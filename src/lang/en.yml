@@ -140,6 +140,7 @@ SWADE:
   RoF: RoF
   Mag: Shots
   Parry: Parry
+  ShieldBonus: Shield Bonus
   Notes: Notes
   ActionsEffects: Actions & Effects
   Actions: Actions
@@ -319,6 +320,7 @@ SWADE:
   RerollWithBenny: Reroll with Benny
   FreeReroll: Free Reroll
   AutoCalcParry: Automatically calculates Parry, including Shields
+  BaseParry: Base Parry
   Subtype: Subtype
   SpecialAbility: Special Ability
   SpecialAbilities: Special Abilities

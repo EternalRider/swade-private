@@ -45,14 +45,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     // Edit armor modifier
     html.find('.armor-value').on('click', (ev) => {
-      let target = ev.currentTarget.dataset.target ?? '';
-      const shouldAutoCalcArmor = getProperty(
-        this.actor,
-        'system.details.autoCalcToughness',
-      );
-      if (target === 'armor' && shouldAutoCalcArmor) {
-        target = 'toughness';
-      }
+      const target = ev.currentTarget.dataset.target ?? '';
       this._modifyDefense(target);
     });
 
@@ -355,8 +348,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       case 'parry':
         targetLabel = `${game.i18n.localize(
           'SWADE.Parry',
-        )} ${game.i18n.localize('SWADE.Mod')}`;
-        targetProperty = 'parry.modifier';
+        )} ${game.i18n.localize('SWADE.ShieldBonus')}`;
+        targetProperty = 'parry.shield';
         break;
       case 'armor':
         targetLabel = `${game.i18n.localize('SWADE.Armor')}`;
