@@ -14,7 +14,7 @@ export default class Reloadinator extends Application<ApplicationOptions> {
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      title: 'Select a magazine',
+      title: game.i18n.localize('SWADE.Magazine.Select'),
       template: 'systems/swade/templates/apps/reload-manager.hbs',
       classes: ['swade', 'magazine-manager', 'swade-app'],
       width: 400,
