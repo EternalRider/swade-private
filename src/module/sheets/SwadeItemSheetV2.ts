@@ -14,7 +14,11 @@ import { Accordion } from '../style/Accordion';
 import { copyToClipboard } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
-  collapsibleStates: CollapsibleStates = { powers: {}, actions: {} };
+  collapsibleStates: CollapsibleStates = {
+    powers: {},
+    actions: {},
+    effects: {},
+  };
   _effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
@@ -165,8 +169,10 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
 
     html.find('.effect-action').on('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId! as string;
+      const effectId = a.closest('details')!.dataset.effectId! as string;
       const effect = this.item.effects.get(effectId, { strict: true });
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
@@ -258,6 +264,17 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (this.item.canGrantItems) {
       data.grantedItems = await this._getGrantedItems();
+    }
+
+    for (const effect of this.item.effects) {
+      foundry.utils.setProperty(
+        effect,
+        'enrichedDescription',
+        await TextEditor.enrichHTML(effect.description, {
+          async: true,
+          secrets: this.item.isOwner,
+        }),
+      );
     }
 
     if (this.type === 'weapon') {
@@ -692,6 +709,18 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           states[id] = !currentState;
         });
       });
+
+    this.form
+      ?.querySelectorAll<HTMLDetailsElement>('.effect-list details')
+      .forEach((el) => {
+        new Accordion(el, '.content', { duration: 200 });
+        const id = el.dataset.effectId as string;
+        el.querySelector('summary')?.addEventListener('click', () => {
+          const states = this.collapsibleStates.effects;
+          const currentState = Boolean(states[id]);
+          states[id] = !currentState;
+        });
+      });
   }
 
   private _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
@@ -860,4 +889,5 @@ type OptionsPartial = Partial<ItemSheet.Data<DocumentSheetOptions>>;
 interface CollapsibleStates {
   actions: Record<string, boolean>;
   powers: Record<string, boolean>;
+  effects: Record<string, boolean>;
 }

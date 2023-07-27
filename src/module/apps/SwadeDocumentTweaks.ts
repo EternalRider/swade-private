@@ -5,7 +5,6 @@ import SwadeItem from '../documents/item/SwadeItem';
 
 export default class SwadeDocumentTweaks extends FormApplication<
   FormApplicationOptions,
-  Record<string, unknown>,
   SwadeActor | SwadeItem
 > {
   constructor(
