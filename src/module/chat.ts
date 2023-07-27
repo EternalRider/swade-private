@@ -132,15 +132,14 @@ export function createMagazineTooltip(
     const actor = ItemChatCardHelper.getChatCardActor(
       card.querySelector('.swade.chat-card')!,
     );
-    const itemId =
-      card.querySelector<HTMLElement>('[data-item-id]')?.dataset.itemId;
-    const loadedAmmo = actor?.items
-      .get(itemId as string)
-      ?.getFlag('swade', 'loadedAmmo');
-    let content = 'No Magazine loaded';
-    if (loadedAmmo) {
-      content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
-    }
+    const itemId = card.querySelector<HTMLElement>('[data-item-id]')?.dataset
+      .itemId as string;
+    const loadedAmmo = actor?.items.get(itemId)?.getFlag('swade', 'loadedAmmo');
+
+    const content = loadedAmmo
+      ? `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`
+      : game.i18n.localize('SWADE.Magazine.NoneLoaded');
+
     game.tooltip.activate(magazine, {
       text: await TextEditor.enrichHTML(content, { async: true }),
     });

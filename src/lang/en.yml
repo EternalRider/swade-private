@@ -913,6 +913,9 @@ SWADE:
     Label: Resources Used
     Hint: How much of an arbitrary resource is used for this action
   CouldNotFindMacro: Could not find Macro with UUID {uuid}
+  Magazine:
+    NoneLoaded: No magazine loaded
+    Select: Select a magazine
 TYPES:
   Actor:
     character: Player Character
