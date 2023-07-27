@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack #763 **by @jpmeehan5**
 - Added the new action type `macro` which allows users to save the UUID of a macro to then later execute it. The triggering item is available in the macro context under the `item` variable. Please keep in mind that normal permission limitations for macros still apply! (#837) **by @florad92**
 - Added the ability to read Active Effect descriptions in the item sheet. (#861) **by @florad92**
+- Added item actions to consumables. (#581) **by @florad92**
 
 ### Changed
 

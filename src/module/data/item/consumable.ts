@@ -1,5 +1,6 @@
 import { constants } from '../../constants';
 import {
+  actions,
   category,
   equippable,
   favorite,
@@ -26,6 +27,7 @@ export class ConsumableData extends foundry.abstract.DataModel<
       ...equippable(),
       ...favorite(),
       ...category(),
+      ...actions(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
         value: new fields.NumberField({ initial: 1 }),
@@ -36,7 +38,7 @@ export class ConsumableData extends foundry.abstract.DataModel<
       subtype: new fields.StringField({
         initial: constants.CONSUMABLE_TYPE.REGULAR,
         choices: Object.values(constants.CONSUMABLE_TYPE),
-        textSearch: true
+        textSearch: true,
       }),
     };
   }
