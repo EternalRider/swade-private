@@ -2,9 +2,10 @@ import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
-import type SwadeActor from '../documents/actor/SwadeActor';
+import SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeUser from '../documents/SwadeUser';
+import { VehicleData } from '../data/actor/vehicle';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -53,20 +54,18 @@ export async function calcWounds(
   targetUuid: string,
   damageContext: DamageContext,
 ) {
-  // Get the target of the damage.
-  const target = (await fromUuid(targetUuid)) as SwadeActor | TokenDocument;
-  // If the target document is a Token, change the actor value to target.actor, otherwise use the target document itself.
-  const actor: SwadeActor =
-    target?.documentName === 'Token' ? target?.actor! : target;
+  const actor = await fromUuid(targetUuid)
+
+  if (!(actor instanceof SwadeActor)) return
   // Get Toughness values.
   let armor = 0;
   let value = 0;
   // If it's not a vehicle
-  if (actor.type !== 'vehicle') {
+  if (!(actor.system instanceof VehicleData)) {
     // Get the values from the stats child object.
     armor = Number(actor.system.stats.toughness.armor);
     value = Number(actor.system.stats.toughness.value);
-  } else if (actor.type === 'vehicle') {
+  } else if (actor.system instanceof VehicleData) {
     // If the Actor is a vehicle, get the values from the system object.
     armor = Number(actor.system.toughness.armor);
     value = Number(actor.system.toughness.total);
@@ -93,7 +92,7 @@ export async function calcWounds(
     // Set status to Shaken.
     statusToApply = Status.SHAKEN;
     // If already shaken, set status to wounded and wounds inflicted to 1.
-    if (actor.system.status.isShaken && woundsInflicted === 0) {
+    if (actor.system.status.isShaken && woundsInflicted === 0 && !(actor.getFlag('swade', 'hardy'))) {
       woundsInflicted = 1;
       statusToApply = Status.WOUNDED;
     }
@@ -173,7 +172,7 @@ async function soakPrompt(
           });
         }
         if (
-          actor.type !== 'vehicle' &&
+          !(actor.system instanceof VehicleData) &&
           game.settings.get('swade', 'grittyDamage')
         ) {
           await rollInjuryTable();
@@ -382,6 +381,12 @@ async function attemptSoak(
   damageContext: DamageContext,
   bestSoakAttempt: number = 0,
 ) {
+  if (actor.system instanceof VehicleData) {
+     // No handling for vehicle soaks... yet
+     return ui.notifications.warn('SWADE.DamageApplicator.SoakDialog.NoVehicleSoak', {
+      localize: true,
+    });
+  }
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   const soakModifiers: RollModifier[] = [
     {
@@ -495,7 +500,7 @@ async function attemptSoak(
           await ChatMessage.create({ content: message });
           // If Gritty Damage is in play, roll on the Injury Table.
           if (
-            actor.type !== 'vehicle' &&
+            !(actor.system instanceof VehicleData) &&
             game.settings.get('swade', 'grittyDamage')
           ) {
             await rollInjuryTable();
@@ -647,8 +652,8 @@ async function applyIncapacitated(actor: SwadeActor) {
     });
   if (Hooks.call('swadeIncapacitation', actor, statuses) && actor.isWildcard) {
     let resistRoll: number = await resistInjury(actor);
-    const heroesNeverDie = game.settings.get('swade', 'heroesNeverDie');
-    if (heroesNeverDie && resistRoll === constants.ROLL_RESULT.CRITFAIL)
+    const ignoreBleedOut = game.settings.get('swade', 'heroesNeverDie') || actor.getFlag('swade', 'ignoreBleedOut');
+    if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL)
       resistRoll = constants.ROLL_RESULT.FAIL;
     let message = '';
     const statusBleedingOut = CONFIG.SWADE.statusEffects.find(
@@ -664,13 +669,13 @@ async function applyIncapacitated(actor: SwadeActor) {
       case constants.ROLL_RESULT.FAIL:
         await rollInjuryTable();
         message = game.i18n.format(
-          heroesNeverDie
+          ignoreBleedOut
             ? 'SWADE.DamageApplicator.Incapacitation.PermanentInjuryHND'
             : 'SWADE.DamageApplicator.Incapacitation.PermanentInjury',
           { name: actor.name },
         );
         // If there's an Status Effect data for Bleeding Out.
-        if (statusBleedingOut && !heroesNeverDie) {
+        if (statusBleedingOut && !ignoreBleedOut) {
           const incapIndex = statuses.findIndex(
             (s) => s.effectData.id === 'incapacitated',
           );
@@ -862,12 +867,3 @@ interface RerollDialogReturn {
   reroll: boolean;
   who: SwadeActor | SwadeUser;
 }
-
-/** Hooks.call('swadeTakeDamage', actor, damageContext)
- * Implemented primarily for RIFTS Blood & Guts variant on Gritty Damage
- * JS objects are passed by reference, so as things are added to damageContext
- *  it can be the only item passed throughout the DamageApplicator
- * Future hooks should be implemented by expanding damageContext and then
- *  passing it as an argument, allowing for future developers calling the hook
- *  to access the information they ned
- */
