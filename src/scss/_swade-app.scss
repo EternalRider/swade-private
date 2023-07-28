@@ -74,7 +74,8 @@
   }
 
   select {
-    height: var(--form-field-height);
+    width: 100%;
+    // height: var(--form-field-height);
   }
 
   option {
@@ -84,7 +85,8 @@
   input[type='number'],
   input[type='text'],
   select {
-    background: transparent;
+    height: unset;
+    background-color: transparent;
     border: none;
     border-radius: var(--input-border-radius);
     border-bottom: var(--input-border-line);

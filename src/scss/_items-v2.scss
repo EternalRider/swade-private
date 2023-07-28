@@ -270,12 +270,6 @@
       row-gap: 0;
       padding: 0;
     }
-
-    .form-group {
-      & * {
-        flex: 1;
-      }
-    }
     .action-name,
     .action-type {
       grid-column: 1/3;
@@ -293,19 +287,16 @@
       place-self: center;
     }
     .full-width {
+      margin-bottom: $medium-spacing;
       grid-column: 1/3;
     }
     .left {
+      margin-bottom: $medium-spacing;
       grid-column: 1;
-      input {
-        place-self: center;
-      }
     }
     .right {
-      grid-column: 2 / -1;
-      input {
-        place-self: center;
-      }
+      margin-bottom: $medium-spacing;
+      grid-column: 2;
     }
   }
 

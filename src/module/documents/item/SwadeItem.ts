@@ -694,10 +694,10 @@ export default class SwadeItem extends Item {
 
   getTraitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    if (getProperty(this, 'system.actions.skillMod')) {
+    if (getProperty(this, 'system.actions.traitMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this, 'system.actions.skillMod'),
+        value: getProperty(this, 'system.actions.traitMod'),
       });
     }
     if (this.type === 'weapon') {
