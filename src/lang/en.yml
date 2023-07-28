@@ -866,6 +866,7 @@ SWADE:
       AdjustDamage: Adjust Damage
       ApplyShaken: Apply Shaken Status
       Accept: Accept
+      NoVehicleSoak: Soaking for Vehicles is not yet supported
     RerollSoakDialog:
       Title: Reroll to Soak Wounds for {name}?
       Prompt: >-
