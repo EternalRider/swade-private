@@ -544,6 +544,7 @@ SWADE:
       ApplyShaken: Aplicar Estado Abalado
       Accept: Aceitar
       SoakRoll: Teste de Vigor para Absorver
+      NoVehicleSoak: Absorver para Veículos ainda não é suportado
     RerollSoakDialog:
       Title: Rerrolar para Absorver Ferimentos para [name}?
       Prompt: >-
@@ -932,6 +933,12 @@ SWADE:
     Label: Recursos utilizados
     Hint: Quanto de um recurso arbitrário é usado para essa ação
   CouldNotFindMacro: Não foi possível encontrar a macro com a UUID {uuid}
+  DmgMod: Modificador de Dano
+  ShieldBonus: Bônus de Escudo
+  BaseParry: Aparar Base
+  Magazine:
+    NoneLoaded: Nenhum carregador carregado
+    Select: Selecione um carregador
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
