@@ -238,13 +238,13 @@ export default class ItemChatCardHelper {
 
       if (action.traitMod) {
         mods.push({
-          label: game.i18n.localize('SWADE.ActionTraitMod'),
+          label: action.name,
           value: action.traitMod,
         });
       }
 
       if (item.type === 'weapon') {
-        if (!item.canExpendResources(action.resourcesUsed)) {
+        if (!item.canExpendResources(action.resourcesUsed ?? 1)) {
           Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
           return null;
         }
@@ -259,7 +259,7 @@ export default class ItemChatCardHelper {
         item: item,
       });
       if (roll && item.type === 'weapon') {
-        await item.consume(action.resourcesUsed ?? 0);
+        await item.consume(action.resourcesUsed ?? 1);
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff

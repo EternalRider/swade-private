@@ -41,7 +41,7 @@ export const actions = () => ({
     dmgMod: new fields.StringField({ initial: '' }),
     additional: new MappingField(
       new fields.SchemaField({
-        name: new fields.StringField({ initial: '' }),
+        name: new fields.StringField({ blank: false, nullable: false }),
         type: new fields.StringField({
           initial: constants.ACTION_TYPE.TRAIT,
           choices: Object.values(constants.ACTION_TYPE),
@@ -70,6 +70,7 @@ export const actions = () => ({
           required: false,
         }),
       }),
+      { initial: {} },
     ),
   }),
 });

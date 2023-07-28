@@ -14,25 +14,30 @@
       >
         <summary>{{action.name}}</summary>
         <span class='content'>
-          <div class='form-group action-name'>
-            <label>{{localize 'SWADE.Name'}}</label>
-            <input
-              type='text'
-              name='system.actions.additional.{{id}}.name'
-              value='{{action.name}}'
-            />
+          <div class='left'>
+            <label class='float-label'>
+              <input
+                type='text'
+                name='system.actions.additional.{{id}}.name'
+                value='{{action.name}}'
+                placeholder='{{localize "SWADE.Name"}}'
+              />
+              <span>{{localize 'SWADE.Name'}}</span>
+            </label>
           </div>
-          <div class='form-group action-type'>
-            <label>{{localize 'Type'}}</label>
-            <select name='system.actions.additional.{{id}}.type'>
-              {{#select action.type}}
-                {{selectOptions
-                  @root.actionTypes
-                  selected=action.type
-                  localize=true
-                }}
-              {{/select}}
-            </select>
+          <div class='right'>
+            <label class='float-label'>
+              <select name='system.actions.additional.{{id}}.type'>
+                {{#select action.type}}
+                  {{selectOptions
+                    @root.actionTypes
+                    selected=action.type
+                    localize=true
+                  }}
+                {{/select}}
+              </select>
+              <span>{{localize 'Type'}}</span>
+            </label>
           </div>
           <button
             type='button'
@@ -43,108 +48,130 @@
             <i class='fas fa-trash fa-2x'></i>
           </button>
           {{#if (eq action.type 'trait')}}
-            <div class='form-group left'>
-              <label> {{localize 'SWADE.AltTrait'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.traitOverride'
-                value='{{action.traitOverride}}'
-              />
+            <div class='left'>
+              <label class='float-label'>
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.traitOverride'
+                  value='{{action.traitOverride}}'
+                  placeholder='{{localize "SWADE.AltTrait"}}'
+                />
+                <span>{{localize 'SWADE.AltTrait'}}</span>
+              </label>
             </div>
-            <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
-              <label>{{localize 'SWADE.TraitMod'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.traitMod'
-                value='{{action.traitMod}}'
-              />
+            <div class='right'>
+              <label class='float-label' title='{{localize "SWADE.ModHint"}}'>
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.traitMod'
+                  value='{{action.traitMod}}'
+                  placeholder='{{localize "SWADE.RollExample"}}'
+                />
+                <span>{{localize 'SWADE.TraitMod'}}</span>
+              </label>
             </div>
-            <div class='form-group left'>
-              <label>{{localize 'SWADE.NumberOfDice.Label'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.dice'
-                value='{{action.dice}}'
-                data-dtype='Number'
-                data-tooltip='{{localize "SWADE.NumberOfDice.Hint"}}'
-              />
-            </div>
-            <div class='form-group right'>
-              {{#if (eq @root.item.type 'weapon')}}
-                <label>{{localize 'SWADE.ShotsUsed'}}</label>
+            <div class='left'>
+              <label class='float-label'>
                 <input
                   type='number'
-                  name='system.actions.additional.{{id}}.resourcesUsed'
-                  value='{{action.resourcesUsed}}'
-                  data-dtype='Number'
+                  name='system.actions.additional.{{id}}.dice'
+                  value='{{action.dice}}'
+                  placeholder='{{localize "SWADE.NumberOfDice.Label"}}'
+                  data-tooltip='{{localize "SWADE.NumberOfDice.Hint"}}'
                 />
-              {{else}}
-                <label>{{localize 'SWADE.ResourcesUsed.Label'}}</label>
-                <input
-                  type='number'
-                  name='system.actions.additional.{{id}}.resourcesUsed'
-                  value='{{action.resourcesUsed}}'
-                  data-dtype='Number'
-                  data-tooltip='{{localize "SWADE.ResourcesUsed.Hint"}}'
-                />
-              {{/if}}
+                <span>{{localize 'SWADE.NumberOfDice.Label'}}</span>
+              </label>
+            </div>
+            <div class='right'>
+              <label class='float-label'>
+                {{#if (eq @root.item.type 'weapon')}}
+                  <input
+                    type='number'
+                    name='system.actions.additional.{{id}}.resourcesUsed'
+                    value='{{action.resourcesUsed}}'
+                    placeholder='{{localize "SWADE.ShotsUsed"}}'
+                  />
+                  <span>{{localize 'SWADE.ShotsUsed'}}</span>
+                {{else}}
+                  <input
+                    type='number'
+                    name='system.actions.additional.{{id}}.resourcesUsed'
+                    value='{{action.resourcesUsed}}'
+                    placeholder='{{localize "SWADE.ResourcesUsed.Label"}}'
+                    data-tooltip='{{localize "SWADE.ResourcesUsed.Hint"}}'
+                  />
+                  <span>{{localize 'SWADE.ResourcesUsed.Label'}}</span>
+                {{/if}}
+              </label>
             </div>
           {{else if (eq action.type 'resist')}}
-            <div class='form-group left'>
-              <label> {{localize 'SWADE.AltTrait'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.traitOverride'
-                value='{{action.traitOverride}}'
-              />
+            <div class='left'>
+              <label class='float-label'>
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.traitOverride'
+                  value='{{action.traitOverride}}'
+                  placeholder='{{localize "SWADE.AltTrait"}}'
+                />
+                <span>{{localize 'SWADE.AltTrait'}}</span>
+              </label>
             </div>
-            <div class='form-group right' title='{{localize "SWADE.ModHint"}}'>
-              <label>{{localize 'SWADE.TraitMod'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.traitMod'
-                value='{{action.traitMod}}'
-              />
+            <div class='right'>
+              <label
+                class='float-label right'
+                title='{{localize "SWADE.ModHint"}}'
+              >
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.traitMod'
+                  value='{{action.traitMod}}'
+                  placeholder='{{localize "SWADE.TraitMod"}}'
+                />
+                <span>{{localize 'SWADE.TraitMod'}}</span>
+              </label>
             </div>
           {{else if (eq action.type 'damage')}}
-            <div class='form-group full-width'>
-              <label>{{localize 'SWADE.DmgOver'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.dmgOverride'
-                value='{{action.dmgOverride}}'
-              />
-            </div>
-            <div
-              class='form-group full-width'
-              title='{{localize "SWADE.ModHint"}}'
-            >
-              <label>{{localize 'SWADE.Dmg'}}
-                {{localize 'SWADE.Modifier'}}</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.dmgMod'
-                value='{{action.dmgMod}}'
-              />
-            </div>
-            <div class='form-group full-width'>
-              <label>{{localize 'SWADE.HeavyWeapon'}}</label>
-              <span class='form-fields'>
+            <div class='left'>
+              <label class='float-label'>
                 <input
-                  type='checkbox'
-                  name='system.actions.additional.{{id}}.isHeavyWeapon'
-                  {{checked action.isHeavyWeapon}}
+                  type='text'
+                  name='system.actions.additional.{{id}}.dmgOverride'
+                  value='{{action.dmgOverride}}'
+                  placeholder='{{localize "SWADE.DmgOver"}}'
                 />
-              </span>
+                <span>{{localize 'SWADE.DmgOver'}}</span>
+              </label>
+            </div>
+            <div class='right'>
+              <label class='float-label' title='{{localize "SWADE.ModHint"}}'>
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.dmgMod'
+                  value='{{action.dmgMod}}'
+                  placeholder='{{localize "SWADE.RollExample"}}'
+                />
+                <span>{{localize 'SWADE.DmgMod'}}</span>
+              </label>
+            </div>
+            <div class='form-group left'>
+              <input
+                type='checkbox'
+                name='system.actions.additional.{{id}}.isHeavyWeapon'
+                {{checked action.isHeavyWeapon}}
+              />
+              <label>{{localize 'SWADE.HeavyWeapon'}}</label>
             </div>
           {{else if (eq action.type 'macro')}}
-            <div class='form-group full-width'>
-              <label>UUID</label>
-              <input
-                type='text'
-                name='system.actions.additional.{{id}}.uuid'
-                value='{{action.uuid}}'
-              />
+            <div class='full-width'>
+              <label class='float-label'>
+                <input
+                  type='text'
+                  name='system.actions.additional.{{id}}.uuid'
+                  value='{{action.uuid}}'
+                  placeholder='UUID'
+                />
+                <span>UUID</span>
+              </label>
             </div>
           {{/if}}
         </span>

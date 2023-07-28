@@ -51,9 +51,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `shotsUsed` -> `resourcesUsed`
   - `skillMod` -> `traitMod`
   - `skillOverride` -> `traitOverride`
-- [BREAKING] Folded `system.stats.parry.modifier` and `system.stats.toughness.modifier` into the existing `system.stats.parry.value` and `system.stats.toughness.value` with a migration into becoming an Active Effect.  **by @jpmeehan5**
+- [BREAKING] Folded `system.stats.parry.modifier` and `system.stats.toughness.modifier` into the existing `system.stats.parry.value` and `system.stats.toughness.value` with a migration into becoming an Active Effect. **by @jpmeehan5**
 - The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the actor, otherwise it's manually editable. **by @jpmeehan5**
 - [BREAKING] The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively (These properties were already accessible and were the correct avenue of access prior to this update). **by @jpmeehan5**
+- Improved the UI for editing actions on items. (#864) **by @florad92**
 
 ### Deprecated
 

@@ -919,6 +919,7 @@ SWADE:
   Magazine:
     NoneLoaded: No magazine loaded
     Select: Select a magazine
+  DmgMod: Damage Modifier
 TYPES:
   Actor:
     character: Player Character
