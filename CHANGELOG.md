@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
+- Enabled full text search in compendiums and added many fields to be searchable (#792)
+  - Actors: archetype, appearance, notes, goals, species name, rank, vehicle classification.
+  - Items: Ability subtype, notes, source, requirements, rank, trapping, power's arcane background.
+  - You can find the searchable fields listed in `CONFIG.textSearch.{docname}`, e.g. `CONFIG.textSearch.actor`
 - Added the `Desperate Attack` modifiers to the Roll Dialog (#847) **by @florad92**
 - Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack (#763) **by @jpmeehan5**
 - Added the new action type `macro` which allows users to save the UUID of a macro to then later execute it. The triggering item is available in the macro context under the `item` variable. Please keep in mind that normal permission limitations for macros still apply! (#684) **by @florad92**
@@ -37,10 +41,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to read Active Effect descriptions in the item sheet. (#861) **by @florad92**
 - Added item actions to consumables. (#581) **by @florad92**
 - Added support for ignoring wounds from a second shaken result via `flags.swade.hardy` and bleeding out from a failed vigor roll upon incapacitation via `flags.swade.ignoreBleedOut` (#785) **by @jpmeehan5**
+- Hovering over the Size input on the character or NPC sheet displays the actor's scale in a tooltip. An actor's scale has been available at `system.stats.scale` for data purposes. (#60) **by @jpmeehan5**
+- You can now configure localized vehicle operator skills (#373) **by @mclemente**
 
 ### Changed
 
-- The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (!355) **by @florad92**
+- [BREAKING] Implemented the System Data Model, which provides strong type checking on all fields. (#794) **by @florad92 and @jpmeehan5**
+- The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (#826) **by @florad92**
+- Roll modifiers from active effects are no longer ignored by default (#826) **by @florad92**
 - The `Entangled` status now applies the `Vulnerable` status instead of the `Distracted` status. (#846) **by @florad92**
 - Changed the label for the input which determines the amount of trait dice that are being rolled for actions to make it more universal. (#823) **by @florad92**
 - The `swadeAction` Hook is no longer triggered if the trait or damage roll was cancelled. (#812) **by @florad92**
@@ -69,6 +77,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
+- Cleaned up error that would display in console after successfully deleting an item that had grants (#803) **by @florad92**
 - Improved magazine reload related i18n (#865) **by @florad92**
 - Overriding parry or toughness now works correctly when the fields are set to auto calculation. (#462) **by @jpmeehan5**
 - Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
