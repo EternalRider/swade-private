@@ -81,6 +81,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Improved magazine reload related i18n (#865) **by @florad92**
 - Overriding parry or toughness now works correctly when the fields are set to auto calculation. (#462) **by @jpmeehan5**
 - Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
+- Fixed an issue that would cause active effects changing skill modifiers not to be disabled correctly (#862) **by @florad92**
 
 ### 3.0.6
 
