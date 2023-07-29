@@ -469,6 +469,10 @@
       grid-column: span 2;
       font-weight: bold;
       display: grid;
+      .check-container {
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
     }
     .bennies {
       grid-row: 1;
@@ -557,6 +561,14 @@
     text-align: center;
     margin-bottom: $medium-spacing;
 
+    .attribute-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      column-gap: $medium-spacing;
+    }
+
     .attribute-manager {
       grid-column: 1;
       grid-row: 1;
@@ -568,30 +580,33 @@
       white-space: nowrap;
     }
     .attribute-value {
-      margin-top: $small-spacing;
+      display: flex;
+      flex-direction: row;
       flex-wrap: nowrap;
-      width: 100%;
+      justify-content: center;
+      align-items: center;
+      column-gap: $medium-spacing;
     }
     .attribute {
+      margin-bottom: $medium-spacing;
+      display: flex;
+      flex-direction: column;
       .die {
         border: none;
         height: 28px;
       }
       .modifier {
-        margin: 0;
-        width: 100%;
-        line-height: 28px;
       }
-      margin-bottom: $medium-spacing;
-    }
-    .attribute + .attribute {
-      padding-left: $medium-spacing;
     }
   }
 
   .derived {
     text-align: center;
     margin-bottom: $medium-spacing;
+    justify-content: start;
+    .derived-list {
+      column-gap: $small-spacing;
+    }
     .stat {
       margin-bottom: $medium-spacing;
     }
@@ -606,9 +621,6 @@
       margin: 0;
       width: 100%;
       height: 28px;
-    }
-    .stat + .stat {
-      padding-left: $small-spacing;
     }
     .running-die {
       max-height: 28px;
