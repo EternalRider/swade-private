@@ -116,6 +116,9 @@ Hooks.once('init', () => {
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
+  // SWADE's default cone template is a very special case that we're storing at angle===0
+  // This preserves access to the other types of cone definitions
+  CONFIG.MeasuredTemplate.defaults.angle = 0
   CONFIG.Token.objectClass = SwadeToken;
 
   //register custom sidebar tabs
