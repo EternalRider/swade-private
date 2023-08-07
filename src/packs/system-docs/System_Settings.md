@@ -1,35 +1,16 @@
 ---
-id: pUgyiLLEp1WQh7Ag
-title: System Settings
-sort: 500000
-key: '!journal.pages!8uC7RTgJOg8SW4cf.pUgyiLLEp1WQh7Ag'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.pUgyiLLEp1WQh7Ag'
+  id: pUgyiLLEp1WQh7Ag
+  name: System Settings
+  sort: 500000
 ---
 
-The Official Savage Worlds system for Foundry VTT offers a number of game settings you can configure to fine tune your game.
-
-## Card Sound
-
-If enabled, Foundry plays a card-like sound effect when dealing initiative via its Combat Tracker.
+The Official Savage Worlds system for Foundry VTT offers a number of game settings you can configure to fine tune your game. This is not a comprehensive list, but instead provides additional info beyond the hint associated with each setting.
 
 ## Automatic Initiative
 
 Progressing to the next round using the Combat Tracker automatically deals Action Cards if this is enabled. If a Joker was drawn, Foundry automatically shuffles the deck before dealing initiative for the new round.
-
-## Create Chat Message for Initiative
-
-When Action Cards are drawn, Foundry will output the drawn Action Cards to the Chat if enabled.
-
-## Hide NPC Wild Cards
-
-This option prevents players from being able to know whether or not an NPC is a Wild Card.
-
-## Automatically Link Wild Cards
-
-Enabling this option automatically links NPC Wild Card tokens to their respective actors from which they are created.
-
-## Benny Notifications
-
-When a GM rewards a Benny or when a character spends a Benny, Foundry displays a chat message respectively.
 
 ## Card Deck to Use for Initiative
 

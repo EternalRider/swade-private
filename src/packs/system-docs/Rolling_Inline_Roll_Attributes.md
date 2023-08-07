@@ -1,8 +1,9 @@
 ---
-id: hwX4nBBG8gzqnJE0
-title: Rolling Inline Roll Attributes
-sort: 300000
-key: '!journal.pages!8uC7RTgJOg8SW4cf.hwX4nBBG8gzqnJE0'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.hwX4nBBG8gzqnJE0'
+  id: hwX4nBBG8gzqnJE0
+  name: Rolling Inline Roll Attributes
+  sort: 300000
 ---
 
 You can roll dice directly from the chat using the `/roll` or `/r` command. When rolling via the chat, it's possible to build inline macros so that you can roll any attribute or skill directly.

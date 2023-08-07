@@ -1,8 +1,9 @@
 ---
-id: NcFH9QGCsLMpdkH0
-title: Items
-sort: 200000
-key: '!journal.pages!8uC7RTgJOg8SW4cf.NcFH9QGCsLMpdkH0'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.NcFH9QGCsLMpdkH0'
+  id: NcFH9QGCsLMpdkH0
+  name: Items
+  sort: 200000
 ---
 
 Items are the components with which you can create and equip actors in Foundry. They can be created in the Items Directory or directly on actor sheets, and they can be dragged between both locations for easy sharing.

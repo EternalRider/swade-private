@@ -202,7 +202,7 @@ export default class SwadeActor extends Actor {
     /**
      * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
      * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
+     * @param {SwadeActor} actor                The actor whose data is being prepared
      */
     Hooks.callAll('swadeActorPrepareDerivedData', this);
   }

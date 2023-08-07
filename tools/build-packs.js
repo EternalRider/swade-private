@@ -119,11 +119,7 @@ function packDocument(batch, doc, type) {
  * @param {object} metadata Metadata loaded from the frontmatter
  */
 function createPage(content, metadata) {
-  return {
-    _key: metadata.key,
-    _id: metadata.id,
-    name: metadata.title,
-    sort: metadata.sort,
+  const protoPage = {
     type: 'text',
     ownership: { default: -1 },
     text: {
@@ -132,6 +128,8 @@ function createPage(content, metadata) {
     },
     title: { level: 1, show: true },
   };
+  const page = merge(protoPage, metadata.foundry);
+  return page
 }
 
 function getDB(path) {
@@ -159,4 +157,31 @@ function makeID(length = 16) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
+}
+
+/**
+ * Merges two objects together recursively into a new object applying values from right to left.
+ * Recursion only applies to child object properties.
+ * 
+ * @param {object} initial The initial object
+ * @param {object} override The object containing changed properties
+ */
+function merge(initial, override) {
+
+  const isObject = (value) => !!value && value.constructor === Object;
+
+  if (!initial || !override) return initial ?? override ?? {}
+
+  return Object.entries({ ...initial, ...override }).reduce(
+    (acc, [key, value]) => {
+      return {
+        ...acc,
+        [key]: (() => {
+          if (isObject(initial[key])) return merge(initial[key], value)
+          return value
+        })()
+      }
+    },
+    {}
+  )
 }

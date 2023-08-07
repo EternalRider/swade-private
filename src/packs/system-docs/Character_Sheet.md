@@ -1,20 +1,26 @@
 ---
-id: 0rHMnYSuYiVcQGxU
-title: Character Sheet
-sort: 900000
-key: '!journal.pages!8uC7RTgJOg8SW4cf.0rHMnYSuYiVcQGxU'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.0rHMnYSuYiVcQGxU'
+  id: 0rHMnYSuYiVcQGxU
+  name: Character Sheet
+  sort: 900000
 ---
+
+Player characters should always be set up using the Character sheet. Furthermore, all NPCs have the option to use the Character sheet in place of the NPC sheet; this is recommended for especially complicated NPCs.
 
 ## Tweaks
 
 Character sheets have a Tweaks option in the title bar of their respective panels. Within the Tweaks settings panel, you’ll find a number of options to customize the character and its sheet.
 
 - **Animal Smarts:** Appends an A to the Smarts Attribute to indicate the actor has Animal Smarts.
+- **Advances:** Switch between the legacy advance system, which just provides an open-ended text box, or the current Expanded system that provides individual fields per advance and automates tracking of character rank.
 - **Running Die:** Sets the die type rolled and any modifiers for Running die rolls.
 - **Max Wounds:** Sets the maximum number of Wounds the character can have before becoming Incapacitated.
 - **Max Fatigue:** Sets the maximum level of Fatigue the character can have before becoming Incapacitated.
 - **Bennies Reset:** Sets the number of Bennies the character has at the start of a session or when bennies are refreshed.
 - **Ignore Wounds:** Used to indicate how many points of Wound penalties to ignore based on any Edges or abilities the character might have.
+- **Unshake Modifier:** Provides a bonus to automatic shake rolls triggered at the start of a shaken character's turn.
+- **Soak Modifier:** Provides a bonus to automatic soak rolls triggered when you apply damage to a character.
 
 ### Initiative
 
@@ -22,7 +28,11 @@ These options affect how drawing Action Cards for Initiative is handled for the 
 
 ### Automatic Calculations
 
-**Toughness:** Automatically calculates stacking of Armor from any armor items equipped and adds it to the character’s base Toughness. This can be useful if characters don and doff armor from various sources during a session.
+**Toughness:** Automatically calculates stacking of Armor from any armor items equipped and adds it to the character’s base Toughness.
+
+**Parry:** Automatically calculates stacking of Parry from any weapon or shield items equipped and adds it to the character’s base parry.
+
+_Note:_ These settings are necessary to include active effects, otherwise they are simply stored in the tooltip and not applied.
 
 ### Additional Stats
 
@@ -83,11 +93,11 @@ The Derived Stats are based on those presented in the core rules with a few feat
 
 #### Size
 
-This is the Size value as per the Special Ability presented in the Bestiary of the core rules.
+This is the Size value as per the Special Ability presented in the Bestiary of the core rules. Hover to see a tooltip displaying the character's scale.
 
-#### Running Die
+#### Pace
 
-Clicking on the label for Pace will roll the Running die and automatically add the character’s Pace to the result.
+You can set a character's pace and running die in the Tweaks dialog.
 
 #### Parry
 
@@ -95,7 +105,7 @@ Parry includes any bonuses from weapons and shields
 
 #### Toughness
 
-Toughness and Armor are manually set values. If automatic calculation for Toughness is enabled, these values will be automatically derived from stats and equipped armor.
+Toughness and Armor are manually set values. If automatic calculation for Toughness is enabled, these values will be automatically derived from stats and equipped armor. Hover to see tooltips showing a breakdown of sources.
 
 ### Skills
 
@@ -120,7 +130,7 @@ Each item in this list can be expanded by clicking on its name. Weapons in parti
 
 **Chat Cards:** These items also each have a chat icon that creates an interactive card in the Chat. This card includes a button to roll the Skill listed in the item’s action tab as well as the damage roll if any. If the item has additional actions defined, those options will also be listed on the card.
 
-## Edges (and Hindrances) Tab
+## Edges & Hindrances Tab
 
 This tab includes both the character’s Hindrances and Edges.
 
@@ -135,7 +145,7 @@ To edit an Edge or Hinderance, click on the edit icon for the item. This will op
 
 **Chat Cards:** Edges and Hindrances also each have a chat icon that creates an interactive card in the Chat. If the item has Actions and Effects defined, those options will be listed on the card.
 
-## Inventory Tab
+## Gear Tab
 
 ### Encumbrance
 
@@ -143,7 +153,7 @@ Encumbrance displays the total amount of weight the character can carry before b
 
 ### Currency
 
-Currency stores the total amount of money the character has currently.
+Currency stores the total amount of money the character has currently. You can configure the label (e.g. dollars or gold or credits) in the system settings.
 
 ### Inventory
 
@@ -152,13 +162,14 @@ The character’s inventory of items is grouped into five categories:
 - Weapons
 - Armors
 - Shields
+- Consumables
 - Misc
 
 Each category has a button labeled “+Add” that allows you to manually enter an item directly to a character’s sheet instead of dragging and dropping an item from the Items Directory sidebar.
 
-Items in the inventory can be equipped, edited, or deleted using the icons to the right of each entry’s listing.
+Items in the inventory can be equipped, favorited, edited, or deleted using the icons to the right of each entry’s listing.
 
-Equipping an item adds the item to the Quick Access & Effects tab on the Summary tab.
+Favoriting an item adds the item to the Quick Access section on the Summary tab.
 
 Editing an item allows you to add details, change the quantity of items, and more (see Weapons for example).
 
@@ -168,9 +179,9 @@ Deleting an item is permanent. Once the item is deleted, it cannot be recovered.
 
 The Powers tab contains lists of powers and the number of Power Points for each Arcane Background the character has.
 
-The “+Add Powers” button allows you to add a new power. While adding the power, you can specify the Arcane Skill used to activate the power (see Powers for more details).
+The “+Add Powers” button allows you to add a new power. While adding the power, you can specify the Arcane Skill used to activate the power.
 
-A power can be added to the Quick Access & Effects list on the Summary tab by clicking the star icon to the right of its listing.
+A power can be added to the Quick Access section on the Summary tab by clicking the star icon to the right of its listing.
 
 **Chat Cards:** Powers have a chat icon that creates an interactive card in the Chat. This card includes a button to roll the Arcane Skill associated with the power. If the item has additional actions defined, those options will also be listed on the card.
 
@@ -183,5 +194,5 @@ To delete a power, you have to first edit the power. The delete icon will appear
 The Description Tab has three fields:
 
 - **Portrait:** Click on the portrait field to select or upload an image of the character’s portrait.
-- **Advances:** This rich text field allows you to track the character’s advances.
+- **Advances:** The display of this field depends on the advance mode chosen in Tweaks. By default, characters use the "Expanded" mode, which lets you add configure advances.
 - **Biography:** Usually, this is where you can add your character’s backstory as well as a list of any special abilities the character has been granted.

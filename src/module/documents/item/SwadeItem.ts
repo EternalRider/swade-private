@@ -298,6 +298,7 @@ export default class SwadeItem extends Item {
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
      * @param {SwadeItem} item                  The item that is used to create the damage value
@@ -702,7 +703,8 @@ export default class SwadeItem extends Item {
     }
     if (this.type === 'weapon') {
       modifiers.push(...this.actor.system.stats.globalMods.attack);
-      if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
+      if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
+        !(this.actor.getFlag('swade', 'ambidextrous'))) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),
           value: -2,
