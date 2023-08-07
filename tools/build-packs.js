@@ -162,6 +162,7 @@ function makeID(length = 16) {
 /**
  * Merges two objects together recursively into a new object applying values from right to left.
  * Recursion only applies to child object properties.
+ * @source  https://github.com/rayepps/radash/blob/master/src/object.ts
  * 
  * @param {object} initial The initial object
  * @param {object} override The object containing changed properties
