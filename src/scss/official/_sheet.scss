@@ -140,9 +140,6 @@
     }
     input[type] {
       background: transparent;
-      &:disabled {
-        border: none;
-      }
     }
   }
 
@@ -248,8 +245,6 @@
       box-shadow: var(--input-box-shadow);
     }
     &:disabled {
-      background: transparent;
-      border: 1px solid var(--input-background);
       &:hover {
         box-shadow: none;
       }
@@ -269,13 +264,14 @@
     background-size: contain;
     background-repeat: no-repeat;
     cursor: pointer;
+    &:disabled {
+      cursor: default;
+    }
     i {
       margin: 0;
     }
-    &:focus {
-      box-shadow: var(--input-box-shadow);
-    }
-    &:hover {
+    &:hover:not(:disabled),
+    &:focus:not(:disabled) {
       text-shadow: var(--input-text-shadow);
     }
     &.rollable {
@@ -756,9 +752,6 @@
       column-gap: 0.5rem;
       display: flex;
       flex-wrap: wrap;
-    }
-    button.item-name {
-      cursor: pointer;
     }
 
     &.disabled-effect {
