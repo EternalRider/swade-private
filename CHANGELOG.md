@@ -65,6 +65,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Improved the UI for editing actions on items. (#864) **by @florad92**
 - The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by jpmeehan5**
 - Improved styles for the character sheet for dealing with linebreaks in the attributes section. (#255) **by @florad92**
+- Significantly updated the system journal documentation to modern system functionality (#868) **by @jpmeehan5**
 
 ### Deprecated
 
@@ -84,6 +85,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Overriding parry or toughness now works correctly when the fields are set to auto calculation. (#462) **by @jpmeehan5**
 - Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
 - Fixed an issue that would cause active effects changing skill modifiers not to be disabled correctly (#862) **by @florad92**
+- Fixed an issue where the Active Effect Wizard would not save the name of the effect on refresh. **by @jpmeehan5**
 
 ### 3.0.6
 

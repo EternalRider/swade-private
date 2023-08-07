@@ -1,9 +1,12 @@
 ---
-id: IQk83Jmto9VQWXNS
-title: Playing the Game
-sort: 0
-key: '!journal.pages!8uC7RTgJOg8SW4cf.IQk83Jmto9VQWXNS'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.IQk83Jmto9VQWXNS'
+  id: IQk83Jmto9VQWXNS
+  name: Playing the Game
+  sort: 0
 ---
+
+If this is your first time using the Foundry Virtual Tabletop, please check out the official [Knowledge Base](https://foundryvtt.com/kb/) for the software; the Savage Worlds system builds on top of the base Foundry functionality, and this guide is focused on the system-specific details.
 
 ## Combat Tracker
 
@@ -27,13 +30,14 @@ Right-clicking on any player name displays a context menu with additional option
 - **Refresh Bennies:** Resets the selected player’s characters’ Bennies to their Bennies Reset value as indicated in their character sheet.
 - **Refresh All Bennies:** Resets all player’s Bennies as above.
 
-## Using Blast and Cone Templates
+## Using Area Templates
 
-The Savage Worlds Adventure Edition system for Foundry adds custom Blast and Cone Templates to the Measurement Controls toolbar. The icons for the templates are as follows:
+The Savage Worlds Adventure Edition system for Foundry adds custom Cone, Blast and Stream Templates to the Measurement Controls toolbar. The icons for the templates are as follows:
 
-- **C:** Cone Template
-- **S:** Small Blast Template
-- **M:** Medium Blast Template
-- **L:** Large Blast Template
+- **<span class='fa-solid fa-location-pin fa-rotate-90'></span>** Cone Template
+- **<span class='fa-solid fa-rectangle-wide'></span>** Stream Template
+- **<span class='fa-solid fa-circle-1 fa-2xs'></span>** Small Blast Template
+- **<span class='fa-solid fa-circle-2 fa-sm'></span>** Medium Blast Template
+- **<span class='fa-solid fa-circle-3 fa-lg'></span>** Large Blast Template
 
 For more information on how to use the area of effect templates in Foundry, see [Measurement and Templates on the Foundry VTT website](https://foundryvtt.com/article/measurement/).

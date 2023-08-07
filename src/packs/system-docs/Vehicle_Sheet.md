@@ -1,8 +1,9 @@
 ---
-id: xXe8NXRCtmpUUigh
-title: Vehicle Sheet
-sort: 800000
-key: '!journal.pages!8uC7RTgJOg8SW4cf.xXe8NXRCtmpUUigh'
+foundry:
+  _key: '!journal.pages!8uC7RTgJOg8SW4cf.xXe8NXRCtmpUUigh'
+  id: xXe8NXRCtmpUUigh
+  name: Vehicle Sheet
+  sort: 800000
 ---
 
 In the _Savage Worlds Adventure Edition_ system for Foundry VTT, vehicles are created as Actors rather than items.

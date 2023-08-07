@@ -51,7 +51,7 @@ export default class SwadeUser extends User {
       await this.setFlag('swade', 'bennies', this.bennies - 1);
 
       /**
-       * A hook event that is fired after an actor spends a Benny
+       * A hook event that is fired after a game master spends a Benny
        * @function spendBenny
        * @category Hooks
        * @param {SwadeUser} user                     The user that spent the benny
@@ -77,7 +77,7 @@ export default class SwadeUser extends User {
       await this.setFlag('swade', 'bennies', this.bennies + 1);
 
       /**
-       * A hook event that is fired after an actor spends a Benny
+       * A hook event that is fired after a game master spends a Benny
        * @function spendBenny
        * @category Hooks
        * @param {SwadeUser} user                     The user that received the benny

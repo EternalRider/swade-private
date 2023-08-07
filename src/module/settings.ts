@@ -107,6 +107,7 @@ export function registerSettings() {
 
   game.settings.register('swade', 'initMessage', {
     name: 'SWADE.Settings.CreateInitChat.Name',
+    hint: 'SWADE.Settings.CreateInitChat.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
