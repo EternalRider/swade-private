@@ -254,6 +254,8 @@ SWADE:
       Hint: Não mostrar aos jogadores quais NPCs são Cartas Selvagens
     CreateInitChat:
       Name: Criar Mensagem no Chat para Iniciativa
+      Hint: Quando as cartas de ação forem compradas, o Foundry enviará as cartas
+        de ação compradas para o Chat, se ativado.
     AutoInit:
       Name: Iniciativa Automática
       Hint: Saca Cartas de Ação automaticamente a cada rodada
