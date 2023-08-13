@@ -3,7 +3,7 @@ foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.0rHMnYSuYiVcQGxU'
   id: 0rHMnYSuYiVcQGxU
   name: Character Sheet
-  sort: 900000
+  sort: 700000
 ---
 
 Player characters should always be set up using the Character sheet. Furthermore, all NPCs have the option to use the Character sheet in place of the NPC sheet; this is recommended for especially complicated NPCs.

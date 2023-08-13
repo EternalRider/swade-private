@@ -3,7 +3,7 @@ foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.qKSga6mGzCPciZ8v'
   id: qKSga6mGzCPciZ8v
   name: NPC Sheet
-  sort: 700000
+  sort: 800000
 ---
 
 NPC sheets are similar to the Character Sheet but much more compact and simplified. They are typically used for characters or creatures other than the player characters.
