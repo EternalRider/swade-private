@@ -1,4 +1,6 @@
 import { constants } from '../../constants';
+import { renameActionProperties } from './_migration';
+import * as shims from './_shims';
 import {
   actions,
   category,
@@ -19,7 +21,8 @@ export class ConsumableData extends foundry.abstract.DataModel<
     ReturnType<(typeof ConsumableData)['defineSchema']>
   >
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),
@@ -41,5 +44,21 @@ export class ConsumableData extends foundry.abstract.DataModel<
         textSearch: true,
       }),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source: object): object {
+    renameActionProperties(source);
+    return super.migrateData(source);
+  }
+
+  /** @inheritdoc */
+  protected override _initialize(options?: any) {
+    super._initialize(options);
+    this._applyShims();
+  }
+
+  protected _applyShims() {
+    shims.actionProperties(this);
   }
 }

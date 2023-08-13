@@ -8,7 +8,8 @@ export interface EdgeData
 export class EdgeData extends foundry.abstract.DataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof EdgeData)['defineSchema']>>
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),

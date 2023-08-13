@@ -17,7 +17,8 @@ export class AbilityData extends foundry.abstract.DataModel<
     ReturnType<(typeof AbilityData)['defineSchema']>
   >
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),
@@ -28,7 +29,7 @@ export class AbilityData extends foundry.abstract.DataModel<
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
-        textSearch: true
+        textSearch: true,
       }),
       grantsPowers: new fields.BooleanField(),
     };

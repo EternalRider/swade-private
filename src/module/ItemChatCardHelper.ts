@@ -231,15 +231,15 @@ export default class ItemChatCardHelper {
     ) {
       //set the trait name and potentially override it via the action
       const traitName =
-        action.traitOverride || getProperty(item, 'system.actions.trait');
+        action.override || getProperty(item, 'system.actions.trait');
 
       //find the trait and either get the skill item or the key of the attribute
       const trait = getTrait(traitName, actor);
 
-      if (action.traitMod) {
+      if (action.modifier) {
         mods.push({
           label: action.name,
-          value: action.traitMod,
+          value: action.modifier,
         });
       }
 
@@ -269,14 +269,14 @@ export default class ItemChatCardHelper {
           value: getProperty(item, 'system.actions.dmgMod'),
         });
       }
-      if (action.dmgMod) {
+      if (action.modifier) {
         mods.push({
           label: action.name,
-          value: action.dmgMod,
+          value: action.modifier,
         });
       }
       roll = await item.rollDamage({
-        dmgOverride: action.dmgOverride,
+        dmgOverride: action.override,
         isHeavyWeapon: action.isHeavyWeapon,
         flavour: action.name,
         additionalMods: mods,

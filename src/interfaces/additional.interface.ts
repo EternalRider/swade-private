@@ -20,12 +20,13 @@ export interface AdditionalStat extends PrototypeAdditionalStat {
 export interface ItemAction {
   name: string;
   type: ActionType;
+  /** how many dice are rolled, only relevant for `trait` actions */
   dice?: number;
+  /** how many resources are used */
   resourcesUsed?: number;
-  traitMod?: string;
-  traitOverride?: string;
-  dmgMod?: string;
-  dmgOverride?: string;
+  modifier?: string;
+  /** Use this value instead of the item default, only relevant for `trait` and `damage` actions */
+  override?: string;
   isHeavyWeapon?: boolean;
   uuid?: string;
 }

@@ -1,4 +1,5 @@
-import { _renameActionProperties } from '../../migration/migration';
+import { renameActionProperties } from './_migration';
+import * as shims from './_shims';
 import {
   actions,
   additionalStats,
@@ -18,6 +19,7 @@ export class ActionData extends foundry.abstract.DataModel<
     ReturnType<(typeof ActionData)['defineSchema']>
   >
 > {
+  /** @inheritdoc */
   static override defineSchema() {
     return {
       ...itemDescription(),
@@ -30,8 +32,18 @@ export class ActionData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
-    _renameActionProperties(source);
+  static override migrateData(source: object): object {
+    renameActionProperties(source);
     return super.migrateData(source);
+  }
+
+  /** @inheritdoc */
+  protected override _initialize(options?: any) {
+    super._initialize(options);
+    this._applyShims();
+  }
+
+  protected _applyShims() {
+    shims.actionProperties(this);
   }
 }
