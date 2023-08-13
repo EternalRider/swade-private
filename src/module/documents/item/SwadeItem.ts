@@ -8,25 +8,25 @@ import {
   ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { EquipState, ReloadType, Updates } from '../../../globals';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { Logger } from '../../Logger';
 import Reloadinator from '../../apps/Reloadinator';
 import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
-import { Logger } from '../../Logger';
 import {
   addUpModifiers,
   getKeyByValue,
   modifierReducer,
   notificationExists,
 } from '../../util';
-import { TraitDie } from '../actor/actor-data-source';
-import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
+import SwadeActor from '../actor/SwadeActor';
+import { TraitDie } from '../actor/actor-data-source';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -77,11 +77,17 @@ export default class SwadeItem extends Item {
     if (data?.system?.grants) {
       for (const grant of data.system.grants as ItemGrant[]) {
         const uuid = grant.uuid;
-        const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
-        if (isNew) continue;
-        const arr = uuid.split('.');
-        arr.splice(arr.length - 1, 0, 'Item');
-        grant.uuid = arr.join('.');
+        if (uuid.startsWith('Compendium.') && !uuid.includes('.Item.')) {
+          const arr = uuid.split('.');
+          arr.splice(arr.length - 1, 0, 'Item');
+          grant.uuid = arr.join('.');
+        }
+        //bad UUID with multiple Item strings
+        if (uuid.split('.').filter((v) => v === 'Item').length > 1) {
+          const arr = uuid.split('.').filter((v) => v !== 'Item'); //remove all instances of Item
+          arr.unshift('Item'); // add a single Item to the front
+          grant.uuid = arr.join('.');
+        }
       }
     }
     return data;
@@ -633,7 +639,7 @@ export default class SwadeItem extends Item {
       hasDamage,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this, 'system.actions.skill'),
+      trait: getProperty(this, 'system.actions.trait'),
       hasTraitRoll,
       showTraitRolls: hasTraitRoll || hasTraitActions,
       hasResistRolls,
@@ -703,8 +709,10 @@ export default class SwadeItem extends Item {
     }
     if (this.type === 'weapon') {
       modifiers.push(...this.actor.system.stats.globalMods.attack);
-      if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
-        !(this.actor.getFlag('swade', 'ambidextrous'))) {
+      if (
+        this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
+        !this.actor.getFlag('swade', 'ambidextrous')
+      ) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),
           value: -2,

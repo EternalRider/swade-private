@@ -51,16 +51,11 @@ export const actions = () => ({
           initial: undefined,
           required: false,
         }),
-        traitMod: new fields.StringField({
+        modifier: new fields.StringField({
           initial: undefined,
           required: false,
         }),
-        traitOverride: new fields.StringField({
-          initial: undefined,
-          required: false,
-        }),
-        dmgMod: new fields.StringField({ initial: undefined, required: false }),
-        dmgOverride: new fields.StringField({
+        override: new fields.StringField({
           initial: undefined,
           required: false,
         }),

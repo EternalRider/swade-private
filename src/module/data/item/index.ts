@@ -21,6 +21,7 @@ export { PowerData } from './power';
 export { ShieldData } from './shield';
 export { SkillData } from './skill';
 export { WeaponData } from './weapon';
+export * as shims from './_shims';
 
 export const config = {
   ability: AbilityData,

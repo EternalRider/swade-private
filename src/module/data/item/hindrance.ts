@@ -10,7 +10,8 @@ export class HindranceData extends foundry.abstract.DataModel<
     ReturnType<(typeof HindranceData)['defineSchema']>
   >
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),

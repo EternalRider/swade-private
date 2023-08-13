@@ -1,4 +1,7 @@
-import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
+import {
+  DataField,
+  ModelValidationError,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 import { constants } from '../constants';
 
 export function makeDiceField(init = 4) {
@@ -125,8 +128,20 @@ export class MappingField extends foundry.data.fields.ObjectField {
     if (foundry.utils.getType(value) !== 'Object')
       throw new Error('must be an Object');
     const errors = this._validateValues(value, options);
-    if (!foundry.utils.isEmpty(errors))
-      throw new foundry.data.validation.DataModelValidationError(errors);
+    if (!foundry.utils.isEmpty(errors)) {
+      const depth = this.fieldPath.split('.').length + 1;
+      const indent = '\n' + ' '.repeat(depth * 2);
+      let msg = '';
+      for (const [key, err] of Object.entries(errors)) {
+        const name =
+          !!value[key].name || !!value[key].label
+            ? `${key} (${value[key].name || value[key].label})`
+            : key;
+        const errString = err.toString().replaceAll('\n', indent);
+        msg += indent + name + ': ' + errString;
+      }
+      throw new foundry.data.validation.DataModelValidationError(msg);
+    }
   }
 
   /* -------------------------------------------- */
@@ -138,7 +153,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
    * @returns {Object<Error>}  An object of value-specific errors by key.
    */
   protected _validateValues(value: object, options: object) {
-    const errors = {};
+    const errors: Record<string, ModelValidationError> = {};
     for (const [k, v] of Object.entries(value)) {
       const error = this.model.validate(v, options);
       if (error) errors[k] = error;

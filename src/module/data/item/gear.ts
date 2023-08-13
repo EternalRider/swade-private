@@ -1,4 +1,5 @@
-import { _renameActionProperties } from '../../migration/migration';
+import { renameActionProperties } from './_migration';
+import * as shims from './_shims';
 import {
   actions,
   arcaneDevice,
@@ -19,7 +20,8 @@ export interface GearData
 export class GearData extends foundry.abstract.DataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof GearData)['defineSchema']>>
 > {
-  static defineSchema() {
+  /** @inheritdoc */
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),
@@ -37,7 +39,17 @@ export class GearData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source) {
-    _renameActionProperties(source);
+    renameActionProperties(source);
     return super.migrateData(source);
+  }
+
+  /** @inheritdoc */
+  protected override _initialize(options?: any) {
+    super._initialize(options);
+    this._applyShims();
+  }
+
+  protected _applyShims() {
+    shims.actionProperties(this);
   }
 }
