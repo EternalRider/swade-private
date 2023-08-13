@@ -113,25 +113,6 @@
       "path": "lang/zh_Hans.json"
     }
   ],
-  "relationships": {
-    "recommends": [
-      {
-        "id": "dice-so-nice",
-        "type": "module",
-        "reason": "Provides 3D dice and bennies."
-      },
-      {
-        "id": "swade-core-rules",
-        "type": "module",
-        "reason": "Provides full text rules and pre-configured items from the Savage Worlds Adventure Edition core rules."
-      },
-      {
-        "id": "swpf-core-rules",
-        "type": "module",
-        "reason": "Provides full text rules and pre-configured items from the Pathfinder for Savage Worlds book."
-      }
-    ]
-  },
   "media": [
     {
       "type": "setup",
