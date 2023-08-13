@@ -1,0 +1,12 @@
+name: Timid
+permission:
+  default: 0
+  XGltUb0dWlJLkvbE: 3
+type: hindrance
+system:
+  description: See SWADE p.28
+  notes: ''
+  major: true
+flags: {}
+img: systems/swade/assets/icons/hindrance.svg
+_id: mD4kmdFPw6KzJ5Un

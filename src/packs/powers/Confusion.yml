@@ -12,7 +12,7 @@ system:
   duration: Until the end of the victim's next turn
   modifiers: []
   notes: ''
-  pp: '1'
+  pp: 1
   range: Sm
   rank: Novice
   trapping: Hypnotic lights, brief illusions, loud noises.

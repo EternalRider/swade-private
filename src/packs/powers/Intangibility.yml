@@ -12,9 +12,9 @@ system:
   duration: '5'
   modifiers: []
   notes: ''
-  pp: '5'
+  pp: 5
   range: Sm
-  rank: Heroic
+  rank: Veteran
   trapping: Ghost form, body of shadow, gaseous transformation
   favorite: false
 img: systems/swade/assets/icons/power.svg

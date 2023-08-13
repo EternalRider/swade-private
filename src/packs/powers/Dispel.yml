@@ -12,9 +12,9 @@ system:
   duration: Instant
   modifiers: []
   notes: ''
-  pp: '1'
+  pp: 1
   range: Sm
-  rank: Seasoned
+  rank: Novice
   trapping: Waving hands, whispered words
   favorite: false
 img: systems/swade/assets/icons/power.svg
