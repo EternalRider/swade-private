@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Updated base system compendiums to SWADE 5.0 (#863) **by @jpmeehan5**
 - [BREAKING] Implemented the System Data Model, which provides strong type checking on all fields. (#794) **by @florad92 and @jpmeehan5**
 - The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers (#826) **by @florad92**
 - Roll modifiers from active effects are no longer ignored by default (#826) **by @florad92**
