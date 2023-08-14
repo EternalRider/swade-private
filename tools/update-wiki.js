@@ -43,6 +43,8 @@ async function getWikiPages(authToken) {
     const response = await fetch(swadeWiki, config)
     const result = await response.json()
 
+    if (response.status === 401) throw new Error(`${response.statusText}, either authToken was invalid or not present`)
+
     return result.map(a => a.slug)
 }
 
