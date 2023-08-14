@@ -64,6 +64,7 @@ publish-artifacts:
     - apk update
     - apk add zip curl
   script: |
+    npm run update-wiki -- --authToken="$CI_JOB_TOKEN"
     cd dist
     zip -r ../$PACKAGE_ARCHIVE.zip .
     cd ..
