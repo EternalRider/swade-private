@@ -21,6 +21,7 @@
     "build:ci": "node ./tools/build-packs.js && rollup -c",
     "link-project": "node ./tools/link-project.js",
     "update-manifest": "node ./tools/update-manifest.js",
+    "update-wiki": "node ./tools/update-wiki.js",
     "clean": "rimraf dist .cache",
     "clean:link": "node ./tools/link-project.js --clean",
     "check:types": "tsc --noEmit",
