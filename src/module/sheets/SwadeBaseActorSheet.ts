@@ -199,6 +199,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         ...data.itemsByType['weapon'],
         ...data.itemsByType['armor'],
         ...data.itemsByType['shield'],
+        ...data.itemsByType['consumable'],
       ]);
       data.maxCarryCapacity = this.actor.calcMaxCarryCapacity();
 
@@ -281,6 +282,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         armor: game.i18n.localize('TYPES.Item.armor'),
         shield: game.i18n.localize('TYPES.Item.shield'),
         gear: game.i18n.localize('TYPES.Item.gear'),
+        consumable: game.i18n.localize('TYPES.Item.consumable'),
       };
     }
     const templateData = {
