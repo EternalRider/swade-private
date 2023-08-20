@@ -8,25 +8,25 @@ import {
   ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { EquipState, ReloadType, Updates } from '../../../globals';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { Logger } from '../../Logger';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import Reloadinator from '../../apps/Reloadinator';
 import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
+import { Logger } from '../../Logger';
 import {
   addUpModifiers,
   getKeyByValue,
   modifierReducer,
   notificationExists,
 } from '../../util';
-import SwadeUser from '../SwadeUser';
-import SwadeActor from '../actor/SwadeActor';
 import { TraitDie } from '../actor/actor-data-source';
+import SwadeActor from '../actor/SwadeActor';
+import SwadeUser from '../SwadeUser';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -243,14 +243,16 @@ export default class SwadeItem extends Item {
     const rollParts = [damage];
 
     //Additional Mods
-    modifiers.push(...this.actor.system.stats.globalMods.damage);
+    if (this.actor) {
+      modifiers.push(...this.actor.system.stats.globalMods.damage);
+    }
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
 
     const terms = DamageRoll.parse(
       rollParts.join(''),
-      this.parent?.getRollData() ?? {},
+      this.actor?.getRollData() ?? {},
     );
     const baseRoll = new Array<string>();
     for (const term of terms) {
@@ -264,6 +266,8 @@ export default class SwadeItem extends Item {
         baseRoll.push(term.formula);
       } else if (term instanceof StringTerm) {
         baseRoll.push(this._makeExplodable(term.term));
+      } else if (term instanceof NumericTerm) {
+        baseRoll.push(term.formula);
       } else {
         baseRoll.push(term.expression);
       }
@@ -294,13 +298,7 @@ export default class SwadeItem extends Item {
       });
     }
 
-    const roll = new DamageRoll(
-      baseRoll.join(''),
-      {},
-      {
-        modifiers: modifiers,
-      },
-    );
+    const roll = new DamageRoll(baseRoll.join(''), {}, { modifiers });
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
@@ -599,9 +597,7 @@ export default class SwadeItem extends Item {
       hasAmmoManagement &&
       this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
     const hasDamage = !!getProperty(this, 'system.damage');
-    const hasTraitRoll =
-      ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
-      !!getProperty(this, 'system.actions.trait');
+    const hasTrait = !!getProperty(this, 'system.actions.trait');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
@@ -637,11 +633,11 @@ export default class SwadeItem extends Item {
       hasMagazine,
       hasReloadButton,
       hasDamage,
+      hasTrait,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
       trait: getProperty(this, 'system.actions.trait'),
-      hasTraitRoll,
-      showTraitRolls: hasTraitRoll || hasTraitActions,
+      showTraitRolls: hasTrait || hasTraitActions,
       hasResistRolls,
       hasMacros,
       powerPoints: this._getPowerPoints(),

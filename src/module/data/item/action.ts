@@ -1,5 +1,3 @@
-import { renameActionProperties } from './_migration';
-import * as shims from './_shims';
 import {
   actions,
   additionalStats,
@@ -8,6 +6,8 @@ import {
   itemDescription,
   templates,
 } from './common';
+import * as migrations from './_migration';
+import * as shims from './_shims';
 
 export interface ActionData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -33,7 +33,7 @@ export class ActionData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source: object): object {
-    renameActionProperties(source);
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

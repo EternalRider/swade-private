@@ -1,6 +1,4 @@
 import { constants } from '../../constants';
-import { renameActionProperties } from './_migration';
-import * as shims from './_shims';
 import {
   actions,
   arcaneDevice,
@@ -14,6 +12,9 @@ import {
   templates,
   vehicular,
 } from './common';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 
 export interface WeaponData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -43,7 +44,7 @@ export class WeaponData extends foundry.abstract.DataModel<
       damage: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
       rof: new fields.NumberField({ initial: 1 }),
-      ap: new fields.NumberField({ initial: 0 }),
+      ap: new fields.NumberField({ initial: 0, integer: true }),
       parry: new fields.NumberField({ initial: 0 }),
       minStr: new fields.StringField({ initial: '' }),
       shots: new fields.NumberField({ initial: 0 }),
@@ -61,7 +62,11 @@ export class WeaponData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source) {
-    renameActionProperties(source);
+    quarantine.ensurePricesAreNumeric(source);
+    quarantine.ensureWeightsAreNumeric(source);
+    quarantine.ensureAPisNumeric(source);
+    quarantine.ensureShotsAreNumeric(source);
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

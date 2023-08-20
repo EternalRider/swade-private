@@ -19,13 +19,13 @@
     {{/if}}
     {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
       <span class="chip">
-        <span class='bold'><i class="fa-sharp fa-solid fa-shield-halved"></i> {{localize "SWADE.Ap"}}:</span>
+        <span class='bold'><i class="fa-solid fa-shield-halved"></i> {{localize "SWADE.Ap"}}:</span>
         {{item.system.ap}}
       </span>
     {{/if}}
     {{#if (eq item.type 'shield')}}
       <span class="chip">
-        <span class='bold'><i class="fa-sharp fa-solid fa-shield-halved"></i> {{localize 'SWADE.Parry'}}:</span>
+        <span class='bold'><i class="fa-solid fa-shield-halved"></i> {{localize 'SWADE.Parry'}}:</span>
         {{item.system.parry}}
       </span>
     {{/if}}
@@ -184,7 +184,7 @@
 
     {{#if (and hasTraitRoll system.actions.trait)}}
       <button class='card-button' data-action='formula'>
-        {{#if powersTab}}<i class="fa-solid fa-hand-sparkles"></i> {{/if}}{{trait}}
+        {{#if powersTab}}<i class="fa-solid fa-hand-sparkles"></i> {{/if}}{{system.actions.trait}}
       </button>
     {{/if}}
 
