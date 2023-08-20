@@ -39,7 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added tooltip to Armor that shows both sources and Armor by location. (#137) **by @jpmeehan5**
 - Improved handling of off-hand weapons and added support for Ambidextrous edge via `flags.swade.ambidextrous`. (#590) **by @jpmeehan5**
 - Added the ability to read Active Effect descriptions in the Item Sheet. (#861) **by @florad92**
-- Added item actions to consumables. (#581) **by @florad92**
+- Added Item actions to consumables. (#581) **by @florad92**
 - Added support for ignoring wounds from a second Shaken result via `flags.swade.hardy` and bleeding out from a failed vigor roll upon incapacitation via `flags.swade.ignoreBleedOut`. (#785) **by @jpmeehan5**
 - Hovering over the Size input on the character or NPC sheet displays the actor's scale in a tooltip. An Actor's scale has been available at `system.stats.scale` for data purposes. (#60) **by @jpmeehan5**
 - You can now configure localized vehicle operator skills. (#373) **by @mclemente**
@@ -61,9 +61,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `skillMod` and `dmgMod` have been combined into `modifier`
   - `skillOverride` and `dmgOverride` have been combined into `override`
 - **[BREAKING]** Folded `system.stats.parry.modifier` and `system.stats.toughness.modifier` into the existing `system.stats.parry.value` and `system.stats.toughness.value` with a migration into becoming an Active Effect. **by @jpmeehan5**
-- The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the actor, otherwise it's manually editable. **by @jpmeehan5**
+- The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the Actor, otherwise it's manually editable. **by @jpmeehan5**
 - **[BREAKING]** The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively. These properties were already accessible and were the correct avenue of access prior to this update. **by @jpmeehan5**
-- Improved the UI for editing actions on items. (#864) **by @florad92**
+- Improved the UI for editing actions on Items. (#864) **by @florad92**
 - The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by jpmeehan5**
 - Improved styles for the character sheet for dealing with linebreaks in the attributes section. (#255) **by @florad92**
 - Significantly updated the system journal documentation to modern system functionality. (#868) **by @jpmeehan5**
@@ -81,7 +81,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
-- Cleaned up error that would display in console after successfully deleting an item that had grants. (#803) **by @florad92**
+- Cleaned up errors that would display in console after successfully deleting an Item that had grants. (#803) **by @florad92**
 - Improved magazine reload related i18n. (#865) **by @florad92**
 - Overriding parry or toughness now works correctly when the fields are set to auto calculation. (#462) **by @jpmeehan5**
 - Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
