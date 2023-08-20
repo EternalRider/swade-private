@@ -1,6 +1,4 @@
 import { constants } from '../../constants';
-import { renameActionProperties } from './_migration';
-import * as shims from './_shims';
 import {
   actions,
   category,
@@ -10,6 +8,9 @@ import {
   itemDescription,
   physicalItem,
 } from './common';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 
 export interface ConsumableData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -48,7 +49,9 @@ export class ConsumableData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source: object): object {
-    renameActionProperties(source);
+    quarantine.ensurePricesAreNumeric(source);
+    quarantine.ensureWeightsAreNumeric(source);
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

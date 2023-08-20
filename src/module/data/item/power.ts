@@ -1,5 +1,3 @@
-import { renameActionProperties } from './_migration';
-import * as shims from './_shims';
 import {
   actions,
   bonusDamage,
@@ -7,6 +5,9 @@ import {
   itemDescription,
   templates,
 } from './common';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 
 export interface PowerData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -42,7 +43,8 @@ export class PowerData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source) {
-    renameActionProperties(source);
+    quarantine.ensurePowerPointsAreNumeric(source);
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

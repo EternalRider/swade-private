@@ -1,5 +1,3 @@
-import { renameActionProperties } from './_migration';
-import * as shims from './_shims';
 import {
   actions,
   arcaneDevice,
@@ -11,6 +9,9 @@ import {
   itemDescription,
   physicalItem,
 } from './common';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 
 export interface ArmorData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -51,7 +52,9 @@ export class ArmorData extends foundry.abstract.DataModel<
 
   /** @inheritdoc */
   static override migrateData(source) {
-    renameActionProperties(source);
+    quarantine.ensurePricesAreNumeric(source);
+    quarantine.ensureWeightsAreNumeric(source);
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

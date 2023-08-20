@@ -2,18 +2,23 @@ import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
-import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
+import {
+  DerivedModifier,
+  RollModifier,
+} from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { VehicleData } from '../../data/actor';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import { Logger } from '../../Logger';
 import {
+  addUpModifiers,
   getRankFromAdvanceAsString,
   mapRange,
   modifierReducer,
@@ -21,7 +26,6 @@ import {
 } from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
-import { VehicleData } from '../../data/actor';
 
 declare global {
   interface DocumentClassConfig {
@@ -228,11 +232,11 @@ export default class SwadeActor extends Actor {
     }
 
     // Prepping the parry & toughness sources
-    this.system.stats.toughness.sources = new Array<DerivedModifier>()
-    this.system.stats.toughness.effects = new Array<DerivedModifier>()
-    this.system.stats.toughness.armorEffects = new Array<DerivedModifier>()
-    this.system.stats.parry.sources = new Array<DerivedModifier>()
-    this.system.stats.parry.effects = new Array<DerivedModifier>()
+    this.system.stats.toughness.sources = new Array<DerivedModifier>();
+    this.system.stats.toughness.effects = new Array<DerivedModifier>();
+    this.system.stats.toughness.armorEffects = new Array<DerivedModifier>();
+    this.system.stats.parry.sources = new Array<DerivedModifier>();
+    this.system.stats.parry.effects = new Array<DerivedModifier>();
 
     //setup the global modifier container object
     this.system.stats.globalMods = {
@@ -309,13 +313,13 @@ export default class SwadeActor extends Actor {
 
     // Toughness calculation
     if (this.system.details.autoCalcToughness) {
-      const torsoArmor = this.calcArmor()
-      this.system.stats.toughness.armor = torsoArmor
-      this.system.stats.toughness.value = this.calcToughness() + torsoArmor
+      const torsoArmor = this.calcArmor();
+      this.system.stats.toughness.armor = torsoArmor;
+      this.system.stats.toughness.value = this.calcToughness() + torsoArmor;
       this.system.stats.toughness.sources.push({
         label: game.i18n.localize('SWADE.Armor'),
-        value: torsoArmor
-      })
+        value: torsoArmor,
+      });
     }
 
     if (this.system.details.autoCalcParry) {
@@ -361,13 +365,17 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
 
-    const effectArray = structuredClone<RollModifier[]>([
+    const effects = structuredClone<RollModifier[]>([
       ...abl.effects,
       ...this.system.stats.globalMods[attribute],
       ...this.system.stats.globalMods.trait,
     ]);
-    if (options.additionalMods) options.additionalMods.push(effectArray);
-    else options.additionalMods = effectArray;
+
+    if (options.additionalMods) {
+      options.additionalMods.push(...effects);
+    } else {
+      options.additionalMods = effects;
+    }
 
     const modifiers = this.getTraitRollModifiers(
       abl.die,
@@ -413,7 +421,7 @@ export default class SwadeActor extends Actor {
         ...roll.terms,
         ...TraitRoll.parse(
           roll.modifiers.reduce(modifierReducer, ''),
-          this.getRollData(),
+          this.getRollData(false),
         ),
       ]) as TraitRoll;
     }
@@ -510,7 +518,7 @@ export default class SwadeActor extends Actor {
         ...roll.terms,
         ...TraitRoll.parse(
           roll.modifiers.reduce(modifierReducer, ''),
-          this.getRollData(),
+          this.getRollData(false),
         ),
       ]) as TraitRoll;
     }
@@ -611,7 +619,9 @@ export default class SwadeActor extends Actor {
     }
 
     return RollDialog.asPromise({
-      roll: new SwadeRoll(runningDie, this.getRollData(), { modifiers: mods }),
+      roll: new SwadeRoll(runningDie, this.getRollData(false), {
+        modifiers: mods,
+      }),
       mods: mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor: game.i18n.localize('SWADE.Running'),
@@ -874,7 +884,9 @@ export default class SwadeActor extends Actor {
    * Function for shortcut roll in item (@str + 1d6)
    * return something like : {agi: "1d8x+1", sma: "1d6x", spi: "1d6x", str: "1d6x-1", vig: "1d6x"}
    */
-  override getRollData(): Record<string, number | string> {
+  override getRollData(
+    includeModifiers = true,
+  ): Record<string, number | string> {
     const out: Record<string, any> = {
       wounds: this.system.wounds.value || 0,
     };
@@ -885,27 +897,42 @@ export default class SwadeActor extends Actor {
       return out;
     }
 
+    const globalMods = this.system.stats.globalMods;
+
     // Attributes
     const attributes = this.system.attributes;
     for (const [key, attribute] of Object.entries(attributes)) {
       const short = key.substring(0, 3);
       const name = game.i18n.localize(SWADE.attributes[key].long);
       const die = attribute.die.sides;
-      const mod = attribute.die.modifier || 0;
-      const modString = mod !== 0 ? mod.signedString() : '';
+      let mod = attribute.die.modifier || 0;
+      if (includeModifiers) {
+        mod = structuredClone<RollModifier[]>([
+          {
+            label: game.i18n.localize('SWADE.TraitMod'),
+            value: attribute.die.modifier as number,
+          },
+          ...globalMods[key],
+          ...globalMods.trait,
+        ])
+          .filter((m) => m.ignore !== true)
+          .reduce(addUpModifiers, 0) as number;
+      }
+      let modString = mod !== 0 ? mod.signedString() : '';
+      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
       let val = `1d${die}x[${name}]${modString}`;
       if (die <= 1) val = `1d${die}[${name}]${modString}`;
       out[short] = val;
     }
 
-    const skills = this.itemTypes.skill;
-    for (const skill of skills) {
-      if (skill.type !== 'skill') continue;
-      const skillDie = Number(skill.system.die.sides);
-      const skillMod = Number(skill.system.die.modifier);
+    for (const skill of this.itemTypes.skill) {
+      const die = skill.system.die.sides;
+      let mod = Number(skill.system.die.modifier);
+      if (includeModifiers) mod = skill.modifier;
       const name = skill.name!.slugify({ strict: true });
-      const skillModString = skillMod !== 0 ? skillMod.signedString() : '';
-      out[name] = `1d${skillDie}[${skill.name}]${skillModString}`;
+      let modString = mod !== 0 ? mod.signedString() : '';
+      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
+      out[name] = `1d${die}[${skill.name}]${modString}`;
     }
     out.fatigue = this.system.fatigue.value || 0;
     out.pace = this.system.stats.speed.adjusted || 0;
@@ -1044,14 +1071,14 @@ export default class SwadeActor extends Actor {
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
       this.system.stats.globalMods[skill.system.attribute] ?? [];
-    const effectArray = structuredClone<RollModifier[]>([
-      ...this.system.stats.globalMods.trait,
-      ...attGlobalMods,
+    const effects = structuredClone<RollModifier[]>([
       ...(skillData.effects ?? []),
+      ...attGlobalMods,
+      ...this.system.stats.globalMods.trait,
     ]);
 
-    if (options.additionalMods) options.additionalMods.push(...effectArray);
-    else options.additionalMods = effectArray;
+    if (options.additionalMods) options.additionalMods.push(...effects);
+    else options.additionalMods = effects;
 
     const rollMods = this.getTraitRollModifiers(
       skillData.die,
@@ -1199,7 +1226,9 @@ export default class SwadeActor extends Actor {
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
   private calcArmor(): number {
-    const torsoArmor = this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
+    const torsoArmor = this._getArmorForLocation(
+      constants.ARMOR_LOCATIONS.TORSO,
+    );
     return this._calcDerivedEffects('armor', torsoArmor);
   }
 
@@ -1222,19 +1251,18 @@ export default class SwadeActor extends Actor {
     }
     sources.push({
       label: game.i18n.localize('SWADE.AttrVig'),
-      value: finalToughness
-    })
+      value: finalToughness,
+    });
 
     const size: number = this.system.stats.size ?? 0;
     finalToughness += size;
     if (size !== 0) {
       sources.push({
         label: game.i18n.localize('SWADE.Size'),
-        value: size
-      })
+        value: size,
+      });
     }
     // finalToughness += toughMod;
-
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
@@ -1243,11 +1271,11 @@ export default class SwadeActor extends Actor {
         finalToughness += armor.system.toughness;
         sources.push({
           label: armor.name,
-          value: armor.system.toughness
-        })
+          value: armor.system.toughness,
+        });
       }
     }
-    return this._calcDerivedEffects('toughness', finalToughness)
+    return this._calcDerivedEffects('toughness', finalToughness);
   }
 
   private calcParry(): number {
@@ -1277,17 +1305,16 @@ export default class SwadeActor extends Actor {
     if (parryBaseSkill) {
       sources.push({
         label: getProperty(parryBaseSkill, 'name'),
-        value: parryTotal
-      })
-    }
-    else {
+        value: parryTotal,
+      });
+    } else {
       sources.push({
         label: game.i18n.localize('SWADE.BaseParry'),
-        value: 2
-      })
+        value: 2,
+      });
     }
 
-    this.system.stats.parry.shield = 0
+    this.system.stats.parry.shield = 0;
 
     //add shields
     for (const shield of this.itemTypes.shield) {
@@ -1298,47 +1325,54 @@ export default class SwadeActor extends Actor {
         this.system.stats.parry.shield += shieldParry;
         sources.push({
           label: shield.name,
-          value: shieldParry
-        })
+          value: shieldParry,
+        });
       }
     }
 
     //add equipped weapons
-    const ambidextrous = this.getFlag('swade', 'ambidextrous')
+    const ambidextrous = this.getFlag('swade', 'ambidextrous');
     for (const weapon of this.itemTypes.weapon) {
       if (weapon.type !== 'weapon') continue;
       let parryBonus = 0;
 
       if (weapon.system.equipStatus >= constants.EQUIP_STATE.OFF_HAND) {
-
         // only add parry bonus if it's in the main hand or actor is ambidextrous
-        if (weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED || 
-          ambidextrous) parryBonus += weapon.system.parry ?? 0;
-        
+        if (
+          weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED ||
+          ambidextrous
+        )
+          parryBonus += weapon.system.parry ?? 0;
+
         //add trademark weapon bonus
         parryBonus += weapon.system.trademark;
       }
       if (parryBonus !== 0) {
         sources.push({
           label: weapon.name,
-          value: parryBonus
-        })
+          value: parryBonus,
+        });
       }
       parryTotal += parryBonus;
     }
 
     return this._calcDerivedEffects('parry', parryTotal);
   }
-  
-  private _calcDerivedEffects(target: 'parry' | 'toughness' | 'armor', derivedStat: number): number {
-    if (this.system instanceof VehicleData) return 0 // typeguarding
-    const effects: DerivedModifier[] = (target === 'armor') ? 
-      this.system.stats.toughness.armorEffects :
-      this.system.stats[target].effects
-    const sources: DerivedModifier[] = (target === 'armor') ? 
-      new Array<DerivedModifier>() : // currently gets discarded
-      this.system.stats[target].sources
-    
+
+  private _calcDerivedEffects(
+    target: 'parry' | 'toughness' | 'armor',
+    derivedStat: number,
+  ): number {
+    if (this.system instanceof VehicleData) return 0; // typeguarding
+    const effects: DerivedModifier[] =
+      target === 'armor'
+        ? this.system.stats.toughness.armorEffects
+        : this.system.stats[target].effects;
+    const sources: DerivedModifier[] =
+      target === 'armor'
+        ? new Array<DerivedModifier>() // currently gets discarded
+        : this.system.stats[target].sources;
+
     effects.forEach((e: DerivedModifier) => {
       switch (e.mode) {
         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
@@ -1346,51 +1380,51 @@ export default class SwadeActor extends Actor {
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode
-          })
+            mode: e.mode,
+          });
           break;
         case CONST.ACTIVE_EFFECT_MODES.ADD:
           derivedStat += e.value;
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode
-          })
+            mode: e.mode,
+          });
           break;
         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
           if (derivedStat > e.value) {
             derivedStat = e.value;
-            sources.length = 0
+            sources.length = 0;
             sources.push({
               label: e.label,
               value: e.value,
-              mode: e.mode
-            })
+              mode: e.mode,
+            });
           }
           break;
         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
           if (derivedStat < e.value) {
             derivedStat = e.value;
-            sources.length = 0
+            sources.length = 0;
             sources.push({
               label: e.label,
               value: e.value,
-              mode: e.mode
-            })
+              mode: e.mode,
+            });
           }
           break;
         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
           derivedStat = e.value;
-          sources.length = 0
+          sources.length = 0;
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode
-          })
+            mode: e.mode,
+          });
           break;
-    }
-    })
-    return derivedStat
+      }
+    });
+    return derivedStat;
   }
 
   /**
@@ -1443,62 +1477,66 @@ export default class SwadeActor extends Actor {
     return totalArmorVal;
   }
 
-  getPTTooltip(target:  'parry' | 'toughness' ): string {
-    if (this.system instanceof VehicleData) return ''
-    let tooltip = (target === 'parry') ? 
-      `<h4>${game.i18n.localize('SWADE.Parry')}
+  getPTTooltip(target: 'parry' | 'toughness'): string {
+    if (this.system instanceof VehicleData) return '';
+    let tooltip =
+      target === 'parry'
+        ? `<h4>${game.i18n.localize('SWADE.Parry')}
        ${this.system.stats.parry.value}
-      (${this.system.stats.parry.shield})</h4>` : 
-      `<h4>${game.i18n.localize('SWADE.Tough')}
+      (${this.system.stats.parry.shield})</h4>`
+        : `<h4>${game.i18n.localize('SWADE.Tough')}
        ${this.system.stats.toughness.value}
-      (${this.system.stats.toughness.armor})</h4>`
+      (${this.system.stats.toughness.armor})</h4>`;
 
-    tooltip += this._sourcesToTooltip(this.system.stats[target].sources)
+    tooltip += this._sourcesToTooltip(this.system.stats[target].sources);
 
-    return tooltip
+    return tooltip;
   }
 
   getArmorTooltip(): string {
-    if (this.system instanceof VehicleData) return ''
-    let tooltip = ''
+    if (this.system instanceof VehicleData) return '';
+    let tooltip = '';
 
-    const armor = this.armorPerLocation
-    tooltip += game.i18n.localize('SWADE.Head') + `: ${armor.head}<br>`
-    tooltip += game.i18n.localize('SWADE.Torso') + `: ${armor.torso}<br>`
-    tooltip += game.i18n.localize('SWADE.Arms') + `: ${armor.arms}<br>`
-    tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`
+    const armor = this.armorPerLocation;
+    tooltip += game.i18n.localize('SWADE.Head') + `: ${armor.head}<br>`;
+    tooltip += game.i18n.localize('SWADE.Torso') + `: ${armor.torso}<br>`;
+    tooltip += game.i18n.localize('SWADE.Arms') + `: ${armor.arms}<br>`;
+    tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`;
 
-    tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects)
+    tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects);
 
-    return tooltip
+    return tooltip;
   }
 
   private _sourcesToTooltip(sources: DerivedModifier[]): string {
-    let tooltip = ''
+    let tooltip = '';
 
-    sources.forEach(source => {
-      let effect = ''
+    sources.forEach((source) => {
+      let effect = '';
       switch (source.mode) {
         case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
-          effect = 'x' + source.value
+          effect = 'x' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
-          effect = game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value
+          effect =
+            game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
-          effect = game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value
+          effect =
+            game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
-          effect = game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value
+          effect =
+            game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.ADD:
         default:
-          effect = source.value.signedString()
+          effect = source.value.signedString();
       }
-      tooltip += `${source.label}: ${effect}<br>`
-    })
+      tooltip += `${source.label}: ${effect}<br>`;
+    });
 
-    return tooltip
+    return tooltip;
   }
 
   private _filterOverrides() {
