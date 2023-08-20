@@ -13,7 +13,7 @@ const items = ['edges', 'hindrances', 'powers', 'skills'];
 
 const journals = ['system-docs'];
 
-main();
+await main();
 
 async function main() {
 
@@ -56,7 +56,8 @@ async function packItemCompendium(pack, inputDir, outputDir) {
     const filePath = path.resolve(packPath, item);
     const file = await fs.readFile(filePath, 'utf-8'); //load the YAML
     const doc = yamLoad(file, { filename: item });
-    packDocument(batch, doc, 'item');
+    doc.effects ??= []; //add an effects array
+    packDocument(batch, doc, 'items');
   }
   //commit and close the DB
   await closeTransactionAndDB(db, batch, pack);
@@ -117,6 +118,7 @@ function packDocument(batch, doc, type) {
  * Create a
  * @param {string} content The string content of the page
  * @param {object} metadata Metadata loaded from the frontmatter
+ * @returns {object} the constructed page
  */
 function createPage(content, metadata) {
   const protoPage = {
@@ -186,3 +188,7 @@ function merge(initial, override) {
     {}
   )
 }
+
+/**
+ * @typedef {(import("classic-level").ChainedBatch)} ChainedBatch
+ */
