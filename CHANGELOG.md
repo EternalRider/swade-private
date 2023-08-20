@@ -87,8 +87,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
 - Fixed an issue that would cause active effects changing skill modifiers not to be disabled correctly (#862) **by @florad92**
 - Fixed an issue where the Active Effect Wizard would not save the name of the effect on refresh. **by @jpmeehan5**
+- Fixed the NPC sheet not having an option to create consumables (#899) **by @jpmeehan5**
+- Fixed the NPC sheet not including consumable weights while calculating encumbrance **by @jpmeehan5**
 
-### 3.0.6
+## 3.0.6
 
 ### Changed
 
