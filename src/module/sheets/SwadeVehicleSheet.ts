@@ -287,7 +287,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     const driver = await this.actor.getDriver();
     const userCanViewDriver =
       game.user?.isGM ||
-      (driver && driver.permission >= CONST.DOCUMENT_PERMISSION_LEVELS.LIMITED);
+      (driver && driver.permission >= CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED);
     const driverData: IDriverData = {
       img: 'icons/svg/mystery-man-black.svg',
       name: 'No Driver',
@@ -369,10 +369,18 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   }
 
   private _buildOpSkillList() {
-    const opSkills = SWADE.vehicles.opSkills;
-    return opSkills.reduce((acc: Record<string, string>, cur: string) => {
-      acc[cur] = cur;
-      return acc;
-    }, {});
+    return ['']
+      .concat(
+        game.settings
+          .get('swade', 'vehicleSkills')
+          .split(/[,]/)
+          .map(function (skill) {
+            return skill.trim();
+          }),
+      )
+      .reduce((acc: Record<string, string>, cur: string) => {
+        acc[cur] = cur;
+        return acc;
+      }, {});
   }
 }

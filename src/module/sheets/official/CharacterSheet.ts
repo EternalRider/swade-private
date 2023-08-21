@@ -1,7 +1,8 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { AdditionalStats, Attribute } from '../../../globals';
+import { AdditionalStats, Attribute, LinkedAttribute } from '../../../globals';
 import {
+  AdditionalStat,
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
@@ -19,11 +20,9 @@ import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
 import PopUpMenu from '../../models/PopUpMenu';
 import * as util from '../../util';
+import { VehicleData } from '../../data/actor';
 
-export default class CharacterSheet extends ActorSheet<
-  DocumentSheetOptions,
-  SwadeActorSheetData
-> {
+export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
   _effectCreateDropDown: ContextMenu;
 
@@ -201,6 +200,7 @@ export default class CharacterSheet extends ActorSheet<
       const effect = sourceId
         ? sourceItem.effects.get(effectId)
         : this.actor.effects.get(effectId);
+      if (!effect) return;
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
       if (!effect) return;
@@ -269,11 +269,10 @@ export default class CharacterSheet extends ActorSheet<
         default: 'ok',
       }).render(true);
     });
-
     html.find('.parry-display').on('click', () => {
-      const parryPropertyPath = 'system.stats.parry.modifier';
+      const parryPropertyPath = 'system.stats.parry.shield';
       const parryMod = getProperty(this.actor, parryPropertyPath) as number;
-      const label = game.i18n.localize('SWADE.Parry');
+      const label = game.i18n.localize('SWADE.ShieldBonus');
       const template = `
       <form><div class="form-group">
         <label>${game.i18n.localize('SWADE.Ed')} ${label}</label>
@@ -303,7 +302,6 @@ export default class CharacterSheet extends ActorSheet<
         default: 'ok',
       }).render(true);
     });
-
     //Item Action Buttons
     html
       .find('.card-buttons button')
@@ -313,7 +311,9 @@ export default class CharacterSheet extends ActorSheet<
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat!;
-      const statData = this.actor.system.additionalStats[stat]!;
+      const statData = this.actor.system.additionalStats[
+        stat
+      ] as AdditionalStat;
       let modifier = statData.modifier || '';
       if (!!modifier && !modifier.match(/^[+-]/)) {
         modifier = '+' + modifier;
@@ -370,13 +370,13 @@ export default class CharacterSheet extends ActorSheet<
       });
 
     html[0]
-      .querySelectorAll('.adjust-counter')
+      .querySelectorAll<HTMLButtonElement>('.adjust-counter')
       .forEach((el) =>
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
 
     html[0]
-      .querySelectorAll(
+      .querySelectorAll<HTMLButtonElement>(
         '.character-detail.race button, .character-detail.archetype button',
       )
       .forEach((btn) => {
@@ -390,7 +390,7 @@ export default class CharacterSheet extends ActorSheet<
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeActorSheetData> {
-    if (this.actor.type === 'vehicle') return super.getData(options);
+    if (this.actor.system instanceof VehicleData) return super.getData(options);
 
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.values()).sort(
@@ -412,12 +412,13 @@ export default class CharacterSheet extends ActorSheet<
       }
       const hasDamage =
         !!getProperty(system, 'damage') ||
-        !!actions.find((action) => action.type === 'damage');
-      const skill =
-        getProperty(system, 'actions.skill') ||
-        !!actions.find((action) => action.type === 'skill');
-      const hasSkillRoll =
-        actions.length || getProperty(system, 'actions.skill');
+        actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
+      const hasTraitRoll =
+        !!getProperty(system, 'actions.trait') ||
+        actions.some((a) => a.type === constants.ACTION_TYPE.TRAIT);
+      const hasMacros = actions.some(
+        (a) => a.type === constants.ACTION_TYPE.MACRO,
+      );
       const hasAmmoManagement =
         ammoManagement &&
         item.type === 'weapon' &&
@@ -426,14 +427,15 @@ export default class CharacterSheet extends ActorSheet<
       const hasReloadButton =
         ammoManagement &&
         system.shots > 0 &&
-        system.reloadType !== constants.RELOAD_TYPE.NONE;
+        system.reloadType !== constants.RELOAD_TYPE.NONE &&
+        system.reloadType !== constants.RELOAD_TYPE.SELF;
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
-      foundry.utils.setProperty(item, 'skill', skill);
-      foundry.utils.setProperty(item, 'hasSkillRoll', hasSkillRoll);
+      foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
+      foundry.utils.setProperty(item, 'hasMacros', hasMacros);
       if (item.type === 'power') {
         const powerPoints = this._getPowerPoints(item);
         foundry.utils.setProperty(item, 'powerPoints', powerPoints);
@@ -447,30 +449,21 @@ export default class CharacterSheet extends ActorSheet<
       itemTypes[type].push(item);
     }
 
-    const parry = this.actor.itemTypes.shield.reduce((acc, cur) => {
-      if (
-        cur.type !== 'shield' &&
-        cur.system.equipStatus === constants.EQUIP_STATE.EQUIPPED
-      ) {
-        return (acc += cur.system.parry);
-      }
-      return acc;
-    }, 0);
-
     const additionalStats = this._getAdditionalStats();
 
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
-      parry: parry,
+      parryTooltip: this.actor.getPTTooltip('parry'),
+      toughnessTooltip: this.actor.getPTTooltip('toughness'),
+      armorTooltip: this.actor.getArmorTooltip(),
+      attributes: this._getAttributesForDisplay(),
+      skills: await this._getSkillsForDisplay(),
       powers: this._getPowers(),
       additionalStats: additionalStats,
       hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
       currentBennies: Array.fromRange(this.actor.bennies, 1),
       bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
-      sortedSkills: this.actor.itemTypes.skill.sort((a, b) =>
-        a.name!.localeCompare(b.name!),
-      ),
       sheetEffects: await this._getEffects(),
       enrichedText: await this._getEnrichedText(),
       settingrules: {
@@ -489,6 +482,90 @@ export default class CharacterSheet extends ActorSheet<
       },
     };
     return { ...(await super.getData(options)), ...data };
+  }
+
+  private _getAttributesForDisplay(): Record<string, TraitDisplay> {
+    if (this.actor.type === 'vehicle') throw Error();
+    const attributes: Record<string, TraitDisplay> = {};
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    for (const key in this.actor.system.attributes) {
+      const attr = this.actor.system.attributes[key];
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: attr.die.modifier,
+        },
+        ...attr.effects,
+        ...globals[key],
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${game.i18n.localize(
+        SWADE.attributes[key].long,
+      )}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      attributes[key] = {
+        die: attr.die.sides,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        tooltip,
+      };
+    }
+
+    return attributes;
+  }
+
+  private async _getSkillsForDisplay(): Promise<SkillDisplay[]> {
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    const skills: SkillDisplay[] = [];
+
+    for (const skill of this.actor.items.filter((i) => i.type === 'skill')) {
+      const attribute = skill.system.attribute;
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: skill.system.die.modifier,
+        },
+        ...skill.system.effects,
+        ...(globals[attribute] ?? []),
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${skill.name}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      skills.push({
+        label: skill.name as string,
+        die: skill.system.die.sides as number,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        description: await this._enrichText(skill.system.description),
+        isCoreSkill: skill.system.isCoreSkill,
+        isOwner: skill.isOwner,
+        id: skill.id,
+        attribute,
+        tooltip,
+      });
+    }
+
+    return skills.sort((a, b) => a.label.localeCompare(b.label));
   }
 
   protected override async _onDropItem(
@@ -788,10 +865,13 @@ export default class CharacterSheet extends ActorSheet<
       modifier = Math.min(modifier * -1, modifier);
       const actionObj = getProperty(
         item,
-        `system.actions.additional.${action}.skillOverride`,
+        `system.actions.additional.${action}.traitOverride`,
       ) as ItemAction;
       //filter down further to make sure we only apply the penalty to a trait roll
-      if (action === 'formula' || (!!actionObj && actionObj.type === 'skill')) {
+      if (
+        action === 'formula' ||
+        actionObj?.type === constants.ACTION_TYPE.TRAIT
+      ) {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
           value: modifier.signedString(),
@@ -1280,8 +1360,12 @@ interface SheetArcaneBackground {
 type OptionsPartial = Partial<ActorSheet.Data<DocumentSheetOptions>>;
 
 interface SwadeActorSheetData extends OptionsPartial {
+  attributes: Record<string, TraitDisplay>;
+  skills: SkillDisplay[];
   itemTypes: Record<string, SwadeItem[]>;
-  parry: number;
+  parryTooltip: string;
+  toughnessTooltip: string;
+  armorTooltip: string;
   settingrules: Record<string, unknown>;
   currentBennies: number[];
   powers: SheetPowers;
@@ -1289,7 +1373,6 @@ interface SwadeActorSheetData extends OptionsPartial {
   additionalStats: AdditionalStats;
   bennyImageURL: string;
   useAttributeShorts: boolean;
-  sortedSkills: SwadeItem[];
   enrichedText: {
     appearance: string;
     goals: string;
@@ -1309,4 +1392,18 @@ interface SwadeActorSheetData extends OptionsPartial {
     permanent: SheetEffect[];
     favorite: SheetEffect[];
   };
+}
+
+interface TraitDisplay {
+  die: number;
+  modifier: number;
+  tooltip: string;
+}
+interface SkillDisplay extends TraitDisplay {
+  label: string;
+  description: string;
+  attribute: LinkedAttribute;
+  isCoreSkill: boolean;
+  isOwner: boolean;
+  id: string;
 }

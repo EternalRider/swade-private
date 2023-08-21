@@ -34,9 +34,15 @@ export class Accordion {
     this.summary?.addEventListener('click', (e) => this.onClick(e));
   }
 
-  onClick(e: MouseEvent) {
+  onClick(e: PointerEvent) {
     // Stop default behavior from the browser
     e.preventDefault();
+
+    // Stop early if we clicked on a button inside summary
+    if ((e.target as HTMLElement).parentElement instanceof HTMLButtonElement) {
+      return;
+    }
+
     // Add an overflow on the <details> to avoid content overflowing
     this.el.style.overflow = 'hidden';
     // Check if the element is being closed or is already closed

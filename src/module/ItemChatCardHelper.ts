@@ -3,6 +3,7 @@ import { ItemAction, RollModifier } from '../interfaces/additional.interface';
 import IRollOptions from '../interfaces/RollOptions.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { SWADE } from './config';
+import { constants } from './constants';
 import { SwadeRoll } from './dice/SwadeRoll';
 import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
@@ -74,7 +75,7 @@ export default class ItemChatCardHelper {
       const ppCost = $(card).find('input.pp-adjust').val() as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
-      if (action === 'formula' || (actionObj && actionObj.type === 'skill')) {
+      if (action === 'formula' || actionObj.type === 'trait') {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
           value: modifier,
@@ -169,7 +170,7 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
   ) {
-    const traitName = getProperty(item, 'system.actions.skill');
+    const traitName = getProperty(item, 'system.actions.trait');
     if (!item.canExpendResources()) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
@@ -205,18 +206,18 @@ export default class ItemChatCardHelper {
    * Handles misc actions
    * @param item The item that this action is used on
    * @param actor The actor who has the item
-   * @param actionKey The action key
+   * @param key The action key
    * @returns the evaluated roll
    */
   static async handleAdditionalActions(
     item: SwadeItem,
     actor: SwadeActor,
-    actionKey: string,
-    additionalMods: RollModifier[] = [],
+    key: string,
+    mods: RollModifier[] = [],
   ): Promise<SwadeRoll | null> {
     const action = getProperty(
       item,
-      `system.actions.additional.${actionKey}`,
+      `system.actions.additional.${key}`,
     ) as ItemAction;
 
     // if there isn't actually any action then return early
@@ -224,63 +225,76 @@ export default class ItemChatCardHelper {
 
     let roll: SwadeRoll | null = null;
 
-    if (action.type === 'skill' || action.type === 'resist') {
+    if (
+      action.type === constants.ACTION_TYPE.TRAIT ||
+      action.type === constants.ACTION_TYPE.RESIST
+    ) {
       //set the trait name and potentially override it via the action
-      let traitName = getProperty(item, 'system.actions.skill');
-      if (action.skillOverride) traitName = action.skillOverride;
+      const traitName =
+        action.override || getProperty(item, 'system.actions.trait');
 
       //find the trait and either get the skill item or the key of the attribute
       const trait = getTrait(traitName, actor);
 
-      if (action.skillMod && parseInt(action.skillMod) !== 0) {
-        additionalMods.push({
-          label: game.i18n.localize('SWADE.ActionTraitMod'),
-          value: action.skillMod,
+      if (action.modifier) {
+        mods.push({
+          label: action.name,
+          value: action.modifier,
         });
       }
 
       if (item.type === 'weapon') {
-        if (!item.canExpendResources(action.shotsUsed)) {
+        if (!item.canExpendResources(action.resourcesUsed ?? 1)) {
           Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
           return null;
         }
       }
 
-      additionalMods.push(...item.getTraitModifiers());
+      mods.push(...item.getTraitModifiers());
 
       roll = await this.doTraitAction(trait, actor, {
         flavour: action.name,
-        rof: action.rof,
-        additionalMods,
+        rof: action.dice,
+        additionalMods: mods,
         item: item,
       });
-
       if (roll && item.type === 'weapon') {
-        await item.consume(action.shotsUsed ?? 0);
-        // await this.subtractShots(actor, item.id!, action.shotsUsed ?? 0);
+        await item.consume(action.resourcesUsed ?? 1);
       }
-    } else if (action.type === 'damage') {
+    } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
       if (getProperty(item, 'system.actions.dmgMod') !== '') {
-        additionalMods.push({
+        mods.push({
           label: game.i18n.localize('SWADE.ItemDmgMod'),
           value: getProperty(item, 'system.actions.dmgMod'),
         });
       }
-      if (action.dmgMod) {
-        additionalMods.push({
+      if (action.modifier) {
+        mods.push({
           label: action.name,
-          value: action.dmgMod,
+          value: action.modifier,
         });
       }
       roll = await item.rollDamage({
-        dmgOverride: action.dmgOverride,
+        dmgOverride: action.override,
         isHeavyWeapon: action.isHeavyWeapon,
         flavour: action.name,
-        additionalMods,
+        additionalMods: mods,
       });
+    } else if (action.type === constants.ACTION_TYPE.MACRO) {
+      if (!action.uuid) return null;
+      const macro = (await fromUuid(action.uuid)) as Macro | null;
+      if (!macro) {
+        Logger.warn(
+          game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }),
+          { toast: true },
+        );
+      }
+      await macro?.execute({ actor: item.actor, item });
+      return null;
     }
-    this.callActionHook(actor, item, actionKey, roll);
+    this.refreshItemCard(actor);
+    this.callActionHook(actor, item, key, roll);
     return roll;
   }
 
@@ -382,6 +396,7 @@ export default class ItemChatCardHelper {
     action: string,
     roll: SwadeRoll | null,
   ) {
+    if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);
   }

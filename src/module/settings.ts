@@ -34,6 +34,7 @@ declare global {
       'swade.gmBennies': number;
       'swade.vehicleMods': boolean;
       'swade.vehicleEdges': boolean;
+      'swade.vehicleSkills': string;
       'swade.bennyImageSheet': string;
       'swade.bennyImage3DBack': string;
       'swade.bennyImage3DFront': string;
@@ -47,7 +48,6 @@ declare global {
       'swade.dumbLuck': boolean;
       'swade.applyEncumbrance': boolean;
       'swade.highlightTemplate': boolean;
-      'swade.fantasyCompanionEntangle': boolean;
       'swade.settingFields': {
         actor: Record<string, PrototypeAdditionalStat>;
         item: Record<string, PrototypeAdditionalStat>;
@@ -107,6 +107,7 @@ export function registerSettings() {
 
   game.settings.register('swade', 'initMessage', {
     name: 'SWADE.Settings.CreateInitChat.Name',
+    hint: 'SWADE.Settings.CreateInitChat.Hint',
     default: true,
     scope: 'world',
     type: Boolean,
@@ -195,16 +196,6 @@ export function registerSettings() {
     type: Boolean,
     default: true,
     config: true,
-  });
-
-  game.settings.register('swade', 'fantasyCompanionEntangle', {
-    name: 'SWADE.Settings.FantasyCompanionEntangle.Name',
-    hint: 'SWADE.Settings.FantasyCompanionEntangle.Hint',
-    scope: 'world',
-    type: Boolean,
-    default: false,
-    config: true,
-    requiresReload: true,
   });
 }
 
@@ -375,6 +366,15 @@ export function registerSettingRules() {
     default: false,
     scope: 'world',
     type: Boolean,
+    config: false,
+  });
+
+  game.settings.register('swade', 'vehicleSkills', {
+    name: 'SWADE.Settings.VehicleSkills.Name',
+    hint: 'SWADE.Settings.VehicleSkills.Hint',
+    default: 'Boating, Driving, Piloting, Riding',
+    scope: 'world',
+    type: String,
     config: false,
   });
 

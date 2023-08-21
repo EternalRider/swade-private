@@ -22,7 +22,76 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-### 3.0.6
+## 3.1.0
+
+### Added
+
+- Enabled full text search in Compendiums and added many fields to be searchable. (#792)
+  - Actors: archetype, appearance, notes, goals, species name, rank, vehicle classification.
+  - Items: Ability subtype, notes, source, requirements, rank, trapping, power's arcane background.
+  - You can find the searchable fields listed in `CONFIG.textSearch.{docname}`, e.g. `CONFIG.textSearch.actor`.
+- Added the `Desperate Attack` modifiers to the Roll Dialog. (#847) **by @florad92**
+- Added a new Reload Procedure: `self`, for javelins, grenades, spray canisters, and anything else that depletes its own quantity to attack. (#763) **by @jpmeehan5**
+- Added the new action type `macro` which allows users to save the UUID of a Macro to then later execute it. The triggering item is available in the Macro context under the `item` variable. Please keep in mind that normal permission limitations for Macros still apply! (#684) **by @florad92**
+- Added the ability for Action Items to specify Measured Templates. (#837) **by @florad92**
+- Added new property `shield` to `system.stats.parry` to represent a Character's shield bonus to parry. (#712) **by @jpmeehan5**
+- Added tooltip to Parry and Toughness to list out their sources. (#832) **by @jpmeehan5**
+- Added tooltip to Armor that shows both sources and Armor by location. (#137) **by @jpmeehan5**
+- Improved handling of off-hand weapons and added support for Ambidextrous edge via `flags.swade.ambidextrous`. (#590) **by @jpmeehan5**
+- Added the ability to read Active Effect descriptions in the Item Sheet. (#861) **by @florad92**
+- Added Item actions to consumables. (#581) **by @florad92**
+- Added support for ignoring wounds from a second Shaken result via `flags.swade.hardy` and bleeding out from a failed vigor roll upon incapacitation via `flags.swade.ignoreBleedOut`. (#785) **by @jpmeehan5**
+- Hovering over the Size input on the character or NPC sheet displays the actor's scale in a tooltip. An Actor's scale has been available at `system.stats.scale` for data purposes. (#60) **by @jpmeehan5**
+- You can now configure localized vehicle operator skills. (#373) **by @mclemente**
+
+### Changed
+
+- Updated base system Compendiums to SWADE 5.0. (#863) **by @jpmeehan5**
+- **[BREAKING]** Implemented the System Data Model, which provides strong type checking on all fields. (#794) **by @florad92 and @jpmeehan5**
+- The character sheet now displays the full modifier for a trait roll and even includes a tooltip breaking down the constituent modifiers. (#826) **by @florad92**
+- Roll modifiers from active effects are no longer ignored by default. (#826) **by @florad92**
+- The `Entangled` status now applies the `Vulnerable` status instead of the `Distracted` status. (#846) **by @florad92**
+- Changed the label for the input which determines the amount of trait dice that are being rolled for actions to make it more universal. (#823) **by @florad92**
+- The `swadeAction` Hook is no longer triggered if the trait or damage roll was cancelled. (#812) **by @florad92**
+- The `Frightened` status effect now applies the Hesitant Hindrance and also disables other initiative related edges. (#811) **by @florad92**
+- **[BREAKING]** Changed the property name of the default trait of an item from `skill` to `trait`. This means `system.actions.skill` has now become `system.actions.trait`. A migration and data shims have been provided. (#837) **by @florad92**
+- **[BREAKING]** Changed the properties of additional actions to reflect their more universal nature, see the list below. A migration and data shims have been provided. (#837) **by @florad92**
+  - `rof` -> `dice`
+  - `shotsUsed` -> `resourcesUsed`
+  - `skillMod` and `dmgMod` have been combined into `modifier`
+  - `skillOverride` and `dmgOverride` have been combined into `override`
+- **[BREAKING]** Folded `system.stats.parry.modifier` and `system.stats.toughness.modifier` into the existing `system.stats.parry.value` and `system.stats.toughness.value` with a migration into becoming an Active Effect. **by @jpmeehan5**
+- The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the Actor, otherwise it's manually editable. **by @jpmeehan5**
+- **[BREAKING]** The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively. These properties were already accessible and were the correct avenue of access prior to this update. **by @jpmeehan5**
+- Improved the UI for editing actions on Items. (#864) **by @florad92**
+- The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by jpmeehan5**
+- Improved styles for the character sheet for dealing with linebreaks in the attributes section. (#255) **by @florad92**
+- Significantly updated the system journal documentation to modern system functionality. (#868) **by @jpmeehan5**
+
+### Deprecated
+
+- Started depreciation of Embedded Abilities in favor of Item Grants. (#827) **by @florad92**
+
+### Removed
+
+- Removed the setting that replaced the core `Entangled` effect with the version from the Fantasy Companion as that version has replaced the core version. (#846) **by @florad92**
+- Removed the `SWADE.Settings.FantasyCompanionEntangle` translation keys as they are no longer needed. (#846) **by @florad92**
+- Removed the ability to convert Journal Compendiums to decks. (#858) **by @florad92**
+
+### Fixed
+
+- Compendium TOC Category Headers should no longer be orphaned at the bottom of a column. (#806) **by @florad92**
+- Cleaned up errors that would display in console after successfully deleting an Item that had grants. (#803) **by @florad92**
+- Improved magazine reload related i18n. (#865) **by @florad92**
+- Overriding parry or toughness now works correctly when the fields are set to auto calculation. (#462) **by @jpmeehan5**
+- Fixed turn alert sounds playing twice when round advanced. (#841) **by @jpmeehan5**
+- Fixed an issue that would cause active effects changing skill modifiers not to be disabled correctly. (#862) **by @florad92**
+- Fixed an issue where the Active Effect Wizard would not save the name of the effect on refresh. **by @jpmeehan5**
+- Fixed the NPC sheet not having an option to create consumables (#899) **by @jpmeehan5**
+- Fixed the NPC sheet not including consumable weights while calculating encumbrance. **by @jpmeehan5**
+- Attribute rolls now respect global modifiers again. (#901) **by @florad92**
+
+## 3.0.6
 
 ### Changed
 

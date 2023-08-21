@@ -528,6 +528,11 @@ export default class SwadeCombat extends Combat {
     }
   }
 
+  protected override _playCombatSound(announcement: string): void {
+    if ( this.previous.round === 0 ||
+      this.previous.round === this.current.round) super._playCombatSound(announcement);
+  }
+
   protected _determineCardsToDraw(combatant: SwadeCombatant): number {
     let cardsToDraw = 1;
     if (!!combatant.initiative && !combatant.roundHeld) return cardsToDraw;

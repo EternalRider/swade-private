@@ -12,7 +12,7 @@ system:
   duration: Instant (Sound); 5 (Silence)
   modifiers: []
   notes: ''
-  pp: '1'
+  pp: 1
   range: Smarts x5 (Sound); Smarts (Silence)
   rank: Novice
   trapping: Magical effects, a brief ripple in the air, a bell or chime that starts or stops ringing

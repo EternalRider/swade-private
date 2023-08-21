@@ -293,8 +293,8 @@ export class RollDialog extends FormApplication<
   }
 
   #getRollData() {
-    if (this.ctx.actor) return this.ctx.actor.getRollData();
-    return this.ctx.item?.actor?.getRollData() ?? {};
+    if (this.ctx.actor) return this.ctx.actor.getRollData(false);
+    return this.ctx.item?.actor?.getRollData(false) ?? {};
   }
 
   #checkForAndAddBonusDamage() {
@@ -350,7 +350,7 @@ export class RollDialog extends FormApplication<
     if (event.key === 'Enter') {
       event.preventDefault();
       event.stopPropagation();
-      const modValue = this.form!.querySelector<HTMLInputElement>(
+      const modValue = this.form?.querySelector<HTMLInputElement>(
         '.new-modifier-value',
       )?.value;
       if (modValue) {

@@ -12,9 +12,9 @@ system:
   duration: A brief conversation of about five minutes
   modifiers: []
   notes: ''
-  pp: '5'
+  pp: 5
   range: Self
-  rank: Heroic
+  rank: Seasoned
   trapping: Seances, prayers, demonic interrogation.
   favorite: false
 img: systems/swade/assets/icons/power.svg

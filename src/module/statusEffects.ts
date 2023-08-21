@@ -76,7 +76,7 @@ export const statusEffects: StatusEffect[] = [
     id: 'wild-attack',
     label: 'SWADE.WildAttack',
     duration: {
-      rounds: 0
+      rounds: 0,
     },
     changes: [
       {
@@ -110,7 +110,7 @@ export const statusEffects: StatusEffect[] = [
     },
     changes: [
       {
-        key: 'system.stats.parry.modifier',
+        key: 'system.stats.parry.value',
         value: '4',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
@@ -164,7 +164,7 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
       {
-        key: 'system.status.isDistracted',
+        key: 'system.status.isVulnerable',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
@@ -174,6 +174,32 @@ export const statusEffects: StatusEffect[] = [
     icon: 'systems/swade/assets/icons/status/status_frightened.svg',
     id: 'frightened',
     label: 'SWADE.Frightened',
+    changes: [
+      {
+        key: 'system.initiative.hasHesitant',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'true',
+        priority: 99, //High priority to make sure the effect overrides existing effects
+      },
+      {
+        key: 'system.initiative.hasLevelHeaded',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'false',
+        priority: 99, //High priority to make sure the effect overrides existing effects
+      },
+      {
+        key: 'system.initiative.hasImpLevelHeaded',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'false',
+        priority: 99, //High priority to make sure the effect overrides existing effects
+      },
+      {
+        key: 'system.initiative.hasQuick',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+        value: 'false',
+        priority: 99, //High priority to make sure the effect overrides existing effects
+      },
+    ],
   },
   {
     icon: 'systems/swade/assets/icons/status/status_distracted.svg',
@@ -213,7 +239,7 @@ export const statusEffects: StatusEffect[] = [
     label: 'SWADE.Prone',
     changes: [
       {
-        key: 'system.stats.parry.modifier',
+        key: 'system.stats.parry.value',
         value: '-2',
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },

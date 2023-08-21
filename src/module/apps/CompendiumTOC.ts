@@ -3,6 +3,7 @@ import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { SWADE } from '../config';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
+import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
@@ -10,6 +11,7 @@ export class CompendiumTOC extends Compendium<
   CompendiumTOCData
 > {
   #disclaimer?: string;
+  #fullTextSearch: boolean;
 
   static get defaultOptions(): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -37,6 +39,7 @@ export class CompendiumTOC extends Compendium<
   ) {
     super(collection, options);
     this.#disclaimer = options?.disclaimer;
+    this.#fullTextSearch = false;
   }
 
   get isJournal(): boolean {
@@ -81,7 +84,16 @@ export class CompendiumTOC extends Compendium<
       wildCardMarker: CONFIG.SWADE.wildCardIcons.compendium,
       columnWidth: this.columnWidth,
       disclaimer: this.#disclaimer,
+      searchMode: {
+        icon: 'fa-search',
+        tooltip: 'SIDEBAR.SearchModeName'
+      },
     };
+
+    if (this.#fullTextSearch) {
+      data.searchMode.icon = 'fa-file-magnifying-glass'
+      data.searchMode.tooltip = 'SIDEBAR.SearchModeFull'
+    }
 
     if (this.isJournal) {
       data.entries = await this._getJournalEntries();
@@ -110,13 +122,18 @@ export class CompendiumTOC extends Compendium<
 
   protected async _onClickLink(ev: JQuery.ClickEvent) {
     const target = ev.currentTarget;
-    const documentId = target.closest('[data-document-id]')?.dataset.documentId;
-    const pageId = target.closest('[data-page-id]')?.dataset.pageId;
-    if (!documentId) return;
-    const options: Record<string, unknown> = {};
-    if (pageId) options.pageId = pageId;
-    const doc = await this.collection.getDocument(documentId);
-    doc?.sheet?.render(true, options);
+    if (target.className === 'toggle-search-mode') {
+      this.#fullTextSearch = !this.#fullTextSearch
+    }
+    else {
+      const documentId = target.closest('[data-document-id]')?.dataset.documentId;
+      const pageId = target.closest('[data-page-id]')?.dataset.pageId;
+      if (!documentId) return;
+      const options: Record<string, unknown> = {};
+      if (pageId) options.pageId = pageId;
+      const doc = await this.collection.getDocument(documentId);
+      doc?.sheet?.render(true, options);
+    }
   }
 
   protected override _contextMenu(html: JQuery<HTMLElement>): void {
@@ -133,10 +150,59 @@ export class CompendiumTOC extends Compendium<
   ) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
-    for (const li of children) {
-      const name = li.querySelector<HTMLAnchorElement>('.name')!;
-      const match = rgx.test(SearchFilter.cleanQuery(name.innerText));
-      li.style.display = match ? 'flex' : 'none';
+    const pack = game.packs.get(this.collection.metadata.id)
+    if (this.#fullTextSearch) {
+      let searchFields: Array<String> = []
+      switch (this.collection.metadata.type) {
+        case 'Actor':
+          searchFields = CONFIG.SWADE.textSearch.actor
+          break;
+        case 'Adventure':
+          searchFields = CONFIG.SWADE.textSearch.adventure
+          break;
+        case 'Cards':
+          searchFields = CONFIG.SWADE.textSearch.cards
+          break;
+        case 'Item':
+          searchFields = CONFIG.SWADE.textSearch.item
+          break;
+        case 'JournalEntry':
+          searchFields = CONFIG.SWADE.textSearch.journalentry.concat(CONFIG.JournalEntry.compendiumIndexFields)
+          break;
+        case 'Macro':
+          searchFields = CONFIG.SWADE.textSearch.macro
+          break;
+        case 'Playlist':
+          searchFields = CONFIG.SWADE.textSearch.playlist
+          break;
+        case 'RollTable':
+          searchFields = CONFIG.SWADE.textSearch.rolltable
+          break;
+        case 'Scene':
+          searchFields = CONFIG.SWADE.textSearch.scene
+          break;
+      }
+      pack.getIndex({
+        fields: searchFields
+      })
+      const searchResults: Array<Document> = pack.search({query: rgx.source})
+      for (const li of children) {
+        if (this.#fullTextSearch) {
+          if (searchResults.some(e => e._id === li.dataset.documentId)) {
+            li.style.display = 'flex'
+          }
+          else {
+            li.style.display = 'none'
+          }
+        }
+      }
+    }
+    else {
+      for (const li of children) {
+        const name = li.querySelector<HTMLAnchorElement>('.name')!;
+        const match = rgx.test(SearchFilter.cleanQuery(name.innerText));
+        li.style.display = match ? 'flex' : 'none';
+      }
     }
     this._fitColumns(this.element[0], html);
   }
@@ -486,6 +552,10 @@ interface CompendiumTOCData
   disclaimer?: string;
   entries?: CompendiumEntry[];
   categories?: CompendiumCategory[];
+  searchMode: {
+    icon: 'fa-search' | 'fa-file-magnifying-glass'
+    tooltip: string;
+  };
 }
 
 interface CompendiumEntry {

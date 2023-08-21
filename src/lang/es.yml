@@ -367,8 +367,9 @@ SWADE:
       Add: Añadir modificador personalizado
     Support: Apoyo
     Preset:
-      Choose: Elige un ajuste predefinido...
+      Choose: Elige un modificador…
       Add: Añade preestablecido
+      Settings: Modificadores predefinidos
     Value: Valor
     Ignore: ¿Ignorar?
   Illumination:
@@ -411,6 +412,7 @@ SWADE:
     EndPrompt: Fin del siguiente turno, inmediato
     None: Ninguno
     LooseTurnOnHold: Perder el turno en espera
+    Remaining: Restante
   RemoveEffectTitle: Eliminar {label} ?
   RemoveEffectBody: >-
     <p style="text-align: center;">Eliminar <strong>{label}</strong> de
@@ -636,9 +638,16 @@ SWADE:
         seleccionar la Tabla de Heridas para tirar.
     InjuryTable:
       Name: Tabla de lesiones
-      Hint: >-
-        Selecciona la tabla apropiada para obtener automáticamente el Daño
-        descarnado.
+      Hint: Selecciona la tabla apropiada para obtener automáticamente el Daño descarnado.
+    UnarmoredHero:
+      Name: Héroe sin armadura
+      Hint: Al marcar esta casilla se activará la regla de configuración Héroe sin
+        armadura al tirar para absorber
+    HeroesNeverDie:
+      Hint: Al marcar esta opción, se activará la regla "Los héroes nunca mueren"
+        al determinar la incapacitación
+      Name: Los héroes nunca mueren
+    ArbitFields: Campos de configuración secundarios
   EffectCallbacks:
     Shaken:
       RollSpirit: Tirada de Espíritu
@@ -658,6 +667,8 @@ SWADE:
       Fail: Has muerto
       Success: Aguanta, por ahora.
       Raise: Se ha estabilizado
+      BleedOutModifier: Modificador de desangramiento
+      IgnoreWounds: Ignorar las heridas por desangramiento
   BenniesSpendGM: Gasta un beni del DJ
   DocumentLink: Enlace
   DocumentTweaks: Ajustes
@@ -756,6 +767,12 @@ SWADE:
   HotbarDropOwnedItemWarning: Sólo se pueden crear macros para los elementos propios
   AdditionalStats:
     SelectHint: Introduce una lista de opciones, separadas por punto y coma
+    Key: clave de estadísticas
+    Current: Actual {stat}
+    Label: Etiqueta
+    Type: Tipo
+    HasMaxValue: Máximo valor
+    Max: Max {stat}
   MessageOnUse:
     Label: Mensaje sobre el uso
     Hint: Mostrar un mensaje de chat cuando se utiliza este elemento
@@ -817,6 +834,21 @@ SWADE:
       los ajustes de SWADE
     NoTargetsSelected: Selecciona un objetivo al que aplicar el daño.
     SoakModifier: Modificador para absorción
+    Incapacitation:
+      Title: Repetir la tirada de gravedad de la lesión {name}?
+      Prompt: <p>{name} está a punto de ser herido. ¿Quieres repetir la tirada de
+        Vigor?</p>
+      Dies: <p><strong>{name}</strong> muere por los daños!</p>
+      TemporaryInjury: <p><strong>{name}</strong> sufre una herida que desaparecerá
+        cuando se curen todas las heridas.</p>
+      TakeSuccess: Sufrir una lesión que desaparece cuando se curan todas las heridas
+      InjuryRoll: Tirada de Vigor para resistir las heridas tras la incapacitación
+      PermanentInjury: <p><strong>{name}</strong> sufre una lesión permanente y se
+        <strong>está desangrando!</strong></p>
+      PermanentInjuryHND: <p><strong>{name}</strong> sufre una lesión permanente!</p>
+      ShortInjury: <p><strong>{name}</strong> sufre una herida que desaparecerá en
+        24 horas, o cuando todas las Heridas estén curadas (lo que ocurra antes).</p>
+      TakeFail: Sufre una lesión permanente
   Rolls:
     Critfail:
       Critfail: PIFIA
@@ -844,6 +876,26 @@ SWADE:
   RefreshPP: Refrescar los puntos de poder
   Targets: 'Objetivos:'
   BaseDamage: Daño básico
+  GlobalMod:
+    Label: Modificadores globales
+    Trait: Todos los atributos
+    Agility: Agilidad y habilidades vinculadas
+    Smarts: Astucia y habilidades vinculadas
+    Spirit: Espíritu y habilidades vinculadas
+    Strength: Fuerza y habilidades vinculadas
+    Vigor: Vigor y habilidades vinculadas
+    Attack: Todos los ataques
+    Damage: Todo el daño
+  ModDamage: Modificadores al daño
+  CalledShot:
+    Hand: 'Ataques apuntados: mano'
+    HeadOrVitals: 'Ataque apuntado: cabeza o puntos vitales'
+    Limbs: 'Ataques apuntados: extremidades'
+  TOCBlockList: Compendium TOC Blocklist
+  ModTrait: Modificadores de rasgo
+  ModAttack: modificadores de ataque
+  Weakness: Debilidad
+  Resistance: Resistencia
 ACTOR:
   TypeCharacter: Personaje Jugador
   TypeNpc: PNJ
@@ -863,3 +915,23 @@ ITEM:
 CARD:
   TypeAdventure: Carta de aventura
   TypePoker: Carta de poker
+TYPES:
+  Actor:
+    character: Personaje jugador
+    npc: Personaje no jugador
+    vehicle: Vehículo
+  Item:
+    weapon: Arma
+    armor: Armadura
+    shield: Escudo
+    gear: Equipo
+    edge: Ventaja
+    hindrance: Desventaja
+    skill: Habilidad
+    power: Poder
+    ability: Capacidad
+    consumable: Consumible
+    action: Acción
+  Card:
+    adventure: Carta de aventura
+    poker: Carta de poker

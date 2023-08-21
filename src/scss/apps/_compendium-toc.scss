@@ -25,6 +25,12 @@
       &.top-row {
         grid-row: 1;
         grid-column: 9/-1;
+        display: flex;
+        justify-content: space-between;
+
+        input {
+          width: calc(100% - 20px)
+        }
       }
       &.second-row {
         grid-row: 2;
@@ -38,6 +44,10 @@
       grid-column: 1/-1;
       grid-row: 3;
       height: 100%;
+    }
+
+    .category-header {
+      break-after: avoid-column;
     }
 
     .category + .category {
