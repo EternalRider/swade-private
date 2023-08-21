@@ -42,7 +42,7 @@ export function ensureShotsAreNumeric(source: any) {
 }
 
 export function ensurePowerPointsAreNumeric(source: any) {
-  if (source.pp === null || typeof source.ap === 'number') return;
+  if (source.pp === null || typeof source.pp === 'number') return;
   if (Number.isNumeric(source.pp)) {
     source.pp = Number(source.pp);
     return;
