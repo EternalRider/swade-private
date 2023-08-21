@@ -126,6 +126,11 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
   };
 }
 
+export function addUpModifiers(acc: number, cur: RollModifier) {
+  if (cur.ignore) return acc;
+  return (acc += Number(cur.value));
+}
+
 /** @internal */
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */
@@ -138,7 +143,7 @@ export function firstOwner(doc) {
       return (
         user?.active &&
         !user.isGM &&
-        level === CONST.DOCUMENT_PERMISSION_LEVELS.OWNER
+        level === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
       );
     })
     .map(([id, _level]) => id);
@@ -216,24 +221,6 @@ export function getKeyByValue(object, value) {
 export function deepFreeze<T>(o: T) {
   Object.values(o).forEach((v) => Object.isFrozen(v) || deepFreeze(v));
   return Object.freeze(o);
-}
-
-/** @internal */
-export function setupFantasyCompanionEntangle() {
-  const entangled = CONFIG.statusEffects.find((v) => v.id === 'entangled');
-  if (!entangled) return;
-  entangled.changes = [
-    {
-      key: 'data.status.isEntangled',
-      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 'true',
-    },
-    {
-      key: 'data.status.isVulnerable',
-      mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      value: 'true',
-    },
-  ];
 }
 
 /** @internal */

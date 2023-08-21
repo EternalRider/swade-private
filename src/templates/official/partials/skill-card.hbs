@@ -1,32 +1,26 @@
 <li class='item skill skill-card' data-item-id='{{id}}'>
   <header class='card-header flexrow' data-item-id='{{id}}'>
     <img class='skill-icon' src='{{img}}' />
-    <button type='button' class='skill-name item-name' title='{{name}}'>
-      {{#if system.isCoreSkill}}★ {{/if}}{{name}}
-      {{#if system.attribute}}
-        ({{localizeSkillAttribute system.attribute @root.useAttributeShorts}})
+    <button type='button' class='skill-name item-name'>
+      {{#if isCoreSkill}}★ {{/if}}{{label}}
+      {{#if attribute}}
+        ({{localizeSkillAttribute attribute @root.useAttributeShorts}})
       {{/if}}
     </button>
-    <button
-      type='button'
-      class='skill-die rollable'
-      title='{{localize "SWADE.Roll"}} {{name}}'
-    >
+    <button type='button' class='skill-die rollable' data-tooltip='{{tooltip}}'>
       <img
         class='skill-die-icon'
-        src='systems/swade/assets/official/dice/d{{system.die.sides}}.svg'
-        alt='d{{system.die.sides}}{{modifier system.die.modifier}}'
+        src='systems/swade/assets/official/dice/d{{die}}.svg'
+        alt='d{{die}}{{modifier this.modifier}}'
       />
-      {{#if system.die.modifier}}
-        <span class='skill-die-modifier'>{{modifier system.die.modifier}}</span>
-      {{/if}}
+      <span class='skill-die-modifier'>{{signedString this.modifier}}</span>
     </button>
     <div class='item-controls'>
       {{#if isOwner}}
         <button
           type='button'
           class='item-control item-edit'
-          title='{{localize "SWADE.Ed"}} {{name}}'
+          title='{{localize "SWADE.Ed"}} {{label}}'
         >
           <i class='fas fa-edit'></i>
         </button>
@@ -34,7 +28,7 @@
     </div>
   </header>
   <div class='card-content' style='display: none;'>
-    {{#if system.description}} {{enrich system.description}} {{else}}
+    {{#if description}} {{enrich description}} {{else}}
       <div class='swade-core'><p>No description available</p></div>
     {{/if}}
   </div>

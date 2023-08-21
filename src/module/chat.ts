@@ -64,16 +64,17 @@ export function chatListeners(html: JQuery<HTMLElement>) {
 /**
  * Hide the display of chat card action buttons which cannot be performed by the user
  */
-export function hideChatActionButtons(
+export async function hideChatActionButtons(
   msg: ChatMessage,
-  html: JQuery<HTMLElement>,
+  jquery: JQuery<HTMLElement>,
   _data: any,
 ) {
+  const html = jquery[0];
   // If the user is the message author or the actor owner, proceed
   const actor = game.actors?.get(msg.speaker.actor);
   if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
-  const chatCard = html.find('.swade.chat-card');
-  if (chatCard.length > 0) {
+  const chatCard = html.querySelector<HTMLElement>('.swade.chat-card');
+  if (chatCard) {
     // Otherwise conceal all action button sections except for
     // resistance rolls (which can be rolled by other actors as a defense)
     const toHide = [
@@ -85,18 +86,36 @@ export function hideChatActionButtons(
       '.pp-counter',
       '.ammo-counter',
       '.reload-controls',
+      '.benny-reroll',
+      '.free-reroll',
     ];
     for (const group of toHide) {
-      chatCard.find(group)?.css({ display: 'none' });
+      chatCard
+        .querySelectorAll<HTMLElement>(group)
+        .forEach((e) => (e.style.display = 'none'));
     }
   }
 
-  const rollCard = html.find('.swade-roll');
-  if (rollCard.length > 0) {
-    const toHide = ['.benny-reroll', '.free-reroll'];
-    for (const group of toHide) {
-      rollCard.find(group)?.css({ display: 'none' });
-    }
+  //hide macros if the user can't execute them
+  const macros = msg.getFlag('swade', 'macros') ?? [];
+  let hiddenCounter = 0;
+  for (const macro of macros) {
+    const doc = (await fromUuid(macro.uuid)) as Macro | null;
+    if (doc?.canExecute) continue;
+    html
+      .querySelectorAll<HTMLButtonElement>(`button[data-action="${macro.id}"]`)
+      .forEach((btn) => {
+        btn.style.display = 'none';
+        hiddenCounter++;
+      });
+  }
+  const macroButtonsTotal = html.querySelectorAll<HTMLButtonElement>(
+    '.card-buttons.macros button',
+  ).length;
+  //if all macros have been hidden, then also hide the header
+  if (macroButtonsTotal <= hiddenCounter) {
+    const header = html.querySelector<HTMLElement>('.card-buttons.macros');
+    if (header) header.style.display = 'none';
   }
 }
 
@@ -113,15 +132,14 @@ export function createMagazineTooltip(
     const actor = ItemChatCardHelper.getChatCardActor(
       card.querySelector('.swade.chat-card')!,
     );
-    const itemId =
-      card.querySelector<HTMLElement>('[data-item-id]')?.dataset.itemId;
-    const loadedAmmo = actor?.items
-      .get(itemId as string)
-      ?.getFlag('swade', 'loadedAmmo');
-    let content = 'No Magazine loaded';
-    if (loadedAmmo) {
-      content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
-    }
+    const itemId = card.querySelector<HTMLElement>('[data-item-id]')?.dataset
+      .itemId as string;
+    const loadedAmmo = actor?.items.get(itemId)?.getFlag('swade', 'loadedAmmo');
+
+    const content = loadedAmmo
+      ? `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`
+      : game.i18n.localize('SWADE.Magazine.NoneLoaded');
+
     game.tooltip.activate(magazine, {
       text: await TextEditor.enrichHTML(content, { async: true }),
     });

@@ -2,7 +2,7 @@
   "id": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "3.0-dev",
+  "version": "3.1-dev",
   "compatibility": {
     "minimum": 11,
     "verified": 11,
@@ -17,7 +17,7 @@
     {
       "name": "Joseph/ChaosOS",
       "url": "https://joseph-meehan.carrd.co/",
-      "discord": "ChaosOS#1948"
+      "discord": "chaosos"
     }
   ],
   "esmodules": ["swade.js"],
@@ -101,27 +101,18 @@
       "lang": "pt-BR",
       "name": "Português (Brasil)",
       "path": "lang/pt_BR.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Française",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "zh-Hans",
+      "name": "Chinese (Simplified)",
+      "path": "lang/zh_Hans.json"
     }
   ],
-  "relationships": {
-    "recommends": [
-      {
-        "id": "dice-so-nice",
-        "type": "module",
-        "reason": "Provides 3D dice and bennies."
-      },
-      {
-        "id": "swade-core-rules",
-        "type": "module",
-        "reason": "Provides full text rules and pre-configured items from the Savage Worlds Adventure Edition core rules."
-      },
-      {
-        "id": "swpf-core-rules",
-        "type": "module",
-        "reason": "Provides full text rules and pre-configured items from the Pathfinder for Savage Worlds book."
-      }
-    ]
-  },
   "media": [
     {
       "type": "setup",

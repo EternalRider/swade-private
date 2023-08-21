@@ -1,0 +1,981 @@
+SWADE:
+  ButtonReset: Réinitialisation
+  ButtonSubmit: Soumettre
+  CommunityCharSheet: Ancienne fiche de personnage
+  CommunityNPCSheet: Fiche de PNJ communautaire
+  CommunityVicSheet: Fiche de véhicule communautaire
+  CommunityItemSheet: Fiche d'objet communautaire
+  ItemSheet: Savage Worlds Fiche d'objet
+  Expand: Agrandir
+  OfficialSheet: Fiche officielle Savage Worlds de Pinnacle
+  ModHint: Assurez-vous que votre modificateur inclut un + ou un -
+  ActionDeckPresetLight: Cartes d'action (clair)
+  ActionDeckPresetDark: Cartes d'action (sombre)
+  Name: Nom
+  Tough: Résistance
+  Race: Espèce
+  Archetype: Archétype
+  Pace: Allure
+  Running: Course
+  RunningDie: Dé de course
+  RollRun: Cliquez pour courir
+  Adv: Progressions
+  Rank: Rang
+  Inv: Inventaire
+  Summary: Résumé
+  Pow: Pouvoirs
+  Wildcard: Joker
+  Extra: Extra
+  Bennies: Jetons
+  TraitMod: Mod. Trait
+  SkillTest: Jet de compétence
+  AttributeTest: Jet d'attribut
+  Attributes: Attributs
+  Derived: Caractéristiques dérivées
+  AttrAgi: Agilité
+  AttrSma: Intellect
+  AnimalSmarts: Intellect animal
+  AnimalSmartsMarker: A
+  AttrSpr: Âme
+  AttrStr: Force
+  AttrVig: Vigueur
+  Tweaks: Ajustements
+  AttrAgiShort: Agi
+  AttrSmaShort: Int
+  AttrSprShort: Âme
+  AttrStrShort: For
+  AttrVigShort: Vig
+  Skills: Compétences
+  Unskilled: Non entraîné
+  CoreSkill: Compétence de base
+  CoreSkills: Compétences de base
+  LinkAttr: Attribut lié
+  ArcaneSkill: Compétence d'arcane
+  ActivateArcaneDevice: Activer l'objet
+  Die: Dé
+  WildDie: Dé joker
+  Modifier: Modificateur
+  BenniesSpend: Dépenser un jeton
+  BenniesGive: Donner un jeton
+  BenniesRefresh: Réinitialiser les jetons
+  AllBenniesRefresh: Réinitialiser tous les jetons
+  BenniesRefreshMessage: Les jetons ont été réinitialisés !
+  BenniesRefreshAllMessage: Tous les jetons ont été réinitialisés !
+  BenniesGMRefreshMessage: Les jetons du MJ ont été réinitialisés !
+  BenniesAddMessage: a reçu un nouveau jeton !
+  BenniesGMAddMessage: Le MJ a reçu un nouveau jeton !
+  BenniesSpendMessage: dépense un jeton !
+  BenniesMax: Réinitialisation des jetons
+  EditSkill: Modifier compétence
+  EdEdge: Modifier atout
+  EdHind: Modifier handicap
+  Ed: Modifier
+  Del: Supprimer
+  Arcane: Arcanes
+  All: Tous
+  HasPowers: A des pouvoirs
+  Weapons: Armes
+  MeleeWeapons: Armes de contact
+  RangedWeapons: Armes à distance
+  Range._name: Portée
+  Armors: Armures
+  Shields: Boucliers
+  Biography: Historique
+  Shaken: Secoué
+  Distr: Distrait
+  Vuln: Vulnérable
+  Stunned: Sonné
+  Entangled: Entravé
+  Bound: Immobilisé
+  Aiming: Viser
+  Berserk: Enragé
+  Defending: Défense totale
+  Flying: En vol
+  Follow: Suivre {name}
+  Unfollow: Arrêter de suivre {name}
+  MakeGroupLeader: Promouvoir comme chef de groupe
+  RemoveGroupLeader: Supprimer le chef de groupe
+  AddTokenFollowers: Ajouter les jetons sélectionnés comme suivants
+  GroupByName: Grouper par nom
+  SetGroupColor: Choisir une couleur de groupe
+  SelectColor: Sélectionner une couleur
+  Holding: En attente
+  Hold: En attente
+  ActAfterCurrentCombatant: Agir après le combattant actuel
+  ActBeforeCurrentCombatant: Agir maintenant
+  LoseTurn: Perdre le tour
+  Frightened: Effrayé
+  Encumbered: Encombré
+  Prone: À terre
+  BleedingOut: Hémorragie
+  Diseased: Malade
+  HeartAttack: Arrêt cardiaque
+  OnFire: En feu
+  Poisoned: Empoisonné
+  Reach: Allonge
+  Torch: Torche
+  Invisible: Invisible
+  Smite: Frappe
+  Armor: Armure
+  Protection: Protection
+  Dmg: Dégâts
+  DmgOver: Remplacement des dégâts
+  Ap: PA
+  APLong: Pénétration d'armure
+  RoF: CdT
+  Mag: Coups
+  Parry: Parade
+  Notes: Notes
+  ActionsEffects: Actions et effets
+  Actions: Actions
+  DmgModUni: Modificateur de dégâts (universel)
+  SkillModUni: Modificateur de comp. (universel)
+  ShotsUsed: Mun. utilisées
+  NaturalArmor: Armure naturelle
+  HitLocations: Localisation
+  Head: Tête
+  Torso: Torse
+  Arms: Bras
+  Legs: Jambes
+  MinStrLong: Force minimale
+  MinStr: Force min.
+  MinStrShort: For min.
+  Desc: Description
+  Special: Capacités spéciales
+  Details: Détails
+  Equippable: Équipable
+  ArcaneDevice: Objet Arcanique
+  Misc: Divers
+  QuickAccess: Accès rapide
+  Effects: Effets actifs
+  Hindrances: Handicaps
+  MajHind: Handicap majeur
+  Major: "(majeur)"
+  Minor: "(mineur)"
+  Edges: Atouts
+  ArcBack: Arcanes
+  Req: Prérequis
+  Conv: Conviction
+  UseConv: Fait appel à sa conviction !
+  Hesitant: Hésitant
+  LevelHeaded: Tête froide
+  ImprovedLevelHeaded: Sang-froid
+  AutoCalc: Calculs automatiques
+  InclArmor: Calcule automatiquement la Résistance, armure incluse
+  Label: Label
+  HasMaxValue: A une valeur max.
+  Enabled: Activé
+  Currency: Monnaie
+  CarryWeight: Encombrement
+  Eqd: Éqpé
+  Equipped: Équipé
+  Unequipped: Non équipé
+  Quantity: Quantité
+  Weight: Poids
+  Price: Prix
+  PP: Points de pouvoir
+  PPShort: Pt de pouvoir
+  PPCost: Coût en PP
+  CurPP: Pt de pouvoir actuels
+  MaxPP: Pt de pouvoir max.
+  Dur: Durée
+  Trap: Aspect
+  Wound: Blessure
+  Wounds: Blessures
+  WoundsMax: Blessures max.
+  Fatigue: Fatigue
+  FatigueMax: Fatigue max.
+  Incap: Incapacité
+  Init: Initiative
+  DrawInit: Lancer l'initiative
+  ActionDeckReset: "Réinitialise les cartes d'action"
+  ActionDeckResetNotification: Réinitialise les cartes d'action
+  InitDraw: pioche …
+  General: Général
+  Addi: Additionel
+  Status: Statut
+  Handling: Manœuvrabilité
+  Topspeed: Vitesse max
+  OutOfControl: Hors de contrôle
+  Wrecked: Épave
+  Item: Objet
+  Cargo: Cargaison
+  MaxCargo: Encombrement max. de la cargaison
+  CargoWeight: Poids de la cargaison
+  Mods: Mods
+  ModSlots: Emplacements de Mods
+  MaxMods: Mods maximums
+  Operator: Conducteur
+  ManCheck: Jet de manœuvre
+  AltSkill: Comp. alternative
+  Class: Classification
+  Vehicular: Arme de véhicule
+  VehicleMod: Mod. de véhicule
+  OpSkill: Compétence de manœuvre
+  ShowBennyAnimation: Montrer l'animation du jeton
+  ShowBennyAnimationDesc: Joue une animation lors de l'utilisation d'un jeton. Seulement
+    disponible si Dice So Nice! est installé
+  WildDiePreset: Thème du dé joker
+  WildDiePresetDesc: Sélectionnez un thème DSN pour votre dé joker. Sélectionnez «
+    Personnalisé » si vous voulez créer le vôtre ou « Aucun » si vous ne voulez pas
+    que votre dé joker soit différent. Gardez à l'esprit que pour le moment, vous
+    seul pouvez voir votre dé joker personnalisé. Les autres joueurs le verront différemment.
+  SettingConf: Configuration des règles
+  SettingConfLabel: Ouvrir la configuration des règles
+  SettingConfDesc: Ajustez le système pour qu'il s'adapte à votre univers.
+  DiceConf: Configuration des dés
+  DiceConfDesc: Configurer les options pour l'intégration SWADE/Dice So Nice
+  DiceConfLabel: Ouvrir la configuration des dés
+  Formula: Formule
+  SitMod: Modificateur de situation
+  RollMode: Mode de jet
+  RollExample: ex. +1d6x ou -2
+  Roll: Lancer
+  RollRaise: Avec Prouesse
+  GroupRoll: Jet de groupe
+  Ok: Ok
+  Cancel: Annuler
+  Redraw: Repiocher
+  Add: Ajout
+  ConfigInit: Configurer l'initiative
+  IgnWounds: Ignorer les blessures
+  Size: Taille
+  Scale: Échelle
+  PickACard: Piocher une carte
+  NoCardsLeft: Il n'y a plus assez de cartes dans la pioche ! Il ne reste que {current}
+    pour {needed} cartes nécessaires
+  OldCard: Ancienne carte
+  ActionCard: Carte d'action
+  ConvictionActive: Conviction active
+  ConvictionActivate: Fait appel à sa conviction !
+  ConvictionExtend: Voulez-vous maintenir votre conviction ?
+  ConvictionEnd: vacille dans sa conviction
+  NoBennies: Vous n'avez plus de jetons !
+  SBT: Petit gabarit
+  MBT: Gabarit moyen
+  LBT: Grand gabarit
+  Cone: Gabarit de cône
+  GM: Meneur de jeu
+  Vehicles: Véhicules
+  AddStats: Caractéristiques additionnelles
+  Actors: Personnages
+  Items: Objets
+  Max: Max.
+  Curr: Actuel
+  DSNNone: "- Aucun -"
+  Reload: Recharger
+  Refresh: Rafraîchir cette carte
+  Ammo: Munitions
+  ReloadUnneeded: Cette arme est déjà complètement chargée
+  ReloadSuccess: L'arme a été rechargée
+  NotEnoughAmmo: Vous n'avez pas assez de munitions pour effectuer cette action !
+  NotEnoughAmmoToReload: Il n'y a pas assez de munitions pour une recharge complète
+  AutoReload: Rechargement auto.
+  NoAmmoSet: Il n'y a pas de munitions affectées
+  Trapping: Aspects
+  AddBenny: Ajouter un jeton
+  CurrentBennies: Jetons actuels
+  RerollWithBenny: Relancer avec un jeton
+  FreeReroll: Relance gratuite
+  AutoCalcParry: Calculer la parade automatiquement, bouclier inclus
+  Subtype: Sous-type
+  SpecialAbility: Capacité spéciale
+  SpecialAbilities: Capacités spéciales
+  RacialAbilities: Capacités innées
+  ArchetypeAbilities: Capacités d'archétype
+  About: Description
+  EdgesHindrances: Atouts/Handicaps
+  GrantsPowers: Accorde des pouvoirs
+  Crew: Équipage requis
+  Passengers: Passagers
+  String: Texte
+  Number: Nombre
+  Checkbox: Case à cocher
+  WealthDie:
+    Label: Richesse (dé)
+    Broke:
+      Label: Fauché
+      Hint: vous êtes fauché !
+    Sides: Dé de Richesse
+    WildSides: Dé Joker pour la richesse
+    Modifier: Modificateur pour le dé de richesse
+  TraitRolls: Jets de trait
+  Trait: Trait
+  AltTrait: Trait alternatif
+  ClickSuggestions: Cliquez pour les suggestions
+  Quick: Vif
+  BonusDamage: Bonus aux dégâts
+  Joker: Joker
+  Subtract: Soustraire
+  DmgRolls: Jets de dégats
+  SubtractPPDesc: Soustraire le coût en PP du total disponible
+  AddPPDesc: Ajouter le coût en PP au total disponible
+  RightClickZoom: Clic-droit pour zoomer
+  SysMigrationWarning: Votre installation de SWADE est ancienne et ne peut pas être
+    migrée vers la nouvelle version. La migration va être tentée, mais des erreurs
+    peuvent se produire.
+  DeckShuffled: La pioche a été automatiquement mélangée
+  BasePace: Allure de base
+  WarningPackLocked: Vous ne pouvez pas éditer un compendium verrouillé. Déverrouillez-le
+    d'abord
+  ActionCardEditor: Éditeur de cartes d'action
+  CardFace: Figure
+  CardValue: Valeur
+  CardSuit: Enseigne
+  IsJoker: Est un Joker
+  OpenACEditor: Ouvert dans l'éditeur de cartes d'action
+  'Yes': Oui
+  'No': Non
+  ShowCharacterSummary: Afficher le résumé du personnage
+  CharacterSummary: Résumé du personnage
+  CopyHtml: Copier le HTML
+  CopyMarkdown: Copier le Markdown
+  Imperial: Impériale
+  Metric: Métrique
+  ChangeBennyWarning: Changer ces paramètres nécessite un rechargement de la page
+    !
+  3DBennies: Jetons 3D
+  WealthSelectionNoneOther: Aucun/Autre
+  Modifiers: Modificateurs
+  ActionTraitMod: Modificateur de trait d'action
+  ActionDmgMod: Modificateur de dégâts
+  ItemTraitMod: Modificatteur de trait d'objet
+  ItemDmgMod: Modification d'objet de dégâts
+  Duplicates: Doublons trouvés
+  DuplicateItemsBodyText: En ajoutant le {type} <strong>{name}</strong> à l'acteur
+    {target}, des éléments en double (nom/type) ont été trouvés. Les nouveaux objets
+    ont été renommés pour signaler leur provenance.
+  NoActionDeckFound: Aucun jeu de cartes d'action trouvé, création en cours
+  NoActionDeckDiscardPileFound: Aucune défausse de carte d'action trouvée, création
+    en cours
+  Wealth: Richesse
+  Characters: Personnages
+  SettingRules: Règles d'univers
+  WorldBasics: Bases du monde
+  MAPenalty:
+    Label: Pénalité d'actions multiples
+    None: Aucun
+  Mod:
+    Custom:
+      Add: Ajouter un modificateur
+    Support: Soutien
+    Preset:
+      Choose: Choisir un préréglage …
+      Add: Ajouter un préréglage
+      Settings: Modificateur du préreglage
+    Value: Valeur
+    Ignore: Ignorer ?
+  Illumination:
+    _name: Illumination
+    Dim: Pénombre
+    Dark: Obscurité
+    Pitch: Noir
+  Cover:
+    _name: Couvert
+    Shield: Couvert - Bouclier
+    Light: Couvert léger
+    Medium: Couvert moyen
+    Heavy: Couvert important
+    Total: Couvert total
+  Range:
+    _name: Portée
+    Medium: Portée moyenne
+    Long: Portée longue
+    Extreme: Portée extrême
+  ModOther: Autres modificateurs
+  Snapfire: Tir statique
+  UnstablePlatform: Plateforme instable
+  CannotAddRaceToRace: Vous ne pouvez pas ajouter une espèce/un archétype à une espèce/un
+    archétype !
+  LayOutChaseWithDeck: Utiliser les cartes pour gérer la poursuite
+  ClearChaseCards: Retirer les cartes de poursuite de la scène
+  NoSceneAvailable: Il n'y a pas de scène disponible, ou vous avez désactivé le canevas
+  ChaseCardsCleared: Toutes les cartes de poursuite ont été retirées de la scène.
+  SetUpChase: Paramétrer la poursuite
+  NotADeckCompendium: Aucun jeu de cartes n'est sélectionné dans le compendium
+  ConvertToDeck: Convertir en jeu de cartes
+  Expiration:
+    TabLabel: Comportement du tour
+    Description: "<p>Les effets s'arrêtent lors <em>du prochain tour de la cible,
+      ou plus tard</em></p>"
+    Behavior: Comportement des fins d'effet
+    BeginAuto: Début du tour automatique
+    BeginPrompt: Début du tour sur demande
+    EndAuto: Fin du tour automatique
+    EndPrompt: Fin du tour sur demande
+    None: Aucun
+    LooseTurnOnHold: perte du tour En attente
+    Remaining: Restant
+  RemoveEffectTitle: Supprimer {label} ?
+  RemoveEffectBody: "<p style='text-align: center;'>Supprimer <strong>{label}</strong>
+    de <strong>{parent}</strong> ?</p>"
+  PPAbbreviation: PP
+  ShowInChat: 'Afficher dans la discussion'
+  ExpandDescription: Agrandir pour montrer la description
+  Favorite: Favoris
+  Equip: Équiper
+  RollDamage: Lancer les dégâts
+  SystemLinks:
+    Changelog: Changements
+    Wiki: Wiki
+    ReportAnIssue: Signaler un problème
+  OpenOrigin: Ouvrir l'origine
+  EffectsTemporary: Effets temporaires
+  EffectsPermanent: Effets permanents
+  Ranks:
+    Novice: Novice
+    Seasoned: Aguerri
+    Veteran: Vétéran
+    Heroic: Héroïque
+    Legendary: Légendaire
+  Advances:
+    EditorTitle: Éditeur avancé
+    Toggle: Activer/Désactiver le plan de progression
+    Delete: Supprimer la progression
+    Planned: Planifié
+    Modes:
+      Legacy: Normal
+      Expanded: Étendu
+    Types:
+      Edge: Nouvel atout
+      SingleSkill: Augmentation d'une Compétence
+      TwoSkills: Augmentation de deux compétences
+      Attribute: Augmentation d'un attribut
+      Hindrance: Réduire un handicap
+    Number: Nombre de progressions
+  AddAdvance: Ajouter une progression
+  Appearance: Apparence
+  CharacterGoals: Objectifs
+  Background: Historique
+  ActiveEffects:
+    Add: Ajouter un effet actif
+    Source: Source
+    ResetDuration: Réinitialiser la durée
+    AddGuided: Ouvrir le guide
+    AddUnguided: Ajouter un Effet Actif vide
+  Keybindings:
+    OpenFavoriteCards:
+      Name: Ouvrir la main préférée
+      UserConfigLabel: Main préférée
+      Hint: Vous pouvez paramétrer votre main préférée dans la configuration d'utilisateur
+      NoCardsWarning: Vous n'avez pas de main préférée !
+    Bennies:
+      Name: Dépenser/recevoir un jeton
+      Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
+        recevoir un jeton
+  Settings:
+    HighlightTemplate:
+      Name: Toujours surligner les gabarits
+      Hint: Quand l’option est activée, les gabarits de mesure sont toujours surlignés,
+        au lieu de la grille.
+    FantasyCompanionEntangle:
+      Name: Statut Entravé du Compagnon Fantasy
+      Hint: Utiliser le statut Entravé du Compagnon Fantasy au lieu de celui du livre
+        de base. Changer ce paramètre nécessite un rechargement
+    InitDiscardPile:
+      Name: Défausse de l'initiative
+    InitCardDeck:
+      Name: Jeu de cartes pour l'initiative
+    ParryBase:
+      Name: Nom de la compétence de combat
+      Hint: Le nom de la compétence utilisée pour calculer la parade
+    UseAttributeShorts:
+      Name: Utiliser des noms d'attributs courts
+      Hint: Activez cette option si vous voulez des noms d'attributs courts sur les
+        fiches des PJs et des PNJs (c.a.d. Agi au lieu d'Agilité ...). Vous devez
+        rouvrir toutes les fiches ouvertes pour que cette option prenne effet.
+    WeightUnit:
+      Name: Unité de poids
+      Hint: Indique si les poids sont mesurés en livres ou en kilogrammes. Changer
+        ce paramètre ne changera PAS le poids des objets, uniquement le calcul de
+        l'encombrement
+    HideNpcItemChatCards:
+      Name: Cacher les cartes de la discussion d'objets des PNJ
+      Hint: Quand l'option est activée, les cartes de la discussion d'objets des PNJ
+        sont automatiquement envoyées en message privé à tous les meneurs de jeu au
+        lieu d'être envoyées dans la discussion publique
+    EnableBennyNotify:
+      Name: Notifications des jetons
+      Hint: Affiche des messages dans la discussion lorsque les jetons sont modifiés.
+    HideWC:
+      Name: Cache le signe Joker des PNJ
+      Hint: Ne montre pas aux joueurs le signe Joker des PNJ
+    CreateInitChat:
+      Name: Créer un message dans la discussion pour l'initiative
+    AutoInit:
+      Name: Initiative automatique
+      Hint: Pioche automatiquement l'initiative à chaque tour
+    Benny3DFront:
+      Name: Texture du jeton, côté face
+      Hint: Texture du jeton 3D, côté face
+    Benny3DBack:
+      Name: Texture du jeton, côté pile
+      Hint: Texture du jeton 3D, côté pile
+    Benny3DBackBump:
+      Name: Relief de la texture du jeton, côté pile
+      Hint: Relief de la texture du jeton 3D, côté pile
+    Benny3DFrontBump:
+      Hint: Relief de la texture du jeton 3D, côté face
+      Name: Relief de la texture du jeton, côté face
+    CoreSkillsList:
+      Name: Liste des compétences de base
+      Hint: Entrez la liste des compétences de base de tous les acteurs, en séparant
+        chaque nom par une virgule
+    CoreSkillsPack:
+      Name: Compendium des compétences de base
+      Hint: Choisissez le compendium d’où viennent les compétences de base
+    WealthType:
+      Name: Type de Richesse
+      Hint: Choisissez comment la richesse d’un personnage est notée, et sa monnaie
+    CurrencyName:
+      Name: Nom de la monnaie
+      Hint: Nommez la monnaie utilisée
+    JokersWild:
+      Name: Un joker, c'est fou !
+      Hint: Donnez un jeton à tous les PJ lorsque l'un d'entre eux tire un joker
+    AmmoManagement:
+      Name: Gestion des munitions
+      Hint: Quand l'option est activée, et si c'est applicable, les actions soustraient
+        des munitions du chargeur de votre arme. Les cartes d'objet ont aussi un nouveau
+        bouton Recharger, et vous ne pourrez pas effectuer d'attaque si vous n'avez
+        plus assez de munitions.
+    PCAmmoFromInventory:
+      Name: Les PJ utilisent les munitions de l'inventaire
+      Hint: Quand l'option est activée, il est possible de marquer un objet « d’Équipement
+        » comme munition. Il sera utilisé pour recharger l'arme
+    NPCAmmoFromInventory:
+      Name: Les PNJ utilisent les munitions de leur inventaire
+    VehicleAmmoFromInventory:
+      Name: Les véhicules utilisent les munitions de leur inventaire
+    EnableWoundPace:
+      Name: Allure affectée par les blessures
+      Hint: Quand l'option est activée, l'Allure est automatiquement affectée par
+        les blessures
+    EnableConv:
+      Name: Conviction
+      Hint: Active la règle d'univers Conviction
+    NoPowerPoints:
+      Name: Pas de points de pouvoir
+      Hint: Lorsqu’elle est activée, cette option cache toutes les interactions des
+        points de pouvoir
+    ApplyEncumbrance:
+      Name: Appliquer les pénalités d'encombrement
+      Hint: Appliquer les pénalités d'encombrement. Gardez à l'esprit que cela n'AFFECTE
+        PAS les jets de {vigor} pour résister à la {fatigue} !
+    GmBennies:
+      Name: Jetons du MJ
+      Hint: Détermine combien de jetons le MJ reçoit après une réinitialisation
+    VehicleMods:
+      Name: Mods du véhicule
+      Hint: Le véhicule a des emplacements de Mods
+    VehicleEdges:
+      Name: Atouts du véhicule
+      Hint: Le véhicule utilise des atouts et des handicaps
+    BennyImageSheet:
+      Name: Jeton
+      Hint: Sélectionnez l'image voulue pour les jetons sur la fiche de personnage
+    HardChoices:
+      Name: Choix cornéliens
+      Hint: Cocher cette option activera les règles des Choix cornéliens
+    CardSound:
+      Name: Son lors de la pioche d’une carte
+      Hint: Joue un son lorsqu’une carte d'initiative est piochée
+    ArbitFields: Données diverses de l'univers
+    AlwaysGeneralPP:
+      Name: Toujours afficher les Points de pouvoir génériques
+      Hint: Quand l'option est cochée, les Point de pouvoirs générique sont toujours
+        visibles, même si tous les pouvoirs ont un Arcane associé
+    StartingCurrency:
+      PC:
+        Name: Fonds de départ d'un personnage joueur
+        Hint: Définir le montant qu'un Personnage Joueur reçoit à la création
+      NPC:
+        Hint: Défini le montant de départ d'un PNJ reçoit à la création
+        Name: Montant de départ d'un PNJ
+    NPCCurrency:
+      Hint: Quand l'option est cochée, tous les PNJ ont les mêmes options d'un Personnage
+        joueur
+      Name: les PNJ utilisent de l'argent
+    UnarmoredHero:
+      Name: Héros sans armure
+      Hint: Cocher cette option activera la règle d'univers Héros sans armure lors
+        des jet d'encaissement
+    WoundCap:
+      Hint: Cocher cette option, active la règle d'univers Limite de blessures lors
+        du calcul des blessures.
+      Name: Limite de blessures
+    InjuryTable:
+      Name: Tables des blessures
+      Hint: Sélectionnez la table correspondante pour les jets automatiques des Dégâts
+        handicapants.
+    GrittyDamage:
+      Name: Dégâts handicapants
+      Hint: Cocher cette option, active la règle d'univers des Dégâts handicapants
+        et permet de choisir la table des blessures à utiliser.
+    HeroesNeverDie:
+      Name: Les héros ne meurent jamais
+      Hint: Cocher cette option active la règle d'univers les Héros de meurent jamais
+        quand le système vérifie l'état d'incapacité
+    DumbLuck:
+      Name: Chance insolente
+      Hint: Cocher cette option activera la règle d'univers Chance insolente
+    VehicleSkills:
+      Name: Compétences de manœuvre
+      Hint: Saisissez une liste de compétences séparées par une virgule pour définir
+        les compétences de manœuvre pour chaque véhicule
+  EffectCallbacks:
+    Shaken:
+      RollSpirit: Jet d'Âme
+      Title: Enlever l'état Secoué de {name}
+      Flavor: Jet d'Âme pour supprimer l'état Secoué
+      UnshakeModifier: Modificateur pour enlever l'état Secoué
+      Question: Que voulez-vous faire ?
+      Success: Vous n'êtes plus Secoué
+    Stunned:
+      Title: Jet de Vigueur pour enlever l'état Sonné
+      Fail: Vous restez Sonné
+      Success: Vous n'êtes plus Sonné mais vous restez Vulnérable
+      Raise: Vous n'êtes plus Sonné ni Vulnérable
+      UnStunModifier: Modificateur pour ne plus être sonné
+    BleedingOut:
+      Title: Jet de Vigueur pour résister à l'hémorragie
+      Fail: Vous êtes mort
+      Success: Vous survivez, pour l'instant...
+      Raise: Votre état est stable
+      IgnoreWounds: Le jet d'hémmoragie ignore les blessures
+      BleedOutModifier: Modificateur pour les jets d'hémmoragie
+  BenniesSpendGM: Dépenser un jeton du MJ
+  DocumentLink: Lien
+  DocumentTweaks: Ajustements
+  TargetVulnerable: La cible est Vulnérable
+  WildAttack: Attaque totale
+  ItemType: Type d'objet
+  Source: Source
+  Properties: Propriétés
+  AddAction: Ajouter une action
+  DeleteEmbeddedActionPrompt: Voulez-vous vraiment supprimer l'action {action}
+  DeleteEmbeddedPowerPrompt: Voulez-vous vraiment supprimer le pouvoir {power} ?
+  TrademarkWeapon:
+    Label: Arme fétiche
+    Regular: Normale
+    Improved: Adorée
+    None: Aucun
+  OffHandPenalty: Malus de main non-directrice
+  ItemEquipStatus:
+    Label: Localisation
+    Stored: Stocké
+    Carried: Porté
+    Equipped: Équipé
+    OffHand: Main non-directrice
+    MainHand: Main directrice
+    TwoHands: Deux mains
+    Installed: Installé
+    Readied: Prêt à l'emploi
+    Added: Ajouté
+  DestroyOnEmpty: Détruire si vide
+  Charges: Charges
+  Consumable:
+    Use: Utiliser
+    Consumables: Consommables
+  EmptyRacialAbilitiesHint: L’espèce '{race}' ou l'archétype '{archetype}' n'a pas
+    encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
+  AdditionalStats:
+    SelectHint: Entrezune liste d'options, séparés par une virgule
+    Key: Clé de statistique
+    Label: Nom
+    Type: Type
+    HasMaxValue: A une valeur maximale
+    Current: Valeur actuelle {stat}
+    Max: Valeur Max {stat}
+  Attribute: Attribut
+  AttributeManager:
+    Open: Gérer les attributs
+    Title: Gérer les atributs pour {name}
+  BaseDie: Dé de base
+  Category: Catégorie d'item
+  ColdBodied: Corps froid
+  CompendiumTOC:
+    Dialog:
+      Content: Afin que le changement soit pris en compte, FoundryVTT et les autres
+        clients doivent être rafraîchis. Merci de confirmer.
+      Title: Confirmer
+    Header: Contenu
+    Toggle: Cocher pour utiliser la table des matières du Compendium
+  CustomWildDie: "- Dé Joker spécial -"
+  DieSides: Faces du dé
+  EffectWizard:
+    EnterSkill:
+      Label: Entrez une compétence
+      Hint: Vous pouvez saisir n'importe quel nom de compétence ou en sélectionner
+        un de la liste suggérée
+    Value: Valeur
+    Preview: Prévisualisation
+    Change: Changement
+    Mode: Mode
+    Changes: Changements
+    SelectAttribute: Sélectionner un attribut
+  EncumbranceSteps: Etapes d'encombrement
+  HeavyArmor: Armure lourde
+  HeavyWeapon: Arme lourde
+  HotbarDropOwnedItemWarning: Vous pouvez seulement créer des boutons de macro pour
+    les items possédés
+  IgnFatigue: Ignorer la fatigue
+  ItemGrants:
+    Header: Cet item fourni
+    When: Fournir les items lorsque
+    EmptyHint: Cet otme ne fourni actuellement aucun autre item
+  ItemIsAmmo: Est une munition
+  MessageOnUse:
+    Label: Messag eà l'utilisation
+    Hint: Afficher un message dans le tchat lorsque cet item est utilisé
+  NoTokenSelectedForResistRoll: Pour faire un test de Résistance, sélectionnez d'abord
+    un token
+  OtherStats: Autres stats
+  Resist: Resister
+  ResistRolls: Jet de résistance
+  Selection: Sélection
+  TOCSettings:
+    Label: Ouvrir les paramètres des Compendiums
+    Hint: Configurer l'application des compendiums
+    Name: Gestion des sommaires de compendium
+  Templates:
+    Cone:
+      Long: Gabarit de cone
+      Short: Cône
+    Large:
+      Long: Gabarit d'explosion - Grand
+      Short: LBT
+    Stream:
+      Long: Gabarit - Flux
+      Short: Flux
+    Possible: Gabarits possibles
+    Small:
+      Long: Gabarit d'explosion - Petit
+      Short: SBT
+    Available: Gabarits disponibles
+    Medium:
+      Long: Gabarit d'explosion - Moyen
+      Short: MBT
+  UsesTOC: Utiliser le sommaire du compendium
+  Vision:
+    SenseHeat: Sentir la chaleu
+    Infravision: Infravision
+    SeeHeat: Voir la chaleur
+  WeaponsAndArmor: Armes & Armures
+  WildCard: Joker
+  WildDieSides: Faces du dé joker
+  WildDieTheme: Thème du dé Joker
+  WildDieThemeDesc: Sélectionnez un thème DSN pour votre dé joker. Choisissez 'Custom'
+    si vous voulez créer le votre, ou 'Aucun/None' si vous ne voulez pas que votre
+    dé joker soit différent. Gardez en tête que les thèmes 'custom' ne seront que
+    vus par vous. Les autres joueurs le verront différents.
+  GlobalMod:
+    Agility: Agilité et compétences liées
+    Label: Modificateur global
+    Smarts: Intellect et compétences liées
+    Trait: Tous les traits
+    Strength: Force et compétences liées
+    Damage: Tous les dégâts
+    Attack: Toutes les attaques
+    AP: Tous les Perce-Armures (PA)
+    Spirit: Âme et compétences liées
+    Vigor: Vigueur et compétences liées
+  Duplicate: Dupliquez
+  ppReload: Points de pouvoir à recharger
+  ReloadNotPossible: Ce type d'acteur ne peut pas recharger
+  ReloadType:
+    Full: Complet
+    Magazine: Chargeur
+    None: Aucun
+    Single: Unitaire
+    PP: Points de pouvoir
+    Label: Façons de recharger
+    Battery: Batterie
+  RemoveAmmo: Enlever les munitions
+  NoMags: Vous n'avez pas de consommables identifiés comme des chargeurs dans votre
+    inventaire
+  ConsumableType:
+    Label: Sous-type
+    Regular: Régulier
+  ModAttack: Modificateurs d'attaque
+  ModDamage: Modificateurs de dégâts
+  ModTrait: Modificateurs de Traits
+  Resistance: Résistance
+  Weakness: Faiblesse
+  Validation:
+    OnlyOneRace: Vous ne pouvez avoir qu'une seule espèce à la fois !
+    OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois !
+  TOCBlockList: Sommaires des compendiums bloqués
+  BaseDamage: Dégâts de base
+  Targets: 'Cibles :'
+  Rolls:
+    SwadeRoll: Jet
+    DamageRoll: Jet de dégâts
+    Critfail:
+      ConfirmDie: Dé de confirmation
+      Possible: ÉCHEC CRITIQUE POSSIBLE
+      Confirm: Confirmation
+      Unconfirmed: Échec critique non confirmé
+      Critfail: ÉCHEC CRITIQUE
+      Confirmed: Confirmation de l'échec critique
+    Free: Gratuit
+    GMBenny: Jeton du MJ
+    Benny: Jeton
+    RollResult: Résultat du lancé
+    TraitRoll: Jet de Trait
+  LoadedAmmo: Munitions chargées
+  DamageApplicator:
+    SoakDialog:
+      UnwoundedTitle: Ajustement des dégâts pour determiner le statut de {name} ?
+      ShakenPrompt: <p>{name} est sur le point d'être Secoué.</p>
+      UnharmedPrompt: <p>{name} pourrait être indemne.</p>
+      Benny: Utiliser un Jeton pour faire un encaissement
+      GMBenny: Utiliser un Jeton du MJ pour faire un encaissement
+      Free: Encaissement gratuit
+      TakeWounds: Subit {wounds} blessure(s)
+      AdjustDamage: Ajuster les dégâts
+      Accept: Accepter
+      SoakRoll: Jet de Vigueur pour l'encaissement
+      WoundedTitle: Jet d'encaissement pour {name} ?
+      WoundedPrompt: <p>{name} est sur le point de subir {wounds} blessures. Voulez
+        vous faire un jet d'encaissement ?</p>
+      ApplyShaken: Appliquer l'état Secoué
+    RerollSoakDialog:
+      Title: Relancer l'encaissement des blessures pour {name} ?
+      Benny: Dépenser un jeton pour relancer
+      Free: Relance gratuite
+      TakeWounds: Prends {wounds] blessures(s)
+      Prompt: <p>{name} va subir {wounds} blessures(s). voulez-vous relancer le jet
+        d'encaissement ?</p>
+      PromptCritFail: <p>{name} est sur le point de subir {wounds} blessures(s). Un
+        échec critique empêche de relancer le jet.</p>
+      GMBenny: Dépenser un jeton du MJ pour relancer
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> n'a pas subit de dégâts significatifs.</p>
+      IsIncapacitated: <p><strong>{name}</strong> est <strong>en Incapacité !</strong></p>
+      SoakedAll: <p><strong>{name}</strong> encaisse toutes les blessures et n'est
+        pas Secoué !</p>
+      IsShaken: <p><strong>{name}</strong> est <strong>Secoué</strong> !</p>
+      IsShakenWithWounds: <p><strong>{name}</strong> est <strong>Secoué </strong>
+        avec <strong>{wounds}</strong> blessure(s) !</p>
+    Incapacitation:
+      InjuryRoll: jet de Vigueur pour résister aux blessures suite à son incapacité
+      PermanentInjury: <p><strong>{name}</strong> subit une blessure permanente et
+        est en <strong>Hémorragie !</strong></p>
+      Title: Relancer la sévérité de la séquelle pour {name] ?
+      Prompt: <p>{name} est sur le point de subir une séquelle. Voulez-vous relancer
+        le jet de Vigueur ?</p>
+      PermanentInjuryHND: <p><strong>{name}</strong> vient de subir une blessure permanente
+        !</p>
+      Dies: <p><strong>{name}</strong> meurt à cause des dégâts !</p>
+      TemporaryInjury: <p><strong>{name}</strong> subit une séquelle qui disparaitra
+        lorsque toutes les blessures auront été soignées.</p>
+      ShortInjury: <p><strong>{name}</strong> souffre d'une séquelle qui disparaîtra
+        dans les 24 heures ou lorsque toutes les blessures seront guéries (selon la
+        première éventualité).</p>
+      TakeFail: Souffre d'une séquelle permanente
+      TakeSuccess: Souffre d'une séquelle qui disparaitra lorsque toutes les blessures
+        auront été guéries
+    ApplyDamage: Application des dégâts
+    SoakModifier: Modificateur d'encaissement
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> est sur le point de subir <strong>{wounds}</strong>
+      blessures !</p>
+    AdjustDamagePrompt: <p>Ajustement des dégâts pour chaque capacité et effet que
+      possède {name}.</p>
+    NoInjuryTable: Aucune table des blessures sélectionnée. Veuillez regarder la configuration
+      du système SWADE
+    NoTargetsSelected: Veuillez sélectionner une cible pour appliquer les dégâts.
+  RunningMod: Modificateur de course
+  RefreshPP: Rafraichir les PP
+  CalledShot:
+    Hand: 'Tir ciblé : main'
+    HeadOrVitals: 'Tir ciblé : tête ou parties vitales'
+    Limbs: 'Tir ciblé : membres'
+  MigrateCompendium: Forcer la migration du Compendium
+  NoAmmoPP: Impossible de trouver des Points de pouvoir correspondant au type de munition
+  RollNoun: Lancé
+  NumberOfDice:
+    Hint: Défini combien de dés de Trait sont lancés pour cette action
+    Label: Dé(s)
+  DesperateAttack:
+    2: Attaque désespérée (2)
+    4: Attaque désespérée (4)
+ACTOR:
+  TypeCharacter: Personnage
+  TypeNpc: PNJ
+  TypeVehicle: Véhicule
+ITEM:
+  TypeWeapon: Arme
+  TypeArmor: Armure
+  TypeShield: Bouclier
+  TypeGear: Équipement
+  TypeEdge: Atout
+  TypeHindrance: Handicap
+  TypeSkill: Compétence
+  TypePower: Pouvoir
+  TypeAbility: Capacité
+  TypeConsumable: Consommable
+CARD:
+  TypeAdventure: " Cartes d'aventure"
+  TypePoker: " Cartes de poker"
+Actor: Acteur
+Vehicles: Véhicules
+Ground Vehicles: Véhicules terrestres
+Civilian Vehicles: Véhicules civils
+Futuristic Military Vehicles: Véhicules militaires futuristes
+World War II Military Vehicles: Véhicules militaires de la Seconde Guerre mondiale
+Aircraft: Aviation
+Civilian: Civil
+Bestiary: Bestiaire
+Modern Military Aircraft: Avions militaires modernes
+World War II Military Aircraft: Avions Seconde Guerre mondiale
+Watercraft: Maritime
+Equipment: Equipement
+Armor: Armures
+Ammo: Munitions
+Common Gear: Matériel de base
+Modern Firearms: Armes à feu modernes
+Personal Weapons: Armes de contact
+Special Weapons: Armes spéciales
+Natural/Improvised Weapons: Armes naturelles/improvisées
+Skills: Compétences
+Edges: Atouts
+Background Edges: Atouts de background
+Combat Edges: Atouts de combat
+Leadership Edges: Atouts de commandement
+Legendary Edges: Atouts légendaires
+Power Edges: Atouts de pouvoirs
+Professional Edges: Atouts professionnels
+Social Edges: Atouts sociaux
+Weird Edges: Atouts étranges
+Hindrances: Handicaps
+Powers: Pouvoirs
+Special Abilities: Capacités spéciales
+1. Characters: 1. Personnages
+2. Gear: 2. Matériel
+3. Rules: 3. Règles
+5. Powers: 5. Pouvoirs
+6. Bestiary: 6. Bestiaire
+7. Game Mastering: 6. Conseils aux Maîtres de Jeu
+Character Creation: Création de personnages
+The Adventure toolkit: Boite à outils des aventures
+TYPES:
+  Actor:
+    npc: PNJ
+    character: Personnage joueur
+    vehicle: Véhicule
+  Item:
+    weapon: Arme
+    armor: Armure
+    shield: Bouclier
+    gear: Équipement
+    edge: Atout
+    hindrance: Handicap
+    power: Pouvoir
+    ability: Capacité
+    consumable: Consommable
+    action: Action
+    skill: Compétence
+  Card:
+    adventure: Cartes d'aventure
+    poker: Cartes de poker

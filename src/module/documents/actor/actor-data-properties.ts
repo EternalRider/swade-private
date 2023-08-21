@@ -1,4 +1,4 @@
-import { RollModifier } from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
   CharacterDataSourceData,
@@ -32,6 +32,23 @@ interface SwadeVehicleDataSource {
 }
 
 export type CharacterDataPropertiesData = CharacterDataSourceData & {
+  attributes: {
+    agility: {
+      effects: RollModifier[];
+    };
+    smarts: {
+      effects: RollModifier[];
+    };
+    spirit: {
+      effects: RollModifier[];
+    };
+    strength: {
+      effects: RollModifier[];
+    };
+    vigor: {
+      effects: RollModifier[];
+    };
+  };
   stats: {
     speed: {
       adjusted: number;
@@ -48,6 +65,14 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
       damage: RollModifier[];
       ap: RollModifier[];
     };
+    parry: {
+      sources: DerivedModifier[];
+      effects: DerivedModifier[];
+    }
+    toughness: {
+      sources: DerivedModifier[];
+      effects: DerivedModifier[];
+    }
   };
   details: {
     encumbrance: {

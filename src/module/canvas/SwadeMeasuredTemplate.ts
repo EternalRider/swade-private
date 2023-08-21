@@ -1,4 +1,4 @@
-import { MeasuredTemplateConstructorDataData } from '../../interfaces/TemplateConfig.interface';
+import BaseMeasuredTemplate from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/measured-template.mjs';
 import SwadeItem from '../documents/item/SwadeItem';
 
 declare global {
@@ -9,7 +9,6 @@ declare global {
 
 export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
-
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
    * @param preset the preset to use.
@@ -32,7 +31,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: MeasuredTemplateConstructorDataData = {
+    const templateBaseData: BaseMeasuredTemplate.ConstructorData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,
@@ -142,12 +141,11 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   }
 
   override _computeShape(): MeasuredTemplateShape {
-    const shape = super._computeShape() as MeasuredTemplateShape;
     const { angle, t } = this.document;
     const { angle: direction, distance } = this.ray;
     if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
       return this._getConeShape(direction, angle, distance);
-    return shape;
+    return super._computeShape() as MeasuredTemplateShape;
   }
 
   protected _getConeShape(
@@ -155,28 +153,20 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     angle: number,
     distance: number,
   ): PIXI.Polygon {
-    angle = angle || 90;
-    const coneType = game.settings.get('core', 'coneTemplateType') as string;
-    const coneWidth = (1.5 / 9) * distance;
-    const coneLength = (7.5 / 9) * distance;
-    let angles: number[];
-    let points: number[];
-    let rays: Ray[];
-    const toRadians = function (degrees: number): number {
-      return degrees * (Math.PI / 180);
-    };
-    // For round cones - approximate the shape with a ray every 3 degrees
-    if (coneType === 'round') {
-      const da = Math.min(angle, 3);
+    // Special case to handle the base SWADE cone rather than a normal cone definition
+    if (angle === 0) {
+      const coneWidth = 1.5 * ( distance / 9 ) ;
+      const coneLength = distance - coneWidth
+      const da = 3;
       const c = Ray.fromAngle(0, 0, direction, coneLength);
-      angles = Array.fromRange(180 / da)
+      const angles = Array.fromRange(180 / da)
         .map((a) => 180 / -2 + a * da)
         .concat([180 / 2]);
       // Get the cone shape as a polygon
-      rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + toRadians(a), coneWidth),
+      const rays = angles.map((a) =>
+        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneWidth),
       );
-      points = rays
+      const points = rays
         .reduce(
           (arr, r) => {
             return arr.concat([c.B.x + r.B.x, c.B.y + r.B.y]);
@@ -184,24 +174,11 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
           [0, 0],
         )
         .concat([0, 0]);
+      return new PIXI.Polygon(points);
     } else {
-      //For flat cones, direct point-to-point
-      angles = [angle / -2, angle / 2];
-      distance /= Math.cos(toRadians(angle / 2));
-      // Get the cone shape as a polygon
-      rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + toRadians(a), distance + 1),
-      );
-      points = rays
-        .reduce(
-          (arr, r) => {
-            return arr.concat([r.B.x, r.B.y]);
-          },
-          [0, 0],
-        )
-        .concat([0, 0]);
+      // honestly don't know why super.getConeShape() isn't working but it's not
+      return MeasuredTemplate.getConeShape(direction, angle, distance)
     }
-    return new PIXI.Polygon(points);
   }
 
   override highlightGrid() {

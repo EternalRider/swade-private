@@ -6,7 +6,7 @@ import { Accordion } from '../style/Accordion';
 
 export default class ActiveEffectWizard extends FormApplication {
   private effect: ActiveEffectDataConstructorData = {
-    label: game.i18n.format('DOCUMENT.New', {
+    name: game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
     }),
     icon: 'systems/swade/assets/icons/active-effect.svg',

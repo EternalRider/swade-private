@@ -1,4 +1,4 @@
-image: node:lts
+image: node:18
 
 variables:
   PACKAGE_NAME: swade
@@ -14,8 +14,9 @@ stages:
   - publish
 
 cache: &global_cache
+  key: $CI_COMMIT_REF_SLUG
   paths:
-    - .npm
+    - .npm/
 
 lint:
   stage: tests
@@ -63,6 +64,7 @@ publish-artifacts:
     - apk update
     - apk add zip curl
   script: |
+    npm run update-wiki -- --authToken="$CI_JOB_TOKEN"
     cd dist
     zip -r ../$PACKAGE_ARCHIVE.zip .
     cd ..

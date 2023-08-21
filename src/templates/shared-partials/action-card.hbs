@@ -7,31 +7,31 @@
   <div class='chips'>
     {{#if (eq item.type 'armor')}}
       <span class="chip">
-        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize 'SWADE.Armor'}}:</span>
+        <span class='bold'><i class="fa-sharp fa-solid fa-shield-halved"></i> {{localize 'SWADE.Armor'}}:</span>
         {{item.system.armor}}
       </span>
     {{/if}}
     {{#if (and (eq item.type 'weapon') item.system.range)}}
       <span class="chip">
-          <span class='bold'> <i class='fas fa-ruler-combined'></i> {{localize "SWADE.Range._name"}}:</span>
+          <span class='bold'><i class="fa-solid fa-ruler-combined"></i> {{localize "SWADE.Range._name"}}:</span>
           {{item.system.range}}
         </span>
     {{/if}}
     {{#if (and (eq item.type 'weapon') (gt item.system.ap '0'))}}
       <span class="chip">
-        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize "SWADE.Ap"}}:</span>
+        <span class='bold'><i class="fa-solid fa-shield-halved"></i> {{localize "SWADE.Ap"}}:</span>
         {{item.system.ap}}
       </span>
     {{/if}}
     {{#if (eq item.type 'shield')}}
       <span class="chip">
-        <span class='bold'><i class='fas fa-shield-alt'></i> {{localize 'SWADE.Parry'}}:</span>
+        <span class='bold'><i class="fa-solid fa-shield-halved"></i> {{localize 'SWADE.Parry'}}:</span>
         {{item.system.parry}}
       </span>
     {{/if}}
     {{#if item.system.notes}}
       <span class="chip">
-        <span class='bold'><i class='fas fa-sticky-note'></i> {{localize 'SWADE.Notes'}}:</span>
+        <span class='bold'><i class="fa-solid fa-note-sticky"></i> {{localize 'SWADE.Notes'}}:</span>
         {{item.system.notes}}
       </span>
     {{/if}}
@@ -39,7 +39,7 @@
 
   {{#if hasAmmoManagement}}
     <div class='ammo-counter'>
-      <span class='bold'><i class='fas fa-dot-circle'></i> {{localize 'SWADE.Mag'}}:</span>
+      <span class='bold'><i class="fa-solid fa-circle-dot"></i> {{localize 'SWADE.Mag'}}:</span>
       <span class='current-shots'>{{item.system.currentShots}}</span>&nbsp;/&nbsp;
       <span class='max-shots'>{{item.system.shots}}</span>
       {{#if item.system.ammo}}&nbsp;- &nbsp;{{item.system.ammo}}{{/if}}
@@ -174,25 +174,24 @@
     {{/if}}
 
     {{#unless powersTab}}
-      {{#if (or hasSkillRoll item.isArcaneDevice)}}
+      {{#if (or hasTraitRoll item.isArcaneDevice)}}
         <h4 class='actions-subheading'>
-          <i class='fas fa-bullseye'></i>
+          <i class="fa-solid fa-bullseye"></i>
           {{localize 'SWADE.TraitRolls'}}
         </h4>
       {{/if}}
     {{/unless}}
 
-    {{#if (and hasSkillRoll system.actions.skill)}}
+    {{#if (and hasTraitRoll system.actions.trait)}}
       <button class='card-button' data-action='formula'>
-        {{#if powersTab}}<i class='fas fa-hand-sparkles'></i> {{/if}}{{skill}}
+        {{#if powersTab}}<i class="fa-solid fa-hand-sparkles"></i> {{/if}}{{system.actions.trait}}
       </button>
     {{/if}}
 
-    {{#each actions as |attr key|}}
-      {{#if (eq attr.type 'skill')}}
-        <button class='card-button' data-action='{{attr.key}}'>
-          {{#if powersTab}}<i class='fas fa-hand-sparkles'></i>
-          {{/if}}{{attr.name}}
+    {{#each actions as |action|}}
+      {{#if (eq action.type 'trait')}}
+        <button class='card-button' data-action='{{action.key}}'>
+          {{#if ../powersTab}}<i class="fa-solid fa-hand-sparkles"></i> {{/if}}{{action.name}}
         </button>
       {{/if}}
     {{/each}}
@@ -206,7 +205,7 @@
     {{#unless powersTab}}
       {{#if hasDamage}}
         <h4 class='actions-subheading'>
-          <i class='fas fa-tint'></i>
+          <i class="fa-solid fa-droplet"></i>
           {{localize 'SWADE.DmgRolls'}}
         </h4>
       {{/if}}
@@ -214,16 +213,33 @@
 
     {{#if item.system.damage}}
       <button class='card-button' data-action='damage'>
-        {{#if powersTab}}<i class='fas fa-tint'></i>
+        {{#if powersTab}}<i class='fa-solid fa-droplet'></i>
         {{/if}}{{item.system.damage}}
       </button>
     {{/if}}
 
-    {{#each actions as |attr key|}}
-      {{#if (eq attr.type 'damage')}}
-        <button class='card-button' data-action='{{attr.key}}'>
-          {{#if ../powersTab}}<i class='fas fa-tint'></i>{{/if}}
-          {{attr.name}}
+    {{#each actions as |action|}}
+      {{#if (eq action.type 'damage')}}
+        <button class='card-button' data-action='{{action.key}}'>
+          {{#if ../powersTab}}<i class='fa-solid fa-droplet'></i> {{/if}}{{action.name}}
+        </button>
+      {{/if}}
+    {{/each}}
+
+  
+    {{#unless powersTab}}
+      {{#if hasMacros}}
+        <h4 class='actions-subheading'>
+          <i class="fa-solid fa-code"></i>
+          {{localize 'DOCUMENT.Macros'}}
+        </h4>
+      {{/if}}
+    {{/unless}}
+
+    {{#each actions as |action|}}
+      {{#if (eq action.type 'macro')}}
+        <button class='card-button' data-action='{{key}}'>
+          {{#if ../powersTab}}<i class='fa-solid fa-code'></i> {{/if}}{{action.name}}
         </button>
       {{/if}}
     {{/each}}
@@ -232,7 +248,7 @@
   {{#if item.system.templates}}
     <div class='card-buttons templates'>
       <h4 class='actions-subheading'>
-        <i class='fas fa-bullseye'></i>
+        <i class='fa-solid fa-bullseye'></i>
         {{localize 'SWADE.Templates.Available'}}
       </h4>
       <span class='flexrow'>

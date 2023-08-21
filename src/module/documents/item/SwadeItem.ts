@@ -18,7 +18,12 @@ import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { Logger } from '../../Logger';
-import { getKeyByValue, modifierReducer, notificationExists } from '../../util';
+import {
+  addUpModifiers,
+  getKeyByValue,
+  modifierReducer,
+  notificationExists,
+} from '../../util';
 import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
@@ -34,9 +39,6 @@ import {
 } from './SwadeItem.interface';
 
 declare global {
-  interface DocumentClassConfig {
-    Item: typeof SwadeItem;
-  }
   interface FlagConfig {
     Item: {
       swade: {
@@ -51,8 +53,7 @@ declare global {
 }
 
 export default class SwadeItem extends Item {
-  overrides: DeepPartial<Record<string, string | number | boolean>> = {};
-
+  overrides: DeepPartial<ItemDataConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
   static override migrateData(data: ItemDataConstructorData) {
@@ -76,11 +77,17 @@ export default class SwadeItem extends Item {
     if (data?.system?.grants) {
       for (const grant of data.system.grants as ItemGrant[]) {
         const uuid = grant.uuid;
-        const isNew = uuid.startsWith('Compendium.') && uuid.includes('.Item.');
-        if (isNew) continue;
-        const arr = uuid.split('.');
-        arr.splice(arr.length - 1, 0, 'Item');
-        grant.uuid = arr.join('.');
+        if (uuid.startsWith('Compendium.') && !uuid.includes('.Item.')) {
+          const arr = uuid.split('.');
+          arr.splice(arr.length - 1, 0, 'Item');
+          grant.uuid = arr.join('.');
+        }
+        //bad UUID with multiple Item strings
+        if (uuid.split('.').filter((v) => v === 'Item').length > 1) {
+          const arr = uuid.split('.').filter((v) => v !== 'Item'); //remove all instances of Item
+          arr.unshift('Item'); // add a single Item to the front
+          grant.uuid = arr.join('.');
+        }
       }
     }
     return data;
@@ -194,6 +201,21 @@ export default class SwadeItem extends Item {
     }
   }
 
+  get modifier(): number {
+    if (this.type !== 'skill') return 0;
+
+    let mod = this.system.die.modifier;
+    const attribute = this.system.attribute;
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    mod += this.system.effects.reduce(addUpModifiers, 0);
+    mod += globals.trait?.reduce(addUpModifiers, 0) ?? 0;
+    if (attribute) mod += globals[attribute]?.reduce(addUpModifiers, 0);
+    return mod;
+  }
+
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
     const modifiers = new Array<RollModifier>();
     let damage = '';
@@ -221,14 +243,16 @@ export default class SwadeItem extends Item {
     const rollParts = [damage];
 
     //Additional Mods
-    modifiers.push(...this.actor.system.stats.globalMods.damage);
+    if (this.actor) {
+      modifiers.push(...this.actor.system.stats.globalMods.damage);
+    }
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
 
     const terms = DamageRoll.parse(
       rollParts.join(''),
-      this.parent?.getRollData() ?? {},
+      this.actor?.getRollData() ?? {},
     );
     const baseRoll = new Array<string>();
     for (const term of terms) {
@@ -242,6 +266,8 @@ export default class SwadeItem extends Item {
         baseRoll.push(term.formula);
       } else if (term instanceof StringTerm) {
         baseRoll.push(this._makeExplodable(term.term));
+      } else if (term instanceof NumericTerm) {
+        baseRoll.push(term.formula);
       } else {
         baseRoll.push(term.expression);
       }
@@ -272,16 +298,11 @@ export default class SwadeItem extends Item {
       });
     }
 
-    const roll = new DamageRoll(
-      baseRoll.join(''),
-      {},
-      {
-        modifiers: modifiers,
-      },
-    );
+    const roll = new DamageRoll(baseRoll.join(''), {}, { modifiers });
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
+     * Returning `false` in a hook callback will cancel the roll entirely
      * @category Hooks
      * @param {SwadeActor} actor                The actor that owns the item which rolls the damage
      * @param {SwadeItem} item                  The item that is used to create the damage value
@@ -539,6 +560,7 @@ export default class SwadeItem extends Item {
   }
 
   override prepareDerivedData() {
+    super.prepareBaseData();
     if (this.type === 'skill') {
       this.system.die = this._boundTraitDie(this.system.die);
       this.system['wild-die'].sides = Math.min(
@@ -575,26 +597,28 @@ export default class SwadeItem extends Item {
       hasAmmoManagement &&
       this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
     const hasDamage = !!getProperty(this, 'system.damage');
-    const hasTraitRoll =
-      ['weapon', 'power', 'shield', 'action'].includes(this.type) &&
-      !!getProperty(this, 'system.actions.skill');
+    const hasTrait = !!getProperty(this, 'system.actions.trait');
     const hasReloadButton =
       ammoManagement &&
       this.type === 'weapon' &&
       getProperty(this, 'system.shots') > 0 &&
-      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE;
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.NONE &&
+      getProperty(this, 'system.reloadType') !== constants.RELOAD_TYPE.SELF;
 
     const additionalActions: Record<string, ItemAction> =
       getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
-      (v) => v.type === 'skill',
+      (v) => v.type === constants.ACTION_TYPE.TRAIT,
     );
     const hasDamageActions = Object.values(additionalActions).some(
-      (v) => v.type === 'damage',
+      (v) => v.type === constants.ACTION_TYPE.DAMAGE,
     );
-    const hasResistRoll = Object.values(additionalActions).some(
-      (v) => v.type === 'resist',
+    const hasResistRolls = Object.values(additionalActions).some(
+      (v) => v.type === constants.ACTION_TYPE.RESIST,
+    );
+    const hasMacros = Object.values(additionalActions).some(
+      (v) => v.type === constants.ACTION_TYPE.MACRO,
     );
     const hasTemplates =
       !!this.system.templates &&
@@ -609,12 +633,13 @@ export default class SwadeItem extends Item {
       hasMagazine,
       hasReloadButton,
       hasDamage,
+      hasTrait,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this, 'system.actions.skill'),
-      hasTraitRoll,
-      showTraitRolls: hasTraitRoll || hasTraitActions,
-      hasResistRoll: hasResistRoll,
+      trait: getProperty(this, 'system.actions.trait'),
+      showTraitRolls: hasTrait || hasTraitActions,
+      hasResistRolls,
+      hasMacros,
       powerPoints: this._getPowerPoints(),
       settingRules: {
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -636,7 +661,16 @@ export default class SwadeItem extends Item {
         scene: token?.parent?.id,
         alias: this.parent?.name,
       },
-      flags: { core: { canPopout: true } },
+      flags: {
+        core: { canPopout: true },
+        swade: {
+          macros: Object.entries(additionalActions)
+            .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
+            .map(([k, v]) => {
+              return { id: k, uuid: v.uuid };
+            }),
+        },
+      },
     };
 
     if (
@@ -663,15 +697,18 @@ export default class SwadeItem extends Item {
 
   getTraitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    if (getProperty(this, 'system.actions.skillMod')) {
+    if (getProperty(this, 'system.actions.traitMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this, 'system.actions.skillMod'),
+        value: getProperty(this, 'system.actions.traitMod'),
       });
     }
     if (this.type === 'weapon') {
       modifiers.push(...this.actor.system.stats.globalMods.attack);
-      if (this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND) {
+      if (
+        this.system.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
+        !this.actor.getFlag('swade', 'ambidextrous')
+      ) {
         modifiers.push({
           label: game.i18n.localize('SWADE.OffHandPenalty'),
           value: -2,
@@ -688,29 +725,39 @@ export default class SwadeItem extends Item {
     return modifiers;
   }
 
-  canExpendResources(shotsUsed = 1): boolean {
-    switch (this.type) {
-      case 'weapon': {
-        if (!game.settings.get('swade', 'ammoManagement') || this.isMeleeWeapon)
-          return true;
-
-        const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
-        const ammo = this?.parent.items.getName(this.system.ammo);
-        if (noReload && !ammo) {
-          return false;
-        } else if (noReload) {
-          const ammoCount =
-            ammo?.type === 'consumable'
-              ? ammo?.system['charges']['value']
-              : ammo?.system['quantity'];
-          return shotsUsed <= ammoCount;
-        } else {
-          return shotsUsed <= this.system.currentShots;
-        }
-      }
-      default:
+  canExpendResources(resourcesUsed = 1): boolean {
+    if (this.type === 'weapon') {
+      if (!game.settings.get('swade', 'ammoManagement') || this.isMeleeWeapon)
         return true;
+
+      const noReload = this.system.reloadType === constants.RELOAD_TYPE.NONE;
+      const selfReload = this.system.reloadType === constants.RELOAD_TYPE.SELF;
+      const ammo = this?.parent.items.getName(this.system.ammo);
+      if (noReload && !ammo) {
+        return false;
+      } else if (noReload) {
+        const ammoCount =
+          ammo?.type === 'consumable'
+            ? ammo?.system['charges']['value']
+            : ammo?.system['quantity'];
+        return resourcesUsed <= ammoCount;
+      } else if (selfReload) {
+        const usesRemaining =
+          this.system.shots * (this.system.quantity - 1) +
+          this.system.currentShots;
+        return resourcesUsed <= usesRemaining;
+      } else {
+        return resourcesUsed <= this.system.currentShots;
+      }
     }
+    if (this.type === 'power') {
+      if (!this.actor) return false;
+      if (game.settings.get('swade', 'noPowerPoints')) return true;
+      const arcane = this.system.arcane || 'general';
+      const ab = this.actor.system.powerPoints[arcane];
+      return ab.value >= resourcesUsed;
+    }
+    return true;
   }
 
   async consume(charges = 1) {
@@ -821,6 +868,7 @@ export default class SwadeItem extends Item {
         await this._handlePowerPointReload();
         break;
       case constants.RELOAD_TYPE.NONE:
+      case constants.RELOAD_TYPE.SELF:
       default:
         // Shouldn't ever arrive here because the Reload button shouldn't display
         break;
@@ -929,7 +977,13 @@ export default class SwadeItem extends Item {
 
   async removeGranted(target = this.parent) {
     if (this.hasGranted.length < 1) return;
-    await target?.deleteEmbeddedDocuments('Item', this.hasGranted);
+    //grab the granted ids and put them into a set to filter possible duplicates
+    const granted = new Set(
+      //filter the list of granted items to only try and remove the ones that still exist on the parent
+      this.hasGranted.filter((grant) => this.parent?.items.has(grant)),
+    );
+    granted.delete(this.id as string); //delete self in case there are circular dependencies.
+    await target?.deleteEmbeddedDocuments('Item', Array.from(granted));
     await this.unsetFlag('swade', 'hasGranted');
   }
 
@@ -1040,9 +1094,40 @@ export default class SwadeItem extends Item {
           'data.quantity': quantity - chargesToUse,
         });
       }
+    } else if (this.system.reloadType === constants.RELOAD_TYPE.SELF) {
+      const currentShots = this.system.currentShots;
+      const maxShots = this.system.shots;
+      const usesShots = !!maxShots && !!currentShots;
+      const usesRemaining =
+        maxShots * (this.system.quantity - 1) + currentShots;
+      if (!usesShots || chargesToUse > usesRemaining) {
+        Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
+        return false;
+      }
+
+      let newShots;
+      let newQuantity;
+      if (chargesToUse < currentShots) {
+        itemUpdates['system.currentShots'] = currentShots - chargesToUse;
+      } else {
+        const quantityUsed = Math.ceil(chargesToUse / maxShots);
+        const remainingQty = this.system.quantity - quantityUsed;
+        if (remainingQty < 1) {
+          newShots = 0;
+          newQuantity = 0;
+        } else {
+          const remainder =
+            chargesToUse - (currentShots + (quantityUsed - 1) * maxShots);
+          newShots = maxShots - remainder;
+          newQuantity = remainingQty;
+        }
+        itemUpdates['system.currentShots'] = newShots;
+        itemUpdates['system.quantity'] = newQuantity;
+      }
     } else {
       const currentShots = this.system.currentShots;
       const usesShots = !!this.system.shots && !!currentShots;
+
       if (!usesShots || chargesToUse > currentShots) {
         Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
         return false;
@@ -1465,14 +1550,14 @@ export default class SwadeItem extends Item {
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
+    const grantOn = getProperty(this, 'system.grantOn');
     if (
       this.canGrantItems &&
       this.parent &&
-      getProperty(this, 'system.grantOn') &&
+      grantOn &&
       hasProperty(changed, 'system.equipStatus')
     ) {
       const equipStatus = getProperty(this, 'system.equipStatus');
-      const grantOn = getProperty(this, 'system.grantOn');
       const shouldGrant =
         (grantOn === constants.GRANT_ON.CARRIED &&
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||

@@ -56,7 +56,6 @@ export const SWADE: SwadeConfig = {
 
   vehicles: {
     maxHandlingPenalty: -4,
-    opSkills: ['', 'Boating', 'Driving', 'Piloting', 'Riding'],
   },
 
   settingConfig: {
@@ -67,6 +66,7 @@ export const SWADE: SwadeConfig = {
       'jokersWild',
       'vehicleMods',
       'vehicleEdges',
+      'vehicleSkills',
       'gmBennies',
       'enableWoundPace',
       'ammoManagement',
@@ -213,9 +213,11 @@ export const SWADE: SwadeConfig = {
         { label: 'SWADE.Aiming', value: '+2' },
         { label: 'SWADE.Snapfire', value: -2 },
         { label: 'SWADE.UnstablePlatform', value: -2 },
-        { label: 'SWADE.CalledShot.Hand', value: '-4' },
-        { label: 'SWADE.CalledShot.HeadOrVitals', value: '-4' },
-        { label: 'SWADE.CalledShot.Limbs', value: '-2' },
+        { label: 'SWADE.CalledShot.Hand', value: -4 },
+        { label: 'SWADE.CalledShot.HeadOrVitals', value: -4 },
+        { label: 'SWADE.CalledShot.Limbs', value: -2 },
+        { label: 'SWADE.DesperateAttack.2', value: '+2' },
+        { label: 'SWADE.DesperateAttack.4', value: '+4' },
       ],
       rollType: constants.ROLL_TYPE.ATTACK,
     },
@@ -224,7 +226,9 @@ export const SWADE: SwadeConfig = {
       modifiers: [
         { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4' },
         { label: 'SWADE.Weakness', value: '+4' },
-        { label: 'SWADE.Resistance', value: '-4' },
+        { label: 'SWADE.Resistance', value: -4 },
+        { label: 'SWADE.DesperateAttack.2', value: -2 },
+        { label: 'SWADE.DesperateAttack.4', value: -4 },
       ],
       rollType: constants.ROLL_TYPE.DAMAGE,
     },
@@ -267,6 +271,34 @@ export const SWADE: SwadeConfig = {
     'SWADE.Ranks.Heroic',
     'SWADE.Ranks.Legendary',
   ],
+
+  textSearch: {
+    actor: [
+      'system.details.archetype',
+      'system.details.appearance',
+      'system.details.notes',
+      'system.details.goals',
+      'system.details.biography.value',
+      'system.details.species.name',
+      'system.details.advances.rank',
+      'classification',
+      'description'
+    ],
+    adventure: [],
+    cards: [],
+    item: [
+      'system.description',
+      'system.notes',
+      'system.subtype',
+      'system.arcane',
+      'system.trapping'
+    ],
+    journalentry: [],
+    macro: [],
+    playlist: [],
+    rolltable: [],
+    scene: []
+  }
 };
 
 /** @internal */
@@ -313,7 +345,6 @@ export interface SwadeConfig {
 
   vehicles: {
     maxHandlingPenalty: number;
-    opSkills: Array<string>;
   };
 
   settingConfig: {
@@ -340,4 +371,16 @@ export interface SwadeConfig {
   prototypeRollGroups: RollModifierGroup[];
 
   ranks: string[];
+
+  textSearch: {
+    scene: Array<String>;
+    rolltable: Array<String>;
+    playlist: Array<String>;
+    macro: Array<String>;
+    journalentry: Array<String>;
+    item: Array<String>;
+    cards: Array<String>;
+    adventure: Array<String>;
+    actor: Array<String>;
+  }
 }

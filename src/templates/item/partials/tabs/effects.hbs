@@ -1,54 +1,64 @@
 <header class='header'>
-    <button type='menu' class='add-effect add-button invisible'>
-      <i class='fa-solid fa-plus'></i>{{localize 'SWADE.ActiveEffects.Add'}}
-    </button>
+  <button type='menu' class='add-effect add-button invisible'>
+    <i class='fa-solid fa-plus'></i>{{localize 'SWADE.ActiveEffects.Add'}}
+  </button>
 </header>
-<ol class='effect-list unmarked-list'>
+<ol class='effect-list unmarked-list collapsibles'>
   {{#each item.effects}}
-    <li data-effect-id='{{id}}'>
-      <img class='effect-icon' src='{{icon}}' />
-      {{#if disabled}}
-        <span class='effect-label effect-disabled'>
-          {{name}}
+    <li>
+      <details
+        data-effect-id='{{id}}'
+        {{collapsible @root.collapsibleStates.effects id}}
+      >
+        <summary>
+          <img class='effect-icon' src='{{icon}}' />
+          {{#if disabled}}
+            <span class='effect-label effect-disabled'>
+              {{name}}
+            </span>
+          {{else}}
+            <span class='effect-label'>
+              {{name}}
+            </span>
+          {{/if}}
+          <span class='effect-controls'>
+            <button
+              type='button'
+              class='effect-action invisible'
+              data-action='toggle'
+              data-toggle='disabled'
+            >
+              <i class='fas fa-power-off'></i>
+            </button>
+            <button
+              type='button'
+              class="effect-action invisible {{#unless flags.swade.favorite}}item-unequipped{{/unless}}" 
+              data-action='toggle'
+              data-toggle='flags.swade.favorite'
+              title='{{localize "SWADE.Favorite"}}'
+            >
+              <i class='fas fa-star'></i>
+            </button>
+            <button
+              type='button'
+              class='effect-action invisible'
+              data-action='edit'
+            >
+              <i class='fas fa-edit'></i>
+            </button>
+            <button
+              type='button'
+              class='effect-action invisible'
+              data-action='delete'
+            >
+              <i class='fas fa-trash'></i>
+            </button>
+          </span>
+        </summary>
+        <span class='content'>
+          <div class="description">{{{enrichedDescription}}}</div>
         </span>
-      {{else}}
-        <span class='effect-label'>
-          {{name}}
-        </span>
-      {{/if}}
-      <span class='effect-controls'>
-          <button
-            type='button'
-            class='effect-action invisible'
-            data-action='toggle'
-            data-toggle='disabled'
-          >
-            <i class='fas fa-power-off'></i>
-          </button>
-          <button 
-            type="button" 
-            class="effect-action invisible {{#unless flags.swade.favorite}}item-unequipped{{/unless}}" 
-            data-action="toggle"
-            data-toggle="flags.swade.favorite"
-            title="{{localize "SWADE.Favorite"}}"
-          >
-            <i class="fas fa-star"></i>
-          </button>
-          <button
-            type='button'
-            class='effect-action invisible'
-            data-action='edit'
-          >
-            <i class='fas fa-edit'></i>
-          </button>
-          <button
-            type='button'
-            class='effect-action invisible'
-            data-action='delete'
-          >
-            <i class='fas fa-trash'></i>
-          </button>
-      </span>
+      </details>
     </li>
   {{/each}}
 </ol>

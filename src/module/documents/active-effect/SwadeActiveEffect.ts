@@ -12,6 +12,7 @@ import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
+import { VehicleData } from '../../data/actor';
 
 declare global {
   interface DocumentClassConfig {
@@ -33,16 +34,11 @@ declare global {
 
 export default class SwadeActiveEffect extends ActiveEffect {
   get affectsItems() {
-    if (this.parent instanceof CONFIG.Actor.documentClass) {
-      const affectedItems = new Array<SwadeItem>();
-      this.changes.forEach((c) =>
-        affectedItems.push(
-          ...this._getAffectedItems(this.parent as SwadeActor, c),
-        ),
-      );
-      return affectedItems.length > 0;
-    }
-    return false;
+    const affectedItems = new Array<SwadeItem>();
+    this.changes.forEach((c) =>
+      affectedItems.push(...this._getAffectedItems(this.parent!, c)),
+    );
+    return affectedItems.length > 0;
   }
 
   get statusId() {
@@ -95,6 +91,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static GLOBAL_REGEXP = /system\.stats\.globalMods\.(\w+)/;
 
+  static PT_REGEXP = /system\.stats\.(parry|toughness)\.(value|armor)/
+
   static override migrateData(data: ActiveEffectDataProperties) {
     super.migrateData(data);
     if ('changes' in data) {
@@ -109,87 +107,47 @@ export default class SwadeActiveEffect extends ActiveEffect {
     return data;
   }
 
-  override apply(actor: SwadeActor, change: EffectChangeData) {
+  override apply(doc: SwadeActor | SwadeItem, change: EffectChangeData) {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
+    const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP)
     if (itemMatch) {
-      //get the properties from the match
-      const key = itemMatch[3].trim();
-      const value = change.value;
-      //get the affected items
-      const affectedItems = this._getAffectedItems(actor, change);
-      //apply the AE to each item
-      for (const item of affectedItems) {
-        const overrides = foundry.utils.flattenObject(item.overrides);
-        // Specialized handling of modifiers so they are listed separately in the RollDialog
-        if (
-          key === 'system.die.modifier' &&
-          itemMatch[1].trim().toLowerCase() === 'skill' &&
-          change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
-        ) {
-          const effectKey = 'system.effects';
-          if (!(effectKey in overrides))
-            overrides[effectKey] = new Array<RollModifier>();
-          this._updateTraitRollEffects(overrides[effectKey], value);
-          // NOT calling super.apply because normal apply doesn't handle objects
-          setProperty(item, effectKey, overrides[effectKey]);
-        } else {
-          // Die sizes for Trait and Wild Die
-          overrides[key] = Number.isNumeric(value) ? Number(value) : value;
-          //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
-          const mockChange = { ...change, key, value };
-          //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
-          super.apply(item, mockChange);
-        }
-        item.overrides = foundry.utils.expandObject(overrides);
-      }
-    } else if (attrMatch && change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
-      const overrides = foundry.utils.flattenObject(actor.overrides);
-      const effectKey = 'system.attributes.' + attrMatch[1] + '.effects';
-      if (!(effectKey in overrides))
-        overrides[effectKey] = new Array<RollModifier>();
-      this._updateTraitRollEffects(overrides[effectKey], change.value);
-      // NOT calling super.apply because normal apply doesn't handle objects
-      setProperty(actor, effectKey, overrides[effectKey]);
-      actor.overrides = foundry.utils.expandObject(overrides);
-    } else if (globalMatch) {
-      if (
-        change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-        actor.system.stats.globalMods.hasOwnProperty(globalMatch[1])
-      ) {
-        const overrides = foundry.utils.flattenObject(actor.overrides);
-        const effectKey = 'system.stats.globalMods.' + globalMatch[1];
-        if (!(effectKey in overrides))
-          overrides[effectKey] = new Array<RollModifier>();
-        this._updateTraitRollEffects(overrides[effectKey], change.value, false);
-        // NOT calling super.apply because normal apply doesn't handle objects
-        setProperty(actor, effectKey, overrides[effectKey]);
-        actor.overrides = foundry.utils.expandObject(overrides);
-      } else {
-        Logger.warn(
-          'Invalid Global Modifier ' + change.key + 'on effect ' + this.id,
-        );
-      }
+      this._handelItemMatch(itemMatch, change, doc);
+    } else if (attrMatch && 
+      change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
+      doc instanceof SwadeActor) {
+      this._handleAttributeMatch(attrMatch, change, doc);
+    } else if (globalMatch &&
+      doc instanceof SwadeActor) {
+      this._handleGlobalModifierMatch(globalMatch, change, doc);
+    } else if (ptMatch &&
+      doc instanceof SwadeActor) {
+      this._handlePTModifierMatch(ptMatch, change, doc);
     } else {
-      return super.apply(actor, change);
+      //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
+      return super.apply(doc, change);
     }
   }
 
-  private _getAffectedItems(actor: SwadeActor, change: EffectChangeData) {
+  private _getAffectedItems(
+    parent: SwadeActor | SwadeItem,
+    change: EffectChangeData,
+  ) {
     const items = new Array<SwadeItem>();
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
-    if (match) {
-      //get the properties from the match
-      const type = match[1].trim().toLowerCase();
-      const name = match[2].trim();
-      //filter the items down, according to type and name/id
-      items.push(
-        ...actor.items.filter(
-          (i) => i.type === type && (i.name === name || i.id === name),
-        ),
-      );
-    }
+    if (!match) return items;
+    //get the properties from the match
+    const type = match[1].trim().toLowerCase();
+    const name = match[2].trim();
+    //filter the items down, according to type and name/id
+    const collection =
+      parent instanceof SwadeItem ? parent.parent?.items ?? [] : parent.items;
+    items.push(
+      ...collection.filter(
+        (i) => i.type === type && (i.name === name || i.id === name),
+      ),
+    );
     return items;
   }
 
@@ -197,30 +155,30 @@ export default class SwadeActiveEffect extends ActiveEffect {
    * Removes Effects from Items
    * @param parent The parent object
    */
-  private _removeEffectsFromItems(parent: SwadeActor) {
+  private _removeEffectsFromItems(parent: SwadeActor | SwadeItem) {
     const affectedItems = new Array<SwadeItem>();
     this.changes.forEach((c) =>
       affectedItems.push(...this._getAffectedItems(parent, c)),
     );
     for (const item of affectedItems) {
       const overrides = foundry.utils.flattenObject(item.overrides);
-      for (const change of this.changes) {
+      for (const change of this.changes as EffectChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
-        if (match) {
-          const key = match[3].trim();
-          if (
-            key === 'system.die.modifier' &&
-            match[1].trim().toLowerCase() === 'skill' &&
-            change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
-          ) {
-            setProperty(item, 'system.effects', []);
-          } else {
-            //delete override
-            delete overrides[key];
-            //restore original data from source
-            const source = getProperty(item._source, key);
-            setProperty(item, key, source);
-          }
+        if (!match) continue;
+        const key = match[3].trim();
+        if (
+          key === 'system.die.modifier' &&
+          match[1].trim().toLowerCase() === 'skill' &&
+          change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
+        ) {
+          foundry.utils.setProperty(item, 'system.effects', []);
+          foundry.utils.setProperty(overrides, 'system.effects', []);
+        } else {
+          //delete override
+          delete overrides[key];
+          //restore original data from source
+          const source = getProperty(item._source, key);
+          foundry.utils.setProperty(item, key, source);
         }
       }
       item.overrides = foundry.utils.expandObject(overrides);
@@ -231,7 +189,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   private _updateTraitRollEffects(
     effectsArray: RollModifier[],
     value: number | string,
-    ignore = true,
+    ignore = false,
   ): boolean {
     if (!this.id) {
       // Handling null ID - don't want to make un-deletable override
@@ -270,6 +228,105 @@ export default class SwadeActiveEffect extends ActiveEffect {
           });
       await this.parent.toggleActiveEffect(effect, { active: true });
     }
+  }
+
+  private _handelItemMatch(
+    match: RegExpMatchArray,
+    change: EffectChangeData,
+    doc: SwadeActor | SwadeItem,
+  ) {
+    //get the properties from the match
+    const key = match[3].trim();
+    const value = change.value;
+    //get the affected items
+    const affectedItems = this._getAffectedItems(doc, change);
+    //apply the AE to each item
+    for (const item of affectedItems) {
+      const overrides = foundry.utils.flattenObject(item.overrides);
+      // Specialized handling of modifiers so they are listed separately in the RollDialog
+      if (
+        key === 'system.die.modifier' &&
+        match[1].trim().toLowerCase() === 'skill' &&
+        change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
+      ) {
+        const effectKey = 'system.effects';
+        if (!(effectKey in overrides)) {
+          overrides[effectKey] = new Array<RollModifier>();
+        }
+        this._updateTraitRollEffects(overrides[effectKey], value);
+        // NOT calling super.apply because normal apply doesn't handle objects
+        foundry.utils.setProperty(item, effectKey, overrides[effectKey]);
+      } else {
+        // Die sizes for Trait and Wild Die
+        overrides[key] = Number.isNumeric(value) ? Number(value) : value;
+        //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
+        const mockChange = { ...change, key, value };
+        //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
+        super.apply(item, mockChange);
+      }
+      item.overrides = foundry.utils.expandObject(overrides);
+    }
+  }
+
+  private _handleAttributeMatch(
+    match: RegExpMatchArray,
+    change: EffectChangeData,
+    doc: SwadeActor,
+  ) {
+    const overrides = foundry.utils.flattenObject(doc.overrides);
+    const effectKey = 'system.attributes.' + match[1] + '.effects';
+    if (!(effectKey in overrides))
+      overrides[effectKey] = new Array<RollModifier>();
+    this._updateTraitRollEffects(overrides[effectKey], change.value);
+    // NOT calling super.apply because normal apply doesn't handle objects
+    foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
+    doc.overrides = foundry.utils.expandObject(overrides);
+  }
+
+  private _handleGlobalModifierMatch(
+    match: RegExpMatchArray,
+    change: EffectChangeData,
+    doc: SwadeActor,
+  ) {
+    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
+    if (
+      change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
+      doc.system.stats.globalMods.hasOwnProperty(match[1])
+    ) {
+      const overrides = foundry.utils.flattenObject(doc.overrides);
+      const effectKey = 'system.stats.globalMods.' + match[1];
+      if (!(effectKey in overrides))
+        overrides[effectKey] = new Array<RollModifier>();
+      this._updateTraitRollEffects(overrides[effectKey], change.value, false);
+      // NOT calling super.apply because normal apply doesn't handle objects
+      setProperty(doc, effectKey, overrides[effectKey]);
+      doc.overrides = foundry.utils.expandObject(overrides);
+    } else {
+      Logger.warn(
+        'Invalid Global Modifier ' + change.key + 'on effect ' + this.id,
+      );
+    }
+  }
+
+  private _handlePTModifierMatch(
+    match: RegExpMatchArray,
+    change: EffectChangeData,
+    doc: SwadeActor,
+  ) {
+    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
+    if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
+      super.apply(doc, change)
+      return;
+    }
+    const autoCalc = (match[1] === 'parry') ? doc.system.details.autoCalcParry : doc.system.details.autoCalcToughness
+    const target = (match[2] === 'armor') ?
+      'armorEffects' : // Armor gets its own display
+      (autoCalc ? 'effects' : 'sources');
+    doc.system.stats[match[1]][target].push({
+      label: this.name,
+      value: Number(change.value),
+      mode: change.mode
+    })
   }
 
   /** This functions checks the effect expiration behavior and either auto-deletes or prompts for deletion */
@@ -375,10 +432,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   ) {
     super._preUpdate(changed, options, user);
     //return early if the parent isn't an actor or we're not actually affecting items
-    if (
-      this.affectsItems &&
-      this.parent instanceof CONFIG.Actor.documentClass
-    ) {
+    if (this.affectsItems && this.parent) {
       this._removeEffectsFromItems(this.parent);
     }
   }

@@ -1,7 +1,4 @@
-import {
-  AdditionalStat,
-  RollModifier,
-} from '../../../interfaces/additional.interface';
+import { AdditionalStat } from '../../../interfaces/additional.interface';
 
 declare global {
   interface SourceConfig {
@@ -24,17 +21,17 @@ export type SwadeActorDataSource =
   | SwadeVehicleDataSource;
 
 interface SwadeCharacterDataSource {
-  data: CharacterDataSourceData;
+  system: CharacterDataSourceData;
   type: 'character';
 }
 
 interface SwadeNpcDataSource {
-  data: CharacterDataSourceData;
+  system: CharacterDataSourceData;
   type: 'npc';
 }
 
 interface SwadeVehicleDataSource {
-  data: VehicleDataSourceData;
+  system: VehicleDataSourceData;
   type: 'vehicle';
 }
 
@@ -43,24 +40,20 @@ export interface CharacterDataSourceData {
     agility: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
     smarts: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
       animal: boolean;
     };
     spirit: {
       unShakeBonus: number;
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
     strength: {
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
       encumbranceSteps: number;
     };
     vigor: {
@@ -72,7 +65,6 @@ export interface CharacterDataSourceData {
       };
       die: TraitDie;
       'wild-die': WildDie;
-      effects: RollModifier[];
     };
   };
   stats: {
@@ -88,7 +80,7 @@ export interface CharacterDataSourceData {
     };
     parry: {
       value: number;
-      modifier: number;
+      shield: number;
     };
     size: number;
   };
