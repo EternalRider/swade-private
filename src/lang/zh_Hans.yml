@@ -711,7 +711,7 @@ SWADE:
   WildDiePreset: 不羁骰主题
   SettingConf: 设定配置
   SettingConfLabel: 打开设定配置
-  SettingConfDesc: 微调系统来适应您正在玩的设定
+  SettingConfDesc: 微调系统来适应您正在玩的设定。
   DiceConf: 不羁骰配置
   DiceConfDesc: 配置SWADE/Dice So Nice集成配置
   DiceConfLabel: 打开不羁骰配置
@@ -724,7 +724,8 @@ SWADE:
   CargoWeight: 载货重量
   Vehicular: 载具武器
   ShowBennyAnimationDesc: 使用助力点时播放动画，仅在安装了Dice So Nice!后生效
-  WildDiePresetDesc: 为不羁骰选择1项DSN主题，若是打算自创则选择“定制”，若是不想自己的不羁骰外表与别不同就选“无”。请记住自创不羁骰当前只有自己看得见，其他玩家所见的会有所不同。
+  WildDiePresetDesc: 
+    为不羁骰选择1项DSN主题，若是打算自创则选择“定制”，若是不想自己的不羁骰外表与别不同就选“无”。请记住自创不羁骰当前只有自己看得见，其他玩家所见的会有所不同。
   Formula: 公式
   SitMod: 情境调整值
   RollMode: 投骰宏
@@ -792,6 +793,8 @@ SWADE:
       Label: 破产
       Hint: 你破产了！
     Sides: 财富骰面
+    WildSides: 财富不羁骰面数
+    Modifier: 财富骰调整值
   TraitRolls: 特性投骰
   Trait: 特性
   ClickSuggestions: 点击获取建议
@@ -846,6 +849,7 @@ SWADE:
     Preset:
       Choose: 选择一项预设……
       Add: 添加预设
+      Settings: 预设调整值
     Value: 数值
     Ignore: 忽略？
   Illumination:
@@ -886,6 +890,7 @@ SWADE:
     EndPrompt: 回合手动结束
     None: 无
     LooseTurnOnHold: 失去待机回合
+    Remaining: 剩余
   NoCardsLeft: 牌组中没有足够的牌了！只有 {needed} 的 {current}需要的卡可用
   Max: 上限
   SysMigrationWarning: 你的SWADE系统数据来自于过旧的Foundry版本，无法可靠地整合至最新版中，尽管仍会尝试此过程，但可能会发生错误。
@@ -1010,7 +1015,7 @@ SWADE:
       Hint: 任一玩家角色抽到鬼牌时给全员发1助力点
     AmmoManagement:
       Name: 弹药管理
-      Hint: 启用时，适用的动作会减去武器弹匣里面的弹药。物品卡同时会出现新的装填按钮，倘若可用弹药不足则无法进行攻击投骰
+      Hint: 自动化弹药消耗。参阅系统文档以获取细节。
     PCAmmoFromInventory:
       Name: PC使用物品栏中的弹药
       Hint: 启用此选项可将某一“装备”物品设为弹药使用，可用于装填武器
@@ -1058,6 +1063,31 @@ SWADE:
       PC:
         Name: 玩家角色起始资金
         Hint: 设定玩家角色演员创建时具备的资金数量
+    ArbitFields: 任意设置字段
+    NPCCurrency:
+      Name: NPC使用货币
+      Hint: 启用后，所有NPC都具有与玩家角色相同的货币选项
+    DumbLuck:
+      Name: 狗屎运
+      Hint: 勾选此项会启用狗屎运设定规则
+    WoundCap:
+      Name: 损伤阈值
+      Hint: 勾选此项将在计算损伤时启用损伤阈值设定规则。
+    UnarmoredHero:
+      Name: 无甲英雄
+      Hint: 勾选此项将在化解投骰时启用无甲英雄设置规则
+    GrittyDamage:
+      Name: 写实伤害
+      Hint: 勾选此项将启用写实伤害设置规则并允许选择创伤表进行投骰。
+    InjuryTable:
+      Name: 创伤表
+      Hint: 选择适当的随机以自动投掷写实伤害。
+    HeroesNeverDie:
+      Name: 英雄不灭
+      Hint: 勾选此项将在确定无力化时启用英雄不灭设定规则
+    VehicleSkills:
+      Name: 操作技能
+      Hint: 输入一个以逗号分割的技能名称列表，定义为所有载具的操作技能
   EffectCallbacks:
     Shaken:
       RollSpirit: 投骰心魂
@@ -1071,11 +1101,14 @@ SWADE:
       Fail: 你仍处于震慑
       Success: 你不再处于震慑，但仍处于脆弱
       Raise: 你不再处于震慑或脆弱
+      UnStunModifier: 解除眩晕调整值
     BleedingOut:
       Title: 抵抗失血的活力检定
       Fail: 你死亡了
       Raise: 你成功得以稳定
       Success: 你暂时苟延残喘。
+      IgnoreWounds: 失血忽略损伤
+      BleedOutModifier: 失血调整值
   BenniesSpendGM: 使用1GM助力点
   DocumentLink: 关联
   DocumentTweaks: 微调
@@ -1090,6 +1123,7 @@ SWADE:
     Label: 招牌武器
     Regular: 普通
     Improved: 精通
+    None: 无
   OffHandPenalty: 副手减值
   ItemEquipStatus:
     Label: 位置
@@ -1099,6 +1133,9 @@ SWADE:
     OffHand: 副手
     MainHand: 主手
     TwoHands: 双手
+    Installed: 已安装
+    Added: 已添加
+    Readied: 已准备好
   DestroyOnEmpty: 清空时消灭
   Charges: 次数
   Consumable:
@@ -1141,6 +1178,7 @@ SWADE:
   Vision:
     SeeHeat: 看见热量
     SenseHeat: 感知热量
+    Infravision: 红外感应
   Attribute: 属性
   BaseDie: 基础骰
   AttributeManager:
@@ -1168,6 +1206,142 @@ SWADE:
       Hint: 你可以输入喜欢的技能名称或是从建议列表中选择一项
   OtherStats: 其他数值
   HotbarDropOwnedItemWarning: 你只能为拥有的物品创建宏
+  RollNoun: 投骰
+  Rolls:
+    TraitRoll: 特性投骰
+    RollResult: 投掷结果
+    SwadeRoll: 投骰
+    DamageRoll: 伤害投骰
+    Critfail:
+      Critfail: 大失败
+      ConfirmDie: 确认骰
+      Unconfirmed: 未确认的大失败
+      Possible: 可能的大失败
+      Confirmed: 确认大失败
+      Confirm: 确认
+    Free: 免费
+    Benny: 助力点
+    GMBenny: GM助力点
+  ConsumableType:
+    Regular: 常规
+    Label: 子类型
+  MessageOnUse:
+    Label: 使用时显示消息
+    Hint: 使用此物品时显示聊天消息
+  GlobalMod:
+    Label: 全局调整值
+    Trait: 所有特性
+    Agility: 灵巧和相关技能
+    Smarts: 聪慧和相关技能
+    Spirit: 心魂和相关技能
+    Strength: 力量和相关技能
+    Vigor: 活力和相关技能
+    Attack: 所有攻击
+    Damage: 所有伤害
+    AP: 所有穿甲
+  ItemGrants:
+    EmptyHint: 此物品目前未授予任何物品
+    Header: 物品授予
+    When: 授予物品时机
+  IgnFatigue: 忽略疲乏
+  BaseDamage: 基础伤害
+  RefreshPP: 刷新奇术点
+  Targets: 目标：
+  DamageApplicator:
+    ApplyDamage: 应用伤害
+    SoakModifier: 化解调整值
+    WoundsAboutToBeTaken: <p><strong>{name}</strong>即将受到<strong>{wounds}</strong>！</p>
+    SoakDialog:
+      WoundedTitle: 为{name}投骰化解伤害？
+      UnwoundedTitle: 调整伤害以确定{name}的状态？
+      ShakenPrompt: <p>{name}即将陷入动摇。</p>
+      UnharmedPrompt: <p>{name}可能未受伤。</p>
+      Benny: 花费一个助力点来吸收
+      GMBenny: 花费一个GM助力点来化解
+      Free: 免费化解
+      TakeWounds: 承受 {wounds}点损伤
+      AdjustDamage: 调整伤害
+      ApplyShaken: 应用动摇状态
+      Accept: 接受
+      SoakRoll: 化解活力考验
+      WoundedPrompt: <p>{name}即将遭受{wounds}。你想要尝试化解吗？</p>
+    RerollSoakDialog:
+      Title: 为 {name} 重骰化解伤害？
+      Prompt: <p>{name} 即将承受 {wounds}点损伤。您是否想重骰化解投骰？</p>
+      PromptCritFail: <p>{name} 即将承受 {wounds}点损伤。大失败阻止了重骰。</p>
+      Benny: 花费一枚助力点重骰
+      GMBenny: 花费一枚GM助力点重骰
+      Free: 免费重骰
+      TakeWounds: 承受 {wounds}点损伤
+    AdjustDamagePrompt: <p>根据 {name} 可能拥有的能力和效果调整伤害。</p>
+    Result:
+      NoSignificantDamage: <p><strong>{name}</strong> 没有遭受重大伤害。</p>
+      SoakedAll: <p><strong>{name}</strong> 化解了所有伤害并且没有动摇！</p>
+      IsShaken: <p><strong>{name}</strong>陷入了<strong>动摇</strong>！</p>
+      IsShakenWithWounds: <p><strong>{name}</strong>陷入了<strong>动摇</strong> 并且承受了 <strong>{wounds}</strong>点损伤！</p>
+      IsIncapacitated: <p><strong>{name}</strong>陷入了<strong>无力化</strong> ！</p>
+    Incapacitation:
+      InjuryRoll: 在无力化状态下进行活力投骰以抵抗伤害
+      Dies: <p><strong>{name}</strong>因伤害而死亡！</p>
+      PermanentInjury: <p><strong>{name}</strong>遭受永久性创伤并且<strong>正在失血！</strong></p>
+      PermanentInjuryHND: <p><strong>{name}</strong>遭受永久性创伤！</p>
+      TemporaryInjury: <p><strong>{name}</strong>遭受创伤，当所有损伤都被治愈时会消失。</p>
+      ShortInjury: <p><strong>{name}</strong>遭受创伤，将在24小时内或者所有损伤都被治愈时会消失（以先到者为准）。</p>
+      TakeFail: 遭受永久性创伤
+      TakeSuccess: 遭受创伤，当所有损伤都被治愈时会消失
+      Title: 为 {name} 重骰创伤严重程度？
+      Prompt: <p>{name}即将遭受创伤。您是否想重骰活力投骰？</p>
+    NoInjuryTable: 没有选择创伤表。请参阅SWADE设置配置
+    NoTargetsSelected: 请选择一个目标以应用伤害。
+  RunningMod: 奔跑调整值
+  WildDieTheme: 不羁骰主题
+  WildDieThemeDesc: 
+    为你的不羁骰选择一个DSN主题。如果你想创建自己的，请选择'自定义'，若不想让你的不羁骰看起来不同，请选择'无'。请注意，目前只有你自己才能看到自己创建的不羁骰。其他玩家看到的是不一样的。
+  Duplicate: 复制
+  ppReload: 奇术点以装弹
+  ReloadNotPossible: 该角色类型不能装弹
+  ReloadType:
+    Label: 装弹程序
+    None: 无
+    Single: 单发
+    Full: 全部
+    Magazine: 弹匣
+    Battery: 电池
+    PP: 奇术点
+    Self: 自身
+  NoAmmoPP: 找不到与设定的弹药匹配的奇术点
+  NoMags: 你的库存中没有标记为弹匣的消耗品
+  RemoveAmmo: 移除弹药
+  Selection: 选择
+  ModTrait: 特征调整值
+  ModAttack: 攻击调整值
+  ModDamage: 伤害调整值
+  Weakness: 弱点
+  Resistance: 抗性
+  Validation:
+    OnlyOneRace: 你一次只能有一个种族！
+    OnlyOneArchetype: 你一次只能有一个原型！
+  CalledShot:
+    HeadOrVitals: 定点攻击：头部或要害
+    Hand: 定点攻击：手部
+    Limbs: 定点攻击：肢体
+  MigrateCompendium: 强制迁移合集包
+  TOCBlockList: TOC合集包组织列表
+  AdditionalStats:
+    SelectHint: 输入一个由分号分隔的选项列表
+    Key: 统计键值
+    Label: 标签
+    Type: 类型
+    HasMaxValue: 具有最大值
+    Current: 当前{stat}
+    Max: 最大{stat}
+  LoadedAmmo: 已装填弹药
+  DesperateAttack:
+    2: 孤注一掷 (2)
+    4: 孤注一掷 (4)
+  NumberOfDice:
+    Label: 骰子
+    Hint: 决定该动作掷出多少颗特性骰子
 ITEM:
   TypeSkill: 技能
   TypePower: 奇术
@@ -1187,3 +1361,23 @@ ACTOR:
   TypeCharacter: 玩家角色
   TypeNpc: NPC
   TypeVehicle: 载具
+TYPES:
+  Card:
+    poker: 扑克牌
+    adventure: 冒险卡牌
+  Actor:
+    character: 玩家角色
+    npc: NPC
+    vehicle: 载具
+  Item:
+    weapon: 武器
+    armor: 护甲
+    shield: 盾牌
+    gear: 装备
+    edge: 专长
+    hindrance: 负赘
+    skill: 技能
+    power: 奇术
+    ability: 属性
+    consumable: 消耗品
+    action: 动作

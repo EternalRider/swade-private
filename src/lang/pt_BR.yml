@@ -3,10 +3,7 @@ SWADE:
   DiceConfDesc: Configure a integração do SWADE/Dice So Nice
   DiceConfLabel: Abrir Configuração de Dados
   WildDiePresetDesc: >-
-    Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado'
-    se quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado
-    Selvagem seja diferente. Esteja ciente de que a configuração de Dado
-    Selvagem só pode ser vista por você, outros jogadores verão diferente.
+    Selecione uma Predefinição do DSN para seu Dado Selvagem.
   SettingConf: Configurações Gerais
   SettingConfLabel: Abrir Configurações Gerais
   Formula: Fórmula
@@ -69,7 +66,7 @@ SWADE:
     Broke:
       Label: Falido
       Hint: Você está Falido!
-    Label: Riqueza
+    Label: Dado de Riqueza
     Sides: Faces do Dado de Riqueza
     WildSides: Lados de Dado Selvagem de Fortuna
     Modifier: Dado Modificador de Fortuna
@@ -87,7 +84,7 @@ SWADE:
   Joker: Curinga
   CustomWildDie: '- Dado Selvagem Personalizado -'
   Subtract: Subtrair
-  DmgRolls: Rolagem de Dano
+  DmgRolls: Rolagens de Dano
   CardSuit: Naipe
   IsJoker: É Curinga
   OpenACEditor: Abrir no Editor de Carta de Ação
@@ -176,7 +173,7 @@ SWADE:
   Equip: Equipar
   RollDamage: Rolar Dano
   SystemLinks:
-    Changelog: Mudanças
+    Changelog: Log de Mudanças
     Wiki: Wiki
     ReportAnIssue: Relatar um problema
   OpenOrigin: Abrir origem
@@ -257,6 +254,8 @@ SWADE:
       Hint: Não mostrar aos jogadores quais NPCs são Cartas Selvagens
     CreateInitChat:
       Name: Criar Mensagem no Chat para Iniciativa
+      Hint: Quando as cartas de ação forem compradas, o Foundry enviará as cartas
+        de ação compradas para o Chat, se ativado.
     AutoInit:
       Name: Iniciativa Automática
       Hint: Saca Cartas de Ação automaticamente a cada rodada
@@ -396,6 +395,10 @@ SWADE:
       Hint: >-
         Marcar essa opção ativará a regra de configuração Heróis Nunca Morrem ao
         determinar a incapacitação
+    VehicleSkills:
+      Name: Perícias de Operação
+      Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
+        como perícias de Operação para todos os veículos
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -543,6 +546,7 @@ SWADE:
       ApplyShaken: Aplicar Estado Abalado
       Accept: Aceitar
       SoakRoll: Teste de Vigor para Absorver
+      NoVehicleSoak: Absorver para Veículos ainda não é suportado
     RerollSoakDialog:
       Title: Rerrolar para Absorver Ferimentos para [name}?
       Prompt: >-
@@ -697,7 +701,7 @@ SWADE:
   ActBeforeCurrentCombatant: Agir agora
   LoseTurn: Alternar Perder Turno
   Frightened: Amedrontado
-  Encumbered: Sobrecarga
+  Encumbered: Sobrecarregado
   Prone: Prostrado
   BleedingOut: Sangrando
   Diseased: Doente
@@ -727,7 +731,7 @@ SWADE:
   NaturalArmor: Armadura Natural
   HitLocations: Locais de Acerto
   Head: Cabeça
-  Torso: Torso
+  Torso: Tronco
   Arms: Braços
   Legs: Pernas
   MinStrLong: Força Mínima
@@ -738,7 +742,7 @@ SWADE:
   Details: Detalhes
   Equippable: Equipável
   ArcaneDevice: Dispositivo Arcano
-  Misc: Misc
+  Misc: Equipamento
   QuickAccess: Acesso Rápido
   Effects: Efeitos
   Hindrances: Complicações
@@ -804,7 +808,7 @@ SWADE:
   ShowBennyAnimationDesc: >-
     Mostra uma animação quando gastar um Bene. Só disponível se Dice So Nice!
     estiver instalado
-  WildDiePreset: Tema do Dado Selvagem
+  WildDiePreset: Predefinição do Dado Selvagem
   RunningMod: Modificador de Corrida
   SkillTest: Teste de Perícia
   AttributeTest: Teste de Atributo
@@ -833,6 +837,7 @@ SWADE:
     PP: Pontos de Poder
     Full: Completa
     Single: Uma por vez
+    Self: Próprio
   NoAmmoPP: Não foi possível encontrar pontos de poder correspondetes à munição definida
   NoMags: Você não tem nenhum consumível marcado como carregador em seu inventário
   RemoveAmmo: Remover Munição
@@ -888,11 +893,10 @@ SWADE:
     GMBenny: Bene de GM
   LoadedAmmo: Munição Carregada
   WildDieThemeDesc: >-
-    Escolha um tema do DSN para o seu Dado Selvagem. Selecione "Personalizada"
-    se você quiser criar a sua própria, ou "Nenhum" se não quiser que o seu Dado
-    Selvagem pareça diferente. Por favor, tenha em mente que os Dados Selvagens
-    auto-criados atualmente só podem ser vistos por você. Outros jogadores os
-    verão de forma diferente.
+    Selecione um Tema do DSN para seu Dado Selvagem. Selecione 'Personalizado' se
+    quiser criar o seu próprio ou 'Nenhum' se não quiser que seu Dado Selvagem seja
+    diferente. Tenha em mente que Dados Selvagens auto-criados só podem ser vistas
+    por você. Outros jogadores os verão de forma diferente.
   TOCBlockList: Lista de Bloqueio de Sumário de Compêndios
   CalledShot:
     Hand: 'Ataque Localizado: Mão'
@@ -914,6 +918,29 @@ SWADE:
   ModDamage: Modificadores de Dano
   Weakness: Fraqueza
   Resistance: Resistência
+  RollNoun: Rolagem
+  DesperateAttack:
+    4: Ataque Desesperado (4)
+    2: Ataque Desesperado (2)
+  NumberOfDice:
+    Label: Dados
+    Hint: Determina quantos dados de Característica serão rolados para esta ação
+  AddOrReplaceActions:
+    Title: Adicionar ou substituir ações
+    Add: Adicionar como nova
+    Replace: Substituir a existente
+    Content: <p>Você deseja adicionar as ações do {type} <strong>{source}</strong>
+      como novas ações ou substituir as ações existentes?</p>
+  ResourcesUsed:
+    Label: Recursos utilizados
+    Hint: Quanto de um recurso arbitrário é usado para essa ação
+  CouldNotFindMacro: Não foi possível encontrar a macro com a UUID {uuid}
+  DmgMod: Modificador de Dano
+  ShieldBonus: Bônus de Escudo
+  BaseParry: Aparar Base
+  Magazine:
+    NoneLoaded: Nenhum carregador carregado
+    Select: Selecione um carregador
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
