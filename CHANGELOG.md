@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.1
+
+### Fixed
+
+- Fixed an issue that could cause incorrect data to be created when updating an item
+
 ## 3.1.0
 
 ### Added
