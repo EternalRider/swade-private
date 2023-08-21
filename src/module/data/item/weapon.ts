@@ -65,7 +65,9 @@ export class WeaponData extends foundry.abstract.DataModel<
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     quarantine.ensureAPisNumeric(source);
+    quarantine.ensureRoFisNumeric(source);
     quarantine.ensureShotsAreNumeric(source);
+
     migrations.renameActionProperties(source);
     return super.migrateData(source);
   }

@@ -1,5 +1,5 @@
 export function ensureWeightsAreNumeric(source: any) {
-  if (source.weight === null || typeof source.price === 'number') return;
+  if (source.weight === null || typeof source.weight === 'number') return;
   if (source.weight instanceof String || typeof source.weight === 'string') {
     // remove all symbols that aren't numeric or a decimal point
     source.weight = Number(source.weight.replaceAll(/[^0-9.]/g, ''));
@@ -23,12 +23,21 @@ export function ensureAPisNumeric(source: any) {
   source.ap = 0; // set the ap to 0 as a default
 }
 
+export function ensureRoFisNumeric(source: any) {
+  if (source.rof === null || typeof source.rof === 'number') return;
+  if (Number.isNumeric(source.rof)) {
+    source.rof = Number(source.rof);
+    return;
+  }
+  source.rof = null; // set the ap to 0 as a default
+}
+
 export function ensureShotsAreNumeric(source: any) {
   if (source.shots !== null && typeof source.shots !== 'number') {
-    source.shots = 0;
+    source.shots = null;
   }
   if (source.currentShots !== null && typeof source.shots !== 'number') {
-    source.currentShots = 0;
+    source.currentShots = null;
   }
 }
 
