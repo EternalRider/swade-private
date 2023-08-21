@@ -59,7 +59,6 @@ build:
 
 publish-artifacts:
   stage: prepare-release
-  image: alpine:latest
   before_script:
     - apk update
     - apk add zip curl
