@@ -48,31 +48,39 @@ const commonActorData = (baseBennies = 3, maxWounds = 3, wildcard = true) => ({
     toughness: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0, integer: true }),
       armor: new fields.NumberField({ initial: 0, integer: true }),
-      modifier: new fields.NumberField({ initial: 0, integer: true, required: false }),
+      modifier: new fields.NumberField({
+        initial: 0,
+        integer: true,
+        required: false,
+      }),
     }),
     parry: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0, integer: true }),
       shield: new fields.NumberField({ initial: 0, integer: true }),
-      modifier: new fields.NumberField({ initial: 0, integer: true, required: false }),
+      modifier: new fields.NumberField({
+        initial: 0,
+        integer: true,
+        required: false,
+      }),
     }),
     size: new fields.NumberField({ initial: 0, integer: true }),
   }),
   details: new fields.SchemaField({
     autoCalcToughness: new fields.BooleanField({ initial: true }),
     autoCalcParry: new fields.BooleanField({ initial: true }),
-    archetype: new fields.StringField({ initial: '', textSearch: true  }),
-    appearance: new fields.HTMLField({ initial: '', textSearch: true  }),
-    notes: new fields.HTMLField({ initial: '', textSearch: true  }),
-    goals: new fields.HTMLField({ initial: '', textSearch: true  }),
+    archetype: new fields.StringField({ initial: '', textSearch: true }),
+    appearance: new fields.HTMLField({ initial: '', textSearch: true }),
+    notes: new fields.HTMLField({ initial: '', textSearch: true }),
+    goals: new fields.HTMLField({ initial: '', textSearch: true }),
     biography: new fields.SchemaField({
       value: new fields.HTMLField({ initial: '', textSearch: true }),
     }),
     species: new fields.SchemaField({
-      name: new fields.StringField({ initial: '', textSearch: true  }),
+      name: new fields.StringField({ initial: '', textSearch: true }),
     }),
     currency: new fields.NumberField({ initial: 0 }),
     wealth: new fields.SchemaField({
-      die: makeDiceField(6),
+      die: new fields.NumberField({ initial: 6, min: -1, integer: true }),
       modifier: new fields.NumberField({ initial: 0 }),
       'wild-die': makeDiceField(6),
     }),
@@ -108,7 +116,7 @@ const commonActorData = (baseBennies = 3, maxWounds = 3, wildcard = true) => ({
       choices: ['legacy', 'expanded'],
     }),
     value: new fields.NumberField({ initial: 0 }),
-    rank: new fields.StringField({ initial: 'Novice', textSearch: true  }),
+    rank: new fields.StringField({ initial: 'Novice', textSearch: true }),
     details: new fields.HTMLField({ initial: '' }),
     list: new fields.ArrayField(
       new fields.SchemaField({

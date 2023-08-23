@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.2
+
+### Fixed
+
+- Fixed an issue that prevent adding Items to an actor via the character sheet. (#904) **by @jpmeehan5**
+- Actors with a wealth die status of Broke are no longer considered invalid. (#909) **by @florad92**
+
 ## 3.1.1
 
 ### Fixed

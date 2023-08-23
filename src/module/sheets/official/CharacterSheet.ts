@@ -919,7 +919,7 @@ export default class CharacterSheet extends ActorSheet {
         name:
           name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
         type: type,
-        system: button.dataset,
+        system: Object.assign({}, button.dataset),
       };
       delete itemData.system.type;
       return itemData;
