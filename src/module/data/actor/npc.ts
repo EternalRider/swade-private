@@ -18,6 +18,7 @@ export class NpcData extends foundry.abstract.DataModel<
   /** @inheritdoc */
   static override migrateData(source) {
     quarantine.ensureStrengthDie(source);
+    quarantine.ensureCurrencyIsNumeric(source);
     return super.migrateData(source);
   }
 }

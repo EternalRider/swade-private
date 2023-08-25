@@ -9,3 +9,18 @@ export function ensureStrengthDie(source: any) {
   //limit the die to a minimum of 1
   strength.sides = Math.max(1, strength.sides);
 }
+
+export function ensureCurrencyIsNumeric(source: any) {
+  if (!source.details || !Object.hasOwn(source.details, 'currency')) return; // return early in case of update
+  if (
+    source.details.currency === null ||
+    typeof source.details.currency === 'number'
+  )
+    return;
+  if (typeof source.details.currency === 'string') {
+    // remove all symbols that aren't numeric or a decimal point
+    source.details.currency = Number(
+      source.details.currency.replaceAll(/[^0-9.]/g, ''),
+    );
+  }
+}
