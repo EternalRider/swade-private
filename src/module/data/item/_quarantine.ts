@@ -1,7 +1,7 @@
 export function ensureWeightsAreNumeric(source: any) {
   if (!Object.hasOwn(source, 'weight')) return; // return early in case of update
   if (source.weight === null || typeof source.weight === 'number') return;
-  if (source.weight instanceof String || typeof source.weight === 'string') {
+  if (typeof source.weight === 'string') {
     // remove all symbols that aren't numeric or a decimal point
     source.weight = Number(source.weight.replaceAll(/[^0-9.]/g, ''));
   }
@@ -10,7 +10,7 @@ export function ensureWeightsAreNumeric(source: any) {
 export function ensurePricesAreNumeric(source: any) {
   if (!Object.hasOwn(source, 'price')) return; // return early in case of update
   if (source.price === null || typeof source.price === 'number') return;
-  if (source.price instanceof String || typeof source.price === 'string') {
+  if (typeof source.price === 'string') {
     // remove all symbols that aren't numeric or a decimal point
     source.price = Number(source.price.replaceAll(/[^0-9.]/g, ''));
   }
@@ -33,7 +33,7 @@ export function ensureRoFisNumeric(source: any) {
     source.rof = Number(source.rof);
     return;
   }
-  source.rof = null; // set the ap to 0 as a default
+  source.rof = 1; // set the rof to 1 as a default
 }
 
 export function ensureShotsAreNumeric(source: any) {
@@ -45,7 +45,7 @@ export function ensureShotsAreNumeric(source: any) {
     source.shots = null;
   }
   if (
-    !Object.hasOwn(source, 'currentShots') &&
+    Object.hasOwn(source, 'currentShots') &&
     source.currentShots !== null &&
     typeof source.currentShots !== 'number'
   ) {

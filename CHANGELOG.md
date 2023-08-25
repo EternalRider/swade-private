@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.3
+
+### Fixed
+
+- Fixed an issue in the action property shims that would prevent the use of active effects on said properties. **by @florad92**
+
 ## 3.1.2
 
 ### Fixed
