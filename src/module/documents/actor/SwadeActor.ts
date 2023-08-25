@@ -1531,7 +1531,7 @@ export default class SwadeActor extends Actor {
           break;
         case CONST.ACTIVE_EFFECT_MODES.ADD:
         default:
-          effect = source.value.signedString();
+          effect = (source.value ?? 0).signedString();
       }
       tooltip += `${source.label}: ${effect}<br>`;
     });
