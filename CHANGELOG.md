@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.4
+
+### Fixed
+
+- Added a migration to active effects that replaces the `skillMod` and `skill` keys with the newer `traitMod` and `trait` keys (#915) **by @florad92**
+
 ## 3.1.3
 
 ### Fixed

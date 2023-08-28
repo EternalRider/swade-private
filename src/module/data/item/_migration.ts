@@ -22,7 +22,11 @@ export function renameActionProperties(source: any) {
       delete action.shotsUsed;
     }
     if (!action.dice && action.rof) {
-      action.dice = action.rof;
+      if (typeof action.rof === 'string') {
+        if (Number.isNumeric(action.rof)) action.dice = Number(action.rof);
+      } else if (typeof action.rof === 'number') {
+        action.dice = action.rof;
+      }
       delete action.rof;
     }
     if (!action.modifier && (action.skillMod || action.dmgMod)) {
