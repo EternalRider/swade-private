@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.1.3
+
+### Fixed
+
+- Fixed an issue in the action property shims that would prevent the use of active effects on said properties. **by @florad92**
+- Fixed added some data sanitization to actors. (#911) **by @florad92**
+- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by jmeehan5**
+
 ## 3.1.2
 
 ### Fixed

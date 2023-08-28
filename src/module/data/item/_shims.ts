@@ -1,15 +1,12 @@
 import { LogCompatibilityWarningOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/module.mjs';
-import { ItemAction } from '../../../interfaces/additional.interface';
 
 export function actionProperties(data: any) {
   const options: LogCompatibilityWarningOptions = {
     since: '3.1',
     until: '4.0',
   };
-  const descriptor = {
-    enumerable: false,
-    configurable: true,
-  };
+  const descriptor = { configurable: true };
+
   Object.defineProperties(data.actions, {
     skill: {
       ...descriptor,
@@ -20,6 +17,13 @@ export function actionProperties(data: any) {
         );
         return data.actions.trait;
       },
+      set: (skill: string) => {
+        foundry.utils.logCompatibilityWarning(
+          getReplacementMessage('skill', 'trait'),
+          options,
+        );
+        data.actions.trait = skill;
+      },
     },
     skillMod: {
       ...descriptor,
@@ -28,13 +32,20 @@ export function actionProperties(data: any) {
           getReplacementMessage('skillMod', 'traitMod'),
           options,
         );
+
         return data.actions.traitMod;
+      },
+      set: (skillMod: string) => {
+        foundry.utils.logCompatibilityWarning(
+          getReplacementMessage('skill', 'traitMod'),
+          options,
+        );
+        data.actions.traitMod = skillMod;
       },
     },
   });
-  for (const action of Object.values<ItemAction>(
-    data.actions.additional ?? {},
-  )) {
+
+  for (const action of Object.values<any>(data.actions.additional)) {
     Object.defineProperties(action, {
       rof: {
         ...descriptor,
@@ -44,6 +55,13 @@ export function actionProperties(data: any) {
             options,
           );
           return action.dice;
+        },
+        set: (rof: number) => {
+          foundry.utils.logCompatibilityWarning(
+            getReplacementMessage('rof', 'dice'),
+            options,
+          );
+          action.dice = rof;
         },
       },
       shotsUsed: {
@@ -55,6 +73,13 @@ export function actionProperties(data: any) {
           );
           return action.resourcesUsed;
         },
+        set: (shots: number) => {
+          foundry.utils.logCompatibilityWarning(
+            getReplacementMessage('shotsUsed', 'resourcesUsed'),
+            options,
+          );
+          action.resourcesUsed = shots;
+        },
       },
       skillOverride: {
         ...descriptor,
@@ -64,6 +89,13 @@ export function actionProperties(data: any) {
             options,
           );
           return action.override;
+        },
+        set: (skillOverride: string) => {
+          foundry.utils.logCompatibilityWarning(
+            'The skillOverride and dmgOverride properties have been combined into a new property named override',
+            options,
+          );
+          action.override = skillOverride;
         },
       },
       skillMod: {
@@ -75,6 +107,13 @@ export function actionProperties(data: any) {
           );
           return action.modifier;
         },
+        set: (skillMod: string) => {
+          foundry.utils.logCompatibilityWarning(
+            'The skillMod and dmgMod properties have been combined into a new property named modifier',
+            options,
+          );
+          action.modifier = skillMod;
+        },
       },
       dmgOverride: {
         ...descriptor,
@@ -85,6 +124,13 @@ export function actionProperties(data: any) {
           );
           return action.override;
         },
+        set: (dmgOverride: string) => {
+          foundry.utils.logCompatibilityWarning(
+            'The skillOverride and dmgOverride properties have been combined into a new property named override',
+            options,
+          );
+          action.override = dmgOverride;
+        },
       },
       dmgMod: {
         ...descriptor,
@@ -94,6 +140,13 @@ export function actionProperties(data: any) {
             options,
           );
           return action.modifier;
+        },
+        set: (dmgMod: string) => {
+          foundry.utils.logCompatibilityWarning(
+            'The skillMod and dmgMod properties have been combined into a new property named modifier',
+            options,
+          );
+          action.modifier = dmgMod;
         },
       },
     });
