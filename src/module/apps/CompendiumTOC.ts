@@ -86,13 +86,13 @@ export class CompendiumTOC extends Compendium<
       disclaimer: this.#disclaimer,
       searchMode: {
         icon: 'fa-search',
-        tooltip: 'SIDEBAR.SearchModeName'
+        tooltip: 'SIDEBAR.SearchModeName',
       },
     };
 
     if (this.#fullTextSearch) {
-      data.searchMode.icon = 'fa-file-magnifying-glass'
-      data.searchMode.tooltip = 'SIDEBAR.SearchModeFull'
+      data.searchMode.icon = 'fa-file-magnifying-glass';
+      data.searchMode.tooltip = 'SIDEBAR.SearchModeFull';
     }
 
     if (this.isJournal) {
@@ -123,10 +123,18 @@ export class CompendiumTOC extends Compendium<
   protected async _onClickLink(ev: JQuery.ClickEvent) {
     const target = ev.currentTarget;
     if (target.className === 'toggle-search-mode') {
-      this.#fullTextSearch = !this.#fullTextSearch
-    }
-    else {
-      const documentId = target.closest('[data-document-id]')?.dataset.documentId;
+      this.#fullTextSearch = !this.#fullTextSearch;
+    } else if (target.className === 'createDocument') {
+      CONFIG[this.entryType].documentClass.createDialog(
+        {},
+        {
+          renderSheet: true,
+          pack: this.collection.metadata.id,
+        },
+      );
+    } else {
+      const documentId =
+        target.closest('[data-document-id]')?.dataset.documentId;
       const pageId = target.closest('[data-page-id]')?.dataset.pageId;
       if (!documentId) return;
       const options: Record<string, unknown> = {};
@@ -150,54 +158,54 @@ export class CompendiumTOC extends Compendium<
   ) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
-    const pack = game.packs.get(this.collection.metadata.id)
+    const pack = game.packs.get(this.collection.metadata.id);
     if (this.#fullTextSearch) {
-      let searchFields: Array<String> = []
+      let searchFields: Array<String> = [];
       switch (this.collection.metadata.type) {
         case 'Actor':
-          searchFields = CONFIG.SWADE.textSearch.actor
+          searchFields = CONFIG.SWADE.textSearch.actor;
           break;
         case 'Adventure':
-          searchFields = CONFIG.SWADE.textSearch.adventure
+          searchFields = CONFIG.SWADE.textSearch.adventure;
           break;
         case 'Cards':
-          searchFields = CONFIG.SWADE.textSearch.cards
+          searchFields = CONFIG.SWADE.textSearch.cards;
           break;
         case 'Item':
-          searchFields = CONFIG.SWADE.textSearch.item
+          searchFields = CONFIG.SWADE.textSearch.item;
           break;
         case 'JournalEntry':
-          searchFields = CONFIG.SWADE.textSearch.journalentry.concat(CONFIG.JournalEntry.compendiumIndexFields)
+          searchFields = CONFIG.SWADE.textSearch.journalentry.concat(
+            CONFIG.JournalEntry.compendiumIndexFields,
+          );
           break;
         case 'Macro':
-          searchFields = CONFIG.SWADE.textSearch.macro
+          searchFields = CONFIG.SWADE.textSearch.macro;
           break;
         case 'Playlist':
-          searchFields = CONFIG.SWADE.textSearch.playlist
+          searchFields = CONFIG.SWADE.textSearch.playlist;
           break;
         case 'RollTable':
-          searchFields = CONFIG.SWADE.textSearch.rolltable
+          searchFields = CONFIG.SWADE.textSearch.rolltable;
           break;
         case 'Scene':
-          searchFields = CONFIG.SWADE.textSearch.scene
+          searchFields = CONFIG.SWADE.textSearch.scene;
           break;
       }
       pack.getIndex({
-        fields: searchFields
-      })
-      const searchResults: Array<Document> = pack.search({query: rgx.source})
+        fields: searchFields,
+      });
+      const searchResults: Array<Document> = pack.search({ query: rgx.source });
       for (const li of children) {
         if (this.#fullTextSearch) {
-          if (searchResults.some(e => e._id === li.dataset.documentId)) {
-            li.style.display = 'flex'
-          }
-          else {
-            li.style.display = 'none'
+          if (searchResults.some((e) => e._id === li.dataset.documentId)) {
+            li.style.display = 'flex';
+          } else {
+            li.style.display = 'none';
           }
         }
       }
-    }
-    else {
+    } else {
       for (const li of children) {
         const name = li.querySelector<HTMLAnchorElement>('.name')!;
         const match = rgx.test(SearchFilter.cleanQuery(name.innerText));
@@ -553,7 +561,7 @@ interface CompendiumTOCData
   entries?: CompendiumEntry[];
   categories?: CompendiumCategory[];
   searchMode: {
-    icon: 'fa-search' | 'fa-file-magnifying-glass'
+    icon: 'fa-search' | 'fa-file-magnifying-glass';
     tooltip: string;
   };
 }
