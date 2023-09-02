@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.0
+
+### Added
+
+- Added ability to create documents within a compendium TOC (#883) **by jmeehan5**
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
 ## 3.1.4
 
 ### Fixed
