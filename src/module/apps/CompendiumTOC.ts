@@ -1,14 +1,13 @@
+import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { SWADE } from '../config';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
-import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
-  TOCApplicationOptions,
-  CompendiumTOCData
+  TOCApplicationOptions
 > {
   #disclaimer?: string;
   #fullTextSearch: boolean;
@@ -46,6 +45,10 @@ export class CompendiumTOC extends Compendium<
     return this.metadata.type === 'JournalEntry';
   }
 
+  get isActor(): boolean {
+    return this.metadata.type === 'Actor';
+  }
+
   get columnWidth(): string {
     switch (this.metadata.type) {
       case 'JournalEntry':
@@ -80,6 +83,7 @@ export class CompendiumTOC extends Compendium<
   ): Promise<CompendiumTOCData> {
     const data: CompendiumTOCData = {
       isJournal: this.isJournal,
+      isActor: this.isActor,
       header: game.i18n.localize('SWADE.CompendiumTOC.Header'),
       wildCardMarker: CONFIG.SWADE.wildCardIcons.compendium,
       columnWidth: this.columnWidth,
@@ -227,8 +231,11 @@ export class CompendiumTOC extends Compendium<
     const collection = this.collection as CompendiumCollection<ActorMetadata>;
     const documents = (await collection.getIndex({
       fields: [
-        'data.wildcard', //backwards compatability
+        /** legacy data start */
+        'data.wildcard',
         'token.img',
+        'token.scale',
+        /** legacy data end*/
         'system.wildcard',
         'prototypeToken.randomImg',
         'prototypeToken.texture.src',
@@ -500,60 +507,69 @@ export class CompendiumTOC extends Compendium<
     return a.name.localeCompare(b.name);
   }
 
-  private async _getActorTokenImage(actor: ActorIndexEntry): Promise<string> {
-    let images: string[] = [];
+  private async _getActorTokenImage(actor: ActorIndexEntry): Promise<TokenArt> {
+    let path!: string;
+    let scale = 1;
     const pack = this.collection.metadata.id;
+    const prototypeToken = actor.prototypeToken;
     //Priority 1: Compendium Artpacks
     if (game.swade.compendiumArt.map.has(`Compendium.${pack}.${actor._id}`)) {
-      images = [this._getCompendiumArt(actor)];
+      return this._getCompendiumArt(actor);
     }
     //Priority 2: random token art
-    else if (actor.prototypeToken?.randomImg) {
+    else if (prototypeToken?.randomImg) {
       try {
-        images = await Actor._requestTokenImages(actor._id, {
+        [path] = await Actor._requestTokenImages(actor._id, {
           pack: this.collection.metadata.id,
         });
       } catch (error) {
         Logger.error(error);
       }
-    }
-    //Priority 3: Normal token art
-    else if (
-      !actor.prototypeToken?.randomImg &&
-      actor.prototypeToken?.texture.src
-    ) {
-      images = [actor.prototypeToken.texture.src];
+    } else if (prototypeToken?.texture.src) {
+      //Priority 3: Normal token art
+      const texture = prototypeToken.texture;
+      path = texture.src;
+      scale = (texture.scaleX + texture.scaleY) / 2; // get the average
     } else if (actor.token.img) {
-      images = [actor.token.img];
+      //legacy code
+      path = actor.token.img;
+      scale = actor.token.scale;
     } else {
       //lowest Priority actor image
-      images = [actor.img];
+      path = actor.img;
     }
 
-    return images[0];
+    return { path, scale };
   }
 
   private _actorIsWildcard(actor: ActorIndexEntry): boolean {
     return actor.system?.wildcard || actor.data?.wildcard;
   }
 
-  private _getCompendiumArt(actor: ActorIndexEntry): string {
+  private _getCompendiumArt(actor: ActorIndexEntry): TokenArt {
     const pack = this.collection.metadata.id;
     const art = game.swade.compendiumArt.map.get(
       `Compendium.${pack}.${actor._id}`,
     );
-    let tokenArt = '';
+    let path = '';
+    let scale = 1;
     if (art) {
       actor.img = art.actor;
-      tokenArt = typeof art.token === 'string' ? art.token : art.token.img;
+      if (typeof art.token === 'string') {
+        path = art.token;
+      } else {
+        path = art.token.img;
+        scale = art.token.scale;
+      }
     }
-    return tokenArt;
+    return { path, scale };
   }
 }
 
 interface CompendiumTOCData
   extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
   isJournal: boolean;
+  isActor: boolean;
   header: string;
   wildCardMarker: string;
   columnWidth: string;
@@ -569,6 +585,7 @@ interface CompendiumTOCData
 interface CompendiumEntry {
   name: string;
   id: string;
+  artwork?: TokenArt;
   img?: string | null;
   /** only relevant for actors */
   isWildcard?: boolean;
@@ -599,6 +616,11 @@ interface CompendiumCategory {
 interface CompendiumGroup {
   group: string;
   entries: CompendiumEntry[];
+}
+
+interface TokenArt {
+  path: string;
+  scale: number;
 }
 
 type ActorIndexEntry = {

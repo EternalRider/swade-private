@@ -46,12 +46,22 @@
           <ol class='categories unmarked-list'>
             {{#each entries}}
               <li class='toc-entry flexrow' data-document-id='{{id}}'>
-                <img
-                  class='thumbnail'
-                  src='{{img}}'
-                  alt='{{name}}'
-                  loading='lazy'
-                />
+                {{#if @root.isActor}}
+                  <img
+                    class='thumbnail'
+                    src='{{img.path}}'
+                    style='scale: {{img.scale}};'
+                    alt='{{name}}'
+                    loading='lazy'
+                  />
+                {{else}}
+                  <img
+                    class='thumbnail'
+                    src='{{img}}'
+                    alt='{{name}}'
+                    loading='lazy'
+                  />
+                {{/if}}
                 {{#if isWildcard}}
                   <img
                     class='wildcard'

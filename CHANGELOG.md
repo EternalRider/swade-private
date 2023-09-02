@@ -26,7 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added ability to create documents within a compendium TOC (#883) **by jmeehan5**
+- Added ability to create documents within a compendium TOC. (#883) **by jmeehan5**
 
 ### Changed
 
@@ -35,6 +35,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Removed
 
 ### Fixed
+
+- Scaled Token images should now properly display in the Compendium TOC. (#895) **by @florad92**
 
 ## 3.1.4
 
