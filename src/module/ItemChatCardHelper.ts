@@ -290,7 +290,11 @@ export default class ItemChatCardHelper {
           { toast: true },
         );
       }
-      await macro?.execute({ actor: item.actor, item });
+      const targetActor =
+        action.macroActor === constants.MACRO_ACTOR.SELF
+          ? item.actor
+          : undefined;
+      await macro?.execute({ actor: targetActor, item });
       return null;
     }
     this.refreshItemCard(actor);

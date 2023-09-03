@@ -81,6 +81,11 @@ export const constants = {
     MACRO: 'macro',
   } as const,
   /** @enum */
+  MACRO_ACTOR: {
+    DEFAULT: 'default',
+    SELF: 'self',
+  } as const,
+  /** @enum */
   ROLL_RESULT: {
     CRITFAIL: -1,
     FAIL: 0,

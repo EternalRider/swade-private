@@ -138,6 +138,9 @@ SWADE:
   DmgOver: Action Damage
   Resist: Resist
   ResistRolls: Resistance Rolls
+  MacroActor:
+    Default: Default
+    Self: Self
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
