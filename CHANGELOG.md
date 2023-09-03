@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added ability to create documents within a compendium TOC. (#883) **by jmeehan5**
+- Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jmeehan5**
 
 ### Changed
 

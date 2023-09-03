@@ -103,6 +103,9 @@ SWADE:
   Berserk: Berserk
   Defending: Defending
   Flying: Flying
+  Unfamiliar:
+    '2': Unfamiliar (-2)
+    '4': Unfamiliar (-4)
   Follow: Follow {name}
   Unfollow: Unfollow {name}
   MakeGroupLeader: Make Group Leader
