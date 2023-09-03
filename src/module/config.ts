@@ -202,8 +202,11 @@ export const SWADE: SwadeConfig = {
     {
       name: 'SWADE.ModTrait',
       modifiers: [
+        { label: 'SWADE.Running', value: -2 },
         { label: 'SWADE.TargetVulnerable', value: '+2' },
         { label: 'SWADE.Encumbered', value: -2 },
+        { label: 'SWADE.Unfamiliar.2', value: -2 },
+        { label: 'SWADE.Unfamiliar.4', value: -4 },
       ],
       rollType: constants.ROLL_TYPE.TRAIT,
     },
@@ -282,7 +285,7 @@ export const SWADE: SwadeConfig = {
       'system.details.species.name',
       'system.details.advances.rank',
       'classification',
-      'description'
+      'description',
     ],
     adventure: [],
     cards: [],
@@ -291,14 +294,14 @@ export const SWADE: SwadeConfig = {
       'system.notes',
       'system.subtype',
       'system.arcane',
-      'system.trapping'
+      'system.trapping',
     ],
     journalentry: [],
     macro: [],
     playlist: [],
     rolltable: [],
-    scene: []
-  }
+    scene: [],
+  },
 };
 
 /** @internal */
@@ -382,5 +385,5 @@ export interface SwadeConfig {
     cards: Array<String>;
     adventure: Array<String>;
     actor: Array<String>;
-  }
+  };
 }
