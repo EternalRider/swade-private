@@ -73,6 +73,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
 
+  get macroActorTypes(): Record<string, string> {
+    return {
+      default: 'SWADE.MacroActor.Default',
+      self: 'SWADE.MacroActor.Self',
+    };
+  }
+
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     this._setupAccordions();
@@ -240,6 +247,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
+      macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
@@ -857,6 +865,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
+  macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;

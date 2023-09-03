@@ -32,6 +32,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by jmeehan5**
+
 ### Deprecated
 
 ### Removed
