@@ -26,14 +26,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added ability to create documents within a compendium TOC. (#883) **by jmeehan5**
+- Added ability to create documents within a compendium TOC. (#883) **by jpmeehan5**
 - Added more trait die options above d12 to the Attribute Manager. (#919) **by @florad92**
-- Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jmeehan5**
+- Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jpmeehan5**
 - Added categories to the edges in the base system. (#925) **by jpmeehan5**
 
 ### Changed
 
-- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by jmeehan5**
+- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by jpmeehan5**
 
 ### Deprecated
 
@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Scaled Token images should now properly display in the Compendium TOC. (#895) **by @florad92**
+- Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by jpmeehan5**
 
 ## 3.1.4
 
@@ -55,7 +56,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed an issue in the action property shims that would prevent the use of active effects on said properties. **by @florad92**
 - Fixed added some data sanitization to actors. (#911) **by @florad92**
-- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by jmeehan5**
+- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by jpmeehan5**
 
 ## 3.1.2
 
