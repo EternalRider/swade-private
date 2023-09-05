@@ -265,13 +265,11 @@ export default class SwadeActor extends Actor {
 
     let pace = this.system.stats.speed.value;
 
-    //modify pace with wounds
+    //modify pace with wounds, core rules p. 95
     if (game.settings.get('swade', 'enableWoundPace')) {
-      //bound maximum wound penalty to -3
-      const wounds = Math.min(this.system.wounds.value, 3);
-      //subtract wounds
-      pace -= wounds;
-      //make sure the pace doesn't go below 1 from wounds
+      const woundPenalties = this.calcWoundPenalties(false);
+      pace += woundPenalties;
+      // Minimum of 1"
       pace = Math.max(pace, 1);
     }
 
@@ -833,7 +831,8 @@ export default class SwadeActor extends Actor {
     await this.update({ 'system.bennies.value': newValue });
   }
 
-  /** Calculates the total Wound Penalties */
+  /** Calculates the total Wound Penalties
+   * and returns them as a negative number */
   calcWoundPenalties(ignoreAll: boolean = false): number {
     if (ignoreAll) return 0;
     let total = 0;
