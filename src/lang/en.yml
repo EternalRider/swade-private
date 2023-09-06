@@ -927,6 +927,10 @@ SWADE:
     NoneLoaded: No magazine loaded
     Select: Select a magazine
   DmgMod: Damage Modifier
+  TOURS:
+    AMMUNITION:
+      Title: Ammunition
+      Description: This Tour will show you how to enable automated ammunition tracking
 TYPES:
   Actor:
     character: Player Character
