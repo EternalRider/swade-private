@@ -44,7 +44,6 @@ import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import registerSWADETours from './module/tours/registration';
 import {
   deepFreeze,
   getStatusEffectDataById,
@@ -235,9 +234,6 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.ItemSheet',
   });
-
-  // Register Tours
-  registerSWADETours();
 
   //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
