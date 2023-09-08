@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added more trait die options above d12 to the Attribute Manager. (#919) **by @florad92**
 - Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jpmeehan5**
 - Added categories to the edges in the base system. (#925) **by jpmeehan5**
+- The NPC and Vehicle sheets now also show effects inherited from items. (#910) **by jpmeehan5**
 
 ### Changed
 
