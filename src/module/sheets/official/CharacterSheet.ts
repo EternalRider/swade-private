@@ -809,7 +809,6 @@ export default class CharacterSheet extends ActorSheet {
         name: effect.name,
         icon: effect.icon,
         disabled: effect.disabled,
-        //@ts-expect-error New v11 property
         description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
@@ -838,6 +837,11 @@ export default class CharacterSheet extends ActorSheet {
         permanent.push(val);
       }
       if (val.favorite) {
+        val.tooltip = val.hasOwnProperty('source')
+          ? game.i18n.localize('SWADE.ActiveEffects.Source') +
+            ': ' +
+            val.source!.name
+          : '';
         favorite.push(val);
       }
     }
@@ -1326,6 +1330,7 @@ export default class CharacterSheet extends ActorSheet {
 interface SheetEffect {
   id: string;
   icon: string | undefined | null;
+  description: string;
   disabled: boolean;
   favorite: boolean;
   origin?: string;
@@ -1334,6 +1339,7 @@ interface SheetEffect {
     id: string;
   };
   name: string;
+  tooltip: string;
   duration?: {
     expiration: number; // constants.STATUS_EFFECT_EXPIRATION
     rounds: number;
