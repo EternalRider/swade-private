@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Scaled Token images should now properly display in the Compendium TOC. (#895) **by @florad92**
 - Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by jpmeehan5**
+- Fixed override data on items targeted by Active Effects. (#933) **by jpmeehan5**
 
 ## 3.1.4
 

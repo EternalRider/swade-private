@@ -264,11 +264,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
         // NOT calling super.apply because normal apply doesn't handle objects
         foundry.utils.setProperty(item, effectKey, overrides[effectKey]);
       } else {
-        // Die sizes for Trait and Wild Die
-        overrides[key] = Number.isNumeric(value) ? Number(value) : value;
         //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
         const mockChange = { ...change, key, value };
-        super.apply(item, mockChange);
+        // @ts-expect-error AE.apply doesn't actually require an Actor, just a Document
+        const changes = super.apply(item, mockChange);
+        Object.assign(overrides, changes);
       }
       item.overrides = foundry.utils.expandObject(overrides);
     }
