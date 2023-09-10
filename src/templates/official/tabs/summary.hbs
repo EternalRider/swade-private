@@ -266,11 +266,7 @@
         <li class="gear-card item {{#if disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}" data-source-id="{{source.id}}">
           <header class="card-header flexrow">
             <div class="item-image" style="background-image: url('{{icon}}')"></div>
-            {{#if origin}}
-              <button type="button" class="item-name effect-action" data-action="open-origin" title="{{localize "SWADE.OpenOrigin"}}">{{name}}</button>
-            {{else}}
-              <button class="item-name">{{name}}</button>
-            {{/if}}
+            <button class="item-name" data-tooltip="{{tooltip}}" >{{name}}</button>
             <div class="item-controls">
               <button type="button" class="item-control effect-action" data-action="toggle" data-toggle="disabled">
                 <i class="fas fa-power-off"></i>
