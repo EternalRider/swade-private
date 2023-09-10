@@ -258,15 +258,20 @@ export default class ItemChatCardHelper {
         additionalMods: mods,
         item: item,
       });
-      if (roll && item.type === 'weapon') {
+      if (
+        roll &&
+        item.type === 'weapon' &&
+        action.type === constants.ACTION_TYPE.TRAIT
+      ) {
         await item.consume(action.resourcesUsed ?? 1);
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
-      if (getProperty(item, 'system.actions.dmgMod') !== '') {
+      const dmgMod = getProperty(item, 'system.actions.dmgMod');
+      if (dmgMod) {
         mods.push({
           label: game.i18n.localize('SWADE.ItemDmgMod'),
-          value: getProperty(item, 'system.actions.dmgMod'),
+          value: dmgMod,
         });
       }
       if (action.modifier) {

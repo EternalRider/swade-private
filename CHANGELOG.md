@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by jpmeehan5**
 - Fixed override data on items targeted by Active Effects. (#933) **by jpmeehan5**
 - Restored icons for skills on the Character Sheet. (#921) **by @florad92**
+- Resist actions on weapons should no longer attempt to consume ammunition. (#923) **by @florad92**
 
 ## 3.1.4
 
