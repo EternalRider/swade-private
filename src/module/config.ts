@@ -6,6 +6,7 @@ import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { constants } from './constants';
 import { statusEffects } from './statusEffects';
+import SwadeTour from './tours/SwadeTour';
 
 /** @internal */
 export const PACKAGE_ID = 'swade';
@@ -302,6 +303,10 @@ export const SWADE: SwadeConfig = {
     rolltable: [],
     scene: [],
   },
+
+  tourClasses: {
+    SwadeTour: SwadeTour,
+  },
 };
 
 /** @internal */
@@ -386,4 +391,6 @@ export interface SwadeConfig {
     adventure: Array<String>;
     actor: Array<String>;
   };
+
+  tourClasses: Record<string, typeof Tour>;
 }
