@@ -348,7 +348,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       buttons.unshift({
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
-        icon: 'fas fa-dice',
+        icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.item).render(true),
       });
     }

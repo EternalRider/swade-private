@@ -7,8 +7,10 @@ import {
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
+import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
+import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
@@ -30,6 +32,11 @@ import { TraitDie } from './actor-data-source';
 declare global {
   interface DocumentClassConfig {
     Actor: typeof SwadeActor;
+  }
+  interface FlagConfig {
+    swade: {
+      auras?: Record<string, AuraData>;
+    };
   }
 }
 
@@ -182,6 +189,24 @@ export default class SwadeActor extends Actor {
       types[type].sort((a, b) => a.sort - b.sort);
     }
     return types;
+  }
+
+  get auras(): Record<string, AuraData> {
+    const auras = (this.getFlag('swade', 'auras') ?? {}) as Record<
+      string,
+      AuraData
+    >;
+    auras.aura1 = foundry.utils.mergeObject(
+      auras.aura1 ?? {},
+      AuraPointSource.defaultData,
+      { overwrite: false },
+    );
+    auras.aura2 = foundry.utils.mergeObject(
+      auras.aura2 ?? {},
+      AuraPointSource.defaultData,
+      { overwrite: false },
+    );
+    return auras;
   }
 
   override prepareBaseData() {

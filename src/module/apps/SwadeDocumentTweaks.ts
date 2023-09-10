@@ -31,14 +31,21 @@ export default class SwadeDocumentTweaks extends FormApplication<
     });
   }
 
-  /* -------------------------------------------- */
-
   /** Add the Document name into the window title*/
   override get title() {
     return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
   }
 
-  /* -------------------------------------------- */
+  activateListeners(jquery: JQuery<HTMLElement>): void {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+
+    html
+      .querySelectorAll('.tab[data-tab="auras"] select')
+      .forEach((select) =>
+        select.addEventListener('contextmenu', this.resetVisibility.bind(this)),
+      );
+  }
 
   /**@inheritdoc */
   override async getData(options?: ApplicationOptions) {
@@ -59,6 +66,25 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
       advanceTypes: this._getAdvanceTypes(),
+      auras: {
+        units: canvas.scene.grid.units,
+        auras: this.object.auras,
+        defaultColor: game.user.color ?? '#000000',
+        visibilityChoices: [
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.HOSTILE,
+            label: 'TOKEN.DISPOSITION.HOSTILE',
+          },
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+            label: 'TOKEN.DISPOSITION.NEUTRAL',
+          },
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+            label: 'TOKEN.DISPOSITION.FRIENDLY',
+          },
+        ],
+      },
     };
 
     return foundry.utils.mergeObject(data, await super.getData(options));
@@ -125,11 +151,13 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return newFields;
   }
 
+  /** @inheritdoc */
   protected override _getSubmitData(updateData = {}) {
     const data = super._getSubmitData(updateData);
     // Prevent submitting overridden values
     const overrides = foundry.utils.flattenObject(this.object.overrides);
     for (const k of Object.keys(overrides)) {
+      if (k.startsWith('system.')) delete data[`data.${k.slice(7)}`]; // Band-aid for < v10 data
       delete data[k];
     }
     return data;
@@ -140,5 +168,17 @@ export default class SwadeDocumentTweaks extends FormApplication<
       legacy: 'SWADE.Advances.Modes.Legacy',
       expanded: 'SWADE.Advances.Modes.Expanded',
     };
+  }
+
+  async resetVisibility(ev: PointerEvent) {
+    const target = ev.currentTarget as HTMLSelectElement;
+    const auraId = target.dataset.auraId as string;
+    await this.object.update(
+      {
+        'flags.swade.auras': { [auraId]: { visibleTo: [] } },
+      },
+      { diff: false },
+    );
+    this.render();
   }
 }

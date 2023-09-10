@@ -3,6 +3,7 @@ import {
   SingleAttributeBar,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import SwadeActor from '../documents/actor/SwadeActor';
+import { AuraPointSource } from './AuraPointSource';
 
 declare global {
   interface PlaceableObjectClassConfig {
@@ -11,6 +12,8 @@ declare global {
 }
 export default class SwadeToken extends Token {
   #blk = 0x000000;
+
+  auras = new Collection<AuraPointSource>();
 
   protected _drawBar(
     number: number,

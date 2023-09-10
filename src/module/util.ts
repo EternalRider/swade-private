@@ -225,7 +225,7 @@ export function deepFreeze<T>(o: T) {
 
 /** @internal */
 export function isObject(value) {
-  return !!value && typeof value === 'object';
+  return !!value && typeof value === 'object' && !Array.isArray(value);
 }
 
 /** Separates an array into a series of smaller arrays of a given size */

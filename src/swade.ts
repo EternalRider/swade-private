@@ -26,6 +26,7 @@ import SwadeItem from './module/documents/item/SwadeItem';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
+import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
@@ -210,6 +211,7 @@ Hooks.once('init', () => {
   registerKeybindings();
 
   registerEffectCallbacks();
+  registerAuraHooks();
 
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);

@@ -7,6 +7,9 @@
       <a class='item' data-group='primary' data-tab='additional-stats'>
         {{localize 'SWADE.AddStats'}}
       </a>
+      <a class='item' data-group='primary' data-tab='auras'>
+        {{localize 'SWADE.Auras.TabHeader'}}
+      </a>
     </nav>
   {{/if}}
   <main class='sheet-body'>
@@ -196,7 +199,7 @@
         </section>
         <!--Initiative-->
         <section>
-          <h2>{{localize 'SWADE.Init'}}</h2>
+          <h3>{{localize 'SWADE.Init'}}</h3>
           <div class='form-group'>
             <label for='{{doc.id}}-hasLevelHeaded'>
               {{localize 'SWADE.LevelHeaded'}}
@@ -251,7 +254,7 @@
         {{#unless isVehicle}}
           <!--Automatic Calculations-->
           <section>
-            <h2>{{localize 'SWADE.AutoCalc'}}</h2>
+            <h3>{{localize 'SWADE.AutoCalc'}}</h3>
             <div class='form-group'>
               <label for='{{doc.id}}-autoCalcToughness'>
                 {{localize 'SWADE.Tough'}}
@@ -315,6 +318,157 @@
           </div>
         </div>
       {{/each}}
+    </section>
+    <section class='tab' data-group='primary' data-tab='auras'>
+      <!-- User Defined Aura 1-->
+      <h3>{{localize 'SWADE.Auras.UserAura1'}}</h3>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Auras.Enabled'}}</label>
+        <input
+          type='checkbox'
+          name='flags.swade.auras.aura1.enabled'
+          {{checked auras.auras.aura1.enabled}}
+        />
+      </div>
+      <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
+        <label>{{localize 'SWADE.Auras.WallConstraints.Label'}}</label>
+        <input
+          type='checkbox'
+          name='flags.swade.auras.aura1.walls'
+          {{checked auras.aura1.walls}}
+        />
+      </div>
+      <div class='form-group slim'>
+        <label>{{localize 'SWADE.Auras.Range'}}
+          <span class='units'>({{auras.units}})</span></label>
+        <span class='form-fields'>
+          <input
+            type='number'
+            name='flags.swade.auras.aura1.radius'
+            value='{{auras.auras.aura1.radius}}'
+            min='0'
+            step='1'
+            placeholder='{{auras.units}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Auras.Color'}}</label>
+        <span class='form-fields'>
+          {{colorPicker
+            name='flags.swade.auras.aura1.color'
+            value=auras.auras.aura1.color
+            default=auras.defaultColor
+          }}
+        </span>
+      </div>
+      <div class='form-group slim'>
+        <label>{{localize 'SWADE.Auras.Alpha'}}</label>
+        <span class='form-fields'>
+          {{rangePicker
+            name='flags.swade.auras.aura1.alpha'
+            value=auras.auras.aura1.alpha
+            min=0
+            max=1
+            step=0.05
+          }}
+        </span>
+      </div>
+      <div class='form-group slim' data-tooltip='SWADE.Aura.Visibility.Hint'>
+        <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
+        <span class='form-fields'>
+          <select
+            data-dtype='Number'
+            data-aura-id='aura1'
+            name='flags.swade.auras.aura1.visibleTo'
+            size='3'
+            multiple
+          >
+            {{selectOptions
+              auras.visibilityChoices
+              selected=auras.auras.aura1.visibleTo
+              localize=true
+              nameAttr='key'
+              labelAttr='label'
+            }}
+          </select>
+        </span>
+      </div>
+      <!-- User Defined Aura 2-->
+      <h3>{{localize 'SWADE.Auras.UserAura2'}}</h3>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Auras.Enabled'}}</label>
+        <input
+          type='checkbox'
+          name='flags.swade.auras.aura2.enabled'
+          {{checked auras.auras.aura2.enabled}}
+        />
+      </div>
+      <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
+        <label>{{localize 'SWADE.Auras.WallConstraints.Label'}}</label>
+        <input
+          type='checkbox'
+          name='flags.swade.auras.aura2.walls'
+          {{checked auras.auras.aura2.walls}}
+        />
+      </div>
+      <div class='form-group slim'>
+        <label>{{localize 'SWADE.Auras.Range'}}
+          <span class='units'>({{auras.units}})</span>
+        </label>
+        <span class='form-fields'>
+          <input
+            type='number'
+            name='flags.swade.auras.aura2.radius'
+            value='{{auras.auras.aura2.radius}}'
+            min='0'
+            step='1'
+            placeholder='{{auras.units}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Auras.Color'}}</label>
+        <span class='form-fields'>
+          {{colorPicker
+            name='flags.swade.auras.aura2.color'
+            value=auras.auras.aura2.color
+            default=defaultColor
+          }}
+        </span>
+      </div>
+      <div class='form-group slim'>
+        <label>{{localize 'SWADE.Auras.Alpha'}}</label>
+        <span class='form-fields'>
+          {{rangePicker
+            name='flags.swade.auras.aura2.alpha'
+            value=auras.auras.aura2.alpha
+            min=0
+            max=1
+            step=0.05
+          }}
+        </span>
+      </div>
+      <div class='form-group slim' data-tooltip='SWADE.Aura.Visibility.Hint'>
+        <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
+        <span class='form-fields'>
+          <select
+            data-dtype='Number'
+            data-aura-id='aura2'
+            name='flags.swade.auras.aura2.visibleTo'
+            size='3'
+            multiple
+          >
+            {{selectOptions
+              auras.visibilityChoices
+              selected=auras.auras.aura2.visibleTo
+              localize=true
+              nameAttr='key'
+              labelAttr='label'
+            }}
+          </select>
+        </span>
+      </div>
     </section>
   </main>
   <footer class='sheet-footer'>

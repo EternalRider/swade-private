@@ -1,5 +1,6 @@
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
+import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
@@ -18,6 +19,12 @@ declare global {
 
   interface CONFIG {
     SWADE: SwadeConfig;
+    Canvas: {
+      auras: {
+        collection: foundry.utils.Collection<AuraPointSource>;
+        filter: VisualEffectsMaskingFilter;
+      };
+    };
   }
 }
 
