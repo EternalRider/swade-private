@@ -14,13 +14,13 @@ import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { VehicleData } from '../../data/actor';
 import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../../documents/item/SwadeItem';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
 import PopUpMenu from '../../models/PopUpMenu';
 import * as util from '../../util';
-import { VehicleData } from '../../data/actor';
 
 export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
@@ -554,6 +554,7 @@ export default class CharacterSheet extends ActorSheet {
       }
       skills.push({
         label: skill.name as string,
+        img: skill.img as string,
         die: skill.system.die.sides as number,
         modifier: mods.reduce(util.addUpModifiers, 0),
         description: await this._enrichText(skill.system.description),
@@ -1407,6 +1408,7 @@ interface TraitDisplay {
 }
 interface SkillDisplay extends TraitDisplay {
   label: string;
+  img: string;
   description: string;
   attribute: LinkedAttribute;
   isCoreSkill: boolean;
