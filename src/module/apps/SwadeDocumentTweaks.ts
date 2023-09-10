@@ -13,38 +13,35 @@ export default class SwadeDocumentTweaks extends FormApplication<
   ) {
     super(doc, options);
   }
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: 'sheet-tweaks',
       width: 380,
-      classes: ['swade-app'],
+      classes: ['swade', 'doc-tweaks', 'swade-app'],
+      template: 'systems/swade/templates/actors/apps/tweaks-dialog.hbs',
+      height: 'auto' as const,
+      tabs: [
+        {
+          group: 'primary',
+          navSelector: '.tabs',
+          contentSelector: '.sheet-body',
+          initial: 'traits',
+        },
+      ],
     });
   }
 
   /* -------------------------------------------- */
 
-  /**
-   * Add the Entity name into the window title
-   * @type {String}
-   */
-  get title() {
+  /** Add the Document name into the window title*/
+  override get title() {
     return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
-  }
-
-  /**
-   * @override
-   */
-  get template() {
-    return 'systems/swade/templates/actors/apps/tweaks-dialog.hbs';
   }
 
   /* -------------------------------------------- */
 
-  /**
-   * Construct and return the data object used to render the HTML template for this form application.
-   * @return {Object}
-   */
-  getData() {
+  /**@inheritdoc */
+  override async getData(options?: ApplicationOptions) {
     const settingFields = this._getPrototypeSettingFields();
 
     for (const key in settingFields) {
@@ -55,6 +52,8 @@ export default class SwadeDocumentTweaks extends FormApplication<
     const data = {
       doc: this.object,
       settingFields: settingFields,
+      itemTabActive: this.object instanceof SwadeItem ? 'active' : '',
+      isItem: this.object instanceof SwadeItem,
       isActor: this.object instanceof SwadeActor,
       isCharacter: this.object.type === 'character',
       isNPC: this.object.type === 'npc',
@@ -62,14 +61,10 @@ export default class SwadeDocumentTweaks extends FormApplication<
       advanceTypes: this._getAdvanceTypes(),
     };
 
-    return data;
+    return foundry.utils.mergeObject(data, await super.getData(options));
   }
 
-  /**
-   * This method is called upon form submission after form data is validated
-   * @param event {Event}       The initial triggering submission event
-   * @param formData {Object}   The object of validated form data with which to update the object
-   */
+  /** @inheritdoc */
   protected override async _updateObject(_event, formData) {
     const expandedFormData = expandObject(formData);
 
@@ -92,18 +87,17 @@ export default class SwadeDocumentTweaks extends FormApplication<
     } else if (this.object instanceof SwadeItem) {
       settingFields = fields.item;
     }
-    return foundry.utils.deepClone(settingFields);
+    return structuredClone(settingFields);
   }
 
   private _handleAdditionalStats(expandedFormData) {
     const formFields = expandedFormData.system.additionalStats ?? {};
     const prototypeFields = this._getPrototypeSettingFields();
-    const newFields = foundry.utils.deepClone(
+    const newFields = structuredClone<AdditionalStats>(
       this.object.system.additionalStats,
-    ) as AdditionalStats;
+    );
     //handle setting specific fields
-    const entries = Object.entries(formFields) as [string, AdditionalStat][];
-    for (const [key, field] of entries) {
+    for (const [key, field] of Object.entries<AdditionalStat>(formFields)) {
       const fieldExistsOnDoc = this.object.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
         //update existing field
