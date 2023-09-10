@@ -91,9 +91,20 @@
     border-radius: var(--input-border-radius);
     border-bottom: var(--input-border-line);
     font-family: var(--default-font);
+    &[multiple] {
+      border: var(--input-border-line);
+      option:checked {
+        background: var(--color-text-dark-secondary);
+        color: var(--color-text-light-heading);
+      }
+    }
   }
 
   button {
+    &[type='submit'],
+    &.submit {
+      margin-top: $medium-spacing;
+    }
     cursor: pointer;
     border-radius: var(--button-border-radius);
     font-family: var(--default-font);

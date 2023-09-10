@@ -266,7 +266,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         {
           label: game.i18n.localize('SWADE.Tweaks'),
           class: 'configure-actor',
-          icon: 'fas fa-dice',
+          icon: 'fa-solid fa-gears',
           onclick: (ev) => this._onConfigureEntity(ev),
         },
         ...buttons,

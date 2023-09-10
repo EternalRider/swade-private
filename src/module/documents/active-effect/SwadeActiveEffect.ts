@@ -46,6 +46,14 @@ export default class SwadeActiveEffect extends ActiveEffect {
     return statusId;
   }
 
+  /** A convenience accessor that returns the effect's containing actor, if it has one */
+  get actor(): SwadeActor | undefined {
+    const parent = this.parent;
+    if (parent instanceof SwadeActor) return parent;
+    if (parent instanceof SwadeItem && parent.actor instanceof SwadeActor)
+      return parent.actor;
+  }
+
   get expiresAtStartOfTurn(): boolean {
     const expiration = this.getFlag('swade', 'expiration') ?? -1;
     return [

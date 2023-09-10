@@ -5,8 +5,7 @@ import { getRankFromAdvanceAsString } from '../util';
 
 export class AdvanceEditor extends FormApplication<
   FormApplicationOptions,
-  object,
-  AdvanceEditorContext
+  object
 > {
   constructor({ advance, actor }: AdvanceEditorContext, options = {}) {
     super({ advance, actor }, options);

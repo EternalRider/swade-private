@@ -697,13 +697,14 @@ export default class CharacterSheet extends ActorSheet {
 
     // Document Tweaks
     if (this.options.editable && this.actor.isOwner) {
-      const button = {
+      const tweaks: Application.HeaderButton = {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
-        icon: 'fas fa-dice',
+        icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
       };
-      buttons = [button, ...buttons];
+
+      buttons = [tweaks, ...buttons];
     }
     return buttons;
   }
