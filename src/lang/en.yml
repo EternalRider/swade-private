@@ -948,6 +948,79 @@ SWADE:
       Hint: >-
         Select which tokens (by Disposition) can see this aura. You can always
         see all auras of a token of which you at least Observer Permission
+  TOURS:
+    AMMUNITION:
+      Title: Ammunition
+      Description: This Tour will show you how to use automated ammunition tracking
+      Actor: Ammunition Tour Demo Character
+      Items:
+        NONE: Longbow
+        SELF: Throwing Knife
+        SINGLE: Revolver
+        FULL: Water Gun
+        MAGAZINE: Steyr AUG
+        BATTERY: Laser Gun
+        PP: Wizard Gun
+      GameSettings:
+        Title: Game Settings
+        Content: First, Ammunition Tracking must be enabled in the game's system settings.
+      SwadeSettings:
+        Title: SWADE Settings
+        Content: Ammunition settings are found in the <em>Savage Worlds</em> setting configurator
+      AmmoSettings:
+        Title: Ammo Settings
+        Content: These control if ammo is automatically consumed by ranged weapons.
+      AmmoManagement:
+        Title: Ammunition Management
+        Content: This setting controls whether firing a ranged weapon consumes any ammo at all, either from the weapons' internal shot counter or from inventory.
+      PCInventory:
+        Title: Ammo from Inventory
+        Content: The next three settings control if external items are consumed when a weapon reloads, based on the actor type. If these are unchecked but ammunition management is checked, actors of a given type will consume the shots on an item but can freely reload. This allows for arcade-style ammo management where the reload action is important to track but long-term ammo usage is not.
+      CharacterWeapons:
+        Title: Character Weapons
+        Content: A character's weapons are listed in the gear tab.
+      ReloadNone:
+        Title: Reload Procedure — None
+        Content: These weapons ignore the shots counter entirely, pulling directly from the linked ammo item. This setting is best for weapons that only use external ammo, such as a quiver of arrows or a drum-fed gattling gun.
+      AmmoNone:
+        Title: The Ammo Field
+        Content: This should be set to a gear (e.g. Arrows) or consumable item (e.g. Barrel of Bullets) in the character's inventory. A gear item's quantity is consumed directly. Consumable items use their charges instead, with each quantity representing a full set of charges. This field must match the name of the item to be consumed <em>exactly</em>.
+      ReloadSelf:
+        Title: Reload Procedure — Self
+        Content: These weapons use their own quantity to reset their shots counter. This setting is best for thrown weapons or anything else that is self-contained and uses itself up.
+      AmmoSelf:
+        Title: The Ammo Field
+        Content: This field is ignored when the reload type is set to self
+      ReloadSingle:
+        Title: Reload Procedure — Single
+        Content: These weapons reload a single shot with each press of the Reload button. This setting is ideal for revolvers or other weapons with bulky pieces of ammunition that are slow to reload.
+      AmmoSingle:
+        Title: The Ammo Field
+        Content: This field works similarly to Reload — None, but quantity or charges are consumed by reloading instead of by firing the weapon, as firing the weapon consumes from the Shots counter.
+      ReloadFull:
+        Title: Reload Procedure — Full
+        Content: These weapons reload their entire shot counter with each press of the Reload button. This can be used as a simplified version of the Magazine method or for weapons that don't have detachable magazines, such as a gun with liquid reservoirs.
+      AmmoFull:
+        Title: The Ammo Field
+        Content: This field works similarly to Reload — None, but quantity or charges are consumed by reloading instead of by firing the weapon, as firing the weapon consumes from the Shots counter.
+      ReloadMagazine:
+        Title: Reload Procedure — Magazine
+        Content: These weapons use fully detachable magazines that can be swapped as needed, tracking the amount of shots left per magazine.
+      AmmoMagazine:
+        Title: The Ammo Field
+        Content: The item named here MUST be a consumable with the Magazine subtype to work correctly. Furthermore, the charges of the consumable should match the shots counter of the weapon.
+      ReloadBattery:
+        Title: Reload Procedure — Battery
+        Content: These weapons operate similar to magazines, but with interchangeable batteries that are depleted proportional to the shots spent.
+      AmmoBattery:
+        Title: The Ammo Field
+        Content: The item named here MUST be a consumable with the Battery subtype to work correctly. Furthermore, the maximum charges of the consumable should be out of 100.
+      ReloadPP:
+        Title: Reload Procedure — Power Points
+        Content: These weapons don't reload with physical ammunition but by depleting the wielder's power points, as featured in <em>Rifts® for Savage Worlds</em>
+      AmmoPP:
+        Title: The Ammo Field
+        Content: Instead of naming an item, name a valid arcane type on the character, such as general, magic, miracles, or psionics
 TYPES:
   Actor:
     character: Player Character

@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jpmeehan5**
 - Added categories to the edges in the base system. (#925) **by jpmeehan5**
 - The NPC and Vehicle sheets now also show effects inherited from items. (#910) **by jpmeehan5**
+- Added a number of Tours to explain the system. (#800) **by jpmeehan5**
+  - Ammunition (#887)
 
 ### Changed
 

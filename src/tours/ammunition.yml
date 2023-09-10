@@ -1,0 +1,189 @@
+title: SWADE.TOURS.AMMUNITION.Title
+description: SWADE.TOURS.AMMUNITION.Description
+canBeResumed: false
+display: true
+steps:
+  - id: gameSettings
+    selector: '#settings-game>button[data-action="configure"]'
+    title: SWADE.TOURS.AMMUNITION.GameSettings.Title
+    content: SWADE.TOURS.AMMUNITION.GameSettings.Content
+    tab:
+      parent: sidebar
+      id: settings
+  - id: swadeSettings
+    selector: '#client-settings button[data-key="swade.setting-config"]'
+    title: SWADE.TOURS.AMMUNITION.SwadeSettings.Title
+    content: SWADE.TOURS.AMMUNITION.SwadeSettings.Content
+    tab:
+      parent: settings
+      id: system
+  - id: ammoSettings
+    selector: '#settingConfig #ammo'
+    title: SWADE.TOURS.AMMUNITION.AmmoSettings.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoSettings.Content
+    tab:
+      parent: configurator
+      id: setting-rules
+  - id: ammoManagement
+    selector: '#ammo>div'
+    title: SWADE.TOURS.AMMUNITION.AmmoManagement.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoManagement.Content
+    settings:
+      ammoManagement: true
+  - id: pcInventory
+    selector: '#ammo>div:nth-child(3)'
+    title: SWADE.TOURS.AMMUNITION.PCInventory.Title
+    content: SWADE.TOURS.AMMUNITION.PCInventory.Content
+  - id: characterWeapons
+    selector: '#actorSheetID .header.weapon+ul'
+    title: SWADE.TOURS.AMMUNITION.CharacterWeapons.Title
+    content: SWADE.TOURS.AMMUNITION.CharacterWeapons.Content
+    tab:
+      parent: actor
+      id: inventory
+    actor:
+      name: SWADE.TOURS.AMMUNITION.Actor
+      type: character
+      img: icons/environment/people/commoner.webp
+      items:
+        - name: SWADE.TOURS.AMMUNITION.Items.NONE
+          type: weapon
+          img: icons/weapons/bows/shortbow-arrows-black.webp
+          system:
+            reloadType: none
+            shots: 1
+            currentShots: 1
+        - name: SWADE.TOURS.AMMUNITION.Items.SELF
+          type: weapon
+          img: icons/weapons/daggers/dagger-straight-thin-black.webp
+          system:
+            reloadType: self
+            shots: 1
+            currentShots: 1
+        - name: SWADE.TOURS.AMMUNITION.Items.SINGLE
+          type: weapon
+          img: icons/weapons/guns/gun-pistol-flintlock.webp
+          system:
+            reloadType: single
+            shots: 6
+            currentShots: 6
+        - name: SWADE.TOURS.AMMUNITION.Items.FULL
+          type: weapon
+          img: icons/magic/water/water-drop-swirl-blue.webp
+          system:
+            reloadType: full
+            shots: 20
+            currentShots: 20
+        - name: SWADE.TOURS.AMMUNITION.Items.MAGAZINE
+          type: weapon
+          img: icons/weapons/guns/rifle-brown.webp
+          system:
+            reloadType: magazine
+            shots: 20
+            currentShots: 20
+        - name: SWADE.TOURS.AMMUNITION.Items.BATTERY
+          type: weapon
+          img: icons/magic/light/beam-layered-teal.webp
+          system:
+            reloadType: battery
+            shots: 20
+            currentShots: 20
+        - name: SWADE.TOURS.AMMUNITION.Items.PP
+          type: weapon
+          img: icons/magic/symbols/rune-sigil-green-purple.webp
+          system:
+            reloadType: pp
+            shots: 20
+            currentShots: 20
+  - id: reloadNone
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadNone.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadNone.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.NONE
+    tab:
+      parent: item
+      id: properties
+  - id: ammoNone
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoNone.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoNone.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.NONE
+  - id: reloadSelf
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadSelf.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadSelf.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.SELF
+    tab:
+      parent: item
+      id: properties
+  - id: ammoSelf
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoSelf.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoSelf.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.SELF
+  - id: reloadSingle
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadSingle.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadSingle.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.SINGLE
+    tab:
+      parent: item
+      id: properties
+  - id: ammoSingle
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoSingle.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoSingle.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.SINGLE
+  - id: reloadFull
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadFull.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadFull.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.FULL
+    tab:
+      parent: item
+      id: properties
+  - id: ammoFull
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoFull.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoFull.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.FULL
+  - id: reloadMagazine
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadMagazine.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadMagazine.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.MAGAZINE
+    tab:
+      parent: item
+      id: properties
+  - id: ammoMagazine
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoMagazine.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoMagazine.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.MAGAZINE
+  - id: reloadBattery
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadBattery.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadBattery.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.BATTERY
+    tab:
+      parent: item
+      id: properties
+  - id: ammoBattery
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoBattery.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoBattery.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.BATTERY
+  - id: reloadPP
+    selector: '#itemSheetID select[name="system.reloadType"]'
+    title: SWADE.TOURS.AMMUNITION.ReloadPP.Title
+    content: SWADE.TOURS.AMMUNITION.ReloadPP.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.PP
+    tab:
+      parent: item
+      id: properties
+  - id: ammoPP
+    selector: '#itemSheetID input[name="system.ammo"]'
+    title: SWADE.TOURS.AMMUNITION.AmmoPP.Title
+    content: SWADE.TOURS.AMMUNITION.AmmoPP.Content
+    itemName: SWADE.TOURS.AMMUNITION.Items.PP
+suggestedNextTours: []

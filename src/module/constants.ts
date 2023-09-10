@@ -107,4 +107,12 @@ export const constants = {
     DIE: 'Die',
     SELECT: 'Selection',
   } as const,
+  /** @enum */
+  TOUR_TAB_PARENTS: {
+    SIDEBAR: 'sidebar',
+    GAMESETTINGS: 'settings',
+    CONFIGURATOR: 'configurator',
+    ACTOR: 'actor',
+    ITEM: 'item',
+  } as const,
 };
