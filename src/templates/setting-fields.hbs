@@ -41,9 +41,7 @@
         {{else if (eq attr.dtype 'Selection')}}
           <label>{{attr.label}}</label>
           <select name='system.additionalStats.{{key}}.value'>
-            {{#select attr.value}}
-              {{selectOptions attr.options selected=attr.value localize=true}}
-            {{/select}}
+            {{selectOptions attr.options selected=attr.value localize=true}}
           </select>
         {{else}}
           <label>{{attr.label}}</label>
@@ -65,7 +63,7 @@
                 data-dtype='{{attr.dtype}}'
                 value='{{attr.max}}'
                 placeholder='{{localize
-                  "SWADE.AdditionalStats.Current"
+                  "SWADE.AdditionalStats.Max"
                   stat=attr.label
                 }}'
               />
