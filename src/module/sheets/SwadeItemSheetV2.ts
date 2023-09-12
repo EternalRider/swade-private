@@ -432,11 +432,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     } else if (classList?.contains('powers')) {
       await this._addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
-      const actions =
-        foundry.utils.getProperty(this.item, 'system.actions.additional') ?? {};
-      if (!foundry.utils.isEmpty(actions)) {
-        await this._addOrReplaceActions(item);
-      }
+      await this._addOrReplaceActions(item);
     }
   }
 
@@ -489,11 +485,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   private async _addOrReplaceActions(item: SwadeItem) {
     const actionKey = 'system.actions.additional';
-    const actions = (foundry.utils.getProperty(this.item, actionKey) ??
-      {}) as ItemActions;
+    const actions = foundry.utils.getProperty(this.item, actionKey) as
+      | ItemActions
+      | undefined;
+    if (typeof actions === 'undefined') return; //no actions on this item, return before we break something;
     if (foundry.utils.isEmpty(actions)) {
       //if no actions are present then we simply copy the actions from the dropped item
-      await this.item.update({
+      return this.item.update({
         [actionKey]: foundry.utils.getProperty(item, actionKey),
       });
     }
