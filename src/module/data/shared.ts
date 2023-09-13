@@ -3,6 +3,7 @@ import {
   ModelValidationError,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 import { constants } from '../constants';
+import { TraitDie } from '../documents/actor/actor-data-source';
 
 export function makeDiceField(init = 4) {
   return new foundry.data.fields.NumberField({
@@ -52,6 +53,22 @@ export function makeAdditionalStatsSchema() {
     }),
     { initial: {} },
   );
+}
+
+/**
+ * @param die The die to adjust
+ * @returns the properly adjusted trait die
+ */
+export function boundTraitDie(die: TraitDie): TraitDie {
+  const sides = die.sides;
+  if (sides < 4 && sides !== 1) {
+    die.sides = 4;
+  } else if (sides > 12) {
+    const difference = sides - 12;
+    die.sides = 12;
+    die.modifier += difference / 2;
+  }
+  return die;
 }
 
 /*

@@ -39,8 +39,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by jpmeehan5**
 - Clicking on an inherited effect on the Character sheet no longer opens the source item in addition to expanding the description. Instead, a tooltip will display on hover that states the source's name. (#929) **by jpmeehan5**
 - Introduced tabs to the Actor Tweaks window. (#932) **by @florad92**
+- Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by jpmeehan5**
+- [BREAKING] The Scale value on vehicles is now automatically derived from their size. **by jpmeehan5**
 
 ### Deprecated
+
+- SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by jpmeehan5**
 
 ### Removed
 

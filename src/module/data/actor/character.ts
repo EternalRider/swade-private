@@ -1,25 +1,14 @@
-import commonActorData from './common';
-import * as quarantine from './_quarantine';
+import { CommonActorData } from './common';
 export interface CharacterData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
     ReturnType<(typeof CharacterData)['defineSchema']>
   > {}
 
-export class CharacterData extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof CharacterData)['defineSchema']>
-  >
-> {
+export class CharacterData extends CommonActorData {
   static defineSchema() {
     return {
-      ...commonActorData(),
+      ...super.defineSchema(),
+      ...this.wildcardData(3, 3, true),
     };
-  }
-
-  /** @inheritdoc */
-  static override migrateData(source) {
-    quarantine.ensureStrengthDie(source);
-    quarantine.ensureCurrencyIsNumeric(source);
-    return super.migrateData(source);
   }
 }

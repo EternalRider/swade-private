@@ -21,7 +21,7 @@ export interface WeaponData
     ReturnType<(typeof WeaponData)['defineSchema']>
   > {}
 
-export class WeaponData extends foundry.abstract.DataModel<
+export class WeaponData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof WeaponData)['defineSchema']>
   >

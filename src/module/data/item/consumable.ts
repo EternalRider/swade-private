@@ -17,7 +17,7 @@ export interface ConsumableData
     ReturnType<(typeof ConsumableData)['defineSchema']>
   > {}
 
-export class ConsumableData extends foundry.abstract.DataModel<
+export class ConsumableData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ConsumableData)['defineSchema']>
   >
