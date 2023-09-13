@@ -12,7 +12,7 @@ export interface AbilityData
     ReturnType<(typeof AbilityData)['defineSchema']>
   > {}
 
-export class AbilityData extends foundry.abstract.DataModel<
+export class AbilityData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof AbilityData)['defineSchema']>
   >

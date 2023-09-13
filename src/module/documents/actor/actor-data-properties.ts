@@ -1,4 +1,7 @@
-import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
+import {
+  DerivedModifier,
+  RollModifier,
+} from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
   CharacterDataSourceData,
@@ -68,11 +71,11 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
     parry: {
       sources: DerivedModifier[];
       effects: DerivedModifier[];
-    }
+    };
     toughness: {
       sources: DerivedModifier[];
       effects: DerivedModifier[];
-    }
+    };
   };
   details: {
     encumbrance: {

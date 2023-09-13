@@ -14,7 +14,7 @@ export interface ActionData
     ReturnType<(typeof ActionData)['defineSchema']>
   > {}
 
-export class ActionData extends foundry.abstract.DataModel<
+export class ActionData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ActionData)['defineSchema']>
   >

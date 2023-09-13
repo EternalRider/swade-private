@@ -5,7 +5,7 @@ export interface HindranceData
     ReturnType<(typeof HindranceData)['defineSchema']>
   > {}
 
-export class HindranceData extends foundry.abstract.DataModel<
+export class HindranceData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof HindranceData)['defineSchema']>
   >
