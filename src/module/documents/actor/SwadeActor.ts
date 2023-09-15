@@ -114,10 +114,10 @@ export default class SwadeActor extends Actor {
 
   get armorPerLocation(): Record<ArmorLocation, number> {
     return {
-      head: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.HEAD),
-      torso: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO),
-      arms: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.ARMS),
-      legs: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.LEGS),
+      head: this._getArmorForLocation(constants.ARMOR_LOCATIONS.HEAD),
+      torso: this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO),
+      arms: this._getArmorForLocation(constants.ARMOR_LOCATIONS.ARMS),
+      legs: this._getArmorForLocation(constants.ARMOR_LOCATIONS.LEGS),
     };
   }
 
@@ -228,7 +228,7 @@ export default class SwadeActor extends Actor {
   }
 
   override prepareDerivedData() {
-    this.#filterOverrides();
+    this._filterOverrides();
 
     /**
      * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
@@ -254,12 +254,12 @@ export default class SwadeActor extends Actor {
 
     rolls.push(
       Roll.fromTerms([
-        this.#buildTraitDie(abl.die.sides, game.i18n.localize(label)),
+        this._buildTraitDie(abl.die.sides, game.i18n.localize(label)),
       ]),
     );
 
     if (this.isWildcard) {
-      rolls.push(Roll.fromTerms([this.#buildWildDie(abl['wild-die'].sides)]));
+      rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
     }
 
     const basePool = PoolTerm.fromRolls(rolls);
@@ -380,7 +380,7 @@ export default class SwadeActor extends Actor {
       return this.makeUnskilledAttempt(options);
     }
 
-    const skillRoll = this.#handleComplexSkill(skill, options);
+    const skillRoll = this._handleComplexSkill(skill, options);
     const roll = skillRoll[0];
     const modifiers = skillRoll[1];
     roll.modifiers = modifiers;
@@ -466,11 +466,11 @@ export default class SwadeActor extends Actor {
     }
     const rolls = [
       Roll.fromTerms([
-        this.#buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label')),
+        this._buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label')),
       ]),
     ];
     if (this.isWildcard) {
-      rolls.push(Roll.fromTerms([this.#buildWildDie(wildDie)]));
+      rolls.push(Roll.fromTerms([this._buildWildDie(wildDie)]));
     }
 
     const pool = PoolTerm.fromRolls(rolls);
@@ -849,12 +849,12 @@ export default class SwadeActor extends Actor {
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
     strength.die.sides += stepAdjust;
     //bound the adjusted strength die to 12
-    const encumbDie = this.#boundTraitDie(strength.die);
+    const encumbDie = this._boundTraitDie(strength.die);
 
     if (unit === 'imperial') {
-      return this.#calcImperialCapacity(encumbDie);
+      return this._calcImperialCapacity(encumbDie);
     } else if (unit === 'metric') {
-      return this.#calcMetricCapacity(encumbDie);
+      return this._calcMetricCapacity(encumbDie);
     } else {
       throw new Error(`Value ${unit} is an unknown value!`);
     }
@@ -1019,7 +1019,7 @@ export default class SwadeActor extends Actor {
       .sort((a, b) => a.label.localeCompare(b.label)); //sort the mods alphabetically by label
   }
 
-  #handleComplexSkill(
+  private _handleComplexSkill(
     skill: SwadeItem,
     options: IRollOptions,
   ): [TraitRoll, RollModifier[]] {
@@ -1037,14 +1037,14 @@ export default class SwadeActor extends Actor {
     //Add all necessary trait die
     for (let i = 0; i < options.rof; i++) {
       rolls.push(
-        Roll.fromTerms([this.#buildTraitDie(skillData.die.sides, skill.name!)]),
+        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
       );
     }
 
     //Add Wild Die
     if (this.isWildcard) {
       rolls.push(
-        Roll.fromTerms([this.#buildWildDie(skillData['wild-die'].sides)]),
+        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
       );
     }
 
@@ -1085,7 +1085,7 @@ export default class SwadeActor extends Actor {
    * @param modifiers modifiers to the die
    * @returns a Die instance that already has the exploding modifier by default
    */
-  #buildTraitDie(sides: number, flavor: string): Die {
+  private _buildTraitDie(sides: number, flavor: string): Die {
     const modifiers: (keyof Die.Modifiers)[] = [];
     if (sides > 1) modifiers.push('x');
     return new Die({
@@ -1099,7 +1099,7 @@ export default class SwadeActor extends Actor {
    * @param die The die to adjust
    * @returns the properly adjusted trait die
    */
-  #boundTraitDie(die: TraitDie): TraitDie {
+  private _boundTraitDie(die: TraitDie): TraitDie {
     const sides = die.sides;
     if (sides < 4 && sides !== 1) {
       die.sides = 4;
@@ -1111,26 +1111,26 @@ export default class SwadeActor extends Actor {
     return die;
   }
 
-  #buildWildDie(sides = 6): WildDie {
+  private _buildWildDie(sides = 6): WildDie {
     return new WildDie({ faces: sides });
   }
 
-  #calcImperialCapacity(strength: TraitDie): number {
+  private _calcImperialCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
     return (strength.sides / 2 - 1 + modifier) * 20;
   }
 
-  #calcMetricCapacity(strength: TraitDie): number {
+  private _calcMetricCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
     return (strength.sides / 2 - 1 + modifier) * 10;
   }
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
   calcArmor(): number {
-    const torsoArmor = this.#getArmorForLocation(
+    const torsoArmor = this._getArmorForLocation(
       constants.ARMOR_LOCATIONS.TORSO,
     );
-    return this.#calcDerivedEffects('armor', torsoArmor);
+    return this._calcDerivedEffects('armor', torsoArmor);
   }
 
   /** Calculates the Toughness value without armor and returns it */
@@ -1174,7 +1174,7 @@ export default class SwadeActor extends Actor {
         });
       }
     }
-    return this.#calcDerivedEffects('toughness', finalToughness);
+    return this._calcDerivedEffects('toughness', finalToughness);
   }
 
   calcParry(): number {
@@ -1255,10 +1255,10 @@ export default class SwadeActor extends Actor {
       parryTotal += parryBonus;
     }
 
-    return this.#calcDerivedEffects('parry', parryTotal);
+    return this._calcDerivedEffects('parry', parryTotal);
   }
 
-  #calcDerivedEffects(
+  private _calcDerivedEffects(
     target: 'parry' | 'toughness' | 'armor',
     derivedStat: number,
   ): number {
@@ -1330,7 +1330,7 @@ export default class SwadeActor extends Actor {
    * @param location The location of the armor such as head, torso, arms or legs
    * @returns The total amount of armor for that location
    */
-  #getArmorForLocation(location: ArmorLocation): number {
+  private _getArmorForLocation(location: ArmorLocation): number {
     if (this.system instanceof VehicleData) return 0;
 
     let totalArmorVal = 0;
@@ -1387,7 +1387,7 @@ export default class SwadeActor extends Actor {
        ${this.system.stats.toughness.value}
       (${this.system.stats.toughness.armor})</h4>`;
 
-    tooltip += this.#sourcesToTooltip(this.system.stats[target].sources);
+    tooltip += this._sourcesToTooltip(this.system.stats[target].sources);
 
     return tooltip;
   }
@@ -1402,12 +1402,12 @@ export default class SwadeActor extends Actor {
     tooltip += game.i18n.localize('SWADE.Arms') + `: ${armor.arms}<br>`;
     tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`;
 
-    tooltip += this.#sourcesToTooltip(this.system.stats.toughness.armorEffects);
+    tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects);
 
     return tooltip;
   }
 
-  #sourcesToTooltip(sources: DerivedModifier[]): string {
+  private _sourcesToTooltip(sources: DerivedModifier[]): string {
     let tooltip = '';
 
     sources.forEach((source) => {
@@ -1438,7 +1438,7 @@ export default class SwadeActor extends Actor {
     return tooltip;
   }
 
-  #filterOverrides() {
+  private _filterOverrides() {
     const overrides = foundry.utils.flattenObject(this.overrides);
     for (const k of Object.keys(overrides)) {
       if (k.startsWith('@')) {
