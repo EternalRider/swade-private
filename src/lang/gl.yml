@@ -16,7 +16,7 @@ SWADE:
   CommunityVicSheet: Ficha de vehículo comunitaria
   CommunityItemSheet: Folla de obxecto comunitaria
   Name: Nome
-  Race: Raza
+  Ancestry: Raza
   Pace: Paso
   Tough: Dureza
   RunningDie: Dado de correr
@@ -398,7 +398,7 @@ SWADE:
   Subtype: Subtipo
   SpecialAbility: Capacidade Especial
   SpecialAbilities: Capacidades Especiais
-  RacialAbilities: Capacidades Raciais
+  AncestralAbilities: Capacidades Raciais
   About: Sobre
   EdgesHindrances: Vantaxes & Desvantaxes
   GrantsPowers: Outorga Poderes
@@ -489,7 +489,7 @@ SWADE:
     \ un"
   MAPenalty.Label: Penalización de acción múltiple
   ApplyEncumbrance: Aplicar penalizadores por Carga
-  CannotAddRaceToRace: Non podes engadir unha raza/arquetipo a unha raza/arquetipo!
+  CannotAddAncestryToAncestry: Non podes engadir unha raza/arquetipo a unha raza/arquetipo!
   NoSceneAvailable: Non hai escena dispoñible ou desabilitaches o lenzo
   ChaseCardsCleared: Todas as cartas de Persecución foron retiradas da escena.
   SetUpChase: Configura a persecución
@@ -662,7 +662,7 @@ SWADE:
     OffHand: Mano mala
     TwoHands: A dos manos
   DestroyOnEmpty: Destruir cuando esté vacío
-  EmptyRacialAbilitiesHint: Esta {race} o {archetype} aún no tiene ninguna habilidad.
+  EmptyAncestralAbilitiesHint: Esta {ancestry} o {archetype} aún no tiene ninguna habilidad.
     Arrastra y suelta algo en la hoja para empezar.
   Templates:
     Cone:

@@ -377,7 +377,7 @@ export default class CharacterSheet extends ActorSheet {
 
     html[0]
       .querySelectorAll<HTMLButtonElement>(
-        '.character-detail.race button, .character-detail.archetype button',
+        '.character-detail.ancestry button, .character-detail.archetype button',
       )
       .forEach((btn) => {
         btn.addEventListener('click', (ev) => {

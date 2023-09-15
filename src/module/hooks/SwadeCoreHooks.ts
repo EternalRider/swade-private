@@ -1054,17 +1054,23 @@ export default class SwadeCoreHooks {
     html.find('section[data-tab="duration"]').after(section);
   }
 
-  /** This hook only really exists to stop Races from being added to the actor as an item if the actor already HAS one */
+  /** This hook only really exists to stop Ancestries from being added to the actor as an item if the actor already HAS one */
   static onPreCreateItem(item: SwadeItem, _options: object, _userId: string) {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
-      if (subType === 'race' && !!item.actor?.race) {
-        ui.notifications.warn('SWADE.Validation.OnlyOneRace', {
+      if (
+        subType === constants.ABILITY_TYPE.ANCESTRY &&
+        !!item.actor?.ancestry
+      ) {
+        ui.notifications.warn('SWADE.Validation.OnlyOneAncestry', {
           localize: true,
         });
         return false;
       }
-      if (subType === 'archetype' && !!item.actor?.archetype) {
+      if (
+        subType === constants.ABILITY_TYPE.ARCHETYPE &&
+        !!item.actor?.archetype
+      ) {
         ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
           localize: true,
         });

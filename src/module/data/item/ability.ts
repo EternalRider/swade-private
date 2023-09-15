@@ -6,6 +6,7 @@ import {
   grants,
   itemDescription,
 } from './common';
+import * as migrations from './_migration';
 
 export interface AbilityData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -33,5 +34,11 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
       }),
       grantsPowers: new fields.BooleanField(),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source) {
+    migrations.renameRaceToAncestry(source);
+    return super.migrateData(source);
   }
 }

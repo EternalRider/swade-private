@@ -10,7 +10,7 @@ SWADE:
   ActionDeckPresetDark: Aktionskarten (Dunkel)
   Name: Name
   Tough: Robustheit
-  Race: Volk
+  Ancestry: Volk
   Archetype: Archetyp
   Pace: Bew.
   Running: Sprinten
@@ -293,7 +293,7 @@ SWADE:
   Subtype: Unterkategorie
   SpecialAbility: Spezialfähigkeit
   SpecialAbilities: Spezialfähigkeiten
-  RacialAbilities: Volkseigenschaften
+  AncestralAbilities: Volkseigenschaften
   ArchetypeAbilities: Archetypeigenschaften
   About: Über
   EdgesHindrances: Talente
@@ -483,7 +483,7 @@ SWADE:
   NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird einer erstellt
   Subtract: Abziehen
   ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen in Kraft treten
-  CannotAddRaceToRace: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
+  CannotAddAncestryToAncestry: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
   Keybindings:
     Bennies:
       Name: Benny bekommen oder Ausgeben
@@ -677,7 +677,7 @@ SWADE:
     UnarmoredHero:
       Name: Ungepanzerter Held
   Validation:
-    OnlyOneRace: Ein charakter kann nur ein Volk auf einmal haben!
+    OnlyOneAncestry: Ein charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
@@ -721,7 +721,7 @@ SWADE:
     Use: Benützen
     Consumables: Verbrauchsgegenstände
   ItemSheet: Savage Worlds Itembogen
-  EmptyRacialAbilitiesHint: Dieses {race} oder dieser {archetype} hat noch keine Fähigkeiten.
+  EmptyAncestralAbilitiesHint: Dieses {ancestry} oder dieser {archetype} hat noch keine Fähigkeiten.
   NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe zu machen
   Templates:
     Cone:

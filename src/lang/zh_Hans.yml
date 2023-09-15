@@ -163,7 +163,7 @@ SWADE.RollRun: 点击以奔跑
 SWADE.RunningDie: 奔跑骰
 SWADE.Running: 奔跑
 SWADE.Pace: 移速
-SWADE.Race: 种族
+SWADE.Ancestry: 种族
 SWADE.Tough: 坚韧
 SWADE.Name: 名称
 ITEM.TypePower: 奇术
@@ -308,7 +308,7 @@ SWADE.String: 文本
 SWADE.Passengers: 可选乘员
 SWADE.EdgesHindrances: 专长与负赘
 SWADE.About: 其他
-SWADE.RacialAbilities: 种族能力
+SWADE.AncestralAbilities: 种族能力
 SWADE.SpecialAbilities: 特殊能力
 SWADE.SpecialAbility: 特殊能力
 SWADE.Subtype: 子类
@@ -436,7 +436,7 @@ SWADE.Range.Extreme: 极限射程
 SWADE.ModOther: 其他调整值
 SWADE.Snapfire: 猝射
 SWADE.UnstablePlatform: 不稳平台
-SWADE.CannotAddRaceToRace: 你不能将族裔/范型添加至族裔/范型！
+SWADE.CannotAddAncestryToAncestry: 你不能将族裔/范型添加至族裔/范型！
 SWADE.ApplyEncumbrance: 应用负载减值
 SWADE.ApplyEncumbranceHint: '应用负载减值。请记住这暂不支持对抗{fatigue}的{vigor}考验！'
 SWADE.LayOutChaseWithDeck: 使用卡组布置追逐
@@ -514,7 +514,7 @@ SWADE:
   ActionDeckPresetDark: 行动卡(深色)
   Name: 名称
   Tough: 坚韧
-  Race: 种族
+  Ancestry: 种族
   Archetype: 范型
   Pace: 移速
   Running: 奔跑
@@ -777,7 +777,7 @@ SWADE:
   Subtype: 子类型
   SpecialAbility: 特殊能力
   SpecialAbilities: 特殊能力
-  RacialAbilities: 种族能力
+  AncestralAbilities: 种族能力
   ArchetypeAbilities: 范型能力
   About: 关于
   EdgesHindrances: 专长&负赘
@@ -872,7 +872,7 @@ SWADE:
   ModOther: 其他调整值
   Snapfire: 猝射
   UnstablePlatform: 不稳平台
-  CannotAddRaceToRace: 你不能将种族/范型添加到种族/范型之中！
+  CannotAddAncestryToAncestry: 你不能将种族/范型添加到种族/范型之中！
   LayOutChaseWithDeck: 使用牌组排出追逐
   ClearChaseCards: 从场景中清楚追逐卡
   NoSceneAvailable: 没有可用场景，或是你停用了画布
@@ -1141,7 +1141,7 @@ SWADE:
   Consumable:
     Use: 使用
     Consumables: 消耗品
-  EmptyRacialAbilitiesHint: 此{race}或{archetype}暂时不具备任何能力，将内容拖拽&置入卡中以开始着手。
+  EmptyAncestralAbilitiesHint: 此{ancestry}或{archetype}暂时不具备任何能力，将内容拖拽&置入卡中以开始着手。
   DeleteEmbeddedActionPrompt: 你确定要删除动作{action}
   CustomWildDie: '- 自定义不羁骰 -'
   Templates:
@@ -1319,7 +1319,7 @@ SWADE:
   Weakness: 弱点
   Resistance: 抗性
   Validation:
-    OnlyOneRace: 你一次只能有一个种族！
+    OnlyOneAncestry: 你一次只能有一个种族！
     OnlyOneArchetype: 你一次只能有一个原型！
   CalledShot:
     HeadOrVitals: 定点攻击：头部或要害

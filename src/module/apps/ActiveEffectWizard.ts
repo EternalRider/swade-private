@@ -1,20 +1,19 @@
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { EffectChangeDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
+import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
+import { constants } from '../constants';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
 export default class ActiveEffectWizard extends FormApplication {
-  private effect: ActiveEffectDataConstructorData = {
-    name: game.i18n.format('DOCUMENT.New', {
-      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-    }),
+  #effect: DeepPartial<BaseActiveEffect.Properties> = {
+    name: SwadeActiveEffect.DEFAULT_NAME,
     icon: 'systems/swade/assets/icons/active-effect.svg',
   };
 
-  private changes = new Array<ChangePreview>();
-  private accordions = new Array<Accordion>();
-  private collapsibleStates: Record<string, boolean> = {
+  #changes: ChangePreview[] = [];
+  #accordions: Accordion[] = [];
+  #collapsibleStates: Record<string, boolean> = {
     attribute: true,
     skill: true,
     derived: true,
@@ -34,50 +33,61 @@ export default class ActiveEffectWizard extends FormApplication {
     });
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
-    this._setupAccordions();
-    html.find('button[data-key]').on('click', this._addChange.bind(this));
-    html.find('button.submit').on('click', async () => {
-      await this._createEffect();
+  constructor(
+    object: SwadeActor | SwadeItem,
+    options?: Partial<FormApplicationOptions>,
+  ) {
+    super(object, options);
+    if (object instanceof SwadeItem) {
+      //TODO Move to `effect.img` once v12 releases
+      this.#effect.name = object.name as string;
+      this.#effect.icon = object.img as string;
+    }
+  }
+
+  override activateListeners(jquery: JQuery<HTMLElement>): void {
+    super.activateListeners(jquery);
+    this.#setupAccordions();
+    const html = jquery[0];
+    html
+      .querySelectorAll<HTMLButtonElement>('button[data-key]')
+      .forEach((btn) =>
+        btn.addEventListener('click', this.#onAddChange.bind(this)),
+      );
+    html
+      .querySelectorAll<HTMLButtonElement>('.change .delete-change')
+      .forEach((btn) =>
+        btn.addEventListener('click', this.#onDeleteChange.bind(this)),
+      );
+
+    html.querySelector('button.submit')?.addEventListener('click', async () => {
+      await this.#createEffect();
       this.close();
     });
+
     html
-      .find('.effect-basics .icon-path input[type="text"]')
-      .on('change', (ev) => {
-        const input = ev.currentTarget as HTMLInputElement;
-        html[0].querySelector<HTMLImageElement>('.effect-basics img')!.src =
-          input.value;
-      });
+      .querySelectorAll<HTMLSelectElement>('.change .value')
+      .forEach((select) =>
+        select.addEventListener('change', this.#onChangeValue.bind(this)),
+      );
 
-    html.find('.change .value').on('change', (ev) => {
-      const target = ev.currentTarget as HTMLInputElement;
-      const index = $(ev.currentTarget).parents('li.change').data('index');
-      this.changes[Number(index)].value = target.value;
-    });
-
-    html.find('.change .mode').on('change', (ev) => {
-      const target = ev.currentTarget as HTMLSelectElement;
-      const index = $(ev.currentTarget).parents('li.change').data('index');
-      this.changes[Number(index)].mode = Number(target.value);
-    });
-
-    html.find('.change .delete-change').on('click', (ev) => {
-      const index = $(ev.currentTarget).parents('li.change').data('index');
-      this.changes.splice(index, 1);
-      this.render(true);
-    });
+    html
+      .querySelectorAll<HTMLSelectElement>('.change .mode')
+      .forEach((select) =>
+        select.addEventListener('change', this.#onChangeMode.bind(this)),
+      );
   }
 
   override async getData(options?: Partial<ApplicationOptions>) {
     const data = {
-      effect: this.effect,
-      changes: this.changes,
-      collapsibleStates: this.collapsibleStates,
-      skillSuggestions: this._getSkillSuggestions(),
-      derivedPresets: this._getDerivedPresets(),
-      globalModPresets: this._getGlobalModPresets(),
-      otherPresets: this._getOtherStatsPresets(),
+      effect: this.#effect,
+      changes: this.#changes,
+      collapsibleStates: this.#collapsibleStates,
+      expirationOptions: this.#getExpirationOptions(),
+      skillSuggestions: this.#getSkillSuggestions(),
+      derivedPresets: this.#getDerivedPresets(),
+      globalModPresets: this.#getGlobalModPresets(),
+      otherPresets: this.#getOtherStatsPresets(),
       changeModes: {
         [foundry.CONST.ACTIVE_EFFECT_MODES.ADD]: 'EFFECT.MODE_ADD',
         [foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE]: 'EFFECT.MODE_OVERRIDE',
@@ -91,30 +101,30 @@ export default class ActiveEffectWizard extends FormApplication {
     _event: Event,
     formData?: object,
   ): Promise<void> {
-    this.effect = foundry.utils.mergeObject(this.effect, formData);
+    this.#effect = foundry.utils.mergeObject(this.#effect, formData);
+    this.render();
   }
 
-  private async _createEffect() {
-    this._prepareChanges();
-    CONFIG.ActiveEffect.documentClass.create(
-      foundry.utils.mergeObject(this.effect, {
-        transfer: this.object instanceof SwadeItem,
-      }),
-      {
-        renderSheet: this.changes.length === 0,
-        parent: this.object as SwadeActor | SwadeItem,
-      },
-    );
+  async #createEffect() {
+    this.#prepareChanges();
+    const data = foundry.utils.mergeObject(this.#effect, {
+      transfer: this.object instanceof SwadeItem,
+    });
+
+    CONFIG.ActiveEffect.documentClass.create(data, {
+      renderSheet: this.#changes.length === 0,
+      parent: this.object as SwadeActor | SwadeItem,
+    });
   }
 
-  private _getSkillSuggestions(): string[] {
+  #getSkillSuggestions(): string[] {
     if (this.object instanceof SwadeActor) {
       return this.object.itemTypes.skill.map((skill) => skill.name!);
     }
     return [];
   }
 
-  private _getDerivedPresets(): ActiveEffectPreset[] {
+  #getDerivedPresets(): ActiveEffectPreset[] {
     return [
       {
         label: game.i18n.localize('SWADE.Tough'),
@@ -131,7 +141,7 @@ export default class ActiveEffectWizard extends FormApplication {
     ];
   }
 
-  private _getGlobalModPresets(): ActiveEffectPreset[] {
+  #getGlobalModPresets(): ActiveEffectPreset[] {
     return [
       {
         label: game.i18n.localize('SWADE.GlobalMod.Trait'),
@@ -172,7 +182,7 @@ export default class ActiveEffectWizard extends FormApplication {
     ];
   }
 
-  private _getOtherStatsPresets(): ActiveEffectPreset[] {
+  #getOtherStatsPresets(): ActiveEffectPreset[] {
     return [
       {
         label: game.i18n.localize('SWADE.Size'),
@@ -227,11 +237,15 @@ export default class ActiveEffectWizard extends FormApplication {
         key: 'system.attributes.vigor.unStunBonus',
       },
       {
-        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
+        ),
         key: 'system.attributes.vigor.bleedOut.modifier',
       },
       {
-        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.IgnoreWounds'),
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds',
+        ),
         key: 'system.attributes.vigor.bleedOut.ignoreWounds',
       },
       {
@@ -249,8 +263,21 @@ export default class ActiveEffectWizard extends FormApplication {
     ];
   }
 
-  private _prepareChanges() {
-    this.effect.changes = this.changes.map((c) => {
+  #getExpirationOptions(): Record<number, string> {
+    return {
+      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto]:
+        'SWADE.Expiration.BeginAuto',
+      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt]:
+        'SWADE.Expiration.BeginPrompt',
+      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto]:
+        'SWADE.Expiration.EndAuto',
+      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt]:
+        'SWADE.Expiration.EndPrompt',
+    };
+  }
+
+  #prepareChanges() {
+    this.#effect.changes = this.#changes.map((c) => {
       return {
         key: c.key,
         mode: c.mode,
@@ -259,16 +286,14 @@ export default class ActiveEffectWizard extends FormApplication {
     });
   }
 
-  private _addChange(ev: JQuery.ClickEvent) {
-    const category = $(ev.currentTarget)
-      .parents('details')
-      .data('category') as string;
-    const keyPart = ev.currentTarget.dataset.key as string;
+  #onAddChange(ev: PointerEvent) {
+    const currentTarget = ev.currentTarget as HTMLButtonElement;
+    const details = currentTarget.closest('details');
+    const keyPart = currentTarget.dataset.key as string;
+    const category = details?.dataset.category as string;
     const target =
-      ($(ev.currentTarget)
-        .parents('details')
-        .find('.target')
-        .val() as string) ?? ev.currentTarget.innerText;
+      (details?.querySelector<HTMLInputElement | HTMLSelectElement>('.target')
+        ?.value as string) ?? currentTarget.innerText;
 
     let label = '';
     let key = '';
@@ -276,17 +301,17 @@ export default class ActiveEffectWizard extends FormApplication {
       if (!target) {
         return ui.notifications.warn('Please enter a skill name first!');
       }
-      label = `${target.capitalize()} ${ev.currentTarget.innerText}`.trim();
+      label = `${target.capitalize()} ${currentTarget.innerText}`.trim();
       key = `@${category.capitalize()}{${target}}[system.${keyPart}]`;
     } else if (category === 'attribute') {
-      label = `${target.capitalize()} ${ev.currentTarget.innerText}`.trim();
+      label = `${target.capitalize()} ${currentTarget.innerText}`.trim();
       key = `system.attributes.${target}.${keyPart}`;
     } else {
       label = target;
       key = keyPart;
     }
 
-    this.changes?.push({
+    this.#changes?.push({
       label: label,
       key: key,
       mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
@@ -294,14 +319,35 @@ export default class ActiveEffectWizard extends FormApplication {
     this.render(true);
   }
 
-  private _setupAccordions() {
+  #onDeleteChange(ev: PointerEvent) {
+    const index = (ev.currentTarget as HTMLButtonElement).closest('li')?.dataset
+      .index;
+    this.#changes.splice(Number(index), 1);
+    this.render(true);
+  }
+
+  #onChangeValue(ev: Event) {
+    const target = ev.currentTarget as HTMLInputElement;
+    const index = (ev.currentTarget as HTMLInputElement).closest('li')?.dataset
+      .index;
+    this.#changes[Number(index)].value = target.value;
+  }
+
+  #onChangeMode(ev: Event) {
+    const target = ev.currentTarget as HTMLSelectElement;
+    const index = (ev.currentTarget as HTMLSelectElement).closest('li')?.dataset
+      .index;
+    this.#changes[Number(index)].mode = Number(target.value);
+  }
+
+  #setupAccordions() {
     this.form
       ?.querySelectorAll<HTMLDetailsElement>('.presets details')
       .forEach((el) => {
-        this.accordions.push(new Accordion(el, '.content', { duration: 200 }));
+        this.#accordions.push(new Accordion(el, '.content', { duration: 200 }));
         const id = el.dataset.category as string;
         el.querySelector('summary')?.addEventListener('click', () => {
-          const states = this.collapsibleStates;
+          const states = this.#collapsibleStates;
           const currentState = Boolean(states[id]);
           states[id] = !currentState;
         });
@@ -315,6 +361,6 @@ interface ActiveEffectPreset {
   group?: string;
 }
 
-interface ChangePreview extends EffectChangeDataConstructorData {
+interface ChangePreview extends Partial<EffectChangeData> {
   label: string;
 }

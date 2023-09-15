@@ -51,3 +51,9 @@ export function renameActionProperties(source: any) {
     }
   }
 }
+
+export function renameRaceToAncestry(source: any) {
+  if (source.subtype === 'race') {
+    source.subtype = constants.ABILITY_TYPE.ANCESTRY;
+  }
+}

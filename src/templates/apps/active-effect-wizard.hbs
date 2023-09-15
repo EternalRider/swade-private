@@ -39,17 +39,12 @@
       <label>{{localize 'SWADE.Expiration.Behavior'}}</label>
       <span class='form-fields'>
         <select name='flags.swade.expiration' data-dtype='Number'>
-          {{#select effect.flags.swade.expiration}}
-            <option value='undefined'>
-              {{localize 'SWADE.Expiration.None'}}
-            </option>
-            <option value='0'>{{localize 'SWADE.Expiration.BeginAuto'}}</option>
-            <option value='1'>
-              {{localize 'SWADE.Expiration.BeginPrompt'}}
-            </option>
-            <option value='2'>{{localize 'SWADE.Expiration.EndAuto'}}</option>
-            <option value='3'>{{localize 'SWADE.Expiration.EndPrompt'}}</option>
-          {{/select}}
+          {{selectOptions
+            expirationOptions
+            localize=true
+            selected=effect.flags.swade.expiration
+            blank='SWADE.Expiration.None'
+          }}
         </select>
       </span>
     </div>

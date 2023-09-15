@@ -13,7 +13,7 @@ SWADE:
   ActionDeckPresetDark: Baralla d'acció (fosca)
   Name: Nom
   Tough: Duresa
-  Race: Raça
+  Ancestry: Raça
   Archetype: Arquetip
   Pace: Pas
   Running: Córrer
@@ -289,7 +289,7 @@ SWADE:
   Subtype: Subtipus
   SpecialAbility: Habilitat especial
   SpecialAbilities: Habilitats especials
-  RacialAbilities: Habilitats racials
+  AncestralAbilities: Habilitats racials
   ArchetypeAbilities: Habilitats d'arquetip
   About: Historial
   EdgesHindrances: Avantatges i Desavantatges
@@ -394,7 +394,7 @@ SWADE:
   ModOther: Altres modificadors
   Snapfire: Penalització per moviment
   UnstablePlatform: Plataforma inestable
-  CannotAddRaceToRace: No pots afegir una raça/arquetip a una raça/arquetip!
+  CannotAddAncestryToAncestry: No pots afegir una raça/arquetip a una raça/arquetip!
   LayOutChaseWithDeck: Fer servir la baralla de persecucions
   ClearChaseCards: Esborrar les cartes de persecució de l'escena
   NoSceneAvailable: No hi ha cap escena disponible o heu desactivat el llenç
@@ -698,8 +698,8 @@ SWADE:
   Consumable:
     Use: Ús
     Consumables: Consumibles
-  EmptyRacialAbilitiesHint: >-
-    Aquesta {race} o {archetype} encara no té cap habilitat. Arrossegueu i
+  EmptyAncestralAbilitiesHint: >-
+    Aquesta {ancestry} o {archetype} encara no té cap habilitat. Arrossegueu i
     deixeu anar alguna cosa a la fitxa per començar.
   NoTokenSelectedForResistRoll: Per fer una tirada de resistència, primer selecciona un token
   Templates:
@@ -861,7 +861,7 @@ SWADE:
       Title: Tornar a tirar per veure la gravetat de la lesió per a {name}?
       Prompt: <p>{name} està a punt de ser ferit. Vols repetir la tirada de Vigor?</p>
   Validation:
-    OnlyOneRace: Només es pot triar una espècie!
+    OnlyOneAncestry: Només es pot triar una espècie!
     OnlyOneArchetype: Només pots tenir un arquetip alhora!
   MigrateCompendium: Força la migració del compendi
   TOCBlockList: Compendi TOC Blocklist
