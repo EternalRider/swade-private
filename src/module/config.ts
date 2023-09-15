@@ -189,9 +189,9 @@ export const SWADE: SwadeConfig = {
       dropdown: 'SWADE.SpecialAbility',
       abilities: 'SWADE.SpecialAbilities',
     },
-    race: {
-      dropdown: 'SWADE.Race',
-      abilities: 'SWADE.RacialAbilities',
+    ancestry: {
+      dropdown: 'SWADE.Ancestry',
+      abilities: 'SWADE.AncestralAbilities',
     },
     archetype: {
       dropdown: 'SWADE.Archetype',

@@ -81,9 +81,7 @@ export default class SwadeActor extends Actor {
     super(data, ctx);
   }
 
-  /**
-   * @returns true when the actor is a Wild Card
-   */
+  /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
     if (this.system instanceof VehicleData) return false;
     return this.system.wildcard || this.type === 'character';
@@ -116,10 +114,10 @@ export default class SwadeActor extends Actor {
 
   get armorPerLocation(): Record<ArmorLocation, number> {
     return {
-      head: this._getArmorForLocation(constants.ARMOR_LOCATIONS.HEAD),
-      torso: this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO),
-      arms: this._getArmorForLocation(constants.ARMOR_LOCATIONS.ARMS),
-      legs: this._getArmorForLocation(constants.ARMOR_LOCATIONS.LEGS),
+      head: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.HEAD),
+      torso: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO),
+      arms: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.ARMS),
+      legs: this.#getArmorForLocation(constants.ARMOR_LOCATIONS.LEGS),
     };
   }
 
@@ -140,23 +138,38 @@ export default class SwadeActor extends Actor {
     );
   }
 
-  /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced 
+  /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced
    * @deprecated since version 3.2, use actor.system.encumbered instead
-  */
+   */
   get isEncumbered(): boolean {
-    foundry.utils.logCompatibilityWarning('SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered', {since: '3.2', until: '4.0'})
+    foundry.utils.logCompatibilityWarning(
+      'SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered',
+      { since: '3.2', until: '4.0' },
+    );
     return this.system.encumbered;
   }
 
-  get race(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData) return;
-    const races = this.items.filter(
-      (i) => i.type === 'ability' && i.system.subtype === 'race',
+  get race() {
+    foundry.utils.logCompatibilityWarning(
+      'The race getter has been 1 with the more appropriate ancestry getter',
+      { since: '3.2', until: '4.0' },
     );
-    if (races.length > 1) {
-      Logger.warn(`Actor ${this.name} (${this.id}) has more than one race!`);
+    return this.ancestry;
+  }
+
+  get ancestry(): SwadeItem | undefined {
+    if (this.system instanceof VehicleData) return;
+    const ancestries = this.items.filter(
+      (i) =>
+        i.type === 'ability' &&
+        i.system.subtype === constants.ABILITY_TYPE.ANCESTRY,
+    );
+    if (ancestries.length > 1) {
+      Logger.warn(
+        `Actor ${this.name} (${this.id}) has more than one ancestry!`,
+      );
     }
-    return races[0];
+    return ancestries[0];
   }
 
   get archetype(): SwadeItem | undefined {
@@ -215,7 +228,7 @@ export default class SwadeActor extends Actor {
   }
 
   override prepareDerivedData() {
-    this._filterOverrides();
+    this.#filterOverrides();
 
     /**
      * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
@@ -241,12 +254,12 @@ export default class SwadeActor extends Actor {
 
     rolls.push(
       Roll.fromTerms([
-        this._buildTraitDie(abl.die.sides, game.i18n.localize(label)),
+        this.#buildTraitDie(abl.die.sides, game.i18n.localize(label)),
       ]),
     );
 
     if (this.isWildcard) {
-      rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
+      rolls.push(Roll.fromTerms([this.#buildWildDie(abl['wild-die'].sides)]));
     }
 
     const basePool = PoolTerm.fromRolls(rolls);
@@ -367,7 +380,7 @@ export default class SwadeActor extends Actor {
       return this.makeUnskilledAttempt(options);
     }
 
-    const skillRoll = this._handleComplexSkill(skill, options);
+    const skillRoll = this.#handleComplexSkill(skill, options);
     const roll = skillRoll[0];
     const modifiers = skillRoll[1];
     roll.modifiers = modifiers;
@@ -453,11 +466,11 @@ export default class SwadeActor extends Actor {
     }
     const rolls = [
       Roll.fromTerms([
-        this._buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label')),
+        this.#buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label')),
       ]),
     ];
     if (this.isWildcard) {
-      rolls.push(Roll.fromTerms([this._buildWildDie(wildDie)]));
+      rolls.push(Roll.fromTerms([this.#buildWildDie(wildDie)]));
     }
 
     const pool = PoolTerm.fromRolls(rolls);
@@ -836,12 +849,12 @@ export default class SwadeActor extends Actor {
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
     strength.die.sides += stepAdjust;
     //bound the adjusted strength die to 12
-    const encumbDie = this._boundTraitDie(strength.die);
+    const encumbDie = this.#boundTraitDie(strength.die);
 
     if (unit === 'imperial') {
-      return this._calcImperialCapacity(encumbDie);
+      return this.#calcImperialCapacity(encumbDie);
     } else if (unit === 'metric') {
-      return this._calcMetricCapacity(encumbDie);
+      return this.#calcMetricCapacity(encumbDie);
     } else {
       throw new Error(`Value ${unit} is an unknown value!`);
     }
@@ -925,102 +938,6 @@ export default class SwadeActor extends Actor {
     return driver;
   }
 
-  private _handleComplexSkill(
-    skill: SwadeItem,
-    options: IRollOptions,
-  ): [TraitRoll, RollModifier[]] {
-    if (this.system instanceof VehicleData) {
-      throw new Error('Only Extras and Wildcards can roll skills!');
-    }
-    if (skill.type !== 'skill') {
-      throw new Error('Detected-non skill in skill roll construction');
-    }
-    if (!options.rof) options.rof = 1;
-    const skillData = skill.system;
-
-    const rolls = new Array<Roll>();
-
-    //Add all necessary trait die
-    for (let i = 0; i < options.rof; i++) {
-      rolls.push(
-        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
-      );
-    }
-
-    //Add Wild Die
-    if (this.isWildcard) {
-      rolls.push(
-        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
-      );
-    }
-
-    const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
-    const basePool = PoolTerm.fromRolls(rolls);
-    basePool.modifiers.push(kh);
-    const attGlobalMods: RollModifier[] =
-      this.system.stats.globalMods[skill.system.attribute] ?? [];
-    const effects = structuredClone<RollModifier[]>([
-      ...(skillData.effects ?? []),
-      ...attGlobalMods,
-      ...this.system.stats.globalMods.trait,
-    ]);
-
-    if (options.additionalMods) options.additionalMods.push(...effects);
-    else options.additionalMods = effects;
-
-    const rollMods = this.getTraitRollModifiers(
-      skillData.die,
-      options,
-      skill.name,
-    );
-
-    //add encumbrance penalty if necessary
-    if (skill.system.attribute === 'agility' && this.system.encumbered) {
-      rollMods.push({
-        label: game.i18n.localize('SWADE.Encumbered'),
-        value: -2,
-      });
-    }
-
-    return [TraitRoll.fromTerms([basePool]), rollMods];
-  }
-
-  /**
-   * @param sides number of sides of the die
-   * @param flavor flavor of the die
-   * @param modifiers modifiers to the die
-   * @returns a Die instance that already has the exploding modifier by default
-   */
-  private _buildTraitDie(sides: number, flavor: string): Die {
-    const modifiers: (keyof Die.Modifiers)[] = [];
-    if (sides > 1) modifiers.push('x');
-    return new Die({
-      faces: sides,
-      modifiers: modifiers,
-      options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
-    });
-  }
-
-  /**
-   * @param die The die to adjust
-   * @returns the properly adjusted trait die
-   */
-  private _boundTraitDie(die: TraitDie): TraitDie {
-    const sides = die.sides;
-    if (sides < 4 && sides !== 1) {
-      die.sides = 4;
-    } else if (sides > 12) {
-      const difference = sides - 12;
-      die.sides = 12;
-      die.modifier += difference / 2;
-    }
-    return die;
-  }
-
-  private _buildWildDie(sides = 6): WildDie {
-    return new WildDie({ faces: sides });
-  }
-
   getTraitRollModifiers(
     die: TraitDie,
     options: IRollOptions,
@@ -1102,28 +1019,122 @@ export default class SwadeActor extends Actor {
       .sort((a, b) => a.label.localeCompare(b.label)); //sort the mods alphabetically by label
   }
 
-  private _calcImperialCapacity(strength: TraitDie): number {
+  #handleComplexSkill(
+    skill: SwadeItem,
+    options: IRollOptions,
+  ): [TraitRoll, RollModifier[]] {
+    if (this.system instanceof VehicleData) {
+      throw new Error('Only Extras and Wildcards can roll skills!');
+    }
+    if (skill.type !== 'skill') {
+      throw new Error('Detected-non skill in skill roll construction');
+    }
+    if (!options.rof) options.rof = 1;
+    const skillData = skill.system;
+
+    const rolls = new Array<Roll>();
+
+    //Add all necessary trait die
+    for (let i = 0; i < options.rof; i++) {
+      rolls.push(
+        Roll.fromTerms([this.#buildTraitDie(skillData.die.sides, skill.name!)]),
+      );
+    }
+
+    //Add Wild Die
+    if (this.isWildcard) {
+      rolls.push(
+        Roll.fromTerms([this.#buildWildDie(skillData['wild-die'].sides)]),
+      );
+    }
+
+    const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
+    const basePool = PoolTerm.fromRolls(rolls);
+    basePool.modifiers.push(kh);
+    const attGlobalMods: RollModifier[] =
+      this.system.stats.globalMods[skill.system.attribute] ?? [];
+    const effects = structuredClone<RollModifier[]>([
+      ...(skillData.effects ?? []),
+      ...attGlobalMods,
+      ...this.system.stats.globalMods.trait,
+    ]);
+
+    if (options.additionalMods) options.additionalMods.push(...effects);
+    else options.additionalMods = effects;
+
+    const rollMods = this.getTraitRollModifiers(
+      skillData.die,
+      options,
+      skill.name,
+    );
+
+    //add encumbrance penalty if necessary
+    if (skill.system.attribute === 'agility' && this.system.encumbered) {
+      rollMods.push({
+        label: game.i18n.localize('SWADE.Encumbered'),
+        value: -2,
+      });
+    }
+
+    return [TraitRoll.fromTerms([basePool]), rollMods];
+  }
+
+  /**
+   * @param sides number of sides of the die
+   * @param flavor flavor of the die
+   * @param modifiers modifiers to the die
+   * @returns a Die instance that already has the exploding modifier by default
+   */
+  #buildTraitDie(sides: number, flavor: string): Die {
+    const modifiers: (keyof Die.Modifiers)[] = [];
+    if (sides > 1) modifiers.push('x');
+    return new Die({
+      faces: sides,
+      modifiers: modifiers,
+      options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
+    });
+  }
+
+  /**
+   * @param die The die to adjust
+   * @returns the properly adjusted trait die
+   */
+  #boundTraitDie(die: TraitDie): TraitDie {
+    const sides = die.sides;
+    if (sides < 4 && sides !== 1) {
+      die.sides = 4;
+    } else if (sides > 12) {
+      const difference = sides - 12;
+      die.sides = 12;
+      die.modifier += difference / 2;
+    }
+    return die;
+  }
+
+  #buildWildDie(sides = 6): WildDie {
+    return new WildDie({ faces: sides });
+  }
+
+  #calcImperialCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
     return (strength.sides / 2 - 1 + modifier) * 20;
   }
 
-  private _calcMetricCapacity(strength: TraitDie): number {
+  #calcMetricCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
     return (strength.sides / 2 - 1 + modifier) * 10;
   }
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
-  private calcArmor(): number {
-    const torsoArmor = this._getArmorForLocation(
+  calcArmor(): number {
+    const torsoArmor = this.#getArmorForLocation(
       constants.ARMOR_LOCATIONS.TORSO,
     );
-    return this._calcDerivedEffects('armor', torsoArmor);
+    return this.#calcDerivedEffects('armor', torsoArmor);
   }
 
-  /**
-   * Calculates the Toughness value without armor and returns it
-   */
-  private calcToughness(): number {
+  /** Calculates the Toughness value without armor and returns it */
+  calcToughness(): number {
     if (this.system instanceof VehicleData) return 0;
     let finalToughness = 0;
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
@@ -1163,10 +1174,10 @@ export default class SwadeActor extends Actor {
         });
       }
     }
-    return this._calcDerivedEffects('toughness', finalToughness);
+    return this.#calcDerivedEffects('toughness', finalToughness);
   }
 
-  private calcParry(): number {
+  calcParry(): number {
     if (this.system instanceof VehicleData) return 0;
     let parryTotal = 0;
     const sources: DerivedModifier[] = this.system.stats.parry.sources;
@@ -1244,10 +1255,10 @@ export default class SwadeActor extends Actor {
       parryTotal += parryBonus;
     }
 
-    return this._calcDerivedEffects('parry', parryTotal);
+    return this.#calcDerivedEffects('parry', parryTotal);
   }
 
-  private _calcDerivedEffects(
+  #calcDerivedEffects(
     target: 'parry' | 'toughness' | 'armor',
     derivedStat: number,
   ): number {
@@ -1319,7 +1330,7 @@ export default class SwadeActor extends Actor {
    * @param location The location of the armor such as head, torso, arms or legs
    * @returns The total amount of armor for that location
    */
-  private _getArmorForLocation(location: ArmorLocation): number {
+  #getArmorForLocation(location: ArmorLocation): number {
     if (this.system instanceof VehicleData) return 0;
 
     let totalArmorVal = 0;
@@ -1376,7 +1387,7 @@ export default class SwadeActor extends Actor {
        ${this.system.stats.toughness.value}
       (${this.system.stats.toughness.armor})</h4>`;
 
-    tooltip += this._sourcesToTooltip(this.system.stats[target].sources);
+    tooltip += this.#sourcesToTooltip(this.system.stats[target].sources);
 
     return tooltip;
   }
@@ -1391,12 +1402,12 @@ export default class SwadeActor extends Actor {
     tooltip += game.i18n.localize('SWADE.Arms') + `: ${armor.arms}<br>`;
     tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`;
 
-    tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects);
+    tooltip += this.#sourcesToTooltip(this.system.stats.toughness.armorEffects);
 
     return tooltip;
   }
 
-  private _sourcesToTooltip(sources: DerivedModifier[]): string {
+  #sourcesToTooltip(sources: DerivedModifier[]): string {
     let tooltip = '';
 
     sources.forEach((source) => {
@@ -1427,7 +1438,7 @@ export default class SwadeActor extends Actor {
     return tooltip;
   }
 
-  private _filterOverrides() {
+  #filterOverrides() {
     const overrides = foundry.utils.flattenObject(this.overrides);
     for (const k of Object.keys(overrides)) {
       if (k.startsWith('@')) {

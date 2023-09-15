@@ -13,7 +13,7 @@ SWADE:
   ActionDeckPresetDark: Action Deck (Dark)
   Name: Name
   Tough: Toughness
-  Race: Race
+  Ancestry: Ancestry
   Archetype: Archetype
   Pace: Pace
   Running: Running
@@ -330,7 +330,7 @@ SWADE:
   Subtype: Subtype
   SpecialAbility: Special Ability
   SpecialAbilities: Special Abilities
-  RacialAbilities: Racial Abilities
+  AncestralAbilities: Ancestral Abilities
   ArchetypeAbilities: Archetype Abilities
   About: About
   EdgesHindrances: Edges & Hindrances
@@ -440,7 +440,7 @@ SWADE:
   UnstablePlatform: Unstable Platform
   Weakness: Weakness
   Resistance: Resistance
-  CannotAddRaceToRace: You cannot add a race/archetype to a race/archetype!
+  CannotAddAncestryToAncestry: You cannot add a ancestry/archetype to an ancestry/archetype!
   LayOutChaseWithDeck: Use Deck to lay out Chase
   ClearChaseCards: Clear Chase cards from Scene
   NoSceneAvailable: There is no scene available or you've disabled the canvas
@@ -713,7 +713,7 @@ SWADE:
       BleedOutModifier: Bleeding Out Modifier
       IgnoreWounds: Bleeding Out Ignore Wounds
   Validation:
-    OnlyOneRace: You can only have one race at a time!
+    OnlyOneAncestry: You can only have one ancestry at a time!
     OnlyOneArchetype: You can only have one archetype at a time!
   BenniesSpendGM: Spend a GM Benny
   DocumentLink: Link
@@ -756,8 +756,8 @@ SWADE:
   Consumable:
     Use: Use
     Consumables: Consumables
-  EmptyRacialAbilitiesHint: >-
-    This {race} or {archetype} doesn't have any abilities yet. Drag&Drop
+  EmptyAncestralAbilitiesHint: >-
+    This {ancestry} or {archetype} doesn't have any abilities yet. Drag&Drop
     something onto the sheet to get started.
   NoTokenSelectedForResistRoll: To make a resistance roll, first select one token
   Templates:

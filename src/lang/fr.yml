@@ -13,7 +13,7 @@ SWADE:
   ActionDeckPresetDark: Cartes d'action (sombre)
   Name: Nom
   Tough: Résistance
-  Race: Espèce
+  Ancestry: Espèce
   Archetype: Archétype
   Pace: Allure
   Running: Course
@@ -281,7 +281,7 @@ SWADE:
   Subtype: Sous-type
   SpecialAbility: Capacité spéciale
   SpecialAbilities: Capacités spéciales
-  RacialAbilities: Capacités innées
+  AncestralAbilities: Capacités innées
   ArchetypeAbilities: Capacités d'archétype
   About: Description
   EdgesHindrances: Atouts/Handicaps
@@ -385,7 +385,7 @@ SWADE:
   ModOther: Autres modificateurs
   Snapfire: Tir statique
   UnstablePlatform: Plateforme instable
-  CannotAddRaceToRace: Vous ne pouvez pas ajouter une espèce/un archétype à une espèce/un
+  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une espèce/un archétype à une espèce/un
     archétype !
   LayOutChaseWithDeck: Utiliser les cartes pour gérer la poursuite
   ClearChaseCards: Retirer les cartes de poursuite de la scène
@@ -677,7 +677,7 @@ SWADE:
   Consumable:
     Use: Utiliser
     Consumables: Consommables
-  EmptyRacialAbilitiesHint: L’espèce '{race}' ou l'archétype '{archetype}' n'a pas
+  EmptyAncestralAbilitiesHint: L’espèce '{ancestry}' ou l'archétype '{archetype}' n'a pas
     encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
   AdditionalStats:
     SelectHint: Entrezune liste d'options, séparés par une virgule
@@ -803,7 +803,7 @@ SWADE:
   Resistance: Résistance
   Weakness: Faiblesse
   Validation:
-    OnlyOneRace: Vous ne pouvez avoir qu'une seule espèce à la fois !
+    OnlyOneAncestry: Vous ne pouvez avoir qu'une seule espèce à la fois !
     OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois !
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base

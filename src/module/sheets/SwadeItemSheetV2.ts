@@ -265,7 +265,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isRaceOrArchetype: subtype === 'race' || subtype === 'archetype',
+        isAncestryOrArchetype:
+          subtype === constants.ABILITY_TYPE.ANCESTRY ||
+          subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
     }
@@ -416,7 +418,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
-      return Logger.warn('SWADE.CannotAddRaceToRace', {
+      return Logger.warn('SWADE.CannotAddAncestryToAncestry', {
         localize: true,
         toast: true,
       });
@@ -672,9 +674,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case 'race':
-          return SWADE.abilitySheet.race.dropdown;
-        case 'archetype':
+        case constants.ABILITY_TYPE.ANCESTRY:
+          return SWADE.abilitySheet.ancestry.dropdown;
+        case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
           return SWADE.abilitySheet.special.dropdown;
@@ -885,7 +887,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isRaceOrArchetype: boolean;
+    isAncestryOrArchetype: boolean;
   };
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
