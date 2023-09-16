@@ -1,0 +1,40 @@
+title: SWADE.TOURS.TWEAKS.Title
+description: SWADE.TOURS.TWEAKS.Description
+canBeResumed: false
+display: true
+steps:
+  - id: accessTweaks
+    selector: '#actorSheetID .header-button.configure-actor'
+    title: SWADE.TOURS.TWEAKS.AccessTweaks.Title
+    content: SWADE.TOURS.TWEAKS.AccessTweaks.Content
+    actor:
+      name: SWADE.TOURS.TWEAKS.Actor
+      type: character
+      img: icons/environment/people/commoner.webp
+  - id: traitTweaks
+    selector: '#tweaks section[data-tab="traits"]'
+    title: SWADE.TOURS.TWEAKS.TraitTweaks.Title
+    content: SWADE.TOURS.TWEAKS.TraitTweaks.Content
+    tab:
+      parent: tweaks
+      id: traits
+  - id: advances
+    selector: '#tweaks section[data-tab="traits"] section div:nth-child(2)'
+    title: SWADE.TOURS.TWEAKS.Advances.Title
+    content: SWADE.TOURS.TWEAKS.Advances.Content
+  - id: unshake
+    selector: '#tweaks section[data-tab="traits"] section div:nth-child(10)'
+    title: SWADE.TOURS.TWEAKS.Unshake.Title
+    content: SWADE.TOURS.TWEAKS.Unshake.Content
+  - id: soak
+    selector: '#tweaks section[data-tab="traits"] section div:nth-child(11)'
+    title: SWADE.TOURS.TWEAKS.Soak.Title
+    content: SWADE.TOURS.TWEAKS.Soak.Content
+  - id: initiative
+    selector: '#tweaks section[data-tab="traits"] section:nth-child(2)'
+    title: SWADE.TOURS.TWEAKS.Initiative.Title
+    content: SWADE.TOURS.TWEAKS.Initiative.Content
+  - id: autoCalc
+    selector: '#tweaks section[data-tab="traits"] section:nth-child(3)'
+    title: SWADE.TOURS.TWEAKS.AutoCalc.Title
+    content: SWADE.TOURS.TWEAKS.AutoCalc.Content

@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The NPC and Vehicle sheets now also show effects inherited from items. (#910) **by jpmeehan5**
 - Added a number of Tours to explain the system. (#800) **by jpmeehan5**
   - Ammunition (#887)
+  - Tweaks (#938)
 
 ### Changed
 

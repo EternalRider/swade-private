@@ -114,5 +114,6 @@ export const constants = {
     CONFIGURATOR: 'configurator',
     ACTOR: 'actor',
     ITEM: 'item',
+    TWEAKS: 'tweaks',
   } as const,
 };
