@@ -1021,6 +1021,31 @@ SWADE:
       AmmoPP:
         Title: The Ammo Field
         Content: Instead of naming an item, name a valid arcane type on the character, such as general, magic, miracles, or psionics
+    TWEAKS:
+      Title: Tweaks Tour
+      Description: Learn about the unique sheet modifications in the Tweaks menu
+      Actor: Tweaks Tour Demo Character
+      AccessTweaks:
+        Title: Accessing Tweaks
+        Content: The Tweaks menu is found in each character sheet's header, and offers additional configuration options
+      TraitTweaks:
+        Title: Trait Tweaks
+        Content: This tab provides a large array of additional fields that customize a character's traits
+      Advances:
+        Title: Advance Mode
+        Content: Expanded advances (the default) bring enhanced data handling that specify the type of advance and automatically calculate your character's rank. Legacy advances are simply a large text box to write whatever you want with no data handling.
+      Unshake:
+        Title: Unshake Modifier
+        Content: Adds a bonus to the automated shake roll that's prompted at the start of a shaken character's turn.
+      Soak:
+        Title: Soak Modifier
+        Content: Adds a bonus to the soak roll that's prompted from the Take Damage button on the system's damage roll cards.
+      Initiative:
+        Title: Initiative Modifiers
+        Content: Modifies the character's initiative handling based on rules found in the core rulebook.
+      AutoCalc:
+        Title: Automatic Calculations
+        Content: Toggles whether the character's stats are derived from their attributes and equipment or manually set.
 TYPES:
   Actor:
     character: Player Character

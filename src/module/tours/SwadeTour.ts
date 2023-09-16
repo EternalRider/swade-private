@@ -1,4 +1,5 @@
 import SettingConfigurator from '../apps/SettingConfigurator';
+import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -7,6 +8,7 @@ export default class SwadeTour extends Tour {
   configurator?: SettingConfigurator;
   actor?: SwadeActor;
   item?: SwadeItem;
+  tweaks?: SwadeDocumentTweaks;
 
   /** @override */
   async _preStep() {
@@ -100,12 +102,25 @@ export default class SwadeTour extends Tour {
           app?.activateTab(currentStep.tab.id);
           break;
         }
+        case constants.TOUR_TAB_PARENTS.TWEAKS: {
+          if (!this.tweaks) {
+            this.tweaks = new SwadeDocumentTweaks(this.actor!);
+            //@ts-expect-error Calling _render because it's async unlike render
+            await this.tweaks._render(true);
+          }
+          this.tweaks.activateTab(currentStep.tab.id);
+        }
       }
     }
     // Leaving to the end because we're only ever going to need one actor at a time and it's created much earlier
     currentStep.selector = currentStep.selector?.replace(
       'actorSheetID',
       this.actor?.sheet?.id!,
+    );
+    // Same with Tweaks dialog
+    currentStep.selector = currentStep.selector?.replace(
+      'tweaks',
+      this.tweaks?.id || '',
     );
   }
 }
