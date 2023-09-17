@@ -19,7 +19,12 @@ export default class SwadeTour extends Tour {
     // Modify any game settings we need to make the magic happen
     if (currentStep.settings) {
       for (const [k, v] of Object.entries(currentStep.settings)) {
-        await game.settings.set('swade', k, v);
+        if (k !== 'settingFields') await game.settings.set('swade', k, v);
+        else {
+          const settingFields = game.settings.get('swade', k);
+          foundry.utils.mergeObject(settingFields, v);
+          await game.settings.set('swade', k, settingFields);
+        }
       }
       // There's no automatic update of the configurator after setting updates
       if (this.configurator?.rendered) {
