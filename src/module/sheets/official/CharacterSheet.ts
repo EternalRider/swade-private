@@ -14,13 +14,13 @@ import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { VehicleData } from '../../data/actor';
 import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../../documents/item/SwadeItem';
 import ItemChatCardHelper from '../../ItemChatCardHelper';
 import { Logger } from '../../Logger';
 import PopUpMenu from '../../models/PopUpMenu';
 import * as util from '../../util';
-import { VehicleData } from '../../data/actor';
 
 export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
@@ -377,7 +377,7 @@ export default class CharacterSheet extends ActorSheet {
 
     html[0]
       .querySelectorAll<HTMLButtonElement>(
-        '.character-detail.race button, .character-detail.archetype button',
+        '.character-detail.ancestry button, .character-detail.archetype button',
       )
       .forEach((btn) => {
         btn.addEventListener('click', (ev) => {
@@ -554,6 +554,7 @@ export default class CharacterSheet extends ActorSheet {
       }
       skills.push({
         label: skill.name as string,
+        img: skill.img as string,
         die: skill.system.die.sides as number,
         modifier: mods.reduce(util.addUpModifiers, 0),
         description: await this._enrichText(skill.system.description),
@@ -696,13 +697,14 @@ export default class CharacterSheet extends ActorSheet {
 
     // Document Tweaks
     if (this.options.editable && this.actor.isOwner) {
-      const button = {
+      const tweaks: Application.HeaderButton = {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
-        icon: 'fas fa-dice',
+        icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
       };
-      buttons = [button, ...buttons];
+
+      buttons = [tweaks, ...buttons];
     }
     return buttons;
   }
@@ -809,7 +811,6 @@ export default class CharacterSheet extends ActorSheet {
         name: effect.name,
         icon: effect.icon,
         disabled: effect.disabled,
-        //@ts-expect-error New v11 property
         description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
       };
@@ -838,6 +839,11 @@ export default class CharacterSheet extends ActorSheet {
         permanent.push(val);
       }
       if (val.favorite) {
+        val.tooltip = val.hasOwnProperty('source')
+          ? game.i18n.localize('SWADE.ActiveEffects.Source') +
+            ': ' +
+            val.source!.name
+          : '';
         favorite.push(val);
       }
     }
@@ -919,7 +925,7 @@ export default class CharacterSheet extends ActorSheet {
         name:
           name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
         type: type,
-        system: button.dataset,
+        system: Object.assign({}, button.dataset),
       };
       delete itemData.system.type;
       return itemData;
@@ -1326,6 +1332,7 @@ export default class CharacterSheet extends ActorSheet {
 interface SheetEffect {
   id: string;
   icon: string | undefined | null;
+  description: string;
   disabled: boolean;
   favorite: boolean;
   origin?: string;
@@ -1334,6 +1341,7 @@ interface SheetEffect {
     id: string;
   };
   name: string;
+  tooltip: string;
   duration?: {
     expiration: number; // constants.STATUS_EFFECT_EXPIRATION
     rounds: number;
@@ -1401,6 +1409,7 @@ interface TraitDisplay {
 }
 interface SkillDisplay extends TraitDisplay {
   label: string;
+  img: string;
   description: string;
   attribute: LinkedAttribute;
   isCoreSkill: boolean;

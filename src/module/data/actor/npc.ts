@@ -1,16 +1,15 @@
-import commonActorData from './common';
+import { CommonActorData } from './common';
 
 export interface NpcData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
     ReturnType<(typeof NpcData)['defineSchema']>
   > {}
 
-export class NpcData extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<ReturnType<(typeof NpcData)['defineSchema']>>
-> {
+export class NpcData extends CommonActorData {
   static defineSchema() {
     return {
-      ...commonActorData(2, 0, false),
+      ...super.defineSchema(),
+      ...this.wildcardData(2, 0, false),
     };
   }
 }

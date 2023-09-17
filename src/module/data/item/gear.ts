@@ -18,7 +18,7 @@ export interface GearData
     ReturnType<(typeof GearData)['defineSchema']>
   > {}
 
-export class GearData extends foundry.abstract.DataModel<
+export class GearData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof GearData)['defineSchema']>>
 > {
   /** @inheritdoc */

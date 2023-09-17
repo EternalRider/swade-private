@@ -3,6 +3,7 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.41</p>
   notes: ''
   isArcaneBackground: false

@@ -1,17 +1,14 @@
-import commonActorData from './common';
+import { CommonActorData } from './common';
 export interface CharacterData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
     ReturnType<(typeof CharacterData)['defineSchema']>
   > {}
 
-export class CharacterData extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof CharacterData)['defineSchema']>
-  >
-> {
+export class CharacterData extends CommonActorData {
   static defineSchema() {
     return {
-      ...commonActorData(),
+      ...super.defineSchema(),
+      ...this.wildcardData(3, 3, true),
     };
   }
 }

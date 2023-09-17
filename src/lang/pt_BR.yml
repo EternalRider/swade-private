@@ -53,7 +53,7 @@ SWADE:
   Subtype: Subtipo
   SpecialAbility: Habilidade Especial
   SpecialAbilities: Habilidades Especiais
-  RacialAbilities: Habilidades Raciais
+  AncestralAbilities: Habilidades Raciais
   ArchetypeAbilities: Habilidades de Arquétipo
   About: Sobre
   EdgesHindrances: Vant & Comp
@@ -146,7 +146,7 @@ SWADE:
     Extreme: Distância Extrema
   Snapfire: Tiro Rápido
   UnstablePlatform: Plataforma Instável
-  CannotAddRaceToRace: Você não pode adicionar uma raça/arquétipo a uma raça/arquétipo!
+  CannotAddAncestryToAncestry: Você não pode adicionar uma raça/arquétipo a uma raça/arquétipo!
   LayOutChaseWithDeck: Usar Baralho para montar Perseguição
   SetUpChase: Configurar Perseguição
   NotADeckCompendium: O compêndio que você selecionou não parece ser um Baralho
@@ -472,8 +472,8 @@ SWADE:
   Consumable:
     Use: Usar
     Consumables: Consumíveis
-  EmptyRacialAbilitiesHint: >-
-    Esta {race} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
+  EmptyAncestralAbilitiesHint: >-
+    Esta {ancestry} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
     alguma coisa na ficha para começar.
   CompendiumTOC:
     Toggle: Altenar uso do Índice de Compêndio
@@ -615,7 +615,7 @@ SWADE:
   ActionDeckPresetDark: Baralho de Ação (Escuro)
   Name: Nome
   Tough: Resistência
-  Race: Raça
+  Ancestry: Raça
   Archetype: Arquétipo
   Pace: Mov.
   Running: Corrida
@@ -862,7 +862,7 @@ SWADE:
   NoSceneAvailable: Não há cena disponível ou você desativou a tela de jogo
   ChaseCardsCleared: Todas as cartas de perseguição foram removidas da cena.
   Validation:
-    OnlyOneRace: Você só pode ter uma raça de cada vez!
+    OnlyOneAncestry: Você só pode ter uma raça de cada vez!
     OnlyOneArchetype: Você só pode ter um arquétipo de cada vez!
   MigrateCompendium: Forçar a migração do compêndio
   AdditionalStats:

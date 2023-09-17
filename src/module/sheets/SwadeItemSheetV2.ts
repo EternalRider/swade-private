@@ -73,6 +73,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
 
+  get macroActorTypes(): Record<string, string> {
+    return {
+      default: 'SWADE.MacroActor.Default',
+      self: 'SWADE.MacroActor.Self',
+    };
+  }
+
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     this._setupAccordions();
@@ -240,6 +247,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
+      macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
@@ -257,7 +265,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isRaceOrArchetype: subtype === 'race' || subtype === 'archetype',
+        isAncestryOrArchetype:
+          subtype === constants.ABILITY_TYPE.ANCESTRY ||
+          subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
     }
@@ -340,7 +350,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       buttons.unshift({
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
-        icon: 'fas fa-dice',
+        icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.item).render(true),
       });
     }
@@ -408,7 +418,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
-      return Logger.warn('SWADE.CannotAddRaceToRace', {
+      return Logger.warn('SWADE.CannotAddAncestryToAncestry', {
         localize: true,
         toast: true,
       });
@@ -424,11 +434,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     } else if (classList?.contains('powers')) {
       await this._addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
-      const actions =
-        foundry.utils.getProperty(this.item, 'system.actions.additional') ?? {};
-      if (!foundry.utils.isEmpty(actions)) {
-        await this._addOrReplaceActions(item);
-      }
+      await this._addOrReplaceActions(item);
     }
   }
 
@@ -481,11 +487,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   private async _addOrReplaceActions(item: SwadeItem) {
     const actionKey = 'system.actions.additional';
-    const actions = (foundry.utils.getProperty(this.item, actionKey) ??
-      {}) as ItemActions;
+    const actions = foundry.utils.getProperty(this.item, actionKey) as
+      | ItemActions
+      | undefined;
+    if (typeof actions === 'undefined') return; //no actions on this item, return before we break something;
     if (foundry.utils.isEmpty(actions)) {
       //if no actions are present then we simply copy the actions from the dropped item
-      await this.item.update({
+      return this.item.update({
         [actionKey]: foundry.utils.getProperty(item, actionKey),
       });
     }
@@ -666,9 +674,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case 'race':
-          return SWADE.abilitySheet.race.dropdown;
-        case 'archetype':
+        case constants.ABILITY_TYPE.ANCESTRY:
+          return SWADE.abilitySheet.ancestry.dropdown;
+        case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
           return SWADE.abilitySheet.special.dropdown;
@@ -857,6 +865,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
+  macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;
@@ -878,7 +887,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isRaceOrArchetype: boolean;
+    isAncestryOrArchetype: boolean;
   };
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];

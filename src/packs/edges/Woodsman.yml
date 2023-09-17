@@ -3,6 +3,7 @@ permission:
   default: 0
 type: edge
 system:
+  category: Professional
   description: <p>See SWADE p.50</p>
   notes: ''
   isArcaneBackground: false

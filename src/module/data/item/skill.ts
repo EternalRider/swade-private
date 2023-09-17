@@ -1,4 +1,4 @@
-import { makeTraitDiceFields } from '../shared';
+import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { itemDescription } from './common';
 
 export interface SkillData
@@ -6,7 +6,7 @@ export interface SkillData
     ReturnType<(typeof SkillData)['defineSchema']>
   > {}
 
-export class SkillData extends foundry.abstract.DataModel<
+export class SkillData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof SkillData)['defineSchema']>
   >
@@ -20,5 +20,14 @@ export class SkillData extends foundry.abstract.DataModel<
       isCoreSkill: new fields.BooleanField(),
       ...makeTraitDiceFields(),
     };
+  }
+
+  override prepareBaseData() {
+    this.effects ??= new Array<RollModifier>();
+  }
+
+  override prepareDerivedData() {
+    this.die = boundTraitDie(this.die);
+    this['wild-die'].sides = Math.min(this['wild-die'].sides, 12);
   }
 }

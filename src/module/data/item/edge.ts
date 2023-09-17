@@ -5,7 +5,7 @@ export interface EdgeData
     ReturnType<(typeof EdgeData)['defineSchema']>
   > {}
 
-export class EdgeData extends foundry.abstract.DataModel<
+export class EdgeData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof EdgeData)['defineSchema']>>
 > {
   /** @inheritdoc */

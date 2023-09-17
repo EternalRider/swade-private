@@ -105,8 +105,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId!;
-      const effect = this.actor.effects.get(effectId, { strict: true });
+      const data = a.closest('li')!.dataset;
+      const effectID = data.effectId;
+      const parentId = data.effectParentId;
+      const effect =
+        parentId === this.actor.id
+          ? this.actor.effects.get(effectID)
+          : this.actor.items.get(parentId).effects.get(effectID);
       const action = a.dataset.action;
 
       switch (action) {
@@ -182,6 +187,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   getData() {
     const data: any = super.getData();
     data.config = SWADE;
+
+    data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
 
     data.itemsByType = {};
     for (const type of game.system.documentTypes.Item) {
@@ -259,7 +266,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         {
           label: game.i18n.localize('SWADE.Tweaks'),
           class: 'configure-actor',
-          icon: 'fas fa-dice',
+          icon: 'fa-solid fa-gears',
           onclick: (ev) => this._onConfigureEntity(ev),
         },
         ...buttons,

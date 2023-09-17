@@ -60,6 +60,11 @@ export const actions = () => ({
           required: false,
         }),
         uuid: new fields.StringField({ initial: undefined, required: false }),
+        macroActor: new fields.StringField({
+          initial: constants.MACRO_ACTOR.DEFAULT,
+          required: false,
+          choices: Object.values(constants.MACRO_ACTOR),
+        }),
         isHeavyWeapon: new fields.BooleanField({
           initial: false,
           required: false,

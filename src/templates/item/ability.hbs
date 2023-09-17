@@ -20,7 +20,7 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    {{#if abilityConfig.isRaceOrArchetype}}
+    {{#if abilityConfig.isAncestryOrArchetype}}
     <a class='item' data-tab='embedded' data-group='main'>
       {{localize abilityConfig.abilityHeader}}
     </a>
@@ -41,13 +41,13 @@
           <select name="system.subtype" {{disabled item.isOwned}}>
           {{#select item.system.subtype}}
             <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
-              <option value="race">{{localize abilityConfig.localization.race.dropdown}}</option>
+              <option value="ancestry">{{localize abilityConfig.localization.ancestry.dropdown}}</option>
               <option value="archetype">{{localize abilityConfig.localization.archetype.dropdown}}</option>
           {{/select}}
           </select>
         </span>
       </div>
-      {{#unless abilityConfig.isRaceOrArchetype}}
+      {{#unless abilityConfig.isAncestryOrArchetype}}
         <div class="form-group">
           <label>{{localize "SWADE.GrantsPowers"}}</label>
             <span class="form-fields">
@@ -62,13 +62,13 @@
       {{/unless}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
-    {{#if abilityConfig.isRaceOrArchetype}}
+    {{#if abilityConfig.isAncestryOrArchetype}}
     <section class='tab embedded' data-group='main' data-tab='embedded'>
       {{#if (isEmpty embeddedAbilities)}}
       <p class="text-center empty-hint">
         {{localize
-          'SWADE.EmptyRacialAbilitiesHint'
-          race=(localize abilityConfig.localization.race.dropdown)
+          'SWADE.EmptyAncestralAbilitiesHint'
+          ancestry=(localize abilityConfig.localization.ancestry.dropdown)
           archetype=(localize abilityConfig.localization.archetype.dropdown)
         }}
       </p>

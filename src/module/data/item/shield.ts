@@ -18,7 +18,7 @@ export interface ShieldData
     ReturnType<(typeof ShieldData)['defineSchema']>
   > {}
 
-export class ShieldData extends foundry.abstract.DataModel<
+export class ShieldData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ShieldData)['defineSchema']>
   >

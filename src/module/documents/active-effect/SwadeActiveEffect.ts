@@ -5,14 +5,15 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
 import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs';
+import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
+import { VehicleData } from '../../data/actor';
 import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
-import { VehicleData } from '../../data/actor';
 
 declare global {
   interface DocumentClassConfig {
@@ -22,7 +23,7 @@ declare global {
     ActiveEffect: {
       swade: {
         removeEffect?: boolean;
-        expiration?: number;
+        expiration?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>;
         loseTurnOnHold?: boolean;
         favorite?: boolean;
         related?: Record<string, ActiveEffectDataConstructorData>;
@@ -33,6 +34,12 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
+  static get defaultName(): string {
+    return game.i18n.format('DOCUMENT.New', {
+      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+    });
+  }
+
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
     this.changes.forEach((c) =>
@@ -44,6 +51,14 @@ export default class SwadeActiveEffect extends ActiveEffect {
   get statusId() {
     const [statusId] = getProperty(this, 'statuses') as Set<string>;
     return statusId;
+  }
+
+  /** A convenience accessor that returns the effect's containing actor, if it has one */
+  get actor(): SwadeActor | undefined {
+    const parent = this.parent;
+    if (parent instanceof SwadeActor) return parent;
+    if (parent instanceof SwadeItem && parent.actor instanceof SwadeActor)
+      return parent.actor;
   }
 
   get expiresAtStartOfTurn(): boolean {
@@ -91,7 +106,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static GLOBAL_REGEXP = /system\.stats\.globalMods\.(\w+)/;
 
-  static PT_REGEXP = /system\.stats\.(parry|toughness)\.(value|armor)/
+  static PT_REGEXP = /system\.stats\.(parry|toughness)\.(value|armor)/;
 
   static override migrateData(data: ActiveEffectDataProperties) {
     super.migrateData(data);
@@ -102,6 +117,16 @@ export default class SwadeActiveEffect extends ActiveEffect {
           const newKey = match[3].trim().replace(/^data\./, 'system.');
           change.key = `@${match[1].trim()}{${match[2].trim()}}[${newKey}]`;
         }
+
+        //fix up effects that had an action related key
+        change.key = change.key.replaceAll(
+          'system.actions.skillMod',
+          'system.actions.traitMod',
+        );
+        change.key = change.key.replaceAll(
+          'system.actions.skill',
+          'system.actions.trait',
+        );
       }
     }
     return data;
@@ -111,21 +136,20 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
-    const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP)
+    const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP);
     if (itemMatch) {
       this._handelItemMatch(itemMatch, change, doc);
-    } else if (attrMatch && 
+    } else if (
+      attrMatch &&
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-      doc instanceof SwadeActor) {
+      doc instanceof SwadeActor
+    ) {
       this._handleAttributeMatch(attrMatch, change, doc);
-    } else if (globalMatch &&
-      doc instanceof SwadeActor) {
+    } else if (globalMatch && doc instanceof SwadeActor) {
       this._handleGlobalModifierMatch(globalMatch, change, doc);
-    } else if (ptMatch &&
-      doc instanceof SwadeActor) {
+    } else if (ptMatch && doc instanceof SwadeActor) {
       this._handlePTModifierMatch(ptMatch, change, doc);
     } else {
-      //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
       return super.apply(doc, change);
     }
   }
@@ -250,19 +274,16 @@ export default class SwadeActiveEffect extends ActiveEffect {
         change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
       ) {
         const effectKey = 'system.effects';
-        if (!(effectKey in overrides)) {
-          overrides[effectKey] = new Array<RollModifier>();
-        }
+        overrides[effectKey] ??= new Array<RollModifier>();
         this._updateTraitRollEffects(overrides[effectKey], value);
         // NOT calling super.apply because normal apply doesn't handle objects
         foundry.utils.setProperty(item, effectKey, overrides[effectKey]);
       } else {
-        // Die sizes for Trait and Wild Die
-        overrides[key] = Number.isNumeric(value) ? Number(value) : value;
         //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
         const mockChange = { ...change, key, value };
-        //@ts-expect-error It normally expects an Actor but since it only targets the data we can re-use it for Items
-        super.apply(item, mockChange);
+        // @ts-expect-error AE.apply doesn't actually require an Actor, just a Document
+        const changes = super.apply(item, mockChange);
+        Object.assign(overrides, changes);
       }
       item.overrides = foundry.utils.expandObject(overrides);
     }
@@ -315,18 +336,24 @@ export default class SwadeActiveEffect extends ActiveEffect {
   ) {
     if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
     if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
-      super.apply(doc, change)
+      super.apply(doc, change);
       return;
     }
-    const autoCalc = (match[1] === 'parry') ? doc.system.details.autoCalcParry : doc.system.details.autoCalcToughness
-    const target = (match[2] === 'armor') ?
-      'armorEffects' : // Armor gets its own display
-      (autoCalc ? 'effects' : 'sources');
+    const autoCalc =
+      match[1] === 'parry'
+        ? doc.system.details.autoCalcParry
+        : doc.system.details.autoCalcToughness;
+    const target =
+      match[2] === 'armor'
+        ? 'armorEffects' // Armor gets its own display
+        : autoCalc
+        ? 'effects'
+        : 'sources';
     doc.system.stats[match[1]][target].push({
       label: this.name,
       value: Number(change.value),
-      mode: change.mode
-    })
+      mode: change.mode,
+    });
   }
 
   /** This functions checks the effect expiration behavior and either auto-deletes or prompts for deletion */
@@ -352,12 +379,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
       expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto;
     const endOfTurnPrompt =
       expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt;
-    const auto = startOfTurnAuto || endOfTurnAuto;
-    const prompt = startOfTurnPrompt || endOfTurnPrompt;
 
-    if (auto) {
+    if (startOfTurnAuto || endOfTurnAuto) {
       await this.delete();
-    } else if (prompt) {
+    } else if (startOfTurnPrompt || endOfTurnPrompt) {
       await this.promptEffectDeletion();
     }
   }
@@ -465,16 +490,22 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preCreate(
-    data: ActiveEffectDataConstructorData,
+    data: DeepPartial<BaseActiveEffect.Properties>,
     options: DocumentModificationOptions,
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
     if (!data.icon) {
-      this.updateSource({
-        icon: 'systems/swade/assets/icons/active-effect.svg',
-      });
+      //TODO Move to `effect.img` once v12 releases
+      let path = 'systems/swade/assets/icons/active-effect.svg';
+      if (this.parent instanceof SwadeItem) path = this.parent.img as string;
+      this.updateSource({ icon: path });
     }
+    const isDefaultName = data.name === SwadeActiveEffect.defaultName;
+    if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {
+      this.updateSource({ name: this.parent.name });
+    }
+
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {

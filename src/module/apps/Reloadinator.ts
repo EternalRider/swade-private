@@ -1,7 +1,7 @@
 import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-export default class Reloadinator extends Application<ApplicationOptions> {
+export default class Reloadinator extends Application {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
   #wantsToDiscard = false;
