@@ -1319,6 +1319,7 @@ SWADE:
   Weakness: 弱点
   Resistance: 抗性
   Validation:
+    OnlyOneRace: 你一次只能有一个种族！
     OnlyOneAncestry: 你一次只能有一个种族！
     OnlyOneArchetype: 你一次只能有一个原型！
   CalledShot:
