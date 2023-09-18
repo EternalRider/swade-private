@@ -67,7 +67,9 @@
       margin: 5px auto 0px auto;
       border: none;
       object-fit: contain;
-      cursor: pointer;
+      &.hasDriver {
+        cursor: pointer;
+      }
     }
   }
 

@@ -55,9 +55,18 @@
   {{!-- Right panel --}}
   <div class="gear">
     <section class="flexrow" id="driver-bar">
-    {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
-  </section>
+      {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
+    </section>
     <section>
+      {{#if settingrules.modSlots}}
+        <div id='modBox'>
+          <div class='bar-container'>
+            <span class='text'>{{mods.used}}/{{actor.system.maxMods}}
+              {{localize 'SWADE.Mods'}}</span>
+            <div class='bar' style='width: {{mods.percentage}}%;'></div>
+          </div>
+        </div>
+      {{/if}}
       <header class="header-field flexrow">
         <div>
           <span>{{localize "SWADE.Mods"}}</span>
