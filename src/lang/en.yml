@@ -947,7 +947,7 @@ SWADE:
       Label: Visible To
       Hint: >-
         Select which tokens (by Disposition) can see this aura. You can always
-        see all auras of a token of which you at least Observer Permission
+        see all auras of a token of which you have at least Observer permission
   TOURS:
     AMMUNITION:
       Title: Ammunition
@@ -1022,7 +1022,7 @@ SWADE:
         Title: The Ammo Field
         Content: Instead of naming an item, name a valid arcane type on the character, such as general, magic, miracles, or psionics
     TWEAKS:
-      Title: Tweaks Tour
+      Title: Tweaks
       Description: Learn about the unique sheet modifications in the Tweaks menu
       Actor: Tweaks Tour Demo Character
       AccessTweaks:
@@ -1047,7 +1047,7 @@ SWADE:
         Title: Automatic Calculations
         Content: Toggles whether the character's stats are derived from their attributes and equipment or manually set.
     ADDSTATS:
-      Title: Additional Stats Tour
+      Title: Additional Stats
       Description: Learn how to configure Additional Stats for your setting
       Actor: Additional Stats Tour Demo Character
       GameSettings:
@@ -1095,7 +1095,31 @@ SWADE:
       AddStatTweaks:
         Title: Additional Stats Tab
         Content: Each Additional Stat defaults to off and must be individually enabled on each actor or item.
-
+    AURAS:
+      Title: Auras
+      Description: Introduced in version 3.2, Auras create persistent visuals that follow tokens around.
+      Actor: Auras Tour Demo Character
+      AccessAuras:
+        Title: Accessing Auras
+        Content: Auras can be found in the Tweaks menu
+      Auramancer:
+        Title: The Auras Tab
+        Content: Auras have their own tab within the Tweaks menu. Characters can have a maximum of two auras.
+      Enable:
+        Title: Enabling Auras
+        Content: Each aura can be enabled individually; they also fully work with unlinked tokens, allowing you to set auras individually even if they share a common source actor.
+      Constrained:
+        Title: Wall Constraints
+        Content: This toggle governs whether the aura is limited by walls that block light or if it can pass through them.
+      Radius:
+        Title: Aura Radius
+        Content: The Aura's radius, measured in grid units. The unit hint displayed here matches the current scene's unit of measurement.
+      Color:
+        Title: Aura Color and Transparency
+        Content: Auras display similar to circular area templates around the source character; these settings let you control their visual display.
+      Visibility:
+        Title: Aura Visibility
+        Content: Select which tokens (by Disposition) can see this aura. You can always see all auras of a token of which you have at least Observer permission.
 TYPES:
   Actor:
     character: Player Character

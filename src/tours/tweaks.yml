@@ -2,6 +2,9 @@ title: SWADE.TOURS.TWEAKS.Title
 description: SWADE.TOURS.TWEAKS.Description
 canBeResumed: false
 display: true
+suggestedNextTours:
+  - swade.additional-stats
+  - swade.auras
 steps:
   - id: accessTweaks
     selector: '#actorSheetID .header-button.configure-actor'
