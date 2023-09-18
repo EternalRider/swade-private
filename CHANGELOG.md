@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Tweaks (#938)
   - Additional Stats (#937)
   - Auras (#936)
+- Improved Documentation of SWADE's unique vision types (#885)
 
 ### Changed
 
