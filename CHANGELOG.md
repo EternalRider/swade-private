@@ -61,7 +61,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restored icons for skills on the Character Sheet. (#921) **by @florad92**
 - Resist actions on weapons should no longer attempt to consume ammunition. (#923) **by @florad92**
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
-- Adding actions to an item via drag&drop should once again work as expected on items without priod actions. (#940) **by @florad92**
+- Adding actions to an item via drag&drop should once again work as expected on items without prior actions. (#940) **by @florad92**
+- Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
 
 ## 3.1.4
 
