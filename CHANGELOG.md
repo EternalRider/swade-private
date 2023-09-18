@@ -34,6 +34,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a number of Tours to explain the system. (#800) **by jpmeehan5**
   - Ammunition (#887)
   - Tweaks (#938)
+  - Additional Stats (#937)
+  - Auras (#936)
 
 ### Changed
 

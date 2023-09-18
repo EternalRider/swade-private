@@ -2,6 +2,9 @@ title: SWADE.TOURS.ADDSTATS.Title
 description: SWADE.TOURS.ADDSTATS.Description
 canBeResumed: false
 display: true
+suggestedNextTours:
+  - swade.tweaks
+  - swade.auras
 steps:
   - id: gameSettings
     selector: '#settings-game>button[data-action="configure"]'
