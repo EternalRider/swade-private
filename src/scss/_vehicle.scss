@@ -1,9 +1,15 @@
 .swade.sheet.actor.vehicle {
+  .vitals-container {
+    margin: 10px 8px;
+    text-align: center;
+  }
+
   .sheet-body {
     .biography {
       .description {
         .editor {
           height: 240px;
+          border: none;
         }
       }
     }
@@ -110,12 +116,9 @@
   }
 
   #opSkill {
-    padding: 7px 0px;
-    display: inline-block;
-    input[type='text'] {
-      flex: 0;
-      flex-basis: 150px;
-      width: 150px;
+    padding: 3px 0px;
+    div {
+      margin-bottom: 2px;
     }
   }
 

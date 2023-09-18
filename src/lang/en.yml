@@ -335,8 +335,9 @@ SWADE:
   About: About
   EdgesHindrances: Edges & Hindrances
   GrantsPowers: Grants Powers
-  Crew: Required Crew
-  Passengers: Optional Passengers
+  Crew: Crew
+  RequiredCrew: Required Crew
+  Passengers: Passengers
   String: Text
   Number: Number
   Checkbox: Checkbox

@@ -1,10 +1,9 @@
-<section class="flexrow" id="driver-bar">
-  {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
-</section>
 <div class="flexrow">
   {{!-- Left panel --}}
   <div class="gear">
-    <section>{{> "systems/swade/templates/setting-fields.hbs"}}</section>
+    {{#if hasAdditionalStatsFields}}
+      <section>{{> "systems/swade/templates/setting-fields.hbs"}}</section>
+    {{/if}}
     <section>
       <header class="header-field flexrow">
         <div>{{ localize "SWADE.Effects" }}</div>
@@ -55,6 +54,9 @@
   </div>
   {{!-- Right panel --}}
   <div class="gear">
+    <section class="flexrow" id="driver-bar">
+    {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
+  </section>
     <section>
       <header class="header-field flexrow">
         <div>
@@ -68,8 +70,8 @@
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
             {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}} 
-            {{/if}} 
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/if}}
           {{/each}}
         </ol>
       </span>

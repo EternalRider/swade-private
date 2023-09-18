@@ -13,6 +13,7 @@ export async function preloadHandlebarsTemplates() {
     'systems/swade/templates/actors/vehicle-partials/cargo-tab.hbs',
     'systems/swade/templates/actors/vehicle-partials/description-tab.hbs',
     'systems/swade/templates/actors/vehicle-partials/vitals.hbs',
+    'systems/swade/templates/actors/vehicle-partials/crew-tab.hbs',
 
     //Gear Cards
     'systems/swade/templates/actors/partials/weapon-card.hbs',
