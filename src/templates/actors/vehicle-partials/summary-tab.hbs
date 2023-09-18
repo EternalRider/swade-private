@@ -50,6 +50,25 @@
           </ol>
         </span>
       </section>
+            <section>
+        <header class="header-field flexrow">
+          <div>
+            <span>{{localize "SWADE.SpecialAbility"}}</span>
+          </div>
+          <div class="header-field-add">
+            <a class="item-create" data-type="ability"
+              ><i class="fa fa-plus"></i
+            ></a>
+          </div>
+        </header>
+        <span class="quickaccess-list">
+          <ol class="gear-list items-list">
+            {{#each itemsByType.ability}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/each}}
+          </ol>
+        </span>
+      </section>
     {{/if}}
   </div>
   {{!-- Right panel --}}
