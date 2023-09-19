@@ -63,6 +63,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
 - Adding actions to an item via drag&drop should once again work as expected on items without prior actions. (#940) **by @florad92**
 - Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
+- Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by jpmeehan5**
 
 ## 3.1.4
 

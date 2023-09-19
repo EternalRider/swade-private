@@ -75,15 +75,6 @@ export default class CharacterSheet extends ActorSheet {
       .find('[name="system.details.currency"]')
       .on('change', this._onChangeInputDelta.bind(this));
 
-    this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
-      const targetIsButton = ev.target instanceof HTMLButtonElement;
-      if (!targetIsButton && ev.key === 'Enter') {
-        ev.preventDefault();
-        this.submit({ preventClose: true });
-        return false;
-      }
-    });
-
     // Drag events for macros.
     // Find all items on the character sheet.
     html.find('li.item').each((i, li) => {
