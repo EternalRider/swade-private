@@ -665,6 +665,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         img: grant.mutation?.img ?? item?.img ?? grant.img,
         uuid: grant.uuid,
         missing: !item,
+        major:
+          foundry.utils.getProperty(grant.mutation, 'system.major') ??
+          foundry.utils.getProperty(item, 'system.major'),
       });
     }
     return enriched;

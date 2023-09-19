@@ -35,7 +35,9 @@
           <a class='grant-name missing'>{{name}}</a>
         {{else}}
           <img class='icon' src='{{img}}' />
-          <a class='grant-name'>{{name}}</a>
+          <a class='grant-name'>{{name}}
+            {{#if major}}{{localize 'SWADE.Major'}}{{/if}}
+          </a>
         {{/if}}
         <button class='grant-delete invisible'>
           <i class='fas fa-trash'></i>
