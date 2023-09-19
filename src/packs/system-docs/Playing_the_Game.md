@@ -32,7 +32,7 @@ Right-clicking on any player name displays a context menu with additional option
 
 ## Using Area Templates
 
-The Savage Worlds Adventure Edition system for Foundry adds custom Cone, Blast and Stream Templates to the Measurement Controls toolbar. The icons for the templates are as follows:
+The _Savage Worlds Adventure Edition_ system for Foundry adds custom Cone, Blast and Stream Templates to the Measurement Controls toolbar. The icons for the templates are as follows:
 
 - **<span class='fa-solid fa-location-pin fa-rotate-90'></span>** Cone Template
 - **<span class='fa-solid fa-rectangle-wide'></span>** Stream Template
@@ -41,3 +41,13 @@ The Savage Worlds Adventure Edition system for Foundry adds custom Cone, Blast a
 - **<span class='fa-solid fa-circle-3 fa-lg'></span>** Large Blast Template
 
 For more information on how to use the area of effect templates in Foundry, see [Measurement and Templates on the Foundry VTT website](https://foundryvtt.com/article/measurement/).
+
+## Vision
+
+The _Savage Worlds Adventure Edition_ system expands upon the base [Foundry token vision handling](https://foundryvtt.com/article/tokens#token-vision).
+
+### Detection Modes
+
+_Savage Worlds_ supports two additional detection modes; **See Heat** and **Sense Heat**. These two modes allow a token to see any token in range that does _not_ have the **cold-bodied** status; See Heat is blocked by walls, while Sense Heat is not. This detection mode ignores both ordinary illumination as well as the foundry-native invisible condition. Tokens that are visible only through this heat vision have a unique color filter overlaid.
+
+![Infravision Demo](systems/swade/assets/docs/Infravision.png)
