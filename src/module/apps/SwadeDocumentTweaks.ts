@@ -67,7 +67,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isVehicle: this.object.type === 'vehicle',
       advanceTypes: this._getAdvanceTypes(),
       auras: {
-        units: canvas.scene.grid.units,
+        units: canvas.scene?.grid?.units ?? game.system.gridUnits,
         auras: this.object.auras,
         defaultColor: game.user.color ?? '#000000',
         visibilityChoices: [
