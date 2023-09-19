@@ -36,7 +36,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Tweaks (#938)
   - Additional Stats (#937)
   - Auras (#936)
-- Improved Documentation of SWADE's unique vision types (#885)
+- Improved Documentation of SWADE's unique vision types. (#885)
+- Added indicator to granted hindrances if it's a major hindrance. (#874)
 
 ### Changed
 
@@ -64,6 +65,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
 - Adding actions to an item via drag&drop should once again work as expected on items without prior actions. (#940) **by @florad92**
 - Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
+- Chat messages for Major and Minor hindrances are no longer reversed. **by @jpmeehan5**
 - Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by jpmeehan5**
 
 ## 3.1.4
