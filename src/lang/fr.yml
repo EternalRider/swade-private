@@ -385,8 +385,8 @@ SWADE:
   ModOther: Autres modificateurs
   Snapfire: Tir statique
   UnstablePlatform: Plateforme instable
-  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une espèce/un archétype à une espèce/un
-    archétype !
+  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une espèce/un archétype
+    à une espèce/un archétype !
   LayOutChaseWithDeck: Utiliser les cartes pour gérer la poursuite
   ClearChaseCards: Retirer les cartes de poursuite de la scène
   NoSceneAvailable: Il n'y a pas de scène disponible, ou vous avez désactivé le canevas
@@ -677,8 +677,8 @@ SWADE:
   Consumable:
     Use: Utiliser
     Consumables: Consommables
-  EmptyAncestralAbilitiesHint: L’espèce '{ancestry}' ou l'archétype '{archetype}' n'a pas
-    encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
+  EmptyAncestralAbilitiesHint: L’espèce '{ancestry}' ou l'archétype '{archetype}'
+    n'a pas encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
   AdditionalStats:
     SelectHint: Entrezune liste d'options, séparés par une virgule
     Key: Clé de statistique
@@ -900,6 +900,8 @@ SWADE:
   DesperateAttack:
     2: Attaque désespérée (2)
     4: Attaque désespérée (4)
+  MacroActor:
+    Default: Défaut
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
