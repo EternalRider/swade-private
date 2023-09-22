@@ -26,32 +26,33 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added ability to create documents within a compendium TOC. (#883) **by jpmeehan5**
+- Added ability to create documents within a compendium TOC. (#883) **by @jpmeehan5**
 - Added more trait die options above d12 to the Attribute Manager. (#919) **by @florad92**
-- Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by jpmeehan5**
-- Added categories to the edges in the base system. (#925) **by jpmeehan5**
-- The NPC and Vehicle sheets now also show effects inherited from items. (#910) **by jpmeehan5**
-- Added a number of Tours to explain the system. (#800) **by jpmeehan5**
+- Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by @jpmeehan5**
+- Added categories to the edges in the base system. (#925) **by @jpmeehan5**
+- The NPC and Vehicle sheets now also show effects inherited from items. (#910) **by @jpmeehan5**
+- Added a number of Tours to explain the system. (#800) **by @jpmeehan5**
   - Ammunition (#887)
   - Tweaks (#938)
   - Additional Stats (#937)
   - Auras (#936)
-- Improved Documentation of SWADE's unique vision types. (#885)
-- Added indicator to granted hindrances if it's a major hindrance. (#874)
+- Improved Documentation of SWADE's unique vision types. (#885) **by @jpmeehan5**
+- Added indicator to granted hindrances if it's a major hindrance. (#874) **by @jpmeehan5**
+- Exposed the MappingField and AddStatsValueField for developers **by @jpmeehan5**
 
 ### Changed
 
-- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by jpmeehan5**
-- [BREAKING] The Scale value on vehicles is now automatically derived from their size. **by jpmeehan5**
-- Clicking on an inherited effect on the Character sheet no longer opens the source item in addition to expanding the description. Instead, a tooltip will display on hover that states the source's name. (#929) **by jpmeehan5**
+- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by @jpmeehan5**
+- [BREAKING] The Scale value on vehicles is now automatically derived from their size. **by @jpmeehan5**
+- Clicking on an inherited effect on the Character sheet no longer opens the source item in addition to expanding the description. Instead, a tooltip will display on hover that states the source's name. (#929) **by @jpmeehan5**
 - Introduced tabs to the Actor Tweaks window. (#932) **by @florad92**
-- Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by jpmeehan5**
+- Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by @jpmeehan5**
 - Replaced all references, including in translation keys, to race with ancestry. A migration has been provided. (#942) **by @florad92**
 - If created on an Item, active effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
 
 ### Deprecated
 
-- SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by jpmeehan5**
+- SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by @jpmeehan5**
 
 ### Removed
 
@@ -66,7 +67,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adding actions to an item via drag&drop should once again work as expected on items without prior actions. (#940) **by @florad92**
 - Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
 - Chat messages for Major and Minor hindrances are no longer reversed. **by @jpmeehan5**
-- Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by jpmeehan5**
+- Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by @jpmeehan5**
+- Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field **by @jpmeehan5 and @florad92**
 
 ## 3.1.4
 
