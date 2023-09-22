@@ -1,9 +1,6 @@
 import { constants } from '../../constants';
-import {
-  makeAdditionalStatsSchema,
-  makeDiceField,
-  MappingField,
-} from '../shared';
+import { MappingField } from '../models/MappingField';
+import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
 

@@ -100,6 +100,7 @@ Hooks.once('init', () => {
     RollDialog,
     effectCallbacks: new Collection(),
     ready: false,
+    fields: data.fields,
   };
 
   //register document classes
