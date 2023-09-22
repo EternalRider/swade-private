@@ -198,7 +198,7 @@ export default class Reloadinator extends Application {
       }
       //copy the selected consumable and set the new charges on the clone.
       await selected.clone(
-        { system: { quantity: 1, 'charges.value': newCharges } },
+        { 'system.quantity': 1, 'system.charges.value': newCharges },
         { save: true },
       );
     } else {

@@ -1,0 +1,43 @@
+title: SWADE.TOURS.AURAS.Title
+description: SWADE.TOURS.AURAS.Description
+canBeResumed: false
+display: true
+suggestedNextTours:
+  - swade.tweaks
+  - swade.additional-stats
+steps:
+  - id: accessAuras
+    selector: '#actorSheetID .header-button.configure-actor'
+    title: SWADE.TOURS.AURAS.AccessAuras.Title
+    content: SWADE.TOURS.AURAS.AccessAuras.Content
+    actor:
+      name: SWADE.TOURS.AURAS.Actor
+      type: character
+      img: icons/environment/people/commoner.webp
+  - id: auramancer
+    selector: '#tweaks section[data-tab="auras"]'
+    title: SWADE.TOURS.AURAS.Auramancer.Title
+    content: SWADE.TOURS.AURAS.Auramancer.Content
+    tab:
+      parent: tweaks
+      id: auras
+  - id: enable
+    selector: '#tweaks section[data-tab="auras"] div:nth-child(2)'
+    title: SWADE.TOURS.AURAS.Enable.Title
+    content: SWADE.TOURS.AURAS.Enable.Content
+  - id: constrained
+    selector: '#tweaks section[data-tab="auras"] div:nth-child(3)'
+    title: SWADE.TOURS.AURAS.Constrained.Title
+    content: SWADE.TOURS.AURAS.Constrained.Content
+  - id: radius
+    selector: '#tweaks section[data-tab="auras"] div:nth-child(4)'
+    title: SWADE.TOURS.AURAS.Radius.Title
+    content: SWADE.TOURS.AURAS.Radius.Content
+  - id: color
+    selector: '#tweaks section[data-tab="auras"] div:nth-child(5)'
+    title: SWADE.TOURS.AURAS.Color.Title
+    content: SWADE.TOURS.AURAS.Color.Content
+  - id: visibility
+    selector: '#tweaks section[data-tab="auras"] div:nth-child(7)'
+    title: SWADE.TOURS.AURAS.Visibility.Title
+    content: SWADE.TOURS.AURAS.Visibility.Content

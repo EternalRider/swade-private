@@ -12,6 +12,16 @@ export default async function registerSWADETours() {
       'tweaks',
       await SwadeTour.fromJSON('/systems/swade/tours/tweaks.json'),
     );
+    game.tours.register(
+      'swade',
+      'additional-stats',
+      await SwadeTour.fromJSON('/systems/swade/tours/additional-stats.json'),
+    );
+    game.tours.register(
+      'swade',
+      'auras',
+      await SwadeTour.fromJSON('/systems/swade/tours/auras.json'),
+    );
   } catch (err) {
     console.log(err);
   }

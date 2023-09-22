@@ -48,6 +48,7 @@ export interface ItemGrant {
   name: string | null;
   mutation?: DeepPartial<ItemDataConstructorData>;
   missing?: boolean;
+  major?: boolean;
 }
 
 export interface ItemGrantChainLink {
