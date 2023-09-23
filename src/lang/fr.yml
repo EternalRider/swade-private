@@ -502,6 +502,8 @@ SWADE:
       Hint: Ne montre pas aux joueurs le signe Joker des PNJ
     CreateInitChat:
       Name: Créer un message dans la discussion pour l'initiative
+      Hint: Quand les cartes d'actions sont tirées, Foundry affichera le tirage des
+        cartes dans le chat si autorisé.
     AutoInit:
       Name: Initiative automatique
       Hint: Pioche automatiquement l'initiative à chaque tour
@@ -791,6 +793,7 @@ SWADE:
     PP: Points de pouvoir
     Label: Façons de recharger
     Battery: Batterie
+    Self: Soi-même
   RemoveAmmo: Enlever les munitions
   NoMags: Vous n'avez pas de consommables identifiés comme des chargeurs dans votre
     inventaire
@@ -840,6 +843,7 @@ SWADE:
       WoundedPrompt: <p>{name} est sur le point de subir {wounds} blessures. Voulez
         vous faire un jet d'encaissement ?</p>
       ApplyShaken: Appliquer l'état Secoué
+      NoVehicleSoak: L'encaissement pour les véhicules n'est pas encore mis en place
     RerollSoakDialog:
       Title: Relancer l'encaissement des blessures pour {name} ?
       Benny: Dépenser un jeton pour relancer
@@ -902,6 +906,65 @@ SWADE:
     4: Attaque désespérée (4)
   MacroActor:
     Default: Défaut
+    Self: Soi-même
+  CouldNotFindMacro: "Impossible de trouver la macro avec l'UUID : {uuid}"
+  DmgMod: Modificateur de dégâts
+  ResourcesUsed:
+    Hint: Quelle quantité d'une ressource arbitraire est utilisée pour cette action
+      ?
+    Label: Utilisation d'une ressource
+  Auras:
+    WallConstraints:
+      Hint: Cela défini si l'aura est bloquée par les murs qui bloquent la lumière
+        ou si elle peut passer à travers eux
+      Label: Limité par les murs
+    TabHeader: Gestionnaire d'auras
+    Enabled: Activé
+    Color: Couleur
+    Range: Rayon de l'aura
+    Alpha: Transparence de l'aura
+    UserAura1: Aura 1
+    UserAura2: Aura 2
+  TOURS:
+    AMMUNITION:
+      GameSettings:
+        Title: Paramètres du jeu
+        Content: En premier, la gestion des munitions doit être activée dans les paramètres
+          du système de jeu.
+      Title: Munitions
+      Description: Ce guide va vous montrer comment utilisé le suivi des munitions
+        automatique
+      Actor: Guide de gestion des munitions pour un personnage
+      Items:
+        NONE: Arc long
+        SELF: Couteau de jet
+        SINGLE: Revolver
+        FULL: Pistolet à eau
+        MAGAZINE: Steyr AUG
+        BATTERY: Pistolet laser
+        PP: Artefact magique
+      SwadeSettings:
+        Title: Paramètres pour SWADE
+  Magazine:
+    NoneLoaded: Pas de chargeur chargé
+    Select: Choisissez un chargeur
+  Unfamiliar:
+    '2': Non spécialisé (-2)
+    '4': Non spécialisé (-4)
+  ShieldBonus: Bonus de bouclier
+  AddOrReplaceActions:
+    Add: Ajouter une nouvelle action
+    Replace: Remplacer une action existante
+    Content: <p>voulez-vous ajouter les actions de {type} <strong>{source}</strong>
+      en tant que nouvelles actions ou remplacer les actions existantes ?</p>
+    Title: Ajouter ou remplacer des actions
+  BaseParry: Parade de base
+  Aura:
+    Visibility:
+      Label: Visible pour
+      Hint: Sélectionne quels tokens (par disposition) peuvent voir cette aura. Vous
+        pouvez toujours voir toutes les auras d'un token sur lequel vous avez la permission
+        d'observateur
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
