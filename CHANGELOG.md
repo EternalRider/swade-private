@@ -69,6 +69,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Chat messages for Major and Minor hindrances are no longer reversed. **by @jpmeehan5**
 - Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by @jpmeehan5**
 - Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field **by @jpmeehan5 and @florad92**
+- Fixed a race condition that could cause attribute dice to display the wrong value (#926) **by @jpmeehan5**
 
 ## 3.1.4
 

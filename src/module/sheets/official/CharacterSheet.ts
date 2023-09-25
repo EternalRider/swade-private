@@ -189,8 +189,8 @@ export default class CharacterSheet extends ActorSheet {
       const sourceId = a.closest('li')!.dataset.sourceId as string;
       const sourceItem = this.actor.items.get(sourceId)!;
       const effect = sourceId
-        ? sourceItem.effects.get(effectId)
-        : this.actor.effects.get(effectId);
+        ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
+        : (this.actor.effects.get(effectId) as SwadeActiveEffect);
       if (!effect) return;
       const action = a.dataset.action as string;
       const toggle = a.dataset.toggle as string;
@@ -447,7 +447,6 @@ export default class CharacterSheet extends ActorSheet {
       parryTooltip: this.actor.getPTTooltip('parry'),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       armorTooltip: this.actor.getArmorTooltip(),
-      attributes: this._getAttributesForDisplay(),
       skills: await this._getSkillsForDisplay(),
       powers: this._getPowers(),
       additionalStats: additionalStats,
@@ -471,7 +470,10 @@ export default class CharacterSheet extends ActorSheet {
         expanded: this.actor.system.advances.mode === 'expanded',
         list: this._getAdvances(),
       },
+      // Putting this at the end because of race condition for grandchild updates
+      attributes: this._getAttributesForDisplay(),
     };
+
     return { ...(await super.getData(options)), ...data };
   }
 
@@ -703,9 +705,9 @@ export default class CharacterSheet extends ActorSheet {
   protected _toggleItem(
     doc: SwadeItem | SwadeActiveEffect,
     toggle: string,
-  ): Record<string, unknown> {
+  ): Record<string, boolean> {
     const oldVal = !!getProperty(doc, toggle);
-    return { _id: doc.id, [toggle]: !oldVal };
+    return { [toggle]: !oldVal };
   }
 
   protected async _chooseItemType(choices?: any) {
