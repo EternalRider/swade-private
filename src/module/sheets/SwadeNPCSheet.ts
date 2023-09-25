@@ -167,10 +167,9 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
 
-    data.parryTooltip = this.actor.getPTTooltip('parry')
-    data.toughnessTooltip = this.actor.getPTTooltip('toughness')
-    data.armorTooltip = this.actor.getArmorTooltip()
-
+    data.parryTooltip = this.actor.getPTTooltip('parry');
+    data.toughnessTooltip = this.actor.getPTTooltip('toughness');
+    data.armorTooltip = this.actor.getArmorTooltip();
     return data;
   }
 

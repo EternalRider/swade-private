@@ -138,7 +138,7 @@ export default class SwadeActor extends Actor {
     );
   }
 
-  /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced
+  /** @return whether this actor is currently encumbered, factoring in whether the rule is even enforced
    * @deprecated since version 3.2, use actor.system.encumbered instead
    */
   get isEncumbered(): boolean {

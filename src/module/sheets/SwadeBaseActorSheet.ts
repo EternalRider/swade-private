@@ -4,6 +4,7 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 /**
  * @noInheritDoc
@@ -110,8 +111,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const parentId = data.effectParentId;
       const effect =
         parentId === this.actor.id
-          ? this.actor.effects.get(effectID)
-          : this.actor.items.get(parentId).effects.get(effectID);
+          ? (this.actor.effects.get(effectID) as SwadeActiveEffect)
+          : (this.actor.items
+              .get(parentId)
+              .effects.get(effectID) as SwadeActiveEffect);
       const action = a.dataset.action;
 
       switch (action) {
