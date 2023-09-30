@@ -238,7 +238,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this._getAdditionalStats();
+    const additionalStats = this.#getAdditionalStats();
 
     const data: SwadeItemSheetData = {
       itemType: this._getItemType(),
@@ -638,11 +638,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  #getAdditionalStats(): AdditionalStats {
     const stats = foundry.utils.deepClone(
       this.item.system.additionalStats,
     ) as AdditionalStats;
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').item;
         const optionString = options[key].optionString ?? '';

@@ -49,10 +49,13 @@ export default class SwadeDocumentTweaks extends FormApplication<
 
   /**@inheritdoc */
   override async getData(options?: ApplicationOptions) {
-    const settingFields = this._getPrototypeSettingFields();
+    const settingFields = this.#getPrototypeSettingFields();
 
     for (const key in settingFields) {
-      if (this.object.system.additionalStats[key]) {
+      if (
+        this.object.system.additionalStats[key] &&
+        this.object.system.additionalStats[key]?.dtype
+      ) {
         settingFields[key].useField = true;
       }
     }
@@ -65,7 +68,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isCharacter: this.object.type === 'character',
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
-      advanceTypes: this._getAdvanceTypes(),
+      advanceTypes: this.#getAdvanceTypes(),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.gridUnits,
         auras: this.object.auras,
@@ -98,14 +101,14 @@ export default class SwadeDocumentTweaks extends FormApplication<
     foundry.utils.setProperty(
       expandedFormData,
       'system.additionalStats',
-      this._handleAdditionalStats(expandedFormData),
+      this.#handleAdditionalStats(expandedFormData),
     );
 
     // Update the actor
     await this.object.update(expandedFormData);
   }
 
-  private _getPrototypeSettingFields() {
+  #getPrototypeSettingFields() {
     const fields = game.settings.get('swade', 'settingFields');
     let settingFields: AdditionalStats = {};
     if (this.object instanceof SwadeActor) {
@@ -116,9 +119,9 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return structuredClone(settingFields);
   }
 
-  private _handleAdditionalStats(expandedFormData) {
+  #handleAdditionalStats(expandedFormData) {
     const formFields = expandedFormData.system.additionalStats ?? {};
-    const prototypeFields = this._getPrototypeSettingFields();
+    const prototypeFields = this.#getPrototypeSettingFields();
     const newFields = structuredClone<AdditionalStats>(
       this.object.system.additionalStats,
     );
@@ -126,6 +129,9 @@ export default class SwadeDocumentTweaks extends FormApplication<
     for (const [key, field] of Object.entries<AdditionalStat>(formFields)) {
       const fieldExistsOnDoc = this.object.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
+        // Fixes blank label when toggling Additional Stat while there's an active effect
+        if (newFields[key].label === undefined)
+          newFields[key].label = prototypeFields[key].label;
         //update existing field
         newFields[key].hasMaxValue = prototypeFields[key].hasMaxValue;
         newFields[key].dtype = prototypeFields[key].dtype;
@@ -163,7 +169,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return data;
   }
 
-  private _getAdvanceTypes(): Record<string, string> {
+  #getAdvanceTypes(): Record<string, string> {
     return {
       legacy: 'SWADE.Advances.Modes.Legacy',
       expanded: 'SWADE.Advances.Modes.Expanded',

@@ -250,7 +250,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: AdditionalStats = this._getAdditionalStats();
+    const additionalStats: AdditionalStats = this.#getAdditionalStats();
     data.additionalStats = additionalStats;
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
     return data;
@@ -459,11 +459,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     return retVal;
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  #getAdditionalStats(): AdditionalStats {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
         attr.options = options[key].optionString

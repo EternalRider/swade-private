@@ -440,7 +440,7 @@ export default class CharacterSheet extends ActorSheet {
       itemTypes[type].push(item);
     }
 
-    const additionalStats = this._getAdditionalStats();
+    const additionalStats = this.#getAdditionalStats();
 
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
@@ -1012,11 +1012,12 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  #getAdditionalStats(): AdditionalStats {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
         const optionString = options[key]?.optionString ?? '';
