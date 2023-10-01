@@ -329,7 +329,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
         name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
       type: type,
       img: `systems/swade/assets/icons/${type}.svg`,
-      system: deepClone(header.dataset),
+      system: Object.assign({}, header.dataset),
     };
     delete itemData.system['type'];
     return itemData;
