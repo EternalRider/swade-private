@@ -71,6 +71,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field. **by @jpmeehan5 and @florad92**
 - Fixed a race condition that could cause attribute dice to display the wrong value. (#926) **by @jpmeehan5**
 - Fixed additional stat display breaking if it was enabled then disabled while you have an active effect. (#669) **by @jpmeehan5**
+- Restored functionality of Item creation buttons on the Vehicle Sheet. (#956) **by @florad92**
 
 ## 3.1.4
 
