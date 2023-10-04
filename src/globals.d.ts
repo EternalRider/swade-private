@@ -57,3 +57,5 @@ export type AbilitySubType = ValueOf<typeof constants.ABILITY_TYPE>;
 export type AdditionalStatType = ValueOf<
   typeof constants.ADDITIONAL_STATS_TYPE
 >;
+
+export type PotentialSource<T extends {}> = T & { [key: string | number]: any };

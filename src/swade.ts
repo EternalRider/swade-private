@@ -253,9 +253,10 @@ Hooks.once('init', () => {
   CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });
-
+Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
 Hooks.once('setup', SwadeCoreHooks.onSetup);
 Hooks.once('ready', SwadeCoreHooks.onReady);
+
 Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
 Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);

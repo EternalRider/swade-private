@@ -2,6 +2,7 @@ import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/
 import { AdditionalStats, EquipState, ItemActions } from '../../globals';
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import { RequirementsEditor } from '../apps/RequirementsEditor';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -80,12 +81,14 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
+  override activateListeners(jquery: JQuery<HTMLElement>): void {
+    super.activateListeners(jquery);
     this._setupAccordions();
-    this._setupEffectCreateMenu(html);
+    this._setupEffectCreateMenu(jquery);
 
-    html.find('.profile-img').on('contextmenu', () => {
+    const html = jquery[0];
+
+    jquery.find('.profile-img').on('contextmenu', () => {
       if (!this.item.img) return;
       new ImagePopout(this.item.img, {
         title: this.item.name!,
@@ -106,9 +109,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
 
     // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
-    html.find('.inline-delete').on('click', () => this.item.delete());
+    jquery.find('.inline-delete').on('click', () => this.item.delete());
 
-    html.find('.add-action').on('click', () => {
+    jquery.find('.add-action').on('click', () => {
       const id = foundry.utils.randomID(8);
       this.collapsibleStates[id] = true;
       this.item.update({
@@ -121,7 +124,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.action-delete').on('click', async (ev) => {
+    jquery.find('.action-delete').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.actionId;
       const action = getProperty(
         this.item,
@@ -146,7 +149,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.power-delete').on('click', async (ev) => {
+    jquery.find('.power-delete').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
       const power = this.item.embeddedPowers.get(id);
       const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
@@ -162,20 +165,20 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.grant-delete').on('click', async (ev) => {
+    jquery.find('.grant-delete').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
       const grants = this.item.grantsItems;
       grants.findSplice((v) => v.uuid === uuid);
       await this.item.update({ 'system.grants': grants });
     });
 
-    html.find('.grant-name').on('click', async (ev) => {
+    jquery.find('.grant-name').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
       const doc = (await fromUuid(uuid)) as SwadeItem;
       doc?.sheet?.render(true);
     });
 
-    html.find('.effect-action').on('click', (ev) => {
+    jquery.find('.effect-action').on('click', (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
       const a = ev.currentTarget;
@@ -194,18 +197,18 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       }
     });
 
-    html.find('.delete-embedded').on('click', async (ev) => {
+    jquery.find('.delete-embedded').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.id!;
       await this._deleteEmbeddedDocument('ability', id);
     });
 
-    html.find('.power .damage').on('click', (ev) => {
+    jquery.find('.power .damage').on('click', (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
       const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
       tempPower.rollDamage();
     });
 
-    html.find('.additional-stats .rollable').on('click', async (ev) => {
+    jquery.find('.additional-stats .rollable').on('click', async (ev) => {
       const stat = ev.currentTarget.dataset.stat!;
       const statData = this.item.system.additionalStats[stat]!;
       let modifier = statData.modifier ?? '';
@@ -222,17 +225,23 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html
+    jquery
       .find('.use-consumable')
       .on('click', async () => await this.item.consume());
 
-    html.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
+    jquery.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
       const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
       const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
       game.tooltip.activate(ev.currentTarget, {
         text: await TextEditor.enrichHTML(content, { async: true }),
       });
     });
+
+    html
+      .querySelector('button.open-requirements-editor')
+      ?.addEventListener('click', () =>
+        new RequirementsEditor(this.item).render(true),
+      );
   }
 
   override async getData(

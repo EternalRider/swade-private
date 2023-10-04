@@ -27,29 +27,6 @@ import { onHotbarDrop } from './hotbarDrop';
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
   static onSetup() {
-    //localize the prototype modifiers
-    for (const group of SWADE.prototypeRollGroups) {
-      group.name = game.i18n.localize(group.name);
-      for (const modifier of group.modifiers) {
-        modifier.label = game.i18n.localize(modifier.label);
-      }
-    }
-    for (let i = 0; i < SWADE.ranks.length; i++) {
-      const element = SWADE.ranks[i];
-      SWADE.ranks[i] = game.i18n.localize(element);
-    }
-    //set the localized parry skill
-    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
-      const proneParryModifier = arr
-        .find((e) => e.id === 'prone')
-        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
-      if (proneParryModifier) {
-        proneParryModifier.key = `@Skill{${game.settings.get(
-          'swade',
-          'parryBaseSkill',
-        )}}[system.die.modifier]`;
-      }
-    });
     registerCompendiumArt();
   }
 
@@ -150,6 +127,41 @@ export default class SwadeCoreHooks {
      * This hook is called once swade is done setting up itself
      */
     Hooks.callAll('swadeReady');
+  }
+
+  static onI18nInit() {
+    //localize the ranks
+    SWADE.ranks = SWADE.ranks.map((rank) => game.i18n.localize(rank));
+
+    //localize the prototype modifiers
+    for (const group of SWADE.prototypeRollGroups) {
+      group.name = game.i18n.localize(group.name);
+      for (const modifier of group.modifiers) {
+        modifier.label = game.i18n.localize(modifier.label);
+      }
+    }
+
+    //set the localized parry skill
+    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
+      const proneParryModifier = arr
+        .find((e) => e.id === 'prone')
+        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
+      if (proneParryModifier) {
+        proneParryModifier.key = `@Skill{${game.settings.get(
+          'swade',
+          'parryBaseSkill',
+        )}}[system.die.modifier]`;
+      }
+    });
+
+    //localize the Attributes
+    for (const attribute in SWADE.attributes) {
+      const { long, short } = SWADE.attributes[attribute];
+      SWADE.attributes[attribute] = {
+        long: game.i18n.localize(long),
+        short: game.i18n.localize(short),
+      };
+    }
   }
 
   static onRenderActorDirectory(

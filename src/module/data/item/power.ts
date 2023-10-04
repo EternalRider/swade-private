@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   bonusDamage,
@@ -42,7 +43,7 @@ export class PowerData extends foundry.abstract.TypeDataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<PowerData>) {
     quarantine.ensurePowerPointsAreNumeric(source);
     migrations.renameActionProperties(source);
     return super.migrateData(source);

@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import {
   actions,
@@ -48,7 +49,7 @@ export class ConsumableData extends foundry.abstract.TypeDataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source: object): object {
+  static override migrateData(source: PotentialSource<ConsumableData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);

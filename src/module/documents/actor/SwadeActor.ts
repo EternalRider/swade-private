@@ -534,7 +534,6 @@ export default class SwadeActor extends Actor {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
-      //@ts-expect-error something something
       system: {
         die: {
           sides: 4,

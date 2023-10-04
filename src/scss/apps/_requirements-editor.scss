@@ -1,0 +1,29 @@
+.requirements-editor {
+  .add-requirement {
+    flex: 0;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    column-gap: 0.25rem;
+    padding-top: 0.25rem;
+
+    .requirement {
+      display: grid;
+      grid-template-columns: max-content 1fr max-content;
+      column-gap: 0.5rem;
+      .flexrow {
+        column-gap: 0.5rem;
+      }
+    }
+  }
+
+  button[data-action='delete'] {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
+}
