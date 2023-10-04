@@ -177,6 +177,14 @@ SWADE:
   Edges: Edges
   ArcBack: Arcane Background
   Req: Requirements
+  Requirements:
+    Other: Other
+    And: and
+    Or: or
+    Editor:
+      Header: Edit requirements for {name}
+      AddHint: Add a new requirement
+      DeleteHint: Delete this requirement
   Conv: Conviction
   UseConv: Calls on their Conviction!
   Hesitant: Hesitant

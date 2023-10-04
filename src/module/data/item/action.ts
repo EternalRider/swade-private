@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   additionalStats,
@@ -32,7 +33,7 @@ export class ActionData extends foundry.abstract.TypeDataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source: object): object {
+  static override migrateData(source: PotentialSource<ActionData>) {
     migrations.renameActionProperties(source);
     return super.migrateData(source);
   }

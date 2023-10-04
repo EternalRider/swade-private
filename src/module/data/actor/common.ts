@@ -1,7 +1,7 @@
 import { DerivedModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { getRankFromAdvanceAsString } from '../../util';
-import { MappingField } from '../models/MappingField';
+import { MappingField } from '../fields/MappingField';
 import {
   boundTraitDie,
   makeAdditionalStatsSchema,

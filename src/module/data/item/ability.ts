@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import {
   additionalStats,
@@ -37,7 +38,7 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<AbilityData>) {
     migrations.renameRaceToAncestry(source);
     return super.migrateData(source);
   }
