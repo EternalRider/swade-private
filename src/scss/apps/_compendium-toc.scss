@@ -1,7 +1,13 @@
 .compendium-toc {
   --heading-font: 'Anton', 'Signika', sans-serif;
 
+  .window-content {
+    background: var(--content-background-image) repeat left top !important;
+    color: var(--font-color) !important;
+  }
+
   .toc {
+    margin: 8px;
     height: 100%;
     display: grid;
     grid-template-rows: 3rem max-content 1fr;
