@@ -8,7 +8,18 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Strength d6+, Vigor d6+'
+    - type: rank
+      selector: ''
+      value: '0'
+      combinator: and
+    - type: attribute
+      selector: strength
+      value: '6'
+      combinator: and
+    - type: attribute
+      selector: vigor
+      value: '6'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

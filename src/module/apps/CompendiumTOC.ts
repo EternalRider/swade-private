@@ -415,11 +415,12 @@ export class CompendiumTOC extends Compendium<
                 name: entry.name as string,
                 id: entry.id,
                 img: entry.img,
+                requirements: entry.system.requirementString,
               };
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
         };
-      });
+      }) as CompendiumGroup[];
   }
 
   protected async _groupUnCategorized(
@@ -432,6 +433,7 @@ export class CompendiumTOC extends Compendium<
           name: doc.name as string,
           id: doc.id,
           img: doc.img,
+          requirements: doc.system.requirementString,
         };
       }
       return {

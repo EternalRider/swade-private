@@ -69,7 +69,12 @@
                     alt='{{localize "SWADE.WildCard"}}'
                   />
                 {{/if}}
-                <a class='name'>{{name}}</a>
+                <div class='entry'>
+                  <a class='name'>{{name}}</a>
+                  {{#if requirements}}
+                    <span class='requirements'>{{requirements}}</span>
+                  {{/if}}
+                </div>
               </li>
             {{/each}}
           </ol>
@@ -84,7 +89,15 @@
                     alt='{{name}}'
                     loading='lazy'
                   />
-                  <a class='name'>{{name}}</a>
+                  <div class='entry'>
+                    <a class='name'>{{name}}</a>
+                    {{#if requirements}}
+                      <span class='requirements'>
+                        {{localize 'SWADE.Req'}}:&nbsp;
+                        {{requirements}}
+                      </span>
+                    {{/if}}
+                  </div>
                 </li>
               {{/each}}
             </ol>

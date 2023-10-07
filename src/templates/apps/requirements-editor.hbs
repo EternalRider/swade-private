@@ -19,6 +19,12 @@
               <select name='{{concat "system.requirements." @index ".value"}}'>
                 {{selectOptions @root.rankChoices selected=value}}
               </select>
+            {{else if (eq type @root.types.WILDCARD)}}
+              <input
+                type='checkbox'
+                name='{{concat "system.requirements." @index ".value"}}'
+                {{checked value}}
+              />
             {{else if (eq type @root.types.ATTRIBUTE)}}
               <select
                 name='{{concat "system.requirements." @index ".selector"}}'
@@ -30,7 +36,7 @@
                   localize=true
                 }}
               </select>
-              <select name='{{concat "system.requirements." @index ".value"}}'>
+              <select name='{{concat "system.requirements." @index ".value"}}' data-dtype="Number">
                 {{#select value}}
                   {{> "systems/swade/templates/die-sides-options.hbs"}}
                 {{/select}}
@@ -42,7 +48,7 @@
                 value='{{selector}}'
                 required
               />
-              <select name='{{concat "system.requirements." @index ".value"}}'>
+              <select name='{{concat "system.requirements." @index ".value"}}' data-dtype="Number">
                 {{#select value}}
                   {{> "systems/swade/templates/die-sides-options.hbs"}}
                 {{/select}}

@@ -27,13 +27,10 @@
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
       <div class="requirements">
+        {{#if editable}}
         <button type="button" class="invisible open-requirements-editor"><i class="fa-solid fa-gear"></i></button>
-        <span>{{localize "SWADE.Req"}}:&nbsp;</span>
-        <ul class="unmarked-list requirements-list">
-          {{#each item.system.requirements}}
-            <li>{{@this}}{{#if (eq combinator "or")}}&nbsp;{{localize "SWADE.Requirements.Or"}}&nbsp;{{else if (not @last)}},&nbsp;{{/if}}</li>
-          {{/each}}
-        </ul>
+        {{/if}}
+        <span><strong>{{localize "SWADE.Req"}}:</strong>&nbsp;{{item.system.requirementString}}</span>
       </div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>

@@ -35,29 +35,59 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
             },
           ],
           validate: (
-            requirements: any[],
+            value: any[],
             _options: DataField.ValidationOptions<DataField.Any>,
           ) => {
-            const rankRequirements = count(
-              requirements,
-              (v) => v.type === constants.REQUIREMENT_TYPE.RANK,
-            );
-
-            if (rankRequirements !== 1) {
-              throw new foundry.data.validation.DataModelValidationError(
-                `Cannot have ${
-                  rankRequirements > 1 ? 'more' : 'less'
-                } than one rank requirement`,
-              );
-            }
+            this.#checkRankRequirements(value);
           },
         },
       ),
     };
   }
 
+  get requirementString() {
+    return this.requirements.reduce(
+      (
+        accumulator: string,
+        current: RequirementsField,
+        index: number,
+        list: RequirementsField[],
+      ) => {
+        accumulator += current.toString();
+        if (index !== list.length - 1) {
+          switch (current.combinator) {
+            case 'or':
+              accumulator +=
+                ' ' + game.i18n.localize('SWADE.Requirements.Or') + ' ';
+              break;
+            case 'and':
+              accumulator += ', ';
+              break;
+          }
+        }
+        return accumulator;
+      },
+      '',
+    );
+  }
+
   static override migrateData(source: PotentialSource<EdgeData>) {
     migrations.convertRequirementsToList(source);
     return super.migrateData(source);
+  }
+
+  static #checkRankRequirements(value: any[]) {
+    const rankRequirements = count(
+      value,
+      (v) => v.type === constants.REQUIREMENT_TYPE.RANK,
+    );
+
+    if (rankRequirements !== 1) {
+      throw new foundry.data.validation.DataModelValidationError(
+        `Cannot have ${
+          rankRequirements > 1 ? 'more' : 'less'
+        } than one rank requirement`,
+      );
+    }
   }
 }
