@@ -8,7 +8,18 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Athletics d8+ or Shooting d8+'
+    - type: rank
+      selector: ''
+      value: '1'
+      combinator: and
+    - type: skill
+      selector: Shooting
+      value: '8'
+      combinator: or
+    - type: skill
+      selector: Athletics
+      value: '8'
+      combinator: or
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

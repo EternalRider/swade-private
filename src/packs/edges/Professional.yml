@@ -8,7 +8,14 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Legendary, maximum die type possible in affected Trait'
+    - type: rank
+      selector: ''
+      value: '4'
+      combinator: and
+    - type: other
+      selector: ''
+      value: maximum die type possible in affected Trait
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

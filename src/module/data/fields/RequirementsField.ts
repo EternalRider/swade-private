@@ -1,5 +1,6 @@
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { AddStatsValueField } from './AddStatsValueField';
 
 export interface RequirementsField
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -13,6 +14,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
 > {
   static get sortOrder() {
     return [
+      constants.REQUIREMENT_TYPE.WILDCARD,
       constants.REQUIREMENT_TYPE.RANK,
       constants.REQUIREMENT_TYPE.ATTRIBUTE,
       constants.REQUIREMENT_TYPE.SKILL,
@@ -43,7 +45,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
       /** The actual requirement value, such as an attribute, skill or edge name */
       selector: new fields.StringField({ initial: '', required: true }),
       /** For attribute and skill requirements this is used  to denote the die type, for Ranks it is used to denote the rank*/
-      value: new fields.StringField({ initial: '', required: true }),
+      value: new AddStatsValueField({ initial: '', required: true }),
       combinator: new fields.StringField({
         initial: 'and',
         choices: ['and', 'or'],
@@ -53,6 +55,10 @@ export class RequirementsField extends foundry.abstract.DataModel<
 
   toString(): string {
     switch (this.type) {
+      case constants.REQUIREMENT_TYPE.WILDCARD:
+        // When the box is unchecked the value is "false", which in JS is typecast to true
+        if (this.value === 'true') return game.i18n.localize('SWADE.WildCard');
+        else return game.i18n.localize('SWADE.Extra');
       case constants.REQUIREMENT_TYPE.RANK:
         return SWADE.ranks[Number(this.value)];
       case constants.REQUIREMENT_TYPE.ATTRIBUTE:

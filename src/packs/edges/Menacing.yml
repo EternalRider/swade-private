@@ -8,7 +8,26 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, any one of Bloodthirsty, Mean, Ruthless, or Ugly'
+    - type: rank
+      selector: ''
+      value: '0'
+      combinator: and
+    - type: hindrance
+      selector: Bloodthirsty
+      value: ''
+      combinator: and
+    - type: hindrance
+      selector: Mean
+      value: ''
+      combinator: or
+    - type: hindrance
+      selector: Ruthless
+      value: ''
+      combinator: or
+    - type: hindrance
+      selector: Ugly
+      value: ''
+      combinator: or
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

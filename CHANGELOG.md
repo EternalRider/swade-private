@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added ability to create documents within a compendium TOC. (#883) **by @jpmeehan5**
+- The Compendium TOC now lists an edge's requirements. (#879) **by @jpmeehan5**
 - Added more trait die options above d12 to the Attribute Manager. (#919) **by @florad92**
 - Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by @jpmeehan5**
 - Added categories to the edges in the base system. (#925) **by @jpmeehan5**
@@ -49,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by @jpmeehan5**
 - Replaced all references, including in translation keys, to race with ancestry. A migration has been provided. (#942) **by @florad92**
 - If created on an Item, active effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
+- Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
 
 ### Deprecated
 

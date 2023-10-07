@@ -8,7 +8,14 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Martial Artist'
+    - type: rank
+      selector: ''
+      value: '1'
+      combinator: and
+    - type: edge
+      selector: Martial Artist
+      value: ''
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -444,7 +444,7 @@ export default class SwadeItem extends Item {
     }
     if (type === 'edge') {
       chips.push({
-        text: this.system.requirements.value,
+        text: this.system.requirementString,
       });
       if (this.system.isArcaneBackground) {
         chips.push({ text: game.i18n.localize('SWADE.Arcane') });

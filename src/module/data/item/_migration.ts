@@ -74,11 +74,21 @@ export function convertRequirementsToList(source: PotentialSource<EdgeData>) {
   const mapped: any[] = oldValue
     .split(',')
     .filter(Boolean)
+    .map((r) => r.trim()) //trim excess whitespaces before we do the actual mapping
     .map((requirement: string) => {
       if (SWADE.ranks.includes(requirement)) {
         return {
           type: constants.REQUIREMENT_TYPE.RANK,
           value: SWADE.ranks.indexOf(requirement),
+        };
+      }
+      if (
+        requirement === game.i18n.localize('SWADE.WildCard') ||
+        requirement === 'Wild Card'
+      ) {
+        return {
+          type: constants.REQUIREMENT_TYPE.WILDCARD,
+          value: true,
         };
       }
       return {

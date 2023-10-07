@@ -91,12 +91,27 @@
     .toc-entry {
       line-height: var(--sidebar-item-height);
       margin-bottom: 0.5rem;
-      .name {
+      .entry {
         line-height: var(--sidebar-item-height);
-        white-space: nowrap;
-        overflow: hidden;
-        text-decoration: underline;
-        text-decoration-color: $header-text;
+        display: flex;
+        flex-direction: column;
+        .name {
+          overflow: hidden;
+          text-decoration: underline;
+          text-decoration-color: $header-text;
+          &:only-child {
+            line-height: var(--sidebar-item-height);
+          }
+          &:not(:only-child) {
+            margin: 0;
+            line-height: 2em;
+          }
+        }
+        .requirements {
+          font-style: italic;
+          font-size: small;
+          line-height: 1.2em;
+        }
       }
       .wildcard {
         flex: 0 0 calc(var(--sidebar-item-height) / 2);

@@ -132,6 +132,7 @@ export class RequirementsEditor extends FormApplication<
 
   #getRequirementTypeChoices(): Record<string, string> {
     return {
+      [constants.REQUIREMENT_TYPE.WILDCARD]: 'SWADE.WildCard',
       [constants.REQUIREMENT_TYPE.RANK]: 'SWADE.Rank',
       [constants.REQUIREMENT_TYPE.ATTRIBUTE]: 'SWADE.Attribute',
       [constants.REQUIREMENT_TYPE.SKILL]: 'TYPES.Item.skill',
