@@ -8,7 +8,14 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Legendary, Vigor d8+'
+    - type: rank
+      selector: ''
+      value: '4'
+      combinator: and
+    - type: attribute
+      selector: vigor
+      value: '8'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

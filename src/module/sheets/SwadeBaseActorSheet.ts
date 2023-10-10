@@ -4,6 +4,7 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 /**
  * @noInheritDoc
@@ -110,8 +111,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const parentId = data.effectParentId;
       const effect =
         parentId === this.actor.id
-          ? this.actor.effects.get(effectID)
-          : this.actor.items.get(parentId).effects.get(effectID);
+          ? (this.actor.effects.get(effectID) as SwadeActiveEffect)
+          : (this.actor.items
+              .get(parentId)
+              .effects.get(effectID) as SwadeActiveEffect);
       const action = a.dataset.action;
 
       switch (action) {
@@ -247,7 +250,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: AdditionalStats = this._getAdditionalStats();
+    const additionalStats: AdditionalStats = this.#getAdditionalStats();
     data.additionalStats = additionalStats;
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
     return data;
@@ -456,11 +459,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     return retVal;
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  #getAdditionalStats(): AdditionalStats {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
         attr.options = options[key].optionString

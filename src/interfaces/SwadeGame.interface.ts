@@ -6,8 +6,7 @@ import { RollDialog } from '../module/apps/RollDialog';
 import SettingConfigurator from '../module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from '../module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from '../module/CharacterSummarizer';
-import { AddStatsValueField } from '../module/data/models/AddStatsValueField';
-import { MappingField } from '../module/data/models/MappingField';
+import { fields } from '../module/data';
 import Benny from '../module/dice/Benny';
 import WildDie from '../module/dice/WildDie';
 import SwadeActiveEffect from '../module/documents/active-effect/SwadeActiveEffect';
@@ -54,10 +53,7 @@ export interface SwadeGame {
   migrations: typeof migrations;
   effectCallbacks: Collection<StatusEffectCallback>;
   ready: boolean;
-  fields: {
-    MappingField: typeof MappingField;
-    AddStatsValueField: typeof AddStatsValueField;
-  };
+  fields: typeof fields;
 }
 
 export type StatusEffectCallback = (effect: SwadeActiveEffect) => Promise<void>;

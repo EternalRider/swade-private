@@ -1,7 +1,7 @@
 import { constants } from '../constants';
 import { TraitDie } from '../documents/actor/actor-data-source';
-import { AddStatsValueField } from './models/AddStatsValueField';
-import { MappingField } from './models/MappingField';
+import { AddStatsValueField } from './fields/AddStatsValueField';
+import { MappingField } from './fields/MappingField';
 
 export function makeDiceField(init = 4) {
   return new foundry.data.fields.NumberField({

@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added ability to create documents within a compendium TOC. (#883) **by @jpmeehan5**
+- The Compendium TOC now lists an edge's requirements. (#879) **by @jpmeehan5**
 - Added more trait die options above d12 to the Attribute Manager. (#919) **by @florad92**
 - Added Running and Unfamiliar as preset trait roll modifiers. (#880) **by @jpmeehan5**
 - Added categories to the edges in the base system. (#925) **by @jpmeehan5**
@@ -49,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by @jpmeehan5**
 - Replaced all references, including in translation keys, to race with ancestry. A migration has been provided. (#942) **by @florad92**
 - If created on an Item, active effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
+- Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
 
 ### Deprecated
 
@@ -68,7 +70,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
 - Chat messages for Major and Minor hindrances are no longer reversed. **by @jpmeehan5**
 - Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by @jpmeehan5**
-- Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field **by @jpmeehan5 and @florad92**
+- Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field. **by @jpmeehan5 and @florad92**
+- Fixed a race condition that could cause attribute dice to display the wrong value. (#926) **by @jpmeehan5**
+- Fixed additional stat display breaking if it was enabled then disabled while you have an active effect. (#669) **by @jpmeehan5**
+- Restored functionality of Item creation buttons on the Vehicle Sheet. (#956) **by @florad92**
+- Fixed the display of bulleted lists in power descriptions. (#954) **by @jpmeehan5**
+- Fixed a bug with source HTML editors in the biography sub-tab of the about tab. (#950) **by @jpmeehan5**
 
 ## 3.1.4
 

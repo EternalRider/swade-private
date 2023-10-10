@@ -8,7 +8,18 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Wild Card, Novice, Fighting d8+'
+    - type: wildCard
+      selector: ''
+      value: 'true'
+      combinator: and
+    - type: rank
+      selector: ''
+      value: '0'
+      combinator: and
+    - type: skill
+      selector: Fighting
+      value: '8'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

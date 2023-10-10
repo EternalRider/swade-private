@@ -366,7 +366,7 @@ export class CompendiumTOC extends Compendium<
           img: hindrance.img,
         };
       })
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a.name.localeCompare(b.name)) as CompendiumEntry[];
   }
 
   protected _groupPowers(
@@ -378,6 +378,7 @@ export class CompendiumTOC extends Compendium<
       if (!groups[rank]) groups[rank] = [];
       groups[rank].push(power);
     }
+
     return Object.entries(groups)
       .sort((a, b) => SWADE.ranks.indexOf(a[0]) - SWADE.ranks.indexOf(b[0]))
       .map((val) => {
@@ -393,7 +394,7 @@ export class CompendiumTOC extends Compendium<
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
         };
-      });
+      }) as CompendiumGroup[];
   }
 
   protected _groupEdges(edges: StoredDocument<SwadeItem>[]): CompendiumGroup[] {
@@ -414,11 +415,12 @@ export class CompendiumTOC extends Compendium<
                 name: entry.name as string,
                 id: entry.id,
                 img: entry.img,
+                requirements: entry.system.requirementString,
               };
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
         };
-      });
+      }) as CompendiumGroup[];
   }
 
   protected async _groupUnCategorized(
@@ -431,6 +433,7 @@ export class CompendiumTOC extends Compendium<
           name: doc.name as string,
           id: doc.id,
           img: doc.img,
+          requirements: doc.system.requirementString,
         };
       }
       return {

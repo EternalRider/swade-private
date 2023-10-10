@@ -8,7 +8,10 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: Seasoned
+    - type: rank
+      selector: ''
+      value: '1'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

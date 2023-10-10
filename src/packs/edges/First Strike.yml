@@ -8,7 +8,14 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Agility d8+'
+    - type: rank
+      selector: ''
+      value: '0'
+      combinator: and
+    - type: attribute
+      selector: agility
+      value: '8'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -8,7 +8,14 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Hard to Kill'
+    - type: rank
+      selector: ''
+      value: '2'
+      combinator: and
+    - type: edge
+      selector: Hard to Kill
+      value: ''
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

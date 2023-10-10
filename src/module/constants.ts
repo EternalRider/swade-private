@@ -116,4 +116,15 @@ export const constants = {
     ITEM: 'item',
     TWEAKS: 'tweaks',
   } as const,
+  /** @enum */
+  REQUIREMENT_TYPE: {
+    WILDCARD: 'wildCard',
+    RANK: 'rank',
+    ATTRIBUTE: 'attribute',
+    SKILL: 'skill',
+    EDGE: 'edge',
+    HINDRANCE: 'hindrance',
+    ANCESTRY: 'ancestry',
+    OTHER: 'other',
+  } as const,
 };
