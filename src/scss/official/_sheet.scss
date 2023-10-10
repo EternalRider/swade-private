@@ -1367,7 +1367,7 @@
       grid-template-rows: 1fr 1fr;
       gap: $large-spacing;
       margin: 0;
-      .editor-container {
+      > .editor-container {
         display: grid;
         grid-template-rows: max-content auto;
         overflow: hidden;
