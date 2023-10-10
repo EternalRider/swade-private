@@ -8,7 +8,22 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Wild Card, Novice, Arcane, Background (Any), arcane skill d8+'
+    - type: wildCard
+      selector: ''
+      value: 'true'
+      combinator: and
+    - type: rank
+      selector: ''
+      value: '0'
+      combinator: and
+    - type: edge
+      selector: Arcane Background (Any)
+      value: ''
+      combinator: and
+    - type: skill
+      selector: arcane skill
+      value: '8'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

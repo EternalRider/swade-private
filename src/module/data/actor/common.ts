@@ -1,13 +1,13 @@
+import { DerivedModifier } from '../../../interfaces/additional.interface';
+import { Advance } from '../../../interfaces/Advance.interface';
+import { getRankFromAdvanceAsString } from '../../util';
+import { MappingField } from '../fields/MappingField';
 import {
   boundTraitDie,
   makeAdditionalStatsSchema,
   makeDiceField,
   makeTraitDiceFields,
-  MappingField,
 } from '../shared';
-import { DerivedModifier } from '../../../interfaces/additional.interface';
-import { getRankFromAdvanceAsString } from '../../util';
-import { Advance } from '../../../interfaces/Advance.interface';
 import * as quarantine from './_quarantine';
 
 const fields = foundry.data.fields;

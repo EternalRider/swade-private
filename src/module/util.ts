@@ -191,7 +191,7 @@ export function getRankFromAdvance(advance: number): number {
 
 /** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
-  return game.i18n.localize(SWADE.ranks[getRankFromAdvance(advance)]);
+  return SWADE.ranks[getRankFromAdvance(advance)];
 }
 
 /**

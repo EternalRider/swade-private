@@ -2,6 +2,7 @@ import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-v
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import SwadeItem from './SwadeItem';
+import { constants } from '../../constants';
 
 export interface ItemChatCardChip {
   icon?: string;
@@ -42,12 +43,20 @@ export interface UsageUpdates {
   resourceUpdates: Updates[];
 }
 
+export interface Requirement {
+  type: ValueOf<typeof constants.REQUIREMENT_TYPE>;
+  combinator: string;
+  selector: string;
+  value: string;
+}
+
 export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
   mutation?: DeepPartial<ItemDataConstructorData>;
   missing?: boolean;
+  major?: boolean;
 }
 
 export interface ItemGrantChainLink {

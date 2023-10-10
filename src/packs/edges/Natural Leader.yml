@@ -8,7 +8,18 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Spirit d8+, Command'
+    - type: rank
+      selector: ''
+      value: '1'
+      combinator: and
+    - type: attribute
+      selector: spirit
+      value: '8'
+      combinator: and
+    - type: edge
+      selector: Command
+      value: ''
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

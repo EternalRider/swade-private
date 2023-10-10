@@ -1,0 +1,107 @@
+<form autocomplete='off' class='{{cssClass}}'>
+  <header>
+    <h2 class="flexrow">
+      <span>{{localize "SWADE.Requirements.Editor.Header" name=object.name}}</span>
+      <button type='button' class="add-requirement" data-action='add' data-tooltip="SWADE.Requirements.Editor.AddHint">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+    </h2>
+  </header>
+  <ul>
+    {{#each object.system.requirements}}
+      <li data-index='{{@index}}'>
+        <div class='requirement'>
+          <select name='{{concat "system.requirements." @index ".type"}}'>
+            {{selectOptions @root.typeChoices selected=type localize=true}}
+          </select>
+          <div class='flexrow'>
+            {{#if (eq type @root.types.RANK)}}
+              <select name='{{concat "system.requirements." @index ".value"}}'>
+                {{selectOptions @root.rankChoices selected=value}}
+              </select>
+            {{else if (eq type @root.types.WILDCARD)}}
+              <input
+                type='checkbox'
+                name='{{concat "system.requirements." @index ".value"}}'
+                {{checked value}}
+              />
+            {{else if (eq type @root.types.ATTRIBUTE)}}
+              <select
+                name='{{concat "system.requirements." @index ".selector"}}'
+                required
+              >
+                {{selectOptions
+                  @root.attributeChoices
+                  selected=selector
+                  localize=true
+                }}
+              </select>
+              <select name='{{concat "system.requirements." @index ".value"}}' data-dtype="Number">
+                {{#select value}}
+                  {{> "systems/swade/templates/die-sides-options.hbs"}}
+                {{/select}}
+              </select>
+            {{else if (eq type @root.types.SKILL)}}
+              <input
+                type='text'
+                name='{{concat "system.requirements." @index ".selector"}}'
+                value='{{selector}}'
+                required
+              />
+              <select name='{{concat "system.requirements." @index ".value"}}' data-dtype="Number">
+                {{#select value}}
+                  {{> "systems/swade/templates/die-sides-options.hbs"}}
+                {{/select}}
+              </select>
+            {{else if (eq type @root.types.EDGE)}}
+              <input
+                type='text'
+                name='{{concat "system.requirements." @index ".selector"}}'
+                value='{{selector}}'
+                required
+              />
+            {{else if (eq type @root.types.HINDRANCE)}}
+              <input
+                type='text'
+                name='{{concat "system.requirements." @index ".selector"}}'
+                value='{{selector}}'
+                required
+              />
+            {{else if (eq type @root.types.ANCESTRY)}}
+              <input
+                type='text'
+                name='{{concat "system.requirements." @index ".selector"}}'
+                value='{{selector}}'
+                required
+              />
+            {{else if (eq type @root.types.OTHER)}}
+              <input
+                type='text'
+                name='{{concat "system.requirements." @index ".value"}}'
+                value='{{value}}'
+              />
+            {{/if}}
+          </div>
+          {{#unless @last}}
+            <select
+              name='{{concat "system.requirements." @index ".combinator"}}'
+            >
+              {{#select combinator}}
+                <option value='and'>{{localize
+                    'SWADE.Requirements.And'
+                  }}</option>
+                <option value='or'>{{localize 'SWADE.Requirements.Or'}}</option>
+              {{/select}}
+            </select>
+          {{/unless}}
+        </div>
+        <button type='button' data-action='delete' data-tooltip="SWADE.Requirements.Editor.DeleteHint">
+          <i class='fa-solid fa-trash'></i>
+          </button>
+      </li>
+    {{/each}}
+  </ul>
+  <footer>
+    <button type="submit"><i class="fa-solid fa-save"></i> {{localize "Save Changes"}}</button>
+  </footer>
+</form>

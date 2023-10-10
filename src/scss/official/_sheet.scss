@@ -11,7 +11,8 @@
 
 .swade-official {
   //Custom properties
-  --content-background-image: url('./assets/main_bg.webp');
+  --content-background-image: url('assets/paperboard-texture.webp');
+  --content-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
 
   --section-header-color: #{$header-text};
   --section-header-size: #{$section-header};
@@ -34,9 +35,8 @@
   //sheet background
   .window-content {
     //sheet background
-    background-image: var(--content-background-image);
-    background-repeat: repeat;
-    background-position: left top;
+    background: var(--content-background-image) left top repeat;
+    box-shadow: var(--content-shadow);
 
     .main-grid {
       height: 100%;
@@ -1367,7 +1367,7 @@
       grid-template-rows: 1fr 1fr;
       gap: $large-spacing;
       margin: 0;
-      .editor-container {
+      > .editor-container {
         display: grid;
         grid-template-rows: max-content auto;
         overflow: hidden;

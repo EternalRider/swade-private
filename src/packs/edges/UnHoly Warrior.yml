@@ -8,7 +8,18 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: Seasoned, Arcane Background (Miracles), Faith d6+
+    - type: rank
+      selector: ''
+      value: '1'
+      combinator: and
+    - type: edge
+      selector: Arcane Background (Miracles)
+      value: ''
+      combinator: and
+    - type: skill
+      selector: Faith
+      value: '6'
+      combinator: and
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

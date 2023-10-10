@@ -11,7 +11,7 @@ import {
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
-import { ItemGrant } from './SwadeItem.interface';
+import { ItemGrant, Requirement } from './SwadeItem.interface';
 
 declare global {
   interface SourceConfig {
@@ -206,9 +206,7 @@ interface ConsumableData
 
 interface EdgeData extends ItemDescription, Favorite, Category {
   isArcaneBackground: boolean;
-  requirements: {
-    value: string;
-  };
+  requirements: Array<Requirement>;
   grants: Array<ItemGrant>;
 }
 

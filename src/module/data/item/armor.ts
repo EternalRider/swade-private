@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   arcaneDevice,
@@ -51,7 +52,7 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<ArmorData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);
