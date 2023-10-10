@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Physical change, glowing aura, potions
   favorite: false
+  swid: boostlower-trait
 img: systems/swade/assets/icons/power.svg
 name: Boost/Lower Trait
 type: power

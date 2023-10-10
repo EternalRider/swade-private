@@ -20,6 +20,7 @@ system:
       selector: Athletics
       value: '6'
       combinator: and
+  swid: free-runner
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

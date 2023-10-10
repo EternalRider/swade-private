@@ -7,6 +7,7 @@ system:
   description: See SWADE p.26
   notes: ''
   major: true
+  swid: one-eye
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: SauXBE06XI73Nj1c

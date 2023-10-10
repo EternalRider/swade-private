@@ -24,6 +24,7 @@ system:
       selector: Stealth
       value: '8'
       combinator: and
+  swid: assasin
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

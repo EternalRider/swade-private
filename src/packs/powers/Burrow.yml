@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Dissolving into the earth and appearing elsewhere.
   favorite: false
+  swid: burrow
 img: systems/swade/assets/icons/power.svg
 name: Burrow
 type: power

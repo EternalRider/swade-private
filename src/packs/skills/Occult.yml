@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: occult
 flags: {}
 img: systems/swade/assets/icons/skills/curled-tentacle.svg
 _id: IenPVxrbuAm9q120

@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: common-knowledge
 flags: {}
 img: systems/swade/assets/icons/skills/gift-of-knowledge.svg
 _id: T6rr0LHgpBl1nfTa

@@ -20,6 +20,7 @@ system:
       selector: Strong Willed
       value: ''
       combinator: and
+  swid: iron-will
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -24,6 +24,7 @@ system:
       selector: Thievery
       value: '6'
       combinator: and
+  swid: thief
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

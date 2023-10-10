@@ -16,6 +16,7 @@ system:
       selector: Hard to Kill
       value: ''
       combinator: and
+  swid: harder-to-kill
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

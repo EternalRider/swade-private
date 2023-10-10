@@ -12,6 +12,7 @@ system:
       selector: ''
       value: '1'
       combinator: and
+  swid: no-mercy
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -16,6 +16,7 @@ system:
       selector: Level Headed
       value: ''
       combinator: and
+  swid: improved-level-headed
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: A lullaby, blowing powder or sand at targets
   favorite: false
+  swid: slumber
 img: systems/swade/assets/icons/power.svg
 name: Slumber
 type: power

@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Psionic invasion, soulsight
   favorite: false
+  swid: mind-reading
 img: systems/swade/assets/icons/power.svg
 name: Mind Reading
 type: power

@@ -16,6 +16,7 @@ system:
       selector: Professional in affected Trait
       value: ''
       combinator: and
+  swid: expert
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

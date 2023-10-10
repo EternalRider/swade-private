@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: Holy items, arcane symbols, handful of salt
   favorite: false
+  swid: banish
 img: systems/swade/assets/icons/power.svg
 name: Banish
 type: power

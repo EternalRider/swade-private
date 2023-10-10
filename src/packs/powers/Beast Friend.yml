@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: The caster concentrates and gestures with his hands.
   favorite: false
+  swid: beast-friend
 img: systems/swade/assets/icons/power.svg
 name: Beast Friend
 type: power

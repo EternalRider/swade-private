@@ -1,13 +1,39 @@
+import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 import { constants } from '../../constants';
 import { MappingField } from '../fields/MappingField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
 
+/** source for regex: https://ihateregex.io/expr/url-slug/ */
+const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
+
 export const itemDescription = () => ({
   description: new fields.HTMLField({ initial: '', textSearch: true }),
   notes: new fields.StringField({ initial: '', textSearch: true }),
   source: new fields.StringField({ initial: '', textSearch: true }),
+  swid: new fields.StringField({
+    initial: constants.RESERVED_SWID.DEFAULT,
+    blank: false,
+    required: true,
+    validate: (
+      value: string,
+      _options: DataField.ValidationOptions<foundry.data.fields.StringField>,
+    ) => {
+      //`any` is a reserved word
+      if (value === constants.RESERVED_SWID.ANY) {
+        throw new foundry.data.validation.DataModelValidationError(
+          'Any is a reserved swid!',
+        );
+      }
+      //if the value matches the regex we have likely a valid swid
+      if (!value.match(slugRegex)) {
+        throw new foundry.data.validation.DataModelValidationError(
+          value + ' is not a valid SWID',
+        );
+      }
+    },
+  }),
   ...additionalStats(),
 });
 export const physicalItem = () => ({

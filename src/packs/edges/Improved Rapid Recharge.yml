@@ -16,6 +16,7 @@ system:
       selector: Rapid Recharge
       value: ''
       combinator: and
+  swid: improved-rapid-recharge
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

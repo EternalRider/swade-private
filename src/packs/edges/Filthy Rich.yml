@@ -16,6 +16,7 @@ system:
       selector: Rich
       value: ''
       combinator: and
+  swid: filthy-rich
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

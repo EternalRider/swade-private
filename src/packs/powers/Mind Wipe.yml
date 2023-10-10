@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: A noxious drink, parasites, touching the target's temples
   favorite: false
+  swid: mind-wipe
 img: systems/swade/assets/icons/power.svg
 name: Mind Wipe
 type: power

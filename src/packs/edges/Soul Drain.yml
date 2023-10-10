@@ -20,6 +20,7 @@ system:
       selector: arcane skill
       value: '10'
       combinator: and
+  swid: soul-drain
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

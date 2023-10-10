@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Glue bomb, vines, handcuffs, webs.
   favorite: false
+  swid: entangle
 img: systems/swade/assets/icons/power.svg
 name: Entangle
 type: power

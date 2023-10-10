@@ -16,6 +16,7 @@ system:
       selector: agility
       value: '6'
       combinator: and
+  swid: fleet-footed
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

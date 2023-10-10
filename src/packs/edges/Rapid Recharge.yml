@@ -20,6 +20,7 @@ system:
       selector: Arcane Background (Any)
       value: ''
       combinator: and
+  swid: rapid-recharge
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

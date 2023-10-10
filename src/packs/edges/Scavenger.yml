@@ -16,6 +16,7 @@ system:
       selector: Luck
       value: ''
       combinator: and
+  swid: scavenger
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

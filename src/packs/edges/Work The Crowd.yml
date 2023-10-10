@@ -16,6 +16,7 @@ system:
       selector: Work the Room
       value: ''
       combinator: and
+  swid: work-the-crowd
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

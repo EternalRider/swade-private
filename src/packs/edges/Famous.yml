@@ -16,6 +16,7 @@ system:
       selector: Fame
       value: ''
       combinator: and
+  swid: famous
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

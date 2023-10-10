@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Laying on hands, touching the victim with a holy symbol, prayer
   favorite: false
+  swid: healing
 img: systems/swade/assets/icons/power.svg
 name: Healing
 type: power

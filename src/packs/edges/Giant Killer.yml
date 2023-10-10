@@ -12,6 +12,7 @@ system:
       selector: ''
       value: '2'
       combinator: and
+  swid: giant-killer
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

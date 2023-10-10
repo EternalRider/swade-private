@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Invisibly marked targets, guiding winds, eagle eyes
   favorite: false
+  swid: farsight
 img: systems/swade/assets/icons/power.svg
 name: Farsight
 type: power

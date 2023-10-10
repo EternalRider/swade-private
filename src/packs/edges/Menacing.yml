@@ -28,6 +28,7 @@ system:
       selector: Ugly
       value: ''
       combinator: or
+  swid: menacing
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

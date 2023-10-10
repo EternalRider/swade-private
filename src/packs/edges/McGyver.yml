@@ -24,6 +24,7 @@ system:
       selector: Repair
       value: '6'
       combinator: and
+  swid: mcgyver
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -92,6 +92,9 @@
   }
 
   button {
+    i {
+      margin-right: 0;
+    }
     &[type='submit'],
     &.submit {
       margin-top: $medium-spacing;

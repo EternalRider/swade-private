@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: performance
 flags: {}
 img: systems/swade/assets/icons/skills/drama-masks.svg
 _id: h76fxCLWOpVmb42A

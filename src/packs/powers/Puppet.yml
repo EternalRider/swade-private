@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: Glowing eyes, trance-like state, a swinging pocket watch, voodoo dolls.
   favorite: false
+  swid: puppet
 img: systems/swade/assets/icons/power.svg
 name: Puppet
 type: power

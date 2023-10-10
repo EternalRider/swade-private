@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Headpieces, talismans, of Tao or other gods, crystals
   favorite: false
+  swid: mind-link
 img: systems/swade/assets/icons/power.svg
 name: Mind Link
 type: power

@@ -16,6 +16,7 @@ system:
       selector: Fighting
       value: '12'
       combinator: and
+  swid: weapon-master
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg
