@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Waving hands, whispered words.
   favorite: false
+  swid: detectconceal-arcana
 img: systems/swade/assets/icons/power.svg
 name: Detect/Conceal Arcana
 type: power

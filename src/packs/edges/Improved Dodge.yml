@@ -16,6 +16,7 @@ system:
       selector: Dodge
       value: ''
       combinator: and
+  swid: improved-dodge
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

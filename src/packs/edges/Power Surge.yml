@@ -24,6 +24,7 @@ system:
       selector: arcane skill
       value: '8'
       combinator: and
+  swid: power-surge
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

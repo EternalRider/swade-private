@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: survival
 flags: {}
 img: systems/swade/assets/icons/skills/camping-tent.svg
 _id: f5m7kipTSZF8mQIx

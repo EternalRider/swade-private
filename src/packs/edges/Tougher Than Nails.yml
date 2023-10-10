@@ -20,6 +20,7 @@ system:
       selector: vigor
       value: '12'
       combinator: and
+  swid: tougher-than-nails
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

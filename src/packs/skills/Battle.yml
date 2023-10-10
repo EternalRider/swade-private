@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: battle
 flags: {}
 img: systems/swade/assets/icons/skills/battle-gear.svg
 _id: NUqbZB5So7oiHJyz

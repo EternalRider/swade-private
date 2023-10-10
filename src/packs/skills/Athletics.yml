@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: athletics
 flags: {}
 img: systems/swade/assets/icons/skills/jump-across.svg
 _id: J4EFfhcWWdfEyvNr

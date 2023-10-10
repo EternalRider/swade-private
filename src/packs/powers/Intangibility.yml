@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: Ghost form, body of shadow, gaseous transformation
   favorite: false
+  swid: intangibility
 img: systems/swade/assets/icons/power.svg
 name: Intangibility
 type: power

@@ -16,6 +16,7 @@ system:
       selector: Frenzy
       value: ''
       combinator: and
+  swid: improved-frenzy
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

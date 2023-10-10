@@ -16,6 +16,7 @@ system:
       selector: Nerves of Steel
       value: ''
       combinator: and
+  swid: improved-nerves-of-steel
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

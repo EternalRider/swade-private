@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Gestures, words of power, potions
   favorite: false
+  swid: growthshrink
 img: systems/swade/assets/icons/power.svg
 name: Growth/Shrink
 type: power

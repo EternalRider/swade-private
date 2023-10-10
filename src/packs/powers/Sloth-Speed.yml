@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Slowing time, blurred motion, a slippery patch of oil or ice
   favorite: false
+  swid: slothspeed
 img: systems/swade/assets/icons/power.svg
 name: Sloth/Speed
 type: power

@@ -7,6 +7,7 @@ system:
   description: See SWADE p.24
   notes: ''
   major: true
+  swid: heroic
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: YZedN0QdDO3JUdX6

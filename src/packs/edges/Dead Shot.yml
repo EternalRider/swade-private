@@ -24,6 +24,7 @@ system:
       selector: Shooting
       value: '8'
       combinator: or
+  swid: dead-shot
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

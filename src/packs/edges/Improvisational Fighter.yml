@@ -16,6 +16,7 @@ system:
       selector: smarts
       value: '6'
       combinator: and
+  swid: improvisational-fighter
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

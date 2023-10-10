@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Whirlwind, chaotic poltergeists, repulsion field
   favorite: false
+  swid: havoc
 img: systems/swade/assets/icons/power.svg
 name: Havoc
 type: power

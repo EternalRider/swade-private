@@ -20,6 +20,7 @@ system:
       selector: Fighting
       value: '8'
       combinator: and
+  swid: mighty-blow
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

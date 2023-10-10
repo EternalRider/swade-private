@@ -21,7 +21,9 @@ declare global {
       'swade.currencyName': string;
       'swade.npcsUseCurrency': boolean;
       'swade.jokersWild': boolean;
+      /** @deprecated */
       'swade.parryBaseSkill': string;
+      'swade.parryBaseSwid': string;
       'swade.weightUnit': 'imperial' | 'metric';
       'swade.ammoManagement': boolean;
       'swade.ammoFromInventory': boolean;
@@ -163,10 +165,19 @@ export function registerSettings() {
     config: true,
   });
 
+  /** @deprecated */
   game.settings.register('swade', 'parryBaseSkill', {
+    default: 'Fighting',
+    scope: 'world',
+    requiresReload: true,
+    type: String,
+    config: false,
+  });
+
+  game.settings.register('swade', 'parryBaseSwid', {
     name: 'SWADE.Settings.ParryBase.Name',
     hint: 'SWADE.Settings.ParryBase.Hint',
-    default: 'Fighting',
+    default: 'fighting',
     scope: 'world',
     requiresReload: true,
     type: String,

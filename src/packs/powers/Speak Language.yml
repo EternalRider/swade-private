@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Words, pictures, hand motions
   favorite: false
+  swid: speak-language
 img: systems/swade/assets/icons/power.svg
 name: Speak Language
 type: power

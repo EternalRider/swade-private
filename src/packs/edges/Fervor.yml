@@ -20,6 +20,7 @@ system:
       selector: Command
       value: ''
       combinator: and
+  swid: fervor
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

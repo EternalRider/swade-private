@@ -17,7 +17,11 @@ import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
-import { getStatusEffectDataById, rollItemMacro } from '../module/util';
+import {
+  getStatusEffectDataById,
+  rollItemMacro,
+  slugify,
+} from '../module/util';
 import { ArtworkMapping } from './ArtworkMapping.interface';
 
 export interface SwadeGame {
@@ -41,6 +45,7 @@ export interface SwadeGame {
   };
   util: {
     getStatusEffectDataById: typeof getStatusEffectDataById;
+    slugify: typeof slugify;
   };
   compendiumArt: {
     map: Map<string, ArtworkMapping>;

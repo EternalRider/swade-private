@@ -16,6 +16,7 @@ system:
       selector: Weapon Master
       value: ''
       combinator: and
+  swid: master-of-arms
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

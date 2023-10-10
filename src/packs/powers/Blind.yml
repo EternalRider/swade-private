@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Bright flash of light, sand in eyes, confusion
   favorite: false
+  swid: blind
 img: systems/swade/assets/icons/power.svg
 name: Blind
 type: power

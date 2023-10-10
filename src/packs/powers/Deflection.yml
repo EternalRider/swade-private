@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Mystical shield, gust of wind, phantom servant that intercepts missiles
   favorite: false
+  swid: deflection
 img: systems/swade/assets/icons/power.svg
 name: Deflection
 type: power

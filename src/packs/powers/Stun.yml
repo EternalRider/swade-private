@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Bolts of energy, stun bombs, sonic booms, burst of blinding light
   favorite: false
+  swid: stun
 img: systems/swade/assets/icons/power.svg
 name: Stun
 type: power

@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Waving hands, whispered words
   favorite: false
+  swid: dispel
 img: systems/swade/assets/icons/power.svg
 name: Dispel
 type: power

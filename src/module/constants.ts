@@ -127,4 +127,9 @@ export const constants = {
     ANCESTRY: 'ancestry',
     OTHER: 'other',
   } as const,
+  /** @enum */
+  RESERVED_SWID: {
+    DEFAULT: 'none',
+    ANY: 'any',
+  } as const,
 };

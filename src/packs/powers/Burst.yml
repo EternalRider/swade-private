@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: A shower of flames, light or other matter of energy.
   favorite: false
+  swid: burst
 img: systems/swade/assets/icons/power.svg
 name: Burst
 type: power

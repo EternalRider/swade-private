@@ -16,6 +16,7 @@ system:
       selector: Arcane Background (Any)
       value: ''
       combinator: and
+  swid: power-points
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

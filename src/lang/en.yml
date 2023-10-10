@@ -536,8 +536,8 @@ SWADE:
     InitCardDeck:
       Name: Card Deck to use for Initiative
     ParryBase:
-      Name: Localized Fighting Skill Name
-      Hint: The name of the skill which will be used to calculate a characters Parry
+      Name: Fighting Skill SWID
+      Hint: The Savage Worlds ID of the skill which will be used to calculate an actors Parry. Read more about the Savage Worlds ID in the docs!
     UseAttributeShorts:
       Name: Use shortened attribute names
       Hint: >-
@@ -946,8 +946,8 @@ SWADE:
     WallConstraints:
       Label: Constrained by Walls
       Hint: >-
-        This toggle governs whether the aura is limited by walls that block light or if it can
-        pass through them
+        This toggle governs whether the aura is limited by walls that block
+        light or if it can pass through them
     UserAura1: Aura 1
     UserAura2: Aura 2
   Aura:
@@ -971,89 +971,157 @@ SWADE:
         PP: Wizard Gun
       GameSettings:
         Title: Game Settings
-        Content: First, Ammunition Tracking must be enabled in the game's system settings.
+        Content: >-
+          First, Ammunition Tracking must be enabled in the game's system
+          settings.
       SwadeSettings:
         Title: SWADE Settings
-        Content: Ammunition settings are found in the <em>Savage Worlds</em> setting configurator
+        Content: >-
+          Ammunition settings are found in the <em>Savage Worlds</em> setting
+          configurator
       AmmoSettings:
         Title: Ammo Settings
         Content: These control if ammo is automatically consumed by ranged weapons.
       AmmoManagement:
         Title: Ammunition Management
-        Content: This setting controls whether firing a ranged weapon consumes any ammo at all, either from the weapons' internal shot counter or from inventory.
+        Content: >-
+          This setting controls whether firing a ranged weapon consumes any ammo
+          at all, either from the weapons' internal shot counter or from
+          inventory.
       PCInventory:
         Title: Ammo from Inventory
-        Content: The next three settings control if external items are consumed when a weapon reloads, based on the actor type. If these are unchecked but ammunition management is checked, actors of a given type will consume the shots on an item but can freely reload. This allows for arcade-style ammo management where the reload action is important to track but long-term ammo usage is not.
+        Content: >-
+          The next three settings control if external items are consumed when a
+          weapon reloads, based on the actor type. If these are unchecked but
+          ammunition management is checked, actors of a given type will consume
+          the shots on an item but can freely reload. This allows for
+          arcade-style ammo management where the reload action is important to
+          track but long-term ammo usage is not.
       CharacterWeapons:
         Title: Character Weapons
         Content: A character's weapons are listed in the gear tab.
       ReloadNone:
         Title: Reload Procedure — None
-        Content: These weapons ignore the shots counter entirely, pulling directly from the linked ammo item. This setting is best for weapons that only use external ammo, such as a quiver of arrows or a drum-fed gattling gun.
+        Content: >-
+          These weapons ignore the shots counter entirely, pulling directly from
+          the linked ammo item. This setting is best for weapons that only use
+          external ammo, such as a quiver of arrows or a drum-fed gattling gun.
       AmmoNone:
         Title: The Ammo Field
-        Content: This should be set to a gear (e.g. Arrows) or consumable item (e.g. Barrel of Bullets) in the character's inventory. A gear item's quantity is consumed directly. Consumable items use their charges instead, with each quantity representing a full set of charges. This field must match the name of the item to be consumed <em>exactly</em>.
+        Content: >-
+          This should be set to a gear (e.g. Arrows) or consumable item (e.g.
+          Barrel of Bullets) in the character's inventory. A gear item's
+          quantity is consumed directly. Consumable items use their charges
+          instead, with each quantity representing a full set of charges. This
+          field must match the name of the item to be consumed <em>exactly</em>.
       ReloadSelf:
         Title: Reload Procedure — Self
-        Content: These weapons use their own quantity to reset their shots counter. This setting is best for thrown weapons or anything else that is self-contained and uses itself up.
+        Content: >-
+          These weapons use their own quantity to reset their shots counter.
+          This setting is best for thrown weapons or anything else that is
+          self-contained and uses itself up.
       AmmoSelf:
         Title: The Ammo Field
         Content: This field is ignored when the reload type is set to self
       ReloadSingle:
         Title: Reload Procedure — Single
-        Content: These weapons reload a single shot with each press of the Reload button. This setting is ideal for revolvers or other weapons with bulky pieces of ammunition that are slow to reload.
+        Content: >-
+          These weapons reload a single shot with each press of the Reload
+          button. This setting is ideal for revolvers or other weapons with
+          bulky pieces of ammunition that are slow to reload.
       AmmoSingle:
         Title: The Ammo Field
-        Content: This field works similarly to Reload — None, but quantity or charges are consumed by reloading instead of by firing the weapon, as firing the weapon consumes from the Shots counter.
+        Content: >-
+          This field works similarly to Reload — None, but quantity or charges
+          are consumed by reloading instead of by firing the weapon, as firing
+          the weapon consumes from the Shots counter.
       ReloadFull:
         Title: Reload Procedure — Full
-        Content: These weapons reload their entire shot counter with each press of the Reload button. This can be used as a simplified version of the Magazine method or for weapons that don't have detachable magazines, such as a gun with liquid reservoirs.
+        Content: >-
+          These weapons reload their entire shot counter with each press of the
+          Reload button. This can be used as a simplified version of the
+          Magazine method or for weapons that don't have detachable magazines,
+          such as a gun with liquid reservoirs.
       AmmoFull:
         Title: The Ammo Field
-        Content: This field works similarly to Reload — None, but quantity or charges are consumed by reloading instead of by firing the weapon, as firing the weapon consumes from the Shots counter.
+        Content: >-
+          This field works similarly to Reload — None, but quantity or charges
+          are consumed by reloading instead of by firing the weapon, as firing
+          the weapon consumes from the Shots counter.
       ReloadMagazine:
         Title: Reload Procedure — Magazine
-        Content: These weapons use fully detachable magazines that can be swapped as needed, tracking the amount of shots left per magazine.
+        Content: >-
+          These weapons use fully detachable magazines that can be swapped as
+          needed, tracking the amount of shots left per magazine.
       AmmoMagazine:
         Title: The Ammo Field
-        Content: The item named here MUST be a consumable with the Magazine subtype to work correctly. Furthermore, the charges of the consumable should match the shots counter of the weapon.
+        Content: >-
+          The item named here MUST be a consumable with the Magazine subtype to
+          work correctly. Furthermore, the charges of the consumable should
+          match the shots counter of the weapon.
       ReloadBattery:
         Title: Reload Procedure — Battery
-        Content: These weapons operate similar to magazines, but with interchangeable batteries that are depleted proportional to the shots spent.
+        Content: >-
+          These weapons operate similar to magazines, but with interchangeable
+          batteries that are depleted proportional to the shots spent.
       AmmoBattery:
         Title: The Ammo Field
-        Content: The item named here MUST be a consumable with the Battery subtype to work correctly. Furthermore, the maximum charges of the consumable should be out of 100.
+        Content: >-
+          The item named here MUST be a consumable with the Battery subtype to
+          work correctly. Furthermore, the maximum charges of the consumable
+          should be out of 100.
       ReloadPP:
         Title: Reload Procedure — Power Points
-        Content: These weapons don't reload with physical ammunition but by depleting the wielder's power points, as featured in <em>Rifts® for Savage Worlds</em>
+        Content: >-
+          These weapons don't reload with physical ammunition but by depleting
+          the wielder's power points, as featured in <em>Rifts® for Savage
+          Worlds</em>
       AmmoPP:
         Title: The Ammo Field
-        Content: Instead of naming an item, name a valid arcane type on the character, such as general, magic, miracles, or psionics
+        Content: >-
+          Instead of naming an item, name a valid arcane type on the character,
+          such as general, magic, miracles, or psionics
     TWEAKS:
       Title: Tweaks
       Description: Learn about the unique sheet modifications in the Tweaks menu
       Actor: Tweaks Tour Demo Character
       AccessTweaks:
         Title: Accessing Tweaks
-        Content: The Tweaks menu is found in each character sheet's header, and offers additional configuration options
+        Content: >-
+          The Tweaks menu is found in each character sheet's header, and offers
+          additional configuration options
       TraitTweaks:
         Title: Trait Tweaks
-        Content: This tab provides a large array of additional fields that customize a character's traits
+        Content: >-
+          This tab provides a large array of additional fields that customize a
+          character's traits
       Advances:
         Title: Advance Mode
-        Content: Expanded advances (the default) bring enhanced data handling that specify the type of advance and automatically calculate your character's rank. Legacy advances are simply a large text box to write whatever you want with no data handling.
+        Content: >-
+          Expanded advances (the default) bring enhanced data handling that
+          specify the type of advance and automatically calculate your
+          character's rank. Legacy advances are simply a large text box to write
+          whatever you want with no data handling.
       Unshake:
         Title: Unshake Modifier
-        Content: Adds a bonus to the automated shake roll that's prompted at the start of a shaken character's turn.
+        Content: >-
+          Adds a bonus to the automated shake roll that's prompted at the start
+          of a shaken character's turn.
       Soak:
         Title: Soak Modifier
-        Content: Adds a bonus to the soak roll that's prompted from the Take Damage button on the system's damage roll cards.
+        Content: >-
+          Adds a bonus to the soak roll that's prompted from the Take Damage
+          button on the system's damage roll cards.
       Initiative:
         Title: Initiative Modifiers
-        Content: Modifies the character's initiative handling based on rules found in the core rulebook.
+        Content: >-
+          Modifies the character's initiative handling based on rules found in
+          the core rulebook.
       AutoCalc:
         Title: Automatic Calculations
-        Content: Toggles whether the character's stats are derived from their attributes and equipment or manually set.
+        Content: >-
+          Toggles whether the character's stats are derived from their
+          attributes and equipment or manually set.
     ADDSTATS:
       Title: Additional Stats
       Description: Learn how to configure Additional Stats for your setting
@@ -1063,13 +1131,19 @@ SWADE:
         Content: First, Additional Stats must be configured in the Game Settings.
       SwadeSettings:
         Title: SWADE Settings
-        Content: Additional Stats are found in the <em>Savage Worlds</em> setting configurator.
+        Content: >-
+          Additional Stats are found in the <em>Savage Worlds</em> setting
+          configurator.
       StatSettings:
         Title: Additional Stats Configuration
-        Content: All stats must be first created on this page, to be enabled later on actors and items.
+        Content: >-
+          All stats must be first created on this page, to be enabled later on
+          actors and items.
       StatKey:
         Title: Stat Key
-        Content: Stat keys determine how the additional stat is referenced in the data (actor.system.additionalStats.stat-key) and must be unique.
+        Content: >-
+          Stat keys determine how the additional stat is referenced in the data
+          (actor.system.additionalStats.stat-key) and must be unique.
       StatLabel:
         Title: Label
         Content: The text that will show up on the character sheet.
@@ -1078,10 +1152,14 @@ SWADE:
         Content: Each type has unique handling.
       HasMax:
         Title: Has Max Value
-        Content: Adds a field to indicate the maximum of an additional stat as well as its current value (Only available for Numbers and Text).
+        Content: >-
+          Adds a field to indicate the maximum of an additional stat as well as
+          its current value (Only available for Numbers and Text).
       ActorDisplay:
         Title: Additional Stats on Actors
-        Content: Additional stats that are enabled on an actor display in the Summary tab.
+        Content: >-
+          Additional stats that are enabled on an actor display in the Summary
+          tab.
       Checkbox:
         Title: Checkbox Additional Stats
         Content: The value of a checkbox is true or false.
@@ -1090,44 +1168,77 @@ SWADE:
         Content: Any number is acceptable, including decimals.
       Die:
         Title: Die Additional Stats
-        Content: The first field accepts any valid Foundry die expression; append an x to make it explode (e.g. 1d6x). The second is a number that is added. Click the label to roll the die.
+        Content: >-
+          The first field accepts any valid Foundry die expression; append an x
+          to make it explode (e.g. 1d6x). The second is a number that is added.
+          Click the label to roll the die.
       Text:
         Title: Text Additional Stats
-        Content: Simple string field; the width isn't very long, so long pieces of text should go in the description or other fields.
+        Content: >-
+          Simple string field; the width isn't very long, so long pieces of text
+          should go in the description or other fields.
       Selection:
         Title: Selection Additional Stats
         Content: A fixed list of options based on the game settings.
       AccessTweaks:
         Title: Enabling and Disabling Additional Stats
-        Content: Additional Stats can be enabled or disabled from the Additional Stats tab in the Tweaks menu.
+        Content: >-
+          Additional Stats can be enabled or disabled from the Additional Stats
+          tab in the Tweaks menu.
       AddStatTweaks:
         Title: Additional Stats Tab
-        Content: Each Additional Stat defaults to off and must be individually enabled on each actor or item.
+        Content: >-
+          Each Additional Stat defaults to off and must be individually enabled
+          on each actor or item.
     AURAS:
       Title: Auras
-      Description: Introduced in version 3.2, Auras create persistent visuals that follow tokens around.
+      Description: >-
+        Introduced in version 3.2, Auras create persistent visuals that follow
+        tokens around.
       Actor: Auras Tour Demo Character
       AccessAuras:
         Title: Accessing Auras
         Content: Auras can be found in the Tweaks menu
       Auramancer:
         Title: The Auras Tab
-        Content: Auras have their own tab within the Tweaks menu. Characters can have a maximum of two auras.
+        Content: >-
+          Auras have their own tab within the Tweaks menu. Characters can have a
+          maximum of two auras.
       Enable:
         Title: Enabling Auras
-        Content: Each aura can be enabled individually; they also fully work with unlinked tokens, allowing you to set auras individually even if they share a common source actor.
+        Content: >-
+          Each aura can be enabled individually; they also fully work with
+          unlinked tokens, allowing you to set auras individually even if they
+          share a common source actor.
       Constrained:
         Title: Wall Constraints
-        Content: This toggle governs whether the aura is limited by walls that block light or if it can pass through them.
+        Content: >-
+          This toggle governs whether the aura is limited by walls that block
+          light or if it can pass through them.
       Radius:
         Title: Aura Radius
-        Content: The Aura's radius, measured in grid units. The unit hint displayed here matches the current scene's unit of measurement.
+        Content: >-
+          The Aura's radius, measured in grid units. The unit hint displayed
+          here matches the current scene's unit of measurement.
       Color:
         Title: Aura Color and Transparency
-        Content: Auras display similar to circular area templates around the source character; these settings let you control their visual display.
+        Content: >-
+          Auras display similar to circular area templates around the source
+          character; these settings let you control their visual display.
       Visibility:
         Title: Aura Visibility
-        Content: Select which tokens (by Disposition) can see this aura. You can always see all auras of a token of which you have at least Observer permission.
+        Content: >-
+          Select which tokens (by Disposition) can see this aura. You can always
+          see all auras of a token of which you have at least Observer
+          permission.
+  SWID:
+    Long: Savage Worlds ID
+    Short: SWID
+    Regenerate: Regenerate Savage Worlds ID
+    ChangeWarning2: >-
+      Changing an Item's Savage Worlds ID might break references to the Item! Proceed with caution and only if you are sure.
+    ChangeWarning3: Do you want to proceed?
+    ChangeWarning1: Proceed with caution!
 TYPES:
   Actor:
     character: Player Character

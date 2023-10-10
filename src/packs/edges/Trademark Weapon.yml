@@ -16,6 +16,7 @@ system:
       selector: skill with chosen weapon of
       value: '8'
       combinator: and
+  swid: trademark-weapon
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

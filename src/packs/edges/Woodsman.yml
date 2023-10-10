@@ -20,6 +20,7 @@ system:
       selector: Survival
       value: '8'
       combinator: and
+  swid: woodsman
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

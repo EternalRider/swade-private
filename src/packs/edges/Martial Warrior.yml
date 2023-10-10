@@ -16,6 +16,7 @@ system:
       selector: Martial Artist
       value: ''
       combinator: and
+  swid: martial-warrior
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

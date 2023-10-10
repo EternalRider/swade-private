@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: science
 flags: {}
 img: systems/swade/assets/icons/skills/erlenmeyer.svg
 _id: RPhFPA70HS72Nysa

@@ -10,6 +10,7 @@ import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import type SwadeUser from '../documents/SwadeUser';
 import { Logger } from '../Logger';
 import { MigrationCounter } from '../models/MigrationCounter';
+import { slugify } from '../util';
 import { triggerServersideMigration } from './migrationUtils';
 
 export async function migrateWorld() {
@@ -345,6 +346,7 @@ export function migrateItemData(item: ItemDataSource) {
   _migrateWeaponAutoReload(item, updateData);
   _ensureBatteryMaxCharges(item, updateData);
   _fixWorldItemGrants(item, updateData);
+  _generateSWID(item, updateData);
 
   // Migrate embedded effects
   if (item.effects) {
@@ -612,6 +614,12 @@ function _fixWorldItemGrants(data: ItemData, updateData: UpdateData) {
       newUUID.shift(); //discard the first part
       grant.uuid = newUUID.join('.');
     }
+  }
+}
+
+function _generateSWID(data: ItemData, updateData: UpdateData) {
+  if (data.system.swid === constants.RESERVED_SWID.DEFAULT) {
+    updateData['system.swid'] = slugify(data.name);
   }
 }
 

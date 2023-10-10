@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: persuasion
 flags: {}
 img: systems/swade/assets/icons/skills/convince.svg
 _id: 6nZk5RtWVTtyotyQ

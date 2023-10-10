@@ -4,6 +4,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
+import { Logger } from './Logger';
 
 /**
  * A simple function to allow quick access to an item such as a skill or weapon. Skills are rolled while other items are posted to the chat as a chatcard
@@ -258,6 +259,22 @@ export function mapRange(
  */
 export function count<T>(arr: Array<T>, condition: (e: T) => boolean): number {
   return arr.filter(condition).length;
+}
+
+/** Takes an input and returns the slugged string of it. */
+export function slugify(input: unknown) {
+  const slugged = String(input)
+    .normalize('NFKD') // split accented characters into their base characters and diacritical marks
+    .replace(/[\u0300-\u036f]/g, '') // remove all the accents, which happen to be all in the \u03xx UNICODE block.
+    .toLowerCase() // convert to lowercase
+    .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
+    .replace(/\s+/g, '-') // replace spaces with hyphens
+    .replace(/-+/g, '-') // remove consecutive hyphens
+    .replace(/^-+/g, '') //remove leading hyphens
+    .replace(/-+$/g, '') //remove trailing hyphens
+    .trim(); // trim leading or trailing whitespace
+  Logger.debug([input, slugged]);
+  return slugged;
 }
 
 type Ownership = Record<string, number>;

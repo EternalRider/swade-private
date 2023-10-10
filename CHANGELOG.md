@@ -40,6 +40,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Improved Documentation of SWADE's unique vision types. (#885) **by @jpmeehan5**
 - Added indicator to granted hindrances if it's a major hindrance. (#874) **by @jpmeehan5**
 - Exposed the MappingField and AddStatsValueField for developers **by @jpmeehan5**
+- Added the Savage Worlds ID (SWID for short). The SWID is a non-unique identifier that allows one to identify an item and its derived from the Item's name. For more information please see the System documentation. (#957) **by @florad92**
+  - Added a migration that sets SWIDs on all items based on their current name.
+  - Added a new setting to set the SWID of the item that should be used to calculate Parry.
+  - [BREAKING] Refactored the parry calculation to take advantage of the newly introduced SWID.
 
 ### Changed
 
@@ -55,6 +59,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Deprecated
 
 - SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by @jpmeehan5**
+- Deprecated the `parryBaseSkill` setting in favor of the `parryBaseSwid`
 
 ### Removed
 

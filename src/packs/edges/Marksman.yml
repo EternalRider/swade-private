@@ -20,6 +20,7 @@ system:
       selector: Athletics
       value: '8'
       combinator: or
+  swid: marksman
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

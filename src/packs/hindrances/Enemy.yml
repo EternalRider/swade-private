@@ -7,6 +7,7 @@ system:
   description: See SWADE p.24
   notes: ''
   major: false
+  swid: enemy
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: SW8Z2uQA9YAE1UZ4

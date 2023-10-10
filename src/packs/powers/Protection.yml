@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: A mystical glow, hardened skin, ethereal armor, a mass of nanites
   favorite: false
+  swid: protection
 img: systems/swade/assets/icons/power.svg
 name: Protection
 type: power

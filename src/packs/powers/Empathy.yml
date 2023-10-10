@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Concentration, a warm or sympathetic smile, exchanging a pleasantry
   favorite: false
+  swid: empathy
 img: systems/swade/assets/icons/power.svg
 name: Empathy
 type: power

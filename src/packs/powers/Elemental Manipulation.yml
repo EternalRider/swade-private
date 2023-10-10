@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: A few simple gestures
   favorite: false
+  swid: elemental-manipulation
 img: systems/swade/assets/icons/power.svg
 name: Elemental Manipulation
 type: power

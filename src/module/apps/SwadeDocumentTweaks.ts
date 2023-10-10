@@ -31,6 +31,10 @@ export default class SwadeDocumentTweaks extends FormApplication<
     });
   }
 
+  override get id() {
+    return `DocumentTweaks-${this.object.documentName}-${this.object.id}`;
+  }
+
   /** Add the Document name into the window title*/
   override get title() {
     return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
@@ -42,9 +46,12 @@ export default class SwadeDocumentTweaks extends FormApplication<
 
     html
       .querySelectorAll('.tab[data-tab="auras"] select')
-      .forEach((select) =>
-        select.addEventListener('contextmenu', this.resetVisibility.bind(this)),
+      .forEach((el) =>
+        el.addEventListener('contextmenu', this.#resetVisibility.bind(this)),
       );
+    html
+      .querySelector('.regenerate-swid')
+      ?.addEventListener('click', () => this.#regenerateSWID.bind(this));
   }
 
   /**@inheritdoc */
@@ -176,7 +183,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     };
   }
 
-  async resetVisibility(ev: PointerEvent) {
+  async #resetVisibility(ev: PointerEvent) {
     const target = ev.currentTarget as HTMLSelectElement;
     const auraId = target.dataset.auraId as string;
     await this.object.update(
@@ -185,6 +192,11 @@ export default class SwadeDocumentTweaks extends FormApplication<
       },
       { diff: false },
     );
+    this.render();
+  }
+
+  async #regenerateSWID() {
+    await (this.object as SwadeItem).regenerateSWID();
     this.render();
   }
 }

@@ -16,6 +16,7 @@ system:
       selector: ''
       value: '4'
       combinator: and
+  swid: sidekick
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

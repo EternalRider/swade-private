@@ -50,6 +50,7 @@ import {
   deepFreeze,
   getStatusEffectDataById,
   rollItemMacro,
+  slugify,
 } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
@@ -88,6 +89,7 @@ Hooks.once('init', () => {
     },
     util: {
       getStatusEffectDataById,
+      slugify,
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),

@@ -4,7 +4,7 @@ permission:
 type: edge
 system:
   category: Power
-  description: '<p>See SWADE p.46</p>'
+  description: <p>See SWADE p.46</p>
   notes: ''
   isArcaneBackground: false
   requirements:
@@ -20,6 +20,7 @@ system:
       selector: Faith
       value: '6'
       combinator: and
+  swid: holyunholy-warrior
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg
