@@ -74,6 +74,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed a race condition that could cause attribute dice to display the wrong value. (#926) **by @jpmeehan5**
 - Fixed additional stat display breaking if it was enabled then disabled while you have an active effect. (#669) **by @jpmeehan5**
 - Restored functionality of Item creation buttons on the Vehicle Sheet. (#956) **by @florad92**
+- Fixed the display of bulleted lists in power descriptions. (#954) **by @jpmeehan5**
 - Fixed a bug with source HTML editors in the biography sub-tab of the about tab. (#950) **by @jpmeehan5**
 
 ## 3.1.4
