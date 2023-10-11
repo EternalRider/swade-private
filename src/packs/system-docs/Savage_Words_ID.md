@@ -22,9 +22,9 @@ All Item documents have a Savage Worlds ID, which can be seen and edited in the 
 
 The swid can be found under `item.system.swid`. Should you want to generate a SWID yourself you can do so via the provided `game.swade.util.slugify` method.
 
-The system will automatically assign a SWID to a newly created Item if none was provided in the initial creation data. Both functions take a swid as the first argument and optionally a `type` (such as `skill` or `edge`).
+The system will automatically assign a SWID to a newly created Item if none was provided in the initial creation data.
 
-The `SwadeActor` class provides two utility functions for retrieving items via their swid:
+The `SwadeActor` class provides two utility functions for retrieving items via their swid, both functions take a swid as the first argument and optionally a `type` (such as `skill` or `edge`).
 
-- `SwadeActor#getSingleItemBySwid`, returns an array of SwadeItems that match the swid (and optionally type)
-- `SwadeActor#getItemsBySwid`, returns the first item that matched the swid (and optionally type) or `undefined` if no item was found.
+- `SwadeActor#getItemsBySwid`, returns an array of SwadeItems that match the swid (and optionally type)
+- `SwadeActor#getSingleItemBySwid`, returns the first item that matched the swid (and optionally type) or `undefined` if no item was found.
