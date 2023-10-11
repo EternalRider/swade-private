@@ -52,7 +52,6 @@ export default class SwadeDocumentTweaks extends FormApplication<
     html
       .querySelector('.regenerate-swid')
       ?.addEventListener('click', this.#regenerateSWID.bind(this));
-    console.log(html.querySelector('.regenerate-swid'));
   }
 
   /**@inheritdoc */
