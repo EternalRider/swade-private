@@ -62,9 +62,9 @@ export default class CharacterSheet extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    this._setupEquipStatusMenu(html);
-    this._setupEffectCreateMenu(html);
-    this._setupItemContextMenu(html);
+    this.#setupEquipStatusMenu(html);
+    this.#setupEffectCreateMenu(html);
+    this.#setupItemContextMenu(html);
 
     // Input focus and update
     const inputs = html.find('input');
@@ -76,11 +76,10 @@ export default class CharacterSheet extends ActorSheet {
       .on('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
-    // Find all items on the character sheet.
-    html.find('li.item').each((i, li) => {
+    html.find('li.item, .attribute').each((i, el) => {
       // Add draggable attribute and dragstart listener.
-      li.setAttribute('draggable', 'true');
-      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
+      el.draggable = true;
+      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     html
@@ -477,89 +476,24 @@ export default class CharacterSheet extends ActorSheet {
     return { ...(await super.getData(options)), ...data };
   }
 
-  private _getAttributesForDisplay(): Record<string, TraitDisplay> {
-    if (this.actor.type === 'vehicle') throw Error();
-    const attributes: Record<string, TraitDisplay> = {};
-    const globals = this.actor?.system.stats.globalMods as Record<
-      string,
-      RollModifier[]
-    >;
-    for (const key in this.actor.system.attributes) {
-      const attr = this.actor.system.attributes[key];
-      const mods: RollModifier[] = [
-        {
-          label: game.i18n.localize('SWADE.TraitMod'),
-          value: attr.die.modifier,
-        },
-        ...attr.effects,
-        ...globals[key],
-        ...globals.trait,
-      ].filter((m) => m.ignore !== true);
-      let tooltip = `<strong>${game.i18n.localize(
-        SWADE.attributes[key].long,
-      )}</strong>`;
-      if (mods.length) {
-        tooltip += `<ul style="text-align:start;">${mods
-          .map(({ label, value }) => {
-            const mapped =
-              typeof value === 'number' ? value.signedString() : value;
-            return `<li>${label}: ${mapped}</li>`;
-          })
-          .join('')}</ul>`;
-      }
-      attributes[key] = {
-        die: attr.die.sides,
-        modifier: mods.reduce(util.addUpModifiers, 0),
-        tooltip,
-      };
+  protected override _onDragStart(event: DragEvent): void {
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget.classList.contains('attribute')) {
+      return this._onDragAttribute(event);
     }
-
-    return attributes;
+    super._onDragStart(event);
   }
 
-  private async _getSkillsForDisplay(): Promise<SkillDisplay[]> {
-    const globals = this.actor?.system.stats.globalMods as Record<
-      string,
-      RollModifier[]
-    >;
-    const skills: SkillDisplay[] = [];
-
-    for (const skill of this.actor.items.filter((i) => i.type === 'skill')) {
-      const attribute = skill.system.attribute;
-      const mods: RollModifier[] = [
-        {
-          label: game.i18n.localize('SWADE.TraitMod'),
-          value: skill.system.die.modifier,
-        },
-        ...skill.system.effects,
-        ...(globals[attribute] ?? []),
-        ...globals.trait,
-      ].filter((m) => m.ignore !== true);
-      let tooltip = `<strong>${skill.name}</strong>`;
-      if (mods.length) {
-        tooltip += `<ul style="text-align:start;">${mods
-          .map(({ label, value }) => {
-            const mapped =
-              typeof value === 'number' ? value.signedString() : value;
-            return `<li>${label}: ${mapped}</li>`;
-          })
-          .join('')}</ul>`;
-      }
-      skills.push({
-        label: skill.name as string,
-        img: skill.img as string,
-        die: skill.system.die.sides as number,
-        modifier: mods.reduce(util.addUpModifiers, 0),
-        description: await this._enrichText(skill.system.description),
-        isCoreSkill: skill.system.isCoreSkill,
-        isOwner: skill.isOwner,
-        id: skill.id,
-        attribute,
-        tooltip,
-      });
-    }
-
-    return skills.sort((a, b) => a.label.localeCompare(b.label));
+  protected _onDragAttribute(event: DragEvent) {
+    const btn = (event.currentTarget as HTMLElement).querySelector('button');
+    event.dataTransfer?.setData(
+      'text/plain',
+      JSON.stringify({
+        type: 'Attribute',
+        uuid: this.actor.uuid,
+        attribute: btn?.dataset.attribute as Attribute,
+      }),
+    );
   }
 
   protected override async _onDropItem(
@@ -650,25 +584,6 @@ export default class CharacterSheet extends ActorSheet {
     } else if (event.altKey) {
       foundry.utils.setProperty(item, key, constants.EQUIP_STATE.STORED);
     }
-  }
-
-  private _getAdvances() {
-    if (this.actor.type === 'vehicle') return [];
-    const retVal = new Array<{ rank: string; list: Advance[] }>();
-    const advances = this.actor.system.advances.list;
-    for (const advance of advances) {
-      const sort = advance.sort;
-      const rankIndex = util.getRankFromAdvance(advance.sort);
-      const rank = util.getRankFromAdvanceAsString(sort);
-      if (!retVal[rankIndex]) {
-        retVal.push({
-          rank: rank,
-          list: [],
-        });
-      }
-      retVal[rankIndex].list.push(advance);
-    }
-    return retVal;
   }
 
   protected _getPowerPoints(item: SwadeItem) {
@@ -785,13 +700,6 @@ export default class CharacterSheet extends ActorSheet {
       notes: await this._enrichText(this.actor.system.details.notes),
       advances: await this._enrichText(this.actor.system.advances.details),
     };
-  }
-
-  private async _enrichText(text: string) {
-    return TextEditor.enrichHTML(text, {
-      async: false,
-      secrets: this.options.editable,
-    });
   }
 
   protected async _getEffects() {
@@ -949,121 +857,6 @@ export default class CharacterSheet extends ActorSheet {
     }
   }
 
-  private async _addAdvance() {
-    if (this.actor.type === 'vehicle') return;
-    const advances = this.actor.system.advances.list;
-    const newAdvance: Advance = {
-      id: foundry.utils.randomID(8),
-      type: constants.ADVANCE_TYPE.EDGE,
-      sort: advances.size + 1,
-      planned: false,
-      notes: '',
-    };
-    advances.set(newAdvance.id, newAdvance);
-    await this.actor.update({ 'system.advances.list': advances.toJSON() });
-    new AdvanceEditor({
-      advance: newAdvance,
-      actor: this.actor,
-    }).render(true);
-  }
-
-  private async _deleteAdvance(id: string) {
-    if (this.actor.type === 'vehicle') return;
-    Dialog.confirm({
-      title: game.i18n.localize('SWADE.Advances.Delete'),
-      content: `<form>
-      <div style="text-align: center;">
-        <p>Are you sure?</p>
-      </div>
-    </form>`,
-      defaultYes: false,
-      yes: () => {
-        if (this.actor.type === 'vehicle') return;
-        const advances = this.actor.system.advances.list;
-        advances.delete(id);
-        const arr = advances.toJSON();
-        arr.forEach((a, i) => (a.sort = i + 1));
-        this.actor.update({ 'system.advances.list': arr });
-      },
-    });
-  }
-
-  private async _toggleAdvancePlanned(id: string) {
-    if (this.actor.type === 'vehicle') return;
-    Dialog.confirm({
-      title: game.i18n.localize('SWADE.Advances.Toggle'),
-      content: `<form>
-        <div style="text-align: center;">
-          <p>Are you sure?</p>
-        </div>
-      </form>`,
-      defaultYes: false,
-      yes: async () => {
-        if (this.actor.type === 'vehicle') return;
-        const advances = this.actor.system.advances.list;
-        const advance = advances.get(id, { strict: true });
-        advance.planned = !advance.planned;
-        advances.set(id, advance);
-        await this.actor.update(
-          { 'system.advances.list': advances.toJSON() },
-          { diff: false },
-        );
-      },
-    });
-  }
-
-  #getAdditionalStats(): AdditionalStats {
-    const stats = structuredClone<AdditionalStats>(
-      this.actor.system.additionalStats,
-    );
-    for (const [key, attr] of Object.entries(stats)) {
-      if (!attr.dtype) delete stats[key];
-      if (attr.dtype === 'Selection') {
-        const options = game.settings.get('swade', 'settingFields').actor;
-        const optionString = options[key]?.optionString ?? '';
-        attr.options = optionString
-          .split(';')
-          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
-      }
-    }
-    return stats;
-  }
-
-  private _getPowers(): SheetPowers {
-    //Deal with ABs and Powers
-    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
-
-    for (const power of this.actor.itemTypes.power) {
-      const ab = power.system.arcane || 'general';
-      if (!arcaneBackgrounds[ab]) {
-        arcaneBackgrounds[ab] = {
-          valuePath: `system.powerPoints.${ab}.value`,
-          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
-          maxPath: `system.powerPoints.${ab}.max`,
-          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
-          powers: [],
-        };
-      }
-      arcaneBackgrounds[ab].powers.push(power);
-    }
-
-    //sort the powers by their sort value
-    for (const entry of Object.values(arcaneBackgrounds)) {
-      entry.powers.sort((a, b) => a.sort - b.sort);
-    }
-
-    const hasPowersWithoutArcane =
-      arcaneBackgrounds?.general?.powers.length > 0;
-    const showGeneral =
-      hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
-
-    return {
-      arcaneBackgrounds,
-      hasPowersWithoutArcane,
-      showGeneral,
-    };
-  }
-
   /**
    * Handle input changes to numeric form fields, allowing them to accept delta-typed inputs
    * @param {Event} event  Triggering event.
@@ -1143,7 +936,233 @@ export default class CharacterSheet extends ActorSheet {
     }
   }
 
-  protected _setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
+  private async _addAdvance() {
+    if (this.actor.type === 'vehicle') return;
+    const advances = this.actor.system.advances.list;
+    const newAdvance: Advance = {
+      id: foundry.utils.randomID(8),
+      type: constants.ADVANCE_TYPE.EDGE,
+      sort: advances.size + 1,
+      planned: false,
+      notes: '',
+    };
+    advances.set(newAdvance.id, newAdvance);
+    await this.actor.update({ 'system.advances.list': advances.toJSON() });
+    new AdvanceEditor({
+      advance: newAdvance,
+      actor: this.actor,
+    }).render(true);
+  }
+
+  private async _deleteAdvance(id: string) {
+    if (this.actor.type === 'vehicle') return;
+    Dialog.confirm({
+      title: game.i18n.localize('SWADE.Advances.Delete'),
+      content: `<form>
+      <div style="text-align: center;">
+        <p>Are you sure?</p>
+      </div>
+    </form>`,
+      defaultYes: false,
+      yes: () => {
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
+        advances.delete(id);
+        const arr = advances.toJSON();
+        arr.forEach((a, i) => (a.sort = i + 1));
+        this.actor.update({ 'system.advances.list': arr });
+      },
+    });
+  }
+
+  private async _toggleAdvancePlanned(id: string) {
+    if (this.actor.type === 'vehicle') return;
+    Dialog.confirm({
+      title: game.i18n.localize('SWADE.Advances.Toggle'),
+      content: `<form>
+        <div style="text-align: center;">
+          <p>Are you sure?</p>
+        </div>
+      </form>`,
+      defaultYes: false,
+      yes: async () => {
+        if (this.actor.type === 'vehicle') return;
+        const advances = this.actor.system.advances.list;
+        const advance = advances.get(id, { strict: true });
+        advance.planned = !advance.planned;
+        advances.set(id, advance);
+        await this.actor.update(
+          { 'system.advances.list': advances.toJSON() },
+          { diff: false },
+        );
+      },
+    });
+  }
+
+  private _getAdvances() {
+    if (this.actor.type === 'vehicle') return [];
+    const retVal = new Array<{ rank: string; list: Advance[] }>();
+    const advances = this.actor.system.advances.list;
+    for (const advance of advances) {
+      const sort = advance.sort;
+      const rankIndex = util.getRankFromAdvance(advance.sort);
+      const rank = util.getRankFromAdvanceAsString(sort);
+      if (!retVal[rankIndex]) {
+        retVal.push({
+          rank: rank,
+          list: [],
+        });
+      }
+      retVal[rankIndex].list.push(advance);
+    }
+    return retVal;
+  }
+
+  private async _enrichText(text: string) {
+    return TextEditor.enrichHTML(text, {
+      async: false,
+      secrets: this.options.editable,
+    });
+  }
+
+  #getAdditionalStats(): AdditionalStats {
+    const stats = structuredClone<AdditionalStats>(
+      this.actor.system.additionalStats,
+    );
+    for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        const optionString = options[key]?.optionString ?? '';
+        attr.options = optionString
+          .split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    return stats;
+  }
+
+  private _getPowers(): SheetPowers {
+    //Deal with ABs and Powers
+    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
+
+    for (const power of this.actor.itemTypes.power) {
+      const ab = power.system.arcane || 'general';
+      if (!arcaneBackgrounds[ab]) {
+        arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
+          powers: [],
+        };
+      }
+      arcaneBackgrounds[ab].powers.push(power);
+    }
+
+    //sort the powers by their sort value
+    for (const entry of Object.values(arcaneBackgrounds)) {
+      entry.powers.sort((a, b) => a.sort - b.sort);
+    }
+
+    const hasPowersWithoutArcane =
+      arcaneBackgrounds?.general?.powers.length > 0;
+    const showGeneral =
+      hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
+
+    return {
+      arcaneBackgrounds,
+      hasPowersWithoutArcane,
+      showGeneral,
+    };
+  }
+
+  private _getAttributesForDisplay(): Record<string, TraitDisplay> {
+    if (this.actor.type === 'vehicle') throw Error();
+    const attributes: Record<string, TraitDisplay> = {};
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    for (const key in this.actor.system.attributes) {
+      const attr = this.actor.system.attributes[key];
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: attr.die.modifier,
+        },
+        ...attr.effects,
+        ...globals[key],
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${game.i18n.localize(
+        SWADE.attributes[key].long,
+      )}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      attributes[key] = {
+        die: attr.die.sides,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        tooltip,
+      };
+    }
+
+    return attributes;
+  }
+
+  private async _getSkillsForDisplay(): Promise<SkillDisplay[]> {
+    const globals = this.actor?.system.stats.globalMods as Record<
+      string,
+      RollModifier[]
+    >;
+    const skills: SkillDisplay[] = [];
+
+    for (const skill of this.actor.items.filter((i) => i.type === 'skill')) {
+      const attribute = skill.system.attribute;
+      const mods: RollModifier[] = [
+        {
+          label: game.i18n.localize('SWADE.TraitMod'),
+          value: skill.system.die.modifier,
+        },
+        ...skill.system.effects,
+        ...(globals[attribute] ?? []),
+        ...globals.trait,
+      ].filter((m) => m.ignore !== true);
+      let tooltip = `<strong>${skill.name}</strong>`;
+      if (mods.length) {
+        tooltip += `<ul style="text-align:start;">${mods
+          .map(({ label, value }) => {
+            const mapped =
+              typeof value === 'number' ? value.signedString() : value;
+            return `<li>${label}: ${mapped}</li>`;
+          })
+          .join('')}</ul>`;
+      }
+      skills.push({
+        label: skill.name as string,
+        img: skill.img as string,
+        die: skill.system.die.sides as number,
+        modifier: mods.reduce(util.addUpModifiers, 0),
+        description: await this._enrichText(skill.system.description),
+        isCoreSkill: skill.system.isCoreSkill,
+        isOwner: skill.isOwner,
+        id: skill.id,
+        attribute,
+        tooltip,
+      });
+    }
+
+    return skills.sort((a, b) => a.label.localeCompare(b.label));
+  }
+
+  #setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [
       {
         name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
@@ -1229,7 +1248,7 @@ export default class CharacterSheet extends ActorSheet {
     this._equipStateMenu = new PopUpMenu(html, selector, items, options);
   }
 
-  protected _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+  #setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
     this._effectCreateDropDown = new ContextMenu(
       html,
       '.effects .effect-add',
@@ -1255,7 +1274,7 @@ export default class CharacterSheet extends ActorSheet {
     );
   }
 
-  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
+  #setupItemContextMenu(html: JQuery<HTMLElement>) {
     const items: ContextMenuEntry[] = [
       {
         name: 'SWADE.Reload',

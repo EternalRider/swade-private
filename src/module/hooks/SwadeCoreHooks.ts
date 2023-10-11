@@ -805,7 +805,7 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    if (data.type === 'Item' && data.uuid.startsWith('Actor')) {
+    if (data.type === 'Item' || data.type === 'Attribute') {
       onHotbarDrop(_hotbar, data, slot);
       return false;
     }

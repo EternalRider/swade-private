@@ -7,34 +7,6 @@ import SwadeItem from './documents/item/SwadeItem';
 import { Logger } from './Logger';
 
 /**
- * A simple function to allow quick access to an item such as a skill or weapon. Skills are rolled while other items are posted to the chat as a chatcard
- * @param itemName the name of the item that should be called
- */
-export function rollItemMacro(itemName: string) {
-  const speaker = ChatMessage.getSpeaker();
-  let actor: SwadeActor | undefined = undefined;
-  if (speaker.token) actor = game.actors?.tokens[speaker.token];
-  if (!actor && speaker.actor) actor = game.actors?.get(speaker.actor);
-  if (!actor || !actor.isOwner) {
-    return null;
-  }
-  const item = actor.items.getName(itemName);
-  if (!item) {
-    ui.notifications.warn(
-      `Your controlled Actor does not have an item named ${itemName}`,
-    );
-    return null;
-  }
-  //Roll the skill
-  if (item.type === 'skill') {
-    return item.roll();
-  } else {
-    // Show the item
-    return item.show();
-  }
-}
-
-/**
  * @internal
  * @param string The string to look for
  * @param localize Switch which determines if the string is a localization key

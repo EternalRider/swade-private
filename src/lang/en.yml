@@ -537,7 +537,9 @@ SWADE:
       Name: Card Deck to use for Initiative
     ParryBase:
       Name: Fighting Skill SWID
-      Hint: The Savage Worlds ID of the skill which will be used to calculate an actors Parry. Read more about the Savage Worlds ID in the docs!
+      Hint: >-
+        The Savage Worlds ID of the skill which will be used to calculate an
+        actors Parry. Read more about the Savage Worlds ID in the docs!
     UseAttributeShorts:
       Name: Use shortened attribute names
       Hint: >-
@@ -829,7 +831,6 @@ SWADE:
         You can enter any skill name you like or select one from the list of
         suggestions
   OtherStats: Other Stats
-  HotbarDropOwnedItemWarning: You can only create macro buttons for owned Items
   AdditionalStats:
     SelectHint: Enter a list of options, seperated by semicolon
     Key: Stat Key
@@ -1236,7 +1237,8 @@ SWADE:
     Short: SWID
     Regenerate: Regenerate Savage Worlds ID
     ChangeWarning2: >-
-      Changing an Item's Savage Worlds ID might break references to the Item! Proceed with caution and only if you are sure.
+      Changing an Item's Savage Worlds ID might break references to the Item!
+      Proceed with caution and only if you are sure.
     ChangeWarning3: Do you want to proceed?
     ChangeWarning1: Proceed with caution!
 TYPES:
