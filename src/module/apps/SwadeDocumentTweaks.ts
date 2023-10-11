@@ -40,7 +40,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
   }
 
-  activateListeners(jquery: JQuery<HTMLElement>): void {
+  activateListeners(jquery: JQuery<HTMLFormElement>): void {
     super.activateListeners(jquery);
     const html = jquery[0];
 
@@ -51,7 +51,8 @@ export default class SwadeDocumentTweaks extends FormApplication<
       );
     html
       .querySelector('.regenerate-swid')
-      ?.addEventListener('click', () => this.#regenerateSWID.bind(this));
+      ?.addEventListener('click', this.#regenerateSWID.bind(this));
+    console.log(html.querySelector('.regenerate-swid'));
   }
 
   /**@inheritdoc */
