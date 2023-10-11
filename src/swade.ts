@@ -4,6 +4,7 @@ import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
+import SwadeTour from './module/tours/SwadeTour';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
@@ -99,6 +100,7 @@ Hooks.once('init', () => {
     effectCallbacks: new Collection(),
     ready: false,
     fields: data.fields,
+    SwadeTour,
   };
 
   //register document classes

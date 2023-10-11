@@ -3,10 +3,8 @@ foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.sEULsXQtiNxTDent'
   id: sEULsXQtiNxTDent
   name: The Savage Worlds ID
-  sort: 400000
+  sort: 450000
 ---
-
-## The Savage Worlds ID
 
 The Savage Worlds ID (or SWID for short) is a semi-unique string in Item documents that is generated from an Item's name. SWIDS are **not** automatically updated when you change the name of an item, allowing the system to identify an item without considering the name, as the SWID stays stable.
 

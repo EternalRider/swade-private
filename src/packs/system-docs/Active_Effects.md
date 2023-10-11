@@ -53,7 +53,7 @@ The order of operations follows the above list exactly; if one or more effects a
 
 ### Active Effects on Items
 
-> You can currently add Active Effects to every type of Item except _Skills_.
+> You can currently add Active Effects to every type of Item except Skills.
 
 To add an Active Effect to an `Item` first find the _Effects_ tab on the item sheet. Like actors, you can either use the active effect wizard or add an empty effect. By default, effects are applied to actors, which is controlled by a toggle on the effect's Details tab. An effect that is suspended still shows on the actor's sheet, just crossed out; an effect that isn't applied will not be on the actor's sheet at all and will not do anything, even if the effect is not suspended.
 
