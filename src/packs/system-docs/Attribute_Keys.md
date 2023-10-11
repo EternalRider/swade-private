@@ -8,7 +8,11 @@ foundry:
     level: 2
 ---
 
+These attribute keys are useful for Active Effects, macros, and anything else that interacts with the Foundry Virtual Tabletop API.
+
 ### Characters and NPCs
+
+Both Characters and NPCs share similar data structures; the main difference is that characters are _always_ wild cards.
 
 #### General
 

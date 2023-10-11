@@ -18,6 +18,7 @@ import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
+import SwadeTour from '../module/tours/SwadeTour';
 import { getStatusEffectDataById, slugify } from '../module/util';
 import { ArtworkMapping } from './ArtworkMapping.interface';
 
@@ -56,6 +57,7 @@ export interface SwadeGame {
   effectCallbacks: Collection<StatusEffectCallback>;
   ready: boolean;
   fields: typeof fields;
+  SwadeTour: typeof SwadeTour;
 }
 
 export type StatusEffectCallback = (effect: SwadeActiveEffect) => Promise<void>;

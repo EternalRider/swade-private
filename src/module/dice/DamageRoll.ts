@@ -25,7 +25,8 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     this.options['targetNumber'] = tn;
   }
 
-  // Damage is almost never going to have a targetNumber of 4, arguably should just return an error 
+  // Damage is almost never going to have a targetNumber of 4, arguably should just return an error
+  // TOFIX: targetNumber is not currently a valid option in the interface, either remove these paths or fix the interface setup and possibly bump these functions to SwadeRoll
   get targetNumber(): number | undefined {
     return this.options['targetNumber'];
   }
@@ -36,9 +37,14 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
       console.warn('No target number set for damage roll');
       return constants.ROLL_RESULT.CRITFAIL;
     }
-    if ((this.total ?? 0) < this.targetNumber) return constants.ROLL_RESULT.FAIL;
-    if ((this.total ?? 0) < this.targetNumber + 4) return constants.ROLL_RESULT.SUCCESS;
-    return Math.max(Math.floor((((this.total ?? 0) - this.targetNumber) / 4)) + 1, 0) // raises get to be 2+
+    if ((this.total ?? 0) < this.targetNumber)
+      return constants.ROLL_RESULT.FAIL;
+    if ((this.total ?? 0) < this.targetNumber + 4)
+      return constants.ROLL_RESULT.SUCCESS;
+    return Math.max(
+      Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1,
+      0,
+    ); // raises get to be 2+
   }
 
   override get isCritfail() {
