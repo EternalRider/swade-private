@@ -27,6 +27,7 @@ import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import { registerAuraHooks } from './module/hooks/AuraHooks';
+import { rollItemMacro } from './module/hooks/hotbarDrop';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
@@ -46,12 +47,7 @@ import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
 import registerSWADETours from './module/tours/registration';
-import {
-  deepFreeze,
-  getStatusEffectDataById,
-  rollItemMacro,
-  slugify,
-} from './module/util';
+import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';

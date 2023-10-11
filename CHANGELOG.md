@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Added a migration that sets SWIDs on all items based on their current name.
   - Added a new setting to set the SWID of the item that should be used to calculate Parry.
   - [BREAKING] Refactored the parry calculation to take advantage of the newly introduced SWID.
+- Added the ability to drag&drop Attributes into the Macro hotbar from the character and NPC sheet. (#145) **by @florad92**
 
 ### Changed
 

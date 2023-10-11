@@ -62,19 +62,6 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    // Drag events for macros.
-    // Find all items on the character sheet.
-    html.find('li.item').each((i, li) => {
-      // Add draggable attribute and dragstart listener.
-      li.setAttribute('draggable', 'true');
-      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
-    });
-    html.find('li.active-effect').each((i, li) => {
-      // Add draggable attribute and dragstart listener.
-      li.setAttribute('draggable', 'true');
-      li.addEventListener('dragstart', (ev) => this._onDragStart(ev), false);
-    });
-
     // Refresh
     html[0]
       .querySelectorAll('.adjust-counter')
@@ -83,6 +70,13 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       );
 
     this._setupItemContextMenu(html);
+
+    // Drag events for macros.
+    html.find('.attribute').each((i, el) => {
+      // Add draggable attribute and dragstart listener.
+      el.draggable = true;
+      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
+    });
 
     // Delete Item
     html.find('.item-delete').on('click', (ev) => {
