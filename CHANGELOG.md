@@ -81,6 +81,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restored functionality of Item creation buttons on the Vehicle Sheet. (#956) **by @florad92**
 - Fixed the display of bulleted lists in power descriptions. (#954) **by @jpmeehan5**
 - Fixed a bug with source HTML editors in the biography sub-tab of the about tab. (#950) **by @jpmeehan5**
+- Fixed a bug that prevented the execution of macro actions under certain circumstances. (#970) **by @florad92**
 
 ## 3.1.4
 
