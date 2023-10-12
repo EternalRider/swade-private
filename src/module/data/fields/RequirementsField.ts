@@ -71,7 +71,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
       case constants.REQUIREMENT_TYPE.ATTRIBUTE:
         return `${SWADE.attributes[this.selector]?.long} d${this.value}+`;
       case constants.REQUIREMENT_TYPE.SKILL:
-        return `${this.selector} d${this.value}+`;
+        return `${this.label} d${this.value}+`;
       case constants.REQUIREMENT_TYPE.POWER:
         return `<i>${this.label}</i>`;
       case constants.REQUIREMENT_TYPE.EDGE:
