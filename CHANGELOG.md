@@ -57,6 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Replaced all references, including in translation keys, to race with ancestry. A migration has been provided. (#942) **by @florad92**
 - If created on an Item, active effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
 - Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
+- The Advance Editor now saves changes automatically. (#972) **by @florad92**
 
 ### Deprecated
 
