@@ -185,6 +185,10 @@ SWADE:
       Header: Edit requirements for {name}
       AddHint: Add a new requirement
       DeleteHint: Delete this requirement
+      Label: Label
+      Value: Value
+      SWID: SWID
+    Combinator: Combinator
   Conv: Conviction
   UseConv: Calls on their Conviction!
   Hesitant: Hesitant

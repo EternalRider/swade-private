@@ -1,3 +1,5 @@
+// based on https://github.com/tonystar/float-label-css
+
 @mixin float-label-container {
   display: block;
   position: relative;
@@ -17,6 +19,7 @@
 }
 
 @mixin float-label-input {
+  padding: 0;
   &::placeholder {
     opacity: 1;
     transition: all 0.2s;
@@ -38,6 +41,12 @@
   @include float-label-container;
 
   @include float-label;
+  &:has(input:invalid, select:invalid) {
+    input,
+    select {
+      border-color: rgb(140, 22, 15);
+    }
+  }
 
   &:hover {
     box-shadow: var(--input-box-shadow);

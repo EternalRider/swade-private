@@ -30,6 +30,10 @@
     color: var(--font-color);
   }
 
+  .debug * {
+    background-color: rgba(0, 100, 0, 0.1) !important;
+  }
+
   input[type],
   select {
     color: var(--font-color);
@@ -206,7 +210,13 @@
   }
 
   footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
     button {
+      margin-left: 0;
+      margin-right: 0;
       font-weight: 700;
     }
   }
