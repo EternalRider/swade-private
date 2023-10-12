@@ -93,7 +93,7 @@ export function convertRequirementsToList(source: PotentialSource<EdgeData>) {
       }
       return {
         type: constants.REQUIREMENT_TYPE.OTHER,
-        value: requirement,
+        label: requirement,
       };
     });
   //make sure at least 1 rank requirement is present in case none could be detected

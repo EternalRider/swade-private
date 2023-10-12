@@ -1,8 +1,8 @@
 import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
-import SwadeItem from './SwadeItem';
 import { constants } from '../../constants';
+import SwadeItem from './SwadeItem';
 
 export interface ItemChatCardChip {
   icon?: string;
@@ -47,7 +47,8 @@ export interface Requirement {
   type: ValueOf<typeof constants.REQUIREMENT_TYPE>;
   combinator: string;
   selector: string;
-  value: string;
+  value: string | number | boolean;
+  label: string;
 }
 
 export interface ItemGrant {

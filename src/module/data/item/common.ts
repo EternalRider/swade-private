@@ -6,7 +6,8 @@ import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 const fields = foundry.data.fields;
 
 /** source for regex: https://ihateregex.io/expr/url-slug/ */
-const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
 
 export const itemDescription = () => ({
   description: new fields.HTMLField({ initial: '', textSearch: true }),
@@ -20,18 +21,7 @@ export const itemDescription = () => ({
       value: string,
       _options: DataField.ValidationOptions<foundry.data.fields.StringField>,
     ) => {
-      //`any` is a reserved word
-      if (value === constants.RESERVED_SWID.ANY) {
-        throw new foundry.data.validation.DataModelValidationError(
-          'Any is a reserved swid!',
-        );
-      }
-      //if the value matches the regex we have likely a valid swid
-      if (!value.match(slugRegex)) {
-        throw new foundry.data.validation.DataModelValidationError(
-          value + ' is not a valid SWID',
-        );
-      }
+      validateSwid(value);
     },
   }),
   ...additionalStats(),
@@ -123,7 +113,6 @@ export const grantEmbedded = () => ({
   ...grants(),
   grantOn: new fields.NumberField({ initial: constants.GRANT_ON.CARRIED }),
 });
-
 export const grants = () => ({
   grants: new fields.ArrayField(
     //TODO create schema field for item grants
@@ -135,3 +124,22 @@ export const grants = () => ({
     }),
   ),
 });
+
+export function validateSwid(value: string) {
+  //`any` is a reserved word
+  if (value === constants.RESERVED_SWID.ANY) {
+    return new foundry.data.validation.DataModelValidationFailure({
+      unresolved: true,
+      invalidValue: value,
+      message: 'any is a reserved swid!',
+    });
+  }
+  //if the value matches the regex we have likely a valid swid
+  if (!value.match(SLUG_REGEX)) {
+    return new foundry.data.validation.DataModelValidationFailure({
+      unresolved: true,
+      invalidValue: value,
+      message: value + ' is not a valid SWID',
+    });
+  }
+}

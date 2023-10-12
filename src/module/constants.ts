@@ -125,6 +125,7 @@ export const constants = {
     EDGE: 'edge',
     HINDRANCE: 'hindrance',
     ANCESTRY: 'ancestry',
+    POWER: 'power',
     OTHER: 'other',
   } as const,
   /** @enum */
