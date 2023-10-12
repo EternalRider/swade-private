@@ -100,7 +100,8 @@
       margin-right: 0;
     }
     &[type='submit'],
-    &.submit {
+    &.submit,
+    &.close {
       margin-top: $medium-spacing;
     }
     cursor: pointer;

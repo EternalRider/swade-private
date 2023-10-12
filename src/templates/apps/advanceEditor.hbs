@@ -27,13 +27,9 @@
   </div>
   <h2>{{localize 'SWADE.Notes'}}</h2>
   <div class='editor-container'>
-    {{editor
-      notes
-      target='notes'
-      button=false
-      editable=owner
-      engine='prosemirror'
-    }}
+    {{editor notes target='advance.notes' button=false engine='prosemirror'}}
   </div>
-  <button type='submit'><i class='far fa-save'></i>{{localize 'Save'}}</button>
+  <footer>
+    <button type='button' class='close'>{{localize 'Close'}}</button>
+  </footer>
 </form>
