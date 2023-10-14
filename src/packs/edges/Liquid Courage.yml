@@ -10,11 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: vigor
-      value: '8'
+      value: 8
       combinator: and
   swid: liquid-courage
 sort: 100001

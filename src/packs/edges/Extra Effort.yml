@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Arcane Background (Gifted)
+      label: Arcane Background (Gifted)
+      selector: arcane-background-gifted
       value: ''
       combinator: and
   swid: extra-effort

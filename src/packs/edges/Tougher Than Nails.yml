@@ -10,15 +10,16 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: edge
-      selector: Tough as Nails
+      label: Tough as Nails
+      selector: tough-as-nails
       value: ''
       combinator: and
     - type: attribute
       selector: vigor
-      value: '12'
+      value: 12
       combinator: and
   swid: tougher-than-nails
 sort: 100001

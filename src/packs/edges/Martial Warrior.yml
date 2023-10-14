@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Martial Artist
+      label: Martial Artist
+      selector: martial-artist
       value: ''
       combinator: and
   swid: martial-warrior

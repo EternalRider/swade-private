@@ -10,11 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: attribute
       selector: vigor
-      value: '8'
+      value: 8
       combinator: and
   swid: tough-as-nails
 sort: 100001

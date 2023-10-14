@@ -10,15 +10,17 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Arcane Background (Miracles)
+      label: Arcane Background (Miracles)
+      selector: arcane-background-miracles
       value: ''
       combinator: and
     - type: skill
-      selector: Faith
-      value: '6'
+      label: Faith
+      selector: faith
+      value: 6
       combinator: and
   swid: holyunholy-warrior
 sort: 100001

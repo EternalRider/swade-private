@@ -10,7 +10,7 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
   swid: combat-reflexes
 sort: 100001

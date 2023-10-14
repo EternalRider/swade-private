@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Attractive
+      label: Attractive
+      selector: attractive
       value: ''
       combinator: and
   swid: very-attractive

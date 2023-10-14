@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: edge
-      selector: Professional in affected Trait
+      label: Professional in affected Trait
+      selector: professional
       value: ''
       combinator: and
   swid: expert

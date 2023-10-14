@@ -10,7 +10,7 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: other
       selector: ''

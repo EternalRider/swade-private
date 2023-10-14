@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
     - type: edge
-      selector: Tactician
+      label: Tactician
+      selector: tactician
       value: ''
       combinator: and
   swid: master-tactician

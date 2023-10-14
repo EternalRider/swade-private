@@ -10,19 +10,21 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: agility
-      value: '8'
+      value: 0
       combinator: and
     - type: skill
-      selector: Fighting
-      value: '6'
+      label: Fighting
+      selector: fighting
+      value: 6
       combinator: and
     - type: skill
-      selector: Stealth
-      value: '8'
+      label: Stealth
+      selector: stealth
+      value: 8
       combinator: and
   swid: assasin
 sort: 100001

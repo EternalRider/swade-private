@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '3'
+      value: 3
       combinator: and
     - type: edge
-      selector: First Strike
+      label: First Strike
+      selector: first-strike
       value: ''
       combinator: and
   swid: improved-first-strike

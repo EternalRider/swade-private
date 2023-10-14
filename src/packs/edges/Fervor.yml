@@ -10,14 +10,15 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
     - type: attribute
       selector: spirit
-      value: '8'
+      value: 8
       combinator: and
     - type: edge
-      selector: Command
+      label: Command
+      selector: command
       value: ''
       combinator: and
   swid: fervor

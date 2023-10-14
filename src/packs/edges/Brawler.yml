@@ -10,15 +10,15 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: strength
-      value: '8'
+      value: 8
       combinator: and
     - type: attribute
       selector: vigor
-      value: '8'
+      value: 8
       combinator: and
   swid: brawler
 sort: 100001
