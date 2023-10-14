@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Rich
+      label: Rich
+      selector: rich
       value: ''
       combinator: and
   swid: filthy-rich

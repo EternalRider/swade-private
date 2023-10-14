@@ -10,11 +10,12 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: skill
-      selector: Fighting
-      value: '12'
+      label: Fighting
+      selector: fighting
+      value: 12
       combinator: and
   swid: weapon-master
 sort: 100001

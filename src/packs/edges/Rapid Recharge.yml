@@ -10,14 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: attribute
       selector: spirit
-      value: '6'
+      value: 6
       combinator: and
-    - type: edge
-      selector: Arcane Background (Any)
+    - type: other
+      label: Arcane Background (Any)
       value: ''
       combinator: and
   swid: rapid-recharge

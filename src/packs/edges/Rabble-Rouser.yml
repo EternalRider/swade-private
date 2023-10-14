@@ -10,11 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: attribute
       selector: spirit
-      value: '8'
+      value: 8
       combinator: and
   swid: rabble-rouser
 sort: 100001

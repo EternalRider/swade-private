@@ -10,15 +10,16 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: spirit
-      value: '6'
+      value: 6
       combinator: and
     - type: skill
-      selector: Survival
-      value: '8'
+      label: Survival
+      selector: survival
+      value: 8
       combinator: and
   swid: woodsman
 sort: 100001

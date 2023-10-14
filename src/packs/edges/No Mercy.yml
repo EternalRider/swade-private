@@ -10,7 +10,7 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
   swid: no-mercy
 sort: 100001

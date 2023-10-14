@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
     - type: edge
-      selector: Martial Warrior
+      label: Martial Warrior
+      selector: martial-warrior
       value: ''
       combinator: and
   swid: chi

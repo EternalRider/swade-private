@@ -10,11 +10,12 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: skill
-      selector: Shooting
-      value: '6'
+      label: Shooting
+      selector: shooting
+      value: 6
       combinator: and
   swid: double-tap
 sort: 100001

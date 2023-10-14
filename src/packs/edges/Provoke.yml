@@ -10,11 +10,12 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: skill
-      selector: Taunt
-      value: '6'
+      label: Taunt
+      selector: taunt
+      value: 6
       combinator: and
   swid: provoke
 sort: 100001

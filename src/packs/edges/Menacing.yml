@@ -10,22 +10,26 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: hindrance
-      selector: Bloodthirsty
-      value: ''
-      combinator: and
-    - type: hindrance
-      selector: Mean
+      label: Bloodthirsty
+      selector: bloodthirsty
       value: ''
       combinator: or
     - type: hindrance
-      selector: Ruthless
+      label: Mean
+      selector: mean
       value: ''
       combinator: or
     - type: hindrance
-      selector: Ugly
+      label: Ruthless
+      selector: ruthless
+      value: ''
+      combinator: or
+    - type: hindrance
+      label b: Ugly
+      selector: ugly
       value: ''
       combinator: or
   swid: menacing

@@ -10,15 +10,16 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: agility
-      value: '8'
+      value: 8
       combinator: and
     - type: skill
-      selector: Athletics
-      value: '6'
+      label: Athletics
+      selector: athletics
+      value: 6
       combinator: and
   swid: free-runner
 sort: 100001

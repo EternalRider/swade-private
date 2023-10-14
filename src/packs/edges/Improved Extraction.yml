@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Extraction
+      label: Extraction
+      selector: extraction
       value: ''
       combinator: and
   swid: improved-extraction

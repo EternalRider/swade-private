@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: edge
-      selector: Weapon Master
+      label: Weapon Master
+      selector: weapon-master
       value: ''
       combinator: and
   swid: master-of-arms

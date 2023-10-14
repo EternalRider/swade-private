@@ -10,19 +10,18 @@ system:
   requirements:
     - type: wildCard
       selector: ''
-      value: 'true'
+      value: true
       combinator: and
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
-    - type: edge
-      selector: Arcane Background (Any)
+    - type: other
+      label: Arcane Background (Any)
       value: ''
       combinator: and
-    - type: skill
-      selector: arcane skill
-      value: '8'
+    - type: other
+      selector: arcane skill d8+
       combinator: and
   swid: power-surge
 sort: 100001

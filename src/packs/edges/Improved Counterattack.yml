@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
     - type: edge
-      selector: Counterattack
+      label: Counterattack
+      selector: counterattack
       value: ''
       combinator: and
   swid: improved-counterattack

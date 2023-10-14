@@ -10,7 +10,7 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
   swid: giant-killer
 sort: 100001

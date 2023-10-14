@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Arcane Resistance
+      label: Arcane Resistance
+      selector: arcane-resistance
       value: ''
       combinator: and
   swid: improved-arcane-resistance

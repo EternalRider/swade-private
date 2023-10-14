@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Trademark Weapon
+      label: Trademark Weapon
+      selector: trademark-weapon
       value: ''
       combinator: and
   swid: improved-trademark-weapon

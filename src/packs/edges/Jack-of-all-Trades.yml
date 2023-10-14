@@ -10,11 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: smarts
-      value: '10'
+      value: 10
       combinator: and
   swid: jack-of-all-trades
 sort: 100001

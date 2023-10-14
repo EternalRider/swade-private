@@ -10,10 +10,10 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
-    - type: edge
-      selector: Arcane Background (Any)
+    - type: other
+      label: Arcane Background (Any)
       value: ''
       combinator: and
   swid: power-points

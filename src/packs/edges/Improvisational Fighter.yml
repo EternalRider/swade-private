@@ -10,11 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: attribute
       selector: smarts
-      value: '6'
+      value: 6
       combinator: and
   swid: improvisational-fighter
 sort: 100001

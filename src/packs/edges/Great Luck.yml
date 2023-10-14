@@ -10,10 +10,11 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Luck
+      label: Luck
+      selector: luck
       value: ''
       combinator: and
   swid: great-luck
