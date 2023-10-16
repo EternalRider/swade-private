@@ -185,7 +185,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       affectedItems.push(...this._getAffectedItems(parent, c)),
     );
     for (const item of affectedItems) {
-      const overrides = foundry.utils.flattenObject(item.overrides);
+      const overrides = foundry.utils.flattenObject(item.overrides ?? {});
       for (const change of this.changes as EffectChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (!match) continue;
@@ -266,7 +266,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const affectedItems = this._getAffectedItems(doc, change);
     //apply the AE to each item
     for (const item of affectedItems) {
-      const overrides = foundry.utils.flattenObject(item.overrides);
+      const overrides = foundry.utils.flattenObject(item.overrides ?? {});
       // Specialized handling of modifiers so they are listed separately in the RollDialog
       if (
         key === 'system.die.modifier' &&
@@ -294,7 +294,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     change: EffectChangeData,
     doc: SwadeActor,
   ) {
-    const overrides = foundry.utils.flattenObject(doc.overrides);
+    const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
     const effectKey = 'system.attributes.' + match[1] + '.effects';
     if (!(effectKey in overrides))
       overrides[effectKey] = new Array<RollModifier>();
@@ -314,7 +314,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])
     ) {
-      const overrides = foundry.utils.flattenObject(doc.overrides);
+      const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
       const effectKey = 'system.stats.globalMods.' + match[1];
       if (!(effectKey in overrides))
         overrides[effectKey] = new Array<RollModifier>();

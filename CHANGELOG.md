@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.1
+
+### Fixed
+
+- Fixed some console errors that could pop up when importing actors with active effects from a compendium. **by @jpmeehan5**
+
 ## 3.2.0
 
 ### Added
