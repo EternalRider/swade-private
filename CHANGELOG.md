@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Fixed some console errors that could pop up when importing actors with active effects from a compendium. **by @jpmeehan5**
+- The AEGIS/Active Effect Wizard should once again recognize when changes are made. (#976) **by @florad92**
+- Fixed validation issues with system edge compendium. **by @florad92**
 
 ## 3.2.0
 

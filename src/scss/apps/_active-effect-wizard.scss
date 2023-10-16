@@ -71,18 +71,22 @@
     column-gap: 0.5rem;
     grid-template-areas:
       'icon name name'
-      'icon icon-path icon-path'
-      'icon turns behavior';
+      'icon turns behavior'
+      'icon empty empty';
 
     .icon {
       grid-area: icon;
+      height: 6.25rem;
       border: none;
-      max-height: 100px;
       place-self: center;
+      transition: 150ms filter linear;
+      cursor: pointer;
+      filter: drop-shadow(0.2em 0.4em 0.3em rgba(0, 0, 0, 0.5));
+      &:hover {
+        filter: drop-shadow(0.2em 0.4em 0.3em rgba(0, 0, 0, 0.8));
+      }
     }
-    .icon-path {
-      grid-area: icon-path;
-    }
+
     .name {
       grid-area: name;
     }
