@@ -3,11 +3,20 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.46</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Arcane Background (Any)'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: other
+      label: Arcane Background (Any)
+      value: ''
+      combinator: and
+  swid: channeling
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

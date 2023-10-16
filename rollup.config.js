@@ -9,7 +9,14 @@ const name = 'swade';
 const distDirectory = 'dist';
 const srcDirectory = 'src';
 
-const staticFiles = ['fonts', 'assets', 'templates', 'cards', 'media', 'system.json'];
+const staticFiles = [
+  'fonts',
+  'assets',
+  'templates',
+  'cards',
+  'media',
+  'system.json',
+];
 
 const isProd = process.env.NODE_ENV === 'production';
 // const isDev = !isProd;
@@ -35,7 +42,6 @@ const environment = (environment) => {
   return plugin;
 };
 
-
 export default defineConfig({
   strictDeprecations: true,
   input: { [`${name}`]: `${srcDirectory}/${name}.ts` },
@@ -54,7 +60,7 @@ export default defineConfig({
       minimize: isProd,
       sourceMap: true,
       use: ['sass'],
-      plugins: [autoprefixer()]
+      plugins: [autoprefixer()],
     }),
     copy({
       targets: [
@@ -76,6 +82,16 @@ export default defineConfig({
           //Convert the language files
           src: [`${srcDirectory}/lang/*.yml`],
           dest: `${distDirectory}/lang`,
+          transform: (content, srcPath, _dstPath) => {
+            const data = yaml.load(content.toString(), { filename: srcPath });
+            return JSON.stringify(data, null, 2);
+          },
+          rename: (name, _ext, _srcPath) => `${name}.json`,
+        },
+        {
+          //Convert the tour files
+          src: [`${srcDirectory}/tours/*.yml`],
+          dest: `${distDirectory}/tours`,
           transform: (content, srcPath, _dstPath) => {
             const data = yaml.load(content.toString(), { filename: srcPath });
             return JSON.stringify(data, null, 2);

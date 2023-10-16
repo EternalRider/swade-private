@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Magical effects, a brief ripple in the air, a bell or chime that starts or stops ringing
   favorite: false
+  swid: soundsilence
 img: systems/swade/assets/icons/power.svg
 name: Sound/Silence
 type: power

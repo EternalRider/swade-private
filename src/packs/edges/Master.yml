@@ -3,11 +3,25 @@ permission:
   default: 0
 type: edge
 system:
+  category: Legendary
   description: <p>See SWADE p.53</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Wild Card, Legendary, Expert in affected Trait'
+    - type: wildCard
+      selector: ''
+      value: true
+      combinator: and
+    - type: rank
+      selector: ''
+      value: 4
+      combinator: and
+    - type: edge
+      label: Expert in affected Trait
+      selector: expert
+      value: ''
+      combinator: and
+  swid: master
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

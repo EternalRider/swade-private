@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Magical spells, holograms, "ethereal materializers"
   favorite: false
+  swid: illusion
 img: systems/swade/assets/icons/power.svg
 name: Illusion
 type: power

@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Powder, potion, iridescent lights
   favorite: false
+  swid: invisibility
 img: systems/swade/assets/icons/power.svg
 name: Invisibility
 type: power

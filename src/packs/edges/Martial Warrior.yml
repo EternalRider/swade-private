@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.43</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Martial Artist'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Martial Artist
+      selector: martial-artist
+      value: ''
+      combinator: and
+  swid: martial-warrior
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

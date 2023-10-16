@@ -23,8 +23,8 @@ import {
   getKeyByValue,
   modifierReducer,
   notificationExists,
+  slugify,
 } from '../../util';
-import { TraitDie } from '../actor/actor-data-source';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
 import {
@@ -366,9 +366,9 @@ export default class SwadeItem extends Item {
     const chips = new Array<ItemChatCardChip>();
     const type = this.type;
     if (type === 'hindrance') {
-      let label = game.i18n.localize('SWADE.Major');
+      let label = game.i18n.localize('SWADE.Minor');
       if (this.system.major) {
-        label = game.i18n.localize('SWADE.Minor');
+        label = game.i18n.localize('SWADE.Major');
       }
       chips.push({ text: label });
     }
@@ -445,7 +445,7 @@ export default class SwadeItem extends Item {
     }
     if (type === 'edge') {
       chips.push({
-        text: this.system.requirements.value,
+        text: this.system.requirementString,
       });
       if (this.system.isArcaneBackground) {
         chips.push({ text: game.i18n.localize('SWADE.Arcane') });
@@ -550,24 +550,6 @@ export default class SwadeItem extends Item {
       actions: actions,
     };
     return data;
-  }
-
-  override prepareBaseData() {
-    super.prepareBaseData();
-    if (this.type === 'skill') {
-      this.system.effects ??= new Array<RollModifier>();
-    }
-  }
-
-  override prepareDerivedData() {
-    super.prepareBaseData();
-    if (this.type === 'skill') {
-      this.system.die = this._boundTraitDie(this.system.die);
-      this.system['wild-die'].sides = Math.min(
-        this.system['wild-die'].sides,
-        12,
-      );
-    }
   }
 
   /** A shorthand function to roll skills directly */
@@ -975,6 +957,77 @@ export default class SwadeItem extends Item {
     Logger.debug([this.name, this.hasGranted]);
   }
 
+  /**
+   * Renders a dialog to confirm the swid change and if accepted updates the SWID on the item.
+   * @returns The generated swid or undefined if no change was made.
+   */
+  async regenerateSWID() {
+    const html = `
+    <div class="warning-message">
+      <p>${game.i18n.localize('SWADE.SWID.ChangeWarning2')}</p>
+      <p>${game.i18n.localize('SWADE.SWID.ChangeWarning3')}</p>
+    </div>
+    `;
+    const confirmation = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.SWID.Regenerate'),
+      content: html,
+      defaultYes: false,
+      options: {
+        classes: [...Dialog.defaultOptions.classes, 'swade-app'],
+      },
+    });
+    if (!confirmation) return;
+    const swid = slugify(this.name);
+    await this.update({ 'system.swid': swid });
+    return swid;
+  }
+
+  /** @returns a flattened array of item grants, going down the chain of grants */
+  async getItemGrantChain(
+    ignored = new Set<string>(),
+  ): Promise<ItemGrantChainLink[]> {
+    if (!this.canGrantItems || ignored.has(this.uuid)) return [];
+    ignored.add(this.uuid);
+    const grantedItems = (await Promise.all(
+      this.grantsItems.map((g) => fromUuid(g.uuid)),
+    )) as SwadeItem[];
+
+    const grants = grantedItems.map((item) => {
+      return {
+        item: item,
+        grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
+      };
+    });
+
+    const children = await Promise.all(
+      grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
+    );
+
+    return [...new Set([...grants, ...children.deepFlatten()])];
+  }
+
+  needsFullReloadProcedure(): boolean {
+    if (this.type !== 'weapon') return false;
+    //gather general datapoints;
+
+    if (this.system.reloadType === constants.RELOAD_TYPE.PP) return false;
+    const isPC = this.parent?.type === 'character';
+    const isNPC = this.parent?.type === 'npc';
+    const isVehicle = this.parent?.type === 'vehicle';
+    const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
+    const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
+    const useAmmoFromInventory = game.settings.get(
+      'swade',
+      'ammoFromInventory',
+    );
+
+    return (
+      (isVehicle && vehicleAmmoFromInventory) ||
+      (isNPC && npcAmmoFromInventory) ||
+      (isPC && useAmmoFromInventory)
+    );
+  }
+
   async removeGranted(target = this.parent) {
     if (this.hasGranted.length < 1) return;
     //grab the granted ids and put them into a set to filter possible duplicates
@@ -1163,28 +1216,6 @@ export default class SwadeItem extends Item {
     );
   }
 
-  needsFullReloadProcedure(): boolean {
-    if (this.type !== 'weapon') return false;
-    //gather general datapoints;
-
-    if (this.system.reloadType === constants.RELOAD_TYPE.PP) return false;
-    const isPC = this.parent?.type === 'character';
-    const isNPC = this.parent?.type === 'npc';
-    const isVehicle = this.parent?.type === 'vehicle';
-    const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
-    const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
-    const useAmmoFromInventory = game.settings.get(
-      'swade',
-      'ammoFromInventory',
-    );
-
-    return (
-      (isVehicle && vehicleAmmoFromInventory) ||
-      (isNPC && npcAmmoFromInventory) ||
-      (isPC && useAmmoFromInventory)
-    );
-  }
-
   private _makeExplodable(expression: string): string {
     // Make all dice of a roll able to explode
     const diceRegExp = /\d*d\d+[^kdrxc]/g;
@@ -1201,22 +1232,6 @@ export default class SwadeItem extends Item {
       }
     }
     return expression;
-  }
-
-  /**
-   * @param die The die to adjust
-   * @returns the properly adjusted trait die
-   */
-  private _boundTraitDie(die: TraitDie): TraitDie {
-    const sides = die.sides;
-    if (sides < 4 && sides !== 1) {
-      die.sides = 4;
-    } else if (sides > 12) {
-      const difference = sides - 12;
-      die.sides = 12;
-      die.modifier += difference / 2;
-    }
-    return die;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
@@ -1240,29 +1255,6 @@ export default class SwadeItem extends Item {
       ) as ItemChatCardPowerPoints;
     }
     return null;
-  }
-  /** returns a flattened array of item grants, going down the chain of grants */
-  async getItemGrantChain(
-    ignored = new Set<string>(),
-  ): Promise<ItemGrantChainLink[]> {
-    if (!this.canGrantItems || ignored.has(this.uuid)) return [];
-    ignored.add(this.uuid);
-    const grantedItems = (await Promise.all(
-      this.grantsItems.map((g) => fromUuid(g.uuid)),
-    )) as SwadeItem[];
-
-    const grants = grantedItems.map((item) => {
-      return {
-        item: item,
-        grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
-      };
-    });
-
-    const children = await Promise.all(
-      grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
-    );
-
-    return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
   protected async _createChargeUsageMessage(charges: number) {
@@ -1441,6 +1433,15 @@ export default class SwadeItem extends Item {
       this.updateSource({
         img: `systems/swade/assets/icons/${data.type}.svg`,
       });
+    }
+
+    //set a swid
+
+    if (
+      !data.system?.swid ||
+      data.system?.swid === constants.RESERVED_SWID.DEFAULT
+    ) {
+      this.updateSource({ 'system.swid': slugify(data.name) });
     }
 
     if (this.parent) {

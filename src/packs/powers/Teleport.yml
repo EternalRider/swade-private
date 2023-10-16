@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: A cloud of smoke, "phasing" out, change into a bolt of lightning
   favorite: false
+  swid: teleport
 img: systems/swade/assets/icons/power.svg
 name: Teleport
 type: power

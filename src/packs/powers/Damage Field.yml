@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Fiery aura, spikes, electrical field
   favorite: false
+  swid: damage-field
 img: systems/swade/assets/icons/power.svg
 name: Damage Field
 type: power

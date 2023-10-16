@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: fighting
 flags: {}
 img: systems/swade/assets/icons/skills/punch.svg
 _id: nuApFswcq0JB132r

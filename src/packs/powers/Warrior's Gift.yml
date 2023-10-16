@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Gestures, prayer, whispered words, concentration
   favorite: false
+  swid: warriors-gift
 img: systems/swade/assets/icons/power.svg
 name: Warrior's Gift
 type: power

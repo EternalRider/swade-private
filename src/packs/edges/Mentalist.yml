@@ -3,11 +3,26 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.46</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Arcane Background (Psionics), Psionics d6+'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Arcane Background (Psionics)
+      selector: arcane-background-psionics
+      value: ''
+      combinator: and
+    - type: skill
+      label: Psionics
+      selector: psionics
+      value: 6
+      combinator: and
+  swid: mentalist
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

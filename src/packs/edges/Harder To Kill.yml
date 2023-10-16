@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.42</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Hard to Kill'
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+    - type: edge
+      label: Hard to Kill
+      selector: hard-to-kill
+      value: ''
+      combinator: and
+  swid: harder-to-kill
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -70,7 +70,7 @@ export const constants = {
   /** @enum */
   ABILITY_TYPE: {
     SPECIAL: 'special',
-    RACE: 'race',
+    ANCESTRY: 'ancestry',
     ARCHETYPE: 'archetype',
   } as const,
   /** @enum */
@@ -79,6 +79,11 @@ export const constants = {
     DAMAGE: 'damage',
     RESIST: 'resist',
     MACRO: 'macro',
+  } as const,
+  /** @enum */
+  MACRO_ACTOR: {
+    DEFAULT: 'default',
+    SELF: 'self',
   } as const,
   /** @enum */
   ROLL_RESULT: {
@@ -101,5 +106,31 @@ export const constants = {
     BOOLEAN: 'Boolean',
     DIE: 'Die',
     SELECT: 'Selection',
+  } as const,
+  /** @enum */
+  TOUR_TAB_PARENTS: {
+    SIDEBAR: 'sidebar',
+    GAMESETTINGS: 'settings',
+    CONFIGURATOR: 'configurator',
+    ACTOR: 'actor',
+    ITEM: 'item',
+    TWEAKS: 'tweaks',
+  } as const,
+  /** @enum */
+  REQUIREMENT_TYPE: {
+    WILDCARD: 'wildCard',
+    RANK: 'rank',
+    ATTRIBUTE: 'attribute',
+    SKILL: 'skill',
+    EDGE: 'edge',
+    HINDRANCE: 'hindrance',
+    ANCESTRY: 'ancestry',
+    POWER: 'power',
+    OTHER: 'other',
+  } as const,
+  /** @enum */
+  RESERVED_SWID: {
+    DEFAULT: 'none',
+    ANY: 'any',
   } as const,
 };

@@ -144,10 +144,10 @@
         </div>
       </header>
       <ul class="items-list">
-        {{#if actor.race}}
-          <li class="ability item" data-item-id="{{actor.race.id}}">
+        {{#if actor.ancestry}}
+          <li class="ability item" data-item-id="{{actor.ancestry.id}}">
             <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-              {{actor.race.name}}&nbsp;({{localize "SWADE.Race"}})
+              {{actor.ancestry.name}}&nbsp;({{localize "SWADE.Ancestry"}})
             </a>
           </li>
         {{/if}}

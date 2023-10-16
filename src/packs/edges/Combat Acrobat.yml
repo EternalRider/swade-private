@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Professional
   description: <p>See SWADE p.48</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Acrobat'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Acrobat
+      selector: acrobat
+      value: ''
+      combinator: and
+  swid: combat-acrobat
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

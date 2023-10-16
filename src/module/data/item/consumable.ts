@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import {
   actions,
@@ -17,7 +18,7 @@ export interface ConsumableData
     ReturnType<(typeof ConsumableData)['defineSchema']>
   > {}
 
-export class ConsumableData extends foundry.abstract.DataModel<
+export class ConsumableData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ConsumableData)['defineSchema']>
   >
@@ -48,7 +49,7 @@ export class ConsumableData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source: object): object {
+  static override migrateData(source: PotentialSource<ConsumableData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);

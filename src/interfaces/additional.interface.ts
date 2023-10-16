@@ -29,6 +29,7 @@ export interface ItemAction {
   override?: string;
   isHeavyWeapon?: boolean;
   uuid?: string;
+  macroActor?: string;
 }
 
 /** A single trait roll modifier, containing a label and a value */

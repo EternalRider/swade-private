@@ -20,7 +20,7 @@ export class Logger {
       .get('_dev-mode')
       //@ts-expect-error adding an API to the module data is common practice
       ?.api?.getPackageDebugValue(Logger.PACKAGE_ID);
-    const prefix = Logger.PACKAGE_ID + '|';
+    const prefix = Logger.PACKAGE_ID + ' | ';
     switch (level) {
       case Logger.LOG_LEVEL.Error:
         console.error(prefix, localize ? game.i18n.localize(msg) : msg);

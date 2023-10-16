@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: faith
 flags: {}
 img: systems/swade/assets/icons/skills/prayer.svg
 _id: 6iYNLnJWXO5dH9Ym

@@ -3,11 +3,25 @@ permission:
   default: 0
 type: edge
 system:
+  category: Professional
   description: <p>See SWADE p.48</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Smarts d8+, Research d8+'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: attribute
+      selector: smarts
+      value: 8
+      combinator: and
+    - type: skill
+      label: Research
+      selector: research
+      value: 8
+      combinator: and
+  swid: investigator
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

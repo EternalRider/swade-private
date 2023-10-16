@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: A wave of the hand, magic wand, steely gaze
   favorite: false
+  swid: telekinesis
 img: systems/swade/assets/icons/power.svg
 name: Telekinesis
 type: power

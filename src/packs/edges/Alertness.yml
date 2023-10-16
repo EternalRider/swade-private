@@ -3,11 +3,16 @@ permission:
   default: 0
 type: edge
 system:
+  category: Background
   description: <p>See SWADE p.37</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: Novice
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+  swid: alertness
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

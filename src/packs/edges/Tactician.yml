@@ -3,11 +3,30 @@ permission:
   default: 0
 type: edge
 system:
+  category: Leadership
   description: <p>See SWADE p.45</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Smarts d8+ Command, Battle d6+'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Command
+      selector: command
+      value: ''
+      combinator: and
+    - type: attribute
+      selector: smarts
+      value: 8
+      combinator: and
+    - type: skill
+      Label: Battle
+      selector: battle
+      value: 6
+      combinator: and
+  swid: tactician
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

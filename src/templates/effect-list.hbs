@@ -1,8 +1,9 @@
 <ul class="effects-list">
-  {{#each data.effects}}
+  {{#each allApplicableEffects }}
   <li
     class="flexrow {{#unless origin}}active-effect{{/unless}} {{#if disabled}}disabled-effect{{/if}}"
-    data-effect-id="{{_id}}"
+    data-effect-id="{{id}}"
+    data-effect-parent-id="{{parent.id}}"
   >
     <img src="{{icon}}" alt="{{name}}" class="effect-icon" />
     {{#if origin}}

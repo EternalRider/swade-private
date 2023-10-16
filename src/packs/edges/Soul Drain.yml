@@ -3,11 +3,24 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.47</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Arcane Background (Any), arcane skill d10+'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: other
+      label: Arcane Background (Any)
+      value: ''
+      combinator: and
+    - type: other
+      label: arcane skill d10+
+      value: ''
+      combinator: and
+  swid: soul-drain
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

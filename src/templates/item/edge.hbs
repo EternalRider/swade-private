@@ -26,15 +26,11 @@
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
-      <div class="form-group">
-        <label>{{localize "SWADE.Req"}}</label>
-        <input
-          name="system.requirements.value"
-          type="text"
-          value="{{item.system.requirements.value}}"
-          placeholder="{{localize 'SWADE.Req'}}"
-          data-dtype="String"
-          />
+      <div class="requirements">
+        {{#if editable}}
+        <button type="button" class="invisible open-requirements-editor"><i class="fa-solid fa-gear"></i></button>
+        {{/if}}
+        <span><strong>{{localize "SWADE.Req"}}:</strong>&nbsp;{{{item.system.requirementString}}}</span>
       </div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>

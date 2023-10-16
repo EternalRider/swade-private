@@ -41,17 +41,17 @@
     </div>
   </div>
   {{/if}}
-  <span class="gridcell character-detail race" data-tooltip="{{localize 'SWADE.Race'}}">
-    <label class="sr-only">{{localize 'SWADE.Race'}}</label>
-    {{#if actor.race}}
-      <button type="button" data-item-id="{{actor.race.id}}">{{actor.race.name}}</button>
+  <span class="gridcell character-detail ancestry" data-tooltip="{{localize 'SWADE.Ancestry'}}">
+    <label class="sr-only">{{localize 'SWADE.Ancestry'}}</label>
+    {{#if actor.ancestry}}
+      <button type="button" data-item-id="{{actor.ancestry.id}}">{{actor.ancestry.name}}</button>
    {{else}}
       <input
         type="text"
         name="system.details.species.name"
         value="{{actor.system.details.species.name}}"
-        placeholder="{{localize 'SWADE.Race'}}"
-        data-tooltip="{{localize 'SWADE.Race'}}"
+        placeholder="{{localize 'SWADE.Ancestry'}}"
+        data-tooltip="{{localize 'SWADE.Ancestry'}}"
       >
    {{/if}}
   </span>

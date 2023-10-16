@@ -17,6 +17,7 @@ system:
   rank: Heroic
   trapping: Elaborate ceremonies, rare plants, magical amulets, divine intervention
   favorite: false
+  swid: resurrection
 img: systems/swade/assets/icons/power.svg
 name: Resurrection
 type: power

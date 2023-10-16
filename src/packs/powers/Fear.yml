@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Gestures, eldritch energy, cold chills
   favorite: false
+  swid: fear
 img: systems/swade/assets/icons/power.svg
 name: Fear
 type: power

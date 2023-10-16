@@ -1,0 +1,24 @@
+.requirements-editor {
+  .add-requirement {
+    flex: 0;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    column-gap: 0.25rem;
+    padding: 0.25rem 0;
+    .requirement {
+      display: grid;
+      grid-template-columns: max-content 1fr max-content;
+      column-gap: 0.5rem;
+      .flexrow {
+        align-items: center;
+        column-gap: 0.5rem;
+      }
+    }
+  }
+}

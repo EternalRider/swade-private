@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.41</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Counterattack'
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+    - type: edge
+      label: Counterattack
+      selector: counterattack
+      value: ''
+      combinator: and
+  swid: improved-counterattack
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

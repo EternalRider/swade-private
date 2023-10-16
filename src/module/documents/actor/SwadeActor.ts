@@ -6,9 +6,10 @@ import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { Advance } from '../../../interfaces/Advance.interface';
+import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
+import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
@@ -19,7 +20,6 @@ import WildDie from '../../dice/WildDie';
 import { Logger } from '../../Logger';
 import {
   addUpModifiers,
-  getRankFromAdvanceAsString,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
@@ -30,6 +30,11 @@ import { TraitDie } from './actor-data-source';
 declare global {
   interface DocumentClassConfig {
     Actor: typeof SwadeActor;
+  }
+  interface FlagConfig {
+    swade: {
+      auras?: Record<string, AuraData>;
+    };
   }
 }
 
@@ -76,9 +81,7 @@ export default class SwadeActor extends Actor {
     super(data, ctx);
   }
 
-  /**
-   * @returns true when the actor is a Wild Card
-   */
+  /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
     if (this.system instanceof VehicleData) return false;
     return this.system.wildcard || this.type === 'character';
@@ -135,26 +138,38 @@ export default class SwadeActor extends Actor {
     );
   }
 
-  /** @return whether this character is currently encumbered, factoring in whether the rule is even enforced */
+  /** @return whether this actor is currently encumbered, factoring in whether the rule is even enforced
+   * @deprecated since version 3.2, use actor.system.encumbered instead
+   */
   get isEncumbered(): boolean {
-    const applyEncumbrance = game.settings.get('swade', 'applyEncumbrance');
-    if (this.system instanceof VehicleData || !applyEncumbrance) {
-      return false;
-    }
-    if (this.system.details.encumbrance.isEncumbered) return true;
-    const encumbrance = this.system.details.encumbrance;
-    return encumbrance.value > encumbrance.max;
+    foundry.utils.logCompatibilityWarning(
+      'SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered',
+      { since: '3.2', until: '4.0' },
+    );
+    return this.system.encumbered;
   }
 
-  get race(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData) return;
-    const races = this.items.filter(
-      (i) => i.type === 'ability' && i.system.subtype === 'race',
+  get race() {
+    foundry.utils.logCompatibilityWarning(
+      'The race getter has been 1 with the more appropriate ancestry getter',
+      { since: '3.2', until: '4.0' },
     );
-    if (races.length > 1) {
-      Logger.warn(`Actor ${this.name} (${this.id}) has more than one race!`);
+    return this.ancestry;
+  }
+
+  get ancestry(): SwadeItem | undefined {
+    if (this.system instanceof VehicleData) return;
+    const ancestries = this.items.filter(
+      (i) =>
+        i.type === 'ability' &&
+        i.system.subtype === constants.ABILITY_TYPE.ANCESTRY,
+    );
+    if (ancestries.length > 1) {
+      Logger.warn(
+        `Actor ${this.name} (${this.id}) has more than one ancestry!`,
+      );
     }
-    return races[0];
+    return ancestries[0];
   }
 
   get archetype(): SwadeItem | undefined {
@@ -184,9 +199,22 @@ export default class SwadeActor extends Actor {
     return types;
   }
 
-  override prepareBaseData() {
-    this._prepareCharacterBaseData();
-    this._prepareVehicleBaseData();
+  get auras(): Record<string, AuraData> {
+    const auras = (this.getFlag('swade', 'auras') ?? {}) as Record<
+      string,
+      AuraData
+    >;
+    auras.aura1 = foundry.utils.mergeObject(
+      auras.aura1 ?? {},
+      AuraPointSource.defaultData,
+      { overwrite: false },
+    );
+    auras.aura2 = foundry.utils.mergeObject(
+      auras.aura2 ?? {},
+      AuraPointSource.defaultData,
+      { overwrite: false },
+    );
+    return auras;
   }
 
   override prepareEmbeddedDocuments() {
@@ -201,7 +229,6 @@ export default class SwadeActor extends Actor {
 
   override prepareDerivedData() {
     this._filterOverrides();
-    this._prepareCharacterDerivedData();
 
     /**
      * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
@@ -209,133 +236,6 @@ export default class SwadeActor extends Actor {
      * @param {SwadeActor} actor                The actor whose data is being prepared
      */
     Hooks.callAll('swadeActorPrepareDerivedData', this);
-  }
-
-  protected _prepareCharacterBaseData() {
-    //typeguard against vehicles
-    if (this.system instanceof VehicleData) return;
-
-    for (const key in this.system.attributes) {
-      const attribute = this.system.attributes[key];
-      attribute.effects = new Array<RollModifier>();
-    }
-
-    //auto calculations
-    if (this.system.details.autoCalcToughness) {
-      //if we calculate the toughness then we set the values to 0 beforehand so the active effects can be applies
-      this.system.stats.toughness.value = 0;
-      this.system.stats.toughness.armor = 0;
-    }
-    if (this.system.details.autoCalcParry) {
-      //same procedure as with Toughness
-      this.system.stats.parry.value = 0;
-    }
-
-    // Prepping the parry & toughness sources
-    this.system.stats.toughness.sources = new Array<DerivedModifier>();
-    this.system.stats.toughness.effects = new Array<DerivedModifier>();
-    this.system.stats.toughness.armorEffects = new Array<DerivedModifier>();
-    this.system.stats.parry.sources = new Array<DerivedModifier>();
-    this.system.stats.parry.effects = new Array<DerivedModifier>();
-
-    //setup the global modifier container object
-    this.system.stats.globalMods = {
-      trait: [],
-      agility: [],
-      smarts: [],
-      spirit: [],
-      strength: [],
-      vigor: [],
-      attack: [],
-      damage: [],
-      ap: [],
-    };
-  }
-
-  protected _prepareCharacterDerivedData() {
-    //typeguard against vehicles
-    if (this.system instanceof VehicleData) return;
-
-    //die type bounding for attributes
-    for (const key in this.system.attributes) {
-      const attribute = this.system.attributes[key];
-      attribute.die = this._boundTraitDie(attribute.die);
-      attribute['wild-die'].sides = Math.min(attribute['wild-die'].sides, 12);
-    }
-
-    let pace = this.system.stats.speed.value;
-
-    //modify pace with wounds
-    if (game.settings.get('swade', 'enableWoundPace')) {
-      //bound maximum wound penalty to -3
-      const wounds = Math.min(this.system.wounds.value, 3);
-      //subtract wounds
-      pace -= wounds;
-      //make sure the pace doesn't go below 1 from wounds
-      pace = Math.max(pace, 1);
-    }
-
-    //handle carry capacity
-    foundry.utils.setProperty(
-      this,
-      'system.details.encumbrance.value',
-      this.calcInventoryWeight(),
-    );
-    foundry.utils.setProperty(
-      this,
-      'system.details.encumbrance.max',
-      this.calcMaxCarryCapacity(),
-    );
-
-    //subtract encumbrance, if necessary
-    if (this.isEncumbered) pace -= 2;
-
-    //Clamp the pace so it's not a negative value
-    this.system.stats.speed.adjusted = Math.max(pace, 0);
-
-    //handle advances
-    const advances = this.system.advances;
-    if (advances.mode === 'expanded') {
-      const advRaw = getProperty(
-        this._source,
-        'system.advances.list',
-      ) as Advance[];
-      const list = new Collection<Advance>();
-      advRaw.forEach((adv) => list.set(adv.id, adv));
-      const activeAdvances = list.filter((a) => !a.planned).length;
-      advances.list = list;
-      advances.value = activeAdvances;
-      advances.rank = getRankFromAdvanceAsString(activeAdvances);
-    }
-
-    //set scale
-    this.system.stats.scale = this.calcScale(this.system.stats.size);
-
-    // Toughness calculation
-    if (this.system.details.autoCalcToughness) {
-      const torsoArmor = this.calcArmor();
-      this.system.stats.toughness.armor = torsoArmor;
-      this.system.stats.toughness.value = this.calcToughness() + torsoArmor;
-      this.system.stats.toughness.sources.push({
-        label: game.i18n.localize('SWADE.Armor'),
-        value: torsoArmor,
-      });
-    }
-
-    if (this.system.details.autoCalcParry) {
-      this.system.stats.parry.value = this.calcParry();
-    }
-  }
-
-  protected _prepareVehicleBaseData() {
-    if (!(this.system instanceof VehicleData)) return;
-    //setup the global modifier container object
-    this.system.stats = {
-      globalMods: {
-        damage: [],
-        ap: [],
-      },
-    };
   }
 
   async rollAttribute(
@@ -384,7 +284,7 @@ export default class SwadeActor extends Actor {
     );
 
     //add encumbrance penalty if necessary
-    if (attribute === 'agility' && this.isEncumbered) {
+    if (attribute === 'agility' && this.system.encumbered) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Encumbered'),
         value: -2,
@@ -611,7 +511,7 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    if (this.isEncumbered) {
+    if (this.system.encumbered) {
       mods.push({
         label: game.i18n.localize('SWADE.Encumbered'),
         value: -2,
@@ -634,7 +534,6 @@ export default class SwadeActor extends Actor {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
-      //@ts-expect-error something something
       system: {
         die: {
           sides: 4,
@@ -833,7 +732,8 @@ export default class SwadeActor extends Actor {
     await this.update({ 'system.bennies.value': newValue });
   }
 
-  /** Calculates the total Wound Penalties */
+  /** Calculates the total Wound Penalties
+   * and returns them as a negative number */
   calcWoundPenalties(ignoreAll: boolean = false): number {
     if (ignoreAll) return 0;
     let total = 0;
@@ -878,6 +778,31 @@ export default class SwadeActor extends Actor {
     else if (size === -3) scale = -4;
     else if (size === -4) scale = -6;
     return scale;
+  }
+
+  /**
+   * Returns an array of items that match a given SWID and optionally an item type
+   * @param swid The SWID of the item(s) which you want to retrieve
+   * @param type Optionally, a type name to restrict the search
+   * @returns an array containing the found items
+   */
+  getItemsBySwid(swid: string, type?: string): SwadeItem[] {
+    const swidFilter = (i: SwadeItem) => i.system.swid === swid;
+    if (!type) return this.items.filter(swidFilter);
+    const itemTypes = this.itemTypes;
+    if (!Object.hasOwn(itemTypes, type))
+      throw new Error(`Type ${type} is invalid!`);
+    return itemTypes[type].filter(swidFilter);
+  }
+
+  /**
+   * Fetch an item that matches a given SWID and optionally an item type
+   * @param swid The SWID of the item(s) which you want to retrieve
+   * @param type Optionally, a type name to restrict the search
+   * @returns The matching item, or undefined if none was found.
+   */
+  getSingleItemBySwid(swid: string, type?: string): SwadeItem | undefined {
+    return this.getItemsBySwid(swid, type)[0];
   }
 
   /**
@@ -1037,102 +962,6 @@ export default class SwadeActor extends Actor {
     return driver;
   }
 
-  private _handleComplexSkill(
-    skill: SwadeItem,
-    options: IRollOptions,
-  ): [TraitRoll, RollModifier[]] {
-    if (this.system instanceof VehicleData) {
-      throw new Error('Only Extras and Wildcards can roll skills!');
-    }
-    if (skill.type !== 'skill') {
-      throw new Error('Detected-non skill in skill roll construction');
-    }
-    if (!options.rof) options.rof = 1;
-    const skillData = skill.system;
-
-    const rolls = new Array<Roll>();
-
-    //Add all necessary trait die
-    for (let i = 0; i < options.rof; i++) {
-      rolls.push(
-        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
-      );
-    }
-
-    //Add Wild Die
-    if (this.isWildcard) {
-      rolls.push(
-        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
-      );
-    }
-
-    const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
-    const basePool = PoolTerm.fromRolls(rolls);
-    basePool.modifiers.push(kh);
-    const attGlobalMods: RollModifier[] =
-      this.system.stats.globalMods[skill.system.attribute] ?? [];
-    const effects = structuredClone<RollModifier[]>([
-      ...(skillData.effects ?? []),
-      ...attGlobalMods,
-      ...this.system.stats.globalMods.trait,
-    ]);
-
-    if (options.additionalMods) options.additionalMods.push(...effects);
-    else options.additionalMods = effects;
-
-    const rollMods = this.getTraitRollModifiers(
-      skillData.die,
-      options,
-      skill.name,
-    );
-
-    //add encumbrance penalty if necessary
-    if (skill.system.attribute === 'agility' && this.isEncumbered) {
-      rollMods.push({
-        label: game.i18n.localize('SWADE.Encumbered'),
-        value: -2,
-      });
-    }
-
-    return [TraitRoll.fromTerms([basePool]), rollMods];
-  }
-
-  /**
-   * @param sides number of sides of the die
-   * @param flavor flavor of the die
-   * @param modifiers modifiers to the die
-   * @returns a Die instance that already has the exploding modifier by default
-   */
-  private _buildTraitDie(sides: number, flavor: string): Die {
-    const modifiers: (keyof Die.Modifiers)[] = [];
-    if (sides > 1) modifiers.push('x');
-    return new Die({
-      faces: sides,
-      modifiers: modifiers,
-      options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
-    });
-  }
-
-  /**
-   * @param die The die to adjust
-   * @returns the properly adjusted trait die
-   */
-  private _boundTraitDie(die: TraitDie): TraitDie {
-    const sides = die.sides;
-    if (sides < 4 && sides !== 1) {
-      die.sides = 4;
-    } else if (sides > 12) {
-      const difference = sides - 12;
-      die.sides = 12;
-      die.modifier += difference / 2;
-    }
-    return die;
-  }
-
-  private _buildWildDie(sides = 6): WildDie {
-    return new WildDie({ faces: sides });
-  }
-
   getTraitRollModifiers(
     die: TraitDie,
     options: IRollOptions,
@@ -1214,6 +1043,102 @@ export default class SwadeActor extends Actor {
       .sort((a, b) => a.label.localeCompare(b.label)); //sort the mods alphabetically by label
   }
 
+  private _handleComplexSkill(
+    skill: SwadeItem,
+    options: IRollOptions,
+  ): [TraitRoll, RollModifier[]] {
+    if (this.system instanceof VehicleData) {
+      throw new Error('Only Extras and Wildcards can roll skills!');
+    }
+    if (skill.type !== 'skill') {
+      throw new Error('Detected-non skill in skill roll construction');
+    }
+    if (!options.rof) options.rof = 1;
+    const skillData = skill.system;
+
+    const rolls = new Array<Roll>();
+
+    //Add all necessary trait die
+    for (let i = 0; i < options.rof; i++) {
+      rolls.push(
+        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
+      );
+    }
+
+    //Add Wild Die
+    if (this.isWildcard) {
+      rolls.push(
+        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
+      );
+    }
+
+    const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
+    const basePool = PoolTerm.fromRolls(rolls);
+    basePool.modifiers.push(kh);
+    const attGlobalMods: RollModifier[] =
+      this.system.stats.globalMods[skill.system.attribute] ?? [];
+    const effects = structuredClone<RollModifier[]>([
+      ...(skillData.effects ?? []),
+      ...attGlobalMods,
+      ...this.system.stats.globalMods.trait,
+    ]);
+
+    if (options.additionalMods) options.additionalMods.push(...effects);
+    else options.additionalMods = effects;
+
+    const rollMods = this.getTraitRollModifiers(
+      skillData.die,
+      options,
+      skill.name,
+    );
+
+    //add encumbrance penalty if necessary
+    if (skill.system.attribute === 'agility' && this.system.encumbered) {
+      rollMods.push({
+        label: game.i18n.localize('SWADE.Encumbered'),
+        value: -2,
+      });
+    }
+
+    return [TraitRoll.fromTerms([basePool]), rollMods];
+  }
+
+  /**
+   * @param sides number of sides of the die
+   * @param flavor flavor of the die
+   * @param modifiers modifiers to the die
+   * @returns a Die instance that already has the exploding modifier by default
+   */
+  private _buildTraitDie(sides: number, flavor: string): Die {
+    const modifiers: (keyof Die.Modifiers)[] = [];
+    if (sides > 1) modifiers.push('x');
+    return new Die({
+      faces: sides,
+      modifiers: modifiers,
+      options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
+    });
+  }
+
+  /**
+   * @param die The die to adjust
+   * @returns the properly adjusted trait die
+   */
+  private _boundTraitDie(die: TraitDie): TraitDie {
+    const sides = die.sides;
+    if (sides < 4 && sides !== 1) {
+      die.sides = 4;
+    } else if (sides > 12) {
+      const difference = sides - 12;
+      die.sides = 12;
+      die.modifier += difference / 2;
+    }
+    return die;
+  }
+
+  private _buildWildDie(sides = 6): WildDie {
+    return new WildDie({ faces: sides });
+  }
+
   private _calcImperialCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
     return (strength.sides / 2 - 1 + modifier) * 20;
@@ -1225,19 +1150,19 @@ export default class SwadeActor extends Actor {
   }
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
-  private calcArmor(): number {
+  calcArmor(): number {
     const torsoArmor = this._getArmorForLocation(
       constants.ARMOR_LOCATIONS.TORSO,
     );
     return this._calcDerivedEffects('armor', torsoArmor);
   }
 
-  /**
-   * Calculates the Toughness value without armor and returns it
-   */
-  private calcToughness(): number {
+  /** Calculates the Toughness value without armor and returns it */
+  calcToughness(): number {
     if (this.system instanceof VehicleData) return 0;
-    let finalToughness = 0;
+    /** base value of all toughness calculations */
+    const toughnessBaseValue = 2;
+
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
 
     //get the base values we need
@@ -1245,7 +1170,7 @@ export default class SwadeActor extends Actor {
     const vigMod: number = this.system.attributes.vigor.die.modifier;
     // const toughMod = this.system.stats.toughness.modifier;
 
-    finalToughness = Math.round(vigor / 2) + 2;
+    let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
     if (vigMod > 0) {
       finalToughness += Math.floor(vigMod / 2);
     }
@@ -1262,7 +1187,6 @@ export default class SwadeActor extends Actor {
         value: size,
       });
     }
-    // finalToughness += toughMod;
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
@@ -1278,24 +1202,23 @@ export default class SwadeActor extends Actor {
     return this._calcDerivedEffects('toughness', finalToughness);
   }
 
-  private calcParry(): number {
+  calcParry(): number {
     if (this.system instanceof VehicleData) return 0;
+    /** base value of all parry calculations */
+    const parryBaseValue = 2;
+
     let parryTotal = 0;
     const sources: DerivedModifier[] = this.system.stats.parry.sources;
-    const parryBase = game.settings.get('swade', 'parryBaseSkill');
-    const parryBaseSkill = this.itemTypes.skill.find(
-      (i) => i.name === parryBase,
+    const parryBaseSkill = this.getSingleItemBySwid(
+      game.settings.get('swade', 'parryBaseSwid'),
+      'skill',
     );
 
-    let skillDie = 0;
-    let skillMod = 0;
-    if (parryBaseSkill) {
-      skillDie = getProperty(parryBaseSkill.system, 'die.sides') ?? 0;
-      skillMod = getProperty(parryBaseSkill.system, 'die.modifier') ?? 0;
-    }
+    const skillDie = parryBaseSkill?.system.die.sides ?? 0;
+    const skillMod = parryBaseSkill?.system.die.modifier ?? 0;
 
     //base parry calculation
-    parryTotal = skillDie / 2 + 2;
+    parryTotal = Math.round(skillDie / 2) + parryBaseValue;
 
     //add modifier if the skill die is 12
     if (skillDie >= 12) {
@@ -1310,7 +1233,7 @@ export default class SwadeActor extends Actor {
     } else {
       sources.push({
         label: game.i18n.localize('SWADE.BaseParry'),
-        value: 2,
+        value: parryBaseValue,
       });
     }
 
@@ -1653,6 +1576,7 @@ export default class SwadeActor extends Actor {
     user: string,
   ) {
     super._onUpdate(changed, options, user);
+    // Updating for Wild Card display toggle
     if (this.type === 'npc') {
       ui.actors?.render(true);
     }

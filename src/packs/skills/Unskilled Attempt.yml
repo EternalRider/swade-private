@@ -12,6 +12,7 @@ system:
     modifier: -2
   wild-die:
     sides: 6
+  swid: unskilled-attempt
 flags: {}
 img: systems/swade/assets/icons/skills/uncertainty.svg
 _id: sfeRMGzHh1yBH9da

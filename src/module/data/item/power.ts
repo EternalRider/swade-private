@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   bonusDamage,
@@ -14,7 +15,7 @@ export interface PowerData
     ReturnType<(typeof PowerData)['defineSchema']>
   > {}
 
-export class PowerData extends foundry.abstract.DataModel<
+export class PowerData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof PowerData)['defineSchema']>
   >
@@ -42,7 +43,7 @@ export class PowerData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<PowerData>) {
     quarantine.ensurePowerPointsAreNumeric(source);
     migrations.renameActionProperties(source);
     return super.migrateData(source);

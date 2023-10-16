@@ -1,6 +1,7 @@
 import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import SwadeItem from './SwadeItem';
 
 export interface ItemChatCardChip {
@@ -42,12 +43,21 @@ export interface UsageUpdates {
   resourceUpdates: Updates[];
 }
 
+export interface Requirement {
+  type: ValueOf<typeof constants.REQUIREMENT_TYPE>;
+  combinator: string;
+  selector: string;
+  value: string | number | boolean;
+  label: string;
+}
+
 export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
   mutation?: DeepPartial<ItemDataConstructorData>;
   missing?: boolean;
+  major?: boolean;
 }
 
 export interface ItemGrantChainLink {

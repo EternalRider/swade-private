@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Fire, ice, light, darkness, colored bolts, a stream of insects
   favorite: false
+  swid: bolt
 img: systems/swade/assets/icons/power.svg
 name: Bolt
 type: power

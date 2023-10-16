@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Fire, ice, thorns, force, bones, energy.
   favorite: false
+  swid: barrier
 img: systems/swade/assets/icons/power.svg
 name: Barrier
 type: power

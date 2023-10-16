@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   arcaneDevice,
@@ -18,7 +19,7 @@ export interface ShieldData
     ReturnType<(typeof ShieldData)['defineSchema']>
   > {}
 
-export class ShieldData extends foundry.abstract.DataModel<
+export class ShieldData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ShieldData)['defineSchema']>
   >
@@ -43,7 +44,7 @@ export class ShieldData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<ShieldData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);

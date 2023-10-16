@@ -1,7 +1,10 @@
 <section class='toc'>
   <h1 class='header title top-row'>{{header}}</h1>
   <div class='header search top-row'>
-    <a class="toggle-search-mode" data-tooltip='{{localize searchMode.tooltip}}'>
+    <a
+      class='toggle-search-mode'
+      data-tooltip='{{localize searchMode.tooltip}}'
+    >
       <i class='fas {{searchMode.icon}}'></i>
     </a>
     <input
@@ -10,6 +13,14 @@
       placeholder='{{localize "Search"}}'
       autocomplete='off'
     />
+    {{#unless isJournal}}
+      {{#if canCreateEntry}}
+        <a
+          class='createDocument'
+          data-tooltip='{{localize "SIDEBAR.Create" type=label}}'
+        ><i class='fa-solid fa-plus'></i></a>
+      {{/if}}
+    {{/unless}}
   </div>
   <div class='disclaimer'>{{disclaimer}}</div>
   <section class='content'>
@@ -35,12 +46,22 @@
           <ol class='categories unmarked-list'>
             {{#each entries}}
               <li class='toc-entry flexrow' data-document-id='{{id}}'>
-                <img
-                  class='thumbnail'
-                  src='{{img}}'
-                  alt='{{name}}'
-                  loading='lazy'
-                />
+                {{#if @root.isActor}}
+                  <img
+                    class='thumbnail'
+                    src='{{img.path}}'
+                    style='scale: {{img.scale}};'
+                    alt='{{name}}'
+                    loading='lazy'
+                  />
+                {{else}}
+                  <img
+                    class='thumbnail'
+                    src='{{img}}'
+                    alt='{{name}}'
+                    loading='lazy'
+                  />
+                {{/if}}
                 {{#if isWildcard}}
                   <img
                     class='wildcard'
@@ -48,7 +69,12 @@
                     alt='{{localize "SWADE.WildCard"}}'
                   />
                 {{/if}}
-                <a class='name'>{{name}}</a>
+                <div class='entry'>
+                  <a class='name'>{{name}}</a>
+                  {{#if requirements}}
+                    <span class='requirements'>{{requirements}}</span>
+                  {{/if}}
+                </div>
               </li>
             {{/each}}
           </ol>
@@ -63,7 +89,15 @@
                     alt='{{name}}'
                     loading='lazy'
                   />
-                  <a class='name'>{{name}}</a>
+                  <div class='entry'>
+                    <a class='name'>{{name}}</a>
+                    {{#if requirements}}
+                      <span class='requirements'>
+                        {{localize 'SWADE.Req'}}:&nbsp;
+                        {{requirements}}
+                      </span>
+                    {{/if}}
+                  </div>
                 </li>
               {{/each}}
             </ol>

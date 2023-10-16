@@ -1,7 +1,7 @@
 import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-export default class Reloadinator extends Application<ApplicationOptions> {
+export default class Reloadinator extends Application {
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
   #wantsToDiscard = false;
@@ -198,7 +198,7 @@ export default class Reloadinator extends Application<ApplicationOptions> {
       }
       //copy the selected consumable and set the new charges on the clone.
       await selected.clone(
-        { system: { quantity: 1, 'charges.value': newCharges } },
+        { 'system.quantity': 1, 'system.charges.value': newCharges },
         { save: true },
       );
     } else {

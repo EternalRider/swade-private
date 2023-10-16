@@ -173,6 +173,18 @@
                 <span>UUID</span>
               </label>
             </div>
+            <div class='full-width'>
+              <label class='float-label'>
+                <select name='system.actions.additional.{{id}}.macroActor'>
+                  {{selectOptions
+                    @root.macroActorTypes
+                    selected=action.macroActor
+                    localize=true
+                  }}
+                </select>
+                <span>{{localize 'DOCUMENT.Actor'}}</span>
+              </label>
+            </div>
           {{/if}}
         </span>
       </details>

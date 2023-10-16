@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: academics
 flags: {}
 img: systems/swade/assets/icons/skills/graduate-cap.svg
 _id: T4x1ZBFB04X8iLdl

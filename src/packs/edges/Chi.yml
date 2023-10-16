@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Weird
   description: <p>See SWADE p.52</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Martial Warrior'
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+    - type: edge
+      label: Martial Warrior
+      selector: martial-warrior
+      value: ''
+      combinator: and
+  swid: chi
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

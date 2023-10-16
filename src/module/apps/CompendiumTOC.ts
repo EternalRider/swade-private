@@ -1,14 +1,13 @@
+import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { SWADE } from '../config';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
-import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
-  TOCApplicationOptions,
-  CompendiumTOCData
+  TOCApplicationOptions
 > {
   #disclaimer?: string;
   #fullTextSearch: boolean;
@@ -46,6 +45,10 @@ export class CompendiumTOC extends Compendium<
     return this.metadata.type === 'JournalEntry';
   }
 
+  get isActor(): boolean {
+    return this.metadata.type === 'Actor';
+  }
+
   get columnWidth(): string {
     switch (this.metadata.type) {
       case 'JournalEntry':
@@ -80,19 +83,20 @@ export class CompendiumTOC extends Compendium<
   ): Promise<CompendiumTOCData> {
     const data: CompendiumTOCData = {
       isJournal: this.isJournal,
+      isActor: this.isActor,
       header: game.i18n.localize('SWADE.CompendiumTOC.Header'),
       wildCardMarker: CONFIG.SWADE.wildCardIcons.compendium,
       columnWidth: this.columnWidth,
       disclaimer: this.#disclaimer,
       searchMode: {
         icon: 'fa-search',
-        tooltip: 'SIDEBAR.SearchModeName'
+        tooltip: 'SIDEBAR.SearchModeName',
       },
     };
 
     if (this.#fullTextSearch) {
-      data.searchMode.icon = 'fa-file-magnifying-glass'
-      data.searchMode.tooltip = 'SIDEBAR.SearchModeFull'
+      data.searchMode.icon = 'fa-file-magnifying-glass';
+      data.searchMode.tooltip = 'SIDEBAR.SearchModeFull';
     }
 
     if (this.isJournal) {
@@ -123,10 +127,18 @@ export class CompendiumTOC extends Compendium<
   protected async _onClickLink(ev: JQuery.ClickEvent) {
     const target = ev.currentTarget;
     if (target.className === 'toggle-search-mode') {
-      this.#fullTextSearch = !this.#fullTextSearch
-    }
-    else {
-      const documentId = target.closest('[data-document-id]')?.dataset.documentId;
+      this.#fullTextSearch = !this.#fullTextSearch;
+    } else if (target.className === 'createDocument') {
+      CONFIG[this.entryType].documentClass.createDialog(
+        {},
+        {
+          renderSheet: true,
+          pack: this.collection.metadata.id,
+        },
+      );
+    } else {
+      const documentId =
+        target.closest('[data-document-id]')?.dataset.documentId;
       const pageId = target.closest('[data-page-id]')?.dataset.pageId;
       if (!documentId) return;
       const options: Record<string, unknown> = {};
@@ -150,54 +162,54 @@ export class CompendiumTOC extends Compendium<
   ) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
-    const pack = game.packs.get(this.collection.metadata.id)
+    const pack = game.packs.get(this.collection.metadata.id);
     if (this.#fullTextSearch) {
-      let searchFields: Array<String> = []
+      let searchFields: Array<String> = [];
       switch (this.collection.metadata.type) {
         case 'Actor':
-          searchFields = CONFIG.SWADE.textSearch.actor
+          searchFields = CONFIG.SWADE.textSearch.actor;
           break;
         case 'Adventure':
-          searchFields = CONFIG.SWADE.textSearch.adventure
+          searchFields = CONFIG.SWADE.textSearch.adventure;
           break;
         case 'Cards':
-          searchFields = CONFIG.SWADE.textSearch.cards
+          searchFields = CONFIG.SWADE.textSearch.cards;
           break;
         case 'Item':
-          searchFields = CONFIG.SWADE.textSearch.item
+          searchFields = CONFIG.SWADE.textSearch.item;
           break;
         case 'JournalEntry':
-          searchFields = CONFIG.SWADE.textSearch.journalentry.concat(CONFIG.JournalEntry.compendiumIndexFields)
+          searchFields = CONFIG.SWADE.textSearch.journalentry.concat(
+            CONFIG.JournalEntry.compendiumIndexFields,
+          );
           break;
         case 'Macro':
-          searchFields = CONFIG.SWADE.textSearch.macro
+          searchFields = CONFIG.SWADE.textSearch.macro;
           break;
         case 'Playlist':
-          searchFields = CONFIG.SWADE.textSearch.playlist
+          searchFields = CONFIG.SWADE.textSearch.playlist;
           break;
         case 'RollTable':
-          searchFields = CONFIG.SWADE.textSearch.rolltable
+          searchFields = CONFIG.SWADE.textSearch.rolltable;
           break;
         case 'Scene':
-          searchFields = CONFIG.SWADE.textSearch.scene
+          searchFields = CONFIG.SWADE.textSearch.scene;
           break;
       }
       pack.getIndex({
-        fields: searchFields
-      })
-      const searchResults: Array<Document> = pack.search({query: rgx.source})
+        fields: searchFields,
+      });
+      const searchResults: Array<Document> = pack.search({ query: rgx.source });
       for (const li of children) {
         if (this.#fullTextSearch) {
-          if (searchResults.some(e => e._id === li.dataset.documentId)) {
-            li.style.display = 'flex'
-          }
-          else {
-            li.style.display = 'none'
+          if (searchResults.some((e) => e._id === li.dataset.documentId)) {
+            li.style.display = 'flex';
+          } else {
+            li.style.display = 'none';
           }
         }
       }
-    }
-    else {
+    } else {
       for (const li of children) {
         const name = li.querySelector<HTMLAnchorElement>('.name')!;
         const match = rgx.test(SearchFilter.cleanQuery(name.innerText));
@@ -219,8 +231,11 @@ export class CompendiumTOC extends Compendium<
     const collection = this.collection as CompendiumCollection<ActorMetadata>;
     const documents = (await collection.getIndex({
       fields: [
-        'data.wildcard', //backwards compatability
+        /** legacy data start */
+        'data.wildcard',
         'token.img',
+        'token.scale',
+        /** legacy data end*/
         'system.wildcard',
         'prototypeToken.randomImg',
         'prototypeToken.texture.src',
@@ -351,7 +366,7 @@ export class CompendiumTOC extends Compendium<
           img: hindrance.img,
         };
       })
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .sort((a, b) => a.name.localeCompare(b.name)) as CompendiumEntry[];
   }
 
   protected _groupPowers(
@@ -363,6 +378,7 @@ export class CompendiumTOC extends Compendium<
       if (!groups[rank]) groups[rank] = [];
       groups[rank].push(power);
     }
+
     return Object.entries(groups)
       .sort((a, b) => SWADE.ranks.indexOf(a[0]) - SWADE.ranks.indexOf(b[0]))
       .map((val) => {
@@ -378,7 +394,7 @@ export class CompendiumTOC extends Compendium<
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
         };
-      });
+      }) as CompendiumGroup[];
   }
 
   protected _groupEdges(edges: StoredDocument<SwadeItem>[]): CompendiumGroup[] {
@@ -395,15 +411,17 @@ export class CompendiumTOC extends Compendium<
           group: val[0],
           entries: val[1]
             .map((entry) => {
+              const requirements = entry.system.requirementString ?? '';
               return {
                 name: entry.name as string,
                 id: entry.id,
                 img: entry.img,
+                requirements: requirements.replace(/<\/?i>/g, ''),
               };
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
         };
-      });
+      }) as CompendiumGroup[];
   }
 
   protected async _groupUnCategorized(
@@ -412,10 +430,12 @@ export class CompendiumTOC extends Compendium<
     const mapped = docs.map(async (doc) => {
       const isItem = doc?.documentName === 'Item';
       if (isItem) {
+        const requirements = doc.system.requirementString ?? '';
         return {
           name: doc.name as string,
           id: doc.id,
           img: doc.img,
+          requirements: requirements.replace(/<\/?i>/g, ''),
         };
       }
       return {
@@ -492,60 +512,69 @@ export class CompendiumTOC extends Compendium<
     return a.name.localeCompare(b.name);
   }
 
-  private async _getActorTokenImage(actor: ActorIndexEntry): Promise<string> {
-    let images: string[] = [];
+  private async _getActorTokenImage(actor: ActorIndexEntry): Promise<TokenArt> {
+    let path!: string;
+    let scale = 1;
     const pack = this.collection.metadata.id;
+    const prototypeToken = actor.prototypeToken;
     //Priority 1: Compendium Artpacks
     if (game.swade.compendiumArt.map.has(`Compendium.${pack}.${actor._id}`)) {
-      images = [this._getCompendiumArt(actor)];
+      return this._getCompendiumArt(actor);
     }
     //Priority 2: random token art
-    else if (actor.prototypeToken?.randomImg) {
+    else if (prototypeToken?.randomImg) {
       try {
-        images = await Actor._requestTokenImages(actor._id, {
+        [path] = await Actor._requestTokenImages(actor._id, {
           pack: this.collection.metadata.id,
         });
       } catch (error) {
         Logger.error(error);
       }
-    }
-    //Priority 3: Normal token art
-    else if (
-      !actor.prototypeToken?.randomImg &&
-      actor.prototypeToken?.texture.src
-    ) {
-      images = [actor.prototypeToken.texture.src];
+    } else if (prototypeToken?.texture.src) {
+      //Priority 3: Normal token art
+      const texture = prototypeToken.texture;
+      path = texture.src;
+      scale = (texture.scaleX + texture.scaleY) / 2; // get the average
     } else if (actor.token.img) {
-      images = [actor.token.img];
+      //legacy code
+      path = actor.token.img;
+      scale = actor.token.scale;
     } else {
       //lowest Priority actor image
-      images = [actor.img];
+      path = actor.img;
     }
 
-    return images[0];
+    return { path, scale };
   }
 
   private _actorIsWildcard(actor: ActorIndexEntry): boolean {
     return actor.system?.wildcard || actor.data?.wildcard;
   }
 
-  private _getCompendiumArt(actor: ActorIndexEntry): string {
+  private _getCompendiumArt(actor: ActorIndexEntry): TokenArt {
     const pack = this.collection.metadata.id;
     const art = game.swade.compendiumArt.map.get(
       `Compendium.${pack}.${actor._id}`,
     );
-    let tokenArt = '';
+    let path = '';
+    let scale = 1;
     if (art) {
       actor.img = art.actor;
-      tokenArt = typeof art.token === 'string' ? art.token : art.token.img;
+      if (typeof art.token === 'string') {
+        path = art.token;
+      } else {
+        path = art.token.img;
+        scale = art.token.scale;
+      }
     }
-    return tokenArt;
+    return { path, scale };
   }
 }
 
 interface CompendiumTOCData
   extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
   isJournal: boolean;
+  isActor: boolean;
   header: string;
   wildCardMarker: string;
   columnWidth: string;
@@ -553,7 +582,7 @@ interface CompendiumTOCData
   entries?: CompendiumEntry[];
   categories?: CompendiumCategory[];
   searchMode: {
-    icon: 'fa-search' | 'fa-file-magnifying-glass'
+    icon: 'fa-search' | 'fa-file-magnifying-glass';
     tooltip: string;
   };
 }
@@ -561,6 +590,7 @@ interface CompendiumTOCData
 interface CompendiumEntry {
   name: string;
   id: string;
+  artwork?: TokenArt;
   img?: string | null;
   /** only relevant for actors */
   isWildcard?: boolean;
@@ -591,6 +621,11 @@ interface CompendiumCategory {
 interface CompendiumGroup {
   group: string;
   entries: CompendiumEntry[];
+}
+
+interface TokenArt {
+  path: string;
+  scale: number;
 }
 
 type ActorIndexEntry = {

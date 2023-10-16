@@ -3,11 +3,20 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.42</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Spirit d8+'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: attribute
+      selector: spirit
+      value: 8
+      combinator: and
+  swid: hard-to-kill
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

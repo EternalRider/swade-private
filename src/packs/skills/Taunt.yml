@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: taunt
 flags: {}
 img: systems/swade/assets/icons/skills/confrontation.svg
 _id: rMUZsS4scGYiH3UJ

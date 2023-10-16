@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Spider-like visage, prickly hairs on hands and feet
   favorite: false
+  swid: wall-walker
 img: systems/swade/assets/icons/power.svg
 name: Wall Walker
 type: power

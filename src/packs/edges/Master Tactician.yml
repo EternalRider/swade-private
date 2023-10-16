@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Leadership
   description: <p>See SWADE p.45</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Tactician'
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+    - type: edge
+      label: Tactician
+      selector: tactician
+      value: ''
+      combinator: and
+  swid: master-tactician
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

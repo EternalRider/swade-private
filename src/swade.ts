@@ -4,6 +4,7 @@ import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
+import SwadeTour from './module/tours/SwadeTour';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
@@ -26,6 +27,8 @@ import SwadeItem from './module/documents/item/SwadeItem';
 import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
+import { registerAuraHooks } from './module/hooks/AuraHooks';
+import { rollItemMacro } from './module/hooks/hotbarDrop';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
@@ -44,11 +47,8 @@ import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
-import {
-  deepFreeze,
-  getStatusEffectDataById,
-  rollItemMacro,
-} from './module/util';
+import registerSWADETours from './module/tours/registration';
+import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
@@ -86,6 +86,7 @@ Hooks.once('init', () => {
     },
     util: {
       getStatusEffectDataById,
+      slugify,
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),
@@ -98,6 +99,8 @@ Hooks.once('init', () => {
     RollDialog,
     effectCallbacks: new Collection(),
     ready: false,
+    fields: data.fields,
+    SwadeTour,
   };
 
   //register document classes
@@ -210,6 +213,7 @@ Hooks.once('init', () => {
   registerKeybindings();
 
   registerEffectCallbacks();
+  registerAuraHooks();
 
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);
@@ -235,6 +239,9 @@ Hooks.once('init', () => {
     label: 'SWADE.ItemSheet',
   });
 
+  // Register Tours
+  registerSWADETours();
+
   //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
   //@ts-expect-error Types don't allow it but is possible and feasible
@@ -246,9 +253,10 @@ Hooks.once('init', () => {
   CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });
-
+Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
 Hooks.once('setup', SwadeCoreHooks.onSetup);
 Hooks.once('ready', SwadeCoreHooks.onReady);
+
 Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
 Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);

@@ -2,6 +2,7 @@ import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/
 import { AdditionalStats, EquipState, ItemActions } from '../../globals';
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import { RequirementsEditor } from '../apps/RequirementsEditor';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -73,12 +74,21 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
-    this._setupAccordions();
-    this._setupEffectCreateMenu(html);
+  get macroActorTypes(): Record<string, string> {
+    return {
+      default: 'SWADE.MacroActor.Default',
+      self: 'SWADE.MacroActor.Self',
+    };
+  }
 
-    html.find('.profile-img').on('contextmenu', () => {
+  override activateListeners(jquery: JQuery<HTMLElement>): void {
+    super.activateListeners(jquery);
+    this._setupAccordions();
+    this._setupEffectCreateMenu(jquery);
+
+    const html = jquery[0];
+
+    jquery.find('.profile-img').on('contextmenu', () => {
       if (!this.item.img) return;
       new ImagePopout(this.item.img, {
         title: this.item.name!,
@@ -99,9 +109,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
 
     // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
-    html.find('.inline-delete').on('click', () => this.item.delete());
+    jquery.find('.inline-delete').on('click', () => this.item.delete());
 
-    html.find('.add-action').on('click', () => {
+    jquery.find('.add-action').on('click', () => {
       const id = foundry.utils.randomID(8);
       this.collapsibleStates[id] = true;
       this.item.update({
@@ -114,7 +124,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.action-delete').on('click', async (ev) => {
+    jquery.find('.action-delete').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.actionId;
       const action = getProperty(
         this.item,
@@ -139,7 +149,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.power-delete').on('click', async (ev) => {
+    jquery.find('.power-delete').on('click', async (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
       const power = this.item.embeddedPowers.get(id);
       const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
@@ -155,20 +165,20 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html.find('.grant-delete').on('click', async (ev) => {
+    jquery.find('.grant-delete').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
       const grants = this.item.grantsItems;
       grants.findSplice((v) => v.uuid === uuid);
       await this.item.update({ 'system.grants': grants });
     });
 
-    html.find('.grant-name').on('click', async (ev) => {
+    jquery.find('.grant-name').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
       const doc = (await fromUuid(uuid)) as SwadeItem;
       doc?.sheet?.render(true);
     });
 
-    html.find('.effect-action').on('click', (ev) => {
+    jquery.find('.effect-action').on('click', (ev) => {
       ev.preventDefault();
       ev.stopPropagation();
       const a = ev.currentTarget;
@@ -187,18 +197,18 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       }
     });
 
-    html.find('.delete-embedded').on('click', async (ev) => {
+    jquery.find('.delete-embedded').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.id!;
       await this._deleteEmbeddedDocument('ability', id);
     });
 
-    html.find('.power .damage').on('click', (ev) => {
+    jquery.find('.power .damage').on('click', (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
       const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
       tempPower.rollDamage();
     });
 
-    html.find('.additional-stats .rollable').on('click', async (ev) => {
+    jquery.find('.additional-stats .rollable').on('click', async (ev) => {
       const stat = ev.currentTarget.dataset.stat!;
       const statData = this.item.system.additionalStats[stat]!;
       let modifier = statData.modifier ?? '';
@@ -215,23 +225,29 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    html
+    jquery
       .find('.use-consumable')
       .on('click', async () => await this.item.consume());
 
-    html.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
+    jquery.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
       const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
       const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
       game.tooltip.activate(ev.currentTarget, {
         text: await TextEditor.enrichHTML(content, { async: true }),
       });
     });
+
+    html
+      .querySelector('button.open-requirements-editor')
+      ?.addEventListener('click', () =>
+        new RequirementsEditor(this.item).render(true),
+      );
   }
 
   override async getData(
     options?: Partial<DocumentSheetOptions>,
   ): Promise<SwadeItemSheetData> {
-    const additionalStats = this._getAdditionalStats();
+    const additionalStats = this.#getAdditionalStats();
 
     const data: SwadeItemSheetData = {
       itemType: this._getItemType(),
@@ -240,6 +256,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
+      macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
@@ -257,7 +274,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isRaceOrArchetype: subtype === 'race' || subtype === 'archetype',
+        isAncestryOrArchetype:
+          subtype === constants.ABILITY_TYPE.ANCESTRY ||
+          subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
       data.embeddedAbilities = this._prepareEmbeddedAbilities();
     }
@@ -340,7 +359,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       buttons.unshift({
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
-        icon: 'fas fa-dice',
+        icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.item).render(true),
       });
     }
@@ -408,7 +427,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
-      return Logger.warn('SWADE.CannotAddRaceToRace', {
+      return Logger.warn('SWADE.CannotAddAncestryToAncestry', {
         localize: true,
         toast: true,
       });
@@ -424,11 +443,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     } else if (classList?.contains('powers')) {
       await this._addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
-      const actions =
-        foundry.utils.getProperty(this.item, 'system.actions.additional') ?? {};
-      if (!foundry.utils.isEmpty(actions)) {
-        await this._addOrReplaceActions(item);
-      }
+      await this._addOrReplaceActions(item);
     }
   }
 
@@ -481,11 +496,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   private async _addOrReplaceActions(item: SwadeItem) {
     const actionKey = 'system.actions.additional';
-    const actions = (foundry.utils.getProperty(this.item, actionKey) ??
-      {}) as ItemActions;
+    const actions = foundry.utils.getProperty(this.item, actionKey) as
+      | ItemActions
+      | undefined;
+    if (typeof actions === 'undefined') return; //no actions on this item, return before we break something;
     if (foundry.utils.isEmpty(actions)) {
       //if no actions are present then we simply copy the actions from the dropped item
-      await this.item.update({
+      return this.item.update({
         [actionKey]: foundry.utils.getProperty(item, actionKey),
       });
     }
@@ -630,11 +647,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  #getAdditionalStats(): AdditionalStats {
     const stats = foundry.utils.deepClone(
       this.item.system.additionalStats,
     ) as AdditionalStats;
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').item;
         const optionString = options[key].optionString ?? '';
@@ -657,6 +675,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         img: grant.mutation?.img ?? item?.img ?? grant.img,
         uuid: grant.uuid,
         missing: !item,
+        major:
+          foundry.utils.getProperty(grant.mutation, 'system.major') ??
+          foundry.utils.getProperty(item, 'system.major'),
       });
     }
     return enriched;
@@ -666,9 +687,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case 'race':
-          return SWADE.abilitySheet.race.dropdown;
-        case 'archetype':
+        case constants.ABILITY_TYPE.ANCESTRY:
+          return SWADE.abilitySheet.ancestry.dropdown;
+        case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
           return SWADE.abilitySheet.special.dropdown;
@@ -857,6 +878,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
+  macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;
@@ -878,7 +900,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isRaceOrArchetype: boolean;
+    isAncestryOrArchetype: boolean;
   };
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];

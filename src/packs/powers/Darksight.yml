@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Glowing eyes, dilated pupils, sonic sight
   favorite: false
+  swid: darksight
 img: systems/swade/assets/icons/power.svg
 name: Darksight
 type: power

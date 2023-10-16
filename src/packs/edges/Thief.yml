@@ -3,11 +3,30 @@ permission:
   default: 0
 type: edge
 system:
+  category: Professional
   description: <p>See SWADE p.49</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Agility d8+, Stealth d6+, Thievery d6+'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: attribute
+      selector: agility
+      value: 8
+      combinator: and
+    - type: skill
+      label: Stealth
+      selector: stealth
+      value: 6
+      combinator: and
+    - type: skill
+      label: Thievery
+      selector: thievery
+      value: 6
+      combinator: and
+  swid: thief
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

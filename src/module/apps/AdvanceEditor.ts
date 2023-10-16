@@ -5,7 +5,6 @@ import { getRankFromAdvanceAsString } from '../util';
 
 export class AdvanceEditor extends FormApplication<
   FormApplicationOptions,
-  object,
   AdvanceEditorContext
 > {
   constructor({ advance, actor }: AdvanceEditorContext, options = {}) {
@@ -42,40 +41,49 @@ export class AdvanceEditor extends FormApplication<
       width: 420,
       height: 'auto' as const,
       submitOnClose: false,
-      closeOnSubmit: true,
-      submitOnChange: false,
+      closeOnSubmit: false,
+      submitOnChange: true,
     });
   }
 
+  override activateListeners(jquery: JQuery<HTMLFormElement>): void {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+
+    html
+      .querySelector('footer .close')
+      ?.addEventListener('click', this.close.bind(this));
+  }
+
   override async getData(
-    _options?: Partial<FormApplicationOptions>,
+    options?: Partial<FormApplicationOptions>,
   ): Promise<any> {
-    const data = {
+    return foundry.utils.mergeObject(await super.getData(options), {
       advance: this.advance,
       rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
-      advanceTypes: this._getAdvanceTypes(),
+      advanceTypes: this.#getAdvanceTypes(),
       owner: this.actor.isOwner,
       notes: await TextEditor.enrichHTML(this.advance.notes, {
         async: true,
         secrets: this.actor.isOwner,
       }),
-    };
-    return data;
+    });
   }
 
   protected override async _updateObject(
     _event: Event,
-    formData: Advance,
+    formData: any,
   ): Promise<unknown> {
-    const sortHasChanged = formData.sort !== this.advance.sort;
+    const expanded = foundry.utils.expandObject(formData);
+    const sortHasChanged = expanded.sort !== this.advance.sort;
     //merge data to update
     const advance: Advance = foundry.utils.mergeObject(this.advance, {
-      notes: formData.notes,
-      planned: formData.planned,
-      type: formData.type,
-      sort: Math.clamped(formData.sort, 1, this.advances.size),
+      notes: expanded.advance.notes,
+      planned: expanded.planned,
+      type: expanded.type,
+      sort: Math.clamped(expanded.sort, 1, this.advances.size),
     });
-    if (sortHasChanged) return this._handleSortingChange(advance);
+    if (sortHasChanged) return this.#handleSortingChange(advance);
     //normal update operation
     this.advances.set(advance.id, advance);
     return this.ctx.actor.update(
@@ -84,19 +92,7 @@ export class AdvanceEditor extends FormApplication<
     );
   }
 
-  override activateEditor(
-    name: string,
-    options?: TextEditor.Options,
-    initialContent?: string,
-  ): void {
-    if (name === 'notes') {
-      // if (options) options.plugins = 'lists image table hr code link';
-      if (!initialContent) initialContent = this.advance.notes;
-    }
-    return super.activateEditor(name, options, initialContent);
-  }
-
-  private _getAdvanceTypes(): Record<number, string> {
+  #getAdvanceTypes(): Record<number, string> {
     return {
       [constants.ADVANCE_TYPE.EDGE]: 'SWADE.Advances.Types.Edge',
       [constants.ADVANCE_TYPE.SINGLE_SKILL]: 'SWADE.Advances.Types.SingleSkill',
@@ -106,7 +102,7 @@ export class AdvanceEditor extends FormApplication<
     };
   }
 
-  private _handleSortingChange(advance: Advance) {
+  #handleSortingChange(advance: Advance) {
     //remove the old advance
     if (this.advances.has(advance.id)) this.advances.delete(advance.id);
     const arr = this.advances.toJSON();

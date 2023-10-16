@@ -5,6 +5,7 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
 import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs';
+import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
@@ -22,7 +23,7 @@ declare global {
     ActiveEffect: {
       swade: {
         removeEffect?: boolean;
-        expiration?: number;
+        expiration?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>;
         loseTurnOnHold?: boolean;
         favorite?: boolean;
         related?: Record<string, ActiveEffectDataConstructorData>;
@@ -33,6 +34,12 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
+  static get defaultName(): string {
+    return game.i18n.format('DOCUMENT.New', {
+      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+    });
+  }
+
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
     this.changes.forEach((c) =>
@@ -44,6 +51,14 @@ export default class SwadeActiveEffect extends ActiveEffect {
   get statusId() {
     const [statusId] = getProperty(this, 'statuses') as Set<string>;
     return statusId;
+  }
+
+  /** A convenience accessor that returns the effect's containing actor, if it has one */
+  get actor(): SwadeActor | undefined {
+    const parent = this.parent;
+    if (parent instanceof SwadeActor) return parent;
+    if (parent instanceof SwadeItem && parent.actor instanceof SwadeActor)
+      return parent.actor;
   }
 
   get expiresAtStartOfTurn(): boolean {
@@ -264,11 +279,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
         // NOT calling super.apply because normal apply doesn't handle objects
         foundry.utils.setProperty(item, effectKey, overrides[effectKey]);
       } else {
-        // Die sizes for Trait and Wild Die
-        overrides[key] = Number.isNumeric(value) ? Number(value) : value;
         //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
         const mockChange = { ...change, key, value };
-        super.apply(item, mockChange);
+        // @ts-expect-error AE.apply doesn't actually require an Actor, just a Document
+        const changes = super.apply(item, mockChange);
+        Object.assign(overrides, changes);
       }
       item.overrides = foundry.utils.expandObject(overrides);
     }
@@ -475,16 +490,22 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preCreate(
-    data: ActiveEffectDataConstructorData,
+    data: DeepPartial<BaseActiveEffect.Properties>,
     options: DocumentModificationOptions,
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
     if (!data.icon) {
-      this.updateSource({
-        icon: 'systems/swade/assets/icons/active-effect.svg',
-      });
+      //TODO Move to `effect.img` once v12 releases
+      let path = 'systems/swade/assets/icons/active-effect.svg';
+      if (this.parent instanceof SwadeItem) path = this.parent.img as string;
+      this.updateSource({ icon: path });
     }
+    const isDefaultName = data.name === SwadeActiveEffect.defaultName;
+    if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {
+      this.updateSource({ name: this.parent.name });
+    }
+
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {

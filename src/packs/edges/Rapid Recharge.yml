@@ -3,11 +3,24 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.47</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Spirit d6+, Arcane Background (Any)'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: attribute
+      selector: spirit
+      value: 6
+      combinator: and
+    - type: other
+      label: Arcane Background (Any)
+      value: ''
+      combinator: and
+  swid: rapid-recharge
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

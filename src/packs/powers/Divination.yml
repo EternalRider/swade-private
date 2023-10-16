@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Seances, prayers, demonic interrogation.
   favorite: false
+  swid: divination
 img: systems/swade/assets/icons/power.svg
 name: Divination
 type: power

@@ -27,29 +27,6 @@ import { onHotbarDrop } from './hotbarDrop';
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
   static onSetup() {
-    //localize the prototype modifiers
-    for (const group of SWADE.prototypeRollGroups) {
-      group.name = game.i18n.localize(group.name);
-      for (const modifier of group.modifiers) {
-        modifier.label = game.i18n.localize(modifier.label);
-      }
-    }
-    for (let i = 0; i < SWADE.ranks.length; i++) {
-      const element = SWADE.ranks[i];
-      SWADE.ranks[i] = game.i18n.localize(element);
-    }
-    //set the localized parry skill
-    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
-      const proneParryModifier = arr
-        .find((e) => e.id === 'prone')
-        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
-      if (proneParryModifier) {
-        proneParryModifier.key = `@Skill{${game.settings.get(
-          'swade',
-          'parryBaseSkill',
-        )}}[system.die.modifier]`;
-      }
-    });
     registerCompendiumArt();
   }
 
@@ -115,9 +92,9 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '3.0.5';
+      const needsMigrationVersion = '3.2.0';
       //Minimal compatible version needed for the migration
-      const compatibleMigrationVersion = '2.0.0';
+      const compatibleMigrationVersion = '3.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
       const needsMigration = foundry.utils.isNewerVersion(
         needsMigrationVersion,
@@ -150,6 +127,41 @@ export default class SwadeCoreHooks {
      * This hook is called once swade is done setting up itself
      */
     Hooks.callAll('swadeReady');
+  }
+
+  static onI18nInit() {
+    //localize the ranks
+    SWADE.ranks = SWADE.ranks.map((rank) => game.i18n.localize(rank));
+
+    //localize the prototype modifiers
+    for (const group of SWADE.prototypeRollGroups) {
+      group.name = game.i18n.localize(group.name);
+      for (const modifier of group.modifiers) {
+        modifier.label = game.i18n.localize(modifier.label);
+      }
+    }
+
+    //set the localized parry skill
+    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
+      const proneParryModifier = arr
+        .find((e) => e.id === 'prone')
+        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
+      if (proneParryModifier) {
+        proneParryModifier.key = `@Skill{${game.settings.get(
+          'swade',
+          'parryBaseSkill',
+        )}}[system.die.modifier]`;
+      }
+    });
+
+    //localize the Attributes
+    for (const attribute in SWADE.attributes) {
+      const { long, short } = SWADE.attributes[attribute];
+      SWADE.attributes[attribute] = {
+        long: game.i18n.localize(long),
+        short: game.i18n.localize(short),
+      };
+    }
   }
 
   static onRenderActorDirectory(
@@ -793,7 +805,7 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    if (data.type === 'Item' && data.uuid.startsWith('Actor')) {
+    if (data.type === 'Item' || data.type === 'Attribute') {
       onHotbarDrop(_hotbar, data, slot);
       return false;
     }
@@ -1054,17 +1066,23 @@ export default class SwadeCoreHooks {
     html.find('section[data-tab="duration"]').after(section);
   }
 
-  /** This hook only really exists to stop Races from being added to the actor as an item if the actor already HAS one */
+  /** This hook only really exists to stop Ancestries from being added to the actor as an item if the actor already HAS one */
   static onPreCreateItem(item: SwadeItem, _options: object, _userId: string) {
     if (item.parent && item.type === 'ability') {
       const subType = item.system.subtype;
-      if (subType === 'race' && !!item.actor?.race) {
-        ui.notifications.warn('SWADE.Validation.OnlyOneRace', {
+      if (
+        subType === constants.ABILITY_TYPE.ANCESTRY &&
+        !!item.actor?.ancestry
+      ) {
+        ui.notifications.warn('SWADE.Validation.OnlyOneAncestry', {
           localize: true,
         });
         return false;
       }
-      if (subType === 'archetype' && !!item.actor?.archetype) {
+      if (
+        subType === constants.ABILITY_TYPE.ARCHETYPE &&
+        !!item.actor?.archetype
+      ) {
         ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
           localize: true,
         });

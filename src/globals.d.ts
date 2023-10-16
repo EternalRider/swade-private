@@ -1,5 +1,6 @@
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
+import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
@@ -18,6 +19,12 @@ declare global {
 
   interface CONFIG {
     SWADE: SwadeConfig;
+    Canvas: {
+      auras: {
+        collection: foundry.utils.Collection<AuraPointSource>;
+        filter: VisualEffectsMaskingFilter;
+      };
+    };
   }
 }
 
@@ -50,3 +57,5 @@ export type AbilitySubType = ValueOf<typeof constants.ABILITY_TYPE>;
 export type AdditionalStatType = ValueOf<
   typeof constants.ADDITIONAL_STATS_TYPE
 >;
+
+export type PotentialSource<T extends {}> = T & { [key: string | number]: any };

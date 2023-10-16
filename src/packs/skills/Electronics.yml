@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: electronics
 flags: {}
 img: systems/swade/assets/icons/skills/circuitry.svg
 _id: 1r7IzGWZdMGTVPdg

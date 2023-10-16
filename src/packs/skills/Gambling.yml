@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: gambling
 flags: {}
 img: systems/swade/assets/icons/skills/rolling-dices.svg
 _id: IPC5QZQyd6s6wls7

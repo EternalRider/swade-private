@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: research
 flags: {}
 img: systems/swade/assets/icons/skills/archive-research.svg
 _id: Ujm46g8fY6z1zeO9

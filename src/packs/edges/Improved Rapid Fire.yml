@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.43</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Veteran, Rapid Fire'
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+    - type: edge
+      label: Rapid Fire
+      selector: rapid-fire
+      value: ''
+      combinator: and
+  swid: improved-rapid-fire
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

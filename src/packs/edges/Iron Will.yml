@@ -3,11 +3,26 @@ permission:
   default: 0
 type: edge
 system:
+  category: Social
   description: <p>See SWADE p.51</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Brave, Strong Willed'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Brave
+      selector: brave
+      value: ''
+      combinator: and
+    - type: edge
+      label: Strong Willed
+      selector: strong-willed
+      value: ''
+      combinator: and
+  swid: iron-will
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

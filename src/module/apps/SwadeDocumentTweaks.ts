@@ -13,63 +13,94 @@ export default class SwadeDocumentTweaks extends FormApplication<
   ) {
     super(doc, options);
   }
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: 'sheet-tweaks',
       width: 380,
-      classes: ['swade-app'],
+      classes: ['swade', 'doc-tweaks', 'swade-app'],
+      template: 'systems/swade/templates/actors/apps/tweaks-dialog.hbs',
+      height: 'auto' as const,
+      tabs: [
+        {
+          group: 'primary',
+          navSelector: '.tabs',
+          contentSelector: '.sheet-body',
+          initial: 'traits',
+        },
+      ],
     });
   }
 
-  /* -------------------------------------------- */
+  override get id() {
+    return `DocumentTweaks-${this.object.documentName}-${this.object.id}`;
+  }
 
-  /**
-   * Add the Entity name into the window title
-   * @type {String}
-   */
-  get title() {
+  /** Add the Document name into the window title*/
+  override get title() {
     return `${this.object.name}: ${game.i18n.localize('SWADE.Tweaks')}`;
   }
 
-  /**
-   * @override
-   */
-  get template() {
-    return 'systems/swade/templates/actors/apps/tweaks-dialog.hbs';
+  activateListeners(jquery: JQuery<HTMLFormElement>): void {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+
+    html
+      .querySelectorAll('.tab[data-tab="auras"] select')
+      .forEach((el) =>
+        el.addEventListener('contextmenu', this.#resetVisibility.bind(this)),
+      );
+    html
+      .querySelector('.regenerate-swid')
+      ?.addEventListener('click', this.#regenerateSWID.bind(this));
   }
 
-  /* -------------------------------------------- */
-
-  /**
-   * Construct and return the data object used to render the HTML template for this form application.
-   * @return {Object}
-   */
-  getData() {
-    const settingFields = this._getPrototypeSettingFields();
+  /**@inheritdoc */
+  override async getData(options?: ApplicationOptions) {
+    const settingFields = this.#getPrototypeSettingFields();
 
     for (const key in settingFields) {
-      if (this.object.system.additionalStats[key]) {
+      if (
+        this.object.system.additionalStats[key] &&
+        this.object.system.additionalStats[key]?.dtype
+      ) {
         settingFields[key].useField = true;
       }
     }
     const data = {
       doc: this.object,
       settingFields: settingFields,
+      itemTabActive: this.object instanceof SwadeItem ? 'active' : '',
+      isItem: this.object instanceof SwadeItem,
       isActor: this.object instanceof SwadeActor,
       isCharacter: this.object.type === 'character',
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
-      advanceTypes: this._getAdvanceTypes(),
+      advanceTypes: this.#getAdvanceTypes(),
+      auras: {
+        units: canvas.scene?.grid?.units ?? game.system.gridUnits,
+        auras: this.object.auras,
+        defaultColor: game.user.color ?? '#000000',
+        visibilityChoices: [
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.HOSTILE,
+            label: 'TOKEN.DISPOSITION.HOSTILE',
+          },
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+            label: 'TOKEN.DISPOSITION.NEUTRAL',
+          },
+          {
+            key: foundry.CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+            label: 'TOKEN.DISPOSITION.FRIENDLY',
+          },
+        ],
+      },
     };
 
-    return data;
+    return foundry.utils.mergeObject(data, await super.getData(options));
   }
 
-  /**
-   * This method is called upon form submission after form data is validated
-   * @param event {Event}       The initial triggering submission event
-   * @param formData {Object}   The object of validated form data with which to update the object
-   */
+  /** @inheritdoc */
   protected override async _updateObject(_event, formData) {
     const expandedFormData = expandObject(formData);
 
@@ -77,14 +108,14 @@ export default class SwadeDocumentTweaks extends FormApplication<
     foundry.utils.setProperty(
       expandedFormData,
       'system.additionalStats',
-      this._handleAdditionalStats(expandedFormData),
+      this.#handleAdditionalStats(expandedFormData),
     );
 
     // Update the actor
     await this.object.update(expandedFormData);
   }
 
-  private _getPrototypeSettingFields() {
+  #getPrototypeSettingFields() {
     const fields = game.settings.get('swade', 'settingFields');
     let settingFields: AdditionalStats = {};
     if (this.object instanceof SwadeActor) {
@@ -92,20 +123,22 @@ export default class SwadeDocumentTweaks extends FormApplication<
     } else if (this.object instanceof SwadeItem) {
       settingFields = fields.item;
     }
-    return foundry.utils.deepClone(settingFields);
+    return structuredClone(settingFields);
   }
 
-  private _handleAdditionalStats(expandedFormData) {
+  #handleAdditionalStats(expandedFormData) {
     const formFields = expandedFormData.system.additionalStats ?? {};
-    const prototypeFields = this._getPrototypeSettingFields();
-    const newFields = foundry.utils.deepClone(
+    const prototypeFields = this.#getPrototypeSettingFields();
+    const newFields = structuredClone<AdditionalStats>(
       this.object.system.additionalStats,
-    ) as AdditionalStats;
+    );
     //handle setting specific fields
-    const entries = Object.entries(formFields) as [string, AdditionalStat][];
-    for (const [key, field] of entries) {
+    for (const [key, field] of Object.entries<AdditionalStat>(formFields)) {
       const fieldExistsOnDoc = this.object.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
+        // Fixes blank label when toggling Additional Stat while there's an active effect
+        if (newFields[key].label === undefined)
+          newFields[key].label = prototypeFields[key].label;
         //update existing field
         newFields[key].hasMaxValue = prototypeFields[key].hasMaxValue;
         newFields[key].dtype = prototypeFields[key].dtype;
@@ -131,20 +164,39 @@ export default class SwadeDocumentTweaks extends FormApplication<
     return newFields;
   }
 
+  /** @inheritdoc */
   protected override _getSubmitData(updateData = {}) {
     const data = super._getSubmitData(updateData);
     // Prevent submitting overridden values
     const overrides = foundry.utils.flattenObject(this.object.overrides);
     for (const k of Object.keys(overrides)) {
+      if (k.startsWith('system.')) delete data[`data.${k.slice(7)}`]; // Band-aid for < v10 data
       delete data[k];
     }
     return data;
   }
 
-  private _getAdvanceTypes(): Record<string, string> {
+  #getAdvanceTypes(): Record<string, string> {
     return {
       legacy: 'SWADE.Advances.Modes.Legacy',
       expanded: 'SWADE.Advances.Modes.Expanded',
     };
+  }
+
+  async #resetVisibility(ev: PointerEvent) {
+    const target = ev.currentTarget as HTMLSelectElement;
+    const auraId = target.dataset.auraId as string;
+    await this.object.update(
+      {
+        'flags.swade.auras': { [auraId]: { visibleTo: [] } },
+      },
+      { diff: false },
+    );
+    this.render();
+  }
+
+  async #regenerateSWID() {
+    await (this.object as SwadeItem).regenerateSWID();
+    this.render();
   }
 }

@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   arcaneDevice,
@@ -18,7 +19,7 @@ export interface GearData
     ReturnType<(typeof GearData)['defineSchema']>
   > {}
 
-export class GearData extends foundry.abstract.DataModel<
+export class GearData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<ReturnType<(typeof GearData)['defineSchema']>>
 > {
   /** @inheritdoc */
@@ -39,7 +40,7 @@ export class GearData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<GearData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);

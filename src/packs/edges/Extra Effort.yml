@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.46</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Arcane Background (Gifted)'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Arcane Background (Gifted)
+      selector: arcane-background-gifted
+      value: ''
+      combinator: and
+  swid: extra-effort
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

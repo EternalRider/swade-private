@@ -3,11 +3,36 @@ permission:
   default: 0
 type: edge
 system:
+  category: Social
   description: <p>See SWADE p.50</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, any one of Bloodthirsty, Mean, Ruthless, or Ugly'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: hindrance
+      label: Bloodthirsty
+      selector: bloodthirsty
+      value: ''
+      combinator: or
+    - type: hindrance
+      label: Mean
+      selector: mean
+      value: ''
+      combinator: or
+    - type: hindrance
+      label: Ruthless
+      selector: ruthless
+      value: ''
+      combinator: or
+    - type: hindrance
+      label b: Ugly
+      selector: ugly
+      value: ''
+      combinator: or
+  swid: menacing
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -1,4 +1,8 @@
+import { PotentialSource } from '../../../globals';
+import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { AbilityData } from './ability';
+import { EdgeData } from './edge';
 
 export function renameActionProperties(source: any) {
   if (!source.actions) return;
@@ -50,4 +54,54 @@ export function renameActionProperties(source: any) {
       delete action.dmgOverride;
     }
   }
+}
+
+export function renameRaceToAncestry(source: PotentialSource<AbilityData>) {
+  if (source.subtype === 'race') {
+    source.subtype = constants.ABILITY_TYPE.ANCESTRY;
+  }
+}
+
+export function convertRequirementsToList(source: PotentialSource<EdgeData>) {
+  if (
+    !source.requirements ||
+    Array.isArray(source.requirements) ||
+    Object.keys(source.requirements).every((k) => Number.isNumeric(k))
+  ) {
+    return;
+  }
+  const oldValue = source.requirements['value'] as string;
+  const mapped: any[] = oldValue
+    .split(',')
+    .filter(Boolean)
+    .map((r) => r.trim()) //trim excess whitespaces before we do the actual mapping
+    .map((requirement: string) => {
+      if (SWADE.ranks.includes(requirement)) {
+        return {
+          type: constants.REQUIREMENT_TYPE.RANK,
+          value: SWADE.ranks.indexOf(requirement),
+        };
+      }
+      if (
+        requirement === game.i18n.localize('SWADE.WildCard') ||
+        requirement === 'Wild Card'
+      ) {
+        return {
+          type: constants.REQUIREMENT_TYPE.WILDCARD,
+          value: true,
+        };
+      }
+      return {
+        type: constants.REQUIREMENT_TYPE.OTHER,
+        label: requirement,
+      };
+    });
+  //make sure at least 1 rank requirement is present in case none could be detected
+  if (!mapped.find((r) => r.type === constants.REQUIREMENT_TYPE.RANK)) {
+    mapped.unshift({
+      type: constants.REQUIREMENT_TYPE.RANK,
+      value: constants.RANK.NOVICE,
+    });
+  }
+  source.requirements = mapped;
 }

@@ -20,7 +20,7 @@ ITEM.TypeSkill: Trebezia
 ITEM.TypePower: Boterea
 SWADE.Name: Izena
 SWADE.Tough: Gogortasuna
-SWADE.Race: Arraza
+SWADE.Ancestry: Arraza
 SWADE.Pace: Pausoa
 SWADE.Running: Korrika
 SWADE.RunningDie: Korrika dadoa
@@ -253,7 +253,7 @@ SWADE.Actors: Aktoreak
 SWADE.Max: Max
 SSO.Add: Gehitu
 SSO.Expand: Zabaldu
-SSO.Race: Arraza
+SSO.Ancestry: Arraza
 SSO.Advances: Aurrerapenak
 SSO.Active: Aktiboa
 SSO.SWADELogo: Savage Worlds Adventure Edition Logoa

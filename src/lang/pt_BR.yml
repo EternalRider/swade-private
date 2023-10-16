@@ -53,7 +53,7 @@ SWADE:
   Subtype: Subtipo
   SpecialAbility: Habilidade Especial
   SpecialAbilities: Habilidades Especiais
-  RacialAbilities: Habilidades Raciais
+  AncestralAbilities: Habilidades Raciais
   ArchetypeAbilities: Habilidades de Arquétipo
   About: Sobre
   EdgesHindrances: Vant & Comp
@@ -146,7 +146,7 @@ SWADE:
     Extreme: Distância Extrema
   Snapfire: Tiro Rápido
   UnstablePlatform: Plataforma Instável
-  CannotAddRaceToRace: Você não pode adicionar uma raça/arquétipo a uma raça/arquétipo!
+  CannotAddAncestryToAncestry: Você não pode adicionar uma raça/arquétipo a uma raça/arquétipo!
   LayOutChaseWithDeck: Usar Baralho para montar Perseguição
   SetUpChase: Configurar Perseguição
   NotADeckCompendium: O compêndio que você selecionou não parece ser um Baralho
@@ -472,8 +472,8 @@ SWADE:
   Consumable:
     Use: Usar
     Consumables: Consumíveis
-  EmptyRacialAbilitiesHint: >-
-    Esta {race} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
+  EmptyAncestralAbilitiesHint: >-
+    Esta {ancestry} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
     alguma coisa na ficha para começar.
   CompendiumTOC:
     Toggle: Altenar uso do Índice de Compêndio
@@ -615,7 +615,7 @@ SWADE:
   ActionDeckPresetDark: Baralho de Ação (Escuro)
   Name: Nome
   Tough: Resistência
-  Race: Raça
+  Ancestry: Raça
   Archetype: Arquétipo
   Pace: Mov.
   Running: Corrida
@@ -862,7 +862,7 @@ SWADE:
   NoSceneAvailable: Não há cena disponível ou você desativou a tela de jogo
   ChaseCardsCleared: Todas as cartas de perseguição foram removidas da cena.
   Validation:
-    OnlyOneRace: Você só pode ter uma raça de cada vez!
+    OnlyOneAncestry: Você só pode ter uma raça de cada vez!
     OnlyOneArchetype: Você só pode ter um arquétipo de cada vez!
   MigrateCompendium: Forçar a migração do compêndio
   AdditionalStats:
@@ -929,7 +929,7 @@ SWADE:
     Title: Adicionar ou substituir ações
     Add: Adicionar como nova
     Replace: Substituir a existente
-    Content: <p>Você deseja adicionar as ações do {type} <strong>{source}</strong>
+    Content: <p>Você deseja adicionar as ações do <strong>{source}</strong> {type}
       como novas ações ou substituir as ações existentes?</p>
   ResourcesUsed:
     Label: Recursos utilizados
@@ -941,6 +941,144 @@ SWADE:
   Magazine:
     NoneLoaded: Nenhum carregador carregado
     Select: Selecione um carregador
+  MacroActor:
+    Default: Padrão
+    Self: Próprio
+  Auras:
+    TabHeader: Auramante
+    Enabled: Habilitado
+    Range: Raio da Aura
+    WallConstraints:
+      Label: Restrito por Paredes
+      Hint: Essa opção determina se a aura é limitada por paredes que bloqueiam a
+        luz ou se pode passar por elas
+    Color: Cor
+    Alpha: Transparência da Aura
+    UserAura1: Aura 1
+    UserAura2: Aura 2
+  Aura:
+    Visibility:
+      Hint: Selecione quais tokens (por Disposição) podem ver essa aura. Você sempre
+        pode ver todas as auras de uma ficha da qual você tenha pelo menos a permissão
+        de Observador
+      Label: Visível para
+  TOURS:
+    AMMUNITION:
+      SwadeSettings:
+        Content: As configurações de munição podem ser encontradas nas regras de ambientação
+          nas configurações gerais do <em>Savage Worlds</em>
+        Title: Configurações do SWADE
+      AmmoSettings:
+        Content: Estes controlam se a munição é consumida automaticamente por armas
+          de longo alcance.
+        Title: Configurações de Munição
+      AmmoManagement:
+        Content: Essa configuração controla se o disparo de uma arma de alcance consome
+          alguma munição, seja do contador de tiros interno da arma ou do inventário.
+        Title: Gerenciamento de Munição
+      PCInventory:
+        Content: As próximas três configurações controlam se os itens externos são
+          consumidos quando uma arma é recarregada, com base no tipo de ator. Se essas
+          configurações não estiverem habilitadas, mas o gerenciamento de munição
+          estiver, os atores de um determinado tipo consumirão os tiros em um item,
+          mas poderão recarregar livremente. Isso permite o gerenciamento de munição
+          no estilo "arcade", em que é importante rastrear a ação de recarga, mas
+          não o uso de munição a longo prazo.
+        Title: Munição do inventário
+      ReloadNone:
+        Content: Essas armas ignoram totalmente o contador de tiros, puxando diretamente
+          do item de munição vinculado. Essa configuração é melhor para armas que
+          usam apenas munição externa, como uma aljava de flechas ou um canhão de
+          guerra alimentado por tambor.
+        Title: Procedimento de recarga — Nenhum
+      AmmoNone:
+        Content: Este deve ser definido como um Equipamento (por exemplo, flechas)
+          ou item consumível (por exemplo, barril de balas) no inventário do personagem.
+          A quantidade de um item de equipamento é consumida diretamente. Em vez disso,
+          os itens consumíveis usam suas cargas, sendo que cada quantidade representa
+          um conjunto completo de cargas. Esse campo deve corresponder exatamente
+          ao nome do item a ser consumido <em></em> .
+        Title: O campo de munição
+      ReloadSingle:
+        Content: Essas armas recarregam um único tiro a cada vez que o botão Recarregar
+          é pressionado. Essa configuração é ideal para revólveres ou outras armas
+          com munições volumosas que demoram a ser recarregadas.
+        Title: Procedimento de recarga — individual
+      AmmoSingle:
+        Content: Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
+          a quantidade ou as cargas são consumidas pelo recarregamento em vez de pelo
+          disparo da arma, já que o disparo da arma consome do contador de tiros.
+        Title: O campo de munição
+      AmmoFull:
+        Content: Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
+          a quantidade ou as cargas são consumidas pelo recarregamento em vez de pelo
+          disparo da arma, já que o disparo da arma consome do contador de tiros.
+        Title: O campo de munição
+      ReloadBattery:
+        Title: Procedimento de recarga — Bateria
+        Content: Essas armas funcionam de forma semelhante aos carregadores, mas com
+          baterias intercambiáveis que se esgotam proporcionalmente aos disparos efetuados.
+      ReloadPP:
+        Title: Procedimento de recarga — Pontos de Poder
+        Content: Essas armas não são recarregadas com munição física, mas esgotando
+          os pontos de poder do usuário, conforme apresentado em <em>Rifts® for Savage
+          Worlds</em>
+      AmmoMagazine:
+        Content: O item nomeado aqui DEVE ser um consumível com o subtipo Carregador
+          para funcionar corretamente. Além disso, as cargas do consumível devem corresponder
+          ao contador de tiros da arma.
+        Title: O campo de munição
+      AmmoBattery:
+        Content: O item nomeado aqui DEVE ser um consumível com o subtipo Bateria
+          para funcionar corretamente. Além disso, as cargas máximas do consumível
+          devem estar fora de 100.
+        Title: O campo de munição
+      AmmoPP:
+        Content: Em vez de nomear um item, nomeie um tipo arcano válido no personagem,
+          como geral, magia, milagres ou psiônica
+        Title: O campo de munição
+      Title: Munição
+      Description: Este Tour irá mostrar como usar o gerenciamento automático de munição
+      Actor: Personagem de Demonstração do Tour de Munição
+      Items:
+        NONE: Arco longo
+        SELF: Faca de arremesso
+        SINGLE: Revólver
+        FULL: Pistola d'água
+        MAGAZINE: Steyr AUG
+        BATTERY: Arma laser
+        PP: Arma de mago
+      GameSettings:
+        Title: Configurações do Jogo
+        Content: Primeiro, o Gerenciamento de Munição deve ser ativado nas configurações
+          do sistema do jogo.
+      CharacterWeapons:
+        Title: Armas de personagens
+        Content: As armas de um personagem são listadas na aba de Equipamento.
+      ReloadSelf:
+        Title: Procedimento de recarga — Self
+        Content: Essas armas usam sua própria quantidade para reiniciar o contador
+          de tiros. Essa configuração é a melhor para armas de arremesso ou qualquer
+          outra coisa que seja autônoma e se utilize sozinha.
+      AmmoSelf:
+        Title: O campo de munição
+        Content: Este campo é ignorado quando o tipo de recarga é definido como próprio
+      ReloadFull:
+        Title: Procedimento de recarga — completo
+        Content: Essas armas recarregam todo o contador de tiros a cada vez que o
+          botão Recarregar é pressionado. Isso pode ser usado como uma versão simplificada
+          do método do carregador ou para armas que não têm carregadores destacáveis,
+          como uma arma com reservatórios de líquido.
+      ReloadMagazine:
+        Title: Procedimento de recarga — Carregador
+        Content: Essas armas usam carregadores totalmente removíveis que podem ser
+          trocados conforme necessário, monitorando a quantidade de tiros restantes
+          por carregador.
+    TWEAKS:
+      Title: Ajustes
+  Unfamiliar:
+    '2': Pouco familiar (-2)
+    '4': Pouco familiar (-4)
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura

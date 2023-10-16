@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Background
   description: <p>See SWADE p.40</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Rich'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: edge
+      label: Rich
+      selector: rich
+      value: ''
+      combinator: and
+  swid: filthy-rich
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

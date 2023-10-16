@@ -53,7 +53,7 @@ export default class ItemChatCardHelper {
 
     // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
-    if (actionObj?.type === 'resist') {
+    if (actionObj?.type === constants.ACTION_TYPE.RESIST) {
       // swap the selected token's actor in as the target for the roll
       if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
         ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {
@@ -63,9 +63,12 @@ export default class ItemChatCardHelper {
         return null;
       }
       actor = canvas.tokens?.controlled[0].actor ?? actor;
-    } else if (!(game.user!.isGM || message.isAuthor || actor.isOwner)) {
-      // For non-resist types, don't allow a roll unless the message author is
-      // the user clicking the button.
+    } else if (
+      !actor.isOwner &&
+      !message.isAuthor &&
+      actionObj?.type !== constants.ACTION_TYPE.MACRO
+    ) {
+      // For non-resist types, don't allow a roll unless the message author is the user clicking the button or it's a macro action
       button.disabled = false;
       return null;
     }
@@ -258,15 +261,20 @@ export default class ItemChatCardHelper {
         additionalMods: mods,
         item: item,
       });
-      if (roll && item.type === 'weapon') {
+      if (
+        roll &&
+        item.type === 'weapon' &&
+        action.type === constants.ACTION_TYPE.TRAIT
+      ) {
         await item.consume(action.resourcesUsed ?? 1);
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
-      if (getProperty(item, 'system.actions.dmgMod') !== '') {
+      const dmgMod = getProperty(item, 'system.actions.dmgMod');
+      if (dmgMod) {
         mods.push({
           label: game.i18n.localize('SWADE.ItemDmgMod'),
-          value: getProperty(item, 'system.actions.dmgMod'),
+          value: dmgMod,
         });
       }
       if (action.modifier) {
@@ -290,7 +298,11 @@ export default class ItemChatCardHelper {
           { toast: true },
         );
       }
-      await macro?.execute({ actor: item.actor, item });
+      const targetActor =
+        action.macroActor === constants.MACRO_ACTOR.SELF
+          ? item.actor
+          : undefined;
+      await macro?.execute({ actor: targetActor, item });
       return null;
     }
     this.refreshItemCard(actor);

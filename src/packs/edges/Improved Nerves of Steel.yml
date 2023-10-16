@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.43</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Novice, Nerves of Steel'
+    - type: rank
+      selector: ''
+      value: 0
+      combinator: and
+    - type: edge
+      label: Nerves of Steel
+      selector: nerves-of-steel
+      value: ''
+      combinator: and
+  swid: improved-nerves-of-steel
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

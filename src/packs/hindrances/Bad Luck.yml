@@ -7,6 +7,7 @@ system:
   description: See SWADE p.22
   notes: ''
   major: true
+  swid: bad-luck
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: AMpyeiCryPW8TaRi

@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Prayer, tonics
   favorite: false
+  swid: relief
 img: systems/swade/assets/icons/power.svg
 name: Relief
 type: power

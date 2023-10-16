@@ -3,11 +3,25 @@ permission:
   default: 0
 type: edge
 system:
+  category: Leadership
   description: <p>See SWADE p.45</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Spirit d8+, Command'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: attribute
+      selector: spirit
+      value: 8
+      combinator: and
+    - type: edge
+      label: Command
+      selector: command
+      value: ''
+      combinator: and
+  swid: natural-leader
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

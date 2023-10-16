@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: driving
 flags: {}
 img: systems/swade/assets/icons/skills/steering-wheel.svg
 _id: wxtizfY3SRgfmJMc

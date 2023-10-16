@@ -1,11 +1,12 @@
 import { makeAdditionalStatsSchema } from '../shared';
+import { DerivedModifier } from '../../../interfaces/additional.interface';
 
 export interface VehicleData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
     ReturnType<(typeof VehicleData)['defineSchema']>
   > {}
 
-export class VehicleData extends foundry.abstract.DataModel<
+export class VehicleData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof VehicleData)['defineSchema']>
   >
@@ -58,5 +59,25 @@ export class VehicleData extends foundry.abstract.DataModel<
       maxCargo: new fields.NumberField({ initial: 0 }),
       maxMods: new fields.NumberField({ initial: 0 }),
     };
+  }
+
+  /** @inheritdoc */
+  override prepareBaseData() {
+    //setup the global modifier container object
+    this.stats = {
+      globalMods: {
+        damage: new Array<DerivedModifier>(),
+        ap: new Array<DerivedModifier>(),
+      },
+    };
+  }
+
+  /** @inheritdoc */
+  override prepareDerivedData() {
+    this.scale = this.parent.calcScale(this.size);
+  }
+
+  get encumbered() {
+    return false;
   }
 }

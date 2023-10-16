@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: boating
 flags: {}
 img: systems/swade/assets/icons/skills/sailboat.svg
 _id: zyS119IeXe9xGLbu

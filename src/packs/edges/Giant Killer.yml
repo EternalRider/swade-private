@@ -3,11 +3,16 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.42</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: Veteran
+    - type: rank
+      selector: ''
+      value: 2
+      combinator: and
+  swid: giant-killer
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

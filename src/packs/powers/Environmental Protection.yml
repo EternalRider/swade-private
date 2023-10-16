@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: A mark on the forehead, potions, gills.
   favorite: false
+  swid: environmental-protection
 img: systems/swade/assets/icons/power.svg
 name: Environmental Protection
 type: power

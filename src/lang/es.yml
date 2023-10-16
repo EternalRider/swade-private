@@ -13,7 +13,7 @@ SWADE:
   ActionDeckPresetDark: Mazo de acción (oscuro)
   Name: Nombre
   Tough: Dureza
-  Race: Raza
+  Ancestry: Raza
   Archetype: Arquetipo
   Pace: Paso
   Running: Correr
@@ -287,7 +287,7 @@ SWADE:
   Subtype: Subtipo
   SpecialAbility: Capacidad especial
   SpecialAbilities: Capacidades especiales
-  RacialAbilities: Capacidades de especies
+  AncestralAbilities: Capacidades de especies
   ArchetypeAbilities: Habilidades de arquetipo
   About: Historial
   EdgesHindrances: Ventajas y Desventajas
@@ -392,7 +392,7 @@ SWADE:
   ModOther: Otros modificadores
   Snapfire: Penalización por movimiento
   UnstablePlatform: Plataforma inestable
-  CannotAddRaceToRace: ¡No puedes agregar una raza/arquetipo a una raza/arquetipo!
+  CannotAddAncestryToAncestry: ¡No puedes agregar una raza/arquetipo a una raza/arquetipo!
   LayOutChaseWithDeck: Usar el mazo de persecuciones
   ClearChaseCards: Borrar cartas de persecución de la escena
   NoSceneAvailable: No hay ninguna escena disponible o has desactivado el lienzo
@@ -702,8 +702,8 @@ SWADE:
   Consumable:
     Use: Usar
     Consumables: Consumibles
-  EmptyRacialAbilitiesHint: >-
-    Esta {race} o {archetype} aún no tiene ninguna habilidad. Arrastra y suelta
+  EmptyAncestralAbilitiesHint: >-
+    Esta {ancestry} o {archetype} aún no tiene ninguna habilidad. Arrastra y suelta
     algo en la hoja para empezar.
   NoTokenSelectedForResistRoll: Para hacer una tirada de resistencia, primero selecciona un token
   Templates:
@@ -865,7 +865,7 @@ SWADE:
     Label: Subtipo
     Regular: Regular
   Validation:
-    OnlyOneRace: Sólo se puede correr una vez!
+    OnlyOneAncestry: Sólo se puede correr una vez!
     OnlyOneArchetype: Sólo puedes tener un arquetipo a la vez!
   MigrateCompendium: Forzar la migración del compendio
   LoadedAmmo: Munición cargada

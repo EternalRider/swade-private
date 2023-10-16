@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import {
   actions,
   additionalStats,
@@ -14,7 +15,7 @@ export interface ActionData
     ReturnType<(typeof ActionData)['defineSchema']>
   > {}
 
-export class ActionData extends foundry.abstract.DataModel<
+export class ActionData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ActionData)['defineSchema']>
   >
@@ -32,7 +33,7 @@ export class ActionData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source: object): object {
+  static override migrateData(source: PotentialSource<ActionData>) {
     migrations.renameActionProperties(source);
     return super.migrateData(source);
   }

@@ -1,7 +1,13 @@
 .compendium-toc {
   --heading-font: 'Anton', 'Signika', sans-serif;
 
+  .window-content {
+    background: var(--content-background-image) repeat left top !important;
+    color: var(--font-color) !important;
+  }
+
   .toc {
+    margin: 8px;
     height: 100%;
     display: grid;
     grid-template-rows: 3rem max-content 1fr;
@@ -29,12 +35,17 @@
         justify-content: space-between;
 
         input {
-          width: calc(100% - 20px)
+          width: calc(100% - 20px);
         }
       }
       &.second-row {
         grid-row: 2;
         grid-column: 1/-1;
+      }
+      .toggle-search-mode,
+      .createDocument {
+        font-size: large;
+        padding: 0 0.25rem;
       }
     }
 
@@ -80,12 +91,27 @@
     .toc-entry {
       line-height: var(--sidebar-item-height);
       margin-bottom: 0.5rem;
-      .name {
+      .entry {
         line-height: var(--sidebar-item-height);
-        white-space: nowrap;
-        overflow: hidden;
-        text-decoration: underline;
-        text-decoration-color: $header-text;
+        display: flex;
+        flex-direction: column;
+        .name {
+          overflow: hidden;
+          text-decoration: underline;
+          text-decoration-color: $header-text;
+          &:only-child {
+            line-height: var(--sidebar-item-height);
+          }
+          &:not(:only-child) {
+            margin: 0;
+            line-height: 2em;
+          }
+        }
+        .requirements {
+          font-style: italic;
+          font-size: small;
+          line-height: 1.2em;
+        }
       }
       .wildcard {
         flex: 0 0 calc(var(--sidebar-item-height) / 2);

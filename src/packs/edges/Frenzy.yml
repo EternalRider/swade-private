@@ -3,11 +3,21 @@ permission:
   default: 0
 type: edge
 system:
+  category: Combat
   description: <p>See SWADE p.42</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Fighting d8+'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: skill
+      label: Fighting
+      selector: fighting
+      value: 8
+      combinator: and
+  swid: frenzy
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

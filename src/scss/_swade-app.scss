@@ -1,6 +1,7 @@
 .swade-app {
   //Custom properties
-  --content-background-image: url('./assets/main_bg.webp');
+  --content-background-image: url('assets/paperboard-texture.webp');
+  --content-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
   --font-color: rgb(0, 0, 0);
   --accent-color: rgb(140, 22, 15);
   --accent-color-secondary: rgb(170, 170, 170);
@@ -24,19 +25,13 @@
 
   .window-content {
     //sheet background
-    background-image: var(--content-background-image);
-    background-repeat: repeat;
-    background-position: left top;
+    background: var(--content-background-image) repeat left top;
+    box-shadow: var(--content-shadow);
     color: var(--font-color);
   }
 
-  &.compendium-toc .window-content {
-    //sheet background
-    background-image: var(--content-background-image);
-    background-repeat: repeat;
-    background-position: left top;
-    color: var(--font-color);
-    padding: 8px;
+  .debug * {
+    background-color: rgba(0, 100, 0, 0.1) !important;
   }
 
   input[type],
@@ -91,9 +86,24 @@
     border-radius: var(--input-border-radius);
     border-bottom: var(--input-border-line);
     font-family: var(--default-font);
+    &[multiple] {
+      border: var(--input-border-line);
+      option:checked {
+        background: var(--color-text-dark-secondary);
+        color: var(--color-text-light-heading);
+      }
+    }
   }
 
   button {
+    i {
+      margin-right: 0;
+    }
+    &[type='submit'],
+    &.submit,
+    &.close {
+      margin-top: $medium-spacing;
+    }
     cursor: pointer;
     border-radius: var(--button-border-radius);
     font-family: var(--default-font);
@@ -201,7 +211,13 @@
   }
 
   footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
     button {
+      margin-left: 0;
+      margin-right: 0;
       font-weight: 700;
     }
   }

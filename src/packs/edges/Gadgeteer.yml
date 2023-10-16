@@ -3,11 +3,26 @@ permission:
   default: 0
 type: edge
 system:
+  category: Power
   description: <p>See SWADE p.46</p>
   notes: ''
   isArcaneBackground: false
   requirements:
-    value: 'Seasoned, Arcane Background (Weird Science), Weird Science d6+'
+    - type: rank
+      selector: ''
+      value: 1
+      combinator: and
+    - type: edge
+      label: Arcane Background (Weird Science)
+      selector: arcane-background-weird-science
+      value: ''
+      combinator: and
+    - type: skill
+      label: Weird Science
+      selector: weird-science
+      value: 6
+      combinator: and
+  swid: gadgeteer
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

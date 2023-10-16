@@ -1,0 +1,130 @@
+title: SWADE.TOURS.ADDSTATS.Title
+description: SWADE.TOURS.ADDSTATS.Description
+canBeResumed: false
+display: true
+suggestedNextTours:
+  - swade.tweaks
+  - swade.auras
+steps:
+  - id: gameSettings
+    selector: '#settings-game>button[data-action="configure"]'
+    title: SWADE.TOURS.ADDSTATS.GameSettings.Title
+    content: SWADE.TOURS.ADDSTATS.GameSettings.Content
+    tab:
+      parent: sidebar
+      id: settings
+  - id: swadeSettings
+    selector: '#client-settings button[data-key="swade.setting-config"]'
+    title: SWADE.TOURS.ADDSTATS.SwadeSettings.Title
+    content: SWADE.TOURS.ADDSTATS.SwadeSettings.Content
+    tab:
+      parent: settings
+      id: system
+  - id: additionalStats
+    selector: '#settingConfig section.attributes'
+    title: SWADE.TOURS.ADDSTATS.StatSettings.Title
+    content: SWADE.TOURS.ADDSTATS.StatSettings.Content
+    tab:
+      parent: configurator
+      id: additional-stats
+    settings:
+      settingFields:
+        actor:
+          wanted:
+            dtype: Boolean
+            label: WANTED!
+            hasMaxValue: false
+          strain:
+            dtype: Number
+            label: Strain
+            hasMaxValue: true
+          burnDie:
+            dtype: Die
+            label: Burn Die
+            hasMaxValue: false
+          major:
+            dtype: String
+            label: College Major
+            hasMaxValue: false
+          align:
+            dtype: Selection
+            label: Alignment
+            optionString: Lawful Good; Good; Unaligned; Evil; Chaotic Evil
+            hasMaxValue: false
+  - id: statKey
+    selector: '#settingConfig section.attributes input.attribute-key'
+    title: SWADE.TOURS.ADDSTATS.StatKey.Title
+    content: SWADE.TOURS.ADDSTATS.StatKey.Content
+  - id: statLabel
+    selector: '#settingConfig section.attributes input.attribute-label'
+    title: SWADE.TOURS.ADDSTATS.StatLabel.Title
+    content: SWADE.TOURS.ADDSTATS.StatLabel.Content
+  - id: statDType
+    selector: '#settingConfig section.attributes select.attribute-dtype'
+    title: SWADE.TOURS.ADDSTATS.StatDType.Title
+    content: SWADE.TOURS.ADDSTATS.StatDType.Content
+  - id: hasMax
+    selector: '#settingConfig section.attributes input.attribute-maxValue'
+    title: SWADE.TOURS.ADDSTATS.HasMax.Title
+    content: SWADE.TOURS.ADDSTATS.HasMax.Content
+  - id: actorDisplay
+    selector: '#actorSheetID div.additional-stats'
+    title: SWADE.TOURS.ADDSTATS.ActorDisplay.Title
+    content: SWADE.TOURS.ADDSTATS.ActorDisplay.Content
+    tab:
+      parent: actor
+      id: summary
+    actor:
+      name: SWADE.TOURS.ADDSTATS.Actor
+      type: character
+      img: icons/environment/people/commoner.webp
+      system:
+        additionalStats:
+          wanted:
+            dtype: Boolean
+            label: WANTED!
+          strain:
+            dtype: Number
+            label: Strain
+            hasMaxValue: true
+          burnDie:
+            dtype: Die
+            label: Burn Die
+          major:
+            dtype: String
+            label: College Major
+          align:
+            dtype: Selection
+            label: Alignment
+            optionString: Lawful Good; Good; Unaligned; Evil; Chaotic Evil
+  - id: checkbox
+    selector: '#actorSheetID div.additional-stats div.form-group:nth-child(1)'
+    title: SWADE.TOURS.ADDSTATS.Checkbox.Title
+    content: SWADE.TOURS.ADDSTATS.Checkbox.Content
+  - id: number
+    selector: '#actorSheetID div.additional-stats div.form-group:nth-child(2)'
+    title: SWADE.TOURS.ADDSTATS.Number.Title
+    content: SWADE.TOURS.ADDSTATS.Number.Content
+  - id: die
+    selector: '#actorSheetID div.additional-stats div.form-group:nth-child(3)'
+    title: SWADE.TOURS.ADDSTATS.Die.Title
+    content: SWADE.TOURS.ADDSTATS.Die.Content
+  - id: text
+    selector: '#actorSheetID div.additional-stats div.form-group:nth-child(4)'
+    title: SWADE.TOURS.ADDSTATS.Text.Title
+    content: SWADE.TOURS.ADDSTATS.Text.Content
+  - id: selection
+    selector: '#actorSheetID div.additional-stats div.form-group:nth-child(5)'
+    title: SWADE.TOURS.ADDSTATS.Selection.Title
+    content: SWADE.TOURS.ADDSTATS.Selection.Content
+  - id: accessTweaks
+    selector: '#actorSheetID .header-button.configure-actor'
+    title: SWADE.TOURS.ADDSTATS.AccessTweaks.Title
+    content: SWADE.TOURS.ADDSTATS.AccessTweaks.Content
+  - id: addStatTweaks
+    selector: '#tweaks section[data-tab="additional-stats"]'
+    title: SWADE.TOURS.ADDSTATS.AddStatTweaks.Title
+    content: SWADE.TOURS.ADDSTATS.AddStatTweaks.Content
+    tab:
+      parent: tweaks
+      id: additional-stats

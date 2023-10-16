@@ -90,11 +90,11 @@ export default class CharacterSummarizer {
     let summary = `<h1>${this.actor.name}</h1>`;
 
     // Basic character information block
-    summary += '<p><strong>' + game.i18n.localize('SWADE.Race') + '</strong>: ';
-    summary += TextEditor.enrichHTML(
-      getProperty(this.actor.system, 'details.species.name'),
-      { async: false },
-    );
+    summary +=
+      '<p><strong>' + game.i18n.localize('SWADE.Ancestry') + '</strong>: ';
+    summary +=
+      this.actor.ancestry?.name ??
+      getProperty(this.actor.system, 'details.species.name');
     summary +=
       '<br/><strong>' + game.i18n.localize('SWADE.Rank') + '</strong>: ';
     summary += getProperty(this.actor.system, 'advances.rank');

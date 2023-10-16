@@ -1,3 +1,4 @@
+import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import {
   actions,
@@ -21,7 +22,7 @@ export interface WeaponData
     ReturnType<(typeof WeaponData)['defineSchema']>
   > {}
 
-export class WeaponData extends foundry.abstract.DataModel<
+export class WeaponData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof WeaponData)['defineSchema']>
   >
@@ -61,7 +62,7 @@ export class WeaponData extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static override migrateData(source) {
+  static override migrateData(source: PotentialSource<WeaponData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     quarantine.ensureAPisNumeric(source);

@@ -4,6 +4,7 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 /**
  * @noInheritDoc
@@ -22,14 +23,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       .find('[name="system.details.currency"]')
       .on('change', this._onChangeInputDelta.bind(this));
 
-    if (this.actor.isOwner) {
-      const handler = (ev: DragEvent) => this._onDragStart(ev);
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-    }
+    // Drag events for macros.
+    html.find('li.active-effect, li.item').each((i, el) => {
+      // Add draggable attribute and dragstart listener.
+      el.draggable = true;
+      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
+    });
 
     // Update Item
     html.find('.item-edit').on('click', (ev) => {
@@ -105,8 +104,15 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     html.find('.effect-action').on('click', (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId!;
-      const effect = this.actor.effects.get(effectId, { strict: true });
+      const data = a.closest('li')!.dataset;
+      const effectID = data.effectId;
+      const parentId = data.effectParentId;
+      const effect =
+        parentId === this.actor.id
+          ? (this.actor.effects.get(effectID) as SwadeActiveEffect)
+          : (this.actor.items
+              .get(parentId)
+              .effects.get(effectID) as SwadeActiveEffect);
       const action = a.dataset.action;
 
       switch (action) {
@@ -183,6 +189,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const data: any = super.getData();
     data.config = SWADE;
 
+    data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
+
     data.itemsByType = {};
     for (const type of game.system.documentTypes.Item) {
       data.itemsByType[type] = data.items.filter((i) => i.type === type) || [];
@@ -240,7 +248,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       };
     }
 
-    const additionalStats: AdditionalStats = this._getAdditionalStats();
+    const additionalStats: AdditionalStats = this.#getAdditionalStats();
     data.additionalStats = additionalStats;
     data.hasAdditionalStatsFields = Object.keys(additionalStats).length > 0;
     return data;
@@ -259,7 +267,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         {
           label: game.i18n.localize('SWADE.Tweaks'),
           class: 'configure-actor',
-          icon: 'fas fa-dice',
+          icon: 'fa-solid fa-gears',
           onclick: (ev) => this._onConfigureEntity(ev),
         },
         ...buttons,
@@ -449,11 +457,32 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     return retVal;
   }
 
-  private _getAdditionalStats(): AdditionalStats {
+  protected override _onDragStart(event: DragEvent): void {
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget.classList.contains('attribute')) {
+      return this._onDragAttribute(event);
+    }
+    super._onDragStart(event);
+  }
+
+  protected _onDragAttribute(event: DragEvent) {
+    const btn = (event.currentTarget as HTMLElement).querySelector('button');
+    event.dataTransfer?.setData(
+      'text/plain',
+      JSON.stringify({
+        type: 'Attribute',
+        uuid: this.actor.uuid,
+        attribute: btn?.dataset.attribute as Attribute,
+      }),
+    );
+  }
+
+  #getAdditionalStats(): AdditionalStats {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
     for (const [key, attr] of Object.entries(stats)) {
+      if (!attr.dtype) delete stats[key];
       if (attr.dtype === 'Selection') {
         const options = game.settings.get('swade', 'settingFields').actor;
         attr.options = options[key].optionString
