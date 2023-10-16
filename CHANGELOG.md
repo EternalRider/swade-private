@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Tweaks (#938)
   - Additional Stats (#937)
   - Auras (#936)
+- Added the ability to display auras on the canvas. This is the first iteration of the Auras feature. Auras can be configured in an actor's tweaks. (#797) **by @florad92**
 - Improved Documentation of SWADE's unique vision types. (#885) **by @jpmeehan5**
 - Added indicator to granted hindrances if it's a major hindrance. (#874) **by @jpmeehan5**
 - Exposed the MappingField and AddStatsValueField for developers **by @jpmeehan5**
@@ -49,14 +50,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a `select` box underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by @jpmeehan5**
+- [BREAKING] Macro additional actions now execute with the Foundry default actor assignment, rather than always setting `actor` to be the actor that's the source of the macro action. The 3.1 functionality is available through a dropdown menu underneath the UUID to change the `actor` from "Default" to "Self". (#924) **by @jpmeehan5**
 - [BREAKING] The Scale value on vehicles is now automatically derived from their size. **by @jpmeehan5**
 - Clicking on an inherited effect on the Character sheet no longer opens the source item in addition to expanding the description. Instead, a tooltip will display on hover that states the source's name. (#929) **by @jpmeehan5**
 - Introduced tabs to the Actor Tweaks window. (#932) **by @florad92**
 - Refactored SwadeActor and SwadeItem data preparation to make use of the system data model. (#934) **by @jpmeehan5**
 - Replaced all references, including in translation keys, to race with ancestry. A migration has been provided. (#942) **by @florad92**
-- If created on an Item, active effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
+- If created on an Item, Active Effects will now default to using the name and image of the parent Item. (#927) **by @florad92**
 - Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
+- Refactored how Edges record their requirements. There are several requirement types which can take a SWID as a reference to the item or value being required. (#625) **by @florad92**
 - The Advance Editor now saves changes automatically. (#972) **by @florad92**
 
 ### Deprecated
@@ -75,7 +77,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Resist actions on weapons should no longer attempt to consume ammunition. (#923) **by @florad92**
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
 - Adding actions to an item via drag&drop should once again work as expected on items without prior actions. (#940) **by @florad92**
-- Fixed an issue that would prevent magazine and battery reloads to perform properly. (#948) **by @florad92**
+- Fixed an issue that would prevent magazine and battery reloads performing properly. (#948) **by @florad92**
 - Chat messages for Major and Minor hindrances are no longer reversed. **by @jpmeehan5**
 - Fixed the currency field overriding, rather than adding or subtracting, if the enter key was pressed. (#517) **by @jpmeehan5**
 - Fixed an issue where the Power Point field on actors would not be properly initialized with a `general` field. **by @jpmeehan5 and @florad92**
