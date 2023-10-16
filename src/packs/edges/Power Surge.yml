@@ -21,7 +21,8 @@ system:
       value: ''
       combinator: and
     - type: other
-      selector: arcane skill d8+
+      selector: ''
+      value: arcane skill d8+
       combinator: and
   swid: power-surge
 sort: 100001
