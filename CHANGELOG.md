@@ -30,6 +30,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The AEGIS/Active Effect Wizard should once again recognize when changes are made. (#976) **by @florad92**
 - Fixed validation issues with system edge compendium. **by @florad92**
 
+### Changed
+
+- Changed handling for the `override` field on items to ensure that data doesn't linger between prepareData cycles. (#977) **by @jpmeehan5**
+
 ## 3.2.0
 
 ### Added
