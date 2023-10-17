@@ -218,6 +218,7 @@ export default class SwadeActor extends Actor {
   }
 
   override prepareEmbeddedDocuments() {
+    for (const item of this.items) item.overrides = {};
     for (const effect of this.effects) {
       effect._safePrepareData();
     }
