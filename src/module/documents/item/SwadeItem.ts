@@ -7,6 +7,7 @@ import {
   ItemDataConstructorData,
   ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState, ReloadType, Updates } from '../../../globals';
 import {
   ItemAction,
@@ -1461,12 +1462,12 @@ export default class SwadeItem extends Item {
     }
   }
 
-  protected override _onDelete(
+  protected override async _preDelete(
     options: DocumentModificationOptions,
-    userId: string,
-  ) {
-    super._onDelete(options, userId);
-    if (this.parent) this.removeGranted();
+    user: BaseUser,
+  ): Promise<void> {
+    await super._preDelete(options, user);
+    if (this.parent) await this.removeGranted();
   }
 
   protected override async _preUpdate(

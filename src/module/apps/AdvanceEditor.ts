@@ -42,7 +42,7 @@ export class AdvanceEditor extends FormApplication<
       height: 'auto' as const,
       submitOnClose: false,
       closeOnSubmit: false,
-      submitOnChange: true,
+      submitOnChange: false,
     });
   }
 
@@ -50,9 +50,10 @@ export class AdvanceEditor extends FormApplication<
     super.activateListeners(jquery);
     const html = jquery[0];
 
-    html
-      .querySelector('footer .close')
-      ?.addEventListener('click', this.close.bind(this));
+    html.querySelector('footer .close')?.addEventListener('click', async () => {
+      await this.submit();
+      this.close();
+    });
   }
 
   override async getData(
