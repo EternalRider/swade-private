@@ -200,10 +200,20 @@ export default class SwadeActor extends Actor {
   }
 
   get auras(): Record<string, AuraData> {
-    const auras = (this.getFlag('swade', 'auras') ?? {}) as Record<
-      string,
-      AuraData
-    >;
+    const auras = (this.flags.swade?.auras ?? {}) as Record<string, AuraData>;
+    const specialAuras = ['aura1', 'aura2'];
+    let aura;
+    for (const key in auras) {
+      if (specialAuras.includes(key)) continue;
+      aura = auras[key] ?? {};
+      auras[key] = foundry.utils.mergeObject(
+        aura,
+        AuraPointSource.defaultData,
+        { overwrite: false },
+      );
+    }
+
+    //special case: the user-defined auras
     auras.aura1 = foundry.utils.mergeObject(
       auras.aura1 ?? {},
       AuraPointSource.defaultData,
@@ -218,6 +228,7 @@ export default class SwadeActor extends Actor {
   }
 
   override prepareEmbeddedDocuments() {
+    for (const item of this.items) item.overrides = {};
     for (const effect of this.effects) {
       effect._safePrepareData();
     }
