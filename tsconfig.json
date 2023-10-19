@@ -7,7 +7,6 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "strict": false,
-    "strictNullChecks": true,
-    "sourceMap": true
+    "strictNullChecks": true
   }
 }

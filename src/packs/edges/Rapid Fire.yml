@@ -13,7 +13,7 @@ system:
       value: 1
       combinator: and
     - type: skill
-      selector: Shooting
+      selector: shooting
       value: 6
       combinator: and
   swid: rapid-fire

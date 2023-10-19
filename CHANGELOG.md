@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.1
+
+### Fixed
+
+- Fixed some console errors that could pop up when importing actors with active effects from a compendium. **by @jpmeehan5**
+- The AEGIS/Active Effect Wizard should once again recognize when changes are made. (#976) **by @florad92**
+- Fixed validation issues with system edge compendium. **by @florad92**
+- Fixed an issue that would cause custom auras not to be filled with default values.
+- Deleting Items with grants should no longer display an error in the console.
+
+### Changed
+
+- Changed handling for the `override` field on items to ensure that data doesn't linger between prepareData cycles. (#977) **by @jpmeehan5**
+
 ## 3.2.0
 
 ### Added

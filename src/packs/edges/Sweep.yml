@@ -18,7 +18,7 @@ system:
       combinator: and
     - type: skill
       label: Fighting
-      selector: Fighting
+      selector: fighting
       value: 8
       combinator: and
   swid: sweep

@@ -23,7 +23,8 @@
 
   font-family: var(--default-font);
 
-  .window-content {
+  .window-content,
+  &.app.sidebar-popout .window-content {
     //sheet background
     background: var(--content-background-image) repeat left top;
     box-shadow: var(--content-shadow);
