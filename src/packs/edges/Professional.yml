@@ -10,12 +10,13 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
     - type: other
       selector: ''
       value: maximum die type possible in affected Trait
       combinator: and
+  swid: professional
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -411,11 +411,12 @@ export class CompendiumTOC extends Compendium<
           group: val[0],
           entries: val[1]
             .map((entry) => {
+              const requirements = entry.system.requirementString ?? '';
               return {
                 name: entry.name as string,
                 id: entry.id,
                 img: entry.img,
-                requirements: entry.system.requirementString,
+                requirements: requirements.replace(/<\/?i>/g, ''),
               };
             })
             .sort((a, b) => a.name.localeCompare(b.name)),
@@ -429,11 +430,12 @@ export class CompendiumTOC extends Compendium<
     const mapped = docs.map(async (doc) => {
       const isItem = doc?.documentName === 'Item';
       if (isItem) {
+        const requirements = doc.system.requirementString ?? '';
         return {
           name: doc.name as string,
           id: doc.id,
           img: doc.img,
-          requirements: doc.system.requirementString,
+          requirements: requirements.replace(/<\/?i>/g, ''),
         };
       }
       return {

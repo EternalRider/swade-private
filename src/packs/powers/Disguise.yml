@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Malleable features, illusionary appearance, hair of new form
   favorite: false
+  swid: disguise
 img: systems/swade/assets/icons/power.svg
 name: Disguise
 type: power

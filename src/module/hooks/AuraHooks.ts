@@ -1,5 +1,6 @@
 import { AuraPointSource } from '../canvas/AuraPointSource';
 import SwadeToken from '../canvas/SwadeToken';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 
 export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
@@ -28,10 +29,7 @@ export function registerAuraHooks() {
   });
 
   Hooks.on('drawToken', (token: SwadeToken) => {
-    for (const id in token.actor.auras) {
-      if (token.auras.has(id)) continue;
-      token.auras.set(id, new AuraPointSource({ object: token, id }));
-    }
+    addAuras(token);
     updateAuras(token);
   });
 
@@ -51,6 +49,14 @@ export function registerAuraHooks() {
     token.auras.clear();
   });
 
+  Hooks.on('updateActiveEffect', (effect: SwadeActiveEffect) => {
+    if (!game.canvas.ready) return;
+    if (effect.changes.some((e) => e.key.startsWith('flags.swade.auras'))) {
+      effect.actor?.getActiveTokens().forEach((t) => addAuras(t));
+      updateAllAuras();
+    }
+  });
+
   Hooks.on('initializeLightSources', () => updateAllAuras());
   Hooks.on('controlToken', () => updateAllAuras());
   Hooks.on('hoverToken', () => updateAllAuras());
@@ -61,12 +67,30 @@ export function registerAuraHooks() {
   });
 }
 
+function addAuras(token: SwadeToken) {
+  for (const id in token.actor.auras) {
+    if (token.auras.has(id)) continue;
+    token.auras.set(id, new AuraPointSource({ object: token, id }));
+  }
+}
+
+function updateAllAuras() {
+  for (const token of canvas.tokens.placeables) {
+    updateAuras(token);
+  }
+}
+
 function updateAuras(token: SwadeToken) {
   const origin = token.getMovementAdjustedPoint(token.center);
   for (const [id, aura] of token.auras.entries()) {
     const auras = token.actor.auras;
     const data = auras[id];
-    if (!data) continue;
+    if (!data) {
+      CONFIG.Canvas.auras.collection.delete(aura.sourceId);
+      aura.destroy();
+      token.auras.delete(id);
+      continue;
+    }
     const { externalRadius } = token;
     aura.initialize({
       x: origin.x,
@@ -82,12 +106,6 @@ function updateAuras(token: SwadeToken) {
     CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
   }
   refreshAuras();
-}
-
-function updateAllAuras() {
-  for (const token of canvas.tokens.placeables) {
-    updateAuras(token);
-  }
 }
 
 function refreshAuras() {

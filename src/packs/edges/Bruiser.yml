@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Brawler
+      label: Brawler
+      selector: brawler
       value: ''
       combinator: and
+  swid: bruiser
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

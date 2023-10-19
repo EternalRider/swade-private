@@ -7,6 +7,7 @@ system:
   description: See SWADE p.23
   notes: ''
   major: false
+  swid: cant-swim
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: B6ah3ofwV6d5X3vL

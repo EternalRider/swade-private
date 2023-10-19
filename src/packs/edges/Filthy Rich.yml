@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Rich
+      label: Rich
+      selector: rich
       value: ''
       combinator: and
+  swid: filthy-rich
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

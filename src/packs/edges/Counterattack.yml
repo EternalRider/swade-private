@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: skill
-      selector: Fighting
-      value: '8'
+      label: Fighting
+      selector: fighting
+      value: 8
       combinator: and
+  swid: counterattack
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

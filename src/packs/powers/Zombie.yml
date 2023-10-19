@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: Carving symbols on corpses, throwing bones, graveyards, "leather" books
   favorite: false
+  swid: zombie
 img: systems/swade/assets/icons/power.svg
 name: Zombie
 type: power

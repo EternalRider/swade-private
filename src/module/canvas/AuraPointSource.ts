@@ -65,8 +65,11 @@ export class AuraPointSource extends PointSource {
   }
 
   protected _checkDisposition(): boolean {
+    const visibleTo = Array.isArray(this.auraData.visibleTo)
+      ? this.auraData.visibleTo
+      : [this.auraData.visibleTo];
     return !!canvas.tokens?.controlled.some((t) =>
-      this.auraData.visibleTo.includes(t.document.disposition),
+      visibleTo.includes(t.document.disposition),
     );
   }
 }

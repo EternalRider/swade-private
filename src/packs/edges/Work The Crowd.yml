@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Work the Room
+      label: Work the Room
+      selector: work-the-room
       value: ''
       combinator: and
+  swid: work-the-crowd
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

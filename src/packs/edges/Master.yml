@@ -8,18 +8,20 @@ system:
   notes: ''
   isArcaneBackground: false
   requirements:
-    - type: rank
-      selector: ''
-      value: '4'
-      combinator: and
-    - type: edge
-      selector: Expert in affected Trait
-      value: ''
-      combinator: and
     - type: wildCard
       selector: ''
-      value: 'true'
+      value: true
       combinator: and
+    - type: rank
+      selector: ''
+      value: 4
+      combinator: and
+    - type: edge
+      label: Expert in affected Trait
+      selector: expert
+      value: ''
+      combinator: and
+  swid: master
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

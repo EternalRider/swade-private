@@ -7,6 +7,7 @@ system:
   description: See SWADE p.25
   notes: ''
   major: false
+  swid: obligation
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: 6VzKthWZN5ccWagO

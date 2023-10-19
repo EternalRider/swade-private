@@ -8,5 +8,6 @@ system:
   description: <p>See SWADE p.23</p>
   notes: ''
   major: true
+  swid: bloodthirsty
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg

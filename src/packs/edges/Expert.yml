@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
-    - type: other
-      selector: Professional in affected Trait
+    - type: edge
+      label: Professional in affected Trait
+      selector: professional
       value: ''
       combinator: and
+  swid: expert
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

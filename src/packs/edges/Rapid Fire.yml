@@ -10,12 +10,13 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: skill
-      selector: Shooting
-      value: '6'
+      selector: shooting
+      value: 6
       combinator: and
+  swid: rapid-fire
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

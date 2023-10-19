@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Level Headed
+      label: Level Headed
+      selector: level-headed
       value: ''
       combinator: and
+  swid: improved-level-headed
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

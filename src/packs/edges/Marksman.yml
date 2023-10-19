@@ -10,16 +10,19 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: skill
-      selector: Shooting
-      value: '8'
+      label: Shooting
+      selector: shooting
+      value: 8
       combinator: or
     - type: skill
-      selector: Athletics
-      value: '8'
+      label: Athletics
+      selector: athletics
+      value: 8
       combinator: or
+  swid: marksman
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

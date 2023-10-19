@@ -17,6 +17,7 @@ system:
   rank: Veteran
   trapping: Gusty winds, wings, broomsticks
   favorite: false
+  swid: fly
 img: systems/swade/assets/icons/power.svg
 name: Fly
 type: power

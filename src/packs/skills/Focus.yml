@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: focus
 flags: {}
 img: systems/swade/assets/icons/skills/meditation.svg
 _id: hUwKmBjfmC9BNMus

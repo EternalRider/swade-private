@@ -10,12 +10,13 @@ system:
   requirements:
     - type: wildCard
       selector: ''
-      value: 'true'
+      value: true
       combinator: and
     - type: rank
       selector: ''
-      value: '4'
+      value: 4
       combinator: and
+  swid: followers
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

@@ -13,6 +13,20 @@
     </nav>
   {{/if}}
   <main class='sheet-body'>
+    {{#if isItem}}
+      <fieldset class='swid'>
+        <p class='notification warning'>
+          {{localize 'SWADE.SWID.ChangeWarning1'}}
+        </p>
+        <legend>{{localize 'SWADE.SWID.Long'}}</legend>
+        <div class='form-group flexrow'>
+          <input type='text' name='system.swid' value='{{doc.system.swid}}' />
+          <button type='button' class='regenerate-swid'>
+            <i class='fa-solid fa-arrows-rotate'></i>
+          </button>
+        </div>
+      </fieldset>
+    {{/if}}
     <section class='tab' data-group='primary' data-tab='traits'>
       {{#if isActor}}
         <!--Max Values-->

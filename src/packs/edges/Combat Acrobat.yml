@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Acrobat
+      label: Acrobat
+      selector: acrobat
       value: ''
       combinator: and
+  swid: combat-acrobat
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

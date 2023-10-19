@@ -30,17 +30,6 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    // Drag events for macros.
-    if (this.actor.isOwner) {
-      const handler = (ev: DragEvent) => this._onDragStart(ev);
-      // Find all items on the character sheet.
-      html.find('li.item.weapon').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-    }
-
     //Toggle Equipmnent Card collapsible
     html.find('.gear-card .card-header .item-name').on('click', (ev) => {
       const card = $(ev.currentTarget).parents('.gear-card');

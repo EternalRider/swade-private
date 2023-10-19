@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
-    - type: edge
-      selector: Arcane Background (Any)
+    - type: other
+      label: Arcane Background (Any)
+      selector: ''
       value: ''
       combinator: and
+  swid: concentration
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

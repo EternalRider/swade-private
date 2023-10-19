@@ -4,6 +4,7 @@ import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
+import SwadeTour from './module/tours/SwadeTour';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
@@ -27,6 +28,7 @@ import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import { registerAuraHooks } from './module/hooks/AuraHooks';
+import { rollItemMacro } from './module/hooks/hotbarDrop';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
@@ -46,11 +48,7 @@ import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeSocketHandler from './module/SwadeSocketHandler';
 import registerSWADETours from './module/tours/registration';
-import {
-  deepFreeze,
-  getStatusEffectDataById,
-  rollItemMacro,
-} from './module/util';
+import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
@@ -88,6 +86,7 @@ Hooks.once('init', () => {
     },
     util: {
       getStatusEffectDataById,
+      slugify,
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),
@@ -101,6 +100,7 @@ Hooks.once('init', () => {
     effectCallbacks: new Collection(),
     ready: false,
     fields: data.fields,
+    SwadeTour,
   };
 
   //register document classes

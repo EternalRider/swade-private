@@ -10,20 +10,23 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Command
+      label: Command
+      selector: command
       value: ''
       combinator: and
     - type: attribute
       selector: smarts
-      value: '8'
+      value: 8
       combinator: and
     - type: skill
-      selector: Battle
-      value: '6'
+      Label: Battle
+      selector: battle
+      value: 6
       combinator: and
+  swid: tactician
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

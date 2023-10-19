@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: edge
-      selector: Nerves of Steel
+      label: Nerves of Steel
+      selector: nerves-of-steel
       value: ''
       combinator: and
+  swid: improved-nerves-of-steel
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

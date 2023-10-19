@@ -10,16 +10,19 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Arcane Background (Magic)
+      label: Arcane Background (Magic)
+      selector: arcane-background-magic
       value: ''
       combinator: and
     - type: skill
-      selector: Spellcasting
-      value: '6'
+      Label: Spellcasting
+      selector: spellcasting
+      value: 6
       combinator: and
+  swid: wizard
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

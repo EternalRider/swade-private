@@ -1,5 +1,6 @@
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { validateSwid } from '../item/common';
 import { AddStatsValueField } from './AddStatsValueField';
 
 export interface RequirementsField
@@ -21,6 +22,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
       constants.REQUIREMENT_TYPE.EDGE,
       constants.REQUIREMENT_TYPE.HINDRANCE,
       constants.REQUIREMENT_TYPE.ANCESTRY,
+      constants.REQUIREMENT_TYPE.POWER,
       constants.REQUIREMENT_TYPE.OTHER,
     ];
   }
@@ -42,10 +44,15 @@ export class RequirementsField extends foundry.abstract.DataModel<
         initial: constants.REQUIREMENT_TYPE.RANK,
         required: true,
       }),
-      /** The actual requirement value, such as an attribute, skill or edge name */
-      selector: new fields.StringField({ initial: '', required: true }),
+      /** The actual requirement value, such as an attribute, skill or edge swid */
+      selector: new fields.StringField({
+        required: true,
+        validate: validateSwid,
+      }),
       /** For attribute and skill requirements this is used  to denote the die type, for Ranks it is used to denote the rank*/
       value: new AddStatsValueField({ initial: '', required: true }),
+      /** A simple label, for display */
+      label: new fields.StringField({ required: false }),
       combinator: new fields.StringField({
         initial: 'and',
         choices: ['and', 'or'],
@@ -56,22 +63,23 @@ export class RequirementsField extends foundry.abstract.DataModel<
   toString(): string {
     switch (this.type) {
       case constants.REQUIREMENT_TYPE.WILDCARD:
-        // When the box is unchecked the value is "false", which in JS is typecast to true
-        if (this.value === 'true') return game.i18n.localize('SWADE.WildCard');
-        else return game.i18n.localize('SWADE.Extra');
+        return this.value
+          ? game.i18n.localize('SWADE.WildCard')
+          : game.i18n.localize('SWADE.Extra');
       case constants.REQUIREMENT_TYPE.RANK:
-        return SWADE.ranks[Number(this.value)];
+        return SWADE.ranks[this.value];
       case constants.REQUIREMENT_TYPE.ATTRIBUTE:
         return `${SWADE.attributes[this.selector]?.long} d${this.value}+`;
       case constants.REQUIREMENT_TYPE.SKILL:
-        return `${this.selector} d${this.value}+`;
+        return `${this.label} d${this.value}+`;
+      case constants.REQUIREMENT_TYPE.POWER:
+        return `<i>${this.label}</i>`;
       case constants.REQUIREMENT_TYPE.EDGE:
       case constants.REQUIREMENT_TYPE.HINDRANCE:
       case constants.REQUIREMENT_TYPE.ANCESTRY:
-        return this.selector;
       case constants.REQUIREMENT_TYPE.OTHER:
       default:
-        return this.value.toString();
+        return this.label ?? '';
     }
   }
 }

@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: '"Morphing", talismans, tattoos'
   favorite: false
+  swid: shape-change
 img: systems/swade/assets/icons/power.svg
 name: Shape Change
 type: power

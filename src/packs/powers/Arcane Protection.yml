@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Concentration, a dull glow around the protected character, a fetish
   favorite: false
+  swid: arcane-protection
 img: systems/swade/assets/icons/power.svg
 name: Arcane Protection
 type: power

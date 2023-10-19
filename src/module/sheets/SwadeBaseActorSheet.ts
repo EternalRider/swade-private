@@ -23,14 +23,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       .find('[name="system.details.currency"]')
       .on('change', this._onChangeInputDelta.bind(this));
 
-    if (this.actor.isOwner) {
-      const handler = (ev: DragEvent) => this._onDragStart(ev);
-      html.find('li.active-effect').each((i, li) => {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.addEventListener('dragstart', handler, false);
-      });
-    }
+    // Drag events for macros.
+    html.find('li.active-effect, li.item').each((i, el) => {
+      // Add draggable attribute and dragstart listener.
+      el.draggable = true;
+      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
+    });
 
     // Update Item
     html.find('.item-edit').on('click', (ev) => {
@@ -457,6 +455,26 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       retVal += i.system.weight * i.system.quantity;
     });
     return retVal;
+  }
+
+  protected override _onDragStart(event: DragEvent): void {
+    const currentTarget = event.currentTarget as HTMLElement;
+    if (currentTarget.classList.contains('attribute')) {
+      return this._onDragAttribute(event);
+    }
+    super._onDragStart(event);
+  }
+
+  protected _onDragAttribute(event: DragEvent) {
+    const btn = (event.currentTarget as HTMLElement).querySelector('button');
+    event.dataTransfer?.setData(
+      'text/plain',
+      JSON.stringify({
+        type: 'Attribute',
+        uuid: this.actor.uuid,
+        attribute: btn?.dataset.attribute as Attribute,
+      }),
+    );
   }
 
   #getAdditionalStats(): AdditionalStats {

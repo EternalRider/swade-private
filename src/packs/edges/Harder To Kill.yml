@@ -10,12 +10,14 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '2'
+      value: 2
       combinator: and
     - type: edge
-      selector: Hard to Kill
+      label: Hard to Kill
+      selector: hard-to-kill
       value: ''
       combinator: and
+  swid: harder-to-kill
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

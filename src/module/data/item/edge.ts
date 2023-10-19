@@ -2,6 +2,7 @@ import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/f
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { Requirement } from '../../documents/item/SwadeItem.interface';
 import { count } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
 import { category, favorite, grants, itemDescription } from './common';
@@ -35,10 +36,30 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
             },
           ],
           validate: (
-            value: any[],
+            value: Requirement[],
             _options: DataField.ValidationOptions<DataField.Any>,
           ) => {
-            this.#checkRankRequirements(value);
+            const failures =
+              new foundry.data.validation.DataModelValidationFailure({
+                unresolved: true,
+              });
+            const ranksInvalid = this.#checkRankRequirements(value);
+            if (ranksInvalid) {
+              failures.elements.push({
+                id: 'rank',
+                name: 'Rank',
+                failure: ranksInvalid,
+              });
+            }
+            const wildCardsInvalid = this.#checkWildCardRequirements(value);
+            if (wildCardsInvalid) {
+              failures.elements.push({
+                id: 'wildCard',
+                name: 'Wild Card',
+                failure: wildCardsInvalid,
+              });
+            }
+            if (failures.elements.length) return failures;
           },
         },
       ),
@@ -76,18 +97,28 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
     return super.migrateData(source);
   }
 
-  static #checkRankRequirements(value: any[]) {
+  static #checkRankRequirements(value: Requirement[]) {
     const rankRequirements = count(
       value,
       (v) => v.type === constants.REQUIREMENT_TYPE.RANK,
     );
 
-    if (rankRequirements !== 1) {
-      throw new foundry.data.validation.DataModelValidationError(
-        `Cannot have ${
-          rankRequirements > 1 ? 'more' : 'less'
-        } than one rank requirement`,
-      );
+    if (rankRequirements > 1) {
+      return new foundry.data.validation.DataModelValidationFailure({
+        message: 'Cannot have more than one rank requirement',
+      });
+    }
+  }
+  static #checkWildCardRequirements(value: Requirement[]) {
+    const wildcard = count(
+      value,
+      (v) => v.type === constants.REQUIREMENT_TYPE.WILDCARD,
+    );
+
+    if (wildcard > 1) {
+      return new foundry.data.validation.DataModelValidationFailure({
+        message: 'Cannot have more than one Wild Card/Extra requirement',
+      });
     }
   }
 }

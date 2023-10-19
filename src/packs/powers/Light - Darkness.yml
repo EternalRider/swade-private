@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Illusionary torch, sunlight, darkness, thick fogs
   favorite: false
+  swid: light-darkness
 img: systems/swade/assets/icons/power.svg
 name: Light / Darkness
 type: power

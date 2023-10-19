@@ -10,16 +10,18 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: agility
-      value: '8'
+      value: 0
       combinator: and
     - type: skill
-      selector: Athletics
-      value: '8'
+      label: Athletics
+      selector: athletics
+      value: 8
       combinator: and
+  swid: acrobat
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

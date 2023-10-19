@@ -7,6 +7,7 @@ system:
   description: See SWADE p.24
   notes: ''
   major: false
+  swid: doubting-thomas
 flags: {}
 img: systems/swade/assets/icons/hindrance.svg
 _id: pmtGG7MrjRzUESCW

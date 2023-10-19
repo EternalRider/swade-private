@@ -23,11 +23,16 @@
 
   font-family: var(--default-font);
 
-  .window-content {
+  .window-content,
+  &.app.sidebar-popout .window-content {
     //sheet background
     background: var(--content-background-image) repeat left top;
     box-shadow: var(--content-shadow);
     color: var(--font-color);
+  }
+
+  .debug * {
+    background-color: rgba(0, 100, 0, 0.1) !important;
   }
 
   input[type],
@@ -92,8 +97,12 @@
   }
 
   button {
+    i {
+      margin-right: 0;
+    }
     &[type='submit'],
-    &.submit {
+    &.submit,
+    &.close {
       margin-top: $medium-spacing;
     }
     cursor: pointer;
@@ -203,7 +212,13 @@
   }
 
   footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
     button {
+      margin-left: 0;
+      margin-right: 0;
       font-weight: 700;
     }
   }

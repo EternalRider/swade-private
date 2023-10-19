@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: riding
 flags: {}
 img: systems/swade/assets/icons/skills/saddle.svg
 _id: eZHUEcNoBgi0h5oi

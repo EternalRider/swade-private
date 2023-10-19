@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Clay figure that grows into a servant, a tattoo that comes to life.
   favorite: false
+  swid: summon-ally
 img: systems/swade/assets/icons/power.svg
 name: Summon Ally
 type: power

@@ -17,6 +17,7 @@ system:
   rank: Novice
   trapping: Hypnotic lights, brief illusions, loud noises.
   favorite: false
+  swid: confusion
 img: systems/swade/assets/icons/power.svg
 name: Confusion
 type: power

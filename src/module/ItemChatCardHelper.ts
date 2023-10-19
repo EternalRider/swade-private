@@ -53,7 +53,7 @@ export default class ItemChatCardHelper {
 
     // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
-    if (actionObj?.type === 'resist') {
+    if (actionObj?.type === constants.ACTION_TYPE.RESIST) {
       // swap the selected token's actor in as the target for the roll
       if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
         ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {
@@ -63,9 +63,12 @@ export default class ItemChatCardHelper {
         return null;
       }
       actor = canvas.tokens?.controlled[0].actor ?? actor;
-    } else if (!(game.user!.isGM || message.isAuthor || actor.isOwner)) {
-      // For non-resist types, don't allow a roll unless the message author is
-      // the user clicking the button.
+    } else if (
+      !actor.isOwner &&
+      !message.isAuthor &&
+      actionObj?.type !== constants.ACTION_TYPE.MACRO
+    ) {
+      // For non-resist types, don't allow a roll unless the message author is the user clicking the button or it's a macro action
       button.disabled = false;
       return null;
     }

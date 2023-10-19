@@ -10,16 +10,18 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
     - type: attribute
       selector: smarts
-      value: '8'
+      value: 8
       combinator: and
     - type: skill
-      selector: Research
-      value: '8'
+      label: Research
+      selector: research
+      value: 8
       combinator: and
+  swid: investigator
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

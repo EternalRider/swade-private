@@ -17,6 +17,7 @@ system:
   rank: Seasoned
   trapping: Touching the object, glowing hands
   favorite: false
+  swid: object-reading
 img: systems/swade/assets/icons/power.svg
 name: Object Reading
 type: power

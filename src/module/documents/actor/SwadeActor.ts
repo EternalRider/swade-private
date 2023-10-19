@@ -200,10 +200,20 @@ export default class SwadeActor extends Actor {
   }
 
   get auras(): Record<string, AuraData> {
-    const auras = (this.getFlag('swade', 'auras') ?? {}) as Record<
-      string,
-      AuraData
-    >;
+    const auras = (this.flags.swade?.auras ?? {}) as Record<string, AuraData>;
+    const specialAuras = ['aura1', 'aura2'];
+    let aura;
+    for (const key in auras) {
+      if (specialAuras.includes(key)) continue;
+      aura = auras[key] ?? {};
+      auras[key] = foundry.utils.mergeObject(
+        aura,
+        AuraPointSource.defaultData,
+        { overwrite: false },
+      );
+    }
+
+    //special case: the user-defined auras
     auras.aura1 = foundry.utils.mergeObject(
       auras.aura1 ?? {},
       AuraPointSource.defaultData,
@@ -218,6 +228,7 @@ export default class SwadeActor extends Actor {
   }
 
   override prepareEmbeddedDocuments() {
+    for (const item of this.items) item.overrides = {};
     for (const effect of this.effects) {
       effect._safePrepareData();
     }
@@ -781,6 +792,31 @@ export default class SwadeActor extends Actor {
   }
 
   /**
+   * Returns an array of items that match a given SWID and optionally an item type
+   * @param swid The SWID of the item(s) which you want to retrieve
+   * @param type Optionally, a type name to restrict the search
+   * @returns an array containing the found items
+   */
+  getItemsBySwid(swid: string, type?: string): SwadeItem[] {
+    const swidFilter = (i: SwadeItem) => i.system.swid === swid;
+    if (!type) return this.items.filter(swidFilter);
+    const itemTypes = this.itemTypes;
+    if (!Object.hasOwn(itemTypes, type))
+      throw new Error(`Type ${type} is invalid!`);
+    return itemTypes[type].filter(swidFilter);
+  }
+
+  /**
+   * Fetch an item that matches a given SWID and optionally an item type
+   * @param swid The SWID of the item(s) which you want to retrieve
+   * @param type Optionally, a type name to restrict the search
+   * @returns The matching item, or undefined if none was found.
+   */
+  getSingleItemBySwid(swid: string, type?: string): SwadeItem | undefined {
+    return this.getItemsBySwid(swid, type)[0];
+  }
+
+  /**
    * Function for shortcut roll in item (@str + 1d6)
    * return something like : {agi: "1d8x+1", sma: "1d6x", spi: "1d6x", str: "1d6x-1", vig: "1d6x"}
    */
@@ -1135,7 +1171,9 @@ export default class SwadeActor extends Actor {
   /** Calculates the Toughness value without armor and returns it */
   calcToughness(): number {
     if (this.system instanceof VehicleData) return 0;
-    let finalToughness = 0;
+    /** base value of all toughness calculations */
+    const toughnessBaseValue = 2;
+
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
 
     //get the base values we need
@@ -1143,7 +1181,7 @@ export default class SwadeActor extends Actor {
     const vigMod: number = this.system.attributes.vigor.die.modifier;
     // const toughMod = this.system.stats.toughness.modifier;
 
-    finalToughness = Math.round(vigor / 2) + 2;
+    let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
     if (vigMod > 0) {
       finalToughness += Math.floor(vigMod / 2);
     }
@@ -1160,7 +1198,6 @@ export default class SwadeActor extends Actor {
         value: size,
       });
     }
-    // finalToughness += toughMod;
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
@@ -1178,22 +1215,21 @@ export default class SwadeActor extends Actor {
 
   calcParry(): number {
     if (this.system instanceof VehicleData) return 0;
+    /** base value of all parry calculations */
+    const parryBaseValue = 2;
+
     let parryTotal = 0;
     const sources: DerivedModifier[] = this.system.stats.parry.sources;
-    const parryBase = game.settings.get('swade', 'parryBaseSkill');
-    const parryBaseSkill = this.itemTypes.skill.find(
-      (i) => i.name === parryBase,
+    const parryBaseSkill = this.getSingleItemBySwid(
+      game.settings.get('swade', 'parryBaseSwid'),
+      'skill',
     );
 
-    let skillDie = 0;
-    let skillMod = 0;
-    if (parryBaseSkill) {
-      skillDie = getProperty(parryBaseSkill.system, 'die.sides') ?? 0;
-      skillMod = getProperty(parryBaseSkill.system, 'die.modifier') ?? 0;
-    }
+    const skillDie = parryBaseSkill?.system.die.sides ?? 0;
+    const skillMod = parryBaseSkill?.system.die.modifier ?? 0;
 
     //base parry calculation
-    parryTotal = skillDie / 2 + 2;
+    parryTotal = Math.round(skillDie / 2) + parryBaseValue;
 
     //add modifier if the skill die is 12
     if (skillDie >= 12) {
@@ -1208,7 +1244,7 @@ export default class SwadeActor extends Actor {
     } else {
       sources.push({
         label: game.i18n.localize('SWADE.BaseParry'),
-        value: 2,
+        value: parryBaseValue,
       });
     }
 

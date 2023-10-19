@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: language
 flags: {}
 img: systems/swade/assets/icons/skills/talk.svg
 _id: DssKSRz65xAEgU11

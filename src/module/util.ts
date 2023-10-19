@@ -4,34 +4,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-
-/**
- * A simple function to allow quick access to an item such as a skill or weapon. Skills are rolled while other items are posted to the chat as a chatcard
- * @param itemName the name of the item that should be called
- */
-export function rollItemMacro(itemName: string) {
-  const speaker = ChatMessage.getSpeaker();
-  let actor: SwadeActor | undefined = undefined;
-  if (speaker.token) actor = game.actors?.tokens[speaker.token];
-  if (!actor && speaker.actor) actor = game.actors?.get(speaker.actor);
-  if (!actor || !actor.isOwner) {
-    return null;
-  }
-  const item = actor.items.getName(itemName);
-  if (!item) {
-    ui.notifications.warn(
-      `Your controlled Actor does not have an item named ${itemName}`,
-    );
-    return null;
-  }
-  //Roll the skill
-  if (item.type === 'skill') {
-    return item.roll();
-  } else {
-    // Show the item
-    return item.show();
-  }
-}
+import { Logger } from './Logger';
 
 /**
  * @internal
@@ -258,6 +231,22 @@ export function mapRange(
  */
 export function count<T>(arr: Array<T>, condition: (e: T) => boolean): number {
   return arr.filter(condition).length;
+}
+
+/** Takes an input and returns the slugged string of it. */
+export function slugify(input: unknown) {
+  const slugged = String(input)
+    .normalize('NFKD') // split accented characters into their base characters and diacritical marks
+    .replace(/[\u0300-\u036f]/g, '') // remove all the accents, which happen to be all in the \u03xx UNICODE block.
+    .toLowerCase() // convert to lowercase
+    .replace(/[^a-z0-9 -]/g, '') // remove non-alphanumeric characters
+    .replace(/\s+/g, '-') // replace spaces with hyphens
+    .replace(/-+/g, '-') // remove consecutive hyphens
+    .replace(/^-+/g, '') //remove leading hyphens
+    .replace(/-+$/g, '') //remove trailing hyphens
+    .trim(); // trim leading or trailing whitespace
+  Logger.debug([input, slugged]);
+  return slugged;
 }
 
 type Ownership = Record<string, number>;

@@ -7,7 +7,7 @@ import { Accordion } from '../style/Accordion';
 
 export default class ActiveEffectWizard extends FormApplication {
   #effect: DeepPartial<BaseActiveEffect.Properties> = {
-    name: SwadeActiveEffect.DEFAULT_NAME,
+    name: SwadeActiveEffect.defaultName,
     icon: 'systems/swade/assets/icons/active-effect.svg',
   };
 
@@ -26,7 +26,7 @@ export default class ActiveEffectWizard extends FormApplication {
       classes: ['swade', 'active-effect-wizard', 'swade-app'],
       scrollY: ['.presets'],
       submitOnClose: false,
-      submitOnChange: true,
+      submitOnChange: false,
       closeOnSubmit: false,
       width: 800,
       height: 800,
@@ -76,6 +76,10 @@ export default class ActiveEffectWizard extends FormApplication {
       .forEach((select) =>
         select.addEventListener('change', this.#onChangeMode.bind(this)),
       );
+
+    html
+      .querySelector<HTMLImageElement>('.icon')
+      ?.addEventListener('click', this.#onClickIcon.bind(this));
   }
 
   override async getData(options?: Partial<ApplicationOptions>) {
@@ -352,6 +356,18 @@ export default class ActiveEffectWizard extends FormApplication {
           states[id] = !currentState;
         });
       });
+  }
+
+  #onClickIcon(_ev: Event) {
+    new FilePicker({
+      current: this.#effect.icon as string,
+      type: 'image',
+      callback: this.#onChangeIcon.bind(this),
+    }).render(true);
+  }
+  #onChangeIcon(path: string, _picker: FilePicker) {
+    this.#effect.icon = path;
+    this.render(true);
   }
 }
 

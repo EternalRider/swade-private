@@ -10,16 +10,19 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
     - type: edge
-      selector: Arcane Background (Weird Science)
+      label: Arcane Background (Weird Science)
+      selector: arcane-background-weird-science
       value: ''
       combinator: and
     - type: skill
-      selector: Weird Science
-      value: '6'
+      label: Weird Science
+      selector: weird-science
+      value: 6
       combinator: and
+  swid: gadgeteer
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

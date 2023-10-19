@@ -92,9 +92,9 @@ export default class SwadeCoreHooks {
         'systemMigrationVersion',
       );
       //TODO Adjust this version every time a migration needs to be triggered
-      const needsMigrationVersion = '3.0.5';
+      const needsMigrationVersion = '3.2.0';
       //Minimal compatible version needed for the migration
-      const compatibleMigrationVersion = '2.0.0';
+      const compatibleMigrationVersion = '3.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
       const needsMigration = foundry.utils.isNewerVersion(
         needsMigrationVersion,
@@ -805,7 +805,7 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
     slot: number,
   ) {
-    if (data.type === 'Item' && data.uuid.startsWith('Actor')) {
+    if (data.type === 'Item' || data.type === 'Attribute') {
       onHotbarDrop(_hotbar, data, slot);
       return false;
     }

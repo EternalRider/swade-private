@@ -12,6 +12,7 @@ system:
     modifier: 0
   wild-die:
     sides: 6
+  swid: weird-science
 flags: {}
 img: systems/swade/assets/icons/skills/raygun.svg
 _id: joZIgLwqqbnd33z1

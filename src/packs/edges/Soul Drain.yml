@@ -10,16 +10,17 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '1'
+      value: 1
       combinator: and
-    - type: edge
-      selector: Arcane Background (Any)
+    - type: other
+      label: Arcane Background (Any)
       value: ''
       combinator: and
-    - type: skill
-      selector: arcane skill
-      value: '10'
+    - type: other
+      label: arcane skill d10+
+      value: ''
       combinator: and
+  swid: soul-drain
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg

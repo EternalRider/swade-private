@@ -10,8 +10,9 @@ system:
   requirements:
     - type: rank
       selector: ''
-      value: '0'
+      value: 0
       combinator: and
+  swid: danger-sense
 sort: 100001
 flags: {}
 img: systems/swade/assets/icons/edge.svg
