@@ -29,8 +29,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed some console errors that could pop up when importing actors with active effects from a compendium. **by @jpmeehan5**
 - The AEGIS/Active Effect Wizard should once again recognize when changes are made. (#976) **by @florad92**
 - Fixed validation issues with system edge compendium. **by @florad92**
-- Fixed an issue that would cause custom auras not to be filled with default values.
-- Deleting Items with grants should no longer display an error in the console.
+- Fixed an issue that would cause custom auras not to be filled with default values. **by @florad92**
+- Deleting Items with grants should no longer display an error in the console. **by @florad92**
 
 ### Changed
 
