@@ -945,6 +945,20 @@ SWADE:
         PP: Artefact magique
       SwadeSettings:
         Title: Paramètres pour SWADE
+      PCInventory:
+        Title: Munitions depuis l'inventaire
+      ReloadNone:
+        Title: Méthode de rechargement - Aucune
+      AmmoNone:
+        Title: Le champ munition
+      ReloadSelf:
+        Title: Méthode de rechargement - Autonome
+      AmmoSettings:
+        Title: Gestion des munitions
+      AmmoManagement:
+        Title: Gestion des munitions
+      CharacterWeapons:
+        Title: Armes du personnage
   Magazine:
     NoneLoaded: Pas de chargeur chargé
     Select: Choisissez un chargeur
@@ -965,6 +979,18 @@ SWADE:
       Hint: Sélectionne quels tokens (par disposition) peuvent voir cette aura. Vous
         pouvez toujours voir toutes les auras d'un token sur lequel vous avez la permission
         d'observateur
+  Requirements:
+    Editor:
+      Label: Libellé
+      Value: Valeur
+      SWID: SWID
+      Header: Éditer les prérequis pour {name}
+      AddHint: Ajouter un nouveau prérequis
+      DeleteHint: Supprimer ce prérequis
+    Combinator: Combinatoire
+    Other: Autre
+    And: et
+    Or: ou
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
