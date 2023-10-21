@@ -477,8 +477,11 @@ SWADE:
     InitCardDeck:
       Name: Jeu de cartes pour l'initiative
     ParryBase:
-      Name: Nom de la compétence de combat
-      Hint: Le nom de la compétence utilisée pour calculer la parade
+      Name: SWID de la compétence de combat
+      Hint: L'identifiant SWID de la compétence avec laquelle calculer la Parade des
+        acteurs. Le SWID est dans l'écran des ajustements de l'objet compétence (en
+        général, le nom de la compétence en minuscule sans accents sans espaces).
+        Voir la documentation du système SWADE pour plus d'informations!
     UseAttributeShorts:
       Name: Utiliser des noms d'attributs courts
       Hint: Activez cette option si vous voulez des noms d'attributs courts sur les
@@ -623,8 +626,8 @@ SWADE:
       Hint: Cocher cette option activera la règle d'univers Chance insolente
     VehicleSkills:
       Name: Compétences de manœuvre
-      Hint: Saisissez une liste de compétences séparées par une virgule pour définir
-        les compétences de manœuvre pour chaque véhicule
+      Hint: Saisissez la liste de compétences, séparées par une virgule, qui peut
+        servir à diriger un véhicule dans votre monde
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
@@ -915,8 +918,8 @@ SWADE:
     Label: Utilisation d'une ressource
   Auras:
     WallConstraints:
-      Hint: Cela défini si l'aura est bloquée par les murs qui bloquent la lumière
-        ou si elle peut passer à travers eux
+      Hint: Cela défini si l'aura est bloquée par les murs qui ne laissent pas passer
+        la lumière ou si elle les ignore
       Label: Limité par les murs
     TabHeader: Gestionnaire d'auras
     Enabled: Activé
@@ -928,13 +931,13 @@ SWADE:
   TOURS:
     AMMUNITION:
       GameSettings:
-        Title: Paramètres du jeu
+        Title: Configuration des options
         Content: En premier, la gestion des munitions doit être activée dans les paramètres
           du système de jeu.
       Title: Munitions
-      Description: Ce guide va vous montrer comment utilisé le suivi des munitions
-        automatique
-      Actor: Guide de gestion des munitions pour un personnage
+      Description: Cette présentation vous montre comment utiliser la gestion automatique
+        des munitions
+      Actor: Capitaine Démo des Munitions
       Items:
         NONE: Arc long
         SELF: Couteau de jet
@@ -945,20 +948,106 @@ SWADE:
         PP: Artefact magique
       SwadeSettings:
         Title: Paramètres pour SWADE
+        Content: La gestion des munitions est située dans la configuration des règles
+          du système <em>Savage Worlds Adventure Edition</em>
       PCInventory:
         Title: Munitions depuis l'inventaire
+        Content: Ces trois paramètres indiquent si des objets de l'inventaire sont
+          consommés quand l'arme est rechargée, pour les personnages joueurs, les
+          personnages non-joueurs et les véhicules. Si la gestion des munitions est
+          activée mais cette coche, munition de l'inventaire, n'est pas cochée, chaque
+          tir consomme des coups de l'arme et l'arme peut être rechargée librement.
+          Cela permet une gestion façon jeu d'arcade, où l'importance est portée sur
+          l'action de recharger, mais on ignore le suivi des munitions restantes sur
+          le long terme.
       ReloadNone:
         Title: Méthode de rechargement - Aucune
+        Content: Les armes sans Rechargement ignorent totalement leur compteur de
+          coups. Cette méthode est adaptée aux armes qui sont alimentée par un objet
+          externe au moment du tir, comme un arc qui prend ses flèches d'un carquois,
+          ou une mitrailleuse Gatling alimentée par un tambour.
       AmmoNone:
         Title: Le champ munition
+        Content: On indique ici une objet de type Équipement (e.g. flèche) ou Consommable
+          (e.g. chargeur de balles) parmi ceux de l'inventaire du personnage. Dans
+          le cas d'un objet d'équipement, chaque coup réduit la quantité de l'objet
+          de un. Dans le cas d'un consommable, chaque coup réduit ses charges de un,
+          la quantité correspondant à un ensemble complet de charges. Ce champ doit
+          porter le nom <em>exact</em> de l'objet à consommer.
       ReloadSelf:
-        Title: Méthode de rechargement - Autonome
+        Title: Méthode de rechargement - Propre
+        Content: Les coups portés par les armes en Rechargement Propre réduisent la
+          quantité de l'arme elle-même. Cette méthode est adaptée aux armes de jet,
+          ou toute arme similaire qui se consomme elle-même.
       AmmoSettings:
         Title: Gestion des munitions
+        Content: Ces paramètres définissent si l'utilisation d'armes à distance consomme
+          des munitions.
       AmmoManagement:
         Title: Gestion des munitions
+        Content: Cette option définit si une arme à distance utilise la gestion des
+          munitions ou pas, que ce soit simplement en comptant le nombre de coups
+          restants au niveau de l'arme, ou en allant jusqu'à gérer des munitions dans
+          l'inventaire.
       CharacterWeapons:
         Title: Armes du personnage
+        Content: Les armes d'un personnage sont dans l'onglet inventaire.
+      AmmoMagazine:
+        Content: Un magasin DOIT forcément être un consommable de sous-type Magasin
+          pour que cette méthode fonctionne correctement. De plus, le nombre de charges
+          du consommable doit être égal au nombre de coups de l'arme.
+        Title: Le champ munition
+      AmmoBattery:
+        Title: Le champ munition
+        Content: L'objet munition DOIT être un consommable de sous-type Batterie.
+          De plus, le nombre de charges maximales du consommable doit être 100.
+      AmmoSelf:
+        Title: Le champ munition
+        Content: Le champ munition est ignoré pour les armes en Rechargement propre
+      ReloadSingle:
+        Title: Méthode de rechargement — Unitaire
+        Content: Les armes en Rechargement unitaire recharge un seul coup à chaque
+          utilisation du bouton Rechargement. Cette méthode est adaptée aux armes
+          comme les mousquets, les arbalètes ou autres armes qui ne peuvent garder
+          qu'une seule munition à la fois.
+      AmmoFull:
+        Title: Le champ munition
+        Content: Cette méthode fonctionne comme les armes sans chargement, mais la
+          quantité, ou charges dans le cas de consommable, est réduite lorsque l'arme
+          est rechargée, et chaque tir avec l'arme réduit le compteur de coups de
+          l'arme.
+      AmmoSingle:
+        Title: Le champ munition
+        Content: Ce champ fonctionne comme pour les armes sans rechargement. Toutefois,
+          la quantité de la munition, ou les charges du consommable, est réduite en
+          utilisant l'action Rechargement, plutôt que lorsque l'on tire avec l'arme.
+      ReloadFull:
+        Title: Méthode de rechargement — Complète
+        Content: Les armes en rechargement complet recharge la totalité de leur compteur
+          de coups en une seule action de rechargement. Cette méthode est une version
+          simplifiée de la méthode par magasin, ou pour les armes qui n'ont pas une
+          magasin détachable tel qu'un canon avec un réservoir liquide.
+      ReloadMagazine:
+        Content: Ces armes à rechargement par magasin utilisent des chargeurs détachable
+          qui peuvent être retirés et échangés à tout moment, en faisant le suivi
+          du nombre de munitions restantes par magasin.
+        Title: Méthode de rechargement — Magasin
+      ReloadBattery:
+        Title: Méthode de rechargement — Batterie
+        Content: Ces armes fonctionnent comme avec des magasins, mais chaque coup
+          tiré épuise une pourcentage de la batterie.
+      ReloadPP:
+        Title: Méthode de rechargement — Points de pouvoir
+        Content: Ces armes ne consomment pas des munitions physiques mais épuisent
+          les Points de pouvoir de tireur, cas qui se présente notamment avec <em>Rifts®
+          pour Savage Worlds</em>
+      AmmoPP:
+        Title: Le champ munition
+        Content: Plutôt que d'indiquer le nom d'un objet, il faut indiquer ici un
+          type d'Arcanes valide pour ce personnage, comme general, magie, miracles
+          ou psioniques
+    TWEAKS:
+      Title: Ajustements
   Magazine:
     NoneLoaded: Pas de chargeur chargé
     Select: Choisissez un chargeur
@@ -987,7 +1076,7 @@ SWADE:
       Header: Éditer les prérequis pour {name}
       AddHint: Ajouter un nouveau prérequis
       DeleteHint: Supprimer ce prérequis
-    Combinator: Combinatoire
+    Combinator: Liaison entre prérequis
     Other: Autre
     And: et
     Or: ou
