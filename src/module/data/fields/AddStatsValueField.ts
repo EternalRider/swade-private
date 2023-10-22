@@ -1,7 +1,7 @@
 import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 
 export class AddStatsValueField extends foundry.data.fields.DataField {
-  constructor(options: DataFieldOptions.Any) {
+  constructor(options: DataFieldOptions.Any = {}) {
     super(options as DataField.DefaultOptions);
   }
 

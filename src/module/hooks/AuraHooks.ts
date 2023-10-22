@@ -30,14 +30,14 @@ export function registerAuraHooks() {
 
   Hooks.on('drawToken', (token: SwadeToken) => {
     addAuras(token);
-    updateAuras(token);
+    updateAurasForToken(token);
   });
 
   Hooks.on('updateToken', (doc: TokenDocument, changes: any) => {
     if (!doc.rendered) return;
     const keys = ['x', 'y', 'disposition'];
     if (keys.some((key) => foundry.utils.hasProperty(changes, key))) {
-      updateAuras(doc.object as SwadeToken);
+      updateAurasForToken(doc.object as SwadeToken);
     }
   });
 
@@ -62,12 +62,13 @@ export function registerAuraHooks() {
   Hooks.on('hoverToken', () => updateAllAuras());
   Hooks.on('refreshToken', (token: SwadeToken) => {
     game.settings.get('core', 'visionAnimation')
-      ? updateAuras(token)
+      ? updateAurasForToken(token)
       : refreshAuras();
   });
 }
 
 function addAuras(token: SwadeToken) {
+  if (!token.actor) return missingActorMsg(token);
   for (const id in token.actor.auras) {
     if (token.auras.has(id)) continue;
     token.auras.set(id, new AuraPointSource({ object: token, id }));
@@ -76,19 +77,23 @@ function addAuras(token: SwadeToken) {
 
 function updateAllAuras() {
   for (const token of canvas.tokens.placeables) {
-    updateAuras(token);
+    updateAurasForToken(token);
   }
 }
 
-function updateAuras(token: SwadeToken) {
+function updateAurasForToken(token: SwadeToken) {
+  if (!token.actor) {
+    Array.from(token.auras.entries()).forEach(([id, aura]) => {
+      removeAura(token, aura, id);
+    });
+    return missingActorMsg(token);
+  }
   const origin = token.getMovementAdjustedPoint(token.center);
+  const auraData = token.actor.auras;
   for (const [id, aura] of token.auras.entries()) {
-    const auras = token.actor.auras;
-    const data = auras[id];
+    const data = auraData[id];
     if (!data) {
-      CONFIG.Canvas.auras.collection.delete(aura.sourceId);
-      aura.destroy();
-      token.auras.delete(id);
+      removeAura(token, aura, id);
       continue;
     }
     const { externalRadius } = token;
@@ -114,4 +119,14 @@ function refreshAuras() {
     if (!aura.active) continue;
     canvas.grid?.auras?.addChild(aura.graphics);
   }
+}
+
+function removeAura(token: SwadeToken, aura: AuraPointSource, id: string) {
+  CONFIG.Canvas.auras.collection.delete(aura.sourceId);
+  aura.destroy();
+  token.auras.delete(id);
+}
+
+function missingActorMsg(token: SwadeToken) {
+  console.warn(`Token ${token.name} (${token.document.uuid}) has no actor!`);
 }
