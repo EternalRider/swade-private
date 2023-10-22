@@ -81,3 +81,16 @@ The following flags enable specialized behavior.
 - `flags.swade.ambidextrous`: Allows an actor to add any parry bonus from off-hand weapons as well as blocks the automatic Off Hand penalty.
 - `flags.swade.hardy`: Prevents a second shaken result from the Apply Damage workflow from counting as a wound.
 - `flags.swade.ignoreBleedOut`: Prevents the application of the "Bleeding Out" status effect on a failed vigor roll upon incapacitation.
+
+### Auras
+
+Every aspect of an aura can be configured by an Active Effect. Generally, the makeup of an aura key is `flags.swade.auras`, followed by user-chosen ID for the aura (such as `command` or `courage`) and then the property that should be affected.
+
+You can set up a complete aura this way too. Values that are not supplied by the Active Effect are filled with default values.
+
+- `flags.swade.auras.<aura id>.enabled`: Whether the aura is enabled or not. Default: `false`
+- `flags.swade.auras.<aura id>.walls`: Whether the aura constrained by walls or not. Default: `false`
+- `flags.swade.auras.<aura id>.color`: The color of the aura. Default: the player's color
+- `flags.swade.auras.<aura id>.color`: The transparency of the color. Goes from 0 (completely see-through) to 1 (completely opaque). Default: `0.25`
+- `flags.swade.auras.<aura id>.radius`: The radius of the aura past the border of the token. Default: `5`
+- `flags.swade.auras.<aura id>.visibleTo`: Who is this aura visible to? The available options are Hostile (-1), Neutral (0), Friendly (1). Owners can always see the tokens. Default: empty
