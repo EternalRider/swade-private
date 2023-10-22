@@ -12,85 +12,100 @@
     </div>
     <div class="header-fields">
       <div class="charline">
-        <h1 class="charname">
-          <input
-            name="name"
-            type="text"
-            value="{{actor.name}}"
-            placeholder="{{localize 'SWADE.Name'}}"
-          />
-        </h1>
+        <input
+          class="charname"
+          name="name"
+          type="text"
+          value="{{actor.name}}"
+          placeholder="{{localize 'SWADE.Name'}}"
+        />
       </div>
-      <section class="header-stats flexrow">
-        <div class="form-group">
-          <label for="size">{{localize "SWADE.Size"}}</label>
-          <input
-            name="system.size"
-            id="size"
-            type="text"
-            value="{{actor.system.size}}"
-            data-dtype="Number"
-            placeholder="0"
-          />
+      <section class="vitals flexrow">
+        <div class="vitals-container">
+          <strong>{{localize "SWADE.Wounds"}}</strong>
+          <div class="counter flexrow">
+            <input
+              type="number"
+              name="system.wounds.value"
+              value="{{actor.system.wounds.value}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+            <span class="seperator">/</span>
+            <input
+              type="number"
+              name="system.wounds.max"
+              value="{{actor.system.wounds.max}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="scale">{{localize "SWADE.Scale"}}</label>
-          <input
-            name="system.scale"
-            id="scale"
-            type="text"
-            value="{{actor.system.scale}}"
-            data-dtype="Number"
-            placeholder="0"
-          />
+        <div class="vitals-container">
+          <strong>{{localize "SWADE.RequiredCrew"}}</strong>
+          <div class="counter flexrow">
+            <input
+              type="number"
+              name="system.crew.required.value"
+              value="{{actor.system.crew.required.value}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+            <span class="seperator">/</span>
+            <input
+              type="number"
+              name="system.crew.required.max"
+              value="{{actor.system.crew.required.max}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+          </div>
         </div>
-        <div class="form-group">
-          <label for="handling">{{localize "SWADE.Handling"}}</label>
-          <input
-            id="handling"
-            name="system.handling"
-            type="text"
-            value="{{actor.system.handling}}"
-            data-dtype="Number"
-            placeholder="{{localize 'SWADE.Handling'}}"
-          />
+         <div class="vitals-container">
+          <strong>{{localize "SWADE.Passengers"}}</strong>
+          <div class="counter flexrow">
+            <input
+              type="number"
+              name="system.crew.optional.value"
+              value="{{actor.system.crew.optional.value}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+            <span class="seperator">/</span>
+            <input
+              type="number"
+              name="system.crew.optional.max"
+              value="{{actor.system.crew.optional.max}}"
+              data-dtype="Number"
+              class="vitals-input"
+            />
+          </div>
         </div>
-      </section>
-      <section class="header-stats flexrow">
-        <div class="form-group">
-          <label for="topspeed" style="white-space: nowrap"
-            >{{localize "SWADE.Topspeed"}}</label
-          >
-          <input
-            name="system.topspeed"
-            id="topspeed"
-            type="text"
-            value="{{actor.system.topspeed}}"
-            data-dtype="String"
-            placeholder="0"
-          />
-        </div>
-        <div class="form-group">
-          <label for="toughness">{{localize "SWADE.Tough"}}</label>
-          <input
-            name="system.toughness.total"
-            id="toughness"
-            type="text"
-            value="{{actor.system.toughness.total}}"
-            data-dtype="String"
-            placeholder="0"
-          />
-        </div>
-        <div class="form-group">
-          <label for="armor">{{localize "SWADE.Armor"}}</label>
-          <input
-            name="system.toughness.armor"
-            id="armor"
-            type="text"
-            value="{{actor.system.toughness.armor}}"
-            data-dtype="String"
-            placeholder="0"
-          />
+        <div class="status-container">
+          <div class="status-item">
+            <label class="check-container"
+              >{{localize "SWADE.OutOfControl"}}
+              <input
+                type="checkbox"
+                name="system.status.isOutOfControl"
+                data-dtype="Boolean"
+                {{checked actor.system.status.isOutOfControl}}
+              />
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="status-item">
+            <label class="check-container"
+              >{{localize "SWADE.Wrecked"}}
+              <input
+                type="checkbox"
+                name="system.status.isWrecked"
+                data-dtype="Boolean"
+                {{checked actor.system.status.isWrecked}}
+              />
+              <span class="checkmark"></span>
+            </label>
+          </div>
         </div>
       </section>
       <section class="header-stats flexrow">
@@ -104,36 +119,13 @@
             placeholder="{{localize 'SWADE.Class'}}"
           />
         </div>
-        <div class="status-item">
-          <label class="check-container"
-            >{{localize "SWADE.OutOfControl"}}
-            <input
-              type="checkbox"
-              name="system.status.isOutOfControl"
-              data-dtype="Boolean"
-              {{checked actor.system.status.isOutOfControl}}
-            />
-            <span class="checkmark"></span>
-          </label>
-        </div>
-        <div class="status-item">
-          <label class="check-container"
-            >{{localize "SWADE.Wrecked"}}
-            <input
-              type="checkbox"
-              name="system.status.isWrecked"
-              data-dtype="Boolean"
-              {{checked actor.system.status.isWrecked}}
-            />
-            <span class="checkmark"></span>
-          </label>
-        </div>
       </section>
     </div>
   </header>
 
   <nav class="flexrow tabs" data-group="primary">
     <a class="item" data-tab="summary">{{localize "SWADE.Summary"}}</a>
+    <a class="item" data-tab="crew">{{localize "SWADE.Crew"}}</a>
     <a class="item" data-tab="cargo">{{localize "SWADE.Cargo"}}</a>
     <a class="item" data-tab="description">{{localize "SWADE.Desc"}}</a>
   </nav>
@@ -143,6 +135,10 @@
     {{!-- Summary Tab --}}
     <div class="tab active" data-group="primary" data-tab="summary">
       {{> "systems/swade/templates/actors/vehicle-partials/summary-tab.hbs"}}
+    </div>
+
+    <div class="tab active" data-group="primary" data-tab="crew">
+      {{> "systems/swade/templates/actors/vehicle-partials/crew-tab.hbs"}}
     </div>
 
     {{!-- Inventory Tab --}}

@@ -379,7 +379,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         break;
     }
 
-    const targetPropertyPath = `system.stats.${targetProperty}`;
+    const targetPropertyPath =
+      this.actor.type === 'vehicle'
+        ? `system.${targetProperty}`
+        : `system.stats.${targetProperty}`;
     const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
 
     const title = `${game.i18n.localize('SWADE.Ed')} ${

@@ -4,9 +4,11 @@
       <a class='item' data-group='primary' data-tab='traits'>
         {{localize 'SWADE.Summary'}}
       </a>
-      <a class='item' data-group='primary' data-tab='additional-stats'>
-        {{localize 'SWADE.AddStats'}}
-      </a>
+      {{#if hasSettingFields}}
+        <a class='item' data-group='primary' data-tab='additional-stats'>
+          {{localize 'SWADE.AddStats'}}
+        </a>
+      {{/if}}
       <a class='item' data-group='primary' data-tab='auras'>
         {{localize 'SWADE.Auras.TabHeader'}}
       </a>
@@ -199,16 +201,18 @@
                 />
               </span>
             </div>
-            <div class='form-group'>
-              <label>{{localize 'SWADE.MaxMods'}}</label>
-              <span class='form-fields'>
-                <input
-                  name='system.maxMods'
-                  type='number'
-                  value='{{doc.system.maxMods}}'
-                />
-              </span>
-            </div>
+            {{#if hasModSlots}}
+              <div class='form-group'>
+                <label>{{localize 'SWADE.MaxMods'}}</label>
+                <span class='form-fields'>
+                  <input
+                    name='system.maxMods'
+                    type='number'
+                    value='{{doc.system.maxMods}}'
+                  />
+                </span>
+              </div>
+            {{/if}}
           {{/if}}
         </section>
         <!--Initiative-->
@@ -301,38 +305,41 @@
         {{/unless}}
       {{/if}}
     </section>
-    <section
-      class='tab {{itemTabActive}}'
-      data-group='primary'
-      data-tab='additional-stats'
-    >
-      {{#if isItem}}<h2>{{localize 'SWADE.AddStats'}}</h2>{{/if}}
-      <header class='form-group flexrow additionalStats-header'>
-        <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
-        <div class='centered'>
-          {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
-        </div>
-        <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
-      </header>
-      {{#each settingFields as |attr key|}}
-        <div class='flexrow'>
-          <div style='text-align: left'>
-            <label for='{{doc.id}}-{{key}}-useField'>{{attr.label}}</label>
-          </div>
+
+    {{#if hasSettingFields}}
+      <section
+        class='tab {{itemTabActive}}'
+        data-group='primary'
+        data-tab='additional-stats'
+      >
+        {{#if isItem}}<h2>{{localize 'SWADE.AddStats'}}</h2>{{/if}}
+        <header class='form-group flexrow additionalStats-header'>
+          <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
           <div class='centered'>
-            <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+            {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
           </div>
-          <div class='centered'>
-            <input
-              type='checkbox'
-              name='system.additionalStats.{{key}}.useField'
-              id='{{doc.id}}-{{key}}-useField'
-              {{checked attr.useField}}
-            />
+          <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
+        </header>
+        {{#each settingFields as |attr key|}}
+          <div class='flexrow'>
+            <div style='text-align: left'>
+              <label for='{{doc.id}}-{{key}}-useField'>{{attr.label}}</label>
+            </div>
+            <div class='centered'>
+              <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+            </div>
+            <div class='centered'>
+              <input
+                type='checkbox'
+                name='system.additionalStats.{{key}}.useField'
+                id='{{doc.id}}-{{key}}-useField'
+                {{checked attr.useField}}
+              />
+            </div>
           </div>
-        </div>
-      {{/each}}
-    </section>
+        {{/each}}
+      </section>
+    {{/if}}
     <section class='tab' data-group='primary' data-tab='auras'>
       <!-- User Defined Aura 1-->
       <h3>{{localize 'SWADE.Auras.UserAura1'}}</h3>

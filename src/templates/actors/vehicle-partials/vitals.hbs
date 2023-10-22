@@ -1,86 +1,58 @@
-<section class='driver-box'>
-  <div class='driver-title'>
-    <strong>{{localize 'SWADE.Operator'}}</strong>
-    <a class='reset-driver'><i class='fas fa-trash'></i></a>
-  </div>
-  <div id='driverImageContainer'>
-    <img src='{{driver.img}}' alt='{{driver.name}}' class='driver-img' />
-  </div>
-</section>
-<section class='vitals flexrow'>
-  <div class='vitals-container'>
-    <div class='flexcol'>
-      <div class='vital-name'>{{localize 'SWADE.Wounds'}}</div>
-      <span class='flexrow'>
+<section class='flexrow'>
+  <div class='attributes secondary'>
+    <header class='header-field'>
+      <span>{{localize 'SWADE.Derived'}}</span>
+    </header>
+    <div class='flexrow attributes-list'>
+      <div class='attribute flex2'>
+        <div class='attribute-label'>{{localize 'SWADE.Size'}}</div>
         <input
-          type='number'
-          value='{{actor.system.wounds.value}}'
-          name='system.wounds.value'
+          name='system.size'
+          type='text'
+          value='{{actor.system.size}}'
           data-dtype='Number'
-          class='wound-input'
-          maxlength='4'
-          size='4'
-          class='vitals-value'
         />
-        <span class='seperator'>/</span>
+      </div>
+      <div class='attribute flex2'>
+        <div class='attribute-label'>{{localize 'SWADE.Handling'}}</div>
         <input
-          type='number'
-          value='{{actor.system.wounds.max}}'
-          name='system.wounds.max'
+          id='handling'
+          name='system.handling'
+          type='text'
+          value='{{actor.system.handling}}'
           data-dtype='Number'
-          class='wound-input'
-          maxlength='4'
-          size='4'
-          class='vitals-value'
-          disabled
+          placeholder='{{localize "SWADE.Handling"}}'
         />
-      </span>
-    </div>
-    <button type='button' id='maneuverCheck'>
-      {{localize 'SWADE.ManCheck'}}
-    </button>
-    {{#if settingrules.modSlots}}
-      <div id='modBox'>
-        <div class='bar-container'>
-          <span class='text'>{{mods.used}}/{{actor.system.maxMods}}
-            {{localize 'SWADE.Mods'}}</span>
-          <div class='bar' style='width: {{mods.percentage}}%;'></div>
+      </div>
+      <div class='attribute flex2'>
+        <div class='attribute-label'>{{localize 'SWADE.Topspeed'}}</div>
+        <div class='toughness-block'>
+          <input
+            name='system.topspeed'
+            id='topspeed'
+            type='text'
+            value='{{actor.system.topspeed}}'
+            data-dtype='String'
+            placeholder='0'
+          />
         </div>
       </div>
-    {{/if}}
-  </div>
-</section>
-<section id='crew'>
-  <label>{{localize 'SWADE.Crew'}}</label>
-  <div class='crew-input'>
-    <input
-      type='text'
-      value='{{actor.system.crew.required.value}}'
-      data-dtype='Number'
-      name='system.crew.required.value'
-    />
-    <span>/</span>
-    <input
-      type='text'
-      value='{{actor.system.crew.required.max}}'
-      data-dtype='Number'
-      name='system.crew.required.max'
-    />
-  </div>
-  <label>{{localize 'SWADE.Passengers'}}</label>
-  <div class='crew-input'>
-    <input
-      type='text'
-      value='{{actor.system.crew.optional.value}}'
-      data-dtype='Number'
-      name='system.crew.optional.value'
-    />
-    <span>/</span>
-    <input
-      type='text'
-      value='{{actor.system.crew.optional.max}}'
-      data-dtype='Number'
-      name='system.crew.optional.max'
-    />
+      <div class='attribute flex3'>
+        <div class='attribute-label'>{{localize 'SWADE.Tough'}}</div>
+        <div class='toughness-block'>
+          <input
+            name='system.toughness.total'
+            type='text'
+            value='{{actor.system.toughness.total}}'
+            placeholder='{{localize "SWADE.Tough"}}'
+            data-dtype='String'
+            placeholder='0'
+          />
+          <div class='armor-value' data-target='armor'>
+            {{actor.system.toughness.armor}}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

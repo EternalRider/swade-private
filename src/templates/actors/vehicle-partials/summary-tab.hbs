@@ -1,10 +1,9 @@
-<section class="flexrow" id="driver-bar">
-  {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
-</section>
 <div class="flexrow">
   {{!-- Left panel --}}
   <div class="gear">
-    <section>{{> "systems/swade/templates/setting-fields.hbs"}}</section>
+    {{#if hasAdditionalStatsFields}}
+      <section>{{> "systems/swade/templates/setting-fields.hbs"}}</section>
+    {{/if}}
     <section>
       <header class="header-field flexrow">
         <div>{{ localize "SWADE.Effects" }}</div>
@@ -51,11 +50,42 @@
           </ol>
         </span>
       </section>
+            <section>
+        <header class="header-field flexrow">
+          <div>
+            <span>{{localize "SWADE.SpecialAbility"}}</span>
+          </div>
+          <div class="header-field-add">
+            <a class="item-create" data-type="ability"
+              ><i class="fa fa-plus"></i
+            ></a>
+          </div>
+        </header>
+        <span class="quickaccess-list">
+          <ol class="gear-list items-list">
+            {{#each itemsByType.ability}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/each}}
+          </ol>
+        </span>
+      </section>
     {{/if}}
   </div>
   {{!-- Right panel --}}
   <div class="gear">
+    <section class="flexrow" id="driver-bar">
+      {{> "systems/swade/templates/actors/vehicle-partials/vitals.hbs"}}
+    </section>
     <section>
+      {{#if settingrules.modSlots}}
+        <div id='modBox'>
+          <div class='bar-container'>
+            <span class='text'>{{mods.used}}/{{actor.system.maxMods}}
+              {{localize 'SWADE.Mods'}}</span>
+            <div class='bar' style='width: {{mods.percentage}}%;'></div>
+          </div>
+        </div>
+      {{/if}}
       <header class="header-field flexrow">
         <div>
           <span>{{localize "SWADE.Mods"}}</span>
@@ -68,8 +98,8 @@
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
             {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}} 
-            {{/if}} 
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+            {{/if}}
           {{/each}}
         </ol>
       </span>
