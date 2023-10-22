@@ -381,6 +381,12 @@ export default class SwadeActor extends Actor {
     options: IRollOptions = { rof: 1 },
     tempSkill?: SwadeItem,
   ): Promise<TraitRoll | null> {
+    if (this.system instanceof VehicleData) {
+      Logger.error('Only Extras and Wildcards can roll skills!', {
+        toast: true,
+      });
+      return null;
+    }
     let skill: SwadeItem | undefined;
     skill = this.items.find((i) => i.id == skillId);
     if (tempSkill) {
@@ -823,12 +829,12 @@ export default class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    const out: Record<string, any> = {
+    const out: Record<string, number | string> = {
       wounds: this.system.wounds.value || 0,
     };
 
     //return early if the actor is a vehicle
-    if (this.type instanceof VehicleData) {
+    if (this.system instanceof VehicleData) {
       out.topspeed = this.system.topspeed || 0;
       return out;
     }

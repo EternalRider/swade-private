@@ -1,5 +1,5 @@
-import { makeAdditionalStatsSchema } from '../shared';
 import { DerivedModifier } from '../../../interfaces/additional.interface';
+import { makeAdditionalStatsSchema } from '../shared';
 
 export interface VehicleData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -66,6 +66,7 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
     //setup the global modifier container object
     this.stats = {
       globalMods: {
+        attack: new Array<DerivedModifier>(),
         damage: new Array<DerivedModifier>(),
         ap: new Array<DerivedModifier>(),
       },

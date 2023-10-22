@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.2
+
+### Added
+
+- Added documentation on how to use Auras with Active Effects. **by @florad92**
+
+### Fixed
+
+- Auras should no longer throw errors when trying render an aura for a token without actors. (#979) **by @florad92**
+- Vehicle actors should no longer throw uncaught errors when gathering roll data. (#978) **by @florad92**
+
 ## 3.2.1
 
 ### Fixed
