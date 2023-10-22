@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.0
+
+### Changed
+
+- The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
+
 ## 3.2.2
 
 ### Added
