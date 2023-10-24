@@ -69,12 +69,14 @@ export default class SwadeDocumentTweaks extends FormApplication<
     const data = {
       doc: this.object,
       settingFields: settingFields,
+      hasSettingFields: !foundry.utils.isEmpty(settingFields),
       itemTabActive: this.object instanceof SwadeItem ? 'active' : '',
       isItem: this.object instanceof SwadeItem,
       isActor: this.object instanceof SwadeActor,
       isCharacter: this.object.type === 'character',
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
+      hasModSlots: game.settings.get('swade', 'vehicleMods'),
       advanceTypes: this.#getAdvanceTypes(),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.gridUnits,

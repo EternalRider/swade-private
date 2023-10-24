@@ -116,11 +116,13 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  margin-top: $small-spacing;
   li {
     border-bottom: $decorative-line;
     padding-bottom: $small-spacing;
     margin-bottom: $small-spacing;
+  }
+  li:first-child {
+    margin-top: $small-spacing;
   }
   .effect-icon {
     flex: 0 0 24px;

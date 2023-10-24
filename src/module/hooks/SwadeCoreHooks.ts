@@ -884,7 +884,9 @@ export default class SwadeCoreHooks {
   ) {
     if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
-      if (activeTab === 'summary') {
+      if (activeTab === 'crew') {
+        const droppedActor = await fromUuid(data.uuid);
+        if (droppedActor.type === 'vehicle') return;
         await actor.update({ 'system.driver.id': data.uuid });
       }
     }
