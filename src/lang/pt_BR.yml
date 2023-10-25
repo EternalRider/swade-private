@@ -57,8 +57,8 @@ SWADE:
   ArchetypeAbilities: Habilidades de Arquétipo
   About: Sobre
   EdgesHindrances: Vant & Comp
-  Crew: Tripulação Requerida
-  Passengers: Passageiros Opcionais
+  Crew: Tripulação
+  Passengers: Passageiros
   String: Texto
   Number: Número
   Checkbox: Caixa de seleção
@@ -1091,6 +1091,7 @@ SWADE:
     Combinator: Combinador
     And: e
     Or: ou
+    Other: Outro
   SWID:
     Short: SWID
     Regenerate: Regenerar ID do Savage Worlds
@@ -1099,6 +1100,7 @@ SWADE:
     ChangeWarning2: Alterar a ID do Savage Worlds de um item pode quebrar as referências
       ao item! Proceda com cautela e somente se tiver certeza.
     ChangeWarning3: Você quer continuar?
+  RequiredCrew: Tripulação Requerida
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
