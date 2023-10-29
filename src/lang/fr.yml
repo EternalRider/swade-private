@@ -162,7 +162,7 @@ SWADE:
   ImprovedLevelHeaded: Sang-froid
   AutoCalc: Calculs automatiques
   InclArmor: Calcule automatiquement la Résistance, armure incluse
-  Label: Label
+  Label: Libellé
   HasMaxValue: A une valeur max.
   Enabled: Activé
   Currency: Monnaie
@@ -434,7 +434,7 @@ SWADE:
     Delete: Supprimer la progression
     Planned: Planifié
     Modes:
-      Legacy: Normal
+      Legacy: Libre
       Expanded: Étendu
     Types:
       Edge: Nouvel atout
@@ -634,9 +634,9 @@ SWADE:
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
-      Title: Enlever l'état Secoué de {name}
+      Title: Annuler l'état Secoué de {name}
       Flavor: Jet d'Âme pour supprimer l'état Secoué
-      UnshakeModifier: Modificateur pour enlever l'état Secoué
+      UnshakeModifier: Modificateur pour annuler l'état Secoué
       Question: Que voulez-vous faire ?
       Success: Vous n'êtes plus Secoué
     Stunned:
@@ -689,8 +689,8 @@ SWADE:
     n'a pas encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
   AdditionalStats:
     SelectHint: Entrezune liste d'options, séparés par une virgule
-    Key: Clé de statistique
-    Label: Nom
+    Key: Clé de la caractéristique
+    Label: Libellé
     Type: Type
     HasMaxValue: A une valeur maximale
     Current: Valeur actuelle {stat}
@@ -741,7 +741,7 @@ SWADE:
   OtherStats: Autres stats
   Resist: Resister
   ResistRolls: Jet de résistance
-  Selection: Sélection
+  Selection: Choix
   TOCSettings:
     Label: Ouvrir les paramètres des Compendiums
     Hint: Configurer l'application des compendiums
@@ -1051,6 +1051,117 @@ SWADE:
           ou psioniques
     TWEAKS:
       Title: Ajustements
+      Actor: Capitaine Démo des Ajustements
+      AccessTweaks:
+        Title: Accès aux Ajustements
+        Content: Le menu Ajustements est placé dans la barre de titre de la feuille
+          de personnage et offre du paramétrage supplémentaire pour le personnage
+      TraitTweaks:
+        Title: Ajustement des caractéristiques
+        Content: Cet onglet propose un large éventail de champ supplémentaires à paramétrer
+          pour le personnage
+      Description: En apprendre plus à propos des options du menu Ajustements des
+        feuilles de personnage
+      Unshake:
+        Title: Annuler Secoué
+        Content: Ajoute un bonus (ou un malus) au jet pour annuler l'état Secoué qui
+          est proposé automatiquement au début du tour du personnage.
+      Soak:
+        Title: Modificateur d'Encaissement
+        Content: Ajoute un bonus (ou un malus) au jet d'Encaissement qui est proposé
+          suite au bouton Appliquer les dégâts d'un message de tchat.
+      Initiative:
+        Title: Modificateurs d'initiative
+        Content: Permet la gestion automatique de certains effets liés à la l'initiative
+          issus du livre de base (comme l'Atout Vif ou le Handicap Hésitant).
+      AutoCalc:
+        Content: Permet de choisir entre la saisie manuelle des caractéristiques dérivées
+          du personnage ou leur calcul automatique à partir de ses Traits et de son
+          équipement.
+        Title: Calculs automatiques
+      Advances:
+        Title: Gestion des progressions
+        Content: Le mode Étendu (par défaut) propose une saisie guidée des progressions
+          du personnage et calcule automatiquement son rang. Le mode Libre est une
+          simple saisie de texte sans gestion particulière de la donnée.
+    ADDSTATS:
+      Actor: Capitaine Démo des Caractéristiques additionnelles
+      Title: Caractéristiques additionnelles
+      GameSettings:
+        Title: Configuration des options
+        Content: Tout d'abord, les caractéristiques additionnelles doivent être définies
+          dans la configuration des options.
+      SwadeSettings:
+        Title: Configuration SWADE
+        Content: Les Caractéristiques additionnelles sont situées dans la configuration
+          des règles de <em>SWADE</em>.
+      Die:
+        Title: Dé
+        Content: Le premier champ attend une expression Foundry valide pour un jet
+          de dé ; ajouter un x s'il peut explorer (e.g. 1d6x). Le second champ est
+          pour ajouter un nombre entier au jet. Cliquer le libellé de la caractéristique
+          pour effectuer le jet de dé ainsi décrit.
+      Text:
+        Title: Texte
+        Content: Un simple champ de saisie. Sa longueur n'est pas très élevée, alors
+          pour saisir du texte plus long, préférer l'usage de la description ou zones
+          similaires de la feuille de personnage.
+      Checkbox:
+        Title: Case à cocher
+        Content: Une Caractéristique additionnelle en case à coche ne peut être que
+          vraie (cochée) ou fausse (décochée).
+      StatSettings:
+        Title: Configuration des Caractéristiques additionnelles
+        Content: Toutes les Caractéristiques doivent en premier lieu être déclarée
+          dans cet onglet, avant de pouvoir être retrouvées et exploitées les acteurs
+          (personnages, véhicules) ou les objets (par exemple compétences, armes,
+          atouts).
+      StatKey:
+        Title: Clé de la caractéristique
+        Content: La clé d'une Caractéristique indique comment la valeur d'une caractéristique
+          est trouvée parmi les données du système (actor.system.additionalStats.stat-key),
+          c'est notamment important pour les Effets Actifs, et elle doit être unique.
+      StatDType:
+        Content: Le type définit la façon de saisir la valeur de la caractéristique
+          et comment elle est gérée par le système.
+        Title: Type
+      HasMax:
+        Title: A une valeur maximale
+        Content: Déclare que la caractéristique a, pour un personnage ou objet donné,
+          une valeur actuelle et une valeur maximale, ajoutant un champ de saisie
+          pour ce maximum (uniquement possible pour les Caractéristiques Numériques
+          et Texte).
+      ActorDisplay:
+        Title: Sur un acteur
+        Content: Les Caractéristiques additionnelles actives pour le personnage (ou
+          véhicule) sont affichées dans l'onglet Résumé.
+      StatLabel:
+        Content: Le nom de la Caractéristique, le libellé sous lequel elle va apparaître
+          dans la fiche de personnage ou sur l'objet.
+        Title: Libellé
+      Number:
+        Content: N'importe quel nombre est autorisé, qu'il soit entier ou avec décimales.
+        Title: Numérique
+      Selection:
+        Title: Choix
+        Content: Valeur à sélectionner dans une liste déroulante de choix proposés
+          par l'univers.
+      AccessTweaks:
+        Title: Activation et désactivation
+        Content: Les Caractéristiques additionnelles sont à activer ou désactiver,
+          pour chaque acteur, depuis l'onglet Caractéristiques additionnelles du menu
+          Ajustements.
+      AddStatTweaks:
+        Title: Onglet Caractéristiques additionnelles
+        Content: Chaque Caractéristique additionnelle démarre par défaut désactivée
+          et doit individuellement être activée si elle s'applique à l'acteur et doit
+          être affichée sur sa fiche (par exemple, dans un univers Cyberpunk qui gèrerait
+          une Tension liée à la possession d'implants cybernétiques, il n'est utile
+          d'afficher cette caractéristique que sur les personnages disposant d'implants).
+      Description: Apprendre à configurer des caractéristiques spécifiques à votre
+        univers
+    AURAS:
+      Actor: Capitaine Démo des Auras
   Magazine:
     NoneLoaded: Pas de chargeur chargé
     Select: Choisissez un chargeur
