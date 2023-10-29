@@ -86,7 +86,7 @@
             {{/if}}
           </span>
           <span class='ap'>{{system.ap}}</span>
-          <span class='note'>{{enrich system.notes}}</span>
+          <span class='note' data-tooltip="{{enrich system.notes}}">{{enrich system.notes}}</span>
           <span class='weight'>{{formatNumber
               (times system.weight system.quantity)
             }}</span>
@@ -165,7 +165,7 @@
           </button>
           <span class='bonus'> {{system.armor}} </span>
           <span class='min-str'>{{system.minStr}}</span>
-          <span class='note'>{{enrich system.notes}}</span>
+          <span class='note' data-tooltip="{{enrich system.notes}}">{{enrich system.notes}}</span>
           <span class='weight'>{{formatNumber
               (times system.weight system.quantity)
             }}</span>
@@ -240,7 +240,7 @@
           </button>
           <span class='parry'>{{system.parry}}</span>
           <span class='cover'>{{system.cover}}</span>
-          <span class='note'>{{enrich system.notes}}</span>
+          <span class='note' data-tooltip="{{enrich system.notes}}">{{enrich system.notes}}</span>
           <span class='weight'>
             {{formatNumber (times system.weight system.quantity) }}
           </span>
