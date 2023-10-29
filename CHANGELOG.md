@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
+- Improved the display of notes in the inventory tab. (#964) **by @florad92**
 
 ## 3.2.2
 
