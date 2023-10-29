@@ -479,9 +479,12 @@ SWADE:
     ParryBase:
       Name: SWID de la compétence de combat
       Hint: L'identifiant SWID de la compétence avec laquelle calculer la Parade des
-        acteurs. Le SWID est dans l'écran des ajustements de l'objet compétence (en
-        général, le nom de la compétence en minuscule sans accents sans espaces).
-        Voir la documentation du système SWADE pour plus d'informations!
+        acteurs. Il est préconisé de laisser <em>fighting</em>, afin d'assurer une
+        compatibilité plus aisée avec les différentes modules d'automatisation pour
+        SWADE. À la place, assurez-vous que le SWID de la Compétence Combat vaut <em>fighting</em>,
+        surtout sur tous les personnages, joueurs ou non joueurs. Le SWID est configuré
+        dans l'écran des ajustements de l'objet compétence. Voir la documentation
+        du système SWADE pour plus d'informations à propos du SWID!
     UseAttributeShorts:
       Name: Utiliser des noms d'attributs courts
       Hint: Activez cette option si vous voulez des noms d'attributs courts sur les
@@ -1080,6 +1083,7 @@ SWADE:
     Other: Autre
     And: et
     Or: ou
+  RequiredCrew: Équipe nécessaire
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
