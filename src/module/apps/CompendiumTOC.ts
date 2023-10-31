@@ -2,6 +2,7 @@ import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { SWADE } from '../config';
+import { constants } from '../constants';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 
@@ -356,10 +357,20 @@ export class CompendiumTOC extends Compendium<
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
-        const isMajor = foundry.utils.getProperty(hindrance, 'system.major');
-        const name = `${hindrance.name} ${
-          isMajor ? game.i18n.localize('SWADE.Major') : ''
-        }`;
+        let suffix: string;
+        if (hindrance.system.isMajor) {
+          suffix = game.i18n.localize('SWADE.Major');
+        } else if (
+          (hindrance.system.severity = constants.HINDRANCE_SEVERITY.MINOR)
+        ) {
+          suffix = game.i18n.localize('SWADE.Minor');
+        } else {
+          suffix =
+            game.i18n.localize('SWADE.Major') +
+            '/' +
+            game.i18n.localize('SWADE.Minor');
+        }
+        const name = `${hindrance.name} ${suffix}`;
         return {
           name: name.trim(),
           id: hindrance.id,

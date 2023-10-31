@@ -176,7 +176,7 @@
   .properties.active {
     .form-group {
       padding: 0 1em;
-      label {
+      & > label {
         flex: 4;
       }
     }
@@ -379,5 +379,17 @@
 
   .requirements {
     padding: 0.25em 0.5em 0;
+  }
+
+  .radio-container {
+    gap: 1rem;
+    display: flex;
+  }
+
+  .hindrance {
+    .severity {
+      flex-direction: column;
+      align-items: baseline;
+    }
   }
 }

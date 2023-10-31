@@ -1246,6 +1246,11 @@ SWADE:
       Proceed with caution and only if you are sure.
     ChangeWarning3: Do you want to proceed?
     ChangeWarning1: Proceed with caution!
+  HindranceSeverity:
+    Label: Severity Options
+    Major: Major Only
+    Minor: Minor Only
+    Either: Either
 TYPES:
   Actor:
     character: Player Character
