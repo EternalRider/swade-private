@@ -367,11 +367,11 @@ export default class SwadeItem extends Item {
     const chips = new Array<ItemChatCardChip>();
     const type = this.type;
     if (type === 'hindrance') {
-      let label = game.i18n.localize('SWADE.Minor');
-      if (this.system.major) {
-        label = game.i18n.localize('SWADE.Major');
-      }
-      chips.push({ text: label });
+      chips.push({
+        text: this.system.isMajor
+          ? game.i18n.localize('SWADE.Major')
+          : game.i18n.localize('SWADE.Minor'),
+      });
     }
     if (type === 'shield') {
       if (this.isReadied) {

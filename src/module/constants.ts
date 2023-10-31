@@ -133,4 +133,10 @@ export const constants = {
     DEFAULT: 'none',
     ANY: 'any',
   } as const,
+  /** @enum */
+  HINDRANCE_SEVERITY: {
+    MAJOR: 'major',
+    MINOR: 'minor',
+    EITHER: 'either',
+  } as const,
 };

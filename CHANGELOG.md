@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added documentation on how to use Auras with Active Effects. **by @florad92**
+- Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 
 ### Fixed
 

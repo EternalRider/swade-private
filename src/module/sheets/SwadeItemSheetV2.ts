@@ -44,7 +44,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return `systems/swade/templates/item/${this.type}.hbs`;
   }
 
-  get type(): this['item']['data']['type'] {
+  get type(): this['item']['type'] {
     return this.item.type;
   }
 
@@ -245,7 +245,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   override async getData(
-    options?: Partial<DocumentSheetOptions>,
+    options: Partial<DocumentSheetOptions<Item>> = {},
   ): Promise<SwadeItemSheetData> {
     const additionalStats = this.#getAdditionalStats();
 
@@ -346,10 +346,20 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
+    if (this.item.type === 'hindrance') {
+      data.severityOptions = {
+        major: 'SWADE.HindranceSeverity.Major',
+        minor: 'SWADE.HindranceSeverity.Minor',
+        either: 'SWADE.HindranceSeverity.Either',
+      };
+    }
+
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
     }
-    return foundry.utils.mergeObject(await super.getData(options), data);
+    const superData = await super.getData(options);
+    superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
+    return foundry.utils.mergeObject(superData, data);
   }
 
   protected override _getHeaderButtons() {
@@ -904,6 +914,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   };
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
+  severityOptions?: Record<string, string>;
 }
 
 type OptionsPartial = Partial<ItemSheet.Data<DocumentSheetOptions>>;
