@@ -797,7 +797,7 @@ SWADE:
     None: Aucun
     Single: Unitaire
     PP: Points de pouvoir
-    Label: Façons de recharger
+    Label: Méthode de chargement
     Battery: Batterie
     Self: Soi-même
   RemoveAmmo: Enlever les munitions
