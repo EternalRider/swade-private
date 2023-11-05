@@ -93,13 +93,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
 - Refactored how Edges record their requirements. There are several requirement types which can take a SWID as a reference to the item or value being required. (#625) **by @florad92**
 - The Advance Editor now saves changes automatically. (#972) **by @florad92**
+- Updated development dependencies (only relevant to developers building local versions). **by @florad92**
 
 ### Deprecated
 
 - SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by @jpmeehan5**
 - Deprecated the `parryBaseSkill` setting in favor of the `parryBaseSwid`
-
-### Removed
 
 ### Fixed
 
