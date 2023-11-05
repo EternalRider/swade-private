@@ -7,7 +7,6 @@ import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
-import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
@@ -20,7 +19,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     actions: {},
     effects: {},
   };
-  _effectCreateDropDown: ContextMenu;
+  #effectCreateDropDown: ContextMenu;
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -35,7 +34,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         },
       ],
       scrollY: ['.properties', '.actions', '.editor-container .editor-content'],
-      dragDrop: [{ dropSelector: null, dragSelector: '.effect-list li' }],
+      dragDrop: [
+        { dropSelector: null, dragSelector: '.effect-list li details' },
+      ],
       resizable: true,
     });
   }
@@ -422,19 +423,19 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   private async _onDropActiveEffect(_event: DragEvent, data) {
-    if (!this.item.isOwner || !data.data) return;
-    if (await this._isSourceSameAsDestination(data)) return;
-    return CONFIG.ActiveEffect.documentClass.create(data.data, {
+    const effect = await CONFIG.ActiveEffect.documentClass.fromDropData(data);
+    if (!this.item.isOwner || !effect) return false;
+    if (this.item.uuid === effect.parent?.uuid) return false;
+    return CONFIG.ActiveEffect.documentClass.create(effect.toObject(), {
       parent: this.item,
     });
   }
 
   private async _onDropItem(event: DragEvent, data) {
-    const uuid = data.uuid;
+    const item = await CONFIG.Item.documentClass.fromDropData(data);
     Logger.debug(
-      `Trying to add ${data.type} ${uuid} to ${this.item.type}/${this.item.name}`,
+      `Trying to add ${data.type} ${item.uuid} to ${this.item.type}/${this.item.name}`,
     );
-    const item = (await fromUuid(uuid)) as SwadeItem;
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
       return Logger.warn('SWADE.CannotAddAncestryToAncestry', {
@@ -553,41 +554,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       },
     };
     new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
-  }
-
-  /** Is the drop data coming from the same item? */
-  private async _isSourceSameAsDestination(data) {
-    let other;
-
-    //item owned by token actor
-    if (data.sceneId && data.tokenId) {
-      other = game.scenes
-        ?.get(data.sceneId)
-        ?.tokens.get(data.tokenId)
-        ?.actor?.items.get(data.itemId);
-    }
-
-    //standalone item
-    if (!other && data.itemId) {
-      if (data.pack) {
-        other = await game.packs.get(data.pack)?.getDocument(data.itemId);
-      } else {
-        other = game.items?.get(data.itemId);
-      }
-    }
-
-    //item owned by standalone actor
-    if (!other && data.actorId) {
-      if (data.pack) {
-        const actor = (await game.packs
-          .get(data.pack)
-          ?.getDocument(data.actorId)) as StoredDocument<SwadeActor>;
-        other = actor?.items.get(data.itemId);
-      } else {
-        other = game.actors?.get(data.actorId)?.items.get(data.itemId);
-      }
-    }
-    return this.item === other;
   }
 
   protected override async _onDragStart(event: DragEvent) {
@@ -755,7 +721,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   private _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
-    this._effectCreateDropDown = new ContextMenu(
+    this.#effectCreateDropDown = new ContextMenu(
       html,
       '.effects .header',
       [
@@ -879,6 +845,14 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       [constants.RELOAD_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
+  }
+
+  protected override _canDragStart(_selector: string): boolean {
+    return this.isEditable;
+  }
+
+  protected override _canDragDrop(_selector: string): boolean {
+    return this.isEditable;
   }
 }
 
