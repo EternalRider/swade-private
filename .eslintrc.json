@@ -72,7 +72,8 @@
         "leadingUnderscore": "allow"
       },
       { "selector": "typeLike", "format": ["PascalCase"] },
-      { "selector": ["objectLiteralProperty", "typeProperty"], "format": null }
+      { "selector": ["objectLiteralProperty", "typeProperty"], "format": null },
+      { "selector": "import", "format": ["camelCase", "PascalCase"] }
     ],
     "deprecation/deprecation": "warn"
   }
