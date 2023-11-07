@@ -55,6 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Changed handling for the `override` field on items to ensure that data doesn't linger between prepareData cycles. (#977) **by @jpmeehan5**
+- Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 
 ## 3.2.0
 
