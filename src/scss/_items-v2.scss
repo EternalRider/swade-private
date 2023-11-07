@@ -91,7 +91,7 @@
 
   .type {
     grid-row: 2;
-    grid-column: 3/7;
+    grid-column: 3/6;
     text-align: center;
     line-height: 2em;
     font-family: 'Anton', 'Signika', sans-serif;
@@ -99,7 +99,7 @@
 
   .source {
     grid-row: 2;
-    grid-column: 7/11;
+    grid-column: 6/11;
     line-height: 2em;
     input {
       text-align: center;
@@ -108,7 +108,7 @@
 
   .category {
     grid-row: 3;
-    grid-column: 7/11;
+    grid-column: 8/11;
     display: flex;
     align-items: center;
     input {
@@ -118,7 +118,7 @@
 
   .quantity {
     grid-row: 3;
-    grid-column: 3/5;
+    grid-column: 3/6;
     display: flex;
     align-items: center;
     input {
@@ -128,7 +128,7 @@
 
   .price {
     grid-row: 3;
-    grid-column: 5/7;
+    grid-column: 6/8;
     display: flex;
     align-items: center;
     input {
