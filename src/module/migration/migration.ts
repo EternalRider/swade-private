@@ -1,6 +1,7 @@
 /* eslint-disable deprecation/deprecation */
 import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs';
 import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
+import { ReloadType } from '../../globals';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
@@ -347,6 +348,7 @@ export function migrateItemData(item: ItemDataSource) {
   _ensureBatteryMaxCharges(item, updateData);
   _fixWorldItemGrants(item, updateData);
   _generateSWID(item, updateData);
+  _setRangeType(item, updateData);
 
   // Migrate embedded effects
   if (item.effects) {
@@ -621,6 +623,28 @@ function _generateSWID(data: ItemData, updateData: UpdateData) {
   if (data.system.swid === constants.RESERVED_SWID.DEFAULT) {
     updateData['system.swid'] = slugify(data.name);
   }
+}
+
+function _setRangeType(data: ItemData, updateData: UpdateData) {
+  if (data.type !== 'weapon' || data.system.rangeType !== null) return;
+  const hasShots = !!data.system.shots;
+  const hasRange = !!data.system.range;
+  const reload = data.system.reloadType as ReloadType;
+
+  let rangeType;
+
+  if (!hasShots && !hasRange) {
+    rangeType = constants.WEAPON_RANGE_TYPE.MELEE;
+  } else if (hasShots && hasRange) {
+    if (reload === constants.RELOAD_TYPE.SELF) {
+      rangeType = constants.WEAPON_RANGE_TYPE.MIXED;
+    } else {
+      rangeType = constants.WEAPON_RANGE_TYPE.RANGED;
+    }
+  } else {
+    rangeType = constants.WEAPON_RANGE_TYPE.MIXED;
+  }
+  updateData['system.rangeType'] = rangeType;
 }
 
 type UpdateData = Record<string, any>;

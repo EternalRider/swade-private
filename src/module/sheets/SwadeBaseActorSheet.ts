@@ -5,7 +5,7 @@ import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
-import SwadeItem from '../documents/item/SwadeItem';
+import { Logger } from '../Logger';
 /**
  * @noInheritDoc
  */
@@ -123,9 +123,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'toggle':
           return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
-          fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
-            this.actor.items.get(item.id!)?.sheet?.render(true);
-          });
+          fromUuid(effect.origin).then((doc) => doc?.sheet?.render(true));
           break;
         default:
           Logger.warn(`The action ${action} is not currently supported`);

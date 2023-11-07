@@ -386,10 +386,9 @@
     display: flex;
   }
 
-  .hindrance {
-    .severity {
-      flex-direction: column;
-      align-items: baseline;
-    }
+  .weapon .range-type,
+  .hindrance .severity {
+    flex-direction: column;
+    align-items: baseline;
   }
 }

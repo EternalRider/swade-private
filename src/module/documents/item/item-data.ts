@@ -10,6 +10,7 @@ import {
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
 import { ItemGrant, Requirement } from './SwadeItem.interface';
 
@@ -122,6 +123,7 @@ interface WeaponData
     GrantEmbedded {
   damage: string;
   range: string;
+  rangeType: ValueOf<typeof constants.WEAPON_RANGE_TYPE>;
   rof: number;
   ap: number;
   minStr: string;
