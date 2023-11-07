@@ -1,4 +1,3 @@
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import { AdditionalStats, EquipState, ItemActions } from '../../globals';
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
@@ -84,8 +83,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   override activateListeners(jquery: JQuery<HTMLElement>): void {
     super.activateListeners(jquery);
-    this._setupAccordions();
-    this._setupEffectCreateMenu(jquery);
+    this.#setupAccordions();
+    this.#setupEffectCreateMenu(jquery);
 
     const html = jquery[0];
 
@@ -158,7 +157,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
       await Dialog.confirm({
         content: `<p class="text-center">${text}</p>`,
-        yes: async () => await this._deleteEmbeddedDocument('power', id),
+        yes: async () => await this.#deleteEmbeddedDocument('power', id),
         defaultYes: false,
         options: foundry.utils.mergeObject(Dialog.defaultOptions, {
           classes: ['dialog', 'swade-app'],
@@ -175,7 +174,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     jquery.find('.grant-name').on('click', async (ev) => {
       const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
-      const doc = (await fromUuid(uuid)) as SwadeItem;
+      const doc = (await fromUuid(uuid)) as SwadeItem | null;
       doc?.sheet?.render(true);
     });
 
@@ -194,13 +193,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         case 'delete':
           return effect.delete();
         case 'toggle':
-          return effect.update(this._toggleEffect(effect, toggle));
+          return effect.update(this.#toggleEffect(effect, toggle));
       }
     });
 
     jquery.find('.delete-embedded').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.id!;
-      await this._deleteEmbeddedDocument('ability', id);
+      await this.#deleteEmbeddedDocument('ability', id);
     });
 
     jquery.find('.power .damage').on('click', (ev) => {
@@ -246,13 +245,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   override async getData(
-    options: Partial<DocumentSheetOptions<Item>> = {},
+    options: OptionsPartial = {},
   ): Promise<SwadeItemSheetData> {
     const additionalStats = this.#getAdditionalStats();
 
     const data: SwadeItemSheetData = {
-      itemType: this._getItemType(),
-      enrichedDescription: await this._enrichText(this.item.system.description),
+      itemType: this.#getItemType(),
+      enrichedDescription: await this.#enrichText(this.item.system.description),
       hasInlineDelete: this.hasInlineDelete,
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
@@ -262,8 +261,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
       isArcaneDevice: this.item.isArcaneDevice,
-      ranges: this._rangeSuggestions(),
-      equipStatusOptions: this._equipStatusOptions(),
+      ranges: this.#rangeSuggestions(),
+      equipStatusOptions: this.#equipStatusOptions(),
       settingRules: {
         modSlots: game.settings.get('swade', 'vehicleMods'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -279,11 +278,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           subtype === constants.ABILITY_TYPE.ANCESTRY ||
           subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
-      data.embeddedAbilities = this._prepareEmbeddedAbilities();
+      data.embeddedAbilities = this.#prepareEmbeddedAbilities();
     }
 
     if (this.item.canGrantItems) {
-      data.grantedItems = await this._getGrantedItems();
+      data.grantedItems = await this.#getGrantedItems();
     }
 
     for (const effect of this.item.effects) {
@@ -299,7 +298,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (this.type === 'weapon') {
       data.ppReload = false;
-      data.trademarkWeaponOptions = this._trademarkWeaponOptions();
+      data.trademarkWeaponOptions = this.#trademarkWeaponOptions();
       switch (this.item.system.reloadType) {
         case constants.RELOAD_TYPE.NONE:
         case constants.RELOAD_TYPE.SINGLE:
@@ -336,7 +335,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           // Doesn't use external ammo
           break;
       }
-      data.reloadTypeOptions = this._reloadTypeOptions();
+      data.reloadTypeOptions = this.#reloadTypeOptions();
+      data.rangeTypeOptions = {
+        [constants.WEAPON_RANGE_TYPE.MELEE]: 'SWADE.Weapon.RangeType.Melee',
+        [constants.WEAPON_RANGE_TYPE.RANGED]: 'SWADE.Weapon.RangeType.Ranged',
+        [constants.WEAPON_RANGE_TYPE.MIXED]: 'SWADE.Weapon.RangeType.Mixed',
+      };
     }
 
     if (this.type === 'consumable') {
@@ -358,7 +362,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
     }
-    const superData = await super.getData(options);
+    const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
     return foundry.utils.mergeObject(superData, data);
   }
@@ -394,6 +398,32 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return data;
   }
 
+  protected override _canDragStart(_selector: string): boolean {
+    return this.isEditable;
+  }
+
+  protected override _canDragDrop(_selector: string): boolean {
+    return this.isEditable;
+  }
+
+  protected override async _onDragStart(event: DragEvent) {
+    const src = event.target as HTMLElement;
+
+    // Create drag data
+    let dragData;
+
+    // Active Effect
+    if (src.dataset.effectId) {
+      const effect = this.item.effects.get(src.dataset.effectId);
+      dragData = effect.toDragData();
+    } else {
+      dragData = this.item.toDragData();
+    }
+
+    // Set data transfer
+    event.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+  }
+
   protected override async _onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -406,13 +436,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
       switch (data.type) {
         case 'ActiveEffect':
-          await this._onDropActiveEffect(event, data);
+          await this.#onDropActiveEffect(event, data);
           break;
         case 'Item':
-          await this._onDropItem(event, data);
+          await this.#onDropItem(event, data);
           break;
         case 'Macro':
-          await this._onDropMacro(event, data);
+          await this.#onDropMacro(event, data);
           break;
         default:
           break;
@@ -422,7 +452,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
   }
 
-  private async _onDropActiveEffect(_event: DragEvent, data) {
+  async #onDropActiveEffect(_event: DragEvent, data) {
     const effect = await CONFIG.ActiveEffect.documentClass.fromDropData(data);
     if (!this.item.isOwner || !effect) return false;
     if (this.item.uuid === effect.parent?.uuid) return false;
@@ -431,7 +461,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
   }
 
-  private async _onDropItem(event: DragEvent, data) {
+  async #onDropItem(event: DragEvent, data) {
     const item = await CONFIG.Item.documentClass.fromDropData(data);
     Logger.debug(
       `Trying to add ${data.type} ${item.uuid} to ${this.item.type}/${this.item.name}`,
@@ -448,17 +478,17 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const classList = target.closest<HTMLElement>('.tab.active')?.classList;
 
     if (classList?.contains('properties')) {
-      await this._addGrantedItem(item);
+      await this.#addGrantedItem(item);
     } else if (classList?.contains('embedded')) {
-      await this._addEmbedded(item);
+      await this.#addEmbedded(item);
     } else if (classList?.contains('powers')) {
-      await this._addArcaneDevicePower(item);
+      await this.#addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
-      await this._addOrReplaceActions(item);
+      await this.#addOrReplaceActions(item);
     }
   }
 
-  private async _onDropMacro(event: DragEvent, data) {
+  async #onDropMacro(event: DragEvent, data) {
     const target = event.target as HTMLElement;
     const actionId = target.closest<HTMLElement>('.tab.actions.active .action')
       ?.dataset.actionId as string;
@@ -469,7 +499,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
   }
 
-  private async _addGrantedItem(item: SwadeItem) {
+  async #addGrantedItem(item: SwadeItem) {
     if (
       !this.item.canGrantItems ||
       this.item.isEmbedded ||
@@ -486,26 +516,14 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     await this.item.update({ 'system.grants': grants });
   }
 
-  private async _addEmbedded(_item: SwadeItem) {
-    const msg =
-      'Embedded Abilities have been deprecated in favor of Item Grants';
-    ui.notifications.warn(msg, { permanent: true, console: false });
-    foundry.utils.logCompatibilityWarning(msg, {
-      since: '3.1',
-      until: '4.0',
-      details:
-        'You can no longer add Embedded Abilities to items but they will still be able to be transferred to actors until the depreciation period ends.',
-    });
-  }
-
-  private async _addArcaneDevicePower(item: SwadeItem) {
+  async #addArcaneDevicePower(item: SwadeItem) {
     if (!this.item.isArcaneDevice || item.type !== 'power') return;
     const collection = this.item.embeddedPowers;
     collection.set(foundry.utils.randomID(), item.toObject());
-    await this._saveEmbeddedPowers(collection);
+    await this.#saveEmbeddedPowers(collection);
   }
 
-  private async _addOrReplaceActions(item: SwadeItem) {
+  async #addOrReplaceActions(item: SwadeItem) {
     const actionKey = 'system.actions.additional';
     const actions = foundry.utils.getProperty(this.item, actionKey) as
       | ItemActions
@@ -556,42 +574,32 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
   }
 
-  protected override async _onDragStart(event: DragEvent) {
-    const src = event.target as HTMLElement;
-
-    // Create drag data
-    const dragData: Record<string, unknown> = {
-      actorId: this.actor?.id,
-      sceneId: this.actor?.isToken ? canvas.scene?.id : null,
-      tokenId: this.actor?.isToken ? this.actor?.token?.id : null,
-      itemId: this.item.id,
-      pack: this.item.pack,
-    };
-
-    // Active Effect
-    if (src.dataset.effectId) {
-      const effect = this.item.effects.get(src.dataset.effectId);
-      dragData.type = 'ActiveEffect';
-      dragData.data = effect?.toObject();
-    }
-
-    // Set data transfer
-    event.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
-  }
-
-  private async _deleteEmbeddedDocument(type: 'power' | 'ability', id: string) {
+  async #deleteEmbeddedDocument(type: 'power' | 'ability', id: string) {
     const flagKey = {
       ability: 'embeddedAbilities',
       power: 'embeddedPowers',
     };
     const flagContent = this.item.getFlag('swade', flagKey[type]) ?? [];
-    const map = new Map(flagContent as Array<[string, ItemDataSource]>);
+    const map = new Map(flagContent as Array<[string, ItemData]>);
     map.delete(id);
     this.item.setFlag('swade', flagKey[type], Array.from(map));
   }
 
   /** @deprecated */
-  private _prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
+  async #addEmbedded(_item: SwadeItem) {
+    const msg =
+      'Embedded Abilities have been deprecated in favor of Item Grants';
+    ui.notifications.warn(msg, { permanent: true, console: false });
+    foundry.utils.logCompatibilityWarning(msg, {
+      since: '3.1',
+      until: '4.0',
+      details:
+        'You can no longer add Embedded Abilities to items but they will still be able to be transferred to actors until the depreciation period ends.',
+    });
+  }
+
+  /** @deprecated */
+  #prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
     const collection = this.item.embeddedAbilities;
     const items = new Array<Record<string, unknown>>();
     for (const [key, val] of collection) {
@@ -619,7 +627,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return items;
   }
 
-  private async _saveEmbeddedPowers(map: Map<string, ItemDataSource>) {
+  async #saveEmbeddedPowers(map: Map<string, ItemData<'power'>>) {
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
@@ -640,7 +648,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return stats;
   }
 
-  private _getGrantedItems(): ItemGrant[] {
+  #getGrantedItems(): ItemGrant[] {
     if (!this.item.canGrantItems) return [];
     const grants = this.item.grantsItems;
     const enriched = new Array<ItemGrant>();
@@ -659,7 +667,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return enriched;
   }
 
-  private _getItemType(): string {
+  #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
@@ -674,7 +682,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return `TYPES.Item.${this.type}`;
   }
 
-  private async _enrichText(text: string): Promise<string> {
+  async #enrichText(text: string): Promise<string> {
     const enriched = await TextEditor.enrichHTML(text, {
       async: true,
       secrets: this.isEditable,
@@ -682,7 +690,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return enriched;
   }
 
-  private _setupAccordions() {
+  #setupAccordions() {
     this.form
       ?.querySelectorAll<HTMLDetailsElement>('.actions-list details')
       .forEach((el) => {
@@ -720,7 +728,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
   }
 
-  private _setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+  #setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
     this.#effectCreateDropDown = new ContextMenu(
       html,
       '.effects .header',
@@ -738,7 +746,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           icon: '<i class="fa-solid fa-file-plus"></i>',
           condition: this.object.isOwner,
           callback: (_li) => {
-            this._createActiveEffect();
+            this.#createActiveEffect();
           },
         },
       ],
@@ -746,7 +754,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     );
   }
 
-  private async _createActiveEffect() {
+  async #createActiveEffect() {
     const newEffect = await CONFIG.ActiveEffect.documentClass.create(
       {
         name: game.i18n.format('DOCUMENT.New', {
@@ -759,7 +767,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     newEffect?.sheet?.render(true);
   }
 
-  protected _toggleEffect(
+  #toggleEffect(
     doc: SwadeActiveEffect,
     toggle: string,
   ): Record<string, unknown> {
@@ -767,7 +775,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return { [toggle]: !oldVal };
   }
 
-  private _rangeSuggestions() {
+  #rangeSuggestions() {
     return [
       '3/6/12',
       '4/8/16',
@@ -786,7 +794,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     ];
   }
 
-  private _equipStatusOptions(): Record<number, string> {
+  #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
       [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
       [constants.EQUIP_STATE.CARRIED]: 'SWADE.ItemEquipStatus.Carried',
@@ -827,7 +835,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return states;
   }
 
-  private _trademarkWeaponOptions(): Record<number, string> {
+  #trademarkWeaponOptions(): Record<number, string> {
     return {
       0: 'SWADE.TrademarkWeapon.None',
       1: 'SWADE.TrademarkWeapon.Regular',
@@ -835,7 +843,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
 
-  private _reloadTypeOptions(): Record<string, string> {
+  #reloadTypeOptions(): Record<string, string> {
     return {
       [constants.RELOAD_TYPE.NONE]: 'SWADE.ReloadType.None',
       [constants.RELOAD_TYPE.SELF]: 'SWADE.ReloadType.Self',
@@ -845,14 +853,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       [constants.RELOAD_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
-  }
-
-  protected override _canDragStart(_selector: string): boolean {
-    return this.isEditable;
-  }
-
-  protected override _canDragDrop(_selector: string): boolean {
-    return this.isEditable;
   }
 }
 
@@ -876,11 +876,11 @@ interface SwadeItemSheetData extends OptionsPartial {
   ranges: string[];
   trademarkWeaponOptions?: Record<number, string>;
   reloadTypeOptions?: Record<number, string>;
-  embeddedPowers?: Map<string, ItemDataSource>;
+  embeddedPowers?: Map<string, ItemData<'power'>>;
   embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
   ammoLoaded?: string;
-  ppReload: boolean;
+  ppReload?: boolean;
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
@@ -889,9 +889,10 @@ interface SwadeItemSheetData extends OptionsPartial {
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
+  rangeTypeOptions?: Record<number, string>;
 }
 
-type OptionsPartial = Partial<ItemSheet.Data<DocumentSheetOptions>>;
+type OptionsPartial = Partial<DocumentSheetOptions<Item>>;
 
 interface CollapsibleStates {
   actions: Record<string, boolean>;

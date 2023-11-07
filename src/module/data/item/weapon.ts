@@ -44,6 +44,12 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       ...grantEmbedded(),
       damage: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
+      rangeType: new fields.NumberField({
+        integer: true,
+        nullable: true,
+        initial: null,
+        choices: Object.values(constants.WEAPON_RANGE_TYPE),
+      }),
       rof: new fields.NumberField({ initial: 1 }),
       ap: new fields.NumberField({ initial: 0, integer: true }),
       parry: new fields.NumberField({ initial: 0 }),
@@ -56,7 +62,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
         choices: Object.values(constants.RELOAD_TYPE),
       }),
       ppReloadCost: new fields.NumberField({ initial: 2 }),
-      trademark: new fields.NumberField({ initial: 0 }),
+      trademark: new fields.NumberField({ initial: 0, min: 0, integer: true }),
       isHeavyWeapon: new fields.BooleanField(),
     };
   }
@@ -81,5 +87,19 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
 
   protected _applyShims() {
     shims.actionProperties(this);
+  }
+
+  get isMelee(): boolean {
+    return (
+      this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED ||
+      this.rangeType === constants.WEAPON_RANGE_TYPE.MELEE
+    );
+  }
+
+  get isRanged(): boolean {
+    return (
+      this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED ||
+      this.rangeType === constants.WEAPON_RANGE_TYPE.RANGED
+    );
   }
 }

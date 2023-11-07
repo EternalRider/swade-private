@@ -96,14 +96,11 @@ export default class SwadeItem extends Item {
 
   constructor(data?: ItemDataConstructorData, context?: Context<SwadeActor>) {
     super(data, context);
-    this.overrides = this.overrides ?? {};
+    this.overrides ??= {};
   }
 
   get isMeleeWeapon(): boolean {
-    if (this.type !== 'weapon') return false;
-    const shots = this.system.shots;
-    const currentShots = this.system.currentShots;
-    return !Number(shots) && !Number(currentShots);
+    return this.system['isMelee'] ?? false;
   }
 
   get range() {

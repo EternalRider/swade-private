@@ -55,6 +55,28 @@ function stringify(obj: any) {
   );
 }
 
+/** A replacement radioboxes helper that enables the use of numeric values */
+function radioBoxes(
+  name: string,
+  choices: Record<string | number, string>,
+  options: Handlebars.HelperOptions,
+) {
+  const checked = options.hash['checked'] ?? null;
+  const localize = options.hash['localize'] ?? false;
+  let html = '';
+  for (const key in choices) {
+    let label = choices[key];
+    if (localize) label = game.i18n.localize(label);
+    const isNumeric = Number.isNumeric(key);
+    const value = isNumeric ? Number(key) : key;
+    const isChecked = checked === value;
+    html += `<label class="checkbox"><input type="radio" name="${name}" value="${value}" ${
+      isChecked ? 'checked' : ''
+    } ${isNumeric ? 'data-dtype="Number"' : ''}> ${label}</label>`;
+  }
+  return new Handlebars.SafeString(html);
+}
+
 /*****************************
  * Helpers for sheets
  *****************************/
@@ -246,6 +268,7 @@ export function registerCustomHelpers() {
     isEmpty,
     collapsible,
     stringify,
+    radioBoxes,
     localizeSkillAttribute,
     advanceType,
     modifier,

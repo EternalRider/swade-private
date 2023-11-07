@@ -139,4 +139,9 @@ export const constants = {
     MINOR: 'minor',
     EITHER: 'either',
   } as const,
+  WEAPON_RANGE_TYPE: {
+    MELEE: 0,
+    RANGED: 1,
+    MIXED: 2,
+  },
 };
