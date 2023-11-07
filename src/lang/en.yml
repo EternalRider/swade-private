@@ -1251,6 +1251,11 @@ SWADE:
     Major: Major Only
     Minor: Minor Only
     Either: Either
+  Weapon:
+    RangeType:
+      Melee: Melee
+      Ranged: Ranged
+      Mixed: Mixed
 TYPES:
   Actor:
     character: Player Character

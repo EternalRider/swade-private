@@ -225,6 +225,12 @@
         </span>
       </div>
       {{/if}}
+      <div class="form-group range-type">
+        <label>Range Type</label>
+          <span class="form-fields">
+          {{radioBoxes "system.rangeType" rangeTypeOptions checked=item.system.rangeType localize=true}}
+        </span>
+      </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
       <div class='form-group'>

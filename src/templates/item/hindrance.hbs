@@ -29,9 +29,9 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
-      <div class="form-group severity">
+      <div class="form-group">
         <label>{{localize "SWADE.HindranceSeverity.Label"}}</label>
-        <span class="radio-container">
+        <span class="form-fields">
           {{radioBoxes "system.severity" severityOptions checked=item.system.severity localize=true}}
         </span>
       </div>

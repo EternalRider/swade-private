@@ -205,13 +205,10 @@ export default class CharacterSheet extends ActorSheet {
         case 'open-origin':
           if (sourceItem) {
             sourceItem.sheet?.render(true);
-          } else {
-            fromUuid(effect!.data?.origin!).then((item: SwadeItem) => {
-              this.actor.items.get(item.id!)?.sheet?.render(true);
-            });
+          } else if (effect.origin) {
+            fromUuid(effect.origin).then((doc) => doc?.sheet?.render(true));
           }
-
-          break;
+          return;
         default:
           Logger.warn(`The action ${action} is not currently supported`);
           break;
