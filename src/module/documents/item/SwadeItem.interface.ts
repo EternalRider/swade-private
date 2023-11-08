@@ -6,7 +6,7 @@ import SwadeItem from './SwadeItem';
 
 export interface ItemChatCardChip {
   icon?: string;
-  text?: string | number;
+  text?: string | number | null;
   title?: string;
 }
 
@@ -22,7 +22,7 @@ export interface ItemChatCardData {
   description: string;
 }
 
-export interface ItemChatCardPowerPoints {
+export interface ItemDisplayPowerPoints {
   max: number;
   value: number;
 }
