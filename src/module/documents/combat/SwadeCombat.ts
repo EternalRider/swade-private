@@ -234,9 +234,9 @@ export default class SwadeCombat extends Combat {
 
     /** Compares two combatants by name or - if they're the same - ID. */
     const nameSortCombatants = (a: SwadeCombatant, b: SwadeCombatant) => {
-      const cn = a.name.localeCompare(b.name);
+      const cn = a.name.localeCompare(b.name, 'en');
       if (cn !== 0) return cn;
-      return a.id!.localeCompare(b.id!);
+      return a.id!.localeCompare(b.id!, 'en');
     };
 
     //decide whether to sort by name or card
@@ -529,8 +529,8 @@ export default class SwadeCombat extends Combat {
   }
 
   protected override _playCombatSound(announcement: string): void {
-    if ( this.previous.round === 0 ||
-      this.previous.round === this.current.round) super._playCombatSound(announcement);
+    if (this.previous.round === 0 || this.previous.round === this.current.round)
+      super._playCombatSound(announcement);
   }
 
   protected _determineCardsToDraw(combatant: SwadeCombatant): number {
