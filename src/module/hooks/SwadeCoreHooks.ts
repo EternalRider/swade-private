@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HotReloadData, Updates } from '../../globals';
+import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
@@ -894,20 +894,21 @@ export default class SwadeCoreHooks {
 
   static async onRenderCombatantConfig(
     app: CombatantConfig,
-    html: JQuery<HTMLElement>,
+    jquery: JQuery<HTMLFormElement>,
     options: any,
   ) {
     // resize the element so it'll fit the new stuff
-    html.css({ height: 'auto' });
+    jquery.css({ height: 'auto' });
 
     //remove the old initiative input
-    html.find('input[name="initiative"]').parents('div.form-group').remove();
+    jquery.find('input[name="initiative"]').parents('div.form-group').remove();
 
     //grab cards and sort them
-    const actionDeckID = game.settings.get('swade', 'actionDeck');
-    const deck = game.cards!.get(actionDeckID, { strict: true });
+    const deck = game.cards!.get(game.settings.get('swade', 'actionDeck'), {
+      strict: true,
+    });
 
-    const cards = Array.from(deck.cards.values()).sort((a, b) => {
+    const cards = Array.from(deck.cards.values()).sort((a: Card, b: Card) => {
       const cardA = a.value!;
       const cardB = b.value!;
       const card = cardA - cardB;
@@ -949,59 +950,19 @@ export default class SwadeCoreHooks {
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const element = await renderTemplate(path, { cardList, numberOfJokers });
-    html.find('footer').before(element);
-
-    //pull the combatant from the Config Object
-    const combatant = app.object;
-    const combat = combatant.parent;
+    jquery.find('footer').before(element);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication
-    html.find('footer button').on('click', async (ev) => {
-      const selectedCard = html.find('input[name=action-card]:checked');
-      if (selectedCard.length === 0) {
-        return;
-      }
-
-      const cardId = selectedCard.data().cardId as string;
-      const card = deck.cards.get(cardId, { strict: true });
-
-      const cardValue = card.value as number;
-      const suitValue = card.system['suit'] as number;
-      const hasJoker = card.system['isJoker'] as boolean;
-      const cardString = card.description;
-
-      //move the card to the discard pile
-      const discardPileId = game.settings.get('swade', 'actionDeckDiscardPile');
-      const discardPile = game.cards!.get(discardPileId, { strict: true });
-      await card.discard(discardPile, { chatNotification: false });
-
-      //update the combatant with the new card
-      const updates = new Array<Updates>();
-      updates.push({
-        _id: combatant.id,
-        initiative: suitValue + cardValue,
-        'flags.swade': { cardValue, suitValue, hasJoker, cardString },
+    jquery[0]
+      .querySelector('footer button')
+      ?.addEventListener('click', async (ev: PointerEvent) => {
+        const selectedCard = (ev.currentTarget as HTMLButtonElement)
+          .closest('.combat-sheet')
+          ?.querySelector<HTMLInputElement>('input[name=action-card]:checked');
+        if (!selectedCard) return;
+        const cardId = selectedCard.dataset.cardId as string;
+        await app.object.assignNewActionCard(cardId);
       });
-
-      //update followers, if applicable
-      if (combatant.isGroupLeader) {
-        const followers =
-          combat?.combatants.filter((f) => f.groupId === combatant.id) ?? [];
-        for (const follower of followers) {
-          updates.push({
-            _id: follower.id,
-            initiative: suitValue + cardValue,
-            'flags.swade': {
-              cardString,
-              cardValue,
-              hasJoker,
-              suitValue: suitValue - 0.001,
-            },
-          });
-        }
-      }
-      await combat?.updateEmbeddedDocuments('Combatant', updates);
-    });
   }
 
   static onRenderActiveEffectConfig(
