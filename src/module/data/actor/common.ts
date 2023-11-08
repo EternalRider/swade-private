@@ -1,6 +1,7 @@
-import { DerivedModifier } from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
-import { getRankFromAdvanceAsString } from '../../util';
+import { SWADE } from '../../config';
+import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
 import { MappingField } from '../fields/MappingField';
 import {
   boundTraitDie,
@@ -150,7 +151,6 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
   protected static wildcardData = (
     baseBennies: number,
     maxWounds: number,
-    wildcard: boolean,
   ) => ({
     bennies: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0 }),
@@ -161,7 +161,6 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       max: new fields.NumberField({ initial: maxWounds }),
       ignored: new fields.NumberField({ initial: 0 }),
     }),
-    wildcard: new fields.BooleanField({ initial: wildcard }),
   });
 
   protected static makePowerPointsSchema = () => {
@@ -291,5 +290,77 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     const encumbrance = this.details.encumbrance;
     if (encumbrance.isEncumbered) return true;
     return encumbrance.value > encumbrance.max;
+  }
+
+  getRollData(includeModifiers: boolean): Record<string, number | string> {
+    
+    const out: Record<string, number | string> = {
+      wounds: this.wounds.value || 0,
+      fatigue: this.fatigue.value || 0,
+      pace: this.stats.speed.adjusted || 0,
+    };
+
+    const globalMods = this.stats.globalMods;
+
+    // Attributes
+    const attributes = this.attributes;
+    for (const [key, attribute] of Object.entries(attributes)) {
+      const short = key.substring(0, 3);
+      const name = game.i18n.localize(SWADE.attributes[key].long);
+      const die = attribute.die.sides;
+      let mod = attribute.die.modifier || 0;
+      if (includeModifiers) {
+        mod = structuredClone<RollModifier[]>([
+          {
+            label: game.i18n.localize('SWADE.TraitMod'),
+            value: attribute.die.modifier as number,
+          },
+          ...globalMods[key],
+          ...globalMods.trait,
+        ])
+          .filter((m) => m.ignore !== true)
+          .reduce(addUpModifiers, 0) as number;
+      }
+      let modString = mod !== 0 ? mod.signedString() : '';
+      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
+      let val = `1d${die}x[${name}]${modString}`;
+      if (die <= 1) val = `1d${die}[${name}]${modString}`;
+      out[short] = val;
+    }
+
+    for (const skill of this.parent.itemTypes.skill) {
+      const die = skill.system.die.sides;
+      let mod = Number(skill.system.die.modifier);
+      if (includeModifiers) mod = skill.modifier;
+      const name = skill.name!.slugify({ strict: true });
+      let modString = mod !== 0 ? mod.signedString() : '';
+      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
+      out[name] = `1d${die}[${skill.name}]${modString}`;
+    }
+
+    return out;
+  }
+
+  async refreshBennies(displayToChat = true) {
+    if (displayToChat) {
+      const message = await renderTemplate(SWADE.bennies.templates.refresh, {
+        target: this.parent,
+        speaker: game.user,
+      });
+      const chatData = {
+        content: message,
+      };
+      CONFIG.ChatMessage.documentClass.create(chatData);
+    }
+    let newValue = this.bennies.max;
+    const hardChoices = game.settings.get('swade', 'hardChoices');
+    if (
+      hardChoices &&
+      this.wildcard &&
+      !this.parent.hasPlayerOwner
+    ) {
+      newValue = 0;
+    }
+    await this.parent.update({ 'system.bennies.value': newValue });
   }
 }

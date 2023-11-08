@@ -13,7 +13,8 @@ import {
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
-
+import { constants } from '../../constants';
+import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 export interface ArmorData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
     ReturnType<(typeof ArmorData)['defineSchema']>
@@ -67,5 +68,59 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
 
   protected _applyShims() {
     shims.actionProperties(this);
+  }
+
+  get canBeArcaneDevice() {
+    return true;
+  }
+
+  get isReadied(): boolean {
+    return this.equipStatus > constants.EQUIP_STATE.CARRIED;
+  }
+
+  get isPhysicalItem() {
+    return true;
+  }
+
+  async getChatChips(
+    enrichOptions: Partial<TextEditor.EnrichOptions>,
+  ): Promise<ItemChatCardChip[]> {
+    const chips = new Array<ItemChatCardChip>();
+    for (const [location, covered] of Object.entries(this.locations)) {
+      if (!covered) continue;
+      chips.push({
+        text: game.i18n.localize(
+          `SWADE.${location.charAt(0).toUpperCase() + location.slice(1)}`,
+        ),
+      });
+    }
+    if (this.isReadied) {
+      chips.push({
+        icon: '<i class="fas fa-tshirt"></i>',
+        title: game.i18n.localize('SWADE.Equipped'),
+      });
+    } else {
+      chips.push({
+        icon: '<i class="fas fa-tshirt" style="color:grey"></i>',
+        title: game.i18n.localize('SWADE.Unequipped'),
+      });
+    }
+    chips.push(
+      {
+        icon: '<i class="fas fa-shield-alt"></i>',
+        title: game.i18n.localize('SWADE.Armor'),
+        text: this.armor,
+      },
+      {
+        icon: '<i class="fas fa-dumbbell"></i>',
+        text: this.minStr,
+      },
+      {
+        icon: '<i class="fas fa-sticky-note"></i>',
+        text: await TextEditor.enrichHTML(this.notes, enrichOptions),
+        title: game.i18n.localize('SWADE.Notes'),
+      },
+    );
+    return chips;
   }
 }

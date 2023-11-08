@@ -47,4 +47,8 @@ export class ActionData extends foundry.abstract.TypeDataModel<
   protected _applyShims() {
     shims.actionProperties(this);
   }
+
+  get canHaveCategory() {
+    return true;
+  }
 }

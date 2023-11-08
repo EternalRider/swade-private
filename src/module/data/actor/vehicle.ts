@@ -81,4 +81,16 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
   get encumbered() {
     return false;
   }
+
+  get wildcard() {
+    return false;
+  }
+
+  getRollData(): Record<string, number | string> {    
+    const out: Record<string, number | string> = {
+      wounds: this.system.wounds.value || 0,
+      topspeed: this.system.topspeed || 0,
+    };
+    return out;
+  }
 }

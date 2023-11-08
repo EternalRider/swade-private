@@ -1,4 +1,5 @@
 import { constants } from '../../constants';
+import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 import { favorite, grants, itemDescription } from './common';
 
 export interface HindranceData
@@ -33,5 +34,19 @@ export class HindranceData extends foundry.abstract.TypeDataModel<
       (this.severity === constants.HINDRANCE_SEVERITY.EITHER &&
         this.major === true)
     );
+  }
+
+  get canGrantItems() {
+    return true;
+  }
+
+  async getChatChips(): Promise<ItemChatCardChip[]> {
+    return [
+      {
+        text: this.isMajor
+          ? game.i18n.localize('SWADE.Major')
+          : game.i18n.localize('SWADE.Minor'),
+      },
+    ];
   }
 }
