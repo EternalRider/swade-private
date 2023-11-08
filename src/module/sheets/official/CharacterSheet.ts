@@ -423,10 +423,8 @@ export default class CharacterSheet extends ActorSheet {
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
       foundry.utils.setProperty(item, 'hasMacros', hasMacros);
-      if (item.type === 'power') {
-        const powerPoints = this._getPowerPoints(item);
-        foundry.utils.setProperty(item, 'powerPoints', powerPoints);
-      }
+      if (item.type === 'power')
+        foundry.utils.setProperty(item, 'powerPoints', item.powerPointObject);
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
@@ -580,19 +578,6 @@ export default class CharacterSheet extends ActorSheet {
       foundry.utils.setProperty(item, key, constants.EQUIP_STATE.CARRIED);
     } else if (event.altKey) {
       foundry.utils.setProperty(item, key, constants.EQUIP_STATE.STORED);
-    }
-  }
-
-  protected _getPowerPoints(item: SwadeItem) {
-    if (item.type === 'power' && item.actor) {
-      const arcane = item.system.arcane;
-      let current = getProperty(item.actor, 'system.powerPoints.value');
-      let max = getProperty(item.actor, 'system.powerPoints.max');
-      if (arcane) {
-        current = getProperty(item.actor, `system.powerPoints.${arcane}.value`);
-        max = getProperty(item.actor, `system.powerPoints.${arcane}.max`);
-      }
-      return { current, max };
     }
   }
 
@@ -1296,7 +1281,7 @@ export default class CharacterSheet extends ActorSheet {
           return (
             isWeapon &&
             !!loadedAmmo &&
-            item.needsFullReloadProcedure() &&
+            item.usesAmmoFromInventory &&
             (item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE ||
               item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );

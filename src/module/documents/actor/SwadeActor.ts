@@ -19,7 +19,6 @@ import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import { Logger } from '../../Logger';
 import {
-  addUpModifiers,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
@@ -83,8 +82,7 @@ export default class SwadeActor extends Actor {
 
   /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
-    if (this.system instanceof VehicleData) return false;
-    return this.system.wildcard || this.type === 'character';
+    return !!this.system.wildcard;
   }
 
   /** @returns true when the actor has an arcane background or a special ability that grants powers. */
@@ -725,28 +723,8 @@ export default class SwadeActor extends Actor {
    * @param displayToChat display a message to chat
    */
   async refreshBennies(displayToChat = true) {
-    if (this.system instanceof VehicleData) return;
-    if (displayToChat) {
-      const message = await renderTemplate(SWADE.bennies.templates.refresh, {
-        target: this,
-        speaker: game.user,
-      });
-      const chatData = {
-        content: message,
-      };
-      CONFIG.ChatMessage.documentClass.create(chatData);
-    }
-    let newValue = this.system.bennies.max;
-    const hardChoices = game.settings.get('swade', 'hardChoices');
-    if (
-      hardChoices &&
-      this.isWildcard &&
-      this.type === 'npc' &&
-      !this.hasPlayerOwner
-    ) {
-      newValue = 0;
-    }
-    await this.update({ 'system.bennies.value': newValue });
+    if (typeof this.system.refreshBennies === 'function')
+      this.system.refreshBennies(displayToChat);
   }
 
   /** Calculates the total Wound Penalties
@@ -829,57 +807,7 @@ export default class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    const out: Record<string, number | string> = {
-      wounds: this.system.wounds.value || 0,
-    };
-
-    //return early if the actor is a vehicle
-    if (this.system instanceof VehicleData) {
-      out.topspeed = this.system.topspeed || 0;
-      return out;
-    }
-
-    const globalMods = this.system.stats.globalMods;
-
-    // Attributes
-    const attributes = this.system.attributes;
-    for (const [key, attribute] of Object.entries(attributes)) {
-      const short = key.substring(0, 3);
-      const name = game.i18n.localize(SWADE.attributes[key].long);
-      const die = attribute.die.sides;
-      let mod = attribute.die.modifier || 0;
-      if (includeModifiers) {
-        mod = structuredClone<RollModifier[]>([
-          {
-            label: game.i18n.localize('SWADE.TraitMod'),
-            value: attribute.die.modifier as number,
-          },
-          ...globalMods[key],
-          ...globalMods.trait,
-        ])
-          .filter((m) => m.ignore !== true)
-          .reduce(addUpModifiers, 0) as number;
-      }
-      let modString = mod !== 0 ? mod.signedString() : '';
-      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
-      let val = `1d${die}x[${name}]${modString}`;
-      if (die <= 1) val = `1d${die}[${name}]${modString}`;
-      out[short] = val;
-    }
-
-    for (const skill of this.itemTypes.skill) {
-      const die = skill.system.die.sides;
-      let mod = Number(skill.system.die.modifier);
-      if (includeModifiers) mod = skill.modifier;
-      const name = skill.name!.slugify({ strict: true });
-      let modString = mod !== 0 ? mod.signedString() : '';
-      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
-      out[name] = `1d${die}[${skill.name}]${modString}`;
-    }
-    out.fatigue = this.system.fatigue.value || 0;
-    out.pace = this.system.stats.speed.adjusted || 0;
-
-    return out;
+    return this.system.getRollData(includeModifiers);
   }
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
@@ -1577,12 +1505,7 @@ export default class SwadeActor extends Actor {
 
     //Handle starting currency
     if (!isImported) {
-      let currency = 0;
-      if (this.type === 'character') {
-        currency = game.settings.get('swade', 'pcStartingCurrency');
-      } else if (this.type === 'npc') {
-        currency = game.settings.get('swade', 'npcStartingCurrency');
-      }
+      const currency = this.system.startingCurrency ?? 0;
       this.updateSource({ 'system.details.currency': currency });
     }
   }

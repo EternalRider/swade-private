@@ -42,4 +42,12 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
     migrations.renameRaceToAncestry(source);
     return super.migrateData(source);
   }
+
+  get canHaveCategory() {
+    return true;
+  }
+
+  get canGrantItems() {
+    return true;
+  }
 }
