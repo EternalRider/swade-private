@@ -24,23 +24,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 3.3.0
 
+### Added
+
+- Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
+- Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
+
 ### Changed
 
 - The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
 - Improved the display of notes in the inventory tab. (#964) **by @florad92**
+- Rearranged item sheet header inputs for localization. (#850) **by @florad92**
+
+### Fixed
+
+- Assigning a new card to a combatant should no longer fail if the card had already been drawn previously. (#908) **by @florad92**
+- Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
 
 ## 3.2.2
 
 ### Added
 
 - Added documentation on how to use Auras with Active Effects. **by @florad92**
-- Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 
 ### Fixed
 
 - Auras should no longer throw errors when trying render an aura for a token without actors. (#979) **by @florad92**
 - Vehicle actors should no longer throw uncaught errors when gathering roll data. (#978) **by @florad92**
-- Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
 
 ## 3.2.1
 
@@ -55,7 +64,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Changed handling for the `override` field on items to ensure that data doesn't linger between prepareData cycles. (#977) **by @jpmeehan5**
-- Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 
 ## 3.2.0
 

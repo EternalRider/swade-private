@@ -1,5 +1,6 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { CombatantDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/combatantData';
+import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
 
 declare global {
@@ -101,6 +102,56 @@ export default class SwadeCombatant extends Combatant {
 
   async setTurnLost(turnLost: boolean) {
     return this.setFlag('swade', 'turnLost', turnLost);
+  }
+
+  async assignNewActionCard(cardId: string) {
+    const combat = this.combat;
+    if (!combat) return;
+    //grab the action deck;
+    const deck = game.cards!.get(game.settings.get('swade', 'actionDeck'), {
+      strict: true,
+    });
+    const card = deck.cards.get(cardId, { strict: true });
+
+    const cardValue = card.value as number;
+    const suitValue = card.system['suit'] as number;
+    const hasJoker = card.system['isJoker'] as boolean;
+    const cardString = card.description;
+
+    //move the card to the discard pile, if its not drawn
+    if (!card.drawn) {
+      const discardPile = game.cards!.get(
+        game.settings.get('swade', 'actionDeckDiscardPile'),
+        { strict: true },
+      );
+      await card.discard(discardPile, { chatNotification: false });
+    }
+
+    //update the combatant with the new card
+    const updates = new Array<Updates>();
+    updates.push({
+      _id: this.id,
+      initiative: suitValue + cardValue,
+      'flags.swade': { cardValue, suitValue, hasJoker, cardString },
+    });
+
+    //update followers, if applicable
+    if (this.isGroupLeader) {
+      const followers = combat!.combatants.filter((f) => f.groupId === this.id);
+      for (const follower of followers) {
+        updates.push({
+          _id: follower.id,
+          initiative: suitValue + cardValue,
+          'flags.swade': {
+            cardString,
+            cardValue,
+            hasJoker,
+            suitValue: suitValue - 0.001,
+          },
+        });
+      }
+    }
+    await combat?.updateEmbeddedDocuments('Combatant', updates);
   }
 
   override async _preCreate(
