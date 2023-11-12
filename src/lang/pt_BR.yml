@@ -1101,6 +1101,11 @@ SWADE:
       ao item! Proceda com cautela e somente se tiver certeza.
     ChangeWarning3: Você quer continuar?
   RequiredCrew: Tripulação Requerida
+  Weapon:
+    RangeType:
+      Melee: Corpo a corpo
+      Ranged: À Distância
+      Mixed: Misto
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura

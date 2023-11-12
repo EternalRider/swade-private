@@ -797,7 +797,7 @@ SWADE:
     None: Aucun
     Single: Unitaire
     PP: Points de pouvoir
-    Label: Façons de recharger
+    Label: Méthode de chargement
     Battery: Batterie
     Self: Soi-même
   RemoveAmmo: Enlever les munitions
@@ -1162,6 +1162,15 @@ SWADE:
         univers
     AURAS:
       Actor: Capitaine Démo des Auras
+      Constrained:
+        Title: Limité par les murs
+      Color:
+        Title: Couleur et transparence de l'aura
+      Radius:
+        Title: Rayon de l'aura
+      Title: Auras
+      Visibility:
+        Title: Visibilité de l'aura
   Magazine:
     NoneLoaded: Pas de chargeur chargé
     Select: Choisissez un chargeur
@@ -1195,6 +1204,17 @@ SWADE:
     And: et
     Or: ou
   RequiredCrew: Équipe nécessaire
+  SWID:
+    Long: Savage Worlds ID
+    Short: SWID
+    Regenerate: Régénérer les Savage Worlds ID
+    ChangeWarning2: Changer le Savage Worlds ID d'un objet peut casser les références
+      à l'objet ! Procédez avec prudence et seulement si vous êtes sûr de vous.
+    ChangeWarning3: Voulez-vous continuer ?
+    ChangeWarning1: Agissez avec prudence !
+  HindranceSeverity:
+    Major: Majeur seulement
+    Minor: mineur seulement
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
