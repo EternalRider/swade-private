@@ -145,7 +145,9 @@ export class CompendiumTOC extends Compendium<
       const options: Record<string, unknown> = {};
       if (pageId) options.pageId = pageId;
       const doc = await this.collection.getDocument(documentId);
-      doc?.sheet?.render(true, options);
+      await doc?.sheet?._render(true, options);
+      // Resolves issue where initial render of a compendium page would fail
+      if (pageId) doc.sheet.goToPage(pageId)
     }
   }
 
