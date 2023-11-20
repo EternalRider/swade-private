@@ -45,6 +45,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Assigning a new card to a combatant should no longer fail if the card had already been drawn previously. (#908) **by @florad92**
 - Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
+- Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
 
 ## 3.2.3
 
