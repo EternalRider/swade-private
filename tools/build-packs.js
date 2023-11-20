@@ -16,13 +16,10 @@ const journals = ['system-docs'];
 await main();
 
 async function main() {
-
-  marked.use({ gfm: true, mangle: false, headerIds: false })
-
   //check if the output directory exists, and create it if necessary
   const inputDir = path.resolve(src);
   const outputDir = path.resolve(dest);
-  if (!existsSync) await fs.mkdir(outputDir, { recursive: true });
+  if (!existsSync(outputDir)) await fs.mkdir(outputDir, { recursive: true });
 
   // pack all items
   for (const pack of items) {
@@ -89,10 +86,8 @@ async function packJournalCompendium(journal, inputDir, outputDir) {
     } else if (ext === '.md') {
       const fileContent = await fs.readFile(filePath, 'utf-8'); //markdown
       const content = fm(fileContent);
-      const page = createPage(
-        await marked(content.body, { async: true }),
-        content.attributes,
-      );
+      const html = await parseMarkdownToHTML(content.body);
+      const page = createPage(html, content.attributes);
       packDocument(batch, page, 'journal');
     }
   }
@@ -107,7 +102,6 @@ async function packJournalCompendium(journal, inputDir, outputDir) {
  * @param {string} type the type of document i.e. actor or journal
  */
 function packDocument(batch, doc, type) {
-  if (!doc._id) doc._id = makeID(); //add ID if necessary
   doc._id ||= makeID(); //add ID if necessary
   const key = doc._key || '!' + type + '!' + doc._id; //grab the key or construct it if necessary
   delete doc._key; //delete the key from the doc
@@ -131,7 +125,7 @@ function createPage(content, metadata) {
     title: { level: 1, show: true },
   };
   const page = merge(protoPage, metadata.foundry);
-  return page
+  return page;
 }
 
 function getDB(path) {
@@ -165,28 +159,47 @@ function makeID(length = 16) {
  * Merges two objects together recursively into a new object applying values from right to left.
  * Recursion only applies to child object properties.
  * @source  https://github.com/rayepps/radash/blob/master/src/object.ts
- * 
+ *
  * @param {object} initial The initial object
  * @param {object} override The object containing changed properties
  */
 function merge(initial, override) {
-
   const isObject = (value) => !!value && value.constructor === Object;
 
-  if (!initial || !override) return initial ?? override ?? {}
+  if (!initial || !override) return initial ?? override ?? {};
 
   return Object.entries({ ...initial, ...override }).reduce(
     (acc, [key, value]) => {
       return {
         ...acc,
         [key]: (() => {
-          if (isObject(initial[key])) return merge(initial[key], value)
-          return value
-        })()
-      }
+          if (isObject(initial[key])) return merge(initial[key], value);
+          return value;
+        })(),
+      };
     },
-    {}
-  )
+    {},
+  );
+}
+/**
+ * Parse the markdown to the HTML content
+ * @param {string} raw The input text
+ * @returns {string} the HTML content
+ */
+async function parseMarkdownToHTML(raw) {
+  /**
+   * Remove zero-width characters that editors like to deposit as they can interfere with parsing
+   * @see https://github.com/markedjs/marked/issues/2139
+   * @see https://github.com/markedjs/marked/pull/2605
+   */
+  // eslint-disable-next-line no-misleading-character-class
+  const markdown = raw.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, '');
+  return marked.parse(markdown, {
+    async: true,
+    gfm: true,
+    mangle: false,
+    headerIds: false,
+  });
 }
 
 /**

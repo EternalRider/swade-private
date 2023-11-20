@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.IQk83Jmto9VQWXNS'
-  id: IQk83Jmto9VQWXNS
+  _id: IQk83Jmto9VQWXNS
   name: Playing the Game
   sort: 0
 ---

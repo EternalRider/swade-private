@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.BrbvJQ3OnkmO3cip'
-  id: BrbvJQ3OnkmO3cip
+  _id: BrbvJQ3OnkmO3cip
   name: System API
   sort: 1000000
 ---

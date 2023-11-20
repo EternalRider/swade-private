@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.0rHMnYSuYiVcQGxU'
-  id: 0rHMnYSuYiVcQGxU
+  _id: 0rHMnYSuYiVcQGxU
   name: Character Sheet
   sort: 700000
 ---

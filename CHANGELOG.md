@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.3
+
+### Added
+
+- Added a migration to fix actors with bad power points data. **by @florad92**
+
+### Fixed
+
+- Fixed compendium compilation breaking the display of system docs on the Forge. (#982) **by @florad92**
+- Fixed a strength of 1 resulting in a negative maximum encumbrance. (#989) **by @jpmeehan5**
+
 ## 3.2.2
 
 ### Added

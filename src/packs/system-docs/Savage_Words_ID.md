@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.sEULsXQtiNxTDent'
-  id: sEULsXQtiNxTDent
+  _id: sEULsXQtiNxTDent
   name: The Savage Worlds ID
   sort: 450000
 ---
