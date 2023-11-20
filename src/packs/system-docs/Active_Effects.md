@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.CS16YycneYYnmWVZ'
-  id: CS16YycneYYnmWVZ
+  _id: CS16YycneYYnmWVZ
   name: Active Effects
   sort: 400000
 ---

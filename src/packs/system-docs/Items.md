@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.NcFH9QGCsLMpdkH0'
-  id: NcFH9QGCsLMpdkH0
+  _id: NcFH9QGCsLMpdkH0
   name: Items
   sort: 200000
 ---

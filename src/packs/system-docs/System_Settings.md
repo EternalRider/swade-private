@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.pUgyiLLEp1WQh7Ag'
-  id: pUgyiLLEp1WQh7Ag
+  _id: pUgyiLLEp1WQh7Ag
   name: System Settings
   sort: 500000
 ---

@@ -1086,12 +1086,12 @@ export default class SwadeActor extends Actor {
 
   private _calcImperialCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
-    return (strength.sides / 2 - 1 + modifier) * 20;
+    return Math.max((strength.sides / 2 - 1 + modifier) * 20, 0);
   }
 
   private _calcMetricCapacity(strength: TraitDie): number {
     const modifier = Math.max(strength.modifier, 0);
-    return (strength.sides / 2 - 1 + modifier) * 10;
+    return Math.max((strength.sides / 2 - 1 + modifier) * 10, 0);
   }
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
