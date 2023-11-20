@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.hwX4nBBG8gzqnJE0'
-  id: hwX4nBBG8gzqnJE0
+  _id: hwX4nBBG8gzqnJE0
   name: Rolling Inline Roll Attributes
   sort: 300000
 ---

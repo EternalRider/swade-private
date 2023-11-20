@@ -1,7 +1,7 @@
 ---
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.qKSga6mGzCPciZ8v'
-  id: qKSga6mGzCPciZ8v
+  _id: qKSga6mGzCPciZ8v
   name: NPC Sheet
   sort: 800000
 ---

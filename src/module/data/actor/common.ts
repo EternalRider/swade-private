@@ -175,6 +175,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
   static override migrateData(source) {
     quarantine.ensureStrengthDie(source);
     quarantine.ensureCurrencyIsNumeric(source);
+    quarantine.ensureGeneralPowerPoints(source);
     return super.migrateData(source);
   }
 

@@ -24,3 +24,18 @@ export function ensureCurrencyIsNumeric(source: any) {
     );
   }
 }
+
+export function ensureGeneralPowerPoints(source: any) {
+  if (!source.powerPoints) return;
+  if (
+    !Object.hasOwn(source.powerPoints, 'value') ||
+    !Object.hasOwn(source.powerPoints, 'max')
+  )
+    return;
+  source.powerPoints.general = {
+    value: source.powerPoints.value,
+    max: source.powerPoints.max,
+  };
+  delete source.powerPoints.value;
+  delete source.powerPoints.max;
+}
