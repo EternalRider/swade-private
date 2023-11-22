@@ -22,9 +22,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## ## 3.2.3
+## 3.2.3
 
-- Changed
+### Changed
 
 - Further improved data cleanup methods for Power Points. (#995) **by @florad92**
 
