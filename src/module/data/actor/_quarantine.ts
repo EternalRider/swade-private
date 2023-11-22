@@ -27,15 +27,28 @@ export function ensureCurrencyIsNumeric(source: any) {
 
 export function ensureGeneralPowerPoints(source: any) {
   if (!source.powerPoints) return;
-  if (
-    !Object.hasOwn(source.powerPoints, 'value') ||
-    !Object.hasOwn(source.powerPoints, 'max')
-  )
-    return;
-  source.powerPoints.general = {
-    value: source.powerPoints.value,
-    max: source.powerPoints.max,
-  };
-  delete source.powerPoints.value;
-  delete source.powerPoints.max;
+  source.powerPoints.general ??= {};
+
+  if (Object.hasOwn(source.powerPoints, 'value')) {
+    const value = source.powerPoints.value;
+    source.powerPoints.general.value = Number.isNumeric(value)
+      ? Number(value)
+      : 0;
+    delete source.powerPoints.value;
+  }
+
+  if (Object.hasOwn(source.powerPoints, 'max')) {
+    const max = source.powerPoints.max;
+    source.powerPoints.general.max = Number.isNumeric(max) ? Number(max) : 0;
+    delete source.powerPoints.max;
+  }
+}
+
+export function ensurePowerPointsAreNumeric(source: any) {
+  if (!source.powerPoints) return;
+  for (const [key, pool] of Object.entries<any>(source.powerPoints)) {
+    if (key.startsWith('-=') || pool === null) continue; //bail condition for deletions
+    pool.value = Number.isNumeric(pool.value) ? Number(pool.value) : 0;
+    pool.max = Number.isNumeric(pool.max) ? Number(pool.max) : 0;
+  }
 }
