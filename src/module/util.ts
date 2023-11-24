@@ -1,10 +1,10 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { RollModifier } from '../interfaces/additional.interface';
+import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-import { Logger } from './Logger';
 
 /**
  * @internal
@@ -179,7 +179,7 @@ export async function copyToClipboard(textToCopy: string) {
 /** @internal */
 export function getStatusEffectDataById(idToSearchFor: string) {
   const filter = (e: StatusEffect) => e.id === idToSearchFor;
-  let data = CONFIG.statusEffects.find(filter);
+  let data = CONFIG.statusEffects.find(filter) as StatusEffect | undefined;
   //fallback for when the effect doesn't exist in the global object
   if (!data) data = SWADE.statusEffects.find(filter);
   return data as StatusEffect;
@@ -190,10 +190,21 @@ export function getKeyByValue(object, value) {
   return Object.keys(object).find((key) => object[key] === value);
 }
 
-/** @internal */
-export function deepFreeze<T>(o: T) {
-  Object.values(o).forEach((v) => Object.isFrozen(v) || deepFreeze(v));
-  return Object.freeze(o);
+/**
+ * @internal
+ * @source https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze#examples
+ */
+export function deepFreeze(object) {
+  // Retrieve the property names defined on object
+  const propNames = Reflect.ownKeys(object);
+  // Freeze properties before freezing self
+  for (const name of propNames) {
+    const value = object[name];
+    if ((value && typeof value === 'object') || typeof value === 'function') {
+      deepFreeze(value);
+    }
+  }
+  return Object.freeze(object);
 }
 
 /** @internal */
