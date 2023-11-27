@@ -48,7 +48,11 @@ export function ensurePowerPointsAreNumeric(source: any) {
   if (!source.powerPoints) return;
   for (const [key, pool] of Object.entries<any>(source.powerPoints)) {
     if (key.startsWith('-=') || pool === null) continue; //bail condition for deletions
-    pool.value = Number.isNumeric(pool.value) ? Number(pool.value) : 0;
-    pool.max = Number.isNumeric(pool.max) ? Number(pool.max) : 0;
+    if (Object.hasOwn(pool, 'value')) {
+      pool.value = Number.isNumeric(pool.value) ? Number(pool.value) : 0;
+    }
+    if (Object.hasOwn(pool, 'max')) {
+      pool.max = Number.isNumeric(pool.max) ? Number(pool.max) : 0;
+    }
   }
 }
