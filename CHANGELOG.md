@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.2.5
+
+### Fixed
+
+- Fixed an issue that would reset maximum or current power points for a pool when updating either value. (#997) **by @florad92**
+
 ## 3.2.4
 
 ### Changed
