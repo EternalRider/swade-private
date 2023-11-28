@@ -47,6 +47,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
 - Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
 
+## 3.2.5
+
+### Fixed
+
+- Fixed an issue that would reset maximum or current power points for a pool when updating either value. (#997) **by @florad92**
+
+## 3.2.4
+
+### Changed
+
+- Further improved data cleanup methods for Power Points. (#995) **by @florad92**
+
 ## 3.2.3
 
 ### Added

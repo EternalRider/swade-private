@@ -902,15 +902,15 @@ export default class CharacterSheet extends ActorSheet {
         await this.actor.getBenny();
         break;
       case 'pp-refresh': {
-        const arcane = target.dataset.arcane;
-        const valueKey = 'system.powerPoints.' + arcane + '.value';
-        const maxKey = 'system.powerPoints.' + arcane + '.max';
-        const currentPP = foundry.utils.getProperty(this.actor, valueKey);
-        const maxPP = foundry.utils.getProperty(this.actor, maxKey);
+        const arcane = target.dataset.arcane as string;
+        const key = `system.powerPoints.${arcane}.value`;
+        const currentPP = foundry.utils.getProperty(this.actor, key);
+        const maxPP = foundry.utils.getProperty(
+          this.actor,
+          `system.powerPoints.${arcane}.max`,
+        );
         if (currentPP >= maxPP) return;
-        await this.actor.update({
-          [valueKey]: Math.min(currentPP + 5, maxPP),
-        });
+        await this.actor.update({ [key]: Math.min(currentPP + 5, maxPP) });
         break;
       }
       default:
@@ -1033,9 +1033,15 @@ export default class CharacterSheet extends ActorSheet {
       if (!arcaneBackgrounds[ab]) {
         arcaneBackgrounds[ab] = {
           valuePath: `system.powerPoints.${ab}.value`,
-          value: getProperty(this.actor, `system.powerPoints.${ab}.value`),
+          value: foundry.utils.getProperty(
+            this.actor,
+            `system.powerPoints.${ab}.value`,
+          ),
           maxPath: `system.powerPoints.${ab}.max`,
-          max: getProperty(this.actor, `system.powerPoints.${ab}.max`),
+          max: foundry.utils.getProperty(
+            this.actor,
+            `system.powerPoints.${ab}.max`,
+          ),
           powers: [],
         };
       }
