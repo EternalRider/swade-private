@@ -39,7 +39,8 @@ export interface WeaponData
 export class WeaponData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof WeaponData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -232,7 +233,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await TextEditor.enrichHTML(this.notes, enrichOptions),
+        text: await TextEditor.enrichHTML(this.notes ?? '', enrichOptions),
         title: game.i18n.localize('SWADE.Notes'),
       },
     );
@@ -246,7 +247,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
 
     const noReload = this.reloadType === constants.RELOAD_TYPE.NONE;
     const selfReload = this.reloadType === constants.RELOAD_TYPE.SELF;
-    const ammo = this.parent?.parent.items.getName(this.ammo);
+    const ammo = this.parent?.actor.items.getName(this.ammo);
     if (noReload && !ammo) {
       return false;
     } else if (noReload) {

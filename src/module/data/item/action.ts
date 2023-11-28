@@ -18,7 +18,8 @@ export interface ActionData
 export class ActionData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ActionData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {

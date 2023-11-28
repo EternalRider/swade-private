@@ -14,23 +14,24 @@ declare global {
   }
 }
 
-export type SwadeActorDataProperties =
+export type SwadeActorDataProperties = (
   | SwadeCharacterDataSource
   | SwadeNpcDataSource
-  | SwadeVehicleDataSource;
+  | SwadeVehicleDataSource
+);
 
 interface SwadeCharacterDataSource {
-  data: CharacterDataPropertiesData;
+  system: CharacterDataPropertiesData;
   type: 'character';
 }
 
 interface SwadeNpcDataSource {
-  data: CharacterDataPropertiesData;
+  system: CharacterDataPropertiesData;
   type: 'npc';
 }
 
 interface SwadeVehicleDataSource {
-  data: VehicleDataPropertiesData;
+  system: VehicleDataPropertiesData;
   type: 'vehicle';
 }
 
@@ -75,6 +76,7 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
     toughness: {
       sources: DerivedModifier[];
       effects: DerivedModifier[];
+      armorEffects: DerivedModifier[];
     };
   };
   details: {

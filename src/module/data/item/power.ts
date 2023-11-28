@@ -22,7 +22,8 @@ export interface PowerData
 export class PowerData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof PowerData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {

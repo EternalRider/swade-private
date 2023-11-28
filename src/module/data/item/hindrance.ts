@@ -10,7 +10,8 @@ export interface HindranceData
 export class HindranceData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof HindranceData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {

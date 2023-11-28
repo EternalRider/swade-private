@@ -17,7 +17,8 @@ export interface AbilityData
 export class AbilityData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof AbilityData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {

@@ -1,4 +1,7 @@
-import { AdditionalStat } from '../../../interfaces/additional.interface';
+import {
+  AdditionalStat,
+  DerivedModifier,
+} from '../../../interfaces/additional.interface';
 
 declare global {
   interface SourceConfig {
@@ -122,7 +125,6 @@ export interface CharacterDataSourceData {
     value: number;
     rank: string;
     details: string;
-    // list: Array<Advance>;
   };
   bennies: {
     value: number;
@@ -169,6 +171,13 @@ export interface VehicleDataSourceData {
     value: number;
     max: number;
     ignored: number;
+  };
+  stats: {
+    globalMods: {
+      attack: DerivedModifier[];
+      damage: DerivedModifier[];
+      ap: DerivedModifier[];
+    };
   };
   crew: {
     required: {
