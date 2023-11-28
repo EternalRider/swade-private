@@ -23,7 +23,8 @@ export interface ArmorData
 export class ArmorData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ArmorData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -75,7 +76,7 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
   }
 
   get isReadied(): boolean {
-    return this.equipStatus > constants.EQUIP_STATE.CARRIED;
+    return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
   get isPhysicalItem() {
@@ -117,7 +118,7 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await TextEditor.enrichHTML(this.notes, enrichOptions),
+        text: await TextEditor.enrichHTML(this.notes ?? '', enrichOptions),
         title: game.i18n.localize('SWADE.Notes'),
       },
     );

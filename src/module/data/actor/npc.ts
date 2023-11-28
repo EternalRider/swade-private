@@ -1,11 +1,9 @@
+import { CharacterDataPropertiesData } from '../../documents/actor/actor-data-properties';
 import { CommonActorData } from './common';
 
 const fields = foundry.data.fields;
 
-export interface NpcData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof NpcData)['defineSchema']>
-  > {}
+export interface NpcData extends CharacterDataPropertiesData {}
 
 export class NpcData extends CommonActorData {
   static defineSchema() {

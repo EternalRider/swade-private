@@ -22,7 +22,10 @@ export interface GearData
   > {}
 
 export class GearData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<ReturnType<(typeof GearData)['defineSchema']>>
+  foundry.data.fields.SchemaField<
+    ReturnType<(typeof GearData)['defineSchema']>
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -64,7 +67,7 @@ export class GearData extends foundry.abstract.TypeDataModel<
   }
 
   get isReadied(): boolean {
-    return this.equipStatus > constants.EQUIP_STATE.CARRIED;
+    return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
   get isPhysicalItem() {
@@ -76,9 +79,9 @@ export class GearData extends foundry.abstract.TypeDataModel<
     const actorUpdates: Updates = {};
     const itemUpdates: Updates = {};
     const resourceUpdates = new Array<Updates>();
-    
+
     itemUpdates['system.quantity'] = Number(this.quantity) - chargesToUse;
-    
+
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
 }

@@ -1,4 +1,5 @@
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { TraitDie } from '../../documents/actor/actor-data-source';
 import { addUpModifiers } from '../../util';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { itemDescription } from './common';
@@ -8,10 +9,15 @@ export interface SkillData
     ReturnType<(typeof SkillData)['defineSchema']>
   > {}
 
+export interface SkillData {
+  effects: RollModifier[];
+}
+
 export class SkillData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof SkillData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -29,12 +35,15 @@ export class SkillData extends foundry.abstract.TypeDataModel<
   }
 
   override prepareDerivedData() {
-    this.die = boundTraitDie(this.die);
-    this['wild-die'].sides = Math.min(this['wild-die'].sides, 12);
+    // TODO: Remove the manual cast after SchemaField issues resolved
+    this.die = boundTraitDie(this.die as TraitDie);
+    // TODO: Remove the manual cast after SchemaField issues resolved
+    this['wild-die'].sides = Math.min(this['wild-die'].sides as number, 12);
   }
 
   get modifier(): number {
-    let mod = this.die.modifier;
+    // TODO: Remove the manual cast after SchemaField issues resolved
+    let mod = this.die.modifier as number;
     const attribute = this.attribute;
     const globals = this.parent.actor?.system.stats.globalMods as Record<
       string,

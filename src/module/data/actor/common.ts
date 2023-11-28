@@ -1,6 +1,10 @@
-import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
+import {
+  DerivedModifier,
+  RollModifier,
+} from '../../../interfaces/additional.interface';
 import { Advance } from '../../../interfaces/Advance.interface';
 import { SWADE } from '../../config';
+import { CharacterDataPropertiesData } from '../../documents/actor/actor-data-properties';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
 import { MappingField } from '../fields/MappingField';
 import {
@@ -13,10 +17,19 @@ import * as quarantine from './_quarantine';
 
 const fields = foundry.data.fields;
 
+// TODO: Figure out how to merge this with the derived properties
+// export interface CommonActorData
+//   extends foundry.data.fields.SchemaField.InnerInitializedType<
+//     ReturnType<(typeof CommonActorData)['defineSchema']>
+//   > {}
+
+export interface CommonActorData extends CharacterDataPropertiesData {}
+
 export class CommonActorData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof CommonActorData)['defineSchema']>
-  >
+  >,
+  Actor
 > {
   static defineSchema() {
     return {
@@ -148,10 +161,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     };
   }
 
-  protected static wildcardData = (
-    baseBennies: number,
-    maxWounds: number,
-  ) => ({
+  protected static wildcardData = (baseBennies: number, maxWounds: number) => ({
     bennies: new fields.SchemaField({
       value: new fields.NumberField({ initial: 0 }),
       max: new fields.NumberField({ initial: baseBennies }),
@@ -293,7 +303,6 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
   }
 
   getRollData(includeModifiers: boolean): Record<string, number | string> {
-    
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
@@ -354,11 +363,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     }
     let newValue = this.bennies.max;
     const hardChoices = game.settings.get('swade', 'hardChoices');
-    if (
-      hardChoices &&
-      this.wildcard &&
-      !this.parent.hasPlayerOwner
-    ) {
+    if (hardChoices && this.wildcard && !this.parent.hasPlayerOwner) {
       newValue = 0;
     }
     await this.parent.update({ 'system.bennies.value': newValue });

@@ -1,15 +1,21 @@
 import { DerivedModifier } from '../../../interfaces/additional.interface';
+import { VehicleDataSourceData } from '../../documents/actor/actor-data-source';
 import { makeAdditionalStatsSchema } from '../shared';
 
-export interface VehicleData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof VehicleData)['defineSchema']>
-  > {}
+
+// TODO: Figure out how to merge this with the derived properties
+// export interface VehicleData
+//   extends foundry.data.fields.SchemaField.InnerInitializedType<
+//     ReturnType<(typeof VehicleData)['defineSchema']>
+//   > {}
+
+export interface VehicleData extends VehicleDataSourceData {}
 
 export class VehicleData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof VehicleData)['defineSchema']>
-  >
+  >,
+  Actor
 > {
   static defineSchema() {
     const fields = foundry.data.fields;
@@ -86,10 +92,10 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
     return false;
   }
 
-  getRollData(): Record<string, number | string> {    
+  getRollData(): Record<string, number | string> {
     const out: Record<string, number | string> = {
-      wounds: this.system.wounds.value || 0,
-      topspeed: this.system.topspeed || 0,
+      wounds: this.wounds.value || 0,
+      topspeed: this.topspeed || 0,
     };
     return out;
   }

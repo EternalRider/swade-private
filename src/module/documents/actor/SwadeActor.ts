@@ -25,6 +25,7 @@ import {
 } from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
+import { ArmorData, ConsumableData, GearData, ShieldData, SkillData, WeaponData } from '../../data/item';
 
 declare global {
   interface DocumentClassConfig {
@@ -831,11 +832,11 @@ export default class SwadeActor extends Actor {
 
   calcInventoryWeight(): number {
     const items = this.items.map((i) =>
-      i.type === 'armor' ||
-      i.type === 'weapon' ||
-      i.type === 'shield' ||
-      i.type === 'gear' ||
-      i.type === 'consumable'
+      i.system instanceof ArmorData ||
+      i.system instanceof WeaponData ||
+      i.system instanceof ShieldData ||
+      i.system instanceof GearData ||
+      i.system instanceof ConsumableData
         ? i.system
         : null,
     );
@@ -843,13 +844,13 @@ export default class SwadeActor extends Actor {
     if (this.system instanceof VehicleData) {
       for (const item of items) {
         if (!item) continue;
-        retVal += item.weight * item.quantity;
+        retVal += Number(item.weight) * Number(item.quantity);
       }
     } else {
       for (const item of items) {
         if (!item) continue;
         if (item.equipStatus !== constants.EQUIP_STATE.STORED) {
-          retVal += item.weight * item.quantity;
+          retVal += Number(item.weight) * Number(item.quantity);
         }
       }
     }
@@ -926,7 +927,7 @@ export default class SwadeActor extends Actor {
 
     const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
-    const numbness = this.system.woundsOrFatigue.ignored;
+    const numbness = this.system.woundsOrFatigue?.ignored;
     if (numbness > 0) {
       const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
         'SWADE.Fatigue',
@@ -995,7 +996,7 @@ export default class SwadeActor extends Actor {
     if (this.system instanceof VehicleData) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
-    if (skill.type !== 'skill') {
+    if (!(skill.system instanceof SkillData)) {
       throw new Error('Detected-non skill in skill roll construction');
     }
     if (!options.rof) options.rof = 1;
@@ -1021,7 +1022,7 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
-      this.system.stats.globalMods[skill.system.attribute] ?? [];
+      this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
     const effects = structuredClone<RollModifier[]>([
       ...(skillData.effects ?? []),
       ...attGlobalMods,
@@ -1135,9 +1136,9 @@ export default class SwadeActor extends Actor {
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
-      if (armor.type !== 'armor') continue;
+      if (!(armor.system instanceof ArmorData)) continue;
       if (armor.isReadied && armor.system.locations.torso) {
-        finalToughness += armor.system.toughness;
+        finalToughness += Number(armor.system.toughness);
         sources.push({
           label: armor.name,
           value: armor.system.toughness,
@@ -1159,8 +1160,8 @@ export default class SwadeActor extends Actor {
       'skill',
     );
 
-    const skillDie = parryBaseSkill?.system.die.sides ?? 0;
-    const skillMod = parryBaseSkill?.system.die.modifier ?? 0;
+    const skillDie = (parryBaseSkill?.system as SkillData).die.sides ?? 0;
+    const skillMod = (parryBaseSkill?.system as SkillData).die.modifier ?? 0;
 
     //base parry calculation
     parryTotal = Math.round(skillDie / 2) + parryBaseValue;
@@ -1186,7 +1187,7 @@ export default class SwadeActor extends Actor {
 
     //add shields
     for (const shield of this.itemTypes.shield) {
-      if (shield.type !== 'shield') continue;
+      if (!(shield.system instanceof ShieldData)) continue;
       if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         const shieldParry = shield.system.parry ?? 0;
         parryTotal += shieldParry;
@@ -1201,19 +1202,19 @@ export default class SwadeActor extends Actor {
     //add equipped weapons
     const ambidextrous = this.getFlag('swade', 'ambidextrous');
     for (const weapon of this.itemTypes.weapon) {
-      if (weapon.type !== 'weapon') continue;
+      if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;
 
-      if (weapon.system.equipStatus >= constants.EQUIP_STATE.OFF_HAND) {
+      if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
         // only add parry bonus if it's in the main hand or actor is ambidextrous
         if (
-          weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED ||
+          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
           ambidextrous
         )
           parryBonus += weapon.system.parry ?? 0;
 
         //add trademark weapon bonus
-        parryBonus += weapon.system.trademark;
+        parryBonus += Number(weapon.system.trademark);
       }
       if (parryBonus !== 0) {
         sources.push({
@@ -1306,12 +1307,12 @@ export default class SwadeActor extends Actor {
 
     //get armor items and retrieve their data
     const armorList = this.itemTypes.armor.map((i) =>
-      i.type === 'armor' ? i.system : null,
+      i.system instanceof ArmorData ? i.system : null,
     );
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = i?.equipStatus > constants.EQUIP_STATE.CARRIED;
+        const isEquipped = Number(i?.equipStatus) > constants.EQUIP_STATE.CARRIED;
         const isLocation = i?.locations[location];
         const isNaturalArmor = i?.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;
@@ -1471,7 +1472,6 @@ export default class SwadeActor extends Actor {
             name: skillName,
             type: 'skill',
             img: 'systems/swade/assets/icons/skill.svg',
-            //@ts-expect-error We're just adding some base data for a skill here.
             system: {
               attribute: '',
             },
@@ -1489,7 +1489,6 @@ export default class SwadeActor extends Actor {
         name: game.i18n.localize('SWADE.Unskilled'),
         type: 'skill',
         img: 'systems/swade/assets/icons/skill.svg',
-        //@ts-expect-error We're just adding some base data for a skill here.
         system: {
           attribute: '',
           die: {

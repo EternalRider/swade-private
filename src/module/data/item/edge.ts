@@ -17,7 +17,10 @@ export interface EdgeData
   > {}
 
 export class EdgeData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<ReturnType<(typeof EdgeData)['defineSchema']>>
+  foundry.data.fields.SchemaField<
+    ReturnType<(typeof EdgeData)['defineSchema']>
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -70,7 +73,7 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
   }
 
   get requirementString() {
-    return this.requirements.reduce(
+    return (this.requirements ?? {}).reduce(
       (
         accumulator: string,
         current: RequirementsField,

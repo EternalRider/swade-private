@@ -29,6 +29,7 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
+import SwadeChatMessage from '../chat/SwadeChatMessage';
 
 declare global {
   interface FlagConfig {
@@ -286,7 +287,7 @@ export default class SwadeItem extends Item {
     }
 
     const roll = new DamageRoll(baseRoll.join(''), {}, { modifiers });
-    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
+    if ('isRerollable' in options) roll.setRerollable(!!options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
      * Returning `false` in a hook callback will cancel the roll entirely
