@@ -782,8 +782,8 @@ SWADE:
   About: 关于
   EdgesHindrances: 专长&负赘
   GrantsPowers: 赋予奇术
-  Crew: 需要乘员
-  Passengers: 可选乘客
+  Crew: 乘员
+  Passengers: 乘员
   String: 文本
   Number: 数字
   Checkbox: 复选框
@@ -962,8 +962,8 @@ SWADE:
     InitDiscardPile:
       Name: 先攻弃牌堆
     ParryBase:
-      Name: 定制格斗技能名称
-      Hint: 此名字的技能会用于计算角色的格挡
+      Name: 格斗技能SWID
+      Hint: 用于计算角色格挡的技能的Savage Worlds ID。详细信息请参阅文档！
     UseAttributeShorts:
       Name: 使用缩写属性名称
       Hint: 倘若想在PC或是NPC卡中看到缩写属性名称则启用此选项。举例而言，灵巧变成“灵”，聪慧变成“聪”等等。此选项需要关闭和重新打开所有已打开的卡才会生效。
@@ -983,6 +983,7 @@ SWADE:
       Hint: 不给玩家显示哪个NPC属于不羁角色
     CreateInitChat:
       Name: 生成先攻聊天信息
+      Hint: 当抽取行动卡时，如果启用了此选项，Foundry将把抽取的行动卡输出到聊天中。
     AutoInit:
       Name: 自动先攻
       Hint: 每轮自动抽行动卡
@@ -1265,6 +1266,7 @@ SWADE:
       Accept: 接受
       SoakRoll: 化解活力考验
       WoundedPrompt: <p>{name}即将遭受{wounds}。你想要尝试化解吗？</p>
+      NoVehicleSoak: 尚不支持为载具进行化解
     RerollSoakDialog:
       Title: 为 {name} 重骰化解伤害？
       Prompt: <p>{name} 即将承受 {wounds}点损伤。您是否想重骰化解投骰？</p>
@@ -1338,11 +1340,251 @@ SWADE:
     Max: 最大{stat}
   LoadedAmmo: 已装填弹药
   DesperateAttack:
-    2: 孤注一掷 (2)
-    4: 孤注一掷 (4)
+    2: 绝望攻击（2）
+    4: 绝望攻击（4）
   NumberOfDice:
     Label: 骰子
     Hint: 决定该动作掷出多少颗特性骰子
+  AddOrReplaceActions:
+    Replace: 替换现有动作
+    Content: <p>你想将{type}<strong>{source}</strong>的动作作为新动作添加还是替换现有动作？</p>
+    Title: 添加或替换动作
+    Add: 添加为新动作
+  RequiredCrew: 必需乘员
+  Requirements:
+    Other: 其它
+    And: 与
+    Editor:
+      Value: 值
+      Label: 标签
+      SWID: SWID
+      Header: 编辑{name}的需求
+      AddHint: 添加新需求
+      DeleteHint: 删除此需求
+    Combinator: 组合器
+    Or: 或者
+  TOURS:
+    ADDSTATS:
+      ActorDisplay:
+        Title: 角色上的额外统计信息
+        Content: 在概览选项卡中显示的角色上启用的额外统计信息。
+      Checkbox:
+        Title: 额外统计信息复选框
+        Content: 复选框的值为是或否。
+      Number:
+        Title: 数字额外统计信息
+        Content: 任何数字都可接受，包括小数。
+      Die:
+        Title: 骰子额外统计信息
+        Content: 第一个字段接受任何有效的Foundry骰子表达式；在骰子表达式后添加x表示爆炸骰子（例如1d6x）。第二个字段是要添加的数字。单击标签以掷骰子。
+      Selection:
+        Content: 这是基于游戏设定的固定选项列表。
+        Title: 选择额外统计信息
+      StatKey:
+        Title: 统计信息键
+        Content: 统计信息键确定数据中引用额外统计信息的方式（actor.system.additionalStats.stat-key），并且必须是唯一的。
+      StatDType:
+        Content: 每种类型都有独特的处理方式。
+        Title: 类型
+      Text:
+        Title: 文本额外统计信息
+        Content: 简单的字符串字段；宽度不是很长，因此较长的文本应放在描述或其他字段中。
+      AccessTweaks:
+        Content: 可以在微调菜单的额外统计信息选项卡中启用或禁用其他统计信息。
+        Title: 启用和禁用其他统计信息
+      AddStatTweaks:
+        Title: 额外统计信息选项卡
+        Content: 每个额外统计信息的默认值为关闭，并且必须在每个角色或物品上单独启用。
+      SwadeSettings:
+        Title: SWADE设置
+        Content: 额外统计信息位于《狂野世界》设置配置器中。
+      GameSettings:
+        Content: 首先，必须在游戏的系统设置中配置额外统计信息。
+        Title: 游戏设置
+      StatSettings:
+        Title: 配置额外统计信息
+        Content: 必须首先在此页面上创建所有统计信息，然后才能在角色和物品上启用它们。
+      Title: 额外统计信息
+      Description: 了解如何配置设置中的额外加统计信息
+      Actor: 额外统计信息教程角色
+      StatLabel:
+        Title: 标签
+        Content: 文本将显示在角色卡上。
+      HasMax:
+        Title: 具有最大值
+        Content: 添加将额外统计信息的最大值及其当前值指示为字段（仅适用于数字和文本）。
+    AURAS:
+      Auramancer:
+        Content: 光环在微调菜单的单独选项卡中。角色最多可以拥有两个光环。
+        Title: 光环选项卡
+      Enable:
+        Title: 启用光环
+        Content: 可以单独启用每个光环；它们还可以与未链接的指示物完全配合使用，允许您单独设置光环，即使它们共享一个共同的源角色。
+      Radius:
+        Title: 光环半径
+        Content: 光环的半径，以网格单位测量。此处显示的单位提示符与当前场景的计量单位匹配。
+      AccessAuras:
+        Content: 光环可以在微调菜单中找到
+        Title: 访问光环
+      Constrained:
+        Content: 此切换控制光环是否受到阻挡光线的墙壁的限制。
+        Title: 墙壁限制
+      Color:
+        Title: 光环颜色和透明度
+        Content: 光环显示为围绕源角色的圆形区域标记；这些设置可让您控制它们的视觉显示。
+      Title: 光环
+      Description: 从3.2版本开始，光环可以创建跟随指示物的持续视觉效果。
+      Actor: Auras Tour Demo Character
+      Visibility:
+        Title: 光环可见性
+        Content: 选择哪些指示物（按状态）可以看到此光环。对于至少具有观察者权限的指示物，您始终可以看到它们的所有光环。
+    AMMUNITION:
+      ReloadSelf:
+        Title: 装弹程序-自身
+        Content: 这些武器使用自己的数量来重置其子弹计数器。这个设置最适合投掷武器或其他任何自包含且会消耗自己的物品。
+      ReloadNone:
+        Content: 这些武器完全忽略子弹计数器，直接从链接的弹药物品中取用。该设置最适合仅使用外部弹药的武器，例如箭矢筒或鼓式加特林机枪。
+        Title: 装弹程序-无
+      AmmoBattery:
+        Content: 此处命名的物品必须是带有电池子类型的消耗品以正确工作。此外，消耗品的最大耐久度应为100。
+        Title: 弹药字段
+      Title: 弹药
+      Items:
+        SELF: 投掷刀
+        SINGLE: 左轮手枪
+        FULL: 水枪
+        MAGAZINE: 斯太尔AUG
+        BATTERY: 激光枪
+        PP: 巫师枪
+        NONE: 长弓
+      GameSettings:
+        Title: 游戏设置
+        Content: 首先，必须在游戏的系统设置中启用弹药追踪。
+      AmmoSettings:
+        Title: 弹药设置
+        Content: 这些设置控制弹药是否会自动被远程武器消耗。
+      PCInventory:
+        Title: 库存中的弹药
+        Content: 
+          接下来的三个设置控制当武器重新装填时，基于角色类型，是否使用外部物品。如果未选中这些选项，但启用了弹药管理，则给定类型的角色将耗尽物品上的子弹，但可以自由重新装填。这允许进行类似街机风格的弹药管理，其中重新装填操作对于追踪很重要，但长期使用不受影响。
+      CharacterWeapons:
+        Title: 角色武器
+        Content: 角色的武器列在装备选项卡中。
+      ReloadSingle:
+        Title: 装弹程序-单发
+        Content: 每次按下重新装填按钮时，这些武器都会重新装填一发子弹。这个设置非常适合拥有笨重弹药的左轮手枪或其他需要缓慢重新装填的武器。
+      AmmoSelf:
+        Title: 弹药字段
+        Content: 当重新装填类型设置为自己时，此字段将被忽略
+      ReloadPP:
+        Content: 这些武器不通过物理弹药重新装填，而是通过消耗使用者的奇术点（如《Rifts® for Savage Worlds》中所述）。
+        Title: 装弹程序-奇术点
+      AmmoPP:
+        Title: 弹药字段
+        Content: 请命名一个有效的奥法类型（例如通用、魔法、奇迹或灵能），而不是物品。
+      Description: 此教程将展示如何使用自动弹药追踪功能
+      Actor: 弹药教程角色
+      SwadeSettings:
+        Title: SWADE设置
+        Content: 弹药设置可以在《Savage Worlds》的设置配置器中找到。
+      AmmoManagement:
+        Title: 弹药管理
+        Content: 此设置控制远程武器是否消耗弹药，无论是从武器的内部弹容量计数器中还是库存中。
+      AmmoNone:
+        Title: 弹药字段
+        Content: 
+          这应该设置为角色库存中的一个装备（例如箭矢）或消耗品（例如一桶子弹）。装备物品的数量直接被消耗。消耗品使用其耐久度，每个数量表示一整套耐久度。此字段的名称必须完全与要消耗的物品名称相匹配。
+      AmmoSingle:
+        Title: 弹药字段
+        Content: 此字段的工作方式类似于重装-无，但是重新装填时才会消耗数量或耐久度，而武器发射不会，因为武器发射会从弹容量计数器中消耗。
+      ReloadFull:
+        Content: 每次按下重新装填按钮时，这些武器都会重新填满子弹。这可以用作简化版本的弹匣方法，或者适用于没有可拆卸弹匣的武器，例如带有液体储存装置的枪支。
+        Title: 装弹程序-全部
+      AmmoFull:
+        Title: 弹药字段
+        Content: 此字段的工作方式类似于重装-无，但是重新装填会消耗数量或耐久度，而不是由武器发射，因为武器开火会从弹容量计数器中消耗。
+      ReloadMagazine:
+        Content: 这些武器使用完全可拆卸的弹匣，可以根据需要进行交换，并追踪每个弹匣剩余的子弹数量。
+        Title: 装弹程序-弹匣
+      AmmoMagazine:
+        Title: 弹药字段
+        Content: 此处命名的物品必须是带有弹匣子类型的消耗品以正确工作。此外，消耗品的耐久度应与武器的弹容量计数器相匹配。
+      ReloadBattery:
+        Content: 这些武器的工作方式类似于弹匣，但使用可更换电池，其电量按照使用的子弹数量来消耗。
+        Title: 装弹程序-电池
+    TWEAKS:
+      AutoCalc:
+        Content: 切换角色的属性和装备是否由它们自动计算的统计信息，或者手动设置。
+        Title: 自动计算
+      Unshake:
+        Content: 为动摇角色回合开始的自动摆脱动摇掷骰添加一个额外的加值。
+        Title: 摆脱动摇修正值
+      Initiative:
+        Title: 先攻修正
+        Content: 根据核心规则书中的规则修改角色的先攻处理方式。
+      Title: 微调
+      Description: 了解微调菜单中独特的人物卡修改
+      Actor: 微调教程角色
+      AccessTweaks:
+        Title: 访问微调
+        Content: 微调菜单位于每个角色卡标题栏中，提供附加配置选项。
+      TraitTweaks:
+        Title: 特性修改
+        Content: 此选项卡提供了一系列额外字段，用于自定义角色的特性。
+      Advances:
+        Title: 升级模式
+        Content: 扩展升级（默认）提供了改进的数据处理，指定了升级的类型并自动计算角色的等级。传统升级只是一个大文本框，可自由编写任何内容，而没有进行数据处理。
+      Soak:
+        Title: 化解修正值
+        Content: 为系统伤害投骰卡片上的承受伤害按钮触发的化解掷骰添加一个额外的加值。
+  SWID:
+    ChangeWarning3: 是否要继续？
+    Long: Savage Worlds ID
+    Short: SWID
+    Regenerate: 重新生成Savage Worlds ID
+    ChangeWarning2: 更改物品的Savage Worlds ID可能会中断对该物品的引用！请谨慎操作，仅在确定时进行更改。
+    ChangeWarning1: 谨慎操作！
+  Auras:
+    TabHeader: 光环配置器
+    WallConstraints:
+      Hint: 此选项控制光环是否受到阻挡光线的墙壁的限制，或者可以穿过墙壁
+      Label: 受墙壁约束
+    UserAura1: 光环1
+    UserAura2: 光环2
+    Enabled: 启用
+    Color: 颜色
+    Range: 光环半径
+    Alpha: 光环透明度
+  CouldNotFindMacro: 找不到UUID为{uuid}的宏
+  HindranceSeverity:
+    Label: 严重程度选项
+    Major: 仅主要
+    Minor: 仅次要
+    Either: 任意
+  Magazine:
+    NoneLoaded: 未装载弹匣
+    Select: 选择一个弹匣
+  Weapon:
+    RangeType:
+      Melee: 近战
+      Ranged: 远程
+      Mixed: 混合
+  Unfamiliar:
+    '2': 不熟悉（-2）
+    '4': 不熟悉（-4）
+  MacroActor:
+    Default: 默认
+    Self: 自身
+  BaseParry: 基础格挡
+  Aura:
+    Visibility:
+      Label: 对可见
+      Hint: 选择可以看到此光环的指示物（按照状态）。你始终可以看到你至少具有观察者权限的指示物的所有光环
+  ShieldBonus: 盾牌加值
+  ResourcesUsed:
+    Label: 使用的资源
+    Hint: 此动作使用的资源量
+  DmgMod: 伤害调整
 ITEM:
   TypeSkill: 技能
   TypePower: 奇术
