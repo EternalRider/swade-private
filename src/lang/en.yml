@@ -28,6 +28,7 @@ SWADE:
   WildCard: Wild Card
   Extra: Extra
   Bennies: Bennies
+  BenniesCount: '{count} Bennies'
   TraitMod: Trait Modifier
   SkillTest: Skill Test
   AttributeTest: Attribute Test
@@ -1256,6 +1257,7 @@ SWADE:
       Melee: Melee
       Ranged: Ranged
       Mixed: Mixed
+  NpcWildCardsOnScene: NPC Wild Cards on Scene
 TYPES:
   Actor:
     character: Player Character
