@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
@@ -22,6 +21,7 @@ import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
+import { UserSummary } from '../style/UserSummary';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -747,13 +747,14 @@ export default class SwadeCoreHooks {
 
   /** Add benny management to the player list */
   static async onRenderPlayerList(
-    list: PlayerList,
+    _list: PlayerList,
     html: JQuery<HTMLElement>,
-    options: any,
+    _options: any,
   ) {
-    html[0]
-      .querySelectorAll<HTMLLIElement>('.player')
-      .forEach((player) => new PlayerBennyDisplay(player));
+    const users = html[0].querySelectorAll<HTMLLIElement>('.player');
+    //add the Benny Display;
+    users.forEach((el) => new PlayerBennyDisplay(el));
+    users.forEach((el) => new UserSummary(el));
   }
 
   static onRenderUserConfig(

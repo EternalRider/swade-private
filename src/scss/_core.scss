@@ -1,7 +1,7 @@
 .directory-list .directory-item {
   .wildcard-icon {
-    width: 32px;
-    height: 32px;
+    width: var(--font-size-32);
+    height: var(--font-size-32);
     object-fit: scale-down;
     object-position: center;
     margin: 0;
@@ -12,12 +12,12 @@
 
 #players ol li.player .bennies-count {
   flex-grow: 0;
-  flex-basis: 25px;
+  flex-basis: var(--font-size-24);
   background: url('assets/icons/plain-circle.svg') no-repeat center;
   color: black;
   font-weight: 900;
   overflow: hidden;
-  font-size: 18px;
+  font-size: var(--font-size-18);
   text-align: center;
   text-shadow: 0 0 5px white;
   &.bennies-gm {
@@ -29,18 +29,28 @@
 }
 
 #combat li.combatant .token-initiative .initiative {
-  font-size: 20px;
+  font-size: var(--font-size-20);
 }
 
 // Settings sidebar
 #game-details > li.system-links {
   margin: 3px 0;
   a {
-    font-size: 12px;
+    font-size: var(--font-size-12);
     text-transform: uppercase;
-    margin-right: 6px;
+    margin-right: calc(var(--font-size-12) / 2);
     color: var(--color-text-hyperlink);
     text-decoration: underline;
+  }
+}
+
+#tooltip.text-center.swade-user-summary {
+  min-width: 15rem;
+  ul {
+    text-align: start;
+  }
+  .header {
+    border-bottom: 1px solid var(--color-underline-header);
   }
 }
 

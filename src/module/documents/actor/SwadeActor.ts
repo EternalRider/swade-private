@@ -2,22 +2,30 @@ import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { Attribute, ItemMetadata } from '../../../globals';
+import { AuraData } from '../../../interfaces/AuraData.interface';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { AuraData } from '../../../interfaces/AuraData.interface';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
+import {
+  ArmorData,
+  ConsumableData,
+  GearData,
+  ShieldData,
+  SkillData,
+  WeaponData,
+} from '../../data/item';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
-import { Logger } from '../../Logger';
 import {
   mapRange,
   modifierReducer,
@@ -25,7 +33,6 @@ import {
 } from '../../util';
 import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
-import { ArmorData, ConsumableData, GearData, ShieldData, SkillData, WeaponData } from '../../data/item';
 
 declare global {
   interface DocumentClassConfig {
@@ -1160,8 +1167,8 @@ export default class SwadeActor extends Actor {
       'skill',
     );
 
-    const skillDie = (parryBaseSkill?.system as SkillData).die.sides ?? 0;
-    const skillMod = (parryBaseSkill?.system as SkillData).die.modifier ?? 0;
+    const skillDie = (parryBaseSkill?.system as SkillData)?.die.sides ?? 0;
+    const skillMod = (parryBaseSkill?.system as SkillData)?.die.modifier ?? 0;
 
     //base parry calculation
     parryTotal = Math.round(skillDie / 2) + parryBaseValue;
@@ -1312,7 +1319,8 @@ export default class SwadeActor extends Actor {
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = Number(i?.equipStatus) > constants.EQUIP_STATE.CARRIED;
+        const isEquipped =
+          Number(i?.equipStatus) > constants.EQUIP_STATE.CARRIED;
         const isLocation = i?.locations[location];
         const isNaturalArmor = i?.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;
