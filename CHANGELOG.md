@@ -29,18 +29,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 - Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
+- Added a new flag for actors, `wildAttackDamage`, that modifies the bonus damage granted by the Wild Attack status. (#987) **by @jpmeehan5**
 
 ### Changed
 
 - The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
 - Improved the display of notes in the inventory tab. (#964) **by @florad92**
-- Refactored a large number of functions on SwadeActor and SwadeItem to use the system data model instead of type guards. **by @jpmeehan5** (#935)
+- Refactored a large number of functions on SwadeActor and SwadeItem to use the system data model instead of type guards. (#935) **by @jpmeehan5**
   - Deprecated `SwadeItem.getTraitModifiers()` in favor of a proper getter, `SwadeItem.traitModifiers`
   - Deprecated `SwadeItem.needsFullReloadProcedure()` in favor a proper getter, `SwadeItem.usesAmmoFromInventory`
   - Deprecated `SwadeItem._getPowerPoints` in favor of a proper getter, `SwadeItem.powerPointObject`
   - [BREAKING] Removed \_isReloadPossible() as redundant
   - [BREAKING] Moved \_createChargeUsageMessage to #createChargeUsageMessage, making it fully private
 - Rearranged item sheet header inputs for localization. (#850) **by @florad92**
+- Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
 
 ### Fixed
 
