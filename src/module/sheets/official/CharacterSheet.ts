@@ -205,8 +205,6 @@ export default class CharacterSheet extends ActorSheet {
         case 'open-origin':
           if (sourceItem) {
             sourceItem.sheet?.render(true);
-          } else if (effect.origin) {
-            fromUuid(effect.origin).then((doc) => doc?.sheet?.render(true));
           }
           return;
         default:

@@ -3,10 +3,10 @@
   <li
     class="flexrow {{#unless origin}}active-effect{{/unless}} {{#if disabled}}disabled-effect{{/if}}"
     data-effect-id="{{id}}"
-    data-effect-parent-id="{{parent.id}}"
+    data-effect-uuid="{{uuid}}"
   >
     <img src="{{icon}}" alt="{{name}}" class="effect-icon" />
-    {{#if origin}}
+    {{#if transfer}}
     <a class="effect-label effect-action" data-action="open-origin"
       >{{name}}</a
     >
