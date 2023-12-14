@@ -20,6 +20,7 @@ The Savage Worlds system uses flags in its code to account for certain special e
   - `ambidextrous`: Allows an actor to add any parry bonus from off-hand weapons as well as blocks the automatic Off Hand penalty.
   - `hardy`: Prevents a second shaken result from the Apply Damage workflow from counting as a wound.
   - `ignoreBleedOut`: Prevents the application of the "Bleeding Out" status effect on a failed vigor roll upon incapacitation.
+  - `wildAttackDamage`: Replaces the bonus damage from Wild Attack; if you add 4 to this value, Wild Attacks will grant +4 damage instead of +2.
 - Effects
   - `conditionalEffect`: Sets if the effect should be ignored by default in the roll dialog.
 

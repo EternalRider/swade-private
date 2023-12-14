@@ -544,6 +544,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
         ]);
       }
     }
+
+    //Update wild attack damage based on a flag
+    if (this.statuses.has('wild-attack')) {
+      const damageModIndex = this.changes.findIndex(
+        (c) => c.key === 'system.stats.globalMods.damage',
+      );
+      const newDamage = this.actor?.getFlag('swade', 'wildAttackDamage');
+      if (typeof newDamage === 'number') {
+        const newChanges = foundry.utils.deepClone(this.changes);
+        newChanges[damageModIndex].value = String(newDamage);
+        this.updateSource({ changes: newChanges });
+      }
+    }
   }
 
   protected override _onCreate(
