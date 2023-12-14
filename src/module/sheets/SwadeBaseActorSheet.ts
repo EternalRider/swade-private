@@ -102,19 +102,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       await this.actor.rollRunningDie();
     });
 
-    html.find('.effect-action').on('click', (ev) => {
+    html.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
       const data = a.closest('li')!.dataset;
-      const effectID = data.effectId;
-      const parentId = data.effectParentId;
-      const effect =
-        parentId === this.actor.id
-          ? (this.actor.effects.get(effectID) as SwadeActiveEffect)
-          : (this.actor.items
-              .get(parentId)
-              .effects.get(effectID) as SwadeActiveEffect);
+      const effectUuid = data.effectUuid;
+      const effect = (await fromUuid(effectUuid) as SwadeActiveEffect);
       const action = a.dataset.action;
-
       switch (action) {
         case 'edit':
           return effect.sheet?.render(true);
@@ -123,7 +116,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         case 'toggle':
           return effect.update({ disabled: !effect?.disabled });
         case 'open-origin':
-          fromUuid(effect.origin).then((doc) => doc?.sheet?.render(true));
+          (effect.parent as SwadeItem).sheet.render(true);
           break;
         default:
           Logger.warn(`The action ${action} is not currently supported`);
