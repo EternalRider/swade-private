@@ -71,7 +71,7 @@
                 <span class="initiative"><i class="fas fa-ban"></i></span>
                 {{else if this.hasRolled}}
                 <span class="initiative">{{this.cardString}}</span>
-                {{else if @root.user.isGM}}
+                {{else if this.canDrawInit}}
                 <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
                 {{else}}
                 <span class="initiative"></span>

@@ -188,7 +188,8 @@ function isInGroup(combatantId: string) {
 }
 
 function groupColor(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
+  const c = game.combat?.combatants.get(combatantId);
+  if (!c) return;
   const groupColor = c.getFlag('swade', 'groupColor');
   if (groupColor) return groupColor;
 

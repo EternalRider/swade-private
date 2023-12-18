@@ -275,6 +275,7 @@ SWADE:
   Ok: Ok
   Cancel: Cancel
   Redraw: Draw Card
+  RedrawBenny: Redraw Card with Benny
   Add: Add
   ConfigInit: Configure Initiative
   IgnWounds: Ignore Wounds
@@ -1258,6 +1259,8 @@ SWADE:
       Ranged: Ranged
       Mixed: Mixed
   NpcWildCardsOnScene: NPC Wild Cards on Scene
+  PlayerCardDrawHelper:
+    Title: SWADE Player Card Draw Helper
 TYPES:
   Actor:
     character: Player Character

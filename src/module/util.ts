@@ -3,6 +3,7 @@ import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
+import SwadeUser from './documents/SwadeUser';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 
@@ -107,7 +108,7 @@ export function addUpModifiers(acc: number, cur: RollModifier) {
 /** @internal */
 export function firstOwner(doc) {
   /* null docs could mean an empty lookup, null docs are not owned by anyone */
-  if (!doc) return null;
+  if (!doc) return;
   const ownership: Ownership =
     (doc instanceof TokenDocument ? doc.actor?.ownership : doc.ownership) ?? {};
   const playerOwners = Object.entries(ownership)
@@ -134,17 +135,17 @@ export function firstOwner(doc) {
  * Players first, then GM
  */
 export function isFirstOwner(doc) {
-  return game.userId === firstOwner(doc)?.id;
+  return firstOwner(doc)?.isSelf;
 }
 
 /** @internal */
 export function firstGM() {
-  return game.users?.find((u) => u.isGM && u.active);
+  return game.users!.activeGM as SwadeUser | null;
 }
 
 /** @internal */
 export function isFirstGM() {
-  return game.userId === firstGM()?.id;
+  return firstGM()?.isSelf ?? false;
 }
 
 /** @internal */
@@ -167,10 +168,7 @@ export function getRankFromAdvanceAsString(advance: number): string {
   return SWADE.ranks[getRankFromAdvance(advance)];
 }
 
-/**
- * @internal
- * @param textToCopy
- */
+/** @internal */
 export async function copyToClipboard(textToCopy: string) {
   await game.clipboard.copyPlainText(textToCopy);
   ui.notifications.info('Copied to clipboard');
@@ -178,11 +176,10 @@ export async function copyToClipboard(textToCopy: string) {
 
 /** @internal */
 export function getStatusEffectDataById(idToSearchFor: string) {
-  const filter = (e: StatusEffect) => e.id === idToSearchFor;
-  let data = CONFIG.statusEffects.find(filter) as StatusEffect | undefined;
-  //fallback for when the effect doesn't exist in the global object
-  if (!data) data = SWADE.statusEffects.find(filter);
-  return data as StatusEffect;
+  const filter = (e: any) => e.id === idToSearchFor;
+  const data =
+    CONFIG.statusEffects.find(filter) || SWADE.statusEffects.find(filter);
+  return data as StatusEffect | undefined;
 }
 
 /** @internal */

@@ -1,6 +1,13 @@
+import { RollInitiativeOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/combat';
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
+import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
+import SwadeUser from '../SwadeUser';
+import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
+import SwadeCards from '../card/SwadeCards';
 import SwadeCombatant from './SwadeCombatant';
 
 declare global {
@@ -10,39 +17,57 @@ declare global {
 }
 
 export default class SwadeCombat extends Combat {
+  /** Compares two combatants by initiative card */
+  static #cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+    const cardA = a.cardValue ?? 0;
+    const cardB = b.cardValue ?? 0;
+    const card = cardB - cardA;
+    if (card !== 0) return card;
+    const suitA = a.suitValue ?? 0;
+    const suitB = b.suitValue ?? 0;
+    return suitB - suitA;
+  }
+
+  /** Compares two combatants by ID. */
+  static #idSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+    return a.id! > b.id! ? 1 : -1;
+  }
+
+  get actionDeck(): SwadeCards {
+    return game.cards!.get(game.settings.get('swade', 'actionDeck'), {
+      strict: true,
+    });
+  }
+
   override async rollInitiative(
     ids: string | string[],
-    options: InitiativeOptions = {},
+    { messageOptions, updateTurn }: RollInitiativeOptions = {},
   ) {
     // Structure input data
     ids = typeof ids === 'string' ? [ids] : ids;
+    const currentId = this.combatant?.id;
 
-    const { messageOptions } = options;
-
-    const messages: Record<string, unknown>[] = [];
+    const messages: DeepPartial<ChatMessageData>[] = [];
+    const updates: Updates[] = [];
     let skipMessage = false;
 
-    const actionCardDeck = game.cards!.get(
-      game.settings.get('swade', 'actionDeck'),
-      { strict: true },
-    );
-
     //Check if enough cards are available
-    if (ids.length > actionCardDeck.availableCards.length) {
+    if (ids.length > this.actionDeck.availableCards.length) {
       const message = game.i18n.format('SWADE.NoCardsLeft', {
         needed: ids.length,
         current: actionCardDeck.availableCards.length,
       });
       ui.notifications.warn(message);
-      return this;
+      return this as Combat;
     }
 
     // Iterate over Combatants, performing an initiative draw for each
     for (const id of ids) {
       // Get Combatant data
-      const c = this.combatants.get(id, { strict: true });
-      const roundHeld = c.roundHeld;
-      const inGroup = c.groupId;
+      const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
+      if (!c.isOwner) continue;
+      const roundHeld = !!c.roundHeld;
+      const inGroup = !!c.groupId;
 
       //Do not draw cards for defeated or holding combatants
       if (c.isDefeated || roundHeld || inGroup) continue;
@@ -53,7 +78,7 @@ export default class SwadeCombat extends Combat {
       const isIncapacitated = c.actor?.system.status.isIncapacitated;
 
       // Figure out how many cards to draw
-      const cardsToDraw = this._determineCardsToDraw(c);
+      const cardsToDraw = this._determineCardsToDraw(c as SwadeCombatant);
 
       // Draw initiative
       let card: Card;
@@ -130,21 +155,29 @@ export default class SwadeCombat extends Combat {
 
       const initiative = card?.system['suit'] + card.value;
 
-      c.updateSource({ initiative: initiative, 'flags.swade': newFlags });
+      const update = {
+        _id: id,
+        initiative,
+        flags: { swade: newFlags },
+      };
 
-      if (c.isGroupLeader) {
-        await c.setSuitValue(c.suitValue ?? 0 + 0.9);
-        const followers =
-          game.combat?.combatants.filter((f) => f.groupId === c.id) ?? [];
-        let s = newFlags.suitValue;
-        for (const f of followers) {
-          s -= 0.02;
-          f.updateSource({
-            initiative: initiative,
-            'flags.swade': newFlags,
-          });
-          f.updateSource({ 'flags.swade.suitValue': s });
-        }
+      //Handle group leader changes
+      if (c.isGroupLeader) update.flags.swade.suitValue += 0.9;
+      updates.push(update);
+
+      //handle potential followers
+      const followers =
+        game.combat?.combatants.filter((f) => f.groupId === c.id) ?? [];
+      let s = newFlags.suitValue;
+      for (const f of followers) {
+        s -= 0.02;
+        updates.push({
+          _id: f.id,
+          initiative: initiative,
+          'flags.swade': foundry.utils.mergeObject(newFlags, {
+            suitValue: s,
+          }),
+        });
       }
 
       // Construct chat message data
@@ -157,14 +190,13 @@ export default class SwadeCombat extends Combat {
             </section>
           `;
 
-      const messageData = mergeObject(
+      const messageData = foundry.utils.mergeObject(
         {
-          speaker: {
-            scene: game.scenes?.active?.id,
-            actor: c.actor ? c.actor.id : null,
-            token: c.token?.id,
-            alias: `${c.token!.name} ${game.i18n.localize('SWADE.InitDraw')}`,
-          },
+          speaker: ChatMessage.getSpeaker({
+            actor: c.actor,
+            token: c.token,
+            alias: c.name,
+          }),
           whisper:
             c.token?.hidden || c.hidden
               ? game?.users?.filter((u) => u.isGM)
@@ -176,11 +208,10 @@ export default class SwadeCombat extends Combat {
       messages.push(messageData);
     }
 
+    if (!updates.length) return this as Combat;
+
     // Update the combat instance with the new combatants
-    await this.update(
-      { combatants: this.combatants.toObject() },
-      { diff: false },
-    );
+    await this.updateEmbeddedDocuments('Combatant', updates);
 
     if (!skipMessage) this._playInitiativeSound();
 
@@ -189,21 +220,32 @@ export default class SwadeCombat extends Combat {
       await CONFIG.ChatMessage.documentClass.createDocuments(messages);
     }
 
-    const combatants = ids.map((id) =>
-      this.combatants.get(id, { strict: true }),
+    const combatants = ids.map(
+      (id) => this.combatants.get(id, { strict: true }) as SwadeCombatant,
     );
 
     for (const c of combatants) {
       await c.handOutBennies();
     }
 
+    if (this.combatants.contents.every((c) => !!c.initiative)) {
+      await this.update({ turn: 0 });
+      this._handleStartOfTurnExpirations();
+    } else if (updateTurn && currentId) {
+      // Ensure the turn order remains with the same combatant
+      await this.update({
+        turn: this.turns.findIndex((t) => t.id === currentId),
+      });
+    }
+
     // Return the updated Combat
-    return this;
+    return this as Combat;
   }
 
-  override _sortCombatants(a: SwadeCombatant, b: SwadeCombatant) {
-    if (!a || !b) return 0;
-
+  protected override _sortCombatants(
+    a: SwadeCombatant,
+    b: SwadeCombatant,
+  ): number {
     const currentRound = game.combats?.viewed?.round ?? 0;
 
     if (
@@ -221,29 +263,11 @@ export default class SwadeCombat extends Combat {
       }
     }
 
-    /** Compares two combatants by initiative card */
-    const cardSortCombatants = (a: SwadeCombatant, b: SwadeCombatant) => {
-      const cardA = a.cardValue ?? 0;
-      const cardB = b.cardValue ?? 0;
-      const card = cardB - cardA;
-      if (card !== 0) return card;
-      const suitA = a.suitValue ?? 0;
-      const suitB = b.suitValue ?? 0;
-      return suitB - suitA;
-    };
-
-    /** Compares two combatants by name or - if they're the same - ID. */
-    const nameSortCombatants = (a: SwadeCombatant, b: SwadeCombatant) => {
-      const cn = a.name.localeCompare(b.name, 'en');
-      if (cn !== 0) return cn;
-      return a.id!.localeCompare(b.id!, 'en');
-    };
-
     //decide whether to sort by name or card
     if (a.flags?.swade && b.flags?.swade) {
-      return cardSortCombatants(a, b);
+      return SwadeCombat.#cardSortCombatants(a, b);
     }
-    return nameSortCombatants(a, b);
+    return SwadeCombat.#idSortCombatants(a, b);
   }
 
   /**
@@ -252,11 +276,9 @@ export default class SwadeCombat extends Combat {
    * @returns an array with the drawn cards
    */
   async drawCard(count = 1): Promise<Card[]> {
-    const deckId = game.settings.get('swade', 'actionDeck');
-    const actionCardDeck = game.cards!.get(deckId, { strict: true });
     const pileId = game.settings.get('swade', 'actionDeckDiscardPile');
     const discardPile = game.cards!.get(pileId, { strict: true });
-    return actionCardDeck.dealForInitiative(discardPile, count);
+    return this.actionDeck.dealForInitiative(discardPile, count);
   }
 
   /** Ask the user to pick a card for a given combatant name */
@@ -289,11 +311,9 @@ export default class SwadeCombat extends Combat {
 
     const template = 'systems/swade/templates/initiative/choose-card.hbs';
     const html = await renderTemplate(template, {
-      data: {
-        cards: cards,
-        oldCard: oldCardId,
-        highestCardID: highestCardID,
-      },
+      cards: cards,
+      oldCard: oldCardId,
+      highestCardID: highestCardID,
     });
 
     const buttons: Record<string, Dialog.Button> = {
@@ -343,13 +363,7 @@ export default class SwadeCombat extends Combat {
             if (oldCardId) {
               card = cards.find((c) => c.id === oldCardId);
             } else {
-              console.log('No card was selected');
-              const thereIsAJoker = cards.some((c) => c.system['isJoker']);
-              if (thereIsAJoker) {
-                card = cards.find((c) => c.system['isJoker']);
-              } else {
-                card = cards[0]; //If no card was selected, assign the first card that was drawn
-              }
+              card = cards.find((c) => c.system['isJoker']) || cards[0];
             }
           }
           resolve(card as Card);
@@ -364,9 +378,7 @@ export default class SwadeCombat extends Combat {
    * @param cardSuit
    */
   findCard(cardValue: number, cardSuit: number): Card | undefined {
-    const packName = game.settings.get('swade', 'actionDeck');
-    const actionCardDeck = game.cards!.get(packName, { strict: true });
-    return actionCardDeck.cards.find(
+    return this.actionDeck.cards.find(
       (c) =>
         c.type === 'poker' &&
         c.value === cardValue &&
@@ -376,13 +388,15 @@ export default class SwadeCombat extends Combat {
 
   override async resetAll() {
     for (const combatant of this.combatants) {
-      const update = this._getInitResetUpdate(combatant);
-      if (update) combatant.updateSource(update);
+      combatant.updateSource(
+        this._getInitResetUpdate(combatant as SwadeCombatant),
+      );
     }
-    return this.update(
+    await this.update(
       { turn: 0, combatants: this.combatants.toObject() },
       { diff: false },
     );
+    return this as Combat;
   }
 
   override async startCombat() {
@@ -398,72 +412,46 @@ export default class SwadeCombat extends Combat {
 
   override async nextTurn() {
     await this._handleEndOfTurnExpirations();
-    const turn = this.turn as number;
-    const skip = this.settings['skipDefeated'] as boolean;
+    const turn = this.turn ?? -1;
+
     // Determine the next turn number
     let next: number | null = null;
-    if (skip) {
+    if (this.settings.skipDefeated) {
       for (const [i, t] of this.turns.entries()) {
         if (i <= turn) continue;
         // Skip defeated, lost turns, and followers on hold (their leaders act for them)
-        if (!t.isDefeated && !t.turnLost && !(t.groupId && t.roundHeld)) {
-          next = i;
-          break;
-        }
+        if (t.isDefeated || t.turnLost || (t.groupId && t.roundHeld)) continue;
+        next = i;
+        break;
       }
     } else {
       next = turn + 1;
     }
+
     // Maybe advance to the next round
     const round = this.round;
     if (this.round === 0 || next === null || next >= this.turns.length) {
       return this.nextRound();
     }
 
-    //update time
-    const advanceTime =
-      Math.max(this.turns.length - this.turn!, 0) * CONFIG.time.turnTime;
-    // Update the encounter
-    //FIXME return once types are updated
-    //@ts-expect-error The property doesn't seem to be defined in the types
-    await this.update({ round: round, turn: next }, { advanceTime });
+    // Update the document, passing data through a hook first
+    const updateData = { round, turn: next };
+    const updateOptions = { advanceTime: CONFIG.time.turnTime, direction: 1 };
+    Hooks.callAll('combatTurn', this, updateData, updateOptions);
+    await this.update(updateData, updateOptions);
     await this._handleStartOfTurnExpirations();
+    return this as Combat;
   }
 
   override async nextRound() {
-    if (!game.user?.isGM) {
-      game.swade.sockets.newRound(this.id!);
-      return this;
-    }
-    const jokerDrawn = this.combatants.some((c) => c.hasJoker);
-    if (jokerDrawn) {
-      await reshuffleActionDeck();
-      ui.notifications.info('SWADE.DeckShuffled', { localize: true });
-    }
-
-    // first we update the combatants locally
-    for (const combatant of this.combatants) {
-      const update = this._getInitResetUpdate(combatant);
-      if (update) combatant.updateSource(update);
-    }
-    if (game.settings.get('swade', 'autoInit')) {
-      // if automatic init is on we draw cards
-      const combatantIds = this.combatants.map((c) => c.id!);
-      await this.rollInitiative(combatantIds);
-    } else {
-      // otherwise we just persist the update
-      await this.update(
-        { combatants: this.combatants.toObject() },
-        { diff: false },
-      );
-    }
-    await super.nextRound();
-    await this._handleStartOfTurnExpirations();
+    if (game.user?.isGM) await this._nextRoundAsGM();
+    else await this._nextRoundAsUser();
+    return this as Combat;
   }
 
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
-  ): Record<string, unknown> | undefined {
+  ): Record<string, unknown> {
     const roundHeld = combatant.roundHeld;
     const turnLost = combatant.turnLost;
     const groupId = combatant.groupId;
@@ -494,12 +482,23 @@ export default class SwadeCombat extends Combat {
         },
       };
     }
+    return {
+      initiative: null,
+      'flags.swade': {
+        suitValue: null,
+        cardValue: null,
+        hasJoker: false,
+        cardString: '',
+        turnLost: false,
+      },
+    };
   }
 
   protected async _handleStartOfTurnExpirations() {
     const expirations =
       this.combatant?.actor?.effects.filter(
-        (effect) => effect.isTemporary && effect.isExpired('start'),
+        (effect: SwadeActiveEffect) =>
+          effect.isTemporary && effect.isExpired('start'),
       ) ?? [];
     for (const effect of expirations) {
       await effect.expire();
@@ -550,9 +549,76 @@ export default class SwadeCombat extends Combat {
     return cardsToDraw;
   }
 
-  override async _preDelete(options: DocumentModificationOptions, user: User) {
+  protected async _nextRoundAsGM() {
+    //reset the deck if a joker had been drawn
+    if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
+      await reshuffleActionDeck();
+      ui.notifications.info('SWADE.DeckShuffled', { localize: true });
+    }
+
+    //reset the combatants
+    await this.resetAll();
+
+    //advance the round to the next one
+    await super.nextRound();
+
+    const autoInit = game.settings.get('swade', 'autoInit');
+
+    //no auto init, we're done;
+    if (!autoInit) return;
+
+    // if automatic init is on we draw cards
+    await this._promptAllPlayersForInitiative();
+    //grab the NPCs, we're drawing them locally
+    await this.rollNPC();
+  }
+
+  /** As a user emit a socket event that asks a Game master to trigger the next round workflow and roll the owned tokens */
+  protected _nextRoundAsUser() {
+    game.swade.sockets.newRound(this.id!);
+  }
+
+  protected async _promptAllPlayersForInitiative() {
+    const [localDraws, remoteDraws] = this.combatants
+      .filter((c) => c.hasPlayerOwner && !c.isNPC)
+      .map((c) => {
+        return {
+          combatant: c as SwadeCombatant,
+          user: c.players[0] as SwadeUser,
+        };
+      })
+      .sort((a, b) => a.user.name.localeCompare(b.user.name))
+      .partition((v) => this._determineIfRemoteDraw(v.user, v.combatant));
+
+    for (const { combatant } of localDraws) {
+      await this.rollInitiative(combatant.id as string);
+    }
+    if (remoteDraws.length > 0) {
+      await PlayerCardDrawHerder.asPromise({
+        draws: remoteDraws,
+        combatId: this.id as string,
+      });
+    }
+  }
+
+  protected _determineIfRemoteDraw(
+    user: SwadeUser,
+    combatant: SwadeCombatant,
+  ): boolean {
+    const initiative = combatant.actor?.system.initiative;
+    const edges =
+      initiative.hasLevelHeaded ||
+      initiative.hasImpLevelHeaded ||
+      initiative.hasQuick;
+    return user.active && edges;
+  }
+
+  override async _preDelete(
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
     await super._preDelete(options, user);
-    const jokerDrawn = this.combatants.some((v) => v.hasJoker ?? false);
+    const jokerDrawn = this.combatants.some((c: SwadeCombatant) => c.hasJoker);
 
     //reset the deck when combat is ended
     if (jokerDrawn) {
@@ -560,24 +626,6 @@ export default class SwadeCombat extends Combat {
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
   }
-}
-
-interface InitiativeOptions {
-  /**
-   * A non-default initiative formula to roll. Otherwise the system default is used.
-   * @defaultValue `null`
-   */
-  formula?: string | null;
-  /**
-   * Update the Combat turn after adding new initiative scores to keep the turn on the same Combatant.
-   * @defaultValue `true`
-   */
-  updateTurn?: boolean;
-  /**
-   * Additional options with which to customize created Chat Messages
-   * @defaultValue `{}`
-   */
-  messageOptions?: object;
 }
 
 interface IPickACard {

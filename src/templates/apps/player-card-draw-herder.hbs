@@ -1,0 +1,21 @@
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>{{localize 'DOCUMENT.User'}}</th>
+        <th>{{localize 'DOCUMENT.Combatant'}}</th>
+        <th>{{localize 'COMBAT.CombatantStatus'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each draws}}
+        <tr class='text-center'>
+          <td>{{user}}</td>
+          <td>{{combatant}}</td>
+          <td>{{icon}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <button class='close'>{{localize 'Close'}}</button>
+</div>
