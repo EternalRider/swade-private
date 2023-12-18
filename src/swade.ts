@@ -1,15 +1,17 @@
 import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
+import CharacterSummarizer from './module/CharacterSummarizer';
+import ItemChatCardHelper from './module/ItemChatCardHelper';
+import { Logger } from './module/Logger';
+import SwadeSocketHandler from './module/SwadeSocketHandler';
 import ActiveEffectWizard from './module/apps/ActiveEffectWizard';
 import { AdvanceEditor } from './module/apps/AdvanceEditor';
 import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
-import SwadeTour from './module/tours/SwadeTour';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
-import CharacterSummarizer from './module/CharacterSummarizer';
 import { SWADE } from './module/config';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
@@ -17,6 +19,7 @@ import { DamageRoll } from './module/dice/DamageRoll';
 import { SwadeRoll } from './module/dice/SwadeRoll';
 import { TraitRoll } from './module/dice/TraitRoll';
 import WildDie from './module/dice/WildDie';
+import SwadeUser from './module/documents/SwadeUser';
 import SwadeActiveEffect from './module/documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './module/documents/actor/SwadeActor';
 import SwadeCards from './module/documents/card/SwadeCards';
@@ -24,16 +27,13 @@ import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
 import SwadeCombat from './module/documents/combat/SwadeCombat';
 import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
-import SwadeUser from './module/documents/SwadeUser';
 import { registerEffectCallbacks } from './module/effectCallbacks';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import { registerAuraHooks } from './module/hooks/AuraHooks';
-import { rollItemMacro } from './module/hooks/hotbarDrop';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
-import ItemChatCardHelper from './module/ItemChatCardHelper';
+import { rollItemMacro } from './module/hooks/hotbarDrop';
 import { registerKeybindings } from './module/keybindings';
-import { Logger } from './module/Logger';
 import * as migrations from './module/migration/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
 import {
@@ -41,12 +41,12 @@ import {
   registerSettingRules,
   registerSettings,
 } from './module/settings';
-import CharacterSheet from './module/sheets/official/CharacterSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
+import CharacterSheet from './module/sheets/official/CharacterSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
-import SwadeSocketHandler from './module/SwadeSocketHandler';
+import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
 import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
@@ -289,14 +289,13 @@ Hooks.on(
 /* Context Options    				          */
 /* ------------------------------------ */
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
-Hooks.on('getActorEntryContext', SwadeCoreHooks.onGetCombatTrackerEntryContext);
 Hooks.on(
-  'getActorDirectoryEntryContext',
+  'getActorEntryContext',
   SwadeCoreHooks.onGetActorDirectoryEntryContext,
 );
 Hooks.on(
-  'getCombatTrackerEntryContext',
-  SwadeCoreHooks.onGetCombatTrackerEntryContext,
+  'getActorDirectoryEntryContext',
+  SwadeCoreHooks.onGetActorDirectoryEntryContext,
 );
 Hooks.on(
   'getCardsDirectoryEntryContext',

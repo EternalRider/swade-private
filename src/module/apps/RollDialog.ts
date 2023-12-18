@@ -7,11 +7,12 @@ import { DamageRoll } from '../dice/DamageRoll';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import WildDie from '../dice/WildDie';
+import type SwadeActor from '../documents/actor/SwadeActor';
+import type SwadeItem from '../documents/item/SwadeItem';
 import { modifierReducer, normalizeRollModifiers } from '../util';
 
 export class RollDialog extends FormApplication<
   FormApplicationOptions,
-  object,
   RollDialogContext
 > {
   #callback: (roll: SwadeRoll | null) => void;
@@ -19,12 +20,14 @@ export class RollDialog extends FormApplication<
   #extraButtonUsed = false;
 
   static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
-    return new Promise((resolve) => new RollDialog(ctx, resolve));
+    return new Promise<SwadeRoll | null>(
+      (resolve) => new RollDialog(ctx, resolve),
+    );
   }
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/rollDialog.hbs',
+      template: 'systems/swade/templates/apps/roll-dialog.hbs',
       classes: ['swade', 'roll-dialog', 'swade-app'],
       width: 400,
       filters: [

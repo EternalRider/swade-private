@@ -1,7 +1,9 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { CombatantDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/combatantData';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
+import type SwadeCombat from './SwadeCombat';
 
 declare global {
   interface DocumentClassConfig {
@@ -19,6 +21,7 @@ declare global {
         isGroupLeader?: boolean;
         roundHeld?: number;
         turnLost?: boolean;
+        firstRound?: number;
         [key: string]: unknown;
       };
     };
@@ -30,6 +33,12 @@ export default class SwadeCombatant extends Combatant {
     const actor = this.actor;
     if (actor?.isWildcard) return super.isDefeated;
     return actor?.status.isIncapacitated || super.isDefeated;
+  }
+
+  get followers(): SwadeCombatant[] {
+    const combat = this.parent as SwadeCombat;
+    return (combat?.combatants.filter((f) => f.groupId === this.id) ??
+      []) as SwadeCombatant[];
   }
 
   get suitValue() {
@@ -157,7 +166,7 @@ export default class SwadeCombatant extends Combatant {
   override async _preCreate(
     data: CombatantDataConstructorData,
     options: DocumentModificationOptions,
-    user: User,
+    user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
     const combatants = game?.combat?.combatants.size ?? 0;
@@ -170,6 +179,7 @@ export default class SwadeCombatant extends Combatant {
     this.updateSource({
       flags: {
         swade: {
+          firstRound: this.combat?.round,
           cardValue: sortValue,
           suitValue: sortValue,
         },
@@ -178,7 +188,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override _onUpdate(
-    changed: DeepPartial<Combatant['data']['_source']>,
+    changed: DeepPartial<Combatant['_source']>,
     options: DocumentModificationOptions,
     userId: string,
   ) {
@@ -194,6 +204,7 @@ export default class SwadeCombatant extends Combatant {
 
   /** Checks if this combatant has a joker and hands out bennies based on the actor type and disposition */
   async handOutBennies() {
+    if (!game.user?.isGM) return;
     if (
       !game.settings.get('swade', 'jokersWild') ||
       this.groupId ||

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { AbilitySubType } from '../globals';
-import { RollModifierGroup } from '../interfaces/additional.interface';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
+import { RollModifierGroup } from '../interfaces/additional.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { constants } from './constants';
 import { statusEffects } from './statusEffects';
@@ -98,9 +98,7 @@ export const SWADE: SwadeConfig = {
     ],
   },
 
-  diceConfig: {
-    flags: {},
-  },
+  diceConfig: { flags: {} },
 
   statusEffects: statusEffects,
 
@@ -376,14 +374,14 @@ export interface SwadeConfig {
   ranks: string[];
 
   textSearch: {
-    scene: Array<String>;
-    rolltable: Array<String>;
-    playlist: Array<String>;
-    macro: Array<String>;
-    journalentry: Array<String>;
-    item: Array<String>;
-    cards: Array<String>;
-    adventure: Array<String>;
-    actor: Array<String>;
+    scene: Array<string>;
+    rolltable: Array<string>;
+    playlist: Array<string>;
+    macro: Array<string>;
+    journalentry: Array<string>;
+    item: Array<string>;
+    cards: Array<string>;
+    adventure: Array<string>;
+    actor: Array<string>;
   };
 }

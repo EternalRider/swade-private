@@ -62,15 +62,6 @@
     text-align: center;
     figure {
       margin: 0;
-      .indicator {
-        visibility: hidden;
-        margin: 0 auto;
-      }
-      &.high-card {
-        .indicator {
-          visibility: visible;
-        }
-      }
     }
     img {
       height: 100px;
