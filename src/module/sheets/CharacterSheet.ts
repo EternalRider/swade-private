@@ -1,26 +1,26 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { AdditionalStats, Attribute, LinkedAttribute } from '../../../globals';
+import { AdditionalStats, Attribute, LinkedAttribute } from '../../globals';
+import { Advance } from '../../interfaces/Advance.interface';
 import {
   AdditionalStat,
   ItemAction,
   RollModifier,
-} from '../../../interfaces/additional.interface';
-import { Advance } from '../../../interfaces/Advance.interface';
-import ActiveEffectWizard from '../../apps/ActiveEffectWizard';
-import { AdvanceEditor } from '../../apps/AdvanceEditor';
-import AttributeManager from '../../apps/AttributeManager';
-import SwadeDocumentTweaks from '../../apps/SwadeDocumentTweaks';
-import SwadeMeasuredTemplate from '../../canvas/SwadeMeasuredTemplate';
-import { SWADE } from '../../config';
-import { constants } from '../../constants';
-import { VehicleData } from '../../data/actor';
-import SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEffect';
-import SwadeItem from '../../documents/item/SwadeItem';
-import ItemChatCardHelper from '../../ItemChatCardHelper';
-import { Logger } from '../../Logger';
-import PopUpMenu from '../../models/PopUpMenu';
-import * as util from '../../util';
+} from '../../interfaces/additional.interface';
+import ItemChatCardHelper from '../ItemChatCardHelper';
+import { Logger } from '../Logger';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import { AdvanceEditor } from '../apps/AdvanceEditor';
+import AttributeManager from '../apps/AttributeManager';
+import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
+import { SWADE } from '../config';
+import { constants } from '../constants';
+import { VehicleData } from '../data/actor';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import SwadeItem from '../documents/item/SwadeItem';
+import PopUpMenu from '../models/PopUpMenu';
+import * as util from '../util';
 
 export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
@@ -51,7 +51,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   get template(): string {
-    const base = 'systems/swade/templates/official/';
+    const base = 'systems/swade/templates/actors/character/';
     if (this.actor.limited) return base + 'limited.hbs';
     return base + 'sheet.hbs';
   }

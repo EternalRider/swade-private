@@ -7,6 +7,7 @@
 @import 'scss/npc';
 @import 'scss/vehicle';
 @import 'scss/items-v2';
+@import 'scss/character-sheet';
 @import 'scss/dialogs';
 
 //chat
@@ -30,7 +31,3 @@
 @import 'scss/apps/active-effect-wizard';
 @import 'scss/apps/reload-manager';
 @import 'scss/apps/requirements-editor';
-
-//official sheet
-@import 'scss/official/mixins';
-@import 'scss/official/sheet';

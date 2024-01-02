@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - [BREAKING] Moved \_createChargeUsageMessage to #createChargeUsageMessage, making it fully private
 - Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 - Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
+- Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
 
 ### Fixed
 

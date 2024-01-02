@@ -1,3 +1,25 @@
+@mixin vital {
+  margin: $small-spacing 0px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  text-align: center;
+  line-height: 70px;
+  font-size: 35px;
+  display: flex;
+  justify-content: center;
+  min-width: 100px;
+  input {
+    width: 35px;
+    text-align: end;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+    height: 70px;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -182,7 +204,9 @@
       font-size: 1.5em;
       color: black;
       border-radius: 8px 8px 0 0;
-      box-shadow: 0px -4px 6px -3px #0000009e, 0px -4px 6px -3px #0000002b inset;
+      box-shadow:
+        0px -4px 6px -3px #0000009e,
+        0px -4px 6px -3px #0000002b inset;
       white-space: nowrap;
     }
     .active {

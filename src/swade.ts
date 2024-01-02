@@ -41,10 +41,10 @@ import {
   registerSettingRules,
   registerSettings,
 } from './module/settings';
+import CharacterSheet from './module/sheets/CharacterSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
-import CharacterSheet from './module/sheets/official/CharacterSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
