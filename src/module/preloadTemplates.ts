@@ -36,19 +36,19 @@ export async function preloadHandlebarsTemplates() {
     //official sheet
 
     //tabs
-    'systems/swade/templates/official/tabs/summary.hbs',
-    'systems/swade/templates/official/tabs/edges.hbs',
-    'systems/swade/templates/official/tabs/effects.hbs',
-    'systems/swade/templates/official/tabs/inventory.hbs',
-    'systems/swade/templates/official/tabs/powers.hbs',
-    'systems/swade/templates/official/tabs/actions.hbs',
-    'systems/swade/templates/official/tabs/about.hbs',
+    'systems/swade/templates/actors/character/tabs/summary.hbs',
+    'systems/swade/templates/actors/character/tabs/edges.hbs',
+    'systems/swade/templates/actors/character/tabs/effects.hbs',
+    'systems/swade/templates/actors/character/tabs/inventory.hbs',
+    'systems/swade/templates/actors/character/tabs/powers.hbs',
+    'systems/swade/templates/actors/character/tabs/actions.hbs',
+    'systems/swade/templates/actors/character/tabs/about.hbs',
 
     //misc partials
-    'systems/swade/templates/official/partials/attributes.hbs',
-    'systems/swade/templates/official/partials/item-card.hbs',
-    'systems/swade/templates/official/partials/skill-card.hbs',
-    'systems/swade/templates/official/partials/setting-fields.hbs',
+    'systems/swade/templates/actors/character/partials/attributes.hbs',
+    'systems/swade/templates/actors/character/partials/item-card.hbs',
+    'systems/swade/templates/actors/character/partials/skill-card.hbs',
+    'systems/swade/templates/actors/character/partials/setting-fields.hbs',
 
     //Sidebar
     'systems/swade/templates/sidebar/combat-tracker.hbs',
