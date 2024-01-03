@@ -16,10 +16,24 @@ function times(a: number, b: number) {
   return a * b;
 }
 
+function isEven(number: number): boolean {
+  return number % 2 === 0;
+}
+
+function isOdd(number: number): boolean {
+  return !isEven(number);
+}
+
 function signedString(num) {
   const result = parseInt(num);
-  if (isNaN(result)) return '';
+  if (isNaN(result)) return 'NaN';
   return result.signedString();
+}
+
+function rotate(number: number) {
+  const rotationVal = (number % 5) + 2;
+  if (rotationVal > 4) return 2;
+  else return rotationVal;
 }
 
 function enrich(content: string) {
@@ -265,7 +279,10 @@ export function registerCustomHelpers() {
     add,
     signedString,
     times,
+    isOdd,
+    isEven,
     formatNumber,
+    rotate,
     isEmpty,
     collapsible,
     stringify,

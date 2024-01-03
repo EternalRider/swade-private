@@ -44,12 +44,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 - Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
+- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
 
 ### Fixed
 
 - Assigning a new card to a combatant should no longer fail if the card had already been drawn previously. (#908) **by @florad92**
 - Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
 - Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
+- Item Grants no longer throw an error if an item could not be found. **by @florad92**
 
 ## 3.2.5
 

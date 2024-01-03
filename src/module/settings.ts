@@ -1,6 +1,7 @@
 import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
+import { constants } from './constants';
 
 declare global {
   namespace ClientSettings {
@@ -8,7 +9,7 @@ declare global {
       'swade.systemMigrationVersion': string;
       'swade.initiativeSound': boolean;
       'swade.autoInit': boolean;
-      'swade.initMessage': boolean;
+      'swade.initMessage': ValueOf<typeof constants.INIT_MESSAGE_TYPE>;
       'swade.actionDeck': string;
       'swade.actionDeckDiscardPile': string;
       'swade.hideNPCWildcards': boolean;
@@ -110,10 +111,19 @@ export function registerSettings() {
   game.settings.register('swade', 'initMessage', {
     name: 'SWADE.Settings.CreateInitChat.Name',
     hint: 'SWADE.Settings.CreateInitChat.Hint',
-    default: true,
-    scope: 'world',
-    type: Boolean,
+    default: constants.INIT_MESSAGE_TYPE.LARGE,
+    scope: 'client',
+    type: String,
+    choices: {
+      [constants.INIT_MESSAGE_TYPE.OFF]: 'SWADE.CardDrawMsgSize.None',
+      [constants.INIT_MESSAGE_TYPE.COMPACT]: 'SWADE.CardDrawMsgSize.Compact',
+      [constants.INIT_MESSAGE_TYPE.LARGE]: 'SWADE.CardDrawMsgSize.Large',
+    },
     config: true,
+    onChange: () =>
+      game.messages
+        ?.filter((m) => m.isContentVisible && m.isCardDraw)
+        .forEach((msg) => ui.chat.updateMessage(msg)),
   });
 
   game.settings.register('swade', 'hideNPCWildcards', {

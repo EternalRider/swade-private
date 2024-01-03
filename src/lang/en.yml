@@ -1261,6 +1261,11 @@ SWADE:
   NpcWildCardsOnScene: NPC Wild Cards on Scene
   PlayerCardDrawHelper:
     Title: SWADE Player Card Draw Helper
+  DiscardedCards: Discarded Cards
+  CardDrawMsgSize:
+    None: None
+    Compact: Compact
+    Large: Large
 TYPES:
   Actor:
     character: Player Character

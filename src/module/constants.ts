@@ -139,9 +139,16 @@ export const constants = {
     MINOR: 'minor',
     EITHER: 'either',
   } as const,
+  /** @enum */
   WEAPON_RANGE_TYPE: {
     MELEE: 0,
     RANGED: 1,
     MIXED: 2,
-  },
+  } as const,
+  /** @enum */
+  INIT_MESSAGE_TYPE: {
+    OFF: 'off',
+    COMPACT: 'compact',
+    LARGE: 'large',
+  } as const,
 };

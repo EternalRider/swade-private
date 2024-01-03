@@ -113,6 +113,24 @@ export default class SwadeCombatant extends Combatant {
     return this.setFlag('swade', 'turnLost', turnLost);
   }
 
+  get cardsToDraw(): number {
+    let cardsToDraw = 1;
+    if (!!this.initiative && !this.roundHeld) return cardsToDraw;
+    const actor = this.actor;
+    if (!actor) return cardsToDraw;
+    const initiative = actor.system.initiative;
+    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
+      cardsToDraw = 2;
+    }
+    if (initiative?.hasImpLevelHeaded) {
+      cardsToDraw = 3;
+    }
+    if (actor.type !== 'vehicle' && actor.system.status.isIncapacitated) {
+      cardsToDraw = 1;
+    }
+    return cardsToDraw;
+  }
+
   async assignNewActionCard(cardId: string) {
     const combat = this.combat;
     if (!combat) return;
@@ -204,7 +222,6 @@ export default class SwadeCombatant extends Combatant {
 
   /** Checks if this combatant has a joker and hands out bennies based on the actor type and disposition */
   async handOutBennies() {
-    if (!game.user?.isGM) return;
     if (
       !game.settings.get('swade', 'jokersWild') ||
       this.groupId ||

@@ -1,4 +1,5 @@
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
@@ -50,19 +51,60 @@ export default class SwadeChatMessage extends ChatMessage {
     );
   }
 
+  /** returns whether the message depicts a card draw result */
+  get isCardDraw(): boolean {
+    return (
+      !!this.getFlag('swade', 'pickedCard') && !!this.getFlag('swade', 'cards')
+    );
+  }
+
+  /** returns the index of the message in the list of all messages */
+  get index(): number {
+    return game.messages!.contents.findIndex((m) => m.id === this.id);
+  }
+
+  override async getHTML() {
+    if (this.isCardDraw) {
+      const content = await this.#renderCardDraw();
+      if (content) this.content = content;
+      else return $('');
+    }
+    return super.getHTML();
+  }
+
   protected override async _renderRollContent(
     messageData: ChatMessage.MessageData,
   ) {
     //use the core render unless all rolls are swade rolls
     if (this['rolls'].every((r: Roll) => r instanceof SwadeRoll)) {
-      return this._renderSwadeRollContent(messageData);
+      return this.#renderSwadeRollContent(messageData);
     }
     return super._renderRollContent(messageData);
   }
 
-  protected async _renderSwadeRollContent(
-    messageData: ChatMessage.MessageData,
-  ) {
+  async #renderCardDraw(): Promise<string> {
+    const msgType = game.settings.get('swade', 'initMessage');
+    const cards: Card[] = this.getFlag('swade', 'cards').map(
+      (c) => new Card(c),
+    );
+    const pickedCard = this.getFlag('swade', 'pickedCard');
+    const [[picked], discarded] = cards.partition((c) => c.id !== pickedCard);
+    if (msgType === constants.INIT_MESSAGE_TYPE.OFF) {
+      return ''; //empty message
+    } else {
+      return renderTemplate(
+        'systems/swade/templates/chat/card-draw-result.hbs',
+        {
+          picked,
+          discarded,
+          largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
+          index: this.index,
+        },
+      );
+    }
+  }
+
+  async #renderSwadeRollContent(messageData: ChatMessage.MessageData) {
     const data = messageData.message;
     // Suppress the "to:" whisper flavor for private rolls
     if (this.blind || this.whisper.length) messageData.isWhisper = false;
