@@ -4,6 +4,7 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
 import SwadeUser from '../SwadeUser';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
@@ -78,38 +79,39 @@ export default class SwadeCombat extends Combat {
       const isIncapacitated = c.actor?.system.status.isIncapacitated;
 
       // Figure out how many cards to draw
-      const cardsToDraw = this._determineCardsToDraw(c as SwadeCombatant);
+      const cardsToDraw = c.cardsToDraw;
 
       // Draw initiative
-      let card: Card;
-      const cards = await this.drawCard(cardsToDraw);
+      let pickedCard: Card;
+      let cardsToPickFrom = await this.drawCard(cardsToDraw);
+
       if (!!c.initiative && !roundHeld) {
         // handle redraws
         const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
-          cards.push(oldCard);
-          card = await this.pickACard({
-            cards: cards,
+          cardsToPickFrom.push(oldCard);
+          const result = await this.pickACard({
+            cards: cardsToPickFrom,
             combatantName: c.name,
             oldCardId: oldCard?.id!,
           });
-          if (card === oldCard) {
-            skipMessage = true;
-          }
+          pickedCard = result.picked;
+          cardsToPickFrom = result.cards;
+          if (pickedCard === oldCard) skipMessage = true;
         } else {
-          card = cards[0];
+          pickedCard = cardsToPickFrom[0];
         }
       } else if (isIncapacitated) {
-        card = cards[0];
+        pickedCard = cardsToPickFrom[0];
       } else if (hasHesitant) {
         // Hesitant
-        const joker = cards.find((c) => c.system['isJoker']);
+        const joker = cardsToPickFrom.find((c) => c.system['isJoker']);
         if (joker) {
           // if one of the cards drawn was a joker, simply use that
-          card = joker;
+          pickedCard = joker;
         } else {
           //sort cards to pick the lower one
-          cards.sort((a, b) => {
+          cardsToPickFrom.sort((a, b) => {
             const cardA = a.value!;
             const cardB = b.value!;
             const card = cardA - cardB;
@@ -119,41 +121,45 @@ export default class SwadeCombat extends Combat {
             const suit = suitA - suitB;
             return suit;
           });
-          card = cards[0];
+          pickedCard = cardsToPickFrom[0];
         }
       } else if (cardsToDraw > 1) {
         //Level Headed
-        card = await this.pickACard({
-          cards: cards,
+        const result = await this.pickACard({
+          cards: cardsToPickFrom,
           combatantName: c.name,
           enableRedraw: hasQuick,
           isQuickDraw: hasQuick,
         });
+        pickedCard = result.picked;
+        cardsToPickFrom = result.cards;
       } else if (hasQuick) {
-        card = cards[0];
-        const cardValue = card?.value!;
+        pickedCard = cardsToPickFrom[0];
+        const cardValue = pickedCard.value!;
         //if the card value is less than 5 then pick a card otherwise use the card
         if (cardValue <= 5) {
-          card = await this.pickACard({
-            cards: [card],
+          const result = await this.pickACard({
+            cards: [pickedCard],
             combatantName: c.name,
             enableRedraw: true,
             isQuickDraw: true,
           });
+          pickedCard = result.picked;
+          cardsToPickFrom = result.cards;
         }
       } else {
         //normal card draw
-        card = cards[0];
+        pickedCard = cardsToPickFrom[0];
       }
 
       const newFlags = {
-        cardValue: card.value!,
-        suitValue: card.system['suit'],
-        hasJoker: card.system['isJoker'],
-        cardString: card.description,
+        cardValue: pickedCard.value!,
+        suitValue: pickedCard.system['suit'],
+        hasJoker: pickedCard.system['isJoker'],
+        cardString: pickedCard.description,
       };
 
-      const initiative = card?.system['suit'] + card.value;
+      const initiative = pickedCard?.system['suit'] + pickedCard.value;
 
       const update = {
         _id: id,
@@ -181,15 +187,6 @@ export default class SwadeCombat extends Combat {
       }
 
       // Construct chat message data
-      const template = `
-            <section class="initiative-draw">
-              <div class="action-card-filter-container">
-                <img class="result-image" src="${card?.currentFace?.img}">
-              </div>
-              <h4 class="result-text result-text-card">${card?.name}</h4>
-            </section>
-          `;
-
       const messageData = foundry.utils.mergeObject(
         {
           speaker: ChatMessage.getSpeaker({
@@ -201,7 +198,13 @@ export default class SwadeCombat extends Combat {
             c.token?.hidden || c.hidden
               ? game?.users?.filter((u) => u.isGM)
               : [],
-          content: template,
+          content: '', //keep the content empty so we don't trigger validation warnings
+          flags: {
+            swade: {
+              pickedCard: pickedCard.id,
+              cards: cardsToPickFrom.map((c) => c.toObject()),
+            },
+          },
         },
         messageOptions,
       );
@@ -213,19 +216,10 @@ export default class SwadeCombat extends Combat {
     // Update the combat instance with the new combatants
     await this.updateEmbeddedDocuments('Combatant', updates);
 
-    if (!skipMessage) this._playInitiativeSound();
-
     // Create multiple chat messages
-    if (game.settings.get('swade', 'initMessage') && !skipMessage) {
-      await CONFIG.ChatMessage.documentClass.createDocuments(messages);
-    }
-
-    const combatants = ids.map(
-      (id) => this.combatants.get(id, { strict: true }) as SwadeCombatant,
-    );
-
-    for (const c of combatants) {
-      await c.handOutBennies();
+    if (!skipMessage) {
+      this._playInitiativeSound();
+      await getDocumentClass('ChatMessage').createDocuments(messages);
     }
 
     if (this.combatants.contents.every((c) => !!c.initiative)) {
@@ -282,94 +276,8 @@ export default class SwadeCombat extends Combat {
   }
 
   /** Ask the user to pick a card for a given combatant name */
-  async pickACard({
-    cards,
-    combatantName,
-    oldCardId,
-    enableRedraw,
-    isQuickDraw,
-  }: IPickACard): Promise<Card> {
-    // any card
-
-    let immediateRedraw = false;
-    if (isQuickDraw) {
-      enableRedraw = !cards.some((card) => card.value! > 5);
-    }
-
-    const sortedCards = deepClone(cards);
-    sortedCards.sort((a: Card, b: Card) => {
-      const cardA = a.value ?? 0;
-      const cardB = b.value ?? 0;
-      const card = cardB - cardA;
-      if (card !== 0) return card;
-      const suitA = a.system['suit'] ?? 0;
-      const suitB = b.system['suit'] ?? 0;
-      return suitB - suitA;
-    });
-    const highestCardID = sortedCards[0].id;
-    let card: Card | undefined;
-
-    const template = 'systems/swade/templates/initiative/choose-card.hbs';
-    const html = await renderTemplate(template, {
-      cards: cards,
-      oldCard: oldCardId,
-      highestCardID: highestCardID,
-    });
-
-    const buttons: Record<string, Dialog.Button> = {
-      ok: {
-        icon: '<i class="fas fa-check"></i>',
-        label: game.i18n.localize('SWADE.Ok'),
-        callback: (html: JQuery<HTMLElement>) => {
-          const choice = html.find('input[name=card]:checked');
-          const cardId = choice.data('card-id') as string;
-          card = cards.find((c) => c.id === cardId);
-        },
-      },
-      redraw: {
-        icon: '<i class="fas fa-plus"></i>',
-        label: game.i18n.localize('SWADE.Redraw'),
-        callback: () => {
-          immediateRedraw = true;
-        },
-      },
-    };
-
-    if (!oldCardId && !enableRedraw) {
-      delete buttons.redraw;
-    }
-
-    return new Promise((resolve) => {
-      new Dialog({
-        title: game.i18n.format('SWADE.PickACard', {
-          name: combatantName,
-        }),
-        content: html,
-        buttons: buttons,
-        default: 'ok',
-        close: async () => {
-          if (immediateRedraw) {
-            const newCards = await this.drawCard();
-            card = await this.pickACard({
-              cards: [...cards, ...newCards],
-              combatantName,
-              oldCardId,
-              enableRedraw,
-              isQuickDraw,
-            });
-          }
-          //if no card has been chosen then choose first in array, unless there was a joker in which case that is chosen
-          if (!card) {
-            if (oldCardId) {
-              card = cards.find((c) => c.id === oldCardId);
-            } else {
-              card = cards.find((c) => c.system['isJoker']) || cards[0];
-            }
-          }
-          resolve(card as Card);
-        },
-      }).render(true);
-    });
+  async pickACard(ctx: CardPickContext): Promise<CardPickResult> {
+    return CardPicker.asPromise({ ...ctx, deck: this.actionDeck });
   }
 
   /**
@@ -532,23 +440,6 @@ export default class SwadeCombat extends Combat {
       super._playCombatSound(announcement);
   }
 
-  protected _determineCardsToDraw(combatant: SwadeCombatant): number {
-    let cardsToDraw = 1;
-    if (!!combatant.initiative && !combatant.roundHeld) return cardsToDraw;
-    const actor = combatant.actor!;
-    const initiative = actor.system.initiative;
-    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
-      cardsToDraw = 2;
-    }
-    if (initiative?.hasImpLevelHeaded) {
-      cardsToDraw = 3;
-    }
-    if (actor.type !== 'vehicle' && actor.system.status.isIncapacitated) {
-      cardsToDraw = 1;
-    }
-    return cardsToDraw;
-  }
-
   protected async _nextRoundAsGM() {
     //reset the deck if a joker had been drawn
     if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
@@ -628,7 +519,7 @@ export default class SwadeCombat extends Combat {
   }
 }
 
-interface IPickACard {
+interface CardPickContext {
   /** an array of cards */
   cards: Card[];
   /** name of the combatant */

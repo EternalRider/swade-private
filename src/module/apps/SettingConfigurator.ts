@@ -1,11 +1,7 @@
 import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
 
-export default class SettingConfigurator extends FormApplication<
-  FormApplicationOptions,
-  any,
-  undefined
-> {
+export default class SettingConfigurator extends FormApplication {
   config: typeof SWADE.settingConfig;
   settingStats: any;
   constructor() {
@@ -196,14 +192,17 @@ export default class SettingConfigurator extends FormApplication<
         const isItem = p.metadata.type === 'Item';
         return isItem && index.every((v) => v['type'] === 'skill');
       })
-      .reduce((acc, p) => {
-        let packName = 'System';
-        if (p.metadata['packageType'] !== 'system') {
-          packName = game.modules.get(p.metadata['packageName'])?.['title'];
-        }
-        acc[p.collection] = `${p.metadata.label} (${packName})`;
-        return acc;
-      }, {} as Record<string, string>);
+      .reduce(
+        (acc, p) => {
+          let packName = 'System';
+          if (p.metadata['packageType'] !== 'system') {
+            packName = game.modules.get(p.metadata['packageName'])?.['title'];
+          }
+          acc[p.collection] = `${p.metadata.label} (${packName})`;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
   }
 
   private _buildActionDeckChoices() {

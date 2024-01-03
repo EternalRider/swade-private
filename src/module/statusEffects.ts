@@ -271,7 +271,6 @@ export const statusEffects: StatusEffect[] = [
         related: {
           distracted: {},
           prone: {},
-          //@ts-expect-error The types don't include deletion syntax but this is valid
           vulnerable: { '-=duration': null },
         },
       },

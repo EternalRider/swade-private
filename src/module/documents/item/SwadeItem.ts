@@ -9,18 +9,19 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState } from '../../../globals';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { Logger } from '../../Logger';
 import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
-import { Logger } from '../../Logger';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
-import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
+import SwadeActor from '../actor/SwadeActor';
+import SwadeChatMessage from '../chat/SwadeChatMessage';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -29,7 +30,6 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
-import SwadeChatMessage from '../chat/SwadeChatMessage';
 
 declare global {
   interface FlagConfig {
@@ -561,7 +561,7 @@ export default class SwadeItem extends Item {
   }
 
   async removeAmmo() {
-    this.system.removeAmmo?.()
+    this.system.removeAmmo?.();
   }
 
   async grantEmbedded(target = this.parent) {
@@ -622,7 +622,7 @@ export default class SwadeItem extends Item {
       this.grantsItems.map((g) => fromUuid(g.uuid)),
     )) as SwadeItem[];
 
-    const grants = grantedItems.map((item) => {
+    const grants = grantedItems.filter(Boolean).map((item) => {
       return {
         item: item,
         grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,

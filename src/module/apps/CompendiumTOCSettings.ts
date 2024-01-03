@@ -2,7 +2,6 @@ import { CompendiumTOC } from './CompendiumTOC';
 
 export default class CompendiumTOCSettings extends FormApplication<
   FormApplicationOptions,
-  Record<string, unknown>,
   Record<string, boolean>
 > {
   constructor(options?: FormApplicationOptions) {
