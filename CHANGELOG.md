@@ -52,6 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
 - Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
 - Item Grants no longer throw an error if an item could not be found. **by @florad92**
+- Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
 
 ## 3.2.5
 
