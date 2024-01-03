@@ -8,9 +8,9 @@ import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
-import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
@@ -342,8 +342,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
       match[2] === 'armor'
         ? 'armorEffects' // Armor gets its own display
         : autoCalc
-        ? 'effects'
-        : 'sources';
+          ? 'effects'
+          : 'sources';
     doc.system.stats[match[1]][target].push({
       label: this.name,
       value: Number(change.value),
@@ -565,6 +565,6 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    this._applyRelatedEffects();
+    if (userId === game.userId) this._applyRelatedEffects();
   }
 }
