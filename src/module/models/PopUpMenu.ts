@@ -10,34 +10,29 @@
 export default class PopUpMenu extends ContextMenu {
   _position: Record<string, number> = {};
   defaultStyle = {
-    position: 'fixed',
+    position: 'absolute',
     width: 'max-content',
-    'font-family': '"Signika", sans-serif',
-    'font-size': '14px',
-    'box-shadow': '0 0 10px #000',
+    'z-index': 'var(--z-index-tooltip)',
+    'font-family': 'var(--font-primary)',
+    'font-size': 'var(--font-size-14)',
+    'box-shadow': '0 0 10px var(--color-border-dark)',
   };
   /** Stores the pageX / pageY position from the the JQuery event to be applied in `_setPosition`. */
   override bind() {
     this.element.on(this.eventName, this.selector, (event) => {
       event.preventDefault();
       // this._position = { left: event.pageX, top: event.pageY };
-      const rect = event.currentTarget.getBoundingClientRect();
-      this._position = {
-        left: rect.right,
-        top: rect.bottom,
-      };
+      const { right, bottom } = event.currentTarget.getBoundingClientRect();
+      this._position = { left: right, top: bottom };
     });
     super.bind();
   }
 
   /** Delegate to the parent `_setPosition` then apply the stored position from the callback in `bind`. */
-  protected override _setPosition(html: JQuery, target: JQuery) {
-    //make sure the target is the parent of the target if the target is a button
-    if (target.is('button')) {
-      target = target.parent();
-    }
-    super._setPosition(html, target);
-    this._position.left -= html.width() ?? 0;
-    html.css(foundry.utils.mergeObject(this._position, this.defaultStyle));
+  protected override _setPosition(html: JQuery, _target: JQuery) {
+    super._setPosition(html, $('body'));
+    html.css(this.defaultStyle); //apply the default style
+    this._position.left -= this.menu.width() ?? 0; //calculate the final position
+    html.css(this._position); //set the absolute position
   }
 }
