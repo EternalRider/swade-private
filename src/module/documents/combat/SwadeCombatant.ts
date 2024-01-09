@@ -215,7 +215,7 @@ export default class SwadeCombatant extends Combatant {
       hasProperty(changed, 'flags.swade.cardValue') ||
       hasProperty(changed, 'flags.swade.suitValue');
     const holdRemoved = hasProperty(changed, 'flags.swade.-=roundHeld');
-    if (hasCardChanged && !holdRemoved) {
+    if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
   }

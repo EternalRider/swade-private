@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
 - Added a new flag for actors, `wildAttackDamage`, that modifies the bonus damage granted by the Wild Attack status. (#987) **by @jpmeehan5**
+- The roll dialog now displays a hint message when no modifiers are present on the roll. **by @florad92**
 
 ### Changed
 
@@ -45,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
+- You can no longer have negative wounds or fatigue. **by @florad92**
 
 ### Fixed
 

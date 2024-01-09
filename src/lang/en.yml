@@ -430,6 +430,7 @@ SWADE:
       Add: Add Preset
     Value: Value
     Ignore: Ignore?
+    None: No modifiers at the moment
   Illumination:
     _name: Illumination
     Dim: Dim Light

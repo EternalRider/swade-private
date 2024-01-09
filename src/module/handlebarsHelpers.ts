@@ -26,7 +26,7 @@ function isOdd(number: number): boolean {
 
 function signedString(num) {
   const result = parseInt(num);
-  if (isNaN(result)) return 'NaN';
+  if (isNaN(result)) return '';
   return result.signedString();
 }
 
