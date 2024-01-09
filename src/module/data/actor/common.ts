@@ -115,7 +115,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
         required: true,
       }),
       fatigue: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 0 }),
+        value: new fields.NumberField({ initial: 0, min: 0 }),
         max: new fields.NumberField({ initial: 2 }),
         ignored: new fields.NumberField({ initial: 0 }),
       }),
@@ -167,7 +167,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       max: new fields.NumberField({ initial: baseBennies }),
     }),
     wounds: new fields.SchemaField({
-      value: new fields.NumberField({ initial: 0 }),
+      value: new fields.NumberField({ initial: 0, min: 0 }),
       max: new fields.NumberField({ initial: maxWounds }),
       ignored: new fields.NumberField({ initial: 0 }),
     }),

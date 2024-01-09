@@ -569,7 +569,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     // Get group leaders for follow leader options
     const groupLeaders = (game.combat?.combatants.filter(
-      (c: SwadeCombatant) => c.isGroupLeader,
+      (c: SwadeCombatant) => c.isOwner && c.isGroupLeader,
     ) ?? []) as SwadeCombatant[];
     // Enable follow and unfollow if there are group leaders.
     // Loop through leaders
