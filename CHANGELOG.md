@@ -55,6 +55,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
 - Item Grants no longer throw an error if an item could not be found. **by @florad92**
 - Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
+- The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
 
 ## 3.2.5
 
