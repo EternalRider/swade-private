@@ -636,6 +636,10 @@ export default class SwadeItem extends Item {
     return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
+  /**
+   * @deprecated
+   * @since 3.3
+   */
   needsFullReloadProcedure(): boolean {
     foundry.utils.logCompatibilityWarning(
       'SwadeItem.needsFullReloadProcedure() is deprecated in favor of SwadeItem.usesAmmoFromInventory',

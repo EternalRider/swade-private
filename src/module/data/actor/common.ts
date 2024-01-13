@@ -31,7 +31,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
   >,
   Actor
 > {
-  static defineSchema() {
+  static override defineSchema() {
     return {
       attributes: new fields.SchemaField({
         agility: new fields.SchemaField(makeTraitDiceFields()),
@@ -352,16 +352,14 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     return out;
   }
 
-  async refreshBennies(displayToChat = true) {
-    if (displayToChat) {
+  async refreshBennies(notify = true) {
+    if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
         speaker: game.user,
       });
-      const chatData = {
-        content: message,
-      };
-      CONFIG.ChatMessage.documentClass.create(chatData);
+      const chatData = { content: message };
+      getDocumentClass('ChatMessage').create(chatData);
     }
     let newValue = this.bennies.max;
     const hardChoices = game.settings.get('swade', 'hardChoices');
@@ -369,5 +367,11 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       newValue = 0;
     }
     await this.parent.update({ 'system.bennies.value': newValue });
+
+    /**
+     * Called an actor refreshes their bennies
+     * @param {SwadeActor} actor            The Actor refreshing their bennies
+     */
+    Hooks.callAll('swadeRefreshBennies', this.parent);
   }
 }
