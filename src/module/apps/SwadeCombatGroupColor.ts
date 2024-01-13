@@ -1,7 +1,6 @@
 /** This class defines a form colorpicker for group leader to assign a group color */
 export default class SwadeCombatGroupColor extends FormApplication<
   FormApplicationOptions,
-  any,
   Combatant
 > {
   config: any;
@@ -49,7 +48,5 @@ export default class SwadeCombatGroupColor extends FormApplication<
     $(this.form!).find('#groupColor').val(groupColor);
   }
 
-  async _updateObject(_event, _formData: GroupColorPickerData) {}
+  async _updateObject(_event, _formData: unknown) {}
 }
-
-interface GroupColorPickerData {}
