@@ -102,11 +102,8 @@ export default class PlayerBennyDisplay {
 
     const hardChoices = game.settings.get('swade', 'hardChoices');
     for (const actor of npcWildcardsToRefresh) {
-      if (hardChoices) {
-        await actor.update({ 'system.bennies.value': 0 });
-      } else {
-        await actor.refreshBennies(false);
-      }
+      if (hardChoices) await actor.update({ 'system.bennies.value': 0 });
+      else await actor.refreshBennies(false);
     }
 
     if (game.settings.get('swade', 'notifyBennies')) {

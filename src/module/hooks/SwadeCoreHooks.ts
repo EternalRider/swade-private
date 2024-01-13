@@ -554,18 +554,15 @@ export default class SwadeCoreHooks {
       {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
-        },
+        condition: () => game.user!.isGM,
+        callback: (li) =>
+          game.users?.get(li[0].dataset.userId!)?.refreshBennies(),
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await PlayerBennyDisplay.refreshAll();
-        },
+        condition: () => game.user!.isGM,
+        callback: () => PlayerBennyDisplay.refreshAll(),
       },
     );
   }

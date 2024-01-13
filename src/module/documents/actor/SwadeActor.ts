@@ -713,7 +713,7 @@ export default class SwadeActor extends Actor {
     }
     // Add a new effect
     else if (state) {
-      const aeClass = CONFIG.ActiveEffect.documentClass;
+      const aeClass = getDocumentClass('ActiveEffect');
       const data = foundry.utils.deepClone(effectData);
       foundry.utils.setProperty(data, 'statuses', [effectData.id]);
       delete data.id; //remove the ID to not trigger validation errors
@@ -728,11 +728,9 @@ export default class SwadeActor extends Actor {
 
   /**
    * Reset the bennies of the Actor to their default value
-   * @param displayToChat display a message to chat
    */
-  async refreshBennies(displayToChat = true) {
-    if (typeof this.system.refreshBennies === 'function')
-      this.system.refreshBennies(displayToChat);
+  async refreshBennies(notify = true) {
+    this.system.refreshBennies?.(notify);
   }
 
   /** Calculates the total Wound Penalties

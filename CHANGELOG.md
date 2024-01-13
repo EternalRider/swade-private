@@ -31,6 +31,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
 - Added a new flag for actors, `wildAttackDamage`, that modifies the bonus damage granted by the Wild Attack status. (#987) **by @jpmeehan5**
 - The roll dialog now displays a hint message when no modifiers are present on the roll. **by @florad92**
+- Added the following new hooks: (#798) **by @florad92**
+  - `swadePreReloadWeapon`
+  - `swadeReloadWeapon`,
+  - `swadeRefreshGmBennies`
+  - `swadeRefreshBennies`
 
 ### Changed
 
