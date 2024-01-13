@@ -210,8 +210,7 @@ function groupColor(combatantId: string) {
   if (c?.players?.length) {
     return c.players[0].color;
   } else {
-    const gm = game.users?.find((u) => u.isGM)!;
-    return gm.color;
+    game.users.activeGM?.color;
   }
 }
 
