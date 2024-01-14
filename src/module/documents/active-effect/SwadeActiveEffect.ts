@@ -93,12 +93,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
     }
   }
 
-  /* Filters through active effects to apply them to items, e.g. skills and weapons
-  match[0] = the whole expression
-  match[1] = ItemType
-  match[2] = Item Name or ID
-  match[3] = attribute key
-  */
+  /**
+   * Filters through active effects to apply them to items, e.g. skills and weapons
+   * * match[0] = the whole expression
+   * * match[1] = ItemType
+   * * match[2] = Item Name or ID
+   * * match[3] = attribute key
+   */
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
   static ATTR_REGEXP =
@@ -551,7 +552,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
         (c) => c.key === 'system.stats.globalMods.damage',
       );
       const newDamage = this.actor?.getFlag('swade', 'wildAttackDamage');
-      if (typeof newDamage === 'number') {
+      if (['number', 'string'].includes(typeof newDamage)) {
         const newChanges = foundry.utils.deepClone(this.changes);
         newChanges[damageModIndex].value = String(newDamage);
         this.updateSource({ changes: newChanges });

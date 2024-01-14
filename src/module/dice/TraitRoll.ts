@@ -9,6 +9,7 @@ import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import { chunkArray, count } from '../util';
 import { SwadeRoll } from './SwadeRoll';
 import WildDie from './WildDie';
+import { CharacterData, NpcData } from '../data/actor';
 
 export class TraitRoll extends SwadeRoll<ActorRollData> {
   static async confirmCritfail(msg: SwadeChatMessage) {
@@ -77,7 +78,9 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return this.options['targetNumber'] ?? 4;
   }
 
-  // Returns -1 on a CritFail, 0 on a fail, 1 on a success, 2 or more for raises
+  /**
+   * @returns Critfail: -1, Fail: 0, Success: 1, Raises: 2 or more
+   */
   get successes(): number {
     if (this.isCritfail) return constants.ROLL_RESULT.CRITFAIL;
     if ((this.total ?? 0) < this.targetNumber)
@@ -87,7 +90,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return Math.max(
       Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1,
       0,
-    ); // raises get to be 2+
+    );
   }
 
   override async getRenderData(flavor?: string, isPrivate = false) {
@@ -134,6 +137,37 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     );
 
     return super.toMessage(messageData, { rollMode, create });
+  }
+
+  override applyReroll(actor: Actor | null): boolean {
+    if (!actor || !actor.system.stats.globalMods.hasOwnProperty('bennyTrait'))
+      return false;
+    if (
+      (actor.system as CharacterData | NpcData).stats.globalMods.bennyTrait
+        ?.length > 0
+    ) {
+      let adjustRoll = false;
+      for (const mod of (actor.system as CharacterData | NpcData).stats
+        .globalMods.bennyTrait) {
+        const hasMod = this.modifiers.find((m) => m.label === mod.label);
+        if (!hasMod) {
+          adjustRoll = true;
+          this.options['modifiers'].push(mod);
+          this.terms.push(
+            new OperatorTerm({ operator: '+' }),
+            new StringTerm({
+              term: String(mod.value),
+              options: { flavor: mod.label },
+            }),
+          );
+        }
+      }
+      if (adjustRoll) {
+        this.resetFormula();
+        return true;
+      }
+    }
+    return false;
   }
 
   protected _formatResultParts() {

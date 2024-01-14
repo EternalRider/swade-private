@@ -224,6 +224,8 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       attack: new Array<DerivedModifier>(),
       damage: new Array<DerivedModifier>(),
       ap: new Array<DerivedModifier>(),
+      bennyTrait: new Array<DerivedModifier>(),
+      bennyDamage: new Array<DerivedModifier>(),
     };
   }
 
