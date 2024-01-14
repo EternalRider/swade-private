@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `swadeRefreshGmBennies`
   - `swadeRefreshBennies`
 - Added context menu option to card decks to set them as the Action Deck. (#975) **by jpmeehan5**
+- Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by jpmeehan5**
 
 ### Changed
 

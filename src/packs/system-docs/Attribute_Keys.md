@@ -61,6 +61,22 @@ Both Characters and NPCs share similar data structures; the main difference is t
 - Ignore wounds while bleeding out: `system.attributes.vigor.bleedOut.ignoreWounds`
 - Bonus to resist bleeding out: `system.attributes.vigor.bleedOut.modifier`
 
+#### Global Modifiers
+
+These are more generic roll bonuses that improve all rolls of a certain category, rather than being tied to a specific attribute or skill. The keys tied to attributes (e.g. Agility) modify both the relevant attribute rolls as well as any skills linked to that attribute.
+
+- Trait: `system.stats.globalMods.trait`
+- Agility: `system.stats.globalMods.agility`
+- Smarts: `system.stats.globalMods.smarts`
+- Spirit: `system.stats.globalMods.spirit`
+- Strength: `system.stats.globalMods.strength`
+- Vigor: `system.stats.globalMods.vigor`
+- Attack: `system.stats.globalMods.attack`
+- Damage: `system.stats.globalMods.damage`
+- Armor Piercing: `system.stats.globalMods.ap`
+- Bennied Trait: `system.stats.globalMods.bennyTrait`
+- Bennied Damage: `system.stats.globalMods.bennyDamage`
+
 #### Derived Stats
 
 - Parry: `system.stats.parry.value`
