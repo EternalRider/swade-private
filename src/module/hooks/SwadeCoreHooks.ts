@@ -313,13 +313,11 @@ export default class SwadeCoreHooks {
       name: 'SWADE.OpenACEditor',
       icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
-        //return early if there's no canvas or scene to lay out cards
-        if (!canvas || !canvas.ready || !canvas.scene) return false;
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         return (
           deck.type === 'deck' &&
-          deck.cards.contents.every((c) => c.type === 'poker') &&
-          deck.isOwner
+          deck.isOwner &&
+          deck.cards.content.every((c) => c.type === 'poker')
         );
       },
       callback: async (li) => {
@@ -331,15 +329,44 @@ export default class SwadeCoreHooks {
       name: 'SWADE.LayOutChaseWithDeck',
       icon: '<i class="fa-solid fa-shipping-fast"></i>',
       condition: (li) => {
-        const cards = game.cards!.get(li.data('documentId'), { strict: true });
-        return cards.type === 'deck';
+        //return early if there's no canvas or scene to lay out cards
+        if (!canvas || !canvas.ready || !canvas.scene) return false;
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.content.every((c) => c.type === 'poker')
+        );
       },
       callback: (li) => {
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         chaseUtils.layoutChase(deck);
       },
     };
-    options.push(actionCardEditor, chaseLayout);
+    const setActionDeck: ContextMenuEntry = {
+      name: 'SWADE.SetActionDeck',
+      icon: '<i class="fas fa-swords"></i>',
+      condition: (li) => {
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.content.every((c) => c.type === 'poker')
+        );
+      },
+      callback: async (li) => {
+        const deckId = li.data('documentId');
+        game.settings.set('swade', 'actionDeck', deckId);
+      },
+    };
+
+    options.push(actionCardEditor, chaseLayout, setActionDeck);
   }
 
   static onGetCompendiumDirectoryEntryContext(

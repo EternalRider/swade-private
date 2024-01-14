@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `swadeReloadWeapon`,
   - `swadeRefreshGmBennies`
   - `swadeRefreshBennies`
+- Added context menu option to card decks to set them as the Action Deck. (#975) **by jpmeehan5**
 
 ### Changed
 
@@ -52,6 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
+- The current action deck can no longer be used to layout a chase. **by jpmeehan5**
 
 ### Fixed
 

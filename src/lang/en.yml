@@ -392,6 +392,7 @@ SWADE:
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
   'No': 'No'
+  SetActionDeck: Set Deck as Action Deck
   ShowCharacterSummary: Show Character Summary
   CharacterSummary: Character Summary
   CopyHtml: Copy HTML
