@@ -36,8 +36,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `swadeReloadWeapon`,
   - `swadeRefreshGmBennies`
   - `swadeRefreshBennies`
-- Added context menu option to card decks to set them as the Action Deck. (#975) **by jpmeehan5**
-- Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by jpmeehan5**
+- Added context menu option to card decks to set them as the Action Deck. (#975) **by @jpmeehan5**
+- Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by @jpmeehan5**
 
 ### Changed
 
@@ -54,7 +54,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
-- The current action deck can no longer be used to layout a chase. **by jpmeehan5**
+- The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
 
 ### Fixed
 
@@ -64,6 +64,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Item Grants no longer throw an error if an item could not be found. **by @florad92**
 - Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
 - The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
+- Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 
 ## 3.2.5
 
