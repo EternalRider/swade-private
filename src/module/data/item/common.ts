@@ -125,6 +125,23 @@ export const grants = () => ({
   ),
 });
 
+export const choiceSets = () => ({
+  choiceSets: new fields.ArrayField(
+    new fields.SchemaField({
+      title: new fields.StringField({ initial: '', required: true }),
+      choice: new fields.NumberField({ initial: null, nullable: true }),
+      choices: new fields.ArrayField(
+        new fields.SchemaField({
+          name: new fields.StringField({ initial: '', required: true }),
+          addToName: new fields.BooleanField({ initial: true, nullable: false}),
+          img: new fields.StringField({ initial: null, nullable: true }),
+          mutation: new fields.ObjectField({ required: false }),
+        }),
+      ),
+    }),
+  ),
+});
+
 export function validateSwid(value: string) {
   //`any` is a reserved word
   if (value === constants.RESERVED_SWID.ANY) {

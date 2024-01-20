@@ -16,6 +16,7 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog } from '../../apps/RollDialog';
+import { ChoiceDialog } from '../../apps/ChoiceDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
@@ -743,6 +744,34 @@ export default class SwadeItem extends Item {
         }
         this.updateSource({ 'system.equipStatus': newState });
       }
+    }
+
+    if (data.system?.choiceSets?.length > 0) {
+      for (const choiceSet of data.system.choiceSets) {
+
+        if (choiceSet.choice !== null) {
+          continue;
+        }
+
+        Object.assign(
+          choiceSet,
+          await ChoiceDialog.asPromise({
+            choiceSet: choiceSet,
+          }),
+        );
+
+        if (choiceSet.choice === null) {
+          continue;
+        }
+
+        const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
+        const update = mutationOption.mutation ?? {};
+        if (mutationOption.addToName) {
+          update.name = data.name + ` (${mutationOption.name})`;
+        }
+        this.updateSource(update);
+      }
+      this.updateSource({ 'system.choiceSets': data.system.choiceSets });
     }
   }
 

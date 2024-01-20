@@ -2,6 +2,7 @@ import { PotentialSource } from '../../../globals';
 import {
   actions,
   bonusDamage,
+  choiceSets,
   favorite,
   itemDescription,
   templates,
@@ -34,6 +35,7 @@ export class PowerData extends foundry.abstract.TypeDataModel<
       ...bonusDamage(),
       ...favorite(),
       ...templates(),
+      ...choiceSets(),
       rank: new fields.StringField({ initial: '', textSearch: true }),
       pp: new fields.NumberField({ initial: 0 }),
       damage: new fields.StringField({ initial: '' }),

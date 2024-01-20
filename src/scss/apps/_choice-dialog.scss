@@ -1,0 +1,50 @@
+.app.choice-dialog .window-content {
+  h3 {
+    display: flex;
+    justify-content: center;
+  }
+
+  button {
+    display: flex;
+    margin: 4 auto;
+  }
+
+  .choices {
+    justify-items: center;
+    margin: auto;
+    max-width: max-content;
+
+    button {
+      cursor: pointer;
+      max-width: 100%;
+
+      &:not(.with-image) {
+        min-width: 120px;
+        justify-content: center;
+      }
+
+      &.with-image {
+        align-items: center;
+
+        img {
+          border: none;
+          height: 1.6em;
+          margin-right: 0.5em;
+        }
+      }
+    }
+
+    .choice-buttons {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+
+      .choice {
+        align-items: center;
+        display: flex;
+        gap: 0.5em;
+        width: 100%;
+      }
+    }
+  }
+}

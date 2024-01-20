@@ -12,7 +12,7 @@ import {
 } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
 import { TraitDie, WildDie } from '../actor/actor-data-source';
-import { ItemGrant, Requirement } from './SwadeItem.interface';
+import { ItemGrant, Requirement, ChoiceSet } from './SwadeItem.interface';
 
 declare global {
   interface SourceConfig {
@@ -90,6 +90,10 @@ interface GrantEmbedded {
   grantOn: number;
 }
 
+interface ChoiceSets {
+  choiceSets: Array<ChoiceSet>;
+}
+
 interface BonusDamage {
   bonusDamageDie: number;
   bonusDamageDice: number;
@@ -120,7 +124,8 @@ interface WeaponData
     Actions,
     Templates,
     Category,
-    GrantEmbedded {
+    GrantEmbedded,
+    ChoiceSets {
   damage: string;
   range: string;
   rangeType: ValueOf<typeof constants.WEAPON_RANGE_TYPE>;
@@ -147,7 +152,8 @@ interface GearData
     Equippable,
     Actions,
     Category,
-    GrantEmbedded {
+    GrantEmbedded,
+    ChoiceSet {
   isAmmo: boolean;
 }
 
@@ -159,7 +165,8 @@ interface ArmorData
     Equippable,
     Actions,
     Category,
-    GrantEmbedded {
+    GrantEmbedded,
+    ChoiceSet {
   minStr: string;
   armor: number | string;
   toughness: number;
@@ -183,7 +190,8 @@ interface ShieldData
     Equippable,
     Actions,
     Category,
-    GrantEmbedded {
+    GrantEmbedded,
+    ChoiceSet {
   minStr: string;
   parry: number;
   cover: number;
@@ -196,7 +204,8 @@ interface ConsumableData
     EquipStatus,
     Category,
     Actions,
-    GrantEmbedded {
+    GrantEmbedded,
+    ChoiceSet {
   charges: {
     max: number;
     value: number;
@@ -206,13 +215,17 @@ interface ConsumableData
   destroyOnEmpty: boolean;
 }
 
-interface EdgeData extends ItemDescription, Favorite, Category {
+interface EdgeData extends ItemDescription, Favorite, Category, ChoiceSet {
   isArcaneBackground: boolean;
   requirements: Array<Requirement>;
   grants: Array<ItemGrant>;
 }
 
-interface HindranceData extends ItemDescription, Favorite {
+interface HindranceData
+  extends ItemDescription,
+    Favorite,
+    ChoiceSet,
+    ChoiceSet {
   major: boolean;
   grants: Array<ItemGrant>;
 }
@@ -222,7 +235,8 @@ interface PowerData
     Actions,
     BonusDamage,
     Favorite,
-    Templates {
+    Templates,
+    ChoiceSet {
   rank: string;
   pp: string;
   damage: string;
@@ -235,7 +249,7 @@ interface PowerData
   innate: boolean;
 }
 
-interface AbilityData extends ItemDescription, Favorite, Category {
+interface AbilityData extends ItemDescription, Favorite, Category, ChoiceSet {
   subtype: AbilitySubType;
   grantsPowers: boolean;
   grants: Array<ItemGrant>;

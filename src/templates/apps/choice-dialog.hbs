@@ -1,0 +1,19 @@
+<div class="content">
+    <div class="choices">
+        <div class="choice-buttons">
+            {{#each choices as |choice|}}
+                <div class="choice">
+                    <button type="button" value="{{choice.value}}" data-action="pick"{{#if choice.img}} class="with-image"{{/if}}>
+                        {{#if choice.img}}<img src="{{choice.img}}" />{{/if}}
+                        <span>{{choice.name}}</span>
+                    </button>
+                    {{#if choice.hasUUID}}
+                        <a class="item-info" data-value="{{choice.value}}" data-tooltip="{{localize "PF2E.UI.RuleElements.ChoiceSet.ViewItem.Tooltip"}}">
+                            <i class="fa-solid fa-fw fa-info-circle"></i>
+                        </a>
+                    {{/if}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
