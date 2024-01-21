@@ -1269,6 +1269,8 @@ SWADE:
     None: None
     Compact: Compact
     Large: Large
+  SelectNewGroupLeader: Select a new Group Leader
+  ToggleIncap: Toggle Incapacitation
 TYPES:
   Actor:
     character: Player Character

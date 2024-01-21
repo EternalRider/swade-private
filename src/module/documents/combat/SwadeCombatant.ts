@@ -3,6 +3,7 @@ import { CombatantDataConstructorData } from '@league-of-foundry-developers/foun
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
+import { firstOwner } from '../../util';
 import type SwadeCombat from './SwadeCombat';
 
 declare global {
@@ -29,10 +30,8 @@ declare global {
 }
 
 export default class SwadeCombatant extends Combatant {
-  override get isDefeated() {
-    const actor = this.actor;
-    if (actor?.isWildcard) return super.isDefeated;
-    return actor?.status.isIncapacitated || super.isDefeated;
+  get isIncapacitated(): boolean {
+    return this.actor.system.isIncapacitated ?? this.isDefeated;
   }
 
   get followers(): SwadeCombatant[] {
@@ -66,7 +65,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get hasJoker() {
-    return this.getFlag('swade', 'hasJoker') ?? false;
+    return !!this.getFlag('swade', 'hasJoker');
   }
 
   async setJoker(joker: boolean) {
@@ -86,7 +85,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get isGroupLeader() {
-    return this.getFlag('swade', 'isGroupLeader') ?? false;
+    return !!this.getFlag('swade', 'isGroupLeader');
   }
 
   async setIsGroupLeader(groupLeader: boolean) {
@@ -106,7 +105,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get turnLost() {
-    return this.getFlag('swade', 'turnLost') ?? false;
+    return !!this.getFlag('swade', 'turnLost');
   }
 
   async setTurnLost(turnLost: boolean) {
@@ -119,15 +118,9 @@ export default class SwadeCombatant extends Combatant {
     const actor = this.actor;
     if (!actor) return cardsToDraw;
     const initiative = actor.system.initiative;
-    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
-      cardsToDraw = 2;
-    }
-    if (initiative?.hasImpLevelHeaded) {
-      cardsToDraw = 3;
-    }
-    if (actor.type !== 'vehicle' && actor.system.status.isIncapacitated) {
-      cardsToDraw = 1;
-    }
+    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) cardsToDraw = 2;
+    if (initiative?.hasImpLevelHeaded) cardsToDraw = 3;
+    if (actor.type !== 'vehicle' && this.isIncapacitated) cardsToDraw = 1;
     return cardsToDraw;
   }
 
@@ -225,46 +218,54 @@ export default class SwadeCombatant extends Combatant {
     if (
       !game.settings.get('swade', 'jokersWild') ||
       this.groupId ||
-      !this.hasJoker
+      !this.hasJoker ||
+      !this.parent
     )
       return;
-    const combatants = game.combat?.combatants ?? [];
+    await this.#createJokersWildMessage();
+    const combatants = this.parent.combatants as SwadeCombatant[];
     const isTokenHostile =
       this.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
     //Give bennies to PCs
     if (this.actor?.type === 'character') {
-      await this._createJokersWildMessage();
-      //filter combatants for PCs and give them bennies
-      const pcs = combatants.filter((c) => c.actor?.type === 'character');
-      for (const c of pcs) {
-        await c.actor?.getBenny();
-      }
+      await this.#friendlyBennies(combatants);
     } else if (this.actor?.type === 'npc' && isTokenHostile) {
-      await this._createJokersWildMessage();
-      //give all GMs a benny
-      const gmUsers = game.users?.filter((u) => u.active && u.isGM) ?? [];
-      for (const gm of gmUsers) {
-        await gm.getBenny();
-      }
-      //give all enemy wildcards a benny
-      const hostiles = combatants.filter((c) => {
-        const isHostile =
-          c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
-        return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
-      });
-      for (const c of hostiles ?? []) {
-        await c.actor?.getBenny();
-      }
+      await this.#adversaryBennies(combatants);
     }
   }
 
-  private async _createJokersWildMessage() {
-    const template = await renderTemplate(SWADE.bennies.templates.joker, {
-      speaker: game.user,
+  async #friendlyBennies(combatants: SwadeCombatant[]) {
+    //filter combatants for PCs and give them bennies
+    const pcs = combatants.filter((c) => c.actor?.type === 'character');
+    await this.#triggerBennies(pcs);
+  }
+
+  async #adversaryBennies(combatants: SwadeCombatant[]) {
+    //give all GMs a benny
+    const gmUsers = game.users!.filter((u) => u.active && u.isGM);
+    for (const gm of gmUsers) await gm.getBenny();
+    //give all enemy wildcards a benny
+    const hostiles = combatants.filter((c) => {
+      const isHostile =
+        c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+      return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
     });
-    await CONFIG.ChatMessage.documentClass.create({
+    await this.#triggerBennies(hostiles);
+  }
+
+  async #triggerBennies(combatants: SwadeCombatant[]) {
+    for (const c of combatants) {
+      if (c.actor?.isOwner) await c.actor?.getBenny();
+      else game.swade.sockets.giveBenny([firstOwner(this)?.id as string]);
+    }
+  }
+
+  async #createJokersWildMessage() {
+    await getDocumentClass('ChatMessage').create({
       user: game.userId,
-      content: template,
+      content: await renderTemplate(SWADE.bennies.templates.joker, {
+        speaker: game.user,
+      }),
     });
   }
 }

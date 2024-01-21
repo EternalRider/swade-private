@@ -306,6 +306,13 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     return encumbrance.value > encumbrance.max;
   }
 
+  get isIncapacitated(): boolean {
+    return (
+      this.status.isIncapacitated ||
+      this.parent?.statuses.has(CONFIG.specialStatusEffects.INCAPACITATED)
+    );
+  }
+
   getRollData(includeModifiers: boolean): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
