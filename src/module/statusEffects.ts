@@ -25,7 +25,7 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'icons/svg/skull.svg',
+    icon: 'icons/svg/stoned.svg',
     id: 'incapacitated',
     label: 'SWADE.Incap',
     changes: [
@@ -35,6 +35,12 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
+  },
+  {
+    icon: 'icons/svg/skull.svg',
+    id: 'defeated',
+    label: 'COMBAT.CombatantDefeated',
+    flags: { swade: { related: { incapacitated: {} } } },
   },
   {
     icon: 'systems/swade/assets/icons/status/status_aiming.svg',
@@ -146,12 +152,8 @@ export const statusEffects: StatusEffect[] = [
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
         value: 'true',
       },
-      {
-        key: 'system.status.isVulnerable',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
     ],
+    flags: { swade: { related: { entangled: {} } } },
   },
   {
     icon: 'systems/swade/assets/icons/status/status_entangled.svg',

@@ -1,0 +1,16 @@
+<form style='margin-bottom: 0.5rem;'>
+  <fieldset>
+    <legend>{{localize 'SWADE.SelectNewGroupLeader'}}</legend>
+    {{#each candidates}}
+      <div>
+        <input
+          id='candidate-{{id}}'
+          type='radio'
+          name='candidate'
+          value='{{id}}'
+        />
+        <label for='candidate-{{id}}'>{{name}}</label>
+      </div>
+    {{/each}}
+  </fieldset>
+</form>

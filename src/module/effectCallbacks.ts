@@ -1,8 +1,7 @@
-import { TraitRoll } from './dice/TraitRoll';
 import { constants } from './constants';
+import { TraitRoll } from './dice/TraitRoll';
 import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './documents/actor/SwadeActor';
-import SwadeItem from './documents/item/SwadeItem';
 import { getStatusEffectDataById } from './util';
 
 /** @internal */
@@ -11,15 +10,15 @@ export function registerEffectCallbacks() {
   effectCallbacks.set('shaken', removeShaken);
   effectCallbacks.set('stunned', removeStunned);
   effectCallbacks.set('bleeding-out', bleedOut);
-  effectCallbacks.set('wild-attack', wildAttack)
+  effectCallbacks.set('wild-attack', wildAttack);
 }
 
 async function wildAttack(effect: SwadeActiveEffect) {
   const parent = effect.parent;
-  if (!parent || parent instanceof SwadeItem) return;
+  if (!(parent instanceof SwadeActor)) return;
   const data = getStatusEffectDataById('vulnerable');
   await parent.toggleActiveEffect(data);
-  await effect.delete()
+  await effect.delete();
 }
 
 async function removeShaken(effect: SwadeActiveEffect) {
@@ -33,11 +32,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
         callback: async () => {
           processed = true;
           const parent = effect.parent;
-          if (
-            !parent ||
-            parent instanceof SwadeItem ||
-            parent?.type === 'vehicle'
-          ) {
+          if (!(parent instanceof SwadeActor) || parent?.type === 'vehicle') {
             return;
           }
           const flavor = game.i18n.localize(
@@ -55,7 +50,10 @@ async function removeShaken(effect: SwadeActiveEffect) {
               },
             ],
           });
-          if ((roll?.successes ?? constants.ROLL_RESULT.FAIL) >= constants.ROLL_RESULT.SUCCESS) {
+          if (
+            (roll?.successes ?? constants.ROLL_RESULT.FAIL) >=
+            constants.ROLL_RESULT.SUCCESS
+          ) {
             await effect.delete();
             ui.notifications.info('SWADE.EffectCallbacks.Shaken.Success', {
               localize: true,
@@ -70,7 +68,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
         callback: async () => {
           processed = true;
           const parent = effect.parent;
-          if (parent instanceof SwadeItem) return;
+          if (!(parent instanceof SwadeActor)) return;
           await parent?.spendBenny();
           await effect.delete();
           resolve(roll);
@@ -82,7 +80,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
         callback: async () => {
           processed = true;
           const parent = effect.parent;
-          if (parent instanceof SwadeItem) return;
+          if (!(parent instanceof SwadeActor)) return;
           await game.user?.spendBenny();
           await effect.delete();
           resolve(roll);
@@ -125,7 +123,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
 
 async function removeStunned(effect: SwadeActiveEffect) {
   const parent = effect.parent;
-  if (!parent || parent instanceof SwadeItem) return;
+  if (!(parent instanceof SwadeActor)) return;
   const flavour = game.i18n.localize('SWADE.EffectCallbacks.Stunned.Title');
   const roll = await parent.rollAttribute('vigor', {
     title: flavour,
@@ -164,7 +162,7 @@ async function removeStunned(effect: SwadeActiveEffect) {
 
 async function bleedOut(effect: SwadeActiveEffect) {
   const parent = effect.parent;
-  if (!parent || parent instanceof SwadeItem) return;
+  if (!(parent instanceof SwadeActor)) return;
 
   const flavor = game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.Title');
   const roll = await parent.rollAttribute('vigor', {
@@ -172,11 +170,13 @@ async function bleedOut(effect: SwadeActiveEffect) {
     flavour: flavor,
     additionalMods: [
       {
-        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
-        value: parent.system.attributes.vigor.bleedOut.modifier
-      }
+        label: game.i18n.localize(
+          'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
+        ),
+        value: parent.system.attributes.vigor.bleedOut.modifier,
+      },
     ],
-    ignoreWounds: parent.system.attributes.vigor.bleedOut.ignoreWounds
+    ignoreWounds: parent.system.attributes.vigor.bleedOut.ignoreWounds,
   });
   const result = roll?.successes ?? constants.ROLL_RESULT.FAIL;
   //death

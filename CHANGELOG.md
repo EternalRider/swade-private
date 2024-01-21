@@ -38,6 +38,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - `swadeRefreshBennies`
 - Added context menu option to card decks to set them as the Action Deck. (#975) **by @jpmeehan5**
 - Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by @jpmeehan5**
+- Added a dialog to select a new group leader combatant when the current leader is marked as defeated. (#943) **by @florad92**
+- Added Incapacitation effect and a corresponding toggle in the Combat Tracker. **by @florad92**
 
 ### Changed
 
@@ -65,6 +67,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
 - The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
+- _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
 
 ## 3.2.5
 

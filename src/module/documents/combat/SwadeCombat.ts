@@ -19,7 +19,7 @@ declare global {
 
 export default class SwadeCombat extends Combat {
   /** Compares two combatants by initiative card */
-  static #cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+  static cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     const cardA = a.cardValue ?? 0;
     const cardB = b.cardValue ?? 0;
     const card = cardB - cardA;
@@ -29,15 +29,44 @@ export default class SwadeCombat extends Combat {
     return suitB - suitA;
   }
 
+  /** Compares two combatants by name. */
+  static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+    if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
+    return a.name > b.name ? 1 : -1;
+  }
+
   /** Compares two combatants by ID. */
   static #idSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     return a.id! > b.id! ? 1 : -1;
   }
 
+  static INITIATIVE_SOUND = 'systems/swade/assets/card-flip.wav';
+
   get actionDeck(): SwadeCards {
     return game.cards!.get(game.settings.get('swade', 'actionDeck'), {
       strict: true,
     });
+  }
+
+  get automaticInitiative(): boolean {
+    return game.settings.get('swade', 'autoInit');
+  }
+
+  #debouncedCombatSound: this['_playCombatSound'];
+
+  #initSoundData: AudioHelper.PlayData = {
+    src: SwadeCombat.INITIATIVE_SOUND,
+    volume: 0.8,
+    autoplay: true,
+    loop: false,
+  };
+
+  constructor(...args) {
+    super(...args);
+    this.#debouncedCombatSound = foundry.utils.debounce(
+      super._playCombatSound,
+      200,
+    );
   }
 
   override async rollInitiative(
@@ -56,7 +85,7 @@ export default class SwadeCombat extends Combat {
     if (ids.length > this.actionDeck.availableCards.length) {
       const message = game.i18n.format('SWADE.NoCardsLeft', {
         needed: ids.length,
-        current: actionCardDeck.availableCards.length,
+        current: this.actionDeck.availableCards.length,
       });
       ui.notifications.warn(message);
       return this as Combat;
@@ -68,15 +97,14 @@ export default class SwadeCombat extends Combat {
       const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
       if (!c.isOwner) continue;
       const roundHeld = !!c.roundHeld;
-      const inGroup = !!c.groupId;
 
-      //Do not draw cards for defeated or holding combatants
-      if (c.isDefeated || roundHeld || inGroup) continue;
+      //Do not draw cards for defeated, holding or grouped combatants
+      if (c.isDefeated || roundHeld || !!c.groupId) continue;
 
       // Set up edges
       const hasHesitant = c.actor?.system.initiative.hasHesitant;
       const hasQuick = c.actor?.system.initiative.hasQuick;
-      const isIncapacitated = c.actor?.system.status.isIncapacitated;
+      const isIncapacitated = c.isIncapacitated;
 
       // Figure out how many cards to draw
       const cardsToDraw = c.cardsToDraw;
@@ -85,7 +113,7 @@ export default class SwadeCombat extends Combat {
       let pickedCard: Card;
       let cardsToPickFrom = await this.drawCard(cardsToDraw);
 
-      if (!!c.initiative && !roundHeld) {
+      if (typeof c.initiative === 'number' && !roundHeld) {
         // handle redraws
         const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
@@ -168,22 +196,11 @@ export default class SwadeCombat extends Combat {
       };
 
       //Handle group leader changes
-      if (c.isGroupLeader) update.flags.swade.suitValue += 0.9;
       updates.push(update);
 
       //handle potential followers
-      const followers =
-        game.combat?.combatants.filter((f) => f.groupId === c.id) ?? [];
-      let s = newFlags.suitValue;
-      for (const f of followers) {
-        s -= 0.02;
-        updates.push({
-          _id: f.id,
-          initiative: initiative,
-          'flags.swade': foundry.utils.mergeObject(newFlags, {
-            suitValue: s,
-          }),
-        });
+      for (const f of c.followers) {
+        updates.push({ _id: f.id, initiative, 'flags.swade': newFlags });
       }
 
       // Construct chat message data
@@ -240,7 +257,7 @@ export default class SwadeCombat extends Combat {
     a: SwadeCombatant,
     b: SwadeCombatant,
   ): number {
-    const currentRound = game.combats?.viewed?.round ?? 0;
+    const currentRound = game.combat?.round ?? 0;
 
     if (
       (a.roundHeld && currentRound !== a.roundHeld) ||
@@ -248,20 +265,21 @@ export default class SwadeCombat extends Combat {
     ) {
       const isOnHoldA = a.roundHeld && (a.roundHeld ?? 0 < currentRound);
       const isOnHoldB = b.roundHeld && (b.roundHeld ?? 0 < currentRound);
-
-      if (isOnHoldA && !isOnHoldB) {
-        return -1;
-      }
-      if (!isOnHoldA && isOnHoldB) {
-        return 1;
-      }
+      if (isOnHoldA && !isOnHoldB) return -1;
+      if (!isOnHoldA && isOnHoldB) return 1;
     }
+
+    // handle groups
+    if (a.isGroupLeader && b.groupId === a.id) return -1;
+    if (b.isGroupLeader && a.groupId === b.id) return 1;
+    if (a.initiative === b.initiative)
+      return SwadeCombat.nameSortCombatants(a, b);
 
     //decide whether to sort by name or card
     if (a.flags?.swade && b.flags?.swade) {
-      return SwadeCombat.#cardSortCombatants(a, b);
+      return SwadeCombat.cardSortCombatants(a, b);
     }
-    return SwadeCombat.#idSortCombatants(a, b);
+    return SwadeCombat.nameSortCombatants(a, b);
   }
 
   /**
@@ -309,11 +327,11 @@ export default class SwadeCombat extends Combat {
 
   override async startCombat() {
     //Init autoroll
-    if (game.settings.get('swade', 'autoInit')) {
-      const combatantIds = this.combatants
-        .filter((c) => c.initiative === null)
-        .map((c) => c.id!);
-      await this.rollInitiative(combatantIds);
+    if (this.automaticInitiative) {
+      // if automatic init is on we draw cards
+      await this._promptAllPlayersForInitiative();
+      //grab the NPCs, we're drawing them locally
+      await this.rollNPC();
     }
     return super.startCombat();
   }
@@ -403,6 +421,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleStartOfTurnExpirations() {
+    if (this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect: SwadeActiveEffect) =>
@@ -414,6 +433,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleEndOfTurnExpirations() {
+    if (this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect) => effect.isTemporary && effect.isExpired('end'),
@@ -424,20 +444,13 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _playInitiativeSound() {
-    if (game.settings.get('swade', 'initiativeSound')) {
-      const data = {
-        src: 'systems/swade/assets/card-flip.wav',
-        volume: 0.8,
-        autoplay: true,
-        loop: false,
-      };
-      AudioHelper.play(data, true);
-    }
+    if (!game.settings.get('swade', 'initiativeSound')) return;
+    AudioHelper.play(this.#initSoundData, true);
   }
 
-  protected override _playCombatSound(announcement: string): void {
-    if (this.previous.round === 0 || this.previous.round === this.current.round)
-      super._playCombatSound(announcement);
+  protected override _playCombatSound(type: string): void {
+    if (this.turn === this.turns.length - 1 && type === 'nextUp') return; //skip if it's the last turn in the round
+    this.#debouncedCombatSound(type);
   }
 
   protected async _nextRoundAsGM() {
@@ -453,10 +466,8 @@ export default class SwadeCombat extends Combat {
     //advance the round to the next one
     await super.nextRound();
 
-    const autoInit = game.settings.get('swade', 'autoInit');
-
     //no auto init, we're done;
-    if (!autoInit) return;
+    if (!this.automaticInitiative) return;
 
     // if automatic init is on we draw cards
     await this._promptAllPlayersForInitiative();

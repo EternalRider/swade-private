@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';

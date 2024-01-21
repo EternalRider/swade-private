@@ -147,6 +147,7 @@ Hooks.once('init', () => {
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
   CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
+  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
   // v11 Active Effect handling
   CONFIG.ActiveEffect.legacyTransferral = false;

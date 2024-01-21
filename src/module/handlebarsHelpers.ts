@@ -201,22 +201,27 @@ function isInGroup(combatantId: string) {
   return c.groupId!;
 }
 
-function groupColor(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId);
-  if (!c) return;
-  const groupColor = c.getFlag('swade', 'groupColor');
-  if (groupColor) return groupColor;
-
-  if (c?.players?.length) {
-    return c.players[0].color;
-  } else {
-    game.users.activeGM?.color;
-  }
+function combatantColor(id: string): string | null {
+  const fallback = 'transparent';
+  const c = game.combat?.combatants.get(id);
+  if (!c) return fallback;
+  if (c.groupId) return groupColor(c.groupId);
+  else if (c.isDefeated) return '#fff';
+  else return groupColor(id);
 }
 
-function leaderColor(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return groupColor(c.groupId as string);
+function groupColor(id: string): string {
+  const fallback = 'transparent';
+  const c = game.combat?.combatants.get(id);
+  if (!c) return fallback;
+  const groupColor = c.getFlag('swade', 'groupColor');
+  if (groupColor) return groupColor || fallback;
+
+  if (c.players?.length) {
+    return c.players[0].color;
+  } else {
+    return game.users.activeGM?.color;
+  }
 }
 
 /*****************************
@@ -299,8 +304,7 @@ export function registerCustomHelpers() {
     turnLost,
     isGroupLeader,
     isInGroup,
-    groupColor,
-    leaderColor,
+    combatantColor,
     eachInMap,
     equipStatus,
     equipStatusLabel,
