@@ -5,6 +5,7 @@ display: true
 suggestedNextTours:
   - swade.tweaks
   - swade.auras
+  - swade.advances
 steps:
   - id: gameSettings
     selector: '#settings-game>button[data-action="configure"]'
