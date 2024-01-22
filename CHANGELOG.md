@@ -40,6 +40,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by @jpmeehan5**
 - Added a dialog to select a new group leader combatant when the current leader is marked as defeated. (#943) **by @florad92**
 - Added Incapacitation effect and a corresponding toggle in the Combat Tracker. **by @florad92**
+- Added more tours. **by @jpmeehan5**
+  - Advances (#888)
 
 ### Changed
 

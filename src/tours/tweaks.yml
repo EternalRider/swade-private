@@ -5,6 +5,7 @@ display: true
 suggestedNextTours:
   - swade.additional-stats
   - swade.auras
+  - swade.advances
 steps:
   - id: accessTweaks
     selector: '#actorSheetID .header-button.configure-actor'

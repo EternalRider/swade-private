@@ -1242,6 +1242,42 @@ SWADE:
           Select which tokens (by Disposition) can see this aura. You can always
           see all auras of a token of which you have at least Observer
           permission.
+    ADVANCES:
+      Title: Advances
+      Description: See how SWADE tracks character advances
+      Actor: Advances Tour Demo Character
+      AccessAdvanceMode:
+        Title: Setting the Advance Mode
+        Content: A character's advance mode can be switched in the Tweaks menu.
+      Mode:
+        Title: Advance Mode Selection
+      AdvanceTab:
+        Title: The Advances Tab
+        Content: Advances are configured in the primary "About" tab.
+      Create:
+        Title: Creating an Advance
+        Content: This button creates a new advance for use
+      Editor:
+        Title: The Advance Editor
+        Content: This form provides configuration info for a new advance.
+      Type:
+        Title: Advance Type Selection
+        Content: Choose what kind of advance this is. Currently this does not trigger any further validation or selection, but future updates to the system may change this.
+      Rank:
+        Title: Advance Rank
+        Content: The rank that your character will be upon arriving at this advance. This cannot be directly edited, as it is derived from your character's total number of advances.
+      Number:
+        Title: Advance Number
+        Content: This controls the order of advances. Changing this will move the advance to an earlier spot in the list.
+      Planned:
+        Title: Planned Advances
+        Content: You can mark advances as planned to prevent them from counting towards your character's rank.
+      Notes:
+        Title: Advance Notes
+        Content: Include any relevant information about your advance here; what traits you increased, what edges you selected, etc.
+      SaveChanges:
+        Title: Save Changes Button
+        Content: Changes are NOT saved automatically back to the character. You must use the save button in the ProseMirror Editor or this "Save Changes" button
   SWID:
     Long: Savage Worlds ID
     Short: SWID

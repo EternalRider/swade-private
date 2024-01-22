@@ -33,7 +33,7 @@ export class AdvanceEditor extends FormApplication<
     ) as Collection<Advance>;
   }
 
-  static get defaultOptions(): FormApplicationOptions {
+  static override get defaultOptions(): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
       template: 'systems/swade/templates/apps/advanceEditor.hbs',
       title: game.i18n.localize('SWADE.Advances.EditorTitle'),
