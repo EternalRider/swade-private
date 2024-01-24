@@ -9,14 +9,19 @@ export class Accordion {
   isExpanding: boolean;
   isClosing: boolean;
   animation: Animation | null;
-  options: KeyframeAnimationOptions;
+  options: AccordionOptions;
+
+  #defaultOptions: KeyframeAnimationOptions = {
+    duration: 400,
+    easing: 'ease-out',
+  };
 
   constructor(
     el: HTMLDetailsElement,
     contentSelector: string = '.content',
-    options: KeyframeAnimationOptions = { duration: 400, easing: 'ease-out' },
+    options: AccordionOptions,
   ) {
-    this.options = options;
+    this.options = { ...this.#defaultOptions, ...options };
     // Store the <details> element
     this.el = el;
     // Store the <summary> element
@@ -31,7 +36,7 @@ export class Accordion {
     // Store if the element is expanding
     this.isExpanding = false;
     // Detect user clicks on the summary element
-    this.summary?.addEventListener('click', (e) => this.onClick(e));
+    this.summary?.addEventListener('click', this.onClick.bind(this));
   }
 
   onClick(e: PointerEvent) {
@@ -39,6 +44,7 @@ export class Accordion {
     e.preventDefault();
 
     // Stop early if we clicked on a button inside summary
+    if (e.target instanceof HTMLButtonElement) return;
     if ((e.target as HTMLElement).parentElement instanceof HTMLButtonElement) {
       return;
     }
@@ -48,9 +54,11 @@ export class Accordion {
     // Check if the element is being closed or is already closed
     if (this.isClosing || !this.el.open) {
       this.open();
+      this.options.onOpen?.(this.el);
       // Check if the element is being opened or is already open
     } else if (this.isExpanding || this.el.open) {
       this.shrink();
+      this.options.onClose?.(this.el);
     }
   }
 
@@ -140,4 +148,9 @@ export class Accordion {
     // Remove the overflow hidden and the fixed height
     this.el.style.height = this.el.style.overflow = '';
   }
+}
+
+export interface AccordionOptions extends KeyframeAnimationOptions {
+  onOpen?: (element: HTMLDetailsElement) => void;
+  onClose?: (element: HTMLDetailsElement) => void;
 }
