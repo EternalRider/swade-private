@@ -264,9 +264,10 @@
     <ol class="quick-list">
       {{#each sheetEffects.favorite}}
         <li class="gear-card item {{#if disabled}}disabled-effect{{/if}}" data-effect-id="{{id}}" data-source-id="{{source.id}}">
-          <header class="card-header flexrow">
+        <details data-collapsible-id="{{concat "effect-card-" id}}">
+          <summary class="card-header flexrow">
             <div class="item-image" style="background-image: url('{{icon}}')"></div>
-            <button class="item-name" data-tooltip="{{tooltip}}" >{{name}}</button>
+            <a class="item-name" data-tooltip="{{tooltip}}" >{{name}}</a>
             <div class="item-controls">
               <button type="button" class="item-control effect-action" data-action="toggle" data-toggle="disabled">
                 <i class="fas fa-power-off"></i>
@@ -275,12 +276,9 @@
                 <i class="fas fa-star"></i>
               </button>
             </div>
-          </header>
-          <div class="card-content" style="display: none">
-          {{#if description}}
-            {{{enrich description}}}
-          {{/if}}
-          </div>
+          </summary>
+          <div class="card-content content description"></div>
+        </details>
         </li>
       {{/each}}
     </ol>

@@ -27,7 +27,7 @@ import * as util from '../util';
 export default class CharacterSheet extends ActorSheet {
   _equipStateMenu: PopUpMenu;
   _effectCreateDropDown: ContextMenu;
-  _accordions: Record<string, any> = {};
+  _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -451,6 +451,16 @@ export default class CharacterSheet extends ActorSheet {
     };
 
     return { ...(await super.getData(options)), ...data };
+  }
+
+  protected override async _render(...args): Promise<void> {
+    await super._render(...args);
+    for (const accordion of Object.values(this._accordions)) {
+      if (accordion.open && accordion.object.el) {
+        await this.#onOpenAccordion(accordion.object.el);
+        accordion.object.el.open = true;
+      }
+    }
   }
 
   protected override _onDragStart(event: DragEvent): void {
@@ -1316,25 +1326,34 @@ export default class CharacterSheet extends ActorSheet {
       'details[data-collapsible-id]',
     );
     for (const el of elements) {
-      if (!el.dataset.collapsibleId) continue;
-      this._accordions[el.dataset.collapsibleId] = new Accordion(
-        el,
-        '.content',
-        { onOpen: this.#onOpenAccordion.bind(this) },
-      );
+      const id = el.dataset.collapsibleId;
+      if (!id) continue;
+      this._accordions[id] = {
+        ...this._accordions[id],
+        object: new Accordion(el, '.content', {
+          onOpen: (details) => {
+            this.#onOpenAccordion(details);
+            this._accordions[id].open = true;
+          },
+          onClose: () => (this._accordions[id].open = false),
+        }),
+      };
     }
   }
 
   async #onOpenAccordion(element: HTMLDetailsElement) {
-    const enriched = Boolean(element.dataset.enriched);
-    if (enriched) return;
-    const itemId = element.closest('li')?.dataset.itemId;
-    const item = this.actor.items.get(itemId, { strict: true });
-    const description = item.system.description;
-    if (!description) return;
+    if (element.dataset.enriched === 'true') return;
+    const docId =
+      element.closest('li')?.dataset.itemId ??
+      element.closest('li')?.dataset.effectId;
+    if (!docId) return;
+    const doc = this.actor.items.get(docId) ?? this.actor.effects.get(docId);
+    const text =
+      doc instanceof SwadeItem ? doc.system.description : doc.description;
+    if (!text) return;
     element.querySelector<HTMLElement>(
       '.content .description, .content.description',
-    )!.innerHTML = await this.#enrichText(item.system.description);
+    )!.innerHTML = await this.#enrichText(text);
     element.setAttribute('data-enriched', true.toString());
   }
 }

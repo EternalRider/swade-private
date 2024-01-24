@@ -13,7 +13,7 @@ export class Accordion {
 
   #defaultOptions: KeyframeAnimationOptions = {
     duration: 400,
-    easing: 'ease-out',
+    easing: 'ease-in-out',
   };
 
   constructor(
