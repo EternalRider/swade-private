@@ -638,7 +638,7 @@ export default class SwadeItem extends Item {
 
   /**
    * @deprecated
-   * @since 3.3
+   * @since 3.3.0
    */
   needsFullReloadProcedure(): boolean {
     foundry.utils.logCompatibilityWarning(

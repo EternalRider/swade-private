@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added Incapacitation effect and a corresponding toggle in the Combat Tracker. **by @florad92**
 - Added more tours. **by @jpmeehan5**
   - Advances (#888)
+- Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
 
 ### Changed
 

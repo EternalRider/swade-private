@@ -1,11 +1,11 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
+import { VehicleData } from '../data/actor/vehicle';
 import { DamageRoll } from '../dice/DamageRoll';
+import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
-import SwadeUser from '../documents/SwadeUser';
-import { VehicleData } from '../data/actor/vehicle';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -106,8 +106,28 @@ export async function calcWounds(
     statusToApply = Status.WOUNDED;
   }
 
-  // Trigger Soak prompt.
-  await soakPrompt(actor, damageContext, woundsInflicted, statusToApply);
+  /**
+   * A hook event that is fired before wounds are calculated
+   * Returning `false` in a hook callback will cancel the workflow entirely
+   * @category Hooks
+   * @since 3.3.0
+   * @param {SwadeActor} actor              The actor that is being damaged
+   * @param {DamageContext} damageContext   The damage context
+   * @param {number} woundsInflicted        The amount of wounds that will be inflicted
+   * @param {Status} statusToApply          The resulting status that would be applied
+   */
+  const permit = Hooks.call(
+    'swadePreCalcWounds',
+    actor,
+    damageContext,
+    woundsInflicted,
+    statusToApply,
+  );
+
+  if (permit !== false) {
+    // Trigger Soak prompt.
+    await soakPrompt(actor, damageContext, woundsInflicted, statusToApply);
+  }
 }
 
 // Function for prompting to Soak.
