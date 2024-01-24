@@ -70,6 +70,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 - _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
+- Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
 
 ## 3.2.5
 

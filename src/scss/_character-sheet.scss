@@ -254,6 +254,7 @@
     height: 100%;
     width: 100%;
     padding: 7px;
+    scrollbar-gutter: stable;
     .active {
       display: block;
     }
@@ -703,9 +704,10 @@
       font-size: $medium-font;
     }
     .skill-name {
+      font-size: var(--font-size-14);
       text-align: left;
+      padding-left: 5px;
       flex: 3;
-      justify-self: flex-start;
     }
     .skill-die {
       display: flex;
@@ -760,11 +762,11 @@
     border-bottom: $solid-line;
     padding-bottom: $small-spacing;
     margin-bottom: $small-spacing;
+
     .item-name {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       text-align: left;
       padding-left: $medium-spacing;
-      justify-self: flex-start;
     }
     .chips {
       &:not(:has(.chip)) {
@@ -786,6 +788,7 @@
     }
     .card-header {
       justify-content: space-between;
+      align-items: center;
     }
     .item-image {
       background-repeat: no-repeat;
@@ -802,7 +805,7 @@
       justify-content: flex-end;
     }
     .card-content {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       line-height: 16px;
       padding: 5px;
       overflow: hidden;
@@ -854,7 +857,7 @@
       column-gap: $small-spacing;
       align-items: center;
       line-height: 30px;
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
 
     .item-name {
@@ -883,7 +886,6 @@
     }
 
     .description {
-      display: none;
       margin: $small-spacing;
       padding: $small-spacing;
       font-size: $small-font;
@@ -1097,9 +1099,12 @@
       margin-bottom: $small-spacing;
       padding-bottom: $small-spacing;
       border-bottom: $solid-line;
-      display: grid;
-      grid-template-columns: 32px 1fr 80px;
-      column-gap: $small-spacing;
+      .feature-header {
+        display: grid;
+        grid-template-columns: 32px 1fr 80px;
+        column-gap: $small-spacing;
+        align-items: center;
+      }
     }
     .feature-list {
       list-style: none;
@@ -1145,7 +1150,6 @@
       }
     }
     .description {
-      display: none;
       margin: $small-spacing;
       padding: $small-spacing;
       font-size: $small-font;
@@ -1161,7 +1165,7 @@
   //#######################
   // Effects Tab
   //#######################
-  .effects.active {
+  .effects {
     .effects-list {
       list-style: none;
       margin-bottom: 1em;
@@ -1172,7 +1176,7 @@
       width: fit-content;
       padding-left: 3rem;
     }
-    .effect,
+    .effect-entry-header,
     .effect-header {
       display: grid;
       grid-template-columns: 40px 3fr 2fr 80px;
@@ -1216,7 +1220,6 @@
       }
     }
     .description {
-      display: none;
       margin: $small-spacing;
       padding: $small-spacing;
       font-size: $small-font;
@@ -1248,9 +1251,61 @@
       margin-bottom: $small-spacing;
       padding-bottom: $small-spacing;
       border-bottom: $solid-line;
-      display: grid;
-      grid-template-columns: 32px 1fr 80px;
-      column-gap: $small-spacing;
+      .power-header {
+        display: grid;
+        align-items: center;
+        grid-template-columns: 32px 1fr 80px;
+        column-gap: $small-spacing;
+      }
+      .content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas:
+          'details details details'
+          'trappings trappings trappings'
+          'description description actions';
+        grid-gap: 0.5rem;
+      }
+
+      .power-details {
+        grid-area: details;
+        font-family: var(--default-font);
+        display: flex;
+        font-size: $small-font;
+        font-weight: 900;
+        span {
+          margin: $small-spacing;
+          padding: $small-spacing;
+        }
+        button {
+          font-weight: 900;
+        }
+      }
+      .trapping {
+        grid-area: trappings;
+        margin: $small-spacing;
+        padding: $small-spacing;
+        font-family: var(--default-font);
+        font-size: $small-font;
+        font-weight: 900;
+      }
+      .description {
+        grid-area: description;
+        margin: $small-spacing;
+        padding: $small-spacing;
+        font-size: $small-font;
+        font-family: 'Signika', serif;
+        max-height: 300px;
+        overflow-y: scroll;
+        white-space: normal;
+        line-height: normal;
+        .swade-core {
+          padding: 0;
+        }
+      }
+      .chat-card {
+        grid-area: actions;
+      }
     }
 
     .item-name {
@@ -1289,40 +1344,6 @@
       button {
         line-height: 24px;
         text-align: center;
-      }
-    }
-
-    .description {
-      display: none;
-      margin: $small-spacing;
-      padding: $small-spacing;
-      font-size: $small-font;
-      font-family: 'Signika', serif;
-      max-height: 300px;
-      overflow-y: scroll;
-      grid-column: 1 / -1;
-      white-space: normal;
-      line-height: normal;
-
-      .power-details {
-        font-family: var(--default-font);
-        display: flex;
-        font-size: $small-font;
-        font-weight: 900;
-        span {
-          margin: $small-spacing;
-          padding: $small-spacing;
-        }
-        button {
-          font-weight: 900;
-        }
-      }
-      .trapping {
-        margin: $small-spacing;
-        padding: $small-spacing;
-        font-family: var(--default-font);
-        font-size: $small-font;
-        font-weight: 900;
       }
     }
 
