@@ -224,7 +224,6 @@ interface EdgeData extends ItemDescription, Favorite, Category, ChoiceSet {
 interface HindranceData
   extends ItemDescription,
     Favorite,
-    ChoiceSet,
     ChoiceSet {
   major: boolean;
   grants: Array<ItemGrant>;

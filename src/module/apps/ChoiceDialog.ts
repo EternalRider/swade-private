@@ -3,9 +3,7 @@ import {
   MutationOption,
 } from '../documents/item/SwadeItem.interface';
 
-export class ChoiceDialog extends Application<
-  ApplicationOptions
-> {
+export class ChoiceDialog extends Application<ApplicationOptions> {
   #callback: (value: ChoiceSet) => void;
   protected selection: ChoiceSet;
 
@@ -34,37 +32,31 @@ export class ChoiceDialog extends Application<
   }
 
   override get title(): string {
-    return this.selection.title ?? 'SWADE Choicedialog';
+    return 'SWADE Choicedialog';
   }
 
   override activateListeners(html: JQuery<HTMLElement>): void {
+    // override escape and enter keys for this Application
     $(document).on('keydown.chooseDefault', this.#onKeyDown.bind(this));
+
     html[0]
-      .querySelectorAll<HTMLElement>('button[data-action=pick]')
-      .forEach((el) => {
-        el.addEventListener('click', (ev) => {
-          this.selection.choice = this.getSelection(ev) ?? null;
-          this.close();
-        });
+      .querySelector<HTMLButtonElement>('button#close')
+      ?.addEventListener('click', this.close.bind(this));
+
+    html[0]
+      .querySelector<HTMLButtonElement>('button#submit-choice')
+      ?.addEventListener('click', (ev) => {
+        this.customSubmit();
       });
   }
 
-  protected getSelection(ev: MouseEvent): number | null {
-    if (!(ev.currentTarget instanceof HTMLElement)) {
-      throw new Error('Unexpected error retrieving form data');
-    }
-
-    const valueElement =
-      ev.currentTarget
-        .closest('.choice')
-        ?.querySelector<HTMLElement>('button[data-action=pick]') ??
-      ev.currentTarget;
-    const selectedIndex = valueElement.getAttribute('value');
-
-    return ['', null].includes(selectedIndex) ||
-      !Number.isInteger(Number(selectedIndex))
-      ? null
-      : Number(selectedIndex);
+  customSubmit() {
+    this.selection.choice = this.getSelection();
+    return this.close();
+  }
+  protected getSelection(): number | null {
+    const radio = this.element[0].querySelector('input[name="choiceset"]:checked') as HTMLInputElement;
+    return radio?.value !== 'none' ? Number(radio?.value) : null;
   }
 
   override close(options?: Application.CloseOptions): Promise<void> {
@@ -75,8 +67,9 @@ export class ChoiceDialog extends Application<
 
   override async getData() {
     return {
-      choices: this.selection.choices.map((c, index) => ({
-        ...c,
+      prompt: this.selection.title,
+      choices: this.selection.choices.map((choice, index) => ({
+        ...choice,
         value: index,
       })),
     };
@@ -94,7 +87,7 @@ export class ChoiceDialog extends Application<
     if (event.key === 'Enter') {
       event.preventDefault();
       event.stopPropagation();
-      return this.close();
+      return this.customSubmit();
     }
   }
 }

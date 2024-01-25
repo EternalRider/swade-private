@@ -1,19 +1,37 @@
-<div class="content">
-    <div class="choices">
-        <div class="choice-buttons">
-            {{#each choices as |choice|}}
-                <div class="choice">
-                    <button type="button" value="{{choice.value}}" data-action="pick"{{#if choice.img}} class="with-image"{{/if}}>
-                        {{#if choice.img}}<img src="{{choice.img}}" />{{/if}}
-                        <span>{{choice.name}}</span>
-                    </button>
-                    {{#if choice.hasUUID}}
-                        <a class="item-info" data-value="{{choice.value}}" data-tooltip="{{localize "PF2E.UI.RuleElements.ChoiceSet.ViewItem.Tooltip"}}">
-                            <i class="fa-solid fa-fw fa-info-circle"></i>
-                        </a>
-                    {{/if}}
-                </div>
-            {{/each}}
-        </div>
-    </div>
-</div>
+<form>
+  <fieldset class='flexcol'>
+    <legend>{{prompt}}</legend>
+    <input
+      type='radio'
+      id='choicenone'
+      name='choiceset'
+      value='none'
+      class='hidden'
+      checked='checked'
+    />
+    {{#each choices as |choice|}}
+      <div>
+        <input
+          type='radio'
+          id='choice{{choice.value}}'
+          name='choiceset'
+          value='{{choice.value}}'
+        />
+        <label
+          for='choice{{choice.value}}'
+          class='choice'
+        >{{choice.name}}</label>
+      </div>
+    {{/each}}
+  </fieldset>
+  <footer class='flexrow'>
+    <button type='button' id='submit-choice'>
+      <i class='fas fa-check-double'></i>
+      {{localize 'SWADE.ButtonSubmit'}}
+    </button>
+    <button type='button' id='close'>
+      <i class='fas fa-times'></i>
+      {{localize 'Close'}}
+    </button>
+  </footer>
+</form>
