@@ -45,7 +45,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
     html[0]
       .querySelector<HTMLButtonElement>('button#submit-choice')
-      ?.addEventListener('click', (ev) => {
+      ?.addEventListener('click', () => {
         this.customSubmit();
       });
   }
