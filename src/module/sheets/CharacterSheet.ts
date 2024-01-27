@@ -174,8 +174,8 @@ export default class CharacterSheet extends ActorSheet {
 
     jquery.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId as string;
-      const sourceId = a.closest('li')!.dataset.sourceId as string;
+      const effectId = a.closest('.effect')!.dataset.effectId as string;
+      const sourceId = a.closest('.effect')!.dataset.sourceId as string;
       const sourceItem = this.actor.items.get(sourceId)!;
       const effect = sourceId
         ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
