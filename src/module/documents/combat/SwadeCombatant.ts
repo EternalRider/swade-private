@@ -23,6 +23,7 @@ declare global {
         roundHeld?: number;
         turnLost?: boolean;
         firstRound?: number;
+        groupColor?: string;
         [key: string]: unknown;
       };
     };
