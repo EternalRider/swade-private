@@ -1,6 +1,7 @@
 import { EquipState } from '../globals';
 import { SWADE } from './config';
 import { constants } from './constants';
+import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
 
 /*****************************
@@ -201,18 +202,18 @@ function isInGroup(combatantId: string) {
   return c.groupId!;
 }
 
-function combatantColor(id: string): string | null {
+function combatantColor(id: string): string | undefined {
   const fallback = 'transparent';
-  const c = game.combat?.combatants.get(id);
+  const c = game.combat?.combatants.get(id) as SwadeCombatant;
   if (!c) return fallback;
   if (c.groupId) return groupColor(c.groupId);
   else if (c.isDefeated) return '#fff';
   else return groupColor(id);
 }
 
-function groupColor(id: string): string {
+function groupColor(id: string): string | undefined {
   const fallback = 'transparent';
-  const c = game.combat?.combatants.get(id);
+  const c = game.combat?.combatants.get(id) as SwadeCombatant;
   if (!c) return fallback;
   const groupColor = c.getFlag('swade', 'groupColor');
   if (groupColor) return groupColor || fallback;
