@@ -11,9 +11,12 @@
   <section class='sheet-sidebar'>
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class='form-group'>
-      <label>{{localize 'SWADE.Range._name'}}</label>
+      <label for="{{item.uuid}}-range">
+        {{localize 'SWADE.Range._name'}}
+      </label>
       <span class='form-fields'>
         <input
+          id="{{item.uuid}}-range"
           name='system.range'
           type='text'
           list="{{item.id}}-ranges"
@@ -23,9 +26,12 @@
       </span>
     </div>
     <div class='form-group'>
-      <label>{{localize 'SWADE.Dmg'}}</label>
+      <label for="{{item.uuid}}-damage">
+        {{localize 'SWADE.Dmg'}}
+      </label>
       <span class='form-fields'>
         <input
+          id="{{item.uuid}}-damage"
           name='system.damage'
           type='text'
           value='{{item.system.damage}}'
@@ -34,9 +40,10 @@
       </span>
     </div>
     <div class='form-group'>
-      <label for='system.ap'>{{localize 'SWADE.Ap'}}</label>
+      <label for='{{item.uuid}}-ap'>{{localize 'SWADE.Ap'}}</label>
       <span class='form-fields'>
         <input
+          id="{{item.uuid}}-ap"
           name='system.ap'
           type='number'
           value='{{item.system.ap}}'
@@ -46,9 +53,10 @@
       </span>
     </div>
     <div class='form-group'>
-      <label for='system.shots'>{{localize 'SWADE.Mag'}}</label>
+      <label for='{{item.uuid}}-shots'>{{localize 'SWADE.Mag'}}</label>
       <span class='form-fields text-center'>
         <input
+          id="{{item.uuid}}-shots"
           name='system.currentShots'
           type='number'
           value='{{item.system.currentShots}}'
@@ -113,9 +121,12 @@
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Parry'}}</label>
+        <label for="{{item.uuid}}-parry">
+          {{localize 'SWADE.Parry'}}
+        </label>
         <span class='form-fields'>
           <input
+            id="{{item.uuid}}-parry"
             name='system.parry'
             type='text'
             value='{{signedString item.system.parry}}'
@@ -125,9 +136,10 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='system.rof'>{{localize 'SWADE.RoF'}}</label>
+        <label for='{{item.uuid}}-rof'>{{localize 'SWADE.RoF'}}</label>
         <span class='form-fields'>
           <input
+            id="{{item.uuid}}-rof"
             name='system.rof'
             type='text'
             value='{{item.system.rof}}'
@@ -136,9 +148,12 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='system.minStr'>{{localize 'SWADE.MinStrShort'}}</label>
+        <label for='{{item.uuid}}-minStr'>
+          {{localize 'SWADE.MinStrShort'}}
+        </label>
         <span class='form-fields'>
           <input
+            id="{{item.uuid}}-minStr"
             name='system.minStr'
             type='text'
             value='{{item.system.minStr}}'
@@ -147,9 +162,10 @@
         </span>
       </div>
       <div class='form-group'>
-        <label for='system.weight'>{{localize 'SWADE.Weight'}}</label>
+        <label for='{{item.uuid}}-weight'>{{localize 'SWADE.Weight'}}</label>
         <span class='form-fields'>
           <input
+            id="{{item.uuid}}-weight"
             name='system.weight'
             type='text'
             value='{{item.system.weight}}'
@@ -159,9 +175,12 @@
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Notes'}}</label>
+        <label for="{{item.uuid}}-notes">
+          {{localize 'SWADE.Notes'}}
+        </label>
         <span class='form-fields'>
           <input
+            id="{{item.uuid}}-notes"
             type='text'
             name='system.notes'
             value='{{item.system.notes}}'
@@ -172,9 +191,12 @@
       {{#if item.system.isVehicular}}
         {{#if settingRules.modSlots}}
           <div class='form-group'>
-            <label for='system.mods'>{{localize 'SWADE.ModSlots'}}</label>
+            <label for='{{item.uuid}}-mods'>
+              {{localize 'SWADE.ModSlots'}}
+            </label>
             <span class='form-fields'>
               <input
+                id="{{item.uuid}}-mods"
                 name='system.mods'
                 type='number'
                 value='{{item.system.mods}}'
@@ -186,9 +208,12 @@
         {{/if}}
       {{/if}}
       <div class="form-group">
-        <label>{{localize "SWADE.Ammo"}}</label>
+        <label for="{{item.uuid}}-ammo">
+          {{localize "SWADE.Ammo"}}
+        </label>
         <span class="form-fields">
           <input
+            id="{{item.uuid}}-ammo"
             type="text"
             name="system.ammo"
             value="{{item.system.ammo}}"
@@ -199,7 +224,9 @@
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.ReloadType.Label'}}</label>
+        <label>
+          {{localize 'SWADE.ReloadType.Label'}}
+        </label>
         <span class='form-fields'>
           <select name='system.reloadType' data-dtype='String'>
             {{#select item.system.reloadType}}
@@ -214,9 +241,12 @@
       </div>
       {{#if ppReload}}
       <div class="form-group">
-        <label>{{localize "SWADE.ppReload"}}</label>
+        <label for="{{item.uuid}}-pp-reload">
+          {{localize "SWADE.ppReload"}}
+        </label>
         <span class="form-fields">
           <input 
+            id="{{item.uuid}}-pp-reload"
             type='text' 
             name='system.ppReloadCost'
             value='{{item.system.ppReloadCost}}'
@@ -226,7 +256,9 @@
       </div>
       {{/if}}
       <div class="form-group range-type">
-        <label>Range Type</label>
+        <label>
+          {{localize "SWADE.Weapon.RangeType.Label"}}
+        </label>
           <span class="form-fields">
           {{radioBoxes "system.rangeType" rangeTypeOptions checked=item.system.rangeType localize=true}}
         </span>
@@ -234,21 +266,27 @@
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
       <div class='form-group'>
-        <label>{{localize 'SWADE.ArcaneDevice'}}</label>
+        <label for="{{item.uuid}}-arcane-device">
+          {{localize 'SWADE.ArcaneDevice'}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+          <input id="{{item.uuid}}-arcane-device" type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Vehicular'}}</label>
+        <label for="{{item.uuid}}-vehicular">
+          {{localize 'SWADE.Vehicular'}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
+          <input id="{{item.uuid}}-vehicular" type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
         </span>
       </div>
       <div class="form-group">
-        <label>{{localize "SWADE.HeavyWeapon"}}</label>
+        <label for="{{item.uuid}}-heavy-weapon">
+          {{localize "SWADE.HeavyWeapon"}}
+        </label>
         <span class="form-fields">
-          <input type="checkbox" name="system.isHeavyWeapon" {{checked item.system.isHeavyWeapon}}/>
+          <input id="{{item.uuid}}-heavy-weapon" type="checkbox" name="system.isHeavyWeapon" {{checked item.system.isHeavyWeapon}}/>
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/templates.hbs'}}

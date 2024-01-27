@@ -86,6 +86,7 @@ SWADE:
   Ed: Edit
   Del: Delete
   Arcane: Arcane
+  InnatePower: Innate Power
   All: All
   HasPowers: Has Powers
   Weapons: Weapons
@@ -332,6 +333,7 @@ SWADE:
   NoAmmoPP: Could not find power points matching the set ammo
   NoMags: You don't have any consumables marked as magazines in your inventory
   RemoveAmmo: Remove Ammunition
+  DiscardMagazine: Discard empty magazine
   ConsumableType:
     Label: Subtype
     Regular: Regular
@@ -1294,6 +1296,7 @@ SWADE:
     Either: Either
   Weapon:
     RangeType:
+      Label: Range Type
       Melee: Melee
       Ranged: Ranged
       Mixed: Mixed

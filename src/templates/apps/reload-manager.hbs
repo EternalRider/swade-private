@@ -1,8 +1,10 @@
 <div>
   {{#if canDiscard}}
     <div class='flexrow'>
-      <label>Discard empty magazine</label>
-      <input type='checkbox' class='discard' />
+      <label for='empty-magazine-discard'>
+        {{localize 'SWADE.DiscardMagazine'}}
+      </label>
+      <input id='empty-magazine-discard' type='checkbox' class='discard' />
     </div>
   {{/if}}
   {{#each magazineGroups}}

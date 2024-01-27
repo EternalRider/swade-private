@@ -4,15 +4,15 @@
   <figure class='grid-under gu-3'></figure>
   <figure class='grid-under gu-4'></figure>
 
-  {{!-- Sheet Header --}}
+  {{! Sheet Header }}
   {{> 'systems/swade/templates/item/partials/header.hbs'}}
 
-  {{!-- Sidebar --}}
+  {{! Sidebar }}
   <section class='sheet-sidebar'>
     {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
   </section>
 
-  {{!-- Sheet Tab Navigation --}}
+  {{! Sheet Tab Navigation }}
   <nav class='tabs' data-group='main'>
     <a class='item' data-tab='description' data-group='main'>
       {{localize 'SWADE.Desc'}}
@@ -21,75 +21,91 @@
       {{localize 'SWADE.Properties'}}
     </a>
     {{#if abilityConfig.isAncestryOrArchetype}}
-    <a class='item' data-tab='embedded' data-group='main'>
-      {{localize abilityConfig.abilityHeader}}
-    </a>
+      <a class='item' data-tab='embedded' data-group='main'>
+        {{localize abilityConfig.abilityHeader}}
+      </a>
     {{/if}}
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
-  {{!-- Main Section --}}
+  {{! Main Section }}
   <section class='sheet-body'>
-    <section class='tab description active' data-group='main' data-tab='description'>
+    <section
+      class='tab description active'
+      data-group='main'
+      data-tab='description'
+    >
       <div></div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
-      <div class="form-group">
-        <label>{{localize "SWADE.Subtype"}}</label>
-        <span class="form-fields">
-          <select name="system.subtype" {{disabled item.isOwned}}>
-          {{#select item.system.subtype}}
-            <option value="special">{{localize abilityConfig.localization.special.dropdown}}</option>
-              <option value="ancestry">{{localize abilityConfig.localization.ancestry.dropdown}}</option>
-              <option value="archetype">{{localize abilityConfig.localization.archetype.dropdown}}</option>
-          {{/select}}
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Subtype'}}</label>
+        <span class='form-fields'>
+          <select name='system.subtype' {{disabled item.isOwned}}>
+            {{#select item.system.subtype}}
+              <option value='special'>{{localize
+                  abilityConfig.localization.special.dropdown
+                }}</option>
+              <option value='ancestry'>{{localize
+                  abilityConfig.localization.ancestry.dropdown
+                }}</option>
+              <option value='archetype'>{{localize
+                  abilityConfig.localization.archetype.dropdown
+                }}</option>
+            {{/select}}
           </select>
         </span>
       </div>
       {{#unless abilityConfig.isAncestryOrArchetype}}
-        <div class="form-group">
-          <label>{{localize "SWADE.GrantsPowers"}}</label>
-            <span class="form-fields">
-              <input
-                type="checkbox"
-                name="system.grantsPowers"
-                {{checked item.system.grantsPowers}}
-                data-dtype="Boolean"
-              />
-            </span>
+        <div class='form-group'>
+          <label for='{{item.uuid}}-grantsPowers'>
+            {{localize 'SWADE.GrantsPowers'}}
+          </label>
+          <span class='form-fields'>
+            <input
+              id='{{item.uuid}}-grantsPowers'
+              type='checkbox'
+              name='system.grantsPowers'
+              {{checked item.system.grantsPowers}}
+              data-dtype='Boolean'
+            />
+          </span>
         </div>
       {{/unless}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     {{#if abilityConfig.isAncestryOrArchetype}}
-    <section class='tab embedded' data-group='main' data-tab='embedded'>
-      {{#if (isEmpty embeddedAbilities)}}
-      <p class="text-center empty-hint">
-        {{localize
-          'SWADE.EmptyAncestralAbilitiesHint'
-          ancestry=(localize abilityConfig.localization.ancestry.dropdown)
-          archetype=(localize abilityConfig.localization.archetype.dropdown)
-        }}
-      </p>
-      {{/if}}
-      <ol class="effect-list unmarked-list">
-      {{#each embeddedAbilities}}
-        <li>
-          <img class="effect-icon" src="{{img}}" alt="{{type}}"/>
-          <span class="effect-label">{{type}} - {{name}} {{majorMinor}}</span>
-          <span class="effect-controls">
-            {{#unless item.isOwned}}
-            <a class="delete-embedded" data-Id="{{id}}">
-              <i class="fas fa-trash"></i>
-            </a>
-            {{/unless}}
-          </span>
-        </li>
-      {{/each}}
-      </ol>
+      <section class='tab embedded' data-group='main' data-tab='embedded'>
+        {{#if (isEmpty embeddedAbilities)}}
+          <p class='text-center empty-hint'>
+            {{localize
+              'SWADE.EmptyAncestralAbilitiesHint'
+              ancestry=(localize abilityConfig.localization.ancestry.dropdown)
+              archetype=(localize abilityConfig.localization.archetype.dropdown)
+            }}
+          </p>
+        {{/if}}
+        <ol class='effect-list unmarked-list'>
+          {{#each embeddedAbilities}}
+            <li>
+              <img class='effect-icon' src='{{img}}' alt='{{type}}' />
+              <span class='effect-label'>{{type}}
+                -
+                {{name}}
+                {{majorMinor}}</span>
+              <span class='effect-controls'>
+                {{#unless item.isOwned}}
+                  <a class='delete-embedded' data-Id='{{id}}'>
+                    <i class='fas fa-trash'></i>
+                  </a>
+                {{/unless}}
+              </span>
+            </li>
+          {{/each}}
+        </ol>
 
-    </section>
+      </section>
     {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>
       {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}

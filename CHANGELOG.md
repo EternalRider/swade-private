@@ -60,6 +60,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
 - The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
+- Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
 
 ### Fixed
 
