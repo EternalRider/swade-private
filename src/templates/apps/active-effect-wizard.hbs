@@ -12,15 +12,21 @@
   <section class='effect-basics'>
     <img src='{{effect.icon}}' alt='{{effect.name}}' class='icon' />
     <div class='form-group name'>
-      <label>{{localize 'EFFECT.Name'}}</label>
+      <label for='aewizard-name'>{{localize 'EFFECT.Name'}}</label>
       <span class='form-fields'>
-        <input type='text' name='name' value='{{effect.name}}' />
+        <input
+          id='aewizard-name'
+          type='text'
+          name='name'
+          value='{{effect.name}}'
+        />
       </span>
     </div>
     <div class='form-group turns'>
-      <label>{{localize 'COMBAT.Rounds'}}</label>
+      <label for='aewizard-duration'>{{localize 'COMBAT.Rounds'}}</label>
       <span class='form-fields'>
         <input
+          id='aewizard-duration'
           type='number'
           name='duration.rounds'
           value='{{effect.duration.rounds}}'
@@ -112,9 +118,16 @@
       <summary>{{localize 'SWADE.Skills'}}</summary>
       <span class='content'>
         <div class='form-group'>
-          <label>{{localize 'SWADE.EffectWizard.EnterSkill.Label'}}</label>
+          <label for='aewizard-skill'>
+            {{localize 'SWADE.EffectWizard.EnterSkill.Label'}}
+          </label>
           <span class='form-fields'>
-            <input type='text' class='target' list='{{object.id}}-skills' />
+            <input
+              id='aewizard-skill'
+              type='text'
+              class='target'
+              list='{{object.id}}-skills'
+            />
           </span>
           <p class='hint'>{{localize 'SWADE.EffectWizard.EnterSkill.Hint'}}</p>
         </div>

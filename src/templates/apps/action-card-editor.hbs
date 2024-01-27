@@ -19,9 +19,10 @@
           />
           <span class='flexcol card-details'>
             <span class='form-group'>
-              <label>{{localize 'Name'}}</label>
+              <label for='{{card.uuid}}-name'>{{localize 'Name'}}</label>
               <span class='form-fields'>
                 <input
+                  id='{{card.uuid}}-name'
                   type='text'
                   name='card.{{card.id}}.name'
                   value='{{card.name}}'
@@ -29,7 +30,9 @@
               </span>
             </span>
             <span class='form-group'>
-              <label>{{localize 'SWADE.CardFace'}}</label>
+              <label for='{{card.uuid}}-face'>
+                {{localize 'SWADE.CardFace'}}
+              </label>
               <span class='form-fields'>
                 <input
                   type='text'
@@ -37,6 +40,7 @@
                   value='{{card.currentFace.img}}'
                 />
                 <button
+                  id='{{card.uuid}}-face'
                   type='button'
                   class='file-picker'
                   data-type='image'
