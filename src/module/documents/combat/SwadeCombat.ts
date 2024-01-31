@@ -4,6 +4,7 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { AmbushAssistant } from '../../apps/AmbushAssistant';
 import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
 import SwadeUser from '../SwadeUser';
@@ -99,7 +100,7 @@ export default class SwadeCombat extends Combat {
       const roundHeld = !!c.roundHeld;
 
       //Do not draw cards for defeated, holding or grouped combatants
-      if (c.isDefeated || roundHeld || !!c.groupId) continue;
+      if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
       // Set up edges
       const hasHesitant = c.actor?.system.initiative.hasHesitant;
@@ -336,6 +337,10 @@ export default class SwadeCombat extends Combat {
     return super.startCombat();
   }
 
+  startSurpriseCombat() {
+    new AmbushAssistant(this).render(true);
+  }
+
   override async nextTurn() {
     await this._handleEndOfTurnExpirations();
     const turn = this.turn ?? -1;
@@ -527,6 +532,16 @@ export default class SwadeCombat extends Combat {
       await reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
+
+    //remove the holding status from any combatants that have it
+    await Promise.allSettled(
+      this.combatants
+        .filter((c) => c.actor.statuses.has('holding'))
+        .flatMap((c) =>
+          c.actor.effects.filter((e) => e.statuses.has('holding')),
+        )
+        .map((e) => e.delete()),
+    );
   }
 }
 

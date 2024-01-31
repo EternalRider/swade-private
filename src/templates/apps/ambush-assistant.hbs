@@ -1,0 +1,58 @@
+{{#*inline "combatant"}}
+  <li class='combatant' data-combatant-id='{{id}}'>
+    <img class='token-image' src='{{img}}' alt='{{name}}' />
+    <span class="name">{{name}}</span>
+    {{#if followers}}
+      <span class="followers">
+        <i class="fa-regular fa-user-group-crown"></i> {{localize "SWADE.FollowerCount" count=followers.length }}
+      </span>
+    {{/if}}
+  </li>
+{{/inline}}
+
+<div class='body'>
+  <header class='header text-center'>
+    <h2>{{localize 'SWADE.AmbushAssistant.Title'}}</h2>
+    <p class="hint">{{localize 'SWADE.AmbushAssistant.Hint'}}</p>
+  </header>
+  <div class='flexrow' style="overflow-x: auto;">
+    <section class='column' data-category='unassigned'>
+      <header class='column-header'>
+        {{localize 'SWADE.AmbushAssistant.Unassigned'}}
+      </header>
+      <ul class='unmarked-list'>
+        {{#each unassigned}}{{> combatant}}{{/each}}
+      </ul>
+    </section>
+    <section class='column' data-category='hold'>
+      <header class='column-header'>
+        {{localize 'SWADE.AmbushAssistant.OnHold'}}
+      </header>
+      <ul class='unmarked-list'>
+        {{#each hold}}{{> combatant}}{{/each}}
+      </ul>
+    </section>
+    <section class='column' data-category='draw'>
+      <header class='column-header'>
+        {{localize 'SWADE.AmbushAssistant.NormalDraw'}}
+      </header>
+      <ul class='unmarked-list'>
+        {{#each draw}}{{> combatant}}{{/each}}
+      </ul>
+    </section>
+    <section class='column' data-category='noTurn'>
+      <header class='column-header'>
+        {{localize 'SWADE.AmbushAssistant.NoTurn'}}
+      </header>
+      <ul class='unmarked-list'>
+        {{#each noTurn}}{{> combatant}}{{/each}}
+      </ul>
+    </section>
+  </div>
+  <footer>
+    {{log this}}
+    <button type='submit' {{disabled submissionLocked}}>
+      {{localize 'COMBAT.Begin'}}
+    </button>
+  </footer>
+</div>
