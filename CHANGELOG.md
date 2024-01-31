@@ -43,6 +43,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added more tours. **by @jpmeehan5**
   - Advances (#888)
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
+- Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
 
 ### Changed
 

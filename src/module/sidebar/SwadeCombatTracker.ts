@@ -158,126 +158,22 @@ export default class SwadeCombatTracker extends CombatTracker {
 
   /** Toggle Hold */
   protected async _onToggleHoldStatus(c: SwadeCombatant) {
-    const data = getStatusEffectDataById('holding');
-    if (!c.roundHeld) {
-      // Add flag for on hold to show icon on token
-      await c.setRoundHeld(this.viewed!.round);
-      await c.actor?.toggleActiveEffect(data, { active: true });
-      if (c.isGroupLeader) {
-        for (const f of c.followers) {
-          await f.setRoundHeld(this.viewed!.round);
-          await f.actor?.toggleActiveEffect(data, { active: true });
-        }
-      }
-    } else {
-      await c.unsetFlag('swade', 'roundHeld');
-      await c.actor?.toggleActiveEffect(data, { active: false });
-    }
+    await c.toggleHold();
   }
 
   /** Toggle Turn Lost */
   protected async _onToggleTurnLostStatus(c: SwadeCombatant) {
-    const data = getStatusEffectDataById('holding');
-    if (!c.turnLost) {
-      const groupId = c.groupId;
-      if (groupId) {
-        const leader = await this.viewed?.combatants.find(
-          (l) => l.id === groupId,
-        );
-        if (leader) await c.setTurnLost(true);
-      } else {
-        await c.update({
-          'flags.swade': {
-            turnLost: true,
-            '-=roundHeld': null,
-          },
-        });
-        await c.actor?.toggleActiveEffect(data, { active: false });
-      }
-    } else {
-      await c.update({
-        'flags.swade': {
-          roundHeld: this.viewed?.round,
-          '-=turnLost': null,
-        },
-      });
-      await c.actor?.toggleActiveEffect(data, { active: false });
-    }
+    await c.toggleTurnLost();
   }
 
   /** Act Now */
   protected async _onActNow(c: SwadeCombatant) {
-    const data = getStatusEffectDataById('holding');
-    let targetCombatant = this.viewed!.combatant as SwadeCombatant;
-    if (c.id === targetCombatant?.id) {
-      targetCombatant = this.viewed!.turns.find((c) => !c.roundHeld)!;
-    }
-    await c.update({
-      flags: {
-        swade: {
-          cardValue: targetCombatant?.cardValue,
-          suitValue: targetCombatant?.suitValue! + 0.01,
-          '-=roundHeld': null,
-        },
-      },
-    });
-    await c.actor?.toggleActiveEffect(data, { active: false });
-    if (c.isGroupLeader) {
-      let s = c.suitValue!;
-      for await (const f of c.followers) {
-        s -= 0.001;
-        await f.update({
-          flags: {
-            swade: {
-              cardValue: c.cardValue,
-              suitValue: s,
-              '-=roundHeld': null,
-            },
-          },
-        });
-        await f.actor?.toggleActiveEffect(data, { active: false });
-      }
-    }
-
-    await this.viewed?.update({
-      turn: this.viewed.turns.findIndex((c) => c.id === c.id),
-    });
+    await c.actNow();
   }
 
   /** Act After Current Combatant */
   protected async _onActAfterCurrentCombatant(c: SwadeCombatant) {
-    const data = getStatusEffectDataById('holding');
-    const currentCombatant = this.viewed!.combatant as SwadeCombatant;
-    await c.update({
-      flags: {
-        swade: {
-          cardValue: currentCombatant?.cardValue,
-          suitValue: currentCombatant?.suitValue! - 0.01,
-          '-=roundHeld': null,
-        },
-      },
-    });
-    await c.actor?.toggleActiveEffect(data, { active: false });
-    if (c.isGroupLeader) {
-      let s = c.suitValue!;
-      for await (const f of c.followers) {
-        s -= 0.001;
-        await f.update({
-          flags: {
-            swade: {
-              cardValue: c.cardValue,
-              suitValue: s,
-              '-=roundHeld': null,
-            },
-          },
-        });
-        await f.actor?.toggleActiveEffect(data, { active: false });
-      }
-    }
-
-    await this.viewed?.update({
-      turn: this.viewed.turns.findIndex((c) => c.id === currentCombatant?.id),
-    });
+    await c.actAfterCurrentCombatant();
   }
 
   protected override _onDragStart(ev: DragEvent): void {
