@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Advances (#888)
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
 - Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
+- Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
 
 ### Changed
 

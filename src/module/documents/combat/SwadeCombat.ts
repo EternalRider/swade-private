@@ -380,6 +380,19 @@ export default class SwadeCombat extends Combat {
     return this as Combat;
   }
 
+  override async previousRound() {
+    const revert = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.RevertRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!revert) return this as Combat;
+    return super.previousRound();
+  }
+
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
   ): Record<string, unknown> {
@@ -459,6 +472,15 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _nextRoundAsGM() {
+    const advance = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!advance) return;
     //reset the deck if a joker had been drawn
     if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
       await reshuffleActionDeck();
