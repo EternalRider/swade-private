@@ -315,9 +315,8 @@ export default class SwadeCombat extends Combat {
 
   override async resetAll() {
     for (const combatant of this.combatants) {
-      combatant.updateSource(
-        this._getInitResetUpdate(combatant as SwadeCombatant),
-      );
+      const update = this._getInitResetUpdate(combatant as SwadeCombatant);
+      if (update) combatant.updateSource(update);
     }
     await this.update(
       { turn: 0, combatants: this.combatants.toObject() },
@@ -395,7 +394,7 @@ export default class SwadeCombat extends Combat {
 
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
-  ): Record<string, unknown> {
+  ): Record<string, unknown> | undefined {
     const roundHeld = combatant.roundHeld;
     const turnLost = combatant.turnLost;
     const groupId = combatant.groupId;
@@ -409,10 +408,8 @@ export default class SwadeCombat extends Combat {
           },
         };
       } else {
-        return {
-          initiative: null,
-          'flags.swade.hasJoker': false,
-        };
+        //keep the card
+        return;
       }
     } else if (!roundHeld || turnLost) {
       return {
