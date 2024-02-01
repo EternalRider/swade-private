@@ -75,6 +75,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 - _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
 - Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
+- Combatants no longer loose their card if they've held their turn. (#1030) **by @florad92**
 
 ## 3.2.5
 
