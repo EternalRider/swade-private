@@ -1334,6 +1334,10 @@ SWADE:
     Unassigned: Unassigned
   Combat:
     StartSurpriseRound: Start Surprise Round
+    AdvanceRoundTitle: Advance to next round?
+    AdvanceRoundContent: Do you want to advance to the next round?
+    RevertRoundTitle: Revert to previous round?
+    RevertRoundContent: Do you want to revert to the previous round?
   FollowerCount: '{count} Followers'
 TYPES:
   Actor:
