@@ -305,6 +305,7 @@ SWADE:
   Duplicate: Duplicate
   Reload: Reload
   Refresh: Refresh this card
+  RefreshOnly: Refresh
   Ammo: Ammunition
   AddOrReplaceActions:
     Title: Add or Replace Actions
@@ -1359,3 +1360,6 @@ TYPES:
   Card:
     adventure: Adventure Card
     poker: Poker Card
+  NotOwnedError: You must own this item/actor for this
+  GrantsItemsError: Refresh doesn't work for items that grant others
+  NoUpdatedItemFound: No item suitable for a refresh has been found

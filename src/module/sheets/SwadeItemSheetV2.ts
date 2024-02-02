@@ -377,6 +377,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         icon: 'fa-solid fa-gears',
         onclick: () => new SwadeDocumentTweaks(this.item).render(true),
       });
+      buttons.unshift({
+        label: 'SWADE.RefreshOnly',
+        class: 'refresh-item',
+        icon: 'fa-solid fa-arrows-rotate',
+        onclick: () => this.item.refreshFromCompendium()
+      });
     }
 
     buttons.unshift({

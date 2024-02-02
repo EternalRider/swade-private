@@ -884,4 +884,69 @@ export default class SwadeItem extends Item {
       }
     }
   }
+
+  async refreshFromCompendium(): Promise<this | null> {
+    if (!this.isOwned) {
+      ui.notifications.error(game.i18n.localize('SWADE.NotOwnedError'))
+      return null
+    }
+    if (this.grantsItems.length > 0) {
+      ui.notifications.error(game.i18n.localize('SWADE.GrantsItemsError'))
+      return null
+    }
+    const newItem = await this.findSimilarInCompendium()
+    if (!newItem) {
+      ui.notifications.warn(game.i18n.localize('SWADE.NoUpdatedItemFound'))
+      return null
+    }
+    const updates = {
+      name: newItem.name,
+      img: newItem.img,
+      system: foundry.utils.deepClone(newItem.system)
+    }
+    foundry.utils.mergeObject(updates, {
+      'system.favorite': this.system.favorite,
+      'system.equipStatus': this.system.equipStatus,
+      'system.quantity': this.system.quantity,
+    })
+    await this.update(updates)
+    return this
+  }
+
+  async findSimilarInCompendium(): Promise<this | null> {
+    const source_id = this.getFlag('core', 'sourceId');
+    if (source_id) {
+      const possibleItem = await fromUuid(source_id);
+      if (possibleItem) {
+        return possibleItem
+      }
+    }
+    const searchFields = [
+      {name: 'system.source', weight: 15},
+      {name: 'name', weight: 10},
+      {name: 'img', weight: 6},
+      {name: 'system.category', weight: 1},
+      {name: 'system.swid', weight: 4},
+    ]
+    let posibleItem = null
+    let posibleItemWeight = 20
+    for (const compendium of game.packs) {
+      if (compendium.metadata.system === 'swade' && compendium.metadata.type === 'Item') {
+        const documents = await compendium.getDocuments({'type' : this.type})
+        for (const potentialItem of documents) {
+          let currentWeight = 0
+          for (const search of searchFields) {
+            if (getProperty(potentialItem, search.name) == getProperty(this, search.name)) {
+              currentWeight += search.weight
+            }
+          }
+          if (currentWeight > posibleItemWeight) {
+            posibleItem = potentialItem
+            posibleItemWeight = currentWeight
+          }
+        }
+      }
+    }
+    return posibleItem
+  }
 }
