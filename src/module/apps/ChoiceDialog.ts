@@ -55,10 +55,10 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
     return this.close();
   }
   protected getSelection(): number | null {
-    const radio = this.element[0].querySelector('input[name="choiceset"]:checked') as HTMLInputElement;
-    if (!radio) {
-      return null;
-    }
+    const radio = this.element[0].querySelector(
+      'input[name="choiceset"]:checked',
+    ) as HTMLInputElement;
+    if (!radio) return null;
     return Number(radio?.value);
   }
 
