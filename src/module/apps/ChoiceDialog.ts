@@ -56,7 +56,10 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
   }
   protected getSelection(): number | null {
     const radio = this.element[0].querySelector('input[name="choiceset"]:checked') as HTMLInputElement;
-    return radio?.value !== 'none' ? Number(radio?.value) : null;
+    if (!radio) {
+      return null;
+    }
+    return Number(radio?.value);
   }
 
   override close(options?: Application.CloseOptions): Promise<void> {

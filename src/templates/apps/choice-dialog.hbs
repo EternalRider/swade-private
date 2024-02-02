@@ -1,14 +1,6 @@
 <form>
   <fieldset class='flexcol'>
     <legend>{{prompt}}</legend>
-    <input
-      type='radio'
-      id='choicenone'
-      name='choiceset'
-      value='none'
-      class='hidden'
-      checked='checked'
-    />
     {{#each choices as |choice|}}
       <div>
         <input
