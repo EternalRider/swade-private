@@ -69,7 +69,6 @@ export interface ChoiceSet {
 export interface MutationOption {
   name: string;
   addToName?: boolean;
-  img?: string | null;
   mutation?: DeepPartial<ItemDataConstructorData>;
 }
 

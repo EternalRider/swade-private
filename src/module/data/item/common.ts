@@ -134,7 +134,6 @@ export const choiceSets = () => ({
         new fields.SchemaField({
           name: new fields.StringField({ initial: '', required: true }),
           addToName: new fields.BooleanField({ initial: true, nullable: false}),
-          img: new fields.StringField({ initial: null, nullable: true }),
           mutation: new fields.ObjectField({ required: false }),
         }),
       ),
