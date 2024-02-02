@@ -3,7 +3,7 @@ import { CombatantDataConstructorData } from '@league-of-foundry-developers/foun
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
-import { firstOwner } from '../../util';
+import { firstOwner, getStatusEffectDataById } from '../../util';
 import type SwadeCombat from './SwadeCombat';
 
 declare global {
@@ -23,6 +23,7 @@ declare global {
         roundHeld?: number;
         turnLost?: boolean;
         firstRound?: number;
+        groupColor?: string;
         [key: string]: unknown;
       };
     };
@@ -172,6 +173,133 @@ export default class SwadeCombatant extends Combatant {
       }
     }
     await combat?.updateEmbeddedDocuments('Combatant', updates);
+  }
+
+  async toggleHold() {
+    if (!this.parent) return;
+    const data = getStatusEffectDataById('holding');
+    if (!this.roundHeld) {
+      const round = Math.max(this.parent.round, 1);
+      // Add flag for on hold to show icon on token
+      await this.setRoundHeld(round);
+      await this.actor?.toggleActiveEffect(data, { active: true });
+      if (this.isGroupLeader) {
+        await Promise.all(this.followers.map((f) => f.setRoundHeld(round)));
+        await Promise.all(
+          this.followers.map(
+            (f) => f.actor?.toggleActiveEffect(data, { active: true }),
+          ),
+        );
+      }
+    } else {
+      await this.unsetFlag('swade', 'roundHeld');
+      await this.actor?.toggleActiveEffect(data, { active: false });
+    }
+  }
+
+  async toggleTurnLost() {
+    if (!this.parent) return;
+    const data = getStatusEffectDataById('holding');
+    if (!this.turnLost) {
+      const groupId = this.groupId;
+      if (groupId) {
+        const leader = await this.parent.combatants.find(
+          (l) => l.id === groupId,
+        );
+        if (leader) await this.setTurnLost(true);
+      } else {
+        await this.update({
+          'flags.swade': {
+            turnLost: true,
+            '-=roundHeld': null,
+          },
+        });
+        await this.actor?.toggleActiveEffect(data, { active: false });
+      }
+    } else {
+      await this.update({
+        'flags.swade': {
+          roundHeld: this.parent.round,
+          '-=turnLost': null,
+        },
+      });
+      await this.actor?.toggleActiveEffect(data, { active: false });
+    }
+  }
+
+  async actNow() {
+    if (!this.parent || !game.user.isGM) return;
+    const data = getStatusEffectDataById('holding');
+    let targetCombatant = this.parent.combatant as SwadeCombatant;
+    if (this.id === targetCombatant?.id) {
+      targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
+    }
+    await this.update({
+      flags: {
+        swade: {
+          cardValue: targetCombatant?.cardValue,
+          suitValue: targetCombatant?.suitValue! + 0.01,
+          '-=roundHeld': null,
+        },
+      },
+    });
+    await this.actor?.toggleActiveEffect(data, { active: false });
+    if (this.isGroupLeader) {
+      let s = this.suitValue!;
+      for await (const f of this.followers) {
+        s -= 0.001;
+        await f.update({
+          flags: {
+            swade: {
+              cardValue: this.cardValue,
+              suitValue: s,
+              '-=roundHeld': null,
+            },
+          },
+        });
+        await f.actor?.toggleActiveEffect(data, { active: false });
+      }
+    }
+
+    await this.parent.update({
+      turn: this.parent.turns.findIndex((c) => c.id === c.id),
+    });
+  }
+
+  async actAfterCurrentCombatant() {
+    if (!this.parent || !game.user.isGM) return;
+    const data = getStatusEffectDataById('holding');
+    const currentCombatant = this.parent.combatant as SwadeCombatant;
+    await this.update({
+      flags: {
+        swade: {
+          cardValue: currentCombatant?.cardValue,
+          suitValue: currentCombatant?.suitValue! - 0.01,
+          '-=roundHeld': null,
+        },
+      },
+    });
+    await this.actor?.toggleActiveEffect(data, { active: false });
+    if (this.isGroupLeader) {
+      let s = this.suitValue!;
+      for await (const f of this.followers) {
+        s -= 0.001;
+        await f.update({
+          flags: {
+            swade: {
+              cardValue: this.cardValue,
+              suitValue: s,
+              '-=roundHeld': null,
+            },
+          },
+        });
+        await f.actor?.toggleActiveEffect(data, { active: false });
+      }
+    }
+
+    await this.parent.update({
+      turn: this.parent.turns.findIndex((c) => c.id === currentCombatant?.id),
+    });
   }
 
   override async _preCreate(

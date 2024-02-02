@@ -4,6 +4,7 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { AmbushAssistant } from '../../apps/AmbushAssistant';
 import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
 import SwadeUser from '../SwadeUser';
@@ -99,7 +100,7 @@ export default class SwadeCombat extends Combat {
       const roundHeld = !!c.roundHeld;
 
       //Do not draw cards for defeated, holding or grouped combatants
-      if (c.isDefeated || roundHeld || !!c.groupId) continue;
+      if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
       // Set up edges
       const hasHesitant = c.actor?.system.initiative.hasHesitant;
@@ -314,9 +315,8 @@ export default class SwadeCombat extends Combat {
 
   override async resetAll() {
     for (const combatant of this.combatants) {
-      combatant.updateSource(
-        this._getInitResetUpdate(combatant as SwadeCombatant),
-      );
+      const update = this._getInitResetUpdate(combatant as SwadeCombatant);
+      if (update) combatant.updateSource(update);
     }
     await this.update(
       { turn: 0, combatants: this.combatants.toObject() },
@@ -334,6 +334,10 @@ export default class SwadeCombat extends Combat {
       await this.rollNPC();
     }
     return super.startCombat();
+  }
+
+  startSurpriseCombat() {
+    new AmbushAssistant(this).render(true);
   }
 
   override async nextTurn() {
@@ -375,9 +379,22 @@ export default class SwadeCombat extends Combat {
     return this as Combat;
   }
 
+  override async previousRound() {
+    const revert = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.RevertRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!revert) return this as Combat;
+    return super.previousRound();
+  }
+
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
-  ): Record<string, unknown> {
+  ): Record<string, unknown> | undefined {
     const roundHeld = combatant.roundHeld;
     const turnLost = combatant.turnLost;
     const groupId = combatant.groupId;
@@ -391,10 +408,8 @@ export default class SwadeCombat extends Combat {
           },
         };
       } else {
-        return {
-          initiative: null,
-          'flags.swade.hasJoker': false,
-        };
+        //keep the card
+        return;
       }
     } else if (!roundHeld || turnLost) {
       return {
@@ -454,6 +469,15 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _nextRoundAsGM() {
+    const advance = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!advance) return;
     //reset the deck if a joker had been drawn
     if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
       await reshuffleActionDeck();
@@ -527,6 +551,16 @@ export default class SwadeCombat extends Combat {
       await reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
+
+    //remove the holding status from any combatants that have it
+    await Promise.allSettled(
+      this.combatants
+        .filter((c) => c.actor.statuses.has('holding'))
+        .flatMap((c) =>
+          c.actor.effects.filter((e) => e.statuses.has('holding')),
+        )
+        .map((e) => e.delete()),
+    );
   }
 }
 

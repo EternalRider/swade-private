@@ -42,9 +42,10 @@
 </div>
 {{#if isPhysicalItem}}
   <div class='item-detail quantity form-group'>
-    <label>{{localize 'SWADE.Quantity'}}</label>
+    <label for='{{item.uuid}}-quantity'>{{localize 'SWADE.Quantity'}}</label>
     <span class='form-fields'>
       <input
+        id='{{item.uuid}}-quantity'
         name='system.quantity'
         type='number'
         value='{{item.system.quantity}}'
@@ -54,9 +55,10 @@
     </span>
   </div>
   <div class='item-detail price form-group'>
-    <label>{{localize 'SWADE.Price'}}</label>
+    <label for='{{item.uuid}}-price'>{{localize 'SWADE.Price'}}</label>
     <span class='form-fields'>
       <input
+        id='{{item.uuid}}-price'
         name='system.price'
         type='number'
         value='{{item.system.price}}'

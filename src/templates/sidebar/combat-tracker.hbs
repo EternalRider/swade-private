@@ -144,21 +144,24 @@
 
     <nav id="combat-controls" class="directory-footer flexrow" data-tooltip-direction="UP">
         {{#if hasCombat}}
-        {{#if user.isGM}}
-        {{#if round}}
-        <a class="combat-control" data-tooltip="COMBAT.RoundPrev" data-control="previousRound"><i class="fa-solid fa-step-backward"></i></a>
-        <a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fa-solid fa-arrow-left"></i></a>
-        <a class="combat-control center" data-control="endCombat">{{localize 'COMBAT.End'}}</a>
-        <a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fa-solid fa-arrow-right"></i></a>
-        <a class="combat-control" data-tooltip="COMBAT.RoundNext" data-control="nextRound"><i class="fa-solid fa-step-forward"></i></a>
-        {{else}}
-        <a class="combat-control center" data-control="startCombat">{{localize 'COMBAT.Begin'}}</a>
-        {{/if}}
-        {{else if control}}
-        <a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fa-solid fa-arrow-left"></i></a>
-        <a class="combat-control center" data-control="nextTurn">{{localize 'COMBAT.TurnEnd'}}</a>
-        <a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fa-solid fa-arrow-right"></i></a>
-        {{/if}}
+            {{#if user.isGM}}
+                {{#if round}}
+                    <a class="combat-control" data-tooltip="COMBAT.RoundPrev" data-control="previousRound"><i class="fa-solid fa-step-backward"></i></a>
+                    <a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fa-solid fa-arrow-left"></i></a>
+                    <a class="combat-control center" data-control="endCombat">{{localize 'COMBAT.End'}}</a>
+                    <a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fa-solid fa-arrow-right"></i></a>
+                    <a class="combat-control" data-tooltip="COMBAT.RoundNext" data-control="nextRound"><i class="fa-solid fa-step-forward"></i></a>
+                {{else}}
+                    <span class="flexcol">
+                        <a class="combat-control" data-control="startCombat">{{localize 'COMBAT.Begin'}}</a>
+                        <a class="combat-control" data-control="startSurpriseCombat">{{localize "SWADE.Combat.StartSurpriseRound"}}</a>
+                    </span>
+                {{/if}}
+            {{else if control}}
+                <a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fa-solid fa-arrow-left"></i></a>
+                <a class="combat-control center" data-control="nextTurn">{{localize 'COMBAT.TurnEnd'}}</a>
+                <a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fa-solid fa-arrow-right"></i></a>
+            {{/if}}
         {{/if}}
     </nav>
 </section>

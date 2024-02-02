@@ -2,11 +2,11 @@
   <ul class='card-list'>
     {{#each cards as |card|}}
       <li class='card'>
-        <label for='{{card.id}}'>
+        <label for='{{card.uuid}}'>
           <input
             type='radio'
             name='card'
-            id='{{card.id}}'
+            id='{{card.uuid}}'
             data-card-id='{{card.id}}'
             {{checked (eq card.id @root.highestCardID)}}
           />

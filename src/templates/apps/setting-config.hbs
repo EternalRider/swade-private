@@ -56,9 +56,12 @@
       <fieldset id='characters'>
         <legend>{{localize 'SWADE.Characters'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.EnableWoundPace.Name'}}</label>
+          <label for='enableWoundPace'>
+            {{localize 'SWADE.Settings.EnableWoundPace.Name'}}
+          </label>
           <div class='form-fields'>
             <input
+              id='enableWoundPace'
               type='checkbox'
               name='settingRules.enableWoundPace'
               data-dtype='Boolean'
@@ -74,9 +77,12 @@
       <fieldset id='vehicles'>
         <legend>{{localize 'SWADE.Vehicles'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.VehicleMods.Name'}}</label>
+          <label for='vehicleMods'>
+            {{localize 'SWADE.Settings.VehicleMods.Name'}}
+          </label>
           <div class='form-fields'>
             <input
+              id='vehicleMods'
               type='checkbox'
               name='settingRules.vehicleMods'
               data-dtype='Boolean'
@@ -86,9 +92,12 @@
           <p class='notes'>{{localize 'SWADE.Settings.VehicleMods.Hint'}}</p>
         </div>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.VehicleEdges.Name'}}</label>
+          <label for='vehicleEdges'>
+            {{localize 'SWADE.Settings.VehicleEdges.Name'}}
+          </label>
           <div class='form-fields'>
             <input
+              id='vehicleEdges'
               type='checkbox'
               name='settingRules.vehicleEdges'
               data-dtype='Boolean'
@@ -98,9 +107,12 @@
           <p class='notes'>{{localize 'SWADE.Settings.VehicleEdges.Hint'}}</p>
         </div>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.VehicleSkills.Name'}}</label>
+          <label for='vehicleSkills'>
+            {{localize 'SWADE.Settings.VehicleSkills.Name'}}
+          </label>
           <div class='form-fields'>
             <textarea
+              id='vehicleSkills'
               style='resize: none;'
               name='settingRules.vehicleSkills'
               data-dtype='String'
@@ -115,9 +127,12 @@
     <section class='tab' data-tab='setting-rules'>
       <!-- Hard Choices -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.HardChoices.Name'}}</label>
+        <label for='hardChoices'>
+          {{localize 'SWADE.Settings.HardChoices.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='hardChoices'
             type='checkbox'
             name='settingRules.hardChoices'
             data-dtype='Boolean'
@@ -128,9 +143,12 @@
       </div>
       <!-- Dumb Luck -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.DumbLuck.Name'}}</label>
+        <label for='dumbLuck'>
+          {{localize 'SWADE.Settings.DumbLuck.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='dumbLuck'
             type='checkbox'
             name='settingRules.dumbLuck'
             data-dtype='Boolean'
@@ -141,9 +159,12 @@
       </div>
       <!-- Wound Cap -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.WoundCap.Name'}}</label>
+        <label for='woundCap'>
+          {{localize 'SWADE.Settings.WoundCap.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='woundCap'
             type='checkbox'
             name='settingRules.woundCap'
             data-dtype='Boolean'
@@ -154,9 +175,12 @@
       </div>
       <!-- Unarmored Hero -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.UnarmoredHero.Name'}}</label>
+        <label for='unarmoredHero'>
+          {{localize 'SWADE.Settings.UnarmoredHero.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='unarmoredHero'
             type='checkbox'
             name='settingRules.unarmoredHero'
             data-dtype='Boolean'
@@ -167,9 +191,12 @@
       </div>
       <!-- Gritty Damage -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.GrittyDamage.Name'}}</label>
+        <label for='grittyDamage'>
+          {{localize 'SWADE.Settings.GrittyDamage.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='grittyDamage'
             type='checkbox'
             name='settingRules.grittyDamage'
             data-dtype='Boolean'
@@ -179,9 +206,11 @@
         <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.InjuryTable.Name'}}</label>
+        <label for='injuryTable'>
+          {{localize 'SWADE.Settings.InjuryTable.Name'}}
+        </label>
         <div class='form-fields'>
-          <select name='settingRules.injuryTable'>
+          <select id='injuryTable' name='settingRules.injuryTable'>
             {{#select settingRules.injuryTable}}
               {{selectOptions injuryTableChoices}}
             {{/select}}
@@ -191,9 +220,12 @@
       </div>
       <!-- Heroes Never Die -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.HeroesNeverDie.Name'}}</label>
+        <label for='heroesNeverDie'>
+          {{localize 'SWADE.Settings.HeroesNeverDie.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='heroesNeverDie'
             type='checkbox'
             name='settingRules.heroesNeverDie'
             data-dtype='Boolean'
@@ -204,9 +236,12 @@
       </div>
       <!-- Conviction -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.EnableConv.Name'}}</label>
+        <label for='enableConviction'>
+          {{localize 'SWADE.Settings.EnableConv.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='enableConviction'
             type='checkbox'
             name='settingRules.enableConviction'
             data-dtype='Boolean'
@@ -217,9 +252,12 @@
       </div>
       <!-- Joker's Wild -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.JokersWild.Name'}}</label>
+        <label for='jokersWild'>
+          {{localize 'SWADE.Settings.JokersWild.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='jokersWild'
             type='checkbox'
             name='settingRules.jokersWild'
             data-dtype='Boolean'
@@ -230,9 +268,12 @@
       </div>
       <!-- No Power Points -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.NoPowerPoints.Name'}}</label>
+        <label for='noPowerPoints'>
+          {{localize 'SWADE.Settings.NoPowerPoints.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='noPowerPoints'
             type='checkbox'
             name='settingRules.noPowerPoints'
             data-dtype='Boolean'
@@ -243,9 +284,12 @@
       </div>
       <!-- Always General Power Points -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.AlwaysGeneralPP.Name'}}</label>
+        <label for='alwaysGeneralPP'>
+          {{localize 'SWADE.Settings.AlwaysGeneralPP.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='alwaysGeneralPP'
             type='checkbox'
             name='settingRules.alwaysGeneralPP'
             data-dtype='Boolean'
@@ -256,9 +300,12 @@
       </div>
       <!-- Encumbrance -->
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.ApplyEncumbrance.Name'}}</label>
+        <label for='applyEncumbrance'>
+          {{localize 'SWADE.Settings.ApplyEncumbrance.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='applyEncumbrance'
             type='checkbox'
             name='settingRules.applyEncumbrance'
             data-dtype='Boolean'
@@ -277,9 +324,12 @@
       <fieldset id='core-skills'>
         <legend>{{localize 'SWADE.CoreSkills'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.CoreSkillsList.Name'}}</label>
+          <label for='coreSkills'>
+            {{localize 'SWADE.Settings.CoreSkillsList.Name'}}
+          </label>
           <div class='form-fields'>
             <textarea
+              id='coreSkills'
               style='resize: none;'
               name='settingRules.coreSkills'
               data-dtype='String'
@@ -289,9 +339,14 @@
           <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsList.Hint'}}</p>
         </div>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.CoreSkillsPack.Name'}}</label>
+          <label for='coreSkillsCompendium'>
+            {{localize 'SWADE.Settings.CoreSkillsPack.Name'}}
+          </label>
           <div class='form-fields'>
-            <select name='settingRules.coreSkillsCompendium'>
+            <select
+              id='coreSkillsCompendium'
+              name='settingRules.coreSkillsCompendium'
+            >
               {{#select settingRules.coreSkillsCompendium}}
                 {{selectOptions coreSkillPackChoices}}
               {{/select}}
@@ -304,9 +359,11 @@
       <fieldset id='wealth'>
         <legend>{{localize 'SWADE.Wealth'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.WealthType.Name'}}</label>
+          <label for='wealthType'>
+            {{localize 'SWADE.Settings.WealthType.Name'}}
+          </label>
           <div class='form-fields'>
-            <select name='settingRules.wealthType'>
+            <select id='wealthType' name='settingRules.wealthType'>
               {{#select settingRules.wealthType}}
                 <option value='currency'>{{localize 'SWADE.Currency'}}</option>
                 <option value='wealthDie'>
@@ -322,9 +379,12 @@
         </div>
         {{#unless (eq settingRules.wealthType 'none')}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.Settings.NPCCurrency.Name'}}</label>
+            <label for='npcsUseCurrency'>
+              {{localize 'SWADE.Settings.NPCCurrency.Name'}}
+            </label>
             <div class='form-fields'>
               <input
+                id='npcsUseCurrency'
                 type='checkbox'
                 name='settingRules.npcsUseCurrency'
                 data-dtype='Boolean'
@@ -336,9 +396,12 @@
         {{/unless}}
         {{#if (eq settingRules.wealthType 'currency')}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.Settings.CurrencyName.Name'}}</label>
+            <label for='currencyName'>
+              {{localize 'SWADE.Settings.CurrencyName.Name'}}
+            </label>
             <div class='form-fields'>
               <input
+                id='currencyName'
                 type='text'
                 name='settingRules.currencyName'
                 value='{{settingRules.currencyName}}'
@@ -347,34 +410,36 @@
             <p class='notes'>{{localize 'SWADE.Settings.CurrencyName.Hint'}}</p>
           </div>
           <div class='form-group'>
-            <label>
+            <label for='pcStartingCurrency'>
               {{localize 'SWADE.Settings.StartingCurrency.PC.Name'}}
             </label>
             <div class='form-fields'>
               <input
+                id='pcStartingCurrency'
                 type='text'
                 name='settingRules.pcStartingCurrency'
                 value='{{settingRules.pcStartingCurrency}}'
               />
             </div>
-            <p class='notes'>{{localize
-                'SWADE.Settings.StartingCurrency.PC.Hint'
-              }}</p>
+            <p class='notes'>
+              {{localize 'SWADE.Settings.StartingCurrency.PC.Hint'}}
+            </p>
           </div>
           <div class='form-group'>
-            <label>
+            <label for='npcStartingCurrency'>
               {{localize 'SWADE.Settings.StartingCurrency.NPC.Name'}}
             </label>
             <div class='form-fields'>
               <input
+                id='npcStartingCurrency'
                 type='text'
                 name='settingRules.npcStartingCurrency'
                 value='{{settingRules.npcStartingCurrency}}'
               />
             </div>
-            <p class='notes'>{{localize
-                'SWADE.Settings.StartingCurrency.NPC.Hint'
-              }}</p>
+            <p class='notes'>
+              {{localize 'SWADE.Settings.StartingCurrency.NPC.Hint'}}
+            </p>
           </div>
         {{/if}}
       </fieldset>
@@ -382,9 +447,12 @@
       <fieldset id='ammo'>
         <legend>{{localize 'SWADE.Ammo'}}</legend>
         <div class='form-group'>
-          <label>{{localize 'SWADE.Settings.AmmoManagement.Name'}}</label>
+          <label for='ammoManagement'>
+            {{localize 'SWADE.Settings.AmmoManagement.Name'}}
+          </label>
           <div class='form-fields'>
             <input
+              id='ammoManagement'
               type='checkbox'
               name='settingRules.ammoManagement'
               data-dtype='Boolean'
@@ -395,11 +463,12 @@
         </div>
         {{#if settingRules.ammoManagement}}
           <div class='form-group'>
-            <label>{{localize
-                'SWADE.Settings.PCAmmoFromInventory.Name'
-              }}</label>
+            <label for='ammoFromInventory'>
+              {{localize 'SWADE.Settings.PCAmmoFromInventory.Name'}}
+            </label>
             <div class='form-fields'>
               <input
+                id='ammoFromInventory'
                 type='checkbox'
                 name='settingRules.ammoFromInventory'
                 data-dtype='Boolean'
@@ -411,11 +480,12 @@
               }}</p>
           </div>
           <div class='form-group'>
-            <label>{{localize
-                'SWADE.Settings.NPCAmmoFromInventory.Name'
-              }}</label>
+            <label for='npcAmmo'>
+              {{localize 'SWADE.Settings.NPCAmmoFromInventory.Name'}}
+            </label>
             <div class='form-fields'>
               <input
+                id='npcAmmo'
                 type='checkbox'
                 name='settingRules.npcAmmo'
                 data-dtype='Boolean'
@@ -424,11 +494,12 @@
             </div>
           </div>
           <div class='form-group'>
-            <label>{{localize
-                'SWADE.Settings.VehicleAmmoFromInventory.Name'
-              }}</label>
+            <label for='vehicleAmmo'>
+              {{localize 'SWADE.Settings.VehicleAmmoFromInventory.Name'}}
+            </label>
             <div class='form-fields'>
               <input
+                id='vehicleAmmo'
                 type='checkbox'
                 name='settingRules.vehicleAmmo'
                 data-dtype='Boolean'
@@ -442,9 +513,12 @@
     <!-- Benny Settings -->
     <section class='tab' data-tab='bennies'>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.GmBennies.Name'}}</label>
+        <label for='gmBennies'>
+          {{localize 'SWADE.Settings.GmBennies.Name'}}
+        </label>
         <div class='form-fields'>
           <input
+            id='gmBennies'
             type='number'
             name='settingRules.gmBennies'
             value='{{settingRules.gmBennies}}'
@@ -454,7 +528,9 @@
         <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Settings.BennyImageSheet.Name'}}</label>
+        <label>
+          {{localize 'SWADE.Settings.BennyImageSheet.Name'}}
+        </label>
         <div class='form-fields'>
           {{filePicker target='settingRules.bennyImageSheet' type='image'}}
           <input

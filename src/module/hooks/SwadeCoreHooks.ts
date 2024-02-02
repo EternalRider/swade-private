@@ -318,7 +318,7 @@ export default class SwadeCoreHooks {
         return (
           deck.type === 'deck' &&
           deck.isOwner &&
-          deck.cards.content.every((c) => c.type === 'poker')
+          deck.cards.contents.every((c) => c.type === 'poker')
         );
       },
       callback: async (li) => {
@@ -339,7 +339,7 @@ export default class SwadeCoreHooks {
         return (
           deck.type === 'deck' &&
           !isActionDeck &&
-          deck.cards.content.every((c) => c.type === 'poker')
+          deck.cards.contents.every((c) => c.type === 'poker')
         );
       },
       callback: (li) => {
@@ -358,7 +358,7 @@ export default class SwadeCoreHooks {
         return (
           deck.type === 'deck' &&
           !isActionDeck &&
-          deck.cards.content.every((c) => c.type === 'poker')
+          deck.cards.contents.every((c) => c.type === 'poker')
         );
       },
       callback: async (li) => {

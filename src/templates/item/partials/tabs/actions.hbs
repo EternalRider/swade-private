@@ -155,11 +155,14 @@
             </div>
             <div class='form-group left'>
               <input
+                id='{{@root.item.id}}-{{id}}-heavy-weapon'
                 type='checkbox'
                 name='system.actions.additional.{{id}}.isHeavyWeapon'
                 {{checked action.isHeavyWeapon}}
               />
-              <label>{{localize 'SWADE.HeavyWeapon'}}</label>
+              <label for='{{@root.item.id}}-{{id}}-heavy-weapon'>
+                {{localize 'SWADE.HeavyWeapon'}}
+              </label>
             </div>
           {{else if (eq action.type 'macro')}}
             <div class='full-width'>

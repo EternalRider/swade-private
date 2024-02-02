@@ -4,12 +4,12 @@ import { SWADE } from '../config';
 export default class SettingConfigurator extends FormApplication {
   config: typeof SWADE.settingConfig;
   settingStats: any;
-  constructor() {
-    super();
+  constructor(obj: any, options: ApplicationOptions) {
+    super(obj, options);
     this.config = SWADE.settingConfig;
   }
 
-  static get defaultOptions(): FormApplicationOptions {
+  static override get defaultOptions(): FormApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'settingConfig',
       title: game.i18n.localize('SWADE.SettingConf'),
@@ -32,7 +32,7 @@ export default class SettingConfigurator extends FormApplication {
     });
   }
 
-  async getData(): any {
+  override async getData(): Promise<object> {
     const settingFields = game.settings.get('swade', 'settingFields');
     const data = {
       settingRules: {},
@@ -57,7 +57,7 @@ export default class SettingConfigurator extends FormApplication {
     return data;
   }
 
-  activateListeners(html) {
+  override activateListeners(html) {
     super.activateListeners(html);
 
     html.find('#reset').click(() => this._resetSettings());

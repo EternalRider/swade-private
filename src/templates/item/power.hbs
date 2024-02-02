@@ -10,9 +10,12 @@
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
     <div class="form-group">
-      <label>{{localize "SWADE.Rank"}}</label>
+      <label for="{{item.uuid}}-rank">
+        {{localize "SWADE.Rank"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-rank"
           name="system.rank"
           type="text"
           value="{{item.system.rank}}"
@@ -21,9 +24,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.PPShort"}}</label>
+      <label for="{{item.uuid}}-pp">
+        {{localize "SWADE.PPShort"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-pp"
           name="system.pp"
           type="text"
           value="{{item.system.pp}}"
@@ -32,9 +38,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Range._name"}}</label>
+      <label for="{{item.uuid}}-range">
+        {{localize "SWADE.Range._name"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-range"
           name="system.range"
           type="text"
           value="{{item.system.range}}"
@@ -43,9 +52,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Dur"}}</label>
+      <label for="{{item.uuid}}-duration">
+        {{localize "SWADE.Dur"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-duration"
           name="system.duration"
           type="text"
           value="{{item.system.duration}}"
@@ -54,9 +66,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Dmg"}}</label>
+      <label for="{{item.uuid}}-damage">
+        {{localize "SWADE.Dmg"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-damage"
           name="system.damage"
           type="text"
           value="{{item.system.damage}}"
@@ -65,9 +80,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Ap"}}</label>
+      <label for="{{item.uuid}}-ap">
+        {{localize "SWADE.Ap"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-ap"
           name="system.ap"
           type="number"
           value="{{item.system.ap}}"
@@ -76,9 +94,12 @@
       /></span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Arcane"}}</label>
+      <label for="{{item.uuid}}-arcane">
+        {{localize "SWADE.Arcane"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-arcane"
           name="system.arcane"
           type="text"
           value="{{item.system.arcane}}"
@@ -118,9 +139,11 @@
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
-        <label >Innate Power</label>
+        <label for="{{item.uuid}}-innate">
+          {{localize "SWADE.InnatePower"}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.innate' {{checked item.system.innate}}/>
+          <input id="{{item.uuid}}-innate" type='checkbox' name='system.innate' {{checked item.system.innate}}/>
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/templates.hbs'}}

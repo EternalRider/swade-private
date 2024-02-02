@@ -10,9 +10,12 @@
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
     <div class="form-group">
-      <label>{{localize "SWADE.Equippable"}}</label>
+      <label for="{{item.uuid}}-equippable">
+        {{localize "SWADE.Equippable"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-equippable"
           type="checkbox"
           name="system.equippable"
           {{checked item.system.equippable}}
@@ -22,9 +25,12 @@
     </div>
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class="form-group">
-      <label for="system.weight">{{localize "SWADE.Weight"}}</label>
+      <label for="{{item.uuid}}-weight">
+        {{localize "SWADE.Weight"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-weight"
           name="system.weight"
           type="text"
           value="{{item.system.weight}}"
@@ -62,21 +68,28 @@
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class='form-group'>
-        <label>{{localize 'SWADE.ArcaneDevice'}}</label>
+        <label for="{{item.uuid}}-arcane-device">
+          {{localize 'SWADE.ArcaneDevice'}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+          <input id="{{item.uuid}}-arcane-device" type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.ItemIsAmmo'}}</label>
+        <label for="{{item.uuid}}-ammo">
+          {{localize 'SWADE.ItemIsAmmo'}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.isAmmo' {{checked item.system.isAmmo}}/>
+          <input id="{{item.uuid}}-ammo" type='checkbox' name='system.isAmmo' {{checked item.system.isAmmo}}/>
         </span>
       </div>
       <div class="form-group">
-        <label>{{localize "SWADE.VehicleMod"}}</label>
+        <label for="{{item.uuid}}-vehicular">
+          {{localize "SWADE.VehicleMod"}}
+        </label>
         <span class="form-fields">
           <input
+            id="{{item.uuid}}-vehicular"
             type="checkbox"
             name="system.isVehicular"
             {{checked item.system.isVehicular}}
@@ -86,9 +99,12 @@
       </div>
       {{#if (and item.system.isVehicular settingRules.modSlots)}} 
         <div class="form-group">
-          <label>{{localize "SWADE.ModSlots"}}</label>
+          <label for="{{item.uuid}}-mods">
+            {{localize "SWADE.ModSlots"}}
+          </label>
           <span class="form-fields">
             <input
+              id="{{item.uuid}}-mods"
               name="system.mods"
               type="text"
               value="{{item.system.mods}}"

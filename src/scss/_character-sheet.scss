@@ -891,7 +891,8 @@
       font-size: $small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
       grid-column: 1 / -1;
       white-space: normal;
       line-height: normal;
@@ -1155,7 +1156,8 @@
       font-size: $small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
       grid-column: 1 / -1;
       white-space: normal;
       line-height: normal;
@@ -1225,7 +1227,8 @@
       font-size: $small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
       grid-column: 1 / -1;
       white-space: normal;
       line-height: normal;
@@ -1296,7 +1299,8 @@
         font-size: $small-font;
         font-family: 'Signika', serif;
         max-height: 300px;
-        overflow-y: scroll;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
         white-space: normal;
         line-height: normal;
         .swade-core {

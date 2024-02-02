@@ -43,6 +43,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added more tours. **by @jpmeehan5**
   - Advances (#888)
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
+- Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
+- Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
 
 ### Changed
 
@@ -60,6 +62,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
 - The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
+- Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
 
 ### Fixed
 
@@ -72,6 +75,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 - _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
 - Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
+- Combatants no longer loose their card if they've held their turn. (#1030) **by @florad92**
 
 ## 3.2.5
 

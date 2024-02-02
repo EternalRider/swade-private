@@ -174,8 +174,8 @@ export default class CharacterSheet extends ActorSheet {
 
     jquery.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
-      const effectId = a.closest('li')!.dataset.effectId as string;
-      const sourceId = a.closest('li')!.dataset.sourceId as string;
+      const effectId = a.closest('.effect')!.dataset.effectId as string;
+      const sourceId = a.closest('.effect')!.dataset.sourceId as string;
       const sourceItem = this.actor.items.get(sourceId)!;
       const effect = sourceId
         ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
@@ -1149,7 +1149,7 @@ export default class CharacterSheet extends ActorSheet {
         icon: '<i class="fas fa-archive"></i>',
         condition: true,
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.STORED);
         },
@@ -1159,7 +1159,7 @@ export default class CharacterSheet extends ActorSheet {
         icon: '<i class="fas fa-shopping-bag"></i>',
         condition: true,
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.CARRIED);
         },
@@ -1168,13 +1168,13 @@ export default class CharacterSheet extends ActorSheet {
         name: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
         icon: '<i class="fas fa-tshirt"></i>',
         condition: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           if (item.type === 'gear') return item.system.equippable;
           return !['weapon', 'consumable'].includes(item.type);
         },
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.EQUIPPED);
         },
@@ -1183,12 +1183,12 @@ export default class CharacterSheet extends ActorSheet {
         name: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
         icon: '<i class="fas fa-hand-paper"></i>',
         condition: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.OFF_HAND);
         },
@@ -1197,12 +1197,12 @@ export default class CharacterSheet extends ActorSheet {
         name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
         icon: '<i class="fas fa-hand-paper fa-flip-horizontal"></i>',
         condition: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.MAIN_HAND);
         },
@@ -1211,12 +1211,12 @@ export default class CharacterSheet extends ActorSheet {
         name: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
         icon: '<i class="fas fa-sign-language"></i>',
         condition: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
         callback: (i: JQuery<HTMLOListElement>) => {
-          const id = i.parents('li.item').data().itemId;
+          const id = i.parents('.item').data().itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.TWO_HANDS);
         },

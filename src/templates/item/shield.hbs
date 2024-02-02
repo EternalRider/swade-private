@@ -11,9 +11,12 @@
   <section class='sheet-sidebar'>
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
     <div class="form-group">
-      <label>{{localize "SWADE.Parry"}}</label>
+      <label for="{{item.uuid}}-parry">
+        {{localize "SWADE.Parry"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-parry"
           name="system.parry"
           type="text"
           value="{{item.system.parry}}"
@@ -23,9 +26,12 @@
       </span>
     </div>
     <div class="form-group">
-      <label>{{localize "SWADE.Cover._name"}}</label>
+      <label for="{{item.uuid}}-cover">
+        {{localize "SWADE.Cover._name"}}
+      </label>
       <span class="form-fields">
         <input
+          id="{{item.uuid}}-cover"
           name="system.cover"
           type="text"
           value="{{item.system.cover}}"
@@ -63,27 +69,35 @@
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class='form-group'>
-        <label>{{localize 'SWADE.ArcaneDevice'}}</label>
+        <label for="{{item.uuid}}-arcane-device">
+          {{localize 'SWADE.ArcaneDevice'}}
+        </label>
         <span class='form-fields'>
-          <input type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+          <input id="{{item.uuid}}-arcane-device" type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
         </span>
       </div>
       <div class="form-group">
-        <label>{{localize "SWADE.MinStrShort"}}</label>
+        <label for="{{item.uuid}}-minStr">
+          {{localize "SWADE.MinStrShort"}}
+        </label>
         <span class="form-fields">
-          <input name="system.minStr" type="text" value="{{item.system.minStr}}"m placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
+          <input id="{{item.uuid}}-minStr" name="system.minStr" type="text" value="{{item.system.minStr}}" placeholder="{{localize 'SWADE.MinStr'}}" data-dtype="String"/>
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Weight'}}</label>
+        <label for="{{item.uuid}}-weight">
+          {{localize 'SWADE.Weight'}}
+        </label>
         <span class='form-fields'>
-          <input name='system.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
+          <input id="{{item.uuid}}-weight" name='system.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Notes'}}</label>
+        <label for="{{item.uuid}}-notes">
+          {{localize 'SWADE.Notes'}}
+        </label>
         <span class='form-fields'>
-          <input type='text' name='system.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
+          <input id="{{item.uuid}}-notes" type='text' name='system.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
