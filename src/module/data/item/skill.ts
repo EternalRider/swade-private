@@ -2,7 +2,7 @@ import { RollModifier } from '../../../interfaces/additional.interface';
 import { TraitDie } from '../../documents/actor/actor-data-source';
 import { addUpModifiers } from '../../util';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
-import { itemDescription } from './common';
+import { choiceSets, itemDescription } from './common';
 
 export interface SkillData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -24,6 +24,7 @@ export class SkillData extends foundry.abstract.TypeDataModel<
     const fields = foundry.data.fields;
     return {
       ...itemDescription(),
+      ...choiceSets(),
       attribute: new fields.StringField({ initial: '' }),
       isCoreSkill: new fields.BooleanField(),
       ...makeTraitDiceFields(),

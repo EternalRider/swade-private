@@ -3,6 +3,7 @@ import { constants } from '../../constants';
 import {
   actions,
   category,
+  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
@@ -36,6 +37,7 @@ export class ConsumableData extends foundry.abstract.TypeDataModel<
       ...category(),
       ...actions(),
       ...grantEmbedded(),
+      ...choiceSets(),
       charges: new fields.SchemaField({
         value: new fields.NumberField({ initial: 1 }),
         max: new fields.NumberField({ initial: 1 }),

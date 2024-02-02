@@ -23,6 +23,7 @@ import {
   arcaneDevice,
   bonusDamage,
   category,
+  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
@@ -58,6 +59,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       ...templates(),
       ...category(),
       ...grantEmbedded(),
+      ...choiceSets(),
       damage: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
       rangeType: new fields.NumberField({

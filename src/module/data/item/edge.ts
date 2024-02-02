@@ -8,7 +8,7 @@ import {
 } from '../../documents/item/SwadeItem.interface';
 import { count } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
-import { category, favorite, grants, itemDescription } from './common';
+import { category, choiceSets, favorite, grants, itemDescription } from './common';
 import * as migrations from './_migration';
 
 export interface EdgeData
@@ -30,6 +30,7 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grants(),
+      ...choiceSets(),
       isArcaneBackground: new fields.BooleanField(),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),

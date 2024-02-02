@@ -1,6 +1,6 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { favorite, grants, itemDescription } from './common';
+import { choiceSets, favorite, grants, itemDescription } from './common';
 
 export interface HindranceData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -20,6 +20,7 @@ export class HindranceData extends foundry.abstract.TypeDataModel<
       ...itemDescription(),
       ...favorite(),
       ...grants(),
+      ...choiceSets(),
       severity: new fields.StringField({
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,

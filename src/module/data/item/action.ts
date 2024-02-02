@@ -3,6 +3,7 @@ import {
   actions,
   additionalStats,
   category,
+  choiceSets,
   favorite,
   itemDescription,
   templates,
@@ -30,6 +31,7 @@ export class ActionData extends foundry.abstract.TypeDataModel<
       ...templates(),
       ...actions(),
       ...additionalStats(),
+      ...choiceSets(),
     };
   }
 

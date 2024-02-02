@@ -3,6 +3,7 @@ import { constants } from '../../constants';
 import {
   additionalStats,
   category,
+  choiceSets,
   favorite,
   grants,
   itemDescription,
@@ -29,6 +30,7 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
       ...category(),
       ...grants(),
       ...additionalStats(),
+      ...choiceSets(),
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
