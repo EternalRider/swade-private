@@ -38,8 +38,10 @@
     padding-bottom: 0.15rem;
     margin-bottom: 0.15rem;
     .token-image {
+      margin: auto;
       border: none;
       grid-area: img;
+      height: 3rem;
     }
     .name {
       grid-area: name;
