@@ -506,7 +506,7 @@ export default class SwadeCombat extends Combat {
 
   protected async _promptAllPlayersForInitiative() {
     const [localDraws, remoteDraws] = this.combatants
-      .filter((c) => c.hasPlayerOwner && !c.isNPC)
+      .filter((c) => c.hasPlayerOwner && !c.isNPC && c.initiative !== null)
       .map((c) => {
         return {
           combatant: c as SwadeCombatant,
