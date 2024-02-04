@@ -15,6 +15,7 @@ declare global {
       swade?: {
         targets?: { name: string; uuid: string }[];
         macros?: { id: string; uuid: string }[];
+        cards?: any[]; //TODO properly set card source data type
         [key: string]: unknown;
       };
       core?: {
@@ -84,9 +85,13 @@ export default class SwadeChatMessage extends ChatMessage {
 
   async #renderCardDraw(): Promise<string> {
     const msgType = game.settings.get('swade', 'initMessage');
-    const cards: Card[] = this.getFlag('swade', 'cards').map(
-      (c) => new Card(c),
-    );
+    const cards = this.getFlag('swade', 'cards')!.map((c) => {
+      return {
+        id: c._id,
+        face: c.faces[c.face].img,
+        name: c.faces[c.face].name || c.name,
+      };
+    });
     const pickedCard = this.getFlag('swade', 'pickedCard');
     const [[picked], discarded] = cards.partition((c) => c.id !== pickedCard);
     if (msgType === constants.INIT_MESSAGE_TYPE.OFF) {
