@@ -75,12 +75,11 @@ export default class SwadeCombat extends Combat {
     { messageOptions, updateTurn }: RollInitiativeOptions = {},
   ) {
     // Structure input data
-    ids = typeof ids === 'string' ? [ids] : ids;
-    const currentId = this.combatant?.id;
+    ids = Array.isArray(ids) ? ids : [ids];
 
+    const currentId = this.combatant?.id;
     const messages: DeepPartial<ChatMessageData>[] = [];
     const updates: Updates[] = [];
-    let skipMessage = false;
 
     //Check if enough cards are available
     if (ids.length > this.actionDeck.availableCards.length) {
@@ -113,8 +112,9 @@ export default class SwadeCombat extends Combat {
       // Draw initiative
       let pickedCard: Card;
       let cardsToPickFrom = await this.drawCard(cardsToDraw);
+      const isRedraw = typeof c.initiative === 'number' && !roundHeld;
 
-      if (typeof c.initiative === 'number' && !roundHeld) {
+      if (isRedraw) {
         // handle redraws
         const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
@@ -126,7 +126,6 @@ export default class SwadeCombat extends Combat {
           });
           pickedCard = result.picked;
           cardsToPickFrom = result.cards;
-          if (pickedCard === oldCard) skipMessage = true;
         } else {
           pickedCard = cardsToPickFrom[0];
         }
@@ -219,6 +218,7 @@ export default class SwadeCombat extends Combat {
           content: '', //keep the content empty so we don't trigger validation warnings
           flags: {
             swade: {
+              isRedraw,
               pickedCard: pickedCard.id,
               cards: cardsToPickFrom.map((c) => c.toObject()),
             },
@@ -235,10 +235,8 @@ export default class SwadeCombat extends Combat {
     await this.updateEmbeddedDocuments('Combatant', updates);
 
     // Create multiple chat messages
-    if (!skipMessage) {
-      this._playInitiativeSound();
-      await getDocumentClass('ChatMessage').createDocuments(messages);
-    }
+    this._playInitiativeSound();
+    await getDocumentClass('ChatMessage').createDocuments(messages);
 
     if (this.combatants.contents.every((c) => !!c.initiative)) {
       await this.update({ turn: 0 });
