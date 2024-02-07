@@ -19,7 +19,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     const html = jquery[0];
     if (!game.user?.isGM) this._contextMenu(jquery);
     //make combatants draggable for GMs
-    html.querySelectorAll<HTMLLIElement>('li.combatant').forEach((li) => {
+    html.querySelectorAll<HTMLLIElement>('.combatant').forEach((li) => {
       const id = li.dataset.combatantId!;
       const comb = this.viewed?.combatants.get(id) as SwadeCombatant | null;
       if (comb?.isOwner || game.user?.isGM) {
@@ -54,6 +54,7 @@ export default class SwadeCombatTracker extends CombatTracker {
           turnLost: combatant?.turnLost,
           emptyInit: !!combatant?.groupId || turn.defeated,
           canDrawInit: this._canDrawInitiative(combatant as SwadeCombatant),
+          canRedraw: this._canRedrawInitiative(combatant as SwadeCombatant),
         },
         { inplace: true },
       );
@@ -79,6 +80,10 @@ export default class SwadeCombatTracker extends CombatTracker {
       combatant.defeated ||
       firstRound >= (combatant.combat?.round ?? 0)
     );
+  }
+
+  protected _canRedrawInitiative(combatant: SwadeCombatant): boolean {
+    return combatant.isOwner;
   }
 
   protected override async _onCombatantControl(event) {
@@ -261,33 +266,8 @@ export default class SwadeCombatTracker extends CombatTracker {
       if (option.condition) continue;
       option.condition = () => game.user?.isGM ?? false;
     }
-    const index = options.findIndex((v) => v.name === 'COMBAT.CombatantReroll');
-    if (index !== -1) {
-      options[index].name = 'SWADE.Redraw';
-      options[index].icon = '<i class="fa-solid fa-sync-alt"></i>';
-      const redrawOptions = new Array<ContextMenuEntry>();
-
-      redrawOptions.push({
-        name: 'SWADE.RedrawBenny',
-        icon: '<i class="fa-solid fa-sync-alt"></i>',
-        condition: (li) => {
-          const combatantId = li.attr('data-combatant-id') as string;
-          const combatant = this.viewed!.combatants.get(combatantId, {
-            strict: true,
-          }) as SwadeCombatant;
-          return combatant.isOwner;
-        },
-        callback: async (li) => {
-          const combatantId = li.attr('data-combatant-id') as string;
-          const combatant = this.viewed!.combatants.get(combatantId);
-          if (!combatant) return;
-          await combatant.actor?.spendBenny();
-          this.viewed?.rollInitiative(combatant.id as string);
-        },
-      });
-
-      options.splice(index + 1, 0, ...redrawOptions);
-    }
+    //delete the redraw option
+    options.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
 
     const groupOptions = new Array<ContextMenuEntry>();
 
@@ -401,6 +381,15 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     options.splice(0, 0, ...groupOptions);
     return options;
+  }
+
+  protected override async _onCombatantMouseDown(
+    event: JQuery.ClickEvent,
+  ): Promise<boolean | void> {
+    if ((event.target as HTMLElement).classList.contains('dealt')) {
+      return this.#onRedrawCard(event.originalEvent as PointerEvent);
+    }
+    return super._onCombatantMouseDown(event);
   }
 
   async #promptNewLeaderSelection(c: SwadeCombatant): Promise<SwadeCombatant> {
@@ -611,5 +600,63 @@ export default class SwadeCombatTracker extends CombatTracker {
     ) as SwadeCombatant | null;
     // If the current Combatant is the holding combatant, just remove Hold status.
     await combatant?.unsetGroupId();
+  }
+
+  async #onRedrawCard(ev: PointerEvent) {
+    const combatantId = (ev.currentTarget as HTMLElement).closest<HTMLElement>(
+      '.combatant',
+    )?.dataset.combatantId as string;
+    const combatant = this.viewed!.combatants.get(combatantId, {
+      strict: true,
+    });
+
+    const isVehicle = combatant.actor?.type === 'vehicle';
+
+    const buttons: Record<string, Dialog.Button> = {
+      gm: {
+        label: game.i18n.localize('SWADE.Rolls.GMBenny'),
+        callback: async () => {
+          game.user?.spendBenny();
+          await this.viewed?.rollInitiative(combatantId);
+        },
+      },
+      benny: {
+        label: game.i18n.localize('SWADE.Benny'),
+        callback: async () => {
+          await combatant.actor?.spendBenny();
+          await this.viewed?.rollInitiative(combatantId);
+        },
+      },
+      free: {
+        label: game.i18n.localize('SWADE.Free'),
+        callback: async () => {
+          await this.viewed?.rollInitiative(combatantId);
+        },
+      },
+    };
+
+    if (!game.user?.isGM) delete buttons.gm;
+
+    const data: Dialog.Data = {
+      title: game.i18n.localize('SWADE.Redraw'),
+      content:
+        '<p class="text-center">' +
+        game.i18n.localize('SWADE.Combat.RedrawDialog.Content') +
+        '</p>',
+      default: 'benny',
+      buttons,
+      render: (el: JQuery<HTMLElement>) => {
+        if (isVehicle || (game.user?.isGM && game.user.bennies === 0)) {
+          el.find('[data-button="gm"]').attr('disabled', 'true');
+        }
+        if (isVehicle || combatant.bennies === 0) {
+          el.find('[data-button="benny"]').attr('disabled', 'true');
+        }
+      },
+    };
+    new Dialog(data, {
+      classes: [...Dialog.defaultOptions.classes, 'swade-app'],
+      height: 'auto' as const,
+    }).render(true);
   }
 }

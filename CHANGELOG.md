@@ -46,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
 - Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
 - Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
+- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
 
 ### Changed
 
@@ -65,6 +66,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - You can no longer have negative wounds or fatigue. **by @florad92**
 - The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
 - Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
+- Move the option to redraw initiative away from a context menu. You can now click the drawn card in the combat track to start drawing a new card. (#1032) **by @florad92**
 
 ### Fixed
 

@@ -69,7 +69,11 @@
                 {{else if this.turnLost}}
                 <span class="initiative"><i class="fa-solid fa-ban"></i></span>
                 {{else if this.hasRolled}}
-                <span class="initiative">{{this.cardString}}</span>
+                    {{#if this.canRedraw}}
+                        <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{this.cardString}}</a>
+                    {{else}}
+                        <span class="initiative">{{this.cardString}}</span>
+                    {{/if}}
                 {{else if this.canDrawInit}}
                 <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
                 {{else}}
