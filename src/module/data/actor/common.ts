@@ -31,7 +31,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
   >,
   Actor
 > {
-  static defineSchema() {
+  static override defineSchema() {
     return {
       attributes: new fields.SchemaField({
         agility: new fields.SchemaField(makeTraitDiceFields()),
@@ -115,7 +115,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
         required: true,
       }),
       fatigue: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 0 }),
+        value: new fields.NumberField({ initial: 0, min: 0 }),
         max: new fields.NumberField({ initial: 2 }),
         ignored: new fields.NumberField({ initial: 0 }),
       }),
@@ -167,7 +167,7 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       max: new fields.NumberField({ initial: baseBennies }),
     }),
     wounds: new fields.SchemaField({
-      value: new fields.NumberField({ initial: 0 }),
+      value: new fields.NumberField({ initial: 0, min: 0 }),
       max: new fields.NumberField({ initial: maxWounds }),
       ignored: new fields.NumberField({ initial: 0 }),
     }),
@@ -224,6 +224,8 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       attack: new Array<DerivedModifier>(),
       damage: new Array<DerivedModifier>(),
       ap: new Array<DerivedModifier>(),
+      bennyTrait: new Array<DerivedModifier>(),
+      bennyDamage: new Array<DerivedModifier>(),
     };
   }
 
@@ -304,6 +306,13 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     return encumbrance.value > encumbrance.max;
   }
 
+  get isIncapacitated(): boolean {
+    return (
+      this.status.isIncapacitated ||
+      this.parent?.statuses.has(CONFIG.specialStatusEffects.INCAPACITATED)
+    );
+  }
+
   getRollData(includeModifiers: boolean): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
@@ -352,16 +361,14 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     return out;
   }
 
-  async refreshBennies(displayToChat = true) {
-    if (displayToChat) {
+  async refreshBennies(notify = true) {
+    if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
         speaker: game.user,
       });
-      const chatData = {
-        content: message,
-      };
-      CONFIG.ChatMessage.documentClass.create(chatData);
+      const chatData = { content: message };
+      getDocumentClass('ChatMessage').create(chatData);
     }
     let newValue = this.bennies.max;
     const hardChoices = game.settings.get('swade', 'hardChoices');
@@ -369,5 +376,11 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       newValue = 0;
     }
     await this.parent.update({ 'system.bennies.value': newValue });
+
+    /**
+     * Called an actor refreshes their bennies
+     * @param {SwadeActor} actor            The Actor refreshing their bennies
+     */
+    Hooks.callAll('swadeRefreshBennies', this.parent);
   }
 }

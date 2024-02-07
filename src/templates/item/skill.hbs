@@ -4,56 +4,65 @@
   <figure class='grid-under gu-3'></figure>
   <figure class='grid-under gu-4'></figure>
 
-  {{!-- Sheet Header --}}
+  {{! Sheet Header }}
   {{> 'systems/swade/templates/item/partials/header.hbs'}}
 
-  <section class="sheet-content">
+  <section class='sheet-content'>
     <div>
-      <div class="form-group">
-        <label>{{localize "SWADE.BaseDie"}}</label>
-        <span class="form-fields">
-          <select name="system.die.sides"data-dtype="Number">
-            {{#select item._source.system.die.sides}} 
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.BaseDie'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.die.sides' data-dtype='Number'>
+            {{#select item._source.system.die.sides}}
               {{>"systems/swade/templates/die-sides-options.hbs"}}
-          {{/select}}
+            {{/select}}
           </select>
           <input
-            name="system.die.modifier"
-            type="text"
-            value="{{item._source.system.die.modifier}}"
-            placeholder="{{localize 'SWADE.Modifier'}}"
-            data-dtype="Number"
+            name='system.die.modifier'
+            type='text'
+            value='{{item._source.system.die.modifier}}'
+            placeholder='{{localize "SWADE.Modifier"}}'
+            data-dtype='Number'
           />
         </span>
       </div>
-      <div class="form-group">
-        <label>{{localize "SWADE.LinkAttr"}}</label>
-        <span class="form-fields">
-          <select name="system.attribute" data-dtype="String">
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.LinkAttr'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.attribute' data-dtype='String'>
             {{#select item.system.attribute}}
               {{> "systems/swade/templates/attribute-select.hbs"}}
             {{/select}}
           </select>
         </span>
       </div>
-      <div class="form-group">
-        <label>{{localize "SWADE.WildDie"}}</label>
-        <span class="form-fields">
-          <select name="system.wild-die.sides" data-dtype="Number">
-            {{#select item._source.system.wild-die.sides}} 
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.WildDie'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.wild-die.sides' data-dtype='Number'>
+            {{#select item._source.system.wild-die.sides}}
               {{> "systems/swade/templates/die-sides-options.hbs"}}
             {{/select}}
           </select>
         </span>
       </div>
-      <div class="form-group">
-        <label>{{localize "SWADE.CoreSkill"}}</label>
-        <span class="form-fields">
+      <div class='form-group'>
+        <label for='{{item.uuid}}-core-skill'>
+          {{localize 'SWADE.CoreSkill'}}
+        </label>
+        <span class='form-fields'>
           <input
-            type="checkbox"
-            name="system.isCoreSkill"
+            id='{{item.uuid}}-core-skill'
+            type='checkbox'
+            name='system.isCoreSkill'
             {{checked item.system.isCoreSkill}}
-            data-dtype="boolean"
+            data-dtype='boolean'
           />
         </span>
       </div>

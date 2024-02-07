@@ -1,12 +1,12 @@
-<form autocomplete='off'>
-  <ul class='card-dialog'>
+<div>
+  <ul class='card-list'>
     {{#each cards as |card|}}
       <li class='card'>
-        <label for='{{card.id}}'>
+        <label for='{{card.uuid}}'>
           <input
             type='radio'
             name='card'
-            id='{{card.id}}'
+            id='{{card.uuid}}'
             data-card-id='{{card.id}}'
             {{checked (eq card.id @root.highestCardID)}}
           />
@@ -26,4 +26,16 @@
       </li>
     {{/each}}
   </ul>
-</form>
+  <footer>
+    <button class='submit'>
+      <i class='fa-solid fa-check'></i>
+      {{localize 'SWADE.Ok'}}
+    </button>
+    {{#if allowRedraw}}
+      <button type='submit' class='redraw'>
+        <i class='fa-solid fa-plus'></i>
+        {{localize 'SWADE.Redraw'}}
+      </button>
+    {{/if}}
+  </footer>
+</div>

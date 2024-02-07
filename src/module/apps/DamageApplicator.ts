@@ -1,11 +1,11 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
+import { VehicleData } from '../data/actor/vehicle';
 import { DamageRoll } from '../dice/DamageRoll';
+import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
-import SwadeUser from '../documents/SwadeUser';
-import { VehicleData } from '../data/actor/vehicle';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -54,9 +54,9 @@ export async function calcWounds(
   targetUuid: string,
   damageContext: DamageContext,
 ) {
-  const actor = await fromUuid(targetUuid)
+  const actor = await fromUuid(targetUuid);
 
-  if (!(actor instanceof SwadeActor)) return
+  if (!(actor instanceof SwadeActor)) return;
   // Get Toughness values.
   let armor = 0;
   let value = 0;
@@ -92,7 +92,12 @@ export async function calcWounds(
     // Set status to Shaken.
     statusToApply = Status.SHAKEN;
     // If already shaken, set status to wounded and wounds inflicted to 1.
-    if (actor.system.status.isShaken && woundsInflicted === 0 && !(actor.getFlag('swade', 'hardy'))) {
+    if (
+      // @ts-expect-error isShaken is undefined, which is falsy and works fine
+      actor.system.status.isShaken &&
+      woundsInflicted === 0 &&
+      !actor.getFlag('swade', 'hardy')
+    ) {
       woundsInflicted = 1;
       statusToApply = Status.WOUNDED;
     }
@@ -101,8 +106,28 @@ export async function calcWounds(
     statusToApply = Status.WOUNDED;
   }
 
-  // Trigger Soak prompt.
-  await soakPrompt(actor, damageContext, woundsInflicted, statusToApply);
+  /**
+   * A hook event that is fired before wounds are calculated
+   * Returning `false` in a hook callback will cancel the workflow entirely
+   * @category Hooks
+   * @since 3.3.0
+   * @param {SwadeActor} actor              The actor that is being damaged
+   * @param {DamageContext} damageContext   The damage context
+   * @param {number} woundsInflicted        The amount of wounds that will be inflicted
+   * @param {Status} statusToApply          The resulting status that would be applied
+   */
+  const permit = Hooks.call(
+    'swadePreCalcWounds',
+    actor,
+    damageContext,
+    woundsInflicted,
+    statusToApply,
+  );
+
+  if (permit !== false) {
+    // Trigger Soak prompt.
+    await soakPrompt(actor, damageContext, woundsInflicted, statusToApply);
+  }
 }
 
 // Function for prompting to Soak.
@@ -380,12 +405,18 @@ async function attemptSoak(
   woundsText: string,
   damageContext: DamageContext,
   bestSoakAttempt: number = 0,
+  options?: {
+    reroll?: boolean;
+  },
 ) {
   if (actor.system instanceof VehicleData) {
-     // No handling for vehicle soaks... yet
-     return ui.notifications.warn('SWADE.DamageApplicator.SoakDialog.NoVehicleSoak', {
-      localize: true,
-    });
+    // No handling for vehicle soaks... yet
+    return ui.notifications.warn(
+      'SWADE.DamageApplicator.SoakDialog.NoVehicleSoak',
+      {
+        localize: true,
+      },
+    );
   }
   // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   const soakModifiers: RollModifier[] = [
@@ -397,6 +428,12 @@ async function attemptSoak(
   if (game.settings.get('swade', 'unarmoredHero') && actor.isUnarmored) {
     soakModifiers.push({
       label: game.i18n.localize('SWADE.Settings.UnarmoredHero.Name'),
+      value: 2,
+    });
+  }
+  if (options?.reroll && actor.getFlag('swade', 'elan')) {
+    soakModifiers.push({
+      label: game.i18n.localize('SWADE.Elan'),
       value: 2,
     });
   }
@@ -535,6 +572,7 @@ async function attemptSoak(
             woundsText,
             damageContext,
             woundsRemaining,
+            { reroll: true },
           );
         },
       },
@@ -552,6 +590,7 @@ async function attemptSoak(
             woundsText,
             damageContext,
             woundsRemaining,
+            { reroll: true },
           );
         },
       },
@@ -628,10 +667,9 @@ async function attemptSoak(
 
 // Function for applying Shaken Status Effect
 async function applyShaken(actor: SwadeActor) {
-  // Check if they are already Shaken.
-  const isShaken = actor.system.status.isShaken;
+  if (actor.system instanceof VehicleData) return;
   // If they're not already Shaken, apply the Status Effect.
-  if (!isShaken) {
+  if (!actor.system.status.isShaken) {
     const data = CONFIG.SWADE.statusEffects.find(
       (s) => s.id === 'shaken',
     ) as StatusEffect;
@@ -652,7 +690,9 @@ async function applyIncapacitated(actor: SwadeActor) {
     });
   if (Hooks.call('swadeIncapacitation', actor, statuses) && actor.isWildcard) {
     let resistRoll: number = await resistInjury(actor);
-    const ignoreBleedOut = game.settings.get('swade', 'heroesNeverDie') || actor.getFlag('swade', 'ignoreBleedOut');
+    const ignoreBleedOut =
+      game.settings.get('swade', 'heroesNeverDie') ||
+      actor.getFlag('swade', 'ignoreBleedOut');
     if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL)
       resistRoll = constants.ROLL_RESULT.FAIL;
     let message = '';

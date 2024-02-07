@@ -3,6 +3,7 @@ import { CombatantDataConstructorData } from '@league-of-foundry-developers/foun
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
+import { firstOwner, getStatusEffectDataById } from '../../util';
 import type SwadeCombat from './SwadeCombat';
 
 declare global {
@@ -22,6 +23,7 @@ declare global {
         roundHeld?: number;
         turnLost?: boolean;
         firstRound?: number;
+        groupColor?: string;
         [key: string]: unknown;
       };
     };
@@ -29,10 +31,8 @@ declare global {
 }
 
 export default class SwadeCombatant extends Combatant {
-  override get isDefeated() {
-    const actor = this.actor;
-    if (actor?.isWildcard) return super.isDefeated;
-    return actor?.status.isIncapacitated || super.isDefeated;
+  get isIncapacitated(): boolean {
+    return this.actor.system.isIncapacitated ?? this.isDefeated;
   }
 
   get followers(): SwadeCombatant[] {
@@ -66,7 +66,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get hasJoker() {
-    return this.getFlag('swade', 'hasJoker') ?? false;
+    return !!this.getFlag('swade', 'hasJoker');
   }
 
   async setJoker(joker: boolean) {
@@ -86,7 +86,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get isGroupLeader() {
-    return this.getFlag('swade', 'isGroupLeader') ?? false;
+    return !!this.getFlag('swade', 'isGroupLeader');
   }
 
   async setIsGroupLeader(groupLeader: boolean) {
@@ -106,11 +106,23 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get turnLost() {
-    return this.getFlag('swade', 'turnLost') ?? false;
+    return !!this.getFlag('swade', 'turnLost');
   }
 
   async setTurnLost(turnLost: boolean) {
     return this.setFlag('swade', 'turnLost', turnLost);
+  }
+
+  get cardsToDraw(): number {
+    let cardsToDraw = 1;
+    if (!!this.initiative && !this.roundHeld) return cardsToDraw;
+    const actor = this.actor;
+    if (!actor) return cardsToDraw;
+    const initiative = actor.system.initiative;
+    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) cardsToDraw = 2;
+    if (initiative?.hasImpLevelHeaded) cardsToDraw = 3;
+    if (actor.type !== 'vehicle' && this.isIncapacitated) cardsToDraw = 1;
+    return cardsToDraw;
   }
 
   async assignNewActionCard(cardId: string) {
@@ -163,6 +175,133 @@ export default class SwadeCombatant extends Combatant {
     await combat?.updateEmbeddedDocuments('Combatant', updates);
   }
 
+  async toggleHold() {
+    if (!this.parent) return;
+    const data = getStatusEffectDataById('holding');
+    if (!this.roundHeld) {
+      const round = Math.max(this.parent.round, 1);
+      // Add flag for on hold to show icon on token
+      await this.setRoundHeld(round);
+      await this.actor?.toggleActiveEffect(data, { active: true });
+      if (this.isGroupLeader) {
+        await Promise.all(this.followers.map((f) => f.setRoundHeld(round)));
+        await Promise.all(
+          this.followers.map(
+            (f) => f.actor?.toggleActiveEffect(data, { active: true }),
+          ),
+        );
+      }
+    } else {
+      await this.unsetFlag('swade', 'roundHeld');
+      await this.actor?.toggleActiveEffect(data, { active: false });
+    }
+  }
+
+  async toggleTurnLost() {
+    if (!this.parent) return;
+    const data = getStatusEffectDataById('holding');
+    if (!this.turnLost) {
+      const groupId = this.groupId;
+      if (groupId) {
+        const leader = await this.parent.combatants.find(
+          (l) => l.id === groupId,
+        );
+        if (leader) await this.setTurnLost(true);
+      } else {
+        await this.update({
+          'flags.swade': {
+            turnLost: true,
+            '-=roundHeld': null,
+          },
+        });
+        await this.actor?.toggleActiveEffect(data, { active: false });
+      }
+    } else {
+      await this.update({
+        'flags.swade': {
+          roundHeld: this.parent.round,
+          '-=turnLost': null,
+        },
+      });
+      await this.actor?.toggleActiveEffect(data, { active: false });
+    }
+  }
+
+  async actNow() {
+    if (!this.parent || !game.user.isGM) return;
+    const data = getStatusEffectDataById('holding');
+    let targetCombatant = this.parent.combatant as SwadeCombatant;
+    if (this.id === targetCombatant?.id) {
+      targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
+    }
+    await this.update({
+      flags: {
+        swade: {
+          cardValue: targetCombatant?.cardValue,
+          suitValue: targetCombatant?.suitValue! + 0.01,
+          '-=roundHeld': null,
+        },
+      },
+    });
+    await this.actor?.toggleActiveEffect(data, { active: false });
+    if (this.isGroupLeader) {
+      let s = this.suitValue!;
+      for await (const f of this.followers) {
+        s -= 0.001;
+        await f.update({
+          flags: {
+            swade: {
+              cardValue: this.cardValue,
+              suitValue: s,
+              '-=roundHeld': null,
+            },
+          },
+        });
+        await f.actor?.toggleActiveEffect(data, { active: false });
+      }
+    }
+
+    await this.parent.update({
+      turn: this.parent.turns.findIndex((c) => c.id === c.id),
+    });
+  }
+
+  async actAfterCurrentCombatant() {
+    if (!this.parent || !game.user.isGM) return;
+    const data = getStatusEffectDataById('holding');
+    const currentCombatant = this.parent.combatant as SwadeCombatant;
+    await this.update({
+      flags: {
+        swade: {
+          cardValue: currentCombatant?.cardValue,
+          suitValue: currentCombatant?.suitValue! - 0.01,
+          '-=roundHeld': null,
+        },
+      },
+    });
+    await this.actor?.toggleActiveEffect(data, { active: false });
+    if (this.isGroupLeader) {
+      let s = this.suitValue!;
+      for await (const f of this.followers) {
+        s -= 0.001;
+        await f.update({
+          flags: {
+            swade: {
+              cardValue: this.cardValue,
+              suitValue: s,
+              '-=roundHeld': null,
+            },
+          },
+        });
+        await f.actor?.toggleActiveEffect(data, { active: false });
+      }
+    }
+
+    await this.parent.update({
+      turn: this.parent.turns.findIndex((c) => c.id === currentCombatant?.id),
+    });
+  }
+
   override async _preCreate(
     data: CombatantDataConstructorData,
     options: DocumentModificationOptions,
@@ -197,57 +336,64 @@ export default class SwadeCombatant extends Combatant {
       hasProperty(changed, 'flags.swade.cardValue') ||
       hasProperty(changed, 'flags.swade.suitValue');
     const holdRemoved = hasProperty(changed, 'flags.swade.-=roundHeld');
-    if (hasCardChanged && !holdRemoved) {
+    if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
   }
 
   /** Checks if this combatant has a joker and hands out bennies based on the actor type and disposition */
   async handOutBennies() {
-    if (!game.user?.isGM) return;
     if (
       !game.settings.get('swade', 'jokersWild') ||
       this.groupId ||
-      !this.hasJoker
+      !this.hasJoker ||
+      !this.parent
     )
       return;
-    const combatants = game.combat?.combatants ?? [];
+    await this.#createJokersWildMessage();
+    const combatants = this.parent.combatants as SwadeCombatant[];
     const isTokenHostile =
       this.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
     //Give bennies to PCs
     if (this.actor?.type === 'character') {
-      await this._createJokersWildMessage();
-      //filter combatants for PCs and give them bennies
-      const pcs = combatants.filter((c) => c.actor?.type === 'character');
-      for (const c of pcs) {
-        await c.actor?.getBenny();
-      }
+      await this.#friendlyBennies(combatants);
     } else if (this.actor?.type === 'npc' && isTokenHostile) {
-      await this._createJokersWildMessage();
-      //give all GMs a benny
-      const gmUsers = game.users?.filter((u) => u.active && u.isGM) ?? [];
-      for (const gm of gmUsers) {
-        await gm.getBenny();
-      }
-      //give all enemy wildcards a benny
-      const hostiles = combatants.filter((c) => {
-        const isHostile =
-          c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
-        return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
-      });
-      for (const c of hostiles ?? []) {
-        await c.actor?.getBenny();
-      }
+      await this.#adversaryBennies(combatants);
     }
   }
 
-  private async _createJokersWildMessage() {
-    const template = await renderTemplate(SWADE.bennies.templates.joker, {
-      speaker: game.user,
+  async #friendlyBennies(combatants: SwadeCombatant[]) {
+    //filter combatants for PCs and give them bennies
+    const pcs = combatants.filter((c) => c.actor?.type === 'character');
+    await this.#triggerBennies(pcs);
+  }
+
+  async #adversaryBennies(combatants: SwadeCombatant[]) {
+    //give all GMs a benny
+    const gmUsers = game.users!.filter((u) => u.active && u.isGM);
+    for (const gm of gmUsers) await gm.getBenny();
+    //give all enemy wildcards a benny
+    const hostiles = combatants.filter((c) => {
+      const isHostile =
+        c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+      return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
     });
-    await CONFIG.ChatMessage.documentClass.create({
+    await this.#triggerBennies(hostiles);
+  }
+
+  async #triggerBennies(combatants: SwadeCombatant[]) {
+    for (const c of combatants) {
+      if (c.actor?.isOwner) await c.actor?.getBenny();
+      else game.swade.sockets.giveBenny([firstOwner(this)?.id as string]);
+    }
+  }
+
+  async #createJokersWildMessage() {
+    await getDocumentClass('ChatMessage').create({
       user: game.userId,
-      content: template,
+      content: await renderTemplate(SWADE.bennies.templates.joker, {
+        speaker: game.user,
+      }),
     });
   }
 }

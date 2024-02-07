@@ -93,92 +93,101 @@
   }
 }
 
+.chat-message .message-header .message-sender {
+  white-space: normal;
+}
+
 .chat-message {
-  .message-header .message-sender {
-    white-space: normal;
-  }
   .initiative-draw {
-    display: flex;
+    position: relative;
+    display: grid;
+    grid-template-columns: max-content 1fr;
     gap: 1em;
     align-items: center;
     margin: 0.5em;
-    .result-text-card {
+    .action-card {
+      grid-column: 1;
+      position: relative;
+      border: none;
+      filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 50%));
+      transition:
+        transform 0.2s ease-in,
+        filter 0.2s ease-in,
+        z-index 0.2s step-end;
+      transform-origin: center left;
+      z-index: 0;
+      &.rotate-deg-2 {
+        transform: rotate(2deg);
+      }
+      &.rotate-deg-negative-2 {
+        transform: rotate(-2deg);
+      }
+      &.rotate-deg-3 {
+        transform: rotate(3deg);
+      }
+      &.rotate-deg-negative-3 {
+        transform: rotate(-3deg);
+      }
+      &.rotate-deg-4 {
+        transform: rotate(4deg);
+      }
+      &.rotate-deg-negative-4 {
+        transform: rotate(-4deg);
+      }
+      .card-face {
+        position: relative;
+        height: 75px;
+        border: none;
+      }
+      &:hover {
+        transform: scale(4.75) rotate(0deg);
+        filter: drop-shadow(4px 6px 4px rgb(0 0 0 / 50%));
+        z-index: 2;
+        transition:
+          transform 0.2s ease-in,
+          z-index 0.2s step-start;
+      }
+    }
+    .card-name {
+      grid-column: 2;
       font-size: 1.125em;
       font-weight: 700;
       line-height: 1;
-      order: 2;
       margin-bottom: 0;
     }
-    .action-card-filter-container {
+  }
+  .discarded-cards {
+    &.compact {
+      padding-top: 0;
+    }
+    position: relative;
+    padding: 0.5rem 0;
+    z-index: 1;
+    &:hover {
       z-index: 1;
-      border: none;
-      filter: drop-shadow(2px 3px 2px rgb(0 0 0 / 50%));
-      transition: transform 0.2s ease-in, filter 0.2s ease-in,
-        z-index 0.2s step-end;
-      transform-origin: center left;
-
-      .result-image {
-        height: 75px;
-        aspect-ratio: 1/1.4;
-        z-index: 2;
-        border: none;
-        transition: z-index 0.2s step-end;
-      }
-
-      &:hover {
-        z-index: 3;
-        filter: drop-shadow(4px 6px 4px rgb(0 0 0 / 50%));
-        transition: transform 0.2s ease-in, z-index 0.2s step-start;
-
-        .result-image {
-          z-index: 4;
-          transition: z-index 0.2s step-start;
-        }
+      transition: z-index 0.2s step-start;
+    }
+    .initiative-draw {
+      margin-left: -0.5em;
+      scale: 90%;
+      position: relative;
+      z-index: 0;
+      transition: z-index 0.2s step-end;
+      .action-card:hover {
+        transform: scale(5.25) rotate(0deg);
       }
     }
   }
-  &:nth-child(4n + 1) .initiative-draw .action-card-filter-container {
-    transform: rotate(2deg);
-
-    &:hover {
-      transform: rotate(0deg) scale(4.75);
-    }
-  }
-  &:nth-child(4n + 2) .initiative-draw .action-card-filter-container {
-    transform: rotate(-4deg);
-
-    &:hover {
-      transform: rotate(0deg) scale(4.75);
-    }
-  }
-  &:nth-child(4n + 3) .initiative-draw .action-card-filter-container {
-    transform: rotate(4deg);
-
-    &:hover {
-      transform: rotate(0deg) scale(4.75);
-    }
-  }
-  &:nth-child(4n + 4) .initiative-draw .action-card-filter-container {
-    transform: rotate(-2deg);
-
-    &:hover {
-      transform: rotate(0deg) scale(4.75);
-    }
-  }
-  &:first-child .initiative-draw .action-card-filter-container,
-  &:nth-of-type(2) .initiative-draw .action-card-filter-container {
+  &:first-child .initiative-draw .picked-card,
+  &:nth-of-type(2) .initiative-draw .picked-card {
     transform-origin: top left;
-
     &:hover {
       transform-origin: top left;
     }
   }
-  &:last-child .initiative-draw .action-card-filter-container,
-  &:nth-last-of-type(2):not(:nth-of-type(2))
-    .initiative-draw
-    .action-card-filter-container {
+  &:last-child .initiative-draw .picked-card,
+  &:nth-last-of-type(2):not(:nth-of-type(2)) .initiative-draw .picked-card {
     transform-origin: bottom left;
-
     &:hover {
       transform-origin: bottom left;
     }

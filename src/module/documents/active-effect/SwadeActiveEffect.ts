@@ -8,9 +8,9 @@ import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
-import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
@@ -93,12 +93,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
     }
   }
 
-  /* Filters through active effects to apply them to items, e.g. skills and weapons
-  match[0] = the whole expression
-  match[1] = ItemType
-  match[2] = Item Name or ID
-  match[3] = attribute key
-  */
+  /**
+   * Filters through active effects to apply them to items, e.g. skills and weapons
+   * * match[0] = the whole expression
+   * * match[1] = ItemType
+   * * match[2] = Item Name or ID
+   * * match[3] = attribute key
+   */
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
   static ATTR_REGEXP =
@@ -342,8 +343,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
       match[2] === 'armor'
         ? 'armorEffects' // Armor gets its own display
         : autoCalc
-        ? 'effects'
-        : 'sources';
+          ? 'effects'
+          : 'sources';
     doc.system.stats[match[1]][target].push({
       label: this.name,
       value: Number(change.value),
@@ -551,7 +552,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
         (c) => c.key === 'system.stats.globalMods.damage',
       );
       const newDamage = this.actor?.getFlag('swade', 'wildAttackDamage');
-      if (typeof newDamage === 'number') {
+      if (['number', 'string'].includes(typeof newDamage)) {
         const newChanges = foundry.utils.deepClone(this.changes);
         newChanges[damageModIndex].value = String(newDamage);
         this.updateSource({ changes: newChanges });
@@ -565,6 +566,6 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    this._applyRelatedEffects();
+    if (userId === game.userId) this._applyRelatedEffects();
   }
 }

@@ -60,6 +60,18 @@ export interface ItemGrant {
   major?: boolean;
 }
 
+export interface ChoiceSet {
+  title: string;
+  choice: number | null;
+  choices: Array<MutationOption>;
+}
+
+export interface MutationOption {
+  name: string;
+  addToName?: boolean;
+  mutation?: DeepPartial<ItemDataConstructorData>;
+}
+
 export interface ItemGrantChainLink {
   item: SwadeItem;
   grant: ItemGrant;

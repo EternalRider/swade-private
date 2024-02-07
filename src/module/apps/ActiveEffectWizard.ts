@@ -39,8 +39,8 @@ export default class ActiveEffectWizard extends FormApplication {
   ) {
     super(object, options);
     if (object instanceof SwadeItem) {
-      //TODO Move to `effect.img` once v12 releases
       this.#effect.name = object.name as string;
+      //TODO Move to `effect.img` once v12 releases
       this.#effect.icon = object.img as string;
     }
   }
@@ -80,6 +80,12 @@ export default class ActiveEffectWizard extends FormApplication {
     html
       .querySelector<HTMLImageElement>('.icon')
       ?.addEventListener('click', this.#onClickIcon.bind(this));
+
+    html
+      .querySelectorAll<HTMLInputElement>('[name]')
+      .forEach((input) =>
+        input.addEventListener('blur', this.submit.bind(this)),
+      );
   }
 
   override async getData(options?: Partial<ApplicationOptions>) {
@@ -115,7 +121,7 @@ export default class ActiveEffectWizard extends FormApplication {
       transfer: this.object instanceof SwadeItem,
     });
 
-    CONFIG.ActiveEffect.documentClass.create(data, {
+    getDocumentClass('ActiveEffect').create(data, {
       renderSheet: this.#changes.length === 0,
       parent: this.object as SwadeActor | SwadeItem,
     });
@@ -358,13 +364,14 @@ export default class ActiveEffectWizard extends FormApplication {
       });
   }
 
-  #onClickIcon(_ev: Event) {
+  #onClickIcon() {
     new FilePicker({
       current: this.#effect.icon as string,
       type: 'image',
       callback: this.#onChangeIcon.bind(this),
     }).render(true);
   }
+
   #onChangeIcon(path: string, _picker: FilePicker) {
     this.#effect.icon = path;
     this.render(true);

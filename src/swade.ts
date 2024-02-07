@@ -41,10 +41,11 @@ import {
   registerSettingRules,
   registerSettings,
 } from './module/settings';
+import CharacterSheet from './module/sheets/CharacterSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
-import CharacterSheet from './module/sheets/official/CharacterSheet';
+import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
@@ -116,6 +117,7 @@ Hooks.once('init', () => {
   //register System Data Model
   CONFIG.Actor.dataModels = data.actor.config;
   CONFIG.Item.dataModels = data.item.config;
+  CONFIG.JournalEntryPage.dataModels = data.journal.config;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -147,6 +149,7 @@ Hooks.once('init', () => {
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
   CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
+  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
   // v11 Active Effect handling
   CONFIG.ActiveEffect.legacyTransferral = false;
@@ -238,6 +241,16 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.ItemSheet',
   });
+  DocumentSheetConfig.registerSheet(
+    JournalEntryPage,
+    'swade',
+    JournalHeadquartersPageSheet,
+    {
+      types: ['headquarters'],
+      makeDefault: true,
+      label: 'SWADE.HeadquartersSheet',
+    },
+  );
 
   // Register Tours
   registerSWADETours();
@@ -262,6 +275,7 @@ Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
+Hooks.on('createProseMirrorEditor', SwadeCoreHooks.onCreateProseMirrorEditor);
 
 /* ------------------------------------ */
 /* Application Render					          */

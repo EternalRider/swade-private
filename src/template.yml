@@ -4,11 +4,11 @@ Actor:
     - npc
     - vehicle
   htmlFields:
-   - details.appearance
-   - details.notes
-   - details.goals
-   - details.biography.value
-   - advances.details
+    - details.appearance
+    - details.notes
+    - details.goals
+    - details.biography.value
+    - advances.details
 Item:
   types:
     - weapon
@@ -23,7 +23,7 @@ Item:
     - consumable
     - action
   htmlFields:
-   -  description
+    - description
 Card:
   types:
     - poker
@@ -38,3 +38,13 @@ Card:
     templates: []
   base:
     templates: []
+JournalEntryPage:
+  types:
+    - headquarters
+  htmlFields:
+    - advantage
+    - complication
+    - form.description
+    - form.acquisition
+    - form.maintenance
+    - upgrades

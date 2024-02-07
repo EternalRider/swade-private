@@ -6,6 +6,8 @@
     "types": ["@league-of-foundry-developers/foundry-vtt-types"],
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
     "strict": false,
     "strictNullChecks": true
   }

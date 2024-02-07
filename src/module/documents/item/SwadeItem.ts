@@ -9,18 +9,20 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState } from '../../../globals';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { Logger } from '../../Logger';
+import { ChoiceDialog } from '../../apps/ChoiceDialog';
 import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
-import { Logger } from '../../Logger';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
-import SwadeActor from '../actor/SwadeActor';
 import SwadeUser from '../SwadeUser';
+import SwadeActor from '../actor/SwadeActor';
+import SwadeChatMessage from '../chat/SwadeChatMessage';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -29,7 +31,6 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
-import SwadeChatMessage from '../chat/SwadeChatMessage';
 
 declare global {
   interface FlagConfig {
@@ -561,7 +562,7 @@ export default class SwadeItem extends Item {
   }
 
   async removeAmmo() {
-    this.system.removeAmmo?.()
+    this.system.removeAmmo?.();
   }
 
   async grantEmbedded(target = this.parent) {
@@ -622,7 +623,7 @@ export default class SwadeItem extends Item {
       this.grantsItems.map((g) => fromUuid(g.uuid)),
     )) as SwadeItem[];
 
-    const grants = grantedItems.map((item) => {
+    const grants = grantedItems.filter(Boolean).map((item) => {
       return {
         item: item,
         grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
@@ -636,6 +637,10 @@ export default class SwadeItem extends Item {
     return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
+  /**
+   * @deprecated
+   * @since 3.3.0
+   */
   needsFullReloadProcedure(): boolean {
     foundry.utils.logCompatibilityWarning(
       'SwadeItem.needsFullReloadProcedure() is deprecated in favor of SwadeItem.usesAmmoFromInventory',
@@ -739,6 +744,33 @@ export default class SwadeItem extends Item {
         }
         this.updateSource({ 'system.equipStatus': newState });
       }
+    }
+
+    if (data.system?.choiceSets?.length > 0) {
+      for (const choiceSet of data.system.choiceSets) {
+        if (choiceSet.choice !== null) {
+          continue;
+        }
+
+        Object.assign(
+          choiceSet,
+          await ChoiceDialog.asPromise({
+            choiceSet: choiceSet,
+          }),
+        );
+
+        if (choiceSet.choice === null) {
+          continue;
+        }
+
+        const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
+        const update = mutationOption.mutation ?? {};
+        if (mutationOption.addToName) {
+          update.name = data.name + ` (${mutationOption.name})`;
+        }
+        this.updateSource(update);
+      }
+      this.updateSource({ 'system.choiceSets': data.system.choiceSets });
     }
   }
 
@@ -850,5 +882,73 @@ export default class SwadeItem extends Item {
         this.removeGranted();
       }
     }
+  }
+
+  async refreshFromCompendium(): Promise<this | null> {
+    if (!this.isOwned) {
+      ui.notifications.error(game.i18n.localize('SWADE.NotOwnedError'));
+      return null;
+    }
+    if (this.grantsItems.length > 0) {
+      ui.notifications.error(game.i18n.localize('SWADE.GrantsItemsError'));
+      return null;
+    }
+    const newItem = await this.findSimilarInCompendium();
+    if (!newItem) {
+      ui.notifications.warn(game.i18n.localize('SWADE.NoUpdatedItemFound'));
+      return null;
+    }
+    const updates = {
+      name: newItem.name,
+      img: newItem.img,
+      system: foundry.utils.deepClone(newItem.system),
+    };
+    foundry.utils.mergeObject(updates, {
+      'system.favorite': this.system.favorite,
+      'system.equipStatus': this.system.equipStatus,
+      'system.quantity': this.system.quantity,
+    });
+    await this.update(updates);
+    return this;
+  }
+
+  async findSimilarInCompendium(): Promise<SwadeItem | null> {
+    const sourceId = this.getFlag('core', 'sourceId') as string;
+    let possibleItem: SwadeItem | null = null;
+    if (sourceId) {
+      possibleItem = (await fromUuid(sourceId)) as SwadeItem | null;
+      if (possibleItem) return possibleItem;
+    }
+
+    const searchFields = [
+      { name: 'system.source', weight: 15 },
+      { name: 'name', weight: 10 },
+      { name: 'img', weight: 6 },
+      { name: 'system.category', weight: 1 },
+      { name: 'system.swid', weight: 4 },
+    ];
+    let possibleItemWeight = 20;
+    for (const pack of game.packs) {
+      if (pack.metadata.system !== 'swade' || pack.metadata.type !== 'Item') {
+        continue;
+      }
+      const documents = await pack.getDocuments({ type: this.type });
+      for (const potentialItem of documents) {
+        let currentWeight = 0;
+        for (const search of searchFields) {
+          if (
+            foundry.utils.getProperty(potentialItem, search.name) ==
+            foundry.utils.getProperty(this, search.name)
+          ) {
+            currentWeight += search.weight;
+          }
+        }
+        if (currentWeight > possibleItemWeight) {
+          possibleItem = potentialItem;
+          possibleItemWeight = currentWeight;
+        }
+      }
+    }
+    return possibleItem;
   }
 }

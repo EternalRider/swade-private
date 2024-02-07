@@ -35,14 +35,14 @@
         <section>
           {{#if isNPC}}
             <div class='form-group'>
-              <label for='{{doc.id}}-wildcard'>
+              <label for='{{doc.uuid}}-wildcard'>
                 {{localize 'SWADE.WildCard'}}
               </label>
               <span class='form-fields'>
                 <input
                   type='checkbox'
                   name='system.wildcard'
-                  id='{{doc.id}}-wildcard'
+                  id='{{doc.uuid}}-wildcard'
                   {{checked doc.isWildcard}}
                 />
               </span>
@@ -50,22 +50,24 @@
           {{/if}}
           {{#unless isVehicle}}
             <div class='form-group'>
-              <label for='{{doc.id}}-animalSmarts'>
+              <label for='{{doc.uuid}}-animalSmarts'>
                 {{localize 'SWADE.AnimalSmarts'}}
               </label>
               <span class='form-fields'>
                 <input
                   type='checkbox'
                   name='system.attributes.smarts.animal'
-                  id='{{doc.id}}-animalSmarts'
+                  id='{{doc.uuid}}-animalSmarts'
                   {{checked doc.system.attributes.smarts.animal}}
                 />
               </span>
             </div>
             <div class='form-group'>
-              <label>{{localize 'SWADE.Adv'}}</label>
+              <label for='{{doc.uuid}}-advances'>
+                {{localize 'SWADE.Adv'}}
+              </label>
               <span class='form-fields'>
-                <select name='system.advances.mode'>
+                <select name='system.advances.mode' id='{{doc.uuid}}-advances'>
                   {{selectOptions
                     advanceTypes
                     selected=doc.system.advances.mode
@@ -75,9 +77,12 @@
               </span>
             </div>
             <div class='form-group'>
-              <label>{{localize 'SWADE.BasePace'}}</label>
+              <label for='{{doc.uuid}}-pace'>
+                {{localize 'SWADE.BasePace'}}
+              </label>
               <span class='form-fields'>
                 <input
+                  id='{{doc.uuid}}-pace'
                   type='number'
                   name='system.stats.speed.value'
                   value='{{doc.system.stats.speed.value}}'
@@ -85,9 +90,12 @@
               </span>
             </div>
             <div class='form-group'>
-              <label>{{localize 'SWADE.RunningDie'}}</label>
+              <label for='{{doc.uuid}}-running-die'>
+                {{localize 'SWADE.RunningDie'}}
+              </label>
               <span class='form-fields'>
                 <select
+                  id='{{doc.uuid}}-running-die'
                   class='running-die'
                   name='system.stats.speed.runningDie'
                   data-dtype='Number'
@@ -111,9 +119,12 @@
             </div>
           {{/unless}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.WoundsMax'}}</label>
+            <label for='{{doc.uuid}}-wounds-max'>
+              {{localize 'SWADE.WoundsMax'}}
+            </label>
             <span class='form-fields'>
               <input
+                id='{{doc.uuid}}-wounds-max'
                 type='number'
                 name='system.wounds.max'
                 value='{{doc.system.wounds.max}}'
@@ -122,9 +133,12 @@
           </div>
           {{#unless isVehicle}}
             <div class='form-group'>
-              <label>{{localize 'SWADE.FatigueMax'}}</label>
+              <label for='{{doc.uuid}}-fatigue-max'>
+                {{localize 'SWADE.FatigueMax'}}
+              </label>
               <span class='form-fields'>
                 <input
+                  id='{{doc.uuid}}-fatigue-max'
                   type='number'
                   name='system.fatigue.max'
                   value='{{doc.system.fatigue.max}}'
@@ -134,9 +148,12 @@
             </div>
           {{/unless}}
           <div class='form-group'>
-            <label>{{localize 'SWADE.BenniesMax'}}</label>
+            <label for='{{doc.uuid}}-bennies-max'>
+              {{localize 'SWADE.BenniesMax'}}
+            </label>
             <span class='form-fields'>
               <input
+                id='{{doc.uuid}}-bennies-max'
                 class='bennies-max'
                 name='system.bennies.max'
                 type='number'
@@ -145,9 +162,12 @@
             </span>
           </div>
           <div class='form-group'>
-            <label>{{localize 'SWADE.IgnWounds'}}</label>
+            <label for='{{doc.uuid}}-wounds-ignore'>
+              {{localize 'SWADE.IgnWounds'}}
+            </label>
             <span class='form-fields'>
               <input
+                id='{{doc.uuid}}-wounds-ignore'
                 name='system.wounds.ignored'
                 type='number'
                 value='{{doc.system.wounds.ignored}}'
@@ -156,9 +176,12 @@
           </div>
           {{#unless isVehicle}}
             <div class='form-group'>
-              <label>{{localize 'SWADE.IgnFatigue'}}</label>
+              <label for='{{doc.uuid}}-fatigue-ignore'>
+                {{localize 'SWADE.IgnFatigue'}}
+              </label>
               <span class='form-fields'>
                 <input
+                  id='{{doc.uuid}}-fatigue-ignore'
                   name='system.fatigue.ignored'
                   type='number'
                   value='{{doc.system.fatigue.ignored}}'
@@ -166,11 +189,12 @@
               </span>
             </div>
             <div class='form-group'>
-              <label>
+              <label for='{{doc.uuid}}-unshake'>
                 {{localize 'SWADE.EffectCallbacks.Shaken.UnshakeModifier'}}
               </label>
               <span class='form-fields'>
                 <input
+                  id='{{doc.uuid}}-unshake'
                   name='system.attributes.spirit.unShakeBonus'
                   type='number'
                   value='{{doc.system.attributes.spirit.unShakeBonus}}'
@@ -178,11 +202,12 @@
               </span>
             </div>
             <div class='form-group'>
-              <label>
+              <label for='{{doc.uuid}}-soak'>
                 {{localize 'SWADE.DamageApplicator.SoakModifier'}}
               </label>
               <span class='form-fields'>
                 <input
+                  id='{{doc.uuid}}-soak'
                   name='system.attributes.vigor.soakBonus'
                   type='number'
                   value='{{doc.system.attributes.vigor.soakBonus}}'
@@ -219,51 +244,54 @@
         <section>
           <h3>{{localize 'SWADE.Init'}}</h3>
           <div class='form-group'>
-            <label for='{{doc.id}}-hasLevelHeaded'>
+            <label for='{{doc.uuid}}-hasLevelHeaded'>
               {{localize 'SWADE.LevelHeaded'}}
             </label>
             <span class='form-fields'>
               <input
                 type='checkbox'
                 name='system.initiative.hasLevelHeaded'
-                id='{{doc.id}}-hasLevelHeaded'
+                id='{{doc.uuid}}-hasLevelHeaded'
                 {{checked doc.system.initiative.hasLevelHeaded}}
               />
             </span>
           </div>
           <div class='form-group'>
-            <label for='{{doc.id}}-hasImpLevelHeaded'>
+            <label for='{{doc.uuid}}-hasImpLevelHeaded'>
               {{localize 'SWADE.ImprovedLevelHeaded'}}
             </label>
             <span class='form-fields'>
               <input
                 type='checkbox'
                 name='system.initiative.hasImpLevelHeaded'
-                id='{{doc.id}}-hasImpLevelHeaded'
+                id='{{doc.uuid}}-hasImpLevelHeaded'
                 {{checked doc.system.initiative.hasImpLevelHeaded}}
               />
             </span>
           </div>
           <div class='form-group'>
-            <label for='{{doc.id}}-hasQuick'>{{localize 'SWADE.Quick'}}</label>
+            <label for='{{doc.uuid}}-hasQuick'>
+              {{localize 'SWADE.Quick'}}
+            </label>
             <span class='form-fields'>
               <input
                 type='checkbox'
                 name='system.initiative.hasQuick'
-                id='{{doc.id}}-hasQuick'
+                id='{{doc.uuid}}-hasQuick'
                 {{checked doc.system.initiative.hasQuick}}
               />
             </span>
           </div>
+          <hr />
           <div class='form-group'>
-            <label for='{{doc.id}}-hasHesitant'>
+            <label for='{{doc.uuid}}-hasHesitant'>
               {{localize 'SWADE.Hesitant'}}
             </label>
             <span class='form-fields'>
               <input
                 type='checkbox'
                 name='system.initiative.hasHesitant'
-                id='{{doc.id}}-hasHesitant'
+                id='{{doc.uuid}}-hasHesitant'
                 {{checked doc.system.initiative.hasHesitant}}
               />
             </span>
@@ -274,28 +302,28 @@
           <section>
             <h3>{{localize 'SWADE.AutoCalc'}}</h3>
             <div class='form-group'>
-              <label for='{{doc.id}}-autoCalcToughness'>
+              <label for='{{doc.uuid}}-autoCalcToughness'>
                 {{localize 'SWADE.Tough'}}
               </label>
               <span class='form-fields'>
                 <input
                   type='checkbox'
                   name='system.details.autoCalcToughness'
-                  id='{{doc.id}}-autoCalcToughness'
+                  id='{{doc.uuid}}-autoCalcToughness'
                   {{checked doc.system.details.autoCalcToughness}}
                 />
               </span>
               <p class='notes'>{{localize 'SWADE.InclArmor'}}</p>
             </div>
             <div class='form-group'>
-              <label for='{{doc.id}}-autoCalcParry'>
+              <label for='{{doc.uuid}}-autoCalcParry'>
                 {{localize 'SWADE.Parry'}}
               </label>
               <span class='form-fields'>
                 <input
                   type='checkbox'
                   name='system.details.autoCalcParry'
-                  id='{{doc.id}}-autoCalcParry'
+                  id='{{doc.uuid}}-autoCalcParry'
                   {{checked doc.system.details.autoCalcParry}}
                 />
               </span>
@@ -323,7 +351,7 @@
         {{#each settingFields as |attr key|}}
           <div class='flexrow'>
             <div style='text-align: left'>
-              <label for='{{doc.id}}-{{key}}-useField'>{{attr.label}}</label>
+              <label for='{{doc.uuid}}-{{key}}-useField'>{{attr.label}}</label>
             </div>
             <div class='centered'>
               <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
@@ -332,7 +360,7 @@
               <input
                 type='checkbox'
                 name='system.additionalStats.{{key}}.useField'
-                id='{{doc.id}}-{{key}}-useField'
+                id='{{doc.uuid}}-{{key}}-useField'
                 {{checked attr.useField}}
               />
             </div>
@@ -344,26 +372,34 @@
       <!-- User Defined Aura 1-->
       <h3>{{localize 'SWADE.Auras.UserAura1'}}</h3>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Auras.Enabled'}}</label>
+        <label for='{{doc.uuid}}-enable-aura1'>
+          {{localize 'SWADE.Auras.Enabled'}}
+        </label>
         <input
+          id='{{doc.uuid}}-enable-aura1'
           type='checkbox'
           name='flags.swade.auras.aura1.enabled'
           {{checked auras.auras.aura1.enabled}}
         />
       </div>
       <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
-        <label>{{localize 'SWADE.Auras.WallConstraints.Label'}}</label>
+        <label for='{{doc.uuid}}-constrain-aura1'>
+          {{localize 'SWADE.Auras.WallConstraints.Label'}}
+        </label>
         <input
+          id='{{doc.uuid}}-constrain-aura1'
           type='checkbox'
           name='flags.swade.auras.aura1.walls'
-          {{checked auras.aura1.walls}}
+          {{checked auras.auras.aura1.walls}}
         />
       </div>
       <div class='form-group slim'>
-        <label>{{localize 'SWADE.Auras.Range'}}
+        <label for='{{doc.uuid}}-radius-aura1'>
+          {{localize 'SWADE.Auras.Range'}}
           <span class='units'>({{auras.units}})</span></label>
         <span class='form-fields'>
           <input
+            id='{{doc.uuid}}-radius-aura1'
             type='number'
             name='flags.swade.auras.aura1.radius'
             value='{{auras.auras.aura1.radius}}'
@@ -374,7 +410,9 @@
         </span>
       </div>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Auras.Color'}}</label>
+        <label>
+          {{localize 'SWADE.Auras.Color'}}
+        </label>
         <span class='form-fields'>
           {{colorPicker
             name='flags.swade.auras.aura1.color'
@@ -418,27 +456,35 @@
       <!-- User Defined Aura 2-->
       <h3>{{localize 'SWADE.Auras.UserAura2'}}</h3>
       <div class='form-group'>
-        <label>{{localize 'SWADE.Auras.Enabled'}}</label>
+        <label for='{{doc.uuid}}-enable-aura2'>
+          {{localize 'SWADE.Auras.Enabled'}}
+        </label>
         <input
+          id='{{doc.uuid}}-enable-aura2'
           type='checkbox'
           name='flags.swade.auras.aura2.enabled'
           {{checked auras.auras.aura2.enabled}}
         />
       </div>
       <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
-        <label>{{localize 'SWADE.Auras.WallConstraints.Label'}}</label>
+        <label for='{{doc.uuid}}-constrain-aura2'>
+          {{localize 'SWADE.Auras.WallConstraints.Label'}}
+        </label>
         <input
+          id='{{doc.uuid}}-constrain-aura2'
           type='checkbox'
           name='flags.swade.auras.aura2.walls'
           {{checked auras.auras.aura2.walls}}
         />
       </div>
       <div class='form-group slim'>
-        <label>{{localize 'SWADE.Auras.Range'}}
+        <label for='{{doc.uuid}}-radius-aura2'>
+          {{localize 'SWADE.Auras.Range'}}
           <span class='units'>({{auras.units}})</span>
         </label>
         <span class='form-fields'>
           <input
+            id='{{doc.uuid}}-radius-aura2'
             type='number'
             name='flags.swade.auras.aura2.radius'
             value='{{auras.auras.aura2.radius}}'

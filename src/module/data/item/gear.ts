@@ -3,6 +3,7 @@ import {
   actions,
   arcaneDevice,
   category,
+  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
@@ -40,6 +41,7 @@ export class GearData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
+      ...choiceSets(),
       isAmmo: new fields.BooleanField(),
     };
   }

@@ -14,11 +14,10 @@ declare global {
   }
 }
 
-export type SwadeActorDataProperties = (
+export type SwadeActorDataProperties =
   | SwadeCharacterDataSource
   | SwadeNpcDataSource
-  | SwadeVehicleDataSource
-);
+  | SwadeVehicleDataSource;
 
 interface SwadeCharacterDataSource {
   system: CharacterDataPropertiesData;
@@ -68,6 +67,8 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
       attack: RollModifier[];
       damage: RollModifier[];
       ap: RollModifier[];
+      bennyTrait: RollModifier[];
+      bennyDamage: RollModifier[];
     };
     parry: {
       sources: DerivedModifier[];

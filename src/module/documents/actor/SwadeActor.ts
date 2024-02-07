@@ -1,6 +1,10 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import {
+  Context,
+  DocumentModificationOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Attribute, ItemMetadata } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -31,8 +35,9 @@ import {
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
+import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { TraitDie } from './actor-data-source';
+import { SwadeActorDataSource, TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -40,7 +45,12 @@ declare global {
   }
   interface FlagConfig {
     swade: {
+      ambidextrous?: boolean;
       auras?: Record<string, AuraData>;
+      elan?: boolean;
+      hardy?: boolean;
+      ignoreBleedOut?: boolean;
+      wildAttackDamage?: string | number;
     };
   }
 }
@@ -635,22 +645,17 @@ export default class SwadeActor extends Actor {
 
   async getBenny() {
     if (this.system instanceof VehicleData) return;
-    const combatant = this.token?.combatant;
-    const notHiddenNPC =
-      !combatant?.isNPC || (combatant?.isNPC && !combatant?.hidden);
-    if (game.settings.get('swade', 'notifyBennies') && notHiddenNPC) {
-      const message = await renderTemplate(SWADE.bennies.templates.add, {
+    const combatant = this.token?.combatant as SwadeCombatant | undefined;
+    await this.update({ 'system.bennies.value': this.bennies + 1 });
+
+    const hiddenNPC = combatant?.isNPC && combatant?.hidden;
+    if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
+      const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: game.user,
       });
-      const chatData = {
-        content: message,
-      };
-      await CONFIG.ChatMessage.documentClass.create(chatData);
+      await getDocumentClass('ChatMessage').create({ content });
     }
-    await this.update({
-      'system.bennies.value': this.bennies + 1,
-    });
 
     /**
      * A hook event that is fired after an actor has been awarded a benny
@@ -713,7 +718,7 @@ export default class SwadeActor extends Actor {
     }
     // Add a new effect
     else if (state) {
-      const aeClass = CONFIG.ActiveEffect.documentClass;
+      const aeClass = getDocumentClass('ActiveEffect');
       const data = foundry.utils.deepClone(effectData);
       foundry.utils.setProperty(data, 'statuses', [effectData.id]);
       delete data.id; //remove the ID to not trigger validation errors
@@ -728,11 +733,9 @@ export default class SwadeActor extends Actor {
 
   /**
    * Reset the bennies of the Actor to their default value
-   * @param displayToChat display a message to chat
    */
-  async refreshBennies(displayToChat = true) {
-    if (typeof this.system.refreshBennies === 'function')
-      this.system.refreshBennies(displayToChat);
+  async refreshBennies(notify = true) {
+    this.system.refreshBennies?.(notify);
   }
 
   /** Calculates the total Wound Penalties
@@ -1429,7 +1432,7 @@ export default class SwadeActor extends Actor {
   protected override async _preCreate(
     createData: ActorDataConstructorData,
     options: DocumentModificationOptions,
-    user: User,
+    user: BaseUser,
   ) {
     await super._preCreate(createData, options, user);
     //return early if it's a vehicle
@@ -1520,9 +1523,9 @@ export default class SwadeActor extends Actor {
   protected override _onUpdate(
     changed: DeepPartial<SwadeActorDataSource> & Record<string, unknown>,
     options: DocumentModificationOptions,
-    user: string,
+    userId: string,
   ) {
-    super._onUpdate(changed, options, user);
+    super._onUpdate(changed, options, userId);
     // Updating for Wild Card display toggle
     if (this.type === 'npc') {
       ui.actors?.render(true);

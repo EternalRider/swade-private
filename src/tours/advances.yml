@@ -1,0 +1,72 @@
+title: SWADE.TOURS.ADVANCES.Title
+description: SWADE.TOURS.ADVANCES.Description
+canBeResumed: false
+display: true
+suggestedNextTours:
+  - swade.tweaks
+  - swade.additional-stats
+  - swade.auras
+steps:
+  - id: accessAdvanceMode
+    selector: '#actorSheetID .header-button.configure-actor'
+    title: SWADE.TOURS.ADVANCES.AccessAdvanceMode.Title
+    content: SWADE.TOURS.ADVANCES.AccessAdvanceMode.Content
+    actor:
+      name: SWADE.TOURS.ADVANCES.Actor
+      type: character
+      img: icons/environment/people/commoner.webp
+  - id: advanceMode
+    selector: '#tweaks section[data-tab="traits"] section div:nth-child(2)'
+    title: SWADE.TOURS.ADVANCES.Mode.Title
+    content: SWADE.TOURS.TWEAKS.Advances.Content
+    tab:
+      parent: tweaks
+      id: traits
+  - id: advanceTab
+    selector: '#actorSheetID section.about section.advances'
+    title: SWADE.TOURS.ADVANCES.AdvanceTab.Title
+    content: SWADE.TOURS.ADVANCES.AdvanceTab.Content
+    tab:
+      parent: actor
+      id: about
+    actions: ['closeTweaks']
+  - id: createAdvances
+    selector: '#actorSheetID section.about section.advances button.item-create'
+    title: SWADE.TOURS.ADVANCES.Create.Title
+    content: SWADE.TOURS.ADVANCES.Create.Content
+  - id: advanceEditor
+    selector: div.advance-editor
+    title: SWADE.TOURS.ADVANCES.Editor.Title
+    content: SWADE.TOURS.ADVANCES.Editor.Content
+    advance:
+      dialog: true
+      id: 9jI3BdVI
+      notes: <p>These are some sample notes</p>
+      planned: false
+      rank: 0
+      sort: 1
+      type: 0
+  - id: advanceType
+    selector: div.advance-editor form div:nth-child(1)
+    title: SWADE.TOURS.ADVANCES.Type.Title
+    content: SWADE.TOURS.ADVANCES.Type.Content
+  - id: advanceRank
+    selector: div.advance-editor form div:nth-child(2)
+    title: SWADE.TOURS.ADVANCES.Rank.Title
+    content: SWADE.TOURS.ADVANCES.Rank.Content
+  - id: advanceNumber
+    selector: div.advance-editor form div:nth-child(3)
+    title: SWADE.TOURS.ADVANCES.Number.Title
+    content: SWADE.TOURS.ADVANCES.Number.Content
+  - id: advancePlans
+    selector: div.advance-editor form div:nth-child(4)
+    title: SWADE.TOURS.ADVANCES.Planned.Title
+    content: SWADE.TOURS.ADVANCES.Planned.Content
+  - id: advanceNotes
+    selector: div.advance-editor form div:nth-child(5)
+    title: SWADE.TOURS.ADVANCES.Notes.Title
+    content: SWADE.TOURS.ADVANCES.Notes.Content
+  - id: saveChanges
+    selector: div.advance-editor button.close
+    title: SWADE.TOURS.ADVANCES.SaveChanges.Title
+    content: SWADE.TOURS.ADVANCES.SaveChanges.Content

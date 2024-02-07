@@ -37,8 +37,10 @@
       </div>
       {{#if (eq item.system.severity "either")}}
         <div class="form-group">
-          <label>{{localize "SWADE.MajHind"}}</label>
-          <input type="checkbox" name="system.major" {{checked item.system.isMajor}} />
+          <label for="{{item.uuid}}-major">
+            {{localize "SWADE.MajHind"}}
+          </label>
+          <input id="{{item.uuid}}-major" type="checkbox" name="system.major" {{checked item.system.isMajor}} />
         </div>
       {{/if}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}

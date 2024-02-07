@@ -1,6 +1,7 @@
 import { EquipState } from '../globals';
 import { SWADE } from './config';
 import { constants } from './constants';
+import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
 
 /*****************************
@@ -16,10 +17,24 @@ function times(a: number, b: number) {
   return a * b;
 }
 
+function isEven(number: number): boolean {
+  return number % 2 === 0;
+}
+
+function isOdd(number: number): boolean {
+  return !isEven(number);
+}
+
 function signedString(num) {
   const result = parseInt(num);
   if (isNaN(result)) return '';
   return result.signedString();
+}
+
+function rotate(number: number) {
+  const rotationVal = (number % 5) + 2;
+  if (rotationVal > 4) return 2;
+  else return rotationVal;
 }
 
 function enrich(content: string) {
@@ -187,23 +202,27 @@ function isInGroup(combatantId: string) {
   return c.groupId!;
 }
 
-function groupColor(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId);
-  if (!c) return;
-  const groupColor = c.getFlag('swade', 'groupColor');
-  if (groupColor) return groupColor;
-
-  if (c?.players?.length) {
-    return c.players[0].color;
-  } else {
-    const gm = game.users?.find((u) => u.isGM)!;
-    return gm.color;
-  }
+function combatantColor(id: string): string | undefined {
+  const fallback = 'transparent';
+  const c = game.combat?.combatants.get(id) as SwadeCombatant;
+  if (!c) return fallback;
+  if (c.groupId) return groupColor(c.groupId);
+  else if (c.isDefeated) return '#fff';
+  else return groupColor(id);
 }
 
-function leaderColor(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return groupColor(c.groupId as string);
+function groupColor(id: string): string | undefined {
+  const fallback = 'transparent';
+  const c = game.combat?.combatants.get(id) as SwadeCombatant;
+  if (!c) return fallback;
+  const groupColor = c.getFlag('swade', 'groupColor');
+  if (groupColor) return groupColor || fallback;
+
+  if (c.players?.length) {
+    return c.players[0].color;
+  } else {
+    return game.users.activeGM?.color;
+  }
 }
 
 /*****************************
@@ -265,7 +284,10 @@ export function registerCustomHelpers() {
     add,
     signedString,
     times,
+    isOdd,
+    isEven,
     formatNumber,
+    rotate,
     isEmpty,
     collapsible,
     stringify,
@@ -283,8 +305,7 @@ export function registerCustomHelpers() {
     turnLost,
     isGroupLeader,
     isInGroup,
-    groupColor,
-    leaderColor,
+    combatantColor,
     eachInMap,
     equipStatus,
     equipStatusLabel,

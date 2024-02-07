@@ -4,40 +4,44 @@
   <figure class='grid-under gu-3'></figure>
   <figure class='grid-under gu-4'></figure>
 
-  {{!-- Sheet Header --}}
+  {{! Sheet Header }}
   {{> 'systems/swade/templates/item/partials/header.hbs'}}
 
-  {{!-- Sidebar --}}
+  {{! Sidebar }}
   <section class='sheet-sidebar'>
-    {{#if (eq item.system.subtype "regular")}}
-      <div class="form-group">
-        <button class="use-consumable">{{localize "SWADE.Consumable.Use"}}</button>
+    {{#if (eq item.system.subtype 'regular')}}
+      <div class='form-group'>
+        <button class='use-consumable'>{{localize
+            'SWADE.Consumable.Use'
+          }}</button>
       </div>
     {{/if}}
     {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
-    <div class="form-group">
-      <label>{{localize "SWADE.Charges"}}</label>
+    <div class='form-group'>
+      <label for='{{item.uuid}}-charges'>{{localize 'SWADE.Charges'}}</label>
       <span class='form-fields text-center'>
         <input
+          id='{{item.uuid}}-charges'
           name='system.charges.value'
           type='number'
           value='{{item.system.charges.value}}'
-          data-dtype="Number"
+          data-dtype='Number'
         />
-        <strong class="flex-separator">/</strong>
+        <strong class='flex-separator'>/</strong>
         <input
           name='system.charges.max'
           type='number'
           value='{{item.system.charges.max}}'
-          data-dtype="Number"
-          {{disabled (eq item.system.subtype "battery")}}
+          data-dtype='Number'
+          {{disabled (eq item.system.subtype 'battery')}}
         />
       </span>
     </div>
     <div class='form-group'>
-      <label for='system.weight'>{{localize 'SWADE.Weight'}}</label>
+      <label for='{{item.uuid}}-weight'>{{localize 'SWADE.Weight'}}</label>
       <span class='form-fields'>
         <input
+          id='{{item.uuid}}-weight'
           name='system.weight'
           type='text'
           value='{{item.system.weight}}'
@@ -49,7 +53,7 @@
     {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
   </section>
 
-  {{!-- Sheet Tab Navigation --}}
+  {{! Sheet Tab Navigation }}
   <nav class='tabs' data-group='main'>
     <a class='item' data-tab='description' data-group='main'>
       {{localize 'SWADE.Desc'}}
@@ -61,35 +65,49 @@
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
-  {{!-- Main Section --}}
+  {{! Main Section }}
   <section class='sheet-body'>
     <section class='tab description' data-group='main' data-tab='description'>
       <div></div>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
-      <div class="form-group">
-        <label>{{localize "SWADE.DestroyOnEmpty"}}</label>
-          <span class='form-fields'>
-            <input type='checkbox' name='system.destroyOnEmpty' {{checked item.system.destroyOnEmpty}}/>
-          </span>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-destroy-on-empty'>
+          {{localize 'SWADE.DestroyOnEmpty'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='{{item.uuid}}-destroy-on-empty'
+            type='checkbox'
+            name='system.destroyOnEmpty'
+            {{checked item.system.destroyOnEmpty}}
+          />
+        </span>
       </div>
-      <div class="form-group">
-        <label>{{localize "SWADE.MessageOnUse.Label"}}</label>
-          <span class='form-fields'>
-            <input type='checkbox' name='system.messageOnUse' {{checked item.system.messageOnUse}}/>
-          </span>
-        <p class="notes">{{localize "SWADE.MessageOnUse.Hint"}}</p>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-message-on-use'>
+          {{localize 'SWADE.MessageOnUse.Label'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='{{item.uuid}}-message-on-use'
+            type='checkbox'
+            name='system.messageOnUse'
+            {{checked item.system.messageOnUse}}
+          />
+        </span>
+        <p class='notes'>{{localize 'SWADE.MessageOnUse.Hint'}}</p>
       </div>
-      <div class="form-group">
-        <label>{{localize "SWADE.ConsumableType.Label"}}</label>
-          <span class='form-fields'>
-              <select name='system.subtype'>
-                  {{#select item.system.subtype}}
-                    {{selectOptions subtypes localize=true}}
-                  {{/select}}
-              </select>
-          </span>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.ConsumableType.Label'}}</label>
+        <span class='form-fields'>
+          <select name='system.subtype'>
+            {{#select item.system.subtype}}
+              {{selectOptions subtypes localize=true}}
+            {{/select}}
+          </select>
+        </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}

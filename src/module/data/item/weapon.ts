@@ -4,12 +4,26 @@ import {
   ReloadType,
   Updates,
 } from '../../../globals';
+import { RollModifier } from '../../../interfaces/additional.interface';
+import { Logger } from '../../Logger';
+import Reloadinator from '../../apps/Reloadinator';
 import { constants } from '../../constants';
+import type SwadeActor from '../../documents/actor/SwadeActor';
+import type SwadeItem from '../../documents/item/SwadeItem';
+import {
+  ItemChatCardChip,
+  UsageUpdates,
+} from '../../documents/item/SwadeItem.interface';
+import { notificationExists } from '../../util';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 import {
   actions,
   arcaneDevice,
   bonusDamage,
   category,
+  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
@@ -18,18 +32,6 @@ import {
   templates,
   vehicular,
 } from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import {
-  ItemChatCardChip,
-  UsageUpdates,
-} from '../../documents/item/SwadeItem.interface';
-import { Logger } from '../../Logger';
-import { notificationExists } from '../../util';
-import Reloadinator from '../../apps/Reloadinator';
-import SwadeItem from '../../documents/item/SwadeItem';
-import { RollModifier } from '../../../interfaces/additional.interface';
 
 export interface WeaponData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -57,6 +59,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       ...templates(),
       ...category(),
       ...grantEmbedded(),
+      ...choiceSets(),
       damage: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
       rangeType: new fields.NumberField({
@@ -150,6 +153,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     }
     return modifiers;
   }
+
   get usesAmmoFromInventory(): boolean {
     if (this.reloadType === constants.RELOAD_TYPE.PP) return false;
     const isPC = this.parent.actor?.type === 'character';
@@ -334,9 +338,13 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
 
-  async reload() {
-    const parentActor = this.parent.actor;
-    if (!game.settings.get('swade', 'ammoManagement') || !parentActor) return;
+  /**
+   * Reload this weapon based on the reload procedure set.
+   * @returns whether this weapon was successfully reloaded
+   */
+  async reload(): Promise<boolean> {
+    const parent = this.parent.actor;
+    if (!game.settings.get('swade', 'ammoManagement') || !parent) return false;
 
     const ammoName = this.ammo;
     //return if there's no ammo set
@@ -345,12 +353,12 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       if (!notificationExists('SWADE.NoAmmoSet', true)) {
         Logger.info('SWADE.NoAmmoSet', { toast: true, localize: true });
       }
-      return;
+      return false;
     }
 
-    const ammo = parentActor.items.getName(ammoName);
-    const currentShots = Number(this.currentShots);
-    const maxShots = Number(this.shots);
+    const ammo = parent.items.getName(ammoName);
+    const currentShots = this.currentShots || 0;
+    const maxShots = this.shots || 0;
     const missingAmmo = maxShots - currentShots;
     const reloadType = this.reloadType;
 
@@ -361,7 +369,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
 
     if (currentShots >= maxShots) {
@@ -371,22 +379,32 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           toast: true,
         });
       }
-      return;
+      return false;
     }
+
+    /**
+     * Called when a reload is initiated. Returning false will cancel the reload operation;
+     * @param {SwadeItem} item        The weapon being reloaded
+     */
+    const permitContinue = Hooks.call('swadePreReloadWeapon', this.parent);
+
+    if (!permitContinue) return false;
+
+    let reloaded = false;
 
     switch (reloadType) {
       case constants.RELOAD_TYPE.SINGLE:
-        await this.#handleSingleReload(ammo as SwadeItem);
+        reloaded = await this.#handleSingleReload(ammo as SwadeItem);
         break;
       case constants.RELOAD_TYPE.FULL:
-        await this.#handleFullReload(ammo as SwadeItem, missingAmmo);
+        reloaded = await this.#handleFullReload(ammo as SwadeItem, missingAmmo);
         break;
       case constants.RELOAD_TYPE.MAGAZINE:
       case constants.RELOAD_TYPE.BATTERY:
-        await this.#handleReloadFromConsumable(reloadType);
+        reloaded = await this.#handleReloadFromConsumable(reloadType);
         break;
       case constants.RELOAD_TYPE.PP:
-        await this.#handlePowerPointReload();
+        reloaded = await this.#handlePowerPointReload();
         break;
       case constants.RELOAD_TYPE.NONE:
       case constants.RELOAD_TYPE.SELF:
@@ -394,15 +412,24 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
         // Shouldn't ever arrive here because the Reload button shouldn't display
         break;
     }
+
+    /**
+     * Called after a weapon reload procedure has finished.
+     * @param {SwadeItem} item            The weapon being reloaded
+     * @param {boolean} reloaded          Whether the reload operation was successfully completed
+     */
+    Hooks.callAll('swadeReloadWeapon', this.parent, reloaded);
+    return reloaded;
   }
 
-  async #handleSingleReload(ammo: SwadeItem) {
+  async #handleSingleReload(ammo: SwadeItem): Promise<boolean> {
     if (ammo.system.quantity > 0) {
       if (this.usesAmmoFromInventory) await ammo.consume(1);
       await this.parent.update({
         'system.currentShots': Number(this.currentShots) + 1,
       });
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+      return true;
     } else {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
@@ -410,15 +437,16 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
+      return false;
     }
   }
 
-  async #handleFullReload(ammo: SwadeItem, missingAmmo: number) {
+  async #handleFullReload(ammo: SwadeItem, missing: number): Promise<boolean> {
     if (!this.usesAmmoFromInventory) {
       return this.#handleSimpleReload();
     }
     if (ammo.type === 'consumable') {
-      return this.#handleConsumableReload(ammo, missingAmmo);
+      return this.#handleConsumableReload(ammo, missing);
     }
     if (ammo.system.quantity <= 0) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
@@ -427,10 +455,10 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
     let ammoInMagazine = this.shots;
-    if (ammo.system.quantity < missingAmmo) {
+    if (ammo.system.quantity < missing) {
       // partial reload
       ammoInMagazine = this.currentShots + ammo.system.quantity;
       await ammo.consume(ammo.system.quantity);
@@ -441,13 +469,17 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
         });
       }
     } else {
-      await ammo.consume(missingAmmo);
+      await ammo.consume(missing);
     }
     await this.parent.update({ 'system.currentShots': ammoInMagazine });
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    return true;
   }
 
-  async #handleConsumableReload(ammo: SwadeItem, missingAmmo: number) {
+  async #handleConsumableReload(
+    ammo: SwadeItem,
+    missing: number,
+  ): Promise<boolean> {
     if (ammo.system.charges.value <= 0) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
         Logger.warn('SWADE.NotEnoughAmmo', {
@@ -455,13 +487,13 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
 
     const allCharges = ammo.system.charges.value * ammo.system.quantity;
 
     let ammoInMagazine = this.shots;
-    if (allCharges < missingAmmo) {
+    if (allCharges < missing) {
       // partial reload
       ammoInMagazine = Number(this.currentShots) + allCharges;
       await ammo.consume(allCharges);
@@ -472,35 +504,34 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
         });
       }
     } else {
-      await ammo.consume(missingAmmo);
+      await ammo.consume(missing);
     }
     await this.parent.update({ 'system.currentShots': ammoInMagazine });
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    return true;
   }
 
-  async #handleReloadFromConsumable(reloadType: ReloadType) {
-    if (!this.usesAmmoFromInventory) {
-      return this.#handleSimpleReload();
-    }
+  async #handleReloadFromConsumable(reloadType: ReloadType): Promise<boolean> {
+    if (!this.usesAmmoFromInventory) return this.#handleSimpleReload();
+
     let magazines = new Array<SwadeItem>();
+    const consumables = this.parent.actor?.itemTypes.consumable;
+    const predicate = (type: ValueOf<typeof constants.CONSUMABLE_TYPE>) => {
+      return (i: SwadeItem) =>
+        i.type === 'consumable' &&
+        i.name === this.ammo &&
+        i.system.subtype === type &&
+        i.system.equipStatus >= constants.EQUIP_STATE.CARRIED;
+    };
+
     if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
-      magazines =
-        this.parent.actor?.itemTypes.consumable.filter(
-          (i) =>
-            i.type === 'consumable' &&
-            i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE &&
-            i.name === this.ammo &&
-            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED,
-        ) ?? [];
+      magazines = consumables.filter(
+        predicate(constants.CONSUMABLE_TYPE.MAGAZINE),
+      );
     } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
-      magazines =
-        this.parent.actor?.itemTypes.consumable.filter(
-          (i) =>
-            i.type === 'consumable' &&
-            i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY &&
-            i.name === this.ammo &&
-            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED,
-        ) ?? [];
+      magazines = consumables.filter(
+        predicate(constants.CONSUMABLE_TYPE.BATTERY),
+      );
     }
 
     if (magazines.filter((m) => m.system.charges.value > 0).length === 0) {
@@ -510,19 +541,19 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
     const reloaded = await Reloadinator.asPromise({
-      weapon: this.parent,
+      weapon: this.parent as SwadeItem,
       magazines,
     });
 
-    if (reloaded) {
+    if (reloaded)
       Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-    }
+    return reloaded;
   }
 
-  async #handlePowerPointReload() {
+  async #handlePowerPointReload(): Promise<boolean> {
     const powerPoints = this.parent.actor?.system.powerPoints[this.ammo!];
     const ppReloadCost = Number(this.ppReloadCost);
     if (!powerPoints) {
@@ -532,7 +563,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
     if (powerPoints?.value < ppReloadCost) {
       if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
@@ -541,7 +572,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
           localize: true,
         });
       }
-      return;
+      return false;
     }
     await this.parent.actor?.update({
       ['system.powerPoints.' + this.ammo + '.value']:
@@ -549,19 +580,20 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     });
     await this.parent.update({ 'system.currentShots': this.shots });
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    return true;
   }
 
-  async #handleSimpleReload() {
-    await this.parent.update({
-      'system.currentShots': this.shots,
-    });
+  async #handleSimpleReload(): Promise<boolean> {
+    await this.parent.update({ 'system.currentShots': this.shots });
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    return true;
   }
 
+  /** Remove the loaded ammunition from this weapon and move it into the parent actor's inventory */
   async removeAmmo() {
     const loadedAmmo = this.parent.getFlag('swade', 'loadedAmmo');
-    const parentActor = this.parent.actor;
-    if (!parentActor || !loadedAmmo) return;
+    const parent = this.parent.actor as SwadeActor | null;
+    if (!parent || !loadedAmmo) return;
     const reloadType = this.reloadType;
     if (
       reloadType !== constants.RELOAD_TYPE.MAGAZINE &&
@@ -569,70 +601,67 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     )
       return;
 
-    if (loadedAmmo) {
-      const updates: Updates[] = [
-        {
-          _id: this.parent.id,
-          'system.currentShots': 0,
-          'flags.swade': { '-=loadedAmmo': null },
-        },
-      ];
+    const updates: Updates[] = [
+      {
+        _id: this.parent.id,
+        'system.currentShots': 0,
+        'flags.swade': { '-=loadedAmmo': null },
+      },
+    ];
 
-      if (!this.usesAmmoFromInventory) {
-        await parentActor.updateEmbeddedDocuments('Item', updates);
-        return;
-      }
-
-      const isFull = this.currentShots === this.shots;
-      if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
-        const existingStack = parentActor.items.find(
-          (i) =>
-            i.type === 'consumable' &&
-            i.name === loadedAmmo.name &&
-            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED &&
-            i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE &&
-            i.system.charges.value === i.system.charges.max,
-        );
-        if (existingStack && isFull) {
-          updates.push({
-            _id: existingStack.id,
-            'system.quantity': existingStack.system.quantity + 1,
-          });
-        } else {
-          const newItemData = foundry.utils.mergeObject(loadedAmmo, {
-            'system.charges.value': this.currentShots,
-          });
-          await CONFIG.Item.documentClass.create(newItemData, {
-            parent: parentActor,
-          });
-        }
-      } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
-        const existingStack = parentActor.items.find(
-          (i) =>
-            i.type === 'consumable' &&
-            i.name === loadedAmmo.name &&
-            i.system.equipStatus >= constants.EQUIP_STATE.CARRIED &&
-            i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY &&
-            i.system.charges.value === 100,
-        );
-
-        if (existingStack && isFull) {
-          updates.push({
-            _id: existingStack.id,
-            'system.quantity': existingStack.system.quantity + 1,
-          });
-        } else {
-          const factor = Number(this.currentShots) / Number(this.shots);
-          const newItemData = foundry.utils.mergeObject(loadedAmmo, {
-            'system.charges.value': Math.ceil(factor * 100),
-          });
-          await CONFIG.Item.documentClass.create(newItemData, {
-            parent: parentActor,
-          });
-        }
-      }
-
-      await parentActor.updateEmbeddedDocuments('Item', updates);
+    if (!this.usesAmmoFromInventory) {
+      await parent.updateEmbeddedDocuments('Item', updates);
+      return;
     }
+    const isFull = this.currentShots === this.shots;
+    const predicate = (
+      type: ValueOf<typeof constants.CONSUMABLE_TYPE>,
+      charges?: number,
+    ) => {
+      return (item: SwadeItem) =>
+        item.type === 'consumable' &&
+        item.name === loadedAmmo.name &&
+        item.system.subtype === type &&
+        item.system.equipStatus >= constants.EQUIP_STATE.CARRIED &&
+        item.system.charges.value === (charges ?? item.system.charges.max);
+    };
+
+    const consumables = parent.itemTypes.consumable;
+
+    if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
+      const existingStack = consumables.find(
+        predicate(constants.CONSUMABLE_TYPE.MAGAZINE),
+      );
+      if (existingStack && isFull) {
+        updates.push({
+          _id: existingStack.id,
+          'system.quantity': existingStack.system.quantity + 1,
+        });
+      } else {
+        const itemData = foundry.utils.mergeObject(loadedAmmo, {
+          'system.charges.value': this.currentShots,
+        });
+        await getDocumentClass('Item').create(itemData, { parent });
+      }
+    } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
+      const existingStack = consumables.find(
+        predicate(constants.CONSUMABLE_TYPE.BATTERY, 100),
+      );
+
+      if (existingStack && isFull) {
+        updates.push({
+          _id: existingStack.id,
+          'system.quantity': existingStack.system.quantity + 1,
+        });
+      } else {
+        const factor = Number(this.currentShots) / Number(this.shots);
+        const itemData = foundry.utils.mergeObject(loadedAmmo, {
+          'system.charges.value': Math.ceil(factor * 100),
+        });
+        await getDocumentClass('Item').create(itemData, { parent });
+      }
+    }
+
+    await parent.updateEmbeddedDocuments('Item', updates);
   }
 }

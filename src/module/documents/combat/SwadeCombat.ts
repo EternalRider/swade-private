@@ -4,6 +4,8 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { AmbushAssistant } from '../../apps/AmbushAssistant';
+import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
 import SwadeUser from '../SwadeUser';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
@@ -18,7 +20,7 @@ declare global {
 
 export default class SwadeCombat extends Combat {
   /** Compares two combatants by initiative card */
-  static #cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+  static cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     const cardA = a.cardValue ?? 0;
     const cardB = b.cardValue ?? 0;
     const card = cardB - cardA;
@@ -28,15 +30,44 @@ export default class SwadeCombat extends Combat {
     return suitB - suitA;
   }
 
+  /** Compares two combatants by name. */
+  static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
+    if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
+    return a.name > b.name ? 1 : -1;
+  }
+
   /** Compares two combatants by ID. */
   static #idSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     return a.id! > b.id! ? 1 : -1;
   }
 
+  static INITIATIVE_SOUND = 'systems/swade/assets/card-flip.wav';
+
   get actionDeck(): SwadeCards {
     return game.cards!.get(game.settings.get('swade', 'actionDeck'), {
       strict: true,
     });
+  }
+
+  get automaticInitiative(): boolean {
+    return game.settings.get('swade', 'autoInit');
+  }
+
+  #debouncedCombatSound: this['_playCombatSound'];
+
+  #initSoundData: AudioHelper.PlayData = {
+    src: SwadeCombat.INITIATIVE_SOUND,
+    volume: 0.8,
+    autoplay: true,
+    loop: false,
+  };
+
+  constructor(...args) {
+    super(...args);
+    this.#debouncedCombatSound = foundry.utils.debounce(
+      super._playCombatSound,
+      200,
+    );
   }
 
   override async rollInitiative(
@@ -55,7 +86,7 @@ export default class SwadeCombat extends Combat {
     if (ids.length > this.actionDeck.availableCards.length) {
       const message = game.i18n.format('SWADE.NoCardsLeft', {
         needed: ids.length,
-        current: actionCardDeck.availableCards.length,
+        current: this.actionDeck.availableCards.length,
       });
       ui.notifications.warn(message);
       return this as Combat;
@@ -67,49 +98,49 @@ export default class SwadeCombat extends Combat {
       const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
       if (!c.isOwner) continue;
       const roundHeld = !!c.roundHeld;
-      const inGroup = !!c.groupId;
 
-      //Do not draw cards for defeated or holding combatants
-      if (c.isDefeated || roundHeld || inGroup) continue;
+      //Do not draw cards for defeated, holding or grouped combatants
+      if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
       // Set up edges
       const hasHesitant = c.actor?.system.initiative.hasHesitant;
       const hasQuick = c.actor?.system.initiative.hasQuick;
-      const isIncapacitated = c.actor?.system.status.isIncapacitated;
+      const isIncapacitated = c.isIncapacitated;
 
       // Figure out how many cards to draw
-      const cardsToDraw = this._determineCardsToDraw(c as SwadeCombatant);
+      const cardsToDraw = c.cardsToDraw;
 
       // Draw initiative
-      let card: Card;
-      const cards = await this.drawCard(cardsToDraw);
-      if (!!c.initiative && !roundHeld) {
+      let pickedCard: Card;
+      let cardsToPickFrom = await this.drawCard(cardsToDraw);
+
+      if (typeof c.initiative === 'number' && !roundHeld) {
         // handle redraws
         const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
-          cards.push(oldCard);
-          card = await this.pickACard({
-            cards: cards,
+          cardsToPickFrom.push(oldCard);
+          const result = await this.pickACard({
+            cards: cardsToPickFrom,
             combatantName: c.name,
             oldCardId: oldCard?.id!,
           });
-          if (card === oldCard) {
-            skipMessage = true;
-          }
+          pickedCard = result.picked;
+          cardsToPickFrom = result.cards;
+          if (pickedCard === oldCard) skipMessage = true;
         } else {
-          card = cards[0];
+          pickedCard = cardsToPickFrom[0];
         }
       } else if (isIncapacitated) {
-        card = cards[0];
+        pickedCard = cardsToPickFrom[0];
       } else if (hasHesitant) {
         // Hesitant
-        const joker = cards.find((c) => c.system['isJoker']);
+        const joker = cardsToPickFrom.find((c) => c.system['isJoker']);
         if (joker) {
           // if one of the cards drawn was a joker, simply use that
-          card = joker;
+          pickedCard = joker;
         } else {
           //sort cards to pick the lower one
-          cards.sort((a, b) => {
+          cardsToPickFrom.sort((a, b) => {
             const cardA = a.value!;
             const cardB = b.value!;
             const card = cardA - cardB;
@@ -119,41 +150,45 @@ export default class SwadeCombat extends Combat {
             const suit = suitA - suitB;
             return suit;
           });
-          card = cards[0];
+          pickedCard = cardsToPickFrom[0];
         }
       } else if (cardsToDraw > 1) {
         //Level Headed
-        card = await this.pickACard({
-          cards: cards,
+        const result = await this.pickACard({
+          cards: cardsToPickFrom,
           combatantName: c.name,
           enableRedraw: hasQuick,
           isQuickDraw: hasQuick,
         });
+        pickedCard = result.picked;
+        cardsToPickFrom = result.cards;
       } else if (hasQuick) {
-        card = cards[0];
-        const cardValue = card?.value!;
+        pickedCard = cardsToPickFrom[0];
+        const cardValue = pickedCard.value!;
         //if the card value is less than 5 then pick a card otherwise use the card
         if (cardValue <= 5) {
-          card = await this.pickACard({
-            cards: [card],
+          const result = await this.pickACard({
+            cards: [pickedCard],
             combatantName: c.name,
             enableRedraw: true,
             isQuickDraw: true,
           });
+          pickedCard = result.picked;
+          cardsToPickFrom = result.cards;
         }
       } else {
         //normal card draw
-        card = cards[0];
+        pickedCard = cardsToPickFrom[0];
       }
 
       const newFlags = {
-        cardValue: card.value!,
-        suitValue: card.system['suit'],
-        hasJoker: card.system['isJoker'],
-        cardString: card.description,
+        cardValue: pickedCard.value!,
+        suitValue: pickedCard.system['suit'],
+        hasJoker: pickedCard.system['isJoker'],
+        cardString: pickedCard.description,
       };
 
-      const initiative = card?.system['suit'] + card.value;
+      const initiative = pickedCard?.system['suit'] + pickedCard.value;
 
       const update = {
         _id: id,
@@ -162,34 +197,14 @@ export default class SwadeCombat extends Combat {
       };
 
       //Handle group leader changes
-      if (c.isGroupLeader) update.flags.swade.suitValue += 0.9;
       updates.push(update);
 
       //handle potential followers
-      const followers =
-        game.combat?.combatants.filter((f) => f.groupId === c.id) ?? [];
-      let s = newFlags.suitValue;
-      for (const f of followers) {
-        s -= 0.02;
-        updates.push({
-          _id: f.id,
-          initiative: initiative,
-          'flags.swade': foundry.utils.mergeObject(newFlags, {
-            suitValue: s,
-          }),
-        });
+      for (const f of c.followers) {
+        updates.push({ _id: f.id, initiative, 'flags.swade': newFlags });
       }
 
       // Construct chat message data
-      const template = `
-            <section class="initiative-draw">
-              <div class="action-card-filter-container">
-                <img class="result-image" src="${card?.currentFace?.img}">
-              </div>
-              <h4 class="result-text result-text-card">${card?.name}</h4>
-            </section>
-          `;
-
       const messageData = foundry.utils.mergeObject(
         {
           speaker: ChatMessage.getSpeaker({
@@ -201,7 +216,13 @@ export default class SwadeCombat extends Combat {
             c.token?.hidden || c.hidden
               ? game?.users?.filter((u) => u.isGM)
               : [],
-          content: template,
+          content: '', //keep the content empty so we don't trigger validation warnings
+          flags: {
+            swade: {
+              pickedCard: pickedCard.id,
+              cards: cardsToPickFrom.map((c) => c.toObject()),
+            },
+          },
         },
         messageOptions,
       );
@@ -213,19 +234,10 @@ export default class SwadeCombat extends Combat {
     // Update the combat instance with the new combatants
     await this.updateEmbeddedDocuments('Combatant', updates);
 
-    if (!skipMessage) this._playInitiativeSound();
-
     // Create multiple chat messages
-    if (game.settings.get('swade', 'initMessage') && !skipMessage) {
-      await CONFIG.ChatMessage.documentClass.createDocuments(messages);
-    }
-
-    const combatants = ids.map(
-      (id) => this.combatants.get(id, { strict: true }) as SwadeCombatant,
-    );
-
-    for (const c of combatants) {
-      await c.handOutBennies();
+    if (!skipMessage) {
+      this._playInitiativeSound();
+      await getDocumentClass('ChatMessage').createDocuments(messages);
     }
 
     if (this.combatants.contents.every((c) => !!c.initiative)) {
@@ -246,7 +258,7 @@ export default class SwadeCombat extends Combat {
     a: SwadeCombatant,
     b: SwadeCombatant,
   ): number {
-    const currentRound = game.combats?.viewed?.round ?? 0;
+    const currentRound = game.combat?.round ?? 0;
 
     if (
       (a.roundHeld && currentRound !== a.roundHeld) ||
@@ -254,20 +266,21 @@ export default class SwadeCombat extends Combat {
     ) {
       const isOnHoldA = a.roundHeld && (a.roundHeld ?? 0 < currentRound);
       const isOnHoldB = b.roundHeld && (b.roundHeld ?? 0 < currentRound);
-
-      if (isOnHoldA && !isOnHoldB) {
-        return -1;
-      }
-      if (!isOnHoldA && isOnHoldB) {
-        return 1;
-      }
+      if (isOnHoldA && !isOnHoldB) return -1;
+      if (!isOnHoldA && isOnHoldB) return 1;
     }
+
+    // handle groups
+    if (a.isGroupLeader && b.groupId === a.id) return -1;
+    if (b.isGroupLeader && a.groupId === b.id) return 1;
+    if (a.initiative === b.initiative)
+      return SwadeCombat.nameSortCombatants(a, b);
 
     //decide whether to sort by name or card
     if (a.flags?.swade && b.flags?.swade) {
-      return SwadeCombat.#cardSortCombatants(a, b);
+      return SwadeCombat.cardSortCombatants(a, b);
     }
-    return SwadeCombat.#idSortCombatants(a, b);
+    return SwadeCombat.nameSortCombatants(a, b);
   }
 
   /**
@@ -282,94 +295,8 @@ export default class SwadeCombat extends Combat {
   }
 
   /** Ask the user to pick a card for a given combatant name */
-  async pickACard({
-    cards,
-    combatantName,
-    oldCardId,
-    enableRedraw,
-    isQuickDraw,
-  }: IPickACard): Promise<Card> {
-    // any card
-
-    let immediateRedraw = false;
-    if (isQuickDraw) {
-      enableRedraw = !cards.some((card) => card.value! > 5);
-    }
-
-    const sortedCards = deepClone(cards);
-    sortedCards.sort((a: Card, b: Card) => {
-      const cardA = a.value ?? 0;
-      const cardB = b.value ?? 0;
-      const card = cardB - cardA;
-      if (card !== 0) return card;
-      const suitA = a.system['suit'] ?? 0;
-      const suitB = b.system['suit'] ?? 0;
-      return suitB - suitA;
-    });
-    const highestCardID = sortedCards[0].id;
-    let card: Card | undefined;
-
-    const template = 'systems/swade/templates/initiative/choose-card.hbs';
-    const html = await renderTemplate(template, {
-      cards: cards,
-      oldCard: oldCardId,
-      highestCardID: highestCardID,
-    });
-
-    const buttons: Record<string, Dialog.Button> = {
-      ok: {
-        icon: '<i class="fas fa-check"></i>',
-        label: game.i18n.localize('SWADE.Ok'),
-        callback: (html: JQuery<HTMLElement>) => {
-          const choice = html.find('input[name=card]:checked');
-          const cardId = choice.data('card-id') as string;
-          card = cards.find((c) => c.id === cardId);
-        },
-      },
-      redraw: {
-        icon: '<i class="fas fa-plus"></i>',
-        label: game.i18n.localize('SWADE.Redraw'),
-        callback: () => {
-          immediateRedraw = true;
-        },
-      },
-    };
-
-    if (!oldCardId && !enableRedraw) {
-      delete buttons.redraw;
-    }
-
-    return new Promise((resolve) => {
-      new Dialog({
-        title: game.i18n.format('SWADE.PickACard', {
-          name: combatantName,
-        }),
-        content: html,
-        buttons: buttons,
-        default: 'ok',
-        close: async () => {
-          if (immediateRedraw) {
-            const newCards = await this.drawCard();
-            card = await this.pickACard({
-              cards: [...cards, ...newCards],
-              combatantName,
-              oldCardId,
-              enableRedraw,
-              isQuickDraw,
-            });
-          }
-          //if no card has been chosen then choose first in array, unless there was a joker in which case that is chosen
-          if (!card) {
-            if (oldCardId) {
-              card = cards.find((c) => c.id === oldCardId);
-            } else {
-              card = cards.find((c) => c.system['isJoker']) || cards[0];
-            }
-          }
-          resolve(card as Card);
-        },
-      }).render(true);
-    });
+  async pickACard(ctx: CardPickContext): Promise<CardPickResult> {
+    return CardPicker.asPromise({ ...ctx, deck: this.actionDeck });
   }
 
   /**
@@ -388,9 +315,8 @@ export default class SwadeCombat extends Combat {
 
   override async resetAll() {
     for (const combatant of this.combatants) {
-      combatant.updateSource(
-        this._getInitResetUpdate(combatant as SwadeCombatant),
-      );
+      const update = this._getInitResetUpdate(combatant as SwadeCombatant);
+      if (update) combatant.updateSource(update);
     }
     await this.update(
       { turn: 0, combatants: this.combatants.toObject() },
@@ -401,13 +327,17 @@ export default class SwadeCombat extends Combat {
 
   override async startCombat() {
     //Init autoroll
-    if (game.settings.get('swade', 'autoInit')) {
-      const combatantIds = this.combatants
-        .filter((c) => c.initiative === null)
-        .map((c) => c.id!);
-      await this.rollInitiative(combatantIds);
+    if (this.automaticInitiative) {
+      // if automatic init is on we draw cards
+      await this._promptAllPlayersForInitiative();
+      //grab the NPCs, we're drawing them locally
+      await this.rollNPC();
     }
     return super.startCombat();
+  }
+
+  startSurpriseCombat() {
+    new AmbushAssistant(this).render(true);
   }
 
   override async nextTurn() {
@@ -449,9 +379,22 @@ export default class SwadeCombat extends Combat {
     return this as Combat;
   }
 
+  override async previousRound() {
+    const revert = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.RevertRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!revert) return this as Combat;
+    return super.previousRound();
+  }
+
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
-  ): Record<string, unknown> {
+  ): Record<string, unknown> | undefined {
     const roundHeld = combatant.roundHeld;
     const turnLost = combatant.turnLost;
     const groupId = combatant.groupId;
@@ -465,10 +408,8 @@ export default class SwadeCombat extends Combat {
           },
         };
       } else {
-        return {
-          initiative: null,
-          'flags.swade.hasJoker': false,
-        };
+        //keep the card
+        return;
       }
     } else if (!roundHeld || turnLost) {
       return {
@@ -495,6 +436,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleStartOfTurnExpirations() {
+    if (this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect: SwadeActiveEffect) =>
@@ -506,6 +448,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleEndOfTurnExpirations() {
+    if (this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect) => effect.isTemporary && effect.isExpired('end'),
@@ -516,40 +459,25 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _playInitiativeSound() {
-    if (game.settings.get('swade', 'initiativeSound')) {
-      const data = {
-        src: 'systems/swade/assets/card-flip.wav',
-        volume: 0.8,
-        autoplay: true,
-        loop: false,
-      };
-      AudioHelper.play(data, true);
-    }
+    if (!game.settings.get('swade', 'initiativeSound')) return;
+    AudioHelper.play(this.#initSoundData, true);
   }
 
-  protected override _playCombatSound(announcement: string): void {
-    if (this.previous.round === 0 || this.previous.round === this.current.round)
-      super._playCombatSound(announcement);
-  }
-
-  protected _determineCardsToDraw(combatant: SwadeCombatant): number {
-    let cardsToDraw = 1;
-    if (!!combatant.initiative && !combatant.roundHeld) return cardsToDraw;
-    const actor = combatant.actor!;
-    const initiative = actor.system.initiative;
-    if (initiative?.hasLevelHeaded || initiative?.hasHesitant) {
-      cardsToDraw = 2;
-    }
-    if (initiative?.hasImpLevelHeaded) {
-      cardsToDraw = 3;
-    }
-    if (actor.type !== 'vehicle' && actor.system.status.isIncapacitated) {
-      cardsToDraw = 1;
-    }
-    return cardsToDraw;
+  protected override _playCombatSound(type: string): void {
+    if (this.turn === this.turns.length - 1 && type === 'nextUp') return; //skip if it's the last turn in the round
+    this.#debouncedCombatSound(type);
   }
 
   protected async _nextRoundAsGM() {
+    const advance = await Dialog.confirm({
+      title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle'),
+      content:
+        '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
+      defaultYes: true,
+      rejectClose: false,
+      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+    });
+    if (!advance) return;
     //reset the deck if a joker had been drawn
     if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
       await reshuffleActionDeck();
@@ -562,10 +490,8 @@ export default class SwadeCombat extends Combat {
     //advance the round to the next one
     await super.nextRound();
 
-    const autoInit = game.settings.get('swade', 'autoInit');
-
     //no auto init, we're done;
-    if (!autoInit) return;
+    if (!this.automaticInitiative) return;
 
     // if automatic init is on we draw cards
     await this._promptAllPlayersForInitiative();
@@ -580,7 +506,7 @@ export default class SwadeCombat extends Combat {
 
   protected async _promptAllPlayersForInitiative() {
     const [localDraws, remoteDraws] = this.combatants
-      .filter((c) => c.hasPlayerOwner && !c.isNPC)
+      .filter((c) => c.hasPlayerOwner && !c.isNPC && c.initiative !== null)
       .map((c) => {
         return {
           combatant: c as SwadeCombatant,
@@ -625,10 +551,20 @@ export default class SwadeCombat extends Combat {
       await reshuffleActionDeck();
       ui.notifications.info('SWADE.DeckShuffled', { localize: true });
     }
+
+    //remove the holding status from any combatants that have it
+    await Promise.allSettled(
+      this.combatants
+        .filter((c) => c.actor.statuses.has('holding'))
+        .flatMap((c) =>
+          c.actor.effects.filter((e) => e.statuses.has('holding')),
+        )
+        .map((e) => e.delete()),
+    );
   }
 }
 
-interface IPickACard {
+interface CardPickContext {
   /** an array of cards */
   cards: Card[];
   /** name of the combatant */

@@ -7,6 +7,7 @@ import {
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
 import { normalizeRollModifiers } from '../util';
+import { Logger } from '../Logger';
 
 export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   constructor(formula: string, data?: T, options: SwadeRollOptions = {}) {
@@ -57,6 +58,9 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
 
     await spender?.spendBenny();
     roll.rerollMode = 'benny';
+
+    roll.applyReroll(actor);
+
     const evaluated = await roll.reroll({ async: true });
     await evaluated.toMessage({
       speaker: speaker,
@@ -162,8 +166,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
 
   override async render({
     flavor,
-    //@ts-expect-error ts resolves this to the function but it's actually the class
-    template = this.constructor.CHAT_TEMPLATE,
+    template = (this.constructor as typeof SwadeRoll).CHAT_TEMPLATE,
     isPrivate = false,
     displayResult = true,
   }: RollRenderOptions = {}) {
@@ -178,6 +181,16 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     if (this.rerollMode === 'free') {
       return game.i18n.localize('SWADE.FreeReroll');
     }
+  }
+
+  /**
+   * Applies reroll bonuses to the current roll
+   * @param _actor The actor making a reroll
+   * @returns If the roll was modified
+   */
+  applyReroll(_actor: Actor | null): boolean {
+    Logger.warn('This function must be implemented on a subsidiary class');
+    return false;
   }
 
   protected _formatFormulaParts(): RollPart[] {

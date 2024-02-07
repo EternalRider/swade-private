@@ -1,68 +1,70 @@
-<section class="flexrow grid-row --grid-row-npc-summary attributes-container">
+<section class='flexrow grid-row --grid-row-npc-summary attributes-container'>
   {{> "systems/swade/templates/actors/partials/attributes.hbs"}}
-  <div class="attributes secondary">
-    <header class="header-field">
-      <span>{{ localize "SWADE.Derived" }}</span>
+  <div class='attributes secondary'>
+    <header class='header-field'>
+      <span>{{localize 'SWADE.Derived'}}</span>
     </header>
-    <div class="flexrow attributes-list">
-      <div class="attribute flex2">
-        <div class="attribute-label">{{localize "SWADE.Size"}}</div>
+    <div class='flexrow attributes-list'>
+      <div class='attribute flex2'>
+        <div class='attribute-label'>{{localize 'SWADE.Size'}}</div>
         <input
-          name="system.stats.size"
-          type="text"
-          value="{{actor.system.stats.size}}"
-          data-dtype="Number"
-          data-tooltip="{{localize 'SWADE.Scale'}}: {{actor.system.stats.scale}}"
+          name='system.stats.size'
+          type='text'
+          value='{{actor.system.stats.size}}'
+          data-dtype='Number'
+          data-tooltip='{{localize
+            "SWADE.Scale"
+          }}: {{actor.system.stats.scale}}'
         />
       </div>
-      <div class="attribute flex2">
-        <a class="running-die" title="{{localize 'SWADE.RollRun'}}"
-          ><div class="attribute-label">{{localize "SWADE.Pace"}}</div></a
-        >
+      <div class='attribute flex2'>
+        <a class='running-die' title='{{localize "SWADE.RollRun"}}'><div
+            class='attribute-label'
+          >{{localize 'SWADE.Pace'}}</div></a>
         <input
-          type="text"
-          value="{{actor.system.stats.speed.adjusted}}"
-          data-dtype="Number"
+          type='text'
+          value='{{actor.system.stats.speed.adjusted}}'
+          data-dtype='Number'
           disabled
         />
       </div>
-      <div class="attribute flex3">
-        <div class="attribute-label">{{localize "SWADE.Parry"}}</div>
-        <div class="toughness-block">
+      <div class='attribute flex3'>
+        <div class='attribute-label'>{{localize 'SWADE.Parry'}}</div>
+        <div class='toughness-block'>
           <input
-            name="system.stats.parry.value"
-            value="{{actor.system.stats.parry.value}}"
-            type="text"
-            placeholder="0"
-            data-dtype="Number"
+            name='system.stats.parry.value'
+            value='{{actor.system.stats.parry.value}}'
+            type='text'
+            placeholder='0'
+            data-dtype='Number'
             {{disabled actor.system.details.autoCalcParry}}
-            data-tooltip="{{parryTooltip}}"
+            data-tooltip='{{parryTooltip}}'
           />
-          <button 
-            class="armor-value" 
-            data-target="parry"
+          <button
+            class='armor-value'
+            data-target='parry'
             {{disabled actor.system.details.autoCalcParry}}
           >
             {{actor.system.stats.parry.shield}}
           </button>
         </div>
       </div>
-      <div class="attribute flex3">
-        <div class="attribute-label">{{localize "SWADE.Tough"}}</div>
-        <div class="toughness-block">
+      <div class='attribute flex3'>
+        <div class='attribute-label'>{{localize 'SWADE.Tough'}}</div>
+        <div class='toughness-block'>
           <input
-            name="system.stats.toughness.value"
-            type="text"
-            value="{{actor.system.stats.toughness.value}}"
-            placeholder="{{localize 'SWADE.Tough'}}"
-            data-dtype="Number"
-            {{disabled  actor.system.details.autoCalcToughness}}
-            data-tooltip="{{toughnessTooltip}}"
+            name='system.stats.toughness.value'
+            type='text'
+            value='{{actor.system.stats.toughness.value}}'
+            placeholder='{{localize "SWADE.Tough"}}'
+            data-dtype='Number'
+            {{disabled actor.system.details.autoCalcToughness}}
+            data-tooltip='{{toughnessTooltip}}'
           />
-          <button 
-            class="armor-value" 
-            data-target="armor"
-            data-tooltip="{{armorTooltip}}"
+          <button
+            class='armor-value'
+            data-target='armor'
+            data-tooltip='{{armorTooltip}}'
             {{disabled actor.system.details.autoCalcToughness}}
           >
             {{actor.system.stats.toughness.armor}}
@@ -72,96 +74,107 @@
     </div>
   </div>
 </section>
-<div class="flexrow grid-row --grid-row-npc-summary">
-    {{!-- Left panel --}}
-  <div class="left-panel">
-    <section class="gear skills">
-      <header class="header-field flexrow">
+<div class='flexrow grid-row --grid-row-npc-summary'>
+  {{! Left panel }}
+  <div class='left-panel'>
+    <section class='gear skills'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.Skills"}}</span>
+          <span>{{localize 'SWADE.Skills'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="skill"
-            ><i class="fa fa-plus"></i
-          ></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='skill'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
-      <ul class="items-list skills-list">
+      <ul class='items-list skills-list'>
         {{#each sortedSkills}}
-          <li class="skill item" data-item-id="{{id}}">
+          <li class='skill item' data-item-id='{{id}}'>
             <a>
-              {{name}}&nbsp;d{{system.die.sides}}{{modifier system.die.modifier}}
+              {{name}}&nbsp;d{{system.die.sides}}
+              {{modifier system.die.modifier }}
             </a>
           </li>
         {{/each}}
       </ul>
     </section>
-    <section class="gear edges">
-      <header class="header-field flexrow">
+    <section class='gear edges'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.Edges"}}</span>
+          <span>{{localize 'SWADE.Edges'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="edge"><i class="fa fa-plus"></i></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='edge'><i class='fa fa-plus'></i></a>
         </div>
       </header>
-      <ul class="items-list">
+      <ul class='items-list'>
         {{#each actor.itemTypes.edge}}
-        <li class="edge item" data-item-id="{{id}}">
-          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{name}}
-          </a>
-        </li>
+          <li class='edge item' data-item-id='{{id}}'>
+            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+              {{name}}
+            </a>
+          </li>
         {{/each}}
       </ul>
     </section>
-    <section class="gear hindrances">
-      <header class="header-field flexrow">
+    <section class='gear hindrances'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.Hindrances"}}</span>
+          <span>{{localize 'SWADE.Hindrances'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="hindrance"><i class="fa fa-plus"></i></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='hindrance'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
-      <ul class="items-list">
+      <ul class='items-list'>
         {{#each actor.itemTypes.hindrance}}
-        <li class="hindrance item" data-item-id="{{id}}">
-          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{name}}{{#if system.isMajor}}&nbsp;{{localize "SWADE.Major"}}{{/if}}
-          </a>
-        </li>
+          <li class='hindrance item' data-item-id='{{id}}'>
+            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+              {{name}}
+              {{#if system.isMajor}}
+                &nbsp;{{localize 'SWADE.Major'}}
+              {{/if}}
+            </a>
+          </li>
         {{/each}}
       </ul>
     </section>
-    <section class="gear abilities">
-      <header class="header-field flexrow">
+    <section class='gear abilities'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.SpecialAbilities"}}</span>
+          <span>{{localize 'SWADE.SpecialAbilities'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="ability"><i class="fa fa-plus"></i></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='ability'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
-      <ul class="items-list">
+      <ul class='items-list'>
         {{#if actor.ancestry}}
-          <li class="ability item" data-item-id="{{actor.ancestry.id}}">
-            <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-              {{actor.ancestry.name}}&nbsp;({{localize "SWADE.Ancestry"}})
+          <li class='ability item' data-item-id='{{actor.ancestry.id}}'>
+            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+              {{actor.ancestry.name}}&nbsp;({{localize 'SWADE.Ancestry'}})
             </a>
           </li>
         {{/if}}
         {{#if actor.archetype}}
-          <li class="ability item" data-item-id="{{actor.archetype.id}}">
-            <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-              {{actor.archetype.name}}&nbsp;({{localize "SWADE.Archetype"}})
+          <li class='ability item' data-item-id='{{actor.archetype.id}}'>
+            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+              {{actor.archetype.name}}&nbsp;({{localize 'SWADE.Archetype'}})
             </a>
           </li>
         {{/if}}
         {{#each actor.itemTypes.ability}}
-          {{#if (eq system.subtype "special")}}
-            <li class="ability item" data-item-id="{{id}}">
-              <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
+          {{#if (eq system.subtype 'special')}}
+            <li class='ability item' data-item-id='{{id}}'>
+              <a
+                class='item-show'
+                title='Right Click to {{localize "SWADE.Ed"}}'
+              >
                 {{name}}
               </a>
             </li>
@@ -169,117 +182,128 @@
         {{/each}}
       </ul>
     </section>
-    <section class="gear abilities">
-      <header class="header-field flexrow">
+    <section class='gear abilities'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.Actions"}}</span>
+          <span>{{localize 'SWADE.Actions'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="action"><i class="fa fa-plus"></i></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='action'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
-      <ul class="items-list">
+      <ul class='items-list'>
         {{#each actor.itemTypes.action}}
-        <li class="action item" data-item-id="{{id}}">
-          <a class="item-show" title="Right Click to {{localize 'SWADE.Ed'}}">
-            {{name}}
-          </a>
-        </li>
+          <li class='action item' data-item-id='{{id}}'>
+            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+              {{name}}
+            </a>
+          </li>
         {{/each}}
       </ul>
     </section>
-    <section class="gear">
+    <section class='gear'>
       {{> "systems/swade/templates/setting-fields.hbs"}}
     </section>
   </div>
-    {{!-- Right panel --}}
+  {{! Right panel }}
   <div>
-    <section class="gear">
-      <header class="header-field flexrow">
-        <div>{{ localize "SWADE.Effects" }}</div>
-        <div class="header-field-add">
-          <a class="add-effect" data-transfer="false"><i class="fa fa-plus"></i></a>
+    <section class='gear'>
+      <header class='header-field flexrow'>
+        <div>{{localize 'SWADE.Effects'}}</div>
+        <div class='header-field-add'>
+          <a class='add-effect' data-transfer='false'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
       {{> "systems/swade/templates/effect-list.hbs"}}
     </section>
-    <section class="gear">
-      <header class="header-field flexrow">
+    <section class='gear'>
+      <header class='header-field flexrow'>
         <div>
-          <span>{{localize "SWADE.Inv"}}</span>
+          <span>{{localize 'SWADE.Inv'}}</span>
         </div>
-        <div class="header-field-add">
-          <a class="item-create" data-type="choice"><i class="fa fa-plus"></i></a>
+        <div class='header-field-add'>
+          <a class='item-create' data-type='choice'>
+            <i class='fa fa-plus'></i>
+          </a>
         </div>
       </header>
       {{#if settingrules.npcsUseCurrency}}
-        <div class="form-group currency">
-        {{#if (eq settingrules.wealthType "wealthDie")}}
-          <button type="button" class="roll">{{localize "SWADE.WealthDie.Label"}}</button>
-          <select data-dtype="Number" name="system.details.wealth.die">
-            {{#select actor.system.details.wealth.die}}
-              {{> "systems/swade/templates/die-sides-options.hbs"}}
-            {{/select}}
-          </select>
-          <input
-            type="text"
-            data-dtype="Number"
-            name="system.details.wealth.modifier"
-            value="{{signedString actor.system.details.wealth.modifier}}"
-            placeholder="{{localize 'SWADE.Modifier'}}"
-          />
-        {{else if (eq settingrules.wealthType "currency")}}
-          <label>{{settingrules.currencyName}}</label>
-          <span class="form-fields">
+        <div class='form-group currency'>
+          {{#if (eq settingrules.wealthType 'wealthDie')}}
+            <button type='button' class='roll'>
+              {{localize 'SWADE.WealthDie.Label' }}
+            </button>
+            <select data-dtype='Number' name='system.details.wealth.die'>
+              {{#select actor.system.details.wealth.die}}
+                {{> "systems/swade/templates/die-sides-options.hbs"}}
+              {{/select}}
+            </select>
             <input
-              name="system.details.currency"
-              type="text"
-              data-dtype="Number"
-              value="{{actor.system.details.currency}}"
-              placeholder="{{localize 'SWADE.Currency'}}"
+              type='text'
+              data-dtype='Number'
+              name='system.details.wealth.modifier'
+              value='{{signedString actor.system.details.wealth.modifier}}'
+              placeholder='{{localize "SWADE.Modifier"}}'
             />
-          </span>
-        {{/if}}
+          {{else if (eq settingrules.wealthType 'currency')}}
+            <label for='{{actor.uuid}}-currency'>
+            {{settingrules.currencyName}}
+            </label>
+            <span class='form-fields'>
+              <input
+                id='{{actor.uuid}}-currency'
+                name='system.details.currency'
+                type='text'
+                data-dtype='Number'
+                value='{{actor.system.details.currency}}'
+                placeholder='{{localize "SWADE.Currency"}}'
+              />
+            </span>
+          {{/if}}
         </div>
       {{/if}}
-      <div class="quickaccess-list">
-        <ol class="gear-list weapon-list">
+      <div class='quickaccess-list'>
+        <ol class='gear-list weapon-list'>
           {{#each itemsByType.weapon}}
             {{>"systems/swade/templates/actors/partials/weapon-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
-        <ol class="gear-list armor-list">
+        <ol class='gear-list armor-list'>
           {{#each itemsByType.armor}}
             {{> "systems/swade/templates/actors/partials/armor-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
-        <ol class="gear-list shield-list">
+        <ol class='gear-list shield-list'>
           {{#each itemsByType.shield}}
             {{> "systems/swade/templates/actors/partials/shield-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
-        <ol class="gear-list items-list">
+        <ol class='gear-list items-list'>
           {{#each itemsByType.consumable}}
             {{> "systems/swade/templates/actors/partials/consumable-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
-        <ol class="gear-list items-list">
+        <ol class='gear-list items-list'>
           {{#each itemsByType.gear}}
             {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=@root.owner}}
           {{/each}}
         </ol>
       </div>
     </section>
-    <section class="gear">
-      <header class="header-field flexrow">
-        <span>{{localize "SWADE.Desc"}}</span>
+    <section class='gear'>
+      <header class='header-field flexrow'>
+        <span>{{localize 'SWADE.Desc'}}</span>
       </header>
-      {{editor 
+      {{editor
         enrichedBiography
-        target="system.details.biography.value" 
-        button=true 
+        target='system.details.biography.value'
+        button=true
         editable=editable
-        engine="prosemirror"
+        engine='prosemirror'
       }}
     </section>
   </div>

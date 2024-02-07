@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
@@ -14,6 +15,7 @@ import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
+import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
@@ -313,13 +315,11 @@ export default class SwadeCoreHooks {
       name: 'SWADE.OpenACEditor',
       icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
-        //return early if there's no canvas or scene to lay out cards
-        if (!canvas || !canvas.ready || !canvas.scene) return false;
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         return (
           deck.type === 'deck' &&
-          deck.cards.contents.every((c) => c.type === 'poker') &&
-          deck.isOwner
+          deck.isOwner &&
+          deck.cards.contents.every((c) => c.type === 'poker')
         );
       },
       callback: async (li) => {
@@ -331,15 +331,44 @@ export default class SwadeCoreHooks {
       name: 'SWADE.LayOutChaseWithDeck',
       icon: '<i class="fa-solid fa-shipping-fast"></i>',
       condition: (li) => {
-        const cards = game.cards!.get(li.data('documentId'), { strict: true });
-        return cards.type === 'deck';
+        //return early if there's no canvas or scene to lay out cards
+        if (!canvas || !canvas.ready || !canvas.scene) return false;
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.contents.every((c) => c.type === 'poker')
+        );
       },
       callback: (li) => {
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         chaseUtils.layoutChase(deck);
       },
     };
-    options.push(actionCardEditor, chaseLayout);
+    const setActionDeck: ContextMenuEntry = {
+      name: 'SWADE.SetActionDeck',
+      icon: '<i class="fas fa-swords"></i>',
+      condition: (li) => {
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.contents.every((c) => c.type === 'poker')
+        );
+      },
+      callback: async (li) => {
+        const deckId = li.data('documentId');
+        game.settings.set('swade', 'actionDeck', deckId);
+      },
+    };
+
+    options.push(actionCardEditor, chaseLayout, setActionDeck);
   }
 
   static onGetCompendiumDirectoryEntryContext(
@@ -398,13 +427,35 @@ export default class SwadeCoreHooks {
 
   /** Add roll data to the message for formatting of dice pools*/
   static onRenderChatMessage(
-    message: SwadeChatMessage,
+    msg: SwadeChatMessage,
     jquery: JQuery<HTMLElement>,
     data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    chat.hideChatActionButtons(message, jquery, data);
-    chat.createMagazineTooltip(message, jquery);
+    chat.hideChatActionButtons(msg, jquery, data);
+    chat.createMagazineTooltip(msg, jquery);
     const html = jquery[0];
+    const makeTableResultsDraggable = () => {
+      const results = html.querySelectorAll<HTMLElement>(
+        '.table-draw .table-result',
+      );
+      if (!results.length) return;
+      results.forEach((e) => {
+        e.draggable = true;
+        e.addEventListener('dragstart', (ev) => {
+          const dragData = game.tables
+            ?.get(msg.getFlag('core', 'RollTable'))
+            ?.results.get(e.dataset.resultId as string)
+            .toDragData();
+          if (!dragData) return;
+          ev.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+        });
+      });
+    };
+
+    if (msg.getFlag('core', 'RollTable') && msg.rolls) {
+      makeTableResultsDraggable();
+    }
+
     html
       .querySelector('.swade-roll-message button.free-reroll')
       ?.addEventListener('click', SwadeRoll.rerollFree);
@@ -413,11 +464,11 @@ export default class SwadeCoreHooks {
       .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
     html
       .querySelector('.swade-roll-message .confirm-critfail')
-      ?.addEventListener('click', () => TraitRoll.confirmCritfail(message));
+      ?.addEventListener('click', () => TraitRoll.confirmCritfail(msg));
 
     html
       .querySelector('.swade-roll-message button.calculate-wounds')
-      ?.addEventListener('click', () => damageApplicator(message));
+      ?.addEventListener('click', () => damageApplicator(msg));
     html
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
@@ -554,18 +605,15 @@ export default class SwadeCoreHooks {
       {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
-        },
+        condition: () => game.user!.isGM,
+        callback: (li) =>
+          game.users?.get(li[0].dataset.userId!)?.refreshBennies(),
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await PlayerBennyDisplay.refreshAll();
-        },
+        condition: () => game.user!.isGM,
+        callback: () => PlayerBennyDisplay.refreshAll(),
       },
     );
   }
@@ -779,5 +827,21 @@ export default class SwadeCoreHooks {
     //stop the hook on empty changes
     if (!content) return false;
     if (extension === 'js') location.reload();
+  }
+
+  static onCreateProseMirrorEditor(
+    uuid: string,
+    plugins: Record<string, ProseMirror.Plugin>,
+    _options: unknown,
+  ) {
+    const [prefix] = uuid.split('#');
+    const type = fromUuidSync(prefix)?.type;
+    if (uuid.includes('JournalEntryPage') && type === 'headquarters') {
+      // Delete the default content link plugin.
+      delete plugins.contentLinks;
+      plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
+        ProseMirror.defaultSchema,
+      );
+    }
   }
 }
