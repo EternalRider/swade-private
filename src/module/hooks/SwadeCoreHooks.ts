@@ -15,6 +15,7 @@ import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
+import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
@@ -426,13 +427,35 @@ export default class SwadeCoreHooks {
 
   /** Add roll data to the message for formatting of dice pools*/
   static onRenderChatMessage(
-    message: SwadeChatMessage,
+    msg: SwadeChatMessage,
     jquery: JQuery<HTMLElement>,
     data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    chat.hideChatActionButtons(message, jquery, data);
-    chat.createMagazineTooltip(message, jquery);
+    chat.hideChatActionButtons(msg, jquery, data);
+    chat.createMagazineTooltip(msg, jquery);
     const html = jquery[0];
+    const makeTableResultsDraggable = () => {
+      const results = html.querySelectorAll<HTMLElement>(
+        '.table-draw .table-result',
+      );
+      if (!results.length) return;
+      results.forEach((e) => {
+        e.draggable = true;
+        e.addEventListener('dragstart', (ev) => {
+          const dragData = game.tables
+            ?.get(msg.getFlag('core', 'RollTable'))
+            ?.results.get(e.dataset.resultId as string)
+            .toDragData();
+          if (!dragData) return;
+          ev.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+        });
+      });
+    };
+
+    if (msg.getFlag('core', 'RollTable') && msg.rolls) {
+      makeTableResultsDraggable();
+    }
+
     html
       .querySelector('.swade-roll-message button.free-reroll')
       ?.addEventListener('click', SwadeRoll.rerollFree);
@@ -441,11 +464,11 @@ export default class SwadeCoreHooks {
       .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
     html
       .querySelector('.swade-roll-message .confirm-critfail')
-      ?.addEventListener('click', () => TraitRoll.confirmCritfail(message));
+      ?.addEventListener('click', () => TraitRoll.confirmCritfail(msg));
 
     html
       .querySelector('.swade-roll-message button.calculate-wounds')
-      ?.addEventListener('click', () => damageApplicator(message));
+      ?.addEventListener('click', () => damageApplicator(msg));
     html
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
@@ -804,5 +827,21 @@ export default class SwadeCoreHooks {
     //stop the hook on empty changes
     if (!content) return false;
     if (extension === 'js') location.reload();
+  }
+
+  static onCreateProseMirrorEditor(
+    uuid: string,
+    plugins: Record<string, ProseMirror.Plugin>,
+    _options: unknown,
+  ) {
+    const [prefix] = uuid.split('#');
+    const type = fromUuidSync(prefix)?.type;
+    if (uuid.includes('JournalEntryPage') && type === 'headquarters') {
+      // Delete the default content link plugin.
+      delete plugins.contentLinks;
+      plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
+        ProseMirror.defaultSchema,
+      );
+    }
   }
 }

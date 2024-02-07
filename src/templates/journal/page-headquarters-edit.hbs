@@ -1,0 +1,84 @@
+<form class='{{cssClass}}' autocomplete='off'>
+  {{> journalEntryPageHeader}}
+  <header class='section-header'>
+    {{localize 'SWADE.Headquarters.Advantage'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.advantage
+      target='system.advantage'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+  <header class='section-header'>
+    {{localize 'SWADE.Headquarters.Complication'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.complication
+      target='system.complication'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+  <header class='section-header'>
+    {{localize 'SWADE.Headquarters.Form'}}
+  </header>
+  <header class='hq-form section-header'>
+    {{localize 'SWADE.Headquarters.Description'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.form.description
+      target='system.form.description'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+  <header class='hq-form section-header'>
+    {{localize 'SWADE.Headquarters.Acquisition'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.form.acquisition
+      target='system.form.acquisition'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+  <header class='hq-form section-header'>
+    {{localize 'SWADE.Headquarters.Maintenance'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.form.maintenance
+      target='system.form.maintenance'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+  <header class='section-header'>
+    {{localize 'SWADE.Headquarters.Upgrades'}}
+  </header>
+  <div class='editor-wrapper'>
+    {{editor
+      enriched.upgrades
+      target='system.upgrades'
+      editable=true
+      button=false
+      engine='prosemirror'
+      collaborate=true
+    }}
+  </div>
+</form>
