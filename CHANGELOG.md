@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
+- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) by **jpmeehan5**
 - Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 - Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**

@@ -6,6 +6,7 @@ SWADE:
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
+  HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
   ModHint: Make sure your modifier includes a + or -
@@ -306,6 +307,9 @@ SWADE:
   Reload: Reload
   Refresh: Refresh this card
   RefreshOnly: Refresh
+  NotOwnedError: You must own this item/actor for this
+  GrantsItemsError: Refresh doesn't work for items that grant others
+  NoUpdatedItemFound: No item suitable for a refresh has been found
   Ammo: Ammunition
   AddOrReplaceActions:
     Title: Add or Replace Actions
@@ -396,6 +400,14 @@ SWADE:
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
   'No': 'No'
+  Headquarters:
+    Advantage: Advantage
+    Complication: Complication
+    Form: Form
+    Description: Description
+    Acquisition: Acquisition
+    Maintenance: Maintenance
+    Upgrades: Upgrades
   SetActionDeck: Set Deck as Action Deck
   ShowCharacterSummary: Show Character Summary
   CharacterSummary: Character Summary
@@ -1360,6 +1372,5 @@ TYPES:
   Card:
     adventure: Adventure Card
     poker: Poker Card
-  NotOwnedError: You must own this item/actor for this
-  GrantsItemsError: Refresh doesn't work for items that grant others
-  NoUpdatedItemFound: No item suitable for a refresh has been found
+  JournalEntryPage:
+    headquarters: Headquarters
