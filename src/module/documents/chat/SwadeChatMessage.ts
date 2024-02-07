@@ -15,6 +15,8 @@ declare global {
       swade?: {
         targets?: { name: string; uuid: string }[];
         macros?: { id: string; uuid: string }[];
+        isRedraw?: boolean;
+        pickedCard?: string;
         cards?: any[]; //TODO properly set card source data type
         [key: string]: unknown;
       };
@@ -66,8 +68,8 @@ export default class SwadeChatMessage extends ChatMessage {
 
   override async getHTML() {
     if (this.isCardDraw) {
-      const content = await this.#renderCardDraw();
-      if (content) this.content = content;
+      const rendered = await this.#renderCardDraw();
+      if (rendered) this.content += '<hr>' + rendered;
       else return $('');
     }
     return super.getHTML();
@@ -93,13 +95,15 @@ export default class SwadeChatMessage extends ChatMessage {
       };
     });
     const pickedCard = this.getFlag('swade', 'pickedCard');
+    const isRedraw = this.getFlag('swade', 'isRedraw');
     const [[picked], discarded] = cards.partition((c) => c.id !== pickedCard);
-    if (msgType === constants.INIT_MESSAGE_TYPE.OFF) {
+    if (msgType === constants.INIT_MESSAGE_TYPE.OFF && !isRedraw) {
       return ''; //empty message
     } else {
       return renderTemplate(
         'systems/swade/templates/chat/card-draw-result.hbs',
         {
+          isRedraw,
           picked,
           discarded,
           largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,

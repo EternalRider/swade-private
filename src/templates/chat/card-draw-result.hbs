@@ -1,3 +1,8 @@
+{{#if isRedraw}}
+  <div class='initiative-redraw'>
+    {{localize 'SWADE.Combat.Redraw'}}
+  </div>
+{{/if}}
 {{#if largeMsg}}
   <section class='initiative-draw'>
     <div
@@ -13,7 +18,7 @@
   </section>
   {{#if discarded}}
     <details class='discarded-cards'>
-      <summary>{{localize 'SWADE.DiscardedCards'}}</summary>
+      <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>
       <div class='initiative-draw'>
         {{#each discarded}}
           <div
@@ -35,7 +40,7 @@
     <h3 class='card-name'>{{picked.name}}</h3>
     {{#if discarded}}
       <details class='discarded-cards compact'>
-        <summary>{{localize 'SWADE.DiscardedCards'}}</summary>
+        <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>
         <ul>
           {{#each discarded}}
             <li>{{name}}</li>
