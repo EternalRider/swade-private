@@ -49,6 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Moved Combat Tracker documentation to a separate page and expanded its coverage. (#890) **by @jpmeehan5**
 - The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
 - Improved the display of notes in the inventory tab. (#964) **by @florad92**
 - Refactored a large number of functions on SwadeActor and SwadeItem to use the system data model instead of type guards. (#935) **by @jpmeehan5**

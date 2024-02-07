@@ -8,16 +8,6 @@ foundry:
 
 If this is your first time using the Foundry Virtual Tabletop, please check out the official [Knowledge Base](https://foundryvtt.com/kb/) for the software; the Savage Worlds system builds on top of the base Foundry functionality, and this guide is focused on the system-specific details.
 
-## Combat Tracker
-
-The SWADE system applies a couple of modifications to Foundry’s Combat Tracker to align it with Savage Worlds’ Initiative rules.
-
-Characters are given cards drawn from the Action Deck table.
-
-If a character has the Level Headed, Improved Level Headed, or Hesitant active in the Tweaks settings in their Actor sheet, the Combat Tracker will take into account those features.
-
-At the start of a new round, Action Cards are automatically drawn for each character. If a Joker was drawn in the previous round, the cards are shuffled (read: the table is reset) before Action Cards are distributed.
-
 ## Rewarding Bennies
 
 GMs can quickly reward Bennies from the Players List in the bottom left of the screen.
