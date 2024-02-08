@@ -132,7 +132,7 @@ SWADE:
   SkillModUni: Modificateur de comp. (universel)
   ShotsUsed: Mun. utilisées
   NaturalArmor: Armure naturelle
-  HitLocations: Localisation
+  HitLocations: Localisations
   Head: Tête
   Torso: Torse
   Arms: Bras
@@ -189,7 +189,7 @@ SWADE:
   Init: Initiative
   DrawInit: Lancer l'initiative
   ActionDeckReset: "Réinitialise les cartes d'action"
-  ActionDeckResetNotification: Réinitialise les cartes d'action
+  ActionDeckResetNotification: Les cartes d'action ont été réinitialisées
   InitDraw: pioche …
   General: Général
   Addi: Additionel
@@ -286,7 +286,7 @@ SWADE:
   About: Description
   EdgesHindrances: Atouts/Handicaps
   GrantsPowers: Accorde des pouvoirs
-  Crew: Équipage requis
+  Crew: Équipage
   Passengers: Passagers
   String: Texte
   Number: Nombre
@@ -416,7 +416,7 @@ SWADE:
   Equip: Équiper
   RollDamage: Lancer les dégâts
   SystemLinks:
-    Changelog: Changements
+    Changelog: Journal des changements
     Wiki: Wiki
     ReportAnIssue: Signaler un problème
   OpenOrigin: Ouvrir l'origine
@@ -481,10 +481,10 @@ SWADE:
       Hint: L'identifiant SWID de la compétence avec laquelle calculer la Parade des
         acteurs. Il est préconisé de laisser <em>fighting</em>, afin d'assurer une
         compatibilité plus aisée avec les différentes modules d'automatisation pour
-        SWADE. À la place, assurez-vous que le SWID de la Compétence Combat vaut <em>fighting</em>,
+        SWADE. À la place, assurez-vous que le SWID de la compétence Combat vaut <em>fighting</em>,
         surtout sur tous les personnages, joueurs ou non joueurs. Le SWID est configuré
         dans l'écran des ajustements de l'objet compétence. Voir la documentation
-        du système SWADE pour plus d'informations à propos du SWID!
+        du système SWADE pour plus d'informations à propos du SWID !
     UseAttributeShorts:
       Name: Utiliser des noms d'attributs courts
       Hint: Activez cette option si vous voulez des noms d'attributs courts sur les
@@ -670,7 +670,7 @@ SWADE:
     None: Aucun
   OffHandPenalty: Malus de main non-directrice
   ItemEquipStatus:
-    Label: Localisation
+    Label: Emplacement
     Stored: Stocké
     Carried: Porté
     Equipped: Équipé
@@ -853,7 +853,7 @@ SWADE:
     RerollSoakDialog:
       Title: Relancer l'encaissement des blessures pour {name} ?
       Benny: Dépenser un jeton pour relancer
-      Free: Relance gratuite
+      Free: Relancer gratuitement
       TakeWounds: Prends {wounds] blessures(s)
       Prompt: <p>{name} va subir {wounds} blessures(s). voulez-vous relancer le jet
         d'encaissement ?</p>
@@ -948,7 +948,7 @@ SWADE:
         FULL: Pistolet à eau
         MAGAZINE: Steyr AUG
         BATTERY: Pistolet laser
-        PP: Artefact magique
+        PP: Artéfact magique
       SwadeSettings:
         Title: Paramètres pour SWADE
         Content: La gestion des munitions est située dans la configuration des règles
@@ -1028,13 +1028,13 @@ SWADE:
         Title: Méthode de rechargement — Complète
         Content: Les armes en rechargement complet recharge la totalité de leur compteur
           de coups en une seule action de rechargement. Cette méthode est une version
-          simplifiée de la méthode par magasin, ou pour les armes qui n'ont pas une
-          magasin détachable tel qu'un canon avec un réservoir liquide.
+          simplifiée de la méthode par chargeur, ou pour les armes qui n'ont pas de
+          chargeur détachable tel qu'une arme avec un réservoir liquide.
       ReloadMagazine:
         Content: Ces armes à rechargement par magasin utilisent des chargeurs détachable
           qui peuvent être retirés et échangés à tout moment, en faisant le suivi
           du nombre de munitions restantes par magasin.
-        Title: Méthode de rechargement — Magasin
+        Title: Méthode de rechargement — Chargeur
       ReloadBattery:
         Title: Méthode de rechargement — Batterie
         Content: Ces armes fonctionnent comme avec des magasins, mais chaque coup
@@ -1069,7 +1069,7 @@ SWADE:
       Soak:
         Title: Modificateur d'Encaissement
         Content: Ajoute un bonus (ou un malus) au jet d'Encaissement qui est proposé
-          suite au bouton Appliquer les dégâts d'un message de tchat.
+          suite au bouton Appliquer les dégâts d'un message de chat.
       Initiative:
         Title: Modificateurs d'initiative
         Content: Permet la gestion automatique de certains effets liés à la l'initiative
@@ -1143,7 +1143,7 @@ SWADE:
         Content: N'importe quel nombre est autorisé, qu'il soit entier ou avec décimales.
         Title: Numérique
       Selection:
-        Title: Choix
+        Title: Sélection des statistiques complémentaires
         Content: Valeur à sélectionner dans une liste déroulante de choix proposés
           par l'univers.
       AccessTweaks:
@@ -1164,15 +1164,38 @@ SWADE:
       Actor: Capitaine Démo des Auras
       Constrained:
         Title: Limité par les murs
+        Content: Cette option permet de déterminer si l'aura est limitée par les murs
+          qui bloquent la lumière ou si elle peut les traverser.
       Color:
         Title: Couleur et transparence de l'aura
+        Content: Les auras s'affichent comme des gabarits circulaires autour du personnage
+          source ; ces paramètres vous permettent de contrôler leur affichage.
       Radius:
         Title: Rayon de l'aura
+        Content: Le rayon de l'Aura, mesuré en unités de grille. L'indice d'unité
+          affiché ici correspond à l'unité de mesure de la scène actuelle.
       Title: Auras
       Visibility:
         Title: Visibilité de l'aura
+        Content: Sélectionnez les jetons (par Disposition) qui peuvent voir cette
+          aura. Vous pouvez toujours voir toutes les auras d'un jeton dont vous avez
+          au moins la permission d'Observateur.
+      Enable:
+        Content: Chaque aura peut être activée individuellement ; elles fonctionnent
+          également avec des jetons non liés, ce qui vous permet de définir des auras
+          individuellement même si elles partagent un acteur source commun.
+        Title: Activation des auras
+      AccessAuras:
+        Content: Les auras se trouvent dans le menu Ajustements
+        Title: Accès aux auras
+      Auramancer:
+        Title: L'onglet Aura
+        Content: Les auras ont leur propre onglet dans le menu Ajustements. Les personnages
+          peuvent avoir un maximum de deux auras.
+      Description: Depuis la version 3.2, l'Aura crée un effet visuel persistent qui
+        suit le token.
   Magazine:
-    NoneLoaded: Pas de chargeur chargé
+    NoneLoaded: Pas de chargeur en place
     Select: Choisissez un chargeur
   Unfamiliar:
     '2': Non spécialisé (-2)
@@ -1215,6 +1238,18 @@ SWADE:
   HindranceSeverity:
     Major: Majeur seulement
     Minor: mineur seulement
+    Either: Au choix
+    Label: Sévérité du handicap
+  RedrawBenny: Repiocher une carte avec un jeton
+  NpcWildCardsOnScene: PNJ Joker sur la scène
+  PlayerCardDrawHelper:
+    Title: Aide au tirage des cartes pour les joueurs
+  Weapon:
+    RangeType:
+      Melee: Corps-à-corps
+      Mixed: Les deux
+      Ranged: Distance
+  BenniesCount: '{count} jetons'
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
