@@ -64,7 +64,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 - Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
-- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
+- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (#1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
 - The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
 - Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
@@ -457,7 +457,7 @@ m
 - Fixed a small issue with a label in the Tweaks window. (#780) **by @florad92**
 - Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782) **by @florad92**
 - Shields should once again display their notes in the inventory tab of the Character Sheet. (#783) **by @florad92**
-- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784) **by @florad92**
+- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (#784) **by @florad92**
 - Fixed a small spacing issue on the NPC sheet. (#760) **by @jpmeehan5**
 
 ### Known Issues
