@@ -17,6 +17,7 @@ import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -287,7 +288,7 @@ export default class CharacterSheet extends ActorSheet {
       }
       //return early if there's no data to roll
       if (!statData.value) return;
-      const roll = new Roll(
+      const roll = new SwadeRoll(
         `${statData.value}${modifier}`,
         this.actor.getRollData(),
       );
