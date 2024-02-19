@@ -47,8 +47,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
 - Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
 - Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
-- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
-- Redrawing an Action Card now causes a card draw message to be created. (#1036) **by @florad92**
+- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are not owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
+- Redrawing an Action Card now causes a card draw message to be created, even if the card remains the same. (#1036) **by @florad92**
+- Added documentation for the system hooks. (#872) **by @gunnar.busch**
+- Added additional translation strings.
 
 ### Changed
 
@@ -66,7 +68,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
 - Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (#1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
-- The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
+- Accordions on the character sheet now remember whether they were opened or closed when re-rendering the sheet. (#964) **by @florad92**
+- Ending a combat encounter now removes the Hold status from any tokens that had it. **by @florad92**
+- The current action deck can no longer be used to layout a chase. To lay out a chase, either create a new Action deck from the presets or duplicate the existing deck. **by @jpmeehan5**
 - Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
 - Move the option to redraw initiative away from a context menu. You can now click the drawn card in the combat track to start drawing a new card. (#1032) **by @florad92**
 
@@ -78,10 +82,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Item Grants no longer throw an error if an item could not be found. **by @florad92**
 - Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
 - The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
+- Players are now once again prompted if they should draw a card during initiative. (#536) **by @florad92**
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 - _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
 - Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
+- Actions on `action` items should now display correctly on the quickaccess (#999) **by @jpmeehan5**
 - Combatants no longer loose their card if they've held their turn. (#1030) **by @florad92**
+- Text enrichment on the character sheet now no longer fails for grandchild documents. (#964) **by @florad92**
 
 ## 3.2.5
 
