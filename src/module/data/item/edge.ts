@@ -2,10 +2,13 @@ import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/f
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
-import { Requirement } from '../../documents/item/SwadeItem.interface';
+import {
+  ItemChatCardChip,
+  Requirement,
+} from '../../documents/item/SwadeItem.interface';
 import { count } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
-import { category, favorite, grants, itemDescription } from './common';
+import { category, choiceSets, favorite, grants, itemDescription } from './common';
 import * as migrations from './_migration';
 
 export interface EdgeData
@@ -14,7 +17,10 @@ export interface EdgeData
   > {}
 
 export class EdgeData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<ReturnType<(typeof EdgeData)['defineSchema']>>
+  foundry.data.fields.SchemaField<
+    ReturnType<(typeof EdgeData)['defineSchema']>
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -24,6 +30,7 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grants(),
+      ...choiceSets(),
       isArcaneBackground: new fields.BooleanField(),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),
@@ -67,7 +74,7 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
   }
 
   get requirementString() {
-    return this.requirements.reduce(
+    return (this.requirements ?? {}).reduce(
       (
         accumulator: string,
         current: RequirementsField,
@@ -120,5 +127,24 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
         message: 'Cannot have more than one Wild Card/Extra requirement',
       });
     }
+  }
+
+  get canHaveCategory() {
+    return true;
+  }
+
+  get canGrantItems() {
+    return true;
+  }
+
+  async getChatChips(): Promise<ItemChatCardChip[]> {
+    const chips = new Array<ItemChatCardChip>();
+    chips.push({
+      text: this.requirementString,
+    });
+    if (this.isArcaneBackground) {
+      chips.push({ text: game.i18n.localize('SWADE.Arcane') });
+    }
+    return chips;
   }
 }

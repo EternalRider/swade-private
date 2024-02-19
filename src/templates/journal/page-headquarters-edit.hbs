@@ -1,0 +1,98 @@
+<form class='{{cssClass}}' autocomplete='off'>
+  {{> journalEntryPageHeader}}
+  <section class='hq-advantage'>
+    <header class='section-header'>
+      {{localize 'SWADE.Headquarters.Advantage'}}
+    </header>
+    <div class='editor-wrapper'>
+      {{editor
+        enriched.advantage
+        target='system.advantage'
+        editable=true
+        button=false
+        engine='prosemirror'
+        collaborate=true
+      }}
+    </div>
+  </section>
+  <section class='hq-complication'>
+    <header class='section-header'>
+      {{localize 'SWADE.Headquarters.Complication'}}
+    </header>
+    <div class='editor-wrapper'>
+      {{editor
+        enriched.complication
+        target='system.complication'
+        editable=true
+        button=false
+        engine='prosemirror'
+        collaborate=true
+      }}
+    </div>
+  </section>
+  <section class='hq-form'>
+    <header class='section-header'>
+      {{localize 'SWADE.Headquarters.Form'}}
+    </header>
+    <div class='hq-description'>
+      <header class='hq-form-part section-header'>
+        {{localize 'SWADE.Headquarters.Description'}}
+      </header>
+      <div class='hq-form-part editor-wrapper'>
+        {{editor
+          enriched.form.description
+          target='system.form.description'
+          editable=true
+          button=false
+          engine='prosemirror'
+          collaborate=true
+        }}
+      </div>
+    </div>
+    <div class='hq-acquisition'>
+      <header class='hq-form-part section-header'>
+        {{localize 'SWADE.Headquarters.Acquisition'}}
+      </header>
+      <div class='hq-form-part editor-wrapper'>
+        {{editor
+          enriched.form.acquisition
+          target='system.form.acquisition'
+          editable=true
+          button=false
+          engine='prosemirror'
+          collaborate=true
+        }}
+      </div>
+    </div>
+    <div class='hq-maintenance'>
+      <header class='hq-form-part section-header'>
+        {{localize 'SWADE.Headquarters.Maintenance'}}
+      </header>
+      <div class='hq-form-part editor-wrapper'>
+        {{editor
+          enriched.form.maintenance
+          target='system.form.maintenance'
+          editable=true
+          button=false
+          engine='prosemirror'
+          collaborate=true
+        }}
+      </div>
+    </div>
+  </section>
+  <section class='hq-upgrades'>
+    <header class='hq-upgrades section-header'>
+      {{localize 'SWADE.Headquarters.Upgrades'}}
+    </header>
+    <div class='hq-upgrades editor-wrapper'>
+      {{editor
+        enriched.upgrades
+        target='system.upgrades'
+        editable=true
+        button=false
+        engine='prosemirror'
+        collaborate=true
+      }}
+    </div>
+  </section>
+</form>

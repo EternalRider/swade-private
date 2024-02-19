@@ -8,9 +8,9 @@ import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
-import { Logger } from '../../Logger';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
@@ -93,12 +93,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
     }
   }
 
-  /* Filters through active effects to apply them to items, e.g. skills and weapons
-  match[0] = the whole expression
-  match[1] = ItemType
-  match[2] = Item Name or ID
-  match[3] = attribute key
-  */
+  /**
+   * Filters through active effects to apply them to items, e.g. skills and weapons
+   * * match[0] = the whole expression
+   * * match[1] = ItemType
+   * * match[2] = Item Name or ID
+   * * match[3] = attribute key
+   */
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
   static ATTR_REGEXP =
@@ -232,20 +233,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   private async _applyRelatedEffects() {
-    const related = this.getFlag('swade', 'related');
-    if (!related || this.parent?.documentName !== 'Actor' || !this.statusId)
-      return;
+    const related = this.getFlag('swade', 'related') ?? {};
+    if (!(this.parent instanceof SwadeActor) || !this.statusId) return;
     for (const [id, mutation] of Object.entries(related)) {
       const statusEffect = getStatusEffectDataById(id);
       //skip if the effect already exists on the actor
-      if (this.parent.statuses.has(id) || !statusEffect) continue;
+      if (this.parent?.statuses.has(id) || !statusEffect) continue;
       //apply the mutation if one exists
       const effect = foundry.utils.isEmpty(mutation)
         ? statusEffect
         : foundry.utils.mergeObject(statusEffect, mutation, {
             performDeletions: true,
           });
-      await this.parent.toggleActiveEffect(effect, { active: true });
+      await this.parent?.toggleActiveEffect(effect, { active: true });
     }
   }
 
@@ -342,8 +342,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
       match[2] === 'armor'
         ? 'armorEffects' // Armor gets its own display
         : autoCalc
-        ? 'effects'
-        : 'sources';
+          ? 'effects'
+          : 'sources';
     doc.system.stats[match[1]][target].push({
       label: this.name,
       value: Number(change.value),
@@ -515,20 +515,17 @@ export default class SwadeActiveEffect extends ActiveEffect {
           await combatant.setRoundHeld(activeCombat.current.round as number);
         }
       }
+      // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
+      if (!data.duration?.combat) {
+        this.updateSource({ 'duration.combat': activeCombat.id });
+      }
     }
 
     //localize names, just to be sure
     this.updateSource({ name: game.i18n.localize(this.name) });
 
     //automatically favorite status effects
-    if (this.statusId) {
-      this.updateSource({ 'flags.swade.favorite': true });
-    }
-
-    // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
-    if (!data.duration?.combat && game.combat) {
-      this.updateSource({ 'duration.combat': game.combat.id });
-    }
+    if (this.statusId) this.updateSource({ 'flags.swade.favorite': true });
 
     //set the world time at creation
     this.updateSource({ duration: { startTime: game.time.worldTime } });
@@ -544,6 +541,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
         ]);
       }
     }
+
+    //Update wild attack damage based on a flag
+    if (this.statuses.has('wild-attack')) {
+      const damageModIndex = this.changes.findIndex(
+        (c) => c.key === 'system.stats.globalMods.damage',
+      );
+      const newDamage = this.actor?.getFlag('swade', 'wildAttackDamage');
+      if (['number', 'string'].includes(typeof newDamage)) {
+        const newChanges = foundry.utils.deepClone(this.changes);
+        newChanges[damageModIndex].value = String(newDamage);
+        this.updateSource({ changes: newChanges });
+      }
+    }
   }
 
   protected override _onCreate(
@@ -552,6 +562,6 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    this._applyRelatedEffects();
+    if (userId === game.userId) this._applyRelatedEffects();
   }
 }

@@ -4,6 +4,7 @@ import {
 } from '../../interfaces/roll.interface';
 import { SwadeRoll } from './SwadeRoll';
 import { constants } from '../constants';
+import { CharacterData, NpcData } from '../data/actor';
 
 export class DamageRoll extends SwadeRoll<ActorRollData> {
   static override CHAT_TEMPLATE =
@@ -69,6 +70,37 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
 
   set isHeavyWeapon(isHeavyWeapon: boolean) {
     this.options['isHeavyWeapon'] = isHeavyWeapon;
+  }
+
+  override applyReroll(actor: Actor | null): boolean {
+    if (!actor || !actor.system.stats.globalMods.hasOwnProperty('bennyDamage'))
+      return false;
+    if (
+      (actor.system as CharacterData | NpcData).stats.globalMods.bennyDamage
+        ?.length > 0
+    ) {
+      let adjustRoll = false;
+      for (const mod of (actor.system as CharacterData | NpcData).stats
+        .globalMods.bennyDamage) {
+        const hasMod = this.modifiers.find((m) => m.label === mod.label);
+        if (!hasMod) {
+          adjustRoll = true;
+          this.options['modifiers'].push(mod);
+          this.terms.push(
+            new OperatorTerm({ operator: '+' }),
+            new StringTerm({
+              term: String(mod.value),
+              options: { flavor: mod.label },
+            }),
+          );
+        }
+      }
+      if (adjustRoll) {
+        this.resetFormula();
+        return true;
+      }
+    }
+    return false;
   }
 }
 

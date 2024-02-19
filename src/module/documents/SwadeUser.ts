@@ -90,12 +90,18 @@ export default class SwadeUser extends User {
     }
   }
 
-  async refreshBennies(displayToChat = true) {
+  async refreshBennies(notify = true) {
     if (this.isGM) {
       const gmBennies = game.settings.get('swade', 'gmBennies');
       await this.setFlag('swade', 'bennies', gmBennies);
+
+      /**
+       * Called when a GM refreshes their bennies.
+       * @param {SwadeUser} user            The GM User
+       */
+      Hooks.callAll('swadeRefreshGmBennies', this);
     } else if (this.character) {
-      await this.character.refreshBennies(displayToChat);
+      await this.character.refreshBennies(notify);
     }
     ui.players?.render(true);
   }

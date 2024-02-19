@@ -1,0 +1,26 @@
+.headquarters-journal,
+.journal-entry-page.headquarters {
+  --section-header-color: #{$header-text};
+  --section-header-size: #{$section-header};
+  --section-header-font: 'Anton', 'Signika', sans-serif;
+
+  .section-header {
+    font-family: var(--section-header-font);
+    font-size: var(--section-header-size);
+    color: var(--section-header-color);
+    text-align: center;
+    &.hq-form-part {
+      font-size: $medium-font;
+    }
+  }
+  .editor-wrapper {
+    height: 200px;
+    // box-shadow: 5px 5px 5px 0px var(--section-header-color);
+    .editor-container {
+      margin-bottom: 0.5rem;
+    }
+  }
+  .editor {
+    height: 100%;
+  }
+}

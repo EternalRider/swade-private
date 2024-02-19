@@ -1,19 +1,16 @@
 /** This class defines a form colorpicker for group leader to assign a group color */
 export default class SwadeCombatGroupColor extends FormApplication<
   FormApplicationOptions,
-  any,
   Combatant
 > {
   config: any;
   groupDefaultColors: any;
-  constructor(object: Combatant, options = {}) {
-    super(object, options);
-  }
-  activateListeners(html: JQuery<HTMLElement>) {
+
+  override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
     html.find('.reset-color').on('click', this._onResetColor.bind(this));
   }
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'group-color-picker',
       title: 'SWADE.SetGroupColor',
@@ -29,7 +26,7 @@ export default class SwadeCombatGroupColor extends FormApplication<
     });
   }
 
-  async _onChangeColorPicker(event) {
+  override async _onChangeColorPicker(event) {
     super._onChangeColorPicker(event);
     this.object.setFlag('swade', 'groupColor', event.currentTarget.value);
   }
@@ -49,7 +46,5 @@ export default class SwadeCombatGroupColor extends FormApplication<
     $(this.form!).find('#groupColor').val(groupColor);
   }
 
-  async _updateObject(_event, _formData: GroupColorPickerData) {}
+  async _updateObject(_event, _formData: unknown) {}
 }
-
-interface GroupColorPickerData {}

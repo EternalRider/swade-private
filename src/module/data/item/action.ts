@@ -3,6 +3,7 @@ import {
   actions,
   additionalStats,
   category,
+  choiceSets,
   favorite,
   itemDescription,
   templates,
@@ -18,7 +19,8 @@ export interface ActionData
 export class ActionData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof ActionData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -29,6 +31,7 @@ export class ActionData extends foundry.abstract.TypeDataModel<
       ...templates(),
       ...actions(),
       ...additionalStats(),
+      ...choiceSets(),
     };
   }
 
@@ -46,5 +49,9 @@ export class ActionData extends foundry.abstract.TypeDataModel<
 
   protected _applyShims() {
     shims.actionProperties(this);
+  }
+
+  get canHaveCategory() {
+    return true;
   }
 }

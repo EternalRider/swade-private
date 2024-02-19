@@ -24,10 +24,10 @@ export default class PlayerBennyDisplay {
     if (!player.isGM && !player.character) return;
     this.element = element;
     this.player = player;
-    this._initialize();
+    this.#initialize();
   }
 
-  private _initialize() {
+  #initialize() {
     //Create counter
     this.counter = document.createElement('span');
     this.counter.classList.add('bennies-count');
@@ -40,7 +40,7 @@ export default class PlayerBennyDisplay {
     if (game.user?.isGM) {
       this._initGameMaster();
     } else {
-      this._initPlayer();
+      this.#initPlayer();
     }
     //append the counter to the player list
     this.element.append(this.counter);
@@ -58,7 +58,7 @@ export default class PlayerBennyDisplay {
   }
 
   /** Player view */
-  private _initPlayer() {
+  #initPlayer() {
     this.counter.innerHTML = this.bennies.toString();
     if (this.player.character && game.userId === this.player.id) {
       this.counter.addEventListener('click', this.onSpendBenny.bind(this));
@@ -102,11 +102,8 @@ export default class PlayerBennyDisplay {
 
     const hardChoices = game.settings.get('swade', 'hardChoices');
     for (const actor of npcWildcardsToRefresh) {
-      if (hardChoices) {
-        await actor.update({ 'system.bennies.value': 0 });
-      } else {
-        await actor.refreshBennies(false);
-      }
+      if (hardChoices) await actor.update({ 'system.bennies.value': 0 });
+      else await actor.refreshBennies(false);
     }
 
     if (game.settings.get('swade', 'notifyBennies')) {

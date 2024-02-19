@@ -175,10 +175,11 @@ export default class ItemChatCardHelper {
   ) {
     const traitName = getProperty(item, 'system.actions.trait');
     if (!item.canExpendResources()) {
+      // TODO: Refactor to be more accurate & more general (probably grab from the PP cost box?)
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
     }
-    additionalMods.push(...item.getTraitModifiers());
+    additionalMods.push(...item.traitModifiers);
     const trait = getTrait(traitName, actor);
     const roll = await this.doTraitAction(trait, actor, {
       additionalMods,
@@ -253,7 +254,7 @@ export default class ItemChatCardHelper {
         }
       }
 
-      mods.push(...item.getTraitModifiers());
+      mods.push(...item.traitModifiers);
 
       roll = await this.doTraitAction(trait, actor, {
         flavour: action.name,

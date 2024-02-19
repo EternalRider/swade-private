@@ -12,7 +12,6 @@ interface CardData {
 
 export default class ActionCardEditor extends FormApplication<
   FormApplicationOptions,
-  any,
   Cards
 > {
   constructor(cards: Cards, options: Partial<FormApplicationOptions> = {}) {

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { HotReloadData, Updates } from '../../globals';
+import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
-import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
@@ -13,15 +12,16 @@ import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
-import SwadeCombatant from '../documents/combat/SwadeCombatant';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
+import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
+import { UserSummary } from '../style/UserSummary';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -315,13 +315,11 @@ export default class SwadeCoreHooks {
       name: 'SWADE.OpenACEditor',
       icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
-        //return early if there's no canvas or scene to lay out cards
-        if (!canvas || !canvas.ready || !canvas.scene) return false;
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         return (
           deck.type === 'deck' &&
-          deck.cards.contents.every((c) => c.type === 'poker') &&
-          deck.isOwner
+          deck.isOwner &&
+          deck.cards.contents.every((c) => c.type === 'poker')
         );
       },
       callback: async (li) => {
@@ -333,15 +331,44 @@ export default class SwadeCoreHooks {
       name: 'SWADE.LayOutChaseWithDeck',
       icon: '<i class="fa-solid fa-shipping-fast"></i>',
       condition: (li) => {
-        const cards = game.cards!.get(li.data('documentId'), { strict: true });
-        return cards.type === 'deck';
+        //return early if there's no canvas or scene to lay out cards
+        if (!canvas || !canvas.ready || !canvas.scene) return false;
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.contents.every((c) => c.type === 'poker')
+        );
       },
       callback: (li) => {
         const deck = game.cards!.get(li.data('documentId'), { strict: true });
         chaseUtils.layoutChase(deck);
       },
     };
-    options.push(actionCardEditor, chaseLayout);
+    const setActionDeck: ContextMenuEntry = {
+      name: 'SWADE.SetActionDeck',
+      icon: '<i class="fas fa-swords"></i>',
+      condition: (li) => {
+        const cardsID = li.data('documentId');
+        const deck = game.cards!.get(cardsID, { strict: true });
+        const isActionDeck =
+          game.settings.get('swade', 'actionDeck') === cardsID;
+        return (
+          deck.type === 'deck' &&
+          !isActionDeck &&
+          deck.cards.contents.every((c) => c.type === 'poker')
+        );
+      },
+      callback: async (li) => {
+        const deckId = li.data('documentId');
+        game.settings.set('swade', 'actionDeck', deckId);
+      },
+    };
+
+    options.push(actionCardEditor, chaseLayout, setActionDeck);
   }
 
   static onGetCompendiumDirectoryEntryContext(
@@ -400,13 +427,35 @@ export default class SwadeCoreHooks {
 
   /** Add roll data to the message for formatting of dice pools*/
   static onRenderChatMessage(
-    message: SwadeChatMessage,
+    msg: SwadeChatMessage,
     jquery: JQuery<HTMLElement>,
     data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    chat.hideChatActionButtons(message, jquery, data);
-    chat.createMagazineTooltip(message, jquery);
+    chat.hideChatActionButtons(msg, jquery, data);
+    chat.createMagazineTooltip(msg, jquery);
     const html = jquery[0];
+    const makeTableResultsDraggable = () => {
+      const results = html.querySelectorAll<HTMLElement>(
+        '.table-draw .table-result',
+      );
+      if (!results.length) return;
+      results.forEach((e) => {
+        e.draggable = true;
+        e.addEventListener('dragstart', (ev) => {
+          const dragData = game.tables
+            ?.get(msg.getFlag('core', 'RollTable'))
+            ?.results.get(e.dataset.resultId as string)
+            .toDragData();
+          if (!dragData) return;
+          ev.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+        });
+      });
+    };
+
+    if (msg.getFlag('core', 'RollTable') && msg.rolls) {
+      makeTableResultsDraggable();
+    }
+
     html
       .querySelector('.swade-roll-message button.free-reroll')
       ?.addEventListener('click', SwadeRoll.rerollFree);
@@ -415,11 +464,11 @@ export default class SwadeCoreHooks {
       .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
     html
       .querySelector('.swade-roll-message .confirm-critfail')
-      ?.addEventListener('click', () => TraitRoll.confirmCritfail(message));
+      ?.addEventListener('click', () => TraitRoll.confirmCritfail(msg));
 
     html
       .querySelector('.swade-roll-message button.calculate-wounds')
-      ?.addEventListener('click', () => damageApplicator(message));
+      ?.addEventListener('click', () => damageApplicator(msg));
     html
       .querySelectorAll<HTMLDetailsElement>('details.modifiers')
       .forEach((detail) => new Accordion(detail));
@@ -459,301 +508,16 @@ export default class SwadeCoreHooks {
       });
   }
 
-  static async onGetCombatTrackerEntryContext(
-    html: JQuery<HTMLElement>,
-    options: ContextMenuEntry[],
-  ) {
-    const index = options.findIndex((v) => v.name === 'COMBAT.CombatantReroll');
-    if (index !== -1) {
-      options[index].name = 'SWADE.Redraw';
-      options[index].icon = '<i class="fa-solid fa-sync-alt"></i>';
-    }
-
-    const newOptions = new Array<ContextMenuEntry>();
-
-    // Set as group leader
-    newOptions.push({
-      name: 'SWADE.MakeGroupLeader',
-      icon: '<i class="fa-solid fa-users"></i>',
-      condition: (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const combatant = game.combat!.combatants.get(targetCombatantId, {
-          strict: true,
-        });
-        return (
-          !hasProperty(combatant, 'flags.swade.isGroupLeader') &&
-          !!combatant?.actor?.isOwner
-        );
-      },
-      callback: async (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const targetCombatant = game.combat!.combatants.get(targetCombatantId)!;
-        await targetCombatant.update({
-          'flags.swade': {
-            isGroupLeader: true,
-            '-=groupId': null,
-          },
-        });
-      },
-    });
-
-    // Set Group Color
-    newOptions.push({
-      name: 'SWADE.SetGroupColor',
-      icon: '<i class="fa-solid fa-palette"></i>',
-      condition: (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const combatant = game.combat?.combatants.get(targetCombatantId)!;
-        return combatant.isGroupLeader && combatant!.actor!.isOwner;
-      },
-      callback: (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const targetCombatant = game.combat?.combatants.get(targetCombatantId)!;
-        new SwadeCombatGroupColor(targetCombatant).render(true);
-      },
-    });
-
-    // Remove Group Leader
-    newOptions.push({
-      name: 'SWADE.RemoveGroupLeader',
-      icon: '<i class="fa-solid fa-users-slash"></i>',
-      condition: (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const combatant = game.combat?.combatants.get(targetCombatantId)!;
-        return combatant.isGroupLeader && combatant!.actor!.isOwner;
-      },
-      callback: async (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const targetCombatant = game.combat?.combatants.get(targetCombatantId)!;
-        // Remove combatants from this leader's group.
-        if (game.combat) {
-          const followers = game.combat.combatants.filter(
-            (f) => f.groupId === targetCombatantId,
-          );
-          for (const f of followers) {
-            await f.unsetGroupId();
-          }
-        }
-        // Remove as group leader
-        await targetCombatant.unsetIsGroupLeader();
-      },
-    });
-
-    // Add selected tokens as followers
-    newOptions.push({
-      name: 'SWADE.AddTokenFollowers',
-      icon: '<i class="fa-solid fa-users"></i>',
-      condition: (li) => {
-        const selectedTokens = canvas?.tokens?.controlled ?? [];
-        return (
-          canvas?.ready &&
-          selectedTokens.length > 0 &&
-          selectedTokens.every((t) => t!.actor!.isOwner)
-        );
-      },
-      callback: async (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const targetCombatant = game.combat?.combatants.get(targetCombatantId)!;
-        const selectedTokens = canvas?.tokens?.controlled;
-        const cardValue = targetCombatant.cardValue! + 0.99;
-        if (selectedTokens) {
-          await targetCombatant.update({
-            flags: {
-              swade: {
-                cardValue: cardValue,
-                suitValue: targetCombatant.suitValue!,
-                isGroupLeader: true,
-                '-=groupId': null,
-              },
-            },
-          });
-          // Filter for tokens that do not already have combatants
-          const newTokens = selectedTokens.filter((t) => !t.inCombat);
-          // Filter for tokens that already have combatants to add them as followers later
-          const existingCombatantTokens = selectedTokens.filter(
-            (t) => t.inCombat,
-          );
-          // Construct array of new combatants data
-          const createData = newTokens?.map((t) => {
-            return {
-              tokenId: t.id,
-              actorId: t.data.actorId,
-              hidden: t.data.hidden,
-            };
-          });
-          // Create the combatants and create array of combatants created
-          const combatants = (await game?.combat?.createEmbeddedDocuments(
-            'Combatant',
-            createData,
-          )) as Array<SwadeCombatant>;
-          // If there were preexisting combatants...
-          if (existingCombatantTokens.length > 0) {
-            // Push them into the combatants array
-            for (const t of existingCombatantTokens) {
-              const c = game?.combat?.getCombatantByToken(t.id);
-              if (c) {
-                combatants?.push(c);
-              }
-            }
-          }
-          if (combatants) {
-            for (const c of combatants) {
-              await c.update({
-                flags: {
-                  swade: {
-                    groupId: targetCombatantId,
-                    '-=isGroupLeader': null,
-                  },
-                },
-              });
-            }
-          }
-        }
-        let suitValue = targetCombatant.suitValue!;
-        const followers = game?.combat?.combatants.filter(
-          (f) => f.groupId === targetCombatantId,
-        );
-        if (followers) {
-          for (const f of followers) {
-            await f.update({
-              flags: {
-                swade: {
-                  cardValue: cardValue,
-                  suitValue: (suitValue -= 0.01),
-                },
-              },
-            });
-          }
-        }
-      },
-    });
-
-    // Set all combatants with this one's name as its followers.
-    newOptions.push({
-      name: 'SWADE.GroupByName',
-      icon: '<i class="fa-solid fa-users"></i>',
-      condition: (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const combatant = game.combat?.combatants.get(targetCombatantId)!;
-        return (
-          !!game.combat!.combatants.find(
-            (c) => c.name === combatant.name && c.id !== targetCombatantId,
-          ) && game.user!.isGM
-        );
-      },
-      callback: async (li) => {
-        const targetCombatantId = li.attr('data-combatant-id') as string;
-        const targetCombatant = game.combat?.combatants.get(targetCombatantId, {
-          strict: true,
-        });
-        const matchingCombatants = game.combat?.combatants.filter(
-          (c) =>
-            c.name === targetCombatant?.name && c.id !== targetCombatant.id,
-        );
-        if (matchingCombatants && targetCombatant) {
-          await targetCombatant.unsetGroupId();
-          await targetCombatant.setIsGroupLeader(true);
-          for (const c of matchingCombatants) {
-            await c?.setGroupId(targetCombatantId);
-            await c?.setCardValue(c!.cardValue!);
-            await c?.setSuitValue(c!.suitValue! - 0.01);
-          }
-        }
-      },
-    });
-
-    // Get group leaders for follow leader options
-    const groupLeaders =
-      game.combat?.combatants.filter((c) => c.isGroupLeader) ?? [];
-    // Enable follow and unfollow if there are group leaders.
-    // Loop through leaders
-    for (const gl of groupLeaders) {
-      // Follow a leader
-      newOptions.push({
-        name: game.i18n.format('SWADE.Follow', { name: gl.name }),
-        icon: '<i class="fa-solid fa-user-friends"></i>',
-        condition: (li) => {
-          const targetCombatantId = li.attr('data-combatant-id') as string;
-          const combatant = game.combat?.combatants.get(targetCombatantId)!;
-          return combatant.groupId !== gl.id && targetCombatantId !== gl.id;
-        },
-        callback: async (li) => {
-          const targetCombatantId = li.attr('data-combatant-id') as string;
-          const combatant = game.combat?.combatants.get(targetCombatantId)!;
-
-          const groupId = gl.id ?? undefined;
-          await gl.setIsGroupLeader(true);
-          const fInitiative = getProperty(gl, 'data.initiative');
-          const fCardValue = gl.cardValue;
-          const fSuitValue = gl.suitValue! - 0.01;
-          const fHasJoker = gl.hasJoker;
-          // Set groupId of dragged combatant to the selected target's id
-
-          await combatant.update({
-            initiative: fInitiative,
-            flags: {
-              swade: {
-                cardValue: fCardValue,
-                suitValue: fSuitValue,
-                hasJoker: fHasJoker,
-                groupId: groupId,
-              },
-            },
-          });
-          if (combatant.isGroupLeader) {
-            const followers =
-              game.combat?.combatants.filter(
-                (f) => f.groupId === combatant.id,
-              ) ?? [];
-
-            for (const follower of followers) {
-              await follower.update({
-                initiative: fInitiative,
-                flags: {
-                  swade: {
-                    cardValue: fCardValue,
-                    suitValue: fSuitValue,
-                    hasJoker: fHasJoker,
-                    groupId: groupId,
-                  },
-                },
-              });
-            }
-            await combatant.unsetIsGroupLeader();
-          }
-        },
-      });
-
-      // Unfollow a leader
-      newOptions.push({
-        name: game.i18n.format('SWADE.Unfollow', { name: gl.name }),
-        icon: '<i class="fa-solid fa-user-friends"></i>',
-        condition: (li) => {
-          const targetCombatantId = li.attr('data-combatant-id') as string;
-          const combatant = game.combat?.combatants.get(targetCombatantId)!;
-          return combatant.groupId === gl.id;
-        },
-        callback: async (li) => {
-          const targetCombatantId = li.attr('data-combatant-id') as string;
-          const targetCombatant =
-            game.combat?.combatants.get(targetCombatantId)!;
-          // If the current Combatant is the holding combatant, just remove Hold status.
-          await targetCombatant.unsetGroupId();
-        },
-      });
-    }
-    options.splice(0, 0, ...newOptions);
-  }
-
   /** Add benny management to the player list */
   static async onRenderPlayerList(
-    list: PlayerList,
+    _list: PlayerList,
     html: JQuery<HTMLElement>,
-    options: any,
+    _options: any,
   ) {
-    html[0]
-      .querySelectorAll<HTMLLIElement>('.player')
-      .forEach((player) => new PlayerBennyDisplay(player));
+    const users = html[0].querySelectorAll<HTMLLIElement>('.player');
+    //add the Benny Display;
+    users.forEach((el) => new PlayerBennyDisplay(el));
+    users.forEach((el) => new UserSummary(el));
   }
 
   static onRenderUserConfig(
@@ -841,18 +605,15 @@ export default class SwadeCoreHooks {
       {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await game.users?.get(li[0].dataset.userId!)?.refreshBennies();
-        },
+        condition: () => game.user!.isGM,
+        callback: (li) =>
+          game.users?.get(li[0].dataset.userId!)?.refreshBennies(),
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: (li) => game.user!.isGM,
-        callback: async (li) => {
-          await PlayerBennyDisplay.refreshAll();
-        },
+        condition: () => game.user!.isGM,
+        callback: () => PlayerBennyDisplay.refreshAll(),
       },
     );
   }
@@ -884,7 +645,9 @@ export default class SwadeCoreHooks {
   ) {
     if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
       const activeTab = getProperty(sheet, '_tabs')[0].active;
-      if (activeTab === 'summary') {
+      if (activeTab === 'crew') {
+        const droppedActor = await fromUuid(data.uuid);
+        if (droppedActor.type === 'vehicle') return;
         await actor.update({ 'system.driver.id': data.uuid });
       }
     }
@@ -892,20 +655,21 @@ export default class SwadeCoreHooks {
 
   static async onRenderCombatantConfig(
     app: CombatantConfig,
-    html: JQuery<HTMLElement>,
+    jquery: JQuery<HTMLFormElement>,
     options: any,
   ) {
     // resize the element so it'll fit the new stuff
-    html.css({ height: 'auto' });
+    jquery.css({ height: 'auto' });
 
     //remove the old initiative input
-    html.find('input[name="initiative"]').parents('div.form-group').remove();
+    jquery.find('input[name="initiative"]').parents('div.form-group').remove();
 
     //grab cards and sort them
-    const actionDeckID = game.settings.get('swade', 'actionDeck');
-    const deck = game.cards!.get(actionDeckID, { strict: true });
+    const deck = game.cards!.get(game.settings.get('swade', 'actionDeck'), {
+      strict: true,
+    });
 
-    const cards = Array.from(deck.cards.values()).sort((a, b) => {
+    const cards = Array.from(deck.cards.values()).sort((a: Card, b: Card) => {
       const cardA = a.value!;
       const cardB = b.value!;
       const card = cardA - cardB;
@@ -947,59 +711,19 @@ export default class SwadeCoreHooks {
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const element = await renderTemplate(path, { cardList, numberOfJokers });
-    html.find('footer').before(element);
-
-    //pull the combatant from the Config Object
-    const combatant = app.object;
-    const combat = combatant.parent;
+    jquery.find('footer').before(element);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication
-    html.find('footer button').on('click', async (ev) => {
-      const selectedCard = html.find('input[name=action-card]:checked');
-      if (selectedCard.length === 0) {
-        return;
-      }
-
-      const cardId = selectedCard.data().cardId as string;
-      const card = deck.cards.get(cardId, { strict: true });
-
-      const cardValue = card.value as number;
-      const suitValue = card.system['suit'] as number;
-      const hasJoker = card.system['isJoker'] as boolean;
-      const cardString = card.description;
-
-      //move the card to the discard pile
-      const discardPileId = game.settings.get('swade', 'actionDeckDiscardPile');
-      const discardPile = game.cards!.get(discardPileId, { strict: true });
-      await card.discard(discardPile, { chatNotification: false });
-
-      //update the combatant with the new card
-      const updates = new Array<Updates>();
-      updates.push({
-        _id: combatant.id,
-        initiative: suitValue + cardValue,
-        'flags.swade': { cardValue, suitValue, hasJoker, cardString },
+    jquery[0]
+      .querySelector('footer button')
+      ?.addEventListener('click', async (ev: PointerEvent) => {
+        const selectedCard = (ev.currentTarget as HTMLButtonElement)
+          .closest('.combat-sheet')
+          ?.querySelector<HTMLInputElement>('input[name=action-card]:checked');
+        if (!selectedCard) return;
+        const cardId = selectedCard.dataset.cardId as string;
+        await app.object.assignNewActionCard(cardId);
       });
-
-      //update followers, if applicable
-      if (combatant.isGroupLeader) {
-        const followers =
-          combat?.combatants.filter((f) => f.groupId === combatant.id) ?? [];
-        for (const follower of followers) {
-          updates.push({
-            _id: follower.id,
-            initiative: suitValue + cardValue,
-            'flags.swade': {
-              cardString,
-              cardValue,
-              hasJoker,
-              suitValue: suitValue - 0.001,
-            },
-          });
-        }
-      }
-      await combat?.updateEmbeddedDocuments('Combatant', updates);
-    });
   }
 
   static onRenderActiveEffectConfig(
@@ -1103,5 +827,21 @@ export default class SwadeCoreHooks {
     //stop the hook on empty changes
     if (!content) return false;
     if (extension === 'js') location.reload();
+  }
+
+  static onCreateProseMirrorEditor(
+    uuid: string,
+    plugins: Record<string, ProseMirror.Plugin>,
+    _options: unknown,
+  ) {
+    const [prefix] = uuid.split('#');
+    const type = fromUuidSync(prefix)?.type;
+    if (uuid.includes('JournalEntryPage') && type === 'headquarters') {
+      // Delete the default content link plugin.
+      delete plugins.contentLinks;
+      plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
+        ProseMirror.defaultSchema,
+      );
+    }
   }
 }

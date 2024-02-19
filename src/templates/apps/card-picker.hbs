@@ -1,0 +1,41 @@
+<div>
+  <ul class='card-list'>
+    {{#each cards as |card|}}
+      <li class='card'>
+        <label for='{{card.uuid}}'>
+          <input
+            type='radio'
+            name='card'
+            id='{{card.uuid}}'
+            data-card-id='{{card.id}}'
+            {{checked (eq card.id @root.highestCardID)}}
+          />
+          <figure>
+            <img src='{{card.currentFace.img}}' />
+            <figcaption>
+              {{#if (eq card.id @root.highestCardID)}}
+                <i class='fas fa-star'></i>
+              {{/if}}
+              {{card.name}}
+              {{#if (eq card.id @root.oldCard)}}
+                <br />({{localize 'SWADE.OldCard'}})
+              {{/if}}
+            </figcaption>
+          </figure>
+        </label>
+      </li>
+    {{/each}}
+  </ul>
+  <footer>
+    <button class='submit'>
+      <i class='fa-solid fa-check'></i>
+      {{localize 'SWADE.Ok'}}
+    </button>
+    {{#if allowRedraw}}
+      <button type='submit' class='redraw'>
+        <i class='fa-solid fa-plus'></i>
+        {{localize 'SWADE.Redraw'}}
+      </button>
+    {{/if}}
+  </footer>
+</div>

@@ -36,9 +36,12 @@
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
-        <label>{{localize "SWADE.ArcBack"}}</label>
+        <label for="{{item.uuid}}-ab">
+          {{localize "SWADE.ArcBack"}}
+        </label>
         <span class="form-fields">
           <input
+            id="{{item.uuid}}-ab"
             type="checkbox"
             name="system.isArcaneBackground"
             {{checked item.system.isArcaneBackground}}

@@ -1,0 +1,52 @@
+{{#if isRedraw}}
+  <div class='initiative-redraw'>
+    {{localize 'SWADE.Combat.Redraw'}}
+  </div>
+{{/if}}
+{{#if largeMsg}}
+  <section class='initiative-draw'>
+    <div
+      class='action-card picked-card rotate-deg-{{ifThen
+          (isOdd index)
+          "negative-"
+          ""
+        }}{{rotate index}}'
+    >
+      <img class='card-face' src='{{picked.face}}' />
+    </div>
+    <h4 class='card-name'>{{picked.name}}</h4>
+  </section>
+  {{#if discarded}}
+    <details class='discarded-cards'>
+      <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>
+      <div class='initiative-draw'>
+        {{#each discarded}}
+          <div
+            class='action-card rotate-deg-{{ifThen
+                (isOdd @index)
+                "negative-"
+                ""
+              }}{{rotate @index}}'
+          >
+            <img class='card-face' src='{{face}}' />
+          </div>
+          <h4 class='card-name'>{{name}}</h4>
+        {{/each}}
+      </div>
+    </details>
+  {{/if}}
+{{else}}
+  <section class='compact-draw'>
+    <h3 class='card-name'>{{picked.name}}</h3>
+    {{#if discarded}}
+      <details class='discarded-cards compact'>
+        <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>
+        <ul>
+          {{#each discarded}}
+            <li>{{name}}</li>
+          {{/each}}
+        </ul>
+      </details>
+    {{/if}}
+  </section>
+{{/if}}

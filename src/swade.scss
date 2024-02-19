@@ -7,7 +7,9 @@
 @import 'scss/npc';
 @import 'scss/vehicle';
 @import 'scss/items-v2';
+@import 'scss/character-sheet';
 @import 'scss/dialogs';
+@import 'scss/headquarters';
 
 //chat
 @import 'scss/chat';
@@ -16,13 +18,14 @@
 
 @import 'scss/core';
 @import 'scss/swade-app';
-//applications
 
+//applications
 @import 'scss/apps/tweaks';
 @import 'scss/apps/setting-config';
 @import 'scss/apps/combat-tracker';
 @import 'scss/apps/action-cards';
 @import 'scss/apps/roll-dialog';
+@import 'scss/apps/choice-dialog';
 @import 'scss/apps/advance-editor';
 @import 'scss/apps/compendium-toc';
 @import 'scss/apps/attribute-manager';
@@ -30,7 +33,8 @@
 @import 'scss/apps/active-effect-wizard';
 @import 'scss/apps/reload-manager';
 @import 'scss/apps/requirements-editor';
+@import 'scss/apps/card-picker';
+@import 'scss/apps/ambush-assistant';
 
-//official sheet
-@import 'scss/official/mixins';
-@import 'scss/official/sheet';
+// Highlight code in journals
+@import '../node_modules/highlight.js/scss/a11y-dark.scss';

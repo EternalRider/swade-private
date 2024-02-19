@@ -13,19 +13,22 @@ export default class SwadeSocketHandler {
     game.socket?.on(this.identifier, (data) => {
       switch (data.type) {
         case 'deleteConvictionMessage':
-          this._onDeleteConvictionMessage(data);
+          this.#onDeleteConvictionMessage(data);
           break;
         case 'newRound':
-          this._onNewRound(data);
+          this.#onNewRound(data);
           break;
         case 'removeStatusEffect':
-          this._onRemoveStatusEffect(data);
+          this.#onRemoveStatusEffect(data);
           break;
         case 'giveBennies':
-          this._onGiveBenny(data);
+          this.#onGiveBenny(data);
+          break;
+        case 'promptInitiative':
+          this.#onPromptInitiative(data);
           break;
         default:
-          this._onUnknownSocket(data.type);
+          this.#onUnknownSocket(data.type);
           break;
       }
     });
@@ -43,11 +46,26 @@ export default class SwadeSocketHandler {
     });
   }
 
+  #onDeleteConvictionMessage(data: DeleteConvictionMessageEvent) {
+    const message = game.messages?.get(data.messageId);
+    //only delete the message if the user is a GM and the event emitter is one of the recipients
+    if (game.user!.isGM && message?.whisper.includes(data.userId)) {
+      message?.delete();
+    }
+  }
+
   removeStatusEffect(uuid: string) {
     this.emit<RemoveStatusEffectEvent>({
       type: 'removeStatusEffect',
       effectUUID: uuid,
     });
+  }
+
+  async #onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
+    const effect = (await fromUuid(data.effectUUID)) as SwadeActiveEffect;
+    if (isFirstOwner(effect.parent)) {
+      effect.expire();
+    }
   }
 
   newRound(combatId: string) {
@@ -57,40 +75,40 @@ export default class SwadeSocketHandler {
     });
   }
 
+  //advance round
+  async #onNewRound(data: NewRoundEvent) {
+    const combat = game.combats!.get(data.combatId, { strict: true });
+    if (isFirstGM()) combat.nextRound();
+  }
+
   giveBenny(users: string[]) {
     this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
   }
 
-  protected async _onRemoveStatusEffect(data: RemoveStatusEffectEvent) {
-    const effect = (await fromUuid(data.effectUUID)) as SwadeActiveEffect;
-    if (isFirstOwner(effect.parent)) {
-      effect.expire();
-    }
-  }
-
-  protected _onDeleteConvictionMessage(data: DeleteConvictionMessageEvent) {
-    const message = game.messages?.get(data.messageId);
-    //only delete the message if the user is a GM and the event emitter is one of the recipients
-    if (game.user!.isGM && message?.data.whisper.includes(data.userId)) {
-      message?.delete();
-    }
-  }
-
-  //advance round
-  protected async _onNewRound(data: NewRoundEvent) {
-    if (isFirstGM()) {
-      game.combats?.get(data.combatId, { strict: true }).nextRound();
-    }
-  }
-
-  protected _onUnknownSocket(type: string) {
-    console.warn(`The socket event ${type} is not supported`);
-  }
-
-  protected async _onGiveBenny(data: GiveBenniesEvent) {
+  async #onGiveBenny(data: GiveBenniesEvent) {
     if (data.users.includes(game.userId!)) {
       await game.user?.getBenny();
     }
+  }
+
+  promptInitiative(combatId: string, userId: string, combatantId: string) {
+    if (!game.user?.isGM) return;
+    this.emit<PromptInitiativeEvent>({
+      type: 'promptInitiative',
+      userId,
+      combatId,
+      combatantIds: [combatantId],
+    });
+  }
+
+  #onPromptInitiative(data: PromptInitiativeEvent) {
+    if (game.userId !== data.userId) return;
+    const combat = game.combats!.get(data.combatId, { strict: true });
+    combat.rollInitiative(data.combatantIds);
+  }
+
+  #onUnknownSocket(type: string) {
+    console.warn(`The socket event ${type} is not supported`);
   }
 }
 
@@ -109,6 +127,12 @@ interface DeleteConvictionMessageEvent extends EventData {
 
 interface NewRoundEvent extends EventData {
   combatId: string;
+}
+
+interface PromptInitiativeEvent extends EventData {
+  userId: string;
+  combatId: string;
+  combatantIds: string[];
 }
 
 interface GiveBenniesEvent extends EventData {

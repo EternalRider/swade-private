@@ -1,9 +1,10 @@
 import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
-import { SWADE } from '../config';
-import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
+import { SWADE } from '../config';
+import { constants } from '../constants';
+import SwadeItem from '../documents/item/SwadeItem';
 
 export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
@@ -144,7 +145,9 @@ export class CompendiumTOC extends Compendium<
       const options: Record<string, unknown> = {};
       if (pageId) options.pageId = pageId;
       const doc = await this.collection.getDocument(documentId);
-      doc?.sheet?.render(true, options);
+      await doc?.sheet?._render(true, options);
+      // Resolves issue where initial render of a compendium page would fail
+      if (pageId) doc.sheet.goToPage(pageId);
     }
   }
 
@@ -162,9 +165,9 @@ export class CompendiumTOC extends Compendium<
   ) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
-    const pack = game.packs.get(this.collection.metadata.id);
+    const pack = game.packs.get(this.collection.metadata.id, { strict: true });
     if (this.#fullTextSearch) {
-      let searchFields: Array<String> = [];
+      let searchFields: Array<string> = [];
       switch (this.collection.metadata.type) {
         case 'Actor':
           searchFields = CONFIG.SWADE.textSearch.actor;
@@ -196,10 +199,10 @@ export class CompendiumTOC extends Compendium<
           searchFields = CONFIG.SWADE.textSearch.scene;
           break;
       }
-      pack.getIndex({
-        fields: searchFields,
+      pack.getIndex({ fields: searchFields });
+      const searchResults: Array<Document.Any> = pack.search({
+        query: rgx.source,
       });
-      const searchResults: Array<Document> = pack.search({ query: rgx.source });
       for (const li of children) {
         if (this.#fullTextSearch) {
           if (searchResults.some((e) => e._id === li.dataset.documentId)) {
@@ -356,10 +359,20 @@ export class CompendiumTOC extends Compendium<
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
-        const isMajor = foundry.utils.getProperty(hindrance, 'system.major');
-        const name = `${hindrance.name} ${
-          isMajor ? game.i18n.localize('SWADE.Major') : ''
-        }`;
+        let suffix: string;
+        if (hindrance.system.isMajor) {
+          suffix = game.i18n.localize('SWADE.Major');
+        } else if (
+          (hindrance.system.severity = constants.HINDRANCE_SEVERITY.MINOR)
+        ) {
+          suffix = game.i18n.localize('SWADE.Minor');
+        } else {
+          suffix =
+            game.i18n.localize('SWADE.Major') +
+            '/' +
+            game.i18n.localize('SWADE.Minor');
+        }
+        const name = `${hindrance.name} ${suffix}`;
         return {
           name: name.trim(),
           id: hindrance.id,

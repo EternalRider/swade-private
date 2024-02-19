@@ -22,6 +22,74 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.0
+
+### Added
+
+- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) by **jpmeehan5**
+- Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
+- Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
+- Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
+- Added a new flag for actors, `wildAttackDamage`, that modifies the bonus damage granted by the Wild Attack status. (#987) **by @jpmeehan5**
+- The roll dialog now displays a hint message when no modifiers are present on the roll. **by @florad92**
+- Added the following new hooks: (#798) **by @florad92**
+  - `swadePreReloadWeapon`
+  - `swadeReloadWeapon`,
+  - `swadeRefreshGmBennies`
+  - `swadeRefreshBennies`
+- Added context menu option to card decks to set them as the Action Deck. (#975) **by @jpmeehan5**
+- Added two new global modifiers to support the Elan and No Mercy edges (`system.stats.globalMods.bennyTrait` and `system.stats.globalMods.bennyDamage` respectively). (#779) **by @jpmeehan5**
+- Added a dialog to select a new group leader combatant when the current leader is marked as defeated. (#943) **by @florad92**
+- Added Incapacitation effect and a corresponding toggle in the Combat Tracker. **by @florad92**
+- Added more tours. **by @jpmeehan5**
+  - Advances (#888)
+  - Headquarters (#955)
+- Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
+- Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
+- Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
+- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are not owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
+- Redrawing an Action Card now causes a card draw message to be created, even if the card remains the same. (#1036) **by @florad92**
+- Added documentation for the system hooks. (#872) **by @gunnar.busch**
+- Added additional translation strings.
+
+### Changed
+
+- Moved Combat Tracker documentation to a separate page and expanded its coverage. (#890) **by @jpmeehan5**
+- The `swade-app` style framework now handles coloring the scrollbars. **by @florad92**
+- Improved the display of notes in the inventory tab. (#964) **by @florad92**
+- Refactored a large number of functions on SwadeActor and SwadeItem to use the system data model instead of type guards. (#935) **by @jpmeehan5**
+  - Deprecated `SwadeItem.getTraitModifiers()` in favor of a proper getter, `SwadeItem.traitModifiers`
+  - Deprecated `SwadeItem.needsFullReloadProcedure()` in favor a proper getter, `SwadeItem.usesAmmoFromInventory`
+  - Deprecated `SwadeItem._getPowerPoints` in favor of a proper getter, `SwadeItem.powerPointObject`
+  - [BREAKING] Removed \_isReloadPossible() as redundant
+  - [BREAKING] Moved \_createChargeUsageMessage to #createChargeUsageMessage, making it fully private
+- Rearranged item sheet header inputs for localization. (#850) **by @florad92**
+- Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
+- Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
+- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (#1004) **by @florad92**
+- You can no longer have negative wounds or fatigue. **by @florad92**
+- Accordions on the character sheet now remember whether they were opened or closed when re-rendering the sheet. (#964) **by @florad92**
+- Ending a combat encounter now removes the Hold status from any tokens that had it. **by @florad92**
+- The current action deck can no longer be used to layout a chase. To lay out a chase, either create a new Action deck from the presets or duplicate the existing deck. **by @jpmeehan5**
+- Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
+- Move the option to redraw initiative away from a context menu. You can now click the drawn card in the combat track to start drawing a new card. (#1032) **by @florad92**
+
+### Fixed
+
+- Assigning a new card to a combatant should no longer fail if the card had already been drawn previously. (#908) **by @florad92**
+- Non-GMs can now drag&drop effects and items from and to Item Sheets. (#988) **by @florad92**
+- Opening a Journal Entry Page link for the first time from the Compendium TOC will now directly take you to that specific entry, rather than just open the journal. (#953) **by @jpmeehan5**
+- Item Grants no longer throw an error if an item could not be found. **by @florad92**
+- Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
+- The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
+- Players are now once again prompted if they should draw a card during initiative. (#536) **by @florad92**
+- Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
+- _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
+- Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
+- Actions on `action` items should now display correctly on the quickaccess (#999) **by @jpmeehan5**
+- Combatants no longer loose their card if they've held their turn. (#1030) **by @florad92**
+- Text enrichment on the character sheet now no longer fails for grandchild documents. (#964) **by @florad92**
+
 ## 3.2.5
 
 ### Fixed
@@ -108,13 +176,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed the background parchment image for compendiums and character sheets for one that tiles better when expanded. **by @florad92**
 - Refactored how Edges record their requirements. There are several requirement types which can take a SWID as a reference to the item or value being required. (#625) **by @florad92**
 - The Advance Editor now saves changes automatically. (#972) **by @florad92**
+- Updated development dependencies (only relevant to developers building local versions). **by @florad92**
 
 ### Deprecated
 
 - SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered, and will be removed in Version 4.0. (#934) **by @jpmeehan5**
 - Deprecated the `parryBaseSkill` setting in favor of the `parryBaseSwid`
-
-### Removed
 
 ### Fixed
 
@@ -397,7 +464,7 @@ m
 - Fixed a small issue with a label in the Tweaks window. (#780) **by @florad92**
 - Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782) **by @florad92**
 - Shields should once again display their notes in the inventory tab of the Character Sheet. (#783) **by @florad92**
-- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784) **by @florad92**
+- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (#784) **by @florad92**
 - Fixed a small spacing issue on the NPC sheet. (#760) **by @jpmeehan5**
 
 ### Known Issues

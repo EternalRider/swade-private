@@ -6,6 +6,7 @@ SWADE:
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
+  HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
   ModHint: Make sure your modifier includes a + or -
@@ -28,6 +29,7 @@ SWADE:
   WildCard: Wild Card
   Extra: Extra
   Bennies: Bennies
+  BenniesCount: '{count} Bennies'
   TraitMod: Trait Modifier
   SkillTest: Skill Test
   AttributeTest: Attribute Test
@@ -78,12 +80,14 @@ SWADE:
   BenniesGMAddMessage: took an additional Benny!
   BenniesSpendMessage: spends a Benny!
   BenniesMax: Bennies Reset
+  Elan: Elan
   EditSkill: Edit Skill
   EdEdge: Edit Edge
   EdHind: Edit Hindrance
   Ed: Edit
   Del: Delete
   Arcane: Arcane
+  InnatePower: Innate Power
   All: All
   HasPowers: Has Powers
   Weapons: Weapons
@@ -274,6 +278,7 @@ SWADE:
   Ok: Ok
   Cancel: Cancel
   Redraw: Draw Card
+  RedrawBenny: Redraw Card with Benny
   Add: Add
   ConfigInit: Configure Initiative
   IgnWounds: Ignore Wounds
@@ -301,6 +306,10 @@ SWADE:
   Duplicate: Duplicate
   Reload: Reload
   Refresh: Refresh this card
+  RefreshOnly: Refresh
+  NotOwnedError: You must own this item/actor for this
+  GrantsItemsError: Refresh doesn't work for items that grant others
+  NoUpdatedItemFound: No item suitable for a refresh has been found
   Ammo: Ammunition
   AddOrReplaceActions:
     Title: Add or Replace Actions
@@ -329,6 +338,7 @@ SWADE:
   NoAmmoPP: Could not find power points matching the set ammo
   NoMags: You don't have any consumables marked as magazines in your inventory
   RemoveAmmo: Remove Ammunition
+  DiscardMagazine: Discard empty magazine
   ConsumableType:
     Label: Subtype
     Regular: Regular
@@ -347,8 +357,9 @@ SWADE:
   About: About
   EdgesHindrances: Edges & Hindrances
   GrantsPowers: Grants Powers
-  Crew: Required Crew
-  Passengers: Optional Passengers
+  Crew: Crew
+  RequiredCrew: Required Crew
+  Passengers: Passengers
   String: Text
   Number: Number
   Checkbox: Checkbox
@@ -389,6 +400,15 @@ SWADE:
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
   'No': 'No'
+  Headquarters:
+    Advantage: Advantage
+    Complication: Complication
+    Form: Form
+    Description: Description
+    Acquisition: Acquisition
+    Maintenance: Maintenance
+    Upgrades: Upgrades
+  SetActionDeck: Set Deck as Action Deck
   ShowCharacterSummary: Show Character Summary
   CharacterSummary: Character Summary
   CopyHtml: Copy HTML
@@ -427,6 +447,7 @@ SWADE:
       Add: Add Preset
     Value: Value
     Ignore: Ignore?
+    None: No modifiers at the moment
   Illumination:
     _name: Illumination
     Dim: Dim Light
@@ -1236,6 +1257,100 @@ SWADE:
           Select which tokens (by Disposition) can see this aura. You can always
           see all auras of a token of which you have at least Observer
           permission.
+    ADVANCES:
+      Title: Advances
+      Description: See how SWADE tracks character advances
+      Actor: Advances Tour Demo Character
+      AccessAdvanceMode:
+        Title: Setting the Advance Mode
+        Content: A character's advance mode can be switched in the Tweaks menu.
+      Mode:
+        Title: Advance Mode Selection
+      AdvanceTab:
+        Title: The Advances Tab
+        Content: Advances are configured in the primary "About" tab.
+      Create:
+        Title: Creating an Advance
+        Content: This button creates a new advance for use
+      Editor:
+        Title: The Advance Editor
+        Content: This form provides configuration info for a new advance.
+      Type:
+        Title: Advance Type Selection
+        Content: >-
+          Choose what kind of advance this is. Currently this does not trigger
+          any further validation or selection, but future updates to the system
+          may change this.
+      Rank:
+        Title: Advance Rank
+        Content: >-
+          The rank that your character will be upon arriving at this advance.
+          This cannot be directly edited, as it is derived from your character's
+          total number of advances.
+      Number:
+        Title: Advance Number
+        Content: >-
+          This controls the order of advances. Changing this will move the
+          advance to an earlier spot in the list.
+      Planned:
+        Title: Planned Advances
+        Content: >-
+          You can mark advances as planned to prevent them from counting towards
+          your character's rank.
+      Notes:
+        Title: Advance Notes
+        Content: >-
+          Include any relevant information about your advance here; what traits
+          you increased, what edges you selected, etc.
+      SaveChanges:
+        Title: Save Changes Button
+        Content: >-
+          Changes are NOT saved automatically back to the character. You must
+          use the save button in the ProseMirror Editor or this "Save Changes"
+          button
+    HEADQUARTERS:
+      Title: Headquarters
+      Description: >-
+        Learn about the new Journal Entry Page type, Headquarters! 
+        Useful for <em>Fantasy Companion</em> strongholds, 
+        <em>Horror Companion</em> lodges, 
+        and <em>Super Powers Companion</em> bases.
+      JournalEntry: Headquarters Tour Journal
+      HeadquartersPage: Headquarters Tour Page
+      CreateJournal:
+        Title: Create a Journal
+        Content: Headquarters must be created within a parent journal.
+      CreatePage:
+        Title: Create a Headquarters Page
+        Content: >-
+          Headquarters are a new journal page type, 
+          just like text, image, and pdf.
+      HQPage:
+        Title: The Headquarters Page
+        Content: >-
+          Headquarters are like text pages, but provide 
+          more structured input. The sections are modeled after the four 
+          steps provided in each of the companions.
+      Advantage:
+        Title: Advantage
+        Content: >-
+          The specific advantages depend on what genre you're playing; 
+          you can drag roll results into this section.
+      Complication:
+        Title: Complication
+        Content: >-
+          Like advantages, you can drag roll results into this section.
+      Form:
+        Title: Form
+        Content: >-
+          The form section is split into three parts so you have 
+          room to describe every aspect of your headquarters.
+      Upgrades:
+        Title: Upgrades
+        Content: >-
+          You can list your upgrades here. This is a fully rendered HTML
+          input, so feel free to use a bulleted list, table, or whatever
+          other organizational system makes sense to you.
   SWID:
     Long: Savage Worlds ID
     Short: SWID
@@ -1245,6 +1360,46 @@ SWADE:
       Proceed with caution and only if you are sure.
     ChangeWarning3: Do you want to proceed?
     ChangeWarning1: Proceed with caution!
+  HindranceSeverity:
+    Label: Severity Options
+    Major: Major Only
+    Minor: Minor Only
+    Either: Either
+  Weapon:
+    RangeType:
+      Label: Range Type
+      Melee: Melee
+      Ranged: Ranged
+      Mixed: Mixed
+  NpcWildCardsOnScene: NPC Wild Cards on Scene
+  PlayerCardDrawHelper:
+    Title: SWADE Player Card Draw Helper
+  CardDrawMsgSize:
+    None: None
+    Compact: Compact
+    Large: Large
+  SelectNewGroupLeader: Select a new Group Leader
+  ToggleIncap: Toggle Incapacitation
+  AmbushAssistant:
+    OnHold: On Hold
+    NormalDraw: Normal Draw
+    NoTurn: No Turn
+    Title: Ambush Assistant
+    Hint: Drag & Drop Combatants to set up the surprise round
+    Unassigned: Unassigned
+  Combat:
+    StartSurpriseRound: Start Surprise Round
+    AdvanceRoundTitle: Advance to next round?
+    AdvanceRoundContent: Do you want to advance to the next round?
+    RevertRoundTitle: Revert to previous round?
+    RevertRoundContent: Do you want to revert to the previous round?
+    DiscardedCards: Discarded Cards
+    Redraw: Card Redraw
+    RedrawDialog:
+      Content: Draw a new Card with a Benny or for free?
+  FollowerCount: '{count} Followers'
+  Benny: Benny
+  Free: Free
 TYPES:
   Actor:
     character: Player Character
@@ -1265,3 +1420,5 @@ TYPES:
   Card:
     adventure: Adventure Card
     poker: Poker Card
+  JournalEntryPage:
+    headquarters: Headquarters

@@ -49,7 +49,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       const template = `
           <form>
             <div>
-              <center>${game.i18n.localize('SWADE.Del')} 
+              <center>${game.i18n.localize('SWADE.Del')}
                 <strong>${ownedItem?.name}</strong>?
               </center>
               <br>

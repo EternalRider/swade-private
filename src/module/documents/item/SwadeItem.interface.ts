@@ -6,7 +6,7 @@ import SwadeItem from './SwadeItem';
 
 export interface ItemChatCardChip {
   icon?: string;
-  text?: string | number;
+  text?: string | number | null;
   title?: string;
 }
 
@@ -22,7 +22,7 @@ export interface ItemChatCardData {
   description: string;
 }
 
-export interface ItemChatCardPowerPoints {
+export interface ItemDisplayPowerPoints {
   max: number;
   value: number;
 }
@@ -58,6 +58,18 @@ export interface ItemGrant {
   mutation?: DeepPartial<ItemDataConstructorData>;
   missing?: boolean;
   major?: boolean;
+}
+
+export interface ChoiceSet {
+  title: string;
+  choice: number | null;
+  choices: Array<MutationOption>;
+}
+
+export interface MutationOption {
+  name: string;
+  addToName?: boolean;
+  mutation?: DeepPartial<ItemDataConstructorData>;
 }
 
 export interface ItemGrantChainLink {

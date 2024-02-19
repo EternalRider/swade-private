@@ -57,8 +57,8 @@ SWADE:
   ArchetypeAbilities: Habilidades de Arquétipo
   About: Sobre
   EdgesHindrances: Vant & Comp
-  Crew: Tripulação Requerida
-  Passengers: Passageiros Opcionais
+  Crew: Tripulação
+  Passengers: Passageiros
   String: Texto
   Number: Número
   Checkbox: Caixa de seleção
@@ -232,8 +232,9 @@ SWADE:
     InitCardDeck:
       Name: Baralho a ser usado para Iniciativa
     ParryBase:
-      Name: Perícia base de Aparar
-      Hint: O nome da perícia usada para calcular Aparar
+      Name: SWID da Perícia Lutar
+      Hint: O ID Savage Worlds da perícia que será usada para calcular o Aparar de
+        atores. Leia mais sobre o ID Savage Worlds na documentação!
     UseAttributeShorts:
       Hint: >-
         Ative esta opção se você quiser ver os nomes de atributos abreviados nas
@@ -1079,6 +1080,32 @@ SWADE:
   Unfamiliar:
     '2': Pouco familiar (-2)
     '4': Pouco familiar (-4)
+  Requirements:
+    Editor:
+      Value: Valor
+      SWID: SWID
+      Header: Editar requerimentos para {name}
+      AddHint: Adicionar um novo requerimento
+      DeleteHint: Deletar este requerimento
+      Label: Nome
+    Combinator: Combinador
+    And: e
+    Or: ou
+    Other: Outro
+  SWID:
+    Short: SWID
+    Regenerate: Regenerar ID do Savage Worlds
+    ChangeWarning1: Prossiga com cuidado!
+    Long: ID Savage Worlds
+    ChangeWarning2: Alterar a ID do Savage Worlds de um item pode quebrar as referências
+      ao item! Proceda com cautela e somente se tiver certeza.
+    ChangeWarning3: Você quer continuar?
+  RequiredCrew: Tripulação Requerida
+  Weapon:
+    RangeType:
+      Melee: Corpo a corpo
+      Ranged: À Distância
+      Mixed: Misto
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura

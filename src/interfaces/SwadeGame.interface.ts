@@ -13,7 +13,7 @@ import SwadeActiveEffect from '../module/documents/active-effect/SwadeActiveEffe
 import { rollItemMacro } from '../module/hooks/hotbarDrop';
 import ItemChatCardHelper from '../module/ItemChatCardHelper';
 import * as migrations from '../module/migration/migration';
-import CharacterSheet from '../module/sheets/official/CharacterSheet';
+import CharacterSheet from '../module/sheets/CharacterSheet';
 import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';

@@ -1,31 +1,43 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
-import { Context } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import {
+  Context,
+  DocumentModificationOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Attribute, ItemMetadata } from '../../../globals';
+import { AuraData } from '../../../interfaces/AuraData.interface';
+import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { AuraData } from '../../../interfaces/AuraData.interface';
-import IRollOptions from '../../../interfaces/RollOptions.interface';
+import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
+import {
+  ArmorData,
+  ConsumableData,
+  GearData,
+  ShieldData,
+  SkillData,
+  WeaponData,
+} from '../../data/item';
 import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
-import { Logger } from '../../Logger';
 import {
-  addUpModifiers,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
+import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { TraitDie } from './actor-data-source';
+import { SwadeActorDataSource, TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -33,7 +45,12 @@ declare global {
   }
   interface FlagConfig {
     swade: {
+      ambidextrous?: boolean;
       auras?: Record<string, AuraData>;
+      elan?: boolean;
+      hardy?: boolean;
+      ignoreBleedOut?: boolean;
+      wildAttackDamage?: string | number;
     };
   }
 }
@@ -83,8 +100,7 @@ export default class SwadeActor extends Actor {
 
   /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
-    if (this.system instanceof VehicleData) return false;
-    return this.system.wildcard || this.type === 'character';
+    return !!this.system.wildcard;
   }
 
   /** @returns true when the actor has an arcane background or a special ability that grants powers. */
@@ -629,22 +645,17 @@ export default class SwadeActor extends Actor {
 
   async getBenny() {
     if (this.system instanceof VehicleData) return;
-    const combatant = this.token?.combatant;
-    const notHiddenNPC =
-      !combatant?.isNPC || (combatant?.isNPC && !combatant?.hidden);
-    if (game.settings.get('swade', 'notifyBennies') && notHiddenNPC) {
-      const message = await renderTemplate(SWADE.bennies.templates.add, {
+    const combatant = this.token?.combatant as SwadeCombatant | undefined;
+    await this.update({ 'system.bennies.value': this.bennies + 1 });
+
+    const hiddenNPC = combatant?.isNPC && combatant?.hidden;
+    if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
+      const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: game.user,
       });
-      const chatData = {
-        content: message,
-      };
-      await CONFIG.ChatMessage.documentClass.create(chatData);
+      await getDocumentClass('ChatMessage').create({ content });
     }
-    await this.update({
-      'system.bennies.value': this.bennies + 1,
-    });
 
     /**
      * A hook event that is fired after an actor has been awarded a benny
@@ -707,7 +718,7 @@ export default class SwadeActor extends Actor {
     }
     // Add a new effect
     else if (state) {
-      const aeClass = CONFIG.ActiveEffect.documentClass;
+      const aeClass = getDocumentClass('ActiveEffect');
       const data = foundry.utils.deepClone(effectData);
       foundry.utils.setProperty(data, 'statuses', [effectData.id]);
       delete data.id; //remove the ID to not trigger validation errors
@@ -722,31 +733,9 @@ export default class SwadeActor extends Actor {
 
   /**
    * Reset the bennies of the Actor to their default value
-   * @param displayToChat display a message to chat
    */
-  async refreshBennies(displayToChat = true) {
-    if (this.system instanceof VehicleData) return;
-    if (displayToChat) {
-      const message = await renderTemplate(SWADE.bennies.templates.refresh, {
-        target: this,
-        speaker: game.user,
-      });
-      const chatData = {
-        content: message,
-      };
-      CONFIG.ChatMessage.documentClass.create(chatData);
-    }
-    let newValue = this.system.bennies.max;
-    const hardChoices = game.settings.get('swade', 'hardChoices');
-    if (
-      hardChoices &&
-      this.isWildcard &&
-      this.type === 'npc' &&
-      !this.hasPlayerOwner
-    ) {
-      newValue = 0;
-    }
-    await this.update({ 'system.bennies.value': newValue });
+  async refreshBennies(notify = true) {
+    this.system.refreshBennies?.(notify);
   }
 
   /** Calculates the total Wound Penalties
@@ -829,57 +818,7 @@ export default class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    const out: Record<string, number | string> = {
-      wounds: this.system.wounds.value || 0,
-    };
-
-    //return early if the actor is a vehicle
-    if (this.system instanceof VehicleData) {
-      out.topspeed = this.system.topspeed || 0;
-      return out;
-    }
-
-    const globalMods = this.system.stats.globalMods;
-
-    // Attributes
-    const attributes = this.system.attributes;
-    for (const [key, attribute] of Object.entries(attributes)) {
-      const short = key.substring(0, 3);
-      const name = game.i18n.localize(SWADE.attributes[key].long);
-      const die = attribute.die.sides;
-      let mod = attribute.die.modifier || 0;
-      if (includeModifiers) {
-        mod = structuredClone<RollModifier[]>([
-          {
-            label: game.i18n.localize('SWADE.TraitMod'),
-            value: attribute.die.modifier as number,
-          },
-          ...globalMods[key],
-          ...globalMods.trait,
-        ])
-          .filter((m) => m.ignore !== true)
-          .reduce(addUpModifiers, 0) as number;
-      }
-      let modString = mod !== 0 ? mod.signedString() : '';
-      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
-      let val = `1d${die}x[${name}]${modString}`;
-      if (die <= 1) val = `1d${die}[${name}]${modString}`;
-      out[short] = val;
-    }
-
-    for (const skill of this.itemTypes.skill) {
-      const die = skill.system.die.sides;
-      let mod = Number(skill.system.die.modifier);
-      if (includeModifiers) mod = skill.modifier;
-      const name = skill.name!.slugify({ strict: true });
-      let modString = mod !== 0 ? mod.signedString() : '';
-      if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
-      out[name] = `1d${die}[${skill.name}]${modString}`;
-    }
-    out.fatigue = this.system.fatigue.value || 0;
-    out.pace = this.system.stats.speed.adjusted || 0;
-
-    return out;
+    return this.system.getRollData(includeModifiers);
   }
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
@@ -903,11 +842,11 @@ export default class SwadeActor extends Actor {
 
   calcInventoryWeight(): number {
     const items = this.items.map((i) =>
-      i.type === 'armor' ||
-      i.type === 'weapon' ||
-      i.type === 'shield' ||
-      i.type === 'gear' ||
-      i.type === 'consumable'
+      i.system instanceof ArmorData ||
+      i.system instanceof WeaponData ||
+      i.system instanceof ShieldData ||
+      i.system instanceof GearData ||
+      i.system instanceof ConsumableData
         ? i.system
         : null,
     );
@@ -915,13 +854,13 @@ export default class SwadeActor extends Actor {
     if (this.system instanceof VehicleData) {
       for (const item of items) {
         if (!item) continue;
-        retVal += item.weight * item.quantity;
+        retVal += Number(item.weight) * Number(item.quantity);
       }
     } else {
       for (const item of items) {
         if (!item) continue;
         if (item.equipStatus !== constants.EQUIP_STATE.STORED) {
-          retVal += item.weight * item.quantity;
+          retVal += Number(item.weight) * Number(item.quantity);
         }
       }
     }
@@ -998,7 +937,7 @@ export default class SwadeActor extends Actor {
 
     const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
-    const numbness = this.system.woundsOrFatigue.ignored;
+    const numbness = this.system.woundsOrFatigue?.ignored;
     if (numbness > 0) {
       const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
         'SWADE.Fatigue',
@@ -1067,7 +1006,7 @@ export default class SwadeActor extends Actor {
     if (this.system instanceof VehicleData) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
-    if (skill.type !== 'skill') {
+    if (!(skill.system instanceof SkillData)) {
       throw new Error('Detected-non skill in skill roll construction');
     }
     if (!options.rof) options.rof = 1;
@@ -1093,7 +1032,7 @@ export default class SwadeActor extends Actor {
     const basePool = PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
-      this.system.stats.globalMods[skill.system.attribute] ?? [];
+      this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
     const effects = structuredClone<RollModifier[]>([
       ...(skillData.effects ?? []),
       ...attGlobalMods,
@@ -1207,9 +1146,9 @@ export default class SwadeActor extends Actor {
 
     //add the toughness from the armor
     for (const armor of this.itemTypes.armor) {
-      if (armor.type !== 'armor') continue;
+      if (!(armor.system instanceof ArmorData)) continue;
       if (armor.isReadied && armor.system.locations.torso) {
-        finalToughness += armor.system.toughness;
+        finalToughness += Number(armor.system.toughness);
         sources.push({
           label: armor.name,
           value: armor.system.toughness,
@@ -1231,8 +1170,8 @@ export default class SwadeActor extends Actor {
       'skill',
     );
 
-    const skillDie = parryBaseSkill?.system.die.sides ?? 0;
-    const skillMod = parryBaseSkill?.system.die.modifier ?? 0;
+    const skillDie = (parryBaseSkill?.system as SkillData)?.die.sides ?? 0;
+    const skillMod = (parryBaseSkill?.system as SkillData)?.die.modifier ?? 0;
 
     //base parry calculation
     parryTotal = Math.round(skillDie / 2) + parryBaseValue;
@@ -1258,7 +1197,7 @@ export default class SwadeActor extends Actor {
 
     //add shields
     for (const shield of this.itemTypes.shield) {
-      if (shield.type !== 'shield') continue;
+      if (!(shield.system instanceof ShieldData)) continue;
       if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
         const shieldParry = shield.system.parry ?? 0;
         parryTotal += shieldParry;
@@ -1273,19 +1212,19 @@ export default class SwadeActor extends Actor {
     //add equipped weapons
     const ambidextrous = this.getFlag('swade', 'ambidextrous');
     for (const weapon of this.itemTypes.weapon) {
-      if (weapon.type !== 'weapon') continue;
+      if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;
 
-      if (weapon.system.equipStatus >= constants.EQUIP_STATE.OFF_HAND) {
+      if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
         // only add parry bonus if it's in the main hand or actor is ambidextrous
         if (
-          weapon.system.equipStatus >= constants.EQUIP_STATE.EQUIPPED ||
+          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
           ambidextrous
         )
           parryBonus += weapon.system.parry ?? 0;
 
         //add trademark weapon bonus
-        parryBonus += weapon.system.trademark;
+        parryBonus += Number(weapon.system.trademark);
       }
       if (parryBonus !== 0) {
         sources.push({
@@ -1378,12 +1317,13 @@ export default class SwadeActor extends Actor {
 
     //get armor items and retrieve their data
     const armorList = this.itemTypes.armor.map((i) =>
-      i.type === 'armor' ? i.system : null,
+      i.system instanceof ArmorData ? i.system : null,
     );
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped = i?.equipStatus > constants.EQUIP_STATE.CARRIED;
+        const isEquipped =
+          Number(i?.equipStatus) > constants.EQUIP_STATE.CARRIED;
         const isLocation = i?.locations[location];
         const isNaturalArmor = i?.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;
@@ -1492,7 +1432,7 @@ export default class SwadeActor extends Actor {
   protected override async _preCreate(
     createData: ActorDataConstructorData,
     options: DocumentModificationOptions,
-    user: User,
+    user: BaseUser,
   ) {
     await super._preCreate(createData, options, user);
     //return early if it's a vehicle
@@ -1543,7 +1483,6 @@ export default class SwadeActor extends Actor {
             name: skillName,
             type: 'skill',
             img: 'systems/swade/assets/icons/skill.svg',
-            //@ts-expect-error We're just adding some base data for a skill here.
             system: {
               attribute: '',
             },
@@ -1561,7 +1500,6 @@ export default class SwadeActor extends Actor {
         name: game.i18n.localize('SWADE.Unskilled'),
         type: 'skill',
         img: 'systems/swade/assets/icons/skill.svg',
-        //@ts-expect-error We're just adding some base data for a skill here.
         system: {
           attribute: '',
           die: {
@@ -1577,12 +1515,7 @@ export default class SwadeActor extends Actor {
 
     //Handle starting currency
     if (!isImported) {
-      let currency = 0;
-      if (this.type === 'character') {
-        currency = game.settings.get('swade', 'pcStartingCurrency');
-      } else if (this.type === 'npc') {
-        currency = game.settings.get('swade', 'npcStartingCurrency');
-      }
+      const currency = this.system.startingCurrency ?? 0;
       this.updateSource({ 'system.details.currency': currency });
     }
   }
@@ -1590,9 +1523,9 @@ export default class SwadeActor extends Actor {
   protected override _onUpdate(
     changed: DeepPartial<SwadeActorDataSource> & Record<string, unknown>,
     options: DocumentModificationOptions,
-    user: string,
+    userId: string,
   ) {
-    super._onUpdate(changed, options, user);
+    super._onUpdate(changed, options, userId);
     // Updating for Wild Card display toggle
     if (this.type === 'npc') {
       ui.actors?.render(true);

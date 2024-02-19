@@ -20,17 +20,17 @@ export type SwadeActorDataProperties =
   | SwadeVehicleDataSource;
 
 interface SwadeCharacterDataSource {
-  data: CharacterDataPropertiesData;
+  system: CharacterDataPropertiesData;
   type: 'character';
 }
 
 interface SwadeNpcDataSource {
-  data: CharacterDataPropertiesData;
+  system: CharacterDataPropertiesData;
   type: 'npc';
 }
 
 interface SwadeVehicleDataSource {
-  data: VehicleDataPropertiesData;
+  system: VehicleDataPropertiesData;
   type: 'vehicle';
 }
 
@@ -67,6 +67,8 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
       attack: RollModifier[];
       damage: RollModifier[];
       ap: RollModifier[];
+      bennyTrait: RollModifier[];
+      bennyDamage: RollModifier[];
     };
     parry: {
       sources: DerivedModifier[];
@@ -75,6 +77,7 @@ export type CharacterDataPropertiesData = CharacterDataSourceData & {
     toughness: {
       sources: DerivedModifier[];
       effects: DerivedModifier[];
+      armorEffects: DerivedModifier[];
     };
   };
   details: {

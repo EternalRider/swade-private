@@ -278,7 +278,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
           return (
             isWeapon &&
             !!loadedAmmo &&
-            item.needsFullReloadProcedure() &&
+            item.usesAmmoFromInventory &&
             (item.system.reloadType === constants.RELOAD_TYPE.MAGAZINE ||
               item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );

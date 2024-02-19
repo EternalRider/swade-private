@@ -10,6 +10,7 @@
 
   //tabs
   --tab-font: 'Anton', 'Signika', sans-serif;
+  --tab-color-active: var(--accent-color);
   --tab-color-inactive: rgb(0, 0, 0);
   --tab-hover-shadow: 0 0 8px var(--color-shadow-primary);
 
@@ -22,6 +23,7 @@
   --button-border-radius: 5px;
 
   font-family: var(--default-font);
+  scrollbar-gutter: stable;
 
   .window-content,
   &.app.sidebar-popout .window-content {
@@ -115,6 +117,7 @@
       text-shadow: var(--input-box-shadow);
     }
     &:disabled {
+      color: revert;
       cursor: default;
       &:hover,
       &:focus {
@@ -151,7 +154,9 @@
       font-size: 1em;
       color: var(--tab-color-inactive);
       border-radius: 8px 8px 0 0;
-      box-shadow: 0px -4px 6px -3px #0000009e, 0px -4px 6px -3px #0000002b inset;
+      box-shadow:
+        0px -4px 6px -3px #0000009e,
+        0px -4px 6px -3px #0000002b inset;
       white-space: nowrap;
       &:hover,
       &:focus {
@@ -160,7 +165,7 @@
     }
     .active {
       text-shadow: none;
-      color: var(--accent-color);
+      color: var(--tab-color-active);
       box-shadow: 0px -6px 6px -1px #0000006b;
       &:hover,
       &:focus {
@@ -215,6 +220,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    column-gap: 0.5rem;
 
     button {
       margin-left: 0;
@@ -239,5 +245,21 @@
 
   .empty-hint {
     color: var(--accent-color-secondary);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: 0 0 1px var(--accent-color-secondary) inset;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    outline: none;
+    border-radius: 3px;
+    background: var(--accent-color);
+    border: 1px solid color-mix(in srgb, var(--accent-color), white 20%);
   }
 }

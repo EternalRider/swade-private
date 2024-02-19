@@ -3,6 +3,7 @@ import { constants } from '../../constants';
 import {
   additionalStats,
   category,
+  choiceSets,
   favorite,
   grants,
   itemDescription,
@@ -17,7 +18,8 @@ export interface AbilityData
 export class AbilityData extends foundry.abstract.TypeDataModel<
   foundry.data.fields.SchemaField<
     ReturnType<(typeof AbilityData)['defineSchema']>
-  >
+  >,
+  Item
 > {
   /** @inheritdoc */
   static override defineSchema() {
@@ -28,6 +30,7 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
       ...category(),
       ...grants(),
       ...additionalStats(),
+      ...choiceSets(),
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
@@ -41,5 +44,13 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
   static override migrateData(source: PotentialSource<AbilityData>) {
     migrations.renameRaceToAncestry(source);
     return super.migrateData(source);
+  }
+
+  get canHaveCategory() {
+    return true;
+  }
+
+  get canGrantItems() {
+    return true;
   }
 }

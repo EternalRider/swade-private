@@ -3,7 +3,11 @@ import { ClassicLevel } from 'classic-level';
 import { default as fm } from 'front-matter';
 import { existsSync, promises as fs } from 'fs';
 import { load as yamLoad } from 'js-yaml';
-import { marked } from 'marked';
+import { Marked } from 'marked';
+import { markedHighlight } from 'marked-highlight';
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import plaintext from 'highlight.js/lib/languages/plaintext';
 import path from 'path';
 
 const src = 'src/packs';
@@ -13,6 +17,9 @@ const items = ['edges', 'hindrances', 'powers', 'skills'];
 
 const journals = ['system-docs'];
 
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('plaintext', plaintext);
+
 await main();
 
 async function main() {
@@ -20,12 +27,12 @@ async function main() {
   const inputDir = path.resolve(src);
   const outputDir = path.resolve(dest);
   if (!existsSync(outputDir)) await fs.mkdir(outputDir, { recursive: true });
-
+  
   // pack all items
   for (const pack of items) {
     await packItemCompendium(pack, inputDir, outputDir);
   }
-
+  
   //pack journal entries
   for (const journal of journals) {
     await packJournalCompendium(journal, inputDir, outputDir);
@@ -37,7 +44,7 @@ async function main() {
  * @param {string} pack The name of the item compendium
  * @param {string} inputDir The directory to read files from
  * @param {string} outputDir The directory to write to
- */
+*/
 async function packItemCompendium(pack, inputDir, outputDir) {
   console.log(chalk.green('Building pack ' + chalk.bold(pack) + '...'));
   const dbPath = path.join(outputDir, pack);
@@ -65,7 +72,7 @@ async function packItemCompendium(pack, inputDir, outputDir) {
  * @param {string} journal The name of the journal compendium
  * @param {string} inputDir The directory to read files from
  * @param {string} outputDir The directory to write to
- */
+*/
 async function packJournalCompendium(journal, inputDir, outputDir) {
   console.log(chalk.green('Building pack ' + chalk.bold(journal) + '...'));
   const dbPath = path.join(outputDir, journal);
@@ -100,7 +107,7 @@ async function packJournalCompendium(journal, inputDir, outputDir) {
  * @param {ChainedBatch} batch The database Transaction
  * @param {object} doc The raw document data
  * @param {string} type the type of document i.e. actor or journal
- */
+*/
 function packDocument(batch, doc, type) {
   doc._id ||= makeID(); //add ID if necessary
   const key = doc._key || '!' + type + '!' + doc._id; //grab the key or construct it if necessary
@@ -113,7 +120,7 @@ function packDocument(batch, doc, type) {
  * @param {string} content The string content of the page
  * @param {object} metadata Metadata loaded from the frontmatter
  * @returns {object} the constructed page
- */
+*/
 function createPage(content, metadata) {
   const protoPage = {
     type: 'text',
@@ -137,7 +144,7 @@ function getDB(path) {
  * @param {ClassicLevel} db The database currently being worked on
  * @param {ChainedBatch} batch The currently active Transaction
  * @param {string} pack The pack being worked on
- */
+*/
 async function closeTransactionAndDB(db, batch, pack) {
   //commit and close the DB
   await batch.write();
@@ -194,6 +201,15 @@ async function parseMarkdownToHTML(raw) {
    */
   // eslint-disable-next-line no-misleading-character-class
   const markdown = raw.replace(/^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/, '');
+  const marked = new Marked(
+    markedHighlight({
+      langPrefix: 'hljs language-',
+      highlight(code, lang) {
+        const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+        return hljs.highlight(code, { language }).value;
+      }
+    })
+  );  
   return marked.parse(markdown, {
     async: true,
     gfm: true,

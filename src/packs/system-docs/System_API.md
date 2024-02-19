@@ -20,12 +20,13 @@ The Savage Worlds system uses flags in its code to account for certain special e
   - `ambidextrous`: Allows an actor to add any parry bonus from off-hand weapons as well as blocks the automatic Off Hand penalty.
   - `hardy`: Prevents a second shaken result from the Apply Damage workflow from counting as a wound.
   - `ignoreBleedOut`: Prevents the application of the "Bleeding Out" status effect on a failed vigor roll upon incapacitation.
+  - `wildAttackDamage`: Replaces the bonus damage from Wild Attack; if you add 4 to this value, Wild Attacks will grant +4 damage instead of +2.
 - Effects
   - `conditionalEffect`: Sets if the effect should be ignored by default in the roll dialog.
 
 ## SWADE Hooks
 
-The [Knowledge Base](https://foundryvtt.com/article/intro-development/#javascript) explains what hooks are and how to generally use them. For hooks provided by the Savage Worlds system, see the [hooks snippets on the system repository](https://gitlab.com/peginc/swade/-/snippets/2578317) for a listing of hooks.
+The [Knowledge Base](https://foundryvtt.com/article/intro-development/#javascript) explains what hooks are and how to generally use them. For hooks provided by the Savage Worlds system, see the @UUID[Compendium.swade.system-docs.JournalEntry.8uC7RTgJOg8SW4cf.JournalEntryPage.du4BEcZ8G47otEeF]{Hooks Page} for a listing of hooks.
 
 ## Classes
 
@@ -124,3 +125,10 @@ The IDs of actors and items created for a SwadeTour are not static. To help targ
 - #itemSheetID
 - #actorSheetID
 - #tweaks
+
+#### Hooks
+
+
+swade(Action|PreCalcWounds|TakeDamage|Incapacitation|RefreshBennies|PreReloadWeapon|ReloadWeapon|SpendGameMasterBenny|GetGameMasterBenny|RefreshGmBennies|ActorPrepareDerivedData|PreRollAttribute|RollAttribute|PreRollSkill|RollSkill|SpendBenny|GetBenny|RollDamage|ChatCard|PreConsumeItem|ConsumeItem|Ready)
+
+
