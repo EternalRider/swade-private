@@ -504,12 +504,12 @@ export default class SwadeCombat extends Combat {
 
   protected async _promptAllPlayersForInitiative() {
     const [localDraws, remoteDraws] = this.combatants
-      .filter((c) => c.hasPlayerOwner && !c.isNPC && c.initiative !== null)
-      .map((c) => {
-        return {
-          combatant: c as SwadeCombatant,
-          user: c.players[0] as SwadeUser,
-        };
+      .filter(
+        (c: SwadeCombatant) =>
+          c.hasPlayerOwner && !c.isNPC && c.initiative === null,
+      )
+      .map((c: SwadeCombatant) => {
+        return { combatant: c, user: c.players[0] as SwadeUser };
       })
       .sort((a, b) => a.user.name.localeCompare(b.user.name))
       .partition((v) => this._determineIfRemoteDraw(v.user, v.combatant));

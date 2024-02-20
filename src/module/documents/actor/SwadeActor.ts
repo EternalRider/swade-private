@@ -115,7 +115,7 @@ export default class SwadeActor extends Actor {
   /** @returns true when the actor is currently in combat and has drawn a joker */
   get hasJoker(): boolean {
     const combatant = game.combats?.active?.getCombatantByActor(this.id!);
-    return combatant?.hasJoker ?? false;
+    return (combatant?.hasJoker as boolean) ?? false;
   }
 
   get bennies(): number {
