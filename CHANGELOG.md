@@ -22,11 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.1
+
+### Fixed
+
+- Fixed an issue that causes card draws to render multiple times. **by @florad92**
+- Fixed a small issue that would improperly determine local draws for initiative. **by @florad92**
+- Fixed an issue with the display of Quick Access **by @jpmeehan5**
+- Fixed an issue that caused the editor on item sheets to have a height of 0. **by @florad92**
+- Fixed an issue that would cause the combat to reset to turn 0 when a combatant goes off hold. (#1041) **by @florad92**
+
 ## 3.3.0
 
 ### Added
 
-- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) by **jpmeehan5**
+- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) **by @jpmeehan5**
 - Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 - Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
@@ -161,7 +171,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Added a migration that sets SWIDs on all items based on their current name.
   - Added a new setting to set the SWID of the item that should be used to calculate Parry.
   - [BREAKING] Refactored the parry calculation to take advantage of the newly introduced SWID.
-- Improved API documentation for module developers. (#945) **by jpmeehan5**
+- Improved API documentation for module developers. (#945) **by @jpmeehan5**
 - Added the ability to drag&drop Attributes into the Macro hotbar from the character and NPC sheet. (#145) **by @florad92**
 
 ### Changed
@@ -186,8 +196,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Scaled Token images should now properly display in the Compendium TOC. (#895) **by @florad92**
-- Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by jpmeehan5**
-- Fixed override data on items targeted by Active Effects. (#933) **by jpmeehan5**
+- Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by @jpmeehan5**
+- Fixed override data on items targeted by Active Effects. (#933) **by @jpmeehan5**
 - Restored icons for skills on the Character Sheet. (#921) **by @florad92**
 - Resist actions on weapons should no longer attempt to consume ammunition. (#923) **by @florad92**
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
@@ -215,7 +225,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed an issue in the action property shims that would prevent the use of active effects on said properties. **by @florad92**
 - Fixed added some data sanitization to actors. (#911) **by @florad92**
-- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by jpmeehan5**
+- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by @jpmeehan5**
 
 ## 3.1.2
 
@@ -272,7 +282,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the Actor, otherwise it's manually editable. **by @jpmeehan5**
 - **[BREAKING]** The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively. These properties were already accessible and were the correct avenue of access prior to this update. **by @jpmeehan5**
 - Improved the UI for editing actions on Items. (#864) **by @florad92**
-- The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by jpmeehan5**
+- The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by @jpmeehan5**
 - Improved styles for the character sheet for dealing with linebreaks in the attributes section. (#255) **by @florad92**
 - Significantly updated the system journal documentation to modern system functionality. (#868) **by @jpmeehan5**
 

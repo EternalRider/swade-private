@@ -181,19 +181,31 @@ export default class SwadeCombatant extends Combatant {
     if (!this.roundHeld) {
       const round = Math.max(this.parent.round, 1);
       // Add flag for on hold to show icon on token
-      await this.setRoundHeld(round);
-      await this.actor?.toggleActiveEffect(data, { active: true });
+      await Promise.all([
+        this.setRoundHeld(round),
+        this.actor?.toggleActiveEffect(data, { active: true }),
+      ]);
       if (this.isGroupLeader) {
-        await Promise.all(this.followers.map((f) => f.setRoundHeld(round)));
-        await Promise.all(
-          this.followers.map(
+        await Promise.all([
+          ...this.followers.map((f) => f.setRoundHeld(round)),
+          ...this.followers.map(
             (f) => f.actor?.toggleActiveEffect(data, { active: true }),
           ),
-        );
+        ]);
       }
     } else {
-      await this.unsetFlag('swade', 'roundHeld');
-      await this.actor?.toggleActiveEffect(data, { active: false });
+      await Promise.all([
+        this.unsetFlag('swade', 'roundHeld'),
+        this.actor?.toggleActiveEffect(data, { active: false }),
+      ]);
+      if (this.isGroupLeader) {
+        await Promise.all([
+          ...this.followers.map((f) => f.unsetFlag('swade', 'roundHeld')),
+          ...this.followers.map(
+            (f) => f.actor?.toggleActiveEffect(data, { active: false }),
+          ),
+        ]);
+      }
     }
   }
 
@@ -262,7 +274,7 @@ export default class SwadeCombatant extends Combatant {
     }
 
     await this.parent.update({
-      turn: this.parent.turns.findIndex((c) => c.id === c.id),
+      turn: this.parent.turns.findIndex((c) => c.id === this.id),
     });
   }
 

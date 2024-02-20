@@ -69,7 +69,7 @@ export default class SwadeChatMessage extends ChatMessage {
   override async getHTML() {
     if (this.isCardDraw) {
       const rendered = await this.#renderCardDraw();
-      if (rendered) this.content += '<hr>' + rendered;
+      if (rendered) this.content = rendered;
       else return $('');
     }
     return super.getHTML();
