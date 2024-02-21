@@ -128,22 +128,28 @@ export default class SwadeCombatTracker extends CombatTracker {
         {
           //make the selected combatant the leader
           _id: selected.id,
+          initiative: c.initiative,
+          cardString: c.cardString,
           'flags.swade.-=groupId': null,
           'flags.swade.isGroupLeader': true,
         },
       ];
       //un-assign the old leader
-      const cUpdate = { _id: c.id, 'flags.swade.isGroupLeader': false };
+      updates.push({
+        _id: c.id,
+        initiative: c.initiative + 0.001,
+        'flags.swade.groupId': selected.id,
+        'flags.swade.isGroupLeader': false
+      });
       if (c.groupId) updates['flags.swade.-=groupId'] = null;
-      updates.push(
-        cUpdate,
-        ...c.followers
-          .filter((f) => f.id !== selected.id)
-          .map((f) => {
-            //re-allocate the followers
-            return { _id: f.id, 'flags.swade.groupId': selected.id };
-          }),
-      );
+      let fInitiative = c.initiative;
+      for (const f of c.followers.filter((f) => f.id !== selected.id)) {
+        updates.push({
+          _id: f.id,
+          initiative: (fInitiative -= 0.001),
+          'flags.swade.groupId': selected.id,
+        });
+      }
       await this.viewed?.updateEmbeddedDocuments('Combatant', updates);
     }
     await super._onToggleDefeatedStatus(c);
@@ -322,11 +328,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         const combatant = this.viewed?.combatants.get(
           li.attr('data-combatant-id') as string,
         ) as SwadeCombatant;
-        const selectedTokens = (canvas?.tokens?.controlled ?? []).filter(
-          (t) => {
-            return t.actor.id !== combatant.actorId
-          }
-        );
+        const selectedTokens = (canvas?.tokens?.controlled ?? []).filter((t) => t.id !== combatant.tokenId);
         return (
           canvas?.ready &&
           selectedTokens.length > 0 &&
@@ -462,9 +464,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     const targetCombatant = this.viewed?.combatants.get(
       targetCombatantId,
     ) as SwadeCombatant;
-    const selectedTokens = (canvas?.tokens?.controlled ?? []).filter(
-      (t) => t.actor.id !== targetCombatant.actorId,
-    );
+    const selectedTokens = (canvas?.tokens?.controlled ?? []).filter((t) => t.id !== targetCombatant.tokenId);
     if (selectedTokens.length < 1) return; //return if no valid tokens are found
     await targetCombatant.update({
       flags: {
