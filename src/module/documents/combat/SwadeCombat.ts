@@ -258,7 +258,11 @@ export default class SwadeCombat extends Combat {
       if (isOnHoldA && !isOnHoldB) return -1;
       if (!isOnHoldA && isOnHoldB) return 1;
     }
-    return b.initiative - a.initiative;
+    if (b.initiative === a.initiative) {
+      return SwadeCombat.nameSortCombatants(a, b);
+    } else {
+      return b.initiative - a.initiative;
+    }
   }
 
   /**

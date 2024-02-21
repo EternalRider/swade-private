@@ -150,19 +150,21 @@ export default class SwadeCombatant extends Combatant {
 
     //update the combatant with the new card
     const updates = new Array<Updates>();
+    const initiative = cardValue + (suitValue / 10);
     updates.push({
       _id: this.id,
-      initiative: cardValue + (suitValue / 10),
+      initiative,
       'flags.swade': { cardValue, suitValue, hasJoker, cardString },
     });
 
     //update followers, if applicable
     if (this.isGroupLeader) {
       const followers = combat!.combatants.filter((f) => f.groupId === this.id);
+      let fInitiative = initiative;
       for (const follower of followers) {
         updates.push({
           _id: follower.id,
-          initiative: cardValue + (suitValue / 10) - 0.0001, //card value is the primary sort value, followed by the suit, so treat the suit as a decimal value.
+          initiative: (fInitiative -= 0.001), //card value is the primary sort value, followed by the suit, so treat the suit as a decimal value.
           'flags.swade': {
             cardString,
             cardValue,
