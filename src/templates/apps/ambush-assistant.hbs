@@ -1,13 +1,13 @@
 {{#*inline "combatant"}}
-  <li class='combatant' data-combatant-id='{{id}}'>
-    <img class='token-image' src='{{img}}' alt='{{name}}' />
-    <span class="name">{{name}}</span>
-    {{#if followers}}
-      <span class="followers">
-        <i class="fa-regular fa-user-group-crown"></i> {{localize "SWADE.FollowerCount" count=followers.length }}
-      </span>
-    {{/if}}
-  </li>
+<li class='combatant' data-combatant-id='{{id}}'>
+  <img class='token-image' src='{{img}}' alt='{{name}}' />
+  <span class="name">{{name}}</span>
+  {{#if followers}}
+  <span class="followers">
+    <i class="fa-regular fa-user-group-crown"></i> {{localize "SWADE.FollowerCount" count=followers.length }}
+  </span>
+  {{/if}}
+</li>
 {{/inline}}
 
 <div class='body'>
@@ -21,7 +21,7 @@
         {{localize 'SWADE.AmbushAssistant.Unassigned'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each unassigned}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
+        {{#each unassigned}}{{> combatant}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='hold'>
@@ -29,7 +29,7 @@
         {{localize 'SWADE.AmbushAssistant.OnHold'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each hold}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
+        {{#each hold}}{{> combatant}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='draw'>
@@ -37,7 +37,7 @@
         {{localize 'SWADE.AmbushAssistant.NormalDraw'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each draw}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
+        {{#each draw}}{{> combatant}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='noTurn'>
@@ -45,11 +45,12 @@
         {{localize 'SWADE.AmbushAssistant.NoTurn'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each noTurn}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
+        {{#each noTurn}}{{> combatant}}{{/each}}
       </ul>
     </section>
   </div>
   <footer>
+    {{log this}}
     <button type='submit' {{disabled submissionLocked}}>
       {{localize 'COMBAT.Begin'}}
     </button>
