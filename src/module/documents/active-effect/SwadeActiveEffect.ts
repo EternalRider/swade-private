@@ -505,9 +505,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const activeCombat = game.combats?.active;
     if (activeCombat) {
       // Get the Combatant that corresponds to the Actor.
-      const combatant = activeCombat.getCombatantByActor(
-        this.parent?.id as string,
-      );
+      const combatant = activeCombat.combatants.find((c) => c.actorId === this.parent?.id && c.tokenId === this.parent?.token?.id); // changed because multiple tokens share the same actorId
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn on Hold for Combatant.
