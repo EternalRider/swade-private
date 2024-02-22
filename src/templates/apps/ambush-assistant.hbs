@@ -21,7 +21,7 @@
         {{localize 'SWADE.AmbushAssistant.Unassigned'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each unassigned}}{{> combatant}}{{/each}}
+        {{#each unassigned}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='hold'>
@@ -29,7 +29,7 @@
         {{localize 'SWADE.AmbushAssistant.OnHold'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each hold}}{{> combatant}}{{/each}}
+        {{#each hold}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='draw'>
@@ -37,7 +37,7 @@
         {{localize 'SWADE.AmbushAssistant.NormalDraw'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each draw}}{{> combatant}}{{/each}}
+        {{#each draw}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
       </ul>
     </section>
     <section class='column' data-category='noTurn'>
@@ -45,12 +45,11 @@
         {{localize 'SWADE.AmbushAssistant.NoTurn'}}
       </header>
       <ul class='unmarked-list'>
-        {{#each noTurn}}{{> combatant}}{{/each}}
+        {{#each noTurn}}{{#unless groupId}}{{> combatant}}{{/unless}}{{/each}}
       </ul>
     </section>
   </div>
   <footer>
-    {{log this}}
     <button type='submit' {{disabled submissionLocked}}>
       {{localize 'COMBAT.Begin'}}
     </button>

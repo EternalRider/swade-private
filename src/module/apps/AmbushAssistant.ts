@@ -58,8 +58,12 @@ export class AmbushAssistant extends Application {
     await this.#combat.startCombat();
     for (const hold of this.#categories.hold) {
       await hold.toggleHold();
+      await hold.setRoundHeld(0.1);
+      await hold.update({initiative: 9999})
     }
     await this.close();
+    await this.#combat.update({turn: 0})
+    await this.#combat.debounceSetup();
   }
 
   protected override _onDrop(event: DragEvent): void {
@@ -77,7 +81,7 @@ export class AmbushAssistant extends Application {
 
     const combatant = this.#categories[category].findSplice((c) => c.id === id);
     if (!combatant) throw new Error();
-    this.#categories[targetCategory].push(combatant);
+    this.#categories[targetCategory].push(combatant,...combatant.followers);
     this.render(true);
   }
 
