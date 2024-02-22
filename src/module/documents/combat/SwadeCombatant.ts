@@ -193,6 +193,7 @@ export default class SwadeCombatant extends Combatant {
         this.actor?.toggleActiveEffect(data, { active: false }),
       ]);
     }
+    await this.parent.debounceSetup(); //hold icon wouldn't always clear
   }
 
   async toggleTurnLost() {
