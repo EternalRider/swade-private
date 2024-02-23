@@ -338,7 +338,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       callback: this.#onAddSelectedAsFollowers.bind(this),
     });
 
-    // Set all combatants with this one's name as its followers.
+    // Set all combatants with this one's name or Actor name as its followers.
     groupOptions.push({
       name: 'SWADE.GroupByName',
       icon: '<i class="fa-solid fa-users"></i>',
@@ -347,7 +347,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         const combatant = this.viewed?.combatants.get(combatantId)!;
         return (
           !!this.viewed!.combatants.find(
-            (c) => c.name === combatant.name && c.id !== combatantId,
+            (c) => (c.name === combatant.name || c.actor?.name === combatant.actor?.name) && c.id !== combatantId,
           ) && game.user!.isGM
         );
       },
@@ -514,18 +514,6 @@ export default class SwadeCombatTracker extends CombatTracker {
         });
       }
     }
-
-    /* for (const f of combatant.followers) {
-      await f.update({
-        initiative: (fInitiative -= 0.001),
-        flags: {
-          swade: {
-            cardValue: combatant.cardValue!,
-            suitValue: combatant.suitValue!,
-          },
-        },
-      });
-    } */
   }
 
   async #onGroupByName(li: JQuery<HTMLElement>) {
@@ -534,12 +522,12 @@ export default class SwadeCombatTracker extends CombatTracker {
       strict: true,
     }) as SwadeCombatant;
     const matchingCombatants = this.viewed?.combatants.filter(
-      (c) => c.name === combatant?.name && c.id !== combatant.id,
+      (c) => (c.name === combatant.name || c.actor?.name === combatant.actor?.name) && c.id !== combatant.id,
     ) as SwadeCombatant[];
     if (matchingCombatants && combatant) {
       await combatant.unsetGroupId();
       await combatant.setIsGroupLeader(true);
-      let fInitiative = initiative;
+      let fInitiative = combatant.initiative;
       for (const c of matchingCombatants) {
         await c.update({initiative: fInitiative -= 0.001})
         await c?.setGroupId(combatantId);
