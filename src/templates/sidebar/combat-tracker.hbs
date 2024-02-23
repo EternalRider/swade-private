@@ -62,7 +62,7 @@
         {{#each turns}}
         <li class="combatant actor directory-item flexrow {{this.css}}" data-combatant-id="{{this.id}}">
             <div class="token-initiative" style="border-right-color: {{combatantColor this.id}}; {{#if this.defeated}}opacity: 0.3;{{/if}}">
-                {{#if this.emptyInit}}
+                {{#if (and (not this.roundHeld) this.emptyInit)}}
                 <span class="initiative"></span>
                 {{else if this.roundHeld}}
                 <span class="initiative"><i class="fa-solid fa-hand-rock"></i></span>
@@ -98,12 +98,12 @@
                     </a>
                     {{#unless isVehicle}}
                     <a class="combatant-control {{#if this.isIncapacitated}}active{{/if}}" data-tooltip="SWADE.ToggleIncap" data-control="toggleIncapacitated">
-                        <i class="fa-solid fa-tombstone"></i>
+                        <i class="fa-solid fa-face-eyes-xmarks"></i>
                     </a>
                     {{/unless}}
                     {{#if ../combat.started}}
                     {{#if this.active}}
-                    {{#unless (or (isInGroup this.id) (gt ../combat.round (roundHeld this.id)) (turnLost this.id))}}
+                    {{#unless (or (gt ../combat.round (roundHeld this.id)) (turnLost this.id))}}
                     <a class="combatant-control {{#if (isOnHold this.id)}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold">
                         <i class="fa-solid fa-hand-rock"></i></a>
                     {{/unless}}
@@ -112,7 +112,6 @@
                     <a class="combatant-control {{#if (turnLost this.id)}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-control="toggleLostTurn">
                         <i class="fa-solid fa-ban"></i></a>
                     {{/if}}
-                    {{#unless (isInGroup this.id)}}
                     {{#if (isOnHold this.id)}}
                     {{#unless (and (eq ../combat.round (roundHeld this.id)) (eq ../combat.combatant.id this.id))}}
                     <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-control="actNow">
@@ -125,7 +124,6 @@
                         <i class="fa-solid fa-level-down-alt"></i></a>
                     {{/unless}}
                     {{/if}}
-                    {{/unless}}
                     {{/if}}
                     {{/if}}
                     <div class="token-effects">
@@ -141,7 +139,6 @@
                 <span class="resource">{{this.resource}}</span>
             </div>
             {{/if}}
-
         </li>
         {{/each}}
     </ol>
