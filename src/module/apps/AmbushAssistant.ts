@@ -55,14 +55,13 @@ export class AmbushAssistant extends Application {
       await Promise.all([noTurn.setTurnLost(true), ...noTurn.followers.map((f) => f.setTurnLost(true))]);
     }
     await this.#combat.startCombat();
+    let initiative = 1000;
     for (const hold of this.#categories.hold) {
-      Promise.all([hold.toggleHold(),...hold.followers.map((f) => f.toggleHold())]);
-      Promise.all([hold.setRoundHeld(0.1), ...hold.followers.map((f) => f.setRoundHeld(0.1))])
-      Promise.all([hold.update({ initiative: 9999 }), ...hold.followers.map((f) => f.update({ initiative: 9999 }))])
+      await Promise.all([hold.toggleHold(),...hold.followers.map((f) => f.toggleHold())]);
+      await Promise.all([hold.setRoundHeld(0.1), ...hold.followers.map((f) => f.setRoundHeld(0.1))]);
+      await Promise.all([hold.update({ initiative: initiative -= 1 }), ...hold.followers.map((f) => f.update({ initiative: initiative -= 0.01 }))]);
     }
     await this.close();
-    await this.#combat.update({turn: 0})
-    await this.#combat.debounceSetup();
   }
 
   protected override _onDrop(event: DragEvent): void {
