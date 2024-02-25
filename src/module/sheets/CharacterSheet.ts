@@ -1348,7 +1348,9 @@ export default class CharacterSheet extends ActorSheet {
       element.closest('li')?.dataset.itemId ??
       element.closest('li')?.dataset.effectId;
     if (!docId) return;
-    const doc = this.actor.items.get(docId) ?? this.actor.effects.get(docId);
+    const doc =
+      this.actor.items.get(docId) ??
+      Array.from(this.actor.allApplicableEffects()).find((e) => e.id === docId);
     const text =
       doc instanceof SwadeItem ? doc.system.description : doc.description;
     if (!text) return;
