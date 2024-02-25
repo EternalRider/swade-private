@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.3
+
+### Fixed
+
+- Fixed an issue that would cause Item Grants to be applied multiple times. (#1052) **by @florad92**
+
 ## 3.3.2
 
 ### Changed
