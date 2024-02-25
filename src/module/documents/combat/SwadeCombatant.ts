@@ -150,24 +150,26 @@ export default class SwadeCombatant extends Combatant {
 
     //update the combatant with the new card
     const updates = new Array<Updates>();
+    const initiative = cardValue + (suitValue / 10);
     updates.push({
       _id: this.id,
-      initiative: suitValue + cardValue,
+      initiative,
       'flags.swade': { cardValue, suitValue, hasJoker, cardString },
     });
 
     //update followers, if applicable
     if (this.isGroupLeader) {
       const followers = combat!.combatants.filter((f) => f.groupId === this.id);
+      let fInitiative = initiative;
       for (const follower of followers) {
         updates.push({
           _id: follower.id,
-          initiative: suitValue + cardValue,
+          initiative: (fInitiative -= 0.001), //card value is the primary sort value, followed by the suit, so treat the suit as a decimal value.
           'flags.swade': {
             cardString,
             cardValue,
             hasJoker,
-            suitValue: suitValue - 0.001,
+            suitValue,
           },
         });
       }
@@ -185,28 +187,13 @@ export default class SwadeCombatant extends Combatant {
         this.setRoundHeld(round),
         this.actor?.toggleActiveEffect(data, { active: true }),
       ]);
-      if (this.isGroupLeader) {
-        await Promise.all([
-          ...this.followers.map((f) => f.setRoundHeld(round)),
-          ...this.followers.map(
-            (f) => f.actor?.toggleActiveEffect(data, { active: true }),
-          ),
-        ]);
-      }
     } else {
       await Promise.all([
         this.unsetFlag('swade', 'roundHeld'),
         this.actor?.toggleActiveEffect(data, { active: false }),
       ]);
-      if (this.isGroupLeader) {
-        await Promise.all([
-          ...this.followers.map((f) => f.unsetFlag('swade', 'roundHeld')),
-          ...this.followers.map(
-            (f) => f.actor?.toggleActiveEffect(data, { active: false }),
-          ),
-        ]);
-      }
     }
+    await this.parent.debounceSetup(); //hold icon wouldn't always clear
   }
 
   async toggleTurnLost() {
@@ -247,35 +234,21 @@ export default class SwadeCombatant extends Combatant {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
     await this.update({
+      initiative: targetCombatant?.cardValue + (targetCombatant?.suitValue / 10) + 0.0001,
       flags: {
         swade: {
           cardValue: targetCombatant?.cardValue,
-          suitValue: targetCombatant?.suitValue! + 0.01,
+          suitValue: targetCombatant?.suitValue,
+          cardString: '',
           '-=roundHeld': null,
         },
       },
     });
     await this.actor?.toggleActiveEffect(data, { active: false });
-    if (this.isGroupLeader) {
-      let s = this.suitValue!;
-      for await (const f of this.followers) {
-        s -= 0.001;
-        await f.update({
-          flags: {
-            swade: {
-              cardValue: this.cardValue,
-              suitValue: s,
-              '-=roundHeld': null,
-            },
-          },
-        });
-        await f.actor?.toggleActiveEffect(data, { active: false });
-      }
-    }
-
     await this.parent.update({
       turn: this.parent.turns.findIndex((c) => c.id === this.id),
     });
+    await this.parent.render(false);
   }
 
   async actAfterCurrentCombatant() {
@@ -283,35 +256,21 @@ export default class SwadeCombatant extends Combatant {
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
+      initiative: currentCombatant?.cardValue + (currentCombatant?.suitValue / 10) - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,
-          suitValue: currentCombatant?.suitValue! - 0.01,
+          suitValue: currentCombatant?.suitValue,
+          cardString: '',
           '-=roundHeld': null,
         },
       },
     });
     await this.actor?.toggleActiveEffect(data, { active: false });
-    if (this.isGroupLeader) {
-      let s = this.suitValue!;
-      for await (const f of this.followers) {
-        s -= 0.001;
-        await f.update({
-          flags: {
-            swade: {
-              cardValue: this.cardValue,
-              suitValue: s,
-              '-=roundHeld': null,
-            },
-          },
-        });
-        await f.actor?.toggleActiveEffect(data, { active: false });
-      }
-    }
-
     await this.parent.update({
       turn: this.parent.turns.findIndex((c) => c.id === currentCombatant?.id),
     });
+    await this.parent.render(false);
   }
 
   override async _preCreate(
