@@ -504,12 +504,12 @@ export default class SwadeItem extends Item {
   }
 
   canExpendResources(resourcesUsed = 1): boolean {
-    const typecheck = this.system._canExpendResources(resourcesUsed);
+    const typecheck = this.system._canExpendResources?.(resourcesUsed);
     if (typecheck === undefined) return true;
     else return typecheck;
   }
 
-  async consume(charges = 1) {
+  async consume(charges = 1): Promise<void> {
     const usage = this.system._getUsageUpdates?.(charges);
     if (!usage) return;
 

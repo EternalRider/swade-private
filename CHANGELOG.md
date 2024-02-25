@@ -22,6 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.2
+
+### Changed
+
+- Consumables now show a warning when they have not enough charges left to consume all the requested charges. (#1044) **by @florad92**
+- Ancestral Abilities now show a much more informative deprecation message. (#1042) **by @kristianserrano**
+
+### Fixed
+
+- Fixed a small issue that would prevent active effects from properly rendering in the quickaccess (#1048) **by @florad92**
+- Bleeding out now properly applies the defeated condition again. (#1049) **by @jpmeehan5**
+
 ## 3.3.1
 
 ### Fixed

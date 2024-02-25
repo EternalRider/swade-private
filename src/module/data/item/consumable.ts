@@ -1,5 +1,9 @@
 import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { constants } from '../../constants';
+import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
 import {
   actions,
   category,
@@ -10,10 +14,6 @@ import {
   itemDescription,
   physicalItem,
 } from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
 
 export interface ConsumableData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -97,7 +97,12 @@ export class ConsumableData extends foundry.abstract.TypeDataModel<
     const maxChargesOnStack = (quantity - 1) * maxCharges + currentCharges;
 
     //abort early if too much is being used
-    if (chargesToUse > maxChargesOnStack) return false;
+    if (chargesToUse > maxChargesOnStack) {
+      ui.notifications.warn('SWADE.Consumable.NotEnoughCharges', {
+        localize: true,
+      });
+      return false;
+    }
 
     const totalRemainingCharges = maxChargesOnStack - chargesToUse;
     const newQuantity = Math.ceil(totalRemainingCharges / maxCharges);
