@@ -12,7 +12,7 @@ _by Pinnacle Entertainment Group, Inc._
 
 </div>
 
-The SWADE System for Savage Worlds is an official product of Pinnacle Entertainment Group. It’s lead developer and maintainer is FloRad who can be supported at https://ko-fi.com/florad
+The SWADE System for Savage Worlds is an official product of Pinnacle Entertainment Group.
 
 This game system supports and enhances the play experience of _Savage Worlds Adventure Edition_ in [Foundry VTT](https://foundryvtt.com/).
 
