@@ -435,8 +435,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
   ) {
     await super._onUpdate(changed, options, userId);
     if (this.getFlag('swade', 'loseTurnOnHold')) {
-      const combatant = game.combat?.combatants.find(
-        (c) => c.actor?.id === this.parent?.id,
+      const activeCombat = game.combats?.active;
+      const combatant = activeCombat?.getCombatantByToken(
+        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
       );
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
@@ -470,9 +471,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {
-      // Get the Combatant that corresponds to the Actor.
-      const combatant = activeCombat.getCombatantByActor(
-        this.parent?.id as string,
+      // Get the Combatant that corresponds to the Token.
+      const combatant = activeCombat.getCombatantByToken(
+        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
       );
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
@@ -505,7 +506,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const activeCombat = game.combats?.active;
     if (activeCombat) {
       // Get the Combatant that corresponds to the Actor.
-      const combatant = activeCombat.combatants.find((c) => c.actorId === this.parent?.id && c.tokenId === this.parent?.token?.id); // changed because multiple tokens share the same actorId
+      const combatant = activeCombat.getCombatantByToken(
+        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      );
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn on Hold for Combatant.
@@ -529,8 +532,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ duration: { startTime: game.time.worldTime } });
 
     if (this.getFlag('swade', 'loseTurnOnHold')) {
-      const combatant = game.combat?.combatants.find(
-        (c) => c.actor?.id === this.parent?.id,
+      const combatant = activeCombat?.getCombatantByToken(
+        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
       );
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await Promise.all([
