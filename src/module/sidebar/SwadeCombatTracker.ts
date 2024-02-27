@@ -55,7 +55,7 @@ export default class SwadeCombatTracker extends CombatTracker {
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
           groupId: combatant?.groupId,
-          emptyInit: !!combatant?.groupId || turn.defeated,
+          emptyInit: (!combatant?.roundHeld && !combatant?.turnLost) && (!!combatant?.groupId || turn.defeated),
           canDrawInit: this._canDrawInitiative(combatant as SwadeCombatant),
           canRedraw: this._canRedrawInitiative(combatant as SwadeCombatant),
         },

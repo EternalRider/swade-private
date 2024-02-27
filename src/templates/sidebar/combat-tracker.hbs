@@ -62,7 +62,7 @@
         {{#each turns}}
         <li class="combatant actor directory-item flexrow {{this.css}}" data-combatant-id="{{this.id}}">
             <div class="token-initiative" style="border-right-color: {{combatantColor this.id}}; {{#if this.defeated}}opacity: 0.3;{{/if}}">
-                {{#if (and (not this.roundHeld) this.emptyInit)}}
+                {{#if this.emptyInit}}
                 <span class="initiative"></span>
                 {{else if this.roundHeld}}
                 <span class="initiative"><i class="fa-solid fa-hand-rock"></i></span>
