@@ -331,8 +331,8 @@ export default class SwadeCombat extends Combat {
     if (this.settings.skipDefeated) {
       for (const [i, t] of this.turns.entries()) {
         if (i <= turn) continue;
-        // Skip defeated, lost turns, and followers on hold (their leaders act for them)
-        if (t.isDefeated || t.turnLost || (t.groupId && t.roundHeld)) continue;
+        // Skip defeated, lost turns
+        if (t.isDefeated || t.turnLost ) continue;
         next = i;
         break;
       }
