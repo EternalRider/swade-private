@@ -233,8 +233,16 @@ export default class SwadeCombatant extends Combatant {
     if (this.id === targetCombatant?.id) {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
+    const targetInitiative = targetCombatant?.initiative;
+    let initiative =  targetInitiative + 0.0001;
+    // Get the other turns that interrupted this target combatant
+    const otherInterruptors = game.combats?.viewed?.turns.filter((t) => t.initiative < targetInitiative + 1 && t.initiative > targetInitiative);
+    for (const t of otherInterruptors) {
+      // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
+      if (Math.abs(t.initiative - initiative) < Number.EPSILON) initiative = t.initiative - 0.000001;
+    }
     await this.update({
-      initiative: targetCombatant?.cardValue + (targetCombatant?.suitValue / 10) + 0.0001,
+      initiative,
       flags: {
         swade: {
           cardValue: targetCombatant?.cardValue,
