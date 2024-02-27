@@ -50,7 +50,7 @@ export default class SwadeCombatTracker extends CombatTracker {
           isVehicle: combatant?.actor.type === 'vehicle',
           isIncapacitated: combatant?.isIncapacitated,
           cardString: combatant?.cardString,
-          initiative: parseFloat(combatant?.initiative).toFixed(4),
+          initiative: parseFloat(combatant?.initiative).toFixed(8),
           roundHeld: combatant?.roundHeld,
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
