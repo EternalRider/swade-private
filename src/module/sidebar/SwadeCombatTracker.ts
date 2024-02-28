@@ -77,9 +77,9 @@ export default class SwadeCombatTracker extends CombatTracker {
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
     if (!combatant.isOwner) return false;
     const firstRound = combatant.getFlag('swade', 'firstRound') ?? 0;
-    // The Combatant can draw can only draw in their first round, but not if they're in a group or defeated.
+    // The Combatant can draw on or after their first round, but not if they're in a group or defeated.
     return (
-      firstRound >= (combatant.combat?.round ?? 0) &&
+      firstRound <= (combatant.combat?.round ?? 0) &&
       !(!!combatant.groupId || combatant.defeated)
     );
   }
