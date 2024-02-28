@@ -14,6 +14,7 @@ import { VehicleData } from '../../data/actor';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
+import SwadeCombatant from '../combat/SwadeCombatant';
 
 declare global {
   interface DocumentClassConfig {
@@ -438,10 +439,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
       const activeCombat = game.combats?.active;
       const combatant = activeCombat?.getCombatantByToken(
         this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
-      );
+      ) as SwadeCombatant;
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
-        await combatant?.unsetFlag('swade', 'roundHeld');
+        await combatant?.toggleHold();
       }
     }
   }
@@ -534,11 +535,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (this.getFlag('swade', 'loseTurnOnHold')) {
       const combatant = activeCombat?.getCombatantByToken(
         this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
-      );
+      ) as SwadeCombatant;
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await Promise.all([
           combatant?.setFlag('swade', 'turnLost', true),
-          combatant?.unsetFlag('swade', 'roundHeld'),
+          combatant?.toggleHold(),
         ]);
       }
     }
