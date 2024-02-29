@@ -15,6 +15,7 @@ import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../combat/SwadeCombatant';
+import SwadeToken from '../../canvas/SwadeToken';
 
 declare global {
   interface DocumentClassConfig {
@@ -437,12 +438,21 @@ export default class SwadeActiveEffect extends ActiveEffect {
     await super._onUpdate(changed, options, userId);
     if (this.getFlag('swade', 'loseTurnOnHold')) {
       const activeCombat = game.combats?.active;
-      // Get the AE Actor's Token.
-      const token = this.parent?.parent;
-      // Get the Combatant that corresponds to the Token.
-      const combatant = activeCombat?.getCombatantByToken(
-        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      // Get the AE's Actor.
+      const actor = this.parent as SwadeActor;
+      // Get the combatant by Actor as default.
+      let combatant = activeCombat?.getCombatantByActor(
+        actor.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
       ) as SwadeCombatant;
+      // If the Actor is a Token, replace the Combatant by getting the Combatant by Token.
+      if (actor.isToken && actor.parent) {
+        // Get the AE Actor's Token.
+        const token = actor.parent as SwadeToken;
+        // Get the Combatant that corresponds to the Token.
+        combatant = activeCombat?.getCombatantByToken(
+          token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
+        ) as SwadeCombatant;
+      }
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
         await combatant?.toggleHold();
@@ -475,12 +485,21 @@ export default class SwadeActiveEffect extends ActiveEffect {
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {
-      // Get the AE Actor's Token.
-      const token = this.parent?.parent;
-      // Get the Combatant that corresponds to the Token.
-      const combatant = activeCombat?.getCombatantByToken(
-        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      // Get the AE's Actor.
+      const actor = this.parent as SwadeActor;
+      // Get the combatant by Actor as default.
+      let combatant = activeCombat?.getCombatantByActor(
+        actor.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
       ) as SwadeCombatant;
+      // If the Actor is a Token, replace the Combatant by getting the Combatant by Token.
+      if (actor.isToken && actor.parent) {
+        // Get the AE Actor's Token.
+        const token = actor.parent as SwadeToken;
+        // Get the Combatant that corresponds to the Token.
+        combatant = activeCombat?.getCombatantByToken(
+          token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
+        ) as SwadeCombatant;
+      }
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn off Hold for Combatant.
@@ -511,12 +530,21 @@ export default class SwadeActiveEffect extends ActiveEffect {
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {
-      // Get the AE Actor's Token.
-      const token = this.parent?.parent;
-      // Get the Combatant that corresponds to the Token.
-      const combatant = activeCombat?.getCombatantByToken(
-        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      // Get the AE's Actor.
+      const actor = this.parent as SwadeActor;
+      // Get the combatant by Actor as default.
+      let combatant = activeCombat?.getCombatantByActor(
+        actor.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
       ) as SwadeCombatant;
+      // If the Actor is a Token, replace the Combatant by getting the Combatant by Token.
+      if (actor.isToken && actor.parent) {
+        // Get the AE Actor's Token.
+        const token = actor.parent as SwadeToken;
+        // Get the Combatant that corresponds to the Token.
+        combatant = activeCombat?.getCombatantByToken(
+          token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
+        ) as SwadeCombatant;
+      }
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn on Hold for Combatant.
@@ -540,12 +568,21 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ duration: { startTime: game.time.worldTime } });
 
     if (this.getFlag('swade', 'loseTurnOnHold')) {
-      // Get the AE Actor's Token.
-      const token = this.parent?.parent;
-      // Get the Combatant that corresponds to the Token.
-      const combatant = activeCombat?.getCombatantByToken(
-        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      // Get the AE's Actor.
+      const actor = this.parent as SwadeActor;
+      // Get the combatant by Actor as default.
+      let combatant = activeCombat?.getCombatantByActor(
+        actor.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
       ) as SwadeCombatant;
+      // If the Actor is a Token, replace the Combatant by getting the Combatant by Token.
+      if (actor.isToken && actor.parent) {
+        // Get the AE Actor's Token.
+        const token = actor.parent as SwadeToken;
+        // Get the Combatant that corresponds to the Token.
+        combatant = activeCombat?.getCombatantByToken(
+          token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs.
+        ) as SwadeCombatant;
+      }
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await Promise.all([
           combatant?.setFlag('swade', 'turnLost', true),
