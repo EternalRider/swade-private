@@ -437,8 +437,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
     await super._onUpdate(changed, options, userId);
     if (this.getFlag('swade', 'loseTurnOnHold')) {
       const activeCombat = game.combats?.active;
+      // Get the AE Actor's Token.
+      const token = this.parent?.parent;
+      // Get the Combatant that corresponds to the Token.
       const combatant = activeCombat?.getCombatantByToken(
-        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
       ) as SwadeCombatant;
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
@@ -472,10 +475,12 @@ export default class SwadeActiveEffect extends ActiveEffect {
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {
+      // Get the AE Actor's Token.
+      const token = this.parent?.parent;
       // Get the Combatant that corresponds to the Token.
-      const combatant = activeCombat.getCombatantByToken(
-        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
-      );
+      const combatant = activeCombat?.getCombatantByToken(
+        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      ) as SwadeCombatant;
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn off Hold for Combatant.
@@ -506,10 +511,12 @@ export default class SwadeActiveEffect extends ActiveEffect {
     // Get the active Combat if there is one.
     const activeCombat = game.combats?.active;
     if (activeCombat) {
-      // Get the Combatant that corresponds to the Actor.
-      const combatant = activeCombat.getCombatantByToken(
-        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
-      );
+      // Get the AE Actor's Token.
+      const token = this.parent?.parent;
+      // Get the Combatant that corresponds to the Token.
+      const combatant = activeCombat?.getCombatantByToken(
+        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+      ) as SwadeCombatant;
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn on Hold for Combatant.
@@ -533,8 +540,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ duration: { startTime: game.time.worldTime } });
 
     if (this.getFlag('swade', 'loseTurnOnHold')) {
+      // Get the AE Actor's Token.
+      const token = this.parent?.parent;
+      // Get the Combatant that corresponds to the Token.
       const combatant = activeCombat?.getCombatantByToken(
-        this.parent?.parent?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
+        token?.id as string, // Get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs
       ) as SwadeCombatant;
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await Promise.all([
