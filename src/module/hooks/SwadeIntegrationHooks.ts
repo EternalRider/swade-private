@@ -77,7 +77,7 @@ export default class SwadeIntegrationHooks {
       (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
     );
 
-    const dieSystem = wildDie.options.appearance.system;
+    const dieSystem = wildDie.options?.appearance?.system;
     //return early if the colorset is none
     if (!dieSystem || dieSystem === 'none') return;
 
