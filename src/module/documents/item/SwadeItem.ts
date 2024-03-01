@@ -748,20 +748,14 @@ export default class SwadeItem extends Item {
 
     if (data.system?.choiceSets?.length > 0) {
       for (const choiceSet of data.system.choiceSets) {
-        if (choiceSet.choice !== null) {
-          continue;
-        }
+        if (choiceSet.choice !== null) continue;
 
         Object.assign(
           choiceSet,
-          await ChoiceDialog.asPromise({
-            choiceSet: choiceSet,
-          }),
+          await ChoiceDialog.asPromise({ choiceSet: choiceSet }),
         );
 
-        if (choiceSet.choice === null) {
-          continue;
-        }
+        if (choiceSet.choice === null) continue;
 
         const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
         const update = mutationOption.mutation ?? {};

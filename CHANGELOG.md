@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.4.0
+
+### Changed
+
+- The dropdown to select the injury table now sorts tables by module.
+
 ## 3.3.2
 
 ### Changed
