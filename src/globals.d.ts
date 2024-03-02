@@ -59,3 +59,8 @@ export type AdditionalStatType = ValueOf<
 >;
 
 export type PotentialSource<T extends {}> = T & { [key: string | number]: any };
+
+export interface DieSidesOption {
+  key: number;
+  label: string;
+}

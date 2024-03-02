@@ -1,3 +1,4 @@
+import { DieSidesOption } from '../../globals';
 import SwadeActor from '../documents/actor/SwadeActor';
 
 export default class AttributeManager extends FormApplication<
@@ -5,9 +6,7 @@ export default class AttributeManager extends FormApplication<
   SwadeActor
 > {
   constructor(actor: SwadeActor, options?: FormApplicationOptions) {
-    if (!(actor instanceof Actor)) {
-      throw new Error('Not an Actor!');
-    }
+    if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
     super(actor, options);
   }
 
@@ -24,11 +23,11 @@ export default class AttributeManager extends FormApplication<
     });
   }
 
-  get id(): string {
+  override get id(): string {
     return `${this.object.id}-attributeManager`;
   }
 
-  get title(): string {
+  override get title(): string {
     return game.i18n.format('SWADE.AttributeManager.Title', {
       name: this.object.name,
     });
@@ -79,9 +78,4 @@ interface AttributeManagerData
   extends Partial<FormApplication.Data<{}, FormApplicationOptions>> {
   isExtra: boolean;
   dieSides: DieSidesOption[];
-}
-
-interface DieSidesOption {
-  key: number;
-  label: string;
 }

@@ -1,4 +1,9 @@
-import { AdditionalStats, EquipState, ItemActions } from '../../globals';
+import {
+  AdditionalStats,
+  DieSidesOption,
+  EquipState,
+  ItemActions,
+} from '../../globals';
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
@@ -359,6 +364,10 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
+    if (this.item.type === 'skill') {
+      data.dieSideOptions = this.#getDieSides();
+    }
+
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
     }
@@ -381,7 +390,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         label: 'SWADE.RefreshOnly',
         class: 'refresh-item',
         icon: 'fa-solid fa-arrows-rotate',
-        onclick: () => this.item.refreshFromCompendium()
+        onclick: () => this.item.refreshFromCompendium(),
       });
     }
 
@@ -800,6 +809,26 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     ];
   }
 
+  #getDieSides(): DieSidesOption[] {
+    const options: DieSidesOption[] = [
+      { key: 4, label: 'd4' },
+      { key: 6, label: 'd6' },
+      { key: 8, label: 'd8' },
+      { key: 10, label: 'd10' },
+      { key: 12, label: 'd12' },
+      { key: 14, label: 'd12+1' },
+      { key: 16, label: 'd12+2' },
+      { key: 18, label: 'd12+3' },
+      { key: 20, label: 'd12+4' },
+    ];
+
+    if (this.item.parent?.type === 'npc') {
+      options.push({ key: 22, label: 'd12+5' }, { key: 24, label: 'd12+6' });
+    }
+
+    return options;
+  }
+
   #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
       [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
@@ -892,10 +921,12 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isAncestryOrArchetype: boolean;
   };
+  dieSides;
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
+  dieSideOptions?: DieSidesOption[];
 }
 
 type OptionsPartial = Partial<DocumentSheetOptions<Item>>;
