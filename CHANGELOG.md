@@ -26,7 +26,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- The dropdown to select the injury table now sorts tables by module.
+- The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
+- Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
 
 ## 3.3.2
 
