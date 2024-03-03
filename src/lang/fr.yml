@@ -365,6 +365,7 @@ SWADE:
       Settings: Modificateur du préreglage
     Value: Valeur
     Ignore: Ignorer ?
+    None: Aucun modificateur pour le moment
   Illumination:
     _name: Illumination
     Dim: Pénombre
@@ -1194,6 +1195,53 @@ SWADE:
           peuvent avoir un maximum de deux auras.
       Description: Depuis la version 3.2, l'Aura crée un effet visuel persistent qui
         suit le token.
+    ADVANCES:
+      Type:
+        Content: Choisissez le type de Progression dont il s'agit. Actuellement, cette
+          Progression ne déclenche aucune autre validation ou sélection, mais les
+          futures mises à jour du système pourraient changer cela.
+        Title: Choix du type de Progression
+      Notes:
+        Title: Notes pour les Progressions
+        Content: Incluez ici toute information pertinente sur votre Progression ;
+          quels traits vous avez augmentés, quels atouts vous avez sélectionnés, etc.
+      SaveChanges:
+        Content: Les modifications ne sont PAS sauvegardées automatiquement pour le
+          personnage. Vous devez utiliser le bouton d'enregistrement dans l'éditeur
+          ou ce bouton "Enregistrer les modifications".
+        Title: Bouton de sauvegarde des modifications
+      Title: Progressions
+      Description: Voir comment SWADE suit les Progressions d'un personnage
+      Actor: Démonstration des Progressions d'un personnage
+      AccessAdvanceMode:
+        Title: Définir le mode de Progression
+        Content: Le mode de Progression d'un personnage peut être modifié dans le
+          menu Ajustement de la fiche de personnage.
+      Mode:
+        Title: Sélection du mode de Progression
+      AdvanceTab:
+        Title: Onglet des Progressions
+        Content: Les Progressions sont définies dans l'onglet "Description".
+      Create:
+        Title: Créer une Progression
+        Content: Ce bouton permet de créer une nouvelle Progression à utiliser
+      Editor:
+        Title: L'éditeur de Progressions
+        Content: Cette fiche de configuration fournit les information sur une nouvelle
+          Progression.
+      Rank:
+        Title: Rang de Progression
+        Content: Le rang que votre personnage atteindra en arrivant à cette Progression.
+          Ce rang ne peut pas être modifié directement, car il est calculé à partir
+          du nombre total de Progressions de votre personnage.
+      Number:
+        Title: Numéro de Progressions
+        Content: Cette option permet de contrôler l'ordre des Progressions. Si vous
+          modifiez cette valeur, la Progression se fera plus tôt dans la liste.
+      Planned:
+        Title: Progressions planifiées
+        Content: Vous pouvez marquer les Progressions comme étant planifiées pour
+          éviter qu'elles ne comptent dans le rang de votre personnage.
   Magazine:
     NoneLoaded: Pas de chargeur en place
     Select: Choisissez un chargeur
@@ -1249,7 +1297,51 @@ SWADE:
       Melee: Corps-à-corps
       Mixed: Les deux
       Ranged: Distance
+      Label: Type d'armes à distance
   BenniesCount: '{count} jetons'
+  Headquarters:
+    Description: Description
+    Advantage: Avantages
+    Complication: Complications
+    Form: Fiche
+    Acquisition: Acquisition
+    Maintenance: Maintenance
+    Upgrades: Mises à jour
+  Combat:
+    RedrawDialog:
+      Content: Piocher une carte avec un Jeton ou gratuitement ?
+    StartSurpriseRound: Démarrer le tour de surprise
+    AdvanceRoundTitle: Allez au prochain round ?
+    AdvanceRoundContent: Voulez-vous allez au prochain round ?
+    RevertRoundTitle: Revenir au round précédent ?
+    RevertRoundContent: Voulez-vous revenir au round précédent ?
+  HeadquartersSheet: Fiche de quartier général
+  Elan: Panache
+  InnatePower: Pouvoir inné
+  RefreshOnly: Mise à jour
+  NotOwnedError: Vous devez avoir les droits sur cet objet ou acteur pour le faire
+  GrantsItemsError: La mise à jour ne fonctionne pas pour les objets qui en donnent
+    d'autres
+  NoUpdatedItemFound: Aucun objet éligible à une mise à jour n'a été trouvé
+  DiscardMagazine: Suppression du chargeur vide
+  SetActionDeck: Définir le jeu comme un jeu d'action
+  DiscardedCards: Cartes défaussées
+  CardDrawMsgSize:
+    None: Aucun
+    Compact: Compacte
+    Large: Grande
+  SelectNewGroupLeader: Choisissez un nouveau leader pour le groupe
+  ToggleIncap: Basculer sur l'état Incapacité
+  AmbushAssistant:
+    OnHold: En attente
+    NormalDraw: Tirage normal
+    NoTurn: Pas dans le tour
+    Title: Assistant pour les embuscades
+    Hint: Glissez et déposez les combattants pour définir le tour de surprise
+    Unassigned: Non assigné
+  FollowerCount: '{count] suivants'
+  Benny: Jeton
+  Free: Gratuit
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1329,3 +1421,5 @@ TYPES:
   Card:
     adventure: Cartes d'aventure
     poker: Cartes de poker
+  JournalEntryPage:
+    headquarters: Quartier général
