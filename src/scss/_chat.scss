@@ -98,6 +98,9 @@
 }
 
 .chat-message {
+  .initiative-redraw {
+    text-align: end;
+  }
   .initiative-draw {
     position: relative;
     display: grid;

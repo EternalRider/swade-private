@@ -233,20 +233,19 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   private async _applyRelatedEffects() {
-    const related = this.getFlag('swade', 'related');
-    if (!related || this.parent?.documentName !== 'Actor' || !this.statusId)
-      return;
+    const related = this.getFlag('swade', 'related') ?? {};
+    if (!(this.parent instanceof SwadeActor) || !this.statusId) return;
     for (const [id, mutation] of Object.entries(related)) {
       const statusEffect = getStatusEffectDataById(id);
       //skip if the effect already exists on the actor
-      if (this.parent.statuses.has(id) || !statusEffect) continue;
+      if (this.parent?.statuses.has(id) || !statusEffect) continue;
       //apply the mutation if one exists
       const effect = foundry.utils.isEmpty(mutation)
         ? statusEffect
         : foundry.utils.mergeObject(statusEffect, mutation, {
             performDeletions: true,
           });
-      await this.parent.toggleActiveEffect(effect, { active: true });
+      await this.parent?.toggleActiveEffect(effect, { active: true });
     }
   }
 
@@ -506,9 +505,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const activeCombat = game.combats?.active;
     if (activeCombat) {
       // Get the Combatant that corresponds to the Actor.
-      const combatant = activeCombat.getCombatantByActor(
-        this.parent?.id as string,
-      );
+      const combatant = activeCombat.combatants.find((c) => c.actorId === this.parent?.id && c.tokenId === this.parent?.token?.id); // changed because multiple tokens share the same actorId
       // If there is a corresponding Combatant, process Combatant Controls
       if (combatant) {
         // If status is Holding, turn on Hold for Combatant.
@@ -516,20 +513,17 @@ export default class SwadeActiveEffect extends ActiveEffect {
           await combatant.setRoundHeld(activeCombat.current.round as number);
         }
       }
+      // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
+      if (!data.duration?.combat) {
+        this.updateSource({ 'duration.combat': activeCombat.id });
+      }
     }
 
     //localize names, just to be sure
     this.updateSource({ name: game.i18n.localize(this.name) });
 
     //automatically favorite status effects
-    if (this.statusId) {
-      this.updateSource({ 'flags.swade.favorite': true });
-    }
-
-    // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
-    if (!data.duration?.combat && game.combat) {
-      this.updateSource({ 'duration.combat': game.combat.id });
-    }
+    if (this.statusId) this.updateSource({ 'flags.swade.favorite': true });
 
     //set the world time at creation
     this.updateSource({ duration: { startTime: game.time.worldTime } });

@@ -13,6 +13,8 @@ export default class SwadeTour extends Tour {
   item?: SwadeItem;
   tweaks?: SwadeDocumentTweaks;
   advanceEditor?: AdvanceEditor;
+  journalEntry?: JournalEntry;
+  journalEntryPage?: JournalEntryPage;
 
   override async _preStep() {
     await super._preStep();
@@ -28,23 +30,30 @@ export default class SwadeTour extends Tour {
     // If we need an actor, make it and render
     if (currentStep.actor) await this.makeActor(currentStep.actor);
 
-    // Alternatively, if we need to fetch an item from the actor
-    // let's do that and potentially render the sheet
-    if (currentStep.itemName) {
-      if (!this.actor) {
-        console.warn('No actor found for step ' + currentStep.title);
+    // Journal and Journal Page creation
+    if (currentStep.journalEntry)
+      await this.makeJournalEntry(currentStep.journalEntry);
+    if (currentStep.journalEntryPage)
+      await this.makeJournalEntryPage(currentStep.journalEntryPage);
+
+    if (currentStep)
+      if (currentStep.itemName) {
+        // Alternatively, if we need to fetch an item from the actor
+        // let's do that and potentially render the sheet
+        if (!this.actor) {
+          console.warn('No actor found for step ' + currentStep.title);
+        }
+        const localizedName = game.i18n.localize(currentStep.itemName);
+        this.item = this.actor?.items.getName(localizedName)!;
+        const app = this.item!.sheet;
+        //@ts-expect-error Calling _render because it's async unlike render
+        if (!app.rendered) await app._render(true);
+        // Assumption: Any given tour user might need to move back and forth between items, but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet but the framework doesn't allow bouncing back and forth between actors
+        currentStep.selector = currentStep.selector?.replace(
+          'itemSheetID',
+          app!.id,
+        );
       }
-      const localizedName = game.i18n.localize(currentStep.itemName);
-      this.item = this.actor?.items.getName(localizedName)!;
-      const app = this.item!.sheet;
-      //@ts-expect-error Calling _render because it's async unlike render
-      if (!app.rendered) await app._render(true);
-      // Assumption: Any given tour user might need to move back and forth between items, but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet but the framework doesn't allow bouncing back and forth between actors
-      currentStep.selector = currentStep.selector?.replace(
-        'itemSheetID',
-        app!.id,
-      );
-    }
 
     // Create an advance for possible use later
     if (currentStep.advance) await this.makeAdvance(currentStep.advance);
@@ -55,12 +64,21 @@ export default class SwadeTour extends Tour {
     // Leaving to the end because we're only ever going to need one actor at a time and it's created much earlier
     currentStep.selector = currentStep.selector?.replace(
       'actorSheetID',
-      this.actor?.sheet?.id!,
+      this.actor?.sheet?.id || '',
     );
     // Same with Tweaks dialog
     currentStep.selector = currentStep.selector?.replace(
       'tweaks',
       this.tweaks?.id || '',
+    );
+    // And of course the journal pages
+    currentStep.selector = currentStep.selector?.replace(
+      'journalSheetID',
+      this.journalEntry?.sheet?.id || '',
+    );
+    currentStep.selector = currentStep.selector?.replace(
+      'journalPageSheetID',
+      this.journalEntryPage?.sheet?.id || '',
     );
   }
 
@@ -119,6 +137,23 @@ export default class SwadeTour extends Tour {
       //@ts-expect-error Calling _render because it's async unlike render
       await this.advanceEditor._render(true);
     }
+  }
+
+  async makeJournalEntry(journalEntry: Partial<JournalEntry>) {
+    journalEntry.name = game.i18n.localize(journalEntry.name!);
+    this.journalEntry =
+      await getDocumentClass('JournalEntry').create(journalEntry);
+    //@ts-expect-error Calling _render because it's async unlike render
+    await this.journalEntry.sheet?._render(true);
+  }
+
+  async makeJournalEntryPage(journalEntryPage: Partial<JournalEntryPage>) {
+    journalEntryPage.name = game.i18n.localize(journalEntryPage.name!);
+    this.journalEntryPage = await getDocumentClass('JournalEntryPage').create(
+      journalEntryPage,
+      { parent: this.journalEntry },
+    );
+    await this.journalEntryPage.sheet?._render(true);
   }
 
   /**
@@ -188,6 +223,8 @@ interface SwadeTourStep extends TourStep {
   advance?: TourAdvance;
   settings?: Record<string, any>;
   actions?: Array<string>;
+  journalEntry?: Partial<JournalEntry>;
+  journalEntryPage?: Partial<JournalEntryPage>;
 }
 
 interface TourAdvance extends Advance {

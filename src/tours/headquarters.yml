@@ -1,0 +1,41 @@
+title: SWADE.TOURS.HEADQUARTERS.Title
+description: SWADE.TOURS.HEADQUARTERS.Description
+canBeResumed: false
+display: true
+steps:
+  - id: createJournal
+    selector: '#journal .create-document.create-entry'
+    title: SWADE.TOURS.HEADQUARTERS.CreateJournal.Title
+    content: SWADE.TOURS.HEADQUARTERS.CreateJournal.Content
+    tab:
+      parent: sidebar
+      id: journal
+  - id: createPage
+    selector: '#journalSheetID button.create'
+    title: SWADE.TOURS.HEADQUARTERS.CreatePage.Title
+    content: SWADE.TOURS.HEADQUARTERS.CreatePage.Content
+    journalEntry:
+      name: SWADE.TOURS.HEADQUARTERS.JournalEntry
+  - id: headquartersPage
+    selector: '#journalPageSheetID'
+    title: SWADE.TOURS.HEADQUARTERS.HQPage.Title
+    content: SWADE.TOURS.HEADQUARTERS.HQPage.Content
+    journalEntryPage:
+      name: SWADE.TOURS.HEADQUARTERS.HeadquartersPage
+      type: headquarters
+  - id: advantage
+    selector: '#journalPageSheetID .hq-advantage'
+    title: SWADE.TOURS.HEADQUARTERS.Advantage.Title
+    content: SWADE.TOURS.HEADQUARTERS.Advantage.Content
+  - id: complication
+    selector: '#journalPageSheetID .hq-complication'
+    title: SWADE.TOURS.HEADQUARTERS.Complication.Title
+    content: SWADE.TOURS.HEADQUARTERS.Complication.Content
+  - id: form
+    selector: '#journalPageSheetID .hq-form'
+    title: SWADE.TOURS.HEADQUARTERS.Form.Title
+    content: SWADE.TOURS.HEADQUARTERS.Form.Content
+  - id: upgrades
+    selector: '#journalPageSheetID .hq-upgrades'
+    title: SWADE.TOURS.HEADQUARTERS.Upgrades.Title
+    content: SWADE.TOURS.HEADQUARTERS.Upgrades.Content

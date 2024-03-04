@@ -22,11 +22,40 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.4.0
+
+### Changed
+
+- The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
+- Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
+
+## 3.3.2
+
+### Changed
+
+- Consumables now show a warning when they have not enough charges left to consume all the requested charges. (#1044) **by @florad92**
+- Ancestral Abilities now show a much more informative deprecation message. (#1042) **by @kristianserrano**
+
+### Fixed
+
+- Fixed a small issue that would prevent active effects from properly rendering in the quickaccess (#1048) **by @florad92**
+- Bleeding out now properly applies the defeated condition again. (#1049) **by @jpmeehan5**
+
+## 3.3.1
+
+### Fixed
+
+- Fixed an issue that causes card draws to render multiple times. **by @florad92**
+- Fixed a small issue that would improperly determine local draws for initiative. **by @florad92**
+- Fixed an issue with the display of Quick Access **by @jpmeehan5**
+- Fixed an issue that caused the editor on item sheets to have a height of 0. **by @florad92**
+- Fixed an issue that would cause the combat to reset to turn 0 when a combatant goes off hold. (#1041) **by @florad92**
+
 ## 3.3.0
 
 ### Added
 
-- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) by **jpmeehan5**
+- Added new type of JournalEntryPage: Headquarters, which can represent a Base from the SPC, a Stronghold from the FC, or a Lodge from the HC. (#918) **by @jpmeehan5**
 - Hindrances can now more precisely define whether they are Major, Minor or a choice of either. (#980) **by @florad92**
 - Weapons can now more precisely define whether they are purely ranged, purely melee or a mix of both. (#951) **by @florad92**
 - Added a tooltip that shows Player Character Hindrances and NPC Wild Card benny counts of the current scene when hovering over a name in the Player list. You can only see the hindrance list if you have at least Limited Ownership over the actor. Only GMs see the NPC Wild Card tooltip. (#881) **by @florad92**
@@ -43,10 +72,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added Incapacitation effect and a corresponding toggle in the Combat Tracker. **by @florad92**
 - Added more tours. **by @jpmeehan5**
   - Advances (#888)
+  - Headquarters (#955)
 - Added the `swadePreCalcWounds` hook. Thanks goes to @mclemente for the great ideas. (#754) **by @florad92**
 - Added the Ambush Assistant application, which lets you set which combatants/group leaders start a surprise round on hold, with a normal card draw or have no turn at all. (#751) **by @florad92**
 - Added dialogs that pop up when advancing/reverting a round in order to prevent accidental changing of the round. (#869) **by @florad92**
-- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
+- Added the `Refresh` button to the Item sheet headers. This will refresh the item with the newest version from a compendium (if the item originally came from a compendium). Items that are not owned or grant items cannot be refreshed. (#1027) **by @javierriveracastro**
+- Redrawing an Action Card now causes a card draw message to be created, even if the card remains the same. (#1036) **by @florad92**
+- Added documentation for the system hooks. (#872) **by @gunnar.busch**
+- Added additional translation strings.
 
 ### Changed
 
@@ -62,9 +95,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Rearranged item sheet header inputs for localization. (#850) **by @florad92**
 - Restored the ability to open the source item for transferred effects on the NPC and Vehicle sheet by clicking on the effect's name. (#962) **by @jpmeehan5**
 - Reorganized files of the character sheet to be more cohesive with the rest of the system. (#1005) **by @florad92**
-- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (1004) **by @florad92**
+- Changed the way initiative card draw results are rendered to chat. You can now choose between a compact message, the original and no message. Draw results now also include the discarded cards. (#1004) **by @florad92**
 - You can no longer have negative wounds or fatigue. **by @florad92**
-- The current action deck can no longer be used to layout a chase. **by @jpmeehan5**
+- Accordions on the character sheet now remember whether they were opened or closed when re-rendering the sheet. (#964) **by @florad92**
+- Ending a combat encounter now removes the Hold status from any tokens that had it. **by @florad92**
+- The current action deck can no longer be used to layout a chase. To lay out a chase, either create a new Action deck from the presets or duplicate the existing deck. **by @jpmeehan5**
 - Linked many more labels to their relevant inputs, improving form usage. (#854) **by @jpmeehan5**
 - Move the option to redraw initiative away from a context menu. You can now click the drawn card in the combat track to start drawing a new card. (#1032) **by @florad92**
 
@@ -76,10 +111,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Item Grants no longer throw an error if an item could not be found. **by @florad92**
 - Active Effects will no longer cause permission errors when applying related effects. (#1006) **by @florad92**
 - The A.E.G.I.S. should no longer reset duration, name and expiration behavior when a change is added. (#1015) **by @florad92**
+- Players are now once again prompted if they should draw a card during initiative. (#536) **by @florad92**
 - Fixed a CSS issue with effect descriptions that used lists. **by @jpmeehan5**
 - _Defeated_ Combatants no longer cause effects to expire. **by @florad92**
 - Fixed broken compendium links in the Character sheet. (#965) **by @florad92**
+- Actions on `action` items should now display correctly on the quickaccess (#999) **by @jpmeehan5**
 - Combatants no longer loose their card if they've held their turn. (#1030) **by @florad92**
+- Text enrichment on the character sheet now no longer fails for grandchild documents. (#964) **by @florad92**
 
 ## 3.2.5
 
@@ -152,7 +190,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Added a migration that sets SWIDs on all items based on their current name.
   - Added a new setting to set the SWID of the item that should be used to calculate Parry.
   - [BREAKING] Refactored the parry calculation to take advantage of the newly introduced SWID.
-- Improved API documentation for module developers. (#945) **by jpmeehan5**
+- Improved API documentation for module developers. (#945) **by @jpmeehan5**
 - Added the ability to drag&drop Attributes into the Macro hotbar from the character and NPC sheet. (#145) **by @florad92**
 
 ### Changed
@@ -177,8 +215,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Scaled Token images should now properly display in the Compendium TOC. (#895) **by @florad92**
-- Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by jpmeehan5**
-- Fixed override data on items targeted by Active Effects. (#933) **by jpmeehan5**
+- Ignoring wounds now correctly also reduces wound penalties to pace. (#920) **by @jpmeehan5**
+- Fixed override data on items targeted by Active Effects. (#933) **by @jpmeehan5**
 - Restored icons for skills on the Character Sheet. (#921) **by @florad92**
 - Resist actions on weapons should no longer attempt to consume ammunition. (#923) **by @florad92**
 - Fixed incorrect placeholders for additional stats. (#939) **by @florad92**
@@ -206,7 +244,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed an issue in the action property shims that would prevent the use of active effects on said properties. **by @florad92**
 - Fixed added some data sanitization to actors. (#911) **by @florad92**
-- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by jpmeehan5**
+- Fixed bug that prevented actor sheet from rendering if a piece of armor had a missing armor or toughness value **by @jpmeehan5**
 
 ## 3.1.2
 
@@ -263,7 +301,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The secondary parry value now represents `system.stats.parry.shield` instead of `system.stats.parry.modifier`, and operates like armor - it's a calculated field if parry is auto calculated on the Actor, otherwise it's manually editable. **by @jpmeehan5**
 - **[BREAKING]** The calcArmor, calcToughness, and calcParry methods are now private - the appropriate properties should be accessed by `system.stats.toughness.armor`, `system.stats.toughness.value`, and `system.stats.parry.value` respectively. These properties were already accessible and were the correct avenue of access prior to this update. **by @jpmeehan5**
 - Improved the UI for editing actions on Items. (#864) **by @florad92**
-- The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by jpmeehan5**
+- The SWADE Cone template is now a special case when a cone's angle is set to 0. Otherwise, cones will use the base Foundry calculations as determined by your core settings. (#873) **by @jpmeehan5**
 - Improved styles for the character sheet for dealing with linebreaks in the attributes section. (#255) **by @florad92**
 - Significantly updated the system journal documentation to modern system functionality. (#868) **by @jpmeehan5**
 
@@ -455,7 +493,7 @@ m
 - Fixed a small issue with a label in the Tweaks window. (#780) **by @florad92**
 - Fixed an issue that would cause the roll modifier normalizations would fail to recognize a number without a leading sign. (#782) **by @florad92**
 - Shields should once again display their notes in the inventory tab of the Character Sheet. (#783) **by @florad92**
-- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (784) **by @florad92**
+- Fixed an issue where improper status penalties were applied when the character was _Entangled_. (#784) **by @florad92**
 - Fixed a small spacing issue on the NPC sheet. (#760) **by @jpmeehan5**
 
 ### Known Issues
