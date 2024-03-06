@@ -474,8 +474,10 @@ SWADE:
     Use: Usar
     Consumables: Consumíveis
   EmptyAncestralAbilitiesHint: >-
-    Esta {ancestry} ou {archetype} ainda não tem nenhuma habilidade. Arraste & Solte
-    alguma coisa na ficha para começar.
+    <strong>Aviso: </strong> Este recurso está sendo deprecado em favor da Concessão
+    de Itens. Se estiver criando um(a) novo(a) {ancestry} ou {archetype}, arraste
+    e solte os Itens na aba Propriedades. O(a) {ancestry} ou {archetype} adicionará
+    esses itens ao Ator quando aplicado.
   CompendiumTOC:
     Toggle: Altenar uso do Índice de Compêndio
     Dialog:
