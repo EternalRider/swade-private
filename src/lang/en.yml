@@ -551,6 +551,10 @@ SWADE:
         a Benny instead
   Settings:
     ArbitFields: Arbitrary Setting Fields
+    CharSheetDefaultWidth:
+      Name: Default Width for Character Sheets
+      Hint: >-
+        Width of character sheets when first opened, in pixels. Default: 650.
     HighlightTemplate:
       Name: Always Highlight Templates
       Hint: >-
