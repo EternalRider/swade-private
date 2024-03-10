@@ -33,7 +33,7 @@ export default class CharacterSheet extends ActorSheet {
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['swade-official', 'sheet', 'actor'],
-      width: 650,
+      width: game.settings.get('swade', 'charSheetDefaultWidth'),
       height: 700,
       resizable: true,
       scrollY: ['section.tab'],

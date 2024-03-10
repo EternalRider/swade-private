@@ -218,6 +218,15 @@ export function registerSettings() {
     default: true,
     config: true,
   });
+
+  game.settings.register('swade', 'charSheetDefaultWidth', {
+    name: 'SWADE.Settings.CharSheetDefaultWidth.Name',
+    hint: 'SWADE.Settings.CharSheetDefaultWidth.Hint',
+    scope: 'world',
+    type: Number,
+    default: 650,
+    config: true,
+  });
 }
 
 /** @internal */
