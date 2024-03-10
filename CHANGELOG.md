@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.4
+
+### Fixed
+
+- Fixed an issue that would cause an erroneous warning message to be displayed for weapons that had shots set to 0/0 and a reload procedure of `None`. (#1058) **by @florad92**
+
 ## 3.3.3
 
 ### Fixed
