@@ -50,12 +50,11 @@ export default class SwadeCombatTracker extends CombatTracker {
           isVehicle: combatant?.actor.type === 'vehicle',
           isIncapacitated: combatant?.isIncapacitated,
           cardString: combatant?.cardString,
-          initiative: parseFloat(combatant?.initiative).toFixed(4),
+          initiative: combatant?.initiative,
           roundHeld: combatant?.roundHeld,
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
           groupId: combatant?.groupId,
-          emptyInit: !!combatant?.groupId || turn.defeated,
           canDrawInit: this._canDrawInitiative(combatant as SwadeCombatant),
           canRedraw: this._canRedrawInitiative(combatant as SwadeCombatant),
         },
@@ -78,15 +77,15 @@ export default class SwadeCombatTracker extends CombatTracker {
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
     if (!combatant.isOwner) return false;
     const firstRound = combatant.getFlag('swade', 'firstRound') ?? 0;
+    // The Combatant can draw on or after their first round, but not if they're in a group or defeated.
     return (
-      !!combatant.groupId ||
-      combatant.defeated ||
-      firstRound >= (combatant.combat?.round ?? 0)
+      firstRound <= (combatant.combat?.round ?? 0) &&
+      !(!!combatant.groupId || combatant.defeated)
     );
   }
 
   protected _canRedrawInitiative(combatant: SwadeCombatant): boolean {
-    return combatant.isOwner;
+    return combatant.isOwner && !combatant.groupId; // Followers can neither draw nor redraw.
   }
 
   protected override async _onCombatantControl(event) {

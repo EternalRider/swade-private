@@ -200,21 +200,13 @@ export default class SwadeCombatant extends Combatant {
     if (!this.parent) return;
     const data = getStatusEffectDataById('holding');
     if (!this.turnLost) {
-      const groupId = this.groupId;
-      if (groupId) {
-        const leader = await this.parent.combatants.find(
-          (l) => l.id === groupId,
-        );
-        if (leader) await this.setTurnLost(true);
-      } else {
-        await this.update({
-          'flags.swade': {
-            turnLost: true,
-            '-=roundHeld': null,
-          },
-        });
-        await this.actor?.toggleActiveEffect(data, { active: false });
-      }
+      await this.update({
+        'flags.swade': {
+          turnLost: true,
+          '-=roundHeld': null,
+        },
+      });
+      await this.actor?.toggleActiveEffect(data, { active: false });
     } else {
       await this.update({
         'flags.swade': {
@@ -233,8 +225,16 @@ export default class SwadeCombatant extends Combatant {
     if (this.id === targetCombatant?.id) {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
+    const targetInitiative = targetCombatant?.initiative ?? 0;
+    let initiative =  targetInitiative + 0.0001;
+    // Get the other turns that interrupted this target combatant
+    const otherInterruptors = this.parent.turns.filter((t) => t.initiative < targetInitiative + 1 && t.initiative > targetInitiative);
+    for (const t of otherInterruptors) {
+      // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
+      if (Math.abs(t.initiative - initiative) < Number.EPSILON) initiative = t.initiative - 0.000001;
+    }
     await this.update({
-      initiative: targetCombatant?.cardValue + (targetCombatant?.suitValue / 10) + 0.0001,
+      initiative,
       flags: {
         swade: {
           cardValue: targetCombatant?.cardValue,

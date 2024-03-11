@@ -336,6 +336,7 @@ SWADE:
     PP: Power Points
   NoAmmoSet: There is no ammunition set
   NoAmmoPP: Could not find power points matching the set ammo
+  NoDescription: No description available
   NoMags: You don't have any consumables marked as magazines in your inventory
   RemoveAmmo: Remove Ammunition
   DiscardMagazine: Discard empty magazine
