@@ -29,6 +29,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
 - Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
 
+## 3.3.4
+
+### Fixed
+
+- Fixed an issue that would cause an erroneous warning message to be displayed for weapons that had shots set to 0/0 and a reload procedure of `None`. (#1058) **by @florad92**
+
+## 3.3.3
+
+### Fixed
+
+- Fixed an issue that would cause Item Grants to be applied multiple times. (#1052) **by @florad92**
+
 ## 3.3.2
 
 ### Changed
