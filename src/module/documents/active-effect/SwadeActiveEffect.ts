@@ -13,9 +13,8 @@ import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
-import SwadeItem from '../item/SwadeItem';
 import SwadeCombatant from '../combat/SwadeCombatant';
-import SwadeToken from '../../canvas/SwadeToken';
+import SwadeItem from '../item/SwadeItem';
 
 declare global {
   interface DocumentClassConfig {
@@ -441,7 +440,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
       // Get the AE's Actor.
       const actor = this.actor as SwadeActor;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken ? activeCombat?.getCombatantByToken(actor.token?.id as string) as SwadeCombatant : activeCombat?.getCombatantByActor(actor.id as string) as SwadeCombatant;
+      const combatant = actor?.isToken
+        ? (activeCombat?.getCombatantByToken(
+            actor.token?.id as string,
+          ) as SwadeCombatant)
+        : (activeCombat?.getCombatantByActor(
+            actor.id as string,
+          ) as SwadeCombatant);
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
         await combatant?.toggleHold();
@@ -477,7 +482,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
       // Get the AE's Actor.
       const actor = this.actor as SwadeActor;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken ? activeCombat?.getCombatantByToken(actor.token?.id as string) as SwadeCombatant : activeCombat?.getCombatantByActor(actor.id as string) as SwadeCombatant;
+      const combatant = actor?.isToken
+        ? (activeCombat?.getCombatantByToken(
+            actor.token?.id as string,
+          ) as SwadeCombatant)
+        : (activeCombat?.getCombatantByActor(
+            actor.id as string,
+          ) as SwadeCombatant);
       // If status is Holding, turn off Hold for Combatant.
       if (this.statusId === 'holding') {
         await combatant?.unsetFlag('swade', 'roundHeld');
@@ -508,7 +519,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
       // Get the AE's Actor.
       const actor = this.actor as SwadeActor;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken ? activeCombat?.getCombatantByToken(actor.token?.id as string) as SwadeCombatant : activeCombat?.getCombatantByActor(actor.id as string) as SwadeCombatant;
+      const combatant = actor?.isToken
+        ? (activeCombat?.getCombatantByToken(
+            actor.token?.id as string,
+          ) as SwadeCombatant)
+        : (activeCombat?.getCombatantByActor(
+            actor.id as string,
+          ) as SwadeCombatant);
       // If status is Holding, turn on Hold for Combatant.
       if (this.statusId === 'holding') {
         await combatant?.setRoundHeld(activeCombat.current.round as number);
@@ -532,7 +549,13 @@ export default class SwadeActiveEffect extends ActiveEffect {
       // Get the AE's Actor.
       const actor = this.actor as SwadeActor;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken ? activeCombat?.getCombatantByToken(actor.token?.id as string) as SwadeCombatant : activeCombat?.getCombatantByActor(actor.id as string) as SwadeCombatant;
+      const combatant = actor?.isToken
+        ? (activeCombat?.getCombatantByToken(
+            actor.token?.id as string,
+          ) as SwadeCombatant)
+        : (activeCombat?.getCombatantByActor(
+            actor.id as string,
+          ) as SwadeCombatant);
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await Promise.all([
           combatant?.setFlag('swade', 'turnLost', true),
