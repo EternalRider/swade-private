@@ -20,7 +20,7 @@ SWADE:
   Running: Running
   RunningDie: Running Die
   RunningMod: Running Modifier
-  RollRun: Click to run
+  RollRun: '[Click] to roll the Running Die'
   Adv: Advances
   Rank: Rank
   Inv: Gear
@@ -336,6 +336,7 @@ SWADE:
     PP: Power Points
   NoAmmoSet: There is no ammunition set
   NoAmmoPP: Could not find power points matching the set ammo
+  NoDescription: No description available
   NoMags: You don't have any consumables marked as magazines in your inventory
   RemoveAmmo: Remove Ammunition
   DiscardMagazine: Discard empty magazine
@@ -375,7 +376,7 @@ SWADE:
   TraitRolls: Trait Rolls
   Trait: Trait
   AltTrait: Action Trait
-  ClickSuggestions: Click for suggestions
+  ClickSuggestions: '[Click] for suggestions'
   Quick: Quick
   BonusDamage: Bonus Damage
   Joker: Joker
@@ -384,7 +385,7 @@ SWADE:
   DmgRolls: Damage Rolls
   SubtractPPDesc: Subtract PP Cost from the available PP
   AddPPDesc: Add PP Cost to the available PP
-  RightClickZoom: Right-Click to Zoom
+  RightClickZoom: '[Right-Click] to Zoom'
   SysMigrationWarning: >-
     Your SWADE system data is from too old a Foundry version and cannot be
     reliably migrated to the latest version. The process will be attempted, but
@@ -551,6 +552,10 @@ SWADE:
         a Benny instead
   Settings:
     ArbitFields: Arbitrary Setting Fields
+    CharSheetDefaultWidth:
+      Name: Default Width for Character Sheets
+      Hint: >-
+        Width of character sheets when first opened, in pixels. Default: 650.
     HighlightTemplate:
       Name: Always Highlight Templates
       Hint: >-
@@ -893,9 +898,11 @@ SWADE:
     Free: Free
     Benny: Benny
     GMBenny: GM Benny
-  LoadedAmmo: Loaded Ammmunition
+  LoadedAmmo: Loaded Ammunition
   DamageApplicator:
-    ApplyDamage: Apply Damage
+    ApplyDamage:
+      Label: Resolve Damage
+      Hint: '[Click] to resolve damage with the selected Token'
     SoakModifier: Soak Modifier
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
     SoakDialog:

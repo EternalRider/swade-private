@@ -2,26 +2,40 @@
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.npC8fXZCPkW9vegg'
   _id: npC8fXZCPkW9vegg
-  name: Combat Tracker
+  name: Combat
   sort: 100000
-  title:
-    level: 2
 ---
+
+## Damage
+
+For precise rules on how damage, soaking and all other related rules work, please consult your rule book.
+
+### How to handle damage
+
+In order to resolve damage with a token select the token you want to handle damage for and then click **Resolve Damage**.
+
+![Damage Roll Card](systems/swade/assets/docs/Damage_Roll_Card.png)
+
+This will trigger the Damage Applicator which will allow you to make some adjustments before either taking the damage as is or attempting to soak. The damage application doesn't currently take into account things like Ballistic Protection, other damage resistances or vulnerabilities, so please adjust the final damage number accordingly.
+
+![Damage Applicator](systems/swade/assets/docs/Damage_Applicator.png)
+
+## The Combat Tracker
 
 The SWADE system applies a couple of modifications to [Foundry’s Combat Tracker](https://foundryvtt.com/article/combat/) to align it with Savage Worlds’ Initiative rules.
 
 ### Combatant Display
 
-Rather than rolling dice, combatants in Savage Worlds are dealt cards to determine their initiative. As such, the numeric value display in the default Foundry combat tracker has been replaced by the suit and value of the combatant's action card. 
+Rather than rolling dice, combatants in Savage Worlds are dealt cards to determine their initiative. As such, the numeric value display in the default Foundry combat tracker has been replaced by the suit and value of the combatant's action card.
 
 In addition to the core-provided Toggle Visibility, Mark Defeated, and Ping Combatant buttons, SWADE adds additional buttons to the actor display:
 
 - **Incapacitated.**: Actors can be incapacitated without being removed from initiative (which Defeated may do depending on your combat options), for example if they are at risk of bleeding out.
 
-- **Hold.** Once combat has begun, Combatants can go on hold to delay their turn. While on hold, they have additional options. 
-  - *Toggle Lose Turn.* Some conditions automatically knock a character out of hold and cause them to lose their turn; this can be configured in the Active Effect sheet as well as with world scripts. Otherwise, there's a button to manually toggle this lost turn.
-  - *Act Now.* A character that's on hold can interrupt the current combatant, rearranging the initiative order. This button does NOT prompt any kind of contested roll to determine whether a character succeeds in interrupting.
-  - *Act After Current Combatant.* Alternatively, a character that's on hold can simply place themselves next in the countdown.
+- **Hold.** Once combat has begun, Combatants can go on hold to delay their turn. While on hold, they have additional options.
+  - _Toggle Lose Turn._ Some conditions automatically knock a character out of hold and cause them to lose their turn; this can be configured in the Active Effect sheet as well as with world scripts. Otherwise, there's a button to manually toggle this lost turn.
+  - _Act Now._ A character that's on hold can interrupt the current combatant, rearranging the initiative order. This button does NOT prompt any kind of contested roll to determine whether a character succeeds in interrupting.
+  - _Act After Current Combatant._ Alternatively, a character that's on hold can simply place themselves next in the countdown.
 
 ### Updating a Combatant
 

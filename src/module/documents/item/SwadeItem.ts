@@ -858,6 +858,7 @@ export default class SwadeItem extends Item {
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
+    if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
     const grantOn = getProperty(this, 'system.grantOn');
     if (
       this.canGrantItems &&
