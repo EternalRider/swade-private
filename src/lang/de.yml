@@ -326,7 +326,7 @@ SWADE:
   DmgRolls: Schadenswürfe
   SubtractPPDesc: MP-Kosten von den verfügbaren MP abziehen
   AddPPDesc: MP-Kosten zu den verfügbaren MP hinzurechnen
-  RightClickZoom: Für eine größere Ansicht rechtsklicken
+  RightClickZoom: Für größere Ansicht rechtsklicken
   SysMigrationWarning: >-
     Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und
     können nicht zuverlässig auf die neueste Version migriert werden. Der
@@ -457,6 +457,7 @@ SWADE:
       Success: Du überlebst – noch.
       Raise: Die Blutung stoppt
       BleedOutModifier: Verbluten-Modifikator
+      IgnoreWounds: Verbluten Wunden Ignorieren
   BenniesSpendGM: SL-Benny ausgeben
   ActionDmgMod: Akionsschadensmodifikator
   AddAdvance: Aufstieg hinzufügen
@@ -472,7 +473,7 @@ SWADE:
     None: Keins
     TabLabel: Verhalten
     Description: >-
-      <p>Effekte laufen währen des <em>nächsten Zuges (oder später)</em> des Zieles
+      <p>Effekte laufen während des <em>nächsten Zuges (oder später)</em> des Zieles
       aus</p>
     LooseTurnOnHold: Verliere Zug wenn dieser Aufgespart wurde
     Remaining: Verbleibend
@@ -689,6 +690,9 @@ SWADE:
     HeroesNeverDie:
       Name: Helden Sterben Nie
       Hint: Schaltet die Settingregel Helden Sterben Nie ein
+    CharSheetDefaultWidth:
+      Hint: 'Breite des Charakterbogens beim ersten Öffnen, in Pixeln. Default: 650.'
+      Name: Standardbreite für Charakterbögen
   Validation:
     OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
@@ -706,7 +710,7 @@ SWADE:
   DocumentTweaks: Optionen
   ItemType: Typ
   Source: Quelle
-  MigrateCompendium: Kompendium migration erzwingen
+  MigrateCompendium: Kompendium-Migration erzwingen
   Properties: Eigenschaften
   AddAction: Aktion hinzufügen
   DeleteEmbeddedActionPrompt: Sicher, dass die Aktion {action} gelöscht werden soll?
@@ -835,9 +839,12 @@ SWADE:
       Possible: MÖGLICHER KRITISCHER PATZER
     Benny: Benny
     GMBenny: SL-Benny
+    Free: Frei
   LoadedAmmo: Geladene Munition
   DamageApplicator:
-    ApplyDamage: Schaden Anwenden
+    ApplyDamage:
+      Label: Schaden berechnen
+      Hint: Klicken, um Schaden für gewählte Figur zu berechnen
     WoundsAboutToBeTaken: <p><strong>{name}</strong> droht, <strong>{wounds}</strong>
       zu erleiden!</p>
     SoakDialog:
@@ -886,6 +893,11 @@ SWADE:
         bis alle Wunden geheilt sind.</p>
       ShortInjury: <p><strong>{name}</strong> erleidet eine Verletzung, die 24 Stunden
         anhält, oder bis alle Wunden geheilt sind (je nachdem, was zuerst eintrifft).</p>
+      Title: Verletzungsgrad für {name} neu würfeln?
+      TakeFail: Erleide permanente Verletzung
+      Prompt: <p>{name} droht eine Verletzung. Konstitutionsprobe wiederholen?</p>
+      InjuryRoll: Konstitutionsprobe gegen Verletzung durch Ausgeschaltet
+      TakeSuccess: Erleide Verletzung bis alle Wunden geheilt wurden
   CustomWildDie: '- Persönlicher Wildcard-Würfel -'
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
@@ -1018,6 +1030,9 @@ SWADE:
   AddOrReplaceActions:
     Title: Aktionen hinzufügen/ersetzen
     Replace: Existierende ersetzen
+    Add: Neu hinzufügen
+    Content: <p>Sollen die Aktionen von <strong>{source}</strong> ({type}) als neue
+      Aktionen hinzugefügt, oder existierende ersetzt werden?</p>
   Headquarters:
     Advantage: Vorteil
     Complication: Komplikation
@@ -1042,6 +1057,19 @@ SWADE:
   Resistance: Widerstand
   BaseParry: Parade-Grundwert
   BenniesCount: '{count} Bennys'
+  NoDescription: Keine Beschreibung verfügbar
+  Magazine:
+    NoneLoaded: Kein Magazin geladen
+    Select: Magazin wählen
+  GrantsItemsError: Auffrischen funktioniert nicht für Items, die andere Items gewähren
+  NoUpdatedItemFound: Kein passendes Item für Auffrischen gefunden
+  DiscardMagazine: Leere Magazine verwerfen
+  PlayerCardDrawHelper:
+    Title: SWADE Spieler Karten Ziehhelfer
+  CouldNotFindMacro: Kein Makro mit UUID {uuid} gefunden
+  ResourcesUsed:
+    Label: Genutzte Ressourcen
+    Hint: Wie viel einer Ressource für diese Aktion genutzt wird
 TYPES:
   Actor:
     Character: Charakter
