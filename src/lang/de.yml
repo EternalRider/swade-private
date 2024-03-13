@@ -18,8 +18,8 @@ SWADE:
   RollRun: Klicke zum Sprinten
   Adv: Aufstiege
   Rank: Rang
-  Inv: Ausrüstung
-  Summary: Eigenschaften
+  Inv: Inventar
+  Summary: Übersicht
   Pow: Mächte
   WildCard: Wildcard
   Extra: Statist
@@ -32,7 +32,7 @@ SWADE:
   Bound: Gebunden
   TraitMod: Eigenschaftsmodifikator
   SkillTest: Fertigkeitsprobe
-  AttributeTest: Attributssprobe
+  AttributeTest: Attributsprobe
   Attributes: Attribute
   Derived: Abgeleitete Werte
   AttrAgi: Geschick
@@ -42,11 +42,11 @@ SWADE:
   AttrSpr: Willenskraft
   AttrStr: Stärke
   AttrVig: Konstitution
-  Tweaks: Einstellungen
+  Tweaks: Optionen
   AttrAgiShort: Ges
   AttrSmaShort: Ver
   AttrSprShort: Wil
-  AttrStrShort: Str
+  AttrStrShort: Stä
   AttrVigShort: Kon
   Skills: Fertigkeiten
   Unskilled: Ungeübt
@@ -56,13 +56,13 @@ SWADE:
   Die: Würfel
   WildDie: Wildcard-Würfel
   Modifier: Modifikator
-  BenniesSpend: Gib einen Benny aus
+  BenniesSpend: Benny ausgeben
   BenniesGive: Einen Benny geben
   BenniesRefresh: Bennys auffrischen
   AllBenniesRefresh: Alle Bennys auffrischen
   BenniesRefreshMessage: Bennys wurden aufgefrischt!
   BenniesRefreshAllMessage: Alle Bennys wurden aufgefrischt!
-  BenniesGMRefreshMessage: SL Bennys wurden aufgefrischt!
+  BenniesGMRefreshMessage: SL-Bennys wurden aufgefrischt!
   BenniesAddMessage: hat einen Benny erhalten!
   BenniesGMAddMessage: hat einen Benny genommen!
   BenniesSpendMessage: setzt einen Benny ein!
@@ -106,7 +106,7 @@ SWADE:
   Legs: Beine
   MinStrLong: Mindeststärke
   MinStr: Min. Stärke
-  MinStrShort: Min.Str
+  MinStrShort: Min.Stä
   Desc: Beschreibung
   Special: Spezialfähigkeiten
   Details: Details
@@ -136,7 +136,7 @@ SWADE:
   CarryWeight: Belastung
   Eqd: Ausger.
   Equipped: Ausgerüstet
-  Unequipped: Getragen
+  Unequipped: Nicht getragen
   Quantity: Anzahl
   Weight: Gewicht
   Price: Kosten
@@ -154,8 +154,8 @@ SWADE:
   FatigueMax: Maximale Erschöpfung
   Incap: Ausgeschaltet
   Init: Initiative
-  ActionDeckReset: Aktionsdeck zurücksetzen
-  ActionDeckResetNotification: Aktionsdeck wurde zurückgesetzt
+  ActionDeckReset: Aktionskartendeck zurücksetzen
+  ActionDeckResetNotification: Aktionskartendeck wurde zurückgesetzt
   InitDraw: zog…
   Addi: Zusätzlich
   Status: Status
@@ -185,7 +185,7 @@ SWADE:
   SitMod: Situativer Mod
   RollMode: Wurfmodus
   RollExample: z.B. +1d6x oder -2
-  Roll: Probe auf
+  Roll: Würfeln
   RollRaise: Steigerungswurf
   GroupRoll: Gruppenprobe
   Ok: OK
@@ -205,7 +205,7 @@ SWADE:
   ConvictionActivate: aktiviert Entschlossenheit!
   ConvictionExtend: Entschlossenheit einsetzen?
   ConvictionEnd: schwankt in der Entschlossenheit
-  NoBennies: Du hast nicht genug Bennys!
+  NoBennies: Nicht genug Bennys!
   GM: Spielleiter
   Vehicles: Fahrzeuge
   AddStats: Weitere Werte
@@ -219,9 +219,9 @@ SWADE:
   BleedingOut: Verblutend
   DSNNone: '- Kein -'
   Defending: Verteidigend
-  DiceConf: Wildcard Würfel Konfiguration
+  DiceConf: Wildcard-Würfel Konfiguration
   DiceConfDesc: Verwalte Einstellungen der SWADE/Dice So Nice integration
-  DiceConfLabel: Wildcard Würfel Konfiguration Öffnen
+  DiceConfLabel: Wildcard-Würfel Konfiguration Öffnen
   Diseased: Erkrankt
   Encumbered: Überladen
   Flying: Fliegend
@@ -232,7 +232,7 @@ SWADE:
   Unfollow: Folge {name} nicht
   MakeGroupLeader: Gruppenleiter machen
   RemoveGroupLeader: Gruppenleiter entfernen
-  AddTokenFollowers: Ausgewählte Tokens als Follower hinzufügen
+  AddTokenFollowers: Ausgewählte Figuren als Gefolgsleute hinzufügen
   GroupByName: Nach Namen gruppieren
   SetGroupColor: Gruppenfarbe einstellen
   SelectColor: Wähle eine Farbe
@@ -250,6 +250,7 @@ SWADE:
     Magazine: Magazin
     Battery: Batterie
     PP: Machtpunkte
+    Self: Selbst
   ConsumableType:
     Label: Subtyp
     Regular: Regulär
@@ -268,7 +269,7 @@ SWADE:
   Refresh: Aktualisiere diese Karte
   Reload: Nachladen
   ReloadSuccess: Die Waffe wurde erfolgreich nachgeladen
-  ReloadNotPossible: Nachladen nicht möglich!
+  ReloadNotPossible: Nachladen nicht möglich
   ReloadUnneeded: Die Waffe ist bereits voll geladen
   ShowBennyAnimation: Zeige die Benny Animation
   ShowBennyAnimationDesc: Spielt eine 3D Animation ab wenn ein Benny ausgegeben wird
@@ -276,15 +277,15 @@ SWADE:
   Protection: Schutz
   Torch: Lichtquelle
   WildDiePreset: Wildcard Würfel Voreinstellung
-  WildDiePresetDesc: Wähle eine DSN Preset für deinen Wildcard Würfel.
-  WildDieTheme: Wildcard Würfel Thema
+  WildDiePresetDesc: Wähle ein DSN-Preset für deinen Wildcard-Würfel.
+  WildDieTheme: Wildcard-Würfel Thema
   WildDieThemeDesc: >-
     Wähle ein DSN-Theme für den Wildcard-Würfel. Wähle "Custom", wenn ein
     eigener erstellt werden soll, oder "Kein" wenn der Wildcard-Würfel nicht
     anders aussehen soll. Bitte beachte, dass selbst erstellte Wildcard-Würfel
     derzeit nur von dir selber gesehen werden können. Andere Spieler werden
     diese anders sehen.
-  Trapping: Ausprägung
+  Trapping: Ausprägungen
   AddBenny: Einen Benny hinzufügen
   CurrentBennies: Derzeitige Bennys
   RerollWithBenny: Mit Benny nochmal würfeln
@@ -295,7 +296,7 @@ SWADE:
   SpecialAbilities: Spezialfähigkeiten
   AncestralAbilities: Volkseigenschaften
   ArchetypeAbilities: Archetypeigenschaften
-  About: Über
+  About: Mehr
   EdgesHindrances: Talente
   GrantsPowers: Gewährt Mächte
   Passengers: Passagiere
@@ -325,7 +326,7 @@ SWADE:
   DmgRolls: Schadenswürfe
   SubtractPPDesc: MP-Kosten von den verfügbaren MP abziehen
   AddPPDesc: MP-Kosten zu den verfügbaren MP hinzurechnen
-  RightClickZoom: Für eine größere Ansicht rechtsklicken
+  RightClickZoom: Für größere Ansicht rechtsklicken
   SysMigrationWarning: >-
     Deine SWADE-Systemdaten stammen aus einer zu alten Foundry-Version und
     können nicht zuverlässig auf die neueste Version migriert werden. Der
@@ -333,8 +334,7 @@ SWADE:
   DeckShuffled: Kartens automatisch gemischt
   BasePace: Basisbewegung
   WarningPackLocked: >-
-    Dieses Kompendium ist gesperrt. Zum bearbeiten bitte das Kompendium
-    entsperren.
+    Dieses Kompendium ist gesperrt. Zum Bearbeiten bitte das Kompendium entsperren.
   ActionCardEditor: Aktionskarteneditor
   CardFace: Kartenillustration
   CardValue: Wert
@@ -343,13 +343,13 @@ SWADE:
   OpenACEditor: Im Aktionskarteneditor öffnen
   'Yes': Ja
   'No': Nein
-  ShowCharacterSummary: Charakterzusammenfassung Anzeigen
-  CharacterSummary: Charakterzusammenfassung
+  ShowCharacterSummary: Charakterübersicht Anzeigen
+  CharacterSummary: Charakterübersicht
   CopyHtml: HTML Kopieren
   CopyMarkdown: Markdown kopieren
   Metric: Metrisch
   Imperial: Imperial
-  3DBennies: 3D Bennies
+  3DBennies: 3D-Bennies
   Modifiers: Modifikatoren
   Duplicates: Duplikate Gefunden
   Wealth: Vermögen
@@ -362,10 +362,12 @@ SWADE:
       Add: Eigenen Modifikator hinzufügen
     Support: Unterstützung
     Preset:
-      Choose: Voreinstellung auswählen…
+      Choose: Modifikator wählen…
       Add: Voreinstellung hinzufügen
+      Settings: Modifikator-Voreinstellungen
     Value: Wert
     Ignore: Ignorieren?
+    None: Aktuell keine Modifikatoren
   Illumination:
     _name: Beleuchtung
     Dim: Düster
@@ -388,7 +390,8 @@ SWADE:
   UnstablePlatform: Unsicheren Grund
   NoSceneAvailable: Es ist keine Szene verfügbar oder der Canvas wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
-  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck zu handeln
+  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
+    zu handeln
   ConvertToDeck: Zu Deck konvertieren
   PPAbbreviation: MP
   ShowInChat: Im Chat anzeigen
@@ -413,7 +416,7 @@ SWADE:
   Advances:
     Planned: Geplant
     Number: Steigerung Nummer
-    Toggle: Plannung ein/ausschalten
+    Toggle: Geplant umschalten
     Types:
       Attribute: Attribut erhöhen
       Edge: Neues Talent
@@ -429,7 +432,7 @@ SWADE:
   CharacterGoals: Ziele
   Background: Hintergrund
   ActiveEffects:
-    Add: Active Effect Hinzufügen
+    Add: Neuer Aktiver Effekt
     Source: Quelle
     ResetDuration: Dauer zurücksetzen
     AddGuided: Wizard öffnen
@@ -451,9 +454,11 @@ SWADE:
     BleedingOut:
       Title: Konstitutionsprobe gegen Ausbluten
       Fail: Du stirbst
-      Success: Du überlebst noch
+      Success: Du überlebst – noch.
       Raise: Die Blutung stoppt
-  BenniesSpendGM: Gib einen SL Benny aus
+      BleedOutModifier: Verbluten-Modifikator
+      IgnoreWounds: Verbluten Wunden Ignorieren
+  BenniesSpendGM: SL-Benny ausgeben
   ActionDmgMod: Akionsschadensmodifikator
   AddAdvance: Aufstieg hinzufügen
   ConvictionActive: Entschlossen
@@ -468,11 +473,12 @@ SWADE:
     None: Keins
     TabLabel: Verhalten
     Description: >-
-      </p>Effekte laufen währen des <em>nächsten Zuges (oder später)</em> des
-      Zieles aus</p>
+      <p>Effekte laufen während des <em>nächsten Zuges (oder später)</em> des Zieles
+      aus</p>
     LooseTurnOnHold: Verliere Zug wenn dieser Aufgespart wurde
+    Remaining: Verbleibend
   ClearChaseCards: Verfolgungsjagdkarten von der Szene entfernen
-  ChaseCardsCleared: Alle Verfolgungsjagtkarten wurden von der Szene entfernt
+  ChaseCardsCleared: Alle Verfolgungsjagdkarten wurden aus der Szene entfernt.
   ItemDmgMod: Schadensmodifikator
   RemoveEffectTitle: '{label} entfernen?'
   RemoveEffectBody: >-
@@ -480,16 +486,19 @@ SWADE:
     <strong>{parent}</strong>entfernen?</p>
   WorldBasics: Basiseinstellungen
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
-  NoActionDeckDiscardPileFound: Kein Aktionskarten Ablagestapel gefunden. Es wird einer erstellt
+  NoActionDeckDiscardPileFound: Kein Aktionskarten-Ablagestapel gefunden, es wird
+    einer erstellt
   Subtract: Abziehen
-  ChangeBennyWarning: Die Seite muss neu geladen werden damit diese Einstellungen in Kraft treten
-  CannotAddAncestryToAncestry: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp hinzugefügt werden
+  ChangeBennyWarning: Nach Änderung dieser Einstellungen muss die Seite neu geladen
+    werden!
+  CannotAddAncestryToAncestry: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp
+    hinzugefügt werden!
   Keybindings:
     Bennies:
-      Name: Benny bekommen oder Ausgeben
+      Name: Benny Ausgeben/Erhalten
       Hint: >-
-        Drücke diese Taste(n) um einen Benny auszugeben. Halte dabei ALT
-        gedrückt um statdessen einen Benny zu bekommen
+        Taste(n) drücken, um einen Benny auszugeben; dabei ALT gedrückt halten, um
+        stattdessen einen Benny zu bekommen
     OpenFavoriteCards:
       Hint: Die favorisierte Kartenhand kann in der Userkonfiguration gesetzt werden
       Name: Favorisierte Kartenhand öffnen
@@ -499,8 +508,8 @@ SWADE:
     HighlightTemplate:
       Name: Schablonen immer ausmalen
       Hint: >-
-        Wenn diese Einstellung eingeschaltet ist werden Schablonen immer voll
-        ausgemalt anstatt nur das Raster
+        Wenn diese Einstellung eingeschaltet ist, werden Schablonen immer ausgemalt
+        (anstatt nur das Raster).
     FantasyCompanionEntangle:
       Name: Festgehalten Status nach Fantasy Companion
       Hint: >-
@@ -511,10 +520,10 @@ SWADE:
     InitCardDeck:
       Name: Aktionskartendeck
     ParryBase:
-      Name: Parade-Fertigkeit
+      Name: Parade-Fertigkeit-SWID
       Hint: >-
-        Der Name der Fertigkeit die zur Berechnung des Paradewerts benutzt wird
-        (Normalerweise Kämpfen)
+        Der SWID der Fertigkeit, die zur Berechnung des Paradewerts benutzt wird.
+        Siehe Dokumentation zur Savage Worlds ID!
     UseShortenedAttributes:
       Name: Attributsnamen abkürzen
       Hint: >-
@@ -535,12 +544,13 @@ SWADE:
         sichtbar zu sein
     EnableBennyNotify:
       Name: Nachrichten zu Bennys
-      Hint: Zeige Chatnachricht beim Nehmen, Einsetzen oder Auffrischen von Bennys
+      Hint: Zeige Chatnachricht beim Nehmen, Einsetzen oder Auffrischen von Bennys.
     HideWC:
-      Name: NSC Wildcards verstecken
+      Name: NSC-Wildcards verstecken
       Hint: Spielern nicht anzeigen, welche NSCs Wildcards sind
     CreateInitChat:
       Name: Chatnachrichten für Initiative
+      Hint: Wenn aktiviert werden gezogene Aktionskarten im Chat ausgegeben.
     AutoInit:
       Name: Automatische Initiative
       Hint: Aktionskarten jede Runde automatisch ziehen
@@ -579,15 +589,12 @@ SWADE:
     JokersWild:
       Name: Bennys für Joker
       Hint: >-
-        Wenn diese Option aktiviert ist, werden Bennys verteilt wenn ein Joker
-        als Aktionskarte gezogen wird.
+        Mit dieser Einstellung erhalten alle Spielercharaktere einen Benny, wenn einer
+        einen Joker zieht
     AmmoManagement:
       Name: Munitionsmanagement
       Hint: >-
-        Wenn diese Option aktiviert (und anwendbar) ist, wird die Munition vom
-        Magazin der Waffe abgezogen. Gegenstandskarten im Chat erhalten außerdem
-        eine Schaltfläche zum nachladen und du kannst die Waffe nicht verwenden
-        wenn nicht genügend Munition verfügbar ist
+        Automatisiert Munuitionsverbrauch. Siehe Dokumentation.
     PCAmmoFromInventory:
       Name: SCs laden Munition aus ihrem Inventar nach
       Hint: >-
@@ -618,11 +625,11 @@ SWADE:
     ApplyEncumbrance:
       Name: Belastungsabzüge anwenden
       Hint: >-
-        Wende belatungsabzüge an. Bitte beachtet das {vigor}sproben zum
-        Widerstand gegen {fatigue} derzeit NICHT unterstüzt sind
+        Belastungsabzüge anwenden. Dies unterstützt aktuell KEINE {vigor}sproben zum
+        Widerstand gegen {fatigue}!
     GmBennies:
-      Name: Spielleiter Bennys
-      Hint: Anzahl Bennys die du als SL beim auffrischen selbiger erhälst
+      Name: Spielleitungs-Bennys
+      Hint: Anzahl Bennys, welche die SL beim Auffrischen erhält
     VehicleMods:
       Name: Fahrzeug-Modifikationen
       Hint: Fahrzeuge nutzen Modifikations-Plätze
@@ -632,11 +639,10 @@ SWADE:
     BennyImageSheet:
       Name: Benny
       Hint: >-
-        Wählt welches Bild verwendet wird um den Benny am Charakterbogen
-        darzustellen
+        Wählt, welches Bild Bennys auf dem Charakterbogen darstellt
     HardChoices:
       Name: Schwere Entscheidungen
-      Hint: Schaltet die Schwere Entscheidungen Settingregel ein
+      Hint: Schaltet die Settingregel Schwere Entscheidungen ein
     UseAttributeShorts:
       Hint: >-
         Aktivieren Sie diese Option, wenn Sie abgekürzte Attributnamen auf den
@@ -662,13 +668,13 @@ SWADE:
         Spielercharaktere
     DumbLuck:
       Name: Narrenglück
-      Hint: Schaltet die Narrenglück Settingregel ein
+      Hint: Schaltet die Settingregel Narrenglück ein
     WoundCap:
       Name: Wundobergrenze
-      Hint: Schaltet die Wundobergrenze Settingregel ein
+      Hint: Schaltet die Settingregel Wundobergrenze ein.
     GrittyDamage:
       Name: Fieser Schaden
-      Hint: Schaltet die Fieser Schaden Settingregel ein
+      Hint: Schaltet die Settingregel Fieser Schaden ein.
     InjuryTable:
       Name: Verletzungstabelle
       Hint: >-
@@ -676,8 +682,19 @@ SWADE:
         verwendet werden soll.
     UnarmoredHero:
       Name: Ungepanzerter Held
+      Hint: Schaltet die Settingregel Ungepanzerter Held für Schaden wegstecken ein
+    ArbitFields: Beliebige Einstellungen
+    VehicleSkills:
+      Hint: Kommaseparierte Liste von Fertigkeiten für den Betrieb von allen Fahrzeugen
+      Name: Fahrzeug-Fertigkeiten
+    HeroesNeverDie:
+      Name: Helden Sterben Nie
+      Hint: Schaltet die Settingregel Helden Sterben Nie ein
+    CharSheetDefaultWidth:
+      Hint: 'Breite des Charakterbogens beim ersten Öffnen, in Pixeln. Default: 650.'
+      Name: Standardbreite für Charakterbögen
   Validation:
-    OnlyOneAncestry: Ein charakter kann nur ein Volk auf einmal haben!
+    OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben!
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
@@ -690,13 +707,13 @@ SWADE:
   TargetVulnerable: Ziel is Verwundbar
   WildAttack: Rücksichtsloser Angriff
   DocumentLink: Link
-  DocumentTweaks: Tweaks
+  DocumentTweaks: Optionen
   ItemType: Typ
   Source: Quelle
-  MigrateCompendium: Kompendium migration erzwingen
+  MigrateCompendium: Kompendium-Migration erzwingen
   Properties: Eigenschaften
   AddAction: Aktion hinzufügen
-  DeleteEmbeddedActionPrompt: Bist du sicher das du die Aktion {action} löschen willst?
+  DeleteEmbeddedActionPrompt: Sicher, dass die Aktion {action} gelöscht werden soll?
   DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
   TrademarkWeapon:
     Label: Lieblingswaffe
@@ -716,19 +733,24 @@ SWADE:
     Added: Hinzugefügt
     Readied: Bereit
   DestroyOnEmpty: Zerstören, wenn leer
-  Charges: Benutzbar
+  Charges: Ladungen
   Consumable:
-    Use: Benützen
+    Use: Benutzen
     Consumables: Verbrauchsgegenstände
+    NotEnoughCharges: Nicht genug Ladungen!
   ItemSheet: Savage Worlds Itembogen
-  EmptyAncestralAbilitiesHint: Dieses {ancestry} oder dieser {archetype} hat noch keine Fähigkeiten.
-  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe zu machen
+  EmptyAncestralAbilitiesHint: <strong>Warnung:</strong> Dieses Feature ist veraltet.
+    Beim Erstellen von einem neuen {ancestry}/{archetype} sollten stattdessen Items
+    in den Reiter Eigenschaften gezogen werden. Dann fügen {ancestry} bzw. {archetype}
+    Akteuren diese Items hinzu, wenn sie auf sie angewendet werden.
+  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe
+    zu machen
   Templates:
     Cone:
       Short: Kegel
       Long: Kebelschablone
     Stream:
-      Short: Stream
+      Short: Strahl
       Long: Streamschablone
     Small:
       Short: KFS
@@ -755,7 +777,7 @@ SWADE:
     SeeHeat: Wärme sehen
     SenseHeat: Wärme spüren
     Infravision: Wärmesicht
-  Attribute: Eigenschaft
+  Attribute: Attribut
   BaseDie: Würfelbasis
   AttributeManager:
     Title: Eigenschaften von {name} verwalten
@@ -782,16 +804,23 @@ SWADE:
         Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
         Liste der Vorschläge auswählen
   OtherStats: Andere Stats
-  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren gehören!
+  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren
+    gehören!
   AdditionalStats:
     SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
+    Current: '{stat} aktuell'
+    Type: Typ
+    HasMaxValue: Hat Maximalwert
+    Max: Max. {stat}
+    Key: Wertschlüssel
+    Label: Bezeichnung
   MessageOnUse:
     Label: Nachricht bei Verwendung
     Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
   ItemGrants:
     EmptyHint: Dieses Item gewährt derzeit keine Items
     Header: Gewährte Items
-    When: Items gewähren wen
+    When: Items gewähren wenn
   IgnFatigue: Erschöpfung ignorieren
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
@@ -804,62 +833,251 @@ SWADE:
     Critfail:
       Critfail: KRITISCHER PATZER
       ConfirmDie: Bestätigungswürfel
-      Confirmed: Bestätigung des kritischen Patzers
+      Confirmed: Bestätigung von kritischem Patzer
       Confirm: Bestätigen
+      Unconfirmed: Kritischer Patzer nicht bestätigt
+      Possible: MÖGLICHER KRITISCHER PATZER
+    Benny: Benny
+    GMBenny: SL-Benny
+    Free: Frei
   LoadedAmmo: Geladene Munition
   DamageApplicator:
-    ApplyDamage: Schaden Anwenden
-    WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
+    ApplyDamage:
+      Label: Schaden berechnen
+      Hint: Klicken, um Schaden für gewählte Figur zu berechnen
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> droht, <strong>{wounds}</strong>
+      zu erleiden!</p>
     SoakDialog:
-      WoundedTitle: Roll to Soak Wounds for {name}?
-      UnwoundedTitle: Adjust Damage to Determine Status for {name}?
-      WoundedPrompt: <p>{name} is about to take {wounds}. Do you want to attempt to Soak?</p>
-      ShakenPrompt: <p>{name} is about to become Shaken.</p>
-      UnharmedPrompt: <p>{name} might be unharmed.</p>
-      Benny: Spend a Benny to Soak
-      GMBenny: Spend a GM Benny to Soak
-      Free: Soak for Free
-      TakeWounds: Take {wounds}
+      WoundedTitle: Für {name} Schaden wegstecken würfeln?
+      UnwoundedTitle: Schaden anpassen, um Status für {name} zu bestimmen?
+      WoundedPrompt: <p>{name} erwartet {wounds}. Schaden wegstecken?</p>
+      ShakenPrompt: <p>{name} droht, Angeschlagen zu werden.</p>
+      UnharmedPrompt: <p>{name} könnte unversehrt bleiben.</p>
+      Benny: Benny nutzen, um Schaden wegzustecken
+      GMBenny: SL-Benny nutzen, um Schaden wegzustecken
+      Free: Umsonst Schaden wegstecken
+      TakeWounds: '{wounds} erleiden'
       AdjustDamage: Schaden anpassen
-      ApplyShaken: Apply Shaken Status
+      ApplyShaken: Angeschlagen-Zustand anwenden
       Accept: Annehmen
-      SoakRoll: Erholungsprobe (Konstitution)
+      SoakRoll: Schaden Wegstecken (Konstitutionsprobe)
+      NoVehicleSoak: Schaden wegstecken wird für Fahrzeuge noch nicht unterstützt
     RerollSoakDialog:
-      Title: Reroll to Soak Wounds for {name}?
+      Title: Schaden wegstecken für {name} neu würfeln?
       Prompt: >-
-        <p>{name} is about to take {wounds}. Do you want to reroll the Soak
-        roll?</p>
-      Benny: Spend a Benny to Reroll
-      GMBenny: Spend a GM Benny to Reroll
-      Free: Reroll for Free
-      TakeWounds: Take {wounds}
+        <p>{name} erwartet {wounds}. Schaden wegstecken neu würfeln?</p>
+      Benny: Für Benny erneut würfeln
+      GMBenny: Für SL-Benny erneut würfeln
+      Free: Umsonst erneut würfeln
+      TakeWounds: '{wounds} erleiden'
       PromptCritFail: >-
-        <p>{name} ist kurz davor {wounds} zu erleiden. Ein kritischer Fehlschlag
-        verhindert Wiederholungswürfe.</p>
-    AdjustDamagePrompt: <p>Adjust damage for any abilities and effects {name} might have.</p>
+        <p>{name} erwartet {wounds}. Ein kritischer Patzer verhindert Wiederholungswürfe.</p>
+    AdjustDamagePrompt: <p>Schaden entsprechend Fähigkeiten/Effekten von {name} anpassen.</p>
     Result:
-      NoSignificantDamage: <p><strong>{name}</strong> suffers no significant damage.</p>
-      SoakedAll: <p><strong>{name}</strong> Soaked all Wounds and is not Shaken!</p>
-      IsShaken: <p><strong>{name}</strong> is <strong>Shaken</strong>!</p>
+      NoSignificantDamage: <p><strong>{name}</strong> nimmt keinen signifikanten Schaden.</p>
+      SoakedAll: <p><strong>{name}</strong> hat allen Schaden weggesteckt und ist
+        nicht Angeschlagen!</p>
+      IsShaken: <p><strong>{name}</strong> ist <strong>Angeschlagen</strong>!</p>
       IsShakenWithWounds: >-
-        <p><strong>{name}</strong> is <strong>Shaken</strong> with
-        <strong>{wounds}</strong>!</p>
-      IsIncapacitated: <p><strong>{name}</strong> is <strong>Incapacitated!</strong></p>
-    NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
+        <p><strong>{name}</strong> ist <strong>Angeschlagen</strong> mit <strong>{wounds}</strong>!</p>
+      IsIncapacitated: <p><strong>{name}</strong> ist <strong>Ausgeschaltet!</strong></p>
+    NoInjuryTable: Keine Verletzungstabelle gewählt. Siehe SWADE-Einstellungen
     NoTargetsSelected: The User who rolled damage must select one or more Targets.
-    SoakModifier: Erholungsprobenmodifikator
-  CustomWildDie: '- Persönlicher Wildcard Würfel -'
+    SoakModifier: Schaden-Wegstecken-Modifikator
+    Incapacitation:
+      Dies: <p><strong>{name}</strong> stirbt durch den Schaden!</p>
+      PermanentInjury: <p><strong>{name}</strong> erleidet eine permanente Verletzung
+        und <strong>Verblutet</strong>!</p>
+      PermanentInjuryHND: <p><strong>{name}</strong> erleidet eine permanente Verletzung!</p>
+      TemporaryInjury: <p><strong>{name}</strong> erleidet eine Verletzung, die anhält,
+        bis alle Wunden geheilt sind.</p>
+      ShortInjury: <p><strong>{name}</strong> erleidet eine Verletzung, die 24 Stunden
+        anhält, oder bis alle Wunden geheilt sind (je nachdem, was zuerst eintrifft).</p>
+      Title: Verletzungsgrad für {name} neu würfeln?
+      TakeFail: Erleide permanente Verletzung
+      Prompt: <p>{name} droht eine Verletzung. Konstitutionsprobe wiederholen?</p>
+      InjuryRoll: Konstitutionsprobe gegen Verletzung durch Ausgeschaltet
+      TakeSuccess: Erleide Verletzung bis alle Wunden geheilt wurden
+  CustomWildDie: '- Persönlicher Wildcard-Würfel -'
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
   ppReload: Zum nachladen benötigte MP
   UsesTOC: Compendium TOC Verwenden
   TOCBlockList: Compendium TOC Blockliste
   RollNoun: Würfelwurf
+  TOURS:
+    ADDSTATS:
+      ActorDisplay:
+        Content: Zusätzliche Werte, die im Übersichtsreiter von Akteuren angezeigt
+          werden können.
+    TWEAKS:
+      Soak:
+        Content: Bonus für Würfe auf Wunden wegstecken, wenn die Schadens-Buttons
+          der System-Chatkarten genutzt werden.
+        Title: Schaden-Wegstecken-Modifikator
+      Title: Optionen
+    AMMUNITION:
+      Title: Munition
+    HEADQUARTERS:
+      Upgrades:
+        Content: Aufwertungen können hier aufgeführt werden. HTML wird vollständig
+          unterstützt, Stichpunktlisten, Tabellen und ähnliches können also beliebig
+          genutzt werden.
+        Title: Aufwertungen
+  RequiredCrew: Nötige Besatzung
+  NumberOfDice:
+    Hint: Anzahl Eigens.-Würfel, die für diese Aktion gewürfelt werden
+    Label: Würfel
+  DmgMod: Schaden-Modifikator
+  Auras:
+    Enabled: Aktiviert
+    WallConstraints:
+      Label: Durch Wände beschränkt
+      Hint: Schaltet um, ob die Aura durch Wände begrenzt wird, die Licht blockieren,
+        oder diese durchdringt
+    UserAura2: Aura 2
+    TabHeader: Auramancer
+    Color: Farbe
+    Range: Aura-Radius
+    Alpha: Aura-Transparenz
+    UserAura1: Aura 1
+  AmbushAssistant:
+    NormalDraw: Normal Ziehen
+    Title: Hinterhalt-Assistent
+    Hint: Kampfteilnehmer per Drag & Drop für Überraschungsrunde zuweisen
+    Unassigned: Nicht zugewiesen
+    OnHold: Aufgespart
+    NoTurn: Kein Zug
+  Combat:
+    StartSurpriseRound: Überraschungsrunde starten
+    AdvanceRoundTitle: Nächste Runde?
+    AdvanceRoundContent: Zur nächsten Runde fortfahren?
+    RevertRoundTitle: Zur letzten Runde zurückkehren?
+    DiscardedCards: Abgelegte Karten
+    Redraw: Karten-Neuziehen
+    RevertRoundContent: Zur letzten Runde zurückkehren?
+    RedrawDialog:
+      Content: Frei oder für Benny neue Karte ziehen?
+  GlobalMod:
+    Trait: Alle Eigenschaften
+    Spirit: Willenskraft und Wil.-Fertigkeiten
+    Label: Globale Modifikatoren
+    Agility: Geschicklichkeit und Ges.-Fertigkeiten
+    Smarts: Verstand und Ver.-Fertigkeiten
+    Strength: Stärke und Stä.-Fertigkeiten
+    Vigor: Konstitution und Kon.-Fertigkeiten
+    Attack: Alle Angriffe
+    Damage: Aller Schaden
+    AP: Alles Panzerbrechende
+  Requirements:
+    Editor:
+      AddHint: Neue Voraussetzung
+      DeleteHint: Voraussetzung löschen
+      Label: Bezeichnung
+      Value: Wert
+      SWID: SWID
+      Header: Voraussetzungen für {name} bearbeiten
+    Combinator: Kombinator
+    Other: Andere
+    And: und
+    Or: oder
+  RedrawBenny: Karte mit Benny ziehen
+  CalledShot:
+    HeadOrVitals: 'Angesagtes Ziel: Kopf oder lebensw. Organe'
+    Limbs: 'Angesagtes Ziel: Gliedmaßen'
+    Hand: 'Angesagtes Ziel: Hand'
+  HindranceSeverity:
+    Either: Leicht/Schwer
+    Label: Schweregrad-Optionen
+    Major: Nur Schwer
+    Minor: Nur Leicht
+  ModAttack: Angriff-Modifikatoren
+  ModTrait: Eigenschaft-Modifikatoren
+  Aura:
+    Visibility:
+      Label: Sichtbar für
+      Hint: Wählt, welche Figuren (nach Gesinnung) diese Aura sehen. Du siehst immer
+        Auren für Figuren, von denen du mindestens Beobachter bist
+  SWID:
+    Long: Savage Worlds ID
+    Short: SWID
+    Regenerate: Savage Worlds ID neu generieren
+    ChangeWarning2: Die Savage Worlds ID zu ändern, kann Verweise auf dieses Item
+      ungültig machen! Hier ist Vorsicht geboten.
+    ChangeWarning3: Fortfahren?
+    ChangeWarning1: Vorsicht!
+  DesperateAttack:
+    '2': Verzweifelter Angriff (2)
+    '4': Verzweifelter Angriff (4)
+  ShieldBonus: Schildbonus
+  Unfamiliar:
+    '2': Ungewohnt (-2)
+    '4': Ungewohnt (-4)
+  Weapon:
+    RangeType:
+      Mixed: Gemischt
+      Melee: Nahkampf
+      Ranged: Fernkampf
+      Label: Reichweitentyp
+  HeadquartersSheet: Savage Worlds Stützpunkt-Bogen
+  Elan: Elan
+  InnatePower: Angeborene Macht
+  MacroActor:
+    Default: Default
+    Self: Selbst
+  RefreshOnly: Auffrischen
+  NotOwnedError: Item/Akteur muss im Besitz sein
+  AddOrReplaceActions:
+    Title: Aktionen hinzufügen/ersetzen
+    Replace: Existierende ersetzen
+    Add: Neu hinzufügen
+    Content: <p>Sollen die Aktionen von <strong>{source}</strong> ({type}) als neue
+      Aktionen hinzugefügt, oder existierende ersetzt werden?</p>
+  Headquarters:
+    Advantage: Vorteil
+    Complication: Komplikation
+    Form: Form
+    Description: Beschreibung
+    Acquisition: Erwerb
+    Maintenance: Wartung
+    Upgrades: Aufwertungen
+  SetActionDeck: Kartenstapel als Aktionskartendeck nutzen
+  NpcWildCardsOnScene: NSC-Wildcards in Szene
+  CardDrawMsgSize:
+    Compact: Kompakt
+    Large: Groß
+    None: Keine
+  SelectNewGroupLeader: Neuen Gruppenleiter wählen
+  ToggleIncap: Ausgeschaltet umschalten
+  Free: Frei
+  Benny: Benny
+  FollowerCount: '{count} Gefolgsleute'
+  ModDamage: Schaden-Modifikatoren
+  Weakness: Anfälligkeit
+  Resistance: Widerstand
+  BaseParry: Parade-Grundwert
+  BenniesCount: '{count} Bennys'
+  NoDescription: Keine Beschreibung verfügbar
+  Magazine:
+    NoneLoaded: Kein Magazin geladen
+    Select: Magazin wählen
+  GrantsItemsError: Auffrischen funktioniert nicht für Items, die andere Items gewähren
+  NoUpdatedItemFound: Kein passendes Item für Auffrischen gefunden
+  DiscardMagazine: Leere Magazine verwerfen
+  PlayerCardDrawHelper:
+    Title: SWADE Spieler Karten Ziehhelfer
+  CouldNotFindMacro: Kein Makro mit UUID {uuid} gefunden
+  ResourcesUsed:
+    Label: Genutzte Ressourcen
+    Hint: Wie viel einer Ressource für diese Aktion genutzt wird
 TYPES:
   Actor:
     Character: Charakter
     Npc: NSC
     Vehicle: Fahrzeug
+    npc: NSC
+    vehicle: Fahrzeug
+    character: Charakter
   Item:
     Weapon: Waffe
     Armor: Rüstung
@@ -872,6 +1090,21 @@ TYPES:
     Ability: Eigenschaft
     Consumable: Verbrauchsgegenstand
     Action: Aktion
+    action: Aktion
+    consumable: Verbrauchsgegenstand
+    ability: Eigenschaft
+    power: Macht
+    hindrance: Handicap
+    shield: Schild
+    armor: Rüstung
+    edge: Talent
+    gear: Ausrüstung
+    weapon: Waffe
+    skill: Fertigkeit
   Card:
     Adventure: Abenteuerkarte
     Poker: Pokerkarte
+    poker: Pokerkarte
+    adventure: Abenteuerkarte
+  JournalEntryPage:
+    headquarters: Stützpunkte

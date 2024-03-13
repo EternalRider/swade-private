@@ -31,7 +31,7 @@ SWADE:
   OldCard: Carta Anterior
   ActionCard: Carta de Ação
   ConvictionActive: Convicção Ativa
-  ConvictionActivate: Usa sua Convicção!
+  ConvictionActivate: Apela à sua convicção!
   ConvictionExtend: Você quer estender sua convicção?
   Vehicles: Veículos
   AddStats: Carac. Adicionais
@@ -75,10 +75,10 @@ SWADE:
   AltTrait: Característica Alternativa
   SubtractPPDesc: Subtraia o custo de PP do PP disponível
   AddPPDesc: Adicionar o custo de PP ao PP disponível
-  RightClickZoom: Clique do botão direito para zoom
+  RightClickZoom: '[Clique-direito] para ampliar'
   CardFace: Face da Carta
   CardValue: Valor
-  ClickSuggestions: Clique para sugestões
+  ClickSuggestions: '[Clique] para obter sugestões'
   Quick: Rápido
   BonusDamage: Bônus de Dano
   Joker: Curinga
@@ -127,6 +127,7 @@ SWADE:
       Settings: Modificadores Predefinidos
     Value: Valor
     Ignore: Ignorar?
+    None: Nenhum modificador no momento
   Illumination:
     _name: Iluminação
     Dim: Penumbra
@@ -400,6 +401,10 @@ SWADE:
       Name: Perícias de Operação
       Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
         como perícias de Operação para todos os veículos
+    CharSheetDefaultWidth:
+      Name: Largura padrão para fichas de personagem
+      Hint: 'Largura das fichas de personagem quando abertas pela primeira vez, em
+        pixels. Padrão: 650.'
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -473,6 +478,7 @@ SWADE:
   Consumable:
     Use: Usar
     Consumables: Consumíveis
+    NotEnoughCharges: Não há cargas suficientes!
   EmptyAncestralAbilitiesHint: >-
     <strong>Aviso: </strong> Este recurso está sendo deprecado em favor da Concessão
     de Itens. Se estiver criando um(a) novo(a) {ancestry} ou {archetype}, arraste
@@ -531,7 +537,9 @@ SWADE:
     When: Concede Itens Quando
   RefreshPP: Restaurar Pontos de Poder
   DamageApplicator:
-    ApplyDamage: Aplicar Dano
+    ApplyDamage:
+      Label: Resolver Danos
+      Hint: '[Clique] para resolver o dano com o Token selecionado'
     WoundsAboutToBeTaken: >-
       <p><strong>{name}</strong> está prestes a sofrer
       <strong>{wounds}</strong>!</p>
@@ -623,7 +631,7 @@ SWADE:
   Pace: Mov.
   Running: Corrida
   RunningDie: Dado de Corrida
-  RollRun: Clique para correr
+  RollRun: '[Clique] para rolar o dado de corrida'
   Adv: Progressos
   Rank: Estágio
   Inv: Equip.
@@ -1108,6 +1116,60 @@ SWADE:
       Melee: Corpo a corpo
       Ranged: À Distância
       Mixed: Misto
+      Label: Tipo de Alcance
+  RedrawBenny: Recomprar Carta com Bene
+  NpcWildCardsOnScene: Cartas Selvagens NPC em cena
+  SelectNewGroupLeader: Selecionar um novo Líder de Grupo
+  ToggleIncap: Alternar Incapacitação
+  CardDrawMsgSize:
+    None: Nenhum
+    Compact: Compacto
+    Large: Grande
+  Benny: Bene
+  AmbushAssistant:
+    NormalDraw: Compra Normal
+    NoTurn: Sem Turno
+    Title: Assistente de Emboscada
+    Hint: Arraste e solte os combatentes para preparar a rodada surpresa
+    Unassigned: Não atribuído
+  Combat:
+    StartSurpriseRound: Iniciar rodada surpresa
+    AdvanceRoundTitle: Avançar para a próxima rodada?
+    AdvanceRoundContent: Você quer avançar à próxima rodada?
+    RevertRoundTitle: Reverter à rodada anterior?
+    RevertRoundContent: Deseja voltar à rodada anterior?
+    DiscardedCards: Cartas descartadas
+    Redraw: Recompra de Carta
+    RedrawDialog:
+      Content: Comprar uma nova carta com um Bene ou de graça?
+  FollowerCount: '{count} Seguidores'
+  Free: Gratuita
+  HindranceSeverity:
+    Major: Somente Maior
+    Minor: Somente Menor
+    Label: Opções de Gravidade
+    Either: Ambas
+  HeadquartersSheet: Folha da Sede do Savage Worlds
+  Elan: Impulso
+  NotOwnedError: Você deve possuir esse item/ator para isso
+  NoUpdatedItemFound: Nenhum item adequado para uma atualização foi encontrado
+  DiscardMagazine: Descartar carregador vazio
+  Headquarters:
+    Form: Formulário
+    Advantage: Vantagem
+    Description: Descrição
+    Acquisition: Aquisição
+    Maintenance: Manutenção
+    Complication: Complicação
+    Upgrades: Upgrades
+  SetActionDeck: Definir deck como Deck de Ação
+  InnatePower: Poder Inato
+  RefreshOnly: Atualizar
+  GrantsItemsError: Atualizar não funciona para itens que concedem outros
+  PlayerCardDrawHelper:
+    Title: Assistente de Compra de Cartas de Jogador do SWADE
+  NoDescription: Nenhuma descrição disponível
+  BenniesCount: '{count} Benes'
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
@@ -1147,3 +1209,5 @@ TYPES:
   Card:
     adventure: Carta de Aventura
     poker: Carta de Poker
+  JournalEntryPage:
+    headquarters: Sede
