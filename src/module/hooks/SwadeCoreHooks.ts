@@ -553,7 +553,7 @@ export default class SwadeCoreHooks {
     <div class="form-group swade-favorite-cards">
       <label>${userConfigLabel}</label>
       <select name="flags.swade.favoriteCardsDoc">
-      <option value="">None</option>
+      <option value="">${game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.HandNone')}</option>
       ${options.join('\n')}
       </select>
     </div>`;

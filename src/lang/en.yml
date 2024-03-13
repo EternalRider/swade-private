@@ -224,6 +224,8 @@ SWADE:
   FatigueMax: Max Fatigue
   Incap: Incapacitated
   Init: Initiative
+  Draw: Draw
+  Reset: Reset
   DrawInit: Draw Initiative
   ActionDeckReset: Reshuffle Action Deck
   ActionDeckResetNotification: Action Deck reshuffled
@@ -294,6 +296,7 @@ SWADE:
   ConvictionActivate: Calls upon their conviction!
   ConvictionExtend: Do you want to extend your conviction?
   ConvictionEnd: wavers in their conviction
+  ConvictionExtendPrompt: Do you want to spend a Benny to extend your conviction?
   NoBennies: You don't have enough bennies!
   GM: Game Master
   Vehicles: Vehicles
@@ -397,6 +400,29 @@ SWADE:
   CardFace: Card Face
   CardValue: Value
   CardSuit: Suit
+  Cards:
+    Spades: Spades
+    Hearts: Hearts
+    Diamonds: Diamonds
+    Clubs: Clubs
+    Jokers: Jokers
+    Two: Two
+    Three: Three
+    Four: Four
+    Five: Five
+    Six: Six
+    Seven: Seven
+    Eight: Eight
+    Nine: Nine
+    Ten: Ten
+    Jack: Jack
+    Queen: Queen
+    King: King
+    Ace: Ace
+    RedJoker: Red Joker / Spades Joker
+    BlackJoker: Black Joker / Hearts Joker
+    BlueJoker: Blue Joker / Diamonds Joker
+    GreenJoker: Green Joker / Clubs Joker
   IsJoker: Is Joker
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
@@ -412,6 +438,7 @@ SWADE:
   SetActionDeck: Set Deck as Action Deck
   ShowCharacterSummary: Show Character Summary
   CharacterSummary: Character Summary
+  CharacterSummaryTypeErr: Can't use character summariser for actor of type {type}
   CopyHtml: Copy HTML
   CopyMarkdown: Copy Markdown
   Imperial: Imperial
@@ -480,6 +507,11 @@ SWADE:
   NoSceneAvailable: There is no scene available or you've disabled the canvas
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
+  ChaseLayout: Layout
+  ChaseRows: Rows
+  ChaseColumns: Columns
+  ChaseNoDeck: Please provide a deck!
+  ChaseReset: The deck "{deck}" has been reset.
   Expiration:
     TabLabel: Turn Behavior
     Description: <p>Effects expire on the target's <em>next turn or later</em>.</p>
@@ -545,6 +577,7 @@ SWADE:
       UserConfigLabel: Favorite Card Hand
       Hint: You can set your favorite hand in the User Config
       NoCardsWarning: You don't have a favorite card hand set!
+      HandNone: None
     Bennies:
       Name: Spend/Receive a Benny
       Hint: >-
@@ -772,7 +805,8 @@ SWADE:
   MigrateCompendium: Force compendium migration
   Properties: Properties
   AddAction: Add Action
-  DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}
+  DialogConfirmPrompt: Are you sure?
+  DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}?
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
     Label: Trademark Weapon
@@ -872,6 +906,7 @@ SWADE:
     HasMaxValue: Has Max Value
     Current: Current {stat}
     Max: Max {stat}
+    KeyErr: Additional Stat key {invalid} is invalid and has been changed to {key}
   MessageOnUse:
     Label: Message on Use
     Hint: Display a chat message when this item is used

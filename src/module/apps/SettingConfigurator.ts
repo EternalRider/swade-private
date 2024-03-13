@@ -155,7 +155,7 @@ export default class SettingConfigurator extends FormApplication {
         const invalidKey = key;
         key = key.slugify().replace('.', '-');
         ui.notifications.warn(
-          `Additional Stat key ${invalidKey} is invalid and has been changed to ${key}`,
+          game.i18n.format('SWADE.AdditionalStats.KeyErr', {invalid: invalidKey, key: key}),
           { permanent: true },
         );
       }
