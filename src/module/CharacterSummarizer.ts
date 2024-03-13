@@ -16,7 +16,7 @@ export default class CharacterSummarizer {
 
     if (!CharacterSummarizer.isSupportedActorType(actor)) {
       ui.notifications.error(
-        `Can't do character summariser against actor of type ${actor.type}`,
+        game.i18n.format('SWADE.CharacterSummaryTypeErr', {type: actor.type})
       );
       this.summary = '';
       return;

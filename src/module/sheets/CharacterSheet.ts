@@ -935,7 +935,7 @@ export default class CharacterSheet extends ActorSheet {
       title: game.i18n.localize('SWADE.Advances.Delete'),
       content: `<form>
       <div style="text-align: center;">
-        <p>Are you sure?</p>
+        <p>${game.i18n.localize('SWADE.DialogConfirmPrompt')}</p>
       </div>
     </form>`,
       defaultYes: false,
@@ -956,7 +956,7 @@ export default class CharacterSheet extends ActorSheet {
       title: game.i18n.localize('SWADE.Advances.Toggle'),
       content: `<form>
         <div style="text-align: center;">
-          <p>Are you sure?</p>
+          <p>${game.i18n.localize('SWADE.DialogConfirmPrompt')}</p>
         </div>
       </form>`,
       defaultYes: false,
