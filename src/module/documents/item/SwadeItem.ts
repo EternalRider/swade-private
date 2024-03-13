@@ -246,7 +246,7 @@ export default class SwadeItem extends Item {
     const baseRoll = new Array<string>();
     for (const term of terms) {
       if (term instanceof Die) {
-        if (!term.modifiers.includes('x')) {
+        if (!term.modifiers.includes('x') && term.faces > 1) {
           term.modifiers.push('x');
         }
         if (!term.flavor) {

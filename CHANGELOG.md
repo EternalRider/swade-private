@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.5
+
+### Fixed
+
+- Fixed an error that would cause damage rolls to fail if the damage formula included `@str` on an actor with a strength of 1. (#1068) **by @florad92**
+
 ## 3.3.4
 
 ### Fixed
