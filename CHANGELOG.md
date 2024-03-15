@@ -33,6 +33,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The roll chat commands now default to using the `SwadeRoll` class. (#753) **by @florad92**
 - Improved the styling and visibility of Conviction messages. (#815) **by @florad92**
 
+## 3.3.5
+
+### Fixed
+
+- Fixed an error that would cause damage rolls to fail if the damage formula included `@str` on an actor with a strength of 1. (#1068) **by @florad92**
+
 ## 3.3.4
 
 ### Fixed
