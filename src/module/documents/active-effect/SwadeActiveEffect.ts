@@ -235,19 +235,21 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private async _applyRelatedEffects() {
     const related = this.getFlag('swade', 'related') ?? {};
-    if (!(this.parent instanceof SwadeActor) || !this.statusId) return;
+    if (!this.actor || !this.statusId) return;
+    const toCreate: ActiveEffectDataConstructorData[] = [];
     for (const [id, mutation] of Object.entries(related)) {
       const statusEffect = getStatusEffectDataById(id);
       //skip if the effect already exists on the actor
-      if (this.parent?.statuses.has(id) || !statusEffect) continue;
+      if (this.actor.statuses.has(id) || !statusEffect) continue;
       //apply the mutation if one exists
-      const effect = foundry.utils.isEmpty(mutation)
-        ? statusEffect
-        : foundry.utils.mergeObject(statusEffect, mutation, {
-            performDeletions: true,
-          });
-      await this.parent?.toggleActiveEffect(effect, { active: true });
+      const effect = foundry.utils.mergeObject(
+        statusEffect,
+        { statuses: [id], ...mutation },
+        { performDeletions: true },
+      );
+      toCreate.push(effect);
     }
+    await this.actor?.createEmbeddedDocuments('ActiveEffect', toCreate);
   }
 
   private _handleItemMatch(
