@@ -1,4 +1,7 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import {
+  StatusEffect,
+  ToggleActiveEffectOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import {
   Context,
   DocumentModificationOptions,
@@ -15,7 +18,6 @@ import {
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { AuraPointSource } from '../../canvas/AuraPointSource';
-import { createConvictionEndMessage } from '../../chat';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
@@ -675,33 +677,43 @@ export default class SwadeActor extends Actor {
     }
   }
 
-  async toggleConviction() {
+  /**
+   * Toggles the actor's conviction state on/off, subtracting the relevant resource
+   * @param toChat Whether to post a chat message when toggling, defaults to `true`
+   */
+  async toggleConviction(toChat = true): Promise<void> {
     if (this.system instanceof VehicleData) return;
     const current = this.system.details.conviction.value;
     const active = this.system.details.conviction.active;
+    let template = '';
+
     if (current > 0 && !active) {
       await this.update({
         'system.details.conviction.value': current - 1,
         'system.details.conviction.active': true,
       });
-      await CONFIG.ChatMessage.documentClass.create({
-        speaker: {
-          actor: this.id,
-          alias: this.name,
-        },
-        content: game.i18n.localize('SWADE.ConvictionActivate'),
-      });
+      template = CONFIG.SWADE.conviction.templates.start;
     } else {
       await this.update({
         'system.details.conviction.active': false,
       });
-      await createConvictionEndMessage(this);
+      template = CONFIG.SWADE.conviction.templates.end;
     }
+    if (!toChat) return;
+    const msgClass = getDocumentClass('ChatMessage');
+    await msgClass.create({
+      speaker: msgClass.getSpeaker({ actor: this }),
+      content: await renderTemplate(template, {
+        icon: CONFIG.SWADE.conviction.icon,
+        actor: this,
+      }),
+    });
   }
 
+  /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
     effectData: StatusEffect,
-    { overlay = false, active }: { overlay?: boolean; active?: boolean } = {},
+    { overlay = false, active }: ToggleActiveEffectOptions = {},
   ) {
     if (!effectData.id) return false;
 

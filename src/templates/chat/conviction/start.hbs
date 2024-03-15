@@ -1,0 +1,10 @@
+<div class='conviction'>
+  {{#if icon}}
+    <img class='icon' src='{{icon}}' />
+  {{else}}
+    <i class='fa-solid fa-star text-icon'></i>
+  {{/if}}
+  <span>
+    {{localize 'SWADE.ConvictionActivate' name=actor.name}}
+  </span>
+</div>

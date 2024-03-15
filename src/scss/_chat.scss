@@ -93,11 +93,10 @@
   }
 }
 
-.chat-message .message-header .message-sender {
-  white-space: normal;
-}
-
 .chat-message {
+  .message-header .message-sender {
+    white-space: normal;
+  }
   .initiative-redraw {
     text-align: end;
   }
@@ -193,6 +192,25 @@
     transform-origin: bottom left;
     &:hover {
       transform-origin: bottom left;
+    }
+  }
+
+  .conviction {
+    background: rgba(179, 135, 40, 0.25);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 0.25rem;
+    border: 1px solid rgb(179, 135, 40);
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: 700;
+    .icon {
+      max-width: 3rem;
+      border: none;
+    }
+    .text-icon {
+      font-size: 2rem;
     }
   }
 }
