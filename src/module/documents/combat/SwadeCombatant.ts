@@ -396,7 +396,7 @@ export default class SwadeCombatant extends Combatant {
   async #triggerBennies(combatants: SwadeCombatant[]) {
     for (const c of combatants) {
       if (c.actor?.isOwner) await c.actor?.getBenny();
-      else game.swade.sockets.giveBenny([firstOwner(this)?.id as string]);
+      else game.swade.sockets.giveBenny([firstOwner(this.actor)?.id as string]);
     }
   }
 
