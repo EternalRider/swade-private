@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
 - Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
 - Related Active Effects are now applied as a single operation. (#1056) **by @florad92**
+- The NPC sheet now displays the benny and Conviction controls for all NPCs. (#991) **by @florad92**
 
 ## 3.3.4
 
