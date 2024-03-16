@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The NPC sheet now displays the benny and Conviction controls for all NPCs. (#991) **by @florad92**
 - The roll chat commands now default to using the `SwadeRoll` class. (#753) **by @florad92**
 - Improved the styling and visibility of Conviction messages. (#815) **by @florad92**
+- Tours will now attempt to progress even if not all permissions are available, e.g. changing world settings (#1014) **by @jpmeehan5**
 
 ## 3.3.5
 
