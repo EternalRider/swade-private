@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 3.4.0
 
+### Added
+
+- Armor Tooltip now provides a full breakdown of Torso armor sources. (#1019) **by @jpmeehan5**
+
 ### Changed
 
 - The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**

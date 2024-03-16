@@ -6,7 +6,6 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ActorDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Attribute, ItemMetadata } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
@@ -322,7 +321,7 @@ export default class SwadeActor extends Actor {
 
     const roll = TraitRoll.fromTerms([basePool]) as TraitRoll;
     roll.modifiers = modifiers;
-    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable!);
 
     /**
      * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
@@ -419,7 +418,7 @@ export default class SwadeActor extends Actor {
     const roll = skillRoll[0];
     const modifiers = skillRoll[1];
     roll.modifiers = modifiers;
-    if ('isRerollable' in options) roll.setRerollable(options.isRerollable);
+    if ('isRerollable' in options) roll.setRerollable(options.isRerollable!);
 
     //Build Flavour
     let flavour = '';
@@ -1325,48 +1324,65 @@ export default class SwadeActor extends Actor {
   private _getArmorForLocation(location: ArmorLocation): number {
     if (this.system instanceof VehicleData) return 0;
 
-    let totalArmorVal = 0;
+    return Object.values(this._getArmorSourcesForLocation(location)).reduce(
+      (acc, value) => (acc += value),
+      0,
+    );
+  }
+
+  /**
+   * @param location The location of the armor such as head, torso, arms or legs
+   * @returns A record of armor sources and values
+   */
+  private _getArmorSourcesForLocation(
+    location: ArmorLocation,
+  ): Record<string, number> {
+    const armorSources = {};
+    if (this.system instanceof VehicleData) return armorSources;
 
     //get armor items and retrieve their data
-    const armorList = this.itemTypes.armor.map((i) =>
-      i.system instanceof ArmorData ? i.system : null,
-    );
+    const armorList = this.itemTypes.armor.map((i) => {
+      const s = i.system as ArmorData;
+      return {
+        name: i.name,
+        armor: s.armor as number,
+        equipStatus: s.equipStatus as number,
+        locations: s.locations,
+        isNaturalArmor: s.isNaturalArmor as boolean,
+      };
+    });
 
     const nonNaturalArmors = armorList
       .filter((i) => {
-        const isEquipped =
-          Number(i?.equipStatus) > constants.EQUIP_STATE.CARRIED;
-        const isLocation = i?.locations[location];
-        const isNaturalArmor = i?.isNaturalArmor;
+        const isEquipped = i.equipStatus > constants.EQUIP_STATE.CARRIED;
+        const isLocation = i.locations[location];
+        const isNaturalArmor = i.isNaturalArmor;
         return isEquipped && !isNaturalArmor && isLocation;
       })
       .sort((a, b) => {
-        const aValue = Number(a?.armor);
-        const bValue = Number(b?.armor);
+        const aValue = a.armor;
+        const bValue = b.armor;
         return bValue - aValue;
       });
 
-    if (nonNaturalArmors.length === 1) {
-      totalArmorVal = Number(nonNaturalArmors[0]!.armor);
-    } else if (nonNaturalArmors.length > 1) {
-      totalArmorVal =
-        Number(nonNaturalArmors[0]?.armor) +
-        Math.floor(Number(nonNaturalArmors[1]?.armor) / 2);
+    if (nonNaturalArmors.length) {
+      const baseArmor = nonNaturalArmors[0];
+      armorSources[baseArmor.name] = baseArmor.armor;
+      if (nonNaturalArmors.length > 1) {
+        const extraArmor = nonNaturalArmors[1];
+        armorSources[extraArmor.name] = Math.floor(extraArmor.armor / 2);
+      }
     }
 
-    //add natural armor
-    armorList
-      .filter((i) => {
-        const isEquipped = i?.equipStatus !== constants.EQUIP_STATE.STORED;
-        const isLocation = i?.locations[location];
-        const isNaturalArmor = i?.isNaturalArmor;
-        return isNaturalArmor && isEquipped && isLocation;
-      })
-      .forEach((i) => {
-        totalArmorVal += Number(i?.armor);
-      });
-
-    return totalArmorVal;
+    return armorList.reduce((acc, i) => {
+      const isEquipped = i.equipStatus !== constants.EQUIP_STATE.STORED;
+      const isLocation = i.locations[location];
+      const isNaturalArmor = i.isNaturalArmor;
+      if (isNaturalArmor && isEquipped && isLocation) {
+        acc[i.name] = i.armor;
+      }
+      return acc;
+    }, armorSources);
   }
 
   getPTTooltip(target: 'parry' | 'toughness'): string {
@@ -1396,6 +1412,10 @@ export default class SwadeActor extends Actor {
     tooltip += game.i18n.localize('SWADE.Legs') + `: ${armor.legs}<hr>`;
 
     tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects);
+
+    tooltip += Object.entries(
+      this._getArmorSourcesForLocation(constants.ARMOR_LOCATIONS.TORSO),
+    ).reduce((acc, [source, value]) => acc + `${source}: ${value}<br>`, '');
 
     return tooltip;
   }
