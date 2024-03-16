@@ -1027,6 +1027,10 @@ SWADE:
         Select which tokens (by Disposition) can see this aura. You can always
         see all auras of a token of which you have at least Observer permission
   TOURS:
+    ERROR:
+      ActorCreatePermission: This Tour requires permission to create actors
+      SettingPermission: This Tour requires modifying world settings
+      JournalCreatePermission: This Tour requires creating a Journal Entry
     AMMUNITION:
       Title: Ammunition
       Description: This Tour will show you how to use automated ammunition tracking
