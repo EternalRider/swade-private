@@ -21,39 +21,41 @@ export default class SwadeTour extends Tour {
 
     const currentStep = this.currentStep as SwadeTourStep;
 
+    let earlyReturn;
+
     // Actions
-    if (currentStep.actions) await this.performActions(currentStep.actions);
+    if (currentStep.actions)
+      earlyReturn = await this.performActions(currentStep.actions);
+
+    if (earlyReturn === true) return;
+    if (earlyReturn === false) return this.exit();
 
     // Modify any game settings we need to make the magic happen
-    if (currentStep.settings) await this.updateSettings(currentStep.settings);
+    if (currentStep.settings)
+      earlyReturn = await this.updateSettings(currentStep.settings);
+
+    if (earlyReturn === true) return;
+    if (earlyReturn === false) return this.exit();
 
     // If we need an actor, make it and render
-    if (currentStep.actor) await this.makeActor(currentStep.actor);
+    if (currentStep.actor)
+      earlyReturn = await this.makeActor(currentStep.actor);
+
+    if (earlyReturn === true) return;
+    if (earlyReturn === false) return this.exit();
 
     // Journal and Journal Page creation
     if (currentStep.journalEntry)
-      await this.makeJournalEntry(currentStep.journalEntry);
+      earlyReturn = await this.makeJournalEntry(currentStep.journalEntry);
     if (currentStep.journalEntryPage)
-      await this.makeJournalEntryPage(currentStep.journalEntryPage);
+      earlyReturn = await this.makeJournalEntryPage(
+        currentStep.journalEntryPage,
+      );
 
-    if (currentStep)
-      if (currentStep.itemName) {
-        // Alternatively, if we need to fetch an item from the actor
-        // let's do that and potentially render the sheet
-        if (!this.actor) {
-          console.warn('No actor found for step ' + currentStep.title);
-        }
-        const localizedName = game.i18n.localize(currentStep.itemName);
-        this.item = this.actor?.items.getName(localizedName)!;
-        const app = this.item!.sheet;
-        //@ts-expect-error Calling _render because it's async unlike render
-        if (!app.rendered) await app._render(true);
-        // Assumption: Any given tour user might need to move back and forth between items, but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet but the framework doesn't allow bouncing back and forth between actors
-        currentStep.selector = currentStep.selector?.replace(
-          'itemSheetID',
-          app!.id,
-        );
-      }
+    if (earlyReturn === true) return;
+    if (earlyReturn === false) return this.exit();
+
+    if (currentStep.itemName) await this.renderItem(currentStep.itemName);
 
     // Create an advance for possible use later
     if (currentStep.advance) await this.makeAdvance(currentStep.advance);
@@ -97,6 +99,40 @@ export default class SwadeTour extends Tour {
    * @param settings Settings to update
    */
   async updateSettings(settings: Record<string, any>) {
+    if (!game!.user!.can('SETTINGS_MODIFY')) {
+      const alreadySet = Object.entries(settings).every(([k, v]) => {
+        if (k === 'settingFields') {
+          const additionalFields = game.settings.get('swade', k);
+          return Object.entries(additionalFields).every(([documentType, f]) => {
+            if (!v[documentType]) return true;
+            return Object.entries(v[documentType]).every(
+              ([field, value]: [string, Record<string, any>]) => {
+                return foundry.utils.objectsEqual(f[field], value);
+              },
+            );
+          });
+        } else {
+          return game.settings.get('swade', k) === v;
+        }
+      });
+      if (!alreadySet) {
+        ui.notifications.error('SWADE.TOURS.ERROR.SettingPermission', {
+          localize: true,
+        });
+        this.exit();
+        return false;
+      } else {
+        const settingsDone = this.steps.findIndex(
+          (s, i) =>
+            i > this.stepIndex! &&
+            !s.selector!.startsWith('#settingConfig') &&
+            !s.selector!.startsWith('#client-settings'),
+        );
+        await this.earlyProgress(settingsDone);
+        return true;
+      }
+    }
+
     for (const [k, v] of Object.entries(settings)) {
       if (k !== 'settingFields') await game.settings.set('swade', k, v);
       else {
@@ -116,15 +152,49 @@ export default class SwadeTour extends Tour {
    * @param actor Actor Data
    */
   async makeActor(actor: Partial<SwadeActor>) {
+    const actCls = getDocumentClass('Actor') as typeof SwadeActor;
+
+    if (!actCls.canUserCreate(game.user!)) {
+      ui.notifications.error('SWADE.TOURS.ERROR.ActorCreatePermission', {
+        localize: true,
+      });
+      this.exit();
+      return false;
+    }
+
     actor.name = game.i18n.localize(actor.name!);
     if (actor.items) {
       for (const item of actor.items) {
         item.name = game.i18n.localize(item.name);
       }
     }
-    this.actor = (await getDocumentClass('Actor').create(actor)) as SwadeActor;
+    this.actor = (await actCls.create(actor)) as SwadeActor;
     //@ts-expect-error Calling _render because it's async unlike render
     await this.actor.sheet?._render(true);
+  }
+
+  /**
+   * Renders an item by name
+   * @param itemName  Item to fetch on the actor
+   */
+  async renderItem(itemName: string) {
+    // Alternatively, if we need to fetch an item from the actor
+    // let's do that and potentially render the sheet
+    if (!this.actor) {
+      console.warn('No actor found for step ' + this.currentStep!.title);
+    }
+    const localizedName = game.i18n.localize(itemName);
+    this.item = this.actor?.items.getName(localizedName) as SwadeItem;
+    const app = this.item!.sheet;
+    //@ts-expect-error Calling _render because it's async unlike render
+    if (!app.rendered) await app._render(true);
+    // Assumption: Any given tour user might need to move back and forth between items
+    // but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet
+    // but the framework doesn't allow bouncing back and forth between actors
+    this.currentStep!.selector = this.currentStep!.selector!.replace(
+      'itemSheetID',
+      app!.id,
+    );
   }
 
   async makeAdvance(advance: TourAdvance) {
@@ -140,9 +210,17 @@ export default class SwadeTour extends Tour {
   }
 
   async makeJournalEntry(journalEntry: Partial<JournalEntry>) {
+    const journalCls = getDocumentClass('JournalEntry');
+
+    if (!journalCls.canUserCreate(game.user!)) {
+      ui.notifications.error('SWADE.TOURS.ERROR.JournalCreatePermission', {
+        localize: true,
+      });
+      this.exit();
+      return false;
+    }
     journalEntry.name = game.i18n.localize(journalEntry.name!);
-    this.journalEntry =
-      await getDocumentClass('JournalEntry').create(journalEntry);
+    this.journalEntry = await journalCls.create(journalEntry);
     //@ts-expect-error Calling _render because it's async unlike render
     await this.journalEntry.sheet?._render(true);
   }
@@ -210,6 +288,19 @@ export default class SwadeTour extends Tour {
         this.tweaks.activateTab(tab.id);
       }
     }
+  }
+
+  async earlyProgress(stepIndex) {
+    const progress = game.settings.get('core', 'tourProgress') as Record<
+      string,
+      Record<string, number>
+    >;
+    const namespace = this.namespace!;
+    if (!(namespace in progress)) progress[namespace] = {};
+    progress[namespace][this.id!] = stepIndex;
+    game.settings.set('core', 'tourProgress', progress);
+    this._reloadProgress();
+    await this._preStep();
   }
 }
 

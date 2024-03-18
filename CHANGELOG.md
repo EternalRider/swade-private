@@ -24,10 +24,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 3.4.0
 
+### Added
+
+- Armor Tooltip now provides a full breakdown of Torso armor sources. (#1019) **by @jpmeehan5**
+
 ### Changed
 
 - The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
 - Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
+- Related Active Effects are now applied as a single operation. (#1056) **by @florad92**
+- The NPC sheet now displays the benny and Conviction controls for all NPCs. (#991) **by @florad92**
+- The roll chat commands now default to using the `SwadeRoll` class. (#753) **by @florad92**
+- Improved the styling and visibility of Conviction messages. (#815) **by @florad92**
+- Tours will now attempt to progress even if not all permissions are available, e.g. changing world settings (#1014) **by @jpmeehan5**
+
+## 3.3.5
+
+### Fixed
+
+- Fixed an error that would cause damage rolls to fail if the damage formula included `@str` on an actor with a strength of 1. (#1068) **by @florad92**
 
 ## 3.3.4
 

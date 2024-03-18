@@ -194,7 +194,6 @@ SWADE:
       SWID: SWID
     Combinator: Combinator
   Conv: Conviction
-  UseConv: Calls on their Conviction!
   Hesitant: Hesitant
   LevelHeaded: Level Headed
   ImprovedLevelHeaded: Improved Level Headed
@@ -293,9 +292,9 @@ SWADE:
   OldCard: Old card
   ActionCard: Action Card
   ConvictionActive: Conviction Active
-  ConvictionActivate: Calls upon their conviction!
+  ConvictionActivate: '{name} calls upon their conviction!'
+  ConvictionEnd: '{name} wavers in their conviction'
   ConvictionExtend: Do you want to extend your conviction?
-  ConvictionEnd: wavers in their conviction
   ConvictionExtendPrompt: Do you want to spend a Benny to extend your conviction?
   NoBennies: You don't have enough bennies!
   GM: Game Master
@@ -1028,6 +1027,10 @@ SWADE:
         Select which tokens (by Disposition) can see this aura. You can always
         see all auras of a token of which you have at least Observer permission
   TOURS:
+    ERROR:
+      ActorCreatePermission: This Tour requires permission to create actors
+      SettingPermission: This Tour requires modifying world settings
+      JournalCreatePermission: This Tour requires creating a Journal Entry
     AMMUNITION:
       Title: Ammunition
       Description: This Tour will show you how to use automated ammunition tracking

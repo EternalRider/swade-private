@@ -45,12 +45,20 @@ export const SWADE: SwadeConfig = {
 
   bennies: {
     templates: {
-      refresh: 'systems/swade/templates/chat/benny-refresh.hbs',
-      refreshAll: 'systems/swade/templates/chat/benny-refresh-all.hbs',
-      add: 'systems/swade/templates/chat/benny-add.hbs',
-      spend: 'systems/swade/templates/chat/benny-spend.hbs',
-      gmadd: 'systems/swade/templates/chat/benny-gmadd.hbs',
+      refresh: 'systems/swade/templates/chat/bennies/benny-refresh.hbs',
+      refreshAll: 'systems/swade/templates/chat/bennies/benny-refresh-all.hbs',
+      add: 'systems/swade/templates/chat/bennies/benny-add.hbs',
+      spend: 'systems/swade/templates/chat/bennies/benny-spend.hbs',
+      gmadd: 'systems/swade/templates/chat/bennies/benny-gmadd.hbs',
       joker: 'systems/swade/templates/chat/jokers-wild.hbs',
+    },
+  },
+
+  conviction: {
+    // icon: 'systems/swade/assets/bennie.webp',
+    templates: {
+      start: 'systems/swade/templates/chat/conviction/start.hbs',
+      end: 'systems/swade/templates/chat/conviction/end.hbs',
     },
   },
 
@@ -306,9 +314,7 @@ export const SWADE: SwadeConfig = {
 export interface SwadeConfig {
   //a piece of ASCII art for the init log message
   ASCII: string;
-
   CONST: typeof constants;
-
   //An object to store localization strings
   attributes: {
     agility: {
@@ -332,7 +338,6 @@ export interface SwadeConfig {
       short: string;
     };
   };
-
   bennies: {
     templates: {
       refresh: string;
@@ -343,36 +348,32 @@ export interface SwadeConfig {
       joker: string;
     };
   };
-
+  conviction: {
+    icon?: string;
+    templates: {
+      start: string;
+      end: string;
+    };
+  };
   vehicles: {
     maxHandlingPenalty: number;
   };
-
   settingConfig: {
     settings: Array<string>;
   };
-
   diceConfig: {
     flags: Record<string, any>;
   };
-
   statusEffects: StatusEffect[];
-
   wildCardIcons: {
     regular: string;
     compendium: string;
   };
-
   measuredTemplatePresets: Array<TemplateConfig>;
-
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
-
   abilitySheet: Record<AbilitySubType, { dropdown: string; abilities: string }>;
-
   prototypeRollGroups: RollModifierGroup[];
-
   ranks: string[];
-
   textSearch: {
     scene: Array<string>;
     rolltable: Array<string>;
