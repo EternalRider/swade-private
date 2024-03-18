@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Armor Tooltip now provides a full breakdown of Torso armor sources. (#1019) **by @jpmeehan5**
 - The width of the Character Sheet is now configurable. (#1060) **by @mhilbrunner**
+- Added new documentation on how to resolve damage. (#1057) **by @florad92**
 
 ### Changed
 
