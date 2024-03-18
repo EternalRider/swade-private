@@ -78,7 +78,7 @@
 
   .charname-container {
     grid-row: 1;
-    grid-column: 3 / 9;
+    grid-column: 3 / 10;
     display: flex;
     align-items: center;
     input[type] {
@@ -121,9 +121,6 @@
   }
 
   .conviction-enabled {
-    .charname-container {
-      grid-column: 3 / 10;
-    }
     .branding {
       grid-row: 1/4;
       grid-column: 10/13;

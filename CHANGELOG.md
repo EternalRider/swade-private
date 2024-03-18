@@ -22,6 +22,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.6
+
+### Added
+
+- Armor Tooltip now provides a full breakdown of Torso armor sources. (#1019) **by @jpmeehan5**
+- The width of the Character Sheet is now configurable. (#1060) **by @mhilbrunner**
+- Added new documentation on how to resolve damage. (#1057) **by @florad92**
+
+### Changed
+
+- The dropdown to select the injury table now sorts tables by module. (#1054) **by @florad92**
+- Skills now have the same set of options for the die size as attributes. (#1017) **by @florad92**
+- Related Active Effects are now applied as a single operation. (#1056) **by @florad92**
+- The NPC sheet now displays the benny and Conviction controls for all NPCs. (#991) **by @florad92**
+- The roll chat commands now default to using the `SwadeRoll` class. (#753) **by @florad92**
+- Improved the styling and visibility of Conviction messages. (#815) **by @florad92**
+- Tours will now attempt to progress even if not all permissions are available, e.g. changing world settings (#1014) **by @jpmeehan5**
+- Improved translation and added missing translation keys. (#1070, #1065, #1063) **by @mhilbrunner**
+
+### Fixed
+
+- Grouping by name now checks `combatant.name` first. (#1050) **by @kristianserrano**
+- Group leaders and followers can now go on hold independently. (#532) **by @kristianserrano**
+- Fixes initiative sorting. (!550, #1043) **by @kristianserrano**
+
 ## 3.3.5
 
 ### Fixed

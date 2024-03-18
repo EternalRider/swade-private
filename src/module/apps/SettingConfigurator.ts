@@ -155,7 +155,7 @@ export default class SettingConfigurator extends FormApplication {
         const invalidKey = key;
         key = key.slugify().replace('.', '-');
         ui.notifications.warn(
-          `Additional Stat key ${invalidKey} is invalid and has been changed to ${key}`,
+          game.i18n.format('SWADE.AdditionalStats.KeyErr', {invalid: invalidKey, key: key}),
           { permanent: true },
         );
       }
@@ -224,26 +224,33 @@ export default class SettingConfigurator extends FormApplication {
     return discardPiles;
   }
 
-  private async _buildInjuryTableChoices() {
-    const injuryTables: Record<string, string> = {};
-    for (const p of game.packs) {
-      if (
-        p.metadata.type === 'RollTable' &&
-        p.metadata.packageType !== 'system'
-      ) {
-        for (const i of p.index) {
-          const rollTable = await p.getDocument(i._id);
-          if (rollTable) {
-            injuryTables[rollTable.uuid] = `${rollTable.name} (${p.title})`;
-          }
-        }
-      }
+  private _buildInjuryTableChoices(): OptionGroup[] {
+    const injuryTables: OptionGroup[] = [
+      {
+        group: 'World',
+        options: game.tables!.contents.map((t) => {
+          return { key: t.uuid as string, label: t.name as string };
+        }),
+      },
+    ];
+
+    const packs = game.packs.filter((p) => p.metadata.type === 'RollTable');
+    for (const pack of packs) {
+      injuryTables.push({
+        group: game.modules.get(pack.metadata.packageName).title as string,
+        options: pack.index.map((i) => {
+          return { key: i.uuid as string, label: i.name as string };
+        }),
+      });
     }
-    if (game.tables?.size) {
-      for (const rollTable of game.tables) {
-        injuryTables[rollTable.uuid] = `${rollTable.name} (World)`;
-      }
-    }
+
+    injuryTables.sort((a, b) => a.group.localeCompare(b.group));
     return injuryTables;
   }
 }
+
+interface OptionGroup {
+  group: string;
+  options: GroupOptions;
+}
+type GroupOptions = Array<{ key: string; label: string }>;

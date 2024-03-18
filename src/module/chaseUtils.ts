@@ -7,7 +7,7 @@ export function layoutChase(deck: Cards) {
   }
 
   if (!deck || deck.type !== 'deck') {
-    return ui.notifications.warn('Please provide a deck!');
+    return ui.notifications.warn('SWADE.ChaseNoDeck', { localize: true });
   }
 
   // Create the dialog template
@@ -26,10 +26,10 @@ export function layoutChase(deck: Cards) {
             </style>
             <form>
                 <fieldset>
-                    <legend>Layout</legend>
+                    <legend>${game.i18n.localize('SWADE.ChaseLayout')}</legend>
                     <div class="fields-grid">
-                        <label for="card-rows">Rows:</label><input id="card-rows" type="number" min="1" style="width: 50px;" value="1">
-                        <label for="card-columns">Columns:</label><input id="card-columns" type="number" min="1" style="width: 50px;" value="9">
+                        <label for="card-rows">${game.i18n.localize('SWADE.ChaseRows')}:</label><input id="card-rows" type="number" min="1" style="width: 50px;" value="1">
+                        <label for="card-columns">${game.i18n.localize('SWADE.ChaseColumns')}:</label><input id="card-columns" type="number" min="1" style="width: 50px;" value="9">
                     </div>
                 </fieldset>
                 <br>
@@ -39,22 +39,22 @@ export function layoutChase(deck: Cards) {
   // Create the Dialog
   const buttons: Record<string, Dialog.Button> = {
     ok: {
-      label: 'Draw',
+      label: game.i18n.localize('SWADE.Draw'),
       callback: (html: JQuery<HTMLElement>) => {
         createChaseTiles(html, deck);
       },
     },
     resetTable: {
-      label: 'Reset',
+      label: game.i18n.localize('SWADE.Reset'),
       callback: async () => {
         await deck.reset({ chatNotification: false });
         await deck.shuffle({ chatNotification: false });
-        ui.notifications.info(`The Deck "${deck.name}" has been reset.`);
+        ui.notifications.info(game.i18n.format('SWADE.ChaseReset', {deck: deck.name}));
         removeChaseTiles(canvas.scene!);
       },
     },
     cancel: {
-      label: 'Cancel',
+      label: game.i18n.localize('SWADE.Cancel'),
     },
   };
 

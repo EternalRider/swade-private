@@ -46,6 +46,7 @@ import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
+import { SwadeChatLog } from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
@@ -128,6 +129,7 @@ Hooks.once('init', () => {
 
   //register custom sidebar tabs
   CONFIG.ui.combat = SwadeCombatTracker;
+  CONFIG.ui.chat = SwadeChatLog;
 
   //set up round timers to 6 seconds
   CONFIG.time.roundTime = 6;

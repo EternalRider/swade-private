@@ -20,7 +20,7 @@ SWADE:
   Running: Running
   RunningDie: Running Die
   RunningMod: Running Modifier
-  RollRun: Click to run
+  RollRun: '[Click] to roll the Running Die'
   Adv: Advances
   Rank: Rank
   Inv: Gear
@@ -194,7 +194,6 @@ SWADE:
       SWID: SWID
     Combinator: Combinator
   Conv: Conviction
-  UseConv: Calls on their Conviction!
   Hesitant: Hesitant
   LevelHeaded: Level Headed
   ImprovedLevelHeaded: Improved Level Headed
@@ -224,6 +223,8 @@ SWADE:
   FatigueMax: Max Fatigue
   Incap: Incapacitated
   Init: Initiative
+  Draw: Draw
+  Reset: Reset
   DrawInit: Draw Initiative
   ActionDeckReset: Reshuffle Action Deck
   ActionDeckResetNotification: Action Deck reshuffled
@@ -291,9 +292,10 @@ SWADE:
   OldCard: Old card
   ActionCard: Action Card
   ConvictionActive: Conviction Active
-  ConvictionActivate: Calls upon their conviction!
+  ConvictionActivate: '{name} calls upon their conviction!'
+  ConvictionEnd: '{name} wavers in their conviction'
   ConvictionExtend: Do you want to extend your conviction?
-  ConvictionEnd: wavers in their conviction
+  ConvictionExtendPrompt: Do you want to spend a Benny to extend your conviction?
   NoBennies: You don't have enough bennies!
   GM: Game Master
   Vehicles: Vehicles
@@ -336,6 +338,7 @@ SWADE:
     PP: Power Points
   NoAmmoSet: There is no ammunition set
   NoAmmoPP: Could not find power points matching the set ammo
+  NoDescription: No description available
   NoMags: You don't have any consumables marked as magazines in your inventory
   RemoveAmmo: Remove Ammunition
   DiscardMagazine: Discard empty magazine
@@ -375,7 +378,7 @@ SWADE:
   TraitRolls: Trait Rolls
   Trait: Trait
   AltTrait: Action Trait
-  ClickSuggestions: Click for suggestions
+  ClickSuggestions: '[Click] for suggestions'
   Quick: Quick
   BonusDamage: Bonus Damage
   Joker: Joker
@@ -384,7 +387,7 @@ SWADE:
   DmgRolls: Damage Rolls
   SubtractPPDesc: Subtract PP Cost from the available PP
   AddPPDesc: Add PP Cost to the available PP
-  RightClickZoom: Right-Click to Zoom
+  RightClickZoom: '[Right-Click] to Zoom'
   SysMigrationWarning: >-
     Your SWADE system data is from too old a Foundry version and cannot be
     reliably migrated to the latest version. The process will be attempted, but
@@ -396,6 +399,29 @@ SWADE:
   CardFace: Card Face
   CardValue: Value
   CardSuit: Suit
+  Cards:
+    Spades: Spades
+    Hearts: Hearts
+    Diamonds: Diamonds
+    Clubs: Clubs
+    Jokers: Jokers
+    Two: Two
+    Three: Three
+    Four: Four
+    Five: Five
+    Six: Six
+    Seven: Seven
+    Eight: Eight
+    Nine: Nine
+    Ten: Ten
+    Jack: Jack
+    Queen: Queen
+    King: King
+    Ace: Ace
+    RedJoker: Red Joker / Spades Joker
+    BlackJoker: Black Joker / Hearts Joker
+    BlueJoker: Blue Joker / Diamonds Joker
+    GreenJoker: Green Joker / Clubs Joker
   IsJoker: Is Joker
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
@@ -411,6 +437,7 @@ SWADE:
   SetActionDeck: Set Deck as Action Deck
   ShowCharacterSummary: Show Character Summary
   CharacterSummary: Character Summary
+  CharacterSummaryTypeErr: Can't use character summariser for actor of type {type}
   CopyHtml: Copy HTML
   CopyMarkdown: Copy Markdown
   Imperial: Imperial
@@ -479,6 +506,11 @@ SWADE:
   NoSceneAvailable: There is no scene available or you've disabled the canvas
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
+  ChaseLayout: Layout
+  ChaseRows: Rows
+  ChaseColumns: Columns
+  ChaseNoDeck: Please provide a deck!
+  ChaseReset: The deck "{deck}" has been reset.
   Expiration:
     TabLabel: Turn Behavior
     Description: <p>Effects expire on the target's <em>next turn or later</em>.</p>
@@ -544,6 +576,7 @@ SWADE:
       UserConfigLabel: Favorite Card Hand
       Hint: You can set your favorite hand in the User Config
       NoCardsWarning: You don't have a favorite card hand set!
+      HandNone: None
     Bennies:
       Name: Spend/Receive a Benny
       Hint: >-
@@ -551,6 +584,10 @@ SWADE:
         a Benny instead
   Settings:
     ArbitFields: Arbitrary Setting Fields
+    CharSheetDefaultWidth:
+      Name: Default Width for Character Sheets
+      Hint: >-
+        Width of character sheets when first opened, in pixels. Default: 650.
     HighlightTemplate:
       Name: Always Highlight Templates
       Hint: >-
@@ -767,7 +804,8 @@ SWADE:
   MigrateCompendium: Force compendium migration
   Properties: Properties
   AddAction: Add Action
-  DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}
+  DialogConfirmPrompt: Are you sure?
+  DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}?
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
     Label: Trademark Weapon
@@ -867,6 +905,7 @@ SWADE:
     HasMaxValue: Has Max Value
     Current: Current {stat}
     Max: Max {stat}
+    KeyErr: Additional Stat key {invalid} is invalid and has been changed to {key}
   MessageOnUse:
     Label: Message on Use
     Hint: Display a chat message when this item is used
@@ -893,9 +932,11 @@ SWADE:
     Free: Free
     Benny: Benny
     GMBenny: GM Benny
-  LoadedAmmo: Loaded Ammmunition
+  LoadedAmmo: Loaded Ammunition
   DamageApplicator:
-    ApplyDamage: Apply Damage
+    ApplyDamage:
+      Label: Resolve Damage
+      Hint: '[Click] to resolve damage with the selected Token'
     SoakModifier: Soak Modifier
     WoundsAboutToBeTaken: <p><strong>{name}</strong> is about to take <strong>{wounds}</strong>!</p>
     SoakDialog:
@@ -986,6 +1027,10 @@ SWADE:
         Select which tokens (by Disposition) can see this aura. You can always
         see all auras of a token of which you have at least Observer permission
   TOURS:
+    ERROR:
+      ActorCreatePermission: This Tour requires permission to create actors
+      SettingPermission: This Tour requires modifying world settings
+      JournalCreatePermission: This Tour requires creating a Journal Entry
     AMMUNITION:
       Title: Ammunition
       Description: This Tour will show you how to use automated ammunition tracking

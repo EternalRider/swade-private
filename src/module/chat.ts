@@ -1,5 +1,4 @@
 import { SWADE } from './config';
-import SwadeActor from './documents/actor/SwadeActor';
 import ItemChatCardHelper from './ItemChatCardHelper';
 
 export function chatListeners(html: JQuery<HTMLElement>) {
@@ -143,21 +142,6 @@ export function createMagazineTooltip(
     game.tooltip.activate(magazine, {
       text: await TextEditor.enrichHTML(content, { async: true }),
     });
-  });
-}
-
-/**
- * Creates an end message for Conviction
- * @param actor The Actor whose conviction is ending
- */
-export async function createConvictionEndMessage(actor: SwadeActor) {
-  await ChatMessage.create({
-    speaker: {
-      actor: actor.id,
-      alias: actor.name,
-      token: actor.token?.id,
-    },
-    content: game.i18n.localize('SWADE.ConvictionEnd'),
   });
 }
 
