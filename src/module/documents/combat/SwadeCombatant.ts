@@ -32,11 +32,13 @@ declare global {
 
 export default class SwadeCombatant extends Combatant {
   get isIncapacitated(): boolean {
-    return this.actor.system.isIncapacitated ?? this.isDefeated;
+    return !!this.actor?.system?.isIncapacitated;
   }
 
   override get isDefeated(): boolean {
-    if (!this.actor.isWildcard) return this.isIncapacitated;
+    if (!this.actor?.isWildcard) {
+      return this.isIncapacitated || super.isDefeated;
+    }
     return super.isDefeated;
   }
 

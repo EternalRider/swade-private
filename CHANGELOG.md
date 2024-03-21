@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.8
+
+### Fixed
+
+- Fixed an issue that could cause the combat tracker to throw errors when rendering if one or more combatants have no actor. **by @florad92**
+- Fixed an issue that could cause an infinite loop when determining if a combatant is defeated could cause an infinite loop when determining if a combatant is defeated could cause an infinite loop when determining if a combatant is defeated... **by @florad92**
+
 ## 3.3.7
 
 ### Changed
