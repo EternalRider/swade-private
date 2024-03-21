@@ -138,7 +138,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         _id: c.id,
         initiative: c.initiative + 0.001,
         'flags.swade.groupId': selected.id,
-        'flags.swade.isGroupLeader': false
+        'flags.swade.isGroupLeader': false,
       });
       if (c.groupId) updates['flags.swade.-=groupId'] = null;
       let fInitiative = c.initiative;
@@ -224,7 +224,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     const initiative = (leader.initiative as number) - 0.001;
     const cardValue = leader.cardValue;
-    const suitValue = (leader.suitValue as number);
+    const suitValue = leader.suitValue as number;
     const hasJoker = leader.hasJoker;
     // Set groupId of dragged combatant to the selected target's id
     await combatant.update({
@@ -327,7 +327,9 @@ export default class SwadeCombatTracker extends CombatTracker {
         const combatant = this.viewed?.combatants.get(
           li.attr('data-combatant-id') as string,
         ) as SwadeCombatant;
-        const selectedTokens = (canvas?.tokens?.controlled ?? []).filter((t) => t.id !== combatant.tokenId);
+        const selectedTokens = (canvas?.tokens?.controlled ?? []).filter(
+          (t) => t.id !== combatant.tokenId,
+        );
         return (
           canvas?.ready &&
           selectedTokens.length > 0 &&
@@ -346,7 +348,10 @@ export default class SwadeCombatTracker extends CombatTracker {
         const combatant = this.viewed?.combatants.get(combatantId)!;
         return (
           !!this.viewed!.combatants.find(
-            (c) => (c.name === combatant.name || c.actor?.name === combatant.actor?.name) && c.id !== combatantId,
+            (c) =>
+              (c.name === combatant.name ||
+                c.actor?.name === combatant.actor?.name) &&
+              c.id !== combatantId,
           ) && game.user!.isGM
         );
       },
@@ -463,7 +468,9 @@ export default class SwadeCombatTracker extends CombatTracker {
     const targetCombatant = this.viewed?.combatants.get(
       targetCombatantId,
     ) as SwadeCombatant;
-    const selectedTokens = (canvas?.tokens?.controlled ?? []).filter((t) => t.id !== targetCombatant.tokenId);
+    const selectedTokens = (canvas?.tokens?.controlled ?? []).filter(
+      (t) => t.id !== targetCombatant.tokenId,
+    );
     if (selectedTokens.length < 1) return; //return if no valid tokens are found
     await targetCombatant.update({
       flags: {
@@ -486,7 +493,10 @@ export default class SwadeCombatTracker extends CombatTracker {
       };
     });
     // Create the combatants and create array of combatants created
-    const combatants = await game?.combat?.createEmbeddedDocuments('Combatant', createData);
+    const combatants = await game?.combat?.createEmbeddedDocuments(
+      'Combatant',
+      createData,
+    );
     // Filter for tokens that already have combatants to add them as followers later
     const existingCombatantTokens = selectedTokens.filter((t) => t.inCombat);
     // If there were preexisting combatants in the selection...
@@ -521,14 +531,17 @@ export default class SwadeCombatTracker extends CombatTracker {
       strict: true,
     }) as SwadeCombatant;
     const matchingCombatants = this.viewed?.combatants.filter(
-      (c) => (c.name === combatant.name || c.actor?.name === combatant.actor?.name) && c.id !== combatant.id,
+      (c) =>
+        (c.name === combatant.name ||
+          c.actor?.name === combatant.actor?.name) &&
+        c.id !== combatant.id,
     ) as SwadeCombatant[];
     if (matchingCombatants && combatant) {
       await combatant.unsetGroupId();
       await combatant.setIsGroupLeader(true);
       let fInitiative = combatant.initiative;
       for (const c of matchingCombatants) {
-        await c.update({initiative: fInitiative -= 0.001})
+        await c.update({ initiative: (fInitiative -= 0.001) });
         await c?.setGroupId(combatantId);
         await c?.setCardValue(c!.cardValue!);
         await c?.setSuitValue(c!.suitValue!);
@@ -570,7 +583,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       for (const follower of combatant.followers) {
         updates.push({
           _id: follower.id,
-          initiative: fInitiative -= 0.001,
+          initiative: (fInitiative -= 0.001),
           flags: {
             swade: {
               cardValue,

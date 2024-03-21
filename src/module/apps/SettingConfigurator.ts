@@ -155,7 +155,10 @@ export default class SettingConfigurator extends FormApplication {
         const invalidKey = key;
         key = key.slugify().replace('.', '-');
         ui.notifications.warn(
-          game.i18n.format('SWADE.AdditionalStats.KeyErr', {invalid: invalidKey, key: key}),
+          game.i18n.format('SWADE.AdditionalStats.KeyErr', {
+            invalid: invalidKey,
+            key: key,
+          }),
           { permanent: true },
         );
       }
@@ -225,22 +228,50 @@ export default class SettingConfigurator extends FormApplication {
   }
 
   private _buildInjuryTableChoices(): OptionGroup[] {
-    const injuryTables: OptionGroup[] = [
-      {
-        group: 'World',
+    const injuryTables: OptionGroup[] = [];
+
+    //add world tables, if necessary
+    if (game.tables?.contents.length) {
+      injuryTables.push({
+        group: game.i18n.localize('SWADE.SettingConfigurator.WorldTables'),
         options: game.tables!.contents.map((t) => {
           return { key: t.uuid as string, label: t.name as string };
         }),
-      },
-    ];
+      });
+    }
 
-    const packs = game.packs.filter((p) => p.metadata.type === 'RollTable');
-    for (const pack of packs) {
+    const rollTablePacks = game.packs.filter(
+      (p) => p.metadata.type === 'RollTable',
+    );
+    const worldPacks = rollTablePacks.filter(
+      (p) => p.metadata.packageType === 'world',
+    );
+
+    //add world compendium packs, if necessary
+    if (worldPacks.length) {
       injuryTables.push({
-        group: game.modules.get(pack.metadata.packageName).title as string,
-        options: pack.index.map((i) => {
-          return { key: i.uuid as string, label: i.name as string };
-        }),
+        group: game.i18n.localize('SWADE.SettingConfigurator.WorldCompendiums'),
+        options: worldPacks
+          .flatMap((p) => p.index.contents)
+          .map((i) => {
+            return { key: i.uuid as string, label: i.name as string };
+          }),
+      });
+    }
+
+    //add an entry for every module, if necessary
+    for (const module of game.modules.values()) {
+      const packs = rollTablePacks.filter(
+        (p) => p.metadata.packageName === module.id,
+      );
+      if (!packs.length) continue;
+      injuryTables.push({
+        group: module.title,
+        options: packs
+          .flatMap((p) => p.index.contents)
+          .map((i) => {
+            return { key: i.uuid as string, label: i.name as string };
+          }),
       });
     }
 

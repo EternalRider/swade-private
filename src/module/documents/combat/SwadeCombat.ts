@@ -229,7 +229,8 @@ export default class SwadeCombat extends Combat {
     this._playInitiativeSound();
     await getDocumentClass('ChatMessage').createDocuments(messages);
 
-    if (this.combatants.contents.every((c) => !!c.initiative)) {
+    const activeCombatants = this.combatants.filter((c) => !c.isDefeated);
+    if (activeCombatants.every((c) => !!c.initiative)) {
       await this.update({ turn: 0 });
       this._handleStartOfTurnExpirations();
     } else if (updateTurn && currentId) {
