@@ -22,6 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.7
+
+### Changed
+
+- Extras are now considered defeated when they are incapacitated and/or dead. **by @florad92**
+
+### Fixed
+
+- Fixed an issue that would prevent the Setting Configurator from opening when world compendiums were present. (#1078) **by @florad92**
+- The `Defeated` status should now have the correct status ID. (#1081) **by @florad92**
+- Fixes marking a character as defeated in the combat tracker resulting in not setting the `turn` value to `0` when advancing to a new round. (#1080) @**by kristianserrano**
+
 ## 3.3.6
 
 ### Added

@@ -586,8 +586,7 @@ SWADE:
     ArbitFields: Arbitrary Setting Fields
     CharSheetDefaultWidth:
       Name: Default Width for Character Sheets
-      Hint: >-
-        Width of character sheets when first opened, in pixels. Default: 650.
+      Hint: 'Width of character sheets when first opened, in pixels. Default: 650.'
     HighlightTemplate:
       Name: Always Highlight Templates
       Hint: >-
@@ -1446,6 +1445,9 @@ SWADE:
   FollowerCount: '{count} Followers'
   Benny: Benny
   Free: Free
+  SettingConfigurator:
+    WorldTables: World Tables
+    WorldCompendiums: World Compendiums
 TYPES:
   Actor:
     character: Player Character
