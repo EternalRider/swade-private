@@ -47,7 +47,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       foundry.utils.mergeObject(
         turn,
         {
-          isVehicle: combatant?.actor.type === 'vehicle',
+          isVehicle: combatant?.actor?.type === 'vehicle',
           isIncapacitated: combatant?.isIncapacitated,
           cardString: combatant?.cardString,
           initiative: combatant?.initiative,
