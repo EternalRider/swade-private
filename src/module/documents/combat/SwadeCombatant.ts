@@ -32,7 +32,14 @@ declare global {
 
 export default class SwadeCombatant extends Combatant {
   get isIncapacitated(): boolean {
-    return this.actor.system.isIncapacitated ?? this.isDefeated;
+    return !!this.actor?.system?.isIncapacitated;
+  }
+
+  override get isDefeated(): boolean {
+    if (!this.actor?.isWildcard) {
+      return this.isIncapacitated || super.isDefeated;
+    }
+    return super.isDefeated;
   }
 
   get followers(): SwadeCombatant[] {
@@ -150,7 +157,7 @@ export default class SwadeCombatant extends Combatant {
 
     //update the combatant with the new card
     const updates = new Array<Updates>();
-    const initiative = cardValue + (suitValue / 10);
+    const initiative = cardValue + suitValue / 10;
     updates.push({
       _id: this.id,
       initiative,
@@ -226,12 +233,16 @@ export default class SwadeCombatant extends Combatant {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
     const targetInitiative = targetCombatant?.initiative ?? 0;
-    let initiative =  targetInitiative + 0.0001;
+    let initiative = targetInitiative + 0.0001;
     // Get the other turns that interrupted this target combatant
-    const otherInterruptors = this.parent.turns.filter((t) => t.initiative < targetInitiative + 1 && t.initiative > targetInitiative);
+    const otherInterruptors = this.parent.turns.filter(
+      (t) =>
+        t.initiative < targetInitiative + 1 && t.initiative > targetInitiative,
+    );
     for (const t of otherInterruptors) {
       // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
-      if (Math.abs(t.initiative - initiative) < Number.EPSILON) initiative = t.initiative - 0.000001;
+      if (Math.abs(t.initiative - initiative) < Number.EPSILON)
+        initiative = t.initiative - 0.000001;
     }
     await this.update({
       initiative,
@@ -256,7 +267,8 @@ export default class SwadeCombatant extends Combatant {
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
-      initiative: currentCombatant?.cardValue + (currentCombatant?.suitValue / 10) - 0.0001,
+      initiative:
+        currentCombatant?.cardValue + currentCombatant?.suitValue / 10 - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,

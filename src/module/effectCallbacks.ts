@@ -189,7 +189,9 @@ async function bleedOut(effect: SwadeActiveEffect) {
     await parent.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 
     //set overlay
-    const data = getStatusEffectDataById('defeated') as StatusEffect;
+    const data = getStatusEffectDataById(
+      CONFIG.specialStatusEffects.DEFEATED,
+    ) as StatusEffect;
     await parent.toggleActiveEffect(data, { overlay: true });
 
     //mark combatant defeated in turn tracker

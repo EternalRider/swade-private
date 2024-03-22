@@ -110,4 +110,4 @@ Please understand that large MRs can be exceptionally difficult to review. If po
 
 ### Changelog Entries
 
-When submitting a new feature or fix via an MR please include a Changelog entry. If you do not include one yourself we will not add one for you.
+When submitting a new feature or fix via an MR please include a Changelog entry. If you do not include one yourself we will not add one for you. Entries should ideally be kept brief and concise, giving users a quick idea of what was added, changed or fixed. If more documentation is needed consider expanding the system documentation.

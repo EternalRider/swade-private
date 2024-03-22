@@ -38,7 +38,7 @@ export const statusEffects: StatusEffect[] = [
   },
   {
     icon: 'icons/svg/skull.svg',
-    id: 'defeated',
+    id: 'dead',
     label: 'COMBAT.CombatantDefeated',
     flags: { swade: { related: { incapacitated: {} } } },
   },

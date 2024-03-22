@@ -22,11 +22,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## 3.4.0
+## 3.3.8
+
+### Fixed
+
+- Fixed an issue that could cause the combat tracker to throw errors when rendering if one or more combatants have no actor. **by @florad92**
+- Fixed an issue that could cause an infinite loop when determining if a combatant is defeated could cause an infinite loop when determining if a combatant is defeated could cause an infinite loop when determining if a combatant is defeated... **by @florad92**
+
+## 3.3.7
+
+### Changed
+
+- Extras are now considered defeated when they are incapacitated and/or dead. **by @florad92**
+
+### Fixed
+
+- Fixed an issue that would prevent the Setting Configurator from opening when world compendiums were present. (#1078) **by @florad92**
+- The `Defeated` status should now have the correct status ID. (#1081) **by @florad92**
+- Fixes marking a character as defeated in the combat tracker resulting in not setting the `turn` value to `0` when advancing to a new round. (#1080) **by @kristianserrano**
+
+## 3.3.6
 
 ### Added
 
 - Armor Tooltip now provides a full breakdown of Torso armor sources. (#1019) **by @jpmeehan5**
+- The width of the Character Sheet is now configurable. (#1060) **by @mhilbrunner**
+- Added new documentation on how to resolve damage. (#1057) **by @florad92**
 
 ### Changed
 
@@ -37,6 +58,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The roll chat commands now default to using the `SwadeRoll` class. (#753) **by @florad92**
 - Improved the styling and visibility of Conviction messages. (#815) **by @florad92**
 - Tours will now attempt to progress even if not all permissions are available, e.g. changing world settings (#1014) **by @jpmeehan5**
+- Improved translation and added missing translation keys. (#1070, #1065, #1063) **by @mhilbrunner**
+
+### Fixed
+
+- Grouping by name now checks `combatant.name` first. (#1050) **by @kristianserrano**
+- Group leaders and followers can now go on hold independently. (#532) **by @kristianserrano**
+- Fixes initiative sorting. (!550, #1043) **by @kristianserrano**
 
 ## 3.3.5
 
