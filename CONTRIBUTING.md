@@ -107,3 +107,7 @@ Please be aware of the fact that reviewing contributions is a significant amount
 #### MR Size
 
 Please understand that large MRs can be exceptionally difficult to review. If possible, please break larger feature contributions down into smaller MRs that build on top of each other, even if multiple MRs are required for a single issue. This will make it easier and more likely for your contributions to be reviewed and merged in a timely fashion.
+
+### Changelog Entries
+
+When submitting a new feature or fix via an MR please include a Changelog entry. If you do not include one yourself we will not add one for you. Entries should ideally be kept brief and concise, giving users a quick idea of what was added, changed or fixed. If more documentation is needed consider expanding the system documentation.

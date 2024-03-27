@@ -21,20 +21,12 @@ steps:
     tab:
       parent: settings
       id: system
-  - id: additionalStats
-    selector: '#settingConfig section.attributes'
-    title: SWADE.TOURS.ADDSTATS.StatSettings.Title
-    content: SWADE.TOURS.ADDSTATS.StatSettings.Content
-    tab:
-      parent: configurator
-      id: additional-stats
     settings:
       settingFields:
         actor:
           wanted:
             dtype: Boolean
             label: WANTED!
-            hasMaxValue: false
           strain:
             dtype: Number
             label: Strain
@@ -42,7 +34,6 @@ steps:
           burnDie:
             dtype: Die
             label: Burn Die
-            hasMaxValue: false
           major:
             dtype: String
             label: College Major
@@ -51,7 +42,13 @@ steps:
             dtype: Selection
             label: Alignment
             optionString: Lawful Good; Good; Unaligned; Evil; Chaotic Evil
-            hasMaxValue: false
+  - id: additionalStats
+    selector: '#settingConfig section.attributes'
+    title: SWADE.TOURS.ADDSTATS.StatSettings.Title
+    content: SWADE.TOURS.ADDSTATS.StatSettings.Content
+    tab:
+      parent: configurator
+      id: additional-stats
   - id: statKey
     selector: '#settingConfig section.attributes input.attribute-key'
     title: SWADE.TOURS.ADDSTATS.StatKey.Title

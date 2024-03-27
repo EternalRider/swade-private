@@ -246,7 +246,7 @@ export default class SwadeItem extends Item {
     const baseRoll = new Array<string>();
     for (const term of terms) {
       if (term instanceof Die) {
-        if (!term.modifiers.includes('x')) {
+        if (!term.modifiers.includes('x') && term.faces > 1) {
           term.modifiers.push('x');
         }
         if (!term.flavor) {
@@ -504,12 +504,12 @@ export default class SwadeItem extends Item {
   }
 
   canExpendResources(resourcesUsed = 1): boolean {
-    const typecheck = this.system._canExpendResources(resourcesUsed);
+    const typecheck = this.system._canExpendResources?.(resourcesUsed);
     if (typecheck === undefined) return true;
     else return typecheck;
   }
 
-  async consume(charges = 1) {
+  async consume(charges = 1): Promise<void> {
     const usage = this.system._getUsageUpdates?.(charges);
     if (!usage) return;
 
@@ -748,20 +748,14 @@ export default class SwadeItem extends Item {
 
     if (data.system?.choiceSets?.length > 0) {
       for (const choiceSet of data.system.choiceSets) {
-        if (choiceSet.choice !== null) {
-          continue;
-        }
+        if (choiceSet.choice !== null) continue;
 
         Object.assign(
           choiceSet,
-          await ChoiceDialog.asPromise({
-            choiceSet: choiceSet,
-          }),
+          await ChoiceDialog.asPromise({ choiceSet: choiceSet }),
         );
 
-        if (choiceSet.choice === null) {
-          continue;
-        }
+        if (choiceSet.choice === null) continue;
 
         const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
         const update = mutationOption.mutation ?? {};
@@ -864,6 +858,7 @@ export default class SwadeItem extends Item {
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
+    if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
     const grantOn = getProperty(this, 'system.grantOn');
     if (
       this.canGrantItems &&

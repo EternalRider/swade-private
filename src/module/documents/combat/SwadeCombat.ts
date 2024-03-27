@@ -19,17 +19,6 @@ declare global {
 }
 
 export default class SwadeCombat extends Combat {
-  /** Compares two combatants by initiative card */
-  static cardSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
-    const cardA = a.cardValue ?? 0;
-    const cardB = b.cardValue ?? 0;
-    const card = cardB - cardA;
-    if (card !== 0) return card;
-    const suitA = a.suitValue ?? 0;
-    const suitB = b.suitValue ?? 0;
-    return suitB - suitA;
-  }
-
   /** Compares two combatants by name. */
   static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
@@ -90,14 +79,12 @@ export default class SwadeCombat extends Combat {
       ui.notifications.warn(message);
       return this as Combat;
     }
-
     // Iterate over Combatants, performing an initiative draw for each
     for (const id of ids) {
       // Get Combatant data
       const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
       if (!c.isOwner) continue;
       const roundHeld = !!c.roundHeld;
-
       //Do not draw cards for defeated, holding or grouped combatants
       if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
@@ -116,7 +103,7 @@ export default class SwadeCombat extends Combat {
 
       if (isRedraw) {
         // handle redraws
-        const oldCard = await this.findCard(c?.cardValue!, c?.suitValue!);
+        const oldCard = this.findCard(c?.cardValue!, c?.suitValue!);
         if (oldCard) {
           cardsToPickFrom.push(oldCard);
           const result = await this.pickACard({
@@ -179,7 +166,6 @@ export default class SwadeCombat extends Combat {
         //normal card draw
         pickedCard = cardsToPickFrom[0];
       }
-
       const newFlags = {
         cardValue: pickedCard.value!,
         suitValue: pickedCard.system['suit'],
@@ -187,7 +173,7 @@ export default class SwadeCombat extends Combat {
         cardString: pickedCard.description,
       };
 
-      const initiative = pickedCard?.system['suit'] + pickedCard.value;
+      const initiative = (pickedCard.value as number) + ((pickedCard?.system['suit'] as number) / 10);
 
       const update = {
         _id: id,
@@ -199,8 +185,13 @@ export default class SwadeCombat extends Combat {
       updates.push(update);
 
       //handle potential followers
+      let fInitiative = initiative;
       for (const f of c.followers) {
-        updates.push({ _id: f.id, initiative, 'flags.swade': newFlags });
+        updates.push({
+          _id: f.id,
+          initiative: fInitiative -= 0.001,
+          'flags.swade': newFlags
+        });
       }
 
       // Construct chat message data
@@ -238,7 +229,8 @@ export default class SwadeCombat extends Combat {
     this._playInitiativeSound();
     await getDocumentClass('ChatMessage').createDocuments(messages);
 
-    if (this.combatants.contents.every((c) => !!c.initiative)) {
+    const activeCombatants = this.combatants.filter((c) => !c.isDefeated);
+    if (activeCombatants.every((c) => !!c.initiative)) {
       await this.update({ turn: 0 });
       this._handleStartOfTurnExpirations();
     } else if (updateTurn && currentId) {
@@ -267,18 +259,11 @@ export default class SwadeCombat extends Combat {
       if (isOnHoldA && !isOnHoldB) return -1;
       if (!isOnHoldA && isOnHoldB) return 1;
     }
-
-    // handle groups
-    if (a.isGroupLeader && b.groupId === a.id) return -1;
-    if (b.isGroupLeader && a.groupId === b.id) return 1;
-    if (a.initiative === b.initiative)
+    if (b.initiative === a.initiative) {
       return SwadeCombat.nameSortCombatants(a, b);
-
-    //decide whether to sort by name or card
-    if (a.flags?.swade && b.flags?.swade) {
-      return SwadeCombat.cardSortCombatants(a, b);
+    } else {
+      return b.initiative - a.initiative;
     }
-    return SwadeCombat.nameSortCombatants(a, b);
   }
 
   /**
@@ -347,8 +332,8 @@ export default class SwadeCombat extends Combat {
     if (this.settings.skipDefeated) {
       for (const [i, t] of this.turns.entries()) {
         if (i <= turn) continue;
-        // Skip defeated, lost turns, and followers on hold (their leaders act for them)
-        if (t.isDefeated || t.turnLost || (t.groupId && t.roundHeld)) continue;
+        // Skip defeated, lost turns
+        if (t.isDefeated || t.turnLost ) continue;
         next = i;
         break;
       }

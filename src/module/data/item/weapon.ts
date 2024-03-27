@@ -253,6 +253,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     const selfReload = this.reloadType === constants.RELOAD_TYPE.SELF;
     const ammo = this.parent?.actor.items.getName(this.ammo);
     if (noReload && !ammo) {
+      if (!this.shots && !this.currentShots) return true;
       return false;
     } else if (noReload) {
       const ammoCount =
@@ -277,6 +278,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     const resourceUpdates = new Array<Updates>();
 
     if (!game.settings.get('swade', 'ammoManagement')) return false;
+    const usesAmmo = this.shots && this.currentShots;
 
     if (this.reloadType === constants.RELOAD_TYPE.NONE) {
       if (!this.usesAmmoFromInventory) return false;
@@ -285,14 +287,15 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
         ammo?.consume(chargesToUse);
       } else {
         const quantity = ammo?.system['quantity'];
-        if (!ammo || chargesToUse > quantity) {
+        if ((usesAmmo && !ammo) || chargesToUse > quantity) {
           Logger.warn('SWADE.NotEnoughAmmo', { toast: true, localize: true });
           return false;
+        } else if (usesAmmo && ammo) {
+          resourceUpdates.push({
+            _id: ammo.id,
+            'data.quantity': quantity - chargesToUse,
+          });
         }
-        resourceUpdates.push({
-          _id: ammo.id,
-          'data.quantity': quantity - chargesToUse,
-        });
       }
     } else if (this.reloadType === constants.RELOAD_TYPE.SELF) {
       const currentShots = Number(this.currentShots);

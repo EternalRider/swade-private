@@ -17,6 +17,8 @@ steps:
     tab:
       parent: settings
       id: system
+    settings:
+      ammoManagement: true
   - id: ammoSettings
     selector: '#settingConfig #ammo'
     title: SWADE.TOURS.AMMUNITION.AmmoSettings.Title
@@ -25,13 +27,11 @@ steps:
       parent: configurator
       id: setting-rules
   - id: ammoManagement
-    selector: '#ammo>div'
+    selector: '#settingConfig #ammo>div'
     title: SWADE.TOURS.AMMUNITION.AmmoManagement.Title
     content: SWADE.TOURS.AMMUNITION.AmmoManagement.Content
-    settings:
-      ammoManagement: true
   - id: pcInventory
-    selector: '#ammo>div:nth-child(3)'
+    selector: '#settingConfig #ammo>div:nth-child(3)'
     title: SWADE.TOURS.AMMUNITION.PCInventory.Title
     content: SWADE.TOURS.AMMUNITION.PCInventory.Content
   - id: characterWeapons

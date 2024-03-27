@@ -72,15 +72,13 @@
     </section>
     {{#if abilityConfig.isAncestryOrArchetype}}
       <section class='tab embedded' data-group='main' data-tab='embedded'>
-        {{#if (isEmpty embeddedAbilities)}}
-          <p class='text-center empty-hint'>
-            {{localize
+          <p class='text-center'>
+            {{{ localize
               'SWADE.EmptyAncestralAbilitiesHint'
               ancestry=(localize abilityConfig.localization.ancestry.dropdown)
               archetype=(localize abilityConfig.localization.archetype.dropdown)
-            }}
+            }}}
           </p>
-        {{/if}}
         <ol class='effect-list unmarked-list'>
           {{#each embeddedAbilities}}
             <li>

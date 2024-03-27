@@ -15,9 +15,7 @@
         </label>
         <span class='form-fields'>
           <select name='system.die.sides' data-dtype='Number'>
-            {{#select item._source.system.die.sides}}
-              {{>"systems/swade/templates/die-sides-options.hbs"}}
-            {{/select}}
+            {{selectOptions dieSideOptions selected=item._source.system.die.sides nameAttr="key" labelAttr="label"}}
           </select>
           <input
             name='system.die.modifier'
@@ -33,7 +31,7 @@
           {{localize 'SWADE.LinkAttr'}}
         </label>
         <span class='form-fields'>
-          <select name='system.attribute' data-dtype='String'>
+          <select name='system.attribute'>
             {{#select item.system.attribute}}
               {{> "systems/swade/templates/attribute-select.hbs"}}
             {{/select}}
@@ -62,7 +60,6 @@
             type='checkbox'
             name='system.isCoreSkill'
             {{checked item.system.isCoreSkill}}
-            data-dtype='boolean'
           />
         </span>
       </div>

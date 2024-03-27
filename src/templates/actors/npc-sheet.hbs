@@ -22,11 +22,8 @@
           value="{{actor.name}}"
           placeholder="{{localize 'SWADE.Name'}}"
         />
-        {{#if actor.isWildcard}}
         <div class="conviction">
-          <div>
-            <strong>{{localize "SWADE.Bennies"}}</strong>
-          </div>
+          <div><strong>{{localize "SWADE.Bennies"}}</strong></div>
           <div class="counter flexrow">
             <input
               class="bennies-current"
@@ -65,7 +62,6 @@
             />
           </div>
         </div>
-        {{/if}}
         {{/if}}
       </div>
       <section class="vitals flexrow">

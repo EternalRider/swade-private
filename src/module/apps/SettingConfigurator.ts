@@ -155,7 +155,10 @@ export default class SettingConfigurator extends FormApplication {
         const invalidKey = key;
         key = key.slugify().replace('.', '-');
         ui.notifications.warn(
-          `Additional Stat key ${invalidKey} is invalid and has been changed to ${key}`,
+          game.i18n.format('SWADE.AdditionalStats.KeyErr', {
+            invalid: invalidKey,
+            key: key,
+          }),
           { permanent: true },
         );
       }
@@ -224,26 +227,61 @@ export default class SettingConfigurator extends FormApplication {
     return discardPiles;
   }
 
-  private async _buildInjuryTableChoices() {
-    const injuryTables: Record<string, string> = {};
-    for (const p of game.packs) {
-      if (
-        p.metadata.type === 'RollTable' &&
-        p.metadata.packageType !== 'system'
-      ) {
-        for (const i of p.index) {
-          const rollTable = await p.getDocument(i._id);
-          if (rollTable) {
-            injuryTables[rollTable.uuid] = `${rollTable.name} (${p.title})`;
-          }
-        }
-      }
+  private _buildInjuryTableChoices(): OptionGroup[] {
+    const injuryTables: OptionGroup[] = [];
+
+    //add world tables, if necessary
+    if (game.tables?.contents.length) {
+      injuryTables.push({
+        group: game.i18n.localize('SWADE.SettingConfigurator.WorldTables'),
+        options: game.tables!.contents.map((t) => {
+          return { key: t.uuid as string, label: t.name as string };
+        }),
+      });
     }
-    if (game.tables?.size) {
-      for (const rollTable of game.tables) {
-        injuryTables[rollTable.uuid] = `${rollTable.name} (World)`;
-      }
+
+    const rollTablePacks = game.packs.filter(
+      (p) => p.metadata.type === 'RollTable',
+    );
+    const worldPacks = rollTablePacks.filter(
+      (p) => p.metadata.packageType === 'world',
+    );
+
+    //add world compendium packs, if necessary
+    if (worldPacks.length) {
+      injuryTables.push({
+        group: game.i18n.localize('SWADE.SettingConfigurator.WorldCompendiums'),
+        options: worldPacks
+          .flatMap((p) => p.index.contents)
+          .map((i) => {
+            return { key: i.uuid as string, label: i.name as string };
+          }),
+      });
     }
+
+    //add an entry for every module, if necessary
+    for (const module of game.modules.values()) {
+      const packs = rollTablePacks.filter(
+        (p) => p.metadata.packageName === module.id,
+      );
+      if (!packs.length) continue;
+      injuryTables.push({
+        group: module.title,
+        options: packs
+          .flatMap((p) => p.index.contents)
+          .map((i) => {
+            return { key: i.uuid as string, label: i.name as string };
+          }),
+      });
+    }
+
+    injuryTables.sort((a, b) => a.group.localeCompare(b.group));
     return injuryTables;
   }
 }
+
+interface OptionGroup {
+  group: string;
+  options: GroupOptions;
+}
+type GroupOptions = Array<{ key: string; label: string }>;

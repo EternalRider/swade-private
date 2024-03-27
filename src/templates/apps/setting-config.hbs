@@ -135,7 +135,6 @@
             id='hardChoices'
             type='checkbox'
             name='settingRules.hardChoices'
-            data-dtype='Boolean'
             {{checked settingRules.hardChoices}}
           />
         </div>
@@ -167,7 +166,6 @@
             id='woundCap'
             type='checkbox'
             name='settingRules.woundCap'
-            data-dtype='Boolean'
             {{checked settingRules.woundCap}}
           />
         </div>
@@ -183,7 +181,6 @@
             id='unarmoredHero'
             type='checkbox'
             name='settingRules.unarmoredHero'
-            data-dtype='Boolean'
             {{checked settingRules.unarmoredHero}}
           />
         </div>
@@ -199,12 +196,12 @@
             id='grittyDamage'
             type='checkbox'
             name='settingRules.grittyDamage'
-            data-dtype='Boolean'
             {{checked settingRules.grittyDamage}}
           />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
       </div>
+      <!-- Injury Table -->
       <div class='form-group'>
         <label for='injuryTable'>
           {{localize 'SWADE.Settings.InjuryTable.Name'}}
@@ -212,7 +209,17 @@
         <div class='form-fields'>
           <select id='injuryTable' name='settingRules.injuryTable'>
             {{#select settingRules.injuryTable}}
-              {{selectOptions injuryTableChoices}}
+              <option value=''></option>
+              {{#each injuryTableChoices}}
+                <optgroup label='{{group}}'>
+                  {{selectOptions
+                    options
+                    nameAttr='key'
+                    labelAttr='label'
+                    sort=true
+                  }}
+                </optgroup>
+              {{/each}}
             {{/select}}
           </select>
         </div>
@@ -228,7 +235,6 @@
             id='heroesNeverDie'
             type='checkbox'
             name='settingRules.heroesNeverDie'
-            data-dtype='Boolean'
             {{checked settingRules.heroesNeverDie}}
           />
         </div>
@@ -244,7 +250,6 @@
             id='enableConviction'
             type='checkbox'
             name='settingRules.enableConviction'
-            data-dtype='Boolean'
             {{checked settingRules.enableConviction}}
           />
         </div>
@@ -260,7 +265,6 @@
             id='jokersWild'
             type='checkbox'
             name='settingRules.jokersWild'
-            data-dtype='Boolean'
             {{checked settingRules.jokersWild}}
           />
         </div>
@@ -276,7 +280,6 @@
             id='noPowerPoints'
             type='checkbox'
             name='settingRules.noPowerPoints'
-            data-dtype='Boolean'
             {{checked settingRules.noPowerPoints}}
           />
         </div>
@@ -292,7 +295,6 @@
             id='alwaysGeneralPP'
             type='checkbox'
             name='settingRules.alwaysGeneralPP'
-            data-dtype='Boolean'
             {{checked settingRules.alwaysGeneralPP}}
           />
         </div>
@@ -308,7 +310,6 @@
             id='applyEncumbrance'
             type='checkbox'
             name='settingRules.applyEncumbrance'
-            data-dtype='Boolean'
             {{checked settingRules.applyEncumbrance}}
           />
         </div>
