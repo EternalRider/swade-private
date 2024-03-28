@@ -454,7 +454,7 @@ SWADE:
   Source: Fonte
   Properties: Propriedades
   AddAction: Adc Ação
-  DeleteEmbeddedActionPrompt: Você tem certeza de que quer deletar a ação {action}
+  DeleteEmbeddedActionPrompt: Você tem certeza de que quer deletar a ação {action}?
   DeleteEmbeddedPowerPrompt: Você tem certeza de que quer deletar o poder {power}?
   TrademarkWeapon:
     Label: Arma Predileta
