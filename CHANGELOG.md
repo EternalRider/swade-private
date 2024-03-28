@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.9
+
+### Changed
+
+- Updated translations.
+
+### Fixed
+
+- Fixed a bug that would cause the main window to scroll up if the user was zoomed in during a dice roll. (#1086) **by @jpmeehan5**
+
 ## 3.3.8
 
 ### Fixed
