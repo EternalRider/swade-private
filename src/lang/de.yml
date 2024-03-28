@@ -106,7 +106,7 @@ SWADE:
   Legs: Beine
   MinStrLong: Mindeststärke
   MinStr: Min. Stärke
-  MinStrShort: Min.Stä
+  MinStrShort: Min. Stä
   Desc: Beschreibung
   Special: Spezialfähigkeiten
   Details: Details
@@ -129,7 +129,7 @@ SWADE:
   ImprovedLevelHeaded: Sehr kühler Kopf
   AutoCalc: Automatische Berechnungen
   InclArmor: Automatisch Robustheit und Rüstung berechnen
-  Label: Etikett
+  Label: Bezeichnung
   HasMaxValue: Hat Maximalwert
   Enabled: aktiviert
   Currency: Währung
@@ -142,9 +142,9 @@ SWADE:
   Price: Kosten
   PP: Machtpunkte
   PPShort: Machtp.
-  PPCost: MP Kosten
+  PPCost: MP-Kosten
   CurPP: Aktuelle Machtpunkte
-  MaxPP: Maximum Machtpunkte
+  MaxPP: Maximale Machtpunkte
   Dur: Dauer
   Trap: Ausprägung
   Wound: Wunde
@@ -179,8 +179,8 @@ SWADE:
   SettingConf: Setting-Konfigurator
   SettingConfLabel: Öffne Setting-Konfigurator
   SettingConfDesc: >-
-    Hier kannst du dein Setting definieren und Dinge wie z.B. Grundfertigkeiten,
-    Settingregeln, usw. einstellen.
+    Hier kannst du dein Setting definieren und Dinge wie Grundfertigkeiten, Settingregeln,
+    usw. einstellen.
   Formula: Formel
   SitMod: Situativer Mod
   RollMode: Wurfmodus
@@ -206,7 +206,7 @@ SWADE:
   ConvictionExtend: Entschlossenheit einsetzen?
   ConvictionEnd: schwankt in der Entschlossenheit
   NoBennies: Nicht genug Bennys!
-  GM: Spielleiter
+  GM: Spielleitung
   Vehicles: Fahrzeuge
   AddStats: Weitere Werte
   Actors: Akteur
@@ -225,7 +225,7 @@ SWADE:
   Diseased: Erkrankt
   Encumbered: Überladen
   Flying: Fliegend
-  Frightened: Veränstigt
+  Frightened: Verängstigt
   General: Generell
   HeartAttack: Herzinfarkt
   Follow: Folge {name}
@@ -271,12 +271,12 @@ SWADE:
   ReloadSuccess: Die Waffe wurde erfolgreich nachgeladen
   ReloadNotPossible: Nachladen nicht möglich
   ReloadUnneeded: Die Waffe ist bereits voll geladen
-  ShowBennyAnimation: Zeige die Benny Animation
-  ShowBennyAnimationDesc: Spielt eine 3D Animation ab wenn ein Benny ausgegeben wird
+  ShowBennyAnimation: Zeige die Benny-Animation
+  ShowBennyAnimationDesc: Spielt eine 3D-Animation ab, wenn ein Benny ausgegeben wird
   Smite: Waffe verbessert
   Protection: Schutz
   Torch: Lichtquelle
-  WildDiePreset: Wildcard Würfel Voreinstellung
+  WildDiePreset: Wildcard-Würfel Voreinstellung
   WildDiePresetDesc: Wähle ein DSN-Preset für deinen Wildcard-Würfel.
   WildDieTheme: Wildcard-Würfel Thema
   WildDieThemeDesc: >-
@@ -343,9 +343,9 @@ SWADE:
   OpenACEditor: Im Aktionskarteneditor öffnen
   'Yes': Ja
   'No': Nein
-  ShowCharacterSummary: Charakterübersicht Anzeigen
+  ShowCharacterSummary: Charakterübersicht anzeigen
   CharacterSummary: Charakterübersicht
-  CopyHtml: HTML Kopieren
+  CopyHtml: HTML kopieren
   CopyMarkdown: Markdown kopieren
   Metric: Metrisch
   Imperial: Imperial
@@ -388,7 +388,7 @@ SWADE:
   ModOther: Andere Modifikatioren
   Snapfire: Schnellschuss
   UnstablePlatform: Unsicheren Grund
-  NoSceneAvailable: Es ist keine Szene verfügbar oder der Canvas wurde ausgeschaltet
+  NoSceneAvailable: Es ist keine Szene verfügbar oder die Spielfläche wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
   NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
     zu handeln
@@ -402,11 +402,11 @@ SWADE:
   SystemLinks:
     Changelog: Changelog
     Wiki: Wiki
-    ReportAnIssue: Ein Problem melden
+    ReportAnIssue: Fehler melden
   Biography: Biografie
-  OpenOrigin: Urpsrung öffnen
+  OpenOrigin: Ursprung öffnen
   EffectsTemporary: Temporäre Effekte
-  EffectsPermanent: Permanente Effecte
+  EffectsPermanent: Permanente Effekte
   Ranks:
     Novice: Anfänger
     Seasoned: Fortgeschritten
@@ -423,8 +423,8 @@ SWADE:
       Hindrance: Handicap ablegen
       TwoSkills: Zwei Fertigkeiten
       SingleSkill: Eine Fertigkeit
-    Delete: Aufstieg Löschen
-    EditorTitle: Aufsteigseditor
+    Delete: Aufstieg löschen
+    EditorTitle: Aufstiegseditor
     Modes:
       Legacy: Legacy
       Expanded: Erweitert
@@ -449,7 +449,7 @@ SWADE:
       Title: Konstitutionsprobe zum Entfernen von Betäubt
       Fail: Du bleibst betäubt
       Success: Du bist nicht mehr Betäubt aber bleibst Verwundbar
-      Raise: Du bist nicht mehr btäubt und auch nicht Verwundbar
+      Raise: Du bist nicht mehr Betäubt und auch nicht Verwundbar
       UnStunModifier: Betäubt Resistenz
     BleedingOut:
       Title: Konstitutionsprobe gegen Ausbluten
@@ -471,7 +471,7 @@ SWADE:
     EndAuto: Automatisch am Ende des Zuges
     EndPrompt: Am Anfang des Zuges, mit Nachfrage
     None: Keins
-    TabLabel: Verhalten
+    TabLabel: Zugverhalten
     Description: >-
       <p>Effekte laufen während des <em>nächsten Zuges (oder später)</em> des Zieles
       aus</p>
@@ -504,6 +504,7 @@ SWADE:
       Name: Favorisierte Kartenhand öffnen
       NoCardsWarning: Es wurde keine favorisierte Kartenhand gesetzt!
       UserConfigLabel: Favorisierte Kartenhand
+      HandNone: Kein(e)
   Settings:
     HighlightTemplate:
       Name: Schablonen immer ausmalen
@@ -598,9 +599,8 @@ SWADE:
     PCAmmoFromInventory:
       Name: SCs laden Munition aus ihrem Inventar nach
       Hint: >-
-        Wenn diese Option aktiviert ist, kann die Option zum Einstellen eines
-        "Ausrüstung" gegenstands als Munition festgelegt werden und wird beim
-        Nachladen der Waffe verwendet
+        Wenn diese Option aktiviert ist, kann die Option zum Einstellen eines "Ausrüstung"-Gegenstands
+        als Munition festgelegt werden und wird beim Nachladen der Waffe verwendet
     NPCAmmoFromInventory:
       Name: NSCs laden Munition aus ihrem Inventar nach
     VehicleAmmoFromInventory:
@@ -698,13 +698,13 @@ SWADE:
     OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
-    Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt
-    wurde sind die folgenden Duplikate festgestellt worde. Diese Duplikaten
-    wurden umbennant um ihre Herkunft zu zeigen.
+    Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt wurde
+    sind die folgenden Duplikate festgestellt worde. Diese Duplikaten wurden umbennant
+    um ihre Quelle zu zeigen.
   LayOutChaseWithDeck: Deck für Verfolgungsjagd verwenden
   ActionTraitMod: Aktionseigenschaftsmodifikator
   ItemTraitMod: Eigenschaftsmodifikator
-  TargetVulnerable: Ziel is Verwundbar
+  TargetVulnerable: Ziel ist Verwundbar
   WildAttack: Rücksichtsloser Angriff
   DocumentLink: Link
   DocumentTweaks: Optionen
@@ -714,7 +714,7 @@ SWADE:
   Properties: Eigenschaften
   AddAction: Aktion hinzufügen
   DeleteEmbeddedActionPrompt: Sicher, dass die Aktion {action} gelöscht werden soll?
-  DeleteEmbeddedPowerPrompt: Bist du sicher das du die Macht {power} löschen willst?
+  DeleteEmbeddedPowerPrompt: Sicher, dass die Macht {power} gelöscht werden soll?
   TrademarkWeapon:
     Label: Lieblingswaffe
     None: Keine Lieblingswaffe
@@ -743,15 +743,14 @@ SWADE:
     Beim Erstellen von einem neuen {ancestry}/{archetype} sollten stattdessen Items
     in den Reiter Eigenschaften gezogen werden. Dann fügen {ancestry} bzw. {archetype}
     Akteuren diese Items hinzu, wenn sie auf sie angewendet werden.
-  NoTokenSelectedForResistRoll: Wähle bitte einen Token aus um eine Widerstandsprobe
-    zu machen
+  NoTokenSelectedForResistRoll: Spielfigur für Widerstandsprobe auswählen
   Templates:
     Cone:
       Short: Kegel
       Long: Kebelschablone
     Stream:
       Short: Strahl
-      Long: Streamschablone
+      Long: Strahlschablone
     Small:
       Short: KFS
       Long: Kleine Flächenschablone
@@ -801,19 +800,20 @@ SWADE:
     EnterSkill:
       Label: Fertigkeit auswählen
       Hint: >-
-        Sie können einen beliebigen Fertigkeitsnamen eingeben oder einen aus der
-        Liste der Vorschläge auswählen
+        Beliebigen Fertigkeitsnamen eingeben oder einen aus der Liste der Vorschläge
+        auswählen
   OtherStats: Andere Stats
   HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren
     gehören!
   AdditionalStats:
-    SelectHint: Gib eine durch Semikolon getrennte Liste von Optionen ein
+    SelectHint: Durch Semikolon getrennte Liste von Optionen eingeben
     Current: '{stat} aktuell'
     Type: Typ
     HasMaxValue: Hat Maximalwert
     Max: Max. {stat}
     Key: Wertschlüssel
     Label: Bezeichnung
+    KeyErr: Weitere Werte Schlüssel {invalid} ist ungültig und wurde geändert zu {key}
   MessageOnUse:
     Label: Nachricht bei Verwendung
     Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
@@ -826,7 +826,7 @@ SWADE:
   RefreshPP: Machtpunkte auffrischen
   Targets: 'Ziele:'
   Rolls:
-    RollResult: Würfelergebniss
+    RollResult: Würfelergebnis
     SwadeRoll: Wurf
     DamageRoll: Schadenswurf
     TraitRoll: Eigenschaftswurf
@@ -855,7 +855,7 @@ SWADE:
       UnharmedPrompt: <p>{name} könnte unversehrt bleiben.</p>
       Benny: Benny nutzen, um Schaden wegzustecken
       GMBenny: SL-Benny nutzen, um Schaden wegzustecken
-      Free: Umsonst Schaden wegstecken
+      Free: Frei Schaden wegstecken
       TakeWounds: '{wounds} erleiden'
       AdjustDamage: Schaden anpassen
       ApplyShaken: Angeschlagen-Zustand anwenden
@@ -868,7 +868,7 @@ SWADE:
         <p>{name} erwartet {wounds}. Schaden wegstecken neu würfeln?</p>
       Benny: Für Benny erneut würfeln
       GMBenny: Für SL-Benny erneut würfeln
-      Free: Umsonst erneut würfeln
+      Free: Frei erneut würfeln
       TakeWounds: '{wounds} erleiden'
       PromptCritFail: >-
         <p>{name} erwartet {wounds}. Ein kritischer Patzer verhindert Wiederholungswürfe.</p>
@@ -1070,6 +1070,40 @@ SWADE:
   ResourcesUsed:
     Label: Genutzte Ressourcen
     Hint: Wie viel einer Ressource für diese Aktion genutzt wird
+  Draw: Ziehen
+  Reset: Reset
+  Cards:
+    Spades: Pik
+    Hearts: Herz
+    Diamonds: Karo
+    Clubs: Kreuz
+    Jokers: Joker
+    Two: Zwei
+    Three: Drei
+    Four: Vier
+    Five: Fünf
+    Six: Sechs
+    Seven: Sieben
+    Nine: Neun
+    Ten: Zehn
+    Jack: Bube
+    Queen: Dame
+    King: König
+    Eight: Acht
+    Ace: Ass
+    RedJoker: Roter Joker / Pik Joker
+    BlackJoker: Schwarzer Joker / Herz Joker
+    BlueJoker: Blauer Joker / Karo Joker
+    GreenJoker: Grüner Joker / Kreuz Joker
+  CharacterSummaryTypeErr: Charakterübersicht kann nicht für Akteure vom Typ {type}
+    genutzt werden
+  ChaseLayout: Layout
+  ChaseRows: Zeilen
+  ChaseColumns: Spalten
+  ChaseNoDeck: Bitte Deck festlegen!
+  ChaseReset: Deck "{deck}" zurückgesetzt.
+  DialogConfirmPrompt: Sicher?
+  ConvictionExtendPrompt: Benny ausgeben, um Entschlossenheit zu verlängern?
 TYPES:
   Actor:
     Character: Charakter

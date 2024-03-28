@@ -30,7 +30,10 @@ export default class PopUpMenu extends ContextMenu {
 
   /** Delegate to the parent `_setPosition` then apply the stored position from the callback in `bind`. */
   protected override _setPosition(html: JQuery, _target: JQuery) {
-    super._setPosition(html, $('body'));
+    const target = $('body');
+    super._setPosition(html, target);
+    // super._setPosition modifies the body to have a `relative` position, causing the window to jump around if a user is scrolled in.
+    target.css('position', 'fixed');
     html.css(this.defaultStyle); //apply the default style
     this._position.left -= this.menu.width() ?? 0; //calculate the final position
     html.css(this._position); //set the absolute position
