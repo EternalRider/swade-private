@@ -18,7 +18,7 @@ SWADE:
   Pace: Allure
   Running: Course
   RunningDie: Dé de course
-  RollRun: Cliquez pour courir
+  RollRun: '[Click] pour courir'
   Adv: Progressions
   Rank: Rang
   Inv: Inventaire
@@ -310,7 +310,7 @@ SWADE:
   DmgRolls: Jets de dégats
   SubtractPPDesc: Soustraire le coût en PP du total disponible
   AddPPDesc: Ajouter le coût en PP au total disponible
-  RightClickZoom: Clic-droit pour zoomer
+  RightClickZoom: '[Clic-droit] pour zoomer'
   SysMigrationWarning: Votre installation de SWADE est ancienne et ne peut pas être
     migrée vers la nouvelle version. La migration va être tentée, mais des erreurs
     peuvent se produire.
@@ -339,7 +339,7 @@ SWADE:
   Modifiers: Modificateurs
   ActionTraitMod: Modificateur de trait d'action
   ActionDmgMod: Modificateur de dégâts
-  ItemTraitMod: Modificatteur de trait d'objet
+  ItemTraitMod: Modificateur de trait d'objet
   ItemDmgMod: Modification d'objet de dégâts
   Duplicates: Doublons trouvés
   DuplicateItemsBodyText: En ajoutant le {type} <strong>{name}</strong> à l'acteur
@@ -460,6 +460,7 @@ SWADE:
       UserConfigLabel: Main préférée
       Hint: Vous pouvez paramétrer votre main préférée dans la configuration d'utilisateur
       NoCardsWarning: Vous n'avez pas de main préférée !
+      HandNone: Aucune
     Bennies:
       Name: Dépenser/recevoir un jeton
       Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
@@ -632,6 +633,10 @@ SWADE:
       Name: Compétences de manœuvre
       Hint: Saisissez la liste de compétences, séparées par une virgule, qui peut
         servir à diriger un véhicule dans votre monde
+    CharSheetDefaultWidth:
+      Hint: "Largeur des feuilles de personnage à l'ouverture, en pixels. Valeur par
+        défaut : 650."
+      Name: Largeur par défaut des feuilles de personnages
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
@@ -662,7 +667,7 @@ SWADE:
   Source: Source
   Properties: Propriétés
   AddAction: Ajouter une action
-  DeleteEmbeddedActionPrompt: Voulez-vous vraiment supprimer l'action {action}
+  DeleteEmbeddedActionPrompt: Voulez-vous vraiment supprimer l'action {action} ?
   DeleteEmbeddedPowerPrompt: Voulez-vous vraiment supprimer le pouvoir {power} ?
   TrademarkWeapon:
     Label: Arme fétiche
@@ -686,8 +691,12 @@ SWADE:
   Consumable:
     Use: Utiliser
     Consumables: Consommables
-  EmptyAncestralAbilitiesHint: L’espèce '{ancestry}' ou l'archétype '{archetype}'
-    n'a pas encore de capacités. Faites des 'glisser/déplacer' sur la fiche pour commencer.
+    NotEnoughCharges: Pas assez de charges !
+  EmptyAncestralAbilitiesHint: <strong>Avertissement:</strong> Cette fonctionnalité
+    a été abandonnée au profit de l'octroi d'éléments. Si vous créez une nouvelle
+    {ancestry} ou {archetype}, glissez-déposez les éléments dans l'onglet Propriétés
+    à la place. Le {ancestry} ou {archetype} ajoutera ces éléments à l'acteur lorsqu'il
+    sera appliqué.
   AdditionalStats:
     SelectHint: Entrezune liste d'options, séparés par une virgule
     Key: Clé de la caractéristique
@@ -696,12 +705,14 @@ SWADE:
     HasMaxValue: A une valeur maximale
     Current: Valeur actuelle {stat}
     Max: Valeur Max {stat}
+    KeyErr: La clé de statistique supplémentaire {invalid} n'est pas valide et a été
+      remplacée par {key}
   Attribute: Attribut
   AttributeManager:
     Open: Gérer les attributs
     Title: Gérer les atributs pour {name}
   BaseDie: Dé de base
-  Category: Catégorie d'item
+  Category: Catégorie d'objet
   ColdBodied: Corps froid
   CompendiumTOC:
     Dialog:
@@ -730,9 +741,9 @@ SWADE:
     les items possédés
   IgnFatigue: Ignorer la fatigue
   ItemGrants:
-    Header: Cet item fourni
-    When: Fournir les items lorsque
-    EmptyHint: Cet otme ne fourni actuellement aucun autre item
+    Header: Cet objet fourni
+    When: Fournir les objets lorsque
+    EmptyHint: Cet objet ne fourni actuellement aucun autre objet
   ItemIsAmmo: Est une munition
   MessageOnUse:
     Label: Messag eà l'utilisation
@@ -887,7 +898,9 @@ SWADE:
       TakeFail: Souffre d'une séquelle permanente
       TakeSuccess: Souffre d'une séquelle qui disparaitra lorsque toutes les blessures
         auront été guéries
-    ApplyDamage: Application des dégâts
+    ApplyDamage:
+      Label: Résolution des dommages
+      Hint: '[Click] pour résoudre les dommages avec le jeton sélectionné'
     SoakModifier: Modificateur d'encaissement
     WoundsAboutToBeTaken: <p><strong>{name}</strong> est sur le point de subir <strong>{wounds}</strong>
       blessures !</p>
@@ -917,8 +930,7 @@ SWADE:
   CouldNotFindMacro: "Impossible de trouver la macro avec l'UUID : {uuid}"
   DmgMod: Modificateur de dégâts
   ResourcesUsed:
-    Hint: Quelle quantité d'une ressource arbitraire est utilisée pour cette action
-      ?
+    Hint: Quelle quantité de ressource arbitraire est utilisée pour cette action ?
     Label: Utilisation d'une ressource
   Auras:
     WallConstraints:
@@ -1242,6 +1254,42 @@ SWADE:
         Title: Progressions planifiées
         Content: Vous pouvez marquer les Progressions comme étant planifiées pour
           éviter qu'elles ne comptent dans le rang de votre personnage.
+    HEADQUARTERS:
+      Title: Quartier général
+      JournalEntry: Visite du journal des Quartiers Généraux
+      Description: Découvrez le nouveau type de page de journal, le quartier général
+        ! Utile pour les Forteresses du <em>Companion Fantastique</em>, les Loges
+        du <em>Companion d'Horreur</em> et les Bases du <em>Companion Supers Pouvoirs</em>.
+      HeadquartersPage: Visite des pages des Quartiers Généraux
+      CreatePage:
+        Title: Créer une page de quartier général
+        Content: Les quartiers généraux sont un nouveau type de page de journal, au
+          même titre que le texte, l'image et le pdf.
+      CreateJournal:
+        Title: Créer un journal
+        Content: Le quartier général doit être créé au sein d'un journal parent.
+      HQPage:
+        Content: Les quartiers généraux ressemblent à des pages de texte, mais fournissent
+          des données plus structurées. Les sections s'inspirent des quatre étapes
+          prévues dans chacun des compagnons.
+        Title: La page du Quartier Général
+      Advantage:
+        Title: Atout
+        Content: Les atouts spécifiques dépendent du genre que vous jouez ; vous pouvez
+          faire glisser les résultats des jets de dé dans cette section.
+      Complication:
+        Content: Comme pour les atouts, vous pouvez faire glisser les résultats des
+          jets de dés dans cette section.
+        Title: Complications
+      Form:
+        Title: Fiche
+        Content: La section de la fiche est divisée en trois parties afin que vous
+          puissiez décrire tous les aspects de votre siège.
+      Upgrades:
+        Title: Améliorations
+        Content: Vous pouvez dresser la liste de vos améliorations ici. Il s'agit
+          d'une entrée en rendu HTML, alors n'hésitez pas à utiliser une liste à puces,
+          un tableau ou tout autre système d'organisation qui vous semble logique.
   Magazine:
     NoneLoaded: Pas de chargeur en place
     Select: Choisissez un chargeur
@@ -1285,9 +1333,9 @@ SWADE:
     ChangeWarning1: Agissez avec prudence !
   HindranceSeverity:
     Major: Majeur seulement
-    Minor: mineur seulement
+    Minor: mineur
     Either: Au choix
-    Label: Sévérité du handicap
+    Label: Sévérité
   RedrawBenny: Repiocher une carte avec un jeton
   NpcWildCardsOnScene: PNJ Joker sur la scène
   PlayerCardDrawHelper:
@@ -1315,6 +1363,8 @@ SWADE:
     AdvanceRoundContent: Voulez-vous allez au prochain round ?
     RevertRoundTitle: Revenir au round précédent ?
     RevertRoundContent: Voulez-vous revenir au round précédent ?
+    DiscardedCards: Cartes défaussées
+    Redraw: Carte re-piochée
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
@@ -1342,6 +1392,42 @@ SWADE:
   FollowerCount: '{count] suivants'
   Benny: Jeton
   Free: Gratuit
+  NoDescription: Aucune description disponible
+  Draw: Piocher
+  Reset: Réinitialiser
+  ConvictionExtendPrompt: Voulez-vous dépenser un Jeton pour prolonger votre conviction
+    ?
+  Cards:
+    Spades: Piques
+    Hearts: Cœurs
+    Diamonds: Carreaux
+    Clubs: Trèfles
+    Jokers: Jokers
+    Two: Deux
+    Three: Trois
+    Four: Quatre
+    Five: Cinq
+    Six: Six
+    Seven: Sept
+    Eight: Huit
+    Nine: Neuf
+    Ten: Dix
+    Jack: Valet
+    Queen: Dame
+    King: Roi
+    Ace: As
+    RedJoker: Joker Rouge / Piques
+    BlackJoker: Joker Noir / Cœur
+    BlueJoker: Joker Bleu / Carreau
+    GreenJoker: Joker vert / Trèfle
+  CharacterSummaryTypeErr: Impossible d'utiliser le résumé de personnage pour un acteur
+    de type {type}
+  ChaseLayout: Disposition
+  ChaseRows: Lignes
+  ChaseColumns: Colonnes
+  ChaseNoDeck: Veuillez choisir un jeu de cartes !
+  ChaseReset: Le jeu de cartes "{deck}" a été réinitialisé.
+  DialogConfirmPrompt: Êtes-vous sûr ?
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
