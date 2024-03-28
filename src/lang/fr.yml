@@ -1290,6 +1290,12 @@ SWADE:
         Content: Vous pouvez dresser la liste de vos améliorations ici. Il s'agit
           d'une entrée en rendu HTML, alors n'hésitez pas à utiliser une liste à puces,
           un tableau ou tout autre système d'organisation qui vous semble logique.
+    ERROR:
+      ActorCreatePermission: Cette présentation nécessite l'autorisation de créer
+        des acteurs
+      SettingPermission: Cette Présentation nécessite de modifier les paramètres de
+        l'univers
+      JournalCreatePermission: Cette présentation nécessite la création d'un journal
   Magazine:
     NoneLoaded: Pas de chargeur en place
     Select: Choisissez un chargeur
@@ -1428,6 +1434,9 @@ SWADE:
   ChaseNoDeck: Veuillez choisir un jeu de cartes !
   ChaseReset: Le jeu de cartes "{deck}" a été réinitialisé.
   DialogConfirmPrompt: Êtes-vous sûr ?
+  SettingConfigurator:
+    WorldTables: Tables sur l'univers
+    WorldCompendiums: Compendiums de l'univers
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
