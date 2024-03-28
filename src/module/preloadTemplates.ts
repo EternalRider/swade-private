@@ -52,6 +52,7 @@ export async function preloadHandlebarsTemplates() {
 
     //Sidebar
     'systems/swade/templates/sidebar/combat-tracker.hbs',
+    'systems/swade/templates/sidebar/combatant-details.hbs',
 
     //Item V2
     'systems/swade/templates/item/partials/header.hbs',

@@ -58,88 +58,29 @@
         </div>
     </header>
 
+    {{log this}}
     <ol id="combat-tracker" class="directory-list">
         {{#each turns}}
+        {{!-- If combat is at round 0 (i.e., not begun), nest followers under leaders --}}
+        {{#unless (and (eq ../round 0) groupId)}}
         <li class="combatant actor directory-item flexrow {{this.css}}" data-combatant-id="{{this.id}}">
-            <div class="token-initiative" style="border-right-color: {{combatantColor this.id}}; {{#if this.defeated}}opacity: 0.3;{{/if}}">
-                {{#if this.roundHeld}}
-                <span class="initiative"><i class="fa-solid fa-hand-rock"></i></span>
-                {{else if this.turnLost}}
-                <span class="initiative"><i class="fa-solid fa-ban"></i></span>
-                {{else if this.hasRolled}} {{! hasRolled is never set anywhere in the SWADE system but seems to be always true even before initiative is drawn}}
-                    {{#if this.canRedraw}}
-                        <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{this.cardString}}</a>
-                    {{else}}
-                        {{#unless this.groupId}}
-                        <span class="initiative">{{this.cardString}}</span>
-                        {{/unless}}
-                    {{/if}}
-                {{else if this.canDrawInit}}
-                <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
-                {{else}}
-                <span class="initiative"></span>
-                {{/if}}
-            </div>
-            <img class="token-image" data-src="{{this.img}}" title="{{this.name}}"/>
-            <div class="token-name flexcol">
-                <h4>{{this.name}}</h4>
-                <div class="combatant-controls flexrow">
-                    {{#if this.canPing}}
-                    <a class="combatant-control" data-tooltip="COMBAT.PingCombatant" data-control="pingCombatant">
-                        <i class="fa-solid fa-bullseye-arrow"></i>
-                    </a>
-                    {{/if}}
-                    {{#if ../user.isGM}}
-                    <a class="combatant-control {{#if this.hidden}}active{{/if}}" data-tooltip="COMBAT.ToggleVis" data-control="toggleHidden">
-                        <i class="fa-solid fa-eye-slash"></i>
-                    </a>
-                    <a class="combatant-control {{#if this.defeated}}active{{/if}}" data-tooltip="COMBAT.ToggleDead" data-control="toggleDefeated">
-                        <i class="fa-solid fa-skull"></i>
-                    </a>
-                    {{#unless isVehicle}}
-                    <a class="combatant-control {{#if this.isIncapacitated}}active{{/if}}" data-tooltip="SWADE.ToggleIncap" data-control="toggleIncapacitated">
-                        <i class="fa-solid fa-face-eyes-xmarks"></i>
-                    </a>
-                    {{/unless}}
-                    {{#if ../combat.started}}
-                    {{#if this.active}}
-                    {{#unless (or (gt ../combat.round (roundHeld this.id)) (turnLost this.id))}}
-                    <a class="combatant-control {{#if (isOnHold this.id)}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold">
-                        <i class="fa-solid fa-hand-rock"></i></a>
-                    {{/unless}}
-                    {{/if}}
-                    {{#if (or (isOnHold this.id) (turnLost this.id))}}
-                    <a class="combatant-control {{#if (turnLost this.id)}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-control="toggleLostTurn">
-                        <i class="fa-solid fa-ban"></i></a>
-                    {{/if}}
-                    {{#if (isOnHold this.id)}}
-                    {{#unless (and (eq ../combat.round (roundHeld this.id)) (eq ../combat.combatant.id this.id))}}
-                    <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-control="actNow">
-                        <i class="fa-solid fa-long-arrow-alt-right"></i></a>
-                    {{/unless}}
-                    {{/if}}
-                    {{#if (and (isOnHold this.id) (eq this.active false))}}
-                    {{#unless this.active}}
-                    <a class="combatant-control {{#if (eq this.active false)}}active{{/if}}" data-tooltip="SWADE.ActAfterCurrentCombatant" data-control="actAfter">
-                        <i class="fa-solid fa-level-down-alt"></i></a>
-                    {{/unless}}
-                    {{/if}}
-                    {{/if}}
-                    {{/if}}
-                    <div class="token-effects">
-                        {{#each this.effects}}
-                        <img class="token-effect" src="{{this}}"/>
-                        {{/each}}
-                    </div>
-                </div>
-            </div>
-
-            {{#if this.hasResource}}
-            <div class="token-resource">
-                <span class="resource">{{this.resource}}</span>
-            </div>
+            {{> "systems/swade/templates/sidebar/combatant-details.hbs" }}
+            {{!-- Before initiative is dealt, group followers as a nested list --}}
+            {{#if (eq ../round 0)}}
+            <ol class="subdirectory">
+            {{#with this as |leader|}}
+            {{#each ../turns}}
+            {{#if (eq groupId leader.id)}}
+            <li class="combatant actor directory-item flexrow {{this.css}}" data-combatant-id="{{this.id}}">
+            {{> "systems/swade/templates/sidebar/combatant-details.hbs" }}
+            </li>
+            {{/if}}
+            {{/each}}
+            {{/with}}
+            </ol>
             {{/if}}
         </li>
+        {{/unless}}
         {{/each}}
     </ol>
 
