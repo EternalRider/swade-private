@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.10
+
+### Fixed
+
+- Rerolls from chat cards now respect the roll mode dropdown above the chat input. (#1092)
+
 ## 3.3.9
 
 ### Changed
