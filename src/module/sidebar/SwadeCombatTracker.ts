@@ -52,6 +52,7 @@ export default class SwadeCombatTracker extends CombatTracker {
           cardString: combatant?.cardString,
           initiative: combatant?.initiative,
           roundHeld: combatant?.roundHeld,
+          isOnHold: !!combatant?.roundHeld,
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
           groupId: combatant?.groupId,
