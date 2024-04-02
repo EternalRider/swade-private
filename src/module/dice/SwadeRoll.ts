@@ -6,8 +6,10 @@ import {
   SwadeRollData,
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
-import { normalizeRollModifiers } from '../util';
 import { Logger } from '../Logger';
+import SwadeUser from '../documents/SwadeUser';
+import SwadeActor from '../documents/actor/SwadeActor';
+import { normalizeRollModifiers } from '../util';
 
 export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   constructor(formula: string, data?: T, options: SwadeRollOptions = {}) {
@@ -33,11 +35,14 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
 
     roll.rerollMode = 'free';
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({
-      speaker: speaker,
-      flavor: msg['flavor'],
-      flags: msg['flags'],
-    });
+    await evaluated.toMessage(
+      {
+        speaker: speaker,
+        flavor: msg['flavor'],
+        flags: msg['flags'],
+      },
+      { rollMode: game.settings.get('core', 'rollMode') },
+    );
   }
 
   static async rerollBenny(event: MouseEvent) {
@@ -49,8 +54,9 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     const roll = msg['rolls'][0] as SwadeRoll;
     const actor = ChatMessage.getSpeakerActor(speaker);
 
-    const isGmBenny = target.dataset.gmBenny;
-    const spender = isGmBenny && game.user?.isGM ? game.user : actor;
+    const isGmBenny = !!target.dataset.gmBenny;
+    const spender: SwadeUser | SwadeActor | null =
+      isGmBenny && game.user?.isGM ? game.user : actor;
 
     if (!spender?.bennies) {
       return ui.notifications.warn('SWADE.NoBennies', { localize: true });
@@ -62,11 +68,14 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     roll.applyReroll(actor);
 
     const evaluated = await roll.reroll({ async: true });
-    await evaluated.toMessage({
-      speaker: speaker,
-      flavor: msg['flavor'],
-      flags: msg['flags'],
-    });
+    await evaluated.toMessage(
+      {
+        speaker: speaker,
+        flavor: msg['flavor'],
+        flags: msg['flags'],
+      },
+      { rollMode: game.settings.get('core', 'rollMode') },
+    );
   }
 
   set rerollMode(mode: 'free' | 'benny') {
