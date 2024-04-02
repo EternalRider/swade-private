@@ -26,12 +26,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added the `SwadeActor.getCombatant` function that returns the actor's combatant for a given combat encounter. (#1089)
+- Added the `SwadeActor.getCombatant` function that returns the actor's combatant for a given combat encounter. (#1089) **by @florad92**
 
 ### Fixed
 
-- Rerolls from chat cards now respect the roll mode dropdown above the chat input. (#1092)
-- Creating and deleting an Active Effect on an unowned item during a combat encounter no longer causes the operation to fail. (#1089)
+- Rerolls from chat cards now respect the roll mode dropdown above the chat input. (#1092) **by @florad92**
+- Creating and deleting an Active Effect on an unowned item during a combat encounter no longer causes the operation to fail. (#1089) **by @florad92**
+- The CompendiumTOC should now properly scale tokens again. (#1088) **by @florad92**
 
 ## 3.3.9
 
