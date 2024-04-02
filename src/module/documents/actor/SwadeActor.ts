@@ -1420,6 +1420,19 @@ export default class SwadeActor extends Actor {
     return tooltip;
   }
 
+  /**
+   * Looks up the combatant instance for this actor in a given Combat encounter, taking into account whether the actor is an unlinked token or not.
+   * @param combat The combat instance to look in.
+   * @returns The found combatant for this actor, if one exists
+   */
+  getCombatant(combat?: Combat): SwadeCombatant | undefined {
+    if (!combat) return;
+    const combatant = this.isToken
+      ? combat?.getCombatantByToken(this.token?.id as string)
+      : combat?.getCombatantByActor(this.id as string);
+    return combatant as SwadeCombatant;
+  }
+
   private _sourcesToTooltip(sources: DerivedModifier[]): string {
     let tooltip = '';
 
