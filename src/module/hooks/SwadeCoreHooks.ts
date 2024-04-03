@@ -12,6 +12,7 @@ import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
@@ -506,6 +507,15 @@ export default class SwadeCoreHooks {
           if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
         });
       });
+  }
+
+  static async onUpdateCombat(
+    document: SwadeCombat,
+    change: any,
+    options: any,
+    userId: string,
+  ) {
+    ui.combat.scrollToTurn();
   }
 
   /** Add benny management to the player list */
