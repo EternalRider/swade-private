@@ -62,6 +62,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       );
     }
     data.cardsIcon = CONFIG.Cards.sidebarIcon;
+    this.scrollToTurn();
     return data;
   }
 
