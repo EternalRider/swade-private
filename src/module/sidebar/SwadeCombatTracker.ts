@@ -52,9 +52,11 @@ export default class SwadeCombatTracker extends CombatTracker {
           cardString: combatant?.cardString,
           initiative: combatant?.initiative,
           roundHeld: combatant?.roundHeld,
+          isOnHold: !!combatant?.roundHeld,
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
           groupId: combatant?.groupId,
+          hasRolled: !!combatant?.initiative && !!combatant?.cardString,
           canDrawInit: this._canDrawInitiative(combatant as SwadeCombatant),
           canRedraw: this._canRedrawInitiative(combatant as SwadeCombatant),
         },
@@ -606,6 +608,8 @@ export default class SwadeCombatTracker extends CombatTracker {
     ) as SwadeCombatant | null;
     // If the current Combatant is the holding combatant, just remove Hold status.
     await combatant?.unsetGroupId();
+    // Set the initiative to null so that they can draw init (hasRolled becomes false).
+    await combatant?.update({initiative: null});
   }
 
   async #onRedrawCard(ev: PointerEvent) {

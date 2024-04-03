@@ -1,0 +1,75 @@
+<div class="token-initiative" style="border-right-color: {{combatantColor id}}; {{#if defeated}}opacity: 0.3;{{/if}}">
+    {{#if roundHeld}}
+    <span class="initiative"><i class="fa-solid fa-hand-rock"></i></span>
+    {{else if turnLost}}
+    <span class="initiative"><i class="fa-solid fa-ban"></i></span>
+    {{else if hasRolled}}
+        {{#if canRedraw}}
+        <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{cardString}}</a>
+        {{else}}
+        {{#unless groupId}}
+        <span class="initiative">{{cardString}}</span>
+        {{/unless}}
+        {{/if}}
+    {{else if (and canDrawInit (not initiative))}}
+    <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
+    {{else}}
+    <span class="initiative"></span>
+    {{/if}}
+</div>
+<img class="token-image" data-src="{{img}}" title="{{name}}" />
+<div class="token-name flexcol">
+    <h4>{{name}}</h4>
+    <div class="combatant-controls flexrow">
+        {{#if canPing}}
+        <a class="combatant-control" data-tooltip="COMBAT.PingCombatant" data-control="pingCombatant">
+            <i class="fa-solid fa-bullseye-arrow"></i>
+        </a>
+        {{/if}}
+        {{#if user.isGM}}
+        <a class="combatant-control {{#if hidden}}active{{/if}}" data-tooltip="COMBAT.ToggleVis" data-control="toggleHidden">
+            <i class="fa-solid fa-eye-slash"></i>
+        </a>
+        <a class="combatant-control {{#if defeated}}active{{/if}}" data-tooltip="COMBAT.ToggleDead" data-control="toggleDefeated">
+            <i class="fa-solid fa-skull"></i>
+        </a>
+        {{#unless isVehicle}}
+        <a class="combatant-control {{#if isIncapacitated}}active{{/if}}" data-tooltip="SWADE.ToggleIncap" data-control="toggleIncapacitated">
+            <i class="fa-solid fa-face-eyes-xmarks"></i>
+        </a>
+        {{/unless}}
+        {{#if combat.started}}
+
+        {{#if active}}
+        {{#unless (or (gt combat.round roundHeld) turnLost)}}
+        <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold"><i class="fa-solid fa-hand-rock"></i></a>
+        {{/unless}}
+        {{/if}}
+
+        {{#if (or isOnHold turnLost)}}
+        <a class="combatant-control {{#if turnLost}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-control="toggleLostTurn"><i class="fa-solid fa-ban"></i></a>
+        {{/if}}
+
+        {{#if isOnHold}}
+        {{#unless (and (eq combat.round roundHeld) active)}}
+        <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-control="actNow"><i class="fa-solid fa-long-arrow-alt-right"></i></a>
+        <a class="combatant-control active" data-tooltip="SWADE.ActAfterCurrentCombatant" data-control="actAfter"><i class="fa-solid fa-level-down-alt"></i></a>
+        {{/unless}}
+        {{/if}}
+
+        {{/if}}
+        {{/if}}
+
+        <div class="token-effects">
+            {{#each effects}}
+            <img class="token-effect" src="{{this}}" />
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+{{#if hasResource}}
+<div class="token-resource">
+    <span class="resource">{{resource}}</span>
+</div>
+{{/if}}
