@@ -323,6 +323,11 @@ Hooks.on(
 );
 
 /* ------------------------------------ */
+/* Update Hooks              	          */
+/* ------------------------------------ */
+Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
+
+/* ------------------------------------ */
 /* System Hooks              	          */
 /* ------------------------------------ */
 // Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);

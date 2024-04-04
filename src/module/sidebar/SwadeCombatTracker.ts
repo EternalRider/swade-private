@@ -67,6 +67,18 @@ export default class SwadeCombatTracker extends CombatTracker {
     return data;
   }
 
+  /** scrollToTurn override because core Foundry targets .active which is applied on .combat-control elements as well */
+  override scrollToTurn() {
+    const combat = this.viewed;
+    if (!combat || combat.turn === null) return;
+    let active = this.element.find('.combatant.active')[0];
+    if (!active) return;
+    let container = active.parentElement;
+    const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
+    container.scrollTop = combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
+    super.scrollToTurn();
+  }
+
   /** Reset the Action Deck */
   protected async _onReshuffleActionDeck(event: PointerEvent) {
     event.stopImmediatePropagation();
