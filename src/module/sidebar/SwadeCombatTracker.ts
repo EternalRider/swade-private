@@ -71,11 +71,12 @@ export default class SwadeCombatTracker extends CombatTracker {
   override scrollToTurn() {
     const combat = this.viewed;
     if (!combat || combat.turn === null) return;
-    let active = this.element.find('.combatant.active')[0];
-    if (!active) return;
-    let container = active.parentElement;
+    const active = this.element.find('.combatant.active')[0];
+    const container = active.parentElement;
+    if (!active || !container) return;
     const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
-    container.scrollTop = combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
+    container.scrollTop =
+      combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
     super.scrollToTurn();
   }
 
@@ -621,7 +622,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     // If the current Combatant is the holding combatant, just remove Hold status.
     await combatant?.unsetGroupId();
     // Set the initiative to null so that they can draw init (hasRolled becomes false).
-    await combatant?.update({initiative: null});
+    await combatant?.update({ initiative: null });
   }
 
   async #onRedrawCard(ev: PointerEvent) {
