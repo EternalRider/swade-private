@@ -54,15 +54,9 @@ export class AmbushAssistant extends Application {
     for (const noTurn of this.#categories.noTurn) {
       await Promise.all([noTurn.setTurnLost(true), ...noTurn.followers.map((f) => f.setTurnLost(true))]);
     }
-    let initiative = 1000;
     for (const hold of this.#categories.hold) {
       await Promise.all([hold.toggleHold(),...hold.followers.map((f) => f.toggleHold())]);
       await Promise.all([hold.setRoundHeld(0.1), ...hold.followers.map((f) => f.setRoundHeld(0.1))]);
-      await hold.update({ initiative: initiative -= 1 });
-      // Need each of them to be offset by a small decrement for properly placing interruptors.
-      for (const f of hold.followers) {
-        await f.update({ initiative: initiative -= 0.01 });
-      }
     }
     await this.close();
     await this.#combat.startCombat();
