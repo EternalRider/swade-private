@@ -46,7 +46,7 @@ import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
-import { SwadeChatLog } from './module/sidebar/SwadeChatLog';
+import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
@@ -265,7 +265,8 @@ Hooks.once('init', () => {
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
-  CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
+  CONFIG.Dice.rolls.unshift(SwadeRoll);
+  CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
