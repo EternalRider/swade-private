@@ -79,16 +79,12 @@ export default class SwadeCombat extends Combat {
       ui.notifications.warn(message);
       return this as Combat;
     }
-
-    // Ambusher initiatives are artificially set rather than based on card and suit, but they'll still draw cards.
-    let ambusherInitiative = 1000;
-
     // Iterate over Combatants, performing an initiative draw for each
     for (const id of ids) {
       // Get Combatant data
       const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
       if (!c.isOwner) continue;
-      const roundHeld = !!c.roundHeld && c.roundHeld >= 1;
+      const roundHeld = !!c.roundHeld;
       //Do not draw cards for defeated, holding or grouped combatants
       if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
@@ -177,14 +173,12 @@ export default class SwadeCombat extends Combat {
         cardString: pickedCard.description,
       };
 
-      const initiative = !!c.roundHeld && c.roundHeld < 1 ? ambusherInitiative -= 1 : (pickedCard.value as number) + ((pickedCard?.system['suit'] as number) / 10);
+      const initiative = (pickedCard.value as number) + ((pickedCard?.system['suit'] as number) / 10);
 
       const update = {
         _id: id,
         initiative,
-        flags: {
-          swade: newFlags
-        },
+        flags: { swade: newFlags },
       };
 
       //Handle group leader changes
@@ -192,12 +186,10 @@ export default class SwadeCombat extends Combat {
 
       //handle potential followers
       let fInitiative = initiative;
-      // Ambusher followers have a tighter decrement.
-      const followerDecrement = !!c.roundHeld ? 0.01 : 0.001;
       for (const f of c.followers) {
         updates.push({
           _id: f.id,
-          initiative: fInitiative -= followerDecrement,
+          initiative: fInitiative -= 0.001,
           'flags.swade': newFlags
         });
       }
