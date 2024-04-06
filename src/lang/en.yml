@@ -140,6 +140,7 @@ SWADE:
   Protection: Protection
   Dmg: Damage
   DmgOver: Action Damage
+  ApOver: Action Armor Piercing
   Resist: Resist
   ResistRolls: Resistance Rolls
   MacroActor:

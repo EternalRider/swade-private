@@ -12,4 +12,5 @@ export default interface IRollOptions {
   isRerollable?: boolean;
   ignoreWounds?: boolean;
   item?: SwadeItem;
+  ap?: number;
 }
