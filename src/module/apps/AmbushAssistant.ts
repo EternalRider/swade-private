@@ -54,6 +54,7 @@ export class AmbushAssistant extends Application {
     for (const noTurn of this.#categories.noTurn) {
       await Promise.all([noTurn.setTurnLost(true), ...noTurn.followers.map((f) => f.setTurnLost(true))]);
     }
+    await this.#combat.startCombat();
     let initiative = 1000;
     for (const hold of this.#categories.hold) {
       await Promise.all([hold.toggleHold(),...hold.followers.map((f) => f.toggleHold())]);
@@ -65,7 +66,6 @@ export class AmbushAssistant extends Application {
       }
     }
     await this.close();
-    await this.#combat.startCombat();
   }
 
   protected override _onDrop(event: DragEvent): void {
