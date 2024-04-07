@@ -1,6 +1,6 @@
 <div class="token-initiative" style="border-right-color: {{combatantColor id}}; {{#if defeated}}opacity: 0.3;{{/if}}">
     {{#if roundHeld}}
-    <span class="initiative"><i class="fa-solid fa-hand-rock"></i></span>
+    <span class="initiative"><i class="fa-solid fa-hand-back-fist"></i></span>
     {{else if turnLost}}
     <span class="initiative"><i class="fa-solid fa-ban"></i></span>
     {{else if hasRolled}}
@@ -42,7 +42,7 @@
 
         {{#if active}}
         {{#unless (or (gt combat.round roundHeld) turnLost)}}
-        <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold"><i class="fa-solid fa-hand-rock"></i></a>
+        <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold"><i class="fa-solid fa-hand-back-fist"></i></a>
         {{/unless}}
         {{/if}}
 
