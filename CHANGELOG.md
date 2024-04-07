@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.3.11
+
+### Fixed
+
+- Ambushing combatants should now receive cards again at the beginning of the surprise round. (#1101) **by @kristianserrano**
+
 ## 3.3.10
 
 ### Added
