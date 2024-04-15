@@ -174,34 +174,6 @@ function displayEmbedded(array: any[] = []) {
  * Combatant related Helpers
  *****************************/
 
-function roundHeld(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return c.roundHeld;
-}
-
-function isOnHold(combatantId: string) {
-  return !!roundHeld(combatantId);
-}
-
-function isNotOnHold(combatantId: string) {
-  return !isOnHold(combatantId);
-}
-
-function turnLost(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return c.turnLost;
-}
-
-function isGroupLeader(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return c.isGroupLeader;
-}
-
-function isInGroup(combatantId: string) {
-  const c = game.combat?.combatants.get(combatantId)!;
-  return c.groupId!;
-}
-
 function combatantColor(id: string): string | undefined {
   const fallback = 'transparent';
   const c = game.combat?.combatants.get(id) as SwadeCombatant;
@@ -299,12 +271,6 @@ export function registerCustomHelpers() {
     canBeEquipped,
     displayEmbedded,
     capitalize,
-    roundHeld,
-    isOnHold,
-    isNotOnHold,
-    turnLost,
-    isGroupLeader,
-    isInGroup,
     combatantColor,
     eachInMap,
     equipStatus,

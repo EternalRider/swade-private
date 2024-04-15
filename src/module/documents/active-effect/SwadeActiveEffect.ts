@@ -459,7 +459,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   protected override async _preUpdate(
     changed: ActiveEffectDataConstructorData,
     options: DocumentModificationOptions,
-    user: User,
+    user: BaseUser,
   ) {
     super._preUpdate(changed, options, user);
     //return early if the parent isn't an actor or we're not actually affecting items
@@ -470,27 +470,18 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
-    user: User,
+    user: BaseUser,
   ) {
     super._preDelete(options, user);
     const parent = this.parent;
     //remove the effects from the item
-    if (this.affectsItems && parent instanceof CONFIG.Actor.documentClass) {
+    if (this.affectsItems && parent instanceof SwadeActor) {
       this._removeEffectsFromItems(parent);
     }
     // Get the active Combat if there is one.
-    const activeCombat = game.combats?.active;
-    if (activeCombat) {
-      // Get the AE's Actor.
-      const actor = this.actor as SwadeActor;
-      // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken
-        ? (activeCombat?.getCombatantByToken(
-            actor.token?.id as string,
-          ) as SwadeCombatant)
-        : (activeCombat?.getCombatantByActor(
-            actor.id as string,
-          ) as SwadeCombatant);
+    const combat = game.combats?.active;
+    const combatant = this?.actor?.getCombatant(combat);
+    if (combat && combatant) {
       // If status is Holding, turn off Hold for Combatant.
       if (this.statusId === 'holding') {
         await combatant?.unsetFlag('swade', 'roundHeld');
@@ -515,29 +506,6 @@ export default class SwadeActiveEffect extends ActiveEffect {
       this.updateSource({ name: this.parent.name });
     }
 
-    // Get the active Combat if there is one.
-    const activeCombat = game.combats?.active;
-    if (activeCombat) {
-      // Get the AE's Actor.
-      const actor = this.actor as SwadeActor;
-      // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken
-        ? (activeCombat?.getCombatantByToken(
-            actor.token?.id as string,
-          ) as SwadeCombatant)
-        : (activeCombat?.getCombatantByActor(
-            actor.id as string,
-          ) as SwadeCombatant);
-      // If status is Holding, turn on Hold for Combatant.
-      if (this.statusId === 'holding') {
-        await combatant?.setRoundHeld(activeCombat.current.round as number);
-      }
-      // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
-      if (!data.duration?.combat) {
-        this.updateSource({ 'duration.combat': activeCombat.id });
-      }
-    }
-
     //localize names, just to be sure
     this.updateSource({ name: game.i18n.localize(this.name) });
 
@@ -547,22 +515,25 @@ export default class SwadeActiveEffect extends ActiveEffect {
     //set the world time at creation
     this.updateSource({ duration: { startTime: game.time.worldTime } });
 
-    if (this.getFlag('swade', 'loseTurnOnHold')) {
-      // Get the AE's Actor.
-      const actor = this.actor as SwadeActor;
-      // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken
-        ? (activeCombat?.getCombatantByToken(
-            actor.token?.id as string,
-          ) as SwadeCombatant)
-        : (activeCombat?.getCombatantByActor(
-            actor.id as string,
-          ) as SwadeCombatant);
-      if (combatant?.getFlag('swade', 'roundHeld')) {
-        await Promise.all([
-          combatant?.setFlag('swade', 'turnLost', true),
-          combatant?.toggleHold(),
-        ]);
+    // Get the active Combat if there is one.
+    const combat = game.combats?.active;
+    const combatant = this.actor?.getCombatant(combat);
+    if (combat && combatant) {
+      // If status is Holding, turn on Hold for Combatant.
+      if (this.statusId === 'holding') {
+        await combatant.setRoundHeld(combat.current.round as number);
+      }
+      // If there's no duration value and there's a combat, at least set the combat ID which then sets a startRound and startTurn, too.
+      if (!data.duration?.combat) {
+        this.updateSource({ 'duration.combat': combat.id });
+      }
+      if (this.getFlag('swade', 'loseTurnOnHold')) {
+        if (combatant.roundHeld) {
+          await Promise.allSettled([
+            combatant.setFlag('swade', 'turnLost', true),
+            combatant.toggleHold(),
+          ]);
+        }
       }
     }
 

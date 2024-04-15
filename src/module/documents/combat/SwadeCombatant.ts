@@ -267,8 +267,7 @@ export default class SwadeCombatant extends Combatant {
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
-      initiative:
-        currentCombatant?.cardValue + currentCombatant?.suitValue / 10 - 0.0001,
+      initiative: currentCombatant?.initiative - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,

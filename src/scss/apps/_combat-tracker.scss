@@ -20,5 +20,9 @@
         font-size: 1.2em;
       }
     }
+    ol.subdirectory {
+      border-left: none;
+      flex-basis: 100%;
+    }
   }
 }
