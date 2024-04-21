@@ -22,7 +22,7 @@ system:
       value: 8
       combinator: and
     - type: skill
-      Label: Battle
+      label: Battle
       selector: battle
       value: 6
       combinator: and
