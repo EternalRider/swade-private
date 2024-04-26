@@ -22,6 +22,40 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.4.0
+
+### Added
+
+- Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+
+## 3.3.11
+
+### Fixed
+
+- Ambushing combatants should now receive cards again at the beginning of the surprise round. (#1101) **by @kristianserrano**
+
+## 3.3.10
+
+### Added
+
+- Added the `SwadeActor.getCombatant` function that returns the actor's combatant for a given combat encounter. (#1089) **by @florad92**
+
+### Fixed
+
+- Rerolls from chat cards now respect the roll mode dropdown above the chat input. (#1092) **by @florad92**
+- Creating and deleting an Active Effect on an unowned item during a combat encounter no longer causes the operation to fail. (#1089) **by @florad92**
+- The CompendiumTOC should now properly scale tokens again. (#1088) **by @florad92**
+
+## 3.3.9
+
+### Changed
+
+- Updated translations.
+
+### Fixed
+
+- Fixed a bug that would cause the main window to scroll up if the user was zoomed in during a dice roll. (#1086) **by @jpmeehan5**
+
 ## 3.3.8
 
 ### Fixed

@@ -15,7 +15,7 @@ SWADE:
   GroupRoll: Grupo
   Ok: Ok
   Cancel: Cancelar
-  ConvictionEnd: oscila na sua convicção
+  ConvictionEnd: '{name} oscila em sua convicção'
   NoBennies: Você não tem Benes suficientes!
   GM: Mestre
   Redraw: Re-Sacar
@@ -31,7 +31,7 @@ SWADE:
   OldCard: Carta Anterior
   ActionCard: Carta de Ação
   ConvictionActive: Convicção Ativa
-  ConvictionActivate: Apela à sua convicção!
+  ConvictionActivate: '{name} apela à sua convicção!'
   ConvictionExtend: Você quer estender sua convicção?
   Vehicles: Veículos
   AddStats: Carac. Adicionais
@@ -208,7 +208,7 @@ SWADE:
   ActiveEffects:
     Add: Adc Efeito Ativo
     Source: Origem
-    ResetDuration: Resetar Duração
+    ResetDuration: Redefinir Duração
     AddGuided: Abrir Assistente
     AddUnguided: Adc Efeito Vazio
   Keybindings:
@@ -217,6 +217,7 @@ SWADE:
       UserConfigLabel: Mão de Cartas favorita
       Hint: Você pode definir sua mão favorita na configuração de usuário
       NoCardsWarning: Você não tem uma Mão de Cartas favorita!
+      HandNone: Nenhuma
     Bennies:
       Name: Gastar/Receber um Bene
       Hint: >-
@@ -612,7 +613,7 @@ SWADE:
   BenniesSpendGM: Gastar um Bene de MJ
   SettingConfDesc: Ajuste o sistema para se adequar ao cenário que está jogando.
   MaxMods: Máximo de Modificações
-  ButtonReset: Resetar
+  ButtonReset: Redefinir
   ButtonSubmit: Enviar
   CommunityCharSheet: Ficha de Personagem da Comunidade
   CommunityNPCSheet: Ficha de NPC da Comunidade
@@ -797,7 +798,7 @@ SWADE:
   Init: Iniciativa
   DrawInit: Sacar Iniciativa
   ActionDeckReset: Resetar a Tabela de Cartas de Ação
-  ActionDeckResetNotification: Cartas de Ação resetadas
+  ActionDeckResetNotification: Cartas de Ação embaralhadas
   Topspeed: Velocidade Máxima
   OutOfControl: Fora de Controle
   Wrecked: Avariado
@@ -884,6 +885,8 @@ SWADE:
     Type: Tipo
     HasMaxValue: Tem Valor Máximo
     Current: '{stat} Atual'
+    KeyErr: A chave de Atributo adicional {invalid} é inválida e foi alterada para
+      {key}
   IgnFatigue: Ignorar Fadiga
   BaseDamage: Dano Base
   Targets: 'Alvos:'
@@ -1132,6 +1135,7 @@ SWADE:
     Title: Assistente de Emboscada
     Hint: Arraste e solte os combatentes para preparar a rodada surpresa
     Unassigned: Não atribuído
+    OnHold: Em espera
   Combat:
     StartSurpriseRound: Iniciar rodada surpresa
     AdvanceRoundTitle: Avançar para a próxima rodada?
@@ -1170,6 +1174,40 @@ SWADE:
     Title: Assistente de Compra de Cartas de Jogador do SWADE
   NoDescription: Nenhuma descrição disponível
   BenniesCount: '{count} Benes'
+  Cards:
+    Jokers: Curingas
+    Two: Dois
+    Spades: Espadas
+    Hearts: Copas
+    Diamonds: Ouros
+    Clubs: Paus
+    Nine: Nove
+    Ten: Dez
+    Jack: Valete
+    Queen: Rainha
+    King: Rei
+    Three: Três
+    Four: Quatro
+    Five: Cinco
+    Six: Seis
+    Seven: Sete
+    Eight: Oito
+    Ace: Ás
+    RedJoker: Curinga Vermelho / Curinga de Espadas
+    BlackJoker: Coringa Preto / Coringa de Copas
+    BlueJoker: Curinga Azul / Coringa de Ouros
+    GreenJoker: Curinga Verde / Curinga de Paus
+  Draw: Sacar
+  Reset: Redefinir
+  ConvictionExtendPrompt: Você quer gastar um Bene para estender sua convicção?
+  CharacterSummaryTypeErr: Não é possível usar o resumidor de personagem para o ator
+    do tipo {type}
+  ChaseReset: O deck "{deck}" foi redefinido.
+  ChaseLayout: Layout
+  ChaseRows: Linhas
+  ChaseColumns: Colunas
+  ChaseNoDeck: Forneça um deck!
+  DialogConfirmPrompt: Tem certeza?
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura

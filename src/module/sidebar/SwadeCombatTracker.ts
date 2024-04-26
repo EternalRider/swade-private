@@ -52,9 +52,11 @@ export default class SwadeCombatTracker extends CombatTracker {
           cardString: combatant?.cardString,
           initiative: combatant?.initiative,
           roundHeld: combatant?.roundHeld,
+          isOnHold: !!combatant?.roundHeld,
           turnLost: combatant?.turnLost,
           isGroupLeader: combatant?.isGroupLeader,
           groupId: combatant?.groupId,
+          hasRolled: !!combatant?.initiative && !!combatant?.cardString,
           canDrawInit: this._canDrawInitiative(combatant as SwadeCombatant),
           canRedraw: this._canRedrawInitiative(combatant as SwadeCombatant),
         },
@@ -63,6 +65,19 @@ export default class SwadeCombatTracker extends CombatTracker {
     }
     data.cardsIcon = CONFIG.Cards.sidebarIcon;
     return data;
+  }
+
+  /** scrollToTurn override because core Foundry targets .active which is applied on .combat-control elements as well */
+  override scrollToTurn() {
+    const combat = this.viewed;
+    if (!combat || combat.turn === null) return;
+    const active = this.element.find('.combatant.active')[0];
+    const container = active.parentElement;
+    if (!active || !container) return;
+    const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
+    container.scrollTop =
+      combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
+    super.scrollToTurn();
   }
 
   /** Reset the Action Deck */
@@ -606,6 +621,8 @@ export default class SwadeCombatTracker extends CombatTracker {
     ) as SwadeCombatant | null;
     // If the current Combatant is the holding combatant, just remove Hold status.
     await combatant?.unsetGroupId();
+    // Set the initiative to null so that they can draw init (hasRolled becomes false).
+    await combatant?.update({ initiative: null });
   }
 
   async #onRedrawCard(ev: PointerEvent) {

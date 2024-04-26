@@ -22,6 +22,7 @@ declare global {
       };
       core?: {
         canPopout?: boolean;
+        RollTable?: string;
       };
     };
   }
@@ -30,8 +31,7 @@ declare global {
 export default class SwadeChatMessage extends ChatMessage {
   /** Returns the most significant roll for this chat message */
   get significantRoll(): SwadeRoll | undefined {
-    if (this.rolls.length === 0) return;
-    return this.rolls[this.rolls.length - 1];
+    return this.rolls[this.rolls.length - 1] as SwadeRoll | undefined;
   }
 
   get speakerActor() {
@@ -50,7 +50,7 @@ export default class SwadeChatMessage extends ChatMessage {
       rollIsCritFail &&
       this.rolls
         .filter((r: SwadeRoll) => r.isCritFailConfirmationRoll)
-        .every((r) => r.total === 1)
+        .every((r: SwadeRoll) => r.total === 1)
     );
   }
 
@@ -58,6 +58,16 @@ export default class SwadeChatMessage extends ChatMessage {
   get isCardDraw(): boolean {
     return (
       !!this.getFlag('swade', 'pickedCard') && !!this.getFlag('swade', 'cards')
+    );
+  }
+
+  get isRollTableResult(): boolean {
+    return !!this.getFlag('core', 'RollTable');
+  }
+
+  get isSwadeRoll(): boolean {
+    return (
+      super.isRoll && this['rolls'].every((r: Roll) => r instanceof SwadeRoll)
     );
   }
 
@@ -79,7 +89,7 @@ export default class SwadeChatMessage extends ChatMessage {
     messageData: ChatMessage.MessageData,
   ) {
     //use the core render unless all rolls are swade rolls
-    if (this['rolls'].every((r: Roll) => r instanceof SwadeRoll)) {
+    if (this.isSwadeRoll && !this.isRollTableResult) {
       return this.#renderSwadeRollContent(messageData);
     }
     return super._renderRollContent(messageData);
@@ -190,7 +200,7 @@ export default class SwadeChatMessage extends ChatMessage {
     const pool = roll.terms[0] as PoolTerm;
     const hasMultipleTraitDice = pool.dice.length > 1;
     const hasConfirmedCritfail = this['rolls'].find(
-      (r) => r.isCritFailConfirmationRoll && r.total === 1,
+      (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1,
     );
     if (hasMultipleTraitDice) {
       return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;

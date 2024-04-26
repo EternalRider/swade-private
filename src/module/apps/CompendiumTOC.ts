@@ -242,6 +242,8 @@ export class CompendiumTOC extends Compendium<
         'system.wildcard',
         'prototypeToken.randomImg',
         'prototypeToken.texture.src',
+        'prototypeToken.texture.scaleX',
+        'prototypeToken.texture.scaleY',
       ],
     })) as Collection<ActorIndexEntry>;
     const actors = documents.filter(
