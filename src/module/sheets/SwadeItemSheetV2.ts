@@ -98,6 +98,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       new ImagePopout(this.item.img, {
         title: this.item.name!,
         shareable: this.item?.isOwner ?? game.user?.isGM,
+        uuid: this.item.uuid
       }).render(true);
     });
 
