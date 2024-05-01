@@ -210,12 +210,12 @@ export default class CharacterSheet extends ActorSheet {
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
-        <label>${game.i18n.localize('SWADE.Ed')} ${label}</label>
+        <label>${game.i18n.format('SWADE.EdF', {item: label})}</label>
         <input name="modifier" value="${armorvalue}" type="number"/>
       </div></form>`;
 
       new Dialog({
-        title: `${game.i18n.localize('SWADE.Ed')} ${this.actor.name} ${label}`,
+        title: `${game.i18n.format('SWADE.EdF', {item: this.actor.name + " " + label})}`,
         content: template,
         buttons: {
           ok: {
@@ -243,12 +243,12 @@ export default class CharacterSheet extends ActorSheet {
       const label = game.i18n.localize('SWADE.ShieldBonus');
       const template = `
       <form><div class="form-group">
-        <label>${game.i18n.localize('SWADE.Ed')} ${label}</label>
+        <label>${game.i18n.format('SWADE.EdF', {item: label})}</label>
         <input name="modifier" value="${parryMod}" type="number"/>
       </div></form>`;
 
       new Dialog({
-        title: `${game.i18n.localize('SWADE.Ed')} ${this.actor.name} ${label}`,
+        title: `${game.i18n.format('SWADE.EdF', {item: this.actor.name + " " + label})}`,
         content: template,
         buttons: {
           ok: {
