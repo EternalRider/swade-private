@@ -4,8 +4,9 @@
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
   "version": "4.0-dev",
   "compatibility": {
-    "minimum": 11,
-    "verified": 11
+    "minimum": 12,
+    "verified": 12,
+    "max": 12
   },
   "authors": [
     {
@@ -62,7 +63,8 @@
     {
       "name": "Savage Worlds System",
       "sorting": "a",
-      "packs": ["skills", "edges", "hindrances", "powers", "system-docs"]
+      "packs": ["skills", "edges", "hindrances", "powers", "system-docs"],
+      "color": "#483D8B"
     }
   ],
   "languages": [
