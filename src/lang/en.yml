@@ -1433,6 +1433,8 @@ SWADE:
     Hint: Drag & Drop Combatants to set up the surprise round
     Unassigned: Unassigned
   Combat:
+    DealAll: Deal All
+    DealNPC: Deal NPCs
     StartSurpriseRound: Start Surprise Round
     AdvanceRoundTitle: Advance to next round?
     AdvanceRoundContent: Do you want to advance to the next round?
