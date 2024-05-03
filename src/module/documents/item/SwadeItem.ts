@@ -216,7 +216,8 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let ap: number =
+      options.ap ?? foundry.utils.getProperty(this, 'system.ap') ?? 0;
     const isHeavyWeapon: boolean =
       foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
       options.isHeavyWeapon;

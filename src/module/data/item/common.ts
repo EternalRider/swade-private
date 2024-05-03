@@ -72,6 +72,11 @@ export const actions = () => ({
           initial: undefined,
           required: false,
         }),
+        ap: new fields.NumberField({
+          initial: undefined,
+          required: false,
+          nullable: true,
+        }),
         uuid: new fields.StringField({ initial: undefined, required: false }),
         macroActor: new fields.StringField({
           initial: constants.MACRO_ACTOR.DEFAULT,
@@ -133,7 +138,10 @@ export const choiceSets = () => ({
       choices: new fields.ArrayField(
         new fields.SchemaField({
           name: new fields.StringField({ initial: '', required: true }),
-          addToName: new fields.BooleanField({ initial: true, nullable: false}),
+          addToName: new fields.BooleanField({
+            initial: true,
+            nullable: false,
+          }),
           mutation: new fields.ObjectField({ required: false }),
         }),
       ),
