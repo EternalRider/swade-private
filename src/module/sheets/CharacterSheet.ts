@@ -336,6 +336,7 @@ export default class CharacterSheet extends ActorSheet {
         new ImagePopout(this.actor.img, {
           title: this.actor.name!,
           shareable: this.actor.isOwner ?? game.user?.isGM,
+          uuid: this.actor.uuid
         }).render(true);
       });
 
