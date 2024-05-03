@@ -127,6 +127,7 @@
     }
   },
   "socket": true,
+  "background": "systems/swade/assets/ui/sign_in_background.webp",
   "gridDistance": 1,
   "gridUnits": "in",
   "manifest": "https://gitlab.com/api/v4/projects/16269883/packages/generic/swade/latest/system.json",
