@@ -13,6 +13,7 @@ system:
       value: 1
       combinator: and
     - type: skill
+      label: Shooting
       selector: shooting
       value: 6
       combinator: and

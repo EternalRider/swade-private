@@ -172,6 +172,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       new ImagePopout(this.actor.img, {
         title: this.actor.name!,
         shareable: this.actor.isOwner ?? game.user?.isGM ?? false,
+        uuid: this.actor.uuid
       }).render(true);
     });
   }

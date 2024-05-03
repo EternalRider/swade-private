@@ -289,6 +289,7 @@ export default class ItemChatCardHelper {
         isHeavyWeapon: action.isHeavyWeapon,
         flavour: action.name,
         additionalMods: mods,
+        ap: action.ap,
       });
     } else if (action.type === constants.ACTION_TYPE.MACRO) {
       if (!action.uuid) return null;

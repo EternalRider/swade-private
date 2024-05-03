@@ -216,7 +216,8 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let ap: number =
+      options.ap ?? foundry.utils.getProperty(this, 'system.ap') ?? 0;
     const isHeavyWeapon: boolean =
       foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
       options.isHeavyWeapon;
@@ -623,12 +624,16 @@ export default class SwadeItem extends Item {
       this.grantsItems.map((g) => fromUuid(g.uuid)),
     )) as SwadeItem[];
 
-    const grants = grantedItems.filter(Boolean).map((item) => {
-      return {
-        item: item,
+    const grants: ItemGrantChainLink[] = [];
+    for (const item of grantedItems) {
+      const choiceUpdate = await item.handleChoices(item.toObject());
+      grants.push({
+        item: new SwadeItem(
+          foundry.utils.mergeObject(item.toObject(), choiceUpdate),
+        ),
         grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
-      };
-    });
+      });
+    }
 
     const children = await Promise.all(
       grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
@@ -746,6 +751,14 @@ export default class SwadeItem extends Item {
       }
     }
 
+    const choiceUpdate = await this.handleChoices(data);
+    if (Object.keys(choiceUpdate).length > 0) {
+      this.updateSource(choiceUpdate);
+    }
+  }
+
+  async handleChoices(data: ItemDataConstructorData) {
+    const choiceUpdate = {};
     if (data.system?.choiceSets?.length > 0) {
       for (const choiceSet of data.system.choiceSets) {
         if (choiceSet.choice !== null) continue;
@@ -762,10 +775,13 @@ export default class SwadeItem extends Item {
         if (mutationOption.addToName) {
           update.name = data.name + ` (${mutationOption.name})`;
         }
-        this.updateSource(update);
+        foundry.utils.mergeObject(choiceUpdate, update);
       }
-      this.updateSource({ 'system.choiceSets': data.system.choiceSets });
+      foundry.utils.mergeObject(choiceUpdate, {
+        'system.choiceSets': data.system.choiceSets,
+      });
     }
+    return choiceUpdate;
   }
 
   protected override async _preDelete(

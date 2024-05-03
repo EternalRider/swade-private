@@ -28,7 +28,7 @@ system:
       value: ''
       combinator: or
     - type: hindrance
-      label b: Ugly
+      label: Ugly
       selector: ugly
       value: ''
       combinator: or

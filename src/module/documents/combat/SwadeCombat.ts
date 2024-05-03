@@ -538,9 +538,9 @@ export default class SwadeCombat extends Combat {
     //remove the holding status from any combatants that have it
     await Promise.allSettled(
       this.combatants
-        .filter((c) => c.actor.statuses.has('holding'))
+        .filter((c) => c.actor?.statuses.has('holding'))
         .flatMap((c) =>
-          c.actor.effects.filter((e) => e.statuses.has('holding')),
+          c.actor?.effects.filter((e) => e.statuses.has('holding')),
         )
         .map((e) => e.delete()),
     );
