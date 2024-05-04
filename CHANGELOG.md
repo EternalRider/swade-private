@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- The chat message sent when using a charge on a consumable item now respects the roll mode and can be localized. (#1105) **by @florad92**
 - The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
 
 ## 3.3.11

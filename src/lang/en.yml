@@ -830,6 +830,7 @@ SWADE:
     Use: Use
     Consumables: Consumables
     NotEnoughCharges: Not enough charges!
+    ChargesUsed: <p>{charges} charge(s) used on <em>{name}</em></p>
   EmptyAncestralAbilitiesHint: >-
     <strong>Warning:</strong> This feature is being deprecated in favor of Item
     grants. If you are creating a new {ancestry} or {archetype}, drag & drop
