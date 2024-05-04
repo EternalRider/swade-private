@@ -19,6 +19,9 @@ declare global {
 }
 
 export default class SwadeCombat extends Combat {
+  /** an internal helper flag that's being checked to see if we're currently asking to advance the round */
+  #roundAdvanceDialog: boolean = false;
+
   /** Compares two combatants by name. */
   static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
@@ -173,7 +176,9 @@ export default class SwadeCombat extends Combat {
         cardString: pickedCard.description,
       };
 
-      const initiative = (pickedCard.value as number) + ((pickedCard?.system['suit'] as number) / 10);
+      const initiative =
+        (pickedCard.value as number) +
+        (pickedCard?.system['suit'] as number) / 10;
 
       const update = {
         _id: id,
@@ -189,8 +194,8 @@ export default class SwadeCombat extends Combat {
       for (const f of c.followers) {
         updates.push({
           _id: f.id,
-          initiative: fInitiative -= 0.001,
-          'flags.swade': newFlags
+          initiative: (fInitiative -= 0.001),
+          'flags.swade': newFlags,
         });
       }
 
@@ -333,7 +338,7 @@ export default class SwadeCombat extends Combat {
       for (const [i, t] of this.turns.entries()) {
         if (i <= turn) continue;
         // Skip defeated, lost turns
-        if (t.isDefeated || t.turnLost ) continue;
+        if (t.isDefeated || t.turnLost) continue;
         next = i;
         break;
       }
@@ -452,6 +457,9 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _nextRoundAsGM() {
+    if (this.#roundAdvanceDialog) return;
+    this.#roundAdvanceDialog = true; //set the flag
+    //run the dialog
     const advance = await Dialog.confirm({
       title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle'),
       content:
@@ -460,6 +468,7 @@ export default class SwadeCombat extends Combat {
       rejectClose: false,
       options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
     });
+    this.#roundAdvanceDialog = false; //unset the flag
     if (!advance) return;
     //reset the deck if a joker had been drawn
     if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
@@ -539,8 +548,8 @@ export default class SwadeCombat extends Combat {
     await Promise.allSettled(
       this.combatants
         .filter((c) => c.actor?.statuses.has('holding'))
-        .flatMap((c) =>
-          c.actor?.effects.filter((e) => e.statuses.has('holding')),
+        .flatMap(
+          (c) => c.actor?.effects.filter((e) => e.statuses.has('holding')),
         )
         .map((e) => e.delete()),
     );
