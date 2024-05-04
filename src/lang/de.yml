@@ -1104,6 +1104,9 @@ SWADE:
   ChaseReset: Deck "{deck}" zurückgesetzt.
   DialogConfirmPrompt: Sicher?
   ConvictionExtendPrompt: Benny ausgeben, um Entschlossenheit zu verlängern?
+  SettingConfigurator:
+    WorldCompendiums: Weltkompendien
+    WorldTables: Welttabellen
 TYPES:
   Actor:
     Character: Charakter
