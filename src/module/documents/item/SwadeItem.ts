@@ -22,7 +22,6 @@ import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
 import SwadeUser from '../SwadeUser';
 import SwadeActor from '../actor/SwadeActor';
-import SwadeChatMessage from '../chat/SwadeChatMessage';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -481,17 +480,13 @@ export default class SwadeItem extends Item {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
     }
 
-    // Toggle default roll mode
-    const rollMode = game.settings.get('core', 'rollMode');
-    if (['gmroll', 'blindroll'].includes(rollMode))
-      chatData.whisper = CONFIG.ChatMessage.documentClass
-        .getWhisperRecipients('GM')
-        .map((u) => u.id!);
-    if (rollMode === 'selfroll') chatData.whisper = [game.user!.id!];
-    if (rollMode === 'blindroll') chatData.blind = true;
+    const msgClass = getDocumentClass('ChatMessage');
+
+    // Apply the roll mode to the message
+    msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
 
     // Create the chat message
-    const chatCard = await CONFIG.ChatMessage.documentClass.create(chatData);
+    const chatCard = await msgClass.create(chatData);
     Hooks.call('swadeChatCard', this.actor, this, chatCard, game.user!.id);
     return chatCard;
   }
@@ -704,13 +699,17 @@ export default class SwadeItem extends Item {
     return this.powerPointObject;
   }
 
-  async #createChargeUsageMessage(
-    charges: number,
-  ): Promise<SwadeChatMessage | undefined> {
-    return CONFIG.ChatMessage.documentClass.create({
-      speaker: ChatMessage.getSpeaker(),
-      content: `<p>${charges} charge(s) used on <em>${this.name}</em></p>`,
-    });
+  async #createChargeUsageMessage(charges: number) {
+    const msgClass = getDocumentClass('ChatMessage');
+    const createData = {
+      speaker: msgClass.getSpeaker(),
+      content: game.i18n.format('SWADE.Consumable.ChargesUsed', {
+        charges,
+        name: this.name,
+      }),
+    };
+    msgClass.applyRollMode(createData, game.settings.get('core', 'rollMode'));
+    return msgClass.create(createData);
   }
 
   protected override async _preCreate(
