@@ -28,6 +28,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
 
+### Changed
+
+- The chat message sent when using a charge on a consumable item now respects the roll mode and can be localized. (#1105) **by @florad92**
+- The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
+
 ## 3.3.11
 
 ### Fixed
