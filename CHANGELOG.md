@@ -34,6 +34,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The chat message sent when using a charge on a consumable item now respects the roll mode and can be localized. (#1105) **by @florad92**
 - The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
 
+### Fixed
+
+- The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
+
 ## 3.3.11
 
 ### Fixed
