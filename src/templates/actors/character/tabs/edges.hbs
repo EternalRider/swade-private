@@ -46,7 +46,7 @@
         <summary class="feature-header">
           <button type="button" class="item-img item-show" style="background-image: url('{{img}}');" title="{{localize 'SWADE.ShowInChat'}}"></button>
           <a class="name item-name" title="{{localize "SWADE.ExpandDescription"}}" >
-            {{name}} {{#if system.major}}{{localize 'SWADE.Major' }}{{else}}{{localize 'SWADE.Minor'}}{{/if}}
+            {{name}} {{#if system.isMajor}}{{localize 'SWADE.Major' }}{{else}}{{localize 'SWADE.Minor'}}{{/if}}
           </a>
           <div class='item-controls'>
           {{#if isOwner}}
