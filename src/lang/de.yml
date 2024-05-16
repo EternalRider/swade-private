@@ -958,6 +958,8 @@ SWADE:
     RevertRoundContent: Zur letzten Runde zurückkehren?
     RedrawDialog:
       Content: Frei oder für Benny neue Karte ziehen?
+    DealAll: Alle austeilen
+    DealNPC: NSCs austeilen
   GlobalMod:
     Trait: Alle Eigenschaften
     Spirit: Willenskraft und Wil.-Fertigkeiten
@@ -1107,6 +1109,7 @@ SWADE:
   SettingConfigurator:
     WorldCompendiums: Weltkompendien
     WorldTables: Welttabellen
+  ApOver: Aktion Panzerbrechend
 TYPES:
   Actor:
     Character: Charakter
