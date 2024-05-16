@@ -10,7 +10,7 @@
       "name": "10 of Clubs",
       "description": "10♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -39,7 +39,7 @@
       "name": "10 of Diamonds",
       "description": "10♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -68,7 +68,7 @@
       "name": "10 of Hearts",
       "description": "10♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -97,7 +97,7 @@
       "name": "10 of Spades",
       "description": "10♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -126,7 +126,7 @@
       "name": "2 of Clubs",
       "description": "2♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -155,7 +155,7 @@
       "name": "2 of Diamonds",
       "description": "2♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -184,7 +184,7 @@
       "name": "2 of Hearts",
       "description": "2♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -213,7 +213,7 @@
       "name": "2 of Spades",
       "description": "2♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -242,7 +242,7 @@
       "name": "3 of Clubs",
       "description": "3♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -271,7 +271,7 @@
       "name": "3 of Diamonds",
       "description": "3♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -300,7 +300,7 @@
       "name": "3 of Hearts",
       "description": "3♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -329,7 +329,7 @@
       "name": "3 of Spades",
       "description": "3♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -358,7 +358,7 @@
       "name": "4 of Clubs",
       "description": "4♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -387,7 +387,7 @@
       "name": "4 of Diamonds",
       "description": "4♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -416,7 +416,7 @@
       "name": "4 of Hearts",
       "description": "4♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -445,7 +445,7 @@
       "name": "4 of Spades",
       "description": "4♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -474,7 +474,7 @@
       "name": "5 of Clubs",
       "description": "5♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -503,7 +503,7 @@
       "name": "5 of Diamonds",
       "description": "5♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -532,7 +532,7 @@
       "name": "5 of Hearts",
       "description": "5♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -561,7 +561,7 @@
       "name": "5 of Spades",
       "description": "5♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -590,7 +590,7 @@
       "name": "6 of Clubs",
       "description": "6♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -619,7 +619,7 @@
       "name": "6 of Diamonds",
       "description": "6♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -648,7 +648,7 @@
       "name": "6 of Hearts",
       "description": "6♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -677,7 +677,7 @@
       "name": "6 of Spades",
       "description": "6♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -706,7 +706,7 @@
       "name": "7 of Clubs",
       "description": "7♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -735,7 +735,7 @@
       "name": "7 of Diamonds",
       "description": "7♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -764,7 +764,7 @@
       "name": "7 of Hearts",
       "description": "7♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -793,7 +793,7 @@
       "name": "7 of Spades",
       "description": "7♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -822,7 +822,7 @@
       "name": "8 of Clubs",
       "description": "8♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -851,7 +851,7 @@
       "name": "8 of Diamonds",
       "description": "8♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -880,7 +880,7 @@
       "name": "8 of Hearts",
       "description": "8♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -909,7 +909,7 @@
       "name": "8 of Spades",
       "description": "8♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -938,7 +938,7 @@
       "name": "9 of Clubs",
       "description": "9♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -967,7 +967,7 @@
       "name": "9 of Diamonds",
       "description": "9♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -996,7 +996,7 @@
       "name": "9 of Hearts",
       "description": "9♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -1025,7 +1025,7 @@
       "name": "9 of Spades",
       "description": "9♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -1054,7 +1054,7 @@
       "name": "Ace of Clubs",
       "description": "A♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -1083,7 +1083,7 @@
       "name": "Ace of Diamonds",
       "description": "A♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -1112,7 +1112,7 @@
       "name": "Ace of Hearts",
       "description": "A♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -1141,7 +1141,7 @@
       "name": "Ace of Spades",
       "description": "A♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -1170,7 +1170,7 @@
       "name": "Black Joker",
       "description": "Blk J",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 99,
         "isJoker": true
       },
@@ -1202,7 +1202,7 @@
       "name": "Jack of Clubs",
       "description": "J♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -1231,7 +1231,7 @@
       "name": "Jack of Diamonds",
       "description": "J♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -1260,7 +1260,7 @@
       "name": "Jack of Hearts",
       "description": "J♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -1289,7 +1289,7 @@
       "name": "Jack of Spades",
       "description": "J♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -1318,7 +1318,7 @@
       "name": "King of Clubs",
       "description": "K♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -1347,7 +1347,7 @@
       "name": "King of Diamonds",
       "description": "K♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -1376,7 +1376,7 @@
       "name": "King of Hearts",
       "description": "K♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -1405,7 +1405,7 @@
       "name": "King of Spades",
       "description": "K♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -1434,7 +1434,7 @@
       "name": "Queen of Clubs",
       "description": "Q♣",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 1,
         "isJoker": false
       },
@@ -1463,7 +1463,7 @@
       "name": "Queen of Diamonds",
       "description": "Q♦",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 2,
         "isJoker": false
       },
@@ -1492,7 +1492,7 @@
       "name": "Queen of Hearts",
       "description": "Q♥",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 3,
         "isJoker": false
       },
@@ -1521,7 +1521,7 @@
       "name": "Queen of Spades",
       "description": "Q♠",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 4,
         "isJoker": false
       },
@@ -1550,7 +1550,7 @@
       "name": "Red Joker",
       "description": "Red J",
       "type": "poker",
-      "data": {
+      "system": {
         "suit": 99,
         "isJoker": true
       },

@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+- Added new default action deck provided by PEG. This deck is available as a preset in the Cards creation dialog. (#1115) **by @jpmeehan5**
 
 ### Changed
 

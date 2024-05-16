@@ -12,6 +12,7 @@ SWADE:
   ModHint: Make sure your modifier includes a + or -
   ActionDeckPresetLight: Action Deck (Light)
   ActionDeckPresetDark: Action Deck (Dark)
+  ActionDeckPresetPEG: Action Deck (PEG)
   Name: Name
   Tough: Toughness
   Ancestry: Ancestry
