@@ -52,6 +52,7 @@ declare global {
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
+      jokerBonus?: string | number;
     };
   }
 }
@@ -115,7 +116,7 @@ export default class SwadeActor extends Actor {
 
   /** @returns true when the actor is currently in combat and has drawn a joker */
   get hasJoker(): boolean {
-    const combatant = game.combats?.active?.getCombatantByActor(this.id!);
+    const combatant = this.getCombatant(game.combats?.active);
     return (combatant?.hasJoker as boolean) ?? false;
   }
 
@@ -979,7 +980,7 @@ export default class SwadeActor extends Actor {
     if (this.hasJoker) {
       mods.push({
         label: game.i18n.localize('SWADE.Joker'),
-        value: 2,
+        value: (this.getFlag('swade', 'jokerBonus') as string | number) ?? 2,
       });
     }
 
@@ -1221,7 +1222,9 @@ export default class SwadeActor extends Actor {
     }
 
     //add equipped weapons
-    const ambidextrous = this.getFlag('swade', 'ambidextrous');
+    const ambidextrous = this.getFlag('swade', 'ambidextrous') as
+      | undefined
+      | boolean;
     for (const weapon of this.itemTypes.weapon) {
       if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;

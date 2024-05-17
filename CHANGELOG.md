@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
 - Added new default action deck provided by PEG. This deck is available as a preset in the Cards creation dialog. (#1115) **by @jpmeehan5**
 
 ### Changed
@@ -36,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- Resolved a bug involving Joker detection for unlinked tokens. **by @jpmeehan5**
 - The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
 
 ## 3.3.11
