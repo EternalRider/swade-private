@@ -1067,7 +1067,7 @@ export default class SwadeActor extends Actor {
       });
     }
 
-    return [TraitRoll.fromTerms([basePool]), rollMods];
+    return [TraitRoll.fromTerms<TraitRoll>([basePool]), rollMods];
   }
 
   /**
@@ -1340,47 +1340,40 @@ export default class SwadeActor extends Actor {
     const armorSources = {};
     if (this.system instanceof VehicleData) return armorSources;
 
-    //get armor items and retrieve their data
-    const armorList = this.itemTypes.armor.map((i) => {
-      const s = i.system as ArmorData;
-      return {
-        name: i.name,
-        armor: s.armor as number,
-        equipStatus: s.equipStatus as number,
-        locations: s.locations,
-        isNaturalArmor: s.isNaturalArmor as boolean,
-      };
-    });
-
-    const nonNaturalArmors = armorList
+    const [regularArmor, naturalArmor] = this.itemTypes.armor
       .filter((i) => {
-        const isEquipped = i.equipStatus > constants.EQUIP_STATE.CARRIED;
-        const isLocation = i.locations[location];
-        const isNaturalArmor = i.isNaturalArmor;
-        return isEquipped && !isNaturalArmor && isLocation;
+        //filter away armor that doesn't match the location and isn't equipped
+        const system = i.system as ArmorData;
+        const isEquipped = system.equipStatus! > constants.EQUIP_STATE.CARRIED;
+        return isEquipped && system.locations[location];
       })
-      .sort((a, b) => {
-        const aValue = a.armor;
-        const bValue = b.armor;
-        return bValue - aValue;
-      });
+      .map((i) => {
+        // map the data into a usable format
+        const system = i.system as ArmorData;
+        return {
+          name: i.name,
+          armor: system.armor as number,
+          isNaturalArmor: system.isNaturalArmor as boolean,
+        } satisfies ArmorCalcContext;
+      })
+      .sort((a, b) => b.armor - a.armor) // sort the items by armor value, descending
+      .partition((i) => i.isNaturalArmor); //split them into natural and regular armor
 
-    if (nonNaturalArmors.length) {
-      const baseArmor = nonNaturalArmors[0];
+    const isCoreStacking =
+      game.settings.get('swade', 'armorStacking') ===
+      constants.ARMOR_STACKING.CORE;
+
+    const [baseArmor, extraArmor] = regularArmor;
+    if (baseArmor) {
       armorSources[baseArmor.name] = baseArmor.armor;
-      if (nonNaturalArmors.length > 1) {
-        const extraArmor = nonNaturalArmors[1];
+      if (extraArmor && isCoreStacking) {
         armorSources[extraArmor.name] = Math.floor(extraArmor.armor / 2);
       }
     }
 
-    return armorList.reduce((acc, i) => {
-      const isEquipped = i.equipStatus !== constants.EQUIP_STATE.STORED;
-      const isLocation = i.locations[location];
-      const isNaturalArmor = i.isNaturalArmor;
-      if (isNaturalArmor && isEquipped && isLocation) {
-        acc[i.name] = i.armor;
-      }
+    //add the natural armor to the object
+    return naturalArmor.reduce((acc, cur) => {
+      acc[cur.name] = cur.armor;
       return acc;
     }, armorSources);
   }
@@ -1582,3 +1575,9 @@ export default class SwadeActor extends Actor {
 }
 
 type ArmorLocation = ValueOf<typeof constants.ARMOR_LOCATIONS>;
+
+interface ArmorCalcContext {
+  name: string;
+  armor: number;
+  isNaturalArmor: boolean;
+}

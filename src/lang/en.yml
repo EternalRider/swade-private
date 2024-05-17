@@ -764,6 +764,12 @@ SWADE:
       Hint: >-
         Checking this will enable the Heroes Never Die Setting Rule when
         determining incapacitation
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Adventure Edition Core Rules
+        SWPF: Pathfinder®️ for Savage Worlds
+      Name: Armor Stacking
+      Hint: Select which rules to use when handling stacking armor
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
