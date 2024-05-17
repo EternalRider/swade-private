@@ -46,10 +46,10 @@ export default class SettingConfigurator extends FormApplication {
         Die: 'SWADE.Die',
         Selection: 'SWADE.Selection',
       },
-      coreSkillPackChoices: this._buildCoreSkillPackChoices(),
-      actionDeckChoices: this._buildActionDeckChoices(),
-      discardPileChoices: this._buildActionDeckDiscardPileChoices(),
-      injuryTableChoices: await this._buildInjuryTableChoices(),
+      coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
+      actionDeckChoices: this.#buildActionDeckChoices(),
+      discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
+      injuryTableChoices: await this.#buildInjuryTableChoices(),
     };
     for (const setting of this.config.settings) {
       data.settingRules[setting] = game.settings.get('swade', setting);
@@ -69,7 +69,7 @@ export default class SettingConfigurator extends FormApplication {
       );
   }
 
-  async _updateObject(event, formData) {
+  async _updateObject(_event, formData) {
     //Gather Data
     const expandedFormdata = expandObject(formData);
     const formActorAttrs = expandedFormdata.actorSettingStats || {};
@@ -88,11 +88,11 @@ export default class SettingConfigurator extends FormApplication {
 
     // Handle the free-form attributes list
     const settingFields = game.settings.get('swade', 'settingFields');
-    const actorStats = this._handleKeyValidityCheck(formActorAttrs);
-    const itemStats = this._handleKeyValidityCheck(formItemAttrs);
+    const actorStats = this.#handleKeyValidityCheck(formActorAttrs);
+    const itemStats = this.#handleKeyValidityCheck(formItemAttrs);
     const saveValue = {
-      actor: this._handleRemovableAttributes(actorStats, settingFields.actor),
-      item: this._handleRemovableAttributes(itemStats, settingFields.item),
+      actor: this.#handleRemovableAttributes(actorStats, settingFields.actor),
+      item: this.#handleRemovableAttributes(itemStats, settingFields.item),
     };
     await game.settings.set('swade', 'settingFields', saveValue);
 
@@ -147,7 +147,7 @@ export default class SettingConfigurator extends FormApplication {
     }
   }
 
-  private _handleKeyValidityCheck(stats: AdditionalStats) {
+  #handleKeyValidityCheck(stats: AdditionalStats) {
     const retVal: AdditionalStats = {};
     for (const stat of Object.values(stats)) {
       let key = stat.key!.trim();
@@ -173,7 +173,7 @@ export default class SettingConfigurator extends FormApplication {
    * @param attributes
    * @param base
    */
-  private _handleRemovableAttributes(
+  #handleRemovableAttributes(
     attributes: AdditionalStats,
     base: AdditionalStats,
   ) {
@@ -185,7 +185,7 @@ export default class SettingConfigurator extends FormApplication {
     return attributes;
   }
 
-  private _buildCoreSkillPackChoices() {
+  #buildCoreSkillPackChoices() {
     return game.packs
       ?.filter((p) => {
         const index = Array.from(p.index.values()).filter(
@@ -208,7 +208,7 @@ export default class SettingConfigurator extends FormApplication {
       );
   }
 
-  private _buildActionDeckChoices() {
+  #buildActionDeckChoices() {
     const deckChoices: Record<string, string> = {};
     game.cards
       ?.filter((stack) => {
@@ -219,7 +219,7 @@ export default class SettingConfigurator extends FormApplication {
     return deckChoices;
   }
 
-  private _buildActionDeckDiscardPileChoices() {
+  #buildActionDeckDiscardPileChoices() {
     const discardPiles: Record<string, string> = {};
     game.cards
       ?.filter((stack) => stack.type === 'pile')
@@ -227,7 +227,7 @@ export default class SettingConfigurator extends FormApplication {
     return discardPiles;
   }
 
-  private _buildInjuryTableChoices(): OptionGroup[] {
+  #buildInjuryTableChoices(): OptionGroup[] {
     const injuryTables: OptionGroup[] = [];
 
     //add world tables, if necessary

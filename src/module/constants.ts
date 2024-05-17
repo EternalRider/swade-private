@@ -151,4 +151,8 @@ export const constants = {
     COMPACT: 'compact',
     LARGE: 'large',
   } as const,
+  ARMOR_STACKING: {
+    CORE: 'core',
+    SWPF: 'swpf',
+  },
 };

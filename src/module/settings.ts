@@ -58,6 +58,7 @@ declare global {
       'swade.tocBlockList': Record<string, boolean>;
       'swade.npcStartingCurrency': number;
       'swade.pcStartingCurrency': number;
+      'swade.armorStacking': string;
     }
   }
 }
@@ -515,6 +516,17 @@ export function registerSettingRules() {
     scope: 'world',
     type: Number,
     default: 0,
+    config: false,
+  });
+
+  game.settings.register('swade', 'armorStacking', {
+    name: 'SWADE.Settings.ArmorStacking.Name',
+    hint: 'SWADE.Settings.ArmorStacking.Name',
+    scope: 'world',
+    type: String,
+    default: constants.ARMOR_STACKING.CORE,
+    choices: constants.ARMOR_STACKING,
+    requiresReload: true,
     config: false,
   });
 }
