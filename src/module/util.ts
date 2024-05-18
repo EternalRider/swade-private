@@ -12,7 +12,7 @@ import SwadeItem from './documents/item/SwadeItem';
  * @param string The string to look for
  * @param localize Switch which determines if the string is a localization key
  */
-export function notificationExists(string: string, localize = false): boolean {
+export function notificationExists(string: string, localize = true): boolean {
   let stringToFind = string;
   if (localize) stringToFind = game.i18n.localize(string);
   const active = ui.notifications.active || [];

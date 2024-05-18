@@ -476,6 +476,7 @@ SWADE:
     Value: Value
     Ignore: Ignore?
     None: No modifiers at the moment
+    Active: Active
   Illumination:
     _name: Illumination
     Dim: Dim Light

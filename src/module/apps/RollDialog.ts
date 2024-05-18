@@ -134,7 +134,7 @@ export class RollDialog extends FormApplication<
         el.addEventListener('change', (ev) => {
           const target = ev.currentTarget as HTMLInputElement;
           const index = Number(target.dataset.index);
-          this.modifiers[index].ignore = target.checked;
+          this.modifiers[index].ignore = !target.checked;
           this.render();
         }),
       );
@@ -142,7 +142,6 @@ export class RollDialog extends FormApplication<
 
   async getData() {
     const data = {
-      baseDice: this.ctx.roll.formula,
       displayExtraButton: true,
       rollModes: CONFIG.Dice.rollModes,
       modGroups: new Array<RollModifierGroup>(),
