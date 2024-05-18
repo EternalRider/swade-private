@@ -100,6 +100,7 @@ export async function calcWounds(
     ) {
       woundsInflicted = 1;
       statusToApply = Status.WOUNDED;
+      damageContext.doubleShaken = true;
     }
     // If damage is at least a raise over Toughness, set status to wounded
   } else if (excess >= 4) {
@@ -197,8 +198,9 @@ async function soakPrompt(
           });
         }
         if (
-          !(actor.system instanceof VehicleData) &&
-          game.settings.get('swade', 'grittyDamage')
+          actor.isWildcard &&
+          game.settings.get('swade', 'grittyDamage') &&
+          !damageContext.doubleShaken
         ) {
           await rollInjuryTable();
         }
@@ -537,8 +539,9 @@ async function attemptSoak(
           await ChatMessage.create({ content: message });
           // If Gritty Damage is in play, roll on the Injury Table.
           if (
-            !(actor.system instanceof VehicleData) &&
-            game.settings.get('swade', 'grittyDamage')
+            actor.isWildcard &&
+            game.settings.get('swade', 'grittyDamage') &&
+            !damageContext.doubleShaken
           ) {
             await rollInjuryTable();
           }
@@ -873,6 +876,8 @@ enum Status {
 interface DamageContext {
   /** Whether or not the damage source is flagged as a heavy weapon */
   isHeavyWeapon?: boolean;
+  /** Was this a result of a second shaken result? */
+  doubleShaken?: boolean;
   /** The Status inflicted by the damage */
   status?: Status;
   wounds: {

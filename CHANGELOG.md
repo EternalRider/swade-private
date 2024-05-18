@@ -153,6 +153,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue with the display of Quick Access **by @jpmeehan5**
 - Fixed an issue that caused the editor on item sheets to have a height of 0. **by @florad92**
 - Fixed an issue that would cause the combat to reset to turn 0 when a combatant goes off hold. (#1041) **by @florad92**
+- Fixed issues with misapplication of Gritty Damage rules (#1102) **by @jpmeehan5**
 
 ## 3.3.0
 
