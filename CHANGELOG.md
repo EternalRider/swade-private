@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Resolved a bug involving Joker detection for unlinked tokens. **by @jpmeehan5**
 - The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
+- Single reloads should no longer fail when no ammo is set while reloading from the inventory is disabled. (#1120) **by @florad92**
 
 ## 3.3.11
 
