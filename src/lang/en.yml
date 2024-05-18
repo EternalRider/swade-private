@@ -86,6 +86,8 @@ SWADE:
   EdEdge: Edit Edge
   EdHind: Edit Hindrance
   Ed: Edit
+  EdF: Edit {item}
+  EdRightClick: '[Right Click] to Edit'
   Del: Delete
   Arcane: Arcane
   InnatePower: Innate Power
