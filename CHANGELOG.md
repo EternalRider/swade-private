@@ -139,6 +139,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Consumables now show a warning when they have not enough charges left to consume all the requested charges. (#1044) **by @florad92**
 - Ancestral Abilities now show a much more informative deprecation message. (#1042) **by @kristianserrano**
+- Inputs subject to an active effect are now disabled on the character sheet, to match the underlying form behavior. (#1102) **by @jpmeehan5**
 
 ### Fixed
 

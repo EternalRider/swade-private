@@ -14,6 +14,7 @@ SWADE:
   ActionDeckPresetDark: Action Deck (Dark)
   ActionDeckPresetPEG: Action Deck (PEG)
   Name: Name
+  disabledAE: Disabled due to Active Effect
   Tough: Toughness
   Ancestry: Ancestry
   Archetype: Archetype
