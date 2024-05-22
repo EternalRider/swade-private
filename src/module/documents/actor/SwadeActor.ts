@@ -32,6 +32,7 @@ import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import {
+  getStatusEffectDataById,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
@@ -712,14 +713,16 @@ export default class SwadeActor extends Actor {
 
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
-    effectData: StatusEffect,
+    effect: StatusEffect | string,
     { overlay = false, active }: ToggleActiveEffectOptions = {},
   ) {
-    if (!effectData.id) return false;
+    const statusEffect =
+      typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
+    if (!statusEffect?.id) return false;
 
     // Remove existing single-status effects.
     const existing = this.effects.reduce((acc, cur) => {
-      if (cur.statuses.size === 1 && cur.statuses.has(effectData.id)) {
+      if (cur.statuses.size === 1 && cur.statuses.has(statusEffect.id)) {
         acc.push(cur.id);
       }
       return acc;
@@ -731,12 +734,12 @@ export default class SwadeActor extends Actor {
     // Add a new effect
     else if (state) {
       const aeClass = getDocumentClass('ActiveEffect');
-      const data = foundry.utils.deepClone(effectData);
-      foundry.utils.setProperty(data, 'statuses', [effectData.id]);
+      const data = foundry.utils.deepClone(statusEffect);
+      foundry.utils.setProperty(data, 'statuses', [statusEffect.id]);
       delete data.id; //remove the ID to not trigger validation errors
       aeClass.migrateDataSafe(data);
       aeClass.cleanData(data);
-      data.name = game.i18n.localize(data.name);
+      data.name = game.i18n.localize(data.name as string);
       if (overlay) foundry.utils.setProperty(data, 'flags.core.overlay', true);
       await aeClass.create(data, { parent: this });
     }

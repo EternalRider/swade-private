@@ -850,13 +850,10 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
-    // Get the key from the target name
-    const id = ev.target.dataset.id as string;
     const key = ev.target.dataset.key as string;
-    const data = util.getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    await this.actor.toggleActiveEffect(data);
+    await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {
