@@ -12,7 +12,9 @@ SWADE:
   ModHint: Make sure your modifier includes a + or -
   ActionDeckPresetLight: Action Deck (Light)
   ActionDeckPresetDark: Action Deck (Dark)
+  ActionDeckPresetPEG: Action Deck (PEG)
   Name: Name
+  disabledAE: Disabled due to Active Effect
   Tough: Toughness
   Ancestry: Ancestry
   Archetype: Archetype
@@ -85,6 +87,8 @@ SWADE:
   EdEdge: Edit Edge
   EdHind: Edit Hindrance
   Ed: Edit
+  EdF: Edit {item}
+  EdRightClick: '[Right Click] to Edit'
   Del: Delete
   Arcane: Arcane
   InnatePower: Innate Power
@@ -476,6 +480,7 @@ SWADE:
     Value: Value
     Ignore: Ignore?
     None: No modifiers at the moment
+    Active: Active
   Illumination:
     _name: Illumination
     Dim: Dim Light
@@ -763,6 +768,12 @@ SWADE:
       Hint: >-
         Checking this will enable the Heroes Never Die Setting Rule when
         determining incapacitation
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Adventure Edition Core Rules
+        SWPF: Pathfinder®️ for Savage Worlds
+      Name: Armor Stacking
+      Hint: Select which rules to use when handling stacking armor
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit

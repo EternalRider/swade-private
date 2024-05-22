@@ -377,13 +377,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         : `system.stats.${targetProperty}`;
     const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
 
-    const title = `${game.i18n.localize('SWADE.Ed')} ${
-      this.actor.name
-    } ${targetLabel}`;
+    const title = `${game.i18n.format('SWADE.EdF'), {item: this.actor.name + " " + targetLabel}}`;
 
     const template = `
       <form><div class="form-group">
-        <label>${game.i18n.localize('SWADE.Ed')} ${targetLabel}</label>
+        <label>${game.i18n.format('SWADE.EdF', {item: targetLabel})}</label>
         <input name="modifier" value="${targetPropertyValue}" type="text"/>
       </div></form>`;
     new Dialog({
