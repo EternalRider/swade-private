@@ -6,11 +6,9 @@ import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import { Logger } from '../Logger';
-/**
- * @noInheritDoc
- */
+/** @noInheritDoc */
 export default class SwadeBaseActorSheet extends ActorSheet {
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
@@ -106,7 +104,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const a = ev.currentTarget;
       const data = a.closest('li')!.dataset;
       const effectUuid = data.effectUuid;
-      const effect = (await fromUuid(effectUuid) as SwadeActiveEffect);
+      const effect = (await fromUuid(effectUuid)) as SwadeActiveEffect;
       const action = a.dataset.action;
       switch (action) {
         case 'edit':
@@ -172,13 +170,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       new ImagePopout(this.actor.img, {
         title: this.actor.name!,
         shareable: this.actor.isOwner ?? game.user?.isGM ?? false,
-        uuid: this.actor.uuid
+        uuid: this.actor.uuid,
       }).render(true);
     });
   }
 
-  getData() {
-    const data: any = super.getData();
+  override async getData() {
+    const data: any = await super.getData();
     data.config = SWADE;
 
     data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
@@ -246,11 +244,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     return data;
   }
 
-  /**
-   * Extend and override the sheet header buttons
-   * @override
-   */
-  protected _getHeaderButtons() {
+  /** Extend and override the sheet header buttons */
+  protected override _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
 
     // Token Configuration
@@ -331,7 +326,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     return [];
   }
 
-  protected async _onResize(event: any) {
+  protected override async _onResize(event: any) {
     super._onResize(event);
     const html = $(event.path);
     const selector = `#${this.id} .resizable`;
@@ -377,11 +372,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         : `system.stats.${targetProperty}`;
     const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
 
-    const title = `${game.i18n.format('SWADE.EdF'), {item: this.actor.name + " " + targetLabel}}`;
+    const title = `${(game.i18n.format('SWADE.EdF'), { item: this.actor.name + ' ' + targetLabel })}`;
 
     const template = `
       <form><div class="form-group">
-        <label>${game.i18n.format('SWADE.EdF', {item: targetLabel})}</label>
+        <label>${game.i18n.format('SWADE.EdF', { item: targetLabel })}</label>
         <input name="modifier" value="${targetPropertyValue}" type="text"/>
       </div></form>`;
     new Dialog({

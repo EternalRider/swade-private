@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
 - The `Ignore` checkbox in the Roll Dialog has been flipped to be an `Active` checkbox to avoid confusion. (#1111) **by @florad92**
 - The topmost roll formula in the Roll Dialog has been removed as it was not adding any useful information. (#1111) **by @florad92**
+- `SwadeActor#toggleActiveEffect` now also accepts a status ID as the first argument. (#1125) **by @florad92**
 
 ### Fixed
 
