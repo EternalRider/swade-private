@@ -22,6 +22,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.0.0
+
+SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11
+
+### Added
+
+### Changed
+
+- Updated `system.json` to match new data structure.
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
 ## 3.4.0
 
 ### Added
