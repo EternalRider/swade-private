@@ -6,6 +6,7 @@ import { DamageRoll } from '../dice/DamageRoll';
 import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+import { getStatusEffectDataById } from '../util';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -100,6 +101,7 @@ export async function calcWounds(
     ) {
       woundsInflicted = 1;
       statusToApply = Status.WOUNDED;
+      damageContext.doubleShaken = true;
     }
     // If damage is at least a raise over Toughness, set status to wounded
   } else if (excess >= 4) {
@@ -197,8 +199,9 @@ async function soakPrompt(
           });
         }
         if (
-          !(actor.system instanceof VehicleData) &&
-          game.settings.get('swade', 'grittyDamage')
+          actor.isWildcard &&
+          game.settings.get('swade', 'grittyDamage') &&
+          !damageContext.doubleShaken
         ) {
           await rollInjuryTable();
         }
@@ -463,12 +466,7 @@ async function attemptSoak(
 
     const isShaken = actor.system.status.isShaken;
     // If they're already Shaken, remove the Status Effect.
-    if (isShaken) {
-      const data = CONFIG.SWADE.statusEffects.find(
-        (s) => s.id === 'shaken',
-      ) as StatusEffect;
-      await actor.toggleActiveEffect(data, { active: false });
-    }
+    if (isShaken) await actor.toggleActiveEffect('shaken', { active: false });
 
     /**
      * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
@@ -537,8 +535,9 @@ async function attemptSoak(
           await ChatMessage.create({ content: message });
           // If Gritty Damage is in play, roll on the Injury Table.
           if (
-            !(actor.system instanceof VehicleData) &&
-            game.settings.get('swade', 'grittyDamage')
+            actor.isWildcard &&
+            game.settings.get('swade', 'grittyDamage') &&
+            !damageContext.doubleShaken
           ) {
             await rollInjuryTable();
           }
@@ -670,24 +669,20 @@ async function applyShaken(actor: SwadeActor) {
   if (actor.system instanceof VehicleData) return;
   // If they're not already Shaken, apply the Status Effect.
   if (!actor.system.status.isShaken) {
-    const data = CONFIG.SWADE.statusEffects.find(
-      (s) => s.id === 'shaken',
-    ) as StatusEffect;
-    await actor.toggleActiveEffect(data, { active: true });
+    await actor.toggleActiveEffect('shaken', { active: true });
   }
 }
 
 // Function for applying the Incapacitated Status Effect
 async function applyIncapacitated(actor: SwadeActor) {
   const statuses: ToggleStatus[] = [];
-  const statusIncapacitated = CONFIG.SWADE.statusEffects.find(
-    (s) => s.id === 'incapacitated',
-  ) as StatusEffect;
-  if (statusIncapacitated)
+  const statusIncapacitated = getStatusEffectDataById('incapacitated');
+  if (statusIncapacitated) {
     statuses.push({
       effectData: statusIncapacitated,
       options: { active: true, overlay: true },
     });
+  }
   if (Hooks.call('swadeIncapacitation', actor, statuses) && actor.isWildcard) {
     let resistRoll: number = await resistInjury(actor);
     const ignoreBleedOut =
@@ -696,9 +691,7 @@ async function applyIncapacitated(actor: SwadeActor) {
     if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL)
       resistRoll = constants.ROLL_RESULT.FAIL;
     let message = '';
-    const statusBleedingOut = CONFIG.SWADE.statusEffects.find(
-      (s) => s.id === 'bleeding-out',
-    );
+    const statusBleedingOut = getStatusEffectDataById('bleeding-out');
     switch (resistRoll) {
       case constants.ROLL_RESULT.CRITFAIL:
         message = game.i18n.format(
@@ -873,6 +866,8 @@ enum Status {
 interface DamageContext {
   /** Whether or not the damage source is flagged as a heavy weapon */
   isHeavyWeapon?: boolean;
+  /** Was this a result of a second shaken result? */
+  doubleShaken?: boolean;
   /** The Status inflicted by the damage */
   status?: Status;
   wounds: {

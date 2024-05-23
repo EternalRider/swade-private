@@ -27,6 +27,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
+- Added new default action deck provided by PEG. This deck is available as a preset in the Cards creation dialog. (#1115) **by @jpmeehan5**
+
+### Changed
+
+- The chat message sent when using a charge on a consumable item now respects the roll mode and can be localized. (#1105) **by @florad92**
+- The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
+- The `Ignore` checkbox in the Roll Dialog has been flipped to be an `Active` checkbox to avoid confusion. (#1111) **by @florad92**
+- The topmost roll formula in the Roll Dialog has been removed as it was not adding any useful information. (#1111) **by @florad92**
+- `SwadeActor#toggleActiveEffect` now also accepts a status ID as the first argument. (#1125) **by @florad92**
+
+### Fixed
+
+- Resolved a bug involving Joker detection for unlinked tokens. **by @jpmeehan5**
+- The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
+- Single reloads should no longer fail when no ammo is set while reloading from the inventory is disabled. (#1120) **by @florad92**
 
 ## 3.3.11
 
@@ -124,6 +140,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Consumables now show a warning when they have not enough charges left to consume all the requested charges. (#1044) **by @florad92**
 - Ancestral Abilities now show a much more informative deprecation message. (#1042) **by @kristianserrano**
+- Inputs subject to an active effect are now disabled on the character sheet, to match the underlying form behavior. (#1102) **by @jpmeehan5**
 
 ### Fixed
 
@@ -139,6 +156,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue with the display of Quick Access **by @jpmeehan5**
 - Fixed an issue that caused the editor on item sheets to have a height of 0. **by @florad92**
 - Fixed an issue that would cause the combat to reset to turn 0 when a combatant goes off hold. (#1041) **by @florad92**
+- Fixed issues with misapplication of Gritty Damage rules (#1102) **by @jpmeehan5**
 
 ## 3.3.0
 

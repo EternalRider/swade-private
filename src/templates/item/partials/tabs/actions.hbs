@@ -153,7 +153,18 @@
                 <span>{{localize 'SWADE.DmgMod'}}</span>
               </label>
             </div>
-            <div class='form-group left'>
+            <div class='left'>
+              <label class='float-label'>
+                <input
+                  type='number'
+                  name='system.actions.additional.{{id}}.ap'
+                  value='{{action.ap}}'
+                  placeholder='{{localize "SWADE.ApOver"}}'
+                />
+                <span>{{localize 'SWADE.ApOver'}}</span>
+              </label>
+            </div>
+            <div class='form-group right'>
               <input
                 id='{{@root.item.id}}-{{id}}-heavy-weapon'
                 type='checkbox'

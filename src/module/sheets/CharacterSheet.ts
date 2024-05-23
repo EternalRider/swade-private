@@ -68,6 +68,7 @@ export default class CharacterSheet extends ActorSheet {
 
     const html = jquery[0];
 
+    this.#disableOverrides(jquery);
     this.#setupEquipStatusMenu(jquery);
     this.#setupEffectCreateMenu(jquery);
     this.#setupItemContextMenu(jquery);
@@ -210,12 +211,12 @@ export default class CharacterSheet extends ActorSheet {
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
-        <label>${game.i18n.localize('SWADE.Ed')} ${label}</label>
+        <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
         <input name="modifier" value="${armorvalue}" type="number"/>
       </div></form>`;
 
       new Dialog({
-        title: `${game.i18n.localize('SWADE.Ed')} ${this.actor.name} ${label}`,
+        title: `${game.i18n.format('SWADE.EdF', { item: this.actor.name + ' ' + label })}`,
         content: template,
         buttons: {
           ok: {
@@ -243,12 +244,12 @@ export default class CharacterSheet extends ActorSheet {
       const label = game.i18n.localize('SWADE.ShieldBonus');
       const template = `
       <form><div class="form-group">
-        <label>${game.i18n.localize('SWADE.Ed')} ${label}</label>
+        <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
         <input name="modifier" value="${parryMod}" type="number"/>
       </div></form>`;
 
       new Dialog({
-        title: `${game.i18n.localize('SWADE.Ed')} ${this.actor.name} ${label}`,
+        title: `${game.i18n.format('SWADE.EdF', { item: this.actor.name + ' ' + label })}`,
         content: template,
         buttons: {
           ok: {
@@ -336,6 +337,7 @@ export default class CharacterSheet extends ActorSheet {
         new ImagePopout(this.actor.img, {
           title: this.actor.name!,
           shareable: this.actor.isOwner ?? game.user?.isGM,
+          uuid: this.actor.uuid,
         }).render(true);
       });
 
@@ -848,13 +850,10 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
-    // Get the key from the target name
-    const id = ev.target.dataset.id as string;
     const key = ev.target.dataset.key as string;
-    const data = util.getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    await this.actor.toggleActiveEffect(data);
+    await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {
@@ -995,9 +994,24 @@ export default class CharacterSheet extends ActorSheet {
 
   async #enrichText(text: string) {
     return TextEditor.enrichHTML(text, {
-      async: false,
+      async: true,
       secrets: this.options.editable,
     });
+  }
+
+  #disableOverrides(jquery: JQuery<HTMLFormElement>) {
+    const flatOverrides = foundry.utils.flattenObject(this.actor.overrides);
+    const disabledText = game.i18n.localize('SWADE.disabledAE');
+    for (const override of Object.keys(flatOverrides)) {
+      for (const input of jquery.find<HTMLInputElement>(
+        `[name="${override}"]`,
+      )) {
+        input.disabled = true;
+        if (input.dataset.tooltip) {
+          input.dataset.tooltip += '<br>' + disabledText;
+        } else input.dataset.tooltip = disabledText;
+      }
+    }
   }
 
   #getAdditionalStats(): AdditionalStats {

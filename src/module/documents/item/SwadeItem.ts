@@ -22,7 +22,6 @@ import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
 import SwadeUser from '../SwadeUser';
 import SwadeActor from '../actor/SwadeActor';
-import SwadeChatMessage from '../chat/SwadeChatMessage';
 import {
   ItemChatCardAction,
   ItemChatCardChip,
@@ -216,7 +215,8 @@ export default class SwadeItem extends Item {
       return null;
     }
     const label = this.name;
-    let ap: number = foundry.utils.getProperty(this, 'system.ap') ?? 0;
+    let ap: number =
+      options.ap ?? foundry.utils.getProperty(this, 'system.ap') ?? 0;
     const isHeavyWeapon: boolean =
       foundry.utils.getProperty(this, 'system.isHeavyWeapon') ||
       options.isHeavyWeapon;
@@ -480,17 +480,13 @@ export default class SwadeItem extends Item {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
     }
 
-    // Toggle default roll mode
-    const rollMode = game.settings.get('core', 'rollMode');
-    if (['gmroll', 'blindroll'].includes(rollMode))
-      chatData.whisper = CONFIG.ChatMessage.documentClass
-        .getWhisperRecipients('GM')
-        .map((u) => u.id!);
-    if (rollMode === 'selfroll') chatData.whisper = [game.user!.id!];
-    if (rollMode === 'blindroll') chatData.blind = true;
+    const msgClass = getDocumentClass('ChatMessage');
+
+    // Apply the roll mode to the message
+    msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
 
     // Create the chat message
-    const chatCard = await CONFIG.ChatMessage.documentClass.create(chatData);
+    const chatCard = await msgClass.create(chatData);
     Hooks.call('swadeChatCard', this.actor, this, chatCard, game.user!.id);
     return chatCard;
   }
@@ -623,12 +619,16 @@ export default class SwadeItem extends Item {
       this.grantsItems.map((g) => fromUuid(g.uuid)),
     )) as SwadeItem[];
 
-    const grants = grantedItems.filter(Boolean).map((item) => {
-      return {
-        item: item,
+    const grants: ItemGrantChainLink[] = [];
+    for (const item of grantedItems) {
+      const choiceUpdate = await item.handleChoices(item.toObject());
+      grants.push({
+        item: new SwadeItem(
+          foundry.utils.mergeObject(item.toObject(), choiceUpdate),
+        ),
         grant: this.grantsItems.find((g) => g.uuid === item.uuid) as ItemGrant,
-      };
-    });
+      });
+    }
 
     const children = await Promise.all(
       grants.flatMap((g) => g.item.getItemGrantChain(ignored)),
@@ -699,13 +699,17 @@ export default class SwadeItem extends Item {
     return this.powerPointObject;
   }
 
-  async #createChargeUsageMessage(
-    charges: number,
-  ): Promise<SwadeChatMessage | undefined> {
-    return CONFIG.ChatMessage.documentClass.create({
-      speaker: ChatMessage.getSpeaker(),
-      content: `<p>${charges} charge(s) used on <em>${this.name}</em></p>`,
-    });
+  async #createChargeUsageMessage(charges: number) {
+    const msgClass = getDocumentClass('ChatMessage');
+    const createData = {
+      speaker: msgClass.getSpeaker(),
+      content: game.i18n.format('SWADE.Consumable.ChargesUsed', {
+        charges,
+        name: this.name,
+      }),
+    };
+    msgClass.applyRollMode(createData, game.settings.get('core', 'rollMode'));
+    return msgClass.create(createData);
   }
 
   protected override async _preCreate(
@@ -746,6 +750,14 @@ export default class SwadeItem extends Item {
       }
     }
 
+    const choiceUpdate = await this.handleChoices(data);
+    if (Object.keys(choiceUpdate).length > 0) {
+      this.updateSource(choiceUpdate);
+    }
+  }
+
+  async handleChoices(data: ItemDataConstructorData) {
+    const choiceUpdate = {};
     if (data.system?.choiceSets?.length > 0) {
       for (const choiceSet of data.system.choiceSets) {
         if (choiceSet.choice !== null) continue;
@@ -762,10 +774,13 @@ export default class SwadeItem extends Item {
         if (mutationOption.addToName) {
           update.name = data.name + ` (${mutationOption.name})`;
         }
-        this.updateSource(update);
+        foundry.utils.mergeObject(choiceUpdate, update);
       }
-      this.updateSource({ 'system.choiceSets': data.system.choiceSets });
+      foundry.utils.mergeObject(choiceUpdate, {
+        'system.choiceSets': data.system.choiceSets,
+      });
     }
+    return choiceUpdate;
   }
 
   protected override async _preDelete(

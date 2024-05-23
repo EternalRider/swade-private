@@ -18,7 +18,7 @@ system:
       value: ''
       combinator: and
     - type: skill
-      Label: Spellcasting
+      label: Spellcasting
       selector: spellcasting
       value: 6
       combinator: and

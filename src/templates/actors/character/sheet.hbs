@@ -18,6 +18,7 @@
       class="charname"
       value="{{actor.name}}"
       placeholder="{{localize 'Name'}}"
+      data-tooltip="{{actor.name}}"
     />
   </label>
   <figure class="gridcell branding"></figure>
@@ -55,7 +56,7 @@
       >
    {{/if}}
   </span>
-  <span class="gridcell character-detail archetype" data-tooltip="{{localize 'SWADE.Archetype'}}">
+  <span class="gridcell character-detail archetype" data-tooltip="SWADE.Archetype">
     <label class="sr-only">{{localize 'SWADE.Archetype'}}</label>
    {{#if actor.archetype}}
       <button  type="button" data-item-id="{{actor.archetype.id}}" >{{actor.archetype.name}}</button>
@@ -69,7 +70,7 @@
       >
    {{/if}}
   </span>
-  <span class="gridcell character-detail rank">
+  <span class="gridcell character-detail rank" data-tooltip="SWADE.Rank">
     <label class="sr-only">{{localize 'SWADE.Rank'}}</label>
     <input
       type="text"
@@ -79,7 +80,7 @@
       {{disabled advances.expanded}}
     />
   </span>
-  <span class="gridcell character-detail advances">
+  <span class="gridcell character-detail advances" data-tooltip="SWADE.Adv">
     <a>{{localize 'SWADE.Adv'}}</a>
     <input
       type="number"

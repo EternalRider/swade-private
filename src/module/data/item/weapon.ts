@@ -32,6 +32,7 @@ import {
   templates,
   vehicular,
 } from './common';
+import { GearData } from './gear';
 
 export interface WeaponData
   extends foundry.data.fields.SchemaField.InnerInitializedType<
@@ -129,11 +130,11 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  get isPhysicalItem() {
+  get isPhysicalItem(): boolean {
     return true;
   }
 
-  get traitModifiers() {
+  get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
     modifiers.push(...this.parent.actor.system.stats.globalMods.attack);
     if (
@@ -349,34 +350,27 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     const parent = this.parent.actor;
     if (!game.settings.get('swade', 'ammoManagement') || !parent) return false;
 
-    const ammoName = this.ammo;
     //return if there's no ammo set
-    const needsFullReloadProcedure = this.usesAmmoFromInventory;
-    if (needsFullReloadProcedure && !ammoName) {
-      if (!notificationExists('SWADE.NoAmmoSet', true)) {
+    if (this.usesAmmoFromInventory && !this.ammo) {
+      if (!notificationExists('SWADE.NoAmmoSet')) {
         Logger.info('SWADE.NoAmmoSet', { toast: true, localize: true });
       }
       return false;
     }
 
-    const ammo = parent.items.getName(ammoName);
+    const ammoItem = parent.items.getName(this.ammo) as SwadeItem | undefined;
     const currentShots = this.currentShots || 0;
     const maxShots = this.shots || 0;
-    const missingAmmo = maxShots - currentShots;
+    const missingShots = maxShots - currentShots;
     const reloadType = this.reloadType;
 
-    if (needsFullReloadProcedure && !ammo) {
-      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
-        Logger.warn('SWADE.NotEnoughAmmo', {
-          toast: true,
-          localize: true,
-        });
-      }
+    if (this.usesAmmoFromInventory && !ammoItem) {
+      this.#postNotEnoughAmmoMessage();
       return false;
     }
 
     if (currentShots >= maxShots) {
-      if (!notificationExists('SWADE.ReloadUnneeded', true)) {
+      if (!notificationExists('SWADE.ReloadUnneeded')) {
         Logger.info('SWADE.ReloadUnneeded', {
           localize: true,
           toast: true,
@@ -397,10 +391,13 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
 
     switch (reloadType) {
       case constants.RELOAD_TYPE.SINGLE:
-        reloaded = await this.#handleSingleReload(ammo as SwadeItem);
+        reloaded = await this.#handleSingleReload(ammoItem);
         break;
       case constants.RELOAD_TYPE.FULL:
-        reloaded = await this.#handleFullReload(ammo as SwadeItem, missingAmmo);
+        reloaded = await this.#handleFullReload(
+          ammoItem as SwadeItem, //FIXME technically the item can be undefined here still
+          missingShots,
+        );
         break;
       case constants.RELOAD_TYPE.MAGAZINE:
       case constants.RELOAD_TYPE.BATTERY:
@@ -425,23 +422,19 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     return reloaded;
   }
 
-  async #handleSingleReload(ammo: SwadeItem): Promise<boolean> {
-    if (ammo.system.quantity > 0) {
-      if (this.usesAmmoFromInventory) await ammo.consume(1);
-      await this.parent.update({
-        'system.currentShots': Number(this.currentShots) + 1,
-      });
-      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
-      return true;
-    } else {
-      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
-        Logger.warn('SWADE.NotEnoughAmmo', {
-          toast: true,
-          localize: true,
-        });
-      }
+  async #handleSingleReload(ammo?: SwadeItem): Promise<boolean> {
+    const system = ammo?.system as GearData | undefined;
+    if (this.usesAmmoFromInventory && (system?.quantity ?? 0) <= 0) {
+      this.#postNotEnoughAmmoMessage();
       return false;
+    } else {
+      await ammo?.consume(1);
     }
+    await this.parent.update({
+      'system.currentShots': Number(this.currentShots) + 1,
+    });
+    Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    return true;
   }
 
   async #handleFullReload(ammo: SwadeItem, missing: number): Promise<boolean> {
@@ -451,13 +444,8 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     if (ammo.type === 'consumable') {
       return this.#handleConsumableReload(ammo, missing);
     }
-    if (ammo.system.quantity <= 0) {
-      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
-        Logger.warn('SWADE.NotEnoughAmmo', {
-          toast: true,
-          localize: true,
-        });
-      }
+    if (system.quantity <= 0) {
+      this.#postNotEnoughAmmoMessage();
       return false;
     }
     let ammoInMagazine = this.shots;
@@ -465,12 +453,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       // partial reload
       ammoInMagazine = this.currentShots + ammo.system.quantity;
       await ammo.consume(ammo.system.quantity);
-      if (!notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
-        Logger.warn('SWADE.NotEnoughAmmoToReload', {
-          toast: true,
-          localize: true,
-        });
-      }
+      this.#postNotEnoughAmmoToReloadMessage();
     } else {
       await ammo.consume(missing);
     }
@@ -484,12 +467,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     missing: number,
   ): Promise<boolean> {
     if (ammo.system.charges.value <= 0) {
-      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
-        Logger.warn('SWADE.NotEnoughAmmo', {
-          toast: true,
-          localize: true,
-        });
-      }
+      this.#postNotEnoughAmmoMessage();
       return false;
     }
 
@@ -500,12 +478,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       // partial reload
       ammoInMagazine = Number(this.currentShots) + allCharges;
       await ammo.consume(allCharges);
-      if (!notificationExists('SWADE.NotEnoughAmmoToReload', true)) {
-        Logger.warn('SWADE.NotEnoughAmmoToReload', {
-          toast: true,
-          localize: true,
-        });
-      }
+      this.#postNotEnoughAmmoToReloadMessage();
     } else {
       await ammo.consume(missing);
     }
@@ -538,7 +511,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     }
 
     if (magazines.filter((m) => m.system.charges.value > 0).length === 0) {
-      if (!notificationExists('SWADE.NoMags', true)) {
+      if (!notificationExists('SWADE.NoMags')) {
         Logger.warn('SWADE.NoMags', {
           toast: true,
           localize: true,
@@ -560,7 +533,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     const powerPoints = this.parent.actor?.system.powerPoints[this.ammo!];
     const ppReloadCost = Number(this.ppReloadCost);
     if (!powerPoints) {
-      if (!notificationExists('SWADE.NoAmmoPP', true)) {
+      if (!notificationExists('SWADE.NoAmmoPP')) {
         Logger.warn('SWADE.NoAmmoPP', {
           toast: true,
           localize: true,
@@ -569,12 +542,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       return false;
     }
     if (powerPoints?.value < ppReloadCost) {
-      if (!notificationExists('SWADE.NotEnoughAmmo', true)) {
-        Logger.warn('SWADE.NotEnoughAmmo', {
-          toast: true,
-          localize: true,
-        });
-      }
+      this.#postNotEnoughAmmoMessage();
       return false;
     }
     await this.parent.actor?.update({
@@ -666,5 +634,23 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     }
 
     await parent.updateEmbeddedDocuments('Item', updates);
+  }
+
+  #postNotEnoughAmmoMessage() {
+    if (!notificationExists('SWADE.NotEnoughAmmo')) {
+      Logger.warn('SWADE.NotEnoughAmmo', {
+        toast: true,
+        localize: true,
+      });
+    }
+  }
+
+  #postNotEnoughAmmoToReloadMessage() {
+    if (!notificationExists('SWADE.NotEnoughAmmoToReload')) {
+      Logger.warn('SWADE.NotEnoughAmmoToReload', {
+        toast: true,
+        localize: true,
+      });
+    }
   }
 }

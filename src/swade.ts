@@ -136,6 +136,11 @@ Hooks.once('init', () => {
 
   //register card presets
   CONFIG.Cards.presets = {
+    actionDeck: {
+      label: 'SWADE.ActionDeckPresetPEG',
+      src: 'systems/swade/cards/action-deck-peg.json',
+      type: 'deck',
+    },
     pokerLight: {
       label: 'SWADE.ActionDeckPresetLight',
       src: 'systems/swade/cards/action-deck-light.json',

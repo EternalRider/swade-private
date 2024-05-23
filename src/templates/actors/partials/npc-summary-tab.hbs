@@ -111,7 +111,7 @@
       <ul class='items-list'>
         {{#each actor.itemTypes.edge}}
           <li class='edge item' data-item-id='{{id}}'>
-            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+            <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
             </a>
           </li>
@@ -132,7 +132,7 @@
       <ul class='items-list'>
         {{#each actor.itemTypes.hindrance}}
           <li class='hindrance item' data-item-id='{{id}}'>
-            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+            <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
               {{#if system.isMajor}}
                 &nbsp;{{localize 'SWADE.Major'}}
@@ -156,14 +156,14 @@
       <ul class='items-list'>
         {{#if actor.ancestry}}
           <li class='ability item' data-item-id='{{actor.ancestry.id}}'>
-            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+            <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{actor.ancestry.name}}&nbsp;({{localize 'SWADE.Ancestry'}})
             </a>
           </li>
         {{/if}}
         {{#if actor.archetype}}
           <li class='ability item' data-item-id='{{actor.archetype.id}}'>
-            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+            <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{actor.archetype.name}}&nbsp;({{localize 'SWADE.Archetype'}})
             </a>
           </li>
@@ -173,7 +173,7 @@
             <li class='ability item' data-item-id='{{id}}'>
               <a
                 class='item-show'
-                title='Right Click to {{localize "SWADE.Ed"}}'
+                data-tooltip='{{localize "SWADE.EdRightClick"}}'
               >
                 {{name}}
               </a>
@@ -196,7 +196,7 @@
       <ul class='items-list'>
         {{#each actor.itemTypes.action}}
           <li class='action item' data-item-id='{{id}}'>
-            <a class='item-show' title='Right Click to {{localize "SWADE.Ed"}}'>
+            <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
             </a>
           </li>

@@ -1,13 +1,12 @@
 import { constants } from '../constants';
 import SwadeItem from '../documents/item/SwadeItem';
-import { getStatusEffectDataById } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /**
  * @noInheritDoc
  */
 export default class SwadeNPCSheet extends SwadeBaseActorSheet {
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return {
       ...super.defaultOptions,
       classes: ['swade', 'sheet', 'actor', 'npc'],
@@ -23,7 +22,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     };
   }
 
-  get template() {
+  override get template() {
     // Later you might want to return a different template
     // based on user permissions.
     if (!game.user?.isGM && this.actor.limited) {
@@ -33,7 +32,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
   }
 
   // Override to set resizable initial size
-  async _renderInner(data) {
+  override async _renderInner(data) {
     const html = await super._renderInner(data);
     this.form = html[0];
 
@@ -168,13 +167,10 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
   }
 
   protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
-    // Get the key from the target name
-    const id = ev.target.dataset.id as string;
     const key = ev.target.dataset.key as string;
-    const data = getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    await this.actor.toggleActiveEffect(data);
+    await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
   protected override async _onDropItem(

@@ -30,6 +30,8 @@ export interface ItemAction {
   isHeavyWeapon?: boolean;
   uuid?: string;
   macroActor?: string;
+  /** Armor Piercing */
+  ap?: number;
 }
 
 /** A single trait roll modifier, containing a label and a value */

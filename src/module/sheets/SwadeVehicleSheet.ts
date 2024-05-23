@@ -8,7 +8,7 @@ import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /** @noInheritDoc */
 export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ['swade', 'sheet', 'actor', 'vehicle'],
       template: 'systems/swade/templates/actors/vehicle-sheet.hbs',
@@ -24,7 +24,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     });
   }
 
-  activateListeners(html: JQuery<HTMLElement>) {
+  override activateListeners(html: JQuery<HTMLElement>) {
     super.activateListeners(html);
 
     // Everything below here is only needed if the sheet is editable
@@ -35,11 +35,8 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       const card = $(ev.currentTarget).parents('.gear-card');
       const content = card.find('.card-content');
       content.toggleClass('collapsed');
-      if (content.hasClass('collapsed')) {
-        content.slideUp();
-      } else {
-        content.slideDown();
-      }
+      if (content.hasClass('collapsed')) content.slideUp();
+      else content.slideDown();
     });
 
     // Delete Item
@@ -74,7 +71,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       const type = header.dataset.type ?? '';
 
       let itemData;
-
+      const itemCls = getDocumentClass('Item');
       switch (type) {
         case 'choice':
           return this._chooseItemType().then(async (dialogInput: any) => {
@@ -83,7 +80,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
               header,
               dialogInput.name,
             );
-            await CONFIG.Item.documentClass.create(data, {
+            await itemCls.create(data, {
               renderSheet: true,
               parent: this.actor,
             });
@@ -95,7 +92,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
           itemData.name = game.i18n.format('DOCUMENT.New', {
             type: type.capitalize(),
           });
-          return CONFIG.Item.documentClass.create(itemData, {
+          return itemCls.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
@@ -103,13 +100,13 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
           itemData = this._createItemData('weapon', header);
           itemData.system.isVehicular = true;
           itemData.system.equipStatus = constants.EQUIP_STATE.EQUIPPED;
-          return CONFIG.Item.documentClass.create(itemData, {
+          return itemCls.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
         default:
           itemData = this._createItemData(type, header);
-          return CONFIG.Item.documentClass.create(itemData, {
+          return itemCls.create(itemData, {
             renderSheet: true,
             parent: this.actor,
           });
@@ -132,10 +129,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
       .on('click', () => this.actor.rollManeuverCheck());
   }
 
-  /**
-   * @override
-   */
-  async getData() {
+  override async getData() {
     const data = await super.getData();
 
     data.config = SWADE;
