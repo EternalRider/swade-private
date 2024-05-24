@@ -1,11 +1,14 @@
 import InfraVisionFilter from './InfravisionFilter';
 
 export default class DetectionModeInfravision extends DetectionMode {
-  static override getDetectionFilter() {
+  static override getDetectionFilter(): PIXI.Filter {
     return (this._detectionFilter ??= InfraVisionFilter.create());
   }
 
-  override _canDetect(visionSource, target) {
+  override _canDetect(
+    visionSource: VisionSource,
+    target: PlaceableObject,
+  ): boolean {
     // See/Sense Heat can ONLY detect warm tokens, ignoring those that are cold-bodied
     const tgt = target?.document;
     const coldBodied =
