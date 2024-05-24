@@ -26,9 +26,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
-- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
 - Added new default action deck provided by PEG. This deck is available as a preset in the Cards creation dialog. (#1115) **by @jpmeehan5**
+- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
+- Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+- Added a tooltip to the character name field on sheets to be able to read long character names. **by @mhilbrunner**
+- Added AP as an additional field to damage actions that works as an override. (#720) **by @gunnar.busch**
+- Updated Translations
 
 ### Changed
 
@@ -37,12 +40,23 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The `Ignore` checkbox in the Roll Dialog has been flipped to be an `Active` checkbox to avoid confusion. (#1111) **by @florad92**
 - The topmost roll formula in the Roll Dialog has been removed as it was not adding any useful information. (#1111) **by @florad92**
 - `SwadeActor#toggleActiveEffect` now also accepts a status ID as the first argument. (#1125) **by @florad92**
+- Groups followers under leaders before combat begins. (#1087) **by @kristianserrano**
+- The Combat Tracker now properly scrolls to the current turn whenever the Combat Tracker is updated. (#1098) **by @kristianserrano**
+- Changes the Combat Tracker initiative button labels from "Roll" to "Deal". This is Savage Worlds after all! **by @kristianserrano**
+- Players without permissions no longer see the names of actors they don't have permissions for when their image is shared from a sheet. (#1112) **by @mhilbrunner**
 
 ### Fixed
 
 - Resolved a bug involving Joker detection for unlinked tokens. **by @jpmeehan5**
 - The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
 - Single reloads should no longer fail when no ammo is set while reloading from the inventory is disabled. (#1120) **by @florad92**
+- Fixed a bug where a logged out player could cause their bennies to go to the GM during Joker's Wild (#1071) **by @jpmeehan5 and @michaeldougherty1976**
+- Fixed some hardcoded i18n strings **by @mhilbrunner**
+- Fixed errors in edges. (#1108) **by @xphenomen**
+- Fixed unfollowers not being able to draw cards because the previously assigned `initiative` value remained. **by @kristianserrano**
+- Fixes `hasRolled` (i.e., has drawn initiative) always being `true` even when it wasn't. **by @kristianserrano**
+- Fixes an interrupting Combatant's `initiative` value not being set accurately when acting after the current Combatant.. **by @kristianserrano**
+- Fixed Items with only Macro Actions not displaying the Actions in the sheet. **by @kristianserrano**
 
 ## 3.3.11
 
