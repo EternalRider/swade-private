@@ -1,7 +1,9 @@
 import { AuraData } from '../../interfaces/AuraData.interface';
 import SwadeToken from './SwadeToken';
 
-export class AuraPointSource extends PointSource {
+export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMixin(
+  foundry.canvas.sources.BaseEffectSource,
+) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static sourceType = 'light';
   graphics!: PIXI.Graphics;
