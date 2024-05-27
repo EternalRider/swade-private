@@ -202,9 +202,9 @@ SWADE:
     benötigten Karten verfügbar
   OldCard: Alte Karte
   ActionCard: Aktionskarte
-  ConvictionActivate: aktiviert Entschlossenheit!
+  ConvictionActivate: '{name} aktiviert Entschlossenheit!'
   ConvictionExtend: Entschlossenheit einsetzen?
-  ConvictionEnd: schwankt in der Entschlossenheit
+  ConvictionEnd: '{name} schwankt in der Entschlossenheit'
   NoBennies: Nicht genug Bennys!
   GM: Spielleitung
   Vehicles: Fahrzeuge
@@ -958,6 +958,8 @@ SWADE:
     RevertRoundContent: Zur letzten Runde zurückkehren?
     RedrawDialog:
       Content: Frei oder für Benny neue Karte ziehen?
+    DealAll: Alle austeilen
+    DealNPC: NSCs austeilen
   GlobalMod:
     Trait: Alle Eigenschaften
     Spirit: Willenskraft und Wil.-Fertigkeiten
@@ -988,7 +990,7 @@ SWADE:
     Hand: 'Angesagtes Ziel: Hand'
   HindranceSeverity:
     Either: Leicht/Schwer
-    Label: Schweregrad-Optionen
+    Label: Schweregrad
     Major: Nur Schwer
     Minor: Nur Leicht
   ModAttack: Angriff-Modifikatoren
@@ -1104,6 +1106,10 @@ SWADE:
   ChaseReset: Deck "{deck}" zurückgesetzt.
   DialogConfirmPrompt: Sicher?
   ConvictionExtendPrompt: Benny ausgeben, um Entschlossenheit zu verlängern?
+  SettingConfigurator:
+    WorldCompendiums: Weltkompendien
+    WorldTables: Welttabellen
+  ApOver: Aktion Panzerbrechend
 TYPES:
   Actor:
     Character: Charakter

@@ -1,8 +1,4 @@
 <form autocomplete='off'>
-  <fieldset class='formula'>
-    <legend>{{localize 'SWADE.RollNoun'}}</legend>
-    <div class='input' role='textbox'>{{baseDice}}</div>
-  </fieldset>
   {{#if isTraitRoll}}
     <fieldset class='flexrow'>
       <legend>{{localize 'SWADE.MAPenalty.Label'}}</legend>
@@ -38,7 +34,7 @@
     <header class='modifier-entry header'>
       <div>{{localize 'SWADE.Name'}}</div>
       <div>{{localize 'SWADE.Mod.Value'}}</div>
-      <div>{{localize 'SWADE.Mod.Ignore'}}</div>
+      <div>{{localize 'SWADE.Mod.Active'}}</div>
     </header>
     <ul class='modifiers'>
       {{#each modifiers}}
@@ -49,7 +45,7 @@
             type='checkbox'
             data-index={{@index}}
             name='modifiers.{{@index}}.ignore'
-            {{checked ignore}}
+            {{checked (not ignore)}}
           />
         </li>
       {{else}}

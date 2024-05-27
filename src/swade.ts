@@ -46,7 +46,7 @@ import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
-import { SwadeChatLog } from './module/sidebar/SwadeChatLog';
+import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
@@ -136,6 +136,11 @@ Hooks.once('init', () => {
 
   //register card presets
   CONFIG.Cards.presets = {
+    actionDeck: {
+      label: 'SWADE.ActionDeckPresetPEG',
+      src: 'systems/swade/cards/action-deck-peg.json',
+      type: 'deck',
+    },
     pokerLight: {
       label: 'SWADE.ActionDeckPresetLight',
       src: 'systems/swade/cards/action-deck-light.json',
@@ -265,7 +270,8 @@ Hooks.once('init', () => {
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
-  CONFIG.Dice.rolls.push(SwadeRoll, TraitRoll, DamageRoll);
+  CONFIG.Dice.rolls.unshift(SwadeRoll);
+  CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
@@ -321,6 +327,11 @@ Hooks.on(
   'getCompendiumDirectoryEntryContext',
   SwadeCoreHooks.onGetCompendiumDirectoryEntryContext,
 );
+
+/* ------------------------------------ */
+/* Update Hooks              	          */
+/* ------------------------------------ */
+Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 
 /* ------------------------------------ */
 /* System Hooks              	          */

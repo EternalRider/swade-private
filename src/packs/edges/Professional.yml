@@ -13,8 +13,9 @@ system:
       value: 4
       combinator: and
     - type: other
+      label: maximum die type possible in affected Trait
       selector: ''
-      value: maximum die type possible in affected Trait
+      value: ''
       combinator: and
   swid: professional
 sort: 100001

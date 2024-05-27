@@ -226,7 +226,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   async actNow() {
-    if (!this.parent || !game.user.isGM) return;
+    if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
     let targetCombatant = this.parent.combatant as SwadeCombatant;
     if (this.id === targetCombatant?.id) {
@@ -263,12 +263,11 @@ export default class SwadeCombatant extends Combatant {
   }
 
   async actAfterCurrentCombatant() {
-    if (!this.parent || !game.user.isGM) return;
+    if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
-      initiative:
-        currentCombatant?.cardValue + currentCombatant?.suitValue / 10 - 0.0001,
+      initiative: currentCombatant?.initiative - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,
@@ -334,6 +333,7 @@ export default class SwadeCombatant extends Combatant {
     )
       return;
     await this.#createJokersWildMessage();
+    // TODO: This is actually going to be a collection, rather than an array
     const combatants = this.parent.combatants as SwadeCombatant[];
     const isTokenHostile =
       this.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
@@ -367,7 +367,11 @@ export default class SwadeCombatant extends Combatant {
   async #triggerBennies(combatants: SwadeCombatant[]) {
     for (const c of combatants) {
       if (c.actor?.isOwner) await c.actor?.getBenny();
-      else game.swade.sockets.giveBenny([firstOwner(this.actor)?.id as string]);
+      else
+        game.swade.sockets.giveBenny(
+          [firstOwner(c.actor)?.id as string],
+          [c.actor.uuid as string],
+        );
     }
   }
 

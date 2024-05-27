@@ -1,9 +1,7 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
 import { constants } from './constants';
 import { TraitRoll } from './dice/TraitRoll';
 import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './documents/actor/SwadeActor';
-import { getStatusEffectDataById } from './util';
 
 /** @internal */
 export function registerEffectCallbacks() {
@@ -17,8 +15,7 @@ export function registerEffectCallbacks() {
 async function wildAttack(effect: SwadeActiveEffect) {
   const parent = effect.parent;
   if (!(parent instanceof SwadeActor)) return;
-  const data = getStatusEffectDataById('vulnerable') as StatusEffect;
-  await parent.toggleActiveEffect(data);
+  await parent.toggleActiveEffect('vulnerable');
   await effect.delete();
 }
 
@@ -189,10 +186,9 @@ async function bleedOut(effect: SwadeActiveEffect) {
     await parent.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 
     //set overlay
-    const data = getStatusEffectDataById(
-      CONFIG.specialStatusEffects.DEFEATED,
-    ) as StatusEffect;
-    await parent.toggleActiveEffect(data, { overlay: true });
+    await parent.toggleActiveEffect(CONFIG.specialStatusEffects.DEFEATED, {
+      overlay: true,
+    });
 
     //mark combatant defeated in turn tracker
     const tokens = parent.getActiveTokens();

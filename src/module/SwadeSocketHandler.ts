@@ -1,4 +1,5 @@
-import SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
+import type SwadeActiveEffect from './documents/active-effect/SwadeActiveEffect';
+import type SwadeActor from './documents/actor/SwadeActor';
 import { isFirstGM, isFirstOwner } from './util';
 
 export default class SwadeSocketHandler {
@@ -81,13 +82,19 @@ export default class SwadeSocketHandler {
     if (isFirstGM()) combat.nextRound();
   }
 
-  giveBenny(users: string[]) {
-    this.emit<GiveBenniesEvent>({ type: 'giveBennies', users });
+  giveBenny(users: string[], actors?: string[]) {
+    this.emit<GiveBenniesEvent>({ type: 'giveBennies', users, actors });
   }
 
   async #onGiveBenny(data: GiveBenniesEvent) {
     if (data.users.includes(game.userId!)) {
-      await game.user?.getBenny();
+      // If specific actors were specified, only give bennies to those actors instead of the user's default, and also don't give bennies to the GM
+      if (data.actors) {
+        for (const a of data.actors) {
+          const actor = fromUuidSync(a) as SwadeActor;
+          actor.getBenny();
+        }
+      } else await game.user?.getBenny();
     }
   }
 
@@ -137,4 +144,6 @@ interface PromptInitiativeEvent extends EventData {
 
 interface GiveBenniesEvent extends EventData {
   users: string[];
+  /** An array of Actor UUIDs */
+  actors?: string[];
 }

@@ -247,9 +247,9 @@ SWADE:
   OldCard: Ancienne carte
   ActionCard: Carte d'action
   ConvictionActive: Conviction active
-  ConvictionActivate: Fait appel à sa conviction !
+  ConvictionActivate: '{name} fait appel à sa conviction !'
   ConvictionExtend: Voulez-vous maintenir votre conviction ?
-  ConvictionEnd: vacille dans sa conviction
+  ConvictionEnd: '{name} vacille dans sa conviction'
   NoBennies: Vous n'avez plus de jetons !
   SBT: Petit gabarit
   MBT: Gabarit moyen
@@ -302,7 +302,7 @@ SWADE:
   TraitRolls: Jets de trait
   Trait: Trait
   AltTrait: Trait alternatif
-  ClickSuggestions: Cliquez pour les suggestions
+  ClickSuggestions: '[Cliquez] pour les suggestions'
   Quick: Vif
   BonusDamage: Bonus aux dégâts
   Joker: Joker
@@ -338,7 +338,7 @@ SWADE:
   WealthSelectionNoneOther: Aucun/Autre
   Modifiers: Modificateurs
   ActionTraitMod: Modificateur de trait d'action
-  ActionDmgMod: Modificateur de dégâts
+  ActionDmgMod: Modificateur de dégâts pour les actions
   ItemTraitMod: Modificateur de trait d'objet
   ItemDmgMod: Modification d'objet de dégâts
   Duplicates: Doublons trouvés
@@ -1290,6 +1290,12 @@ SWADE:
         Content: Vous pouvez dresser la liste de vos améliorations ici. Il s'agit
           d'une entrée en rendu HTML, alors n'hésitez pas à utiliser une liste à puces,
           un tableau ou tout autre système d'organisation qui vous semble logique.
+    ERROR:
+      ActorCreatePermission: Cette présentation nécessite l'autorisation de créer
+        des acteurs
+      SettingPermission: Cette Présentation nécessite de modifier les paramètres de
+        l'univers
+      JournalCreatePermission: Cette présentation nécessite la création d'un journal
   Magazine:
     NoneLoaded: Pas de chargeur en place
     Select: Choisissez un chargeur
@@ -1370,7 +1376,7 @@ SWADE:
   InnatePower: Pouvoir inné
   RefreshOnly: Mise à jour
   NotOwnedError: Vous devez avoir les droits sur cet objet ou acteur pour le faire
-  GrantsItemsError: La mise à jour ne fonctionne pas pour les objets qui en donnent
+  GrantsItemsError: La mise à jour ne fonctionne pas pour les éléments qui en donnent
     d'autres
   NoUpdatedItemFound: Aucun objet éligible à une mise à jour n'a été trouvé
   DiscardMagazine: Suppression du chargeur vide
@@ -1428,6 +1434,9 @@ SWADE:
   ChaseNoDeck: Veuillez choisir un jeu de cartes !
   ChaseReset: Le jeu de cartes "{deck}" a été réinitialisé.
   DialogConfirmPrompt: Êtes-vous sûr ?
+  SettingConfigurator:
+    WorldTables: Tables sur l'univers
+    WorldCompendiums: Compendiums de l'univers
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ

@@ -98,6 +98,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       new ImagePopout(this.item.img, {
         title: this.item.name!,
         shareable: this.item?.isOwner ?? game.user?.isGM,
+        uuid: this.item.uuid,
       }).render(true);
     });
 
@@ -625,7 +626,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
       let majorMinor = '';
       if (val.type === 'hindrance') {
-        if (val.data?.major ?? val.system.major) {
+        if (val.system.isMajor) {
           majorMinor = game.i18n.localize('SWADE.Major');
         } else {
           majorMinor = game.i18n.localize('SWADE.Minor');
@@ -676,7 +677,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         missing: !item,
         major:
           foundry.utils.getProperty(grant.mutation, 'system.major') ??
-          foundry.utils.getProperty(item, 'system.major'),
+          foundry.utils.getProperty(item, 'system.isMajor'),
       });
     }
     return enriched;

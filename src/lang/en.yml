@@ -12,7 +12,9 @@ SWADE:
   ModHint: Make sure your modifier includes a + or -
   ActionDeckPresetLight: Action Deck (Light)
   ActionDeckPresetDark: Action Deck (Dark)
+  ActionDeckPresetPEG: Action Deck (PEG)
   Name: Name
+  disabledAE: Disabled due to Active Effect
   Tough: Toughness
   Ancestry: Ancestry
   Archetype: Archetype
@@ -85,6 +87,8 @@ SWADE:
   EdEdge: Edit Edge
   EdHind: Edit Hindrance
   Ed: Edit
+  EdF: Edit {item}
+  EdRightClick: '[Right Click] to Edit'
   Del: Delete
   Arcane: Arcane
   InnatePower: Innate Power
@@ -140,6 +144,7 @@ SWADE:
   Protection: Protection
   Dmg: Damage
   DmgOver: Action Damage
+  ApOver: Action Armor Piercing
   Resist: Resist
   ResistRolls: Resistance Rolls
   MacroActor:
@@ -475,6 +480,7 @@ SWADE:
     Value: Value
     Ignore: Ignore?
     None: No modifiers at the moment
+    Active: Active
   Illumination:
     _name: Illumination
     Dim: Dim Light
@@ -762,6 +768,12 @@ SWADE:
       Hint: >-
         Checking this will enable the Heroes Never Die Setting Rule when
         determining incapacitation
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Adventure Edition Core Rules
+        SWPF: Pathfinder®️ for Savage Worlds
+      Name: Armor Stacking
+      Hint: Select which rules to use when handling stacking armor
   EffectCallbacks:
     Shaken:
       RollSpirit: Roll Spirit
@@ -829,6 +841,7 @@ SWADE:
     Use: Use
     Consumables: Consumables
     NotEnoughCharges: Not enough charges!
+    ChargesUsed: <p>{charges} charge(s) used on <em>{name}</em></p>
   EmptyAncestralAbilitiesHint: >-
     <strong>Warning:</strong> This feature is being deprecated in favor of Item
     grants. If you are creating a new {ancestry} or {archetype}, drag & drop
@@ -1433,6 +1446,8 @@ SWADE:
     Hint: Drag & Drop Combatants to set up the surprise round
     Unassigned: Unassigned
   Combat:
+    DealAll: Deal All
+    DealNPC: Deal NPCs
     StartSurpriseRound: Start Surprise Round
     AdvanceRoundTitle: Advance to next round?
     AdvanceRoundContent: Do you want to advance to the next round?
