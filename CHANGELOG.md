@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.4.1
+
+### Fixed
+
+- Fixed filenames for the PEG Action deck for operating systems where file names are case-sensitive. () **by @florad92**
+
 ## 3.4.0
 
 ### Added
