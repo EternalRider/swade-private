@@ -126,7 +126,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return foundry.utils.(this, 'system.isArcaneDevice') as boolean;
+    return foundry.utils.getProperty(this, 'system.isArcaneDevice') as boolean;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
@@ -406,7 +406,7 @@ export default class SwadeItem extends Item {
     const hasReloadButton = !!this.system.hasReloadButton;
 
     const additionalActions: Record<string, ItemAction> =
-    foundry.utils.getProperty(this, 'system.actions.additional') || {};
+      foundry.utils.getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === constants.ACTION_TYPE.TRAIT,
@@ -800,7 +800,10 @@ export default class SwadeItem extends Item {
 
     if (this.parent && hasProperty(changed, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
-      const newState = foundry.utils.getProperty(changed, 'system.equipStatus') as EquipState;
+      const newState = foundry.utils.getProperty(
+        changed,
+        'system.equipStatus',
+      ) as EquipState;
       const updates = this.effects.map((ae) => {
         return {
           _id: ae.id,
@@ -849,7 +852,10 @@ export default class SwadeItem extends Item {
     if (!context.isItemGrant) {
       for (const item of items) {
         const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
-        const equipStatus = foundry.utils.getProperty(item, 'system.equipStatus');
+        const equipStatus = foundry.utils.getProperty(
+          item,
+          'system.equipStatus',
+        );
         const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
           item.type,
         );
