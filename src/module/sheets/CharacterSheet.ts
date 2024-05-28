@@ -422,7 +422,7 @@ export default class CharacterSheet extends ActorSheet {
     const itemTypes: Record<string, SwadeItem[]> = {};
     for (const item of items) {
       const type = item.type;
-      if (!itemTypes[type]) itemTypes[type] = [];
+      itemTypes[type] ??= [];
       itemTypes[type].push(item);
     }
 
@@ -694,7 +694,7 @@ export default class CharacterSheet extends ActorSheet {
       const val: SheetEffect = {
         id: effect.id!,
         name: effect.name,
-        icon: effect.icon,
+        icon: effect.img,
         disabled: effect.disabled,
         description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,

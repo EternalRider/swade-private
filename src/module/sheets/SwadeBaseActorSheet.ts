@@ -5,6 +5,7 @@ import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 /** @noInheritDoc */
 export default class SwadeBaseActorSheet extends ActorSheet {
@@ -181,10 +182,14 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
 
-    data.itemsByType = {};
-    for (const type of game.system.documentTypes.Item) {
-      data.itemsByType[type] = data.items.filter((i) => i.type === type) || [];
+    const itemsByType: Record<string, SwadeItem[]> = {};
+    for (const item of this.actor.items) {
+      const type = item.type;
+      itemsByType[type] ??= [];
+      itemsByType[type].push(item);
     }
+
+    data.itemsByType = itemsByType;
 
     data.sortedSkills = this.actor.items
       .filter((i) => i.type === 'skill')
@@ -193,11 +198,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     if (this.actor.type !== 'vehicle') {
       //Encumbrance
       data.inventoryWeight = this._calcInventoryWeight([
-        ...data.itemsByType['gear'],
-        ...data.itemsByType['weapon'],
-        ...data.itemsByType['armor'],
-        ...data.itemsByType['shield'],
-        ...data.itemsByType['consumable'],
+        ...(data.itemsByType['gear'] ?? []),
+        ...(data.itemsByType['weapon'] ?? []),
+        ...(data.itemsByType['armor'] ?? []),
+        ...(data.itemsByType['shield'] ?? []),
+        ...(data.itemsByType['consumable'] ?? []),
       ]);
       data.maxCarryCapacity = this.actor.calcMaxCarryCapacity();
 
@@ -212,7 +217,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       data.activeArcane = this.options['activeArcane'];
       const arcanes = new Array<string>();
       const powers = data.itemsByType.power;
-      powers.forEach((pow: any) => {
+      powers?.forEach((pow: any) => {
         const arcane: string = pow.system.arcane;
         if (!arcane) return;
         if (!arcanes.find((el) => el === arcane)) {
