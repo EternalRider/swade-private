@@ -132,7 +132,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     jquery.find('.action-delete').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.actionId;
-      const action = getProperty(
+      const action = foundry.utils.getProperty(
         this.item,
         `system.actions.additional.${id}`,
       ) as ItemAction;
@@ -787,7 +787,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     doc: SwadeActiveEffect,
     toggle: string,
   ): Record<string, unknown> {
-    const oldVal = !!getProperty(doc, toggle);
+    const oldVal = !!foundry.utils.getProperty(doc, toggle);
     return { [toggle]: !oldVal };
   }
 

@@ -290,7 +290,8 @@ export default class SwadeCoreHooks {
       const ids: string[] = content
         .filter(
           (a: SwadeActor) =>
-            getProperty(a, 'system.wildcard') && a.name !== '#[CF_tempEntity]',
+            foundry.utils.getProperty(a, 'system.wildcard') &&
+            a.name !== '#[CF_tempEntity]',
         )
         .map((actor) => actor._id);
 
@@ -654,7 +655,7 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
   ) {
     if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
-      const activeTab = getProperty(sheet, '_tabs')[0].active;
+      const activeTab = foundry.utils.getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'crew') {
         const droppedActor = await fromUuid(data.uuid);
         if (droppedActor.type === 'vehicle') return;

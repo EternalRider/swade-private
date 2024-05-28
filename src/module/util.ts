@@ -22,7 +22,7 @@ export function notificationExists(string: string, localize = true): boolean {
 /** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
-  const defaultValue = getProperty(
+  const defaultValue = foundry.utils.getProperty(
     SWADE,
     'diceConfig.flags.dsnShowBennyAnimation.default',
   ) as boolean;

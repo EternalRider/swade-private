@@ -143,7 +143,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
-      const statData = getProperty(
+      const statData = foundry.utils.getProperty(
         this.actor,
         `system.additionalStats.${stat}`,
       ) as AdditionalStat;
@@ -370,7 +370,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       this.actor.type === 'vehicle'
         ? `system.${targetProperty}`
         : `system.stats.${targetProperty}`;
-    const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
+    const targetPropertyValue = foundry.utils.getProperty(
+      this.actor,
+      targetPropertyPath,
+    );
 
     const title = `${(game.i18n.format('SWADE.EdF'), { item: this.actor.name + ' ' + targetLabel })}`;
 
@@ -431,7 +434,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor, input.name) + delta;
+      input.value = foundry.utils.getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }

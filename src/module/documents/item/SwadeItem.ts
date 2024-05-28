@@ -126,7 +126,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this, 'system.isArcaneDevice') as boolean;
+    return foundry.utils.(this, 'system.isArcaneDevice') as boolean;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
@@ -170,7 +170,7 @@ export default class SwadeItem extends Item {
 
   get grantsItems(): ItemGrant[] {
     if (!this.canGrantItems) return [];
-    return getProperty(this, 'system.grants') as ItemGrant[];
+    return foundry.utils.getProperty(this, 'system.grants') as ItemGrant[];
   }
 
   get hasGranted(): string[] {
@@ -189,10 +189,10 @@ export default class SwadeItem extends Item {
 
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    if (getProperty(this, 'system.actions.traitMod')) {
+    if (foundry.utils.getProperty(this, 'system.actions.traitMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this, 'system.actions.traitMod'),
+        value: foundry.utils.getProperty(this, 'system.actions.traitMod'),
       });
     }
     if (this.system.traitModifiers)
@@ -355,7 +355,7 @@ export default class SwadeItem extends Item {
         : new Array<ItemChatCardChip>();
 
     //Additional actions
-    const itemActions = getProperty(
+    const itemActions = foundry.utils.getProperty(
       this,
       'system.actions.additional',
     ) as Record<string, ItemAction>;
@@ -401,12 +401,12 @@ export default class SwadeItem extends Item {
     const hasMagazine =
       hasAmmoManagement &&
       this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
-    const hasDamage = !!getProperty(this, 'system.damage');
-    const hasTrait = !!getProperty(this, 'system.actions.trait');
+    const hasDamage = !!foundry.utils.getProperty(this, 'system.damage');
+    const hasTrait = !!foundry.utils.getProperty(this, 'system.actions.trait');
     const hasReloadButton = !!this.system.hasReloadButton;
 
     const additionalActions: Record<string, ItemAction> =
-      getProperty(this, 'system.actions.additional') || {};
+    foundry.utils.getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === constants.ACTION_TYPE.TRAIT,
@@ -436,7 +436,7 @@ export default class SwadeItem extends Item {
       hasTrait,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this, 'system.actions.trait'),
+      trait: foundry.utils.getProperty(this, 'system.actions.trait'),
       showTraitRolls: hasTrait || hasTraitActions,
       hasResistRolls,
       hasMacros,
@@ -800,7 +800,7 @@ export default class SwadeItem extends Item {
 
     if (this.parent && hasProperty(changed, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
-      const newState = getProperty(changed, 'system.equipStatus') as EquipState;
+      const newState = foundry.utils.getProperty(changed, 'system.equipStatus') as EquipState;
       const updates = this.effects.map((ae) => {
         return {
           _id: ae.id,
@@ -848,8 +848,8 @@ export default class SwadeItem extends Item {
   ) {
     if (!context.isItemGrant) {
       for (const item of items) {
-        const grantOn = getProperty(item, 'system.grantOn');
-        const equipStatus = getProperty(item, 'system.equipStatus');
+        const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
+        const equipStatus = foundry.utils.getProperty(item, 'system.equipStatus');
         const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
           item.type,
         );
@@ -874,14 +874,14 @@ export default class SwadeItem extends Item {
   ) {
     super._onUpdate(changed, options, userId);
     if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
-    const grantOn = getProperty(this, 'system.grantOn');
+    const grantOn = foundry.utils.getProperty(this, 'system.grantOn');
     if (
       this.canGrantItems &&
       this.parent &&
       grantOn &&
       hasProperty(changed, 'system.equipStatus')
     ) {
-      const equipStatus = getProperty(this, 'system.equipStatus');
+      const equipStatus = foundry.utils.getProperty(this, 'system.equipStatus');
       const shouldGrant =
         (grantOn === constants.GRANT_ON.CARRIED &&
           equipStatus >= constants.EQUIP_STATE.CARRIED) ||

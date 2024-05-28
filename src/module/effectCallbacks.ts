@@ -112,9 +112,10 @@ async function removeShaken(effect: SwadeActiveEffect) {
         if (gmHasNoBennies) gmButton?.prop('disabled', true);
       },
     };
-    const options: DialogOptions = mergeObject(Dialog.defaultOptions, {
-      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
-    });
+    const options: DialogOptions = foundry.utils.mergeObject(
+      Dialog.defaultOptions,
+      { classes: ['dialog', 'dialog-buttons-column', 'swade-app'] },
+    );
     new Dialog(data, options).render(true);
   });
 }

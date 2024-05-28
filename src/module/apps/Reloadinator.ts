@@ -129,8 +129,14 @@ export default class Reloadinator extends Application {
 
     for (const mag of filteredMags) {
       if (mag.type !== 'consumable') continue;
-      const charges = getProperty(mag, 'system.charges.value') as number;
-      const capacity = getProperty(mag, 'system.charges.max') as number;
+      const charges = foundry.utils.getProperty(
+        mag,
+        'system.charges.value',
+      ) as number;
+      const capacity = foundry.utils.getProperty(
+        mag,
+        'system.charges.max',
+      ) as number;
       const isBattery =
         mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
 

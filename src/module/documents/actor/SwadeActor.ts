@@ -95,7 +95,10 @@ export default class SwadeActor extends Actor {
                   scaleY: art.token.scale,
                 },
               };
-        data.prototypeToken = mergeObject(data.prototypeToken ?? {}, tokenArt);
+        data.prototypeToken = foundry.utils.mergeObject(
+          data.prototypeToken ?? {},
+          tokenArt,
+        );
       }
     }
     super(data, ctx);
