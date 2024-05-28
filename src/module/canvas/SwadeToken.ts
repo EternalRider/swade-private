@@ -35,14 +35,14 @@ export default class SwadeToken extends Token {
     data: ObjectAttributeBar,
   ): void {
     const { value, max } = data;
-    const colorPct = Math.clamped(value, 0, max) / max;
+    const colorPct = Math.clamp(value, 0, max) / max;
     const woundColor = SwadeActor.getWoundsColor(value, max);
 
     // Determine the container size (logic borrowed from core)
     const w = this.w;
     let h = Math.max(canvas!.dimensions!.size / 12, 8);
     if (this.document.height >= 2) h *= 1.6;
-    const stroke = Math.clamped(h / 8, 1, 2);
+    const stroke = Math.clamp(h / 8, 1, 2);
 
     //set up bar container
     this._resetVitalsBar(bar, w, h, stroke);
@@ -64,14 +64,14 @@ export default class SwadeToken extends Token {
   ): void {
     const { value, max } = data;
 
-    const colorPct = Math.clamped(value, 0, max) / max;
+    const colorPct = Math.clamp(value, 0, max) / max;
     const woundColor = SwadeActor.getFatigueColor(value, max);
 
     // Determine the container size (logic borrowed from core)
     const w = this.w;
     let h = Math.max(canvas!.dimensions!.size / 12, 8);
     if (this.document.height >= 2) h *= 1.6;
-    const stroke = Math.clamped(h / 8, 1, 2);
+    const stroke = Math.clamp(h / 8, 1, 2);
 
     //set up bar container
     this._resetVitalsBar(bar, w, h, stroke);

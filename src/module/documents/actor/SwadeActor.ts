@@ -758,19 +758,28 @@ export default class SwadeActor extends Actor {
   calcWoundPenalties(ignoreAll: boolean = false): number {
     if (ignoreAll) return 0;
     let total = 0;
-    const wounds = getProperty(this, 'system.wounds.value') as number;
-    const ignoredWounds = getProperty(this, 'system.wounds.ignored') as number;
+    const wounds = foundry.utils.getProperty(
+      this,
+      'system.wounds.value',
+    ) as number;
+    const ignoredWounds = foundry.utils.getProperty(
+      this,
+      'system.wounds.ignored',
+    ) as number;
 
     //clamp the value between 0 and the maximum
-    total = Math.clamped(wounds - ignoredWounds, 0, 3);
+    total = Math.clamp(wounds - ignoredWounds, 0, 3);
     return total * -1;
   }
 
   /** Calculates the total Fatigue Penalties */
   calcFatiguePenalties(): number {
     let total = 0;
-    const fatigue = getProperty(this, 'system.fatigue.value') as number;
-    const ignoredFatigue = getProperty(
+    const fatigue = foundry.utils.getProperty(
+      this,
+      'system.fatigue.value',
+    ) as number;
+    const ignoredFatigue = foundry.utils.getProperty(
       this,
       'system.fatigue.ignored',
     ) as number;
@@ -782,7 +791,10 @@ export default class SwadeActor extends Actor {
 
   calcStatusPenalties(): number {
     let retVal = 0;
-    const isDistracted = getProperty(this, 'system.status.isDistracted');
+    const isDistracted = foundry.utils.getProperty(
+      this,
+      'system.status.isDistracted',
+    );
     if (isDistracted) {
       retVal -= 2;
     }
@@ -840,7 +852,7 @@ export default class SwadeActor extends Actor {
   calcMaxCarryCapacity(): number {
     if (this.system instanceof VehicleData) return 0;
     const unit = game.settings.get('swade', 'weightUnit');
-    const strength = deepClone(this.system.attributes.strength);
+    const strength = foundry.utils.deepClone(this.system.attributes.strength);
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
     strength.die.sides += stepAdjust;
     //bound the adjusted strength die to 12
@@ -1198,7 +1210,7 @@ export default class SwadeActor extends Actor {
 
     if (parryBaseSkill) {
       sources.push({
-        label: getProperty(parryBaseSkill, 'name'),
+        label: foundry.utils.getProperty(parryBaseSkill, 'name'),
         value: parryTotal,
       });
     } else {
