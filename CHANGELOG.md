@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 3.4.1
+
+### Fixed
+
+- Fixed filenames for the PEG Action deck for operating systems where file names are case-sensitive. This will not affect any existing action decks (#1133) **by @florad92**
+- The trait roll dialog now works as labeled. (#1135) **by @jpmeehan5**
+- The `jokerBonus` flag now correctly also modifies damage rolls. (#1137) **by @jpmeehan5**
+
 ## 3.4.0
 
 ### Added
