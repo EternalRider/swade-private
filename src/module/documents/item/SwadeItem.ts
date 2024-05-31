@@ -283,7 +283,7 @@ export default class SwadeItem extends Item {
     if (this.parent?.hasJoker) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Joker'),
-        value: '+2',
+        value: this.parent.getFlag('swade', 'jokerBonus') ?? 2,
       });
     }
 
