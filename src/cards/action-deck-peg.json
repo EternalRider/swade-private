@@ -1104,7 +1104,7 @@
       "faces": [
         {
           "name": "Ace of Clubs",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_ace.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_Ace.png",
           "text": ""
         }
       ],
@@ -1134,7 +1134,7 @@
       "faces": [
         {
           "name": "Ace of Diamonds",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_ace.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_Ace.png",
           "text": ""
         }
       ],
@@ -1164,7 +1164,7 @@
       "faces": [
         {
           "name": "Ace of Hearts",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_ace.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_Ace.png",
           "text": ""
         }
       ],
@@ -1194,7 +1194,7 @@
       "faces": [
         {
           "name": "Ace of Spades",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_ace.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_Ace.png",
           "text": ""
         }
       ],
@@ -1256,7 +1256,7 @@
       "faces": [
         {
           "name": "Jack of Clubs",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_jack.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_Jack.png",
           "text": ""
         }
       ],
@@ -1286,7 +1286,7 @@
       "faces": [
         {
           "name": "Jack of Diamonds",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_jack.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_Jack.png",
           "text": ""
         }
       ],
@@ -1316,7 +1316,7 @@
       "faces": [
         {
           "name": "Jack of Hearts",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_jack.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_Jack.png",
           "text": ""
         }
       ],
@@ -1346,7 +1346,7 @@
       "faces": [
         {
           "name": "Jack of Spades",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_jack.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_Jack.png",
           "text": ""
         }
       ],
@@ -1376,7 +1376,7 @@
       "faces": [
         {
           "name": "King of Clubs",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_king.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_King.png",
           "text": ""
         }
       ],
@@ -1406,7 +1406,7 @@
       "faces": [
         {
           "name": "King of Diamonds",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_king.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_King.png",
           "text": ""
         }
       ],
@@ -1436,7 +1436,7 @@
       "faces": [
         {
           "name": "King of Hearts",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_king.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_King.png",
           "text": ""
         }
       ],
@@ -1466,7 +1466,7 @@
       "faces": [
         {
           "name": "King of Spades",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_king.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_King.png",
           "text": ""
         }
       ],
@@ -1496,7 +1496,7 @@
       "faces": [
         {
           "name": "Queen of Clubs",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_queen.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_CLUBS_Queen.png",
           "text": ""
         }
       ],
@@ -1526,7 +1526,7 @@
       "faces": [
         {
           "name": "Queen of Diamonds",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_queen.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_DIAMONDS_Queen.png",
           "text": ""
         }
       ],
@@ -1556,7 +1556,7 @@
       "faces": [
         {
           "name": "Queen of Hearts",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_queen.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_HEARTS_Queen.png",
           "text": ""
         }
       ],
@@ -1586,7 +1586,7 @@
       "faces": [
         {
           "name": "Queen of Spades",
-          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_queen.png",
+          "img": "systems/swade/assets/actionDeck/Action_Deck_Cards_SPADES_Queen.png",
           "text": ""
         }
       ],
