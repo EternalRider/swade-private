@@ -22,7 +22,7 @@ export function notificationExists(string: string, localize = true): boolean {
 /** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
-  const defaultValue = getProperty(
+  const defaultValue = foundry.utils.getProperty(
     SWADE,
     'diceConfig.flags.dsnShowBennyAnimation.default',
   ) as boolean;
@@ -229,7 +229,7 @@ export function mapRange(
 ): number {
   if (inMin === inMax || outMin === outMax) return 0;
   const mapped = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  return Math.clamped(mapped, outMin, outMax);
+  return Math.clamp(mapped, outMin, outMax);
 }
 
 /**

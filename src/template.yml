@@ -28,15 +28,12 @@ Card:
   types:
     - poker
     - adventure
-    - base
   templates:
   poker:
     templates: []
     suit: 0
     isJoker: false
   adventure:
-    templates: []
-  base:
     templates: []
 JournalEntryPage:
   types:

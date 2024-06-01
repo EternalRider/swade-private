@@ -50,7 +50,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get statusId() {
-    const [statusId] = getProperty(this, 'statuses') as Set<string>;
+    const [statusId] = foundry.utils.getProperty(
+      this,
+      'statuses',
+    ) as Set<string>;
     return statusId;
   }
 
@@ -199,7 +202,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
-          const source = getProperty(item._source, key);
+          const source = foundry.utils.getProperty(item._source, key);
           foundry.utils.setProperty(item, key, source);
         }
       }

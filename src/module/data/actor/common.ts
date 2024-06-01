@@ -240,7 +240,10 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     //handle advances
     const advances = this.advances;
     if (advances.mode === 'expanded') {
-      const advRaw = getProperty(this._source, 'advances.list') as Advance[];
+      const advRaw = foundry.utils.getProperty(
+        this._source,
+        'advances.list',
+      ) as Advance[];
       const list = new Collection<Advance>();
       advRaw.forEach((adv) => list.set(adv.id, adv));
       const activeAdvances = list.filter((a) => !a.planned).length;

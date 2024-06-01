@@ -207,12 +207,15 @@ export default class CharacterSheet extends ActorSheet {
 
     jquery.find('.armor-display').on('click', () => {
       const armorPropertyPath = 'system.stats.toughness.armor';
-      const armorvalue = getProperty(this.actor, armorPropertyPath);
+      const armorValue = foundry.utils.getProperty(
+        this.actor,
+        armorPropertyPath,
+      );
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
         <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
-        <input name="modifier" value="${armorvalue}" type="number"/>
+        <input name="modifier" value="${armorValue}" type="number"/>
       </div></form>`;
 
       new Dialog({
@@ -240,7 +243,10 @@ export default class CharacterSheet extends ActorSheet {
     });
     jquery.find('.parry-display').on('click', () => {
       const parryPropertyPath = 'system.stats.parry.shield';
-      const parryMod = getProperty(this.actor, parryPropertyPath) as number;
+      const parryMod = foundry.utils.getProperty(
+        this.actor,
+        parryPropertyPath,
+      ) as number;
       const label = game.i18n.localize('SWADE.ShieldBonus');
       const template = `
       <form><div class="form-group">
@@ -372,7 +378,8 @@ export default class CharacterSheet extends ActorSheet {
     for (const item of items) {
       // Basic template rendering data
       const system = item.system;
-      const itemActions = getProperty(system, 'actions.additional') ?? {};
+      const itemActions =
+        foundry.utils.getProperty(system, 'actions.additional') ?? {};
       const actions = new Array<any>();
 
       for (const action in itemActions) {
@@ -383,10 +390,10 @@ export default class CharacterSheet extends ActorSheet {
         });
       }
       const hasDamage =
-        !!getProperty(system, 'damage') ||
+        !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
       const hasTraitRoll =
-        !!getProperty(system, 'actions.trait') ||
+        !!foundry.utils.getProperty(system, 'actions.trait') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.TRAIT);
       const hasMacros = actions.some(
         (a) => a.type === constants.ACTION_TYPE.MACRO,
@@ -415,7 +422,7 @@ export default class CharacterSheet extends ActorSheet {
     const itemTypes: Record<string, SwadeItem[]> = {};
     for (const item of items) {
       const type = item.type;
-      if (!itemTypes[type]) itemTypes[type] = [];
+      itemTypes[type] ??= [];
       itemTypes[type].push(item);
     }
 
@@ -598,7 +605,7 @@ export default class CharacterSheet extends ActorSheet {
     doc: SwadeItem | SwadeActiveEffect,
     toggle: string,
   ): Record<string, boolean> {
-    const oldVal = !!getProperty(doc, toggle);
+    const oldVal = !!foundry.utils.getProperty(doc, toggle);
     return { [toggle]: !oldVal };
   }
 
@@ -687,7 +694,7 @@ export default class CharacterSheet extends ActorSheet {
       const val: SheetEffect = {
         id: effect.id!,
         name: effect.name,
-        icon: effect.icon,
+        icon: effect.img,
         disabled: effect.disabled,
         description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
@@ -747,7 +754,7 @@ export default class CharacterSheet extends ActorSheet {
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
       let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
       modifier = Math.min(modifier * -1, modifier);
-      const actionObj = getProperty(
+      const actionObj = foundry.utils.getProperty(
         item,
         `system.actions.additional.${action}.traitOverride`,
       ) as ItemAction;
@@ -765,9 +772,10 @@ export default class CharacterSheet extends ActorSheet {
       //handle Power Item Card PP adjustment
       const adjustment = button.getAttribute('data-adjust') as string;
       const power = this.actor.items.get(itemId, { strict: true });
-      const arcane = getProperty(power, 'system.arcane') || 'general';
+      const arcane =
+        foundry.utils.getProperty(power, 'system.arcane') || 'general';
       const key = `system.powerPoints.${arcane}.value`;
-      let newPP = getProperty(this.actor, key) as number;
+      let newPP = foundry.utils.getProperty(this.actor, key) as number;
       if (adjustment === 'plus') {
         newPP += parseInt(ppToAdjust, 10);
       } else if (adjustment === 'minus') {
@@ -779,7 +787,7 @@ export default class CharacterSheet extends ActorSheet {
       const adjustment = button.getAttribute('data-adjust') as string;
       const item = this.actor.items.get(itemId)!;
       const key = 'system.powerPoints.value';
-      let newPP = getProperty(item, key);
+      let newPP = foundry.utils.getProperty(item, key);
       if (adjustment === 'plus') {
         newPP += parseInt(arcaneDevicePPToAdjust, 10);
       } else if (adjustment === 'minus') {
@@ -843,7 +851,7 @@ export default class CharacterSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor, input.name) + delta;
+      input.value = foundry.utils.getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }

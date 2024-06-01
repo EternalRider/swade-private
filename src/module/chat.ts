@@ -49,7 +49,7 @@ export function chatListeners(html: JQuery<HTMLElement>) {
       const adjustment = element.getAttribute('data-adjust') as string;
       const item = actor.items.get(itemId, { strict: true });
       const key = 'system.powerPoints.value';
-      const oldPP = getProperty(item, key) as number;
+      const oldPP = foundry.utils.getProperty(item, key) as number;
       if (adjustment === 'plus') {
         await item.update({ [key]: oldPP + parseInt(adPPToAdjust, 10) });
       } else if (adjustment === 'minus') {

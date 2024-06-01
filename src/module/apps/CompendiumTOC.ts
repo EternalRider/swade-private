@@ -324,7 +324,9 @@ export class CompendiumTOC extends Compendium<
       const typeLabel = game.i18n.localize(`TYPES.Item.${type}`);
 
       const [unCategorized, categorized] = items.partition(
-        (i) => i.canHaveCategory && !!getProperty(i, 'system.category'),
+        (i) =>
+          i.canHaveCategory &&
+          !!foundry.utils.getProperty(i, 'system.category'),
       );
 
       //handle the un-categorized things first, which are sorted by type

@@ -8,7 +8,7 @@ export default class WildDie extends Die {
     };
   }
   constructor(termData?: Partial<Die.TermData>) {
-    termData = mergeObject(WildDie.defaultTermData, termData);
+    termData = foundry.utils.mergeObject(WildDie.defaultTermData, termData);
     const user = game.user;
     if (game.dice3d) {
       // Get the user's configured Wild Die data.

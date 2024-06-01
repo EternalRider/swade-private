@@ -2,14 +2,14 @@
 import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs';
 import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
 import { ReloadType } from '../../globals';
+import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
-import type SwadeUser from '../documents/SwadeUser';
-import { Logger } from '../Logger';
 import { MigrationCounter } from '../models/MigrationCounter';
 import { slugify } from '../util';
 import { triggerServersideMigration } from './migrationUtils';
@@ -545,7 +545,10 @@ function _migratePowerEquipToFavorite(data: ItemData, updateData: UpdateData) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
-    updateData['system.favorite'] = getProperty(data, 'system.equipped');
+    updateData['system.favorite'] = foundry.utils.getProperty(
+      data,
+      'system.equipped',
+    );
     updateData['system.-=equipped'] = null;
     updateData['system.-=equippable'] = null;
   }

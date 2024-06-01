@@ -143,7 +143,7 @@ export default class ItemChatCardHelper {
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
-          getProperty(item, 'system.arcaneSkillDie'),
+          foundry.utils.getProperty(item, 'system.arcaneSkillDie'),
         );
         break;
       case 'reload':
@@ -173,7 +173,7 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
   ) {
-    const traitName = getProperty(item, 'system.actions.trait');
+    const traitName = foundry.utils.getProperty(item, 'system.actions.trait');
     if (!item.canExpendResources()) {
       // TODO: Refactor to be more accurate & more general (probably grab from the PP cost box?)
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
@@ -195,10 +195,10 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
   ) {
-    if (getProperty(item, 'system.actions.dmgMod')) {
+    if (foundry.utils.getProperty(item, 'system.actions.dmgMod')) {
       additionalMods.push({
         label: game.i18n.localize('SWADE.ItemDmgMod'),
-        value: getProperty(item, 'system.actions.dmgMod'),
+        value: foundry.utils.getProperty(item, 'system.actions.dmgMod'),
       });
     }
     const roll = await item.rollDamage({ additionalMods });
@@ -219,7 +219,7 @@ export default class ItemChatCardHelper {
     key: string,
     mods: RollModifier[] = [],
   ): Promise<SwadeRoll | null> {
-    const action = getProperty(
+    const action = foundry.utils.getProperty(
       item,
       `system.actions.additional.${key}`,
     ) as ItemAction;
@@ -235,7 +235,8 @@ export default class ItemChatCardHelper {
     ) {
       //set the trait name and potentially override it via the action
       const traitName =
-        action.override || getProperty(item, 'system.actions.trait');
+        action.override ||
+        foundry.utils.getProperty(item, 'system.actions.trait');
 
       //find the trait and either get the skill item or the key of the attribute
       const trait = getTrait(traitName, actor);
@@ -271,7 +272,7 @@ export default class ItemChatCardHelper {
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
-      const dmgMod = getProperty(item, 'system.actions.dmgMod');
+      const dmgMod = foundry.utils.getProperty(item, 'system.actions.dmgMod');
       if (dmgMod) {
         mods.push({
           label: game.i18n.localize('SWADE.ItemDmgMod'),
@@ -370,8 +371,14 @@ export default class ItemChatCardHelper {
 
     if (item?.type === 'power') {
       const arcane = item.system.arcane || 'general';
-      const curPP = getProperty(actor, `system.powerPoints.${arcane}.value`);
-      const maxPP = getProperty(actor, `system.powerPoints.${arcane}.max`);
+      const curPP = foundry.utils.getProperty(
+        actor,
+        `system.powerPoints.${arcane}.value`,
+      );
+      const maxPP = foundry.utils.getProperty(
+        actor,
+        `system.powerPoints.${arcane}.max`,
+      );
       //update message content
       $(content).find('.pp-counter .current-pp').first().text(curPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);
@@ -385,8 +392,11 @@ export default class ItemChatCardHelper {
     }
 
     if (item?.isArcaneDevice) {
-      const currentPP = getProperty(item, 'system.powerPoints.value');
-      const maxPP = getProperty(item, 'system.powerPoints.max');
+      const currentPP = foundry.utils.getProperty(
+        item,
+        'system.powerPoints.value',
+      );
+      const maxPP = foundry.utils.getProperty(item, 'system.powerPoints.max');
       //update message content
       $(content).find('.pp-counter .current-pp').first().text(currentPP);
       $(content).find('.pp-counter .max-pp').first().text(maxPP);
