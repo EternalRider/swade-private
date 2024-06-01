@@ -62,11 +62,11 @@ export class RollDialog extends FormApplication<
     return this.ctx.roll.constructor as SwadeRoll;
   }
 
-  get title(): string {
+  override get title(): string {
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
-  get rollMode(): foundry.CONST.DICE_ROLL_MODES {
+  override get rollMode(): foundry.CONST.DICE_ROLL_MODES {
     return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
       .value as foundry.CONST.DICE_ROLL_MODES;
   }
@@ -140,7 +140,7 @@ export class RollDialog extends FormApplication<
       );
   }
 
-  async getData() {
+  override async getData() {
     const data = {
       displayExtraButton: true,
       rollModes: CONFIG.Dice.rollModes,
@@ -174,7 +174,7 @@ export class RollDialog extends FormApplication<
   protected override async _updateObject(ev: Event, formData: FormData) {
     const expanded = foundry.utils.expandObject(formData) as RollDialogFormData;
     Object.values(expanded.modifiers ?? []).forEach(
-      (v, i) => (this.modifiers[i].ignore = v.ignore),
+      (v, i) => (this.modifiers[i].ignore = !v.active),
     );
     if (expanded.map && expanded.map !== 0) {
       this.modifiers.push({
@@ -376,7 +376,7 @@ export interface RollDialogContext {
   isHeavyWeapon?: boolean;
 }
 interface RollDialogFormData {
-  modifiers?: RollModifier[];
+  modifiers?: Array<RollModifier & { active: boolean }>;
   map?: number;
   rollMode: foundry.CONST.DICE_ROLL_MODES;
 }
