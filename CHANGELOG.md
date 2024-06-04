@@ -28,13 +28,18 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 
 ### Added
 
+- Added data model for Poker cards. **by @jpmeehan5**
+
 ### Changed
 
-- Updated `system.json` to match new data structure.
+- Updated `system.json` to match new data structure. (#1047) **by @jpmeehan5**
+- The system tile in the Setup screen now uses the newer, prettier background image as new SWADE worlds. **by @jpmeehan5**
 
 ### Deprecated
 
 ### Removed
+
+- Removed `template.yml` (which compiled to template.json). Information about the document subtypes available in the system is now available in `system.json`. (#1047) **by @jpmeehan5**
 
 ### Fixed
 
