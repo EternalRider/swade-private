@@ -117,8 +117,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "systems/swade/assets/official/SWADE_Logo.webp",
-      "thumbnail": "systems/swade/assets/official/SWADE_Logo.webp"
+      "url": "systems/swade/assets/ui/sign_in_background.webp",
+      "thumbnail": "systems/swade/assets/ui/sign_in_background.webp"
     }
   ],
   "flags": {
@@ -139,5 +139,59 @@
   "readme": "https://gitlab.com/peginc/swade/-/wikis/home",
   "bugs": "https://gitlab.com/peginc/swade/-/issues",
   "changelog": "https://gitlab.com/peginc/swade/-/releases",
-  "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md"
+  "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md",
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "details.appearance",
+          "details.notes",
+          "details.goals",
+          "details.biography.value",
+          "advances.details"
+        ]
+      },
+      "npc": {
+        "htmlFields": [
+          "details.appearance",
+          "details.notes",
+          "details.goals",
+          "details.biography.value",
+          "advances.details"
+        ]
+      },
+      "vehicle": {
+        "htmlFields": ["description"]
+      }
+    },
+    "Item": {
+      "weapon": { "htmlFields": ["description"] },
+      "armor": { "htmlFields": ["description"] },
+      "shield": { "htmlFields": ["description"] },
+      "gear": { "htmlFields": ["description"] },
+      "edge": { "htmlFields": ["description"] },
+      "hindrance": { "htmlFields": ["description"] },
+      "skill": { "htmlFields": ["description"] },
+      "power": { "htmlFields": ["description"] },
+      "ability": { "htmlFields": ["description"] },
+      "consumable": { "htmlFields": ["description"] },
+      "action": { "htmlFields": ["description"] }
+    },
+    "Card": {
+      "poker": {},
+      "adventure": {}
+    },
+    "JournalEntryPage": {
+      "headquarters": {
+        "htmlFields": [
+          "advantage",
+          "complication",
+          "form.description",
+          "form.acquisition",
+          "form.maintenance",
+          "upgrades"
+        ]
+      }
+    }
+  }
 }
