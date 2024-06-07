@@ -18,6 +18,7 @@ declare global {
         isRedraw?: boolean;
         pickedCard?: string;
         cards?: any[]; //TODO properly set card source data type
+        rollMode?: string;
         [key: string]: unknown;
       };
       core?: {
