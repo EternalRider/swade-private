@@ -38,10 +38,16 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     await evaluated.toMessage(
       {
         speaker: speaker,
-        flavor: msg['flavor'],
-        flags: msg['flags'],
+        flavor: msg.flavor,
+        flags: msg.flags,
+        whisper: msg.whisper,
+        blind: msg.blind,
       },
-      { rollMode: game.settings.get('core', 'rollMode') },
+      {
+        rollMode:
+          msg.getFlag('swade', 'rollMode') ??
+          game.settings.get('core', 'rollMode'),
+      },
     );
   }
 
@@ -71,10 +77,16 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     await evaluated.toMessage(
       {
         speaker: speaker,
-        flavor: msg['flavor'],
-        flags: msg['flags'],
+        flavor: msg.flavor,
+        flags: msg.flags,
+        whisper: msg.whisper,
+        blind: msg.blind,
       },
-      { rollMode: game.settings.get('core', 'rollMode') },
+      {
+        rollMode:
+          msg.getFlag('swade', 'rollMode') ??
+          game.settings.get('core', 'rollMode'),
+      },
     );
   }
 
@@ -145,17 +157,18 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   ) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate({ async: true });
-    const tempRolls = messageData['rolls'] ?? [];
+    const existingRolls = messageData['rolls'] ?? [];
     messageData = foundry.utils.mergeObject(
       {
         user: game.user!.id,
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         sound: CONFIG.sounds.dice,
+        'flags.swade.rollMode': rollMode,
       },
       messageData,
     );
 
-    messageData['rolls'] = [...tempRolls, this];
+    messageData['rolls'] = [...existingRolls, this];
     // Either create the message or just return the chat data
     const cls = getDocumentClass('ChatMessage');
     const msg = new cls(messageData);

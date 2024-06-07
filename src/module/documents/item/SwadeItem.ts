@@ -473,17 +473,17 @@ export default class SwadeItem extends Item {
       },
     };
 
+    const msgClass = getDocumentClass('ChatMessage');
+
     if (
       game.settings.get('swade', 'hideNpcItemChatCards') &&
       this.actor?.type === 'npc'
     ) {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
+    } else {
+      // Apply the roll mode to the message
+      msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
     }
-
-    const msgClass = getDocumentClass('ChatMessage');
-
-    // Apply the roll mode to the message
-    msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
 
     // Create the chat message
     const chatCard = await msgClass.create(chatData);

@@ -43,6 +43,8 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 
 ### Fixed
 
+- NPC item chat cards should once again be hidden when the relevant setting has been enabled (#1142) **by @florad92**
+- Roll rerolls should now properly copy the roll mode from the original roll message. (#1142) **by @florad92**
 - Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
 
 ## 3.4.1
