@@ -43,6 +43,8 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 
 ### Fixed
 
+- Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
+
 ## 3.4.1
 
 ### Fixed
