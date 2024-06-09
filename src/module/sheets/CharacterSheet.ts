@@ -299,7 +299,7 @@ export default class CharacterSheet extends ActorSheet {
         `${statData.value}${modifier}`,
         this.actor.getRollData(),
       );
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         flavor: statData.label,

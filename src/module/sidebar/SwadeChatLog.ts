@@ -16,7 +16,7 @@ export default class SwadeChatLog extends ChatLog {
       const [formula, flavor] = match.slice(2, 4);
       if (flavor && !chatData.flavor) chatData.flavor = flavor;
       const roll = Roll.create(formula, rollData) as SwadeRoll | Roll;
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       rolls.push(roll);
     }
     chatData.type = CONST.CHAT_MESSAGE_TYPES.ROLL;

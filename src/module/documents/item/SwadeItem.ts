@@ -245,7 +245,7 @@ export default class SwadeItem extends Item {
     );
     const baseRoll = new Array<string>();
     for (const term of terms) {
-      if (term instanceof Die) {
+      if (term instanceof foundry.dice.terms.Die) {
         if (!term.modifiers.includes('x') && term.faces > 1) {
           term.modifiers.push('x');
         }
@@ -253,9 +253,9 @@ export default class SwadeItem extends Item {
           term.options.flavor = game.i18n.localize('SWADE.BaseDamage');
         }
         baseRoll.push(term.formula);
-      } else if (term instanceof StringTerm) {
+      } else if (term instanceof foundry.dice.terms.StringTerm) {
         baseRoll.push(this._makeExplodable(term.term));
-      } else if (term instanceof NumericTerm) {
+      } else if (term instanceof foundry.dice.terms.NumericTerm) {
         baseRoll.push(term.formula);
       } else {
         baseRoll.push(term.expression);

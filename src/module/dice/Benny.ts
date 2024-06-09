@@ -1,5 +1,5 @@
-export default class Benny extends DiceTerm {
-  constructor(termData: DiceTerm.TermData) {
+export default class Benny extends foundry.dice.terms.DiceTerm {
+  constructor(termData: foundry.dice.terms.DiceTerm.TermData) {
     termData.faces = 2;
     super(termData);
   }
@@ -13,7 +13,7 @@ export default class Benny extends DiceTerm {
   }
 
   /** @override */
-  override getResultLabel(_result: DiceTerm.Result): string {
+  override getResultLabel(_result: foundry.dice.terms.DiceTerm.Result): string {
     return 'b';
   }
 }

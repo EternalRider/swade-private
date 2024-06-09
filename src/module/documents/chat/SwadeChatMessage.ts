@@ -198,7 +198,7 @@ export default class SwadeChatMessage extends ChatMessage {
     const isTraitRoll = roll instanceof TraitRoll;
     if (!roll || !isTraitRoll) return false;
     if (this.speakerActor?.isWildcard) return !!roll.isCritfail;
-    const pool = roll.terms[0] as PoolTerm;
+    const pool = roll.terms[0] as foundry.dice.terms.PoolTerm;
     const hasMultipleTraitDice = pool.dice.length > 1;
     const hasConfirmedCritfail = this['rolls'].find(
       (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1,
