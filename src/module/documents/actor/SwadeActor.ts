@@ -295,7 +295,7 @@ export default class SwadeActor extends Actor {
       rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
     }
 
-    const basePool = PoolTerm.fromRolls(rolls);
+    const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
 
     const effects = structuredClone<RollModifier[]>([
@@ -640,7 +640,7 @@ export default class SwadeActor extends Actor {
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate({ async: true }),
+        await new Roll('1dB').evaluate(),
         game.user!,
         true,
         null,
@@ -672,7 +672,7 @@ export default class SwadeActor extends Actor {
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate({ async: true }),
+        await new Roll('1dB').evaluate(),
         game.user!,
         true,
         null,
@@ -1059,7 +1059,7 @@ export default class SwadeActor extends Actor {
     }
 
     const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
-    const basePool = PoolTerm.fromRolls(rolls);
+    const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
       this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
@@ -1095,10 +1095,13 @@ export default class SwadeActor extends Actor {
    * @param modifiers modifiers to the die
    * @returns a Die instance that already has the exploding modifier by default
    */
-  private _buildTraitDie(sides: number, flavor: string): Die {
-    const modifiers: (keyof Die.Modifiers)[] = [];
+  private _buildTraitDie(
+    sides: number,
+    flavor: string,
+  ): foundry.dice.terms.Die {
+    const modifiers: (keyof foundry.dice.terms.Die.Modifiers)[] = [];
     if (sides > 1) modifiers.push('x');
-    return new Die({
+    return new foundry.dice.terms.Die({
       faces: sides,
       modifiers: modifiers,
       options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },

@@ -128,7 +128,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     isPrivate = false,
     displayResult = true,
   ): Promise<Record<string, unknown>> {
-    if (!this._evaluated) await this.evaluate({ async: true });
+    if (!this._evaluated) await this.evaluate();
     const chatData = {
       isPrivate: isPrivate,
       displayResult: displayResult,
@@ -156,12 +156,11 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     } = {},
   ) {
     // Perform the roll, if it has not yet been rolled
-    if (!this._evaluated) await this.evaluate({ async: true });
+    if (!this._evaluated) await this.evaluate();
     const existingRolls = messageData['rolls'] ?? [];
     messageData = foundry.utils.mergeObject(
       {
         user: game.user!.id,
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         sound: CONFIG.sounds.dice,
         'flags.swade.rollMode': rollMode,
       },
@@ -218,7 +217,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   protected _formatFormulaParts(): RollPart[] {
     const result = new Array<RollPart>();
     for (const term of this.terms) {
-      if (term instanceof PoolTerm) {
+      if (term instanceof foundry.dice.terms.PoolTerm) {
         // Compute dice from the pool
         for (const roll of term.rolls) {
           const faces = roll.terms[0]['faces'];
@@ -235,7 +234,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
             hint: roll.dice[0].flavor,
           });
         }
-      } else if (term instanceof Die) {
+      } else if (term instanceof foundry.dice.terms.Die) {
         // Grab the right dice
         const faces = term.faces;
         let total = 0;
@@ -263,7 +262,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return result;
   }
 
-  protected _getDieClass(die: Die) {
+  protected _getDieClass(die: foundry.dice.terms.Die) {
     const faces = die.faces;
     let total = 0;
     die.results.forEach((result) => {

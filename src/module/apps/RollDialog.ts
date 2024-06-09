@@ -208,7 +208,7 @@ export class RollDialog extends FormApplication<
       !this.ctx.actor?.isWildcard
     ) {
       const traitPool = terms[0];
-      if (traitPool instanceof PoolTerm) {
+      if (traitPool instanceof foundry.dice.terms.PoolTerm) {
         const wildDie = new WildDie();
         // @ts-expect-error Roll Class
         const wildRoll = this.rollCls.fromTerms([wildDie]);
@@ -229,7 +229,7 @@ export class RollDialog extends FormApplication<
     }
 
     //evaluate
-    await finalizedRoll.evaluate({ async: true });
+    await finalizedRoll.evaluate();
 
     if (finalizedRoll instanceof DamageRoll) {
       finalizedRoll.ap = this.ctx.ap ?? 0;
