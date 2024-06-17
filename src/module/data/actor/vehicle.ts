@@ -1,7 +1,7 @@
 import { DerivedModifier } from '../../../interfaces/additional.interface';
+import SwadeActor from '../../documents/actor/SwadeActor';
 import { VehicleDataSourceData } from '../../documents/actor/actor-data-source';
 import { makeAdditionalStatsSchema } from '../shared';
-
 
 // TODO: Figure out how to merge this with the derived properties
 // export interface VehicleData
@@ -17,7 +17,7 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
   >,
   Actor
 > {
-  static defineSchema() {
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       size: new fields.NumberField({ initial: 0 }),
@@ -66,6 +66,8 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
       maxMods: new fields.NumberField({ initial: 0 }),
     };
   }
+
+  declare parent: SwadeActor;
 
   /** @inheritdoc */
   override prepareBaseData() {
