@@ -179,6 +179,15 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   const filter = (e: any) => e.id === idToSearchFor;
   const data =
     CONFIG.statusEffects.find(filter) || SWADE.statusEffects.find(filter);
+  // Future deprecation - removing this would require deeper API changes
+  // foundry.utils.logCompatibilityWarning(
+  //   'You are accessing `game.swade.util.getStatusEffectDataById`. ' +
+  //     'This is now deprecated in favor of `ActiveEffect.fromStatusEffect`, which returns a temporary active effect for use',
+  //   {
+  //     since: '4.0',
+  //     until: '5.0',
+  //   },
+  // );
   return data as StatusEffect | undefined;
 }
 
