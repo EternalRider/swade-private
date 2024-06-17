@@ -1,9 +1,10 @@
+import { Advance } from '../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { Advance } from '../../../interfaces/Advance.interface';
 import { SWADE } from '../../config';
+import SwadeActor from '../../documents/actor/SwadeActor';
 import { CharacterDataPropertiesData } from '../../documents/actor/actor-data-properties';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
 import { MappingField } from '../fields/MappingField';
@@ -160,6 +161,8 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
       additionalStats: makeAdditionalStatsSchema(),
     };
   }
+
+  declare parent: SwadeActor;
 
   protected static wildcardData = (baseBennies: number, maxWounds: number) => ({
     bennies: new fields.SchemaField({
