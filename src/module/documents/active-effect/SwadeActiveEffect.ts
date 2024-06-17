@@ -321,7 +321,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
         overrides[effectKey] = new Array<RollModifier>();
       this._updateTraitRollEffects(overrides[effectKey], change.value, false);
       // NOT calling super.apply because normal apply doesn't handle objects
-      setProperty(doc, effectKey, overrides[effectKey]);
+      foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
       doc.overrides = foundry.utils.expandObject(overrides);
     } else {
       Logger.warn(
@@ -498,11 +498,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
-    if (!data.icon) {
-      //TODO Move to `effect.img` once v12 releases
+    if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;
-      this.updateSource({ icon: path });
+      this.updateSource({ img: path });
     }
     const isDefaultName = data.name === SwadeActiveEffect.defaultName;
     if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {

@@ -34,6 +34,7 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 
 - Updated `system.json` to match new data structure. (#1047) **by @jpmeehan5**
 - The system tile in the Setup screen now uses the newer, prettier background image as new SWADE worlds. **by @jpmeehan5**
+- All uses of `icon` and `label` in Active Effects has been migrated to `img` and `name` respectively, in alignment with updated schema from Foundry. (#1047) **by @jpmeehan5**
 
 ### Deprecated
 

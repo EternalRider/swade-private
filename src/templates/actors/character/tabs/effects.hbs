@@ -2,7 +2,7 @@
   <li class="item effect {{#if effect.disabled}}disabled-effect{{/if}}" data-effect-id="{{effect.id}}" {{#if effect.source}}data-source-id="{{effect.source.id}}"{{/if}}>
   <details data-collapsible-id="{{concat "active-effect-" effect.id}}">
     <summary class="effect-entry-header" >
-      <img src="{{effect.icon}}" alt="{{effect.name}}" class="effect-icon" />
+      <img src="{{effect.img}}" alt="{{effect.name}}" class="effect-icon" />
       <a class="effect-label" title='{{localize "SWADE.ExpandDescription"}}'>
         {{effect.name}}
       </a>

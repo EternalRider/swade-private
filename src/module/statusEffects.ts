@@ -4,9 +4,10 @@ import { constants } from './constants';
 /** @internal */
 export const statusEffects: StatusEffect[] = [
   {
-    icon: 'systems/swade/assets/icons/status/status_shaken.svg',
+    img: 'systems/swade/assets/icons/status/status_shaken.svg',
     id: 'shaken',
-    label: 'SWADE.Shaken',
+    _id: '"shaken0000000000"',
+    name: 'SWADE.Shaken',
     duration: {
       rounds: 1,
     },
@@ -25,9 +26,10 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'icons/svg/stoned.svg',
+    img: 'icons/svg/stoned.svg',
     id: 'incapacitated',
-    label: 'SWADE.Incap',
+    _id: 'incapacitated000',
+    name: 'SWADE.Incap',
     changes: [
       {
         key: 'system.status.isIncapacitated',
@@ -37,20 +39,24 @@ export const statusEffects: StatusEffect[] = [
     ],
   },
   {
-    icon: 'icons/svg/skull.svg',
+    img: 'icons/svg/skull.svg',
     id: 'dead',
-    label: 'COMBAT.CombatantDefeated',
+    _id: 'dead000000000000',
+    name: 'COMBAT.CombatantDefeated',
     flags: { swade: { related: { incapacitated: {} } } },
+    // statuses: ['incapacitated'], TODO: After status effect handling rework
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_aiming.svg',
+    img: 'systems/swade/assets/icons/status/status_aiming.svg',
     id: 'aiming',
-    label: 'SWADE.Aiming',
+    _id: 'aiming0000000000',
+    name: 'SWADE.Aiming',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_enraged.svg',
+    img: 'systems/swade/assets/icons/status/status_enraged.svg',
     id: 'berserk',
-    label: 'SWADE.Berserk',
+    _id: 'berserk000000000',
+    name: 'SWADE.Berserk',
     duration: {
       rounds: 10,
     },
@@ -78,9 +84,10 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_wild_attack.svg',
+    img: 'systems/swade/assets/icons/status/status_wild_attack.svg',
     id: 'wild-attack',
-    label: 'SWADE.WildAttack',
+    _id: 'wildattack000000',
+    name: 'SWADE.WildAttack',
     duration: {
       rounds: 0,
     },
@@ -106,11 +113,13 @@ export const statusEffects: StatusEffect[] = [
         expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
       },
     },
+    statuses: ['vulnerable'],
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_defending.svg',
+    img: 'systems/swade/assets/icons/status/status_defending.svg',
     id: 'defending',
-    label: 'SWADE.Defending',
+    _id: 'defending0000000',
+    name: 'SWADE.Defending',
     duration: {
       rounds: 1,
     },
@@ -128,19 +137,22 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_flying.svg',
+    img: 'systems/swade/assets/icons/status/status_flying.svg',
     id: 'flying',
-    label: 'SWADE.Flying',
+    _id: 'flying0000000000',
+    name: 'SWADE.Flying',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_holding.svg',
+    img: 'systems/swade/assets/icons/status/status_holding.svg',
     id: 'holding',
-    label: 'SWADE.Holding',
+    _id: 'holding000000000',
+    name: 'SWADE.Holding',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_bound.svg',
+    img: 'systems/swade/assets/icons/status/status_bound.svg',
     id: 'bound',
-    label: 'SWADE.Bound',
+    _id: 'bound00000000000',
+    name: 'SWADE.Bound',
     changes: [
       {
         key: 'system.status.isBound',
@@ -154,11 +166,13 @@ export const statusEffects: StatusEffect[] = [
       },
     ],
     flags: { swade: { related: { entangled: {} } } },
+    statuses: ['distracted'], // , 'entangled' // TODO: After status effect handling rework
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_entangled.svg',
+    img: 'systems/swade/assets/icons/status/status_entangled.svg',
     id: 'entangled',
-    label: 'SWADE.Entangled',
+    _id: 'entangled0000000',
+    name: 'SWADE.Entangled',
     changes: [
       {
         key: 'system.status.isEntangled',
@@ -171,11 +185,13 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
+    statuses: ['vulnerable'],
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_frightened.svg',
+    img: 'systems/swade/assets/icons/status/status_frightened.svg',
     id: 'frightened',
-    label: 'SWADE.Frightened',
+    _id: 'frightened000000',
+    name: 'SWADE.Frightened',
     changes: [
       {
         key: 'system.initiative.hasHesitant',
@@ -204,9 +220,10 @@ export const statusEffects: StatusEffect[] = [
     ],
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_distracted.svg',
+    img: 'systems/swade/assets/icons/status/status_distracted.svg',
     id: 'distracted',
-    label: 'SWADE.Distr',
+    _id: 'distracted000000',
+    name: 'SWADE.Distr',
     duration: {
       rounds: 1,
     },
@@ -224,9 +241,10 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_encumbered.svg',
+    img: 'systems/swade/assets/icons/status/status_encumbered.svg',
     id: 'encumbered',
-    label: 'SWADE.Encumbered',
+    _id: 'encumbered000000',
+    name: 'SWADE.Encumbered',
     changes: [
       {
         key: 'system.details.encumbrance.isEncumbered',
@@ -236,9 +254,10 @@ export const statusEffects: StatusEffect[] = [
     ],
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_prone.svg',
+    img: 'systems/swade/assets/icons/status/status_prone.svg',
     id: 'prone',
-    label: 'SWADE.Prone',
+    _id: 'prone00000000000',
+    name: 'SWADE.Prone',
     changes: [
       {
         key: 'system.stats.parry.value',
@@ -253,9 +272,10 @@ export const statusEffects: StatusEffect[] = [
     ],
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_stunned.svg',
+    img: 'systems/swade/assets/icons/status/status_stunned.svg',
     id: 'stunned',
-    label: 'SWADE.Stunned',
+    _id: 'stunned000000000',
+    name: 'SWADE.Stunned',
     duration: {
       rounds: 1,
     },
@@ -277,11 +297,13 @@ export const statusEffects: StatusEffect[] = [
         },
       },
     },
+    // statuses: ['distracted', 'prone', 'vulnerable'], // TODO: After status effect handling rework
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_vulnerable.svg',
+    img: 'systems/swade/assets/icons/status/status_vulnerable.svg',
     id: 'vulnerable',
-    label: 'SWADE.Vuln',
+    _id: 'vulnerable000000',
+    name: 'SWADE.Vuln',
     duration: {
       rounds: 1,
     },
@@ -299,9 +321,10 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_bleeding_out.svg',
+    img: 'systems/swade/assets/icons/status/status_bleeding_out.svg',
     id: 'bleeding-out',
-    label: 'SWADE.BleedingOut',
+    _id: 'bleedingout00000',
+    name: 'SWADE.BleedingOut',
     duration: {
       rounds: 1,
     },
@@ -312,69 +335,82 @@ export const statusEffects: StatusEffect[] = [
     },
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_diseased.svg',
+    img: 'systems/swade/assets/icons/status/status_diseased.svg',
     id: 'diseased',
-    label: 'SWADE.Diseased',
+    _id: 'diseased00000000',
+    name: 'SWADE.Diseased',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_heart_attack.svg',
+    img: 'systems/swade/assets/icons/status/status_heart_attack.svg',
     id: 'heart-attack',
-    label: 'SWADE.HeartAttack',
+    _id: 'heartattack00000',
+    name: 'SWADE.HeartAttack',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_on_fire.svg',
+    img: 'systems/swade/assets/icons/status/status_on_fire.svg',
     id: 'on-fire',
-    label: 'SWADE.OnFire',
+    _id: 'onfire0000000000',
+    name: 'SWADE.OnFire',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_poisoned.svg',
+    img: 'systems/swade/assets/icons/status/status_poisoned.svg',
     id: 'poisoned',
-    label: 'SWADE.Poisoned',
+    _id: 'poisoned00000000',
+    name: 'SWADE.Poisoned',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_cover_shield.svg',
+    img: 'systems/swade/assets/icons/status/status_cover_shield.svg',
     id: 'cover-shield',
-    label: 'SWADE.Cover.Shield',
+    _id: 'covershield00000',
+    name: 'SWADE.Cover.Shield',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_cover.svg',
+    img: 'systems/swade/assets/icons/status/status_cover.svg',
     id: 'cover',
-    label: 'SWADE.Cover._name',
+    _id: 'cover00000000000',
+    name: 'SWADE.Cover._name',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_reach.svg',
+    img: 'systems/swade/assets/icons/status/status_reach.svg',
     id: 'reach',
-    label: 'SWADE.Reach',
+    _id: 'reach00000000000',
+    name: 'SWADE.Reach',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_torch.svg',
+    img: 'systems/swade/assets/icons/status/status_torch.svg',
     id: 'torch',
-    label: 'SWADE.Torch',
+    _id: 'torch00000000000',
+    name: 'SWADE.Torch',
   },
   {
     id: 'invisible',
-    label: 'EFFECT.StatusInvisible',
-    icon: 'icons/svg/invisible.svg',
+    _id: 'invisible0000000',
+    name: 'EFFECT.StatusInvisible',
+    img: 'icons/svg/invisible.svg',
   },
   {
-    icon: 'icons/svg/blind.svg',
+    img: 'icons/svg/blind.svg',
     id: 'blind',
-    label: 'EFFECT.StatusBlind',
+    _id: 'blind00000000000',
+    name: 'EFFECT.StatusBlind',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_coldbodied.svg',
+    img: 'systems/swade/assets/icons/status/status_coldbodied.svg',
     id: 'cold-bodied',
-    label: 'SWADE.ColdBodied',
+    _id: 'coldbodied000000',
+    name: 'SWADE.ColdBodied',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_smite.svg',
+    img: 'systems/swade/assets/icons/status/status_smite.svg',
     id: 'smite',
-    label: 'SWADE.Smite',
+    _id: 'smite00000000000',
+    name: 'SWADE.Smite',
   },
   {
-    icon: 'systems/swade/assets/icons/status/status_protection.svg',
+    img: 'systems/swade/assets/icons/status/status_protection.svg',
     id: 'protection',
-    label: 'SWADE.Protection',
+    _id: 'protection000000',
+    name: 'SWADE.Protection',
     duration: {
       rounds: 5,
     },
