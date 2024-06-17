@@ -77,7 +77,13 @@ export const actions = () => ({
           required: false,
           nullable: true,
         }),
-        uuid: new fields.StringField({ initial: undefined, required: false }),
+        uuid: new fields.DocumentUUIDField({
+          type: 'Macro',
+          nullable: true,
+          required: true,
+          blank: false,
+          initial: null,
+        }),
         macroActor: new fields.StringField({
           initial: constants.MACRO_ACTOR.DEFAULT,
           required: false,
@@ -122,7 +128,11 @@ export const grants = () => ({
   grants: new fields.ArrayField(
     //TODO create schema field for item grants
     new fields.SchemaField({
-      uuid: new fields.StringField({ initial: '', required: true }),
+      uuid: new fields.DocumentUUIDField({
+        type: 'Item',
+        nullable: false,
+        required: true,
+      }),
       img: new fields.StringField({ initial: null, nullable: true }),
       name: new fields.StringField({ initial: null, nullable: true }),
       mutation: new fields.ObjectField({ required: false }),
