@@ -247,12 +247,15 @@ export default class SwadeCoreHooks {
       name: 'SWADE.ShowCharacterSummary',
       icon: '<i class="fa-solid fa-users"></i>',
       callback: (li) => {
-        const actor = game.actors?.get(li.data('documentId'), { strict: true });
-        CharacterSummarizer.summarizeCharacters([actor!]);
+        const actor = game.actors!.get(li.data('documentId'), { strict: true });
+        CharacterSummarizer.summarizeCharacters([actor]);
       },
       condition: (li) => {
-        const actor = game.actors?.get(li.data('documentId'), { strict: true });
-        return CharacterSummarizer.isSupportedActorType(actor!);
+        const actor = game.actors!.get(li.data('documentId'), { strict: true });
+        return (
+          actor.permission > CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED &&
+          CharacterSummarizer.isSupportedActorType(actor)
+        );
       },
     });
     options.splice(0, 0, ...newOptions);
