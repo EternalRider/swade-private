@@ -266,17 +266,13 @@ export class RollDialog extends FormApplication<
   }
 
   #buildRollForEvaluation(): SwadeRoll {
-    //@ts-expect-error rollCls is correct here
-    const roll = this.rollCls.fromTerms([
-      ...this.ctx.roll.terms,
-      ...this.rollCls.parse(
-        this.modifiers
-          .filter((v) => !v.ignore) //remove the disabled modifiers
-          .map(normalizeRollModifiers)
-          .reduce(modifierReducer, ''),
-        this.#getRollData(),
-      ),
-    ]) as SwadeRoll;
+    const formula =
+      this.ctx.roll.formula +
+      this.modifiers
+        .filter((v) => !v.ignore) //remove the disabled modifiers
+        .map(normalizeRollModifiers)
+        .reduce(modifierReducer, '');
+    const roll = new this.rollCls(formula, this.#getRollData()) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
   }
