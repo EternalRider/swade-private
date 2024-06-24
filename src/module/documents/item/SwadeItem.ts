@@ -764,7 +764,7 @@ export default class SwadeItem extends Item {
 
         Object.assign(
           choiceSet,
-          await ChoiceDialog.asPromise({ choiceSet: choiceSet }),
+          await ChoiceDialog.asPromise({ choiceSet: choiceSet, parent: this }),
         );
 
         if (choiceSet.choice === null) continue;
