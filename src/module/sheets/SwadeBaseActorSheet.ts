@@ -223,7 +223,12 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         if (!arcanes.find((el) => el === arcane)) {
           arcanes.push(arcane);
           // Add powerpoints data relevant to the detected arcane
-          if (!hasProperty(this.actor, `system.powerPoints.${arcane}`)) {
+          if (
+            !foundry.utils.hasProperty(
+              this.actor,
+              `system.powerPoints.${arcane}`,
+            )
+          ) {
             data.actor.system.powerPoints[arcane] = {
               value: 0,
               max: 0,
