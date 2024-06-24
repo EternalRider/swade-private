@@ -36,6 +36,7 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 - The system tile in the Setup screen now uses the newer, prettier background image as new SWADE worlds. **by @jpmeehan5**
 - All uses of `icon` and `label` in Active Effects has been migrated to `img` and `name` respectively, in alignment with updated schema from Foundry. (#1047) **by @jpmeehan5**
 - Added stricter data validation to UUIDs for both Item Grants and Macro actions. (#1003) **by @florad92**
+- The ChoiceDialog now displays the name of the parent item. (#1158) **by @florad92**
 
 ### Deprecated
 
