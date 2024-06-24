@@ -1,10 +1,10 @@
-<li class='gear-card item misc' data-item-id='{{_id}}'>
+<li class='gear-card item misc' data-item-id='{{item.id}}'>
   <header class='flexrow card-header'>
-    <div class='item-image' style="background-image: url('{{img}}')"></div>
-    <h4 class='item-name'>{{name}}</h4>
+    <div class='item-image' style="background-image: url('{{item.img}}')"></div>
+    <h4 class='item-name'>{{item.name}}</h4>
     <div class='item-controls'>
       <a class='item-control item-show'><i class='fas fa-eye'></i></a>
-      {{#if owner}}
+      {{#if item.isOwner}}
         <a class='item-control item-edit' title='{{localize "SWADE.Ed"}}'><i
             class='fas fa-edit'
           ></i></a>
@@ -15,6 +15,6 @@
     </div>
   </header>
   <div class='card-content collapsed' style='display: none;'>
-    {{enrich system.description}}
+    {{enrich item.system.description}}
   </div>
 </li>

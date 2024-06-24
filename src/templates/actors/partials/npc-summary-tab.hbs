@@ -268,28 +268,29 @@
       {{/if}}
       <div class='quickaccess-list'>
         <ol class='gear-list weapon-list'>
-          {{#each itemsByType.weapon}}
-            {{>"systems/swade/templates/actors/partials/weapon-card.hbs" owner=@root.owner}}
+          {{#each itemsByType.weapon as |item|}}
+          {{log this}}
+            {{>"systems/swade/templates/actors/partials/weapon-card.hbs" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list armor-list'>
-          {{#each itemsByType.armor}}
-            {{> "systems/swade/templates/actors/partials/armor-card.hbs" owner=@root.owner}}
+          {{#each itemsByType.armor as |item|}}
+            {{> "systems/swade/templates/actors/partials/armor-card.hbs" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list shield-list'>
-          {{#each itemsByType.shield}}
-            {{> "systems/swade/templates/actors/partials/shield-card.hbs" owner=@root.owner}}
+          {{#each itemsByType.shield as |item|}}
+            {{> "systems/swade/templates/actors/partials/shield-card.hbs" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list items-list'>
-          {{#each itemsByType.consumable}}
-            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" owner=@root.owner}}
+          {{#each itemsByType.consumable as |item|}}
+            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list items-list'>
-          {{#each itemsByType.gear}}
-            {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=@root.owner}}
+          {{#each itemsByType.gear as |item|}}
+            {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=item}}
           {{/each}}
         </ol>
       </div>
