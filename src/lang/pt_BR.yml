@@ -361,9 +361,6 @@ SWADE:
       Hint: >-
         Aplica penalidades de sobrecarga. Por favor, tenha em mente que
         atualmente NÃO SUPORTA rolagens de {vigor} para resistir a {fatigue}!
-    GmBennies:
-      Name: Benes do Mestre
-      Hint: Configura quantos Benes o Mestre recebe ao resetar
     NPCCurrency:
       Name: NPCs usam dinheiro
       Hint: >-

@@ -572,9 +572,6 @@ SWADE:
       Name: Appliquer les pénalités d'encombrement
       Hint: Appliquer les pénalités d'encombrement. Gardez à l'esprit que cela n'AFFECTE
         PAS les jets de {vigor} pour résister à la {fatigue} !
-    GmBennies:
-      Name: Jetons du MJ
-      Hint: Détermine combien de jetons le MJ reçoit après une réinitialisation
     VehicleMods:
       Name: Mods du véhicule
       Hint: Le véhicule a des emplacements de Mods

@@ -332,6 +332,7 @@ Hooks.on(
 /* ------------------------------------ */
 /* Update Hooks              	          */
 /* ------------------------------------ */
+Hooks.on('userConnected', SwadeCoreHooks.onUserConnected);
 Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 
 /* ------------------------------------ */

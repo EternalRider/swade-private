@@ -95,7 +95,7 @@ export default class SwadeUser extends User {
 
   async refreshBennies(notify = true) {
     if (this.isGM) {
-      const gmBennies = game.settings.get('swade', 'gmBennies');
+      const gmBennies = game.users.filter((u) => u.active && !u.isGM).length;
       await this.setFlag('swade', 'bennies', gmBennies);
 
       /**
@@ -110,14 +110,17 @@ export default class SwadeUser extends User {
   }
 
   protected override async _onUpdate(
-    changed: PropertiesToSource<UserDataProperties>, 
+    changed: PropertiesToSource<UserDataProperties>,
     options: DocumentModificationOptions,
-    userId: string
-  ){  
+    userId: string,
+  ) {
     await super._onUpdate(changed, options, userId);
 
     // If the user is a gm and their bennies were changed, re-render the players display
-    if (this.isGM && foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined) 
+    if (
+      this.isGM &&
+      foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined
+    )
       ui.players.render(true);
   }
 }
