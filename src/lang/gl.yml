@@ -616,9 +616,6 @@ SWADE:
     EnableWoundPace:
       Name: Ajustar el paso con las heridas
       Hint: Cuando se activa, el paso se ve afectado automáticamente por las heridas
-    GmBennies:
-      Name: Benis del DJ
-      Hint: Establece cuántos Benis recibe el DJ al reiniciar
     VehicleMods:
       Name: Modificadores de vehículos
       Hint: Los vehículos utilizan modificadores

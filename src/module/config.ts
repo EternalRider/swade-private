@@ -75,7 +75,6 @@ export const SWADE: SwadeConfig = {
       'vehicleMods',
       'vehicleEdges',
       'vehicleSkills',
-      'gmBennies',
       'enableWoundPace',
       'ammoManagement',
       'ammoFromInventory',

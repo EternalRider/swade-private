@@ -22,6 +22,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Added
+
+- `userConnected` hook event listener for modifying GM Bennies when a player logs in or drops out.
+- `userUpdated` hook event listner for refreshing the Players List whenever a user us updated.
+- A new Context Menu option to adjust the GM's currently available Bennies.
+
+### Changed
+
+- When refreshing GM Bennies, the number set is based on the current number of active, non-GM users.
+  - If a user later logs in, the number of Bennies increases by 1.
+  - If a user later leaves, the number of Bennies decreases by 1. (Of course the Benny is restored if they return.)
+  - If a user refreshes their browser, the above `userConnected` hook event listeners trigger accordingly.
+  - If a GM refreshes their Bennies before any players join, the above events will modify the GM's Bennies appropriately.
+
+### Removed
+
+- Setting configuration for the number of GM Bennies has been removed.
+
+### Fixed
+
+- The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated.
+
 ## 4.0.0
 
 SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11

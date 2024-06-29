@@ -522,6 +522,18 @@ export default class SwadeCoreHooks {
     ui.combat.scrollToTurn();
   }
 
+  /** Change current GM Bennies count */
+  static async onUserConnected(user: SwadeUser, connected: boolean) {
+    const gm = game.users.activeGM;
+    if (user.isGM || !gm?.isSelf) return false;
+    const bennyDiff = connected ? 1 : -1;
+    const currentBennies = gm.bennies;
+    let newBennies = currentBennies + bennyDiff;
+    newBennies = newBennies < 0 ? 0 : newBennies;
+    await gm.setFlag('swade', 'gmBennies', newBennies);
+    ui.players?.render(true);
+  }
+
   /** Add benny management to the player list */
   static async onRenderPlayerList(
     _list: PlayerList,
@@ -628,6 +640,56 @@ export default class SwadeCoreHooks {
         icon: '<i class="fa-solid fa-sync"></i>',
         condition: () => game.user!.isGM,
         callback: () => PlayerBennyDisplay.refreshAll(),
+      },
+      {
+        name: game.i18n.localize('SWADE.BenniesAdjustGM'),
+        icon: '<i class="fa-solid fa-coins"></i>',
+        condition: (li) =>
+          game.user!.isGM && game.users?.get(li[0].dataset.userId!)!.isGM!,
+        callback: async (li) => {
+          const gm = game.users?.get(li[0].dataset.userId!);
+          await foundry.applications.api.DialogV2.wait({
+            window: { title: game.i18n.localize('SWADE.BenniesAdjustGM') },
+            position: {
+              left: ui.players.element[0].offsetLeft,
+              top: ui.players.element[0].offsetTop - 183,
+            },
+            content: `
+                <p>${game.i18n.localize('SWADE.BenniesAdjustGMText')}</p>
+                <label
+                  style="display: block; width: max-content;"
+                  for"gm-bennies">
+                  ${game.i18n.localize('SWADE.Bennies')}:
+                  <input
+                    id="gm-bennies"
+                    type="number"
+                    min="0"
+                    style="width: 5ch; height: .75lh; text-align: center;"
+                    name="gm-bennies"
+                    value="${game.users?.filter((u) => u.active && !u.isGM).length}"
+                    autofocus
+                  >
+                </label>
+            `,
+            buttons: [
+              {
+                action: 'cancel',
+                label: game.i18n.localize('SWADE.Cancel'),
+              },
+              {
+                action: 'submit',
+                label: game.i18n.localize('SWADE.ButtonSubmit'),
+                default: true,
+                callback: async (event, button, dialog) =>
+                  await gm?.setFlag(
+                    'swade',
+                    'bennies',
+                    Number(button.form.elements['gm-bennies'].value),
+                  ),
+              },
+            ],
+          });
+        },
       },
     );
   }
