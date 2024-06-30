@@ -444,7 +444,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     if (ammo.type === 'consumable') {
       return this.#handleConsumableReload(ammo, missing);
     }
-    if (system.quantity <= 0) {
+    if (ammo.system.quantity <= 0) {
       this.#postNotEnoughAmmoMessage();
       return false;
     }
