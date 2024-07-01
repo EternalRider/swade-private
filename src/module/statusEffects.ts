@@ -6,7 +6,7 @@ export const statusEffects: StatusEffect[] = [
   {
     img: 'systems/swade/assets/icons/status/status_shaken.svg',
     id: 'shaken',
-    _id: '"shaken0000000000"',
+    _id: 'shaken0000000000',
     name: 'SWADE.Shaken',
     duration: {
       rounds: 1,

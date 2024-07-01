@@ -22,30 +22,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## [Unreleased]
-
-### Added
-
-- `userConnected` hook event listener for modifying GM Bennies when a player logs in or drops out.
-- `userUpdated` hook event listner for refreshing the Players List whenever a user us updated.
-- A new Context Menu option to adjust the GM's currently available Bennies.
-
-### Changed
-
-- When refreshing GM Bennies, the number set is based on the current number of active, non-GM users.
-  - If a user later logs in, the number of Bennies increases by 1.
-  - If a user later leaves, the number of Bennies decreases by 1. (Of course the Benny is restored if they return.)
-  - If a user refreshes their browser, the above `userConnected` hook event listeners trigger accordingly.
-  - If a GM refreshes their Bennies before any players join, the above events will modify the GM's Bennies appropriately.
-
-### Removed
-
-- Setting configuration for the number of GM Bennies has been removed.
-
-### Fixed
-
-- The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated.
-
 ## 4.0.0
 
 SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11
@@ -53,6 +29,8 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 ### Added
 
 - Added data model for Poker cards. **by @jpmeehan5**
+- `userConnected` hook event listener for modifying GM Bennies when a player logs in or drops out. (#1161) by **@kristianserrano**
+- A new Context Menu option to adjust the GM's currently available Bennies. (#1161) by **@kristianserrano**
 
 ### Changed
 
@@ -61,18 +39,28 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 - All uses of `icon` and `label` in Active Effects has been migrated to `img` and `name` respectively, in alignment with updated schema from Foundry. (#1047) **by @jpmeehan5**
 - Added stricter data validation to UUIDs for both Item Grants and Macro actions. (#1003) **by @florad92**
 - The ChoiceDialog now displays the name of the parent item. (#1158) **by @florad92**
+- When refreshing GM Bennies, the number set is based on the current number of active, non-GM users. (#1161) by **@kristianserrano**
+  - If a user later logs in, the number of Bennies increases by 1.
+  - If a user later leaves, the number of Bennies decreases by 1. (Of course the Benny is restored if they return.)
+  - If a user refreshes their browser, the above `userConnected` hook event listeners trigger accordingly.
+  - If a GM refreshes their Bennies before any players join, the above events will modify the GM's Bennies appropriately.
 
 ### Deprecated
 
 ### Removed
 
 - Removed `template.yml` (which compiled to template.json). Information about the document subtypes available in the system is now available in `system.json`. (#1047) **by @jpmeehan5**
+- Setting configuration for the number of GM Bennies has been removed. (#1161) by **@kristianserrano**
+
 
 ### Fixed
 
 - NPC item chat cards should once again be hidden when the relevant setting has been enabled (#1142) **by @florad92**
 - Roll rerolls should now properly copy the roll mode from the original roll message. (#1142) **by @florad92**
 - Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
+- The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated. (#1161) by **@kristianserrano**
+- The Full Reload property now works again (#1165) **by @michaeldougherty1976**
+
 
 ## 3.4.1
 
