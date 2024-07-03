@@ -159,25 +159,6 @@ export default class SwadeActor extends Actor {
     );
   }
 
-  /** @return whether this actor is currently encumbered, factoring in whether the rule is even enforced
-   * @deprecated since version 3.2, use actor.system.encumbered instead
-   */
-  get isEncumbered(): boolean {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered',
-      { since: '3.2', until: '4.0' },
-    );
-    return this.system.encumbered;
-  }
-
-  get race() {
-    foundry.utils.logCompatibilityWarning(
-      'The race getter has been 1 with the more appropriate ancestry getter',
-      { since: '3.2', until: '4.0' },
-    );
-    return this.ancestry;
-  }
-
   get ancestry(): SwadeItem | undefined {
     if (this.system instanceof VehicleData) return;
     const ancestries = this.items.filter(

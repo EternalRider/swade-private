@@ -25,7 +25,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   };
   #effectCreateDropDown: ContextMenu;
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 600,
       height: 560,
@@ -163,7 +163,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
       await Dialog.confirm({
         content: `<p class="text-center">${text}</p>`,
-        yes: async () => await this.#deleteEmbeddedDocument('power', id),
+        yes: async () => await this.#deleteEmbeddedDocument(id),
         defaultYes: false,
         options: foundry.utils.mergeObject(Dialog.defaultOptions, {
           classes: ['dialog', 'swade-app'],
@@ -201,11 +201,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         case 'toggle':
           return effect.update(this.#toggleEffect(effect, toggle));
       }
-    });
-
-    jquery.find('.delete-embedded').on('click', async (ev) => {
-      const id = ev.currentTarget.dataset.id!;
-      await this.#deleteEmbeddedDocument('ability', id);
     });
 
     jquery.find('.power .damage').on('click', (ev) => {
@@ -284,7 +279,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           subtype === constants.ABILITY_TYPE.ANCESTRY ||
           subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
-      data.embeddedAbilities = this.#prepareEmbeddedAbilities();
     }
 
     if (this.item.canGrantItems) {
@@ -495,8 +489,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (classList?.contains('properties')) {
       await this.#addGrantedItem(item);
-    } else if (classList?.contains('embedded')) {
-      await this.#addEmbedded(item);
     } else if (classList?.contains('powers')) {
       await this.#addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
@@ -590,57 +582,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
   }
 
-  async #deleteEmbeddedDocument(type: 'power' | 'ability', id: string) {
-    const flagKey = {
-      ability: 'embeddedAbilities',
-      power: 'embeddedPowers',
-    };
-    const flagContent = this.item.getFlag('swade', flagKey[type]) ?? [];
+  async #deleteEmbeddedDocument(id: string) {
+    const flagContent = this.item.getFlag('swade', 'embeddedPowers') ?? [];
     const map = new Map(flagContent as Array<[string, ItemData]>);
     map.delete(id);
-    this.item.setFlag('swade', flagKey[type], Array.from(map));
-  }
-
-  /** @deprecated */
-  async #addEmbedded(_item: SwadeItem) {
-    const msg =
-      'Embedded Abilities have been deprecated in favor of Item Grants';
-    ui.notifications.warn(msg, { permanent: true, console: false });
-    foundry.utils.logCompatibilityWarning(msg, {
-      since: '3.1',
-      until: '4.0',
-      details:
-        'You can no longer add Embedded Abilities to items but they will still be able to be transferred to actors until the depreciation period ends.',
-    });
-  }
-
-  /** @deprecated */
-  #prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
-    const collection = this.item.embeddedAbilities;
-    const items = new Array<Record<string, unknown>>();
-    for (const [key, val] of collection) {
-      const type =
-        val.type === 'ability'
-          ? game.i18n.localize('SWADE.SpecialAbility')
-          : game.i18n.localize(`TYPES.Item.${val.type}`);
-
-      let majorMinor = '';
-      if (val.type === 'hindrance') {
-        if (val.system.isMajor) {
-          majorMinor = game.i18n.localize('SWADE.Major');
-        } else {
-          majorMinor = game.i18n.localize('SWADE.Minor');
-        }
-      }
-      items.push({
-        id: key,
-        img: val.img,
-        name: val.name,
-        type,
-        majorMinor,
-      });
-    }
-    return items;
+    this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
   async #saveEmbeddedPowers(map: Map<string, ItemData<'power'>>) {

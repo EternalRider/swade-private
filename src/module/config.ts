@@ -192,15 +192,12 @@ export const SWADE: SwadeConfig = {
   abilitySheet: {
     special: {
       dropdown: 'SWADE.SpecialAbility',
-      abilities: 'SWADE.SpecialAbilities',
     },
     ancestry: {
       dropdown: 'SWADE.Ancestry',
-      abilities: 'SWADE.AncestralAbilities',
     },
     archetype: {
       dropdown: 'SWADE.Archetype',
-      abilities: 'SWADE.ArchetypeAbilities',
     },
   },
 
@@ -371,7 +368,7 @@ export interface SwadeConfig {
   };
   measuredTemplatePresets: Array<TemplateConfig>;
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
-  abilitySheet: Record<AbilitySubType, { dropdown: string; abilities: string }>;
+  abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   prototypeRollGroups: RollModifierGroup[];
   ranks: string[];
   textSearch: {
