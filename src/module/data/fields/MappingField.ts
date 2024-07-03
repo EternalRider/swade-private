@@ -1,6 +1,5 @@
-import {
+import type {
   DataField,
-  ModelValidationError,
   ObjectField,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 
@@ -9,9 +8,9 @@ import {
  * @param model The class of DataField which should be embedded in this field.
  * @param options Options which configure the behavior of the field.
  */
-export class MappingField extends foundry.data.fields.ObjectField {
+export class MappingField<Model extends DataField.Any = DataField.Any> extends foundry.data.fields.ObjectField {
   /**The embedded DataField definition which is contained in this field.*/
-  declare model: DataField.Any;
+  declare model: Model;
   /** Keys that will be created if no data is provided. */
   declare initialKeys?: string[];
   /** Function to calculate the initial value for a key. */
@@ -19,7 +18,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
   /**  Should the keys in the initialized data be limited to the keys provided by `initialKeys`? */
   declare initialValue?: MappingFieldInitialValueBuilder;
 
-  constructor(model: DataField.Any, options: MappingFieldOptions = {}) {
+  constructor(model: Model, options: MappingFieldOptions = {}) {
     if (!(model instanceof foundry.data.fields.DataField)) {
       throw new Error(
         'MappingField must have a DataField as its contained element',
@@ -60,7 +59,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
    * @returns Initial value based on provided field type.
    */
   protected _getInitialValueForKey(key: string, object?: Record<string, any>) {
-    const initial = this.model.getInitialValue();
+    const initial = this.model.getInitialValue({});
     return this.initialValue?.(key, initial, object) ?? initial;
   }
 
@@ -91,7 +90,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
    * @returns An object of value-specific errors by key.
    */
   protected _validateValues(value: object, options: object) {
-    const errors: Record<string, ModelValidationError> = {};
+    const errors: Record<string, foundry.data.validation.DataModelValidationFailure> = {};
     for (const [k, v] of Object.entries(value)) {
       const error = this.model.validate(v, options);
       if (error) errors[k] = error;
@@ -114,8 +113,7 @@ export class MappingField extends foundry.data.fields.ObjectField {
     return obj;
   }
 
-  /** @inheritdoc */
-  _getField(path) {
+  override _getField(path) {
     if (path.length === 0) return this;
     else if (path.length === 1) return this.model;
     path.shift();

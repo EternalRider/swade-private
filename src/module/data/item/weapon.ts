@@ -1,3 +1,6 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import {
   EquipState,
   PotentialSource,
@@ -18,39 +21,86 @@ import { notificationExists } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
+import { SwadePhysicalItemData } from './base';
 import {
   actions,
   arcaneDevice,
   bonusDamage,
   category,
-  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
-  itemDescription,
-  physicalItem,
   templates,
   vehicular,
 } from './common';
+import { ConsumableData } from './consumable';
 import { GearData } from './gear';
+import {
+  Actions,
+  ArcaneDevice,
+  BonusDamage,
+  Category,
+  ChoicesType,
+  Equippable,
+  Favorite,
+  GrantEmbedded,
+  Templates,
+  Vehicular,
+} from './item-common.interface';
 
-export interface WeaponData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof WeaponData)['defineSchema']>
-  > {}
+declare namespace WeaponData {
+  interface Schema
+    extends SwadePhysicalItemData.Schema,
+      Equippable,
+      ArcaneDevice,
+      Vehicular,
+      Actions,
+      BonusDamage,
+      Favorite,
+      Templates,
+      Category,
+      GrantEmbedded {
+    damage: foundry.data.fields.StringField<{ initial: '' }>;
+    range: foundry.data.fields.StringField<{ initial: '' }>;
+    rangeType: foundry.data.fields.NumberField<{
+      integer: true;
+      nullable: true;
+      initial: null;
+      choices: ChoicesType<typeof constants.WEAPON_RANGE_TYPE>;
+    }>;
+    rof: foundry.data.fields.NumberField<{ initial: 1 }>;
+    ap: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+    parry: foundry.data.fields.NumberField<{ initial: 0 }>;
+    minStr: foundry.data.fields.StringField<{ initial: '' }>;
+    shots: foundry.data.fields.NumberField<{ initial: 0 }>;
+    currentShots: foundry.data.fields.NumberField<{ initial: 0 }>;
+    ammo: foundry.data.fields.StringField<{ initial: '' }>;
+    reloadType: foundry.data.fields.StringField<{
+      initial: typeof constants.RELOAD_TYPE.NONE;
+      choices: ChoicesType<typeof constants.RELOAD_TYPE>;
+    }>;
+    ppReloadCost: foundry.data.fields.NumberField<{ initial: 2 }>;
+    trademark: foundry.data.fields.NumberField<{
+      initial: 0;
+      min: 0;
+      integer: true;
+    }>;
+    isHeavyWeapon: foundry.data.fields.BooleanField;
+  }
+  interface BaseData extends SwadePhysicalItemData.BaseData {}
+  interface DerivedData extends SwadePhysicalItemData.DerivedData {}
+}
 
-export class WeaponData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof WeaponData)['defineSchema']>
-  >,
-  Item
+class WeaponData extends SwadePhysicalItemData<
+  WeaponData.Schema,
+  WeaponData.BaseData,
+  WeaponData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): WeaponData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
-      ...physicalItem(),
+      ...super.defineSchema(),
       ...equippable(),
       ...arcaneDevice(),
       ...vehicular(),
@@ -60,7 +110,6 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       ...templates(),
       ...category(),
       ...grantEmbedded(),
-      ...choiceSets(),
       damage: new fields.StringField({ initial: '' }),
       range: new fields.StringField({ initial: '' }),
       rangeType: new fields.NumberField({
@@ -130,10 +179,6 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  get isPhysicalItem(): boolean {
-    return true;
-  }
-
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
     modifiers.push(...this.parent.actor.system.stats.globalMods.attack);
@@ -196,7 +241,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
   }
 
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichOptions>,
+    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     if (this.isReadied) {
@@ -466,6 +511,7 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
     ammo: SwadeItem,
     missing: number,
   ): Promise<boolean> {
+    if (!(ammo.system instanceof ConsumableData)) return false;
     if (ammo.system.charges.value <= 0) {
       this.#postNotEnoughAmmoMessage();
       return false;
@@ -653,4 +699,17 @@ export class WeaponData extends foundry.abstract.TypeDataModel<
       });
     }
   }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    if (this.parent?.actor?.type === 'npc') {
+      this.updateSource({ equipStatus: constants.EQUIP_STATE.MAIN_HAND });
+    }
+  }
 }
+
+export { WeaponData };

@@ -101,7 +101,7 @@ Hooks.once('init', () => {
     RollDialog,
     effectCallbacks: new Collection(),
     ready: false,
-    fields: data.fields,
+    data,
     SwadeTour,
   };
 
@@ -263,16 +263,15 @@ Hooks.once('init', () => {
   // Register Tours
   registerSWADETours();
 
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
+
   CONFIG.Dice.TraitRoll = TraitRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
