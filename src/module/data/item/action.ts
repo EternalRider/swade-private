@@ -2,9 +2,10 @@ import { PotentialSource } from '../../../globals';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
-import { actions, category, favorite, templates } from './common';
+import { actions, bonusDamage, category, favorite, templates } from './common';
 import {
   Actions,
+  BonusDamage,
   Category,
   Favorite,
   Templates,
@@ -16,7 +17,8 @@ declare namespace ActionData {
       Favorite,
       Category,
       Templates,
-      Actions {}
+      Actions,
+      BonusDamage {}
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -34,6 +36,7 @@ class ActionData extends SwadeBaseItemData<
       ...category(),
       ...templates(),
       ...actions(),
+      ...bonusDamage(),
     };
   }
 

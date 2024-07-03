@@ -66,6 +66,7 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 - Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
 - The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated. (#1161) by **@kristianserrano**
 - The Full Reload property now works again (#1165) **by @michaeldougherty1976**
+- Action items should now roll damage actions with bonus damage properly. (#1163) **by @florad92**
 
 ## 3.4.1
 
