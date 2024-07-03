@@ -1,5 +1,8 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { StatusEffect as v11StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { constants } from './constants';
+
+// shim until v12
+type StatusEffect = v11StatusEffect & { img?: string }
 
 /** @internal */
 export const statusEffects: StatusEffect[] = [

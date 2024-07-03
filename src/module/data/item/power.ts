@@ -1,41 +1,59 @@
 import { PotentialSource } from '../../../globals';
 import {
-  actions,
-  bonusDamage,
-  choiceSets,
-  favorite,
-  itemDescription,
-  templates,
-} from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
 } from '../../documents/item/SwadeItem.interface';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
+import { SwadeBaseItemData } from './base';
+import { actions, bonusDamage, favorite, templates } from './common';
+import {
+  Actions,
+  BonusDamage,
+  Favorite,
+  Templates,
+} from './item-common.interface';
 
-export interface PowerData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof PowerData)['defineSchema']>
-  > {}
+declare namespace PowerData {
+  interface Schema
+    extends SwadeBaseItemData.Schema,
+      Actions,
+      BonusDamage,
+      Favorite,
+      Templates {
+    rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
+    pp: foundry.data.fields.NumberField<{ initial: 0 }>;
+    damage: foundry.data.fields.StringField<{ initial: '' }>;
+    range: foundry.data.fields.StringField<{ initial: '' }>;
+    duration: foundry.data.fields.StringField<{ initial: '' }>;
+    trapping: foundry.data.fields.StringField<{
+      initial: '';
+      textSearch: true;
+    }>;
+    arcane: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
+    ap: foundry.data.fields.NumberField<{ initial: 0 }>;
+    innate: foundry.data.fields.BooleanField;
+    modifiers: foundry.data.fields.ArrayField<foundry.data.fields.ObjectField>;
+  }
+  interface BaseData extends SwadeBaseItemData.BaseData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+}
 
-export class PowerData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof PowerData)['defineSchema']>
-  >,
-  Item
+class PowerData extends SwadeBaseItemData<
+  PowerData.Schema,
+  PowerData.BaseData,
+  PowerData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): PowerData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
+      ...super.defineSchema(),
       ...actions(),
       ...bonusDamage(),
       ...favorite(),
       ...templates(),
-      ...choiceSets(),
       rank: new fields.StringField({ initial: '', textSearch: true }),
       pp: new fields.NumberField({ initial: 0 }),
       damage: new fields.StringField({ initial: '' }),
@@ -83,13 +101,9 @@ export class PowerData extends foundry.abstract.TypeDataModel<
 
   async getChatChips(): Promise<ItemChatCardChip[]> {
     return [
-      {
-        text: this.rank,
-      },
+      { text: this.rank },
       { text: this.arcane },
-      {
-        text: this.pp + game.i18n.localize('SWADE.PPAbbreviation'),
-      },
+      { text: this.pp + game.i18n.localize('SWADE.PPAbbreviation') },
       {
         icon: '<i class="fas fa-ruler"></i>',
         text: this.range,
@@ -105,9 +119,7 @@ export class PowerData extends foundry.abstract.TypeDataModel<
         text: this.duration,
         title: game.i18n.localize('SWADE.Dur'),
       },
-      {
-        text: this.trapping,
-      },
+      { text: this.trapping },
     ];
   }
 
@@ -119,3 +131,5 @@ export class PowerData extends foundry.abstract.TypeDataModel<
     return ab.value >= resourcesUsed;
   }
 }
+
+export { PowerData };

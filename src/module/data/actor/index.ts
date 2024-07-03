@@ -13,7 +13,7 @@ export const config = {
 };
 
 declare global {
-  interface SystemConfig {
+  interface DataModelConfig {
     Actor: {
       character: CharacterData;
       npc: NpcData;

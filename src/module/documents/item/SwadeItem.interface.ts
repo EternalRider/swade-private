@@ -1,4 +1,7 @@
-import { ItemDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
+import {
+  DeepPartial,
+  ValueOf,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
@@ -47,15 +50,15 @@ export interface Requirement {
   type: ValueOf<typeof constants.REQUIREMENT_TYPE>;
   combinator: string;
   selector: string;
-  value: string | number | boolean;
-  label: string;
+  value?: string | number | boolean;
+  label?: string;
 }
 
 export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
-  mutation?: DeepPartial<ItemDataConstructorData>;
+  mutation?: DeepPartial<foundry.documents.BaseItem.ConstructorData>;
   missing?: boolean;
   major?: boolean;
 }
@@ -69,7 +72,7 @@ export interface ChoiceSet {
 export interface MutationOption {
   name: string;
   addToName?: boolean;
-  mutation?: DeepPartial<ItemDataConstructorData>;
+  mutation?: DeepPartial<foundry.documents.BaseItem.ConstructorData>;
 }
 
 export interface ItemGrantChainLink {

@@ -1,4 +1,5 @@
 import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
+import { DataModelValidationFailure } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/validation-failure.mjs';
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
@@ -8,29 +9,46 @@ import {
 } from '../../documents/item/SwadeItem.interface';
 import { count } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
-import { category, choiceSets, favorite, grants, itemDescription } from './common';
 import * as migrations from './_migration';
+import { SwadeBaseItemData } from './base';
+import { category, favorite, grants } from './common';
+import { Category, Favorite, Grants } from './item-common.interface';
 
-export interface EdgeData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof EdgeData)['defineSchema']>
-  > {}
+declare namespace EdgeData {
+  interface Schema
+    extends SwadeBaseItemData.Schema,
+      Favorite,
+      Category,
+      Grants {
+    isArcaneBackground: foundry.data.fields.BooleanField;
+    requirements: foundry.data.fields.ArrayField<
+      foundry.data.fields.EmbeddedDataField<RequirementsField>,
+      {
+        initial: Requirement[];
+        validate: (
+          value: Requirement[],
+          _options: DataField.ValidationOptions<DataField.Any>,
+        ) => DataModelValidationFailure | undefined;
+      }
+    >;
+  }
+  interface BaseData extends SwadeBaseItemData.BaseData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+}
 
-export class EdgeData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof EdgeData)['defineSchema']>
-  >,
-  Item
+class EdgeData extends SwadeBaseItemData<
+  EdgeData.Schema,
+  EdgeData.BaseData,
+  EdgeData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): EdgeData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
+      ...super.defineSchema(),
       ...favorite(),
       ...category(),
       ...grants(),
-      ...choiceSets(),
       isArcaneBackground: new fields.BooleanField(),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),
@@ -39,7 +57,8 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
             {
               type: constants.REQUIREMENT_TYPE.RANK,
               value: SWADE.ranks[constants.RANK.NOVICE],
-              selector: 'and',
+              combinator: 'and',
+              selector: '',
             },
           ],
           validate: (
@@ -148,3 +167,5 @@ export class EdgeData extends foundry.abstract.TypeDataModel<
     return chips;
   }
 }
+
+export { EdgeData };

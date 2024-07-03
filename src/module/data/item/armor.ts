@@ -1,38 +1,66 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
+import { constants } from '../../constants';
+import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
+import { SwadePhysicalItemData } from './base';
 import {
   actions,
   arcaneDevice,
   bonusDamage,
   category,
-  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
-  itemDescription,
-  physicalItem,
 } from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import { constants } from '../../constants';
-import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-export interface ArmorData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof ArmorData)['defineSchema']>
-  > {}
+import {
+  Actions,
+  ArcaneDevice,
+  BonusDamage,
+  Category,
+  Equippable,
+  Favorite,
+  GrantEmbedded,
+} from './item-common.interface';
 
-export class ArmorData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof ArmorData)['defineSchema']>
-  >,
-  Item
+declare namespace ArmorData {
+  interface Schema
+    extends SwadePhysicalItemData.Schema,
+      Equippable,
+      ArcaneDevice,
+      Actions,
+      BonusDamage,
+      Favorite,
+      Category,
+      GrantEmbedded {
+    minStr: foundry.data.fields.StringField<{ initial: '' }>;
+    armor: foundry.data.fields.NumberField<{ initial: 0 }>;
+    toughness: foundry.data.fields.NumberField<{ initial: 0 }>;
+    isNaturalArmor: foundry.data.fields.BooleanField;
+    isHeavyArmor: foundry.data.fields.BooleanField;
+    locations: foundry.data.fields.SchemaField<{
+      head: foundry.data.fields.BooleanField;
+      torso: foundry.data.fields.BooleanField<{ initial: true }>;
+      arms: foundry.data.fields.BooleanField;
+      legs: foundry.data.fields.BooleanField;
+    }>;
+  }
+  interface BaseData extends SwadePhysicalItemData.BaseData {}
+  interface DerivedData extends SwadePhysicalItemData.DerivedData {}
+}
+class ArmorData extends SwadePhysicalItemData<
+  ArmorData.Schema,
+  ArmorData.BaseData,
+  ArmorData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): ArmorData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
-      ...physicalItem(),
+      ...super.defineSchema(),
       ...equippable(),
       ...arcaneDevice(),
       ...actions(),
@@ -40,7 +68,6 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      ...choiceSets(),
       minStr: new fields.StringField({ initial: '' }),
       armor: new fields.NumberField({ initial: 0 }),
       toughness: new fields.NumberField({ initial: 0 }),
@@ -81,12 +108,8 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  get isPhysicalItem() {
-    return true;
-  }
-
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichOptions>,
+    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     for (const [location, covered] of Object.entries(this.locations)) {
@@ -126,4 +149,17 @@ export class ArmorData extends foundry.abstract.TypeDataModel<
     );
     return chips;
   }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    if (this.parent?.actor?.type === 'npc') {
+      this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
+    }
+  }
 }
+
+export { ArmorData };

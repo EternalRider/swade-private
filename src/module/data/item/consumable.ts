@@ -1,43 +1,68 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState, PotentialSource, Updates } from '../../../globals';
+import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
+import { SwadePhysicalItemData } from './base';
 import {
   actions,
   category,
-  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
-  itemDescription,
-  physicalItem,
 } from './common';
+import {
+  Actions,
+  Category,
+  ChoicesType,
+  Equippable,
+  Favorite,
+  GrantEmbedded,
+} from './item-common.interface';
 
-export interface ConsumableData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof ConsumableData)['defineSchema']>
-  > {}
+declare namespace ConsumableData {
+  interface Schema
+    extends SwadePhysicalItemData.Schema,
+      Equippable,
+      Favorite,
+      Category,
+      Actions,
+      GrantEmbedded {
+    charges: foundry.data.fields.SchemaField<{
+      value: foundry.data.fields.NumberField<{ initial: 1 }>;
+      max: foundry.data.fields.NumberField<{ initial: 1 }>;
+    }>;
+    messageOnUse: foundry.data.fields.BooleanField<{ initial: true }>;
+    destroyOnEmpty: foundry.data.fields.BooleanField;
+    subtype: foundry.data.fields.StringField<{
+      initial: typeof constants.CONSUMABLE_TYPE.REGULAR;
+      choices: ChoicesType<typeof constants.CONSUMABLE_TYPE>;
+      textSearch: true;
+    }>;
+  }
+  interface BaseData extends SwadePhysicalItemData.BaseData {}
+  interface DerivedData extends SwadePhysicalItemData.DerivedData {}
+}
 
-export class ConsumableData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof ConsumableData)['defineSchema']>
-  >,
-  Item
+class ConsumableData extends SwadePhysicalItemData<
+  ConsumableData.Schema,
+  ConsumableData.BaseData,
+  ConsumableData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): ConsumableData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
-      ...physicalItem(),
+      ...super.defineSchema(),
       ...equippable(),
       ...favorite(),
       ...category(),
       ...actions(),
       ...grantEmbedded(),
-      ...choiceSets(),
       charges: new fields.SchemaField({
         value: new fields.NumberField({ initial: 1 }),
         max: new fields.NumberField({ initial: 1 }),
@@ -68,10 +93,6 @@ export class ConsumableData extends foundry.abstract.TypeDataModel<
 
   protected _applyShims() {
     shims.actionProperties(this);
-  }
-
-  get isPhysicalItem() {
-    return true;
   }
 
   /** Used by SwadeItem.#postConsumptionCleanup */
@@ -118,4 +139,40 @@ export class ConsumableData extends foundry.abstract.TypeDataModel<
 
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
+
+  protected override async _preUpdate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preUpdate(data, options, user);
+    if (
+      foundry.utils.hasProperty(data, 'system.quantity') &&
+      this.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
+      this.charges.value !== 0 &&
+      this.charges.value !== this.charges.max
+    ) {
+      if (data.system.quantity > 1 && this.charges.value < this.charges.max) {
+        delete data.system.quantity;
+        Logger.warn(
+          'Partially filled magazines can only have a quantity of 1',
+          { toast: true },
+        );
+      }
+    }
+    if (
+      foundry.utils.hasProperty(data, 'system.charges.max') &&
+      this.subtype === constants.CONSUMABLE_TYPE.BATTERY
+    ) {
+      foundry.utils.setProperty(data, 'system.charges.max', 100);
+    }
+    if (
+      foundry.utils.getProperty(data, 'system.subtype') ===
+      constants.CONSUMABLE_TYPE.BATTERY
+    ) {
+      foundry.utils.setProperty(data, 'system.charges.max', 100);
+    }
+  }
 }
+
+export { ConsumableData };

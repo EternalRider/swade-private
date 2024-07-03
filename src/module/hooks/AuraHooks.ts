@@ -85,28 +85,28 @@ function updateAurasForToken(token: SwadeToken) {
     });
     return missingActorMsg(token);
   }
-  const origin = token.center;
-  const auraData = token.actor.auras;
-  for (const [id, aura] of token.auras.entries()) {
-    const data = auraData[id];
-    if (!data) {
-      removeAura(token, aura, id);
-      continue;
-    }
-    const { externalRadius } = token;
-    aura.initialize({
-      x: origin.x,
-      y: origin.y,
-      disabled: !data.enabled,
-      radius: canvas.dimensions?.size * data.radius + externalRadius,
-      externalRadius: externalRadius,
-      rotation: token.document.rotation,
-      preview: token.isPreview,
-      walls: data.walls,
-    });
+  // const origin = token.getCenterPoint({ x: 0, y: 0 });
+  // const auraData = token.actor.auras;
+  // for (const [id, aura] of token.auras.entries()) {
+  //   const data = auraData[id];
+  //   if (!data) {
+  //     removeAura(token, aura, id);
+  //     continue;
+  //   }
+  //   const { externalRadius } = token;
+  //   aura.initialize({
+  //     x: origin.x,
+  //     y: origin.y,
+  //     disabled: !data.enabled,
+  //     radius: canvas.dimensions?.size * data.radius + externalRadius,
+  //     externalRadius: externalRadius,
+  //     rotation: token.document.rotation,
+  //     preview: token.isPreview,
+  //     walls: data.walls,
+  //   });
 
-    CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
-  }
+  //   CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
+  // }
   refreshAuras();
 }
 

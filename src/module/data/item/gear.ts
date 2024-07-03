@@ -1,39 +1,57 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource, Updates } from '../../../globals';
+import { constants } from '../../constants';
+import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
+import { SwadePhysicalItemData } from './base';
 import {
   actions,
   arcaneDevice,
   category,
-  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
-  itemDescription,
-  physicalItem,
   vehicular,
 } from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import { constants } from '../../constants';
-import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import {
+  Actions,
+  ArcaneDevice,
+  Category,
+  Equippable,
+  Favorite,
+  GrantEmbedded,
+  Vehicular,
+} from './item-common.interface';
 
-export interface GearData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof GearData)['defineSchema']>
-  > {}
+declare namespace GearData {
+  interface Schema
+    extends SwadePhysicalItemData.Schema,
+      Equippable,
+      ArcaneDevice,
+      Vehicular,
+      Actions,
+      Favorite,
+      Category,
+      GrantEmbedded {
+    isAmmo: foundry.data.fields.BooleanField;
+  }
+  interface BaseData extends SwadePhysicalItemData.BaseData {}
+  interface DerivedData extends SwadePhysicalItemData.DerivedData {}
+}
 
-export class GearData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof GearData)['defineSchema']>
-  >,
-  Item
+class GearData extends SwadePhysicalItemData<
+  GearData.Schema,
+  GearData.BaseData,
+  GearData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): GearData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
-      ...physicalItem(),
+      ...super.defineSchema(),
       ...equippable(),
       ...arcaneDevice(),
       ...vehicular(),
@@ -41,7 +59,6 @@ export class GearData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      ...choiceSets(),
       isAmmo: new fields.BooleanField(),
     };
   }
@@ -54,7 +71,6 @@ export class GearData extends foundry.abstract.TypeDataModel<
     return super.migrateData(source);
   }
 
-  /** @inheritdoc */
   protected override _initialize(options?: any) {
     super._initialize(options);
     this._applyShims();
@@ -72,10 +88,6 @@ export class GearData extends foundry.abstract.TypeDataModel<
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  get isPhysicalItem() {
-    return true;
-  }
-
   /** Used by SwadeItem.consume */
   _getUsageUpdates(chargesToUse: number): UsageUpdates {
     const actorUpdates: Updates = {};
@@ -86,4 +98,16 @@ export class GearData extends foundry.abstract.TypeDataModel<
 
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
+
+  protected override async _preCreate(
+    _data: foundry.documents.BaseItem.ConstructorData,
+    _options: DocumentModificationOptions,
+    _user: BaseUser,
+  ) {
+    if (this.parent?.actor?.type === 'npc') {
+      this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
+    }
+  }
 }
+
+export { GearData };
