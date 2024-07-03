@@ -8,6 +8,7 @@ import {
   ItemDataSource,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -34,7 +35,6 @@ declare global {
   interface FlagConfig {
     Item: {
       swade: {
-        embeddedAbilities: [string, ItemDataSource][];
         embeddedPowers: [string, ItemDataSource][];
         hasGranted?: string[];
         loadedAmmo?: ItemDataSource;
@@ -50,14 +50,6 @@ export default class SwadeItem extends Item {
 
   static override migrateData(data: ItemDataConstructorData) {
     super.migrateData(data);
-    if (data.flags?.swade?.embeddedAbilities) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [key, item] of data.flags.swade.embeddedAbilities) {
-        if (item.system && !item.data) continue;
-        item.system = { ...item.data };
-        delete item.data;
-      }
-    }
     if (data.flags?.swade?.embeddedPowers) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [key, item] of data.flags.swade.embeddedPowers) {
@@ -151,11 +143,6 @@ export default class SwadeItem extends Item {
 
   get canHaveCategory(): boolean {
     return this.system.canHaveCategory || this.isPhysicalItem;
-  }
-
-  get embeddedAbilities() {
-    const flagContent = this.getFlag('swade', 'embeddedAbilities') ?? [];
-    return new Map(flagContent);
   }
 
   get embeddedPowers() {
@@ -490,14 +477,6 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
-  getTraitModifiers(): RollModifier[] {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem.getTraitModifiers() is deprecated in favor of SwadeItem.traitModifiers',
-      { since: '3.3', until: '4.0' },
-    );
-    return this.traitModifiers;
-  }
-
   canExpendResources(resourcesUsed = 1): boolean {
     const typecheck = this.system._canExpendResources?.(resourcesUsed);
     if (typecheck === undefined) return true;
@@ -636,18 +615,6 @@ export default class SwadeItem extends Item {
     return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
-  /**
-   * @deprecated
-   * @since 3.3.0
-   */
-  needsFullReloadProcedure(): boolean {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem.needsFullReloadProcedure() is deprecated in favor of SwadeItem.usesAmmoFromInventory',
-      { since: '3.3', until: '4.0' },
-    );
-    return !!this.system.usesAmmoFromInventory;
-  }
-
   async removeGranted(target = this.parent) {
     if (this.hasGranted.length < 1) return;
     //grab the granted ids and put them into a set to filter possible duplicates
@@ -688,14 +655,6 @@ export default class SwadeItem extends Item {
       }
     }
     return expression;
-  }
-
-  private _getPowerPoints(): ItemDisplayPowerPoints | null {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem._getPowerPoints() is deprecated in favor of SwadeItem.powerPoints',
-      { since: '3.3', until: '4.0' },
-    );
-    return this.powerPointObject;
   }
 
   async #createChargeUsageMessage(charges: number) {

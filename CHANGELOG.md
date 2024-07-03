@@ -47,11 +47,17 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 
 ### Deprecated
 
+- Finished deprecation of Embedded Abilities. (#1163) **by @florad92**
+- Finished deprecation of `SwadeItem._getPowerPoints()`. **by @florad92**
+- Finished deprecation of `SwadeItem.getTraitModifiers()`. **by @florad92**
+- Finished deprecation of `SwadeItem.needsFullReloadProcedure()`. **by @florad92**
+- Finished deprecation of `SwadeActor.isEncumbered`. **by @florad92**
+- Finished deprecation of `SwadeActor.race`. **by @florad92**
+
 ### Removed
 
 - Removed `template.yml` (which compiled to template.json). Information about the document subtypes available in the system is now available in `system.json`. (#1047) **by @jpmeehan5**
 - Setting configuration for the number of GM Bennies has been removed. (#1161) by **@kristianserrano**
-
 
 ### Fixed
 
@@ -60,7 +66,6 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 - Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
 - The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated. (#1161) by **@kristianserrano**
 - The Full Reload property now works again (#1165) **by @michaeldougherty1976**
-
 
 ## 3.4.1
 
