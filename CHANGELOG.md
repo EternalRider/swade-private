@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 4.0.0
 
+SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11
+
 ### Added
 
 - Added data model for Poker cards. **by @jpmeehan5**
