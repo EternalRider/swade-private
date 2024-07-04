@@ -66,7 +66,7 @@ export class RollDialog extends FormApplication<
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
-  get rollMode(): foundry.CONST.DICE_ROLL_MODES {
+  override get rollMode(): foundry.CONST.DICE_ROLL_MODES {
     return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
       .value as foundry.CONST.DICE_ROLL_MODES;
   }
