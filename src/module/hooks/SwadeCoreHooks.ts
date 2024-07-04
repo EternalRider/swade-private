@@ -23,6 +23,7 @@ import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
+import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -548,11 +549,11 @@ export default class SwadeCoreHooks {
 
   static onRenderUserConfig(
     app: UserConfig,
-    html: JQuery<HTMLElement>,
+    html: HTMLElement,
     data: Record<string, unknown>,
   ) {
     // resize the element so it'll fit the new stuff
-    html.css({ height: 'auto' });
+    html.style.height = 'auto';
 
     //get possible
     const possibleCardsDocs = game.cards!.filter(
@@ -561,10 +562,12 @@ export default class SwadeCoreHooks {
         c.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
     );
 
-    const actorDirectory = html.find('div.stacked.directory');
+    const form = html.querySelector<HTMLDivElement>('.standard-form');
+    const footer = html.querySelector<HTMLDivElement>('.form-footer');
+    if (!form || !footer) return;
 
     //return early to avoid double rendering
-    if (html.find('div.swade-favorite-cards').length) return;
+    if (html.querySelector('div.swade-favorite-cards')) return;
 
     const userConfigLabel = game.i18n.localize(
       'SWADE.Keybindings.OpenFavoriteCards.UserConfigLabel',
@@ -576,14 +579,18 @@ export default class SwadeCoreHooks {
     });
 
     const template = `
-    <div class="form-group swade-favorite-cards">
-      <label>${userConfigLabel}</label>
-      <select name="flags.swade.favoriteCardsDoc">
-      <option value="">${game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.HandNone')}</option>
-      ${options.join('\n')}
-      </select>
-    </div>`;
-    actorDirectory.before(template);
+    <fieldset>
+      <legend>${userConfigLabel}</legend>
+      <div class="form-group stacked swade-favorite-cards">
+        <select name="flags.swade.favoriteCardsDoc">
+        <option value="">${game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.HandNone')}</option>
+        ${options.join('\n')}
+        </select>
+      </div>
+    </fieldset>
+    `;
+
+    form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
   static onRenderChatLog(app: ChatLog, html: JQuery<HTMLElement>, data: any) {
