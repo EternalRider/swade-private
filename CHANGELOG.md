@@ -69,6 +69,10 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
 - The Full Reload property now works again (#1165) **by @michaeldougherty1976**
 - Action items should now roll damage actions with bonus damage properly. (#1163) **by @florad92**
 
+### Known Issues
+
+- Due to changes in foundry's Canvas and rendering Auras have been disabled for the time being.
+
 ## 3.4.1
 
 ### Fixed
