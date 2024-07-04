@@ -206,6 +206,6 @@ export default class SwadeChatMessage extends ChatMessage {
     if (hasMultipleTraitDice) {
       return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;
     }
-    return hasConfirmedCritfail;
+    return !!hasConfirmedCritfail;
   }
 }

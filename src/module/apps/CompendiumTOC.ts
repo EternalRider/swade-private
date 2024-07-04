@@ -1,5 +1,4 @@
 import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
@@ -660,4 +659,4 @@ type ActorIndexEntry = {
   token: {
     img: string;
   };
-} & Partial<ActorDataSource>;
+} & foundry.documents.BaseActor;

@@ -859,7 +859,6 @@ interface SwadeItemSheetData extends OptionsPartial {
   trademarkWeaponOptions?: Record<number, string>;
   reloadTypeOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemData<'power'>>;
-  embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
   ammoLoaded?: string;
   ppReload?: boolean;

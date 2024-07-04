@@ -4,6 +4,7 @@ import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 export default class ActiveEffectWizard extends FormApplication {
   #effect: DeepPartial<BaseActiveEffect.Properties> = {

@@ -65,7 +65,7 @@ export default class Reloadinator extends Application {
       });
   }
 
-  async getData(options?: Partial<ApplicationOptions>) {
+  override async getData(options?: Partial<ApplicationOptions>) {
     const renderData = {
       magazineGroups: this.#prepareOptionList(),
       canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,

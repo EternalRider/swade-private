@@ -1,7 +1,7 @@
 import {
-  ObjectAttributeBar,
   SingleAttributeBar,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+  ObjectAttributeBar,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { AuraPointSource } from './AuraPointSource';
 
@@ -15,7 +15,7 @@ export default class SwadeToken extends Token {
 
   auras = new Collection<AuraPointSource>();
 
-  protected _drawBar(
+  protected override _drawBar(
     number: number,
     bar: PIXI.Graphics,
     data: SingleAttributeBar | ObjectAttributeBar | null,

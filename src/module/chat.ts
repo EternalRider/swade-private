@@ -70,7 +70,7 @@ export async function hideChatActionButtons(
 ) {
   const html = jquery[0];
   // If the user is the message author or the actor owner, proceed
-  const actor = game.actors?.get(msg.speaker.actor);
+  const actor = game.actors?.get(msg.speaker.actor ?? '');
   if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
   const chatCard = html.querySelector<HTMLElement>('.swade.chat-card');
   if (chatCard) {
@@ -133,14 +133,22 @@ export function createMagazineTooltip(
     );
     const itemId = card.querySelector<HTMLElement>('[data-item-id]')?.dataset
       .itemId as string;
-    const loadedAmmo = actor?.items.get(itemId)?.getFlag('swade', 'loadedAmmo');
+    const item = actor?.items.get(itemId);
+    const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
 
     const content = loadedAmmo
       ? `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`
       : game.i18n.localize('SWADE.Magazine.NoneLoaded');
 
     game.tooltip.activate(magazine, {
-      text: await TextEditor.enrichHTML(content, { async: true }),
+      text: await TextEditor.enrichHTML(content, {
+        relativeTo: item.uuid,
+        rollData: item.getRollData(),
+        secrets: item.testUserPermission(
+          game.user,
+          CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+        ),
+      }),
     });
   });
 }

@@ -23,7 +23,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
   await new Promise((resolve) => {
     let roll: TraitRoll | null = null;
     let processed = false;
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       roll: {
         label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.RollSpirit'),
         icon: '<i class="fas fa-dice"></i>',

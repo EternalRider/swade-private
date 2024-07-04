@@ -66,7 +66,7 @@ export class RollDialog extends FormApplication<
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
-  override get rollMode(): foundry.CONST.DICE_ROLL_MODES {
+  get rollMode(): foundry.CONST.DICE_ROLL_MODES {
     return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
       .value as foundry.CONST.DICE_ROLL_MODES;
   }
@@ -218,7 +218,6 @@ export class RollDialog extends FormApplication<
     }
 
     //recreate the roll
-    //@ts-expect-error rollCls works here
     const finalizedRoll = this.rollCls.fromTerms(
       terms,
       roll.options,
@@ -363,7 +362,7 @@ export class RollDialog extends FormApplication<
 export interface RollDialogContext {
   roll: SwadeRoll;
   mods: RollModifier[];
-  speaker: foundry.data.ChatMessageData['speaker']['_source'];
+  speaker: ChatSpeakerData;
   flavor: string;
   title: string;
   item?: SwadeItem;

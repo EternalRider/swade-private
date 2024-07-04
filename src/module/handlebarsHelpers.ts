@@ -37,11 +37,6 @@ function rotate(number: number) {
   else return rotationVal;
 }
 
-function enrich(content: string) {
-  const enriched = TextEditor.enrichHTML(content, { async: false }) as string;
-  return new Handlebars.SafeString(enriched);
-}
-
 function formatNumber(num) {
   return Math.round((num + Number.EPSILON) * 1000) / 1000;
 }
@@ -267,7 +262,6 @@ export function registerCustomHelpers() {
     localizeSkillAttribute,
     advanceType,
     modifier,
-    enrich,
     canBeEquipped,
     displayEmbedded,
     capitalize,

@@ -1,5 +1,4 @@
 import { constants } from '../constants';
-import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /**
@@ -154,7 +153,11 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
 
     data.enrichedBiography = await TextEditor.enrichHTML(
       this.actor.system.details.biography.value,
-      { async: true, secrets: this.options.editable },
+      {
+        relativeTo: this.actor,
+        rollData: this.actor.getRollData(),
+        secrets: this.options.editable && this.document.isOwner,
+      },
     );
 
     // Everything below here is only needed if user is not limited
@@ -171,60 +174,6 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
-  }
-
-  protected override async _onDropItem(
-    event: DragEvent,
-    data: ActorSheet.DropData.Item,
-  ): Promise<unknown> {
-    await super._onDropItem(event, data);
-    const item = (await fromUuid(data.uuid)) as SwadeItem;
-    //check if it's the proper type and subtype
-    if (item.type !== 'ability') return;
-    const subType = item.system.subtype;
-    if (subType === 'special') return;
-
-    //process embedded documents
-    const map = item.embeddedAbilities;
-    const creationData = new Array<any>();
-    const duplicates = new Array<{ type: string; name: string }>();
-    for (const entry of map.values()) {
-      const existingItems = this.actor.items.filter(
-        (i) => i.type === entry.type && i.name === entry.name,
-      );
-      if (existingItems.length > 0) {
-        duplicates.push({
-          type: game.i18n.localize(`TYPES.Item.${entry.type}`),
-          name: entry.name,
-        });
-        entry.name += ` (${item.name})`;
-      }
-      creationData.push(entry);
-    }
-    if (creationData.length > 0) {
-      await this.actor.createEmbeddedDocuments('Item', creationData, {
-        //@ts-expect-error Normally the flag is a boolean
-        renderSheet: null,
-      });
-    }
-    if (duplicates.length > 0) {
-      Dialog.prompt({
-        title: game.i18n.localize('SWADE.Duplicates'),
-        rejectClose: false,
-        content: await renderTemplate(
-          '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
-          {
-            duplicates: duplicates.sort((a, b) => a.type.localeCompare(b.type)),
-            bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
-              type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
-              name: item.name,
-              target: this.actor.name,
-            }),
-          },
-        ),
-        callback: () => {},
-      });
-    }
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {

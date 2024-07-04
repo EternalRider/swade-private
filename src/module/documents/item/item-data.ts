@@ -1,3 +1,4 @@
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import {
   AbilitySubType,
   AdditionalStats,
@@ -221,10 +222,7 @@ interface EdgeData extends ItemDescription, Favorite, Category, ChoiceSet {
   grants: Array<ItemGrant>;
 }
 
-interface HindranceData
-  extends ItemDescription,
-    Favorite,
-    ChoiceSet {
+interface HindranceData extends ItemDescription, Favorite, ChoiceSet {
   major: boolean;
   grants: Array<ItemGrant>;
 }

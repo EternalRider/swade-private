@@ -635,7 +635,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     const isVehicle = combatant.actor?.type === 'vehicle';
 
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       gm: {
         label: game.i18n.localize('SWADE.Rolls.GMBenny'),
         callback: async () => {

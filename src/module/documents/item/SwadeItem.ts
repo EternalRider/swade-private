@@ -2,13 +2,11 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
-import {
-  ItemDataConstructorData,
-  ItemDataSource,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import {
+  DeepPartial,
+  StoredDocument,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -35,9 +33,9 @@ declare global {
   interface FlagConfig {
     Item: {
       swade: {
-        embeddedPowers: [string, ItemDataSource][];
+        embeddedPowers: [string, foundry.documents.BaseItem.ConstructorData][];
         hasGranted?: string[];
-        loadedAmmo?: ItemDataSource;
+        loadedAmmo?: foundry.documents.BaseItem.ConstructorData;
         [key: string]: unknown;
       };
     };
@@ -45,10 +43,12 @@ declare global {
 }
 
 export default class SwadeItem extends Item {
-  overrides: DeepPartial<ItemDataConstructorData> = {};
+  overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
-  static override migrateData(data: ItemDataConstructorData) {
+  static override migrateData(
+    data: foundry.documents.BaseItem.ConstructorData,
+  ) {
     super.migrateData(data);
     if (data.flags?.swade?.embeddedPowers) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -77,7 +77,10 @@ export default class SwadeItem extends Item {
     return data;
   }
 
-  constructor(data?: ItemDataConstructorData, context?: Context<SwadeActor>) {
+  constructor(
+    data: foundry.documents.BaseItem.ConstructorData,
+    context?: Context<SwadeActor>,
+  ) {
     super(data, context);
     this.overrides ??= {};
   }
@@ -332,7 +335,7 @@ export default class SwadeItem extends Item {
   }
 
   async getChatData(
-    enrichOptions: Partial<TextEditor.EnrichOptions> = { async: true },
+    enrichOptions: Partial<TextEditor.EnrichmentOptions> = { async: true },
   ): Promise<ItemChatCardData> {
     // Item properties
     const chips =
@@ -437,7 +440,7 @@ export default class SwadeItem extends Item {
     const html = await renderTemplate(template, templateData);
 
     // Basic chat message data
-    const chatData: ChatMessageDataConstructorData = {
+    const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
       user: game.user?.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,

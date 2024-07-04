@@ -269,7 +269,6 @@
       <div class='quickaccess-list'>
         <ol class='gear-list weapon-list'>
           {{#each itemsByType.weapon as |item|}}
-          {{log this}}
             {{>"systems/swade/templates/actors/partials/weapon-card.hbs" item=item}}
           {{/each}}
         </ol>

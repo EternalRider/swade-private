@@ -1,3 +1,4 @@
+import { InexactPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import SwadeActor from '../module/documents/actor/SwadeActor';
 import SwadeItem from '../module/documents/item/SwadeItem';
 import { RollModifier } from './additional.interface';
