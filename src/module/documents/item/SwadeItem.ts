@@ -42,7 +42,11 @@ declare global {
   }
 }
 
-export default class SwadeItem extends Item {
+type SystemItemTypes = Exclude<foundry.documents.BaseItem.TypeNames, 'base'>;
+
+export default class SwadeItem<
+  ItemType extends SystemItemTypes = SystemItemTypes,
+> extends Item {
   overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
@@ -84,6 +88,8 @@ export default class SwadeItem extends Item {
     super(data, context);
     this.overrides ??= {};
   }
+
+  override system: DataModelConfig['Item'][ItemType];
 
   get isMeleeWeapon(): boolean {
     return this.system['isMelee'] ?? false;
@@ -339,7 +345,7 @@ export default class SwadeItem extends Item {
   ): Promise<ItemChatCardData> {
     // Item properties
     const chips =
-      typeof this.system.getChatChips === 'function'
+      'getChatChips' in this.system
         ? await this.system.getChatChips(enrichOptions)
         : new Array<ItemChatCardChip>();
 
@@ -481,9 +487,9 @@ export default class SwadeItem extends Item {
   }
 
   canExpendResources(resourcesUsed = 1): boolean {
-    const typecheck = this.system._canExpendResources?.(resourcesUsed);
-    if (typecheck === undefined) return true;
-    else return typecheck;
+    if ('_canExpendResources' in this.system) {
+      return this.system._canExpendResources(resourcesUsed);
+    } else return true;
   }
 
   async consume(charges = 1): Promise<void> {
@@ -534,12 +540,12 @@ export default class SwadeItem extends Item {
 
   async reload() {
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    if (typeof this.system.reload !== 'function' || !ammoManagement) return;
+    if (!('reload' in this.system) || !ammoManagement) return;
     else this.system.reload();
   }
 
   async removeAmmo() {
-    this.system.removeAmmo?.();
+    if ('removeAmmo' in this.system) this.system.removeAmmo();
   }
 
   async grantEmbedded(target = this.parent) {

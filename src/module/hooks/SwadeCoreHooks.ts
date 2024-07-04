@@ -41,6 +41,7 @@ export default class SwadeCoreHooks {
       const tocBlockList = game.settings.get('swade', 'tocBlockList');
       const isBlocked = tocBlockList[pack.collection];
       if (isRightType && !isBlocked) {
+        // @ts-expect-error The type check isn't properly narrowing
         pack.apps = [new CompendiumTOC({ collection: pack })];
       }
     }
