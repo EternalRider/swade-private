@@ -10,6 +10,7 @@ import { SwadePhysicalItemData } from './base';
 import {
   actions,
   arcaneDevice,
+  bonusDamage,
   category,
   equippable,
   favorite,
@@ -56,6 +57,7 @@ class GearData extends SwadePhysicalItemData<
       ...arcaneDevice(),
       ...vehicular(),
       ...actions(),
+      ...bonusDamage(),
       ...favorite(),
       ...category(),
       ...grantEmbedded(),

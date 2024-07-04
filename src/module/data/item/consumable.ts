@@ -10,10 +10,11 @@ import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
 import {
   actions,
+  bonusDamage,
   category,
   equippable,
   favorite,
-  grantEmbedded,
+  grantEmbedded,  
 } from './common';
 import {
   Actions,
@@ -62,6 +63,7 @@ class ConsumableData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...actions(),
+      ...bonusDamage(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
         value: new fields.NumberField({ initial: 1 }),
