@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.0.1
+
+### Fixed
+
+- Data prep failure due to bad type declaration. (#1169) **by @jpmeehan5**
+
 ## 4.0.0
 
 SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11

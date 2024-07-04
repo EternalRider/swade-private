@@ -60,9 +60,12 @@ declare global {
 
 type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
 
-export default class SwadeActor<
-  ActorType extends SystemActorTypes = SystemActorTypes,
-> extends Actor {
+interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
+  type: ActorType;
+  system: DataModelConfig['Actor'][ActorType];
+}
+
+class SwadeActor extends Actor {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -117,8 +120,6 @@ export default class SwadeActor<
   // ): this is SwadeActor<TypeName> {
   //   return type === this.type;
   // }
-
-  override system: DataModelConfig['Actor'][ActorType];
 
   /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
@@ -1500,6 +1501,8 @@ export default class SwadeActor<
     }
   }
 }
+
+export default SwadeActor;
 
 type ArmorLocation = ValueOf<typeof constants.ARMOR_LOCATIONS>;
 
