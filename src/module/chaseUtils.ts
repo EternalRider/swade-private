@@ -1,5 +1,3 @@
-import { Dimensions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs/baseScene';
-
 export function layoutChase(deck: Cards) {
   //return if no canvas or scene is available
   if (!canvas || !canvas.ready || !canvas.scene) {
@@ -37,7 +35,7 @@ export function layoutChase(deck: Cards) {
         `;
 
   // Create the Dialog
-  const buttons: Record<string, Dialog.Button> = {
+  const buttons: Record<string, DialogButton> = {
     ok: {
       label: game.i18n.localize('SWADE.Draw'),
       callback: (html: JQuery<HTMLElement>) => {
@@ -49,7 +47,9 @@ export function layoutChase(deck: Cards) {
       callback: async () => {
         await deck.reset({ chatNotification: false });
         await deck.shuffle({ chatNotification: false });
-        ui.notifications.info(game.i18n.format('SWADE.ChaseReset', {deck: deck.name}));
+        ui.notifications.info(
+          game.i18n.format('SWADE.ChaseReset', { deck: deck.name }),
+        );
         removeChaseTiles(canvas.scene!);
       },
     },
@@ -119,7 +119,7 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
    * Get the width and height of the scene and it's rectangle area.
    * This will be compared to the size of the spread later to make sure the cards aren't tiled off canvas.
    */
-  const dimensions = canvas.scene.dimensions as Dimensions;
+  const dimensions = canvas.scene.dimensions;
   const sceneWidth = dimensions.sceneWidth;
   const sceneHeight = dimensions.sceneHeight;
   const sceneRectX = dimensions.sceneRect.x;

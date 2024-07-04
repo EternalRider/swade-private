@@ -82,7 +82,7 @@ export class AdvanceEditor extends FormApplication<
       notes: expanded.advance.notes,
       planned: expanded.planned,
       type: expanded.type,
-      sort: Math.clamped(expanded.sort, 1, this.advances.size),
+      sort: Math.clamp(expanded.sort, 1, this.advances.size),
     });
     if (sortHasChanged) return this.#handleSortingChange(advance);
     //normal update operation

@@ -18,6 +18,7 @@ declare global {
         isRedraw?: boolean;
         pickedCard?: string;
         cards?: any[]; //TODO properly set card source data type
+        rollMode?: string;
         [key: string]: unknown;
       };
       core?: {
@@ -197,7 +198,7 @@ export default class SwadeChatMessage extends ChatMessage {
     const isTraitRoll = roll instanceof TraitRoll;
     if (!roll || !isTraitRoll) return false;
     if (this.speakerActor?.isWildcard) return !!roll.isCritfail;
-    const pool = roll.terms[0] as PoolTerm;
+    const pool = roll.terms[0] as foundry.dice.terms.PoolTerm;
     const hasMultipleTraitDice = pool.dice.length > 1;
     const hasConfirmedCritfail = this['rolls'].find(
       (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1,
@@ -205,6 +206,6 @@ export default class SwadeChatMessage extends ChatMessage {
     if (hasMultipleTraitDice) {
       return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;
     }
-    return hasConfirmedCritfail;
+    return !!hasConfirmedCritfail;
   }
 }

@@ -23,7 +23,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
   await new Promise((resolve) => {
     let roll: TraitRoll | null = null;
     let processed = false;
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       roll: {
         label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.RollSpirit'),
         icon: '<i class="fas fa-dice"></i>',
@@ -112,9 +112,10 @@ async function removeShaken(effect: SwadeActiveEffect) {
         if (gmHasNoBennies) gmButton?.prop('disabled', true);
       },
     };
-    const options: DialogOptions = mergeObject(Dialog.defaultOptions, {
-      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
-    });
+    const options: DialogOptions = foundry.utils.mergeObject(
+      Dialog.defaultOptions,
+      { classes: ['dialog', 'dialog-buttons-column', 'swade-app'] },
+    );
     new Dialog(data, options).render(true);
   });
 }

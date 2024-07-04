@@ -1,5 +1,6 @@
 import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
+import SwadeCards from '../documents/card/SwadeCards';
 
 export default class SettingConfigurator extends FormApplication {
   config: typeof SWADE.settingConfig;
@@ -211,7 +212,7 @@ export default class SettingConfigurator extends FormApplication {
   #buildActionDeckChoices() {
     const deckChoices: Record<string, string> = {};
     game.cards
-      ?.filter((stack) => {
+      ?.filter((stack: SwadeCards) => {
         const cards = Array.from(stack.cards.values());
         return stack.type === 'deck' && cards.every((c) => c.type === 'poker');
       })
@@ -266,7 +267,7 @@ export default class SettingConfigurator extends FormApplication {
       );
       if (!packs.length) continue;
       injuryTables.push({
-        group: module.title,
+        group: module.title!,
         options: packs
           .flatMap((p) => p.index.contents)
           .map((i) => {

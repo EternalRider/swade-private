@@ -1,15 +1,15 @@
-import { HeadquartersData } from './headquarters'
+import { HeadquartersData } from './headquarters';
 
-export { HeadquartersData } from './headquarters'
+export { HeadquartersData } from './headquarters';
 
 export const config = {
-    headquarters: HeadquartersData
-}
+  headquarters: HeadquartersData,
+};
 
 declare global {
-    interface SystemConfig {
-        JournalEntryPage: {
-            headquarters: HeadquartersData
-        }
-    }
+  interface DataModelConfig {
+    JournalEntryPage: {
+      headquarters: HeadquartersData;
+    };
+  }
 }

@@ -16,7 +16,7 @@ export default class CharacterSummarizer {
 
     if (!CharacterSummarizer.isSupportedActorType(actor)) {
       ui.notifications.error(
-        game.i18n.format('SWADE.CharacterSummaryTypeErr', {type: actor.type})
+        game.i18n.format('SWADE.CharacterSummaryTypeErr', { type: actor.type }),
       );
       this.summary = '';
       return;
@@ -94,15 +94,17 @@ export default class CharacterSummarizer {
       '<p><strong>' + game.i18n.localize('SWADE.Ancestry') + '</strong>: ';
     summary +=
       this.actor.ancestry?.name ??
-      getProperty(this.actor.system, 'details.species.name');
+      foundry.utils.getProperty(this.actor.system, 'details.species.name');
     summary +=
       '<br/><strong>' + game.i18n.localize('SWADE.Rank') + '</strong>: ';
-    summary += getProperty(this.actor.system, 'advances.rank');
-    summary += ' (' + getProperty(this.actor.system, 'advances.value');
+    summary += foundry.utils.getProperty(this.actor.system, 'advances.rank');
+    summary +=
+      ' (' + foundry.utils.getProperty(this.actor.system, 'advances.value');
     summary += ' ' + game.i18n.localize('SWADE.Adv');
     summary +=
       ')<br/><strong>' + game.i18n.localize('SWADE.Bennies') + '</strong>: ';
-    summary += getProperty(this.actor.system, 'bennies.max') + '</p>';
+    summary +=
+      foundry.utils.getProperty(this.actor.system, 'bennies.max') + '</p>';
 
     // Attributes
     const attributes = new Array();
@@ -141,21 +143,23 @@ export default class CharacterSummarizer {
       '<p><strong>' +
       game.i18n.localize('SWADE.Pace') +
       '</strong>: ' +
-      getProperty(this.actor.system, 'stats.speed.value') +
+      foundry.utils.getProperty(this.actor.system, 'stats.speed.value') +
       ', ';
     summary +=
       '<strong>' +
       game.i18n.localize('SWADE.Parry') +
       '</strong>: ' +
-      getProperty(this.actor.system, 'stats.parry.value') +
+      foundry.utils.getProperty(this.actor.system, 'stats.parry.value') +
       ', ';
     summary +=
       '<strong>' +
       game.i18n.localize('SWADE.Tough') +
       '</strong>: ' +
-      getProperty(this.actor.system, 'stats.toughness.value');
+      foundry.utils.getProperty(this.actor.system, 'stats.toughness.value');
     summary +=
-      ' (' + getProperty(this.actor.system, 'stats.toughness.armor') + ')</p>';
+      ' (' +
+      foundry.utils.getProperty(this.actor.system, 'stats.toughness.armor') +
+      ')</p>';
 
     // Items - skills, powers, gear, etc
     const skills = new Array<string>();
@@ -297,8 +301,14 @@ export default class CharacterSummarizer {
   }
 
   private _formatDieStat(document: SwadeItem | SwadeActor, dataKey: String) {
-    const sides = getProperty(document.system, dataKey + '.sides');
-    const modifier = getProperty(document.system, dataKey + '.modifier');
+    const sides = foundry.utils.getProperty(
+      document.system,
+      dataKey + '.sides',
+    );
+    const modifier = foundry.utils.getProperty(
+      document.system,
+      dataKey + '.modifier',
+    );
     const val = `d${sides}` + this._formatModifier(modifier);
     return val;
   }

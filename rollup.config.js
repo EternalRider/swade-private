@@ -69,16 +69,6 @@ export default defineConfig({
           dest: distDirectory,
         },
         {
-          //Convert the template
-          src: [`${srcDirectory}/template.yml`],
-          dest: distDirectory,
-          transform: (content, srcPath, _dstPath) => {
-            const data = yaml.load(content.toString(), { filename: srcPath });
-            return JSON.stringify(data, null, 2);
-          },
-          rename: (name, _ext, _srcPath) => `${name}.json`,
-        },
-        {
           //Convert the language files
           src: [`${srcDirectory}/lang/*.yml`],
           dest: `${distDirectory}/lang`,

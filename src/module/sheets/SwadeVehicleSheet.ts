@@ -9,7 +9,7 @@ import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 /** @noInheritDoc */
 export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   static override get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['swade', 'sheet', 'actor', 'vehicle'],
       template: 'systems/swade/templates/actors/vehicle-sheet.hbs',
       width: 600,

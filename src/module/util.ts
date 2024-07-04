@@ -22,7 +22,7 @@ export function notificationExists(string: string, localize = true): boolean {
 /** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
-  const defaultValue = getProperty(
+  const defaultValue = foundry.utils.getProperty(
     SWADE,
     'diceConfig.flags.dsnShowBennyAnimation.default',
   ) as boolean;
@@ -179,6 +179,15 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   const filter = (e: any) => e.id === idToSearchFor;
   const data =
     CONFIG.statusEffects.find(filter) || SWADE.statusEffects.find(filter);
+  // Future deprecation - removing this would require deeper API changes
+  // foundry.utils.logCompatibilityWarning(
+  //   'You are accessing `game.swade.util.getStatusEffectDataById`. ' +
+  //     'This is now deprecated in favor of `ActiveEffect.fromStatusEffect`, which returns a temporary active effect for use',
+  //   {
+  //     since: '4.0',
+  //     until: '5.0',
+  //   },
+  // );
   return data as StatusEffect | undefined;
 }
 
@@ -229,7 +238,7 @@ export function mapRange(
 ): number {
   if (inMin === inMax || outMin === outMax) return 0;
   const mapped = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  return Math.clamped(mapped, outMin, outMax);
+  return Math.clamp(mapped, outMin, outMax);
 }
 
 /**
@@ -255,6 +264,17 @@ export function slugify(input: unknown) {
     .trim(); // trim leading or trailing whitespace
   Logger.debug([input, slugged]);
   return slugged;
+}
+
+/**
+ * Convert a template string into HTML DOM nodes
+ * @param  {String} str The template string
+ * @return {Node}       The template HTML
+ */
+export function stringToHTML<T extends Element = Element>(str: string): T {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(str, 'text/html');
+  return doc.body.firstElementChild as T;
 }
 
 type Ownership = Record<string, number>;

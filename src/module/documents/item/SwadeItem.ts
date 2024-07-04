@@ -2,12 +2,11 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
-import {
-  ItemDataConstructorData,
-  ItemDataSource,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
+import {
+  DeepPartial,
+  StoredDocument,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -20,7 +19,6 @@ import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
-import SwadeUser from '../SwadeUser';
 import SwadeActor from '../actor/SwadeActor';
 import {
   ItemChatCardAction,
@@ -35,30 +33,27 @@ declare global {
   interface FlagConfig {
     Item: {
       swade: {
-        embeddedAbilities: [string, ItemDataSource][];
-        embeddedPowers: [string, ItemDataSource][];
+        embeddedPowers: [string, foundry.documents.BaseItem.ConstructorData][];
         hasGranted?: string[];
-        loadedAmmo?: ItemDataSource;
+        loadedAmmo?: foundry.documents.BaseItem.ConstructorData;
         [key: string]: unknown;
       };
     };
   }
 }
 
-export default class SwadeItem extends Item {
-  overrides: DeepPartial<ItemDataConstructorData> = {};
+type SystemItemTypes = Exclude<foundry.documents.BaseItem.TypeNames, 'base'>;
+
+export default class SwadeItem<
+  ItemType extends SystemItemTypes = SystemItemTypes,
+> extends Item {
+  overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
-  static override migrateData(data: ItemDataConstructorData) {
+  static override migrateData(
+    data: foundry.documents.BaseItem.ConstructorData,
+  ) {
     super.migrateData(data);
-    if (data.flags?.swade?.embeddedAbilities) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [key, item] of data.flags.swade.embeddedAbilities) {
-        if (item.system && !item.data) continue;
-        item.system = { ...item.data };
-        delete item.data;
-      }
-    }
     if (data.flags?.swade?.embeddedPowers) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [key, item] of data.flags.swade.embeddedPowers) {
@@ -86,10 +81,15 @@ export default class SwadeItem extends Item {
     return data;
   }
 
-  constructor(data?: ItemDataConstructorData, context?: Context<SwadeActor>) {
+  constructor(
+    data: foundry.documents.BaseItem.ConstructorData,
+    context?: Context<SwadeActor>,
+  ) {
     super(data, context);
     this.overrides ??= {};
   }
+
+  override system: DataModelConfig['Item'][ItemType];
 
   get isMeleeWeapon(): boolean {
     return this.system['isMelee'] ?? false;
@@ -126,7 +126,7 @@ export default class SwadeItem extends Item {
 
   get isArcaneDevice(): boolean {
     if (!this.canBeArcaneDevice) return false;
-    return getProperty(this, 'system.isArcaneDevice') as boolean;
+    return foundry.utils.getProperty(this, 'system.isArcaneDevice') as boolean;
   }
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
@@ -154,11 +154,6 @@ export default class SwadeItem extends Item {
     return this.system.canHaveCategory || this.isPhysicalItem;
   }
 
-  get embeddedAbilities() {
-    const flagContent = this.getFlag('swade', 'embeddedAbilities') ?? [];
-    return new Map(flagContent);
-  }
-
   get embeddedPowers() {
     const flagContent = this.getFlag('swade', 'embeddedPowers') ?? [];
     return new Map(flagContent);
@@ -170,7 +165,7 @@ export default class SwadeItem extends Item {
 
   get grantsItems(): ItemGrant[] {
     if (!this.canGrantItems) return [];
-    return getProperty(this, 'system.grants') as ItemGrant[];
+    return foundry.utils.getProperty(this, 'system.grants') as ItemGrant[];
   }
 
   get hasGranted(): string[] {
@@ -189,10 +184,10 @@ export default class SwadeItem extends Item {
 
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    if (getProperty(this, 'system.actions.traitMod')) {
+    if (foundry.utils.getProperty(this, 'system.actions.traitMod')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.ItemTraitMod'),
-        value: getProperty(this, 'system.actions.traitMod'),
+        value: foundry.utils.getProperty(this, 'system.actions.traitMod'),
       });
     }
     if (this.system.traitModifiers)
@@ -245,7 +240,7 @@ export default class SwadeItem extends Item {
     );
     const baseRoll = new Array<string>();
     for (const term of terms) {
-      if (term instanceof Die) {
+      if (term instanceof foundry.dice.terms.Die) {
         if (!term.modifiers.includes('x') && term.faces > 1) {
           term.modifiers.push('x');
         }
@@ -253,9 +248,9 @@ export default class SwadeItem extends Item {
           term.options.flavor = game.i18n.localize('SWADE.BaseDamage');
         }
         baseRoll.push(term.formula);
-      } else if (term instanceof StringTerm) {
+      } else if (term instanceof foundry.dice.terms.StringTerm) {
         baseRoll.push(this._makeExplodable(term.term));
-      } else if (term instanceof NumericTerm) {
+      } else if (term instanceof foundry.dice.terms.NumericTerm) {
         baseRoll.push(term.formula);
       } else {
         baseRoll.push(term.expression);
@@ -346,16 +341,16 @@ export default class SwadeItem extends Item {
   }
 
   async getChatData(
-    enrichOptions: Partial<TextEditor.EnrichOptions> = { async: true },
+    enrichOptions: Partial<TextEditor.EnrichmentOptions> = { async: true },
   ): Promise<ItemChatCardData> {
     // Item properties
     const chips =
-      typeof this.system.getChatChips === 'function'
+      'getChatChips' in this.system
         ? await this.system.getChatChips(enrichOptions)
         : new Array<ItemChatCardChip>();
 
     //Additional actions
-    const itemActions = getProperty(
+    const itemActions = foundry.utils.getProperty(
       this,
       'system.actions.additional',
     ) as Record<string, ItemAction>;
@@ -401,12 +396,12 @@ export default class SwadeItem extends Item {
     const hasMagazine =
       hasAmmoManagement &&
       this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
-    const hasDamage = !!getProperty(this, 'system.damage');
-    const hasTrait = !!getProperty(this, 'system.actions.trait');
+    const hasDamage = !!foundry.utils.getProperty(this, 'system.damage');
+    const hasTrait = !!foundry.utils.getProperty(this, 'system.actions.trait');
     const hasReloadButton = !!this.system.hasReloadButton;
 
     const additionalActions: Record<string, ItemAction> =
-      getProperty(this, 'system.actions.additional') || {};
+      foundry.utils.getProperty(this, 'system.actions.additional') || {};
 
     const hasTraitActions = Object.values(additionalActions).some(
       (v) => v.type === constants.ACTION_TYPE.TRAIT,
@@ -436,7 +431,7 @@ export default class SwadeItem extends Item {
       hasTrait,
       hasTemplates,
       showDamageRolls: hasDamage || hasDamageActions,
-      trait: getProperty(this, 'system.actions.trait'),
+      trait: foundry.utils.getProperty(this, 'system.actions.trait'),
       showTraitRolls: hasTrait || hasTraitActions,
       hasResistRolls,
       hasMacros,
@@ -451,7 +446,7 @@ export default class SwadeItem extends Item {
     const html = await renderTemplate(template, templateData);
 
     // Basic chat message data
-    const chatData: ChatMessageDataConstructorData = {
+    const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
       user: game.user?.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
@@ -473,17 +468,17 @@ export default class SwadeItem extends Item {
       },
     };
 
+    const msgClass = getDocumentClass('ChatMessage');
+
     if (
       game.settings.get('swade', 'hideNpcItemChatCards') &&
       this.actor?.type === 'npc'
     ) {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
+    } else {
+      // Apply the roll mode to the message
+      msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
     }
-
-    const msgClass = getDocumentClass('ChatMessage');
-
-    // Apply the roll mode to the message
-    msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
 
     // Create the chat message
     const chatCard = await msgClass.create(chatData);
@@ -491,18 +486,10 @@ export default class SwadeItem extends Item {
     return chatCard;
   }
 
-  getTraitModifiers(): RollModifier[] {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem.getTraitModifiers() is deprecated in favor of SwadeItem.traitModifiers',
-      { since: '3.3', until: '4.0' },
-    );
-    return this.traitModifiers;
-  }
-
   canExpendResources(resourcesUsed = 1): boolean {
-    const typecheck = this.system._canExpendResources?.(resourcesUsed);
-    if (typecheck === undefined) return true;
-    else return typecheck;
+    if ('_canExpendResources' in this.system) {
+      return this.system._canExpendResources(resourcesUsed);
+    } else return true;
   }
 
   async consume(charges = 1): Promise<void> {
@@ -553,12 +540,12 @@ export default class SwadeItem extends Item {
 
   async reload() {
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    if (typeof this.system.reload !== 'function' || !ammoManagement) return;
+    if (!('reload' in this.system) || !ammoManagement) return;
     else this.system.reload();
   }
 
   async removeAmmo() {
-    this.system.removeAmmo?.();
+    if ('removeAmmo' in this.system) this.system.removeAmmo();
   }
 
   async grantEmbedded(target = this.parent) {
@@ -637,18 +624,6 @@ export default class SwadeItem extends Item {
     return [...new Set([...grants, ...children.deepFlatten()])];
   }
 
-  /**
-   * @deprecated
-   * @since 3.3.0
-   */
-  needsFullReloadProcedure(): boolean {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem.needsFullReloadProcedure() is deprecated in favor of SwadeItem.usesAmmoFromInventory',
-      { since: '3.3', until: '4.0' },
-    );
-    return !!this.system.usesAmmoFromInventory;
-  }
-
   async removeGranted(target = this.parent) {
     if (this.hasGranted.length < 1) return;
     //grab the granted ids and put them into a set to filter possible duplicates
@@ -691,14 +666,6 @@ export default class SwadeItem extends Item {
     return expression;
   }
 
-  private _getPowerPoints(): ItemDisplayPowerPoints | null {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeItem._getPowerPoints() is deprecated in favor of SwadeItem.powerPoints',
-      { since: '3.3', until: '4.0' },
-    );
-    return this.powerPointObject;
-  }
-
   async #createChargeUsageMessage(charges: number) {
     const msgClass = getDocumentClass('ChatMessage');
     const createData = {
@@ -710,188 +677,6 @@ export default class SwadeItem extends Item {
     };
     msgClass.applyRollMode(createData, game.settings.get('core', 'rollMode'));
     return msgClass.create(createData);
-  }
-
-  protected override async _preCreate(
-    data: ItemDataConstructorData,
-    options: DocumentModificationOptions,
-    user: User,
-  ) {
-    await super._preCreate(data, options, user);
-    //Set default image if no image already exists
-    if (!data.img) {
-      this.updateSource({
-        img: `systems/swade/assets/icons/${data.type}.svg`,
-      });
-    }
-
-    //set a swid
-
-    if (
-      !data.system?.swid ||
-      data.system?.swid === constants.RESERVED_SWID.DEFAULT
-    ) {
-      this.updateSource({ 'system.swid': slugify(data.name) });
-    }
-
-    if (this.parent) {
-      if (data.type === 'skill' && options.renderSheet !== null) {
-        options.renderSheet = true;
-      }
-      if (
-        this.parent.type === 'npc' &&
-        hasProperty(this, 'system.equippable')
-      ) {
-        let newState: EquipState = constants.EQUIP_STATE.EQUIPPED;
-        if (data.type === 'weapon') {
-          newState = constants.EQUIP_STATE.MAIN_HAND;
-        }
-        this.updateSource({ 'system.equipStatus': newState });
-      }
-    }
-
-    const choiceUpdate = await this.handleChoices(data);
-    if (Object.keys(choiceUpdate).length > 0) {
-      this.updateSource(choiceUpdate);
-    }
-  }
-
-  async handleChoices(data: ItemDataConstructorData) {
-    const choiceUpdate = {};
-    if (data.system?.choiceSets?.length > 0) {
-      for (const choiceSet of data.system.choiceSets) {
-        if (choiceSet.choice !== null) continue;
-
-        Object.assign(
-          choiceSet,
-          await ChoiceDialog.asPromise({ choiceSet: choiceSet }),
-        );
-
-        if (choiceSet.choice === null) continue;
-
-        const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
-        const update = mutationOption.mutation ?? {};
-        if (mutationOption.addToName) {
-          update.name = data.name + ` (${mutationOption.name})`;
-        }
-        foundry.utils.mergeObject(choiceUpdate, update);
-      }
-      foundry.utils.mergeObject(choiceUpdate, {
-        'system.choiceSets': data.system.choiceSets,
-      });
-    }
-    return choiceUpdate;
-  }
-
-  protected override async _preDelete(
-    options: DocumentModificationOptions,
-    user: BaseUser,
-  ): Promise<void> {
-    await super._preDelete(options, user);
-    if (this.parent) await this.removeGranted();
-  }
-
-  protected override async _preUpdate(
-    changed: DeepPartial<ItemDataConstructorData>,
-    options: DocumentModificationOptions,
-    user: SwadeUser,
-  ) {
-    await super._preUpdate(changed, options, user);
-
-    if (this.parent && hasProperty(changed, 'system.equipStatus')) {
-      //toggle all active effects when an item equip status changes
-      const newState = getProperty(changed, 'system.equipStatus') as EquipState;
-      const updates = this.effects.map((ae) => {
-        return {
-          _id: ae.id,
-          disabled: newState < constants.EQUIP_STATE.OFF_HAND,
-        };
-      });
-      await this.updateEmbeddedDocuments('ActiveEffect', updates);
-    }
-    //handle and potentially reject magazine/battery updates
-    if (this.type === 'consumable') {
-      if (
-        foundry.utils.hasProperty(changed, 'system.quantity') &&
-        this.system.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
-        this.system.charges.value !== 0 &&
-        this.system.charges.value !== this.system.charges.max
-      ) {
-        const quantity = changed.system.quantity;
-        const charges = this.system.charges;
-        if (quantity > 1 && charges.value < charges.max) {
-          delete changed.system.quantity;
-          Logger.warn(
-            'Partially filled magazines can only have a quantity of 1',
-            { toast: true, localize: true },
-          );
-        }
-      }
-      if (
-        foundry.utils.hasProperty(changed, 'system.charges.max') &&
-        this.system.subtype === constants.CONSUMABLE_TYPE.BATTERY
-      ) {
-        foundry.utils.setProperty(changed, 'system.charges.max', 100);
-      }
-      if (
-        foundry.utils.getProperty(changed, 'system.subtype') ===
-        constants.CONSUMABLE_TYPE.BATTERY
-      ) {
-        foundry.utils.setProperty(changed, 'system.charges.max', 100);
-      }
-    }
-  }
-
-  protected static override async _onCreateDocuments(
-    items: SwadeItem[],
-    context,
-  ) {
-    if (!context.isItemGrant) {
-      for (const item of items) {
-        const grantOn = getProperty(item, 'system.grantOn');
-        const equipStatus = getProperty(item, 'system.equipStatus');
-        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
-          item.type,
-        );
-        const shouldGrant =
-          grantOn === constants.GRANT_ON.ADDED ||
-          nonPhysGranter ||
-          (grantOn === constants.GRANT_ON.CARRIED &&
-            equipStatus === constants.EQUIP_STATE.CARRIED) ||
-          (grantOn === constants.GRANT_ON.READIED && item.isReadied);
-        if (item.canGrantItems && item.isEmbedded && shouldGrant) {
-          await item.grantEmbedded();
-        }
-      }
-    }
-    await super._onCreateDocuments(items, context);
-  }
-
-  protected override _onUpdate(
-    changed: DeepPartial<ItemDataSource>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ) {
-    super._onUpdate(changed, options, userId);
-    if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
-    const grantOn = getProperty(this, 'system.grantOn');
-    if (
-      this.canGrantItems &&
-      this.parent &&
-      grantOn &&
-      hasProperty(changed, 'system.equipStatus')
-    ) {
-      const equipStatus = getProperty(this, 'system.equipStatus');
-      const shouldGrant =
-        (grantOn === constants.GRANT_ON.CARRIED &&
-          equipStatus >= constants.EQUIP_STATE.CARRIED) ||
-        (grantOn === constants.GRANT_ON.READIED && this.isReadied);
-      if (shouldGrant && this.hasGranted.length <= 0) {
-        this.grantEmbedded();
-      } else if (!shouldGrant) {
-        this.removeGranted();
-      }
-    }
   }
 
   async refreshFromCompendium(): Promise<this | null> {
@@ -960,5 +745,107 @@ export default class SwadeItem extends Item {
       }
     }
     return possibleItem;
+  }
+
+  async handleChoices(data: foundry.documents.BaseItem.ConstructorData) {
+    const choiceUpdate = {};
+    if (data.system?.choiceSets?.length > 0) {
+      for (const choiceSet of data.system.choiceSets) {
+        if (choiceSet.choice !== null) continue;
+
+        Object.assign(
+          choiceSet,
+          await ChoiceDialog.asPromise({ choiceSet: choiceSet, parent: this }),
+        );
+
+        if (choiceSet.choice === null) continue;
+
+        const mutationOption = choiceSet.choices[choiceSet.choice] ?? {};
+        const update = mutationOption.mutation ?? {};
+        if (mutationOption.addToName) {
+          update.name = data.name + ` (${mutationOption.name})`;
+        }
+        foundry.utils.mergeObject(choiceUpdate, update);
+      }
+      foundry.utils.mergeObject(choiceUpdate, {
+        'system.choiceSets': data.system.choiceSets,
+      });
+    }
+    return choiceUpdate;
+  }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    const choiceUpdate = await this.handleChoices(data);
+    if (Object.keys(choiceUpdate).length > 0) {
+      this.updateSource(choiceUpdate);
+    }
+  }
+
+  protected override async _preDelete(
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ): Promise<void> {
+    await super._preDelete(options, user);
+    if (this.parent) await this.removeGranted();
+  }
+
+  protected override _onUpdate(
+    changed: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    super._onUpdate(changed, options, userId);
+    if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
+    const grantOn = foundry.utils.getProperty(this, 'system.grantOn');
+    if (
+      this.canGrantItems &&
+      this.parent &&
+      grantOn &&
+      hasProperty(changed, 'system.equipStatus')
+    ) {
+      const equipStatus = foundry.utils.getProperty(this, 'system.equipStatus');
+      const shouldGrant =
+        (grantOn === constants.GRANT_ON.CARRIED &&
+          equipStatus >= constants.EQUIP_STATE.CARRIED) ||
+        (grantOn === constants.GRANT_ON.READIED && this.isReadied);
+      if (shouldGrant && this.hasGranted.length <= 0) {
+        this.grantEmbedded();
+      } else if (!shouldGrant) {
+        this.removeGranted();
+      }
+    }
+  }
+
+  protected static override async _onCreateDocuments(
+    items: SwadeItem[],
+    context,
+  ) {
+    if (!context.isItemGrant) {
+      for (const item of items) {
+        const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
+        const equipStatus = foundry.utils.getProperty(
+          item,
+          'system.equipStatus',
+        );
+        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
+          item.type,
+        );
+        const shouldGrant =
+          grantOn === constants.GRANT_ON.ADDED ||
+          nonPhysGranter ||
+          (grantOn === constants.GRANT_ON.CARRIED &&
+            equipStatus === constants.EQUIP_STATE.CARRIED) ||
+          (grantOn === constants.GRANT_ON.READIED && item.isReadied);
+        if (item.canGrantItems && item.isEmbedded && shouldGrant) {
+          await item.grantEmbedded();
+        }
+      }
+    }
+    await super._onCreateDocuments(items, context);
   }
 }

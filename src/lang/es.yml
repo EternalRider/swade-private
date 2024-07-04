@@ -591,9 +591,6 @@ SWADE:
         Aplicar penalizaciones por sobrecarga. Por favor, ten en cuenta que esto
         actualmente NO ESTÁ SOPORTADO para las pruebas de {vigor} para resistir
         la {fatiga}
-    GmBennies:
-      Name: Benis del DJ
-      Hint: Establece cuántos Benis recibe el DJ al reiniciar
     VehicleMods:
       Name: Modificadores de vehículos
       Hint: Los vehículos utilizan modificadores

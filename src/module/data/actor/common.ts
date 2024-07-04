@@ -1,11 +1,11 @@
+import { Advance } from '../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
-import { Advance } from '../../../interfaces/Advance.interface';
 import { SWADE } from '../../config';
-import { CharacterDataPropertiesData } from '../../documents/actor/actor-data-properties';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
+import { DiceField, DiceTrait } from '../common.interface';
 import { MappingField } from '../fields/MappingField';
 import {
   boundTraitDie,
@@ -17,21 +17,235 @@ import * as quarantine from './_quarantine';
 
 const fields = foundry.data.fields;
 
-// TODO: Figure out how to merge this with the derived properties
-// export interface CommonActorData
-//   extends foundry.data.fields.SchemaField.InnerInitializedType<
-//     ReturnType<(typeof CommonActorData)['defineSchema']>
-//   > {}
+declare namespace CommonActorData {
+  interface Schema extends DataSchema {
+    attributes: foundry.data.fields.SchemaField<{
+      agility: foundry.data.fields.SchemaField<DiceTrait>;
+      smarts: foundry.data.fields.SchemaField<
+        DiceTrait & {
+          animal: foundry.data.fields.BooleanField;
+        }
+      >;
+      spirit: foundry.data.fields.SchemaField<
+        DiceTrait & {
+          unShakeBonus: foundry.data.fields.NumberField<{
+            initial: 0;
+            integer: true;
+          }>;
+        }
+      >;
+      strength: foundry.data.fields.SchemaField<
+        DiceTrait & {
+          encumbranceSteps: foundry.data.fields.NumberField<{
+            initial: 0;
+            integer: true;
+          }>;
+        }
+      >;
+      vigor: foundry.data.fields.SchemaField<
+        DiceTrait & {
+          unStunBonus: foundry.data.fields.NumberField<{
+            initial: 0;
+            integer: true;
+          }>;
+          soakBonus: foundry.data.fields.NumberField<{
+            initial: 0;
+            integer: true;
+          }>;
+          bleedOut: foundry.data.fields.SchemaField<{
+            modifier: foundry.data.fields.NumberField<{
+              initial: 0;
+              integer: true;
+            }>;
+            ignoreWounds: foundry.data.fields.BooleanField;
+          }>;
+        }
+      >;
+    }>;
+    stats: foundry.data.fields.SchemaField<{
+      speed: foundry.data.fields.SchemaField<{
+        runningDie: DiceField;
+        runningMod: foundry.data.fields.NumberField<{
+          initial: 0;
+          integer: true;
+        }>;
+        value: foundry.data.fields.NumberField<{ initial: 6; integer: true }>;
+      }>;
+      toughness: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+        armor: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+        modifier: foundry.data.fields.NumberField<{
+          initial: 0;
+          integer: true;
+          required: false;
+        }>;
+      }>;
+      parry: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+        shield: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+        modifier: foundry.data.fields.NumberField<{
+          initial: 0;
+          integer: true;
+          required: false;
+        }>;
+      }>;
+      size: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+    }>;
+    details: foundry.data.fields.SchemaField<{
+      autoCalcToughness: foundry.data.fields.BooleanField<{ initial: true }>;
+      autoCalcParry: foundry.data.fields.BooleanField<{ initial: true }>;
+      archetype: foundry.data.fields.StringField<{
+        initial: '';
+        textSearch: true;
+      }>;
+      appearance: foundry.data.fields.HTMLField<{
+        initial: '';
+        textSearch: true;
+      }>;
+      notes: foundry.data.fields.HTMLField<{ initial: ''; textSearch: true }>;
+      goals: foundry.data.fields.HTMLField<{ initial: ''; textSearch: true }>;
+      biography: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.HTMLField<{ initial: ''; textSearch: true }>;
+      }>;
+      species: foundry.data.fields.SchemaField<{
+        name: foundry.data.fields.StringField<{
+          initial: '';
+          textSearch: true;
+        }>;
+      }>;
+      currency: foundry.data.fields.NumberField<{ initial: 0 }>;
+      wealth: foundry.data.fields.SchemaField<{
+        die: foundry.data.fields.NumberField<{
+          initial: 6;
+          min: -1;
+          integer: true;
+        }>;
+        modifier: foundry.data.fields.NumberField<{ initial: 0 }>;
+        'wild-die': DiceField;
+      }>;
+      conviction: foundry.data.fields.SchemaField<{
+        value: foundry.data.fields.NumberField<{ initial: 0 }>;
+        active: foundry.data.fields.BooleanField;
+      }>;
+    }>;
+    powerPoints: MappingField<foundry.data.fields.SchemaField<{}>>;
+    fatigue: foundry.data.fields.SchemaField<{
+      value: foundry.data.fields.NumberField<{ initial: 0; min: 0 }>;
+      max: foundry.data.fields.NumberField<{ initial: 2 }>;
+      ignored: foundry.data.fields.NumberField<{ initial: 0 }>;
+    }>;
+    woundsOrFatigue: foundry.data.fields.SchemaField<{
+      ignored: foundry.data.fields.NumberField<{ initial: 0 }>;
+    }>;
+    advances: foundry.data.fields.SchemaField<{
+      mode: foundry.data.fields.StringField<{
+        initial: 'expanded';
+        choices: ['legacy', 'expanded'];
+      }>;
+      value: foundry.data.fields.NumberField<{ initial: 0 }>;
+      rank: foundry.data.fields.StringField<{
+        initial: 'Novice';
+        textSearch: true;
+      }>;
+      details: foundry.data.fields.HTMLField<{ initial: '' }>;
+      list: foundry.data.fields.ArrayField<
+        foundry.data.fields.SchemaField<{
+          type: foundry.data.fields.NumberField<{ initial: 0 }>;
+          notes: foundry.data.fields.HTMLField<{ initial: '' }>;
+          sort: foundry.data.fields.NumberField<{ initial: 0 }>;
+          planned: foundry.data.fields.BooleanField;
+          id: foundry.data.fields.StringField<{ initial: '' }>;
+          rank: foundry.data.fields.NumberField<{ initial: 0 }>;
+        }>
+      >;
+    }>;
+    status: foundry.data.fields.SchemaField<{
+      isShaken: foundry.data.fields.BooleanField;
+      isDistracted: foundry.data.fields.BooleanField;
+      isVulnerable: foundry.data.fields.BooleanField;
+      isStunned: foundry.data.fields.BooleanField;
+      isEntangled: foundry.data.fields.BooleanField;
+      isBound: foundry.data.fields.BooleanField;
+      isIncapacitated: foundry.data.fields.BooleanField;
+    }>;
+    initiative: foundry.data.fields.SchemaField<{
+      hasHesitant: foundry.data.fields.BooleanField;
+      hasLevelHeaded: foundry.data.fields.BooleanField;
+      hasImpLevelHeaded: foundry.data.fields.BooleanField;
+      hasQuick: foundry.data.fields.BooleanField;
+    }>;
+    additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
+  }
 
-export interface CommonActorData extends CharacterDataPropertiesData {}
+  interface BaseData {
+    attributes: {
+      agility: {
+        effects: Array<RollModifier>;
+      };
+      smarts: {
+        effects: Array<RollModifier>;
+      };
+      spirit: {
+        effects: Array<RollModifier>;
+      };
+      strength: {
+        effects: Array<RollModifier>;
+      };
+      vigor: {
+        effects: Array<RollModifier>;
+      };
+    };
+    stats: {
+      scale: number;
+      toughness: {
+        sources: Array<DerivedModifier>;
+        effects: Array<DerivedModifier>;
+        armorEffects: Array<DerivedModifier>;
+      };
+      parry: {
+        sources: Array<DerivedModifier>;
+        effects: Array<DerivedModifier>;
+      };
+      globalMods: {
+        trait: Array<DerivedModifier>;
+        agility: Array<DerivedModifier>;
+        smarts: Array<DerivedModifier>;
+        spirit: Array<DerivedModifier>;
+        strength: Array<DerivedModifier>;
+        vigor: Array<DerivedModifier>;
+        attack: Array<DerivedModifier>;
+        damage: Array<DerivedModifier>;
+        ap: Array<DerivedModifier>;
+        bennyTrait: Array<DerivedModifier>;
+        bennyDamage: Array<DerivedModifier>;
+      };
+    };
+  }
 
-export class CommonActorData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof CommonActorData)['defineSchema']>
-  >,
-  Actor
+  interface DerivedData {
+    advances: {
+      list: Collection<Advance>;
+    };
+    details: {
+      encumbrance: {
+        max: number;
+        value: number;
+      };
+    };
+  }
+}
+
+class CommonActorData<
+  Schema extends CommonActorData.Schema = CommonActorData.Schema,
+  BaseData extends CommonActorData.BaseData = CommonActorData.BaseData,
+  DerivedData extends CommonActorData.DerivedData = CommonActorData.DerivedData,
+> extends foundry.abstract.TypeDataModel<
+  Schema,
+  Actor.ConfiguredInstance,
+  BaseData,
+  DerivedData
 > {
-  static override defineSchema() {
+  static override defineSchema(): CommonActorData.Schema {
     return {
       attributes: new fields.SchemaField({
         agility: new fields.SchemaField(makeTraitDiceFields()),
@@ -240,7 +454,10 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     //handle advances
     const advances = this.advances;
     if (advances.mode === 'expanded') {
-      const advRaw = getProperty(this._source, 'advances.list') as Advance[];
+      const advRaw = foundry.utils.getProperty(
+        this._source,
+        'advances.list',
+      ) as Advance[];
       const list = new Collection<Advance>();
       advRaw.forEach((adv) => list.set(adv.id, adv));
       const activeAdvances = list.filter((a) => !a.planned).length;
@@ -384,3 +601,5 @@ export class CommonActorData extends foundry.abstract.TypeDataModel<
     Hooks.callAll('swadeRefreshBennies', this.parent);
   }
 }
+
+export { CommonActorData };

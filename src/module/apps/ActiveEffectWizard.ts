@@ -4,11 +4,12 @@ import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 export default class ActiveEffectWizard extends FormApplication {
   #effect: DeepPartial<BaseActiveEffect.Properties> = {
     name: SwadeActiveEffect.defaultName,
-    icon: 'systems/swade/assets/icons/active-effect.svg',
+    img: 'systems/swade/assets/icons/active-effect.svg',
   };
 
   #changes: ChangePreview[] = [];
@@ -40,8 +41,7 @@ export default class ActiveEffectWizard extends FormApplication {
     super(object, options);
     if (object instanceof SwadeItem) {
       this.#effect.name = object.name as string;
-      //TODO Move to `effect.img` once v12 releases
-      this.#effect.icon = object.img as string;
+      this.#effect.img = object.img as string;
     }
   }
 
@@ -366,14 +366,14 @@ export default class ActiveEffectWizard extends FormApplication {
 
   #onClickIcon() {
     new FilePicker({
-      current: this.#effect.icon as string,
+      current: this.#effect.img as string,
       type: 'image',
       callback: this.#onChangeIcon.bind(this),
     }).render(true);
   }
 
   #onChangeIcon(path: string, _picker: FilePicker) {
-    this.#effect.icon = path;
+    this.#effect.img = path;
     this.render(true);
   }
 }

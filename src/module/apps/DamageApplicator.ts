@@ -1,4 +1,4 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor/vehicle';
@@ -159,7 +159,7 @@ async function soakPrompt(
   let prompt = '';
 
   // Create a collection of buttons with an adjust button included by default.
-  const buttons: Record<string, Dialog.Button> = {
+  const buttons: Record<string, DialogButton> = {
     adjust: {
       label: game.i18n.localize(
         'SWADE.DamageApplicator.SoakDialog.AdjustDamage',
@@ -496,7 +496,7 @@ async function attemptSoak(
     }`;
 
     // Build default buttons
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       take: {
         label: game.i18n.format(
           'SWADE.DamageApplicator.RerollSoakDialog.TakeWounds',
@@ -771,7 +771,7 @@ async function resistInjury(
   );
 
   // Build default buttons
-  const buttons: Record<string, Dialog.Button> = {
+  const buttons: Record<string, DialogButton> = {
     take: {
       label: incapLabel,
       icon: '<i class="fa-solid fa-skull"></i>',

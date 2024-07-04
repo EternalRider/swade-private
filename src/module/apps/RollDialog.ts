@@ -208,7 +208,7 @@ export class RollDialog extends FormApplication<
       !this.ctx.actor?.isWildcard
     ) {
       const traitPool = terms[0];
-      if (traitPool instanceof PoolTerm) {
+      if (traitPool instanceof foundry.dice.terms.PoolTerm) {
         const wildDie = new WildDie();
         // @ts-expect-error Roll Class
         const wildRoll = this.rollCls.fromTerms([wildDie]);
@@ -218,7 +218,6 @@ export class RollDialog extends FormApplication<
     }
 
     //recreate the roll
-    //@ts-expect-error rollCls works here
     const finalizedRoll = this.rollCls.fromTerms(
       terms,
       roll.options,
@@ -229,7 +228,7 @@ export class RollDialog extends FormApplication<
     }
 
     //evaluate
-    await finalizedRoll.evaluate({ async: true });
+    await finalizedRoll.evaluate();
 
     if (finalizedRoll instanceof DamageRoll) {
       finalizedRoll.ap = this.ctx.ap ?? 0;
@@ -266,17 +265,13 @@ export class RollDialog extends FormApplication<
   }
 
   #buildRollForEvaluation(): SwadeRoll {
-    //@ts-expect-error rollCls is correct here
-    const roll = this.rollCls.fromTerms([
-      ...this.ctx.roll.terms,
-      ...this.rollCls.parse(
-        this.modifiers
-          .filter((v) => !v.ignore) //remove the disabled modifiers
-          .map(normalizeRollModifiers)
-          .reduce(modifierReducer, ''),
-        this.#getRollData(),
-      ),
-    ]) as SwadeRoll;
+    const formula =
+      this.ctx.roll.formula +
+      this.modifiers
+        .filter((v) => !v.ignore) //remove the disabled modifiers
+        .map(normalizeRollModifiers)
+        .reduce(modifierReducer, '');
+    const roll = new this.rollCls(formula, this.#getRollData()) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
   }
@@ -367,7 +362,7 @@ export class RollDialog extends FormApplication<
 export interface RollDialogContext {
   roll: SwadeRoll;
   mods: RollModifier[];
-  speaker: foundry.data.ChatMessageData['speaker']['_source'];
+  speaker: ChatSpeakerData;
   flavor: string;
   title: string;
   item?: SwadeItem;

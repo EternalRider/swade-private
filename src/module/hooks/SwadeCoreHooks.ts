@@ -23,6 +23,7 @@ import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
+import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -40,6 +41,7 @@ export default class SwadeCoreHooks {
       const tocBlockList = game.settings.get('swade', 'tocBlockList');
       const isBlocked = tocBlockList[pack.collection];
       if (isRightType && !isBlocked) {
+        // @ts-expect-error The type check isn't properly narrowing
         pack.apps = [new CompendiumTOC({ collection: pack })];
       }
     }
@@ -247,12 +249,15 @@ export default class SwadeCoreHooks {
       name: 'SWADE.ShowCharacterSummary',
       icon: '<i class="fa-solid fa-users"></i>',
       callback: (li) => {
-        const actor = game.actors?.get(li.data('documentId'), { strict: true });
-        CharacterSummarizer.summarizeCharacters([actor!]);
+        const actor = game.actors!.get(li.data('documentId'), { strict: true });
+        CharacterSummarizer.summarizeCharacters([actor]);
       },
       condition: (li) => {
-        const actor = game.actors?.get(li.data('documentId'), { strict: true });
-        return CharacterSummarizer.isSupportedActorType(actor!);
+        const actor = game.actors!.get(li.data('documentId'), { strict: true });
+        return (
+          actor.permission > CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED &&
+          CharacterSummarizer.isSupportedActorType(actor)
+        );
       },
     });
     options.splice(0, 0, ...newOptions);
@@ -290,7 +295,8 @@ export default class SwadeCoreHooks {
       const ids: string[] = content
         .filter(
           (a: SwadeActor) =>
-            getProperty(a, 'system.wildcard') && a.name !== '#[CF_tempEntity]',
+            foundry.utils.getProperty(a, 'system.wildcard') &&
+            a.name !== '#[CF_tempEntity]',
         )
         .map((actor) => actor._id);
 
@@ -518,6 +524,18 @@ export default class SwadeCoreHooks {
     ui.combat.scrollToTurn();
   }
 
+  /** Change current GM Bennies count */
+  static async onUserConnected(user: SwadeUser, connected: boolean) {
+    const gm = game.users.activeGM;
+    if (user.isGM || !gm?.isSelf) return false;
+    const bennyDiff = connected ? 1 : -1;
+    const currentBennies = gm.bennies;
+    let newBennies = currentBennies + bennyDiff;
+    newBennies = newBennies < 0 ? 0 : newBennies;
+    await gm.setFlag('swade', 'gmBennies', newBennies);
+    ui.players?.render(true);
+  }
+
   /** Add benny management to the player list */
   static async onRenderPlayerList(
     _list: PlayerList,
@@ -532,11 +550,11 @@ export default class SwadeCoreHooks {
 
   static onRenderUserConfig(
     app: UserConfig,
-    html: JQuery<HTMLElement>,
+    html: HTMLElement,
     data: Record<string, unknown>,
   ) {
     // resize the element so it'll fit the new stuff
-    html.css({ height: 'auto' });
+    html.style.height = 'auto';
 
     //get possible
     const possibleCardsDocs = game.cards!.filter(
@@ -545,10 +563,12 @@ export default class SwadeCoreHooks {
         c.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
     );
 
-    const actorDirectory = html.find('div.stacked.directory');
+    const form = html.querySelector<HTMLDivElement>('.standard-form');
+    const footer = html.querySelector<HTMLDivElement>('.form-footer');
+    if (!form || !footer) return;
 
     //return early to avoid double rendering
-    if (html.find('div.swade-favorite-cards').length) return;
+    if (html.querySelector('div.swade-favorite-cards')) return;
 
     const userConfigLabel = game.i18n.localize(
       'SWADE.Keybindings.OpenFavoriteCards.UserConfigLabel',
@@ -560,14 +580,18 @@ export default class SwadeCoreHooks {
     });
 
     const template = `
-    <div class="form-group swade-favorite-cards">
-      <label>${userConfigLabel}</label>
-      <select name="flags.swade.favoriteCardsDoc">
-      <option value="">${game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.HandNone')}</option>
-      ${options.join('\n')}
-      </select>
-    </div>`;
-    actorDirectory.before(template);
+    <fieldset>
+      <legend>${userConfigLabel}</legend>
+      <div class="form-group stacked swade-favorite-cards">
+        <select name="flags.swade.favoriteCardsDoc">
+        <option value="">${game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.HandNone')}</option>
+        ${options.join('\n')}
+        </select>
+      </div>
+    </fieldset>
+    `;
+
+    form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
   static onRenderChatLog(app: ChatLog, html: JQuery<HTMLElement>, data: any) {
@@ -625,6 +649,56 @@ export default class SwadeCoreHooks {
         condition: () => game.user!.isGM,
         callback: () => PlayerBennyDisplay.refreshAll(),
       },
+      {
+        name: game.i18n.localize('SWADE.BenniesAdjustGM'),
+        icon: '<i class="fa-solid fa-coins"></i>',
+        condition: (li) =>
+          game.user!.isGM && game.users?.get(li[0].dataset.userId!)!.isGM!,
+        callback: async (li) => {
+          const gm = game.users?.get(li[0].dataset.userId!);
+          await foundry.applications.api.DialogV2.wait({
+            window: { title: game.i18n.localize('SWADE.BenniesAdjustGM') },
+            position: {
+              left: ui.players.element[0].offsetLeft,
+              top: ui.players.element[0].offsetTop - 183,
+            },
+            content: `
+                <p>${game.i18n.localize('SWADE.BenniesAdjustGMText')}</p>
+                <label
+                  style="display: block; width: max-content;"
+                  for"gm-bennies">
+                  ${game.i18n.localize('SWADE.Bennies')}:
+                  <input
+                    id="gm-bennies"
+                    type="number"
+                    min="0"
+                    style="width: 5ch; height: .75lh; text-align: center;"
+                    name="gm-bennies"
+                    value="${game.users?.filter((u) => u.active && !u.isGM).length}"
+                    autofocus
+                  >
+                </label>
+            `,
+            buttons: [
+              {
+                action: 'cancel',
+                label: game.i18n.localize('SWADE.Cancel'),
+              },
+              {
+                action: 'submit',
+                label: game.i18n.localize('SWADE.ButtonSubmit'),
+                default: true,
+                callback: async (event, button, dialog) =>
+                  await gm?.setFlag(
+                    'swade',
+                    'bennies',
+                    Number(button.form.elements['gm-bennies'].value),
+                  ),
+              },
+            ],
+          });
+        },
+      },
     );
   }
 
@@ -654,7 +728,7 @@ export default class SwadeCoreHooks {
     data: { type: string; uuid: string },
   ) {
     if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
-      const activeTab = getProperty(sheet, '_tabs')[0].active;
+      const activeTab = foundry.utils.getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'crew') {
         const droppedActor = await fromUuid(data.uuid);
         if (droppedActor.type === 'vehicle') return;

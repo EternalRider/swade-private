@@ -1,5 +1,4 @@
-import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ActorDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData';
+import { StoredDocument } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
@@ -8,12 +7,12 @@ import SwadeItem from '../documents/item/SwadeItem';
 
 export class CompendiumTOC extends Compendium<
   CompendiumTOCMetadata,
-  TOCApplicationOptions
+  TOCApplicationOptions<CompendiumTOCMetadata>
 > {
   #disclaimer?: string;
   #fullTextSearch: boolean;
 
-  static get defaultOptions(): ApplicationOptions {
+  static override get defaultOptions(): ApplicationOptions {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ['swade-app', 'compendium-toc'],
       template: 'systems/swade/templates/apps/compendium-toc.hbs',
@@ -33,11 +32,8 @@ export class CompendiumTOC extends Compendium<
 
   static CF_ENTITY = '#[CF_tempEntity]';
 
-  constructor(
-    collection: CompendiumCollection<CompendiumTOCMetadata>,
-    options?: Partial<TOCApplicationOptions>,
-  ) {
-    super(collection, options);
+  constructor(options: TOCApplicationOptions<CompendiumTOCMetadata>) {
+    super(options);
     this.#disclaimer = options?.disclaimer;
     this.#fullTextSearch = false;
   }
@@ -68,7 +64,7 @@ export class CompendiumTOC extends Compendium<
     }
   }
 
-  activateListeners(html: JQuery<HTMLElement>): void {
+  override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
     html.find('a').on('click', this._onClickLink.bind(this));
     html[0]
@@ -79,7 +75,7 @@ export class CompendiumTOC extends Compendium<
     new ResizeObserver(this._onObserveResize.bind(this)).observe(html[0]);
   }
 
-  async getData(
+  override async getData(
     options?: Partial<ApplicationOptions>,
   ): Promise<CompendiumTOCData> {
     const data: CompendiumTOCData = {
@@ -172,12 +168,12 @@ export class CompendiumTOC extends Compendium<
         case 'Actor':
           searchFields = CONFIG.SWADE.textSearch.actor;
           break;
-        case 'Adventure':
-          searchFields = CONFIG.SWADE.textSearch.adventure;
-          break;
-        case 'Cards':
-          searchFields = CONFIG.SWADE.textSearch.cards;
-          break;
+        // case 'Adventure':
+        //   searchFields = CONFIG.SWADE.textSearch.adventure;
+        //   break;
+        // case 'Cards':
+        //   searchFields = CONFIG.SWADE.textSearch.cards;
+        //   break;
         case 'Item':
           searchFields = CONFIG.SWADE.textSearch.item;
           break;
@@ -186,21 +182,21 @@ export class CompendiumTOC extends Compendium<
             CONFIG.JournalEntry.compendiumIndexFields,
           );
           break;
-        case 'Macro':
-          searchFields = CONFIG.SWADE.textSearch.macro;
-          break;
-        case 'Playlist':
-          searchFields = CONFIG.SWADE.textSearch.playlist;
-          break;
-        case 'RollTable':
-          searchFields = CONFIG.SWADE.textSearch.rolltable;
-          break;
-        case 'Scene':
-          searchFields = CONFIG.SWADE.textSearch.scene;
-          break;
+        // case 'Macro':
+        //   searchFields = CONFIG.SWADE.textSearch.macro;
+        //   break;
+        // case 'Playlist':
+        //   searchFields = CONFIG.SWADE.textSearch.playlist;
+        //   break;
+        // case 'RollTable':
+        //   searchFields = CONFIG.SWADE.textSearch.rolltable;
+        //   break;
+        // case 'Scene':
+        //   searchFields = CONFIG.SWADE.textSearch.scene;
+        //   break;
       }
       pack.getIndex({ fields: searchFields });
-      const searchResults: Array<Document.Any> = pack.search({
+      const searchResults = pack.search({
         query: rgx.source,
       });
       for (const li of children) {
@@ -324,7 +320,9 @@ export class CompendiumTOC extends Compendium<
       const typeLabel = game.i18n.localize(`TYPES.Item.${type}`);
 
       const [unCategorized, categorized] = items.partition(
-        (i) => i.canHaveCategory && !!getProperty(i, 'system.category'),
+        (i) =>
+          i.canHaveCategory &&
+          !!foundry.utils.getProperty(i, 'system.category'),
       );
 
       //handle the un-categorized things first, which are sorted by type
@@ -586,6 +584,7 @@ export class CompendiumTOC extends Compendium<
   }
 }
 
+// TODO: Evaluate how much we care about keeping this
 interface CompendiumTOCData
   extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
   isJournal: boolean;
@@ -623,9 +622,10 @@ export type CompendiumTOCMetadata = CompendiumCollection.Metadata & {
   type: 'Actor' | 'Item' | 'JournalEntry';
 };
 
-type TOCApplicationOptions = ApplicationOptions & {
-  disclaimer?: string;
-};
+type TOCApplicationOptions<Metadata extends CompendiumCollection.Metadata> =
+  Compendium.Options<Metadata> & {
+    disclaimer?: string;
+  };
 
 interface CompendiumCategory {
   category: string;
@@ -658,4 +658,4 @@ type ActorIndexEntry = {
   token: {
     img: string;
   };
-} & Partial<ActorDataSource>;
+} & foundry.documents.BaseActor;

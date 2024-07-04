@@ -1,12 +1,5 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import {
-  ActiveEffectDataConstructorData,
-  ActiveEffectDataProperties,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData';
-import { BaseUser } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents.mjs';
 import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
-import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -15,6 +8,7 @@ import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -27,7 +21,10 @@ declare global {
         expiration?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>;
         loseTurnOnHold?: boolean;
         favorite?: boolean;
-        related?: Record<string, ActiveEffectDataConstructorData>;
+        related?: Record<
+          string,
+          foundry.documents.BaseActiveEffect.ConstructorData
+        >;
         conditionalEffect?: boolean;
       };
     };
@@ -50,7 +47,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get statusId() {
-    const [statusId] = getProperty(this, 'statuses') as Set<string>;
+    const [statusId] = foundry.utils.getProperty(
+      this,
+      'statuses',
+    ) as Set<string>;
     return statusId;
   }
 
@@ -199,7 +199,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
-          const source = getProperty(item._source, key);
+          const source = foundry.utils.getProperty(item._source, key);
           foundry.utils.setProperty(item, key, source);
         }
       }
@@ -236,7 +236,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   private async _applyRelatedEffects() {
     const related = this.getFlag('swade', 'related') ?? {};
     if (!this.actor || !this.statusId) return;
-    const toCreate: ActiveEffectDataConstructorData[] = [];
+    const toCreate: foundry.documents.BaseActiveEffect.ConstructorData[] = [];
     for (const [id, mutation] of Object.entries(related)) {
       const statusEffect = getStatusEffectDataById(id);
       //skip if the effect already exists on the actor
@@ -318,7 +318,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
         overrides[effectKey] = new Array<RollModifier>();
       this._updateTraitRollEffects(overrides[effectKey], change.value, false);
       // NOT calling super.apply because normal apply doesn't handle objects
-      setProperty(doc, effectKey, overrides[effectKey]);
+      foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
       doc.overrides = foundry.utils.expandObject(overrides);
     } else {
       Logger.warn(
@@ -401,7 +401,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       label: this.name,
       parent: this.parent?.name,
     });
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       yes: {
         label: game.i18n.localize('Yes'),
         icon: '<i class="fas fa-check"></i>',
@@ -457,7 +457,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preUpdate(
-    changed: ActiveEffectDataConstructorData,
+    changed: foundry.documents.BaseActiveEffect.ConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser,
   ) {
@@ -495,11 +495,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
     user: BaseUser,
   ): Promise<void> {
     super._preCreate(data, options, user);
-    if (!data.icon) {
-      //TODO Move to `effect.img` once v12 releases
+    if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;
-      this.updateSource({ icon: path });
+      this.updateSource({ img: path });
     }
     const isDefaultName = data.name === SwadeActiveEffect.defaultName;
     if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {

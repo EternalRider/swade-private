@@ -101,7 +101,7 @@ Hooks.once('init', () => {
     RollDialog,
     effectCallbacks: new Collection(),
     ready: false,
-    fields: data.fields,
+    data,
     SwadeTour,
   };
 
@@ -119,6 +119,7 @@ Hooks.once('init', () => {
   CONFIG.Actor.dataModels = data.actor.config;
   CONFIG.Item.dataModels = data.item.config;
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
+  CONFIG.Card.dataModels = data.card.config;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -262,16 +263,15 @@ Hooks.once('init', () => {
   // Register Tours
   registerSWADETours();
 
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
+
   CONFIG.Dice.TraitRoll = TraitRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
@@ -331,6 +331,7 @@ Hooks.on(
 /* ------------------------------------ */
 /* Update Hooks              	          */
 /* ------------------------------------ */
+Hooks.on('userConnected', SwadeCoreHooks.onUserConnected);
 Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 
 /* ------------------------------------ */

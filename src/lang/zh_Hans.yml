@@ -1036,9 +1036,6 @@ SWADE:
     ApplyEncumbrance:
       Name: 应用负载减值
       Hint: 应用负载减值，请记住这当前暂不支持抵抗{fatigue}的{vigor}检定！
-    GmBennies:
-      Name: 游戏主持人助力点
-      Hint: 设置刷新时GM能获得的助力点数量
     VehicleMods:
       Name: 载具改装
       Hint: 载具使用改装栏

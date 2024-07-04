@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { AbilitySubType } from '../globals';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { RollModifierGroup } from '../interfaces/additional.interface';
@@ -75,7 +76,6 @@ export const SWADE: SwadeConfig = {
       'vehicleMods',
       'vehicleEdges',
       'vehicleSkills',
-      'gmBennies',
       'enableWoundPace',
       'ammoManagement',
       'ammoFromInventory',
@@ -193,15 +193,12 @@ export const SWADE: SwadeConfig = {
   abilitySheet: {
     special: {
       dropdown: 'SWADE.SpecialAbility',
-      abilities: 'SWADE.SpecialAbilities',
     },
     ancestry: {
       dropdown: 'SWADE.Ancestry',
-      abilities: 'SWADE.AncestralAbilities',
     },
     archetype: {
       dropdown: 'SWADE.Archetype',
-      abilities: 'SWADE.ArchetypeAbilities',
     },
   },
 
@@ -372,7 +369,7 @@ export interface SwadeConfig {
   };
   measuredTemplatePresets: Array<TemplateConfig>;
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
-  abilitySheet: Record<AbilitySubType, { dropdown: string; abilities: string }>;
+  abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   prototypeRollGroups: RollModifierGroup[];
   ranks: string[];
   textSearch: {

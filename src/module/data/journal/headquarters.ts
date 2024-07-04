@@ -1,10 +1,25 @@
-export class HeadquartersData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof HeadquartersData)['defineSchema']>
-  >,
-  JournalEntryPage
+declare namespace HeadquartersData {
+  interface Schema extends DataSchema {
+    advantage: foundry.data.fields.HTMLField;
+    complication: foundry.data.fields.HTMLField;
+    upgrades: foundry.data.fields.HTMLField;
+    form: foundry.data.fields.SchemaField<{
+      description: foundry.data.fields.HTMLField;
+      acquisition: foundry.data.fields.HTMLField;
+      maintenance: foundry.data.fields.HTMLField;
+    }>;
+  }
+  interface BaseData {}
+  interface DerivedData {}
+}
+
+class HeadquartersData extends foundry.abstract.TypeDataModel<
+  HeadquartersData.Schema,
+  JournalEntryPage.ConfiguredInstance,
+  HeadquartersData.BaseData,
+  HeadquartersData.DerivedData
 > {
-  static override defineSchema() {
+  static override defineSchema(): HeadquartersData.Schema {
     const fields = foundry.data.fields;
     return {
       advantage: new fields.HTMLField(),
@@ -18,3 +33,5 @@ export class HeadquartersData extends foundry.abstract.TypeDataModel<
     };
   }
 }
+
+export { HeadquartersData };

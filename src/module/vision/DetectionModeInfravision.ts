@@ -17,7 +17,7 @@ export default class DetectionModeInfravision extends DetectionMode {
     if (coldBodied) return false;
 
     // The source may not be blind if the detection mode requires sight
-    const src = visionSource.object.document;
+    const src = visionSource?.object?.document;
     const isBlind =
       src instanceof TokenDocument &&
       this.type === DetectionMode.DETECTION_TYPES.SIGHT &&

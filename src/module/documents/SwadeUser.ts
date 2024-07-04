@@ -1,5 +1,6 @@
 import { createGmBennyAddMessage } from '../chat';
 import { shouldShowBennyAnimation } from '../util';
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -60,7 +61,7 @@ export default class SwadeUser extends User {
 
       if (!!game.dice3d && (await shouldShowBennyAnimation())) {
         game.dice3d.showForRoll(
-          await new Roll('1dB').evaluate({ async: true }),
+          await new Roll('1dB').evaluate(),
           game.user!,
           true,
           null,
@@ -92,7 +93,7 @@ export default class SwadeUser extends User {
 
   async refreshBennies(notify = true) {
     if (this.isGM) {
-      const gmBennies = game.settings.get('swade', 'gmBennies');
+      const gmBennies = game.users.filter((u) => u.active && !u.isGM).length;
       await this.setFlag('swade', 'bennies', gmBennies);
 
       /**
@@ -104,6 +105,21 @@ export default class SwadeUser extends User {
       await this.character.refreshBennies(notify);
     }
     ui.players?.render(true);
+  }
+
+  protected override async _onUpdate(
+    changed: foundry.documents.BaseUser.UpdateData,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    await super._onUpdate(changed, options, userId);
+
+    // If the user is a gm and their bennies were changed, re-render the players display
+    if (
+      this.isGM &&
+      foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined
+    )
+      ui.players.render(true);
   }
 }
 

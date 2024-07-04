@@ -30,7 +30,7 @@ export default class ActionCardEditor extends FormApplication<
       submitOnClose: false,
     });
   }
-  get id(): string {
+  override get id(): string {
     return `actionCardEditor-${this.object.id}`;
   }
 
@@ -38,7 +38,7 @@ export default class ActionCardEditor extends FormApplication<
     return this.object as Cards;
   }
 
-  async getData() {
+  override async getData() {
     const data = {
       deckName: this.cards.name,
       cards: Array.from(this.cards.cards.values()).sort(this._sortCards),

@@ -5,6 +5,7 @@ import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 /** @noInheritDoc */
 export default class SwadeBaseActorSheet extends ActorSheet {
@@ -143,7 +144,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     html.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
-      const statData = getProperty(
+      const statData = foundry.utils.getProperty(
         this.actor,
         `system.additionalStats.${stat}`,
       ) as AdditionalStat;
@@ -155,7 +156,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         `${statData.value}${modifier}`,
         this.actor.getRollData(),
       );
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         flavor: statData.label,
@@ -181,10 +182,29 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
 
-    data.itemsByType = {};
-    for (const type of game.system.documentTypes.Item) {
-      data.itemsByType[type] = data.items.filter((i) => i.type === type) || [];
+    const itemsByType: Record<string, SwadeItem[]> = {};
+    for (const item of this.actor.items) {
+      const type = item.type;
+      const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
+        relativeTo: item,
+        rollData: item.getRollData(),
+        secrets: this.options.editable && this.document.isOwner,
+      };
+
+      item.enrichedDescription = await TextEditor.enrichHTML(
+        item.system.description,
+        itemEnrichmentOptions,
+      );
+      item.enrichedNotes = await TextEditor.enrichHTML(
+        item.system.notes,
+        itemEnrichmentOptions,
+      );
+
+      itemsByType[type] ??= [];
+      itemsByType[type].push(item);
     }
+
+    data.itemsByType = itemsByType;
 
     data.sortedSkills = this.actor.items
       .filter((i) => i.type === 'skill')
@@ -193,11 +213,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     if (this.actor.type !== 'vehicle') {
       //Encumbrance
       data.inventoryWeight = this._calcInventoryWeight([
-        ...data.itemsByType['gear'],
-        ...data.itemsByType['weapon'],
-        ...data.itemsByType['armor'],
-        ...data.itemsByType['shield'],
-        ...data.itemsByType['consumable'],
+        ...(data.itemsByType['gear'] ?? []),
+        ...(data.itemsByType['weapon'] ?? []),
+        ...(data.itemsByType['armor'] ?? []),
+        ...(data.itemsByType['shield'] ?? []),
+        ...(data.itemsByType['consumable'] ?? []),
       ]);
       data.maxCarryCapacity = this.actor.calcMaxCarryCapacity();
 
@@ -212,13 +232,18 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       data.activeArcane = this.options['activeArcane'];
       const arcanes = new Array<string>();
       const powers = data.itemsByType.power;
-      powers.forEach((pow: any) => {
+      powers?.forEach((pow: any) => {
         const arcane: string = pow.system.arcane;
         if (!arcane) return;
         if (!arcanes.find((el) => el === arcane)) {
           arcanes.push(arcane);
           // Add powerpoints data relevant to the detected arcane
-          if (!hasProperty(this.actor, `system.powerPoints.${arcane}`)) {
+          if (
+            !foundry.utils.hasProperty(
+              this.actor,
+              `system.powerPoints.${arcane}`,
+            )
+          ) {
             data.actor.system.powerPoints[arcane] = {
               value: 0,
               max: 0,
@@ -370,7 +395,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       this.actor.type === 'vehicle'
         ? `system.${targetProperty}`
         : `system.stats.${targetProperty}`;
-    const targetPropertyValue = getProperty(this.actor, targetPropertyPath);
+    const targetPropertyValue = foundry.utils.getProperty(
+      this.actor,
+      targetPropertyPath,
+    );
 
     const title = `${(game.i18n.format('SWADE.EdF'), { item: this.actor.name + ' ' + targetLabel })}`;
 
@@ -431,7 +459,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor, input.name) + delta;
+      input.value = foundry.utils.getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }

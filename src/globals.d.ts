@@ -1,3 +1,4 @@
+import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.d.mts';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AuraPointSource } from './module/canvas/AuraPointSource';
@@ -11,10 +12,8 @@ declare global {
     dice3d?: Dice3D;
   }
 
-  interface LenientGlobalVariableTypes {
-    game: never; //type is entirely irrelevant, as long as it is configured
-    canvas: never;
-    ui: never;
+  interface AssumeHookRan {
+    ready: never;
   }
 
   interface CONFIG {
