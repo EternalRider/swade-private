@@ -6,6 +6,7 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -38,7 +39,7 @@ import {
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { SwadeActorDataSource, TraitDie } from './actor-data-source';
+import { TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -57,7 +58,11 @@ declare global {
   }
 }
 
-export default class SwadeActor extends Actor {
+type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
+
+export default class SwadeActor<
+  ActorType extends SystemActorTypes = SystemActorTypes,
+> extends Actor {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -105,6 +110,15 @@ export default class SwadeActor extends Actor {
     }
     super(data, ctx);
   }
+
+  // Does not appear to work properly
+  // isType<TypeName extends SystemActorTypes>(
+  //   type: TypeName,
+  // ): this is SwadeActor<TypeName> {
+  //   return type === this.type;
+  // }
+
+  override system: DataModelConfig['Actor'][ActorType];
 
   /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
@@ -191,9 +205,8 @@ export default class SwadeActor extends Actor {
   }
 
   override get itemTypes() {
-    const types: Record<string, SwadeItem[]> = Object.fromEntries(
-      game.documentTypes.Item.map((t) => [t, []]),
-    );
+    const types: Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]> =
+      Object.fromEntries(game.documentTypes.Item.map((t) => [t, []]));
     for (const item of this.items.values()) {
       types[item.type].push(item);
     }
@@ -332,7 +345,6 @@ export default class SwadeActor extends Actor {
     if (!permitContinue) return null;
 
     if (options.suppressChat) {
-      // @ts-expect-error Error checking is wrong here roll is a TraitRoll
       return TraitRoll.fromTerms([
         ...roll.terms,
         ...TraitRoll.parse(
@@ -736,7 +748,7 @@ export default class SwadeActor extends Actor {
    * Reset the bennies of the Actor to their default value
    */
   async refreshBennies(notify = true) {
-    this.system.refreshBennies?.(notify);
+    if ('refreshBennies' in this.system) this.system.refreshBennies(notify);
   }
 
   /** Calculates the total Wound Penalties
@@ -1475,7 +1487,7 @@ export default class SwadeActor extends Actor {
   }
 
   protected override _onUpdate(
-    changed: DeepPartial<SwadeActorDataSource> & Record<string, unknown>,
+    changed: foundry.documents.BaseActor.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {

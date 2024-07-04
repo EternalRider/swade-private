@@ -8,6 +8,7 @@ declare namespace NpcData {
   interface Schema extends CommonActorData.Schema {
     bennies: ReturnType<(typeof NpcData)['wildcardData']>['bennies'];
     wounds: ReturnType<(typeof NpcData)['wildcardData']>['wounds'];
+    wildcard: foundry.data.fields.BooleanField<{ initial: false }>;
   }
 
   interface BaseData extends CommonActorData.BaseData {}
@@ -20,7 +21,7 @@ export class NpcData extends CommonActorData<
   NpcData.BaseData,
   NpcData.DerivedData
 > {
-  static override defineSchema() {
+  static override defineSchema(): NpcData.Schema {
     return {
       ...super.defineSchema(),
       ...this.wildcardData(2, 0),
