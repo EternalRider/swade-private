@@ -1,6 +1,7 @@
 import { ACTIVE_EFFECT_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
 import { ActionType, AdditionalStatType } from '../globals';
 import { constants } from '../module/constants';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 export interface PrototypeAdditionalStat {
   dtype: AdditionalStatType;

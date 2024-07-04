@@ -1,7 +1,5 @@
 import { createGmBennyAddMessage } from '../chat';
 import { shouldShowBennyAnimation } from '../util';
-import { UserDataProperties } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/userData';
-import { PropertiesToSource } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes';
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 declare global {
@@ -110,7 +108,7 @@ export default class SwadeUser extends User {
   }
 
   protected override async _onUpdate(
-    changed: PropertiesToSource<UserDataProperties>,
+    changed: foundry.documents.BaseUser.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {

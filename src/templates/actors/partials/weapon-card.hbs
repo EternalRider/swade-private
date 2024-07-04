@@ -38,7 +38,7 @@
     {{#unless (isEmpty item.system.notes)}}
       <div class='chips'>
         <span>{{localize 'SWADE.Notes'}}:&nbsp;</span>
-        <div>{{enrich item.system.notes}}</div>
+        <div>{{item.enrichedNotes}}</div>
       </div>
     {{/unless}}
   </div>

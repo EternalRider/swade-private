@@ -1,3 +1,4 @@
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { constants } from '../module/constants';
 
 export interface Advance {

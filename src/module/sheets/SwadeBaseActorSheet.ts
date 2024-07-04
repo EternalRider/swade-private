@@ -185,6 +185,21 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const itemsByType: Record<string, SwadeItem[]> = {};
     for (const item of this.actor.items) {
       const type = item.type;
+      const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
+        relativeTo: item,
+        rollData: item.getRollData(),
+        secrets: this.options.editable && this.document.isOwner,
+      };
+
+      item.enrichedDescription = await TextEditor.enrichHTML(
+        item.system.description,
+        itemEnrichmentOptions,
+      );
+      item.enrichedNotes = await TextEditor.enrichHTML(
+        item.system.notes,
+        itemEnrichmentOptions,
+      );
+
       itemsByType[type] ??= [];
       itemsByType[type].push(item);
     }

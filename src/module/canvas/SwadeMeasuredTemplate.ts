@@ -87,7 +87,6 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
     // Cancel the workflow (right-click)
     this.handlers.rc = (event) => {
-      //@ts-expect-error DND5e does this and Atropos probably knows what he's doing
       this.layer._onDragLeftCancel(event);
       this._removeListenersFromCanvas();
       initialLayer.activate();
@@ -155,8 +154,8 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
   ): PIXI.Polygon {
     // Special case to handle the base SWADE cone rather than a normal cone definition
     if (angle === 0) {
-      const coneWidth = 1.5 * ( distance / 9 ) ;
-      const coneLength = distance - coneWidth
+      const coneWidth = 1.5 * (distance / 9);
+      const coneLength = distance - coneWidth;
       const da = 3;
       const c = Ray.fromAngle(0, 0, direction, coneLength);
       const angles = Array.fromRange(180 / da)
@@ -177,7 +176,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       return new PIXI.Polygon(points);
     } else {
       // honestly don't know why super.getConeShape() isn't working but it's not
-      return MeasuredTemplate.getConeShape(direction, angle, distance)
+      return MeasuredTemplate.getConeShape(direction, angle, distance);
     }
   }
 

@@ -1,7 +1,7 @@
 import {
   StatusEffect,
   ToggleActiveEffectOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import {
   Context,
   DocumentModificationOptions,
@@ -77,7 +77,10 @@ export default class SwadeActor extends Actor {
     return Color.fromHSV([hue, value, 0.75]);
   }
 
-  constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
+  constructor(
+    data: foundry.documents.BaseActor.ConstructorData,
+    ctx?: Context<TokenDocument>,
+  ) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
         `Compendium.${ctx.pack}.${data._id}`,

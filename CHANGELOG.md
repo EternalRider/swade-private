@@ -44,6 +44,7 @@ SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foun
   - If a user later leaves, the number of Bennies decreases by 1. (Of course the Benny is restored if they return.)
   - If a user refreshes their browser, the above `userConnected` hook event listeners trigger accordingly.
   - If a GM refreshes their Bennies before any players join, the above events will modify the GM's Bennies appropriately.
+- All text enrichment is now handled asynchronously in getData. (#1155) **by @jpmeehan5**
 
 ### Deprecated
 
