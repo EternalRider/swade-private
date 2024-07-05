@@ -1143,14 +1143,8 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   #getWealthDieTypes(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 0, label: 'SWADE.WealthDie.Broke.Label' },
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-    ];
+    const options: DieSidesOption[] = util.getDieSidesRange(4,12)
+    options.unshift({ key: 0, label: 'SWADE.WealthDie.Broke.Label' });
     return options;
   }
 

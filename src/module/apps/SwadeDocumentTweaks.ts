@@ -5,6 +5,7 @@ import {
 import { AdditionalStat } from '../../interfaces/additional.interface';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { getDieSidesRange } from '../util';
 
 export default class SwadeDocumentTweaks extends FormApplication<
   FormApplicationOptions,
@@ -80,7 +81,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isVehicle: this.object.type === 'vehicle',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
       advanceTypes: this.#getAdvanceTypes(),
-      runningDieTypes: this.#getRunningDieTypes(),
+      runningDieTypes: getDieSidesRange(1,12),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.gridUnits,
         auras: this.object.auras,
@@ -185,18 +186,6 @@ export default class SwadeDocumentTweaks extends FormApplication<
       legacy: 'SWADE.Advances.Modes.Legacy',
       expanded: 'SWADE.Advances.Modes.Expanded',
     };
-  }
-
-  #getRunningDieTypes(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 1, label: '1' },
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-    ];
-    return options;
   }
 
   async #resetVisibility(ev: PointerEvent) {

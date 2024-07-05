@@ -1,5 +1,6 @@
 import { DieSidesOption } from '../../globals';
 import SwadeActor from '../documents/actor/SwadeActor';
+import { getDieSidesRange } from '../util';
 
 export default class AttributeManager extends FormApplication<
   FormApplicationOptions,
@@ -43,49 +44,12 @@ export default class AttributeManager extends FormApplication<
   ): Promise<AttributeManagerData> {
     const data: AttributeManagerData = {
       isExtra: !this.object.isWildcard,
-      dieSides: this._getDieSides(),
-      wildDieSides: this._getWildDieSides(),
-      dieSidesWithMinimum: this._getDieSidesWithMinimum(),
+      dieSides: (this.object.type === 'npc' ? getDieSidesRange(4,24) :getDieSidesRange(4,20)),
+      wildDieSides: getDieSidesRange(4,12),
+      dieSidesWithMinimum: getDieSidesRange(1,12),
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
   }
-
-  protected _getDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-      { key: 14, label: 'd12+1' },
-      { key: 16, label: 'd12+2' },
-      { key: 18, label: 'd12+3' },
-      { key: 20, label: 'd12+4' },
-    ];
-
-    if (this.object.type === 'npc') {
-      options.push({ key: 22, label: 'd12+5' }, { key: 24, label: 'd12+6' });
-    }
-
-    return options;
-  }
-
-  protected _getDieSidesWithMinimum(): DieSidesOption[] {
-    const dieSides = this._getDieSides();
-    dieSides.unshift({ key: 1, label: '1' });
-    return dieSides;
-  }
-  protected _getWildDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-    ];
-    return options;
-  }
-
 
   protected override async _updateObject(_event: Event, formData?: object) {
     await this.object.update(formData);

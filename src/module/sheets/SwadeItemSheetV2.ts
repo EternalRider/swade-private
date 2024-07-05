@@ -15,7 +15,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
-import { copyToClipboard } from '../util';
+import { copyToClipboard, getDieSidesRange } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = {
@@ -341,7 +341,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         [constants.WEAPON_RANGE_TYPE.RANGED]: 'SWADE.Weapon.RangeType.Ranged',
         [constants.WEAPON_RANGE_TYPE.MIXED]: 'SWADE.Weapon.RangeType.Mixed',
       };
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
     }
 
     if (this.type === 'consumable') {
@@ -350,29 +349,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
         [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       };
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
     }
 
-    if (this.type === 'gear') {
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    if(["consumable","gear", "shield", "armor", "action", "power","weapon"].includes(this.type)) {      
+      data.bonusDamageDieSideOptions = getDieSidesRange(4,12);
     }
-
-    if (this.type === 'shield') {
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
-    }
-
-    if (this.type === 'armor') {
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
-    }
-
-    if (this.type === 'action') {
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
-    }
-
-    if (this.type === 'power') {
-      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
-    }
-
 
     if (this.item.type === 'hindrance') {
       data.severityOptions = {
@@ -383,12 +364,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
 
     if (this.item.type === 'skill') {
-      data.dieSideOptions = this.#getDieSides();
+      data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
     }
 
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
-      data.dieSideOptions = this.#getDieSides();
+      data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
@@ -780,36 +761,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     ];
   }
 
-  #getDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-      { key: 14, label: 'd12+1' },
-      { key: 16, label: 'd12+2' },
-      { key: 18, label: 'd12+3' },
-      { key: 20, label: 'd12+4' },
-    ];
-
-    if (this.item.parent?.type === 'npc') {
-      options.push({ key: 22, label: 'd12+5' }, { key: 24, label: 'd12+6' });
-    }
-
-    return options;
-  }
-
-  #getBonusDamageDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-    ];
-    return options;
-  }
 
   #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
