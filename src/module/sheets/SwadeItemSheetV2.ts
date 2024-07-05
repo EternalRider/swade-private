@@ -366,6 +366,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (this.item.type === 'skill') {
       data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
+      data.wildDieSideOptions = getDieSidesRange(4,12);
+      data.attributeOptions = this.#getAttributeOptions();
     }
 
     if (this.item.isArcaneDevice) {
@@ -668,6 +670,16 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return `TYPES.Item.${this.type}`;
   }
 
+  #getAttributeOptions(): Record<string, string> {
+    return {
+      'agility': 'SWADE.AttrAgi',
+      'smarts': 'SWADE.AttrSma',
+      'spirit': 'SWADE.AttrSpr',
+      'strength': 'SWADE.AttrStr',
+      'vigor': 'SWADE.AttrVig',
+      '':''
+    };
+  }
   async #enrichText(text: string): Promise<string> {
     const enriched = await TextEditor.enrichHTML(text, {
       async: true,
@@ -879,7 +891,9 @@ interface SwadeItemSheetData extends OptionsPartial {
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
   grantOnTriggers?: Record<number, string>[];
+  attributeOptions?: Record<string, string>;
   dieSideOptions?: DieSidesOption[];  
+  wildDieSideOptions?: DieSidesOption[];
   bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
