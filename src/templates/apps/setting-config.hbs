@@ -204,19 +204,18 @@
         </label>
         <div class='form-fields'>
           <select id='injuryTable' name='settingRules.injuryTable'>
-            {{#select settingRules.injuryTable}}
               <option value=''></option>
               {{#each injuryTableChoices}}
                 <optgroup label='{{group}}'>
                   {{selectOptions
                     options
-                    nameAttr='key'
+                    selected=../settingRules.injuryTable
+                    valueAttr='key'
                     labelAttr='label'
                     sort=true
                   }}
                 </optgroup>
               {{/each}}
-            {{/select}}
           </select>
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.InjuryTable.Hint'}}</p>
