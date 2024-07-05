@@ -62,13 +62,11 @@
           <li data-index='{{@index}}' class='change'>
             <span class='label'>{{label}}</span>
             <select class='mode'>
-              {{#select this.mode}}
-                {{selectOptions
-                  @root.changeModes
-                  selected=this.mode
-                  localize=true
-                }}
-              {{/select}}
+              {{selectOptions
+                @root.changeModes
+                selected=this.mode
+                localize=true
+              }}
             </select>
             <input type='text' class='value' value='{{this.value}}' />
             <span class='change-controls'>
