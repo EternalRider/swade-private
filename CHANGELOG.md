@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Added
+
+- Adds a configuration Setting for a static refresh amount for GM Bennies.
+
+### Changed
+
+- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects.
+
+### Fixed
+
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener.
+
 ## 4.0.0
 
 SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11
