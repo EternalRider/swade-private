@@ -15,7 +15,7 @@
         </label>
         <span class='form-fields'>
           <select name='system.die.sides' data-dtype='Number'>
-            {{selectOptions dieSideOptions selected=item._source.system.die.sides nameAttr="key" labelAttr="label"}}
+            {{selectOptions dieSideOptions selected=item._source.system.die.sides valueAttr="key" labelAttr="label"}}
           </select>
           <input
             name='system.die.modifier'
