@@ -42,9 +42,43 @@ export default class ActionCardEditor extends FormApplication<
     const data = {
       deckName: this.cards.name,
       cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
+      suitOptions: this.#getSuitOptions(),
+      cardValues: this.#getCardValues(),
     };
     return data as any;
   }
+  #getSuitOptions(): Record<number, string> {
+    return {
+      4: 'SWADE.Cards.Spades',
+      3: 'SWADE.Cards.Hearts',
+      2: 'SWADE.Cards.Diamonds',
+      1: 'SWADE.Cards.Clubs',
+      99: 'SWADE.Cards.Jokers',
+    };
+  }
+
+  #getCardValues(): Record<number, string> {
+    return {
+      2: 'SWADE.Cards.Two',
+      3: 'SWADE.Cards.Three',
+      4: 'SWADE.Cards.Four',
+      5: 'SWADE.Cards.Five',
+      6: 'SWADE.Cards.Six',
+      7: 'SWADE.Cards.Seven',
+      8: 'SWADE.Cards.Eight',
+      9: 'SWADE.Cards.Nine',
+      10: 'SWADE.Cards.Ten',
+      11: 'SWADE.Cards.Jack',
+      12: 'SWADE.Cards.Queen',
+      13: 'SWADE.Cards.King',
+      14: 'SWADE.Cards.Ace',
+      99: 'SWADE.Cards.RedJoker',
+      98: 'SWADE.Cards.BlackJoker',
+      97: 'SWADE.Cards.BlueJoker',
+      96: 'SWADE.Cards.GreenJoker',
+    };
+  }
+
 
   override activateListeners(html: JQuery) {
     super.activateListeners(html);
