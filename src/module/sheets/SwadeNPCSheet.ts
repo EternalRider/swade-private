@@ -1,4 +1,5 @@
 import { constants } from '../constants';
+import { getDieSidesRange } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
 /**
@@ -159,6 +160,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         secrets: this.options.editable && this.document.isOwner,
       },
     );
+    data.wealthDieTypes = getDieSidesRange(4,12);
 
     // Everything below here is only needed if user is not limited
     if (this.actor.limited) return data;
