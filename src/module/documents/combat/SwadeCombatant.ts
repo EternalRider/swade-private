@@ -308,15 +308,18 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override _onUpdate(
-    changed: DeepPartial<Combatant['_source']>,
+    changed: foundry.documents.BaseCombatant.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
     const hasCardChanged =
-      hasProperty(changed, 'flags.swade.cardValue') ||
-      hasProperty(changed, 'flags.swade.suitValue');
-    const holdRemoved = hasProperty(changed, 'flags.swade.-=roundHeld');
+      foundry.utils.hasProperty(changed, 'flags.swade.cardValue') ||
+      foundry.utils.hasProperty(changed, 'flags.swade.suitValue');
+    const holdRemoved = foundry.utils.hasProperty(
+      changed,
+      'flags.swade.-=roundHeld',
+    );
     if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
