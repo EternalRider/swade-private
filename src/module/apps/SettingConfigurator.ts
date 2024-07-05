@@ -51,6 +51,8 @@ export default class SettingConfigurator extends FormApplication {
       actionDeckChoices: this.#buildActionDeckChoices(),
       discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
       injuryTableChoices: await this.#buildInjuryTableChoices(),
+      armorStackingChoices: this.#getArmorStackingChoices(),
+      wealthTypes: this.#getWealthTypes(),
     };
     for (const setting of this.config.settings) {
       data.settingRules[setting] = game.settings.get('swade', setting);
@@ -184,6 +186,21 @@ export default class SettingConfigurator extends FormApplication {
       }
     }
     return attributes;
+  }
+
+  #getArmorStackingChoices(): Record<string, string> {
+    return {
+      'core': 'SWADE.Settings.ArmorStacking.Choices.Core',
+      'swpf': 'SWADE.Settings.ArmorStacking.Choices.SWPF',
+    };
+  }
+
+  #getWealthTypes(): Record<string, string> {
+    return {
+      'currency': 'SWADE.Currency',
+      'wealthDie': 'SWADE.WealthDie.Label',
+      'none': 'SWADE.WealthSelectionNoneOther',
+    };
   }
 
   #buildCoreSkillPackChoices() {
