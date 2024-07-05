@@ -84,7 +84,6 @@ export default class DiceSettings extends FormApplication<
       fontList: game.dice3d?.exports.Utils.prepareFontList(),
       materialList: this._prepareMaterialList(),
     };
-    console.log(data);
     return data;
   }
 
