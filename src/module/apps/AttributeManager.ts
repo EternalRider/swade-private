@@ -44,6 +44,8 @@ export default class AttributeManager extends FormApplication<
     const data: AttributeManagerData = {
       isExtra: !this.object.isWildcard,
       dieSides: this._getDieSides(),
+      wildDieSides: this._getWildDieSides(),
+      dieSidesWithMinimum: this._getDieSidesWithMinimum(),
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
   }
@@ -68,6 +70,23 @@ export default class AttributeManager extends FormApplication<
     return options;
   }
 
+  protected _getDieSidesWithMinimum(): DieSidesOption[] {
+    const dieSides = this._getDieSides();
+    dieSides.unshift({ key: 1, label: '1' });
+    return dieSides;
+  }
+  protected _getWildDieSides(): DieSidesOption[] {
+    const options: DieSidesOption[] = [
+      { key: 4, label: 'd4' },
+      { key: 6, label: 'd6' },
+      { key: 8, label: 'd8' },
+      { key: 10, label: 'd10' },
+      { key: 12, label: 'd12' },
+    ];
+    return options;
+  }
+
+
   protected override async _updateObject(_event: Event, formData?: object) {
     await this.object.update(formData);
     return this.render(true);
@@ -78,4 +97,6 @@ interface AttributeManagerData
   extends Partial<FormApplication.Data<{}, FormApplicationOptions>> {
   isExtra: boolean;
   dieSides: DieSidesOption[];
+  wildDieSides: DieSidesOption[];
+  dieSidesWithMinimum: DieSidesOption[];
 }
