@@ -279,6 +279,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           subtype === constants.ABILITY_TYPE.ANCESTRY ||
           subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
+      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(SWADE.abilitySheet);
     }
 
     if (this.item.canGrantItems) {
@@ -645,7 +646,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       ? options.slice(0,2)
       : options
   }
-
+  #getAbilitySubtypeOptions(abilityLocalization: typeof SWADE.abilitySheet): Record<string, string> {
+    return {
+      'special' :abilityLocalization.special.dropdown,
+      'ancestry': abilityLocalization.ancestry.dropdown,
+      'archetype': abilityLocalization.archetype.dropdown
+    }
+  }
   #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
@@ -865,6 +872,7 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isAncestryOrArchetype: boolean;
   };
+  abilitySubtypeOptions: Record<string, string>;
   dieSides;
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
