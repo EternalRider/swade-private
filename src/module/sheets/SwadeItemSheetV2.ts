@@ -341,6 +341,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         [constants.WEAPON_RANGE_TYPE.RANGED]: 'SWADE.Weapon.RangeType.Ranged',
         [constants.WEAPON_RANGE_TYPE.MIXED]: 'SWADE.Weapon.RangeType.Mixed',
       };
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
     }
 
     if (this.type === 'consumable') {
@@ -349,7 +350,29 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
         [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       };
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
     }
+
+    if (this.type === 'gear') {
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    }
+
+    if (this.type === 'shield') {
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    }
+
+    if (this.type === 'armor') {
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    }
+
+    if (this.type === 'action') {
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    }
+
+    if (this.type === 'power') {
+      data.bonusDamageDieSideOptions = this.#getBonusDamageDieSides();
+    }
+
 
     if (this.item.type === 'hindrance') {
       data.severityOptions = {
@@ -777,6 +800,17 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return options;
   }
 
+  #getBonusDamageDieSides(): DieSidesOption[] {
+    const options: DieSidesOption[] = [
+      { key: 4, label: 'd4' },
+      { key: 6, label: 'd6' },
+      { key: 8, label: 'd8' },
+      { key: 10, label: 'd10' },
+      { key: 12, label: 'd12' },
+    ];
+    return options;
+  }
+
   #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
       [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
@@ -873,7 +907,8 @@ interface SwadeItemSheetData extends OptionsPartial {
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
-  dieSideOptions?: DieSidesOption[];
+  dieSideOptions?: DieSidesOption[];  
+  bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
 type OptionsPartial = Partial<DocumentSheetOptions<Item>>;
