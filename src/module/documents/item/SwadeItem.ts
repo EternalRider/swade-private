@@ -44,9 +44,12 @@ declare global {
 
 type SystemItemTypes = Exclude<foundry.documents.BaseItem.TypeNames, 'base'>;
 
-export default class SwadeItem<
-  ItemType extends SystemItemTypes = SystemItemTypes,
-> extends Item {
+interface SwadeItem<ItemType extends SystemItemTypes = SystemItemTypes> {
+  type: ItemType;
+  system: DataModelConfig['Item'][ItemType];
+}
+
+class SwadeItem extends Item {
   overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
@@ -88,8 +91,6 @@ export default class SwadeItem<
     super(data, context);
     this.overrides ??= {};
   }
-
-  override system: DataModelConfig['Item'][ItemType];
 
   get isMeleeWeapon(): boolean {
     return this.system['isMelee'] ?? false;
@@ -849,3 +850,5 @@ export default class SwadeItem<
     await super._onCreateDocuments(items, context);
   }
 }
+
+export default SwadeItem;

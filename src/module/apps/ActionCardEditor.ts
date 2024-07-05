@@ -57,7 +57,7 @@ export default class ActionCardEditor extends FormApplication<
     const cards = Object.entries(data.card) as [string, CardData][];
     const updates = new Array<Record<string, unknown>>();
     for (const [id, value] of cards) {
-      const newData = {
+      const newData: foundry.documents.BaseCard.ConstructorData = {
         name: value.name,
         faces: [
           {
@@ -66,14 +66,14 @@ export default class ActionCardEditor extends FormApplication<
           },
         ],
         value: value.cardValue,
-        data: {
+        system: {
           isJoker: value.suitValue > 90,
           suit: value.suitValue,
         },
       };
       //grab the current card and diff it against the object we got from the form
       const current = this.cards.cards.get(id, { strict: true });
-      const diff = foundry.utils.diffObject(current.data.toObject(), newData);
+      const diff = foundry.utils.diffObject(current.toObject(), newData);
       //skip if there's no differences
       if (foundry.utils.isEmpty(diff)) continue;
       //set the ID for the update

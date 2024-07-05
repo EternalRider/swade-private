@@ -414,11 +414,11 @@
           {{localize 'SWADE.Auras.Color'}}
         </label>
         <span class='form-fields'>
-          {{colorPicker
+          <color-picker
             name='flags.swade.auras.aura1.color'
-            value=auras.auras.aura1.color
-            default=auras.defaultColor
-          }}
+            value={{auras.auras.aura1.color}}
+            default={{defaultColor}}
+          />
         </span>
       </div>
       <div class='form-group slim'>
@@ -447,7 +447,7 @@
               auras.visibilityChoices
               selected=auras.auras.aura1.visibleTo
               localize=true
-              nameAttr='key'
+              valueAttr='key'
               labelAttr='label'
             }}
           </select>
@@ -497,11 +497,11 @@
       <div class='form-group'>
         <label>{{localize 'SWADE.Auras.Color'}}</label>
         <span class='form-fields'>
-          {{colorPicker
+          <color-picker
             name='flags.swade.auras.aura2.color'
-            value=auras.auras.aura2.color
-            default=defaultColor
-          }}
+            value={{auras.auras.aura2.color}}
+            default={{defaultColor}}
+          />
         </span>
       </div>
       <div class='form-group slim'>
@@ -530,7 +530,7 @@
               auras.visibilityChoices
               selected=auras.auras.aura2.visibleTo
               localize=true
-              nameAttr='key'
+              valueAttr='key'
               labelAttr='label'
             }}
           </select>

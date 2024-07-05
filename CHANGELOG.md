@@ -36,6 +36,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener.
 
+## 4.0.2
+
+### Fixed
+
+- Resolved more deprecation warnings. **by @jpmeehan5**
+- Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
+- Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
+- Tweaks now save properly. (#1171) **by @jpmeehan5**
+
+## 4.0.1
+
+### Fixed
+
+- Data prep failure due to bad type declaration. (#1169) **by @jpmeehan5**
+
 ## 4.0.0
 
 SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11

@@ -642,6 +642,7 @@ SWADE:
     AutoInit:
       Name: Automatic Initiative
       Hint: Automatically draw Action Cards every round
+    Bumpmaps: Bumpmaps
     Benny3DFront:
       Name: Front Texture
       Hint: Front texture of the 3D Benny

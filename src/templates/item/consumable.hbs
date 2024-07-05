@@ -102,9 +102,7 @@
         <label>{{localize 'SWADE.ConsumableType.Label'}}</label>
         <span class='form-fields'>
           <select name='system.subtype'>
-            {{#select item.system.subtype}}
-              {{selectOptions subtypes localize=true}}
-            {{/select}}
+            {{selectOptions subtypes selected=item.system.subtype localize=true}}
           </select>
         </span>
       </div>

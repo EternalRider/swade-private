@@ -109,7 +109,9 @@
     }
     cursor: pointer;
     border-radius: var(--button-border-radius);
-    font-family: var(--default-font);
+    &:not(.fa-file-import) {
+      font-family: var(--default-font);
+    }
     &:focus {
       box-shadow: var(--input-box-shadow);
     }
