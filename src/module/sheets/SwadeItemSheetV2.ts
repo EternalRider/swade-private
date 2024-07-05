@@ -365,6 +365,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
+      data.dieSideOptions = this.#getDieSides();
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
