@@ -717,6 +717,14 @@ SWADE:
       Hint: >-
         Enter a comma-separated list of skill names to be defined as Operation
         skills for all vehicle
+    StaticGmBennies:
+      Name: Static Gamemaster Bennies
+      Hint: >-
+        Sets a static value for the number of Bennies the GM recieves on a refresh instead of
+        basing it on the number of active players.
+    GmBennies:
+      Name: Gamemaster Bennies
+      Hint: Sets how many Bennies the GM receives on a refresh
     BennyImageSheet:
       Name: Benny
       Hint: Select which image to use for Bennies on the Character Sheet

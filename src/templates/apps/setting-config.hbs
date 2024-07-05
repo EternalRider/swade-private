@@ -533,6 +533,32 @@
     <!-- Benny Settings -->
     <section class='tab' data-tab='bennies'>
       <div class='form-group'>
+        <label for='staticGmBennies'>
+          {{localize 'SWADE.Settings.StaticGmBennies.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='staticGmBennies'
+            type='checkbox'
+            name='settingRules.staticGmBennies'
+            data-dtype='Boolean'
+            {{checked settingRules.staticGmBennies}}
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
+      </div>
+      {{#if settingRules.staticGmBennies}}
+      <div class='form-group'>
+        <label for='gmBennies'>
+          {{localize 'SWADE.Settings.GmBennies.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input id='gmBennies' type='number' name='settingRules.gmBennies' value='{{settingRules.gmBennies}}' data-dtype='Number' />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
+      </div>
+      {{/if}}
+      <div class='form-group'>
         <label>
           {{localize 'SWADE.Settings.BennyImageSheet.Name'}}
         </label>
