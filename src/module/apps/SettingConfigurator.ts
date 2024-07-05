@@ -72,7 +72,7 @@ export default class SettingConfigurator extends FormApplication {
 
   async _updateObject(_event, formData) {
     //Gather Data
-    const expandedFormdata = expandObject(formData);
+    const expandedFormdata = foundry.utils.expandObject(formData);
     const formActorAttrs = expandedFormdata.actorSettingStats || {};
     const formItemAttrs = expandedFormdata.itemSettingStats || {};
 

@@ -103,7 +103,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
 
   /** @inheritdoc */
   protected override async _updateObject(_event, formData) {
-    const expandedFormData = expandObject(formData);
+    const expandedFormData = foundry.utils.expandObject(formData);
 
     //recombine the formdata
     foundry.utils.setProperty(
@@ -149,8 +149,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
         newFields[key] = prototypeFields[key];
       } else {
         //delete field
-        //@ts-expect-error This is only done to delete the key
-        newFields[`-=${key}`] = null;
+        newFields[`-=${key}`] = field;
         delete newFields[key];
       }
     }

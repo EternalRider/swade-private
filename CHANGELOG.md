@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Advance notes now properly display parsed HTML rather than raw string **by @jpmeehan5**
+- Tweaks now save properly (#1171) **by @jpmeehan5**
 
 ## 4.0.1
 
