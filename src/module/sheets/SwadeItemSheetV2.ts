@@ -284,7 +284,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.item.canGrantItems) {
       data.grantedItems = await this.#getGrantedItems();
     }
-
+    data.grantOnTriggers = this.#getGrantOnTriggers();
     for (const effect of this.item.effects) {
       foundry.utils.setProperty(
         effect,
@@ -373,6 +373,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
+
     return foundry.utils.mergeObject(superData, data);
   }
 
@@ -634,6 +635,17 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return enriched;
   }
 
+  #getGrantOnTriggers(): Record<number, string>[] {
+    const options = [
+      { key: 0, label: 'SWADE.ItemEquipStatus.Added' },
+      { key: 1, label: 'SWADE.ItemEquipStatus.Carried' },
+      { key: 2, label: 'SWADE.ItemEquipStatus.Readied' }
+    ];
+    return this.item.type === 'consumable'
+      ? options.slice(0,2)
+      : options
+  }
+
   #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
@@ -858,6 +870,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
+  grantOnTriggers?: Record<number, string>[];
   dieSideOptions?: DieSidesOption[];  
   bonusDamageDieSideOptions?: DieSidesOption[];
 }
