@@ -25,12 +25,13 @@
       </label>
       <span class='form-fields'>
         <select data-dtype='Number' name='system.details.wealth.die'>
-          {{#select actor.system.details.wealth.die}}
-            <option value='0'>{{localize
-                'SWADE.WealthDie.Broke.Label'
-              }}</option>
-            {{> "systems/swade/templates/die-sides-options.hbs"}}
-          {{/select}}
+          {{selectOptions 
+            wealthDieTypes
+            selected=actor.system.details.wealth.die
+            localize=true 
+            valueAttr='key'
+            labelAttr='label'
+          }}
         </select>
         <input
           type='text'
