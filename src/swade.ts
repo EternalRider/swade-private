@@ -279,7 +279,6 @@ Hooks.once('setup', SwadeCoreHooks.onSetup);
 Hooks.once('ready', SwadeCoreHooks.onReady);
 
 Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
-Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);

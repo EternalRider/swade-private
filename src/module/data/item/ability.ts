@@ -9,6 +9,8 @@ import {
   Favorite,
   Grants,
 } from './item-common.interface';
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 
 declare namespace AbilityData {
   interface Schema
@@ -61,6 +63,34 @@ class AbilityData extends SwadeBaseItemData<
 
   get canGrantItems() {
     return true;
+  }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    //Stop Ancestries/Archetypes from being added to the actor as an item if the actor already has one
+    const subType = this.subtype;
+    if (
+      subType === constants.ABILITY_TYPE.ANCESTRY &&
+      !!this.parent.actor?.ancestry
+    ) {
+      ui.notifications.warn('SWADE.Validation.OnlyOneAncestry', {
+        localize: true,
+      });
+      return false;
+    }
+    if (
+      subType === constants.ABILITY_TYPE.ARCHETYPE &&
+      !!this.parent.actor?.archetype
+    ) {
+      ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+        localize: true,
+      });
+      return false;
+    }
   }
 }
 
