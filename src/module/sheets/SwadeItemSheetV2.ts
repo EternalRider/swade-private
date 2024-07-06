@@ -352,7 +352,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
-    if(["consumable","gear", "shield", "armor", "action", "power","weapon"].includes(this.type)) {      
+    if(['consumable','gear', 'shield', 'armor', 'action', 'power','weapon'].includes(this.type)) {      
       data.bonusDamageDieSideOptions = getDieSidesRange(4,12);
     }
 
