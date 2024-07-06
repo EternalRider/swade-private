@@ -5,19 +5,7 @@
     <label>{{localize 'SWADE.ItemGrants.When'}}</label>
     <span class='form-fields'>
       <select name='system.grantOn' data-dtype='Number'>
-        {{#select item.system.grantOn}}
-          <option value='0'>
-            {{localize 'SWADE.ItemEquipStatus.Added'}}
-          </option>
-          <option value='1'>
-            {{localize 'SWADE.ItemEquipStatus.Carried'}}
-          </option>
-          {{#unless (eq item.type 'consumable')}}
-            <option value='2'>
-              {{localize 'SWADE.ItemEquipStatus.Readied'}}
-            </option>
-          {{/unless}}
-        {{/select}}
+        {{selectOptions grantOnTriggers selected=item.system.grantOn localize=true valueAttr='key' labelAttr='label'}}
       </select>
     </span>
   </div>

@@ -33,17 +33,7 @@
         <label>{{localize 'SWADE.Subtype'}}</label>
         <span class='form-fields'>
           <select name='system.subtype' {{disabled item.isOwned}}>
-            {{#select item.system.subtype}}
-              <option value='special'>{{localize
-                  abilityConfig.localization.special.dropdown
-                }}</option>
-              <option value='ancestry'>{{localize
-                  abilityConfig.localization.ancestry.dropdown
-                }}</option>
-              <option value='archetype'>{{localize
-                  abilityConfig.localization.archetype.dropdown
-                }}</option>
-            {{/select}}
+            {{selectOptions abilitySubtypeOptions selected=item.system.subtype localize=true}}
           </select>
         </span>
       </div>

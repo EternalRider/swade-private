@@ -238,9 +238,12 @@
               {{localize 'SWADE.WealthDie.Label' }}
             </button>
             <select data-dtype='Number' name='system.details.wealth.die'>
-              {{#select actor.system.details.wealth.die}}
-                {{> "systems/swade/templates/die-sides-options.hbs"}}
-              {{/select}}
+              {{selectOptions
+                wealthDieTypes
+                selected=actor.system.details.wealth.die
+                valueAttr='key'
+                labelAttr='label'
+              }}
             </select>
             <input
               type='text'

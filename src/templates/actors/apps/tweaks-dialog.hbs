@@ -100,14 +100,13 @@
                   name='system.stats.speed.runningDie'
                   data-dtype='Number'
                 >
-                  {{#select doc.system.stats.speed.runningDie}}
-                    <option value='1'>1</option>
-                    <option value='4'>d4</option>
-                    <option value='6'>d6</option>
-                    <option value='8'>d8</option>
-                    <option value='10'>d10</option>
-                    <option value='12'>d12</option>
-                  {{/select}}
+                  {{selectOptions
+                    runningDieTypes
+                    selected=doc.system.stats.speed.runningDie
+                    localize=true
+                    valueAttr='key'
+                    labelAttr='label'
+                  }}
                 </select>
                 <input
                   type='text'

@@ -25,9 +25,11 @@
       <div class='flexrow'>
         <label>{{localize 'SWADE.OpSkill'}}</label>
         <select name='system.driver.skill'>
-          {{#select actor.system.driver.skill}}
-            {{selectOptions opSkills}}
-          {{/select}}
+          {{selectOptions 
+            opSkills
+            selected=actor.system.driver.skill
+            localize=true
+          }}
         </select>
       </div>
       {{#if (isEmpty actor.system.driver.skill)}}
