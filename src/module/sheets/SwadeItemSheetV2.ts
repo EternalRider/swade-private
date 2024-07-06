@@ -15,7 +15,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
-import { copyToClipboard } from '../util';
+import { copyToClipboard, getDieSidesRange } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = {
@@ -279,12 +279,15 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           subtype === constants.ABILITY_TYPE.ANCESTRY ||
           subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
+      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
+        SWADE.abilitySheet,
+      );
     }
 
     if (this.item.canGrantItems) {
       data.grantedItems = await this.#getGrantedItems();
     }
-
+    data.grantOnTriggers = this.#getGrantOnTriggers();
     for (const effect of this.item.effects) {
       foundry.utils.setProperty(
         effect,
@@ -351,6 +354,20 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
+    if (
+      [
+        'consumable',
+        'gear',
+        'shield',
+        'armor',
+        'action',
+        'power',
+        'weapon',
+      ].includes(this.type)
+    ) {
+      data.bonusDamageDieSideOptions = getDieSidesRange(4, 12);
+    }
+
     if (this.item.type === 'hindrance') {
       data.severityOptions = {
         major: 'SWADE.HindranceSeverity.Major',
@@ -360,14 +377,24 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
 
     if (this.item.type === 'skill') {
-      data.dieSideOptions = this.#getDieSides();
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
+      data.wildDieSideOptions = getDieSidesRange(4, 12);
+      data.attributeOptions = this.#getAttributeOptions();
     }
 
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
+
     return foundry.utils.mergeObject(superData, data);
   }
 
@@ -629,6 +656,23 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return enriched;
   }
 
+  #getGrantOnTriggers(): Record<number, string>[] {
+    const options = [
+      { key: 0, label: 'SWADE.ItemEquipStatus.Added' },
+      { key: 1, label: 'SWADE.ItemEquipStatus.Carried' },
+      { key: 2, label: 'SWADE.ItemEquipStatus.Readied' },
+    ];
+    return this.item.type === 'consumable' ? options.slice(0, 2) : options;
+  }
+  #getAbilitySubtypeOptions(
+    abilityLocalization: typeof SWADE.abilitySheet,
+  ): Record<string, string> {
+    return {
+      special: abilityLocalization.special.dropdown,
+      ancestry: abilityLocalization.ancestry.dropdown,
+      archetype: abilityLocalization.archetype.dropdown,
+    };
+  }
   #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
@@ -644,6 +688,16 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return `TYPES.Item.${this.type}`;
   }
 
+  #getAttributeOptions(): Record<string, string> {
+    return {
+      agility: 'SWADE.AttrAgi',
+      smarts: 'SWADE.AttrSma',
+      spirit: 'SWADE.AttrSpr',
+      strength: 'SWADE.AttrStr',
+      vigor: 'SWADE.AttrVig',
+      '': '',
+    };
+  }
   async #enrichText(text: string): Promise<string> {
     const enriched = await TextEditor.enrichHTML(text, {
       async: true,
@@ -756,26 +810,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     ];
   }
 
-  #getDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-      { key: 14, label: 'd12+1' },
-      { key: 16, label: 'd12+2' },
-      { key: 18, label: 'd12+3' },
-      { key: 20, label: 'd12+4' },
-    ];
-
-    if (this.item.parent?.type === 'npc') {
-      options.push({ key: 22, label: 'd12+5' }, { key: 24, label: 'd12+6' });
-    }
-
-    return options;
-  }
-
   #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
       [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
@@ -867,12 +901,17 @@ interface SwadeItemSheetData extends OptionsPartial {
     abilityHeader: string;
     isAncestryOrArchetype: boolean;
   };
+  abilitySubtypeOptions: Record<string, string>;
   dieSides;
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
+  grantOnTriggers?: Record<number, string>[];
+  attributeOptions?: Record<string, string>;
   dieSideOptions?: DieSidesOption[];
+  wildDieSideOptions?: DieSidesOption[];
+  bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
 type OptionsPartial = Partial<DocumentSheetOptions<Item>>;

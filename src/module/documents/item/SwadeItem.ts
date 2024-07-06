@@ -780,7 +780,9 @@ class SwadeItem extends Item {
     options: DocumentModificationOptions,
     user: BaseUser,
   ) {
-    await super._preCreate(data, options, user);
+    const canCreate = await super._preCreate(data, options, user);
+    if (canCreate === false) return false;
+
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {
       this.updateSource(choiceUpdate);
@@ -807,7 +809,7 @@ class SwadeItem extends Item {
       this.canGrantItems &&
       this.parent &&
       grantOn &&
-      hasProperty(changed, 'system.equipStatus')
+      foundry.utils.hasProperty(changed, 'system.equipStatus')
     ) {
       const equipStatus = foundry.utils.getProperty(this, 'system.equipStatus');
       const shouldGrant =

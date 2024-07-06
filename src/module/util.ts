@@ -1,4 +1,5 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
@@ -189,6 +190,27 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   //   },
   // );
   return data as StatusEffect | undefined;
+}
+/** @internal */
+export function getDieSidesRange(
+  minimumSides: number,
+  maximumSides: number,
+): DieSidesOption[] {
+  const options: DieSidesOption[] = [
+    { key: 1, label: '1' },
+    { key: 4, label: 'd4' },
+    { key: 6, label: 'd6' },
+    { key: 8, label: 'd8' },
+    { key: 10, label: 'd10' },
+    { key: 12, label: 'd12' },
+    { key: 14, label: 'd12+1' },
+    { key: 16, label: 'd12+2' },
+    { key: 18, label: 'd12+3' },
+    { key: 20, label: 'd12+4' },
+    { key: 22, label: 'd12+5' },
+    { key: 24, label: 'd12+6' },
+  ];
+  return options.filter((x) => x.key >= minimumSides && x.key <= maximumSides);
 }
 
 /** @internal */

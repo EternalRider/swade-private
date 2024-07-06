@@ -45,6 +45,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
 - Tweaks now save properly. (#1171) **by @jpmeehan5**
 
+## 4.0.2
+
+### Fixed
+
+- Resolved more deprecation warnings. **by @jpmeehan5**
+- Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
+- Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
+- Tweaks now save properly. (#1171) **by @jpmeehan5**
+- Powers display correctly on the NPC sheet (#1174) **by @jpmeehan5**
+
 ## 4.0.1
 
 ### Fixed
