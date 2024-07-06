@@ -537,12 +537,10 @@
           {{localize 'SWADE.Settings.BennyImageSheet.Name'}}
         </label>
         <div class='form-fields'>
-          {{filePicker target='settingRules.bennyImageSheet' type='image'}}
-          <input
-            type='text'
+          <file-picker
             name='settingRules.bennyImageSheet'
+            type='image'
             value='{{settingRules.bennyImageSheet}}'
-            data-dtype='String'
           />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.BennyImageSheet.Hint'}}</p>
@@ -558,15 +556,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DFront.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker
-                target='settingRules.bennyImage3DFront'
-                type='image'
-              }}
-              <input
-                type='text'
+              <file-picker
                 name='settingRules.bennyImage3DFront'
                 value='{{settingRules.bennyImage3DFront}}'
-                data-dtype='String'
+                type='image'
               />
             </div>
             <p class='notes'>{{localize 'SWADE.Settings.Benny3DFront.Hint'}}</p>
@@ -574,12 +567,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DBack.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.bennyImage3DBack' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.bennyImage3DBack'
                 value='{{settingRules.bennyImage3DBack}}'
-                data-dtype='String'
               />
             </div>
             <p class='notes'>{{localize 'SWADE.Settings.Benny3DBack.Hint'}}</p>
@@ -587,16 +578,14 @@
         </fieldset>
         <!-- Bumpmaps -->
         <fieldset>
-          <legend>Bumpmaps</legend>
+          <legend>{{localize 'SWADE.Settings.Bumpmaps'}}</legend>
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DFrontBump.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.3dBennyFrontBump' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.3dBennyFrontBump'
-                value='{{settingRules.3dBennyFrontBump}}'
-                data-dtype='String'
+                value='{{settingRules.[3dBennyFrontBump]}}'
               />
             </div>
             <p class='notes'>
@@ -606,12 +595,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DBackBump.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.3dBennyBackBump' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.3dBennyBackBump'
-                value='{{settingRules.3dBennyBackBump}}'
-                data-dtype='String'
+                value='{{settingRules.[3dBennyBackBump]}}'
               />
             </div>
             <p class='notes'>
