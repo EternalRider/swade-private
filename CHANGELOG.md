@@ -28,6 +28,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Continued to resolve deprecation warnings
 - Continued to improve internal typings
+- Chase tiles now their images. (#1177) **by @jpmeehan5**
+- You can now open arcane devices with embedded powers. (#1178) **by @jpmeehan5**
+- The edit and delete buttons now show for vehicle mods and weapons again. (#1179) **by @jpmeehan5**
 
 ## 4.0.2
 
