@@ -1,4 +1,3 @@
-import { RollInitiativeOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/combat';
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
@@ -64,13 +63,13 @@ export default class SwadeCombat extends Combat {
 
   override async rollInitiative(
     ids: string | string[],
-    { messageOptions, updateTurn }: RollInitiativeOptions = {},
+    { messageOptions, updateTurn }: Combat.InitiativeOptions = {},
   ) {
     // Structure input data
     ids = Array.isArray(ids) ? ids : [ids];
 
     const currentId = this.combatant?.id;
-    const messages: DeepPartial<ChatMessageData>[] = [];
+    const messages: foundry.documents.BaseChatMessage.ConstructorData[] = [];
     const updates: Updates[] = [];
 
     //Check if enough cards are available
@@ -80,7 +79,7 @@ export default class SwadeCombat extends Combat {
         current: this.actionDeck.availableCards.length,
       });
       ui.notifications.warn(message);
-      return this as Combat;
+      return this;
     }
     // Iterate over Combatants, performing an initiative draw for each
     for (const id of ids) {
@@ -225,7 +224,7 @@ export default class SwadeCombat extends Combat {
       messages.push(messageData);
     }
 
-    if (!updates.length) return this as Combat;
+    if (!updates.length) return this;
 
     // Update the combat instance with the new combatants
     await this.updateEmbeddedDocuments('Combatant', updates);
@@ -246,7 +245,7 @@ export default class SwadeCombat extends Combat {
     }
 
     // Return the updated Combat
-    return this as Combat;
+    return this;
   }
 
   protected override _sortCombatants(
@@ -310,7 +309,7 @@ export default class SwadeCombat extends Combat {
       { turn: 0, combatants: this.combatants.toObject() },
       { diff: false },
     );
-    return this as Combat;
+    return this;
   }
 
   override async startCombat() {
@@ -358,13 +357,13 @@ export default class SwadeCombat extends Combat {
     Hooks.callAll('combatTurn', this, updateData, updateOptions);
     await this.update(updateData, updateOptions);
     await this._handleStartOfTurnExpirations();
-    return this as Combat;
+    return this;
   }
 
   override async nextRound() {
     if (game.user?.isGM) await this._nextRoundAsGM();
     else await this._nextRoundAsUser();
-    return this as Combat;
+    return this;
   }
 
   override async previousRound() {
@@ -376,7 +375,7 @@ export default class SwadeCombat extends Combat {
       rejectClose: false,
       options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
     });
-    if (!revert) return this as Combat;
+    if (!revert) return this;
     return super.previousRound();
   }
 
@@ -548,8 +547,8 @@ export default class SwadeCombat extends Combat {
     await Promise.allSettled(
       this.combatants
         .filter((c) => c.actor?.statuses.has('holding'))
-        .flatMap(
-          (c) => c.actor?.effects.filter((e) => e.statuses.has('holding')),
+        .flatMap((c) =>
+          c.actor?.effects.filter((e) => e.statuses.has('holding')),
         )
         .map((e) => e.delete()),
     );

@@ -3,8 +3,8 @@ import { SwadeRoll } from '../dice/SwadeRoll';
 export default class SwadeChatLog extends ChatLog {
   protected override async _processDiceCommand(
     command: string,
-    matches: RegExpMatchArray,
-    chatData: ChatMessageDataConstructorData,
+    matches: RegExpMatchArray[],
+    chatData: foundry.documents.BaseChatMessage.ConstructorData,
     createOptions: DocumentModificationContext,
   ): Promise<void> {
     const actor =

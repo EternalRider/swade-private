@@ -4,10 +4,9 @@ import { ItemMetadata } from '../../../globals';
 import { CommonActorData } from './common';
 
 declare namespace CharacterData {
-  interface Schema extends CommonActorData.Schema {
-    bennies: ReturnType<(typeof CharacterData)['wildcardData']>['bennies'];
-    wounds: ReturnType<(typeof CharacterData)['wildcardData']>['wounds'];
-  }
+  interface Schema
+    extends CommonActorData.Schema,
+      ReturnType<(typeof CharacterData)['wildcardData']> {}
 
   interface BaseData extends CommonActorData.BaseData {}
 

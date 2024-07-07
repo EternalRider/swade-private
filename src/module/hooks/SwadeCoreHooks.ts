@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { HotReloadData } from '../../globals';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
@@ -11,6 +12,7 @@ import { constants } from '../constants';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
+import SwadeCards from '../documents/card/SwadeCards';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -486,7 +488,7 @@ export default class SwadeCoreHooks {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid,
+            target.dataset.tokenUuid ?? '',
           ) as TokenDocument | null;
           const tokenObj = tokenDoc?.object;
           if (tokenObj?.isVisible && !tokenObj?.controlled) {
@@ -497,7 +499,7 @@ export default class SwadeCoreHooks {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid,
+            target.dataset.tokenUuid ?? '',
           ) as TokenDocument | null;
           const tokenObj = tokenDoc?.object;
           if (tokenObj?.isVisible && !tokenObj?.controlled) {
@@ -508,7 +510,7 @@ export default class SwadeCoreHooks {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid,
+            target.dataset.tokenUuid ?? '',
           ) as TokenDocument | null;
           if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
         });
@@ -525,7 +527,10 @@ export default class SwadeCoreHooks {
   }
 
   /** Change current GM Bennies count */
-  static async onUserConnected(user: SwadeUser, connected: boolean) {
+  static async onUserConnected(
+    user: User.ConfiguredInstance,
+    connected: boolean,
+  ) {
     const gm = game.users.activeGM;
     if (user.isGM || !gm?.isSelf) return false;
     const bennyDiff = connected ? 1 : -1;
@@ -730,7 +735,9 @@ export default class SwadeCoreHooks {
     if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
       const activeTab = foundry.utils.getProperty(sheet, '_tabs')[0].active;
       if (activeTab === 'crew') {
-        const droppedActor = await fromUuid(data.uuid);
+        const droppedActor = (await fromUuid(
+          data.uuid,
+        )) as Actor.ConfiguredInstance;
         if (droppedActor.type === 'vehicle') return;
         await actor.update({ 'system.driver.id': data.uuid });
       }
@@ -749,9 +756,12 @@ export default class SwadeCoreHooks {
     jquery.find('input[name="initiative"]').parents('div.form-group').remove();
 
     //grab cards and sort them
-    const deck = game.cards!.get(game.settings.get('swade', 'actionDeck'), {
-      strict: true,
-    });
+    const deck: SwadeCards = game.cards.get(
+      game.settings.get('swade', 'actionDeck'),
+      {
+        strict: true,
+      },
+    );
 
     const cards = Array.from(deck.cards.values()).sort((a: Card, b: Card) => {
       const cardA = a.value!;
