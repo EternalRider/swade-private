@@ -234,7 +234,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
       const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
       game.tooltip.activate(ev.currentTarget, {
-        text: await TextEditor.enrichHTML(content, { async: true }),
+        text: await TextEditor.enrichHTML(content, {
+          secrets: this.item.isOwner,
+        }),
       });
     });
 
@@ -291,7 +293,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         effect,
         'enrichedDescription',
         await TextEditor.enrichHTML(effect.description, {
-          async: true,
           secrets: this.item.isOwner,
         }),
       );
@@ -372,6 +373,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [key, power] of data.embeddedPowers!) {
+        power.enrichedDescription = await this.#enrichText(
+          power.system.description,
+        );
+      }
       data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
@@ -682,8 +689,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
   async #enrichText(text: string): Promise<string> {
     const enriched = await TextEditor.enrichHTML(text, {
-      async: true,
-      secrets: this.isEditable,
+      relativeTo: this.item,
+      rollData: this.item.getRollData(),
+      secrets: this.document.isOwner,
     });
     return enriched;
   }

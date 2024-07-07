@@ -417,7 +417,7 @@ export default class CharacterSheet extends ActorSheet {
       const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
         relativeTo: item,
         rollData: item.getRollData(),
-        secrets: this.isEditable,
+        secrets: this.document.isOwner,
       };
 
       const enrichedDescription = await TextEditor.enrichHTML(
@@ -980,7 +980,7 @@ export default class CharacterSheet extends ActorSheet {
     return TextEditor.enrichHTML(text, {
       relativeTo: this.actor,
       rollData: this.actor.getRollData(),
-      secrets: this.options.editable && this.document.isOwner,
+      secrets: this.document.isOwner,
     });
   }
 
