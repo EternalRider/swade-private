@@ -1,8 +1,6 @@
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import IDriverData from '../../interfaces/DriverData.interface';
-import { SWADE } from '../config';
 import { constants } from '../constants';
-import SwadeActor from '../documents/actor/SwadeActor';
+import type SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
@@ -132,17 +130,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   override async getData() {
     const data = await super.getData();
 
-    data.config = SWADE;
-    data.itemsByType = {};
     data.opSkills = this._buildOpSkillList();
-    for (const item of data.items) {
-      let list = data.itemsByType[item.type];
-      if (!list) {
-        list = [];
-        data.itemsByType[item.type] = list;
-      }
-      list.push(item);
-    }
 
     //Prepare inventory
     data.inventory = this._determineCargo().sort(
@@ -211,7 +199,10 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
+  protected _handleDropModifierKeys(
+    event: DragEvent,
+    item: foundry.documents.BaseItem.ConstructorData,
+  ) {
     const equipKey = 'system.equipStatus';
     const isEquippable =
       item.type === 'gear' &&
