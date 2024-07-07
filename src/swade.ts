@@ -204,11 +204,8 @@ Hooks.once('init', () => {
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
 
-  //@ts-expect-error Types don't properly recognize dotnotation
+  // @ts-expect-error Yes we're calling a protected function
   JournalTextPageSheet._converter.setOption('tables', true);
-
-  //@ts-expect-error Revist once types have caught up
-  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
   //register custom Handlebars helpers
   registerCustomHelpers();
@@ -268,6 +265,7 @@ Hooks.once('init', () => {
   CONFIG.Dice.TraitRoll = TraitRoll;
   CONFIG.Dice.DamageRoll = DamageRoll;
 
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);

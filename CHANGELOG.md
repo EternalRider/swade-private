@@ -22,11 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.0.3
+
+### Fixed
+
+- Continued to resolve deprecation warnings
+- Continued to improve internal typings
+
 ## 4.0.2
 
 ### Fixed
 
-- Resolved more deprecation warnings. **by @jpmeehan5**
+- Resolved more deprecation warnings.
 - Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
 - Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
 - Tweaks now save properly. (#1171) **by @jpmeehan5**

@@ -1,7 +1,7 @@
 import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.d.mts';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
-import { AuraPointSource } from './module/canvas/AuraPointSource';
+// import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
@@ -19,12 +19,19 @@ declare global {
 
   interface CONFIG {
     SWADE: SwadeConfig;
-    Canvas: {
-      auras: {
-        collection: foundry.utils.Collection<AuraPointSource>;
-        filter: VisualEffectsMaskingFilter;
-      };
-    };
+    // Canvas: {
+    //   auras: {
+    //     collection: foundry.utils.Collection<AuraPointSource>;
+    //     filter: VisualEffectsMaskingFilter;
+    //   };
+    // };
+  }
+
+  namespace CONFIG {
+    interface SpecialStatusEffects extends CONFIG.DefaultSpecialStatusEffects {
+      COLDBODIED: string;
+      INCAPACITATED: string;
+    }
   }
 }
 
