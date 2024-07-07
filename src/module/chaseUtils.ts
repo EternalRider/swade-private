@@ -198,7 +198,7 @@ async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
     for (let x = 0; x < columns; x++) {
       // Set the tile data for size and position. Use a flag to identify the tile as a Chase card for deletion later.
       const tData = {
-        img: cardsDrawn[counter].currentFace?.img,
+        texture: { src: cardsDrawn[counter].currentFace?.img },
         width: cardWidth,
         height: cardHeight,
         x: positionX,

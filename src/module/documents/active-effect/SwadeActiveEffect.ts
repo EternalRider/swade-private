@@ -1,5 +1,4 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -432,7 +431,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _onUpdate(
-    changed: PropertiesToSource<ActiveEffectDataProperties>,
+    changed: foundry.documents.BaseActiveEffect.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {
@@ -457,9 +456,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preUpdate(
-    changed: foundry.documents.BaseActiveEffect.ConstructorData,
+    changed: foundry.documents.BaseActiveEffect.UpdateData,
     options: DocumentModificationOptions,
-    user: BaseUser,
+    user: User.ConfiguredInstance,
   ) {
     super._preUpdate(changed, options, user);
     //return early if the parent isn't an actor or we're not actually affecting items
@@ -470,7 +469,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override async _preDelete(
     options: DocumentModificationOptions,
-    user: BaseUser,
+    user: User.ConfiguredInstance,
   ) {
     super._preDelete(options, user);
     const parent = this.parent;
@@ -490,9 +489,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preCreate(
-    data: DeepPartial<BaseActiveEffect.Properties>,
+    data: foundry.documents.BaseActiveEffect.ConstructorData,
     options: DocumentModificationOptions,
-    user: BaseUser,
+    user: User.ConfiguredInstance,
   ): Promise<void> {
     super._preCreate(data, options, user);
     if (!data.img) {
@@ -551,7 +550,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override _onCreate(
-    data: PropertiesToSource<ActiveEffectDataProperties>,
+    data: foundry.documents.BaseActiveEffect.ConstructorData,
     options: DocumentModificationOptions,
     userId: string,
   ): void {

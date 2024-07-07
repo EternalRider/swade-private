@@ -56,6 +56,11 @@ export interface SwadeGame {
   migrations: typeof migrations;
   effectCallbacks: Collection<StatusEffectCallback>;
   ready: boolean;
+  data: Record<
+    string,
+    | typeof foundry.abstract.TypeDataModel
+    | Record<string, typeof foundry.abstract.TypeDataModel>
+  >;
   fields: typeof fields;
   SwadeTour: typeof SwadeTour;
 }

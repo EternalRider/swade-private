@@ -5,9 +5,9 @@ import { CommonActorData } from './common';
 const fields = foundry.data.fields;
 
 declare namespace NpcData {
-  interface Schema extends CommonActorData.Schema {
-    bennies: ReturnType<(typeof NpcData)['wildcardData']>['bennies'];
-    wounds: ReturnType<(typeof NpcData)['wildcardData']>['wounds'];
+  interface Schema
+    extends CommonActorData.Schema,
+      ReturnType<(typeof NpcData)['wildcardData']> {
     wildcard: foundry.data.fields.BooleanField<{ initial: false }>;
   }
 

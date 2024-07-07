@@ -355,7 +355,7 @@ export class CompendiumTOC extends Compendium<
   }
 
   protected _groupHindrances(
-    hindrances: StoredDocument<SwadeItem>[],
+    hindrances: StoredDocument<SwadeItem<'hindrance'>>[],
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
@@ -410,8 +410,10 @@ export class CompendiumTOC extends Compendium<
       }) as CompendiumGroup[];
   }
 
-  protected _groupEdges(edges: StoredDocument<SwadeItem>[]): CompendiumGroup[] {
-    const groups: Record<string, StoredDocument<SwadeItem>[]> = {};
+  protected _groupEdges(
+    edges: StoredDocument<SwadeItem<'edge'>>[],
+  ): CompendiumGroup[] {
+    const groups: Record<string, StoredDocument<SwadeItem<'edge'>>[]> = {};
     for (const edge of edges) {
       const cat: string = foundry.utils.getProperty(edge, 'system.category');
       if (!groups[cat]) groups[cat] = [];
@@ -561,6 +563,7 @@ export class CompendiumTOC extends Compendium<
   }
 
   private _actorIsWildcard(actor: ActorIndexEntry): boolean {
+    // eslint-disable-next-line deprecation/deprecation
     return actor.system?.wildcard || actor.data?.wildcard;
   }
 
@@ -657,5 +660,6 @@ type ActorIndexEntry = {
   };
   token: {
     img: string;
+    scale: number;
   };
 } & foundry.documents.BaseActor;

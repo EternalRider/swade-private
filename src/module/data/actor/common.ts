@@ -4,6 +4,7 @@ import {
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { SWADE } from '../../config';
+import type SwadeActor from '../../documents/actor/SwadeActor';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
 import { DiceField, DiceTrait } from '../common.interface';
 import { MappingField } from '../fields/MappingField';
@@ -226,10 +227,16 @@ declare namespace CommonActorData {
     advances: {
       list: Collection<Advance>;
     };
+    stats: {
+      speed: {
+        adjusted: number;
+      };
+    };
     details: {
       encumbrance: {
         max: number;
         value: number;
+        isEncumbered: boolean;
       };
     };
   }
@@ -241,7 +248,7 @@ class CommonActorData<
   DerivedData extends CommonActorData.DerivedData = CommonActorData.DerivedData,
 > extends foundry.abstract.TypeDataModel<
   Schema,
-  Actor.ConfiguredInstance,
+  SwadeActor,
   BaseData,
   DerivedData
 > {
@@ -403,7 +410,8 @@ class CommonActorData<
     return super.migrateData(source);
   }
 
-  override prepareBaseData() {
+  // specifying this to resolve depth issue
+  override prepareBaseData(this: CommonActorData) {
     for (const key in this.attributes) {
       const attribute = this.attributes[key];
       attribute.effects = new Array<RollModifier>();
@@ -443,7 +451,8 @@ class CommonActorData<
     };
   }
 
-  override prepareDerivedData() {
+  // specifying this to resolve depth issue
+  override prepareDerivedData(this: CommonActorData) {
     //die type bounding for attributes
     for (const key in this.attributes) {
       const attribute = this.attributes[key];
@@ -530,7 +539,11 @@ class CommonActorData<
     );
   }
 
-  getRollData(includeModifiers: boolean): Record<string, number | string> {
+  // specifying this to resolve depth issue
+  getRollData(
+    this: CommonActorData,
+    includeModifiers: boolean,
+  ): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
@@ -578,7 +591,8 @@ class CommonActorData<
     return out;
   }
 
-  async refreshBennies(notify = true) {
+  // specifying this to resolve depth issue
+  async refreshBennies(this: CommonActorData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
