@@ -19,7 +19,7 @@ export class Accordion {
   constructor(
     el: HTMLDetailsElement,
     contentSelector: string = '.content',
-    options: AccordionOptions,
+    options?: AccordionOptions,
   ) {
     this.options = { ...this.#defaultOptions, ...options };
     // Store the <details> element

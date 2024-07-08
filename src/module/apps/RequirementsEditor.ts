@@ -77,6 +77,7 @@ export class RequirementsEditor extends FormApplication<
       rankChoices: this.#getRankChoices(),
       dieChoices: this.#getDieChoices(),
       attributeChoices: this.#getAttributeChoices(),
+      combinatorChoices: this.#getCombinatorChoices(),
       slugPattern: SLUG_REGEX.source,
     });
   }
@@ -156,6 +157,13 @@ export class RequirementsEditor extends FormApplication<
       [constants.REQUIREMENT_TYPE.ANCESTRY]: 'SWADE.Ancestry',
       [constants.REQUIREMENT_TYPE.POWER]: 'TYPES.Item.power',
       [constants.REQUIREMENT_TYPE.OTHER]: 'SWADE.Requirements.Other',
+    };
+  }
+
+  #getCombinatorChoices(): Record<string,string> {
+    return { 
+      'and': 'SWADE.Requirements.And', 
+      'or': 'SWADE.Requirements.Or'
     };
   }
 

@@ -28,13 +28,11 @@
           <div class='right'>
             <label class='float-label'>
               <select name='system.actions.additional.{{id}}.type'>
-                {{#select action.type}}
-                  {{selectOptions
-                    @root.actionTypes
-                    selected=action.type
-                    localize=true
-                  }}
-                {{/select}}
+                {{selectOptions
+                  @root.actionTypes
+                  selected=action.type
+                  localize=true
+                }}
               </select>
               <span>{{localize 'Type'}}</span>
             </label>

@@ -22,11 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.0.3
+
+### Fixed
+
+- Continued to resolve deprecation warnings
+- Continued to improve internal typings
+- Chase tiles now their images. (#1177) **by @jpmeehan5**
+- You can now open arcane devices with embedded powers. (#1178) **by @jpmeehan5**
+- The edit and delete buttons now show for vehicle mods and weapons again. (#1179) **by @jpmeehan5**
+
 ## 4.0.2
 
 ### Fixed
 
-- Resolved more deprecation warnings. **by @jpmeehan5**
+- Resolved more deprecation warnings.
 - Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
 - Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
 - Tweaks now save properly. (#1171) **by @jpmeehan5**

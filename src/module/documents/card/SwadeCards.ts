@@ -1,4 +1,4 @@
-import { CardDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/cardData';
+import { StoredDocument } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -28,8 +28,8 @@ export default class SwadeCards extends Cards {
     const drawn = this._drawCards(number, how) as StoredDocument<Card>[];
 
     // Process the card data
-    const toCreate = new Array<Partial<CardDataSource>>();
-    const toUpdate = new Array<Partial<CardDataSource>>();
+    const toCreate = new Array<foundry.documents.BaseCard.ConstructorData>();
+    const toUpdate = new Array<foundry.documents.BaseCard.UpdateData>();
     const toDelete = new Array<string>();
     for (const card of drawn) {
       const createData = card.toObject();

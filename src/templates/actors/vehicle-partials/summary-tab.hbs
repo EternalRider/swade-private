@@ -117,9 +117,9 @@
       </header>
       <span class="quickaccess-list">
         <ol class="gear-list weapon-list">
-          {{#each itemsByType.weapon}}
+          {{#each itemsByType.weapon as |item|}}
             {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" item=this owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" item=item owner=../owner}}
             {{/if}}
           {{/each}}
         </ol>

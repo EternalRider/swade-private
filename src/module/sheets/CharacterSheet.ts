@@ -1,6 +1,11 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { AdditionalStats, Attribute, LinkedAttribute } from '../../globals';
+import { 
+  AdditionalStats, 
+  Attribute, 
+  DieSidesOption,
+  LinkedAttribute,  
+} from '../../globals';
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   AdditionalStat,
@@ -412,7 +417,7 @@ export default class CharacterSheet extends ActorSheet {
       const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
         relativeTo: item,
         rollData: item.getRollData(),
-        secrets: this.isEditable,
+        secrets: this.document.isOwner,
       };
 
       const enrichedDescription = await TextEditor.enrichHTML(
@@ -480,8 +485,8 @@ export default class CharacterSheet extends ActorSheet {
       },
       // Putting this at the end because of race condition for grandchild updates
       attributes: this.#getAttributesForDisplay(),
+      wealthDieTypes: this.#getWealthDieTypes(),
     };
-
     return { ...(await super.getData(options)), ...data };
   }
 
@@ -975,7 +980,7 @@ export default class CharacterSheet extends ActorSheet {
     return TextEditor.enrichHTML(text, {
       relativeTo: this.actor,
       rollData: this.actor.getRollData(),
-      secrets: this.options.editable && this.document.isOwner,
+      secrets: this.document.isOwner,
     });
   }
 
@@ -1136,6 +1141,13 @@ export default class CharacterSheet extends ActorSheet {
 
     return skills.sort((a, b) => a.label.localeCompare(b.label));
   }
+
+  #getWealthDieTypes(): DieSidesOption[] {
+    const options: DieSidesOption[] = util.getDieSidesRange(4,12)
+    options.unshift({ key: 0, label: 'SWADE.WealthDie.Broke.Label' });
+    return options;
+  }
+
 
   #setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [
@@ -1426,6 +1438,7 @@ interface SwadeActorSheetData extends OptionsPartial {
     permanent: SheetEffect[];
     favorite: SheetEffect[];
   };
+  wealthDieTypes: DieSidesOption[];
 }
 
 interface TraitDisplay {
