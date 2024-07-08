@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.1.0
+
+### Changed
+
+- Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
+
 ## 4.0.3
 
 ### Fixed
