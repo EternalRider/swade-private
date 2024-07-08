@@ -3,9 +3,7 @@
   <span class="form-fields">
     <input type="number" name="system.bonusDamageDice" min="1" max="10" value="{{item.system.bonusDamageDice}}" data-dtype="Number">
     <select name="system.bonusDamageDie" data-dtype="Number">
-      {{#select item.system.bonusDamageDie}}
-        {{> "systems/swade/templates/die-sides-options.hbs"}}
-      {{/select}}
+      {{selectOptions bonusDamageDieSideOptions selected=item.system.bonusDamageDie valueAttr='key' labelAttr='label'}}
     </select>
   </span>
 </div>

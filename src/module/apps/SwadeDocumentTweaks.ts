@@ -2,6 +2,7 @@ import { AdditionalStats } from '../../globals';
 import { AdditionalStat } from '../../interfaces/additional.interface';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { getDieSidesRange } from '../util';
 
 export default class SwadeDocumentTweaks extends FormApplication<
   FormApplicationOptions,
@@ -77,6 +78,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isVehicle: this.object.type === 'vehicle',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
       advanceTypes: this.#getAdvanceTypes(),
+      runningDieTypes: getDieSidesRange(1, 12),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.gridUnits,
         auras: this.object.auras,
@@ -97,7 +99,6 @@ export default class SwadeDocumentTweaks extends FormApplication<
         ],
       },
     };
-
     return foundry.utils.mergeObject(data, await super.getData(options));
   }
 

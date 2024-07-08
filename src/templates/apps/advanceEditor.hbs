@@ -3,9 +3,7 @@
     <label>{{localize 'Type'}}</label>
     <span class='form-fields'>
       <select name='type' data-dtype='Number'>
-        {{#select advance.type}}
-          {{selectOptions advanceTypes selected=advance.type localize=true}}
-        {{/select}}
+        {{selectOptions advanceTypes selected=advance.type localize=true}}
       </select>
     </span>
   </div>

@@ -9,7 +9,7 @@ export default class Benny extends foundry.dice.terms.DiceTerm {
 
   /** @override */
   override get isDeterministic(): boolean {
-    return true;
+    return false;
   }
 
   /** @override */

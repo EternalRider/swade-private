@@ -3,9 +3,7 @@
     <span class="arcane-skill-inputs form-group">
       <span class="form-fields text-center">
         <select name="system.arcaneSkillDie.sides" data-dtype="Number" class="text-center">
-          {{#select item.system.arcaneSkillDie.sides}}
-            {{> "systems/swade/templates/die-sides-options.hbs"}}
-          {{/select}}
+          {{selectOptions dieSideOptions selected=item.system.arcaneSkillDie.sides valueAttr='key' labelAttr='label'}}
         </select>
         <input 
           name="system.arcaneSkillDie.modifier" 
@@ -63,7 +61,7 @@
             </button>
           {{/if}}
           </div>
-          <div class="full-width">{{enrich value.system.description}}</div>
+          <div class="full-width">{{value.enrichedDescription}}</div>
         </span>
       </details>
     </li>

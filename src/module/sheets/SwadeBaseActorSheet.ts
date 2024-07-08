@@ -188,7 +188,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
         relativeTo: item,
         rollData: item.getRollData(),
-        secrets: this.options.editable && this.document.isOwner,
+        secrets: this.document.isOwner,
       };
 
       item.enrichedDescription = await TextEditor.enrichHTML(
