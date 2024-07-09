@@ -925,6 +925,9 @@ SWADE:
           unterstützt, Stichpunktlisten, Tabellen und ähnliches können also beliebig
           genutzt werden.
         Title: Aufwertungen
+    ERROR:
+      ActorCreatePermission: Diese Tour erfordert die Berechtigung, Akteure zu erstellen
+      SettingPermission: Diese Tour erfordert die Veränderung von Welteinstellungen
   RequiredCrew: Nötige Besatzung
   NumberOfDice:
     Hint: Anzahl Eigens.-Würfel, die für diese Aktion gewürfelt werden
