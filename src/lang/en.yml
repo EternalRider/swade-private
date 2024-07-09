@@ -22,6 +22,9 @@ SWADE:
   Running: Running
   RunningDie: Running Die
   RunningMod: Running Modifier
+  RunningHint:
+    Header: <strong>Total running distance.</strong>
+    Reminder: <p>Running during your turn incurs a -2 penalty to all your actions.</p>
   RollRun: '[Click] to roll the Running Die'
   Adv: Advances
   Rank: Rank
