@@ -1473,6 +1473,7 @@ TYPES:
     vehicle: Vehicle
   Item:
     weapon: Weapon
+    ancestry: Ancestry
     armor: Armor
     shield: Shield
     gear: Gear

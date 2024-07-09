@@ -781,7 +781,7 @@ class SwadeItem extends Item {
     user: BaseUser,
   ) {
     const canCreate = await super._preCreate(data, options, user);
-    if (canCreate === false) return false
+    if (canCreate === false) return false;
 
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {
@@ -835,9 +835,12 @@ class SwadeItem extends Item {
           item,
           'system.equipStatus',
         );
-        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
-          item.type,
-        );
+        const nonPhysGranter = [
+          'edge',
+          'ability',
+          'ancestry',
+          'hindrance',
+        ].includes(item.type);
         const shouldGrant =
           grantOn === constants.GRANT_ON.ADDED ||
           nonPhysGranter ||

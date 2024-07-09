@@ -1,5 +1,6 @@
 import { AbilityData } from './ability';
 import { ActionData } from './action';
+import { AncestryData } from './ancestry';
 import { ArmorData } from './armor';
 import { ConsumableData } from './consumable';
 import { EdgeData } from './edge';
@@ -13,6 +14,7 @@ import { WeaponData } from './weapon';
 export * as shims from './_shims';
 export { AbilityData } from './ability';
 export { ActionData } from './action';
+export { AncestryData } from './ancestry';
 export { ArmorData } from './armor';
 export * as base from './base';
 export { ConsumableData } from './consumable';
@@ -27,6 +29,7 @@ export { WeaponData } from './weapon';
 export const config = {
   ability: AbilityData,
   action: ActionData,
+  ancestry: AncestryData,
   armor: ArmorData,
   consumable: ConsumableData,
   edge: EdgeData,
@@ -43,6 +46,7 @@ declare global {
     Item: {
       ability: AbilityData;
       action: ActionData;
+      ancestry: AncestryData;
       armor: ArmorData;
       consumable: ConsumableData;
       edge: EdgeData;

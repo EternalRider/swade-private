@@ -26,11 +26,13 @@ export const itemDescription = () => ({
   }),
   ...additionalStats(),
 });
+
 export const physicalItem = () => ({
   quantity: new fields.NumberField({ initial: 1 }),
   weight: new fields.NumberField({ initial: 0 }),
   price: new fields.NumberField({ initial: 0 }),
 });
+
 export const arcaneDevice = () => ({
   isArcaneDevice: new fields.BooleanField(),
   arcaneSkillDie: new fields.SchemaField({
@@ -39,14 +41,17 @@ export const arcaneDevice = () => ({
   }),
   powerPoints: new fields.ObjectField({}),
 });
+
 export const equippable = () => ({
   equippable: new fields.BooleanField(),
   equipStatus: new fields.NumberField({ initial: 1 }),
 });
+
 export const vehicular = () => ({
   isVehicular: new fields.BooleanField(),
   mods: new fields.NumberField({ initial: 1 }),
 });
+
 export const actions = () => ({
   actions: new fields.SchemaField({
     trait: new fields.StringField({ initial: '' }),
@@ -98,13 +103,16 @@ export const actions = () => ({
     ),
   }),
 });
+
 export const bonusDamage = () => ({
   bonusDamageDie: makeDiceField(6),
   bonusDamageDice: new fields.NumberField({ initial: 1 }),
 });
+
 export const favorite = () => ({
   favorite: new fields.BooleanField(),
 });
+
 export const templates = () => ({
   templates: new fields.SchemaField({
     cone: new fields.BooleanField(),
@@ -114,16 +122,20 @@ export const templates = () => ({
     large: new fields.BooleanField(),
   }),
 });
+
 export const additionalStats = () => ({
   additionalStats: makeAdditionalStatsSchema(),
 });
+
 export const category = () => ({
   category: new fields.StringField({ initial: '' }),
 });
+
 export const grantEmbedded = () => ({
   ...grants(),
   grantOn: new fields.NumberField({ initial: constants.GRANT_ON.CARRIED }),
 });
+
 export const grants = () => ({
   grants: new fields.ArrayField(
     //TODO create schema field for item grants
