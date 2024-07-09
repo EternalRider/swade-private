@@ -13,6 +13,7 @@ import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import { SWADE } from './module/config';
+import { constants } from './module/constants';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
 import { DamageRoll } from './module/dice/DamageRoll';
@@ -60,6 +61,19 @@ import './swade.scss';
 /* ------------------------------------ */
 Hooks.once('init', () => {
   Logger.info(`Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`);
+
+  Object.defineProperty(constants.ABILITY_TYPE, 'ANCESTRY', {
+    get: () => {
+      foundry.utils.logCompatibilityWarning(
+        'The ancestry ability type has been deprecated in favor of the new ancestry Item',
+        {
+          since: '4.1',
+          until: '5.0',
+        },
+      );
+      return 'ancestry';
+    },
+  });
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
@@ -261,7 +275,6 @@ Hooks.once('init', () => {
   registerSWADETours();
 
   CONFIG.Dice.SwadeRoll = SwadeRoll;
-
   CONFIG.Dice.TraitRoll = TraitRoll;
   CONFIG.Dice.DamageRoll = DamageRoll;
 

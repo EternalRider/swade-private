@@ -167,6 +167,7 @@
     "Item": {
       "weapon": { "htmlFields": ["description"] },
       "armor": { "htmlFields": ["description"] },
+      "ancestry": { "htmlFields": ["description"] },
       "shield": { "htmlFields": ["description"] },
       "gear": { "htmlFields": ["description"] },
       "edge": { "htmlFields": ["description"] },

@@ -29,30 +29,6 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
-      <div class='form-group'>
-        <label>{{localize 'SWADE.Subtype'}}</label>
-        <span class='form-fields'>
-          <select name='system.subtype' {{disabled item.isOwned}}>
-            {{selectOptions abilitySubtypeOptions selected=item.system.subtype localize=true}}
-          </select>
-        </span>
-      </div>
-      {{#unless abilityConfig.isArchetype}}
-        <div class='form-group'>
-          <label for='{{item.uuid}}-grantsPowers'>
-            {{localize 'SWADE.GrantsPowers'}}
-          </label>
-          <span class='form-fields'>
-            <input
-              id='{{item.uuid}}-grantsPowers'
-              type='checkbox'
-              name='system.grantsPowers'
-              {{checked item.system.grantsPowers}}
-              data-dtype='Boolean'
-            />
-          </span>
-        </div>
-      {{/unless}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
     <section class='tab effects' data-group='main' data-tab='effects'>
