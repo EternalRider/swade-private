@@ -5,19 +5,17 @@ import {
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
 import { constants } from '../constants';
+import { CharacterData, NpcData } from '../data/actor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import { chunkArray, count } from '../util';
 import { SwadeRoll } from './SwadeRoll';
 import WildDie from './WildDie';
-import { CharacterData, NpcData } from '../data/actor';
 
 export class TraitRoll extends SwadeRoll<ActorRollData> {
   static async confirmCritfail(msg: SwadeChatMessage) {
     const label = game.i18n.localize('SWADE.Rolls.Critfail.ConfirmDie');
     const options = { critfailConfirmationRoll: true };
-    const roll = await new SwadeRoll(`1d6[${label}]`, {}, options).evaluate({
-      async: true,
-    });
+    const roll = await new SwadeRoll(`1d6[${label}]`, {}, options).evaluate();
     await game.dice3d?.showForRoll(
       roll,
       game.user,
@@ -101,11 +99,11 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
 
   override clone() {
     const cloned = super.clone();
-    if (cloned.terms[0] instanceof PoolTerm) {
+    if (cloned.terms[0] instanceof foundry.dice.terms.PoolTerm) {
       for (const poolPart of cloned.terms[0].rolls) {
         poolPart.terms.forEach((part, i, terms) => {
           if (
-            part instanceof Die &&
+            part instanceof foundry.dice.terms.Die &&
             part.flavor === game.i18n.localize('SWADE.WildDie')
           ) {
             terms[i] = new WildDie({ faces: part.faces });
@@ -154,8 +152,8 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
           adjustRoll = true;
           this.options['modifiers'].push(mod);
           this.terms.push(
-            new OperatorTerm({ operator: '+' }),
-            new StringTerm({
+            new foundry.dice.terms.OperatorTerm({ operator: '+' }),
+            new foundry.dice.terms.StringTerm({
               term: String(mod.value),
               options: { flavor: mod.label },
             }),
@@ -173,7 +171,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   protected _formatResultParts() {
     const result = new Array<RollPart>();
     if (!this.isValidTraitRoll) return result;
-    const pool = this.terms[0] as PoolTerm;
+    const pool = this.terms[0] as foundry.dice.terms.PoolTerm;
     //clone the terms and remove the pool;
     const mods = this.terms.slice(1);
     //cut up the modifiers and add them up into a single number
@@ -202,8 +200,10 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return result;
   }
 
-  #termIsPoolTerm(term: RollTerm): term is PoolTerm {
-    return term instanceof PoolTerm;
+  #termIsPoolTerm(
+    term: foundry.dice.terms.RollTerm,
+  ): term is foundry.dice.terms.PoolTerm {
+    return term instanceof foundry.dice.terms.PoolTerm;
   }
 }
 

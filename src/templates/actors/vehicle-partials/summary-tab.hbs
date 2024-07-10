@@ -26,7 +26,7 @@
         <span class="quickaccess-list">
           <ol class="gear-list items-list">
             {{#each itemsByType.edge}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=this owner=../owner}}
             {{/each}}
           </ol>
         </span>
@@ -45,7 +45,7 @@
         <span class="quickaccess-list">
           <ol class="gear-list items-list">
             {{#each itemsByType.hindrance}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=this owner=../owner}}
             {{/each}}
           </ol>
         </span>
@@ -64,7 +64,7 @@
         <span class="quickaccess-list">
           <ol class="gear-list items-list">
             {{#each itemsByType.ability}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=this owner=../owner}}
             {{/each}}
           </ol>
         </span>
@@ -98,7 +98,7 @@
         <ol class="gear-list items-list">
           {{#each itemsByType.gear}}
             {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-              {{> "systems/swade/templates/actors/partials/misc-card.hbs" owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=this owner=../owner}}
             {{/if}}
           {{/each}}
         </ol>
@@ -117,9 +117,9 @@
       </header>
       <span class="quickaccess-list">
         <ol class="gear-list weapon-list">
-          {{#each itemsByType.weapon}}
+          {{#each itemsByType.weapon as |item|}}
             {{#if (and system.isVehicular (gt system.equipStatus @root.equipStatusEnum.CARRIED))}}
-              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" owner=../owner}}
+              {{> "systems/swade/templates/actors/partials/weapon-card.hbs" item=item owner=../owner}}
             {{/if}}
           {{/each}}
         </ol>

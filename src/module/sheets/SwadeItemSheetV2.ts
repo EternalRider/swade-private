@@ -15,7 +15,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
-import { copyToClipboard } from '../util';
+import { copyToClipboard, getDieSidesRange } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = {
@@ -25,7 +25,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   };
   #effectCreateDropDown: ContextMenu;
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 600,
       height: 560,
@@ -54,7 +54,15 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   get hasInlineDelete(): boolean {
-    const types = ['edge', 'hindrance', 'ability', 'skill', 'power', 'action'];
+    const types = [
+      'edge',
+      'hindrance',
+      'ability',
+      'ancestry',
+      'skill',
+      'power',
+      'action',
+    ];
     return types.includes(this.type);
   }
 
@@ -132,7 +140,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     jquery.find('.action-delete').on('click', async (ev) => {
       const id = ev.currentTarget.dataset.actionId;
-      const action = getProperty(
+      const action = foundry.utils.getProperty(
         this.item,
         `system.actions.additional.${id}`,
       ) as ItemAction;
@@ -163,7 +171,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
       await Dialog.confirm({
         content: `<p class="text-center">${text}</p>`,
-        yes: async () => await this.#deleteEmbeddedDocument('power', id),
+        yes: async () => await this.#deleteEmbeddedDocument(id),
         defaultYes: false,
         options: foundry.utils.mergeObject(Dialog.defaultOptions, {
           classes: ['dialog', 'swade-app'],
@@ -203,11 +211,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       }
     });
 
-    jquery.find('.delete-embedded').on('click', async (ev) => {
-      const id = ev.currentTarget.dataset.id!;
-      await this.#deleteEmbeddedDocument('ability', id);
-    });
-
     jquery.find('.power .damage').on('click', (ev) => {
       const id = $(ev.currentTarget).parents('details').data('powerId');
       const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
@@ -224,7 +227,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       //return of there's no value to roll
       if (!statData.value) return;
       const roll = new Roll(`${statData.value}${modifier}`);
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
         flavor: `${this.item.name} - ${statData.label}`,
@@ -239,7 +242,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
       const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
       game.tooltip.activate(ev.currentTarget, {
-        text: await TextEditor.enrichHTML(content, { async: true }),
+        text: await TextEditor.enrichHTML(content, {
+          secrets: this.item.isOwner,
+        }),
       });
     });
 
@@ -280,23 +285,22 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isAncestryOrArchetype:
-          subtype === constants.ABILITY_TYPE.ANCESTRY ||
-          subtype === constants.ABILITY_TYPE.ARCHETYPE,
+        isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
-      data.embeddedAbilities = this.#prepareEmbeddedAbilities();
+      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
+        SWADE.abilitySheet,
+      );
     }
 
     if (this.item.canGrantItems) {
       data.grantedItems = await this.#getGrantedItems();
     }
-
+    data.grantOnTriggers = this.#getGrantOnTriggers();
     for (const effect of this.item.effects) {
       foundry.utils.setProperty(
         effect,
         'enrichedDescription',
         await TextEditor.enrichHTML(effect.description, {
-          async: true,
           secrets: this.item.isOwner,
         }),
       );
@@ -357,6 +361,20 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
+    if (
+      [
+        'consumable',
+        'gear',
+        'shield',
+        'armor',
+        'action',
+        'power',
+        'weapon',
+      ].includes(this.type)
+    ) {
+      data.bonusDamageDieSideOptions = getDieSidesRange(4, 12);
+    }
+
     if (this.item.type === 'hindrance') {
       data.severityOptions = {
         major: 'SWADE.HindranceSeverity.Major',
@@ -366,14 +384,30 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
 
     if (this.item.type === 'skill') {
-      data.dieSideOptions = this.#getDieSides();
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
+      data.wildDieSideOptions = getDieSidesRange(4, 12);
+      data.attributeOptions = this.#getAttributeOptions();
     }
 
     if (this.item.isArcaneDevice) {
       data.embeddedPowers = this.item.embeddedPowers;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [key, power] of data.embeddedPowers!) {
+        power.enrichedDescription = await this.#enrichText(
+          power.system.description,
+        );
+      }
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
+
     return foundry.utils.mergeObject(superData, data);
   }
 
@@ -495,8 +529,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (classList?.contains('properties')) {
       await this.#addGrantedItem(item);
-    } else if (classList?.contains('embedded')) {
-      await this.#addEmbedded(item);
     } else if (classList?.contains('powers')) {
       await this.#addArcaneDevicePower(item);
     } else if (classList?.contains('actions')) {
@@ -590,57 +622,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
   }
 
-  async #deleteEmbeddedDocument(type: 'power' | 'ability', id: string) {
-    const flagKey = {
-      ability: 'embeddedAbilities',
-      power: 'embeddedPowers',
-    };
-    const flagContent = this.item.getFlag('swade', flagKey[type]) ?? [];
+  async #deleteEmbeddedDocument(id: string) {
+    const flagContent = this.item.getFlag('swade', 'embeddedPowers') ?? [];
     const map = new Map(flagContent as Array<[string, ItemData]>);
     map.delete(id);
-    this.item.setFlag('swade', flagKey[type], Array.from(map));
-  }
-
-  /** @deprecated */
-  async #addEmbedded(_item: SwadeItem) {
-    const msg =
-      'Embedded Abilities have been deprecated in favor of Item Grants';
-    ui.notifications.warn(msg, { permanent: true, console: false });
-    foundry.utils.logCompatibilityWarning(msg, {
-      since: '3.1',
-      until: '4.0',
-      details:
-        'You can no longer add Embedded Abilities to items but they will still be able to be transferred to actors until the depreciation period ends.',
-    });
-  }
-
-  /** @deprecated */
-  #prepareEmbeddedAbilities(): Array<Record<string, unknown>> {
-    const collection = this.item.embeddedAbilities;
-    const items = new Array<Record<string, unknown>>();
-    for (const [key, val] of collection) {
-      const type =
-        val.type === 'ability'
-          ? game.i18n.localize('SWADE.SpecialAbility')
-          : game.i18n.localize(`TYPES.Item.${val.type}`);
-
-      let majorMinor = '';
-      if (val.type === 'hindrance') {
-        if (val.system.isMajor) {
-          majorMinor = game.i18n.localize('SWADE.Major');
-        } else {
-          majorMinor = game.i18n.localize('SWADE.Minor');
-        }
-      }
-      items.push({
-        id: key,
-        img: val.img,
-        name: val.name,
-        type,
-        majorMinor,
-      });
-    }
-    return items;
+    this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
   async #saveEmbeddedPowers(map: Map<string, ItemData<'power'>>) {
@@ -683,12 +669,26 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return enriched;
   }
 
+  #getGrantOnTriggers(): Record<number, string>[] {
+    const options = [
+      { key: 0, label: 'SWADE.ItemEquipStatus.Added' },
+      { key: 1, label: 'SWADE.ItemEquipStatus.Carried' },
+      { key: 2, label: 'SWADE.ItemEquipStatus.Readied' },
+    ];
+    return this.item.type === 'consumable' ? options.slice(0, 2) : options;
+  }
+  #getAbilitySubtypeOptions(
+    abilityLocalization: typeof SWADE.abilitySheet,
+  ): Record<string, string> {
+    return {
+      special: abilityLocalization.special.dropdown,
+      archetype: abilityLocalization.archetype.dropdown,
+    };
+  }
   #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case constants.ABILITY_TYPE.ANCESTRY:
-          return SWADE.abilitySheet.ancestry.dropdown;
         case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
@@ -698,10 +698,21 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return `TYPES.Item.${this.type}`;
   }
 
+  #getAttributeOptions(): Record<string, string> {
+    return {
+      agility: 'SWADE.AttrAgi',
+      smarts: 'SWADE.AttrSma',
+      spirit: 'SWADE.AttrSpr',
+      strength: 'SWADE.AttrStr',
+      vigor: 'SWADE.AttrVig',
+      '': '',
+    };
+  }
   async #enrichText(text: string): Promise<string> {
     const enriched = await TextEditor.enrichHTML(text, {
-      async: true,
-      secrets: this.isEditable,
+      relativeTo: this.item,
+      rollData: this.item.getRollData(),
+      secrets: this.document.isOwner,
     });
     return enriched;
   }
@@ -787,7 +798,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     doc: SwadeActiveEffect,
     toggle: string,
   ): Record<string, unknown> {
-    const oldVal = !!getProperty(doc, toggle);
+    const oldVal = !!foundry.utils.getProperty(doc, toggle);
     return { [toggle]: !oldVal };
   }
 
@@ -808,26 +819,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       '75/150/300',
       '300/600/1200',
     ];
-  }
-
-  #getDieSides(): DieSidesOption[] {
-    const options: DieSidesOption[] = [
-      { key: 4, label: 'd4' },
-      { key: 6, label: 'd6' },
-      { key: 8, label: 'd8' },
-      { key: 10, label: 'd10' },
-      { key: 12, label: 'd12' },
-      { key: 14, label: 'd12+1' },
-      { key: 16, label: 'd12+2' },
-      { key: 18, label: 'd12+3' },
-      { key: 20, label: 'd12+4' },
-    ];
-
-    if (this.item.parent?.type === 'npc') {
-      options.push({ key: 22, label: 'd12+5' }, { key: 24, label: 'd12+6' });
-    }
-
-    return options;
   }
 
   #equipStatusOptions(): Record<number, string> {
@@ -913,21 +904,25 @@ interface SwadeItemSheetData extends OptionsPartial {
   trademarkWeaponOptions?: Record<number, string>;
   reloadTypeOptions?: Record<number, string>;
   embeddedPowers?: Map<string, ItemData<'power'>>;
-  embeddedAbilities?: Array<Record<string, unknown>>;
   ammoList?: string[];
   ammoLoaded?: string;
   ppReload?: boolean;
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isAncestryOrArchetype: boolean;
+    isArchetype: boolean;
   };
+  abilitySubtypeOptions: Record<string, string>;
   dieSides;
   subtypes?: Record<string, string>;
   grantedItems?: ItemGrant[];
   severityOptions?: Record<string, string>;
   rangeTypeOptions?: Record<number, string>;
+  grantOnTriggers?: Record<number, string>[];
+  attributeOptions?: Record<string, string>;
   dieSideOptions?: DieSidesOption[];
+  wildDieSideOptions?: DieSidesOption[];
+  bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
 type OptionsPartial = Partial<DocumentSheetOptions<Item>>;

@@ -1,39 +1,59 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
+import { constants } from '../../constants';
+import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
+import * as migrations from './_migration';
+import * as quarantine from './_quarantine';
+import * as shims from './_shims';
+import { SwadePhysicalItemData } from './base';
 import {
   actions,
   arcaneDevice,
   bonusDamage,
   category,
-  choiceSets,
   equippable,
   favorite,
   grantEmbedded,
-  itemDescription,
-  physicalItem,
 } from './common';
-import * as migrations from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
-import { constants } from '../../constants';
-import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
+import {
+  Actions,
+  ArcaneDevice,
+  BonusDamage,
+  Category,
+  Equippable,
+  Favorite,
+  GrantEmbedded,
+} from './item-common.interface';
 
-export interface ShieldData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof ShieldData)['defineSchema']>
-  > {}
+declare namespace ShieldData {
+  interface Schema
+    extends SwadePhysicalItemData.Schema,
+      Equippable,
+      ArcaneDevice,
+      Actions,
+      BonusDamage,
+      Favorite,
+      Category,
+      GrantEmbedded {
+    minStr: foundry.data.fields.StringField<{ initial: '' }>;
+    parry: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+    cover: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
+  }
+  interface BaseData extends SwadePhysicalItemData.BaseData {}
+  interface DerivedData extends SwadePhysicalItemData.DerivedData {}
+}
 
-export class ShieldData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof ShieldData)['defineSchema']>
-  >,
-  Item
+class ShieldData extends SwadePhysicalItemData<
+  ShieldData.Schema,
+  ShieldData.BaseData,
+  ShieldData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): ShieldData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
-      ...physicalItem(),
+      ...super.defineSchema(),
       ...equippable(),
       ...arcaneDevice(),
       ...actions(),
@@ -41,7 +61,6 @@ export class ShieldData extends foundry.abstract.TypeDataModel<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      ...choiceSets(),
       minStr: new fields.StringField({ initial: '' }),
       parry: new fields.NumberField({ initial: 0, integer: true }),
       cover: new fields.NumberField({ initial: 0, integer: true }),
@@ -74,12 +93,8 @@ export class ShieldData extends foundry.abstract.TypeDataModel<
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  get isPhysicalItem() {
-    return true;
-  }
-
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichOptions>,
+    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     if (this.isReadied) {
@@ -116,4 +131,17 @@ export class ShieldData extends foundry.abstract.TypeDataModel<
     );
     return chips;
   }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    if (this.parent?.actor?.type === 'npc') {
+      this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
+    }
+  }
 }
+
+export { ShieldData };

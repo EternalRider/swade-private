@@ -1,36 +1,47 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
-import {
-  additionalStats,
-  category,
-  choiceSets,
-  favorite,
-  grants,
-  itemDescription,
-} from './common';
 import * as migrations from './_migration';
+import { SwadeBaseItemData } from './base';
+import { category, favorite, grants } from './common';
+import {
+  Category,
+  ChoicesType,
+  Favorite,
+  Grants,
+} from './item-common.interface';
 
-export interface AbilityData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof AbilityData)['defineSchema']>
-  > {}
+declare namespace AbilityData {
+  interface Schema
+    extends SwadeBaseItemData.Schema,
+      Favorite,
+      Category,
+      Grants {
+    subtype: foundry.data.fields.StringField<{
+      initial: typeof constants.ABILITY_TYPE.SPECIAL;
+      choices: ChoicesType<typeof constants.ABILITY_TYPE>;
+      textSearch: true;
+    }>;
+    grantsPowers: foundry.data.fields.BooleanField;
+  }
+  interface BaseData extends SwadeBaseItemData.BaseData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+}
 
-export class AbilityData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof AbilityData)['defineSchema']>
-  >,
-  Item
+class AbilityData extends SwadeBaseItemData<
+  AbilityData.Schema,
+  AbilityData.BaseData,
+  AbilityData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): AbilityData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
+      ...super.defineSchema(),
       ...favorite(),
       ...category(),
       ...grants(),
-      ...additionalStats(),
-      ...choiceSets(),
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
@@ -53,4 +64,25 @@ export class AbilityData extends foundry.abstract.TypeDataModel<
   get canGrantItems() {
     return true;
   }
+
+  protected override async _preCreate(
+    data: foundry.documents.BaseItem.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(data, options, user);
+    //Stop Ancestries/Archetypes from being added to the actor as an item if the actor already has one
+    const subType = this.subtype;
+    if (
+      subType === constants.ABILITY_TYPE.ARCHETYPE &&
+      !!this.parent.actor?.archetype
+    ) {
+      ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+        localize: true,
+      });
+      return false;
+    }
+  }
 }
+
+export { AbilityData };

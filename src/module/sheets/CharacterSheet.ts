@@ -1,6 +1,11 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { AdditionalStats, Attribute, LinkedAttribute } from '../../globals';
+import { 
+  AdditionalStats, 
+  Attribute, 
+  DieSidesOption,
+  LinkedAttribute,  
+} from '../../globals';
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   AdditionalStat,
@@ -207,12 +212,15 @@ export default class CharacterSheet extends ActorSheet {
 
     jquery.find('.armor-display').on('click', () => {
       const armorPropertyPath = 'system.stats.toughness.armor';
-      const armorvalue = getProperty(this.actor, armorPropertyPath);
+      const armorValue = foundry.utils.getProperty(
+        this.actor,
+        armorPropertyPath,
+      );
       const label = game.i18n.localize('SWADE.Armor');
       const template = `
       <form><div class="form-group">
         <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
-        <input name="modifier" value="${armorvalue}" type="number"/>
+        <input name="modifier" value="${armorValue}" type="number"/>
       </div></form>`;
 
       new Dialog({
@@ -240,7 +248,10 @@ export default class CharacterSheet extends ActorSheet {
     });
     jquery.find('.parry-display').on('click', () => {
       const parryPropertyPath = 'system.stats.parry.shield';
-      const parryMod = getProperty(this.actor, parryPropertyPath) as number;
+      const parryMod = foundry.utils.getProperty(
+        this.actor,
+        parryPropertyPath,
+      ) as number;
       const label = game.i18n.localize('SWADE.ShieldBonus');
       const template = `
       <form><div class="form-group">
@@ -293,7 +304,7 @@ export default class CharacterSheet extends ActorSheet {
         `${statData.value}${modifier}`,
         this.actor.getRollData(),
       );
-      await roll.evaluate({ async: true });
+      await roll.evaluate();
       await roll.toMessage({
         speaker: ChatMessage.getSpeaker(),
         flavor: statData.label,
@@ -372,7 +383,8 @@ export default class CharacterSheet extends ActorSheet {
     for (const item of items) {
       // Basic template rendering data
       const system = item.system;
-      const itemActions = getProperty(system, 'actions.additional') ?? {};
+      const itemActions =
+        foundry.utils.getProperty(system, 'actions.additional') ?? {};
       const actions = new Array<any>();
 
       for (const action in itemActions) {
@@ -383,10 +395,10 @@ export default class CharacterSheet extends ActorSheet {
         });
       }
       const hasDamage =
-        !!getProperty(system, 'damage') ||
+        !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
       const hasTraitRoll =
-        !!getProperty(system, 'actions.trait') ||
+        !!foundry.utils.getProperty(system, 'actions.trait') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.TRAIT);
       const hasMacros = actions.some(
         (a) => a.type === constants.ACTION_TYPE.MACRO,
@@ -402,12 +414,34 @@ export default class CharacterSheet extends ActorSheet {
         system.reloadType !== constants.RELOAD_TYPE.NONE &&
         system.reloadType !== constants.RELOAD_TYPE.SELF;
 
+      const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
+        relativeTo: item,
+        rollData: item.getRollData(),
+        secrets: this.document.isOwner,
+      };
+
+      const enrichedDescription = await TextEditor.enrichHTML(
+        item.system.description,
+        itemEnrichmentOptions,
+      );
+
+      const enrichedNotes = await TextEditor.enrichHTML(
+        item.system.notes,
+        itemEnrichmentOptions,
+      );
+
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
       foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
       foundry.utils.setProperty(item, 'hasMacros', hasMacros);
+      foundry.utils.setProperty(
+        item,
+        'enrichedDescription',
+        enrichedDescription,
+      );
+      foundry.utils.setProperty(item, 'enrichedNotes', enrichedNotes);
       if (item.type === 'power')
         foundry.utils.setProperty(item, 'powerPoints', item.powerPointObject);
     }
@@ -415,7 +449,7 @@ export default class CharacterSheet extends ActorSheet {
     const itemTypes: Record<string, SwadeItem[]> = {};
     for (const item of items) {
       const type = item.type;
-      if (!itemTypes[type]) itemTypes[type] = [];
+      itemTypes[type] ??= [];
       itemTypes[type].push(item);
     }
 
@@ -447,12 +481,12 @@ export default class CharacterSheet extends ActorSheet {
       },
       advances: {
         expanded: this.actor.system.advances.mode === 'expanded',
-        list: this.#getAdvances(),
+        list: await this.#getAdvances(),
       },
       // Putting this at the end because of race condition for grandchild updates
       attributes: this.#getAttributesForDisplay(),
+      wealthDieTypes: this.#getWealthDieTypes(),
     };
-
     return { ...(await super.getData(options)), ...data };
   }
 
@@ -506,59 +540,7 @@ export default class CharacterSheet extends ActorSheet {
       this._handleDropModifierKeys(event, itemData);
     }
 
-    //process embedded documents, if any exist
-    if (item.embeddedAbilities.size > 0) {
-      await this._handleEmbeddedAbilities(item);
-    }
-
     return this._onDropItemCreate(itemData);
-  }
-
-  protected async _handleEmbeddedAbilities(item: SwadeItem) {
-    //check if it's the proper type and subtype
-    if (item.type !== 'ability') return;
-    const subType = item.system.subtype;
-    if (subType === 'special') return;
-    const map = item.embeddedAbilities;
-    const creationData = new Array<any>();
-    const duplicates = new Array<{ type: string; name: string }>();
-    for (const entry of map.values()) {
-      const existingItems = this.actor.items.filter(
-        (i) => i.type === entry.type && i.name === entry.name,
-      );
-      if (existingItems.length > 0) {
-        duplicates.push({
-          type: game.i18n.localize(`TYPES.Item.${entry.type}`),
-          name: entry.name,
-        });
-        entry.name += ` (${item.name})`;
-      }
-      creationData.push(entry);
-    }
-    if (creationData.length > 0) {
-      await this.actor.createEmbeddedDocuments('Item', creationData, {
-        //@ts-expect-error Normally the flag is a boolean
-        renderSheet: null,
-      });
-    }
-    if (duplicates.length > 0) {
-      Dialog.prompt({
-        title: game.i18n.localize('SWADE.Duplicates'),
-        rejectClose: false,
-        content: await renderTemplate(
-          '/systems/swade/templates/apps/duplicate-items-dialog.hbs',
-          {
-            duplicates: duplicates.sort((a, b) => a.type.localeCompare(b.type)),
-            bodyText: game.i18n.format('SWADE.DuplicateItemsBodyText', {
-              type: game.i18n.localize(SWADE.abilitySheet[subType].dropdown),
-              name: item.name,
-              target: this.actor.name,
-            }),
-          },
-        ),
-        callback: () => {},
-      });
-    }
   }
 
   protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
@@ -598,7 +580,7 @@ export default class CharacterSheet extends ActorSheet {
     doc: SwadeItem | SwadeActiveEffect,
     toggle: string,
   ): Record<string, boolean> {
-    const oldVal = !!getProperty(doc, toggle);
+    const oldVal = !!foundry.utils.getProperty(doc, toggle);
     return { [toggle]: !oldVal };
   }
 
@@ -687,7 +669,7 @@ export default class CharacterSheet extends ActorSheet {
       const val: SheetEffect = {
         id: effect.id!,
         name: effect.name,
-        icon: effect.icon,
+        img: effect.img,
         disabled: effect.disabled,
         description: effect.description,
         favorite: effect.getFlag('swade', 'favorite') ?? false,
@@ -747,7 +729,7 @@ export default class CharacterSheet extends ActorSheet {
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
       let modifier = Math.ceil(parseInt(ppToAdjust, 10) / 2);
       modifier = Math.min(modifier * -1, modifier);
-      const actionObj = getProperty(
+      const actionObj = foundry.utils.getProperty(
         item,
         `system.actions.additional.${action}.traitOverride`,
       ) as ItemAction;
@@ -765,9 +747,10 @@ export default class CharacterSheet extends ActorSheet {
       //handle Power Item Card PP adjustment
       const adjustment = button.getAttribute('data-adjust') as string;
       const power = this.actor.items.get(itemId, { strict: true });
-      const arcane = getProperty(power, 'system.arcane') || 'general';
+      const arcane =
+        foundry.utils.getProperty(power, 'system.arcane') || 'general';
       const key = `system.powerPoints.${arcane}.value`;
-      let newPP = getProperty(this.actor, key) as number;
+      let newPP = foundry.utils.getProperty(this.actor, key) as number;
       if (adjustment === 'plus') {
         newPP += parseInt(ppToAdjust, 10);
       } else if (adjustment === 'minus') {
@@ -779,7 +762,7 @@ export default class CharacterSheet extends ActorSheet {
       const adjustment = button.getAttribute('data-adjust') as string;
       const item = this.actor.items.get(itemId)!;
       const key = 'system.powerPoints.value';
-      let newPP = getProperty(item, key);
+      let newPP = foundry.utils.getProperty(item, key);
       if (adjustment === 'plus') {
         newPP += parseInt(arcaneDevicePPToAdjust, 10);
       } else if (adjustment === 'minus') {
@@ -843,20 +826,17 @@ export default class CharacterSheet extends ActorSheet {
     const value = input.value;
     if (['+', '-'].includes(value[0])) {
       const delta = parseInt(value, 10);
-      input.value = getProperty(this.actor, input.name) + delta;
+      input.value = foundry.utils.getProperty(this.actor, input.name) + delta;
     } else if (value[0] === '=') {
       input.value = value.slice(1);
     }
   }
 
   protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
-    // Get the key from the target name
-    const id = ev.target.dataset.id as string;
     const key = ev.target.dataset.key as string;
-    const data = util.getStatusEffectDataById(id);
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    await this.actor.toggleActiveEffect(data);
+    await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
   protected async _handleCounterAdjust(ev: MouseEvent) {
@@ -976,11 +956,12 @@ export default class CharacterSheet extends ActorSheet {
     });
   }
 
-  #getAdvances() {
+  async #getAdvances() {
     if (this.actor.type === 'vehicle') return [];
     const retVal = new Array<{ rank: string; list: Advance[] }>();
     const advances = this.actor.system.advances.list;
     for (const advance of advances) {
+      advance.enrichedNotes = await this.#enrichText(advance.notes);
       const sort = advance.sort;
       const rankIndex = util.getRankFromAdvance(advance.sort);
       const rank = util.getRankFromAdvanceAsString(sort);
@@ -997,8 +978,9 @@ export default class CharacterSheet extends ActorSheet {
 
   async #enrichText(text: string) {
     return TextEditor.enrichHTML(text, {
-      async: true,
-      secrets: this.options.editable,
+      relativeTo: this.actor,
+      rollData: this.actor.getRollData(),
+      secrets: this.document.isOwner,
     });
   }
 
@@ -1159,6 +1141,13 @@ export default class CharacterSheet extends ActorSheet {
 
     return skills.sort((a, b) => a.label.localeCompare(b.label));
   }
+
+  #getWealthDieTypes(): DieSidesOption[] {
+    const options: DieSidesOption[] = util.getDieSidesRange(4,12)
+    options.unshift({ key: 0, label: 'SWADE.WealthDie.Broke.Label' });
+    return options;
+  }
+
 
   #setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [
@@ -1380,7 +1369,7 @@ export default class CharacterSheet extends ActorSheet {
 
 interface SheetEffect {
   id: string;
-  icon: string | undefined | null;
+  img: string | undefined | null;
   description: string;
   disabled: boolean;
   favorite: boolean;
@@ -1390,7 +1379,7 @@ interface SheetEffect {
     id: string;
   };
   name: string;
-  tooltip: string;
+  tooltip?: string;
   duration?: {
     expiration: number; // constants.STATUS_EFFECT_EXPIRATION
     rounds: number;
@@ -1449,6 +1438,7 @@ interface SwadeActorSheetData extends OptionsPartial {
     permanent: SheetEffect[];
     favorite: SheetEffect[];
   };
+  wealthDieTypes: DieSidesOption[];
 }
 
 interface TraitDisplay {

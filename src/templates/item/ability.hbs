@@ -20,11 +20,6 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    {{#if abilityConfig.isAncestryOrArchetype}}
-      <a class='item' data-tab='embedded' data-group='main'>
-        {{localize abilityConfig.abilityHeader}}
-      </a>
-    {{/if}}
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
@@ -38,21 +33,11 @@
         <label>{{localize 'SWADE.Subtype'}}</label>
         <span class='form-fields'>
           <select name='system.subtype' {{disabled item.isOwned}}>
-            {{#select item.system.subtype}}
-              <option value='special'>{{localize
-                  abilityConfig.localization.special.dropdown
-                }}</option>
-              <option value='ancestry'>{{localize
-                  abilityConfig.localization.ancestry.dropdown
-                }}</option>
-              <option value='archetype'>{{localize
-                  abilityConfig.localization.archetype.dropdown
-                }}</option>
-            {{/select}}
+            {{selectOptions abilitySubtypeOptions selected=item.system.subtype localize=true}}
           </select>
         </span>
       </div>
-      {{#unless abilityConfig.isAncestryOrArchetype}}
+      {{#unless abilityConfig.isArchetype}}
         <div class='form-group'>
           <label for='{{item.uuid}}-grantsPowers'>
             {{localize 'SWADE.GrantsPowers'}}
@@ -70,36 +55,6 @@
       {{/unless}}
       {{> 'systems/swade/templates/item/partials/grants.hbs'}}
     </section>
-    {{#if abilityConfig.isAncestryOrArchetype}}
-      <section class='tab embedded' data-group='main' data-tab='embedded'>
-          <p class='text-center'>
-            {{{ localize
-              'SWADE.EmptyAncestralAbilitiesHint'
-              ancestry=(localize abilityConfig.localization.ancestry.dropdown)
-              archetype=(localize abilityConfig.localization.archetype.dropdown)
-            }}}
-          </p>
-        <ol class='effect-list unmarked-list'>
-          {{#each embeddedAbilities}}
-            <li>
-              <img class='effect-icon' src='{{img}}' alt='{{type}}' />
-              <span class='effect-label'>{{type}}
-                -
-                {{name}}
-                {{majorMinor}}</span>
-              <span class='effect-controls'>
-                {{#unless item.isOwned}}
-                  <a class='delete-embedded' data-Id='{{id}}'>
-                    <i class='fas fa-trash'></i>
-                  </a>
-                {{/unless}}
-              </span>
-            </li>
-          {{/each}}
-        </ol>
-
-      </section>
-    {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>
       {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
     </section>

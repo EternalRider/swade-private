@@ -77,7 +77,7 @@
   </header>
   <ul class="feature-list">
     {{#each itemTypes.ability}}
-      {{#if (eq system.subtype "special")}}
+      {{#if (ne system.subtype "archetype")}}
         <li class='edge-hindrance item' data-item-id='{{id}}'>
           <details data-collapsible-id='{{concat type "-" id}}'>
             <summary class="feature-header">

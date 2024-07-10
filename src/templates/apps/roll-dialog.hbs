@@ -44,7 +44,7 @@
           <input
             type='checkbox'
             data-index={{@index}}
-            name='modifiers.{{@index}}.ignore'
+            name='modifiers.{{@index}}.active'
             {{checked (not ignore)}}
           />
         </li>
@@ -113,11 +113,7 @@
   <div class='form-group'>
     <label>{{localize 'SWADE.RollMode'}}</label>
     <select id='rollMode' name='rollMode'>
-      {{#select rollMode}}
-        {{#each rollModes as |label mode|}}
-          <option value='{{mode}}'>{{localize label}}</option>
-        {{/each}}
-      {{/select}}
+      {{selectOptions rollModes selected=rollMode localize=true}}
     </select>
   </div>
   <footer class='flexrow'>

@@ -1,3 +1,4 @@
+import SwadeItem from '../documents/item/SwadeItem';
 import {
   ChoiceSet,
   MutationOption,
@@ -5,6 +6,7 @@ import {
 
 export class ChoiceDialog extends Application<ApplicationOptions> {
   #callback: (value: ChoiceSet) => void;
+  #parent: SwadeItem;
   protected selection: ChoiceSet;
 
   static asPromise(ctx: ChoiceDialogContext): Promise<ChoiceSet> {
@@ -27,6 +29,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
   ) {
     super(options);
     this.#callback = resolve;
+    this.#parent = data.parent;
     this.selection = data.choiceSet;
     this.render(true);
   }
@@ -54,6 +57,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
     this.selection.choice = this.getSelection();
     return this.close();
   }
+
   protected getSelection(): number | null {
     const radio = this.element[0].querySelector(
       'input[name="choiceset"]:checked',
@@ -70,6 +74,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
   override async getData() {
     return {
+      parent: this.#parent,
       prompt: this.selection.title,
       choices: this.selection.choices.map((choice, index) => ({
         ...choice,
@@ -96,6 +101,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 }
 
 export interface ChoiceDialogContext {
+  parent: SwadeItem;
   choiceSet: ChoiceSet;
 }
 export interface ChoiceDialogData {

@@ -2,9 +2,9 @@ import {
   ActorRollData,
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
-import { SwadeRoll } from './SwadeRoll';
 import { constants } from '../constants';
 import { CharacterData, NpcData } from '../data/actor';
+import { SwadeRoll } from './SwadeRoll';
 
 export class DamageRoll extends SwadeRoll<ActorRollData> {
   static override CHAT_TEMPLATE =
@@ -87,8 +87,8 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
           adjustRoll = true;
           this.options['modifiers'].push(mod);
           this.terms.push(
-            new OperatorTerm({ operator: '+' }),
-            new StringTerm({
+            new foundry.dice.terms.OperatorTerm({ operator: '+' }),
+            new foundry.dice.terms.StringTerm({
               term: String(mod.value),
               options: { flavor: mod.label },
             }),

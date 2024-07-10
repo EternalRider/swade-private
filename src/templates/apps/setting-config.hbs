@@ -28,12 +28,10 @@
           <label>{{localize 'SWADE.Settings.InitCardDeck.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.actionDeck'>
-              {{#select settingRules.actionDeck}}
-                {{selectOptions
-                  actionDeckChoices
-                  selected=settingRules.actionDeck
-                }}
-              {{/select}}
+              {{selectOptions
+                actionDeckChoices
+                selected=settingRules.actionDeck
+              }}
             </select>
           </div>
         </div>
@@ -42,12 +40,10 @@
           <label>{{localize 'SWADE.Settings.InitDiscardPile.Name'}}</label>
           <div class='form-fields'>
             <select name='settingRules.actionDeckDiscardPile'>
-              {{#select settingRules.actionDeckDiscardPile}}
-                {{selectOptions
-                  discardPileChoices
-                  selected=settingRules.actionDeckDiscardPile
-                }}
-              {{/select}}
+              {{selectOptions
+                discardPileChoices
+                selected=settingRules.actionDeckDiscardPile
+              }}
             </select>
           </div>
         </div>
@@ -208,19 +204,18 @@
         </label>
         <div class='form-fields'>
           <select id='injuryTable' name='settingRules.injuryTable'>
-            {{#select settingRules.injuryTable}}
               <option value=''></option>
               {{#each injuryTableChoices}}
                 <optgroup label='{{group}}'>
                   {{selectOptions
                     options
-                    nameAttr='key'
+                    selected=../settingRules.injuryTable
+                    valueAttr='key'
                     labelAttr='label'
                     sort=true
                   }}
                 </optgroup>
               {{/each}}
-            {{/select}}
           </select>
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.InjuryTable.Hint'}}</p>
@@ -328,14 +323,7 @@
         </label>
         <div class='form-fields'>
           <select id='armorStacking' name='settingRules.armorStacking'>
-            {{#select settingRules.armorStacking}}
-              <option value='core'>
-                {{localize 'SWADE.Settings.ArmorStacking.Choices.Core'}}
-              </option>
-              <option value='swpf'>
-                {{localize 'SWADE.Settings.ArmorStacking.Choices.SWPF'}}
-              </option>
-            {{/select}}
+            {{selectOptions armorStackingChoices selected=settingRules.armorStacking localize=true}}
           </select>
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.ArmorStacking.Hint'}}</p>
@@ -367,9 +355,7 @@
               id='coreSkillsCompendium'
               name='settingRules.coreSkillsCompendium'
             >
-              {{#select settingRules.coreSkillsCompendium}}
-                {{selectOptions coreSkillPackChoices}}
-              {{/select}}
+              {{selectOptions coreSkillPackChoices selected=settingRules.coreSkillsCompendium localize=true}}
             </select>
           </div>
           <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsPack.Hint'}}</p>
@@ -384,15 +370,7 @@
           </label>
           <div class='form-fields'>
             <select id='wealthType' name='settingRules.wealthType'>
-              {{#select settingRules.wealthType}}
-                <option value='currency'>{{localize 'SWADE.Currency'}}</option>
-                <option value='wealthDie'>
-                  {{localize 'SWADE.WealthDie.Label'}}
-                </option>
-                <option value='none'>
-                  {{localize 'SWADE.WealthSelectionNoneOther'}}
-                </option>
-              {{/select}}
+              {{selectOptions wealthTypes selected=settingRules.wealthType localize=true}}
             </select>
           </div>
           <p class='notes'>{{localize 'SWADE.Settings.WealthType.Hint'}}</p>
@@ -533,31 +511,14 @@
     <!-- Benny Settings -->
     <section class='tab' data-tab='bennies'>
       <div class='form-group'>
-        <label for='gmBennies'>
-          {{localize 'SWADE.Settings.GmBennies.Name'}}
-        </label>
-        <div class='form-fields'>
-          <input
-            id='gmBennies'
-            type='number'
-            name='settingRules.gmBennies'
-            value='{{settingRules.gmBennies}}'
-            data-dtype='Number'
-          />
-        </div>
-        <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
-      </div>
-      <div class='form-group'>
         <label>
           {{localize 'SWADE.Settings.BennyImageSheet.Name'}}
         </label>
         <div class='form-fields'>
-          {{filePicker target='settingRules.bennyImageSheet' type='image'}}
-          <input
-            type='text'
+          <file-picker
             name='settingRules.bennyImageSheet'
+            type='image'
             value='{{settingRules.bennyImageSheet}}'
-            data-dtype='String'
           />
         </div>
         <p class='notes'>{{localize 'SWADE.Settings.BennyImageSheet.Hint'}}</p>
@@ -573,15 +534,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DFront.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker
-                target='settingRules.bennyImage3DFront'
-                type='image'
-              }}
-              <input
-                type='text'
+              <file-picker
                 name='settingRules.bennyImage3DFront'
                 value='{{settingRules.bennyImage3DFront}}'
-                data-dtype='String'
+                type='image'
               />
             </div>
             <p class='notes'>{{localize 'SWADE.Settings.Benny3DFront.Hint'}}</p>
@@ -589,12 +545,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DBack.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.bennyImage3DBack' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.bennyImage3DBack'
                 value='{{settingRules.bennyImage3DBack}}'
-                data-dtype='String'
               />
             </div>
             <p class='notes'>{{localize 'SWADE.Settings.Benny3DBack.Hint'}}</p>
@@ -602,16 +556,14 @@
         </fieldset>
         <!-- Bumpmaps -->
         <fieldset>
-          <legend>Bumpmaps</legend>
+          <legend>{{localize 'SWADE.Settings.Bumpmaps'}}</legend>
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DFrontBump.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.3dBennyFrontBump' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.3dBennyFrontBump'
-                value='{{settingRules.3dBennyFrontBump}}'
-                data-dtype='String'
+                value='{{settingRules.[3dBennyFrontBump]}}'
               />
             </div>
             <p class='notes'>
@@ -621,12 +573,10 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Settings.Benny3DBackBump.Name'}}</label>
             <div class='form-fields'>
-              {{filePicker target='settingRules.3dBennyBackBump' type='image'}}
-              <input
-                type='text'
+              <file-picker
+                type='image'
                 name='settingRules.3dBennyBackBump'
-                value='{{settingRules.3dBennyBackBump}}'
-                data-dtype='String'
+                value='{{settingRules.[3dBennyBackBump]}}'
               />
             </div>
             <p class='notes'>

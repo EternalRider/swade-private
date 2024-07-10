@@ -1,12 +1,27 @@
-import { CharacterDataPropertiesData } from '../../documents/actor/actor-data-properties';
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { CommonActorData } from './common';
 
 const fields = foundry.data.fields;
 
-export interface NpcData extends CharacterDataPropertiesData {}
+declare namespace NpcData {
+  interface Schema
+    extends CommonActorData.Schema,
+      ReturnType<(typeof NpcData)['wildcardData']> {
+    wildcard: foundry.data.fields.BooleanField<{ initial: false }>;
+  }
 
-export class NpcData extends CommonActorData {
-  static defineSchema() {
+  interface BaseData extends CommonActorData.BaseData {}
+
+  interface DerivedData extends CommonActorData.DerivedData {}
+}
+
+export class NpcData extends CommonActorData<
+  NpcData.Schema,
+  NpcData.BaseData,
+  NpcData.DerivedData
+> {
+  static override defineSchema(): NpcData.Schema {
     return {
       ...super.defineSchema(),
       ...this.wildcardData(2, 0),
@@ -14,7 +29,31 @@ export class NpcData extends CommonActorData {
     };
   }
 
-  get startingCurrency(): number {
-    return game.settings.get('swade', 'npcStartingCurrency');
+  get #startingCurrency(): number {
+    return game.settings.get('swade', 'npcStartingCurrency') ?? 0;
+  }
+
+  protected override async _preCreate(
+    createData: foundry.documents.BaseActor.ConstructorData,
+    _options: DocumentModificationOptions,
+    _user: BaseUser,
+  ) {
+    const isImported = foundry.utils.hasProperty(
+      createData,
+      'flags.core.sourceId',
+    );
+
+    //Handle starting currency
+    if (!isImported) {
+      this.updateSource({ 'details.currency': this.#startingCurrency });
+    }
+  }
+
+  protected override _onUpdate(
+    _changed: foundry.documents.BaseActor.UpdateData,
+    _options: DocumentModificationOptions,
+    _userId: string,
+  ) {
+    ui.actors?.render(true);
   }
 }

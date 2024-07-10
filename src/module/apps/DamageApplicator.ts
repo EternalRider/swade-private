@@ -1,4 +1,4 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor/vehicle';
@@ -6,6 +6,7 @@ import { DamageRoll } from '../dice/DamageRoll';
 import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+import { getStatusEffectDataById } from '../util';
 
 // Create string variable for the SWADE CSS class for App Windows.
 const appCssClasses = ['swade-app'];
@@ -158,7 +159,7 @@ async function soakPrompt(
   let prompt = '';
 
   // Create a collection of buttons with an adjust button included by default.
-  const buttons: Record<string, Dialog.Button> = {
+  const buttons: Record<string, DialogButton> = {
     adjust: {
       label: game.i18n.localize(
         'SWADE.DamageApplicator.SoakDialog.AdjustDamage',
@@ -465,12 +466,7 @@ async function attemptSoak(
 
     const isShaken = actor.system.status.isShaken;
     // If they're already Shaken, remove the Status Effect.
-    if (isShaken) {
-      const data = CONFIG.SWADE.statusEffects.find(
-        (s) => s.id === 'shaken',
-      ) as StatusEffect;
-      await actor.toggleActiveEffect(data, { active: false });
-    }
+    if (isShaken) await actor.toggleActiveEffect('shaken', { active: false });
 
     /**
      * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
@@ -500,7 +496,7 @@ async function attemptSoak(
     }`;
 
     // Build default buttons
-    const buttons: Record<string, Dialog.Button> = {
+    const buttons: Record<string, DialogButton> = {
       take: {
         label: game.i18n.format(
           'SWADE.DamageApplicator.RerollSoakDialog.TakeWounds',
@@ -673,24 +669,20 @@ async function applyShaken(actor: SwadeActor) {
   if (actor.system instanceof VehicleData) return;
   // If they're not already Shaken, apply the Status Effect.
   if (!actor.system.status.isShaken) {
-    const data = CONFIG.SWADE.statusEffects.find(
-      (s) => s.id === 'shaken',
-    ) as StatusEffect;
-    await actor.toggleActiveEffect(data, { active: true });
+    await actor.toggleActiveEffect('shaken', { active: true });
   }
 }
 
 // Function for applying the Incapacitated Status Effect
 async function applyIncapacitated(actor: SwadeActor) {
   const statuses: ToggleStatus[] = [];
-  const statusIncapacitated = CONFIG.SWADE.statusEffects.find(
-    (s) => s.id === 'incapacitated',
-  ) as StatusEffect;
-  if (statusIncapacitated)
+  const statusIncapacitated = getStatusEffectDataById('incapacitated');
+  if (statusIncapacitated) {
     statuses.push({
       effectData: statusIncapacitated,
       options: { active: true, overlay: true },
     });
+  }
   if (Hooks.call('swadeIncapacitation', actor, statuses) && actor.isWildcard) {
     let resistRoll: number = await resistInjury(actor);
     const ignoreBleedOut =
@@ -699,9 +691,7 @@ async function applyIncapacitated(actor: SwadeActor) {
     if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL)
       resistRoll = constants.ROLL_RESULT.FAIL;
     let message = '';
-    const statusBleedingOut = CONFIG.SWADE.statusEffects.find(
-      (s) => s.id === 'bleeding-out',
-    );
+    const statusBleedingOut = getStatusEffectDataById('bleeding-out');
     switch (resistRoll) {
       case constants.ROLL_RESULT.CRITFAIL:
         message = game.i18n.format(
@@ -781,7 +771,7 @@ async function resistInjury(
   );
 
   // Build default buttons
-  const buttons: Record<string, Dialog.Button> = {
+  const buttons: Record<string, DialogButton> = {
     take: {
       label: incapLabel,
       icon: '<i class="fa-solid fa-skull"></i>',

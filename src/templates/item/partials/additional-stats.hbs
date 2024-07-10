@@ -38,7 +38,7 @@
               value='{{stat.max}}'
               data-dtype='{{stat.dtype}}'
               placeholder='{{localize
-                "SWADE.AdditionalStats.Current"
+                "SWADE.AdditionalStats.Max"
                 stat=stat.label
               }}'
             />
@@ -62,7 +62,7 @@
               value='{{stat.max}}'
               data-dtype='{{stat.dtype}}'
               placeholder='{{localize
-                "SWADE.AdditionalStats.Current"
+                "SWADE.AdditionalStats.Max"
                 stat=stat.label
               }}'
             />
@@ -84,9 +84,7 @@
           />
         {{else if (eq stat.dtype 'Selection')}}
           <select name='system.additionalStats.{{key}}.value'>
-            {{#select stat.value}}
-              {{selectOptions stat.options selected=attr.value localize=true}}
-            {{/select}}
+            {{selectOptions stat.options selected=stat.value localize=true}}
           </select>
         {{/if}}
       </span>

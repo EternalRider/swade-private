@@ -13,6 +13,7 @@ import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import { SWADE } from './module/config';
+import { constants } from './module/constants';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
 import { DamageRoll } from './module/dice/DamageRoll';
@@ -61,6 +62,19 @@ import './swade.scss';
 Hooks.once('init', () => {
   Logger.info(`Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`);
 
+  Object.defineProperty(constants.ABILITY_TYPE, 'ANCESTRY', {
+    get: () => {
+      foundry.utils.logCompatibilityWarning(
+        'The ancestry ability type has been deprecated in favor of the new ancestry Item',
+        {
+          since: '4.1',
+          until: '5.0',
+        },
+      );
+      return 'ancestry';
+    },
+  });
+
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
   //freeze the constants
@@ -101,7 +115,7 @@ Hooks.once('init', () => {
     RollDialog,
     effectCallbacks: new Collection(),
     ready: false,
-    fields: data.fields,
+    data,
     SwadeTour,
   };
 
@@ -119,6 +133,7 @@ Hooks.once('init', () => {
   CONFIG.Actor.dataModels = data.actor.config;
   CONFIG.Item.dataModels = data.item.config;
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
+  CONFIG.Card.dataModels = data.card.config;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -203,11 +218,8 @@ Hooks.once('init', () => {
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
 
-  //@ts-expect-error Types don't properly recognize dotnotation
+  // @ts-expect-error Yes we're calling a protected function
   JournalTextPageSheet._converter.setOption('tables', true);
-
-  //@ts-expect-error Revist once types have caught up
-  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
 
   //register custom Handlebars helpers
   registerCustomHelpers();
@@ -262,16 +274,15 @@ Hooks.once('init', () => {
   // Register Tours
   registerSWADETours();
 
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.SwadeRoll = SwadeRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.TraitRoll = TraitRoll;
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.DamageRoll = DamageRoll;
 
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
+  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
@@ -279,7 +290,6 @@ Hooks.once('setup', SwadeCoreHooks.onSetup);
 Hooks.once('ready', SwadeCoreHooks.onReady);
 
 Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
-Hooks.on('preCreateItem', SwadeCoreHooks.onPreCreateItem);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
 Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
@@ -331,6 +341,7 @@ Hooks.on(
 /* ------------------------------------ */
 /* Update Hooks              	          */
 /* ------------------------------------ */
+Hooks.on('userConnected', SwadeCoreHooks.onUserConnected);
 Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 
 /* ------------------------------------ */

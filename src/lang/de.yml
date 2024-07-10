@@ -627,9 +627,6 @@ SWADE:
       Hint: >-
         Belastungsabzüge anwenden. Dies unterstützt aktuell KEINE {vigor}sproben zum
         Widerstand gegen {fatigue}!
-    GmBennies:
-      Name: Spielleitungs-Bennys
-      Hint: Anzahl Bennys, welche die SL beim Auffrischen erhält
     VehicleMods:
       Name: Fahrzeug-Modifikationen
       Hint: Fahrzeuge nutzen Modifikations-Plätze

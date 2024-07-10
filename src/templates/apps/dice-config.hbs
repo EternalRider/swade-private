@@ -14,24 +14,16 @@
 
       {{else if this.isSelect}}
       <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
-        {{#select this.value}}
-          {{#each this.choices as |name id|}}
-            <option value="{{id}}">{{localize name}}</option>
-          {{/each}}
-        {{/select}}
+        {{selectOptions this.choices selected=this.value localize=true}}
       </select>
 
       {{else if this.isSelectOptGroup}}
       <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
-        {{#select this.value}}
           {{#each this.groups as |group key|}}
             <optgroup label="{{key}}">
-              {{#each group as |name id|}}
-                <option value="{{id}}">{{name}}</option>
-              {{/each}}
+              {{selectOptions group selected=../value localize=true}}
             </optgroup>
           {{/each}}
-        {{/select}}
       </select>
 
       {{else if this.isRange}}
@@ -83,9 +75,7 @@
       name="swade.dsnCustomWildDieOptions.material"
       {{disabled (or noWildDie hasCustomWildDie)}}
     >
-      {{#select settings.dsnCustomWildDieOptions.value.material}}
-        {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
-      {{/select}}
+      {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
     </select>
   </div>
 
@@ -95,9 +85,7 @@
       name="swade.dsnCustomWildDieOptions.font"
       {{disabled (or noWildDie hasCustomWildDie)}}
     >
-      {{#select settings.dsnCustomWildDieOptions.value.font}}
-        {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
-      {{/select}}
+      {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
     </select>
   </div>
 

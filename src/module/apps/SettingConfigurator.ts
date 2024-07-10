@@ -1,5 +1,6 @@
 import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
+import SwadeCards from '../documents/card/SwadeCards';
 
 export default class SettingConfigurator extends FormApplication {
   config: typeof SWADE.settingConfig;
@@ -50,6 +51,8 @@ export default class SettingConfigurator extends FormApplication {
       actionDeckChoices: this.#buildActionDeckChoices(),
       discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
       injuryTableChoices: await this.#buildInjuryTableChoices(),
+      armorStackingChoices: this.#getArmorStackingChoices(),
+      wealthTypes: this.#getWealthTypes(),
     };
     for (const setting of this.config.settings) {
       data.settingRules[setting] = game.settings.get('swade', setting);
@@ -71,7 +74,7 @@ export default class SettingConfigurator extends FormApplication {
 
   async _updateObject(_event, formData) {
     //Gather Data
-    const expandedFormdata = expandObject(formData);
+    const expandedFormdata = foundry.utils.expandObject(formData);
     const formActorAttrs = expandedFormdata.actorSettingStats || {};
     const formItemAttrs = expandedFormdata.itemSettingStats || {};
 
@@ -185,6 +188,21 @@ export default class SettingConfigurator extends FormApplication {
     return attributes;
   }
 
+  #getArmorStackingChoices(): Record<string, string> {
+    return {
+      'core': 'SWADE.Settings.ArmorStacking.Choices.Core',
+      'swpf': 'SWADE.Settings.ArmorStacking.Choices.SWPF',
+    };
+  }
+
+  #getWealthTypes(): Record<string, string> {
+    return {
+      'currency': 'SWADE.Currency',
+      'wealthDie': 'SWADE.WealthDie.Label',
+      'none': 'SWADE.WealthSelectionNoneOther',
+    };
+  }
+
   #buildCoreSkillPackChoices() {
     return game.packs
       ?.filter((p) => {
@@ -211,7 +229,7 @@ export default class SettingConfigurator extends FormApplication {
   #buildActionDeckChoices() {
     const deckChoices: Record<string, string> = {};
     game.cards
-      ?.filter((stack) => {
+      ?.filter((stack: SwadeCards) => {
         const cards = Array.from(stack.cards.values());
         return stack.type === 'deck' && cards.every((c) => c.type === 'poker');
       })
@@ -266,7 +284,7 @@ export default class SettingConfigurator extends FormApplication {
       );
       if (!packs.length) continue;
       injuryTables.push({
-        group: module.title,
+        group: module.title!,
         options: packs
           .flatMap((p) => p.index.contents)
           .map((i) => {

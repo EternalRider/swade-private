@@ -1,5 +1,3 @@
-import { ChatSpeakerData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData';
-
 export declare class Dice3D {
   //TODO type box
   box: any;

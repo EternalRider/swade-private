@@ -1,4 +1,4 @@
-export default class WildDie extends Die {
+export default class WildDie extends foundry.dice.terms.Die {
   static get defaultTermData() {
     return {
       number: 1,
@@ -7,8 +7,8 @@ export default class WildDie extends Die {
       options: { flavor: game.i18n.localize('SWADE.WildDie') },
     };
   }
-  constructor(termData?: Partial<Die.TermData>) {
-    termData = mergeObject(WildDie.defaultTermData, termData);
+  constructor(termData?: Partial<foundry.dice.terms.Die.TermData>) {
+    termData = foundry.utils.mergeObject(WildDie.defaultTermData, termData);
     const user = game.user;
     if (game.dice3d) {
       // Get the user's configured Wild Die data.

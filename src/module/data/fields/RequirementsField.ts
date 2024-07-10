@@ -1,18 +1,31 @@
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import { validateSwid } from '../item/common';
+import { ChoicesType } from '../item/item-common.interface';
 import { AddStatsValueField } from './AddStatsValueField';
 
-export interface RequirementsField
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof RequirementsField)['defineSchema']>
-  > {}
+declare namespace RequirementsField {
+  interface Schema extends DataSchema {
+    type: foundry.data.fields.StringField<{
+      required: true;
+      initial: typeof constants.REQUIREMENT_TYPE.RANK;
+      choices: ChoicesType<typeof constants.REQUIREMENT_TYPE>;
+    }>;
+    selector: foundry.data.fields.StringField<{
+      required: true;
+      validate: typeof validateSwid;
+    }>;
+    value: AddStatsValueField;
+    label: foundry.data.fields.StringField<{ required: false }>;
+    combinator: foundry.data.fields.StringField<{
+      initial: 'and';
+      choices: ['and', 'or'];
+    }>;
+  }
+}
 
-export class RequirementsField extends foundry.abstract.DataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof RequirementsField)['defineSchema']>
-  >
-> {
+class RequirementsField extends foundry.abstract
+  .DataModel<RequirementsField.Schema> {
   static get sortOrder() {
     return [
       constants.REQUIREMENT_TYPE.WILDCARD,
@@ -35,7 +48,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
   }
 
   /** @inheritdoc */
-  static defineSchema() {
+  static override defineSchema() {
     const fields = foundry.data.fields;
     return {
       /**The type of requirement */
@@ -60,7 +73,7 @@ export class RequirementsField extends foundry.abstract.DataModel<
     };
   }
 
-  toString(): string {
+  override toString(): string {
     switch (this.type) {
       case constants.REQUIREMENT_TYPE.WILDCARD:
         return this.value
@@ -83,3 +96,5 @@ export class RequirementsField extends foundry.abstract.DataModel<
     }
   }
 }
+
+export { RequirementsField };

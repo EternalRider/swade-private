@@ -1,13 +1,13 @@
 import {
   StatusEffect,
   ToggleActiveEffectOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { Attribute, ItemMetadata } from '../../../globals';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -32,13 +32,14 @@ import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import {
+  getStatusEffectDataById,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { SwadeActorDataSource, TraitDie } from './actor-data-source';
+import { TraitDie } from './actor-data-source';
 
 declare global {
   interface DocumentClassConfig {
@@ -57,7 +58,14 @@ declare global {
   }
 }
 
-export default class SwadeActor extends Actor {
+type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
+
+interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
+  type: ActorType;
+  system: DataModelConfig['Actor'][ActorType];
+}
+
+class SwadeActor extends Actor {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -77,7 +85,10 @@ export default class SwadeActor extends Actor {
     return Color.fromHSV([hue, value, 0.75]);
   }
 
-  constructor(data: ActorDataConstructorData, ctx?: Context<TokenDocument>) {
+  constructor(
+    data: foundry.documents.BaseActor.ConstructorData,
+    ctx?: Context<TokenDocument>,
+  ) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
         `Compendium.${ctx.pack}.${data._id}`,
@@ -94,11 +105,21 @@ export default class SwadeActor extends Actor {
                   scaleY: art.token.scale,
                 },
               };
-        data.prototypeToken = mergeObject(data.prototypeToken ?? {}, tokenArt);
+        data.prototypeToken = foundry.utils.mergeObject(
+          data.prototypeToken ?? {},
+          tokenArt,
+        );
       }
     }
     super(data, ctx);
   }
+
+  // Does not appear to work properly
+  // isType<TypeName extends SystemActorTypes>(
+  //   type: TypeName,
+  // ): this is SwadeActor<TypeName> {
+  //   return type === this.type;
+  // }
 
   /** @returns true when the actor is a Wild Card */
   get isWildcard(): boolean {
@@ -156,32 +177,9 @@ export default class SwadeActor extends Actor {
     );
   }
 
-  /** @return whether this actor is currently encumbered, factoring in whether the rule is even enforced
-   * @deprecated since version 3.2, use actor.system.encumbered instead
-   */
-  get isEncumbered(): boolean {
-    foundry.utils.logCompatibilityWarning(
-      'SwadeActor.isEncumbered is deprecated in favor of SwadeActor.system.encumbered',
-      { since: '3.2', until: '4.0' },
-    );
-    return this.system.encumbered;
-  }
-
-  get race() {
-    foundry.utils.logCompatibilityWarning(
-      'The race getter has been 1 with the more appropriate ancestry getter',
-      { since: '3.2', until: '4.0' },
-    );
-    return this.ancestry;
-  }
-
   get ancestry(): SwadeItem | undefined {
     if (this.system instanceof VehicleData) return;
-    const ancestries = this.items.filter(
-      (i) =>
-        i.type === 'ability' &&
-        i.system.subtype === constants.ABILITY_TYPE.ANCESTRY,
-    );
+    const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
       Logger.warn(
         `Actor ${this.name} (${this.id}) has more than one ancestry!`,
@@ -204,9 +202,8 @@ export default class SwadeActor extends Actor {
   }
 
   override get itemTypes() {
-    const types: Record<string, SwadeItem[]> = Object.fromEntries(
-      game.documentTypes.Item.map((t) => [t, []]),
-    );
+    const types: Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]> =
+      Object.fromEntries(game.documentTypes.Item.map((t) => [t, []]));
     for (const item of this.items.values()) {
       types[item.type].push(item);
     }
@@ -291,7 +288,7 @@ export default class SwadeActor extends Actor {
       rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
     }
 
-    const basePool = PoolTerm.fromRolls(rolls);
+    const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     basePool.modifiers.push('kh');
 
     const effects = structuredClone<RollModifier[]>([
@@ -345,7 +342,6 @@ export default class SwadeActor extends Actor {
     if (!permitContinue) return null;
 
     if (options.suppressChat) {
-      // @ts-expect-error Error checking is wrong here roll is a TraitRoll
       return TraitRoll.fromTerms([
         ...roll.terms,
         ...TraitRoll.parse(
@@ -557,9 +553,11 @@ export default class SwadeActor extends Actor {
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
       }),
-      mods: mods,
+      mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: game.i18n.localize('SWADE.Running'),
+      flavor:
+        game.i18n.localize('SWADE.RunningHint.Header') +
+        game.i18n.localize('SWADE.RunningHint.Reminder'),
       title: game.i18n.localize('SWADE.Running'),
       actor: this,
     });
@@ -636,7 +634,7 @@ export default class SwadeActor extends Actor {
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate({ async: true }),
+        await new Roll('1dB').evaluate(),
         game.user!,
         true,
         null,
@@ -668,7 +666,7 @@ export default class SwadeActor extends Actor {
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate({ async: true }),
+        await new Roll('1dB').evaluate(),
         game.user!,
         true,
         null,
@@ -712,14 +710,16 @@ export default class SwadeActor extends Actor {
 
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
-    effectData: StatusEffect,
+    effect: StatusEffect | string,
     { overlay = false, active }: ToggleActiveEffectOptions = {},
   ) {
-    if (!effectData.id) return false;
+    const statusEffect =
+      typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
+    if (!statusEffect?.id) return false;
 
     // Remove existing single-status effects.
     const existing = this.effects.reduce((acc, cur) => {
-      if (cur.statuses.size === 1 && cur.statuses.has(effectData.id)) {
+      if (cur.statuses.size === 1 && cur.statuses.has(statusEffect.id)) {
         acc.push(cur.id);
       }
       return acc;
@@ -731,12 +731,12 @@ export default class SwadeActor extends Actor {
     // Add a new effect
     else if (state) {
       const aeClass = getDocumentClass('ActiveEffect');
-      const data = foundry.utils.deepClone(effectData);
-      foundry.utils.setProperty(data, 'statuses', [effectData.id]);
+      const data = foundry.utils.deepClone(statusEffect);
+      foundry.utils.setProperty(data, 'statuses', [statusEffect.id]);
       delete data.id; //remove the ID to not trigger validation errors
       aeClass.migrateDataSafe(data);
       aeClass.cleanData(data);
-      data.name = game.i18n.localize(data.name);
+      data.name = game.i18n.localize(data.name as string);
       if (overlay) foundry.utils.setProperty(data, 'flags.core.overlay', true);
       await aeClass.create(data, { parent: this });
     }
@@ -747,7 +747,7 @@ export default class SwadeActor extends Actor {
    * Reset the bennies of the Actor to their default value
    */
   async refreshBennies(notify = true) {
-    this.system.refreshBennies?.(notify);
+    if ('refreshBennies' in this.system) this.system.refreshBennies(notify);
   }
 
   /** Calculates the total Wound Penalties
@@ -755,19 +755,28 @@ export default class SwadeActor extends Actor {
   calcWoundPenalties(ignoreAll: boolean = false): number {
     if (ignoreAll) return 0;
     let total = 0;
-    const wounds = getProperty(this, 'system.wounds.value') as number;
-    const ignoredWounds = getProperty(this, 'system.wounds.ignored') as number;
+    const wounds = foundry.utils.getProperty(
+      this,
+      'system.wounds.value',
+    ) as number;
+    const ignoredWounds = foundry.utils.getProperty(
+      this,
+      'system.wounds.ignored',
+    ) as number;
 
     //clamp the value between 0 and the maximum
-    total = Math.clamped(wounds - ignoredWounds, 0, 3);
+    total = Math.clamp(wounds - ignoredWounds, 0, 3);
     return total * -1;
   }
 
   /** Calculates the total Fatigue Penalties */
   calcFatiguePenalties(): number {
     let total = 0;
-    const fatigue = getProperty(this, 'system.fatigue.value') as number;
-    const ignoredFatigue = getProperty(
+    const fatigue = foundry.utils.getProperty(
+      this,
+      'system.fatigue.value',
+    ) as number;
+    const ignoredFatigue = foundry.utils.getProperty(
       this,
       'system.fatigue.ignored',
     ) as number;
@@ -779,7 +788,10 @@ export default class SwadeActor extends Actor {
 
   calcStatusPenalties(): number {
     let retVal = 0;
-    const isDistracted = getProperty(this, 'system.status.isDistracted');
+    const isDistracted = foundry.utils.getProperty(
+      this,
+      'system.status.isDistracted',
+    );
     if (isDistracted) {
       retVal -= 2;
     }
@@ -837,7 +849,7 @@ export default class SwadeActor extends Actor {
   calcMaxCarryCapacity(): number {
     if (this.system instanceof VehicleData) return 0;
     const unit = game.settings.get('swade', 'weightUnit');
-    const strength = deepClone(this.system.attributes.strength);
+    const strength = foundry.utils.deepClone(this.system.attributes.strength);
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
     strength.die.sides += stepAdjust;
     //bound the adjusted strength die to 12
@@ -1041,7 +1053,7 @@ export default class SwadeActor extends Actor {
     }
 
     const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
-    const basePool = PoolTerm.fromRolls(rolls);
+    const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
     const attGlobalMods: RollModifier[] =
       this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
@@ -1077,10 +1089,13 @@ export default class SwadeActor extends Actor {
    * @param modifiers modifiers to the die
    * @returns a Die instance that already has the exploding modifier by default
    */
-  private _buildTraitDie(sides: number, flavor: string): Die {
-    const modifiers: (keyof Die.Modifiers)[] = [];
+  private _buildTraitDie(
+    sides: number,
+    flavor: string,
+  ): foundry.dice.terms.Die {
+    const modifiers: (keyof foundry.dice.terms.Die.Modifiers)[] = [];
     if (sides > 1) modifiers.push('x');
-    return new Die({
+    return new foundry.dice.terms.Die({
       faces: sides,
       modifiers: modifiers,
       options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
@@ -1195,7 +1210,7 @@ export default class SwadeActor extends Actor {
 
     if (parryBaseSkill) {
       sources.push({
-        label: getProperty(parryBaseSkill, 'name'),
+        label: foundry.utils.getProperty(parryBaseSkill, 'name'),
         value: parryTotal,
       });
     } else {
@@ -1470,112 +1485,22 @@ export default class SwadeActor extends Actor {
     this.overrides = foundry.utils.expandObject(overrides);
   }
 
-  protected override async _preCreate(
-    createData: ActorDataConstructorData,
-    options: DocumentModificationOptions,
-    user: BaseUser,
-  ) {
-    await super._preCreate(createData, options, user);
-    //return early if it's a vehicle
-    if (createData.type === 'vehicle') return;
-
-    if (this.type === 'character') {
-      this.updateSource({
-        prototypeToken: {
-          actorLink: true,
-          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-        },
-      });
-    }
-
-    const isImported = foundry.utils.hasProperty(
-      createData,
-      'flags.core.sourceId',
-    );
-
-    const coreSkillList = game.settings.get('swade', 'coreSkills');
-    //only do this if this is a PC with no prior skills
-    if (
-      coreSkillList.length > 0 &&
-      this.type === 'character' &&
-      this.itemTypes.skill.length === 0
-    ) {
-      //Get list of core skills from settings
-      const coreSkills = coreSkillList.split(',').map((s) => s.trim());
-
-      //Set compendium source
-      const pack = game.packs.get(
-        game.settings.get('swade', 'coreSkillsCompendium'),
-        { strict: true },
-      ) as CompendiumCollection<ItemMetadata>;
-
-      const skillIndex = await pack.getDocuments();
-
-      // extract skill data
-      const skills = skillIndex
-        .filter((i) => i.type === 'skill')
-        .filter((i) => coreSkills.includes(i.name!))
-        .map((s) => s.toObject());
-
-      // Create core skills not in compendium (for custom skill names entered by the user)
-      for (const skillName of coreSkills) {
-        if (!skillIndex.find((skill) => skillName === skill.name)) {
-          skills.push({
-            name: skillName,
-            type: 'skill',
-            img: 'systems/swade/assets/icons/skill.svg',
-            system: {
-              attribute: '',
-            },
-          });
-        }
-      }
-
-      //set all the skills to be core skills
-      for (const skill of skills) {
-        if (skill.type === 'skill') skill.system.isCoreSkill = true;
-      }
-
-      //Add the Untrained skill
-      skills.push({
-        name: game.i18n.localize('SWADE.Unskilled'),
-        type: 'skill',
-        img: 'systems/swade/assets/icons/skill.svg',
-        system: {
-          attribute: '',
-          die: {
-            sides: 4,
-            modifier: -2,
-          },
-        },
-      });
-
-      //Add the items to the creation data
-      this.updateSource({ items: skills });
-    }
-
-    //Handle starting currency
-    if (!isImported) {
-      const currency = this.system.startingCurrency ?? 0;
-      this.updateSource({ 'system.details.currency': currency });
-    }
-  }
-
   protected override _onUpdate(
-    changed: DeepPartial<SwadeActorDataSource> & Record<string, unknown>,
+    changed: foundry.documents.BaseActor.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
-    // Updating for Wild Card display toggle
-    if (this.type === 'npc') {
-      ui.actors?.render(true);
-    }
-    if (hasProperty(changed, 'system.bennies') && this.hasPlayerOwner) {
+    if (
+      foundry.utils.hasProperty(changed, 'system.bennies') &&
+      this.hasPlayerOwner
+    ) {
       ui.players?.render(true);
     }
   }
 }
+
+export default SwadeActor;
 
 type ArmorLocation = ValueOf<typeof constants.ARMOR_LOCATIONS>;
 

@@ -5,8 +5,7 @@ import { SWADE } from '../config';
  */
 export default class DiceSettings extends FormApplication<
   FormApplicationOptions,
-  any,
-  undefined
+  any
 > {
   config: any;
   customWildDieDefaultColors: any;
@@ -17,7 +16,7 @@ export default class DiceSettings extends FormApplication<
       this.config.flags.dsnCustomWildDieColors.default;
   }
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return {
       ...super.defaultOptions,
       id: 'diceConfig',
@@ -36,7 +35,7 @@ export default class DiceSettings extends FormApplication<
   /**
    * @override
    */
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     html.find('#reset').on('click', () => this._resetSettings());
@@ -49,7 +48,7 @@ export default class DiceSettings extends FormApplication<
   /**
    * @override
    */
-  getData(): any {
+  override getData(): any {
     const settings: Record<string, any> = {};
     for (const flag in this.config.flags) {
       const defaultValue = this.config.flags[flag].default;
@@ -85,7 +84,6 @@ export default class DiceSettings extends FormApplication<
       fontList: game.dice3d?.exports.Utils.prepareFontList(),
       materialList: this._prepareMaterialList(),
     };
-
     return data;
   }
 

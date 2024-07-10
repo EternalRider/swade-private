@@ -1,5 +1,6 @@
 import { AbilityData } from './ability';
 import { ActionData } from './action';
+import { AncestryData } from './ancestry';
 import { ArmorData } from './armor';
 import { ConsumableData } from './consumable';
 import { EdgeData } from './edge';
@@ -10,9 +11,12 @@ import { ShieldData } from './shield';
 import { SkillData } from './skill';
 import { WeaponData } from './weapon';
 
+export * as shims from './_shims';
 export { AbilityData } from './ability';
 export { ActionData } from './action';
+export { AncestryData } from './ancestry';
 export { ArmorData } from './armor';
+export * as base from './base';
 export { ConsumableData } from './consumable';
 export { EdgeData } from './edge';
 export { GearData } from './gear';
@@ -21,11 +25,11 @@ export { PowerData } from './power';
 export { ShieldData } from './shield';
 export { SkillData } from './skill';
 export { WeaponData } from './weapon';
-export * as shims from './_shims';
 
 export const config = {
   ability: AbilityData,
   action: ActionData,
+  ancestry: AncestryData,
   armor: ArmorData,
   consumable: ConsumableData,
   edge: EdgeData,
@@ -38,10 +42,11 @@ export const config = {
 };
 
 declare global {
-  interface SystemConfig {
+  interface DataModelConfig {
     Item: {
       ability: AbilityData;
       action: ActionData;
+      ancestry: AncestryData;
       armor: ArmorData;
       consumable: ConsumableData;
       edge: EdgeData;

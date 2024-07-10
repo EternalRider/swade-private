@@ -2,11 +2,11 @@
   "id": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "3.3-dev",
+  "version": "4.1-dev",
   "compatibility": {
-    "minimum": 11,
-    "verified": 11,
-    "maximum": 11
+    "minimum": 12,
+    "verified": 12,
+    "max": 12
   },
   "authors": [
     {
@@ -63,7 +63,8 @@
     {
       "name": "Savage Worlds System",
       "sorting": "a",
-      "packs": ["skills", "edges", "hindrances", "powers", "system-docs"]
+      "packs": ["skills", "edges", "hindrances", "powers", "system-docs"],
+      "color": "#483D8B"
     }
   ],
   "languages": [
@@ -116,8 +117,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "systems/swade/assets/official/SWADE_Logo.webp",
-      "thumbnail": "systems/swade/assets/official/SWADE_Logo.webp"
+      "url": "systems/swade/assets/ui/sign_in_background.webp",
+      "thumbnail": "systems/swade/assets/ui/sign_in_background.webp"
     }
   ],
   "flags": {
@@ -128,13 +129,70 @@
   },
   "socket": true,
   "background": "systems/swade/assets/ui/sign_in_background.webp",
-  "gridDistance": 1,
-  "gridUnits": "in",
+  "grid": {
+    "units": "in",
+    "type": 0
+  },
   "manifest": "https://gitlab.com/api/v4/projects/16269883/packages/generic/swade/latest/system.json",
   "download": "This is auto replaced",
   "url": "https://gitlab.com/peginc/swade",
   "readme": "https://gitlab.com/peginc/swade/-/wikis/home",
   "bugs": "https://gitlab.com/peginc/swade/-/issues",
   "changelog": "https://gitlab.com/peginc/swade/-/releases",
-  "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md"
+  "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md",
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "details.appearance",
+          "details.notes",
+          "details.goals",
+          "details.biography.value",
+          "advances.details"
+        ]
+      },
+      "npc": {
+        "htmlFields": [
+          "details.appearance",
+          "details.notes",
+          "details.goals",
+          "details.biography.value",
+          "advances.details"
+        ]
+      },
+      "vehicle": {
+        "htmlFields": ["description"]
+      }
+    },
+    "Item": {
+      "weapon": { "htmlFields": ["description"] },
+      "armor": { "htmlFields": ["description"] },
+      "ancestry": { "htmlFields": ["description"] },
+      "shield": { "htmlFields": ["description"] },
+      "gear": { "htmlFields": ["description"] },
+      "edge": { "htmlFields": ["description"] },
+      "hindrance": { "htmlFields": ["description"] },
+      "skill": { "htmlFields": ["description"] },
+      "power": { "htmlFields": ["description"] },
+      "ability": { "htmlFields": ["description"] },
+      "consumable": { "htmlFields": ["description"] },
+      "action": { "htmlFields": ["description"] }
+    },
+    "Card": {
+      "poker": {},
+      "adventure": {}
+    },
+    "JournalEntryPage": {
+      "headquarters": {
+        "htmlFields": [
+          "advantage",
+          "complication",
+          "form.description",
+          "form.acquisition",
+          "form.maintenance",
+          "upgrades"
+        ]
+      }
+    }
+  }
 }

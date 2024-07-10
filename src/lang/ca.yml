@@ -587,9 +587,6 @@ SWADE:
       Hint: >-
         Aplicar penalitzacions de càrrega. Si us plau, tingueu en compte que
         actualment NO admet les tirades de {vigor} per resistir la {fatigue}!
-    GmBennies:
-      Name: Benis del DJ
-      Hint: Estableix quants benis rep el DJ al reiniciar
     VehicleMods:
       Name: Modificadors de vehicles
       Hint: Els vehicles utilitzen modificadors

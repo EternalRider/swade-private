@@ -1,9 +1,10 @@
+import { InexactPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import SwadeActor from '../module/documents/actor/SwadeActor';
 import SwadeItem from '../module/documents/item/SwadeItem';
 import { RollModifier } from './additional.interface';
 
 export interface SwadeRollOptions
-  extends InexactPartial<RollTerm.EvaluationOptions> {
+  extends InexactPartial<foundry.dice.terms.RollTerm.EvaluationOptions> {
   modifiers?: RollModifier[];
   rerollMode?: 'benny' | 'free';
   critfailConfirmationRoll?: boolean;

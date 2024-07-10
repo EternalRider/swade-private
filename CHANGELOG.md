@@ -22,13 +22,108 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.1.0
+
+### Changed
+
+- Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
+- Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
+
+## 4.0.3
+
+### Fixed
+
+- Continued to resolve deprecation warnings
+- Continued to improve internal typings
+- Chase tiles now their images. (#1177) **by @jpmeehan5**
+- You can now open arcane devices with embedded powers. (#1178) **by @jpmeehan5**
+- The edit and delete buttons now show for vehicle mods and weapons again. (#1179) **by @jpmeehan5**
+
+## 4.0.2
+
+### Fixed
+
+- Resolved more deprecation warnings.
+- Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
+- Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
+- Tweaks now save properly. (#1171) **by @jpmeehan5**
+- Powers display correctly on the NPC sheet (#1174) **by @jpmeehan5**
+
+## 4.0.1
+
+### Fixed
+
+- Data prep failure due to bad type declaration. (#1169) **by @jpmeehan5**
+
+## 4.0.0
+
+SWADE v4 brings compatibility with Foundry v12 and drops compatibility with Foundry v11
+
+### Added
+
+- Added data model for Poker cards. **by @jpmeehan5**
+- `userConnected` hook event listener for modifying GM Bennies when a player logs in or drops out. (#1161) by **@kristianserrano**
+- A new Context Menu option to adjust the GM's currently available Bennies. (#1161) by **@kristianserrano**
+
+### Changed
+
+- Updated `system.json` to match new data structure. (#1047) **by @jpmeehan5**
+- The system tile in the Setup screen now uses the newer, prettier background image as new SWADE worlds. **by @jpmeehan5**
+- All uses of `icon` and `label` in Active Effects has been migrated to `img` and `name` respectively, in alignment with updated schema from Foundry. (#1047) **by @jpmeehan5**
+- Added stricter data validation to UUIDs for both Item Grants and Macro actions. (#1003) **by @florad92**
+- The ChoiceDialog now displays the name of the parent item. (#1158) **by @florad92**
+- When refreshing GM Bennies, the number set is based on the current number of active, non-GM users. (#1161) by **@kristianserrano**
+  - If a user later logs in, the number of Bennies increases by 1.
+  - If a user later leaves, the number of Bennies decreases by 1. (Of course the Benny is restored if they return.)
+  - If a user refreshes their browser, the above `userConnected` hook event listeners trigger accordingly.
+  - If a GM refreshes their Bennies before any players join, the above events will modify the GM's Bennies appropriately.
+- All text enrichment is now handled asynchronously in getData. (#1155) **by @jpmeehan5**
+
+### Deprecated
+
+- Finished deprecation of Embedded Abilities. (#1163) **by @florad92**
+- Finished deprecation of `SwadeItem._getPowerPoints()`. **by @florad92**
+- Finished deprecation of `SwadeItem.getTraitModifiers()`. **by @florad92**
+- Finished deprecation of `SwadeItem.needsFullReloadProcedure()`. **by @florad92**
+- Finished deprecation of `SwadeActor.isEncumbered`. **by @florad92**
+- Finished deprecation of `SwadeActor.race`. **by @florad92**
+
+### Removed
+
+- Removed `template.yml` (which compiled to template.json). Information about the document subtypes available in the system is now available in `system.json`. (#1047) **by @jpmeehan5**
+- Setting configuration for the number of GM Bennies has been removed. (#1161) by **@kristianserrano**
+
+### Fixed
+
+- NPC item chat cards should once again be hidden when the relevant setting has been enabled (#1142) **by @florad92**
+- Roll rerolls should now properly copy the roll mode from the original roll message. (#1142) **by @florad92**
+- Additional Stats max value inputs should now have the correct placeholder. (#1147) **by @florad92**
+- The number of GM Bennies in a player's Players List would not update when they logged in. The Players List now rerenders any time a User is updated. (#1161) by **@kristianserrano**
+- The Full Reload property now works again (#1165) **by @michaeldougherty1976**
+- Action items should now roll damage actions with bonus damage properly. (#1163) **by @florad92**
+
+### Known Issues
+
+- Due to changes in foundry's Canvas and rendering Auras have been disabled for the time being.
+
+## 3.4.1
+
+### Fixed
+
+- Fixed filenames for the PEG Action deck for operating systems where file names are case-sensitive. This will not affect any existing action decks (#1133) **by @florad92**
+- The trait roll dialog now works as labeled. (#1135) **by @jpmeehan5**
+- The `jokerBonus` flag now correctly also modifies damage rolls. (#1137) **by @jpmeehan5**
+
 ## 3.4.0
 
 ### Added
 
-- Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
-- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
 - Added new default action deck provided by PEG. This deck is available as a preset in the Cards creation dialog. (#1115) **by @jpmeehan5**
+- Added a new actor flag, `jokerBonus`, that can be used to override the default +2 bonus to trait rolls for having a joker. (#1110) **by @jpmeehan5**
+- Added `SwadeRoll` the Roll class at the beginning of the `CONFIG.Dice.rolls`, making it the default for RollTables and chat rolls. (#1099) **by @florad92**
+- Added a tooltip to the character name field on sheets to be able to read long character names. **by @mhilbrunner**
+- Added AP as an additional field to damage actions that works as an override. (#720) **by @gunnar.busch**
+- Updated Translations
 
 ### Changed
 
@@ -36,12 +131,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The advance round dialog no longer pops up multiple times. (#1116) **by @florad92**
 - The `Ignore` checkbox in the Roll Dialog has been flipped to be an `Active` checkbox to avoid confusion. (#1111) **by @florad92**
 - The topmost roll formula in the Roll Dialog has been removed as it was not adding any useful information. (#1111) **by @florad92**
+- `SwadeActor#toggleActiveEffect` now also accepts a status ID as the first argument. (#1125) **by @florad92**
+- Groups followers under leaders before combat begins. (#1087) **by @kristianserrano**
+- The Combat Tracker now properly scrolls to the current turn whenever the Combat Tracker is updated. (#1098) **by @kristianserrano**
+- Changes the Combat Tracker initiative button labels from "Roll" to "Deal". This is Savage Worlds after all! **by @kristianserrano**
+- Players without permissions no longer see the names of actors they don't have permissions for when their image is shared from a sheet. (#1112) **by @mhilbrunner**
 
 ### Fixed
 
 - Resolved a bug involving Joker detection for unlinked tokens. **by @jpmeehan5**
 - The character sheet should now correctly show if a hindrance is Major or Minor again. (#1122) **by @florad92**
 - Single reloads should no longer fail when no ammo is set while reloading from the inventory is disabled. (#1120) **by @florad92**
+- Fixed a bug where a logged out player could cause their bennies to go to the GM during Joker's Wild (#1071) **by @jpmeehan5 and @michaeldougherty1976**
+- Fixed some hardcoded i18n strings **by @mhilbrunner**
+- Fixed errors in edges. (#1108) **by @xphenomen**
+- Fixed unfollowers not being able to draw cards because the previously assigned `initiative` value remained. **by @kristianserrano**
+- Fixes `hasRolled` (i.e., has drawn initiative) always being `true` even when it wasn't. **by @kristianserrano**
+- Fixes an interrupting Combatant's `initiative` value not being set accurately when acting after the current Combatant.. **by @kristianserrano**
+- Fixed Items with only Macro Actions not displaying the Actions in the sheet. **by @kristianserrano**
 
 ## 3.3.11
 

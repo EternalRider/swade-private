@@ -201,14 +201,7 @@
               name='{{concat "system.requirements." @index ".combinator"}}'
               data-tooltip='SWADE.Requirements.Combinator'
             >
-              {{#select combinator}}
-                <option value='and'>
-                  {{localize 'SWADE.Requirements.And'}}
-                </option>
-                <option value='or'>
-                  {{localize 'SWADE.Requirements.Or'}}
-                </option>
-              {{/select}}
+              {{selectOptions @root.combinatorChoices selected=combinator localize=true}}
             </select>
           {{/unless}}
         </div>

@@ -1,15 +1,14 @@
 /* eslint-disable deprecation/deprecation */
-import { AnyDocumentData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs';
-import { Document } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs';
 import { ReloadType } from '../../globals';
+import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { AbilityData } from '../data/item';
+import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
-import type SwadeUser from '../documents/SwadeUser';
-import { Logger } from '../Logger';
 import { MigrationCounter } from '../models/MigrationCounter';
 import { slugify } from '../util';
 import { triggerServersideMigration } from './migrationUtils';
@@ -60,7 +59,7 @@ export async function migrateWorld() {
       await _migratePTModifiers(actor);
       const source = valid
         ? actor.toObject()
-        : game.data.actors.find((a) => a._id === actor.id);
+        : game.data.actors?.find((a) => a._id === actor.id);
       const updateData = migrateActorData(source);
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`Migrating Actor document ${actor.name}`);
@@ -79,7 +78,7 @@ export async function migrateWorld() {
     try {
       const source = valid
         ? item.toObject()
-        : game.data.items.find((i) => i._id === item.id);
+        : game.data.items?.find((i) => i._id === item.id);
       const updateData = migrateItemData(source);
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`Migrating Item document ${item.name}`);
@@ -256,14 +255,15 @@ async function refreshAllCompendiums() {
 
 /**
  * Update all Documents in a compendium using the new system data model.
- * @param {CompendiumCollection} pack  Pack to refresh.
+ * @param pack  Pack to refresh.
  */
-async function refreshCompendium(pack) {
+async function refreshCompendium(
+  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+) {
   if (!pack?.documentName) return;
   // swade.moduleArt.suppressArt = true;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const DocumentClass = CONFIG[pack.documentName]
-    .documentClass as typeof Document<AnyDocumentData>;
+  const DocumentClass = getDocumentClass(pack.documentName);
   const wasLocked = pack.locked;
   await pack.configure({ locked: false });
   await pack.migrate();
@@ -339,8 +339,11 @@ export function migrateActorData(actor: ActorData) {
  * @param {object} item             Item data to migrate
  * @returns {object}                The updateData to apply
  */
-export function migrateItemData(item: ItemDataSource) {
+export function migrateItemData(
+  item: foundry.documents.BaseItem.ConstructorData,
+) {
   const updateData: UpdateData = {};
+  _renameRaceToAncestry(item, updateData);
   _migrateWeaponAPToNumber(item, updateData);
   _migratePowerEquipToFavorite(item, updateData);
   _migrateItemEquipState(item, updateData);
@@ -349,6 +352,7 @@ export function migrateItemData(item: ItemDataSource) {
   _fixWorldItemGrants(item, updateData);
   _generateSWID(item, updateData);
   _setRangeType(item, updateData);
+  _migrateAbilityToAncestry(item, updateData);
 
   // Migrate embedded effects
   if (item.effects) {
@@ -398,7 +402,9 @@ export function migrateEffectData(_effect: ActiveEffectData) {
  * @param {object} data   The data to clean
  * @private
  */
-export function removeDeprecatedObjects(data: ItemData | ActorData) {
+export function removeDeprecatedObjects(
+  data: foundry.documents.BaseItem.ConstructorData | ActorData,
+) {
   for (const [k, v] of Object.entries(data)) {
     if (getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
@@ -533,7 +539,10 @@ function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
   if (effects.length > 0) updateData.effects = effects;
 }
 
-function _migrateWeaponAPToNumber(data: ItemData, updateData: UpdateData) {
+function _migrateWeaponAPToNumber(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'weapon') return updateData;
 
   if (data.system.ap && typeof data.system.ap === 'string') {
@@ -541,17 +550,26 @@ function _migrateWeaponAPToNumber(data: ItemData, updateData: UpdateData) {
   }
 }
 
-function _migratePowerEquipToFavorite(data: ItemData, updateData: UpdateData) {
+function _migratePowerEquipToFavorite(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
-    updateData['system.favorite'] = getProperty(data, 'system.equipped');
+    updateData['system.favorite'] = foundry.utils.getProperty(
+      data,
+      'system.equipped',
+    );
     updateData['system.-=equipped'] = null;
     updateData['system.-=equippable'] = null;
   }
 }
 
-function _migrateItemEquipState(data: ItemData, updateData: UpdateData) {
+function _migrateItemEquipState(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (
     data.type !== 'armor' &&
     data.type !== 'weapon' &&
@@ -588,7 +606,10 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
   return updateData;
 }
 
-function _migrateWeaponAutoReload(data: ItemData, updateData: UpdateData) {
+function _migrateWeaponAutoReload(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'weapon') return;
   const hasOld = foundry.utils.hasProperty(data, 'system.autoReload');
   if (!hasOld) return;
@@ -600,14 +621,20 @@ function _migrateWeaponAutoReload(data: ItemData, updateData: UpdateData) {
   updateData['system.-=autoReload'] = null;
 }
 
-function _ensureBatteryMaxCharges(data: ItemData, updateData: UpdateData) {
+function _ensureBatteryMaxCharges(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
     updateData['system.charges.max'] = 100;
   }
 }
 
-function _fixWorldItemGrants(data: ItemData, updateData: UpdateData) {
+function _fixWorldItemGrants(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (!data.system.grants) return;
   updateData['system.grants'] = structuredClone(data.system.grants);
   for (const grant of updateData['system.grants'] as Array<ItemGrant>) {
@@ -619,13 +646,19 @@ function _fixWorldItemGrants(data: ItemData, updateData: UpdateData) {
   }
 }
 
-function _generateSWID(data: ItemData, updateData: UpdateData) {
+function _generateSWID(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.system.swid === constants.RESERVED_SWID.DEFAULT) {
     updateData['system.swid'] = slugify(data.name);
   }
 }
 
-function _setRangeType(data: ItemData, updateData: UpdateData) {
+function _setRangeType(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'weapon' || data.system.rangeType !== null) return;
   const hasShots = !!data.system.shots;
   const hasRange = !!data.system.range;
@@ -645,6 +678,40 @@ function _setRangeType(data: ItemData, updateData: UpdateData) {
     rangeType = constants.WEAPON_RANGE_TYPE.MIXED;
   }
   updateData['system.rangeType'] = rangeType;
+}
+
+function _renameRaceToAncestry(
+  data: foundry.documents.BaseItem.ConstructorData,
+  updateData: UpdateData,
+) {
+  if (data.type === 'ability' && data.system.subtype === 'race') {
+    updateData['system.subtype'] = 'ancestry';
+  }
+}
+
+export async function _migrateAbilityToAncestry(item: SwadeItem) {
+  if (
+    !(item.system instanceof AbilityData) ||
+    item.system.subtype !== 'ancestry'
+  )
+    return;
+  const rawData = item.toObject() as any;
+  const parent = item.parent;
+  const pack = item.pack ?? undefined;
+  rawData.type = 'ancestry';
+  rawData.system = AbilityData.schema.clean(rawData.system);
+
+  console.log(rawData);
+
+  await item.delete();
+  const newItem = await SwadeItem.create(rawData, {
+    parent,
+    pack,
+    keepId: true,
+    renderSheet: true,
+  });
+
+  console.log(newItem);
 }
 
 type UpdateData = Record<string, any>;

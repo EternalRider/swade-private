@@ -1,26 +1,34 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { choiceSets, favorite, grants, itemDescription } from './common';
+import { SwadeBaseItemData } from './base';
+import { favorite, grants } from './common';
+import { ChoicesType, Favorite, Grants } from './item-common.interface';
 
-export interface HindranceData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof HindranceData)['defineSchema']>
-  > {}
+declare namespace HindranceData {
+  interface Schema extends SwadeBaseItemData.Schema, Favorite, Grants {
+    severity: foundry.data.fields.StringField<{
+      choices: ChoicesType<typeof constants.HINDRANCE_SEVERITY>;
+      initial: typeof constants.HINDRANCE_SEVERITY.EITHER;
+      blank: false;
+    }>;
+    major: foundry.data.fields.BooleanField;
+  }
+  interface BaseData extends SwadeBaseItemData.BaseData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+}
 
-export class HindranceData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof HindranceData)['defineSchema']>
-  >,
-  Item
+class HindranceData extends SwadeBaseItemData<
+  HindranceData.Schema,
+  HindranceData.BaseData,
+  HindranceData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): HindranceData.Schema {
     const fields = foundry.data.fields;
     return {
-      ...itemDescription(),
+      ...super.defineSchema(),
       ...favorite(),
       ...grants(),
-      ...choiceSets(),
       severity: new fields.StringField({
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,
@@ -52,3 +60,5 @@ export class HindranceData extends foundry.abstract.TypeDataModel<
     ];
   }
 }
+
+export { HindranceData };

@@ -1,4 +1,5 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
@@ -22,7 +23,7 @@ export function notificationExists(string: string, localize = true): boolean {
 /** @internal */
 export async function shouldShowBennyAnimation(): Promise<boolean> {
   const value = game.user?.getFlag('swade', 'dsnShowBennyAnimation');
-  const defaultValue = getProperty(
+  const defaultValue = foundry.utils.getProperty(
     SWADE,
     'diceConfig.flags.dsnShowBennyAnimation.default',
   ) as boolean;
@@ -179,8 +180,36 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   const filter = (e: any) => e.id === idToSearchFor;
   const data =
     CONFIG.statusEffects.find(filter) || SWADE.statusEffects.find(filter);
+  // Future deprecation - removing this would require deeper API changes
+  // foundry.utils.logCompatibilityWarning(
+  //   'You are accessing `game.swade.util.getStatusEffectDataById`. ' +
+  //     'This is now deprecated in favor of `ActiveEffect.fromStatusEffect`, which returns a temporary active effect for use',
+  //   {
+  //     since: '4.0',
+  //     until: '5.0',
+  //   },
+  // );
   return data as StatusEffect | undefined;
 }
+/** @internal */
+export function getDieSidesRange(minimumSides: number, maximumSides: number): DieSidesOption[] {
+  const options: DieSidesOption[] = [
+    { key: 1, label: '1' },
+    { key: 4, label: 'd4' },
+    { key: 6, label: 'd6' },
+    { key: 8, label: 'd8' },
+    { key: 10, label: 'd10' },
+    { key: 12, label: 'd12' },
+    { key: 14, label: 'd12+1' },
+    { key: 16, label: 'd12+2' },
+    { key: 18, label: 'd12+3' },
+    { key: 20, label: 'd12+4' },
+    { key: 22, label: 'd12+5' },
+    { key: 24, label: 'd12+6' },
+  ];
+  return options.filter(x=>x.key >= minimumSides && x.key <= maximumSides);
+}
+
 
 /** @internal */
 export function getKeyByValue(object, value) {
@@ -229,7 +258,7 @@ export function mapRange(
 ): number {
   if (inMin === inMax || outMin === outMax) return 0;
   const mapped = ((num - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
-  return Math.clamped(mapped, outMin, outMax);
+  return Math.clamp(mapped, outMin, outMax);
 }
 
 /**
@@ -255,6 +284,17 @@ export function slugify(input: unknown) {
     .trim(); // trim leading or trailing whitespace
   Logger.debug([input, slugged]);
   return slugged;
+}
+
+/**
+ * Convert a template string into HTML DOM nodes
+ * @param  {String} str The template string
+ * @return {Node}       The template HTML
+ */
+export function stringToHTML<T extends Element = Element>(str: string): T {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(str, 'text/html');
+  return doc.body.firstElementChild as T;
 }
 
 type Ownership = Record<string, number>;

@@ -1,37 +1,42 @@
 import { PotentialSource } from '../../../globals';
-import {
-  actions,
-  additionalStats,
-  category,
-  choiceSets,
-  favorite,
-  itemDescription,
-  templates,
-} from './common';
 import * as migrations from './_migration';
 import * as shims from './_shims';
+import { SwadeBaseItemData } from './base';
+import { actions, bonusDamage, category, favorite, templates } from './common';
+import {
+  Actions,
+  BonusDamage,
+  Category,
+  Favorite,
+  Templates,
+} from './item-common.interface';
 
-export interface ActionData
-  extends foundry.data.fields.SchemaField.InnerInitializedType<
-    ReturnType<(typeof ActionData)['defineSchema']>
-  > {}
+declare namespace ActionData {
+  interface Schema
+    extends SwadeBaseItemData.Schema,
+      Favorite,
+      Category,
+      Templates,
+      Actions,
+      BonusDamage {}
+  interface BaseData extends SwadeBaseItemData.BaseData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+}
 
-export class ActionData extends foundry.abstract.TypeDataModel<
-  foundry.data.fields.SchemaField<
-    ReturnType<(typeof ActionData)['defineSchema']>
-  >,
-  Item
+class ActionData extends SwadeBaseItemData<
+  ActionData.Schema,
+  ActionData.BaseData,
+  ActionData.DerivedData
 > {
   /** @inheritdoc */
-  static override defineSchema() {
+  static override defineSchema(): ActionData.Schema {
     return {
-      ...itemDescription(),
+      ...super.defineSchema(),
       ...favorite(),
       ...category(),
       ...templates(),
       ...actions(),
-      ...additionalStats(),
-      ...choiceSets(),
+      ...bonusDamage(),
     };
   }
 
@@ -55,3 +60,5 @@ export class ActionData extends foundry.abstract.TypeDataModel<
     return true;
   }
 }
+
+export { ActionData };

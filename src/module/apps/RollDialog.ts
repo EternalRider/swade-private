@@ -62,11 +62,11 @@ export class RollDialog extends FormApplication<
     return this.ctx.roll.constructor as SwadeRoll;
   }
 
-  get title(): string {
+  override get title(): string {
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
-  get rollMode(): foundry.CONST.DICE_ROLL_MODES {
+  override get rollMode(): foundry.CONST.DICE_ROLL_MODES {
     return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
       .value as foundry.CONST.DICE_ROLL_MODES;
   }
@@ -140,7 +140,7 @@ export class RollDialog extends FormApplication<
       );
   }
 
-  async getData() {
+  override async getData() {
     const data = {
       displayExtraButton: true,
       rollModes: CONFIG.Dice.rollModes,
@@ -174,7 +174,7 @@ export class RollDialog extends FormApplication<
   protected override async _updateObject(ev: Event, formData: FormData) {
     const expanded = foundry.utils.expandObject(formData) as RollDialogFormData;
     Object.values(expanded.modifiers ?? []).forEach(
-      (v, i) => (this.modifiers[i].ignore = v.ignore),
+      (v, i) => (this.modifiers[i].ignore = !v.active),
     );
     if (expanded.map && expanded.map !== 0) {
       this.modifiers.push({
@@ -208,7 +208,7 @@ export class RollDialog extends FormApplication<
       !this.ctx.actor?.isWildcard
     ) {
       const traitPool = terms[0];
-      if (traitPool instanceof PoolTerm) {
+      if (traitPool instanceof foundry.dice.terms.PoolTerm) {
         const wildDie = new WildDie();
         // @ts-expect-error Roll Class
         const wildRoll = this.rollCls.fromTerms([wildDie]);
@@ -218,7 +218,6 @@ export class RollDialog extends FormApplication<
     }
 
     //recreate the roll
-    //@ts-expect-error rollCls works here
     const finalizedRoll = this.rollCls.fromTerms(
       terms,
       roll.options,
@@ -229,7 +228,7 @@ export class RollDialog extends FormApplication<
     }
 
     //evaluate
-    await finalizedRoll.evaluate({ async: true });
+    await finalizedRoll.evaluate();
 
     if (finalizedRoll instanceof DamageRoll) {
       finalizedRoll.ap = this.ctx.ap ?? 0;
@@ -266,17 +265,13 @@ export class RollDialog extends FormApplication<
   }
 
   #buildRollForEvaluation(): SwadeRoll {
-    //@ts-expect-error rollCls is correct here
-    const roll = this.rollCls.fromTerms([
-      ...this.ctx.roll.terms,
-      ...this.rollCls.parse(
-        this.modifiers
-          .filter((v) => !v.ignore) //remove the disabled modifiers
-          .map(normalizeRollModifiers)
-          .reduce(modifierReducer, ''),
-        this.#getRollData(),
-      ),
-    ]) as SwadeRoll;
+    const formula =
+      this.ctx.roll.formula +
+      this.modifiers
+        .filter((v) => !v.ignore) //remove the disabled modifiers
+        .map(normalizeRollModifiers)
+        .reduce(modifierReducer, '');
+    const roll = new this.rollCls(formula, this.#getRollData()) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
   }
@@ -367,7 +362,7 @@ export class RollDialog extends FormApplication<
 export interface RollDialogContext {
   roll: SwadeRoll;
   mods: RollModifier[];
-  speaker: foundry.data.ChatMessageData['speaker']['_source'];
+  speaker: ChatSpeakerData;
   flavor: string;
   title: string;
   item?: SwadeItem;
@@ -376,7 +371,7 @@ export interface RollDialogContext {
   isHeavyWeapon?: boolean;
 }
 interface RollDialogFormData {
-  modifiers?: RollModifier[];
+  modifiers?: Array<RollModifier & { active: boolean }>;
   map?: number;
   rollMode: foundry.CONST.DICE_ROLL_MODES;
 }

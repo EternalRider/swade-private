@@ -22,6 +22,9 @@ SWADE:
   Running: Running
   RunningDie: Running Die
   RunningMod: Running Modifier
+  RunningHint:
+    Header: <strong>Total running distance.</strong>
+    Reminder: <p>Running during your turn incurs a -2 penalty to all your actions.</p>
   RollRun: '[Click] to roll the Running Die'
   Adv: Advances
   Rank: Rank
@@ -72,6 +75,9 @@ SWADE:
   WildDie: Wild Die
   Modifier: Modifier
   BenniesSpend: Spend a Benny
+  BenniesSpendGM: Spend a GM Benny
+  BenniesAdjustGM: Adjust GM Bennies
+  BenniesAdjustGMText: Enter the number of Bennies the GM should currently have.
   BenniesGive: Give a Benny
   BenniesRefresh: Refresh Bennies
   AllBenniesRefresh: Refresh All Bennies
@@ -639,6 +645,7 @@ SWADE:
     AutoInit:
       Name: Automatic Initiative
       Hint: Automatically draw Action Cards every round
+    Bumpmaps: Bumpmaps
     Benny3DFront:
       Name: Front Texture
       Hint: Front texture of the 3D Benny
@@ -703,9 +710,6 @@ SWADE:
       Hint: >-
         Apply encumbrance penalties. Please keep in mind that this currently
         does NOT SUPPORT {vigor} tests to resist {fatigue}!
-    GmBennies:
-      Name: Gamemaster Bennies
-      Hint: Sets how many Bennies the GM receives on a refresh
     VehicleMods:
       Name: Vehicles Mods
       Hint: Vehicles use Mod-Slots
@@ -798,7 +802,6 @@ SWADE:
   Validation:
     OnlyOneAncestry: You can only have one ancestry at a time!
     OnlyOneArchetype: You can only have one archetype at a time!
-  BenniesSpendGM: Spend a GM Benny
   DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
@@ -1470,6 +1473,7 @@ TYPES:
     vehicle: Vehicle
   Item:
     weapon: Weapon
+    ancestry: Ancestry
     armor: Armor
     shield: Shield
     gear: Gear

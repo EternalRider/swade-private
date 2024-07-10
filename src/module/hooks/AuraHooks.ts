@@ -14,10 +14,7 @@ export function registerAuraHooks() {
   });
 
   Hooks.on('drawGridLayer', (layer: GridLayer) => {
-    layer.auras = layer.addChildAt(
-      new PIXI.Container(),
-      layer.getChildIndex(layer.borders),
-    );
+    layer.auras = layer.addChild(new PIXI.Container());
     layer.auras.filters = [CONFIG.Canvas.auras.filter];
     canvas.effects.visualEffectsMaskingFilters.add(CONFIG.Canvas.auras.filter);
   });
@@ -43,7 +40,7 @@ export function registerAuraHooks() {
 
   Hooks.on('destroyToken', (token: SwadeToken) => {
     token.auras.forEach((aura) => {
-      aura.destroy();
+      aura._destroy();
       CONFIG.Canvas.auras.collection.delete(aura.sourceId);
     });
     token.auras.clear();
@@ -88,42 +85,42 @@ function updateAurasForToken(token: SwadeToken) {
     });
     return missingActorMsg(token);
   }
-  const origin = token.getMovementAdjustedPoint(token.center);
-  const auraData = token.actor.auras;
-  for (const [id, aura] of token.auras.entries()) {
-    const data = auraData[id];
-    if (!data) {
-      removeAura(token, aura, id);
-      continue;
-    }
-    const { externalRadius } = token;
-    aura.initialize({
-      x: origin.x,
-      y: origin.y,
-      disabled: !data.enabled,
-      radius: canvas.dimensions?.size * data.radius + externalRadius,
-      externalRadius: externalRadius,
-      rotation: token.document.rotation,
-      preview: token.isPreview,
-      walls: data.walls,
-    });
+  // const origin = token.getCenterPoint({ x: 0, y: 0 });
+  // const auraData = token.actor.auras;
+  // for (const [id, aura] of token.auras.entries()) {
+  //   const data = auraData[id];
+  //   if (!data) {
+  //     removeAura(token, aura, id);
+  //     continue;
+  //   }
+  //   const { externalRadius } = token;
+  //   aura.initialize({
+  //     x: origin.x,
+  //     y: origin.y,
+  //     disabled: !data.enabled,
+  //     radius: canvas.dimensions?.size * data.radius + externalRadius,
+  //     externalRadius: externalRadius,
+  //     rotation: token.document.rotation,
+  //     preview: token.isPreview,
+  //     walls: data.walls,
+  //   });
 
-    CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
-  }
+  //   CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
+  // }
   refreshAuras();
 }
 
 function refreshAuras() {
-  canvas.grid?.auras?.removeChildren();
+  canvas.interface.grid?.auras?.removeChildren();
   for (const aura of CONFIG.Canvas.auras.collection) {
     if (!aura.active) continue;
-    canvas.grid?.auras?.addChild(aura.graphics);
+    canvas.interface.grid?.auras?.addChild(aura.graphics);
   }
 }
 
 function removeAura(token: SwadeToken, aura: AuraPointSource, id: string) {
   CONFIG.Canvas.auras.collection.delete(aura.sourceId);
-  aura.destroy();
+  aura._destroy();
   token.auras.delete(id);
 }
 

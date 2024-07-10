@@ -1,5 +1,4 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { CombatantDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/combatantData';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
@@ -226,7 +225,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   async actNow() {
-    if (!this.parent || !game.user.isGM) return;
+    if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
     let targetCombatant = this.parent.combatant as SwadeCombatant;
     if (this.id === targetCombatant?.id) {
@@ -263,7 +262,7 @@ export default class SwadeCombatant extends Combatant {
   }
 
   async actAfterCurrentCombatant() {
-    if (!this.parent || !game.user.isGM) return;
+    if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
@@ -309,15 +308,18 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override _onUpdate(
-    changed: DeepPartial<Combatant['_source']>,
+    changed: foundry.documents.BaseCombatant.UpdateData,
     options: DocumentModificationOptions,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
     const hasCardChanged =
-      hasProperty(changed, 'flags.swade.cardValue') ||
-      hasProperty(changed, 'flags.swade.suitValue');
-    const holdRemoved = hasProperty(changed, 'flags.swade.-=roundHeld');
+      foundry.utils.hasProperty(changed, 'flags.swade.cardValue') ||
+      foundry.utils.hasProperty(changed, 'flags.swade.suitValue');
+    const holdRemoved = foundry.utils.hasProperty(
+      changed,
+      'flags.swade.-=roundHeld',
+    );
     if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
@@ -333,6 +335,7 @@ export default class SwadeCombatant extends Combatant {
     )
       return;
     await this.#createJokersWildMessage();
+    // TODO: This is actually going to be a collection, rather than an array
     const combatants = this.parent.combatants as SwadeCombatant[];
     const isTokenHostile =
       this.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
@@ -366,7 +369,11 @@ export default class SwadeCombatant extends Combatant {
   async #triggerBennies(combatants: SwadeCombatant[]) {
     for (const c of combatants) {
       if (c.actor?.isOwner) await c.actor?.getBenny();
-      else game.swade.sockets.giveBenny([firstOwner(this.actor)?.id as string]);
+      else
+        game.swade.sockets.giveBenny(
+          [firstOwner(c.actor)?.id as string],
+          [c.actor.uuid as string],
+        );
     }
   }
 

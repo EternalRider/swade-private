@@ -25,12 +25,13 @@
       </label>
       <span class='form-fields'>
         <select data-dtype='Number' name='system.details.wealth.die'>
-          {{#select actor.system.details.wealth.die}}
-            <option value='0'>{{localize
-                'SWADE.WealthDie.Broke.Label'
-              }}</option>
-            {{> "systems/swade/templates/die-sides-options.hbs"}}
-          {{/select}}
+          {{selectOptions 
+            wealthDieTypes
+            selected=actor.system.details.wealth.die
+            localize=true 
+            valueAttr='key'
+            labelAttr='label'
+          }}
         </select>
         <input
           type='text'
@@ -88,9 +89,9 @@
               {{/if}}
             </span>
             <span class='ap'>{{system.ap}}</span>
-            <span class='note' data-tooltip='{{enrich system.notes}}'>{{enrich
-                system.notes
-              }}</span>
+            <span class='note' data-tooltip='{{{enrichedNotes}}}'>
+              {{{enrichedNotes}}}
+            </span>
             <span class='weight'>{{formatNumber
                 (times system.weight system.quantity)
               }}</span>
@@ -171,9 +172,9 @@
             </a>
             <span class='bonus'> {{system.armor}} </span>
             <span class='min-str'>{{system.minStr}}</span>
-            <span class='note' data-tooltip='{{enrich system.notes}}'>{{enrich
-                system.notes
-              }}</span>
+            <span class='note' data-tooltip='{{{enrichedNotes}}}'>
+              {{{enrichedNotes}}}
+            </span>
             <span class='weight'>{{formatNumber
                 (times system.weight system.quantity)
               }}</span>
@@ -254,9 +255,9 @@
             </a>
             <span class='parry'>{{system.parry}}</span>
             <span class='cover'>{{system.cover}}</span>
-            <span class='note' data-tooltip='{{enrich system.notes}}'>{{enrich
-                system.notes
-              }}</span>
+            <span class='note' data-tooltip='{{{enrichedNotes}}}'>
+              {{{enrichedNotes}}}
+            </span>
             <span class='weight'>
               {{formatNumber (times system.weight system.quantity)}}
             </span>

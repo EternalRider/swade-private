@@ -89,7 +89,7 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
         'updateCombatant',
         (
           combatant: SwadeCombatant,
-          _changed: DeepPartial<Combatant>,
+          _changed: foundry.documents.BaseCombatant.UpdateData,
           _options: DocumentModificationOptions,
           triggeringUser: string,
         ) => {
