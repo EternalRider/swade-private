@@ -6,6 +6,7 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
@@ -1496,6 +1497,48 @@ class SwadeActor extends Actor {
       this.hasPlayerOwner
     ) {
       ui.players?.render(true);
+    }
+    if (
+      foundry.utils.hasProperty(options, 'swade.wounds.value') ||
+      foundry.utils.hasProperty(options, 'swade.fatigue.value')
+    ) {
+      const isDamage = foundry.utils.hasProperty(changed, 'system.wounds.value')
+        ? changed.system.wounds.value > options.swade.wounds.value
+        : foundry.utils.hasProperty(changed, 'system.fatigue.value')
+          ? changed.system.fatigue.value > options.swade.fatigue.value
+          : false;
+      const tokens = this.getActiveTokens(true, false);
+      for (const token of tokens) {
+        token.ring?.flashColor(
+          isDamage ? Color.from('#D41159') : Color.from('#1A85FF'),
+          {
+            duration: 1000,
+            easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+          },
+        );
+      }
+    }
+  }
+
+  protected override async _preUpdate(
+    changed: foundry.documents.BaseActor.UpdateData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    super._preUpdate(changed, options, user);
+    if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.wounds.value',
+        this.system.wounds.value,
+      );
+    }
+    if (foundry.utils.hasProperty(changed, 'system.fatigue.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.fatigue.value',
+        this.system.fatigue.value,
+      );
     }
   }
 }

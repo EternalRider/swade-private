@@ -557,4 +557,43 @@ export default class SwadeActiveEffect extends ActiveEffect {
     super._onCreate(data, options, userId);
     if (userId === game.userId) this._applyRelatedEffects();
   }
+
+  protected override _displayScrollingStatus(enabled) {
+    super._displayScrollingStatus(enabled);
+    const tokens = this.target.getActiveTokens(true);
+    console.log(this);
+    const badAEs = [
+      'shaken',
+      'incapacitated',
+      'dead',
+      'bound',
+      'entangled',
+      'frightened',
+      'distracted',
+      'encumbered',
+      'prone',
+      'stunned',
+      'vulnerable',
+      'bleeding-out',
+      'diseased',
+      'heart-attack',
+      'on-fire',
+      'poisoned',
+      'blind',
+    ];
+    const isBad = this.statuses?.some((s) => badAEs.includes(s));
+    const color = isBad
+      ? enabled
+        ? Color.from('#D41159')
+        : Color.from('#1A85FF')
+      : enabled
+        ? Color.from('#1A85FF')
+        : Color.from('#D41159');
+    for (const token of tokens) {
+      token.ring?.flashColor(color, {
+        duration: 1000,
+        easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+      });
+    }
+  }
 }
