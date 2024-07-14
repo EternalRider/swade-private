@@ -532,13 +532,12 @@ export default class SwadeCoreHooks {
     connected: boolean,
   ) {
     const gm = game.users.activeGM;
-    if (user.isGM || !gm?.isSelf) return false;
-    const bennyDiff = connected ? 1 : -1;
-    const currentBennies = gm.bennies;
-    let newBennies = currentBennies + bennyDiff;
+    const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
+    if (user.isGM || hasStaticBennies || !gm?.isSelf) return false;
+    let newBennies = connected ? gm.bennies + 1 : gm.bennies - 1;
     newBennies = newBennies < 0 ? 0 : newBennies;
-    await gm.setFlag('swade', 'gmBennies', newBennies);
-    ui.players?.render(true);
+    await gm.setFlag('swade', 'bennies', newBennies);
+    await ui.players?.render(true);
   }
 
   /** Add benny management to the player list */
@@ -661,6 +660,13 @@ export default class SwadeCoreHooks {
           game.user!.isGM && game.users?.get(li[0].dataset.userId!)!.isGM!,
         callback: async (li) => {
           const gm = game.users?.get(li[0].dataset.userId!);
+          const hasStaticBennies = game.settings.get(
+            'swade',
+            'staticGmBennies',
+          );
+          const gmBennies = hasStaticBennies
+            ? game.settings.get('swade', 'gmBennies')
+            : game.users.filter((u) => u.active && !u.isGM).length;
           await foundry.applications.api.DialogV2.wait({
             window: { title: game.i18n.localize('SWADE.BenniesAdjustGM') },
             position: {
@@ -679,7 +685,7 @@ export default class SwadeCoreHooks {
                     min="0"
                     style="width: 5ch; height: .75lh; text-align: center;"
                     name="gm-bennies"
-                    value="${game.users?.filter((u) => u.active && !u.isGM).length}"
+                    value="${gmBennies}"
                     autofocus
                   >
                 </label>

@@ -99,6 +99,8 @@ export const SWADE: SwadeConfig = {
       'pcStartingCurrency',
       'npcStartingCurrency',
       'armorStacking',
+      'staticGmBennies',
+      'gmBennies',
       'bennyImageSheet',
       'bennyImage3DFront',
       'bennyImage3DBack',

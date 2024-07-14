@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Added
+
+- Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
+
+### Changed
+
+- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
+
+### Fixed
+
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
+
 ## 4.1.0
 
 ### Changed

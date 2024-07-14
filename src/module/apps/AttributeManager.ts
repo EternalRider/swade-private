@@ -44,9 +44,12 @@ export default class AttributeManager extends FormApplication<
   ): Promise<AttributeManagerData> {
     const data: AttributeManagerData = {
       isExtra: !this.object.isWildcard,
-      dieSides: (this.object.type === 'npc' ? getDieSidesRange(4,24) :getDieSidesRange(4,20)),
-      wildDieSides: getDieSidesRange(4,12),
-      dieSidesWithMinimum: getDieSidesRange(1,12),
+      dieSides:
+        this.object.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20),
+      wildDieSides: getDieSidesRange(4, 12),
+      dieSidesWithMinimum: getDieSidesRange(1, 12),
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
   }

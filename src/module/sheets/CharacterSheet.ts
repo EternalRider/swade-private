@@ -1,10 +1,10 @@
 import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
 import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
-import { 
-  AdditionalStats, 
-  Attribute, 
+import {
+  AdditionalStats,
+  Attribute,
   DieSidesOption,
-  LinkedAttribute,  
+  LinkedAttribute,
 } from '../../globals';
 import { Advance } from '../../interfaces/Advance.interface';
 import {
@@ -1143,11 +1143,10 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   #getWealthDieTypes(): DieSidesOption[] {
-    const options: DieSidesOption[] = util.getDieSidesRange(4,12)
+    const options: DieSidesOption[] = util.getDieSidesRange(4, 12);
     options.unshift({ key: 0, label: 'SWADE.WealthDie.Broke.Label' });
     return options;
   }
-
 
   #setupEquipStatusMenu(html: JQuery<HTMLElement> = $('body')) {
     const items: ContextMenuEntry[] = [

@@ -79,7 +79,6 @@ export default class ActionCardEditor extends FormApplication<
     };
   }
 
-
   override activateListeners(html: JQuery) {
     super.activateListeners(html);
     html.find('.card-face').on('click', (ev) => this._showCard(ev));
