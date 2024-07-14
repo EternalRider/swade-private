@@ -54,7 +54,15 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   get hasInlineDelete(): boolean {
-    const types = ['edge', 'hindrance', 'ability', 'skill', 'power', 'action'];
+    const types = [
+      'edge',
+      'hindrance',
+      'ability',
+      'ancestry',
+      'skill',
+      'power',
+      'action',
+    ];
     return types.includes(this.type);
   }
 
@@ -277,9 +285,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isAncestryOrArchetype:
-          subtype === constants.ABILITY_TYPE.ANCESTRY ||
-          subtype === constants.ABILITY_TYPE.ARCHETYPE,
+        isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
       data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
         SWADE.abilitySheet,
@@ -676,7 +682,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   ): Record<string, string> {
     return {
       special: abilityLocalization.special.dropdown,
-      ancestry: abilityLocalization.ancestry.dropdown,
       archetype: abilityLocalization.archetype.dropdown,
     };
   }
@@ -684,8 +689,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case constants.ABILITY_TYPE.ANCESTRY:
-          return SWADE.abilitySheet.ancestry.dropdown;
         case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
@@ -907,7 +910,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isAncestryOrArchetype: boolean;
+    isArchetype: boolean;
   };
   abilitySubtypeOptions: Record<string, string>;
   dieSides;

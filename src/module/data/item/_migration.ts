@@ -1,7 +1,7 @@
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
-import { AbilityData } from './ability';
+import type { AbilityData } from './ability';
 import { EdgeData } from './edge';
 
 export function renameActionProperties(source: any) {
@@ -57,9 +57,7 @@ export function renameActionProperties(source: any) {
 }
 
 export function renameRaceToAncestry(source: PotentialSource<AbilityData>) {
-  if (source.subtype === 'race') {
-    source.subtype = constants.ABILITY_TYPE.ANCESTRY;
-  }
+  if (source.subtype === 'race') source.subtype = 'ancestry';
 }
 
 export function convertRequirementsToList(source: PotentialSource<EdgeData>) {

@@ -72,7 +72,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     const combat = this.viewed;
     if (!combat || combat.turn === null) return;
     const active = this.element.find('.combatant.active')[0];
-    const container = active.parentElement;
+    const container = active?.parentElement;
     if (!active || !container) return;
     const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
     container.scrollTop =

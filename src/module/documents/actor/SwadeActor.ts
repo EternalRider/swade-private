@@ -179,11 +179,7 @@ class SwadeActor extends Actor {
 
   get ancestry(): SwadeItem | undefined {
     if (this.system instanceof VehicleData) return;
-    const ancestries = this.items.filter(
-      (i) =>
-        i.type === 'ability' &&
-        i.system.subtype === constants.ABILITY_TYPE.ANCESTRY,
-    );
+    const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
       Logger.warn(
         `Actor ${this.name} (${this.id}) has more than one ancestry!`,
@@ -557,9 +553,11 @@ class SwadeActor extends Actor {
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
       }),
-      mods: mods,
+      mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: game.i18n.localize('SWADE.Running'),
+      flavor:
+        game.i18n.localize('SWADE.RunningHint.Header') +
+        game.i18n.localize('SWADE.RunningHint.Reminder'),
       title: game.i18n.localize('SWADE.Running'),
       actor: this,
     });

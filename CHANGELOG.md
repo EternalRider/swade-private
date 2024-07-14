@@ -26,24 +26,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Adds a configuration Setting for a static refresh amount for GM Bennies.
+- Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
 
 ### Changed
 
-- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects.
+- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
 
 ### Fixed
 
-- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener.
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
 
-## 4.0.2
+## 4.1.0
 
-### Fixed
+### Changed
 
-- Resolved more deprecation warnings. **by @jpmeehan5**
-- Advance notes now properly display parsed HTML rather than raw string. **by @jpmeehan5**
-- Action Card Editor now works correctly. (#1173) **by @jpmeehan5**
-- Tweaks now save properly. (#1171) **by @jpmeehan5**
+- Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
+- Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
 
 ## 4.0.3
 

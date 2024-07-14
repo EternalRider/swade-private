@@ -835,9 +835,12 @@ class SwadeItem extends Item {
           item,
           'system.equipStatus',
         );
-        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
-          item.type,
-        );
+        const nonPhysGranter = [
+          'edge',
+          'ability',
+          'ancestry',
+          'hindrance',
+        ].includes(item.type);
         const shouldGrant =
           grantOn === constants.GRANT_ON.ADDED ||
           nonPhysGranter ||

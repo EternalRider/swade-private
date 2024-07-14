@@ -70,6 +70,7 @@ export const constants = {
   /** @enum */
   ABILITY_TYPE: {
     SPECIAL: 'special',
+    /** @deprecated */
     ANCESTRY: 'ancestry',
     ARCHETYPE: 'archetype',
   } as const,

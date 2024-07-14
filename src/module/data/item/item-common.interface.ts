@@ -14,4 +14,5 @@ export type Equippable = ReturnType<typeof common.equippable>;
 export type ArcaneDevice = ReturnType<typeof common.arcaneDevice>;
 export type BonusDamage = ReturnType<typeof common.bonusDamage>;
 export type Vehicular = ReturnType<typeof common.vehicular>;
+
 export type ChoicesType<T> = ValueOf<T>[];
