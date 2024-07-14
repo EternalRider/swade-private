@@ -93,7 +93,10 @@ export default class SwadeUser extends User {
 
   async refreshBennies(notify = true) {
     if (this.isGM) {
-      const gmBennies = game.users.filter((u) => u.active && !u.isGM).length;
+      const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
+      const gmBennies = hasStaticBennies
+        ? game.settings.get('swade', 'gmBennies')
+        : game.users.filter((u) => u.active && !u.isGM).length;
       await this.setFlag('swade', 'bennies', gmBennies);
 
       /**

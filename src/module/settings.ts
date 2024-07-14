@@ -34,6 +34,8 @@ declare global {
       'swade.enableWoundPace': boolean;
       'swade.noPowerPoints': boolean;
       'swade.alwaysGeneralPP': boolean;
+      'swade.staticGmBennies': boolean;
+      'swade.gmBennies': number;
       'swade.vehicleMods': boolean;
       'swade.vehicleEdges': boolean;
       'swade.vehicleSkills': string;
@@ -369,6 +371,24 @@ export function registerSettingRules() {
     default: false,
     scope: 'world',
     type: Boolean,
+    config: false,
+  });
+
+  game.settings.register('swade', 'staticGmBennies', {
+    name: 'SWADE.Settings.StaticGmBennies.Name',
+    hint: 'SWADE.Settings.StaticGmBennies.Hint',
+    default: false,
+    scope: 'world',
+    type: Boolean,
+    config: false,
+  });
+
+  game.settings.register('swade', 'gmBennies', {
+    name: 'SWADE.Settings.GmBennies.Name',
+    hint: 'SWADE.Settings.GmBennies.Hint',
+    default: 0,
+    scope: 'world',
+    type: Number,
     config: false,
   });
 

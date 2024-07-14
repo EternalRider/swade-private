@@ -192,7 +192,10 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   return data as StatusEffect | undefined;
 }
 /** @internal */
-export function getDieSidesRange(minimumSides: number, maximumSides: number): DieSidesOption[] {
+export function getDieSidesRange(
+  minimumSides: number,
+  maximumSides: number,
+): DieSidesOption[] {
   const options: DieSidesOption[] = [
     { key: 1, label: '1' },
     { key: 4, label: 'd4' },
@@ -207,9 +210,8 @@ export function getDieSidesRange(minimumSides: number, maximumSides: number): Di
     { key: 22, label: 'd12+5' },
     { key: 24, label: 'd12+6' },
   ];
-  return options.filter(x=>x.key >= minimumSides && x.key <= maximumSides);
+  return options.filter((x) => x.key >= minimumSides && x.key <= maximumSides);
 }
-
 
 /** @internal */
 export function getKeyByValue(object, value) {
