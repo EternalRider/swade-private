@@ -111,6 +111,14 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     this.options['rerollable'] = rerollable;
   }
 
+  setMessageId(messageId: string) {
+    this.options['messageId'] = messageId;
+  }
+
+  get messageId(){
+    return this.options['messageId'];
+  }
+
   get isRerollable() {
     return this.options['rerollable'] ?? false;
   }
