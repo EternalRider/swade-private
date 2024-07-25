@@ -49,7 +49,10 @@ export default class AttributeManager extends FormApplication<
           ? getDieSidesRange(4, 24)
           : getDieSidesRange(4, 20),
       wildDieSides: getDieSidesRange(4, 12),
-      dieSidesWithMinimum: getDieSidesRange(1, 12),
+      dieSidesWithMinimum:
+        this.object.type === 'npc'
+          ? getDieSidesRange(1, 24)
+          : getDieSidesRange(1, 20),
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
   }

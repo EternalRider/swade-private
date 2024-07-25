@@ -43,6 +43,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
 - Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
 
+## 4.0.4
+
+### Fixed
+
+- Continued to resolve deprecation warnings
+- Compendium TOC Token preview once again handles wildcards correctly. (#1183) **by @florad92**
+- The Strength attribute can be configured to go above a d12. (#1189) **by @jpmeehan5**
+- Fixed soak rolls not waiting for Dice So Nice to finish animation before posting results. (#1133) **by @chridgely**
+- Fixed bugs related to the no power points setting rule. (#1188) **by @jpmeehan5**
+- Item Grants should no longer render all item sheets if a skill Item is amongst the granted Items. (#1185) **by @florad92**
+
 ## 4.0.3
 
 ### Fixed

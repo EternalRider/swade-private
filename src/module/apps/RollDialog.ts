@@ -238,13 +238,15 @@ export class RollDialog extends FormApplication<
     finalizedRoll.setRerollable(this.ctx.roll.isRerollable);
 
     // Convert the roll to a chat message and return it
-    await finalizedRoll.toMessage(
+    const msg = await finalizedRoll.toMessage(
       {
         flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
       },
       { rollMode: this.rollMode },
     );
+    // TODO: Remove type annotation after toMessage gets fixed upstream in types
+    finalizedRoll.setMessageId(msg?.id as string);
 
     return finalizedRoll;
   }

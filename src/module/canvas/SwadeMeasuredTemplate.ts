@@ -188,12 +188,11 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     //defer to the core highlighting if the setting is off
     if (!highlightRAW) return super.highlightGrid();
 
-    const grid = canvas.grid!;
-    const color = Number(this.fillColor);
-    const border = Number(this.borderColor);
+    const color = Number(this.document.fillColor);
+    const border = Number(this.document.borderColor);
 
     //get the highlight layer and prep it
-    const layer = grid.getHighlightLayer(this.highlightId);
+    const layer = canvas.interface.grid.getHighlightLayer(this.highlightId);
     if (!layer) return;
     layer.clear();
 

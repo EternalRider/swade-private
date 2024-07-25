@@ -66,7 +66,7 @@ class SkillData extends SwadeBaseItemData<
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
-    if (this.parent && options.renderSheet !== null) {
+    if (this.parent && !options.isItemGrant && options.renderSheet !== null) {
       options.renderSheet = true;
     }
   }
