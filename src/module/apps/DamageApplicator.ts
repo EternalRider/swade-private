@@ -421,7 +421,6 @@ async function attemptSoak(
       },
     );
   }
-  // TODO: Figure out how to delay the results message until after the DSN roll animation completes.
   const soakModifiers: RollModifier[] = [
     {
       label: game.i18n.localize('SWADE.DamageApplicator.SoakModifier'),
@@ -434,11 +433,8 @@ async function attemptSoak(
       value: 2,
     });
   }
-  if (options?.reroll && actor.getFlag('swade', 'elan')) {
-    soakModifiers.push({
-      label: game.i18n.localize('SWADE.Elan'),
-      value: 2,
-    });
+  if (options?.reroll) {
+    soakModifiers.push(...actor.system.stats.globalMods.bennyTrait)
   }
   // Roll Vigor and get the data.
   const vigorRoll = await actor.rollAttribute('vigor', {
