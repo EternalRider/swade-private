@@ -71,7 +71,7 @@ class AbilityData extends SwadeBaseItemData<
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
-    //Stop Ancestries/Archetypes from being added to the actor as an item if the actor already has one
+    //Stop Archetypes from being added to the actor as an item if the actor already has one
     const subType = this.subtype;
     if (
       subType === constants.ABILITY_TYPE.ARCHETYPE &&

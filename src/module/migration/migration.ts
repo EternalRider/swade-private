@@ -3,7 +3,6 @@ import { ReloadType } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
-import { AbilityData } from '../data/item';
 import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -343,7 +342,6 @@ export function migrateItemData(
   item: foundry.documents.BaseItem.ConstructorData,
 ) {
   const updateData: UpdateData = {};
-  _renameRaceToAncestry(item, updateData);
   _migrateWeaponAPToNumber(item, updateData);
   _migratePowerEquipToFavorite(item, updateData);
   _migrateItemEquipState(item, updateData);
@@ -352,7 +350,6 @@ export function migrateItemData(
   _fixWorldItemGrants(item, updateData);
   _generateSWID(item, updateData);
   _setRangeType(item, updateData);
-  _migrateAbilityToAncestry(item, updateData);
 
   // Migrate embedded effects
   if (item.effects) {
@@ -678,40 +675,6 @@ function _setRangeType(
     rangeType = constants.WEAPON_RANGE_TYPE.MIXED;
   }
   updateData['system.rangeType'] = rangeType;
-}
-
-function _renameRaceToAncestry(
-  data: foundry.documents.BaseItem.ConstructorData,
-  updateData: UpdateData,
-) {
-  if (data.type === 'ability' && data.system.subtype === 'race') {
-    updateData['system.subtype'] = 'ancestry';
-  }
-}
-
-export async function _migrateAbilityToAncestry(item: SwadeItem) {
-  if (
-    !(item.system instanceof AbilityData) ||
-    item.system.subtype !== 'ancestry'
-  )
-    return;
-  const rawData = item.toObject() as any;
-  const parent = item.parent;
-  const pack = item.pack ?? undefined;
-  rawData.type = 'ancestry';
-  rawData.system = AbilityData.schema.clean(rawData.system);
-
-  console.log(rawData);
-
-  await item.delete();
-  const newItem = await SwadeItem.create(rawData, {
-    parent,
-    pack,
-    keepId: true,
-    renderSheet: true,
-  });
-
-  console.log(newItem);
 }
 
 type UpdateData = Record<string, any>;
