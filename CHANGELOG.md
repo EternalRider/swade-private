@@ -22,26 +22,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## [Unreleased]
+## 4.1.0
 
 ### Added
 
+- New item type: Ancestry. Existing ancestry abilities are automatically migrated. **by @florad92**
 - Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
-
-### Changed
-
-- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
-
-### Fixed
-
-- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
-
-## 4.1.0
 
 ### Changed
 
 - Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
 - Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
+- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
+
+### Fixed
+
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
 
 ## 4.0.4
 

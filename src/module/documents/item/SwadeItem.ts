@@ -81,6 +81,10 @@ class SwadeItem extends Item {
         }
       }
     }
+    // eslint-disable-next-line deprecation/deprecation
+    if (data.type === 'ability' && ['ancestry', 'race'].includes(data.system?.subtype)) {
+      data.type = 'ancestry';
+    }
     return data;
   }
 
