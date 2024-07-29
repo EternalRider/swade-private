@@ -339,7 +339,7 @@ class WeaponData extends SwadePhysicalItemData<
         } else if (usesAmmo && ammo) {
           resourceUpdates.push({
             _id: ammo.id,
-            'data.quantity': quantity - chargesToUse,
+            'system.quantity': quantity - chargesToUse,
           });
         }
       }
