@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.0.5
+
+### Fixed
+
+- Removed outdated references to `flags.swade.elan` in favor of `globalMods.bennyTrait`. **by @jpmeehan5**
+- Ammo count for weapons with Reload Procedure of None once again reduce the ammo quantity by 1 as expected. (#1194) **by kristianserrano**
+- Fixed Vehicular weapons not rolling driver's skill. (#331) **by architech99**
+
 ## 4.0.4
 
 ### Fixed

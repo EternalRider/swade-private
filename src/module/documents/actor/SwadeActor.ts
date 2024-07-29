@@ -49,7 +49,6 @@ declare global {
     swade: {
       ambidextrous?: boolean;
       auras?: Record<string, AuraData>;
-      elan?: boolean;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
