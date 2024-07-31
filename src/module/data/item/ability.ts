@@ -4,8 +4,9 @@ import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { category, favorite, grants } from './common';
+import { builder, category, favorite, grants } from './common';
 import {
+  Builder,
   Category,
   ChoicesType,
   Favorite,
@@ -17,7 +18,8 @@ declare namespace AbilityData {
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      Grants {
+      Grants, 
+      Builder {
     subtype: foundry.data.fields.StringField<{
       initial: typeof constants.ABILITY_TYPE.SPECIAL;
       choices: ChoicesType<typeof constants.ABILITY_TYPE>;
@@ -42,6 +44,7 @@ class AbilityData extends SwadeBaseItemData<
       ...favorite(),
       ...category(),
       ...grants(),
+      ...builder(),
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),

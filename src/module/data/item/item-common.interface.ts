@@ -1,6 +1,7 @@
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import * as common from './common';
 
+export type Builder = ReturnType<typeof common.builder>;
 export type PhysicalItem = ReturnType<typeof common.physicalItem>;
 export type Templates = ReturnType<typeof common.templates>;
 export type ItemDescription = ReturnType<typeof common.itemDescription>;

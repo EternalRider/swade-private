@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - New item type: Ancestry. Existing ancestry abilities are automatically migrated. **by @florad92**
 - Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
+- Added new field for Abilities and physical items, `system.build.cost`, that can be used to track the character creation values for custom ancestries and other similar "build your own" designs.
 
 ### Changed
 
