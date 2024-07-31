@@ -56,19 +56,22 @@ class RequirementsField extends foundry.abstract
         choices: Object.values(constants.REQUIREMENT_TYPE),
         initial: constants.REQUIREMENT_TYPE.RANK,
         required: true,
+        label: 'Type',
       }),
       /** The actual requirement value, such as an attribute, skill or edge swid */
       selector: new fields.StringField({
         required: true,
         validate: validateSwid,
+        label: 'SWADE.Requirements.Editor.SWID',
       }),
       /** For attribute and skill requirements this is used  to denote the die type, for Ranks it is used to denote the rank*/
-      value: new AddStatsValueField({ initial: '', required: true }),
+      value: new AddStatsValueField({ initial: '', required: true, label: 'SWADE.Requirements.Editor.Value' }),
       /** A simple label, for display */
       label: new fields.StringField({ required: false }),
       combinator: new fields.StringField({
         initial: 'and',
         choices: ['and', 'or'],
+        label: 'SWADE.Requirements.Combinator',
       }),
     };
   }

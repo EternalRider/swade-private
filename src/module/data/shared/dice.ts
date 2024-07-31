@@ -1,8 +1,9 @@
 import { TraitDie } from '../../documents/actor/actor-data-source';
 
-export function makeDiceField(init = 4) {
+export function makeDiceField(initial = 4, label = 'SWADE.DieSides') {
   return new foundry.data.fields.NumberField({
-    initial: init,
+    label,
+    initial,
     min: 0,
     integer: true,
     positive: true,
@@ -15,12 +16,13 @@ export function makeTraitDiceFields() {
     die: new fields.SchemaField({
       sides: makeDiceField(),
       modifier: new fields.NumberField({
+        label: 'SWADE.TraitMod',
         initial: 0,
         integer: true,
       }),
     }),
     'wild-die': new fields.SchemaField({
-      sides: makeDiceField(6),
+      sides: makeDiceField(6, 'SWADE.WildDieSides'),
     }),
   };
 }

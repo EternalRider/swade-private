@@ -25,7 +25,7 @@ export class NpcData extends CommonActorData<
     return {
       ...super.defineSchema(),
       ...this.wildcardData(2, 0),
-      wildcard: new fields.BooleanField({ initial: false }),
+      wildcard: new fields.BooleanField({ initial: false, label: 'SWADE.WildCard' }),
     };
   }
 

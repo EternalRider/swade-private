@@ -61,9 +61,9 @@ class ShieldData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      minStr: new fields.StringField({ initial: '' }),
-      parry: new fields.NumberField({ initial: 0, integer: true }),
-      cover: new fields.NumberField({ initial: 0, integer: true }),
+      minStr: new fields.StringField({ initial: '', label: 'SWADE.MinStr' }),
+      parry: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.Parry' }),
+      cover: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.Cover._name' }),
     };
   }
 

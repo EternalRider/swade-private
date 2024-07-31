@@ -49,8 +49,11 @@ class AbilityData extends SwadeBaseItemData<
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
         textSearch: true,
+        label: 'SWADE.Subtype',
       }),
-      grantsPowers: new fields.BooleanField(),
+      grantsPowers: new fields.BooleanField({
+        label: 'SWADE.GrantsPowers',
+      }),
     };
   }
 

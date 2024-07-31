@@ -33,8 +33,9 @@ class HindranceData extends SwadeBaseItemData<
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,
         blank: false,
+        label: 'SWADE.HindranceSeverity.Label',
       }),
-      major: new fields.BooleanField(),
+      major: new fields.BooleanField({ label: 'SWADE.MajHind' }),
     };
   }
 

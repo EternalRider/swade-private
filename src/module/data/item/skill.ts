@@ -29,8 +29,8 @@ class SkillData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...makeTraitDiceFields(),
-      attribute: new foundry.data.fields.StringField({ initial: '' }),
-      isCoreSkill: new foundry.data.fields.BooleanField(),
+      attribute: new foundry.data.fields.StringField({ initial: '', label: 'SWADE.Attribute' }),
+      isCoreSkill: new foundry.data.fields.BooleanField({ label: 'SWADE.CoreSkill' }),
     };
   }
 

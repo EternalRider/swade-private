@@ -27,6 +27,7 @@ SWADE:
     Reminder: <p>Running during your turn incurs a -2 penalty to all your actions.</p>
   RollRun: '[Click] to roll the Running Die'
   Adv: Advances
+  Advance: Advance
   Rank: Rank
   Inv: Gear
   Summary: Traits
@@ -88,6 +89,7 @@ SWADE:
   BenniesGMAddMessage: took an additional Benny!
   BenniesSpendMessage: spends a Benny!
   BenniesMax: Bennies Reset
+  BenniesMaxNum: Maximum Bennies
   Elan: Elan
   EditSkill: Edit Skill
   EdEdge: Edit Edge
@@ -168,6 +170,7 @@ SWADE:
   DmgModUni: Damage Modifier
   SkillModUni: Trait Modifier
   ShotsUsed: Shots Used
+  ShotsCurrent: Current Shots
   NaturalArmor: Natural Armor
   HitLocations: Hit Locations
   Head: Head
@@ -191,6 +194,7 @@ SWADE:
   Minor: (Minor)
   Edges: Edges
   ArcBack: Arcane Background
+  Value: Value
   Req: Requirements
   Requirements:
     Other: Other
@@ -225,6 +229,7 @@ SWADE:
   PPCost: PP Cost
   CurPP: Current Power Points
   MaxPP: Maximum Power Points
+  MaxLabel: Maximum
   Dur: Duration
   Trap: Trapping
   Wound: Wound
@@ -245,6 +250,7 @@ SWADE:
   Status: Status
   Handling: Handling
   Topspeed: Top Speed
+  SpeedUnit: Unit
   OutOfControl: Out of Control
   Wrecked: Wrecked
   Item: Item
@@ -311,6 +317,7 @@ SWADE:
   GM: Game Master
   Vehicles: Vehicles
   AddStats: Additional Stats
+  Stats: Stats
   Actors: Actors
   Items: Items
   Max: Max
@@ -550,6 +557,7 @@ SWADE:
     Wiki: Wiki
     ReportAnIssue: Report an Issue
   OpenOrigin: Open origin
+  ActionsOverride: Override
   EffectsTemporary: Temporary Effects
   EffectsPermanent: Permanent Effects
   Ranks:
@@ -564,6 +572,7 @@ SWADE:
     Delete: Delete Advance
     Planned: Planned
     Modes:
+      Label: Mode
       Legacy: Legacy
       Expanded: Expanded
     Types:
@@ -577,6 +586,8 @@ SWADE:
   Appearance: Appearance
   CharacterGoals: Goals
   Background: Background
+  ID: ID
+  SortNum: Sorting Number
   ActiveEffects:
     Add: Add Active Effect
     Source: Source
@@ -849,6 +860,7 @@ SWADE:
     Readied: Readied
   DestroyOnEmpty: Destroy when Empty
   Charges: Charges
+  ChargesMax: Maximum Charges
   Consumable:
     Use: Use
     Consumables: Consumables
@@ -928,7 +940,10 @@ SWADE:
     Type: Type
     HasMaxValue: Has Max Value
     Current: Current {stat}
+    Value: Value
     Max: Max {stat}
+    MaxLabel: Maximum
+    OptionLabel: Option
     KeyErr: Additional Stat key {invalid} is invalid and has been changed to {key}
   MessageOnUse:
     Label: Message on Use
@@ -937,7 +952,10 @@ SWADE:
     EmptyHint: This item currently grants no items
     Header: Item Grants
     When: Grant Items When
+    Mutation: Mutation
   IgnFatigue: Ignore Fatigue
+  IgnFatigueWounds: Ignore Wounds/Fatigue
+  FatigueWounds: Wounds/Fatigue
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
   Targets: 'Targets:'
