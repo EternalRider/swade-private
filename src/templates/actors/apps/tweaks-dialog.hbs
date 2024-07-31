@@ -28,6 +28,21 @@
           </button>
         </div>
       </fieldset>
+      {{#if doc.system.build}}
+        <div class='form-group'>
+          <label for='{{doc.uuid}}-build-points'>
+            {{localize 'SWADE.BuildCost'}}
+          </label>
+          <span class='form-fields'>
+            <input
+              id='{{doc.uuid}}-builder-points'
+              type='number'
+              name='system.build.points'
+              value='{{doc.system.build.points}}'
+            />
+          </span>
+        </div>
+      {{/if}}
     {{/if}}
     <section class='tab' data-group='primary' data-tab='traits'>
       {{#if isActor}}

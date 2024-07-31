@@ -27,6 +27,12 @@ export const itemDescription = () => ({
   ...additionalStats(),
 });
 
+export const builder = () => ({
+  build: new fields.SchemaField({
+    cost: new fields.NumberField({ integer: true, label: 'SWADE.BuildCost' })
+  })
+})
+
 export const physicalItem = () => ({
   quantity: new fields.NumberField({ initial: 1 }),
   weight: new fields.NumberField({ initial: 0 }),
