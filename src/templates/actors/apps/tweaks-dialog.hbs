@@ -30,15 +30,15 @@
       </fieldset>
       {{#if doc.system.build}}
         <div class='form-group'>
-          <label for='{{doc.uuid}}-build-points'>
+          <label for='{{doc.uuid}}-build-cost'>
             {{localize 'SWADE.BuildCost'}}
           </label>
           <span class='form-fields'>
             <input
-              id='{{doc.uuid}}-builder-points'
+              id='{{doc.uuid}}-build-cost'
               type='number'
               name='system.build.points'
-              value='{{doc.system.build.points}}'
+              value='{{doc.system.build.cost}}'
             />
           </span>
         </div>
