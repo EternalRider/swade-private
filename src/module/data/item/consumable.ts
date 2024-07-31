@@ -66,15 +66,16 @@ class ConsumableData extends SwadePhysicalItemData<
       ...bonusDamage(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 1 }),
-        max: new fields.NumberField({ initial: 1 }),
+        value: new fields.NumberField({ initial: 1, label: 'SWADE.Charges' }),
+        max: new fields.NumberField({ initial: 1, label: 'SWADE.ChargesMax' }),
       }),
-      messageOnUse: new fields.BooleanField({ initial: true }),
-      destroyOnEmpty: new fields.BooleanField(),
+      messageOnUse: new fields.BooleanField({ initial: true, label: 'SWADE.MessageOnUse.Label' }),
+      destroyOnEmpty: new fields.BooleanField({ label: 'SWADE.DestroyOnEmpty' }),
       subtype: new fields.StringField({
         initial: constants.CONSUMABLE_TYPE.REGULAR,
         choices: Object.values(constants.CONSUMABLE_TYPE),
         textSearch: true,
+        label: 'SWADE.Subtype',
       }),
     };
   }

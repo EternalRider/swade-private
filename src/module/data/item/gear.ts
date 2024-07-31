@@ -61,7 +61,7 @@ class GearData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      isAmmo: new fields.BooleanField(),
+      isAmmo: new fields.BooleanField({ label: 'SWADE.ItemIsAmmo' }),
     };
   }
 

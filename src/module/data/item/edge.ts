@@ -49,10 +49,11 @@ class EdgeData extends SwadeBaseItemData<
       ...favorite(),
       ...category(),
       ...grants(),
-      isArcaneBackground: new fields.BooleanField(),
+      isArcaneBackground: new fields.BooleanField({ label: 'SWADE.ArcBack' }),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),
         {
+          label: 'SWADE.Req',
           initial: [
             {
               type: constants.REQUIREMENT_TYPE.RANK,
