@@ -35,7 +35,7 @@ export default class SwadeUser extends User {
 
   async spendBenny() {
     if (this.isGM) {
-      if (this.bennies === 0) return;
+      if (this.bennies <= 0) return;
       const message = await renderTemplate(
         CONFIG.SWADE.bennies.templates.spend,
         {

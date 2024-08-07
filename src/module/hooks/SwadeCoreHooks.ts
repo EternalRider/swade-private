@@ -535,9 +535,8 @@ export default class SwadeCoreHooks {
     const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
     if (user.isGM || hasStaticBennies || !gm?.isSelf) return false;
     let newBennies = connected ? gm.bennies + 1 : gm.bennies - 1;
-    newBennies = newBennies < 0 ? 0 : newBennies;
     await gm.setFlag('swade', 'bennies', newBennies);
-    await ui.players?.render(true);
+    ui.players?.render(true);
   }
 
   /** Add benny management to the player list */

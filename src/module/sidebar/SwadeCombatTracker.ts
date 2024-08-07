@@ -669,7 +669,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       default: 'benny',
       buttons,
       render: (el: JQuery<HTMLElement>) => {
-        if (isVehicle || (game.user?.isGM && game.user.bennies === 0)) {
+        if (isVehicle || (game.user?.isGM && game.user.bennies <= 0)) {
           el.find('[data-button="gm"]').attr('disabled', 'true');
         }
         if (isVehicle || combatant.bennies === 0) {
