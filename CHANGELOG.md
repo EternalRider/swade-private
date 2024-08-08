@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Changed
+
+- Fixes the GM gaining another Benny if the GM has 0 Bennies and a player refreshes the browser. Previously, a GM with 0 Bennies could never have below 0, so when a player refreshed, they'd drop, which decreases the amount of Bennies a GM has (bottoming out at 0), and rejoin, which increases the amount (adding 1 Benny). This fix allows the GM Benny count to go to negative values when players drop, avoiding the possibility of gaining an extra Benny unintentionally. **by @kristianserrano**
+
 ## 4.1.0
 
 ### Added
@@ -45,7 +51,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Removed outdated references to `flags.swade.elan` in favor of `globalMods.bennyTrait`. **by @jpmeehan5**
-- Ammo count for weapons with Reload Procedure of None once again reduce the ammo quantity by 1 as expected. (#1194) **by kristianserrano**
+- Ammo count for weapons with Reload Procedure of None once again reduce the ammo quantity by 1 as expected. (#1194) **by @kristianserrano**
 - Fixed Vehicular weapons not rolling driver's skill. (#331) **by architech99**
 
 ## 4.0.4
