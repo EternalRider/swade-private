@@ -558,37 +558,23 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (userId === game.userId) this._applyRelatedEffects();
   }
 
-  protected override _displayScrollingStatus(enabled) {
+  protected override _displayScrollingStatus(enabled: boolean) {
     super._displayScrollingStatus(enabled);
     const tokens = this.target.getActiveTokens(true);
-    console.log(this);
-    const badAEs = [
-      'shaken',
-      'incapacitated',
-      'dead',
-      'bound',
-      'entangled',
-      'frightened',
-      'distracted',
-      'encumbered',
-      'prone',
-      'stunned',
-      'vulnerable',
-      'bleeding-out',
-      'diseased',
-      'heart-attack',
-      'on-fire',
-      'poisoned',
-      'blind',
-    ];
-    const isBad = this.statuses?.some((s) => badAEs.includes(s));
-    const color = isBad
-      ? enabled
-        ? Color.from('#D41159')
-        : Color.from('#1A85FF')
-      : enabled
-        ? Color.from('#1A85FF')
-        : Color.from('#D41159');
+    const isNegative = CONFIG.SWADE.nagetiveStatusEffects.includes(
+      this.statusId,
+    );
+
+    const negativeColor = '#D41159';
+    const positiveColor = '#1A85FF';
+    const colorCode = enabled
+      ? isNegative // if the AE is added and negative, flash negative color, else flash positive color
+        ? negativeColor
+        : positiveColor
+      : isNegative // if the AE is getting removed and negative, flash negative color, else flash positive color
+        ? positiveColor
+        : negativeColor;
+    const color = Color.from(colorCode);
     for (const token of tokens) {
       token.ring?.flashColor(color, {
         duration: 1000,
