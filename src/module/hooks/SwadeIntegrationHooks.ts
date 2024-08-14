@@ -97,10 +97,14 @@ export default class SwadeIntegrationHooks {
         texture: customOptions?.texture,
         system: dieSystem,
       };
-      setProperty(wildDie, 'options.appearance', customAppearance);
+      foundry.utils.setProperty(
+        wildDie,
+        'options.appearance',
+        customAppearance,
+      );
     } else {
       // Set the preset
-      setProperty(wildDie, 'options.colorset', colorSet);
+      foundry.utils.setProperty(wildDie, 'options.colorset', colorSet);
     }
     // Get the dicePreset for the given die type
     const dicePreset = game.dice3d?.DiceFactory.systems[dieSystem].dice.find(

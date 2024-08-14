@@ -245,19 +245,7 @@ function equipStatusLabel(state: EquipState) {
   return new Handlebars.SafeString(states[state]);
 }
 
-function prepareFormRendering(
-  doc: ClientDocument,
-  path: string,
-  options: Handlebars.HelperOptions,
-) {
-  let field: foundry.data.fields.DataField;
-  if (path.startsWith('system')) {
-    const splitPath = path.split('.');
-    splitPath.shift();
-    field = doc.system.schema.getField(splitPath.join('.'));
-  } else {
-    field = doc.schema.getField(path);
-  }
+function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
   const {
     classes,
     label,
@@ -267,6 +255,7 @@ function prepareFormRendering(
     units,
     widget,
     source,
+    document,
     ...inputConfig
   } = options.hash;
   const groupConfig = {
@@ -279,6 +268,20 @@ function prepareFormRendering(
     units,
     classes: typeof classes === 'string' ? classes.split(' ') : [],
   };
+  const doc: ClientDocument =
+    document ??
+    options.data.root.item ??
+    options.data.root.actor ??
+    options.data.root.document;
+  let field: foundry.data.fields.DataField;
+  if (path.startsWith('system')) {
+    const splitPath = path.split('.');
+    splitPath.shift();
+    field = doc.system.schema.getField(splitPath.join('.'));
+  } else {
+    field = doc.schema.getField(path);
+  }
+
   if (!('value' in inputConfig)) {
     inputConfig.value = foundry.utils.getProperty(
       source ? doc._source : doc,
@@ -288,13 +291,8 @@ function prepareFormRendering(
   return { field, inputConfig, groupConfig };
 }
 
-function formGroupSimple(
-  doc: ClientDocument,
-  path: string,
-  options: Handlebars.HelperOptions,
-) {
+function formGroupSimple(path: string, options: Handlebars.HelperOptions) {
   const { field, inputConfig, groupConfig } = prepareFormRendering(
-    doc,
     path,
     options,
   );
@@ -302,12 +300,8 @@ function formGroupSimple(
   return new Handlebars.SafeString(group.outerHTML);
 }
 
-function formInputSimple(
-  doc: ClientDocument,
-  path: string,
-  options: Handlebars.HelperOptions,
-) {
-  const { field, inputConfig } = prepareFormRendering(doc, path, options);
+function formInputSimple(path: string, options: Handlebars.HelperOptions) {
+  const { field, inputConfig } = prepareFormRendering(path, options);
   const group = field.toInput(inputConfig);
   return new Handlebars.SafeString(group.outerHTML);
 }
@@ -315,6 +309,7 @@ function formInputSimple(
 /** @internal */
 export function registerCustomHelpers() {
   Handlebars.registerHelper({
+    readonly: (val) => (val ? 'readonly' : ''),
     add,
     signedString,
     times,

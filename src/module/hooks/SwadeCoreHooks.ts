@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { HotReloadData } from '../../globals';
+import CharacterSummarizer from '../CharacterSummarizer';
+import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
-import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -15,8 +16,6 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeCards from '../documents/card/SwadeCards';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombat from '../documents/combat/SwadeCombat';
-import SwadeItem from '../documents/item/SwadeItem';
-import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
 import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
@@ -534,7 +533,7 @@ export default class SwadeCoreHooks {
     const gm = game.users.activeGM;
     const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
     if (user.isGM || hasStaticBennies || !gm?.isSelf) return false;
-    let newBennies = connected ? gm.bennies + 1 : gm.bennies - 1;
+    const newBennies = connected ? gm.bennies + 1 : gm.bennies - 1;
     await gm.setFlag('swade', 'bennies', newBennies);
     ui.players?.render(true);
   }

@@ -39,6 +39,12 @@ class SwadeBaseItemData<
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
+
+    if (this.parent?.actor?.type === 'group' && !this.isPhysicalItem) {
+      ui.notifications?.warn('Groups can only hold physical items!');
+      return false;
+    }
+
     // set a default image
     if (!data.img) {
       this.parent?.updateSource({
