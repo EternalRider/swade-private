@@ -1,1 +1,1379 @@
-{}
+---
+SWADE:
+  ButtonReset: Reset
+  ButtonSubmit: Submit
+  CommunityCharSheet: Legacy Character Sheet
+  CommunityNPCSheet: Community NPC Sheet
+  CommunityVicSheet: Community Vehicle Sheet
+  CommunityItemSheet: Community Item Sheet
+  ItemSheet: Savage Worlds Item Sheet
+  HeadquartersSheet: Savage Worlds Headquarters Sheet
+  Expand: Expand
+  OfficialSheet: Savage Worlds Official Sheet by Pinnacle
+  ModHint: Upewnij się, że modyfikator zawiera + lub -
+  ActionDeckPresetLight: Action Deck (Light)
+  ActionDeckPresetDark: Action Deck (Dark)
+  ActionDeckPresetPEG: Action Deck (PEG)
+  Name: Nazwa
+  disabledAE: Wyłączony z powodu aktywnego efektu
+  Tough: Wytrzymałość
+  Ancestry: Pochodzenie
+  Archetype: Archetyp
+  Pace: Tempo
+  Running: Bieganie
+  RunningDie: Kość Biegania
+  RunningMod: Modyfikator Biegania
+  RollRun: Kliknij aby Pobiec
+  Adv: Rozwinięcia
+  Rank: Ranga
+  Inv: Sprzęt
+  Summary: Cechy
+  Pow: Moce
+  WildCard: Figura
+  Extra: Blotka
+  Bennies: Fuksy
+  BenniesCount: 'Fuksy: {count}'
+  TraitMod: Modyfikator Cechy
+  SkillTest: Test Umiejętności
+  AttributeTest: Test Cechy
+  Attributes: Cechy
+  Derived: Cechy pochodne
+  AttrAgi: Zręczność
+  AttrSma: Spryt
+  AnimalSmarts: Zwierzęcy Spryt
+  AnimalSmartsMarker: Z
+  AttrSpr: Duch
+  AttrStr: Siła
+  AttrVig: Wigor
+  Tweaks: Mody
+  AttrAgiShort: Zr
+  AttrSmaShort: Sp
+  AttrSprShort: Du
+  AttrStrShort: Si
+  AttrVigShort: Wi
+  Skills: Umiejętności
+  Unskilled: Improwizacja
+  CoreSkill: Umiejętność Podstawowa
+  CoreSkills: Umiejętności Podstawowe
+  LinkAttr: Powiązana Cecha
+  GlobalMod:
+    Label: Global Modifiers
+    Trait: All Traits
+    Agility: Agility and linked Skills
+    Smarts: Smarts and linked Skills
+    Spirit: Spirit and linked Skills
+    Strength: Strength and linked Skills
+    Vigor: Vigor and linked Skills
+    Attack: All Attacks
+    Damage: All Damage
+    AP: All Armor Piercing
+  ArcaneSkill: Umiejętność Nadprzyrodzona
+  ActivateArcaneDevice: Aktywuj Artefakt
+  Die: Kość
+  WildDie: Kość Figury
+  Modifier: Modyfikator
+  BenniesSpend: Wydaj Fuksa
+  BenniesSpendGM: Wydaj Fuksa MG
+  BenniesAdjustGM: Dostosuj Fuksy MG
+  BenniesAdjustGMText: Wprowadź liczbę Fuksów, jaką Mistrz Gry powinien obecnie mieć.
+  BenniesGive: Daj Fuksa
+  BenniesRefresh: Odśwież Fuksy
+  AllBenniesRefresh: Odśwież wszystkie Fuksy
+  BenniesRefreshMessage: Fuksy zostały odświeżone!
+  BenniesRefreshAllMessage: Wszystkie Fuksy zostały odświeżone!
+  BenniesGMRefreshMessage: Fuksy MG zostały odświeżone!
+  BenniesAddMessage: otrzymał Fuksa!
+  BenniesGMAddMessage: wziął dodatkowego Fuksa!
+  BenniesSpendMessage: wydał Fuksa!
+  BenniesMax: Reset Fuksów
+  Elan: Rozmach
+  EditSkill: Edytuj Umiejętność
+  EdEdge: Edytuj Przewagę
+  EdHind: Edytuj Zawadę
+  Ed: Edytuj
+  EdF: Edytuj {item}
+  EdRightClick: Kliknij prawym przyciskiem, aby edytować
+  Del: Usuń
+  Arcane: Nadprzyrodzony
+  InnatePower: Moc Wrodzona
+  All: Wszystko
+  HasPowers: Ma Moce
+  Weapons: Broń
+  MeleeWeapons: Broń Biała
+  RangedWeapons: Broń Dystansowa
+  Armors: Pancerz
+  WeaponsAndArmor: Broń i Pancerz
+  Shields: Tarcze
+  Biography: Historia
+  Shaken: W Szoku
+  Distr: Zmylony
+  Vuln: Odsłonięty
+  Stunned: Porażony
+  Entangled: Pochwycony
+  Bound: Unieruchomiony
+  Aiming: Celowanie
+  Berserk: Berserk
+  Defending: Obrona
+  Flying: Latanie
+  Unfamiliar:
+    '2': Nieznany (-2)
+    '4': Nieznany (-4)
+  Follow: Podąża za {name}
+  Unfollow: Nie podąża za {name}
+  MakeGroupLeader: Uczyń Liderem Grupy
+  RemoveGroupLeader: Usuń Lidera Grupy
+  AddTokenFollowers: Dodaj wybrane tokeny jako podążających
+  GroupByName: Grupuj według nazwy
+  SetGroupColor: Ustaw kolor grupy
+  SelectColor: Wybierz kolor
+  Holding: Wstrzymanie Akcji
+  Hold: Wstrzymaj Akcję
+  ActAfterCurrentCombatant: Działaj po tej postaci
+  ActBeforeCurrentCombatant: Działaj teraz
+  LoseTurn: Strata tury
+  Frightened: Przerażony
+  Encumbered: Obładowany
+  Prone: Na Ziemi
+  BleedingOut: Konanie
+  Diseased: Chory
+  HeartAttack: Zawał Serca
+  OnFire: W Ogniu
+  Poisoned: Zatruty
+  Reach: Odległość
+  Torch: Pochodnia
+  Invisible: Niewidzialność
+  ColdBodied: Wyziębienie
+  Smite: Grom
+  Armor: Pancerz
+  Protection: Ochrona
+  Dmg: Obrażenia
+  DmgOver: Obrażenia Akcji
+  ApOver: Akcja Przebijanie Pancerza
+  Resist: Obrona
+  ResistRolls: Rzut na Obronę
+  MacroActor:
+    Default: Domyślny
+    Self: Własny
+  Ap: PP
+  APLong: Przebicie Pancerza
+  RoF: SzS
+  Mag: Strzały
+  Parry: Obrona
+  ShieldBonus: Bonus Tarczy
+  Notes: Uwagi
+  ActionsEffects: Akcje i Stany
+  Actions: Akcje
+  DmgModUni: Modyfikator Obrażeń
+  SkillModUni: Modyfikator Cechy
+  ShotsUsed: Zużycie Pocisków
+  NaturalArmor: Naturalny Pancerz
+  HitLocations: Lokacje Trafienia
+  Head: Głowa
+  Torso: Korpus
+  Arms: Ręce
+  Legs: Nogi
+  MinStrLong: Minimalna Siła
+  MinStr: Min. Siła
+  MinStrShort: Min.SI
+  Desc: Opis
+  Special: Zdolności Specjalne
+  Details: Szczegóły
+  Equippable: Ekwipowalny
+  ArcaneDevice: Artefakt
+  Misc: Różne
+  QuickAccess: Szybki Dostęp
+  Effects: Stany
+  Hindrances: Zawady
+  MajHind: Poważna Zawada
+  Major: "(Poważna)"
+  Minor: "(Drobna)"
+  Edges: Przewagi
+  ArcBack: Zdolności Nadprzyrodzone
+  Req: Wymagania
+  Requirements:
+    Other: Inne
+    And: i
+    Or: albo
+    Editor:
+      Header: Edytuj wymagania dla {name}
+      AddHint: Dodaj nowe wymagania
+      DeleteHint: Usuń to wymaganie
+      Label: Etykieta
+      Value: Wartość
+      SWID: SWID
+    Combinator: Łącznik
+  Conv: Determinacja
+  Hesitant: Niezdecydowany
+  LevelHeaded: Opanowany
+  ImprovedLevelHeaded: Wyjątkowo Opanowany
+  AutoCalc: Automatyczne wyliczenia
+  InclArmor: Automatycznie oblicza Wytrzymałość, włączając Pancerz
+  Label: Etykieta
+  Enabled: Włączony
+  Currency: Waluta
+  CarryWeight: Obładowanie
+  Eqd: Wyp.
+  Equipped: Założony
+  Unequipped: Nie założony
+  Quantity: Ilość
+  Weight: Waga
+  Price: Cena
+  PP: Punkty Mocy
+  PPShort: PM
+  PPCost: Koszt PM
+  CurPP: Aktualne Punkty Mocy
+  MaxPP: Maksymalne Punkty Mocy
+  Dur: Trwanie
+  Trap: Wariant
+  Wound: Rana
+  Wounds: Rany
+  WoundsMax: Maksymalne Rany
+  Fatigue: Zmęczenie
+  FatigueMax: Maksymalne Zmęczenie
+  Incap: Wyeliminowany
+  Init: Inicjatywa
+  Draw: Losuj
+  Reset: Zresetuj
+  DrawInit: Losuj Inicjatywę
+  ActionDeckReset: Przetasuj Karty Akcji
+  ActionDeckResetNotification: Karty Akcji Przetasowane
+  InitDraw: Wylosowano…
+  General: Ogólny
+  Addi: Dodatkowy
+  Status: Stan
+  Handling: Sterowność
+  Topspeed: Maks. Prędkość
+  OutOfControl: Utrata Kontroli
+  Wrecked: Zniszczony
+  Item: Przedmiot
+  Cargo: Ładunek
+  MaxCargo: Maksymalna waga Ładunku
+  CargoWeight: Waga Ładunku
+  Mods: Modyfikacje
+  ModSlots: Sloty na Modyfikacje
+  MaxMods: Maksimum Modyfikacji
+  Operator: Kierowca
+  ManCheck: Test Manewrowania
+  AltSkill: Alternatywna Umiejętność
+  Class: Klasyfikacja
+  Vehicular: Broń Pojazdu
+  VehicleMod: Modyfikacja pojazdu
+  OpSkill: Umiejętność Manewrowania
+  ShowBennyAnimation: Pokaż animację Fuksa
+  ShowBennyAnimationDesc: Odtwórz animację, gdy wydajesz Fuksa. Dostępne tylko, jeśli
+    Dice So Nice! jest zainstalowane
+  WildDiePreset: Szablon Kości Figury
+  WildDiePresetDesc: Wybierz szablon dla twojej Kości Figury.
+  WildDieTheme: Motyw Kości Figury
+  WildDieThemeDesc: Wybierz motyw dla twojej Kości Figury. Wybierz 'Custom' by stworzyć
+    własny albo 'None' jeśli nie chcesz aby twoja Kość Figury wyglądała inaczej. Miej
+    na uwadze, że własnoręcznie stworzone Kości Figury aktualnie mogą być widziane
+    tylko przez ciebie. Inni gracze będą je widzieć inaczej.
+  SettingConf: Konfigurator ustawień
+  SettingConfLabel: Otwórz konfigurator ustawień
+  SettingConfDesc: Dostrój system tak, aby pasował do ustawień, w których grasz.
+  DiceConf: Ustawienia Kości Figury
+  DiceConfDesc: Skonfiguruj ustawienia integracji SWADE/Dice So Nice
+  DiceConfLabel: Otwórz ustawienia Kości Figury
+  Formula: Wzór
+  SitMod: Mod sytuacyjny
+  RollMode: Typ rzutu
+  RollExample: np. +1d6x albo -2
+  Roll: Rzut
+  RollNoun: Rzut
+  RollRaise: Przebicie
+  GroupRoll: Rzut grupowy
+  Ok: Ok
+  Cancel: Anuluj
+  Redraw: Przelosuj kartę
+  RedrawBenny: Użyj Fuksa by przelosować kartę
+  Add: " dodaj"
+  ConfigInit: Konfiguruj Inicjatywę
+  IgnWounds: Ignoruj Rany
+  Size: Rozmiar
+  Scale: Skala
+  PickACard: Wybierz kartę dla {name}
+  NoCardsLeft: Jest za mało kart w talii! Tylko {current} z {needed} wymaganych kart
+    jest dostępne.
+  OldCard: Stara karta
+  ActionCard: Karta Akcji
+  ConvictionActive: Determinacja aktywna
+  ConvictionActivate: "{name} używa swojej Determinacji!"
+  ConvictionEnd: "{name} nie jest zbyt Zdeterminowany"
+  ConvictionExtend: Czy chcesz zwiększyć swoją Determinację?
+  ConvictionExtendPrompt: Czy chcesz wydać Fuksa aby zwiększyć swoją Determinację?
+  NoBennies: Masz za mało fuksów!
+  GM: Mistrz Gry
+  Vehicles: Pojazdy
+  AddStats: Dodatkowe Statystyki
+  Actors: Aktorzy
+  Items: Przedmioty
+  Max: Maks
+  Curr: Aktualny
+  DSNNone: "- None -"
+  Duplicate: Kopiuj
+  Reload: Przeładowanie
+  Refresh: Odśwież tę kartę
+  RefreshOnly: Odśwież
+  NotOwnedError: Musisz posiadać ten przedmiot/aktora by to zrobić
+  GrantsItemsError: Odświeżanie nie działa na przedmioty, które przyznają bonusy innym
+  NoUpdatedItemFound: Nie znaleziono przedmiotu nadającego się do odświeżenia
+  Ammo: Amunicja
+  AddOrReplaceActions:
+    Title: Dodaj lub zamień Akcje
+    Add: Dodaj nową
+    Replace: Zamień istniejącą
+    Content: "<p>Czy chcesz dodać akcje z {type} <strong>{source}</strong> jako nowe
+      akcje lub wymienić istniejące akcje?</p>"
+  ppReload: Punkty mocy do przeładowania
+  ReloadNotPossible: Ten typ aktora nie przeładowuje
+  ReloadUnneeded: Broń jest już w pełni załadowana
+  ReloadSuccess: Broń została pomyślnie przeładowana
+  NotEnoughAmmo: Nie masz wystarczającej ilości amunicji do tej akcji!
+  NotEnoughAmmoToReload: Nie ma wystarczającej ilości amunicji do pełnego przeładowania
+  ReloadType:
+    Label: Typ przeładowania
+    None: brak
+    Self: Własne
+    Single: Pojedyncze
+    Full: Pełne
+    Magazine: Magazynek
+    Battery: Bateria
+    PP: Punkty Mocy
+  NoAmmoSet: Brak zestawu amunicji
+  NoAmmoPP: Nie znaleziono Punktów Mocy odpowiadających ustawionej amunicji
+  NoDescription: Brak dostępnego opisu
+  NoMags: Nie masz w ekwipunku żadnych przedmiotów zużywalnych oznaczonych jako magazynki
+  RemoveAmmo: Usuń amunicję
+  DiscardMagazine: Usuń pusty magazynek
+  ConsumableType:
+    Label: Podtyp
+    Regular: Zwykły
+  Trapping: Warianty
+  AddBenny: Dodaj Fuksa
+  CurrentBennies: Aktualne Fuksy
+  RerollWithBenny: Przerzut z Fuksem
+  FreeReroll: Darmowy Przerzut
+  AutoCalcParry: Automatycznie oblicza Obronę, włączając Tarczę
+  BaseParry: Bazowe parowanie
+  Subtype: Podtyp
+  SpecialAbility: Zdolność Specjalna
+  SpecialAbilities: Zdolności Specjalne
+  RacialAbilities: Właściwości rasowe
+  ArchetypeAbilities: Właściwości archetypu
+  About: Dziennik
+  EdgesHindrances: Przewagi i Zawady
+  GrantsPowers: Daje moce
+  Crew: Załoga
+  RequiredCrew: Niezbędna Załoga
+  Passengers: Pasażerowie
+  String: Tekst
+  Number: Numer
+  Checkbox: Checkbox
+  Selection: Wybór
+  WealthDie:
+    Label: Kość Majątku
+    Broke:
+      Label: Zrujnowany
+      Hint: Jesteś zrujnowany!
+    Sides: Ściany Kości Majątku
+    WildSides: Ściany Kości Figury (Majątku)
+    Modifier: Modyfikator Kości Majątku
+  TraitRolls: Rzut na Cechę
+  Trait: Cecha
+  AltTrait: Akcja Cechy
+  ClickSuggestions: Kliknij, aby wyświetlić sugestie
+  Quick: Szybki
+  BonusDamage: Dodatkowe Obrażenia
+  Joker: Joker
+  CustomWildDie: "- Niestandardowa Kość Figury -"
+  Subtract: Odejmij
+  DmgRolls: Rzuty na Obrażenia
+  SubtractPPDesc: Odejmij koszt PM od dostępnych PM
+  AddPPDesc: Dodaj koszt PM do dostępnych PM
+  RightClickZoom: Kliknij prawym przyciskiem myszy, aby powiększyć
+  SysMigrationWarning: Twoje dane systemu SWADE pochodzą ze zbyt starej wersji Foundry
+    i nie można ich w sposób niezawodny przenieść do najnowszej wersji. Proces ten
+    zostanie podjęty, ale mogą wystąpić błędy.
+  DeckShuffled: Talia kart automatycznie potasowana
+  BasePace: Bazowe Tempo
+  WarningPackLocked: Nie możesz edytować zablokowanego Kompendium. Najpierw je odblokuj
+  ActionCardEditor: Edytor Kart Akcji
+  CardFace: Tył karty
+  CardValue: Wartość
+  CardSuit: Kolor
+  Cards:
+    Spades: Pik
+    Hearts: Kier
+    Diamonds: Karo
+    Clubs: Trefl
+    Jokers: Jokery
+    Two: Dwójka
+    Three: Trójka
+    Four: Czwórka
+    Five: Piątka
+    Six: Szóstka
+    Seven: Seiódemka
+    Eight: Ósemka
+    Nine: Dziewiątka
+    Ten: Dziesiątka
+    Jack: Walet
+    Queen: Królowa
+    King: Król
+    Ace: As
+    RedJoker: Czerwony Joker / Joker Pik
+    BlackJoker: Czarny Joker / Joker Kier
+    BlueJoker: Niebieski Joker / Joker Karo
+    GreenJoker: Zielony Joker / Joker Trefl
+  IsJoker: Jest Jokerem
+  OpenACEditor: Otwórz w Edytorze Kart Akcji
+  'Yes': Tak
+  'No': Nie
+  Headquarters:
+    Advantage: Zaleta
+    Complication: Komplikacja
+    Form: Formularz
+    Description: Opis
+    Acquisition: Nabycie
+    Maintenance: Konserwacja
+    Upgrades: Ulepszenia
+  SetActionDeck: Ustaw talię jako Talię Akcji
+  ShowCharacterSummary: Pokaż podsumowanie Postaci
+  CharacterSummary: Podsumowanie Postaci
+  CharacterSummaryTypeErr: Nie można użyć podsumowania postaci dla aktora typu {type}
+  CopyHtml: Kopiuj HTML
+  CopyMarkdown: Kopiuj Markdown
+  Imperial: Imperialny
+  Metric: Metryczny
+  ChangeBennyWarning: Zmiana tych ustawień będzie wymagała odświeżenia strony!
+  3DBennies: Fuksy 3D
+  WealthSelectionNoneOther: Brak/Inny
+  Modifiers: Modyfikatory
+  ActionTraitMod: Modyfikator Akcji Cechy
+  ActionDmgMod: Modyfikator Obrażeń Akcji
+  ItemTraitMod: Modyfikator Cech Przedmiotu
+  ItemDmgMod: Modyfikator Obrażeń Przedmiotu
+  Duplicates: Znaleziono duplikaty
+  DuplicateItemsBodyText: Podczas dodawania {type} <strong>{name}</strong> do aktora
+    {target} znaleziono następujące duplikaty (według nazwy i typu). Nazwy nowych
+    elementów zostały zmienione, aby odzwierciedlały ich źródło.
+  NoActionDeckFound: Nie znaleziono Talii Akcji, tworzę nową
+  NoActionDeckDiscardPileFound: Nie znaleziono Stosu Odrzuconych Talii Akcji, tworzę
+    nowy
+  Wealth: Majątek
+  Characters: Postacie
+  SettingRules: Zasady Światów
+  WorldBasics: Podstawy Świata
+  MAPenalty:
+    Label: Kara za Wiele Akcji
+    None: Brak
+  Mod:
+    Custom:
+      Add: Dodaj niestandardowy Modyfikator
+    Support: Wsparcie
+    Preset:
+      Settings: Modyfikator szablonu
+      Choose: Wybierz modyfikator…
+      Add: Dodaj szablon
+    Value: Wartość
+    Ignore: Pominąć?
+    None: Brak modyfikatorów w tym momencie
+    Active: Aktywny
+  Illumination:
+    _name: Oświetlenie
+    Dim: Półmrok
+    Dark: Mrok
+    Pitch: Ciemność
+  Cover:
+    _name: Osłona
+    Shield: Osłona - Tarcza
+    Light: Lekka Osłona
+    Medium: Średnia Osłona
+    Heavy: Pełna Osłona
+    Total: Zupełna Osłona
+  Range:
+    _name: Zasięg
+    Medium: Średni Zasięg
+    Long: Daleki Zasięg
+    Extreme: Ekstremalny Zasięg
+  ModOther: Inne Modyfikatory
+  ModTrait: Modyfikatory Cechy
+  ModAttack: Modyfikatory Ataku
+  ModDamage: Modyfikatory Obrażeń
+  Snapfire: Nieporęczna
+  UnstablePlatform: Niestabilne podłoże
+  Weakness: Słabość
+  Resistance: Odporność
+  CannotAddRaceToRace: Nie możesz dodać rasy/archetypu do rasy/archetypu!
+  LayOutChaseWithDeck: Użyj talii by rozpocząć Pościg
+  ClearChaseCards: Wyczyść stół z kart Pościgu
+  NoSceneAvailable: Brak dostępnych scen lub płótno zostało wyłączone
+  ChaseCardsCleared: Wszystkie karty Pościgu zostały usunięte ze sceny.
+  SetUpChase: Ustaw Pościg
+  ChaseLayout: Layout
+  ChaseRows: Rzędy
+  ChaseColumns: Kolumny
+  ChaseNoDeck: Udostępnij talię!
+  ChaseReset: Talia "{deck}" została zresetowana.
+  Expiration:
+    TabLabel: Turn Behavior
+    Description: "<p>Effects expire on the target's <em>next turn or later</em>.</p>"
+    Behavior: Expiration Behavior
+    BeginAuto: Start of Turn, Automatic
+    BeginPrompt: Start of Turn, Prompt
+    EndAuto: End of Turn, Automatic
+    EndPrompt: End of Turn, Prompt
+    None: None
+    LooseTurnOnHold: Lose Turn on Hold
+    Remaining: Remaining
+  RemoveEffectTitle: Usunąć {label} ?
+  RemoveEffectBody: '<p style="text-align: center;">Usunąć <strong>{label}</strong>
+    z <strong>{parent}</strong>?</p>'
+  PPAbbreviation: PM
+  ShowInChat: Pokaż na czacie
+  ExpandDescription: Rozwiń aby pokazać opis
+  Favorite: Ulubione
+  Equip: Załóż
+  RollDamage: Rzut na Obrażenia
+  SystemLinks:
+    Changelog: Changelog
+    Wiki: Wiki
+    ReportAnIssue: Zgłoś problem
+  OpenOrigin: Otwórz źródło
+  EffectsTemporary: Tymczasowy Stan
+  EffectsPermanent: Permanentny Stan
+  Ranks:
+    Novice: Nowicjusz
+    Seasoned: Doświadczony
+    Veteran: Weteran
+    Heroic: Heros
+    Legendary: Legenda
+  Advances:
+    EditorTitle: Edytor rozwojów
+    Toggle: Przełącz stan planowanego rozwoju
+    Delete: Usuń rozwój
+    Planned: Zaplanowane
+    Modes:
+      Legacy: Dziedzictwo
+      Expanded: Rozszerzony
+    Types:
+      Edge: Nowa Przewaga
+      SingleSkill: Rozwój Jednej Umiejętności
+      TwoSkills: Rozwój Dwóch Umiejętności
+      Attribute: Rozwój Cechy
+      Hindrance: Obniżenie Zawady
+    Number: Numer rozwoju
+  AddAdvance: Nowy Rozwój
+  Appearance: Wygląd
+  CharacterGoals: Cele
+  Background: Profil
+  ActiveEffects:
+    Add: Dodaj Aktywny Stan
+    Source: Źródło
+    ResetDuration: Reset Czasu Trwania
+    AddGuided: Otwórz Kreator
+    AddUnguided: Dodaj Pusty Stan
+  Keybindings:
+    OpenFavoriteCards:
+      Name: Open Favorite Card Hand
+      UserConfigLabel: Favorite Card Hand
+      Hint: You can set your favorite hand in the User Config
+      NoCardsWarning: You don't have a favorite card hand set!
+      HandNone: None
+    Bennies:
+      Name: Spend/Receive a Benny
+      Hint: Press to spend a Benny, hold down Alt while you press the key to receive
+        a Benny instead
+  Settings:
+    ArbitFields: Dowolne ustawianie pól
+    CharSheetDefaultWidth:
+      Name: Default Width for Character Sheets
+      Hint: 'Width of character sheets when first opened, in pixels. Default: 650.'
+    HighlightTemplate:
+      Name: Always Highlight Templates
+      Hint: When enabled, Measured Templates alway highlight themselves instead of
+        the grid.
+    InitDiscardPile:
+      Name: Initiative Discard Pile
+    InitCardDeck:
+      Name: Card Deck to use for Initiative
+    ParryBase:
+      Name: Fighting Skill SWID
+      Hint: The Savage Worlds ID of the skill which will be used to calculate an actors
+        Parry. Read more about the Savage Worlds ID in the docs!
+    UseAttributeShorts:
+      Name: Use shortened attribute names
+      Hint: Activate this option if you want to see abbreviated attribute names on
+        the pc and npc sheets, i.e. Agi instead of Agility, Sma instead of Smarts,
+        etc. You'll need to close and reopen all open sheets for this option to take
+        effect.
+    WeightUnit:
+      Name: Unit of weight
+      Hint: Sets whether weights are measured in pounds or kilograms. Changing this
+        will NOT change the weights on items, only how the encumbrance is calculated
+    HideNpcItemChatCards:
+      Name: Hide NPC Item Chat Cards
+      Hint: When enabled, NPC Item Chat Cards are automatically sent as a whisper
+        to all Gamemasters instead of being posted for all to see
+    EnableBennyNotify:
+      Name: Benny notifications
+      Hint: Displays chat messages when bennies are taken, given or refreshed.
+    HideWC:
+      Name: Hide NPC Wild Cards
+      Hint: Do not show which NPCs are Wild Cards to players
+    CreateInitChat:
+      Name: Create Chat Message for Initiative
+      Hint: When Action Cards are drawn, Foundry will output the drawn Action Cards
+        to the Chat if enabled.
+    AutoInit:
+      Name: Automatic Initiative
+      Hint: Automatically draw Action Cards every round
+    Bumpmaps: Bumpmaps
+    Benny3DFront:
+      Name: Front Texture
+      Hint: Front texture of the 3D Benny
+    Benny3DBack:
+      Name: Back Texture
+      Hint: Back texture of the 3D Benny
+    Benny3DBackBump:
+      Name: Back Bump Map
+      Hint: Back bump map of the benny
+    Benny3DFrontBump:
+      Hint: Front bump map of the benny
+      Name: Front Bump Map
+    CoreSkillsList:
+      Name: List of Core Skills
+      Hint: Enter a comma-separated list of skill names to be defined as core skills
+        for all actors
+    CoreSkillsPack:
+      Name: Core Skills Compendium
+      Hint: Choose from which Compendium the core skills will be drawn
+    WealthType:
+      Name: Wealth Type
+      Hint: Choose how to track character wealth and currency
+    CurrencyName:
+      Name: Currency Name
+      Hint: Name your currency
+    JokersWild:
+      Name: Joker's Wild
+      Hint: Daje Fuksa każdej postaci gracza, gdy jeden z nich otrzyma Jokera
+    AmmoManagement:
+      Name: Ammunition Management
+      Hint: Automates ammo consumption. See system documentation journal for details.
+    PCAmmoFromInventory:
+      Name: PCs use Ammunition from Inventory
+      Hint: When activated a Gear or Consumable Item that is set as ammunition will
+        be used when reloading the weapon
+    NPCAmmoFromInventory:
+      Name: NPCs use ammunition from their inventory
+    VehicleAmmoFromInventory:
+      Name: Vehicles use ammunition from their inventory
+    EnableWoundPace:
+      Name: Adjust Pace with Wounds
+      Hint: When enabled, Pace is automatically affected by Wounds
+    EnableConv:
+      Name: Determinacja
+      Hint: Włącza zasady Determinacji
+    NoPowerPoints:
+      Name: Bez Punktów Magii
+      Hint: Wyłącza wszelkie interakcje z Punktami Magii
+    AlwaysGeneralPP:
+      Name: Zawsze pokazuj Moce
+      Hint: Gdy ta opcja jest włączona, sekcja Mocy jest zawsze wyświetlana, nawet
+        jeśli wszystkie moce mają powiązane tajemne tło
+    ApplyEncumbrance:
+      Name: Zastosuj kary za obciążenie
+      Hint: Apply encumbrance penalties. Please keep in mind that this currently does
+        NOT SUPPORT {vigor} tests to resist {fatigue}!
+    VehicleMods:
+      Name: Vehicles Mods
+      Hint: Vehicles use Mod-Slots
+    VehicleEdges:
+      Name: Przewagi pojazdu
+      Hint: Pojazdy używają Przewag i Zawad
+    VehicleSkills:
+      Name: Operation Skills
+      Hint: Enter a comma-separated list of skill names to be defined as Operation
+        skills for all vehicle
+    BennyImageSheet:
+      Name: Benny
+      Hint: Select which image to use for Bennies on the Character Sheet
+    HardChoices:
+      Name: Koło fortuny
+      Hint: Checking this will enable the Hard Choices setting rule
+    CardSound:
+      Name: Card Sound
+      Hint: Play a short card sound when dealing Initiative
+    StartingCurrency:
+      PC:
+        Name: Player Character starting currency
+        Hint: Set the amount of currency that Player Character Actors recieve upon
+          creation
+      NPC:
+        Hint: Set the amount of currency that NPC Actors recieve upon creation
+        Name: NPC starting currency
+    NPCCurrency:
+      Name: NPCs use currency
+      Hint: When enabled, all NPCs have the same currency options as Player Characters
+    DumbLuck:
+      Name: Szczęśliwy traf
+      Hint: Checking this will enable the Dumb Luck Setting Rule
+    WoundCap:
+      Name: Limit ran
+      Hint: Checking this will enable the Wound Cap Setting Rule when calculating
+        Wounds.
+    UnarmoredHero:
+      Name: W samej przepasce
+      Hint: Checking this will enable the Unarmored Hero setting rule when rolling
+        to soak
+    GrittyDamage:
+      Name: Paskudne obrażenia
+      Hint: Checking this will enable the Gritty Damage Setting Rule and allow for
+        selecting the Injury Table to roll.
+    InjuryTable:
+      Name: Injury Table
+      Hint: Select the appropriate RollTable to automatically roll for Gritty Damage.
+    HeroesNeverDie:
+      Name: Heroes Never Die
+      Hint: Checking this will enable the Heroes Never Die Setting Rule when determining
+        incapacitation
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Adventure Edition Core Rules
+        SWPF: Pathfinder®️ for Savage Worlds
+      Name: Armor Stacking
+      Hint: Select which rules to use when handling stacking armor
+  EffectCallbacks:
+    Shaken:
+      RollSpirit: Rzut na Ducha
+      Title: Usuń Szok z {name}
+      Flavor: Test Ducha aby usunąć Szok
+      UnshakeModifier: Modyfikator Bez Szoku
+      Question: Co chcesz zrobić?
+      Success: Nie jesteś już W Szoku
+    Stunned:
+      Title: Test Wigoru aby usunąć Porażenie
+      Fail: Nadal jesteś Porażony
+      Success: Nie jesteś już Porażony, ale pozostajesz Odsłonięty
+      Raise: Nie jesteś już ani Porażony, ani Odsłonięty
+      UnStunModifier: Modyfikator wyjścia z Porażenia
+    BleedingOut:
+      Title: Test Wigoru aby odeprzeć Konanie
+      Fail: Umierasz
+      Success: Jeszcze się trzymasz... ledwo...
+      Raise: Udało ci się ustabilizować!
+      BleedOutModifier: Modyfikator Konania
+      IgnoreWounds: Konanie ignorujące rany
+  Validation:
+    OnlyOneRace: Możesz mieć tylko jedną rasę na raz!
+    OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz!
+  DocumentLink: Link
+  DocumentTweaks: Mody
+  TargetVulnerable: Cel jest Odsłonięty
+  WildAttack: Wściekły Atak
+  DesperateAttack:
+    '2': Desperacki Atak (2)
+    '4': Desperacki Atak (4)
+  CalledShot:
+    HeadOrVitals: 'Strzał mierzony: Głowa i inne wrażliwe miejsca'
+    Hand: 'Strzał mierzony: Dłoń'
+    Limbs: 'Strzał mierzony: Kończyna'
+  ItemType: Typ Przedmiotu
+  Source: Źródło
+  MigrateCompendium: Wymuś przeniesienie kompendium
+  Properties: Właściwości
+  AddAction: Dodaj Akcję
+  DialogConfirmPrompt: Jesteś pewien?
+  DeleteEmbeddedActionPrompt: Czy na pewno chcesz usunąć akcję {action}
+  DeleteEmbeddedPowerPrompt: Czy na pewno chcesz usunąć moc {power}?
+  TrademarkWeapon:
+    Label: Ulubiona Broń
+    None: Nie
+    Regular: Ulubiona Broń
+    Improved: Ukochana Broń
+  OffHandPenalty: Kara za słabszą rękę
+  ItemEquipStatus:
+    Label: Umiejscowienie
+    Stored: Zmagazynowane
+    Carried: Przy sobie
+    Equipped: Wyekwipowane
+    Installed: Zainstalowane
+    OffHand: Słabsza ręka
+    MainHand: Główna ręka
+    TwoHands: Dwie ręce
+    Added: Dodane
+    Readied: Przygotowane
+  DestroyOnEmpty: Usunąć gdy puste?
+  Charges: Ładunki
+  Consumable:
+    Use: Użyj
+    Consumables: Przedmioty Zużywalne
+    NotEnoughCharges: Za mało ładunków!
+    ChargesUsed: "<p>{charges} ładunki/ów użytych na <em>{name}</em></p>"
+  EmptyAncestralAbilitiesHint: "<strong>Uwaga:</strong>Ta {ancestry} albo {archetype}
+    nie ma jeszcze żadnych umiejętności. Przeciągnij coś na karte aby zacząć."
+  NoTokenSelectedForResistRoll: Aby wykonać rzut na Obronę, najpierw zaznacz token
+  Templates:
+    Cone:
+      Short: Zionięcie
+      Long: Wzornik Zionięcia
+    Stream:
+      Short: Strumień
+      Long: Wzornik Strumienia
+    Small:
+      Short: Mały
+      Long: Mały Wzornik Wybuchu
+    Medium:
+      Short: Średni
+      Long: Średni Wzornik Wybuchu
+    Large:
+      Short: Duży
+      Long: Duży Wzornik Wybuchu
+    Available: Dostępne Wzorniki
+    Possible: Możliwe Wzorniki
+  CompendiumTOC:
+    Toggle: Toggle use Compendium TOC
+    Dialog:
+      Title: Confirm Toggle
+      Content: In order for the change to take effect, Foundry VTT and all connected
+        clients will be reloaded. Please confirm.
+    Header: Zawartość
+  Category: Kategoria
+  ItemIsAmmo: Jest amunicją
+  Vision:
+    SeeHeat: Widzi ciepło
+    SenseHeat: Wyczuwa ciepło
+    Infravision: Infrawizja
+  Attribute: Cecha
+  BaseDie: Kość Bazowa
+  AttributeManager:
+    Title: Zarządzanie Cechami {name}
+    Open: Zarządzaj Cechami
+  HeavyArmor: Ciężki Pancerz
+  HeavyWeapon: Broń Ciężka
+  UsesTOC: Use Compendium TOC
+  TOCBlockList: Compendium TOC Blocklist
+  TOCSettings:
+    Label: Open Compendium TOC Settings
+    Name: Compendium TOC Settings
+    Hint: Configure the Compendum TOC Application
+  DieSides: Ścianki kości
+  WildDieSides: Ścianki Kości Figury
+  EncumbranceSteps: Poziomy Obładowania
+  EffectWizard:
+    Preview: Podejrzyj
+    Change: Zmień
+    Mode: Tryb
+    Value: Wartość
+    Changes: Zmiany
+    SelectAttribute: Wybierz Cechę
+    EnterSkill:
+      Label: Wpisz Umiejętność
+      Hint: Możesz wpisać dowolną nazwę umiejętności lub wybrać ją z listy sugestii
+  OtherStats: Inne statystyki
+  AdditionalStats:
+    SelectHint: Wprowadź listę opcji oddzielonych średnikami
+    Key: Stat Key
+    Label: Label
+    Type: Type
+    HasMaxValue: Has Max Value
+    Current: Current {stat}
+    Max: Max {stat}
+    KeyErr: Additional Stat key {invalid} is invalid and has been changed to {key}
+  MessageOnUse:
+    Label: Wiadomość przy użyciu
+    Hint: Wyświetla wiadomość, gdy przedmiot zostaje użyty
+  ItemGrants:
+    EmptyHint: This item currently grants no items
+    Header: Item Grants
+    When: Grant Items When
+  IgnFatigue: Ignoruj Zmęczenie
+  BaseDamage: Bazowe Obrażenia
+  RefreshPP: Odśwież Punkty Mocy
+  Targets: 'Cele:'
+  Rolls:
+    RollResult: Wynik Rzutu
+    SwadeRoll: Rzut
+    DamageRoll: Rzut na Obrażenia
+    TraitRoll: Rzut na Cechę
+    Critfail:
+      Critfail: Katastrofa
+      ConfirmDie: Potwierdzenie Kości
+      Unconfirmed: Katastrofa nie potwierdzona
+      Possible: MOŻLIWA KATASTROFA
+      Confirmed: Potwierdzenie Katastrofy
+      Confirm: Potwierdź
+    Free: Za darmo
+    Benny: Fuks
+    GMBenny: Fuks MG
+  LoadedAmmo: Załadowana amunicja
+  DamageApplicator:
+    ApplyDamage:
+      Label: Ustal obrażenia
+      Hint: Kliknij aby ustalić obrażenia wybranego tokenu
+    SoakModifier: Modyfikator Wyparowania
+    WoundsAboutToBeTaken: "<p><strong>{name}</strong> otrzyma <strong>{wounds}</strong>!</p>"
+    SoakDialog:
+      SoakRoll: Test Wigoru w celu Wyparowania
+      WoundedTitle: Rzuć aby Wyparować Rany dla {name}?
+      UnwoundedTitle: Dostosuj Obrażenia aby ustalić Status dla {name}?
+      WoundedPrompt: "<p>{name} otrzyma {wounds}. Czy chcesz podjąć próbę Wyparowania?</p>"
+      ShakenPrompt: "<p>{name} zostanie Porażony.</p>"
+      UnharmedPrompt: "<p>{name} może być nienaruszony.</p>"
+      Benny: Wydaj Fuksa w celu Wyparowania
+      GMBenny: Wydaj Fuksa MG w celu Wyparowania
+      Free: Darmowe Wyparowanie
+      TakeWounds: Otrzymaj {wounds}
+      AdjustDamage: Dostosuj Obrażenia
+      ApplyShaken: Zastosuj Szok
+      Accept: Akceptuj
+      NoVehicleSoak: Soaking for Vehicles is not yet supported
+    RerollSoakDialog:
+      Title: Przerzuć aby Wyparować Rany dla {name}?
+      Prompt: "<p>{name} otrzyma {wounds}. Czy chcesz przerzucić Wyparowanie?</p>"
+      PromptCritFail: "<p>{name} otrzyma {wounds}. Katastrofa nie pozwala na przerzuty.</p>"
+      Benny: Wydaj Fuksa aby przerzucić
+      GMBenny: Wydaj Fuksa MG aby przerzucić
+      Free: Przerzut jest darmowy
+      TakeWounds: Otrzymaj {wounds}
+    AdjustDamagePrompt: "<p>Dostosuj obrażenia do dowolnych zdolności i efektów, które
+      {name} może mieć.</p>"
+    Result:
+      NoSignificantDamage: "<p><strong>{name}</strong> nie ponosi znacznych szkód.</p>"
+      SoakedAll: "<p><strong>{name}</strong> Wyparował wszystkie Rany i nie jest W
+        Szoku!</p>"
+      IsShaken: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>!</p>"
+      IsShakenWithWounds: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>
+        i otrzymał <strong>{wounds}</strong>!</p>"
+      IsIncapacitated: "<p><strong>{name}</strong> jest <strong>Wyeliminowany!</strong></p>"
+    Incapacitation:
+      InjuryRoll: 'Wyeliminowany: Test Wigoru w celu uniknięcia urazu'
+      Dies: "<p><strong>{name}</strong> umiera z powodu obrażeń!</p>"
+      PermanentInjury: "<p><strong>{name}</strong> doznaje trwałego urazu oraz <strong>Kona!</strong></p>"
+      PermanentInjuryHND: "<p><strong>{name}</strong> doznaje trwałego urazu!</p>"
+      TemporaryInjury: "<p><strong>{name}</strong> doznaje urazu, który trwa do pełnego
+        wyleczenia ran.</p>"
+      ShortInjury: "<p><strong>{name}</strong> doznaje urazu, który trwa 24 godziny,
+        albo pełnego wyleczenia ran (cokolwiek wydarzy się pierwsze).</p>"
+      TakeFail: Doznaje trwałego urazu
+      TakeSuccess: Doznaje urazu, który trwa do pełnego wyleczenia ran
+      Title: Przerzut urazu dla {name}?
+      Prompt: "<p>{name} dozna urazu. Czy chcesz przerzucić test Wigoru?</p>"
+    NoInjuryTable: No Injury Table has been selected. See SWADE Settings Configuration
+    NoTargetsSelected: Please select a target to apply the damage to.
+  NumberOfDice:
+    Label: Dice
+    Hint: Determines how many Trait dice are rolled for this action
+  ResourcesUsed:
+    Label: Resources Used
+    Hint: How much of an arbitrary resource is used for this action
+  CouldNotFindMacro: Could not find Macro with UUID {uuid}
+  Magazine:
+    NoneLoaded: No magazine loaded
+    Select: Select a magazine
+  DmgMod: Damage Modifier
+  Auras:
+    TabHeader: Auramancer
+    Enabled: Enabled
+    Color: Color
+    Range: Aura Radius
+    Alpha: Aura Transparency
+    WallConstraints:
+      Label: Constrained by Walls
+      Hint: This toggle governs whether the aura is limited by walls that block light
+        or if it can pass through them
+    UserAura1: Aura 1
+    UserAura2: Aura 2
+  Aura:
+    Visibility:
+      Label: Visible To
+      Hint: Select which tokens (by Disposition) can see this aura. You can always
+        see all auras of a token of which you have at least Observer permission
+  TOURS:
+    ERROR:
+      ActorCreatePermission: This Tour requires permission to create actors
+      SettingPermission: This Tour requires modifying world settings
+      JournalCreatePermission: This Tour requires creating a Journal Entry
+    AMMUNITION:
+      Title: Ammunition
+      Description: This Tour will show you how to use automated ammunition tracking
+      Actor: Ammunition Tour Demo Character
+      Items:
+        NONE: Longbow
+        SELF: Throwing Knife
+        SINGLE: Revolver
+        FULL: Water Gun
+        MAGAZINE: Steyr AUG
+        BATTERY: Laser Gun
+        PP: Wizard Gun
+      GameSettings:
+        Title: Game Settings
+        Content: First, Ammunition Tracking must be enabled in the game's system settings.
+      SwadeSettings:
+        Title: SWADE Settings
+        Content: Ammunition settings are found in the <em>Savage Worlds</em> setting
+          configurator
+      AmmoSettings:
+        Title: Ammo Settings
+        Content: These control if ammo is automatically consumed by ranged weapons.
+      AmmoManagement:
+        Title: Ammunition Management
+        Content: This setting controls whether firing a ranged weapon consumes any
+          ammo at all, either from the weapons' internal shot counter or from inventory.
+      PCInventory:
+        Title: Ammo from Inventory
+        Content: The next three settings control if external items are consumed when
+          a weapon reloads, based on the actor type. If these are unchecked but ammunition
+          management is checked, actors of a given type will consume the shots on
+          an item but can freely reload. This allows for arcade-style ammo management
+          where the reload action is important to track but long-term ammo usage is
+          not.
+      CharacterWeapons:
+        Title: Character Weapons
+        Content: A character's weapons are listed in the gear tab.
+      ReloadNone:
+        Title: Reload Procedure — None
+        Content: These weapons ignore the shots counter entirely, pulling directly
+          from the linked ammo item. This setting is best for weapons that only use
+          external ammo, such as a quiver of arrows or a drum-fed gattling gun.
+      AmmoNone:
+        Title: The Ammo Field
+        Content: This should be set to a gear (e.g. Arrows) or consumable item (e.g.
+          Barrel of Bullets) in the character's inventory. A gear item's quantity
+          is consumed directly. Consumable items use their charges instead, with each
+          quantity representing a full set of charges. This field must match the name
+          of the item to be consumed <em>exactly</em>.
+      ReloadSelf:
+        Title: Reload Procedure — Self
+        Content: These weapons use their own quantity to reset their shots counter.
+          This setting is best for thrown weapons or anything else that is self-contained
+          and uses itself up.
+      AmmoSelf:
+        Title: The Ammo Field
+        Content: This field is ignored when the reload type is set to self
+      ReloadSingle:
+        Title: Reload Procedure — Single
+        Content: These weapons reload a single shot with each press of the Reload
+          button. This setting is ideal for revolvers or other weapons with bulky
+          pieces of ammunition that are slow to reload.
+      AmmoSingle:
+        Title: The Ammo Field
+        Content: This field works similarly to Reload — None, but quantity or charges
+          are consumed by reloading instead of by firing the weapon, as firing the
+          weapon consumes from the Shots counter.
+      ReloadFull:
+        Title: Reload Procedure — Full
+        Content: These weapons reload their entire shot counter with each press of
+          the Reload button. This can be used as a simplified version of the Magazine
+          method or for weapons that don't have detachable magazines, such as a gun
+          with liquid reservoirs.
+      AmmoFull:
+        Title: The Ammo Field
+        Content: This field works similarly to Reload — None, but quantity or charges
+          are consumed by reloading instead of by firing the weapon, as firing the
+          weapon consumes from the Shots counter.
+      ReloadMagazine:
+        Title: Reload Procedure — Magazine
+        Content: These weapons use fully detachable magazines that can be swapped
+          as needed, tracking the amount of shots left per magazine.
+      AmmoMagazine:
+        Title: The Ammo Field
+        Content: The item named here MUST be a consumable with the Magazine subtype
+          to work correctly. Furthermore, the charges of the consumable should match
+          the shots counter of the weapon.
+      ReloadBattery:
+        Title: Reload Procedure — Battery
+        Content: These weapons operate similar to magazines, but with interchangeable
+          batteries that are depleted proportional to the shots spent.
+      AmmoBattery:
+        Title: The Ammo Field
+        Content: The item named here MUST be a consumable with the Battery subtype
+          to work correctly. Furthermore, the maximum charges of the consumable should
+          be out of 100.
+      ReloadPP:
+        Title: Reload Procedure — Power Points
+        Content: These weapons don't reload with physical ammunition but by depleting
+          the wielder's power points, as featured in <em>Rifts® for Savage Worlds</em>
+      AmmoPP:
+        Title: The Ammo Field
+        Content: Instead of naming an item, name a valid arcane type on the character,
+          such as general, magic, miracles, or psionics
+    TWEAKS:
+      Title: Tweaks
+      Description: Learn about the unique sheet modifications in the Tweaks menu
+      Actor: Tweaks Tour Demo Character
+      AccessTweaks:
+        Title: Accessing Tweaks
+        Content: The Tweaks menu is found in each character sheet's header, and offers
+          additional configuration options
+      TraitTweaks:
+        Title: Trait Tweaks
+        Content: This tab provides a large array of additional fields that customize
+          a character's traits
+      Advances:
+        Title: Advance Mode
+        Content: Expanded advances (the default) bring enhanced data handling that
+          specify the type of advance and automatically calculate your character's
+          rank. Legacy advances are simply a large text box to write whatever you
+          want with no data handling.
+      Unshake:
+        Title: Unshake Modifier
+        Content: Adds a bonus to the automated shake roll that's prompted at the start
+          of a shaken character's turn.
+      Soak:
+        Title: Soak Modifier
+        Content: Adds a bonus to the soak roll that's prompted from the Take Damage
+          button on the system's damage roll cards.
+      Initiative:
+        Title: Initiative Modifiers
+        Content: Modifies the character's initiative handling based on rules found
+          in the core rulebook.
+      AutoCalc:
+        Title: Automatic Calculations
+        Content: Toggles whether the character's stats are derived from their attributes
+          and equipment or manually set.
+    ADDSTATS:
+      Title: Additional Stats
+      Description: Learn how to configure Additional Stats for your setting
+      Actor: Additional Stats Tour Demo Character
+      GameSettings:
+        Title: Game Settings
+        Content: First, Additional Stats must be configured in the Game Settings.
+      SwadeSettings:
+        Title: SWADE Settings
+        Content: Additional Stats are found in the <em>Savage Worlds</em> setting
+          configurator.
+      StatSettings:
+        Title: Additional Stats Configuration
+        Content: All stats must be first created on this page, to be enabled later
+          on actors and items.
+      StatKey:
+        Title: Stat Key
+        Content: Stat keys determine how the additional stat is referenced in the
+          data (actor.system.additionalStats.stat-key) and must be unique.
+      StatLabel:
+        Title: Label
+        Content: The text that will show up on the character sheet.
+      StatDType:
+        Title: Type
+        Content: Each type has unique handling.
+      HasMax:
+        Title: Has Max Value
+        Content: Adds a field to indicate the maximum of an additional stat as well
+          as its current value (Only available for Numbers and Text).
+      ActorDisplay:
+        Title: Additional Stats on Actors
+        Content: Additional stats that are enabled on an actor display in the Summary
+          tab.
+      Checkbox:
+        Title: Checkbox Additional Stats
+        Content: The value of a checkbox is true or false.
+      Number:
+        Title: Number Additional Stats
+        Content: Any number is acceptable, including decimals.
+      Die:
+        Title: Die Additional Stats
+        Content: The first field accepts any valid Foundry die expression; append
+          an x to make it explode (e.g. 1d6x). The second is a number that is added.
+          Click the label to roll the die.
+      Text:
+        Title: Text Additional Stats
+        Content: Simple string field; the width isn't very long, so long pieces of
+          text should go in the description or other fields.
+      Selection:
+        Title: Selection Additional Stats
+        Content: A fixed list of options based on the game settings.
+      AccessTweaks:
+        Title: Enabling and Disabling Additional Stats
+        Content: Additional Stats can be enabled or disabled from the Additional Stats
+          tab in the Tweaks menu.
+      AddStatTweaks:
+        Title: Additional Stats Tab
+        Content: Each Additional Stat defaults to off and must be individually enabled
+          on each actor or item.
+    AURAS:
+      Title: Auras
+      Description: Introduced in version 3.2, Auras create persistent visuals that
+        follow tokens around.
+      Actor: Auras Tour Demo Character
+      AccessAuras:
+        Title: Accessing Auras
+        Content: Auras can be found in the Tweaks menu
+      Auramancer:
+        Title: The Auras Tab
+        Content: Auras have their own tab within the Tweaks menu. Characters can have
+          a maximum of two auras.
+      Enable:
+        Title: Enabling Auras
+        Content: Each aura can be enabled individually; they also fully work with
+          unlinked tokens, allowing you to set auras individually even if they share
+          a common source actor.
+      Constrained:
+        Title: Wall Constraints
+        Content: This toggle governs whether the aura is limited by walls that block
+          light or if it can pass through them.
+      Radius:
+        Title: Aura Radius
+        Content: The Aura's radius, measured in grid units. The unit hint displayed
+          here matches the current scene's unit of measurement.
+      Color:
+        Title: Aura Color and Transparency
+        Content: Auras display similar to circular area templates around the source
+          character; these settings let you control their visual display.
+      Visibility:
+        Title: Aura Visibility
+        Content: Select which tokens (by Disposition) can see this aura. You can always
+          see all auras of a token of which you have at least Observer permission.
+    ADVANCES:
+      Title: Advances
+      Description: See how SWADE tracks character advances
+      Actor: Advances Tour Demo Character
+      AccessAdvanceMode:
+        Title: Setting the Advance Mode
+        Content: A character's advance mode can be switched in the Tweaks menu.
+      Mode:
+        Title: Advance Mode Selection
+      AdvanceTab:
+        Title: The Advances Tab
+        Content: Advances are configured in the primary "About" tab.
+      Create:
+        Title: Creating an Advance
+        Content: This button creates a new advance for use
+      Editor:
+        Title: The Advance Editor
+        Content: This form provides configuration info for a new advance.
+      Type:
+        Title: Advance Type Selection
+        Content: Choose what kind of advance this is. Currently this does not trigger
+          any further validation or selection, but future updates to the system may
+          change this.
+      Rank:
+        Title: Advance Rank
+        Content: The rank that your character will be upon arriving at this advance.
+          This cannot be directly edited, as it is derived from your character's total
+          number of advances.
+      Number:
+        Title: Advance Number
+        Content: This controls the order of advances. Changing this will move the
+          advance to an earlier spot in the list.
+      Planned:
+        Title: Planned Advances
+        Content: You can mark advances as planned to prevent them from counting towards
+          your character's rank.
+      Notes:
+        Title: Advance Notes
+        Content: Include any relevant information about your advance here; what traits
+          you increased, what edges you selected, etc.
+      SaveChanges:
+        Title: Save Changes Button
+        Content: Changes are NOT saved automatically back to the character. You must
+          use the save button in the ProseMirror Editor or this "Save Changes" button
+    HEADQUARTERS:
+      Title: Headquarters
+      Description: Learn about the new Journal Entry Page type, Headquarters! Useful
+        for <em>Fantasy Companion</em> strongholds, <em>Horror Companion</em> lodges,
+        and <em>Super Powers Companion</em> bases.
+      JournalEntry: Headquarters Tour Journal
+      HeadquartersPage: Headquarters Tour Page
+      CreateJournal:
+        Title: Create a Journal
+        Content: Headquarters must be created within a parent journal.
+      CreatePage:
+        Title: Create a Headquarters Page
+        Content: Headquarters are a new journal page type, just like text, image,
+          and pdf.
+      HQPage:
+        Title: The Headquarters Page
+        Content: Headquarters are like text pages, but provide more structured input.
+          The sections are modeled after the four steps provided in each of the companions.
+      Advantage:
+        Title: Advantage
+        Content: The specific advantages depend on what genre you're playing; you
+          can drag roll results into this section.
+      Complication:
+        Title: Complication
+        Content: Like advantages, you can drag roll results into this section.
+      Form:
+        Title: Form
+        Content: The form section is split into three parts so you have room to describe
+          every aspect of your headquarters.
+      Upgrades:
+        Title: Upgrades
+        Content: You can list your upgrades here. This is a fully rendered HTML input,
+          so feel free to use a bulleted list, table, or whatever other organizational
+          system makes sense to you.
+  SWID:
+    Long: Savage Worlds ID
+    Short: SWID
+    Regenerate: Regenerate Savage Worlds ID
+    ChangeWarning2: Changing an Item's Savage Worlds ID might break references to
+      the Item! Proceed with caution and only if you are sure.
+    ChangeWarning3: Do you want to proceed?
+    ChangeWarning1: Proceed with caution!
+  HindranceSeverity:
+    Label: Severity Options
+    Major: Major Only
+    Minor: Minor Only
+    Either: Either
+  Weapon:
+    RangeType:
+      Label: Range Type
+      Melee: Melee
+      Ranged: Ranged
+      Mixed: Mixed
+  NpcWildCardsOnScene: NPC Wild Cards on Scene
+  PlayerCardDrawHelper:
+    Title: SWADE Player Card Draw Helper
+  CardDrawMsgSize:
+    None: None
+    Compact: Compact
+    Large: Large
+  SelectNewGroupLeader: Select a new Group Leader
+  ToggleIncap: Toggle Incapacitation
+  AmbushAssistant:
+    OnHold: On Hold
+    NormalDraw: Normal Draw
+    NoTurn: No Turn
+    Title: Ambush Assistant
+    Hint: Drag & Drop Combatants to set up the surprise round
+    Unassigned: Unassigned
+  Combat:
+    DealAll: Deal All
+    DealNPC: Deal NPCs
+    StartSurpriseRound: Start Surprise Round
+    AdvanceRoundTitle: Advance to next round?
+    AdvanceRoundContent: Do you want to advance to the next round?
+    RevertRoundTitle: Revert to previous round?
+    RevertRoundContent: Do you want to revert to the previous round?
+    DiscardedCards: Discarded Cards
+    Redraw: Card Redraw
+    RedrawDialog:
+      Content: Draw a new Card with a Benny or for free?
+  FollowerCount: "{count} Followers"
+  Benny: Benny
+  Free: Free
+  SettingConfigurator:
+    WorldTables: World Tables
+    WorldCompendiums: World Compendiums
+TYPES:
+  Actor:
+    character: Postać gracza
+    npc: NPC
+    vehicle: Pojazd
+  Item:
+    weapon: Broń
+    armor: Pancerz
+    shield: Tarcza
+    gear: Sprzęt
+    edge: Przewaga
+    hindrance: Zawada
+    skill: Umiejętność
+    power: Moc
+    ability: Zdolność
+    consumable: Przedmiot Zużywalny
+    action: Akcja
+  Card:
+    adventure: Adventure Card
+    poker: Poker Card
+  JournalEntryPage:
+    headquarters: Headquarters
