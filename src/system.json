@@ -112,6 +112,11 @@
       "lang": "zh-Hans",
       "name": "Chinese (Simplified)",
       "path": "lang/zh_Hans.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski",
+      "path": "lang/pl.json"
     }
   ],
   "media": [
