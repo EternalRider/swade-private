@@ -1,10 +1,5 @@
-import {
-  ApplicationRenderContext,
-  ApplicationTab,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/_types.mjs';
-import { DocumentSheetConfiguration } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/document-sheet.mjs';
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { PhysicalItem } from '../../globals';
+import { PhysicalItem, SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { GroupMember } from '../data/actor/group';
@@ -14,11 +9,9 @@ import { Accordion } from '../style/Accordion';
 import { mapRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
-type GroupSheetConfiguration = DocumentSheetConfiguration<SwadeActor<'group'>>;
-
-export class GroupSheet extends SwadeActorSheetV2 {
+export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   declare actor: SwadeActor<'group'>;
-  static override DEFAULT_OPTIONS: DeepPartial<GroupSheetConfiguration> = {
+  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor<'group'>>> = {
     classes: ['group', 'standard-form'],
     position: { height: 700, width: 700 },
     window: { resizable: true },
@@ -30,7 +23,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: 'systems/swade/templates/actors/group/header.hbs' },
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
     stash: { template: 'systems/swade/templates/actors/group/tab-stash.hbs' },
@@ -45,7 +38,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
     },
   };
 
-  static override TABS: Record<string, ApplicationTab> = {
+  static override TABS: Record<string, Partial<SwadeApplicationTab>> = {
     members: {
       id: 'members',
       group: 'primary',
@@ -72,7 +65,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
     const id =
       target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     if (!id) return;
-    if (!this.actor.system.members.has(id)) return false;
+    if (!this.actor.system.members.has(id)) return;
     const existing = Array.from(this.actor.system.members.keys()).map((v) =>
       v.toString(),
     );
@@ -126,7 +119,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    if (!game.user.isGM) return false;
+    if (!game.user.isGM) return;
     this.actor.update({ 'system.locked': !this.actor.system.locked });
   }
 
@@ -147,9 +140,9 @@ export class GroupSheet extends SwadeActorSheetV2 {
     });
   }
 
-  protected _onFirstRender(
-    context: ApplicationRenderContext,
-    options: unknown,
+  protected override _onFirstRender(
+    context: GroupSheetRenderContext,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
   ) {
     super._onFirstRender(context, options);
     for (const member of this.actor.system.members.values()) {
@@ -159,8 +152,8 @@ export class GroupSheet extends SwadeActorSheetV2 {
   }
 
   protected override _onRender(
-    context: ApplicationRenderContext,
-    options: unknown,
+    context: GroupSheetRenderContext,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
   ) {
     super._onRender(context, options);
     if (this.actor.system.locked) this.element.classList.add('locked');
@@ -170,18 +163,18 @@ export class GroupSheet extends SwadeActorSheetV2 {
     });
   }
 
-  protected _onClose(_options: unknown) {
+  protected override _onClose(_options: unknown) {
     for (const member of this.actor.system.members.values()) {
       if (!member.actor) continue;
       delete member.actor.apps[this.id];
     }
   }
 
-  protected _preSyncPartState(
+  protected override _preSyncPartState(
     partId: string,
     newElement: HTMLElement,
     priorElement: HTMLElement,
-    state: unknown,
+    state: foundry.applications.api.HandlebarsApplicationMixin.PartState,
   ) {
     super._preSyncPartState(partId, newElement, priorElement, state);
     if (partId === 'stash') this._preSyncStash(newElement, priorElement);
@@ -269,7 +262,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
     data: object,
   ): Promise<object | boolean> {
     if (!this.actor.isOwner || this.actor.system.locked) return false;
-    const actor = await Actor.implementation.fromDropData(data);
+    const actor = await getDocumentClass('Actor').fromDropData(data);
     if (actor.type === 'group' || actor.type === 'vehicle') {
       Logger.warn(
         `You cannot add ${game.i18n.localize('TYPES.Actor.' + actor.type)} Actors to a group!`,
@@ -282,6 +275,14 @@ export class GroupSheet extends SwadeActorSheetV2 {
     });
     return true;
   }
+}
+
+interface GroupSheetRenderContext extends SwadeActorSheetV2.RenderContext {
+  members: SwadeActor[],
+  itemTypes: SwadeItem[],
+  benny: string,
+  unlocked: boolean,
+  description: string,
 }
 
 type ItemTypes = Record<PhysicalItem, RenderedItem[]>;

@@ -2,7 +2,6 @@ import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/sr
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 // import { AuraPointSource } from './module/canvas/AuraPointSource';
-import type { ApplicationTab } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/_types.d.mts';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
@@ -80,11 +79,10 @@ export interface DieSidesOption {
   label: string;
 }
 
-export interface SwadeApplicationTab extends ApplicationTab {
-  id: string;
-  group: string;
-  label: string;
-  icon: string;
-  active: boolean;
-  cssClass: string;
+export interface SwadeApplicationTab extends foundry.applications.api.ApplicationV2.Tab {
+  tabCssClass: string;
+}
+
+export interface SwadeDocumentSheetConfiguration<Document extends foundry.abstract.Document.Any> extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
+  dragDrop: DragDropConfiguration[];
 }

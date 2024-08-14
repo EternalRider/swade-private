@@ -1,37 +1,37 @@
-import {
-  ApplicationRenderContext,
-  ApplicationTab,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/_types.mjs';
-import { DocumentSheetConfiguration } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/document-sheet.mjs';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { SwadeApplicationTab } from '../../globals';
+import type { AnyObject, DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import type { SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
+
+type DocumentSheetRenderOptions = foundry.applications.api.DocumentSheetV2.RenderOptions;
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
-export const SwadeBaseSheetMixin = (Base) =>
-  class SwadeBaseSheetMixin extends HandlebarsApplicationMixin(Base) {
-    static DEFAULT_OPTIONS: DeepPartial<DocumentSheetConfiguration> = {
+export function SwadeBaseSheetMixin<
+Document extends Actor.ConfiguredInstance | Item.ConfiguredInstance, 
+RenderContext extends AnyObject
+>(Base: typeof foundry.applications.api.DocumentSheetV2) {
+  return class SwadeBaseSheet extends HandlebarsApplicationMixin(Base)<Document, RenderContext, SwadeDocumentSheetConfiguration<Document>, DocumentSheetRenderOptions> {
+    static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<Document>> = {
       classes: ['swade'],
       form: {
         submitOnChange: true,
         closeOnSubmit: false,
       },
       actions: {
-        editImg: SwadeBaseSheetMixin._onEditImage,
+        editImg: SwadeBaseSheet._onEditImage,
       },
     };
 
-    static TABS: Record<string, SwadeApplicationTab> = {};
+    static TABS: Record<string, Partial<SwadeApplicationTab>> = {};
 
     static async _onEditImage(
-      this: SwadeBaseSheetMixin,
+      this: SwadeBaseSheet,
       _event: PointerEvent,
       _target: HTMLImageElement,
     ) {
       const { img } =
-        this.document.constructor.getDefaultArtwork?.(
+        (this.document.constructor as Actor.ConfiguredClass | Item.ConfiguredClass).getDefaultArtwork?.(
           this.document.toObject(),
         ) ?? {};
       const fp = new FilePicker({
@@ -42,7 +42,7 @@ export const SwadeBaseSheetMixin = (Base) =>
         top: this.position.top + 40,
         left: this.position.left + 10,
       });
-      return fp.browse();
+      fp.browse();
     }
 
     // This is marked as private because there's no real need
@@ -54,14 +54,14 @@ export const SwadeBaseSheetMixin = (Base) =>
       return this.#dragDrop;
     }
 
-    tabGroups: Record<string, string> = {};
+    override tabGroups: Record<string, string> = {};
 
-    constructor(options = {}) {
+    constructor(options) {
       super(options);
       this.#dragDrop = this.#createDragDropHandlers();
     }
 
-    async _prepareContext(options: unknown) {
+    override async _prepareContext(options: DocumentSheetRenderOptions) {
       const context = await super._prepareContext(options);
       return foundry.utils.mergeObject(context, {
         tabs: this._getTabs(),
@@ -75,7 +75,7 @@ export const SwadeBaseSheetMixin = (Base) =>
      * @param context Prepared context data
      * @param options Provided render options
      */
-    protected _onRender(context: ApplicationRenderContext, options: unknown) {
+    protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<DocumentSheetRenderOptions>) {
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
       this.#disableOverrides();
@@ -107,6 +107,8 @@ export const SwadeBaseSheetMixin = (Base) =>
       const docRow = (event.currentTarget as HTMLElement).closest('li');
       if ('link' in (event.target as HTMLElement).dataset) return;
 
+      if (!docRow) return;
+
       // Chained operation
       const dragData = this._getEmbeddedDocument(docRow)?.toDragData();
 
@@ -134,13 +136,14 @@ export const SwadeBaseSheetMixin = (Base) =>
     ): Item | ActiveEffect | void {
       const docRow = target.closest<HTMLLIElement>('li[data-document-class]');
       if (!docRow) return;
+      // TODO: Once `this.document` correctly resolves this will throw more type errors
       if (docRow.dataset.documentClass === 'Item') {
-        return this.actor.items.get(docRow.dataset.itemId);
+        return this.document.items.get(docRow.dataset.itemId);
       } else if (docRow.dataset.documentClass === 'ActiveEffect') {
         const parent =
-          docRow.dataset.parentId === this.actor.id
-            ? this.actor
-            : this.actor.items.get(docRow?.dataset.parentId);
+          docRow.dataset.parentId === this.document.id
+            ? this.document
+            : this.document.items.get(docRow?.dataset.parentId);
         return parent.effects.get(docRow?.dataset.effectId);
       } else return console.warn('Could not find document class');
     }
@@ -149,8 +152,8 @@ export const SwadeBaseSheetMixin = (Base) =>
      * Utility method for _prepareContext to create the tab navigation.
      */
     protected _getTabs() {
-      return Object.values(this.constructor.TABS).reduce(
-        (acc: Record<string, ApplicationTab>, v: ApplicationTab) => {
+      return Object.values((this.constructor as typeof SwadeBaseSheet).TABS).reduce(
+        (acc: Record<string, SwadeApplicationTab>, v: SwadeApplicationTab) => {
           const isActive = this.tabGroups[v.group] === v.id;
           acc[v.id] = {
             ...v,
@@ -169,7 +172,7 @@ export const SwadeBaseSheetMixin = (Base) =>
      * @returns An array of DragDrop handlers
      */
     #createDragDropHandlers(): DragDrop[] {
-      return this.options.dragDrop.map((d) => {
+      return (this.options.dragDrop ?? []).map((d) => {
         d.permissions = {
           dragstart: this._canDragStart.bind(this),
           drop: this._canDragDrop.bind(this),
@@ -189,8 +192,10 @@ export const SwadeBaseSheetMixin = (Base) =>
         this.document.overrides ?? {},
       );
       for (const override of Object.keys(flatOverrides)) {
-        const input = this.element.querySelector(`[name="${override}"]`);
+        const input: HTMLInputElement | null = this.element.querySelector(`[name="${override}"]`);
         if (input) input.disabled = true;
       }
     }
   };
+}
+  

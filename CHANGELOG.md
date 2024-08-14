@@ -22,17 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## [Unreleased]
-
-### Changed
-
-- Fixes the GM gaining another Benny if the GM has 0 Bennies and a player refreshes the browser. Previously, a GM with 0 Bennies could never have below 0, so when a player refreshed, they'd drop, which decreases the amount of Bennies a GM has (bottoming out at 0), and rejoin, which increases the amount (adding 1 Benny). This fix allows the GM Benny count to go to negative values when players drop, avoiding the possibility of gaining an extra Benny unintentionally. **by @kristianserrano**
-
 ## 4.1.0
 
 ### Added
 
 - New item type: Ancestry. Existing ancestry abilities are automatically migrated. **by @florad92**
+- New actor type: Group. You can drop an actor or enter its UUID to add an actor to the group. Groups can carry physical items (i.e. a party stash) and can also track collective resources like ammo or supply. **by @florad92**.
 - Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
 - Added new field for Abilities and physical items, `system.build.cost`, that can be used to track the character creation values for custom ancestries and other similar "build your own" designs.
 
@@ -41,9 +36,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
 - Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
 - If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
+- Fixes the GM gaining another Benny if the GM has 0 Bennies and a player refreshes the browser. Previously, a GM with 0 Bennies could never have below 0, so when a player refreshed, they'd drop, which decreases the amount of Bennies a GM has (bottoming out at 0), and rejoin, which increases the amount (adding 1 Benny). This fix allows the GM Benny count to go to negative values when players drop, avoiding the possibility of gaining an extra Benny unintentionally. **by @kristianserrano**
+
 
 ### Fixed
 
+- More deprecation resolutions
+- More type fixes
 - Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
 
 ## 4.0.5
