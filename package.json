@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@guanghechen/rollup-plugin-copy": "^5.0.11",
-    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#c235ef3b3f397193091db464758e01418f7d4eba",
+    "@league-of-foundry-developers/foundry-vtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#3d304e6e8b824939e65b3e56b65d855cd06baca2",
     "@rollup/plugin-typescript": "^11.0.0",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",

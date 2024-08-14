@@ -178,7 +178,7 @@ declare namespace CommonActorData {
     additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
   }
 
-  interface BaseData {
+  type BaseData = {
     attributes: {
       agility: {
         effects: Array<RollModifier>;
@@ -223,7 +223,7 @@ declare namespace CommonActorData {
     };
   }
 
-  interface DerivedData {
+  type DerivedData = {
     advances: {
       list: Collection<Advance>;
     };

@@ -1,19 +1,17 @@
-import { DocumentSheetConfiguration } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/document-sheet.mjs';
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { Updates } from '../../globals';
-import SwadeActor from '../documents/actor/SwadeActor';
+import { SwadeDocumentSheetConfiguration, Updates } from '../../globals';
+import type SwadeActor from '../documents/actor/SwadeActor';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
-
-type ActorSheetConfiguration = DocumentSheetConfiguration<SwadeActor> & {
-  dragDrop: DragDropConfiguration[];
-};
+import type SwadeUser from '../documents/SwadeUser';
+import type SwadeItem from '../documents/item/SwadeItem';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-export class SwadeActorSheetV2 extends SwadeBaseSheetMixin(ActorSheetV2) {
-  declare element: HTMLFormElement;
-  static override DEFAULT_OPTIONS: DeepPartial<ActorSheetConfiguration> = {
+
+export class SwadeActorSheetV2<RenderContext extends SwadeActorSheetV2.RenderContext> extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
+  // declare element: HTMLFormElement;
+  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor>> = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
     actions: {
@@ -232,7 +230,7 @@ export class SwadeActorSheetV2 extends SwadeBaseSheetMixin(ActorSheetV2) {
     data: object,
   ): Promise<Item[]> {
     if (!this.actor.isOwner) return [];
-    const folder = await Folder.implementation.fromDropData(data);
+    const folder = await getDocumentClass('Folder').fromDropData(data);
     if (folder.type !== 'Item') return [];
     const droppedItemData = await Promise.all(
       folder.contents.map(async (item) => {
@@ -292,4 +290,21 @@ export class SwadeActorSheetV2 extends SwadeBaseSheetMixin(ActorSheetV2) {
     // Perform the update
     return this.actor.updateEmbeddedDocuments('Item', updateData);
   }
+}
+
+export namespace SwadeActorSheetV2 {
+  export type RenderContext = {
+      user: SwadeUser,
+      editable: boolean,
+      owner: boolean,
+      limited: boolean,
+      // Add the actor document.
+      actor: SwadeActor,
+      items: SwadeItem[],
+      // Add the actor's data to context.data for easier access, as well as flags.
+      system: SwadeActor['system'],
+      flags: SwadeActor['flags'],
+      // Adding a pointer to CONFIG.SWADE
+      config: typeof CONFIG.SWADE,
+    }
 }

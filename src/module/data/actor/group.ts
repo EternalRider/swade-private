@@ -8,7 +8,7 @@ import {
 const fields = foundry.data.fields;
 
 interface GroupMember {
-  actor: SwadeActor | null;
+  actor: SwadeActor<'character' | 'npc'> | null;
 }
 
 declare namespace GroupData {
@@ -22,10 +22,10 @@ declare namespace GroupData {
       label: string;
     }>;
   }
-  interface BaseData {
+  type BaseData = {
     members: Map<string, GroupMember>;
   }
-  interface DerivedData {}
+  type DerivedData = {}
 }
 
 class GroupData<
