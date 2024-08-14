@@ -190,16 +190,16 @@ export default class SettingConfigurator extends FormApplication {
 
   #getArmorStackingChoices(): Record<string, string> {
     return {
-      'core': 'SWADE.Settings.ArmorStacking.Choices.Core',
-      'swpf': 'SWADE.Settings.ArmorStacking.Choices.SWPF',
+      core: 'SWADE.Settings.ArmorStacking.Choices.Core',
+      swpf: 'SWADE.Settings.ArmorStacking.Choices.SWPF',
     };
   }
 
   #getWealthTypes(): Record<string, string> {
     return {
-      'currency': 'SWADE.Currency',
-      'wealthDie': 'SWADE.WealthDie.Label',
-      'none': 'SWADE.WealthSelectionNoneOther',
+      currency: 'SWADE.Currency',
+      wealthDie: 'SWADE.WealthDie.Label',
+      none: 'SWADE.WealthSelectionNoneOther',
     };
   }
 

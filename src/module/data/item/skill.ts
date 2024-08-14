@@ -29,8 +29,8 @@ class SkillData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...makeTraitDiceFields(),
-      attribute: new foundry.data.fields.StringField({ initial: '' }),
-      isCoreSkill: new foundry.data.fields.BooleanField(),
+      attribute: new foundry.data.fields.StringField({ initial: '', label: 'SWADE.Attribute' }),
+      isCoreSkill: new foundry.data.fields.BooleanField({ label: 'SWADE.CoreSkill' }),
     };
   }
 
@@ -66,7 +66,7 @@ class SkillData extends SwadeBaseItemData<
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
-    if (this.parent && options.renderSheet !== null) {
+    if (this.parent && !options.isItemGrant && options.renderSheet !== null) {
       options.renderSheet = true;
     }
   }

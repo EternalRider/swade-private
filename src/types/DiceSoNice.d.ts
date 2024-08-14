@@ -1,4 +1,6 @@
 export declare class Dice3D {
+  waitFor3DAnimationByMessageID(targetMessageId: string): Promise<boolean>;
+
   //TODO type box
   box: any;
   DiceFactory: any;

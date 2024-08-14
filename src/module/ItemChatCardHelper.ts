@@ -45,6 +45,10 @@ export default class ItemChatCardHelper {
       );
       return null;
     }
+    
+    if (actor.type === 'vehicle') {
+      actor = await actor.getDriver() ?? actor;
+    }
 
     const actionObj = foundry.utils.getProperty(
       item,
@@ -78,7 +82,7 @@ export default class ItemChatCardHelper {
       const ppCost = $(card).find('input.pp-adjust').val() as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
-      if (action === 'formula' || actionObj.type === 'trait') {
+      if (action === 'formula' || actionObj?.type === 'trait') {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
           value: modifier,
@@ -92,6 +96,8 @@ export default class ItemChatCardHelper {
       button.disabled = false;
       return null;
     }
+
+    if (!actor) return null;
 
     const roll = await this.handleAction(item, actor, action, additionalMods);
 

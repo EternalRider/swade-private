@@ -6,6 +6,7 @@ SWADE:
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
+  GroupSheet: Savage Worlds Group Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
@@ -27,6 +28,7 @@ SWADE:
     Reminder: <p>Running during your turn incurs a -2 penalty to all your actions.</p>
   RollRun: '[Click] to roll the Running Die'
   Adv: Advances
+  Advance: Advance
   Rank: Rank
   Inv: Gear
   Summary: Traits
@@ -88,6 +90,7 @@ SWADE:
   BenniesGMAddMessage: took an additional Benny!
   BenniesSpendMessage: spends a Benny!
   BenniesMax: Bennies Reset
+  BenniesMaxNum: Maximum Bennies
   Elan: Elan
   EditSkill: Edit Skill
   EdEdge: Edit Edge
@@ -168,6 +171,7 @@ SWADE:
   DmgModUni: Damage Modifier
   SkillModUni: Trait Modifier
   ShotsUsed: Shots Used
+  ShotsCurrent: Current Shots
   NaturalArmor: Natural Armor
   HitLocations: Hit Locations
   Head: Head
@@ -191,6 +195,7 @@ SWADE:
   Minor: (Minor)
   Edges: Edges
   ArcBack: Arcane Background
+  Value: Value
   Req: Requirements
   Requirements:
     Other: Other
@@ -225,6 +230,7 @@ SWADE:
   PPCost: PP Cost
   CurPP: Current Power Points
   MaxPP: Maximum Power Points
+  MaxLabel: Maximum
   Dur: Duration
   Trap: Trapping
   Wound: Wound
@@ -245,6 +251,7 @@ SWADE:
   Status: Status
   Handling: Handling
   Topspeed: Top Speed
+  SpeedUnit: Unit
   OutOfControl: Out of Control
   Wrecked: Wrecked
   Item: Item
@@ -311,6 +318,7 @@ SWADE:
   GM: Game Master
   Vehicles: Vehicles
   AddStats: Additional Stats
+  Stats: Stats
   Actors: Actors
   Items: Items
   Max: Max
@@ -368,6 +376,7 @@ SWADE:
   SpecialAbilities: Special Abilities
   AncestralAbilities: Ancestral Abilities
   ArchetypeAbilities: Archetype Abilities
+  BuildCost: Build Cost
   About: About
   EdgesHindrances: Edges & Hindrances
   GrantsPowers: Grants Powers
@@ -549,6 +558,7 @@ SWADE:
     Wiki: Wiki
     ReportAnIssue: Report an Issue
   OpenOrigin: Open origin
+  ActionsOverride: Override
   EffectsTemporary: Temporary Effects
   EffectsPermanent: Permanent Effects
   Ranks:
@@ -563,6 +573,7 @@ SWADE:
     Delete: Delete Advance
     Planned: Planned
     Modes:
+      Label: Mode
       Legacy: Legacy
       Expanded: Expanded
     Types:
@@ -576,6 +587,8 @@ SWADE:
   Appearance: Appearance
   CharacterGoals: Goals
   Background: Background
+  ID: ID
+  SortNum: Sorting Number
   ActiveEffects:
     Add: Add Active Effect
     Source: Source
@@ -721,6 +734,14 @@ SWADE:
       Hint: >-
         Enter a comma-separated list of skill names to be defined as Operation
         skills for all vehicle
+    StaticGmBennies:
+      Name: Static Gamemaster Bennies
+      Hint: >-
+        Sets a static value for the number of Bennies the GM recieves on a refresh instead of
+        basing it on the number of active players.
+    GmBennies:
+      Name: Gamemaster Bennies
+      Hint: Sets how many Bennies the GM receives on a refresh
     BennyImageSheet:
       Name: Benny
       Hint: Select which image to use for Bennies on the Character Sheet
@@ -840,6 +861,7 @@ SWADE:
     Readied: Readied
   DestroyOnEmpty: Destroy when Empty
   Charges: Charges
+  ChargesMax: Maximum Charges
   Consumable:
     Use: Use
     Consumables: Consumables
@@ -919,7 +941,10 @@ SWADE:
     Type: Type
     HasMaxValue: Has Max Value
     Current: Current {stat}
+    Value: Value
     Max: Max {stat}
+    MaxLabel: Maximum
+    OptionLabel: Option
     KeyErr: Additional Stat key {invalid} is invalid and has been changed to {key}
   MessageOnUse:
     Label: Message on Use
@@ -928,7 +953,10 @@ SWADE:
     EmptyHint: This item currently grants no items
     Header: Item Grants
     When: Grant Items When
+    Mutation: Mutation
   IgnFatigue: Ignore Fatigue
+  IgnFatigueWounds: Ignore Wounds/Fatigue
+  FatigueWounds: Wounds/Fatigue
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
   Targets: 'Targets:'
@@ -1466,11 +1494,39 @@ SWADE:
   SettingConfigurator:
     WorldTables: World Tables
     WorldCompendiums: World Compendiums
+  Group:
+    Sheet:
+      Members:
+        Header: Members
+        Hint: To add members either drag & drop them onto the sheet or copy & paste their UUID. This also works with token actors in a scene.
+        Empty: No members yet
+      Stash:
+        Header: Stash
+        Empty: No items present
+      Lock:
+        Label: Toggle Sheet Lock
+        Hint: When locked, no Actors can be added to or removed from the group
+  Supplies:
+    Label: Supplies
+    Level:
+      Out: Out
+      Low: Low
+      High: High
+      VeryHigh: Very High
+    Ammo:
+      Label: Ammunition
+    Fuel:
+      Label: Fuel
+    Food:
+      Label: Food
+    Supply:
+      Label: Supply
 TYPES:
   Actor:
     character: Player Character
     npc: NPC
     vehicle: Vehicle
+    group: Group
   Item:
     weapon: Weapon
     ancestry: Ancestry

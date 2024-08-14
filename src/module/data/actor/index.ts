@@ -1,8 +1,10 @@
 import { CharacterData } from './character';
+import { GroupData } from './group';
 import { NpcData } from './npc';
 import { VehicleData } from './vehicle';
 
 export { CharacterData } from './character';
+export { GroupData } from './group';
 export { NpcData } from './npc';
 export { VehicleData } from './vehicle';
 
@@ -10,6 +12,7 @@ export const config = {
   character: CharacterData,
   npc: NpcData,
   vehicle: VehicleData,
+  group: GroupData,
 };
 
 declare global {
@@ -18,6 +21,7 @@ declare global {
       character: CharacterData;
       npc: NpcData;
       vehicle: VehicleData;
+      group: GroupData;
     };
   }
 }

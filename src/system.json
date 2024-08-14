@@ -160,9 +160,8 @@
           "advances.details"
         ]
       },
-      "vehicle": {
-        "htmlFields": ["description"]
-      }
+      "vehicle": { "htmlFields": ["description"] },
+      "group": { "htmlFields": ["description"] }
     },
     "Item": {
       "weapon": { "htmlFields": ["description"] },

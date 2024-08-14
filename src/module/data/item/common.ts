@@ -10,13 +10,26 @@ const fields = foundry.data.fields;
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
 
 export const itemDescription = () => ({
-  description: new fields.HTMLField({ initial: '', textSearch: true }),
-  notes: new fields.StringField({ initial: '', textSearch: true }),
-  source: new fields.StringField({ initial: '', textSearch: true }),
+  description: new fields.HTMLField({
+    initial: '',
+    textSearch: true,
+    label: 'SWADE.Desc',
+  }),
+  notes: new fields.StringField({
+    initial: '',
+    textSearch: true,
+    label: 'SWADE.Notes',
+  }),
+  source: new fields.StringField({
+    initial: '',
+    textSearch: true,
+    label: 'SWADE.Source',
+  }),
   swid: new fields.StringField({
     initial: constants.RESERVED_SWID.DEFAULT,
     blank: false,
     required: true,
+    label: 'SWADE.SWID.Long',
     validate: (
       value: string,
       _options: DataField.ValidationOptions<foundry.data.fields.StringField>,
@@ -27,60 +40,71 @@ export const itemDescription = () => ({
   ...additionalStats(),
 });
 
+export const builder = () => ({
+  build: new fields.SchemaField({
+    cost: new fields.NumberField({ integer: true, label: 'SWADE.BuildCost' })
+  })
+})
+
 export const physicalItem = () => ({
-  quantity: new fields.NumberField({ initial: 1 }),
-  weight: new fields.NumberField({ initial: 0 }),
-  price: new fields.NumberField({ initial: 0 }),
+  quantity: new fields.NumberField({ initial: 1, label: 'SWADE.Quantity' }),
+  weight: new fields.NumberField({ initial: 0, label: 'SWADE.Weight' }),
+  price: new fields.NumberField({ initial: 0, label: 'SWADE.Price' }),
 });
 
 export const arcaneDevice = () => ({
-  isArcaneDevice: new fields.BooleanField(),
+  isArcaneDevice: new fields.BooleanField({ label: 'SWADE.ArcaneDevice' }),
   arcaneSkillDie: new fields.SchemaField({
     sides: makeDiceField(),
-    modifier: new fields.NumberField({ initial: 0 }),
+    modifier: new fields.NumberField({ initial: 0, label: 'SWADE.Modifier' }),
   }),
-  powerPoints: new fields.ObjectField({}),
+  powerPoints: new fields.ObjectField({ label: 'SWADE.PP' }),
 });
 
 export const equippable = () => ({
-  equippable: new fields.BooleanField(),
-  equipStatus: new fields.NumberField({ initial: 1 }),
+  equippable: new fields.BooleanField({ label: 'SWADE.Equippable' }),
+  equipStatus: new fields.NumberField({ initial: 1, label: 'SWADE.Equipped' }),
 });
 
 export const vehicular = () => ({
-  isVehicular: new fields.BooleanField(),
-  mods: new fields.NumberField({ initial: 1 }),
+  isVehicular: new fields.BooleanField({ label: 'SWADE.VehicleMod' }),
+  mods: new fields.NumberField({ initial: 1, label: 'SWADE.Mods' }),
 });
 
 export const actions = () => ({
   actions: new fields.SchemaField({
-    trait: new fields.StringField({ initial: '' }),
-    traitMod: new fields.StringField({ initial: '' }),
-    dmgMod: new fields.StringField({ initial: '' }),
+    trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
+    traitMod: new fields.StringField({ initial: '', label: 'SWADE.TraitMod' }),
+    dmgMod: new fields.StringField({ initial: '', label: 'SWADE.DmgMod' }),
     additional: new MappingField(
       new fields.SchemaField({
-        name: new fields.StringField({ blank: false, nullable: false }),
+        name: new fields.StringField({ blank: false, nullable: false, label: 'SWADE.Name' }),
         type: new fields.StringField({
           initial: constants.ACTION_TYPE.TRAIT,
           choices: Object.values(constants.ACTION_TYPE),
+          label: 'Type',
         }),
         dice: new fields.NumberField({ initial: undefined, required: false }),
         resourcesUsed: new fields.NumberField({
           initial: undefined,
           required: false,
+          label: 'SWADE.ResourcesUsed.Label',
         }),
         modifier: new fields.StringField({
           initial: undefined,
           required: false,
+          label: 'SWADE.Modifier',
         }),
         override: new fields.StringField({
           initial: undefined,
           required: false,
+          label: 'SWADE.ActionsOverride',
         }),
         ap: new fields.NumberField({
           initial: undefined,
           required: false,
           nullable: true,
+          label: 'SWADE.Name',
         }),
         uuid: new fields.DocumentUUIDField({
           type: 'Macro',
@@ -88,15 +112,18 @@ export const actions = () => ({
           required: true,
           blank: false,
           initial: null,
+          label: 'UUID',
         }),
         macroActor: new fields.StringField({
           initial: constants.MACRO_ACTOR.DEFAULT,
           required: false,
           choices: Object.values(constants.MACRO_ACTOR),
+          label: 'DOCUMENT.Actor',
         }),
         isHeavyWeapon: new fields.BooleanField({
           initial: false,
           required: false,
+          label: 'SWADE.HeavyWeapon',
         }),
       }),
       { initial: {} },
@@ -106,21 +133,24 @@ export const actions = () => ({
 
 export const bonusDamage = () => ({
   bonusDamageDie: makeDiceField(6),
-  bonusDamageDice: new fields.NumberField({ initial: 1 }),
+  bonusDamageDice: new fields.NumberField({ initial: 1, label: 'SWADE.NumberOfDice.Label' }),
 });
 
 export const favorite = () => ({
-  favorite: new fields.BooleanField(),
+  favorite: new fields.BooleanField({ label: 'SWADE.Favorite' }),
 });
 
 export const templates = () => ({
-  templates: new fields.SchemaField({
-    cone: new fields.BooleanField(),
-    stream: new fields.BooleanField(),
-    small: new fields.BooleanField(),
-    medium: new fields.BooleanField(),
-    large: new fields.BooleanField(),
-  }),
+  templates: new fields.SchemaField(
+    {
+      cone: new fields.BooleanField({ label: 'SWADE.Cone.Short' }),
+      stream: new fields.BooleanField({ label: 'SWADE.Stream.Short' }),
+      small: new fields.BooleanField({ label: 'SWADE.Small.Short' }),
+      medium: new fields.BooleanField({ label: 'SWADE.Medium.Short' }),
+      large: new fields.BooleanField({ label: 'SWADE.Large.Short' }),
+    },
+    { label: 'SWADE.Templates.Possible' },
+  ),
 });
 
 export const additionalStats = () => ({
@@ -128,12 +158,12 @@ export const additionalStats = () => ({
 });
 
 export const category = () => ({
-  category: new fields.StringField({ initial: '' }),
+  category: new fields.StringField({ initial: '', label: 'SWADE.Category' }),
 });
 
 export const grantEmbedded = () => ({
   ...grants(),
-  grantOn: new fields.NumberField({ initial: constants.GRANT_ON.CARRIED }),
+  grantOn: new fields.NumberField({ initial: constants.GRANT_ON.CARRIED, label: 'SWADE.ItemGrants.When' }),
 });
 
 export const grants = () => ({
@@ -144,10 +174,11 @@ export const grants = () => ({
         type: 'Item',
         nullable: false,
         required: true,
+        label: 'SWADE.Item',
       }),
-      img: new fields.StringField({ initial: null, nullable: true }),
-      name: new fields.StringField({ initial: null, nullable: true }),
-      mutation: new fields.ObjectField({ required: false }),
+      img: new fields.StringField({ initial: null, nullable: true, label: 'Image' }),
+      name: new fields.StringField({ initial: null, nullable: true, label: 'SWADE.Name' }),
+      mutation: new fields.ObjectField({ required: false, label: 'SWADE.ItemGrants.Mutation' }),
     }),
   ),
 });
@@ -164,7 +195,7 @@ export const choiceSets = () => ({
             initial: true,
             nullable: false,
           }),
-          mutation: new fields.ObjectField({ required: false }),
+          mutation: new fields.ObjectField({ required: false, label: 'SWADE.ItemGrants.Mutation' }),
         }),
       ),
     }),
@@ -177,7 +208,7 @@ export function validateSwid(value: string) {
     return new foundry.data.validation.DataModelValidationFailure({
       unresolved: true,
       invalidValue: value,
-      message: 'any is a reserved swid!',
+      message: 'any is a reserved SWID!',
     });
   }
   //if the value matches the regex we have likely a valid swid
@@ -185,7 +216,7 @@ export function validateSwid(value: string) {
     return new foundry.data.validation.DataModelValidationFailure({
       unresolved: true,
       invalidValue: value,
-      message: value + ' is not a valid SWID',
+      message: value + ' is not a valid SWID!',
     });
   }
 }

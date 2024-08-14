@@ -22,12 +22,48 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Changed
+
+- Fixes the GM gaining another Benny if the GM has 0 Bennies and a player refreshes the browser. Previously, a GM with 0 Bennies could never have below 0, so when a player refreshed, they'd drop, which decreases the amount of Bennies a GM has (bottoming out at 0), and rejoin, which increases the amount (adding 1 Benny). This fix allows the GM Benny count to go to negative values when players drop, avoiding the possibility of gaining an extra Benny unintentionally. **by @kristianserrano**
+
 ## 4.1.0
+
+### Added
+
+- New item type: Ancestry. Existing ancestry abilities are automatically migrated. **by @florad92**
+- Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
+- Added new field for Abilities and physical items, `system.build.cost`, that can be used to track the character creation values for custom ancestries and other similar "build your own" designs.
 
 ### Changed
 
 - Separated vehicle speed value and unit into two different fields. `system.topspeed` is now `system.topspeed.value` and `system.topspeed.unit`. (#1170) **by @florad92**
 - Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
+- If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
+
+### Fixed
+
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
+
+## 4.0.5
+
+### Fixed
+
+- Removed outdated references to `flags.swade.elan` in favor of `globalMods.bennyTrait`. **by @jpmeehan5**
+- Ammo count for weapons with Reload Procedure of None once again reduce the ammo quantity by 1 as expected. (#1194) **by @kristianserrano**
+- Fixed Vehicular weapons not rolling driver's skill. (#331) **by architech99**
+
+## 4.0.4
+
+### Fixed
+
+- Continued to resolve deprecation warnings
+- Compendium TOC Token preview once again handles wildcards correctly. (#1183) **by @florad92**
+- The Strength attribute can be configured to go above a d12. (#1189) **by @jpmeehan5**
+- Fixed soak rolls not waiting for Dice So Nice to finish animation before posting results. (#1133) **by @chridgely**
+- Fixed bugs related to the no power points setting rule. (#1188) **by @jpmeehan5**
+- Item Grants should no longer render all item sheets if a skill Item is amongst the granted Items. (#1185) **by @florad92**
 
 ## 4.0.3
 

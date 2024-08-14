@@ -43,6 +43,7 @@ import {
   registerSettings,
 } from './module/settings';
 import CharacterSheet from './module/sheets/CharacterSheet';
+import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
@@ -241,6 +242,12 @@ Hooks.once('init', () => {
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
 
+  Actors.registerSheet('swade', GroupSheet, {
+    types: ['group'],
+    makeDefault: true,
+    label: 'SWADE.GroupSheet',
+  });
+
   Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
     makeDefault: true,
@@ -258,6 +265,20 @@ Hooks.once('init', () => {
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
+    types: [
+      'ability',
+      'action',
+      'ancestry',
+      'armor',
+      'consumable',
+      'edge',
+      'gear',
+      'hindrance',
+      'power',
+      'shield',
+      'skill',
+      'weapon',
+    ],
     label: 'SWADE.ItemSheet',
   });
   DocumentSheetConfig.registerSheet(
@@ -278,11 +299,9 @@ Hooks.once('init', () => {
   CONFIG.Dice.TraitRoll = TraitRoll;
   CONFIG.Dice.DamageRoll = DamageRoll;
 
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);

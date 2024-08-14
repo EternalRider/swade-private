@@ -603,7 +603,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
             const newActions: ItemActions = {};
             //give the actions new keys to make sure there are no id collisions
             for (const action of Object.values(existingActions)) {
-              newActions[randomID(8)] = action;
+              newActions[foundry.utils.randomID(8)] = action;
             }
             this.item.update({ [actionKey]: newActions });
           },

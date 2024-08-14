@@ -4,8 +4,9 @@ import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { category, favorite, grants } from './common';
+import { builder, category, favorite, grants } from './common';
 import {
+  Builder,
   Category,
   ChoicesType,
   Favorite,
@@ -17,7 +18,8 @@ declare namespace AbilityData {
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      Grants {
+      Grants, 
+      Builder {
     subtype: foundry.data.fields.StringField<{
       initial: typeof constants.ABILITY_TYPE.SPECIAL;
       choices: ChoicesType<typeof constants.ABILITY_TYPE>;
@@ -42,12 +44,16 @@ class AbilityData extends SwadeBaseItemData<
       ...favorite(),
       ...category(),
       ...grants(),
+      ...builder(),
       subtype: new fields.StringField({
         initial: constants.ABILITY_TYPE.SPECIAL,
         choices: Object.values(constants.ABILITY_TYPE),
         textSearch: true,
+        label: 'SWADE.Subtype',
       }),
-      grantsPowers: new fields.BooleanField(),
+      grantsPowers: new fields.BooleanField({
+        label: 'SWADE.GrantsPowers',
+      }),
     };
   }
 
@@ -71,13 +77,13 @@ class AbilityData extends SwadeBaseItemData<
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
-    //Stop Ancestries/Archetypes from being added to the actor as an item if the actor already has one
+    //Stop Archetypes from being added to the actor as an item if the actor already has one
     const subType = this.subtype;
     if (
       subType === constants.ABILITY_TYPE.ARCHETYPE &&
       !!this.parent.actor?.archetype
     ) {
-      ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+      ui.notifications?.warn('SWADE.Validation.OnlyOneArchetype', {
         localize: true,
       });
       return false;

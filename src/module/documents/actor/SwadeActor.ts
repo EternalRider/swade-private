@@ -38,7 +38,7 @@ import {
   shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
-import SwadeItem from '../item/SwadeItem';
+import SwadeItem, { SystemItemTypes } from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
 
 declare global {
@@ -49,7 +49,6 @@ declare global {
     swade: {
       ambidextrous?: boolean;
       auras?: Record<string, AuraData>;
-      elan?: boolean;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
@@ -202,8 +201,9 @@ class SwadeActor extends Actor {
   }
 
   override get itemTypes() {
-    const types: Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]> =
-      Object.fromEntries(game.documentTypes.Item.map((t) => [t, []]));
+    const types = Object.fromEntries<SwadeItem[]>(
+      game.documentTypes.Item.map((t: SystemItemTypes) => [t, []]),
+    ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
     for (const item of this.items.values()) {
       types[item.type].push(item);
     }
@@ -568,6 +568,7 @@ class SwadeActor extends Actor {
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
       system: {
+        swid: 'unskilled-attempt',
         die: {
           sides: 4,
           modifier: 0,
@@ -842,7 +843,7 @@ class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    return this.system.getRollData(includeModifiers);
+    return this.system.getRollData?.(includeModifiers) ?? {};
   }
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */

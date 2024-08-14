@@ -99,6 +99,8 @@ export const SWADE: SwadeConfig = {
       'pcStartingCurrency',
       'npcStartingCurrency',
       'armorStacking',
+      'staticGmBennies',
+      'gmBennies',
       'bennyImageSheet',
       'bennyImage3DFront',
       'bennyImage3DBack',
@@ -193,6 +195,9 @@ export const SWADE: SwadeConfig = {
   abilitySheet: {
     special: {
       dropdown: 'SWADE.SpecialAbility',
+    },
+    ancestry: {
+      dropdown: 'SWADE.Ancestry',
     },
     archetype: {
       dropdown: 'SWADE.Archetype',

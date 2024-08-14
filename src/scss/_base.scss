@@ -1,4 +1,4 @@
-.swade.sheet {
+.swade.sheet:not(.application) {
   .window-content {
     background-image: url('./assets/main_bg.webp');
     background-repeat: repeat;

@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { HotReloadData } from '../../globals';
+import CharacterSummarizer from '../CharacterSummarizer';
+import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
-import CharacterSummarizer from '../CharacterSummarizer';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -15,8 +16,6 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeCards from '../documents/card/SwadeCards';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import SwadeCombat from '../documents/combat/SwadeCombat';
-import SwadeItem from '../documents/item/SwadeItem';
-import { Logger } from '../Logger';
 import * as migrations from '../migration/migration';
 import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
@@ -532,12 +531,10 @@ export default class SwadeCoreHooks {
     connected: boolean,
   ) {
     const gm = game.users.activeGM;
-    if (user.isGM || !gm?.isSelf) return false;
-    const bennyDiff = connected ? 1 : -1;
-    const currentBennies = gm.bennies;
-    let newBennies = currentBennies + bennyDiff;
-    newBennies = newBennies < 0 ? 0 : newBennies;
-    await gm.setFlag('swade', 'gmBennies', newBennies);
+    const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
+    if (user.isGM || hasStaticBennies || !gm?.isSelf) return false;
+    const newBennies = connected ? gm.bennies + 1 : gm.bennies - 1;
+    await gm.setFlag('swade', 'bennies', newBennies);
     ui.players?.render(true);
   }
 
@@ -661,6 +658,13 @@ export default class SwadeCoreHooks {
           game.user!.isGM && game.users?.get(li[0].dataset.userId!)!.isGM!,
         callback: async (li) => {
           const gm = game.users?.get(li[0].dataset.userId!);
+          const hasStaticBennies = game.settings.get(
+            'swade',
+            'staticGmBennies',
+          );
+          const gmBennies = hasStaticBennies
+            ? game.settings.get('swade', 'gmBennies')
+            : game.users.filter((u) => u.active && !u.isGM).length;
           await foundry.applications.api.DialogV2.wait({
             window: { title: game.i18n.localize('SWADE.BenniesAdjustGM') },
             position: {
@@ -679,7 +683,7 @@ export default class SwadeCoreHooks {
                     min="0"
                     style="width: 5ch; height: .75lh; text-align: center;"
                     name="gm-bennies"
-                    value="${game.users?.filter((u) => u.active && !u.isGM).length}"
+                    value="${gmBennies}"
                     autofocus
                   >
                 </label>

@@ -22,13 +22,13 @@ class HeadquartersData extends foundry.abstract.TypeDataModel<
   static override defineSchema(): HeadquartersData.Schema {
     const fields = foundry.data.fields;
     return {
-      advantage: new fields.HTMLField(),
-      complication: new fields.HTMLField(),
-      upgrades: new fields.HTMLField(),
+      advantage: new fields.HTMLField({ label: 'SWADE.Headquarters.Advantage' }),
+      complication: new fields.HTMLField({ label: 'SWADE.Headquarters.Complication' }),
+      upgrades: new fields.HTMLField({ label: 'SWADE.Headquarters.Upgrades' }),
       form: new fields.SchemaField({
-        description: new fields.HTMLField(),
-        acquisition: new fields.HTMLField(),
-        maintenance: new fields.HTMLField(),
+        description: new fields.HTMLField({ label: 'SWADE.Headquarters.Description' }),
+        acquisition: new fields.HTMLField({ label: 'SWADE.Headquarters.Acquisition' }),
+        maintenance: new fields.HTMLField({ label: 'SWADE.Headquarters.Maintenance' }),
       }),
     };
   }
