@@ -1491,6 +1491,8 @@ SWADE:
   FollowerCount: '{count} Followers'
   Benny: Benny
   Free: Free
+  DeleteFromParentWarningPermanent: '{name} will be permanently deleted from {parent} and cannot be recovered.'
+  DeleteFromParentWarning: '{name} will be permanently deleted from {parent}.'
   SettingConfigurator:
     WorldTables: World Tables
     WorldCompendiums: World Compendiums

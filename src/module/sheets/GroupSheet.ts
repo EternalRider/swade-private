@@ -86,7 +86,7 @@ export class GroupSheet extends SwadeActorSheetV2 {
       window: {
         title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${name}`,
       },
-      content: `<h4>${game.i18n.localize('AreYouSure')}</h4><p>${game.i18n.format('SIDEBAR.DeleteWarning', { type })}</p>`,
+      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarning', { name, parent: this.actor.name })}</p>`,
     });
     if (!proceed) return;
     existing.splice(index, 1);
