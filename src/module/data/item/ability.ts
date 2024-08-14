@@ -83,7 +83,7 @@ class AbilityData extends SwadeBaseItemData<
       subType === constants.ABILITY_TYPE.ARCHETYPE &&
       !!this.parent.actor?.archetype
     ) {
-      ui.notifications.warn('SWADE.Validation.OnlyOneArchetype', {
+      ui.notifications?.warn('SWADE.Validation.OnlyOneArchetype', {
         localize: true,
       });
       return false;

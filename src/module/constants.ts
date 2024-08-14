@@ -1,3 +1,6 @@
+import { PhysicalItem } from '../globals';
+
+/* eslint-disable @typescript-eslint/naming-convention */
 export const constants = {
   /** @enum */
   ARMOR_LOCATIONS: {
@@ -152,8 +155,23 @@ export const constants = {
     COMPACT: 'compact',
     LARGE: 'large',
   } as const,
+  /** @enum */
   ARMOR_STACKING: {
     CORE: 'core',
     SWPF: 'swpf',
-  },
+  } as const,
+  /**@enum */
+  SUPPLY_LEVEL: {
+    VERY_HIGH: 3,
+    HIGH: 2,
+    LOW: 1,
+    OUT: 0,
+  } as const,
+  PHYSICAL_ITEMS: [
+    'weapon',
+    'armor',
+    'shield',
+    'consumable',
+    'gear',
+  ] as PhysicalItem[],
 };

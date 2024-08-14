@@ -1,0 +1,63 @@
+<section
+  class='{{tabs.members.tabCssClass}}'
+  data-group='primary'
+  data-tab='members'
+>
+  <fieldset>
+    <legend>{{localize tabs.members.label}}</legend>
+    <ol class='fieldset-list'>
+      {{#each members}}
+        <li class='item member {{cssClass}}' data-member-uuid='{{uuid}}'>
+          <a
+            role='button'
+            class='image'
+            data-action='showMemberImage'
+            data-tooltip='SIDEBAR.CharArt'
+            style='background-image:url("{{img}}");'
+          >
+            <div
+              class='wounds'
+              style='--_background:{{wounds.background}}; --_wounds-color:{{wounds.color}};'
+            >
+
+              {{wounds.value}}/{{wounds.max}}
+            </div>
+          </a>
+          <div class='name'>
+            <a role='button' data-action='openMember'>{{name}}</a>
+          </div>
+          <div class='bennies flexrow' data-tooltip='SWADE.Bennies'>
+            {{bennies}}
+            <img
+              class='benny-image'
+              src='{{@root.benny}}'
+              alt='{{localize "SWADE.Benny"}}'
+            /></div>
+          <div class='identity'>{{profile}}</div>
+          <ol class='stats'>
+            <li><span class='bold'>{{localize 'SWADE.Tough'}}:</span>
+              {{toughness}}({{armor}})</li>
+            <li><span class='bold'>{{localize 'SWADE.Pace'}}:</span>
+              {{pace}}</li>
+            <li><span class='bold'>{{localize 'SWADE.Parry'}}:</span>
+              {{parry}}</li>
+          </ol>
+          {{#if (and @root.actor.isOwner @root.unlocked)}}
+            <div class='controls'>
+              <button type='button' class='icon' data-action='deleteMember'>
+                <i class='fa-solid fa-trash'></i>
+              </button>
+            </div>
+          {{/if}}
+        </li>
+      {{else}}
+        <li class='hint' style='height: var(--input-height)'>
+          {{localize 'SWADE.Group.Sheet.Members.Empty'}}
+        </li>
+      {{/each}}
+    </ol>
+  </fieldset>
+  {{#if (and user.isGM unlocked)}}
+    {{formGroupSimple 'system.members' source=true localize=true}}
+  {{/if}}
+</section>

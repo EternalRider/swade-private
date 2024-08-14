@@ -484,7 +484,10 @@ class WeaponData extends SwadePhysicalItemData<
     return true;
   }
 
-  async #handleFullReload(ammo: SwadeItem, missing: number): Promise<boolean> {
+  async #handleFullReload(
+    ammo: SwadeItem<'gear' | 'consumable'>,
+    missing: number,
+  ): Promise<boolean> {
     if (!this.usesAmmoFromInventory) {
       return this.#handleSimpleReload();
     }
@@ -706,7 +709,7 @@ class WeaponData extends SwadePhysicalItemData<
     data: foundry.documents.BaseItem.ConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser,
-  ) {
+  ): Promise<undefined> {
     await super._preCreate(data, options, user);
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.MAIN_HAND });

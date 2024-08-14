@@ -453,7 +453,7 @@ class SwadeItem extends Item {
     // Basic chat message data
     const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
       user: game.user?.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.parent?.id,
@@ -861,3 +861,4 @@ class SwadeItem extends Item {
 }
 
 export default SwadeItem;
+export { SystemItemTypes };

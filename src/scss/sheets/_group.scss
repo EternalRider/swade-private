@@ -1,0 +1,193 @@
+.application button {
+  margin: 0;
+}
+
+.application.sheet.swade.actor.group {
+  &.standard-form {
+    gap: 0;
+  }
+  fieldset {
+    padding: 0.5rem;
+    .fieldset-list {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+  }
+
+  &.locked {
+    .header .name {
+      background: transparent;
+      --input-border-color: transparent;
+    }
+  }
+
+  .header {
+    gap: 1rem;
+    & .profile-img {
+      flex-grow: 0;
+      border: none;
+      height: var(--font-size-80);
+      &:hover,
+      &:focus {
+        filter: drop-shadow(0 0 8px var(--color-shadow-primary));
+      }
+    }
+    .name {
+      height: var(--font-size-80);
+      font-size: var(--font-size-48);
+    }
+    .icon {
+      flex: 0;
+      align-self: self-start;
+    }
+  }
+
+  .tab {
+    scrollbar-gutter: stable;
+  }
+
+  .member {
+    display: grid;
+    grid-template-areas:
+      'image name bennies controls'
+      'image identity identity identity'
+      'image stats stats stats';
+    column-gap: 1rem;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: var(--input-height) auto auto;
+    &:not(:last-of-type) {
+      margin-bottom: 0.5rem;
+      border-bottom: 2px groove var(--color-fieldset-border);
+    }
+    &.broken * {
+      cursor: not-allowed;
+    }
+    .image {
+      --image-size: var(--font-size-64);
+      display: inline-grid;
+      height: var(--image-size);
+      width: var(--image-size);
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      grid-area: image;
+      scale: 1;
+      &:hover {
+        text-shadow: none;
+        filter: drop-shadow(0 0 8px var(--color-shadow-primary));
+      }
+      .wounds {
+        --_text-height: 1.25rem;
+        pointer-events: none;
+        background-color: var(--_background, rgba(255, 0, 0, 0.8));
+        color: var(--_wounds-color);
+        margin-top: auto;
+        line-height: var(--_text-height);
+        height: var(--_text-height);
+        text-align: center;
+      }
+    }
+
+    .name {
+      line-height: var(--input-height);
+      font-size: 1.2em;
+      grid-area: name;
+    }
+
+    .bennies {
+      grid-area: bennies;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      .benny-image {
+        height: var(--input-height);
+        border: none;
+      }
+    }
+
+    .name,
+    .bennies {
+      line-height: var(--input-height);
+      font-size: 1.2em;
+    }
+
+    .identity {
+      grid-area: identity;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+    }
+
+    .stats {
+      grid-area: stats;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      .bold {
+        font-weight: bold;
+      }
+      li:not(:last-of-type)::after {
+        content: ', ';
+        margin-right: 1ch;
+      }
+    }
+
+    .controls {
+      grid-area: controls;
+    }
+  }
+
+  .stash {
+    .item {
+      //The details/summary styles should probably be moved to a separate file to make them more universal
+      details {
+        border-bottom: 2px groove var(--color-fieldset-border);
+        &[open] {
+          summary:before {
+            transform: rotate(90deg);
+          }
+        }
+      }
+      summary {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        position: relative;
+        margin-left: 1.2em;
+        padding-bottom: 0.25rem;
+        &:hover,
+        &:focus {
+          text-shadow: 0 0 10px var(--color-shadow-primary);
+        }
+        &::before {
+          content: '';
+          border-width: 0.4em;
+          border-style: solid;
+          border-color: transparent transparent transparent
+            var(--color-text-primary);
+          position: absolute;
+          left: -1rem;
+          transform: rotate(0);
+          transform-origin: 0.2em 50%;
+          transition: 200ms transform ease;
+        }
+        &::marker {
+          display: none;
+        }
+      }
+      .img {
+        border: none;
+        max-width: 2rem;
+      }
+
+      .controls {
+        margin-left: auto;
+        flex-grow: 0;
+        min-width: fit-content;
+        gap: 0.5rem;
+      }
+    }
+  }
+}

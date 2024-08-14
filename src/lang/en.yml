@@ -6,6 +6,7 @@ SWADE:
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
+  GroupSheet: Savage Worlds Group Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
@@ -1493,11 +1494,39 @@ SWADE:
   SettingConfigurator:
     WorldTables: World Tables
     WorldCompendiums: World Compendiums
+  Group:
+    Sheet:
+      Members:
+        Header: Members
+        Hint: To add members either drag & drop them onto the sheet or copy & paste their UUID. This also works with token actors in a scene.
+        Empty: No members yet
+      Stash:
+        Header: Stash
+        Empty: No items present
+      Lock:
+        Label: Toggle Sheet Lock
+        Hint: When locked, no Actors can be added to or removed from the group
+  Supplies:
+    Label: Supplies
+    Level:
+      Out: Out
+      Low: Low
+      High: High
+      VeryHigh: Very High
+    Ammo:
+      Label: Ammunition
+    Fuel:
+      Label: Fuel
+    Food:
+      Label: Food
+    Supply:
+      Label: Supply
 TYPES:
   Actor:
     character: Player Character
     npc: NPC
     vehicle: Vehicle
+    group: Group
   Item:
     weapon: Weapon
     ancestry: Ancestry
