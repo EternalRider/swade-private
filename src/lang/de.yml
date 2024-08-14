@@ -735,6 +735,7 @@ SWADE:
     Use: Benutzen
     Consumables: Verbrauchsgegenstände
     NotEnoughCharges: Nicht genug Ladungen!
+    ChargesUsed: <p>{charges} Ladung(en) von <em>{name}</em> genutzt</p>
   ItemSheet: Savage Worlds Itembogen
   EmptyAncestralAbilitiesHint: <strong>Warnung:</strong> Dieses Feature ist veraltet.
     Beim Erstellen von einem neuen {ancestry}/{archetype} sollten stattdessen Items
@@ -921,6 +922,9 @@ SWADE:
           unterstützt, Stichpunktlisten, Tabellen und ähnliches können also beliebig
           genutzt werden.
         Title: Aufwertungen
+    ERROR:
+      ActorCreatePermission: Diese Tour erfordert die Berechtigung, Akteure zu erstellen
+      SettingPermission: Diese Tour erfordert die Veränderung von Welteinstellungen
   RequiredCrew: Nötige Besatzung
   NumberOfDice:
     Hint: Anzahl Eigens.-Würfel, die für diese Aktion gewürfelt werden
