@@ -82,7 +82,10 @@ class SwadeItem extends Item {
       }
     }
     // eslint-disable-next-line deprecation/deprecation
-    if (data.type === 'ability' && ['ancestry', 'race'].includes(data.system?.subtype)) {
+    if (
+      data.type === 'ability' &&
+      ['ancestry', 'race'].includes(data.system?.subtype)
+    ) {
       data.type = 'ancestry';
     }
     return data;
@@ -385,6 +388,22 @@ class SwadeItem extends Item {
     //return early if there's no parent or this isn't a skill
     if (!this.system.canRoll) return null;
     return this.parent.rollSkill(this.id, options);
+  }
+
+  override async deleteDialog(
+    options?: Partial<DialogOptions> | undefined,
+  ): Promise<false | this | null | undefined> {
+    if (!this.parent) return super.deleteDialog(options);
+    const type = game.i18n.localize(`TYPES.Item.${this.type}`);
+    const proceed = await foundry.applications.api.DialogV2.confirm({
+      rejectClose: false,
+      window: {
+        title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
+      },
+      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
+    });
+    if (!proceed) return false;
+    return this.delete();
   }
 
   /**
