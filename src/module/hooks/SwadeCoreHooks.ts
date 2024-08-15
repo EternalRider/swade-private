@@ -917,4 +917,13 @@ export default class SwadeCoreHooks {
       );
     }
   }
+  static async onTargetToken(user: BaseUser, token: Token, targeted: boolean) {
+    if (!targeted) return;
+    token.ring?.flashColor(user.color, {
+      duration: 1000,
+      easing: (pt) => {
+        return (Math.sin(2 * Math.PI * pt - Math.PI / 2) + 1) / 2;
+      },
+    });
+  }
 }

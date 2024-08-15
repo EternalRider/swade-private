@@ -566,4 +566,29 @@ export default class SwadeActiveEffect extends ActiveEffect {
     super._onCreate(data, options, userId);
     if (userId === game.userId) this._applyRelatedEffects();
   }
+
+  protected override _displayScrollingStatus(enabled: boolean) {
+    super._displayScrollingStatus(enabled);
+    const tokens = this.target.getActiveTokens(true);
+    const isNegative = CONFIG.SWADE.nagetiveStatusEffects.includes(
+      this.statusId,
+    );
+
+    const negativeColor = '#D41159';
+    const positiveColor = '#1A85FF';
+    const colorCode = enabled
+      ? isNegative // if the AE is added and negative, flash negative color, else flash positive color
+        ? negativeColor
+        : positiveColor
+      : isNegative // if the AE is getting removed and negative, flash negative color, else flash positive color
+        ? positiveColor
+        : negativeColor;
+    const color = Color.from(colorCode);
+    for (const token of tokens) {
+      token.ring?.flashColor(color, {
+        duration: 1000,
+        easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+      });
+    }
+  }
 }

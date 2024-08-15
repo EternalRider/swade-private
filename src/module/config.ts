@@ -113,6 +113,26 @@ export const SWADE: SwadeConfig = {
 
   statusEffects: statusEffects,
 
+  nagetiveStatusEffects: [
+    'shaken',
+    'incapacitated',
+    'dead',
+    'bound',
+    'entangled',
+    'frightened',
+    'distracted',
+    'encumbered',
+    'prone',
+    'stunned',
+    'vulnerable',
+    'bleeding-out',
+    'diseased',
+    'heart-attack',
+    'on-fire',
+    'poisoned',
+    'blind',
+  ],
+
   wildCardIcons: {
     regular: 'systems/swade/assets/ui/wildcard.svg',
     compendium: 'systems/swade/assets/ui/wildcard-dark.svg',
@@ -365,6 +385,7 @@ export interface SwadeConfig {
     flags: Record<string, any>;
   };
   statusEffects: StatusEffect[];
+  nagetiveStatusEffects: string[];
   wildCardIcons: {
     regular: string;
     compendium: string;
