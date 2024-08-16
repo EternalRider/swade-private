@@ -6,7 +6,6 @@ import {
   Context,
   DocumentModificationOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
@@ -1518,28 +1517,6 @@ class SwadeActor extends Actor {
           },
         );
       }
-    }
-  }
-
-  protected override async _preUpdate(
-    changed: foundry.documents.BaseActor.UpdateData,
-    options: DocumentModificationOptions,
-    user: BaseUser,
-  ) {
-    super._preUpdate(changed, options, user);
-    if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
-      foundry.utils.setProperty(
-        options,
-        'swade.wounds.value',
-        this.system.wounds.value,
-      );
-    }
-    if (foundry.utils.hasProperty(changed, 'system.fatigue.value')) {
-      foundry.utils.setProperty(
-        options,
-        'swade.fatigue.value',
-        this.system.fatigue.value,
-      );
     }
   }
 }

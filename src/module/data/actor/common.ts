@@ -1,3 +1,5 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
@@ -15,6 +17,7 @@ import {
   makeTraitDiceFields,
 } from '../shared';
 import * as quarantine from './_quarantine';
+import { VehicleData } from './vehicle';
 
 const fields = foundry.data.fields;
 
@@ -221,7 +224,7 @@ declare namespace CommonActorData {
         bennyDamage: Array<DerivedModifier>;
       };
     };
-  }
+  };
 
   type DerivedData = {
     advances: {
@@ -239,7 +242,7 @@ declare namespace CommonActorData {
         isEncumbered: boolean;
       };
     };
-  }
+  };
 }
 
 class CommonActorData<
@@ -826,6 +829,30 @@ class CommonActorData<
      * @param {SwadeActor} actor            The Actor refreshing their bennies
      */
     Hooks.callAll('swadeRefreshBennies', this.parent);
+  }
+
+  protected override async _preUpdate(
+    this: CommonActorData,
+    changed: foundry.documents.BaseActor.UpdateData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preUpdate(changed, options, user);
+    if (this instanceof VehicleData) return;
+    if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.wounds.value',
+        this.wounds.value,
+      );
+    }
+    if (foundry.utils.hasProperty(changed, 'system.fatigue.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.fatigue.value',
+        this.fatigue.value,
+      );
+    }
   }
 }
 

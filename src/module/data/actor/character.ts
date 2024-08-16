@@ -33,25 +33,15 @@ export class CharacterData extends CommonActorData<
     return game.settings.get('swade', 'pcStartingCurrency') ?? 0;
   }
 
-  protected async _preCreate(
-    createData: foundry.documents.BaseActor.ConstructorData,
-    _options: DocumentModificationOptions,
-    _user: BaseUser,
-  ) {
-    this.parent.updateSource({
-      prototypeToken: {
-        actorLink: true,
-        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-      },
-    });
-
-    const coreSkillList = game.settings.get('swade', 'coreSkills');
+  async #addCoreSkills() {
+    //Get list of core skills from settings
+    const coreSkills = game.settings
+      .get('swade', 'coreSkills')
+      .split(',')
+      .map((s) => s.trim());
 
     //only do this if this is a PC with no prior skills
-    if (coreSkillList.length > 0 && this.parent.itemTypes.skill.length === 0) {
-      //Get list of core skills from settings
-      const coreSkills = coreSkillList.split(',').map((s) => s.trim());
-
+    if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
       //Set compendium source
       const pack = game.packs.get(
         game.settings.get('swade', 'coreSkillsCompendium'),
@@ -100,6 +90,22 @@ export class CharacterData extends CommonActorData<
       //Add the items to the creation data
       this.parent.updateSource({ items: skills });
     }
+  }
+
+  protected override async _preCreate(
+    createData: foundry.documents.BaseActor.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(createData, options, user);
+    this.parent.updateSource({
+      prototypeToken: {
+        actorLink: true,
+        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+      },
+    });
+
+    await this.#addCoreSkills();
 
     const isImported = foundry.utils.hasProperty(
       createData,
