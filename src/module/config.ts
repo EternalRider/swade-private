@@ -113,7 +113,7 @@ export const SWADE: SwadeConfig = {
 
   statusEffects: statusEffects,
 
-  nagetiveStatusEffects: [
+  negativeStatusEffects: [
     'shaken',
     'incapacitated',
     'dead',
@@ -385,7 +385,7 @@ export interface SwadeConfig {
     flags: Record<string, any>;
   };
   statusEffects: StatusEffect[];
-  nagetiveStatusEffects: string[];
+  negativeStatusEffects: string[];
   wildCardIcons: {
     regular: string;
     compendium: string;

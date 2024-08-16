@@ -570,7 +570,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   protected override _displayScrollingStatus(enabled: boolean) {
     super._displayScrollingStatus(enabled);
     const tokens = this.target.getActiveTokens(true);
-    const isNegative = CONFIG.SWADE.nagetiveStatusEffects.includes(
+    const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(
       this.statusId,
     );
 
