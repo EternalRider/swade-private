@@ -1283,6 +1283,9 @@ SWADE:
     Header: <strong>Distância total de corrida.</strong>
     Reminder: <p>Correr durante o seu turno causa -2 de penalidade em todas as suas
       ações.</p>
+  DeleteFromParentWarning: '{name} será permanentemente excluído de {parent}.'
+  DeleteFromParentWarningPermanent: '{name} será permanentemente excluído de {parent}
+    e não poderá ser recuperado.'
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
