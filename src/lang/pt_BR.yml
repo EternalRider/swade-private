@@ -12,7 +12,7 @@ SWADE:
   RollExample: ex. +1d6x ou -2
   Roll: Rolar
   RollRaise: Ampliação
-  GroupRoll: Grupo
+  GroupRoll: Rolagem de Grupo
   Ok: Ok
   Cancel: Cancelar
   ConvictionEnd: '{name} oscila em sua convicção'
@@ -128,6 +128,7 @@ SWADE:
     Value: Valor
     Ignore: Ignorar?
     None: Nenhum modificador no momento
+    Active: Ativo
   Illumination:
     _name: Iluminação
     Dim: Penumbra
@@ -194,6 +195,7 @@ SWADE:
     Modes:
       Legacy: Legado
       Expanded: Expandido
+      Label: Modo
     Types:
       Hindrance: Redução de Complicação
       Edge: Nova Vantagem
@@ -403,6 +405,19 @@ SWADE:
       Name: Largura padrão para fichas de personagem
       Hint: 'Largura das fichas de personagem quando abertas pela primeira vez, em
         pixels. Padrão: 650.'
+    StaticGmBennies:
+      Name: Benes de GM Estáticos
+      Hint: Define um valor estático para o número de Benes que o GM recebe ao recarregar,
+        em vez de se basear no número de jogadores ativos.
+    GmBennies:
+      Hint: Define quantos Benes o GM recebe ao recarregar
+      Name: Benes de GM
+    ArmorStacking:
+      Choices:
+        Core: Regras Básicas de Savage Worlds Edição Aventura
+        SWPF: Pathfinder®️ para Savage Worlds
+      Name: Acúmulo de Armadura
+      Hint: Selecione qual regra usar para o acúmulo de armadura
   EffectCallbacks:
     Shaken:
       RollSpirit: Rolar Espírito
@@ -477,6 +492,7 @@ SWADE:
     Use: Usar
     Consumables: Consumíveis
     NotEnoughCharges: Não há cargas suficientes!
+    ChargesUsed: <p>{charges} carga(s) usada em <em>{name}</em></p>
   EmptyAncestralAbilitiesHint: >-
     <strong>Aviso: </strong> Este recurso está sendo deprecado em favor da Concessão
     de Itens. Se estiver criando um(a) novo(a) {ancestry} ou {archetype}, arraste
@@ -533,6 +549,7 @@ SWADE:
     EmptyHint: Este item atualmente não concede nenhum item
     Header: Concessão de Itens
     When: Concede Itens Quando
+    Mutation: Mutação
   RefreshPP: Restaurar Pontos de Poder
   DamageApplicator:
     ApplyDamage:
@@ -884,6 +901,9 @@ SWADE:
     Current: '{stat} Atual'
     KeyErr: A chave de Atributo adicional {invalid} é inválida e foi alterada para
       {key}
+    Value: Valor
+    MaxLabel: Máximo
+    OptionLabel: Opção
   IgnFatigue: Ignorar Fadiga
   BaseDamage: Dano Base
   Targets: 'Alvos:'
@@ -1143,6 +1163,8 @@ SWADE:
     Redraw: Recompra de Carta
     RedrawDialog:
       Content: Comprar uma nova carta com um Bene ou de graça?
+    DealAll: Dar a Todos
+    DealNPC: Dar para NPCs
   FollowerCount: '{count} Seguidores'
   Free: Gratuita
   HindranceSeverity:
@@ -1205,6 +1227,62 @@ SWADE:
   ChaseColumns: Colunas
   ChaseNoDeck: Forneça um deck!
   DialogConfirmPrompt: Tem certeza?
+  Group:
+    Sheet:
+      Stash:
+        Header: Estoque
+        Empty: Sem itens presentes
+      Lock:
+        Label: Alternar Trava de Ficha
+        Hint: Quando travada, nenhum Ator pode ser adicionado ou removido do grupo
+      Members:
+        Header: Membros
+        Hint: Para adicionar membros, arraste e solte-os sobre a ficha ou copie e
+          cole seus UUIDs. Isso também funciona para tokens de atores em uma cena.
+        Empty: Sem membros ainda
+  Supplies:
+    Label: Suprimentos
+    Level:
+      Low: Baixo
+      High: Alto
+      VeryHigh: Muito Alto
+      Out: Sem
+    Ammo:
+      Label: Munição
+    Fuel:
+      Label: Combustível
+    Food:
+      Label: Comida
+    Supply:
+      Label: Suprimento
+  GroupSheet: Ficha de Grupo do Savage Worlds
+  BenniesAdjustGM: Ajustar Benes do GM
+  BenniesAdjustGMText: Coloque o número de Benes que o GM deveria ter atualmente.
+  BenniesMaxNum: Máximo de Benes
+  EdF: Editar {item}
+  EdRightClick: '[Botão Direito] para Editar'
+  SpeedUnit: Unidade
+  ActionsOverride: Substituir
+  ID: ID
+  SortNum: Número de Ordenação
+  ChargesMax: Máximo de Cargas
+  IgnFatigueWounds: Ignorar Ferimentos/Fadiga
+  FatigueWounds: Ferimentos/Fadiga
+  SettingConfigurator:
+    WorldCompendiums: Compêndios do Mundo
+    WorldTables: Tabelas do Mundo
+  Advance: Avançar
+  ShotsCurrent: Tiros Atuais
+  Value: Valor
+  MaxLabel: Máximo
+  Stats: Atributos
+  BuildCost: Custo de Construção
+  ActionDeckPresetPEG: Baralho de Ações (PEG)
+  disabledAE: Desabilitado devido a Efeito Ativo
+  RunningHint:
+    Header: <strong>Distância total de corrida.</strong>
+    Reminder: <p>Correr durante o seu turno causa -2 de penalidade em todas as suas
+      ações.</p>
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
@@ -1229,6 +1307,7 @@ TYPES:
     character: Personagem de Jogador
     npc: NPC
     vehicle: Veículo
+    group: Grupo
   Item:
     weapon: Arma
     armor: Armadura
@@ -1241,6 +1320,7 @@ TYPES:
     ability: Habilidade
     consumable: Consumível
     action: Ação
+    ancestry: Ancestralidade
   Card:
     adventure: Carta de Aventura
     poker: Carta de Poker
