@@ -25,6 +25,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace ArmorData {
   interface Schema
@@ -160,6 +161,16 @@ class ArmorData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }
   }
+
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/armor-embeds.hbs', 'armor-embed');
+  }
+
 }
 
 export { ArmorData };

@@ -7,7 +7,7 @@ import {
   ItemChatCardChip,
   Requirement,
 } from '../../documents/item/SwadeItem.interface';
-import { count } from '../../util';
+import { count, createEmbedElement } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
@@ -167,6 +167,16 @@ class EdgeData extends SwadeBaseItemData<
     }
     return chips;
   }
+  
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/edge-embeds.hbs', 'edge-embed');
+  }
+
 }
 
 export { EdgeData };

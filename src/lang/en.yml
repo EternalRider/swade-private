@@ -193,6 +193,8 @@ SWADE:
   MajHind: Major Hindrance
   Major: (Major)
   Minor: (Minor)
+  HindMajor: Major
+  HindMinor: Minor  
   Edges: Edges
   ArcBack: Arcane Background
   Value: Value

@@ -1,4 +1,5 @@
 import { PotentialSource } from '../../../globals';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
@@ -50,6 +51,15 @@ class ActionData extends SwadeBaseItemData<
   protected override _initialize(options?: any) {
     super._initialize(options);
     this._applyShims();
+  }
+
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/action-embeds.hbs', 'action-embed');
   }
 
   protected _applyShims() {

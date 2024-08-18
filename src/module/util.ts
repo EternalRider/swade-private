@@ -299,4 +299,20 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
   return doc.body.firstElementChild as T;
 }
 
+/**
+ * Utility function to create an HTML element for the purpose of storing embed content.
+ * TODO: Evaluate if this is better somewhere else
+ * @param  {any} objectToEmbed The object that the embed is for
+ * @param  {string} template The handlebars template path to use
+ * @param  {string} className The class name to attach to the outermost element for purposes of controlled styling
+ * @param  {Partial<TextEditor.EnrichmentOptions>} options the enrichment options
+ */
+export async function createEmbedElement(objectToEmbed: any, template: string, className: string): Promise<HTMLElement | HTMLCollection | null> {
+  const content = await renderTemplate(template, objectToEmbed);
+  const elem = document.createElement('div') as HTMLElement
+  elem.className = className;
+  elem.innerHTML = content;
+  return elem;
+}
+
 type Ownership = Record<string, number>;

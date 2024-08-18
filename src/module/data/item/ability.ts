@@ -12,6 +12,7 @@ import {
   Favorite,
   Grants,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace AbilityData {
   interface Schema
@@ -89,6 +90,15 @@ class AbilityData extends SwadeBaseItemData<
       return false;
     }
   }
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/ability-embeds.hbs', 'ability-embed');
+  }
+
 }
 
 export { AbilityData };

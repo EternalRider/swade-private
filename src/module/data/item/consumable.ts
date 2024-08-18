@@ -24,6 +24,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace ConsumableData {
   interface Schema
@@ -176,6 +177,16 @@ class ConsumableData extends SwadePhysicalItemData<
       foundry.utils.setProperty(data, 'system.charges.max', 100);
     }
   }
+  
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/consumable-embeds.hbs', 'consumable-embed');
+  }
+
 }
 
 export { ConsumableData };

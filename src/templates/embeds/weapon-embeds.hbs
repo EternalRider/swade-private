@@ -1,0 +1,46 @@
+<div class="weapon flexcol">
+    <div class="flexrow header">
+        <span class="name">{{parent.name}}</span>
+        <div class="img-container">
+            <img
+                class="item-img"
+                src="{{parent.img}}"
+                data-edit="img"
+                alt="{{parent.name}}"
+                title='{{localize 'SWADE.RightClickZoom'}}'
+            />
+        </div>
+    </div>
+    <section class="stats flexcol">
+        <table class="data-table">
+            <tr class="header-row">
+                {{#if range}}<td>{{localize 'SWADE.Range._name'}}</td>{{/if}}
+                {{#if damage}}<td>{{localize 'SWADE.Dmg'}}</td>{{/if}}
+                {{#if ap}}<td>{{localize 'SWADE.Ap'}}</td>{{/if}}
+                {{#if rof}}<td>{{localize 'SWADE.RoF'}}</td>{{/if}}
+                {{#if shots}}<td>{{localize 'SWADE.Mag'}}</td>{{/if}}
+                {{#if minStr}}<td>{{localize 'SWADE.MinStrShort'}}</td>{{/if}}
+                {{#if weight}}<td>{{localize 'SWADE.Weight'}}</td>{{/if}}
+                {{#if price}}<td>{{localize 'SWADE.Price'}}</td>{{/if}}
+            </tr>            
+            <tr class="data-row">
+                {{#if range}}<td class="range">{{range}}</td>{{/if}}
+                {{#if damage}}<td class="damage">{{formatDamage damage}}</td>{{/if}}
+                {{#if ap}}<td class="ap">{{ap}}</td>{{/if}}
+                {{#if rof}}<td class="rof">{{rof}}</td>{{/if}}
+                {{#if shots}}<td class="shots">{{shots}}</td>{{/if}}
+                {{#if minStr}}<td class="minstr">{{minStr}}</td>{{/if}}
+                {{#if weight}}<td class="weight">{{weight}}</td>{{/if}}
+                {{#if price}}<td class="price">{{price}}</td>{{/if}}
+            </tr>
+        </table>
+    </section>
+    {{#if notes}}
+    <section class="notes">
+        <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
+    </section>
+    {{/if}}
+    <section class="description">
+        {{{enrichedDescription}}}
+    </section>
+</div>

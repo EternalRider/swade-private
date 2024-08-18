@@ -1,5 +1,6 @@
 import { DerivedModifier } from '../../../interfaces/additional.interface';
 import SwadeActor from '../../documents/actor/SwadeActor';
+import { createEmbedElement } from '../../util';
 import { makeAdditionalStatsSchema } from '../shared';
 import * as migrations from './_migration';
 
@@ -164,6 +165,14 @@ export class VehicleData extends foundry.abstract.TypeDataModel<
   /** @inheritdoc */
   override prepareDerivedData() {
     this.scale = this.parent.calcScale(this.size);
+  }
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/vehicle-embeds.hbs', 'vehicle-embed');
   }
 
   get encumbered() {

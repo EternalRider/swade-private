@@ -1,0 +1,42 @@
+<div class="armor flexcol">
+    <div class="flexrow header">
+        <span class="name">{{parent.name}}</span>
+        <div class="img-container">
+            <img
+                class="item-img"
+                src="{{parent.img}}"
+                data-edit="img"
+                alt="{{parent.name}}"
+                title='{{localize 'SWADE.RightClickZoom'}}'
+            />
+        </div>
+    </div>
+    <section class="stats flexcol">
+        <table class="data-table">
+            <tr class="header-row">
+                <td>{{localize 'SWADE.HitLocations'}}</td>
+                <td>{{localize 'SWADE.Armor'}}</td>
+                {{#if toughness}}<td>{{localize 'SWADE.Tough'}}</td>{{/if}}
+                <td>{{localize 'SWADE.MinStrShort'}}</td>
+                <td>{{localize 'SWADE.Weight'}}</td>
+                <td>{{localize 'SWADE.Price'}}</td>
+            </tr>            
+            <tr class="data-row">
+                <td>{{formatArmorLocations locations}}</td>
+                <td class="armor">{{armor}}</td>
+                {{#if toughness}}<td class="toughness">{{toughness}}</td>{{/if}}
+                <td class="minstr">{{minStr}}</td>
+                <td class="weight">{{weight}}</td>
+                <td class="price">{{price}}</td>
+            </tr>
+        </table>
+    </section>
+    {{#if notes}}
+    <section class="notes">
+        <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
+    </section>
+    {{/if}}
+    <section class="description">
+        {{{enrichedDescription}}}
+    </section>
+</div>
