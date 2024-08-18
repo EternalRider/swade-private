@@ -1,0 +1,85 @@
+.content-embed {
+  a.content-link {
+    background: initial;
+    border: initial;
+    color: #8c160f;
+    margin: initial;
+    padding: initial;
+    text-decoration: underline;
+    white-space: normal;
+    word-break: normal;
+  }
+}
+.actor-embed {
+  background: url('assets/paperboard-texture.webp') center top repeat;
+  box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+  border-width: 1px;
+  border-style: solid;
+  border-color: darkgray;
+  padding: 2px;
+    .header {
+      margin-top: 5px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .wildcard-indicator {
+      width: 32px;
+      height: 32px;
+      object-fit: scale-down;
+      object-position: center;
+      margin: 0;
+      margin-right: 2px;
+      vertical-align: middle;
+      border-style: none;
+    }
+
+    .profile-img-container {
+        height: 120px;        
+    }
+    .profile-img {
+      height: inherit;
+      width: inherit;
+      object-fit: contain;
+      cursor: pointer;
+      border-style: none; 
+    }
+    .embed-section {
+        display:block;
+        margin-bottom: 2px;
+        margin-top: 2px;        
+    }
+    .attributes, .skills, .edges, .hindrances, .powers, .gear, .derived, .health {
+      padding-left: 1em;
+      text-indent: -1em;  
+    }
+    .power {
+      font-style: italic;
+    }
+
+    .items-list {
+        display: inline;
+        list-style: none;
+        padding: 0;
+        .item.power {
+          display: inline;          
+          &:last-child:after {
+            content: ';';
+          }
+          &:not(:last-child)::after {
+            content: ', ';
+          }
+        }
+
+        .item {
+          display: inline;          
+          li:last-child:after {
+            content: '';
+          }
+          &:not(:last-child)::after {
+            content: ', ';
+          }
+        }
+    }
+}

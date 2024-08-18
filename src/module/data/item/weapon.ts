@@ -17,7 +17,7 @@ import {
   ItemChatCardChip,
   UsageUpdates,
 } from '../../documents/item/SwadeItem.interface';
-import { notificationExists } from '../../util';
+import { createEmbedElement, notificationExists } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -715,6 +715,16 @@ class WeaponData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.MAIN_HAND });
     }
   }
+
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/weapon-embeds.hbs', 'weapon-embed');
+  }
+
 }
 
 export { WeaponData };

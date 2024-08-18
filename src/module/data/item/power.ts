@@ -3,6 +3,7 @@ import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
 } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -130,6 +131,15 @@ class PowerData extends SwadeBaseItemData<
     const ab = this.parent.actor.system.powerPoints[arcane];
     return ab.value >= resourcesUsed;
   }
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/power-embeds.hbs', 'power-embed');
+  }
+
 }
 
 export { PowerData };

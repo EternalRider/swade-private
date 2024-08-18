@@ -1,0 +1,10 @@
+<div class="skill flexcol">
+    {{#if isCoreSkill}}
+        <span class="core name">★ {{parent.name}}&nbsp;({{attribute}})</span>
+    {{else}}
+        <span class="name">{{parent.name}}&nbsp;({{attribute}})</span>
+    {{/if}}
+    <section class="description">
+        {{{enrichedDescription}}}
+    </section>
+</div>

@@ -1,0 +1,122 @@
+<div class="flexcol">
+    <h2 class="header">
+        {{#if parent.isWildcard}}
+            <img src="systems/swade/assets/ui/wildcard-dark.svg" class="wildcard-indicator" alt="{{localize "SWADE.WildCard"}}" title="{{localize "SWADE.WildCard"}}">
+        {{/if}}    
+        <strong>{{parent.name}}</strong>
+    </h2>
+    <section class="embed-section profile">
+        <div class="profile-img-container">
+            <img
+                class="profile-img"
+                src="{{parent.img}}"
+                data-edit="img"
+                alt="{{parent.name}}"
+                title='{{localize 'SWADE.RightClickZoom'}}'
+            />
+        </div>
+    </section>
+    <section class="embed-section biography">{{{enrichedBiography}}}</section>
+    <section class="embed-section attributes">
+        <strong>{{localize 'SWADE.Attributes'}}:</strong>
+        <span>{{localize "SWADE.AttrAgi"}}</span><span style="margin-left: 2px;">d{{attributes.agility.die.sides}}, </span>
+        <span>{{localize "SWADE.AttrSma"}}</span><span style="margin-left: 2px;">d{{attributes.smarts.die.sides}}, </span>
+        <span>{{localize "SWADE.AttrSpr"}}</span><span style="margin-left: 2px;">d{{attributes.spirit.die.sides}}, </span>
+        <span>{{localize "SWADE.AttrStr"}}</span><span style="margin-left: 2px;">d{{attributes.strength.die.sides}}, </span>
+        <span>{{localize "SWADE.AttrVig"}}</span><span style="margin-left: 2px;">d{{attributes.vigor.die.sides}}</span>
+    </section>
+
+    {{#if parent.itemTypes.skill}}
+    <section class="embed-section skills">
+        <strong>{{localize 'SWADE.Skills'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.skill}}
+                <li class='item' data-item-id='{{id}}'>{{name}}&nbsp;d{{system.die.sides}}{{modifier system.die.modifier }}</li>
+            {{/each}}
+        </ul>        
+    </section>
+    {{/if}}
+    {{#if parent.itemTypes.edge}}
+    <section class= "embed-section edges">
+        <strong>{{localize 'SWADE.Edges'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.edge}}
+            <li class="item">{{name}}</li>
+            {{/each}}
+        </ul>        
+    </section>
+    {{/if}}
+    {{#if parent.itemTypes.hindrance}}
+    <section class= "embed-section hindrances">
+        <strong>{{localize 'SWADE.Hindrances'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.hindrance}}
+            <li class="item">{{name}}</li>
+            {{/each}}
+        </ul>        
+    </section>
+    {{/if}}
+    {{#if parent.itemTypes.power}}
+    <section class= "embed-section powers">
+        <strong>{{localize 'SWADE.Pow'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.power}}
+            <li class="item power">{{name}}</li>
+            {{/each}}
+        </ul>        
+        <div class="flexcol">
+            {{#each @root.powerPoints}}
+                {{#if this.max}}
+                <span><strong>Power Points:</strong>&nbsp;{{this.max}}</span>
+                {{/if}}
+            {{/each}}
+        </div>
+    </section>
+    {{/if}}
+    {{#if displayableGear}}
+    <section class="embed-section gear">
+        <strong>{{localize 'SWADE.Inv'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.armor}}
+            <li class="item">{{name}}&nbsp;({{signedString system.armor}})</li>
+            {{/each}}
+            {{#each parent.itemTypes.weapon}}
+                <li class="item">{{name}}&nbsp;
+                    (<ul class='items-list'>
+                        {{~#if system.range~}}
+                            <li class="item">{{localize 'SWADE.Range._name'}} {{system.range}}</li>
+                        {{~/if}}
+                        {{~#if system.damage~}}
+                            <li class="item">{{localize 'SWADE.Dmg'}} {{formatDamage system.damage}}</li>
+                        {{~/if}}
+                        {{~#if system.ap~}}
+                            <li class="item">{{localize 'SWADE.Ap'}} {{system.ap}}</li>
+                        {{~/if~}}
+                    </ul>)
+                </li>
+            {{/each}}
+        </ul>        
+    </section>
+    {{/if}}
+    <section class="embed-section derived">
+        <strong>{{localize 'SWADE.Size'}}:</strong> {{stats.size}},
+        <strong>{{localize 'SWADE.Pace'}}:</strong> {{stats.speed.value}},
+        <strong>{{localize 'SWADE.Parry'}}:</strong> {{stats.parry.value}},
+        <strong>{{localize 'SWADE.Tough'}}:</strong> {{stats.toughness.value}} ({{stats.toughness.armor}})
+    </section>
+    <section class="embed-section health">
+        <strong>{{localize "SWADE.WoundsMax"}}:</strong> {{wounds.max}},
+        <strong>{{localize "SWADE.FatigueMax"}}:</strong> {{fatigue.max}}{{#if parent.isWildcard}}, <strong>{{localize "SWADE.Bennies"}}:</strong> {{bennies.max}}{{/if}}
+    </section>
+    
+    {{#if parent.itemTypes.ability}}
+    <section style="embed-section abilities">
+        <strong>{{localize 'SWADE.SpecialAbilities'}}:</strong>
+        <ul class='items-list'>
+            {{#each parent.itemTypes.ability}}
+            <li class="item">{{name}}</li>
+            {{/each}}
+        </ul>        
+    </section>
+    {{/if}}
+</div>

@@ -2,6 +2,7 @@ import type { DocumentModificationOptions } from '@league-of-foundry-developers/
 import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
 import { CommonActorData } from './common';
+import { createEmbedElement } from '../../util';
 
 declare namespace CharacterData {
   interface Schema
@@ -117,4 +118,19 @@ export class CharacterData extends CommonActorData<
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,// eslint-disable-line @typescript-eslint/no-unused-vars
+    options: TextEditor.EnrichmentOptions,// eslint-disable-line @typescript-eslint/no-unused-vars
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedBiography = await TextEditor.enrichHTML(this.details.biography.value, options);
+
+    // Combine weapons and armor into a displayable gear array. For now, these are the only items we display under gear.
+    //TODO: Refactor to a handlebar helper
+    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
+    foundry.utils.setProperty(this, 'displayableGear', displayableGear);
+
+    return await createEmbedElement(this,'systems/swade/templates/embeds/actor-embeds.hbs', 'actor-embed');
+  }
+
 }

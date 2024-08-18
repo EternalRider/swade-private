@@ -1,0 +1,522 @@
+.edge-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .edge {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .requirements {
+            .req-header {
+                font-family: 'Roboto Slab', 'Signika', sans-serif;
+                font-size: 12px;
+                color:rgb(151, 40, 36);
+                text-transform: uppercase;
+            }
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+.power-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .power {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .fields {
+            ul {
+                list-style: none;
+                padding: 0;
+            }            
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+
+.hindrance-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .hindrance {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+.skill-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .skill {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;            
+        }
+        .core {
+            color: #8c160f;
+        }
+        .description {
+            padding: 0;
+        }
+        .center {
+            justify-content: center;
+        }
+    }
+}
+.ancestry-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .ancestry {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            border-bottom-color: rgb(120, 46, 34);
+            border-bottom-style: solid;
+            border-bottom-width: 0.666667px;
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+.ability-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .ability {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            border-bottom-color: rgb(120, 46, 34);
+            border-bottom-style: solid;
+            border-bottom-width: 0.666667px;
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+
+.action-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .action {
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            border-bottom-color: rgb(120, 46, 34);
+            border-bottom-style: solid;
+            border-bottom-width: 0.666667px;
+        }
+        .description {
+            padding: 0;
+        }
+    }
+}
+
+.shield-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .shield {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .notes {
+            padding-left: 1em;
+            text-indent: -1em;        
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                }
+            }
+        }
+        .notes {
+            div {
+                span {
+                    font-weight: bold;
+                    font-style: italic;
+                }
+            }
+        }
+    
+    }
+}
+.weapon-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .weapon {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .notes {
+            padding-left: 1em;
+            text-indent: -1em;     
+            div {
+                span {
+                    font-weight: bold;
+                    font-style: italic;
+                }
+            }   
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                    .damage:first-letter{
+                        text-transform: uppercase;
+                    }
+                }
+            }
+        }
+    }
+}
+.gear-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .gear {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}
+.consumable-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .consumable {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}
+.armor-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .armor {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+}
+.vehicle-embed {
+    background: url('assets/paperboard-texture.webp') center top repeat;
+    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+    border-width: 1px;
+    border-style: solid;
+    border-color: darkgray;
+    padding: 3%;
+
+    .vehicle {
+        .header {
+            width: 100%;
+            justify-content: space-between;
+        }
+        .name {
+            font-family: 'Anton', 'Signika', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-basis: 75%;
+        }
+        .description {
+            padding: 0;
+        }
+        .notes {
+            padding-left: 1em;
+            text-indent: -1em;     
+            div {
+                span {
+                    font-weight: bold;
+                    font-style: italic;
+                }
+            }   
+        }
+        .img-container {
+            display: flex;
+            justify-content: flex-end;
+            height: 30px;        
+        }
+        .item-img {
+          height: inherit;
+          width: inherit;
+          cursor: pointer;
+          border-style: none; 
+          margin: 0;
+        }
+        .stats {
+            .data-table {
+                .header-row {
+                    background-color: black;
+                    color: white;
+                    text-transform: uppercase;
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 8px;
+                }
+                .data-row {
+                    text-align: center;
+                    font-family: Roboto Slab, Signika, sans-serif;
+                    font-size: 10px;
+                    .damage:first-letter{
+                        text-transform: uppercase;
+                    }
+                }
+            }
+        }
+    }
+}
