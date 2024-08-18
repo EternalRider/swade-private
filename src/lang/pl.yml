@@ -1,19 +1,18 @@
----
 SWADE:
   ButtonReset: Reset
-  ButtonSubmit: Submit
+  ButtonSubmit: Wyślij
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
   CommunityVicSheet: Community Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
-  Expand: Expand
+  Expand: Rozszerz
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
   ModHint: Upewnij się, że modyfikator zawiera + lub -
-  ActionDeckPresetLight: Action Deck (Light)
-  ActionDeckPresetDark: Action Deck (Dark)
-  ActionDeckPresetPEG: Action Deck (PEG)
+  ActionDeckPresetLight: Talia Akcji (Jasny)
+  ActionDeckPresetDark: Talia Akcji (Ciemny)
+  ActionDeckPresetPEG: Talia Akcji (PEG)
   Name: Nazwa
   disabledAE: Wyłączony z powodu aktywnego efektu
   Tough: Wytrzymałość
@@ -23,7 +22,7 @@ SWADE:
   Running: Bieganie
   RunningDie: Kość Biegania
   RunningMod: Modyfikator Biegania
-  RollRun: Kliknij aby Pobiec
+  RollRun: Kliknij aby rzucić Kością Biegania
   Adv: Rozwinięcia
   Rank: Ranga
   Inv: Sprzęt
@@ -35,8 +34,8 @@ SWADE:
   BenniesCount: 'Fuksy: {count}'
   TraitMod: Modyfikator Cechy
   SkillTest: Test Umiejętności
-  AttributeTest: Test Cechy
-  Attributes: Cechy
+  AttributeTest: Test Atrybutu
+  Attributes: Atrybuty
   Derived: Cechy pochodne
   AttrAgi: Zręczność
   AttrSma: Spryt
@@ -45,7 +44,7 @@ SWADE:
   AttrSpr: Duch
   AttrStr: Siła
   AttrVig: Wigor
-  Tweaks: Mody
+  Tweaks: Poprawki
   AttrAgiShort: Zr
   AttrSmaShort: Sp
   AttrSprShort: Du
@@ -55,18 +54,18 @@ SWADE:
   Unskilled: Improwizacja
   CoreSkill: Umiejętność Podstawowa
   CoreSkills: Umiejętności Podstawowe
-  LinkAttr: Powiązana Cecha
+  LinkAttr: Powiązany Atrybut
   GlobalMod:
-    Label: Global Modifiers
-    Trait: All Traits
-    Agility: Agility and linked Skills
-    Smarts: Smarts and linked Skills
-    Spirit: Spirit and linked Skills
-    Strength: Strength and linked Skills
-    Vigor: Vigor and linked Skills
-    Attack: All Attacks
-    Damage: All Damage
-    AP: All Armor Piercing
+    Label: Modyfikatory ogólne
+    Trait: Wszystkie Cechy
+    Agility: Zręczność i powiązane Umiejętności
+    Smarts: Spryt i powiązane Umiejętności
+    Spirit: Duch i powiązane Umiejętności
+    Strength: Siła i powiązane Umiejętności
+    Vigor: Wigor i powiązane Umiejętności
+    Attack: Wszystkie Ataki
+    Damage: Wszystkie Obrażenia
+    AP: Wszystkie Przebicia Pancerza
   ArcaneSkill: Umiejętność Nadprzyrodzona
   ActivateArcaneDevice: Aktywuj Artefakt
   Die: Kość
@@ -101,10 +100,10 @@ SWADE:
   Weapons: Broń
   MeleeWeapons: Broń Biała
   RangedWeapons: Broń Dystansowa
-  Armors: Pancerz
+  Armors: Pancerze
   WeaponsAndArmor: Broń i Pancerz
   Shields: Tarcze
-  Biography: Historia
+  Biography: Historia Postaci
   Shaken: W Szoku
   Distr: Zmylony
   Vuln: Odsłonięty
@@ -137,7 +136,7 @@ SWADE:
   BleedingOut: Konanie
   Diseased: Chory
   HeartAttack: Zawał Serca
-  OnFire: W Ogniu
+  OnFire: Płonie
   Poisoned: Zatruty
   Reach: Odległość
   Torch: Pochodnia
@@ -174,7 +173,7 @@ SWADE:
   Legs: Nogi
   MinStrLong: Minimalna Siła
   MinStr: Min. Siła
-  MinStrShort: Min.SI
+  MinStrShort: Min.Si
   Desc: Opis
   Special: Zdolności Specjalne
   Details: Szczegóły
@@ -196,7 +195,7 @@ SWADE:
     Or: albo
     Editor:
       Header: Edytuj wymagania dla {name}
-      AddHint: Dodaj nowe wymagania
+      AddHint: Dodaj nowe wymaganie
       DeleteHint: Usuń to wymaganie
       Label: Etykieta
       Value: Wartość
@@ -213,13 +212,13 @@ SWADE:
   Currency: Waluta
   CarryWeight: Obładowanie
   Eqd: Wyp.
-  Equipped: Założony
-  Unequipped: Nie założony
+  Equipped: Wyposażony
+  Unequipped: Niewyposażony
   Quantity: Ilość
   Weight: Waga
   Price: Cena
   PP: Punkty Mocy
-  PPShort: PM
+  PPShort: P. Mocy
   PPCost: Koszt PM
   CurPP: Aktualne Punkty Mocy
   MaxPP: Maksymalne Punkty Mocy
@@ -247,7 +246,7 @@ SWADE:
   Wrecked: Zniszczony
   Item: Przedmiot
   Cargo: Ładunek
-  MaxCargo: Maksymalna waga Ładunku
+  MaxCargo: Maksymalna Waga Ładunku
   CargoWeight: Waga Ładunku
   Mods: Modyfikacje
   ModSlots: Sloty na Modyfikacje
@@ -287,14 +286,14 @@ SWADE:
   Cancel: Anuluj
   Redraw: Przelosuj kartę
   RedrawBenny: Użyj Fuksa by przelosować kartę
-  Add: " dodaj"
+  Add: "dodaj"
   ConfigInit: Konfiguruj Inicjatywę
   IgnWounds: Ignoruj Rany
   Size: Rozmiar
   Scale: Skala
   PickACard: Wybierz kartę dla {name}
   NoCardsLeft: Jest za mało kart w talii! Tylko {current} z {needed} wymaganych kart
-    jest dostępne.
+    jest dostępne
   OldCard: Stara karta
   ActionCard: Karta Akcji
   ConvictionActive: Determinacja aktywna
@@ -310,7 +309,7 @@ SWADE:
   Items: Przedmioty
   Max: Maks
   Curr: Aktualny
-  DSNNone: "- None -"
+  DSNNone: "- brak -"
   Duplicate: Kopiuj
   Reload: Przeładowanie
   Refresh: Odśwież tę kartę
@@ -344,7 +343,7 @@ SWADE:
   NoAmmoPP: Nie znaleziono Punktów Mocy odpowiadających ustawionej amunicji
   NoDescription: Brak dostępnego opisu
   NoMags: Nie masz w ekwipunku żadnych przedmiotów zużywalnych oznaczonych jako magazynki
-  RemoveAmmo: Usuń amunicję
+  RemoveAmmo: Usuń Amunicję
   DiscardMagazine: Usuń pusty magazynek
   ConsumableType:
     Label: Podtyp
@@ -360,10 +359,10 @@ SWADE:
   SpecialAbility: Zdolność Specjalna
   SpecialAbilities: Zdolności Specjalne
   RacialAbilities: Właściwości rasowe
-  ArchetypeAbilities: Właściwości archetypu
+  ArchetypeAbilities: Zdolności Archetypu
   About: Dziennik
   EdgesHindrances: Przewagi i Zawady
-  GrantsPowers: Daje moce
+  GrantsPowers: Daje Moce
   Crew: Załoga
   RequiredCrew: Niezbędna Załoga
   Passengers: Pasażerowie
@@ -379,7 +378,7 @@ SWADE:
     Sides: Ściany Kości Majątku
     WildSides: Ściany Kości Figury (Majątku)
     Modifier: Modyfikator Kości Majątku
-  TraitRolls: Rzut na Cechę
+  TraitRolls: Rzuty na Cechy
   Trait: Cecha
   AltTrait: Akcja Cechy
   ClickSuggestions: Kliknij, aby wyświetlić sugestie
@@ -413,7 +412,7 @@ SWADE:
     Four: Czwórka
     Five: Piątka
     Six: Szóstka
-    Seven: Seiódemka
+    Seven: Siódemka
     Eight: Ósemka
     Nine: Dziewiątka
     Ten: Dziesiątka
@@ -421,16 +420,16 @@ SWADE:
     Queen: Królowa
     King: Król
     Ace: As
-    RedJoker: Czerwony Joker / Joker Pik
-    BlackJoker: Czarny Joker / Joker Kier
-    BlueJoker: Niebieski Joker / Joker Karo
-    GreenJoker: Zielony Joker / Joker Trefl
+    RedJoker: Joker Czerwony / Pik
+    BlackJoker: Joker Czarny / Kier
+    BlueJoker: Joker Niebieski / Karo
+    GreenJoker: Joker Zielony / Trefl
   IsJoker: Jest Jokerem
   OpenACEditor: Otwórz w Edytorze Kart Akcji
   'Yes': Tak
   'No': Nie
   Headquarters:
-    Advantage: Zaleta
+    Advantage: Premia
     Complication: Komplikacja
     Form: Formularz
     Description: Opis
@@ -472,7 +471,7 @@ SWADE:
       Add: Dodaj niestandardowy Modyfikator
     Support: Wsparcie
     Preset:
-      Settings: Modyfikator szablonu
+      Settings: Predefiniowane modyfikatory
       Choose: Wybierz modyfikator…
       Add: Dodaj szablon
     Value: Wartość
@@ -497,7 +496,7 @@ SWADE:
     Long: Daleki Zasięg
     Extreme: Ekstremalny Zasięg
   ModOther: Inne Modyfikatory
-  ModTrait: Modyfikatory Cechy
+  ModTrait: Modyfikatory Cech
   ModAttack: Modyfikatory Ataku
   ModDamage: Modyfikatory Obrażeń
   Snapfire: Nieporęczna
@@ -506,26 +505,26 @@ SWADE:
   Resistance: Odporność
   CannotAddRaceToRace: Nie możesz dodać rasy/archetypu do rasy/archetypu!
   LayOutChaseWithDeck: Użyj talii by rozpocząć Pościg
-  ClearChaseCards: Wyczyść stół z kart Pościgu
+  ClearChaseCards: Wyczyść scenę z kart Pościgu
   NoSceneAvailable: Brak dostępnych scen lub płótno zostało wyłączone
   ChaseCardsCleared: Wszystkie karty Pościgu zostały usunięte ze sceny.
   SetUpChase: Ustaw Pościg
-  ChaseLayout: Layout
+  ChaseLayout: Układ
   ChaseRows: Rzędy
   ChaseColumns: Kolumny
   ChaseNoDeck: Udostępnij talię!
   ChaseReset: Talia "{deck}" została zresetowana.
   Expiration:
-    TabLabel: Turn Behavior
-    Description: "<p>Effects expire on the target's <em>next turn or later</em>.</p>"
-    Behavior: Expiration Behavior
-    BeginAuto: Start of Turn, Automatic
-    BeginPrompt: Start of Turn, Prompt
-    EndAuto: End of Turn, Automatic
-    EndPrompt: End of Turn, Prompt
-    None: None
-    LooseTurnOnHold: Lose Turn on Hold
-    Remaining: Remaining
+    TabLabel: Zachowanie w czasie tury
+    Description: "<p>Efekty wygasają podczas <em>następnej tury celu lub później</em>.</p>"
+    Behavior: Zasady wygasania
+    BeginAuto: Początek tury, Automatycznie
+    BeginPrompt: Początek tury, Zapytanie
+    EndAuto: Koniec tury, Automatycznie
+    EndPrompt: Koniec tury, Zapytanie
+    None: Brak
+    LooseTurnOnHold: Utrata tury przy Wstrzymaniu Akcji
+    Remaining: Pozostało
   RemoveEffectTitle: Usunąć {label} ?
   RemoveEffectBody: '<p style="text-align: center;">Usunąć <strong>{label}</strong>
     z <strong>{parent}</strong>?</p>'
@@ -536,12 +535,12 @@ SWADE:
   Equip: Załóż
   RollDamage: Rzut na Obrażenia
   SystemLinks:
-    Changelog: Changelog
+    Changelog: Dziennik Zmian
     Wiki: Wiki
     ReportAnIssue: Zgłoś problem
   OpenOrigin: Otwórz źródło
-  EffectsTemporary: Tymczasowy Stan
-  EffectsPermanent: Permanentny Stan
+  EffectsTemporary: Tymczasowe Stany
+  EffectsPermanent: Permanentne Stany
   Ranks:
     Novice: Nowicjusz
     Seasoned: Doświadczony
@@ -554,13 +553,14 @@ SWADE:
     Delete: Usuń rozwój
     Planned: Zaplanowane
     Modes:
-      Legacy: Dziedzictwo
+      Legacy: Legacy
       Expanded: Rozszerzony
+      Label: Tryb
     Types:
       Edge: Nowa Przewaga
       SingleSkill: Rozwój Jednej Umiejętności
       TwoSkills: Rozwój Dwóch Umiejętności
-      Attribute: Rozwój Cechy
+      Attribute: Rozwój Atrybutu
       Hindrance: Obniżenie Zawady
     Number: Numer rozwoju
   AddAdvance: Nowy Rozwój
@@ -575,93 +575,96 @@ SWADE:
     AddUnguided: Dodaj Pusty Stan
   Keybindings:
     OpenFavoriteCards:
-      Name: Open Favorite Card Hand
-      UserConfigLabel: Favorite Card Hand
-      Hint: You can set your favorite hand in the User Config
-      NoCardsWarning: You don't have a favorite card hand set!
-      HandNone: None
+      Name: Otwórz ulubioną Rękę Kart
+      UserConfigLabel: Ulubiona Ręka Kart
+      Hint: Możesz ustawić swoją ulubioną Rękę w konfiguracji użytkownika
+      NoCardsWarning: Nie masz ulubionej Ręki Kart!
+      HandNone: Brak
     Bennies:
-      Name: Spend/Receive a Benny
-      Hint: Press to spend a Benny, hold down Alt while you press the key to receive
-        a Benny instead
+      Name: Wydaj/Otrzymaj a Fuksa
+      Hint: Naciśnij aby wydać Fuksa, przytrzymaj dodatkowo Alt aby zamiast tego otrzymać
+        Fuksa
   Settings:
     ArbitFields: Dowolne ustawianie pól
     CharSheetDefaultWidth:
-      Name: Default Width for Character Sheets
-      Hint: 'Width of character sheets when first opened, in pixels. Default: 650.'
+      Name: Domyślna szerokość Karty Postaci
+      Hint: 'Szerokość Karty Postaci otwartej po raz pierwszy, w pikselach. Domyślnie:
+        650.'
     HighlightTemplate:
-      Name: Always Highlight Templates
-      Hint: When enabled, Measured Templates alway highlight themselves instead of
-        the grid.
+      Name: Zawsze podświetlaj Wzorniki
+      Hint: Gdy włączone, Wzorniki zawsze podświetlają siebie zamiast siatki.
     InitDiscardPile:
-      Name: Initiative Discard Pile
+      Name: Stos Odrzuconych Inicjatywy
     InitCardDeck:
-      Name: Card Deck to use for Initiative
+      Name: Talia Kart używana do Inicjatywy
     ParryBase:
-      Name: Fighting Skill SWID
-      Hint: The Savage Worlds ID of the skill which will be used to calculate an actors
-        Parry. Read more about the Savage Worlds ID in the docs!
+      Name: Umiejętność Walki SWID
+      Hint: Umiejętność, która będzie używana do obliczania Obrony aktorów. Więcej
+        informacji o Savage Worlds ID w dokumentacji!
     UseAttributeShorts:
-      Name: Use shortened attribute names
-      Hint: Activate this option if you want to see abbreviated attribute names on
-        the pc and npc sheets, i.e. Agi instead of Agility, Sma instead of Smarts,
-        etc. You'll need to close and reopen all open sheets for this option to take
-        effect.
+      Name: Używaj skróconych nazw Atrybutów
+      Hint: Użyj tej opcji, jeśli chcesz widzieć skrócone wersje nazw atrybutów w
+        Kartach Postaci graczy i NPC, na przykład Zr zamiast Zręczność, Sp zamiast
+        Spryt, itd. Musisz zamknąć i otworzyć ponownie wszystkie karty, by zobaczyć
+        zmiany.
     WeightUnit:
-      Name: Unit of weight
-      Hint: Sets whether weights are measured in pounds or kilograms. Changing this
-        will NOT change the weights on items, only how the encumbrance is calculated
+      Name: Jednostka wagi
+      Hint: Ustawia mierzenie wagi w funtach lub kilogramach. Zmiana miary nie zmieni
+        wagi w ustawieniach przedmiotów, a jedynie jak liczone będzie Obciążenie
     HideNpcItemChatCards:
-      Name: Hide NPC Item Chat Cards
-      Hint: When enabled, NPC Item Chat Cards are automatically sent as a whisper
-        to all Gamemasters instead of being posted for all to see
+      Name: Ukryj karty przedmiotów NPC na czacie
+      Hint: Gdy włączone, karty przedmiotów NPC są automatycznie wysyłane jako szept
+        do wszystkich Mistrzów Gry, zamiast postowania ich w sposób umożliwiający
+        zobaczenie wszystkim graczom
     EnableBennyNotify:
-      Name: Benny notifications
-      Hint: Displays chat messages when bennies are taken, given or refreshed.
+      Name: Powiadomienia o Fuksach
+      Hint: Wyświetla wiadomość na czacie, kiedy Fuksy są wydawane, otrzymywane albo
+        odświeżane.
     HideWC:
-      Name: Hide NPC Wild Cards
-      Hint: Do not show which NPCs are Wild Cards to players
+      Name: Ukryj Figury NPC
+      Hint: Nie pokazuj graczom którzy spośród NPC są Figurami
     CreateInitChat:
-      Name: Create Chat Message for Initiative
-      Hint: When Action Cards are drawn, Foundry will output the drawn Action Cards
-        to the Chat if enabled.
+      Name: Wysyłaj wiadomości na czacie dotyczące Inicjatywy
+      Hint: Jeśli opcja jest włączona, wylosowane Karty Akcji zostaną pokazane na
+        czacie.
     AutoInit:
-      Name: Automatic Initiative
-      Hint: Automatically draw Action Cards every round
-    Bumpmaps: Bumpmaps
+      Name: Automatyczna Inicjatywa
+      Hint: Automatycznie losuj Karty Akcji w każdej rundzie
+    Bumpmaps: Mapy wypukłości
     Benny3DFront:
-      Name: Front Texture
-      Hint: Front texture of the 3D Benny
+      Name: Przednia tekstura
+      Hint: Przednia tekstura Fuksa 3D
     Benny3DBack:
-      Name: Back Texture
-      Hint: Back texture of the 3D Benny
+      Name: Tylna tekstura
+      Hint: Tylna tekstura Fuksa 3D
     Benny3DBackBump:
-      Name: Back Bump Map
-      Hint: Back bump map of the benny
+      Name: Tylna mapa wypukłości
+      Hint: Tylna mapa wypukłości Fuksa
     Benny3DFrontBump:
-      Hint: Front bump map of the benny
-      Name: Front Bump Map
+      Hint: Przednia mapa wypukłości Fuksa
+      Name: Przednia mapa wypukłości
     CoreSkillsList:
-      Name: List of Core Skills
-      Hint: Enter a comma-separated list of skill names to be defined as core skills
-        for all actors
+      Name: Lista Umiejętności Podstawowych
+      Hint: Wprowadź nazwy Umiejętności oddzielone przecinkiem aby zdefiniować je
+        jako podstawowe dla wszystkich aktorów
     CoreSkillsPack:
-      Name: Core Skills Compendium
-      Hint: Choose from which Compendium the core skills will be drawn
+      Name: Kompendium Umiejętności Podstawowych
+      Hint: Wybierz z którego kompendium zostaną zaczerpnięte Umiejętności Podstawowe
     WealthType:
-      Name: Wealth Type
-      Hint: Choose how to track character wealth and currency
+      Name: Tryb Majątku
+      Hint: Wybierz sposób śledzenia Majątku postaci i waluty
     CurrencyName:
-      Name: Currency Name
-      Hint: Name your currency
+      Name: Nazwa waluty
+      Hint: Nazwij swoją walutę
     JokersWild:
-      Name: Joker's Wild
-      Hint: Daje Fuksa każdej postaci gracza, gdy jeden z nich otrzyma Jokera
+      Name: Jokery szaleją!
+      Hint: Kiedy postać gracza dostanie podczas walki jokera, wszyscy w drużynie
+        otrzymują po Fuksie
     AmmoManagement:
-      Name: Ammunition Management
-      Hint: Automates ammo consumption. See system documentation journal for details.
+      Name: Zarządzanie Amunicją
+      Hint: Automatyzuje zużywanie Amunicji. Sprawdź dokumentację by poznać szczegóły.
     PCAmmoFromInventory:
-      Name: PCs use Ammunition from Inventory
+      Name: PC używają Amunicji z ekwipunku
       Hint: When activated a Gear or Consumable Item that is set as ammunition will
         be used when reloading the weapon
     NPCAmmoFromInventory:
@@ -761,7 +764,7 @@ SWADE:
       Title: Test Wigoru aby odeprzeć Konanie
       Fail: Umierasz
       Success: Jeszcze się trzymasz... ledwo...
-      Raise: Udało ci się ustabilizować!
+      Raise: Udało ci się ustabilizować
       BleedOutModifier: Modyfikator Konania
       IgnoreWounds: Konanie ignorujące rany
   Validation:
@@ -784,7 +787,7 @@ SWADE:
   Properties: Właściwości
   AddAction: Dodaj Akcję
   DialogConfirmPrompt: Jesteś pewien?
-  DeleteEmbeddedActionPrompt: Czy na pewno chcesz usunąć akcję {action}
+  DeleteEmbeddedActionPrompt: Czy na pewno chcesz usunąć akcję {action}?
   DeleteEmbeddedPowerPrompt: Czy na pewno chcesz usunąć moc {power}?
   TrademarkWeapon:
     Label: Ulubiona Broń
@@ -803,7 +806,7 @@ SWADE:
     TwoHands: Dwie ręce
     Added: Dodane
     Readied: Przygotowane
-  DestroyOnEmpty: Usunąć gdy puste?
+  DestroyOnEmpty: Usuń gdy puste
   Charges: Ładunki
   Consumable:
     Use: Użyj
@@ -844,11 +847,11 @@ SWADE:
     SeeHeat: Widzi ciepło
     SenseHeat: Wyczuwa ciepło
     Infravision: Infrawizja
-  Attribute: Cecha
+  Attribute: Atrybut
   BaseDie: Kość Bazowa
   AttributeManager:
-    Title: Zarządzanie Cechami {name}
-    Open: Zarządzaj Cechami
+    Title: Zarządzanie Atrybutami {name}
+    Open: Zarządzaj Atrybutami
   HeavyArmor: Ciężki Pancerz
   HeavyWeapon: Broń Ciężka
   UsesTOC: Use Compendium TOC
@@ -866,7 +869,7 @@ SWADE:
     Mode: Tryb
     Value: Wartość
     Changes: Zmiany
-    SelectAttribute: Wybierz Cechę
+    SelectAttribute: Wybierz Atrybut
     EnterSkill:
       Label: Wpisz Umiejętność
       Hint: Możesz wpisać dowolną nazwę umiejętności lub wybrać ją z listy sugestii
@@ -1355,6 +1358,24 @@ SWADE:
   SettingConfigurator:
     WorldTables: World Tables
     WorldCompendiums: World Compendiums
+  GroupSheet: Savage Worlds Group Sheet
+  RunningHint:
+    Header: <strong>Całkowity dystans biegu.</strong>
+    Reminder: <p>Bieganie podczas twojej tury powoduje karę -2 do wszystkich twoich
+      akcji.</p>
+  Advance: Rozwinięcie
+  BenniesMaxNum: Maksimum Fuksów
+  ShotsCurrent: Aktualne Pociski
+  Value: Wartość
+  MaxLabel: Maksimum
+  SpeedUnit: Jednostka
+  Stats: Statystyki
+  AncestralAbilities: Zdolności Pochodzenia
+  BuildCost: Koszt budowy
+  CannotAddAncestryToAncestry: Nie możesz dodać Pochodzenia/Archetypu do Pochodzenia/Archetypu!
+  ActionsOverride: Nadpisz
+  ID: ID
+  SortNum: Numer Porządkowy
 TYPES:
   Actor:
     character: Postać gracza
