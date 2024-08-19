@@ -3,7 +3,7 @@ export class InfravisionBackgroundVisionShader extends AmplificationBackgroundVi
 
   /** @inheritdoc */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  static defaultUniforms = {
+  static override defaultUniforms = {
     ...super.defaultUniforms,
     colorTint: this.COLOR_TINT,
   };

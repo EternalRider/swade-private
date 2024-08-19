@@ -588,7 +588,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       item,
       actionKey,
     ) as ItemActions;
-    const data: Dialog.Data = {
+    const data: DialogData = {
       title: game.i18n.localize('SWADE.AddOrReplaceActions.Title'),
       content: game.i18n.format('SWADE.AddOrReplaceActions.Content', {
         source: item.name,

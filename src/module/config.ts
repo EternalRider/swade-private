@@ -328,6 +328,10 @@ export const SWADE: SwadeConfig = {
     rolltable: [],
     scene: [],
   },
+
+  swid: {
+    ignoreSystem: false,
+  },
 };
 
 /** @internal */
@@ -383,6 +387,9 @@ export interface SwadeConfig {
   };
   diceConfig: {
     flags: Record<string, any>;
+  };
+  swid: {
+    ignoreSystem: boolean;
   };
   statusEffects: StatusEffect[];
   negativeStatusEffects: string[];
