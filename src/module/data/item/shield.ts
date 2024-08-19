@@ -25,6 +25,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace ShieldData {
   interface Schema
@@ -61,9 +62,9 @@ class ShieldData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      minStr: new fields.StringField({ initial: '' }),
-      parry: new fields.NumberField({ initial: 0, integer: true }),
-      cover: new fields.NumberField({ initial: 0, integer: true }),
+      minStr: new fields.StringField({ initial: '', label: 'SWADE.MinStr' }),
+      parry: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.Parry' }),
+      cover: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.Cover._name' }),
     };
   }
 
@@ -142,6 +143,15 @@ class ShieldData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }
   }
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/shield-embeds.hbs', 'shield-embed');
+  }
+
 }
 
 export { ShieldData };

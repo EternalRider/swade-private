@@ -88,7 +88,7 @@ export default class DiceSettings extends FormApplication<
   }
 
   async _updateObject(_event, formData): Promise<void> {
-    const expandedFormdata = expandObject(formData) as any;
+    const expandedFormdata = foundry.utils.expandObject(formData) as any;
     //handle basic settings
     for (const [key, value] of Object.entries(expandedFormdata.swade)) {
       //handle custom wild die

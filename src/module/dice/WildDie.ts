@@ -19,9 +19,13 @@ export default class WildDie extends foundry.dice.terms.Die {
         // If dieSystem is defined... (new users might not have one defined)
         if (dieSystem) {
           // Set the color preset.
-          setProperty(termData, 'options.colorset', colorSet);
+          foundry.utils.setProperty(termData, 'options.colorset', colorSet);
           // Set the system value.
-          setProperty(termData, 'options.appearance.system', dieSystem);
+          foundry.utils.setProperty(
+            termData,
+            'options.appearance.system',
+            dieSystem,
+          );
           // Get the die model for the respective die type
           const dicePreset = game.dice3d?.DiceFactory?.systems[
             dieSystem

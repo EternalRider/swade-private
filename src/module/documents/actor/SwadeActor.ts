@@ -38,7 +38,7 @@ import {
   shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
-import SwadeItem from '../item/SwadeItem';
+import SwadeItem, { SystemItemTypes } from '../item/SwadeItem';
 import { TraitDie } from './actor-data-source';
 
 declare global {
@@ -178,11 +178,7 @@ class SwadeActor extends Actor {
 
   get ancestry(): SwadeItem | undefined {
     if (this.system instanceof VehicleData) return;
-    const ancestries = this.items.filter(
-      (i) =>
-        i.type === 'ability' &&
-        i.system.subtype === constants.ABILITY_TYPE.ANCESTRY,
-    );
+    const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
       Logger.warn(
         `Actor ${this.name} (${this.id}) has more than one ancestry!`,
@@ -205,8 +201,9 @@ class SwadeActor extends Actor {
   }
 
   override get itemTypes() {
-    const types: Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]> =
-      Object.fromEntries(game.documentTypes.Item.map((t) => [t, []]));
+    const types = Object.fromEntries<SwadeItem[]>(
+      game.documentTypes.Item.map((t: SystemItemTypes) => [t, []]),
+    ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
     for (const item of this.items.values()) {
       types[item.type].push(item);
     }
@@ -556,9 +553,11 @@ class SwadeActor extends Actor {
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
       }),
-      mods: mods,
+      mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor: game.i18n.localize('SWADE.Running'),
+      flavor:
+        game.i18n.localize('SWADE.RunningHint.Header') +
+        game.i18n.localize('SWADE.RunningHint.Reminder'),
       title: game.i18n.localize('SWADE.Running'),
       actor: this,
     });
@@ -569,6 +568,7 @@ class SwadeActor extends Actor {
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
       system: {
+        swid: 'unskilled-attempt',
         die: {
           sides: 4,
           modifier: 0,
@@ -843,7 +843,7 @@ class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    return this.system.getRollData(includeModifiers);
+    return this.system.getRollData?.(includeModifiers) ?? {};
   }
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
@@ -1497,6 +1497,26 @@ class SwadeActor extends Actor {
       this.hasPlayerOwner
     ) {
       ui.players?.render(true);
+    }
+    if (
+      foundry.utils.hasProperty(options, 'swade.wounds.value') ||
+      foundry.utils.hasProperty(options, 'swade.fatigue.value')
+    ) {
+      const isDamage = foundry.utils.hasProperty(changed, 'system.wounds.value')
+        ? changed.system.wounds.value > options.swade.wounds.value
+        : foundry.utils.hasProperty(changed, 'system.fatigue.value')
+          ? changed.system.fatigue.value > options.swade.fatigue.value
+          : false;
+      const tokens = this.getActiveTokens(true, false);
+      for (const token of tokens) {
+        token.ring?.flashColor(
+          isDamage ? Color.from('#D41159') : Color.from('#1A85FF'),
+          {
+            duration: 1000,
+            easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+          },
+        );
+      }
     }
   }
 }

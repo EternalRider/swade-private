@@ -1,4 +1,5 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -7,7 +8,6 @@ import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -31,6 +31,8 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
+  declare parent?: SwadeActor | SwadeItem;
+
   static get defaultName(): string {
     return game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
@@ -51,6 +53,11 @@ export default class SwadeActiveEffect extends ActiveEffect {
       'statuses',
     ) as Set<string>;
     return statusId;
+  }
+
+  override get isSuppressed(): boolean {
+    if (this.parent?.type === 'group') return true;
+    return false;
   }
 
   /** A convenience accessor that returns the effect's containing actor, if it has one */
@@ -109,7 +116,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   static PT_REGEXP = /system\.stats\.(parry|toughness)\.(value|armor)/;
 
-  static override migrateData(data: ActiveEffectDataProperties) {
+  static override migrateData(data: any) {
     super.migrateData(data);
     if ('changes' in data) {
       for (const change of data.changes) {
@@ -492,7 +499,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     data: foundry.documents.BaseActiveEffect.ConstructorData,
     options: DocumentModificationOptions,
     user: User.ConfiguredInstance,
-  ): Promise<void> {
+  ): Promise<boolean | void> {
+    //make sure active effects can't be added to group actors
+    if (this.parent?.type === 'group') return false;
     super._preCreate(data, options, user);
     if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
@@ -556,5 +565,30 @@ export default class SwadeActiveEffect extends ActiveEffect {
   ): void {
     super._onCreate(data, options, userId);
     if (userId === game.userId) this._applyRelatedEffects();
+  }
+
+  protected override _displayScrollingStatus(enabled: boolean) {
+    super._displayScrollingStatus(enabled);
+    const tokens = this.target.getActiveTokens(true);
+    const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(
+      this.statusId,
+    );
+
+    const negativeColor = '#D41159';
+    const positiveColor = '#1A85FF';
+    const colorCode = enabled
+      ? isNegative // if the AE is added and negative, flash negative color, else flash positive color
+        ? negativeColor
+        : positiveColor
+      : isNegative // if the AE is getting removed and negative, flash negative color, else flash positive color
+        ? positiveColor
+        : negativeColor;
+    const color = Color.from(colorCode);
+    for (const token of tokens) {
+      token.ring?.flashColor(color, {
+        duration: 1000,
+        easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+      });
+    }
   }
 }

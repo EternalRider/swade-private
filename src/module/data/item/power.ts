@@ -3,6 +3,7 @@ import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
 } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -54,16 +55,16 @@ class PowerData extends SwadeBaseItemData<
       ...bonusDamage(),
       ...favorite(),
       ...templates(),
-      rank: new fields.StringField({ initial: '', textSearch: true }),
-      pp: new fields.NumberField({ initial: 0 }),
-      damage: new fields.StringField({ initial: '' }),
-      range: new fields.StringField({ initial: '' }),
-      duration: new fields.StringField({ initial: '' }),
-      trapping: new fields.StringField({ initial: '', textSearch: true }),
-      arcane: new fields.StringField({ initial: '', textSearch: true }),
-      ap: new fields.NumberField({ initial: 0 }),
-      innate: new fields.BooleanField(),
-      modifiers: new fields.ArrayField(new fields.ObjectField()),
+      rank: new fields.StringField({ initial: '', textSearch: true, label: 'SWADE.Rank' }),
+      pp: new fields.NumberField({ initial: 0, label: 'SWADE.PP' }),
+      damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
+      range: new fields.StringField({ initial: '', label: 'SWADE.Range._name' }),
+      duration: new fields.StringField({ initial: '', label: 'SWADE.Dur' }),
+      trapping: new fields.StringField({ initial: '', textSearch: true, label: 'SWADE.Trap' }),
+      arcane: new fields.StringField({ initial: '', textSearch: true,  label: 'SWADE.Arcane' }),
+      ap: new fields.NumberField({ initial: 0, label: 'SWADE.AP' }),
+      innate: new fields.BooleanField({ label: 'SWADE.InnatePower' }),
+      modifiers: new fields.ArrayField(new fields.ObjectField(), { label: 'SWADE.Modifiers' }),
     };
   }
 
@@ -130,6 +131,15 @@ class PowerData extends SwadeBaseItemData<
     const ab = this.parent.actor.system.powerPoints[arcane];
     return ab.value >= resourcesUsed;
   }
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/power-embeds.hbs', 'power-embed');
+  }
+
 }
 
 export { PowerData };

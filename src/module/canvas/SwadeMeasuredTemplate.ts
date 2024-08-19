@@ -79,7 +79,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       const now = Date.now(); // Apply a 20ms throttle
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
-      const snapped = canvas.grid?.getSnappedPosition(center.x, center.y, 2);
+      const snapped = canvas.grid.getSnappedPoint(center, {mode: CONST.GRID_SNAPPING_MODES.CENTER, resolution: 2});
       this.document.updateSource({ x: snapped?.x, y: snapped?.y });
       this.refresh();
       moveTime = now;
@@ -95,11 +95,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     // Confirm the workflow (left-click)
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
-      const dest = canvas.grid?.getSnappedPosition(
-        this.document.x,
-        this.document.y,
-        2,
-      );
+      const dest = canvas.grid.getSnappedPoint(this.document, {mode: CONST.GRID_SNAPPING_MODES.CENTER, resolution: 2});
       this.document.updateSource(dest);
       canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
         this.document.toObject(),

@@ -1,0 +1,31 @@
+<div class="gear flexcol">
+    <div class="flexrow header">
+        <span class="name">{{parent.name}}</span>
+        <div class="img-container">
+            <img
+                class="item-img"
+                src="{{parent.img}}"
+                data-edit="img"
+                alt="{{parent.name}}"
+                title='{{localize 'SWADE.RightClickZoom'}}'
+            />
+        </div>
+    </div>
+    <section class="stats flexcol">
+        <table class="data-table">
+            <tr class="header-row">
+                {{#if quantity}}<td>{{localize 'SWADE.Quantity'}}</td>{{/if}}
+                {{#if weight}}<td>{{localize 'SWADE.Weight'}}</td>{{/if}}
+                {{#if price}}<td>{{localize 'SWADE.Price'}}</td>{{/if}}
+            </tr>            
+            <tr class="data-row">
+                {{#if quantity}}<td class="quantity">{{quantity}}</td>{{/if}}
+                {{#if weight}}<td class="weight">{{weight}}</td>{{/if}}
+                {{#if price}}<td class="price">{{price}}</td>{{/if}}
+            </tr>
+        </table>
+    </section>
+    <section class="description">
+        {{{enrichedDescription}}}
+    </section>
+</div>

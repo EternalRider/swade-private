@@ -1,5 +1,6 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
 import { favorite, grants } from './common';
 import { ChoicesType, Favorite, Grants } from './item-common.interface';
@@ -33,8 +34,9 @@ class HindranceData extends SwadeBaseItemData<
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,
         blank: false,
+        label: 'SWADE.HindranceSeverity.Label',
       }),
-      major: new fields.BooleanField(),
+      major: new fields.BooleanField({ label: 'SWADE.MajHind' }),
     };
   }
 
@@ -59,6 +61,16 @@ class HindranceData extends SwadeBaseItemData<
       },
     ];
   }
+
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/hindrance-embeds.hbs', 'hindrance-embed');
+  }
+
 }
 
 export { HindranceData };

@@ -1,4 +1,4 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -192,7 +192,10 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   return data as StatusEffect | undefined;
 }
 /** @internal */
-export function getDieSidesRange(minimumSides: number, maximumSides: number): DieSidesOption[] {
+export function getDieSidesRange(
+  minimumSides: number,
+  maximumSides: number,
+): DieSidesOption[] {
   const options: DieSidesOption[] = [
     { key: 1, label: '1' },
     { key: 4, label: 'd4' },
@@ -207,9 +210,8 @@ export function getDieSidesRange(minimumSides: number, maximumSides: number): Di
     { key: 22, label: 'd12+5' },
     { key: 24, label: 'd12+6' },
   ];
-  return options.filter(x=>x.key >= minimumSides && x.key <= maximumSides);
+  return options.filter((x) => x.key >= minimumSides && x.key <= maximumSides);
 }
-
 
 /** @internal */
 export function getKeyByValue(object, value) {
@@ -288,13 +290,68 @@ export function slugify(input: unknown) {
 
 /**
  * Convert a template string into HTML DOM nodes
- * @param  {String} str The template string
- * @return {Node}       The template HTML
+ * @param str The template string
+ * @returns The template HTML
  */
 export function stringToHTML<T extends Element = Element>(str: string): T {
   const parser = new DOMParser();
   const doc = parser.parseFromString(str, 'text/html');
   return doc.body.firstElementChild as T;
+}
+
+/**
+ * Utility function to create an HTML element for the purpose of storing embed content.
+ * TODO: Evaluate if this is better somewhere else
+ * @param  {any} objectToEmbed The object that the embed is for
+ * @param  {string} template The handlebars template path to use
+ * @param  {string} className The class name to attach to the outermost element for purposes of controlled styling
+ * @param  {Partial<TextEditor.EnrichmentOptions>} options the enrichment options
+ */
+export async function createEmbedElement(
+  objectToEmbed: any,
+  template: string,
+  className: string,
+): Promise<HTMLElement | HTMLCollection | null> {
+  const content = await renderTemplate(template, objectToEmbed);
+  const elem = document.createElement('div') as HTMLElement;
+  elem.className = className;
+  elem.innerHTML = content;
+  return elem;
+}
+
+/**
+ * Searches world items and compendium collections for all items that match the given SWID, optionally narrowing down the search by item type
+ * @param swid the swid to look for
+ * @param type An optional item type for narrowing the possible list of resulting items
+ * @returns a list of items that has matched the swid and type
+ */
+export async function getItemsBySwid(
+  swid: string,
+  type?: string,
+): Promise<SwadeItem[]> {
+  //get world items first
+  let items: SwadeItem[] = game.items.filter((i) => i.system.swid === swid);
+  //filter by type if necessary
+  if (type) items = items.filter((i) => i.type === type);
+
+  //get compendium items next
+  let itemPacks = game.packs.filter((p) => p.documentName === 'Item');
+  //remove system compendium
+  if (SWADE.swid.ignoreSystem) {
+    itemPacks = itemPacks.filter((p) => p.metadata.packageName !== 'swade');
+  }
+  for (const pack of itemPacks) {
+    await pack.getIndex();
+    const index = pack.index.filter((i) => i.system?.swid === swid);
+    const ids = index.map((e) => e._id);
+    if (ids.length < 1) continue;
+    const query: Record<string, unknown> = { _id__in: ids };
+    //filter by type if necessary
+    if (type) query.type = type;
+    const documents = await pack.getDocuments(query);
+    items.push(...documents);
+  }
+  return items;
 }
 
 type Ownership = Record<string, number>;

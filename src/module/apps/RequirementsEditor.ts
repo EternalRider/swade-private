@@ -160,10 +160,10 @@ export class RequirementsEditor extends FormApplication<
     };
   }
 
-  #getCombinatorChoices(): Record<string,string> {
-    return { 
-      'and': 'SWADE.Requirements.And', 
-      'or': 'SWADE.Requirements.Or'
+  #getCombinatorChoices(): Record<string, string> {
+    return {
+      and: 'SWADE.Requirements.And',
+      or: 'SWADE.Requirements.Or',
     };
   }
 

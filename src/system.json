@@ -2,7 +2,7 @@
   "id": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "4.0-dev",
+  "version": "4.1-dev",
   "compatibility": {
     "minimum": 12,
     "verified": 12,
@@ -112,6 +112,11 @@
       "lang": "zh-Hans",
       "name": "Chinese (Simplified)",
       "path": "lang/zh_Hans.json"
+    },
+    {
+      "lang": "pl",
+      "name": "Polski",
+      "path": "lang/pl.json"
     }
   ],
   "media": [
@@ -160,13 +165,13 @@
           "advances.details"
         ]
       },
-      "vehicle": {
-        "htmlFields": ["description"]
-      }
+      "vehicle": { "htmlFields": ["description"] },
+      "group": { "htmlFields": ["description"] }
     },
     "Item": {
       "weapon": { "htmlFields": ["description"] },
       "armor": { "htmlFields": ["description"] },
+      "ancestry": { "htmlFields": ["description"] },
       "shield": { "htmlFields": ["description"] },
       "gear": { "htmlFields": ["description"] },
       "edge": { "htmlFields": ["description"] },

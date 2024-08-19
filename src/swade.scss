@@ -10,6 +10,8 @@
 @import 'scss/character-sheet';
 @import 'scss/dialogs';
 @import 'scss/headquarters';
+@import 'scss/actor-embeds';
+@import 'scss/item-embeds';
 
 //chat
 @import 'scss/chat';
@@ -36,5 +38,12 @@
 @import 'scss/apps/card-picker';
 @import 'scss/apps/ambush-assistant';
 
+//sheets
+@import 'scss/sheets/group';
+
 // Highlight code in journals
 @import '../node_modules/highlight.js/scss/a11y-dark.scss';
+
+.debug * {
+  outline: 1px solid limegreen !important;
+}

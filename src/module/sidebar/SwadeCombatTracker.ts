@@ -660,7 +660,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     if (!game.user?.isGM) delete buttons.gm;
 
-    const data: Dialog.Data = {
+    const data: DialogData = {
       title: game.i18n.localize('SWADE.Redraw'),
       content:
         '<p class="text-center">' +
@@ -669,7 +669,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       default: 'benny',
       buttons,
       render: (el: JQuery<HTMLElement>) => {
-        if (isVehicle || (game.user?.isGM && game.user.bennies === 0)) {
+        if (isVehicle || (game.user?.isGM && game.user.bennies <= 0)) {
           el.find('[data-button="gm"]').attr('disabled', 'true');
         }
         if (isVehicle || combatant.bennies === 0) {

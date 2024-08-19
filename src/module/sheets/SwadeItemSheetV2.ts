@@ -54,7 +54,15 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   get hasInlineDelete(): boolean {
-    const types = ['edge', 'hindrance', 'ability', 'skill', 'power', 'action'];
+    const types = [
+      'edge',
+      'hindrance',
+      'ability',
+      'ancestry',
+      'skill',
+      'power',
+      'action',
+    ];
     return types.includes(this.type);
   }
 
@@ -277,11 +285,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       data.abilityConfig = {
         localization: SWADE.abilitySheet,
         abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isAncestryOrArchetype:
-          subtype === constants.ABILITY_TYPE.ANCESTRY ||
-          subtype === constants.ABILITY_TYPE.ARCHETYPE,
+        isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
       };
-      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(SWADE.abilitySheet);
+      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
+        SWADE.abilitySheet,
+      );
     }
 
     if (this.item.canGrantItems) {
@@ -353,8 +361,18 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       };
     }
 
-    if(['consumable','gear', 'shield', 'armor', 'action', 'power','weapon'].includes(this.type)) {      
-      data.bonusDamageDieSideOptions = getDieSidesRange(4,12);
+    if (
+      [
+        'consumable',
+        'gear',
+        'shield',
+        'armor',
+        'action',
+        'power',
+        'weapon',
+      ].includes(this.type)
+    ) {
+      data.bonusDamageDieSideOptions = getDieSidesRange(4, 12);
     }
 
     if (this.item.type === 'hindrance') {
@@ -366,8 +384,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     }
 
     if (this.item.type === 'skill') {
-      data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
-      data.wildDieSideOptions = getDieSidesRange(4,12);
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
+      data.wildDieSideOptions = getDieSidesRange(4, 12);
       data.attributeOptions = this.#getAttributeOptions();
     }
 
@@ -379,7 +400,10 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           power.system.description,
         );
       }
-      data.dieSideOptions = (this.item.parent?.type === 'npc') ? getDieSidesRange(4,24) : getDieSidesRange(4,20);
+      data.dieSideOptions =
+        this.item.parent?.type === 'npc'
+          ? getDieSidesRange(4, 24)
+          : getDieSidesRange(4, 20);
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
@@ -564,7 +588,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       item,
       actionKey,
     ) as ItemActions;
-    const data: Dialog.Data = {
+    const data: DialogData = {
       title: game.i18n.localize('SWADE.AddOrReplaceActions.Title'),
       content: game.i18n.format('SWADE.AddOrReplaceActions.Content', {
         source: item.name,
@@ -579,7 +603,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
             const newActions: ItemActions = {};
             //give the actions new keys to make sure there are no id collisions
             for (const action of Object.values(existingActions)) {
-              newActions[randomID(8)] = action;
+              newActions[foundry.utils.randomID(8)] = action;
             }
             this.item.update({ [actionKey]: newActions });
           },
@@ -649,25 +673,22 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const options = [
       { key: 0, label: 'SWADE.ItemEquipStatus.Added' },
       { key: 1, label: 'SWADE.ItemEquipStatus.Carried' },
-      { key: 2, label: 'SWADE.ItemEquipStatus.Readied' }
+      { key: 2, label: 'SWADE.ItemEquipStatus.Readied' },
     ];
-    return this.item.type === 'consumable'
-      ? options.slice(0,2)
-      : options
+    return this.item.type === 'consumable' ? options.slice(0, 2) : options;
   }
-  #getAbilitySubtypeOptions(abilityLocalization: typeof SWADE.abilitySheet): Record<string, string> {
+  #getAbilitySubtypeOptions(
+    abilityLocalization: typeof SWADE.abilitySheet,
+  ): Record<string, string> {
     return {
-      'special' :abilityLocalization.special.dropdown,
-      'ancestry': abilityLocalization.ancestry.dropdown,
-      'archetype': abilityLocalization.archetype.dropdown
-    }
+      special: abilityLocalization.special.dropdown,
+      archetype: abilityLocalization.archetype.dropdown,
+    };
   }
   #getItemType(): string {
     if (this.type === 'ability') {
       const subtype = this.item.system.subtype;
       switch (subtype) {
-        case constants.ABILITY_TYPE.ANCESTRY:
-          return SWADE.abilitySheet.ancestry.dropdown;
         case constants.ABILITY_TYPE.ARCHETYPE:
           return SWADE.abilitySheet.archetype.dropdown;
         default:
@@ -679,12 +700,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
   #getAttributeOptions(): Record<string, string> {
     return {
-      'agility': 'SWADE.AttrAgi',
-      'smarts': 'SWADE.AttrSma',
-      'spirit': 'SWADE.AttrSpr',
-      'strength': 'SWADE.AttrStr',
-      'vigor': 'SWADE.AttrVig',
-      '':''
+      agility: 'SWADE.AttrAgi',
+      smarts: 'SWADE.AttrSma',
+      spirit: 'SWADE.AttrSpr',
+      strength: 'SWADE.AttrStr',
+      vigor: 'SWADE.AttrVig',
+      '': '',
     };
   }
   async #enrichText(text: string): Promise<string> {
@@ -800,7 +821,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     ];
   }
 
-
   #equipStatusOptions(): Record<number, string> {
     let states: Record<number, string> = {
       [constants.EQUIP_STATE.STORED]: 'SWADE.ItemEquipStatus.Stored',
@@ -890,7 +910,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
-    isAncestryOrArchetype: boolean;
+    isArchetype: boolean;
   };
   abilitySubtypeOptions: Record<string, string>;
   dieSides;
@@ -900,7 +920,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   rangeTypeOptions?: Record<number, string>;
   grantOnTriggers?: Record<number, string>[];
   attributeOptions?: Record<string, string>;
-  dieSideOptions?: DieSidesOption[];  
+  dieSideOptions?: DieSidesOption[];
   wildDieSideOptions?: DieSidesOption[];
   bonusDamageDieSideOptions?: DieSidesOption[];
 }

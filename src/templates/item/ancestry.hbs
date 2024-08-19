@@ -1,0 +1,43 @@
+<form class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{! Sheet Header }}
+  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+
+  {{! Sidebar }}
+  <section class='sheet-sidebar'>
+    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+  </section>
+
+  {{! Sheet Tab Navigation }}
+  <nav class='tabs' data-group='main'>
+    <a class='item' data-tab='description' data-group='main'>
+      {{localize 'SWADE.Desc'}}
+    </a>
+    <a class='item' data-tab='properties' data-group='main'>
+      {{localize 'SWADE.Properties'}}
+    </a>
+    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
+  </nav>
+
+  {{! Main Section }}
+  <section class='sheet-body'>
+    <section class='tab description full-page' data-group='main' data-tab='description'>
+      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+    </section>
+    <section class='tab properties' data-group='main' data-tab='properties'>
+      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
+    </section>
+    <section class='tab effects' data-group='main' data-tab='effects'>
+      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+    </section>
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</form>

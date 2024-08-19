@@ -2,12 +2,12 @@ import { DocumentModificationOptions } from '@league-of-foundry-developers/found
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
-import { physicalItem } from '../common';
-import { PhysicalItem } from '../item-common.interface';
+import { builder, physicalItem } from '../common';
+import { Builder, PhysicalItem } from '../item-common.interface';
 import { SwadeBaseItemData } from './base';
 
 declare namespace SwadePhysicalItemData {
-  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem {}
+  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {}
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -22,6 +22,7 @@ class SwadePhysicalItemData<
     return {
       ...super.defineSchema(),
       ...physicalItem(),
+      ...builder()
     };
   }
 

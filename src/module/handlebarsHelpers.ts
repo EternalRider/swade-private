@@ -193,6 +193,70 @@ function groupColor(id: string): string | undefined {
 }
 
 /*****************************
+ * Embedded content related Helpers
+ *****************************/
+
+// This helper will take a system-formatted damage string and reformat it to the format used in the PEG sources.
+// Right now this just removes the '@' and capitalizes and 'str' values
+// aka @str+1d6 formats to Str+1d6
+function formatDamage(damageStr: string) {
+  return damageStr
+    .replace('@', '')
+    .replace('str','Str');
+}
+
+// This helper will take in the locations property found on armor items and will return the list of locations that have armor values in a 
+// localized string formatted list for display
+function formatArmorLocations(locations:any) {
+    // Translate hit locations
+    const armorLocations:string[] = [];
+    const headLocation = game.i18n.localize('SWADE.Head');
+    const torsoLocation = game.i18n.localize('SWADE.Torso');
+    const armsLocation = game.i18n.localize('SWADE.Arms');
+    const legsLocation = game.i18n.localize('SWADE.Legs');
+
+    // Create an array of locations based on whether there are values there
+    if (locations.head) 
+      armorLocations.push(headLocation);
+    if (locations.torso) 
+      armorLocations.push(torsoLocation);
+    if (locations.arms) 
+      armorLocations.push(armsLocation);
+    if (locations.legs) 
+      armorLocations.push(legsLocation);
+
+    // Use localized list formatting
+    const formatter = game.i18n.getListFormatter({
+      style: 'long',
+      type: 'unit',
+    });
+
+    return formatter.format(armorLocations);
+}
+
+// This helper will take in the hindrance severity value and format it to an appropriate localized display if the value is 'either', otherwise just return
+// the singular localization value represented
+function formatHindranceSeverity(severity: string) {
+  const minorSeverity = game.i18n.localize('SWADE.HindMinor');
+  const majorSeverity = game.i18n.localize('SWADE.HindMajor');
+
+  // If it's just minor or major, return their respective localizations.
+  if (severity !== 'minor' && severity !== 'major' && severity !== 'either') return '';
+  if (severity === 'minor') return minorSeverity;
+  if (severity === 'major') return majorSeverity;
+  
+  // If it's 'either' then localize the list of both combined
+  if (this.severity === 'either') {    
+    const formatter = game.i18n.getListFormatter({
+      style: 'long',
+      type: 'disjunction',
+    });
+    const severities = [minorSeverity, majorSeverity];
+    return formatter.format(severities);
+  }
+}
+
+/*****************************
  * Equipment related Helpers
  *****************************/
 
@@ -245,9 +309,71 @@ function equipStatusLabel(state: EquipState) {
   return new Handlebars.SafeString(states[state]);
 }
 
+function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
+  const {
+    classes,
+    label,
+    hint,
+    rootId,
+    stacked,
+    units,
+    widget,
+    source,
+    document,
+    ...inputConfig
+  } = options.hash;
+  const groupConfig = {
+    label,
+    hint,
+    rootId,
+    stacked,
+    widget,
+    localize: inputConfig.localize,
+    units,
+    classes: typeof classes === 'string' ? classes.split(' ') : [],
+  };
+  const doc: ClientDocument =
+    document ??
+    options.data.root.item ??
+    options.data.root.actor ??
+    options.data.root.document;
+  let field: foundry.data.fields.DataField;
+  if (path.startsWith('system')) {
+    const splitPath = path.split('.');
+    splitPath.shift();
+    field = doc.system.schema.getField(splitPath.join('.'));
+  } else {
+    field = doc.schema.getField(path);
+  }
+
+  if (!('value' in inputConfig)) {
+    inputConfig.value = foundry.utils.getProperty(
+      source ? doc._source : doc,
+      path,
+    );
+  }
+  return { field, inputConfig, groupConfig };
+}
+
+function formGroupSimple(path: string, options: Handlebars.HelperOptions) {
+  const { field, inputConfig, groupConfig } = prepareFormRendering(
+    path,
+    options,
+  );
+  const group = field.toFormGroup(groupConfig, inputConfig);
+  return new Handlebars.SafeString(group.outerHTML);
+}
+
+function formInputSimple(path: string, options: Handlebars.HelperOptions) {
+  const { field, inputConfig } = prepareFormRendering(path, options);
+  const group = field.toInput(inputConfig);
+  return new Handlebars.SafeString(group.outerHTML);
+}
+
 /** @internal */
 export function registerCustomHelpers() {
   Handlebars.registerHelper({
+    readonly: (val) => (val ? 'readonly' : ''),
     add,
     signedString,
     times,
@@ -269,5 +395,10 @@ export function registerCustomHelpers() {
     eachInMap,
     equipStatus,
     equipStatusLabel,
+    formGroupSimple,
+    formInputSimple,
+    formatDamage,
+    formatArmorLocations,
+    formatHindranceSeverity
   });
 }

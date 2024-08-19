@@ -79,15 +79,14 @@ export default class ActionCardEditor extends FormApplication<
     };
   }
 
-
   override activateListeners(html: JQuery) {
     super.activateListeners(html);
     html.find('.card-face').on('click', (ev) => this._showCard(ev));
     html.find('.add-card').on('click', async () => this._createNewCard());
   }
 
-  protected override async _updateObject(event: Event, formData = {}) {
-    const data = expandObject(formData);
+  protected override async _updateObject(_event: Event, formData = {}) {
+    const data = foundry.utils.expandObject(formData);
     const cards = Object.entries(data.card) as [string, CardData][];
     const updates = new Array<Record<string, unknown>>();
     for (const [id, value] of cards) {

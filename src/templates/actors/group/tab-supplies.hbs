@@ -1,0 +1,13 @@
+<section
+  class='{{tabs.supplies.tabCssClass}}'
+  data-group='primary'
+  data-tab='supplies'
+>
+  <fieldset>
+    <legend>{{localize tabs.supplies.label}}</legend>
+    {{formGroupSimple 'system.supplyLevels.ammo' localize=true}}
+    {{formGroupSimple 'system.supplyLevels.fuel' localize=true}}
+    {{formGroupSimple 'system.supplyLevels.food' localize=true}}
+    {{formGroupSimple 'system.supplyLevels.supply' localize=true}}
+  </fieldset>
+</section>

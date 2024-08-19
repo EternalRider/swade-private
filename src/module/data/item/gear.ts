@@ -26,6 +26,7 @@ import {
   GrantEmbedded,
   Vehicular,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace GearData {
   interface Schema
@@ -61,7 +62,7 @@ class GearData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      isAmmo: new fields.BooleanField(),
+      isAmmo: new fields.BooleanField({ label: 'SWADE.ItemIsAmmo' }),
     };
   }
 
@@ -110,6 +111,16 @@ class GearData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }
   }
+
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/gear-embeds.hbs', 'gear-embed');
+  }
+
 }
 
 export { GearData };

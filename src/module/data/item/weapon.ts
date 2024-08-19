@@ -17,7 +17,7 @@ import {
   ItemChatCardChip,
   UsageUpdates,
 } from '../../documents/item/SwadeItem.interface';
-import { notificationExists } from '../../util';
+import { createEmbedElement, notificationExists } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -110,28 +110,30 @@ class WeaponData extends SwadePhysicalItemData<
       ...templates(),
       ...category(),
       ...grantEmbedded(),
-      damage: new fields.StringField({ initial: '' }),
-      range: new fields.StringField({ initial: '' }),
+      damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
+      range: new fields.StringField({ initial: '', label: 'SWADE.Range._name' }),
       rangeType: new fields.NumberField({
         integer: true,
         nullable: true,
         initial: null,
         choices: Object.values(constants.WEAPON_RANGE_TYPE),
+        label: 'SWADE.Weapon.RangeType.Label',
       }),
-      rof: new fields.NumberField({ initial: 1 }),
-      ap: new fields.NumberField({ initial: 0, integer: true }),
-      parry: new fields.NumberField({ initial: 0 }),
-      minStr: new fields.StringField({ initial: '' }),
-      shots: new fields.NumberField({ initial: 0 }),
-      currentShots: new fields.NumberField({ initial: 0 }),
-      ammo: new fields.StringField({ initial: '' }),
+      rof: new fields.NumberField({ initial: 1, label: 'SWADE.RoF' }),
+      ap: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.AP' }),
+      parry: new fields.NumberField({ initial: 0, label: 'SWADE.Parry' }),
+      minStr: new fields.StringField({ initial: '', label: 'SWADE.MinStr' }),
+      shots: new fields.NumberField({ initial: 0, label: 'SWADE.Mag' }),
+      currentShots: new fields.NumberField({ initial: 0, label: 'SWADE.ShotsCurrent' }),
+      ammo: new fields.StringField({ initial: '', label: 'SWADE.Ammo' }),
       reloadType: new fields.StringField({
         initial: constants.RELOAD_TYPE.NONE,
         choices: Object.values(constants.RELOAD_TYPE),
+        label: 'SWADE.ReloadType.Label',
       }),
-      ppReloadCost: new fields.NumberField({ initial: 2 }),
-      trademark: new fields.NumberField({ initial: 0, min: 0, integer: true }),
-      isHeavyWeapon: new fields.BooleanField(),
+      ppReloadCost: new fields.NumberField({ initial: 2, label: 'SWADE.PPCost' }),
+      trademark: new fields.NumberField({ initial: 0, min: 0, integer: true, label: 'SWADE.TrademarkWeapon.Label' }),
+      isHeavyWeapon: new fields.BooleanField({ label: 'SWADE.HeavyWeapon' }),
     };
   }
 
@@ -482,7 +484,10 @@ class WeaponData extends SwadePhysicalItemData<
     return true;
   }
 
-  async #handleFullReload(ammo: SwadeItem, missing: number): Promise<boolean> {
+  async #handleFullReload(
+    ammo: SwadeItem<'gear' | 'consumable'>,
+    missing: number,
+  ): Promise<boolean> {
     if (!this.usesAmmoFromInventory) {
       return this.#handleSimpleReload();
     }
@@ -704,12 +709,22 @@ class WeaponData extends SwadePhysicalItemData<
     data: foundry.documents.BaseItem.ConstructorData,
     options: DocumentModificationOptions,
     user: BaseUser,
-  ) {
+  ): Promise<undefined> {
     await super._preCreate(data, options, user);
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.MAIN_HAND });
     }
   }
+
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/weapon-embeds.hbs', 'weapon-embed');
+  }
+
 }
 
 export { WeaponData };

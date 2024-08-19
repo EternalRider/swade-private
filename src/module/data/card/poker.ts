@@ -16,8 +16,8 @@ class PokerData extends foundry.abstract.TypeDataModel<
   static override defineSchema(): PokerData.Schema {
     const fields = foundry.data.fields;
     return {
-      isJoker: new fields.BooleanField(),
-      suit: new fields.NumberField({ min: 1, max: 4 }), // Possible that it's preferable to do this with choices
+      isJoker: new fields.BooleanField({ label: 'SWADE.IsJoker' }),
+      suit: new fields.NumberField({ min: 1, max: 4, label: 'SWADE.CardSuit' }), // Possible that it's preferable to do this with choices
     };
   }
 }

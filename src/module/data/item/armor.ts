@@ -25,6 +25,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace ArmorData {
   interface Schema
@@ -68,16 +69,16 @@ class ArmorData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
-      minStr: new fields.StringField({ initial: '' }),
-      armor: new fields.NumberField({ initial: 0 }),
-      toughness: new fields.NumberField({ initial: 0 }),
-      isNaturalArmor: new fields.BooleanField(),
-      isHeavyArmor: new fields.BooleanField(),
+      minStr: new fields.StringField({ initial: '', label: 'SWADE.MinStr' }),
+      armor: new fields.NumberField({ initial: 0, label: 'SWADE.Armor' }),
+      toughness: new fields.NumberField({ initial: 0, label: 'SWADE.Tough' }),
+      isNaturalArmor: new fields.BooleanField({ label: 'SWADE.NaturalArmor' }),
+      isHeavyArmor: new fields.BooleanField({ label: 'SWADE.HeavyArmor' }),
       locations: new fields.SchemaField({
-        head: new fields.BooleanField(),
-        torso: new fields.BooleanField({ initial: true }),
-        arms: new fields.BooleanField(),
-        legs: new fields.BooleanField(),
+        head: new fields.BooleanField({ label: 'SWADE.Head' }),
+        torso: new fields.BooleanField({ initial: true, label: 'SWADE.Torso' }),
+        arms: new fields.BooleanField({ label: 'SWADE.Arms' }),
+        legs: new fields.BooleanField({ label: 'SWADE.Legs' }),
       }),
     };
   }
@@ -160,6 +161,16 @@ class ArmorData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }
   }
+
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/armor-embeds.hbs', 'armor-embed');
+  }
+
 }
 
 export { ArmorData };

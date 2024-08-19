@@ -1,3 +1,5 @@
+import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
@@ -15,6 +17,7 @@ import {
   makeTraitDiceFields,
 } from '../shared';
 import * as quarantine from './_quarantine';
+import { VehicleData } from './vehicle';
 
 const fields = foundry.data.fields;
 
@@ -178,7 +181,7 @@ declare namespace CommonActorData {
     additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
   }
 
-  interface BaseData {
+  type BaseData = {
     attributes: {
       agility: {
         effects: Array<RollModifier>;
@@ -221,9 +224,9 @@ declare namespace CommonActorData {
         bennyDamage: Array<DerivedModifier>;
       };
     };
-  }
+  };
 
-  interface DerivedData {
+  type DerivedData = {
     advances: {
       list: Collection<Advance>;
     };
@@ -239,7 +242,7 @@ declare namespace CommonActorData {
         isEncumbered: boolean;
       };
     };
-  }
+  };
 }
 
 class CommonActorData<
@@ -254,151 +257,364 @@ class CommonActorData<
 > {
   static override defineSchema(): CommonActorData.Schema {
     return {
-      attributes: new fields.SchemaField({
-        agility: new fields.SchemaField(makeTraitDiceFields()),
-        smarts: new fields.SchemaField({
-          ...makeTraitDiceFields(),
-          animal: new fields.BooleanField(),
-        }),
-        spirit: new fields.SchemaField({
-          ...makeTraitDiceFields(),
-          unShakeBonus: new fields.NumberField({ initial: 0, integer: true }),
-        }),
-        strength: new fields.SchemaField({
-          ...makeTraitDiceFields(),
-          encumbranceSteps: new fields.NumberField({
+      attributes: new fields.SchemaField(
+        {
+          agility: new fields.SchemaField(makeTraitDiceFields(), {
+            label: 'SWADE.AttrAgi',
+          }),
+          smarts: new fields.SchemaField(
+            {
+              ...makeTraitDiceFields(),
+              animal: new fields.BooleanField({ label: 'SWADE.AnimalSmarts' }),
+            },
+            { label: 'SWADE.AttrSma' },
+          ),
+          spirit: new fields.SchemaField(
+            {
+              ...makeTraitDiceFields(),
+              unShakeBonus: new fields.NumberField({
+                initial: 0,
+                integer: true,
+              }),
+            },
+            { label: 'SWADE.AttrSpr' },
+          ),
+          strength: new fields.SchemaField(
+            {
+              ...makeTraitDiceFields(),
+              encumbranceSteps: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.EncumbranceSteps',
+              }),
+            },
+            { label: 'SWADE.AttrStr' },
+          ),
+          vigor: new fields.SchemaField(
+            {
+              ...makeTraitDiceFields(),
+              unStunBonus: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.EffectCallbacks.Stunned.UnStunModifier',
+              }),
+              soakBonus: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.DamageApplicator.SoakModifier',
+              }),
+              bleedOut: new fields.SchemaField({
+                modifier: new fields.NumberField({
+                  initial: 0,
+                  integer: true,
+                  label: 'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
+                }),
+                ignoreWounds: new fields.BooleanField({
+                  label: 'SWADE.IgnWounds',
+                }),
+              }),
+            },
+            { label: 'SWADE.AttrVig' },
+          ),
+        },
+        { label: 'SWADE.Attributes' },
+      ),
+      stats: new fields.SchemaField(
+        {
+          speed: new fields.SchemaField(
+            {
+              runningDie: makeDiceField(6, 'SWADE.RunningDie'),
+              runningMod: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.RunningMod',
+              }),
+              value: new fields.NumberField({
+                initial: 6,
+                integer: true,
+                label: 'SWADE.BasePace',
+              }),
+            },
+            { label: 'SWADE.Pace' },
+          ),
+          toughness: new fields.SchemaField(
+            {
+              value: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.Tough',
+              }),
+              armor: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.Armor',
+              }),
+              modifier: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                required: false,
+                label: 'SWADE.Modifier',
+              }),
+            },
+            { label: 'SWADE.Tough' },
+          ),
+          parry: new fields.SchemaField(
+            {
+              value: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.Parry',
+              }),
+              shield: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                label: 'SWADE.ShieldBonus',
+              }),
+              modifier: new fields.NumberField({
+                initial: 0,
+                integer: true,
+                required: false,
+                label: 'SWADE.Modifier',
+              }),
+            },
+            { label: 'SWADE.Parry' },
+          ),
+          size: new fields.NumberField({
             initial: 0,
             integer: true,
+            label: 'SWADE.Size',
           }),
-        }),
-        vigor: new fields.SchemaField({
-          ...makeTraitDiceFields(),
-          unStunBonus: new fields.NumberField({ initial: 0, integer: true }),
-          soakBonus: new fields.NumberField({ initial: 0, integer: true }),
-          bleedOut: new fields.SchemaField({
-            modifier: new fields.NumberField({ initial: 0, integer: true }),
-            ignoreWounds: new fields.BooleanField(),
+        },
+        { label: 'SWADE.Stats' },
+      ),
+      details: new fields.SchemaField(
+        {
+          autoCalcToughness: new fields.BooleanField({
+            initial: true,
+            label: 'SWADE.InclArmor',
           }),
-        }),
-      }),
-      stats: new fields.SchemaField({
-        speed: new fields.SchemaField({
-          runningDie: makeDiceField(6),
-          runningMod: new fields.NumberField({ initial: 0, integer: true }),
-          value: new fields.NumberField({ initial: 6, integer: true }),
-        }),
-        toughness: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0, integer: true }),
-          armor: new fields.NumberField({ initial: 0, integer: true }),
-          modifier: new fields.NumberField({
+          autoCalcParry: new fields.BooleanField({
+            initial: true,
+            label: 'SWADE.AutoCalcParry',
+          }),
+          archetype: new fields.StringField({
+            initial: '',
+            textSearch: true,
+            label: 'SWADE.Archetype',
+          }),
+          appearance: new fields.HTMLField({
+            initial: '',
+            textSearch: true,
+            label: 'SWADE.Appearance',
+          }),
+          notes: new fields.HTMLField({
+            initial: '',
+            textSearch: true,
+            label: 'SWADE.Notes',
+          }),
+          goals: new fields.HTMLField({
+            initial: '',
+            textSearch: true,
+            label: 'SWADE.CharacterGoals',
+          }),
+          biography: new fields.SchemaField(
+            {
+              value: new fields.HTMLField({
+                initial: '',
+                textSearch: true,
+                label: 'SWADE.Biography',
+              }),
+            },
+            { label: 'SWADE.Biography' },
+          ),
+          species: new fields.SchemaField(
+            {
+              name: new fields.StringField({
+                initial: '',
+                textSearch: true,
+                label: 'SWADE.Ancestry',
+              }),
+            },
+            { label: 'SWADE.Ancestry' },
+          ),
+          currency: new fields.NumberField({
             initial: 0,
-            integer: true,
-            required: false,
+            label: 'SWADE.Currency',
           }),
-        }),
-        parry: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0, integer: true }),
-          shield: new fields.NumberField({ initial: 0, integer: true }),
-          modifier: new fields.NumberField({
-            initial: 0,
-            integer: true,
-            required: false,
-          }),
-        }),
-        size: new fields.NumberField({ initial: 0, integer: true }),
-      }),
-      details: new fields.SchemaField({
-        autoCalcToughness: new fields.BooleanField({ initial: true }),
-        autoCalcParry: new fields.BooleanField({ initial: true }),
-        archetype: new fields.StringField({ initial: '', textSearch: true }),
-        appearance: new fields.HTMLField({ initial: '', textSearch: true }),
-        notes: new fields.HTMLField({ initial: '', textSearch: true }),
-        goals: new fields.HTMLField({ initial: '', textSearch: true }),
-        biography: new fields.SchemaField({
-          value: new fields.HTMLField({ initial: '', textSearch: true }),
-        }),
-        species: new fields.SchemaField({
-          name: new fields.StringField({ initial: '', textSearch: true }),
-        }),
-        currency: new fields.NumberField({ initial: 0 }),
-        wealth: new fields.SchemaField({
-          die: new fields.NumberField({ initial: 6, min: -1, integer: true }),
-          modifier: new fields.NumberField({ initial: 0 }),
-          'wild-die': makeDiceField(6),
-        }),
-        conviction: new fields.SchemaField({
-          value: new fields.NumberField({ initial: 0 }),
-          active: new fields.BooleanField(),
-        }),
-      }),
+          wealth: new fields.SchemaField(
+            {
+              die: new fields.NumberField({
+                initial: 6,
+                min: -1,
+                integer: true,
+                label: 'SWADE.WealthDie.Sides',
+              }),
+              modifier: new fields.NumberField({
+                initial: 0,
+                label: 'SWADE.WealthDie.Modifier',
+              }),
+              'wild-die': makeDiceField(6, 'SWADE.WealthDie.WildSides'),
+            },
+            { label: 'SWADE.WealthDie.Label' },
+          ),
+          conviction: new fields.SchemaField(
+            {
+              value: new fields.NumberField({
+                initial: 0,
+                label: 'SWADE.Value',
+              }),
+              active: new fields.BooleanField({
+                label: 'SWADE.ConvictionActive',
+              }),
+            },
+            { label: 'SWADE.Conv' },
+          ),
+        },
+        { label: 'SWADE.Details' },
+      ),
       powerPoints: new MappingField(this.makePowerPointsSchema(), {
         initialKeys: ['general'],
         required: true,
+        label: 'SWADE.PP',
       }),
-      fatigue: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 0, min: 0 }),
-        max: new fields.NumberField({ initial: 2 }),
-        ignored: new fields.NumberField({ initial: 0 }),
-      }),
-      woundsOrFatigue: new fields.SchemaField({
-        ignored: new fields.NumberField({ initial: 0 }),
-      }),
-      advances: new fields.SchemaField({
-        mode: new fields.StringField({
-          initial: 'expanded',
-          choices: ['legacy', 'expanded'],
-        }),
-        value: new fields.NumberField({ initial: 0 }),
-        rank: new fields.StringField({ initial: 'Novice', textSearch: true }),
-        details: new fields.HTMLField({ initial: '' }),
-        list: new fields.ArrayField(
-          new fields.SchemaField({
-            //TODO Create special data field for Advances
-            type: new fields.NumberField({ initial: 0 }),
-            notes: new fields.HTMLField({ initial: '' }),
-            sort: new fields.NumberField({ initial: 0 }),
-            planned: new fields.BooleanField(),
-            id: new fields.StringField({ initial: '' }),
-            rank: new fields.NumberField({ initial: 0 }),
+      fatigue: new fields.SchemaField(
+        {
+          value: new fields.NumberField({
+            initial: 0,
+            min: 0,
+            label: 'SWADE.Fatigue',
           }),
-        ),
-      }),
-      status: new fields.SchemaField({
-        isShaken: new fields.BooleanField(),
-        isDistracted: new fields.BooleanField(),
-        isVulnerable: new fields.BooleanField(),
-        isStunned: new fields.BooleanField(),
-        isEntangled: new fields.BooleanField(),
-        isBound: new fields.BooleanField(),
-        isIncapacitated: new fields.BooleanField(),
-      }),
-      initiative: new fields.SchemaField({
-        hasHesitant: new fields.BooleanField(),
-        hasLevelHeaded: new fields.BooleanField(),
-        hasImpLevelHeaded: new fields.BooleanField(),
-        hasQuick: new fields.BooleanField(),
-      }),
+          max: new fields.NumberField({
+            initial: 2,
+            label: 'SWADE.FatigueMax',
+          }),
+          ignored: new fields.NumberField({
+            initial: 0,
+            label: 'SWADE.IgnFatigue',
+          }),
+        },
+        { label: 'SWADE.Fatigue' },
+      ),
+      woundsOrFatigue: new fields.SchemaField(
+        {
+          ignored: new fields.NumberField({
+            initial: 0,
+            label: 'SWADE.IgnFatigueWounds',
+          }),
+        },
+        { label: 'SWADE.FatigueWounds' },
+      ),
+      advances: new fields.SchemaField(
+        {
+          mode: new fields.StringField({
+            initial: 'expanded',
+            choices: ['legacy', 'expanded'],
+            label: 'SWADE.Advances.Modes.Label',
+          }),
+          value: new fields.NumberField({ initial: 0, label: 'SWADE.Advance' }),
+          rank: new fields.StringField({
+            initial: 'Novice',
+            textSearch: true,
+            label: 'SWADE.Rank',
+          }),
+          details: new fields.HTMLField({
+            initial: '',
+            label: 'SWADE.Details',
+          }),
+          list: new fields.ArrayField(
+            new fields.SchemaField({
+              //TODO Create special data field for Advances
+              type: new fields.NumberField({ initial: 0, label: 'Type' }),
+              notes: new fields.HTMLField({
+                initial: '',
+                label: 'SWADE.Notes',
+              }),
+              sort: new fields.NumberField({
+                initial: 0,
+                label: 'SWADE.SortNum',
+              }),
+              planned: new fields.BooleanField({
+                label: 'SWADE.Advances.Planned',
+              }),
+              id: new fields.StringField({ initial: '', label: 'SWADE.ID' }),
+              rank: new fields.NumberField({ initial: 0, label: 'SWADE.Rank' }),
+            }),
+            { label: 'SWADE.Adv' },
+          ),
+        },
+        { label: 'SWADE.Adv' },
+      ),
+      status: new fields.SchemaField(
+        {
+          isShaken: new fields.BooleanField({ label: 'SWADE.Shaken' }),
+          isDistracted: new fields.BooleanField({ label: 'SWADE.Distracted' }),
+          isVulnerable: new fields.BooleanField({ label: 'SWADE.Vulnerable' }),
+          isStunned: new fields.BooleanField({ label: 'SWADE.Stunned' }),
+          isEntangled: new fields.BooleanField({ label: 'SWADE.Entangled' }),
+          isBound: new fields.BooleanField({ label: 'SWADE.Bound' }),
+          isIncapacitated: new fields.BooleanField({ label: 'SWADE.Incap' }),
+        },
+        { label: 'SWADE.Status' },
+      ),
+      initiative: new fields.SchemaField(
+        {
+          hasHesitant: new fields.BooleanField({ label: 'SWADE.Hesitant' }),
+          hasLevelHeaded: new fields.BooleanField({
+            label: 'SWADE.LevelHeaded',
+          }),
+          hasImpLevelHeaded: new fields.BooleanField({
+            label: 'SWADE.ImprovedLevelHeaded',
+          }),
+          hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
+        },
+        { label: 'SWADE.Init' },
+      ),
       additionalStats: makeAdditionalStatsSchema(),
     };
   }
 
   protected static wildcardData = (baseBennies: number, maxWounds: number) => ({
-    bennies: new fields.SchemaField({
-      value: new fields.NumberField({ initial: 0 }),
-      max: new fields.NumberField({ initial: baseBennies }),
-    }),
-    wounds: new fields.SchemaField({
-      value: new fields.NumberField({ initial: 0, min: 0 }),
-      max: new fields.NumberField({ initial: maxWounds }),
-      ignored: new fields.NumberField({ initial: 0 }),
-    }),
+    bennies: new fields.SchemaField(
+      {
+        value: new fields.NumberField({
+          initial: 0,
+          label: 'SWADE.CurrentBennies',
+        }),
+        max: new fields.NumberField({
+          initial: baseBennies,
+          label: 'SWADE.BenniesMaxNum',
+        }),
+      },
+      { label: 'SWADE.Bennies' },
+    ),
+    wounds: new fields.SchemaField(
+      {
+        value: new fields.NumberField({
+          initial: 0,
+          min: 0,
+          label: 'SWADE.Wounds',
+        }),
+        max: new fields.NumberField({
+          initial: maxWounds,
+          label: 'SWADE.WoundsMax',
+        }),
+        ignored: new fields.NumberField({
+          initial: 0,
+          label: 'SWADE.IgnWounds',
+        }),
+      },
+      { label: 'SWADE.Wounds' },
+    ),
   });
 
   protected static makePowerPointsSchema = () => {
-    return new fields.SchemaField({
-      value: new fields.NumberField({ initial: 0 }),
-      max: new fields.NumberField({ initial: 0 }),
-    });
+    return new fields.SchemaField(
+      {
+        value: new fields.NumberField({ initial: 0, label: 'SWADE.CurPP' }),
+        max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxPP' }),
+      },
+      { label: 'SWADE.PP' },
+    );
   };
 
   /** @inheritdoc */
@@ -613,6 +829,30 @@ class CommonActorData<
      * @param {SwadeActor} actor            The Actor refreshing their bennies
      */
     Hooks.callAll('swadeRefreshBennies', this.parent);
+  }
+
+  protected override async _preUpdate(
+    this: CommonActorData,
+    changed: foundry.documents.BaseActor.UpdateData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preUpdate(changed, options, user);
+    if (this instanceof VehicleData) return;
+    if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.wounds.value',
+        this.wounds.value,
+      );
+    }
+    if (foundry.utils.hasProperty(changed, 'system.fatigue.value')) {
+      foundry.utils.setProperty(
+        options,
+        'swade.fatigue.value',
+        this.fatigue.value,
+      );
+    }
   }
 }
 

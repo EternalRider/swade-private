@@ -13,6 +13,7 @@ import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import { SWADE } from './module/config';
+import { constants } from './module/constants';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
 import { DamageRoll } from './module/dice/DamageRoll';
@@ -42,6 +43,7 @@ import {
   registerSettings,
 } from './module/settings';
 import CharacterSheet from './module/sheets/CharacterSheet';
+import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
@@ -50,7 +52,12 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
-import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
+import {
+  deepFreeze,
+  getItemsBySwid,
+  getStatusEffectDataById,
+  slugify,
+} from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
@@ -60,6 +67,19 @@ import './swade.scss';
 /* ------------------------------------ */
 Hooks.once('init', () => {
   Logger.info(`Initializing Savage Worlds Adventure Edition\n${SWADE.ASCII}`);
+
+  Object.defineProperty(constants.ABILITY_TYPE, 'ANCESTRY', {
+    get: () => {
+      foundry.utils.logCompatibilityWarning(
+        'The ancestry ability type has been deprecated in favor of the new ancestry Item',
+        {
+          since: '4.1',
+          until: '5.0',
+        },
+      );
+      return 'ancestry';
+    },
+  });
 
   //Record Configuration Values
   CONFIG.SWADE = SWADE;
@@ -89,6 +109,7 @@ Hooks.once('init', () => {
     util: {
       getStatusEffectDataById,
       slugify,
+      getItemsBySwid,
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),
@@ -203,6 +224,7 @@ Hooks.once('init', () => {
   });
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
+  CONFIG.Item.compendiumIndexFields.push('system.swid');
 
   // @ts-expect-error Yes we're calling a protected function
   JournalTextPageSheet._converter.setOption('tables', true);
@@ -227,6 +249,12 @@ Hooks.once('init', () => {
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
 
+  Actors.registerSheet('swade', GroupSheet, {
+    types: ['group'],
+    makeDefault: true,
+    label: 'SWADE.GroupSheet',
+  });
+
   Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
     makeDefault: true,
@@ -244,6 +272,20 @@ Hooks.once('init', () => {
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
+    types: [
+      'ability',
+      'action',
+      'ancestry',
+      'armor',
+      'consumable',
+      'edge',
+      'gear',
+      'hindrance',
+      'power',
+      'shield',
+      'skill',
+      'weapon',
+    ],
     label: 'SWADE.ItemSheet',
   });
   DocumentSheetConfig.registerSheet(
@@ -261,15 +303,12 @@ Hooks.once('init', () => {
   registerSWADETours();
 
   CONFIG.Dice.SwadeRoll = SwadeRoll;
-
   CONFIG.Dice.TraitRoll = TraitRoll;
   CONFIG.Dice.DamageRoll = DamageRoll;
 
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.terms.b = Benny;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
-  //@ts-expect-error Types don't allow it but is possible and feasible
   CONFIG.Dice.types.push(WildDie);
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
@@ -330,6 +369,7 @@ Hooks.on(
 /* ------------------------------------ */
 Hooks.on('userConnected', SwadeCoreHooks.onUserConnected);
 Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
+Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
 
 /* ------------------------------------ */
 /* System Hooks              	          */

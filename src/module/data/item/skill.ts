@@ -2,7 +2,7 @@ import { DocumentModificationOptions } from '@league-of-foundry-developers/found
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { TraitDie } from '../../documents/actor/actor-data-source';
-import { addUpModifiers } from '../../util';
+import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
@@ -29,8 +29,8 @@ class SkillData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...makeTraitDiceFields(),
-      attribute: new foundry.data.fields.StringField({ initial: '' }),
-      isCoreSkill: new foundry.data.fields.BooleanField(),
+      attribute: new foundry.data.fields.StringField({ initial: '', label: 'SWADE.Attribute' }),
+      isCoreSkill: new foundry.data.fields.BooleanField({ label: 'SWADE.CoreSkill' }),
     };
   }
 
@@ -70,6 +70,16 @@ class SkillData extends SwadeBaseItemData<
       options.renderSheet = true;
     }
   }
+
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/skill-embeds.hbs', 'skill-embed');
+  }
+
 }
 
 export { SkillData };

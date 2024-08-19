@@ -2,6 +2,7 @@ import type { DocumentModificationOptions } from '@league-of-foundry-developers/
 import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
 import { CommonActorData } from './common';
+import { createEmbedElement } from '../../util';
 
 declare namespace CharacterData {
   interface Schema
@@ -33,25 +34,15 @@ export class CharacterData extends CommonActorData<
     return game.settings.get('swade', 'pcStartingCurrency') ?? 0;
   }
 
-  protected async _preCreate(
-    createData: foundry.documents.BaseActor.ConstructorData,
-    _options: DocumentModificationOptions,
-    _user: BaseUser,
-  ) {
-    this.parent.updateSource({
-      prototypeToken: {
-        actorLink: true,
-        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
-      },
-    });
-
-    const coreSkillList = game.settings.get('swade', 'coreSkills');
+  async #addCoreSkills() {
+    //Get list of core skills from settings
+    const coreSkills = game.settings
+      .get('swade', 'coreSkills')
+      .split(',')
+      .map((s) => s.trim());
 
     //only do this if this is a PC with no prior skills
-    if (coreSkillList.length > 0 && this.parent.itemTypes.skill.length === 0) {
-      //Get list of core skills from settings
-      const coreSkills = coreSkillList.split(',').map((s) => s.trim());
-
+    if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
       //Set compendium source
       const pack = game.packs.get(
         game.settings.get('swade', 'coreSkillsCompendium'),
@@ -100,6 +91,22 @@ export class CharacterData extends CommonActorData<
       //Add the items to the creation data
       this.parent.updateSource({ items: skills });
     }
+  }
+
+  protected override async _preCreate(
+    createData: foundry.documents.BaseActor.ConstructorData,
+    options: DocumentModificationOptions,
+    user: BaseUser,
+  ) {
+    await super._preCreate(createData, options, user);
+    this.parent.updateSource({
+      prototypeToken: {
+        actorLink: true,
+        disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+      },
+    });
+
+    await this.#addCoreSkills();
 
     const isImported = foundry.utils.hasProperty(
       createData,
@@ -111,4 +118,19 @@ export class CharacterData extends CommonActorData<
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,// eslint-disable-line @typescript-eslint/no-unused-vars
+    options: TextEditor.EnrichmentOptions,// eslint-disable-line @typescript-eslint/no-unused-vars
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedBiography = await TextEditor.enrichHTML(this.details.biography.value, options);
+
+    // Combine weapons and armor into a displayable gear array. For now, these are the only items we display under gear.
+    //TODO: Refactor to a handlebar helper
+    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
+    foundry.utils.setProperty(this, 'displayableGear', displayableGear);
+
+    return await createEmbedElement(this,'systems/swade/templates/embeds/actor-embeds.hbs', 'actor-embed');
+  }
+
 }

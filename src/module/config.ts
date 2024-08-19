@@ -99,6 +99,8 @@ export const SWADE: SwadeConfig = {
       'pcStartingCurrency',
       'npcStartingCurrency',
       'armorStacking',
+      'staticGmBennies',
+      'gmBennies',
       'bennyImageSheet',
       'bennyImage3DFront',
       'bennyImage3DBack',
@@ -110,6 +112,26 @@ export const SWADE: SwadeConfig = {
   diceConfig: { flags: {} },
 
   statusEffects: statusEffects,
+
+  negativeStatusEffects: [
+    'shaken',
+    'incapacitated',
+    'dead',
+    'bound',
+    'entangled',
+    'frightened',
+    'distracted',
+    'encumbered',
+    'prone',
+    'stunned',
+    'vulnerable',
+    'bleeding-out',
+    'diseased',
+    'heart-attack',
+    'on-fire',
+    'poisoned',
+    'blind',
+  ],
 
   wildCardIcons: {
     regular: 'systems/swade/assets/ui/wildcard.svg',
@@ -306,6 +328,10 @@ export const SWADE: SwadeConfig = {
     rolltable: [],
     scene: [],
   },
+
+  swid: {
+    ignoreSystem: false,
+  },
 };
 
 /** @internal */
@@ -362,7 +388,11 @@ export interface SwadeConfig {
   diceConfig: {
     flags: Record<string, any>;
   };
+  swid: {
+    ignoreSystem: boolean;
+  };
   statusEffects: StatusEffect[];
+  negativeStatusEffects: string[];
   wildCardIcons: {
     regular: string;
     compendium: string;

@@ -1,6 +1,6 @@
 import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.d.mts';
-import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
+import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 // import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
@@ -67,7 +67,22 @@ export type AdditionalStatType = ValueOf<
 
 export type PotentialSource<T extends {}> = T & { [key: string | number]: any };
 
+export type PhysicalItem =
+  | 'weapon'
+  | 'armor'
+  | 'shield'
+  | 'consumable'
+  | 'gear';
+
 export interface DieSidesOption {
   key: number;
   label: string;
+}
+
+export interface SwadeApplicationTab extends foundry.applications.api.ApplicationV2.Tab {
+  tabCssClass: string;
+}
+
+export interface SwadeDocumentSheetConfiguration<Document extends foundry.abstract.Document.Any> extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
+  dragDrop: DragDropConfiguration[];
 }

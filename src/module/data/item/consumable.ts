@@ -24,6 +24,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { createEmbedElement } from '../../util';
 
 declare namespace ConsumableData {
   interface Schema
@@ -66,15 +67,16 @@ class ConsumableData extends SwadePhysicalItemData<
       ...bonusDamage(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 1 }),
-        max: new fields.NumberField({ initial: 1 }),
+        value: new fields.NumberField({ initial: 1, label: 'SWADE.Charges' }),
+        max: new fields.NumberField({ initial: 1, label: 'SWADE.ChargesMax' }),
       }),
-      messageOnUse: new fields.BooleanField({ initial: true }),
-      destroyOnEmpty: new fields.BooleanField(),
+      messageOnUse: new fields.BooleanField({ initial: true, label: 'SWADE.MessageOnUse.Label' }),
+      destroyOnEmpty: new fields.BooleanField({ label: 'SWADE.DestroyOnEmpty' }),
       subtype: new fields.StringField({
         initial: constants.CONSUMABLE_TYPE.REGULAR,
         choices: Object.values(constants.CONSUMABLE_TYPE),
         textSearch: true,
+        label: 'SWADE.Subtype',
       }),
     };
   }
@@ -175,6 +177,16 @@ class ConsumableData extends SwadePhysicalItemData<
       foundry.utils.setProperty(data, 'system.charges.max', 100);
     }
   }
+  
+  async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
+  ): Promise<HTMLElement | HTMLCollection | null> {
+    config.caption = false;
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
+    return await createEmbedElement(this,'systems/swade/templates/embeds/consumable-embeds.hbs', 'consumable-embed');
+  }
+
 }
 
 export { ConsumableData };

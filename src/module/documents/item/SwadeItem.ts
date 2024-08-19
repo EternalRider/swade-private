@@ -28,6 +28,7 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
+import { DatabaseCreateOperation } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/_types.mjs';
 
 declare global {
   interface FlagConfig {
@@ -81,6 +82,13 @@ class SwadeItem extends Item {
         }
       }
     }
+    // eslint-disable-next-line deprecation/deprecation
+    if (
+      data.type === 'ability' &&
+      ['ancestry', 'race'].includes(data.system?.subtype)
+    ) {
+      data.type = 'ancestry';
+    }
     return data;
   }
 
@@ -98,7 +106,7 @@ class SwadeItem extends Item {
 
   get range() {
     // Validates that this item type has a range property
-    if (!this.system.range) return;
+    if (!('range' in this.system) || !this.system.range) return;
     //match the range string via Regex
     const match = this.system.range.match(SwadeItem.RANGE_REGEX);
     //return early if nothing is found
@@ -122,7 +130,8 @@ class SwadeItem extends Item {
    * @returns whether this item can be an arcane device
    */
   get canBeArcaneDevice(): boolean {
-    return this.system.canBeArcaneDevice || false;
+    if ('canBeArcaneDevice' in this.system) return this.system.canBeArcaneDevice;
+    return false;
   }
 
   get isArcaneDevice(): boolean {
@@ -132,8 +141,9 @@ class SwadeItem extends Item {
 
   /** @returns the power points for the AB that this power belongs to or null when the item is not a power */
   get powerPointObject(): ItemDisplayPowerPoints | null {
-    const typeResult = this.system._powerPoints;
-    if (typeResult !== undefined) return typeResult;
+    if ('_powerPoints' in this.system) {
+      return this.system._powerPoints
+    }
     else if (this.isArcaneDevice) {
       return foundry.utils.getProperty(
         this,
@@ -144,7 +154,8 @@ class SwadeItem extends Item {
   }
 
   get isReadied(): boolean {
-    return this.system.isReadied || false;
+    if ('isReadied' in this.system) return this.system.isReadied
+    return false;
   }
 
   get isPhysicalItem(): boolean {
@@ -152,7 +163,8 @@ class SwadeItem extends Item {
   }
 
   get canHaveCategory(): boolean {
-    return this.system.canHaveCategory || this.isPhysicalItem;
+    if ('canHaveCategory' in this.system) return this.system.canHaveCategory;
+    return this.isPhysicalItem;
   }
 
   get embeddedPowers() {
@@ -161,7 +173,7 @@ class SwadeItem extends Item {
   }
 
   get canGrantItems(): boolean {
-    return this.isPhysicalItem || this.system.canGrantItems;
+    return this.isPhysicalItem || (('canGrantItems' in this.system) ? this.system.canGrantItems : false);
   }
 
   get grantsItems(): ItemGrant[] {
@@ -180,7 +192,8 @@ class SwadeItem extends Item {
   }
 
   get modifier(): number {
-    return this.system.modifier || 0;
+    if ('modifier' in this.system) return this.system.modifier;
+    return 0;
   }
 
   get traitModifiers(): RollModifier[] {
@@ -191,13 +204,14 @@ class SwadeItem extends Item {
         value: foundry.utils.getProperty(this, 'system.actions.traitMod'),
       });
     }
-    if (this.system.traitModifiers)
+    if ('traitModifiers' in this.system && this.system.traitModifiers)
       modifiers.push(...this.system.traitModifiers);
     return modifiers;
   }
 
   get usesAmmoFromInventory(): boolean {
-    return !!this.system.usesAmmoFromInventory;
+    if ('usesAmmoFromInventory' in this.system) return !!this.system.usesAmmoFromInventory;
+    return false;
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
@@ -205,7 +219,7 @@ class SwadeItem extends Item {
     let damage = '';
     if (options.dmgOverride) {
       damage = options.dmgOverride;
-    } else if (this.system.damage) {
+    } else if ('damage' in this.system && this.system.damage) {
       damage = this.system.damage;
     } else {
       return null;
@@ -331,7 +345,7 @@ class SwadeItem extends Item {
         this.name
       } with type ${this.type}`,
     );
-    if (this.system._rejectEquipState?.(state)) {
+    if (('_rejectEquipState' in this.system) && this.system._rejectEquipState(state)) {
       Logger.warn('You cannot set this state on the item ' + this.name, {
         toast: true,
       });
@@ -341,9 +355,7 @@ class SwadeItem extends Item {
     return state;
   }
 
-  async getChatData(
-    enrichOptions: Partial<TextEditor.EnrichmentOptions> = { async: true },
-  ): Promise<ItemChatCardData> {
+  async getChatData(enrichOptions: Partial<TextEditor.EnrichmentOptions>): Promise<ItemChatCardData> {
     // Item properties
     const chips =
       'getChatChips' in this.system
@@ -379,8 +391,24 @@ class SwadeItem extends Item {
   /** A shorthand function to roll skills directly */
   async roll(options: IRollOptions = {}) {
     //return early if there's no parent or this isn't a skill
-    if (!this.system.canRoll) return null;
+    if (!('canRoll' in this.system) || !this.system.canRoll) return null;
     return this.parent.rollSkill(this.id, options);
+  }
+
+  override async deleteDialog(
+    options?: Partial<DialogOptions> | undefined,
+  ): Promise<false | this | null | undefined> {
+    if (!this.parent) return super.deleteDialog(options);
+    const type = game.i18n.localize(`TYPES.Item.${this.type}`);
+    const proceed = await foundry.applications.api.DialogV2.confirm({
+      rejectClose: false,
+      window: {
+        title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
+      },
+      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
+    });
+    if (!proceed) return false;
+    return this.delete();
   }
 
   /**
@@ -449,7 +477,7 @@ class SwadeItem extends Item {
     // Basic chat message data
     const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
       user: game.user?.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.parent?.id,
@@ -549,7 +577,7 @@ class SwadeItem extends Item {
     if ('removeAmmo' in this.system) this.system.removeAmmo();
   }
 
-  async grantEmbedded(target = this.parent) {
+  async grantEmbedded(target: SwadeActor = this.parent) {
     if (!this.canGrantItems || !target) return;
     const grantChain = await this.getItemGrantChain();
 
@@ -563,7 +591,7 @@ class SwadeItem extends Item {
       grantChain.map((l) => l.item.toObject()),
       {
         parent: target,
-        renderSheet: null,
+        renderSheet: undefined,
         isItemGrant: true,
       },
     );
@@ -781,7 +809,7 @@ class SwadeItem extends Item {
     user: BaseUser,
   ) {
     const canCreate = await super._preCreate(data, options, user);
-    if (canCreate === false) return false
+    if (canCreate === false) return false;
 
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {
@@ -824,20 +852,24 @@ class SwadeItem extends Item {
     }
   }
 
-  protected static override async _onCreateDocuments(
+  protected static override async _onCreateOperation(
     items: SwadeItem[],
-    context,
+    operation: DatabaseCreateOperation, // TODO: Update alongside the DocumentModificationContext removal so isItemGrant can be typed correctly
+    user: User.ConfiguredInstance
   ) {
-    if (!context.isItemGrant) {
+    if (!operation.isItemGrant) {
       for (const item of items) {
         const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
         const equipStatus = foundry.utils.getProperty(
           item,
           'system.equipStatus',
         );
-        const nonPhysGranter = ['edge', 'ability', 'hindrance'].includes(
-          item.type,
-        );
+        const nonPhysGranter = [
+          'edge',
+          'ability',
+          'ancestry',
+          'hindrance',
+        ].includes(item.type);
         const shouldGrant =
           grantOn === constants.GRANT_ON.ADDED ||
           nonPhysGranter ||
@@ -849,8 +881,9 @@ class SwadeItem extends Item {
         }
       }
     }
-    await super._onCreateDocuments(items, context);
+    await super._onCreateOperation(items, operation, user);
   }
 }
 
 export default SwadeItem;
+export { SystemItemTypes };
