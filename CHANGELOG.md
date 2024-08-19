@@ -32,6 +32,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added new field for Abilities and physical items, `system.build.cost`, that can be used to track the character creation values for custom ancestries and other similar "build your own" designs.
 - Added polish language support. (#807) **by @eph.mac**
 - Added the asynchronous `game.swade.util.getItemsBySwid` function which takes two arguments, a SWID to look for an an optional type for narrowing down your search. This function looks through world and compendium items, returning an array of items that matched the parameters. **by @florad92**
+- Added support for the dynamic token ring that was introduced in Foundry V12. Targeting, as well as adding or removing certain effects causes a small flashing animation on the token. (#1153) **by @gunnar.busch**
+- Added Actor and Item embeds for the new `@Embed` syntax that was introduced in Foundry V12. (#1059) **by @michaeldougherty1976**
+- Added a static value override for GM bennies. This allows GMs to refresh bennies to a predefined value as opposed to counting the active players. The static value can be set in the Setting Configurator. (#1172) **by @kristianserrano**
 
 ### Changed
 
@@ -43,9 +46,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- More deprecation resolutions
+- More deprecation resolutions (#1047)
 - More type fixes
-- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. **by @kristianserrano**
+- Incorrect flag name used when trying to set the GM's current Bennies in the `userConnected` Hook event listener. (!651) **by @kristianserrano**
 
 ## 4.0.5
 

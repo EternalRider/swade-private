@@ -1,9 +1,9 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
+import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
 import { grants } from './common';
 import { Grants } from './item-common.interface';
-import { createEmbedElement } from '../../util';
 
 declare namespace AncestryData {
   interface Schema extends SwadeBaseItemData.Schema, Grants {
@@ -51,15 +51,21 @@ class AncestryData extends SwadeBaseItemData<
       return false;
     }
   }
-  async toEmbed(
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/ancestry-embeds.hbs', 'ancestry-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/ancestry-embeds.hbs',
+      'ancestry-embed',
+    );
   }
-
 }
 
 export { AncestryData };
