@@ -52,7 +52,12 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
-import { deepFreeze, getStatusEffectDataById, slugify } from './module/util';
+import {
+  deepFreeze,
+  getItemsBySwid,
+  getStatusEffectDataById,
+  slugify,
+} from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
@@ -104,6 +109,7 @@ Hooks.once('init', () => {
     util: {
       getStatusEffectDataById,
       slugify,
+      getItemsBySwid,
     },
     compendiumArt: {
       map: new Map<string, ArtworkMapping>(),
@@ -218,6 +224,7 @@ Hooks.once('init', () => {
   });
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
+  CONFIG.Item.compendiumIndexFields.push('system.swid');
 
   // @ts-expect-error Yes we're calling a protected function
   JournalTextPageSheet._converter.setOption('tables', true);

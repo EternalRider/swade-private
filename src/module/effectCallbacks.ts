@@ -89,7 +89,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
     if (!game.user?.isGM) delete buttons.gmBenny;
 
     const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
-    const data: Dialog.Data = {
+    const data: DialogData = {
       title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
         name: effect.parent?.name,
       }),

@@ -660,7 +660,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
     if (!game.user?.isGM) delete buttons.gm;
 
-    const data: Dialog.Data = {
+    const data: DialogData = {
       title: game.i18n.localize('SWADE.Redraw'),
       content:
         '<p class="text-center">' +

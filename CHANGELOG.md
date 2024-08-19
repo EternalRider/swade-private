@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds a configuration Setting for a static refresh amount for GM Bennies. **by @kristianserrano**
 - Added new field for Abilities and physical items, `system.build.cost`, that can be used to track the character creation values for custom ancestries and other similar "build your own" designs.
 - Added polish language support. (#807) **by @eph.mac**
+- Added the asynchronous `game.swade.util.getItemsBySwid` function which takes two arguments, a SWID to look for an an optional type for narrowing down your search. This function looks through world and compendium items, returning an array of items that matched the parameters. **by @florad92**
 
 ### Changed
 
@@ -38,7 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added additional text to the roll card produced by rolling the running die. (#1160) **by @florad92**
 - If the refresh amount for GM Bennies is set to a static value, the amount of Bennies the GM has available will not change when a player connects or disconnects. **by @kristianserrano**
 - Fixes the GM gaining another Benny if the GM has 0 Bennies and a player refreshes the browser. Previously, a GM with 0 Bennies could never have below 0, so when a player refreshed, they'd drop, which decreases the amount of Bennies a GM has (bottoming out at 0), and rejoin, which increases the amount (adding 1 Benny). This fix allows the GM Benny count to go to negative values when players drop, avoiding the possibility of gaining an extra Benny unintentionally. **by @kristianserrano**
-
+- SWIDs are now part loaded as part of an item's compendium index entry. **by @florad92**
 
 ### Fixed
 

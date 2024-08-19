@@ -1,4 +1,4 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token';
+import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -290,8 +290,8 @@ export function slugify(input: unknown) {
 
 /**
  * Convert a template string into HTML DOM nodes
- * @param  {String} str The template string
- * @return {Node}       The template HTML
+ * @param str The template string
+ * @returns The template HTML
  */
 export function stringToHTML<T extends Element = Element>(str: string): T {
   const parser = new DOMParser();
@@ -307,12 +307,51 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
  * @param  {string} className The class name to attach to the outermost element for purposes of controlled styling
  * @param  {Partial<TextEditor.EnrichmentOptions>} options the enrichment options
  */
-export async function createEmbedElement(objectToEmbed: any, template: string, className: string): Promise<HTMLElement | HTMLCollection | null> {
+export async function createEmbedElement(
+  objectToEmbed: any,
+  template: string,
+  className: string,
+): Promise<HTMLElement | HTMLCollection | null> {
   const content = await renderTemplate(template, objectToEmbed);
-  const elem = document.createElement('div') as HTMLElement
+  const elem = document.createElement('div') as HTMLElement;
   elem.className = className;
   elem.innerHTML = content;
   return elem;
+}
+
+/**
+ * Searches world items and compendium collections for all items that match the given SWID, optionally narrowing down the search by item type
+ * @param swid the swid to look for
+ * @param type An optional item type for narrowing the possible list of resulting items
+ * @returns a list of items that has matched the swid and type
+ */
+export async function getItemsBySwid(
+  swid: string,
+  type?: string,
+): Promise<SwadeItem[]> {
+  //get world items first
+  let items: SwadeItem[] = game.items.filter((i) => i.system.swid === swid);
+  //filter by type if necessary
+  if (type) items = items.filter((i) => i.type === type);
+
+  //get compendium items next
+  let itemPacks = game.packs.filter((p) => p.documentName === 'Item');
+  //remove system compendium
+  if (SWADE.swid.ignoreSystem) {
+    itemPacks = itemPacks.filter((p) => p.metadata.packageName !== 'swade');
+  }
+  for (const pack of itemPacks) {
+    await pack.getIndex();
+    const index = pack.index.filter((i) => i.system?.swid === swid);
+    const ids = index.map((e) => e._id);
+    if (ids.length < 1) continue;
+    const query: Record<string, unknown> = { _id__in: ids };
+    //filter by type if necessary
+    if (type) query.type = type;
+    const documents = await pack.getDocuments(query);
+    items.push(...documents);
+  }
+  return items;
 }
 
 type Ownership = Record<string, number>;
