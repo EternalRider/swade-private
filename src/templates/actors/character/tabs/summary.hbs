@@ -158,19 +158,19 @@
       <span class='stat-value flexrow'>
         <input
           type='text'
-          value='{{actor.system.stats.speed.adjusted}}'
+          value='{{lookup actor.system.pace actor.system.pace.base}}'
           data-dtype='Number'
           placeholder='{{localize "SWADE.Pace"}}'
-          disabled
+          readonly
         />
         <button
           type='button'
           class='running-die'
           title='{{localize "SWADE.RollRun"}}'
-          style='background-image: url(systems/swade/assets/official/dice/d{{actor.system.stats.speed.runningDie}}.svg);'
+          style='background-image: url(systems/swade/assets/official/dice/d{{actor.system.pace.running.die}}.svg);'
         >
           <span class='sr-only'>
-            d{{actor.system.stats.speed.runningDie}}
+            d{{actor.system.pace.running.die}}
             {{localize 'SWADE.RunningDie'}}
           </span>
         </button>

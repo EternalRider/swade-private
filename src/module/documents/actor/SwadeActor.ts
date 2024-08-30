@@ -1,3 +1,4 @@
+import ApplicationV2 from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/application.mjs';
 import {
   StatusEffect,
   ToggleActiveEffectOptions,
@@ -19,7 +20,13 @@ import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
-import { VehicleData } from '../../data/actor';
+import {
+  CharacterData,
+  GroupData,
+  NpcData,
+  VehicleData,
+} from '../../data/actor';
+import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
 import {
   ArmorData,
   ConsumableData,
@@ -522,32 +529,64 @@ class SwadeActor extends Actor {
   }
 
   async rollRunningDie() {
-    if (this.system instanceof VehicleData) return null;
+    if (
+      this.system instanceof VehicleData ||
+      this.system instanceof GroupData
+    ) {
+      return null;
+    }
 
-    const runningDieSides = this.system.stats.speed.runningDie;
-    const runningMod = this.system.stats.speed.runningMod;
-    const pace = this.system.stats.speed.adjusted;
-    const runningDie = `1d${runningDieSides}[${game.i18n.localize(
+    const system = this.system as CharacterData | NpcData;
+
+    const availableKeys = PaceSchemaField.paceKeys.filter(
+      (key) => !!system.pace[key],
+    );
+
+    let paceKey: string | null = availableKeys[0];
+    if (Object.keys(availableKeys).length > 1) {
+      paceKey = await foundry.applications.api.DialogV2.wait({
+        window: {
+          title: 'SWADE.Movement.Running.Dialog.Title',
+        } satisfies Partial<ApplicationV2.WindowConfiguration>,
+        content: `<p>${game.i18n.localize('SWADE.Movement.Running.Dialog.Content')}</p>`,
+        buttons: availableKeys.map((key) => {
+          return {
+            label: `SWADE.Movement.Pace.${key.capitalize()}.Label`,
+            action: key,
+            default: key === paceKey,
+          };
+        }),
+        rejectClose: false,
+        render: (_event, app) =>
+          app.querySelector('footer')?.classList.add('flexcol'),
+      });
+    }
+
+    if (paceKey === null) return;
+    let pace = system.pace[paceKey];
+    const running = system.pace.running;
+    const runningDie = `1d${running.die}[${game.i18n.localize(
       'SWADE.RunningDie',
     )}]`;
 
-    const mods: RollModifier[] = [
-      { label: game.i18n.localize('SWADE.Pace'), value: pace },
-    ];
+    const mods: RollModifier[] = [];
 
-    if (runningMod) {
+    if (running.mod) {
       mods.push({
         label: game.i18n.localize('SWADE.Modifier'),
-        value: runningMod,
+        value: running.mod,
       });
     }
 
     if (this.system.encumbered) {
+      pace += 2; //add the base value back, the roll modifier will take care of it
       mods.push({
         label: game.i18n.localize('SWADE.Encumbered'),
         value: -2,
       });
     }
+    const paceLabel = `${game.i18n.localize('SWADE.Pace')} (${game.i18n.localize(`SWADE.Movement.Pace.${paceKey.capitalize()}.Label`)})`;
+    mods.unshift({ label: paceLabel, value: pace });
 
     return RollDialog.asPromise({
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
@@ -712,19 +751,19 @@ class SwadeActor extends Actor {
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
     effect: StatusEffect | string,
-    { overlay = false, active }: ToggleActiveEffectOptions = {},
+    { overlay = false, active }: Partial<ToggleActiveEffectOptions> = {},
   ) {
     const statusEffect =
       typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
     if (!statusEffect?.id) return false;
 
     // Remove existing single-status effects.
-    const existing = this.effects.reduce((acc, cur) => {
+    const existing = this.effects.reduce<string[]>((acc, cur) => {
       if (cur.statuses.size === 1 && cur.statuses.has(statusEffect.id)) {
         acc.push(cur.id);
       }
       return acc;
-    }, new Array<string>());
+    }, []);
     const state = active ?? !existing.length;
     if (!state && existing.length) {
       await this.deleteEmbeddedDocuments('ActiveEffect', existing);

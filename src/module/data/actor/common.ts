@@ -10,13 +10,21 @@ import type SwadeActor from '../../documents/actor/SwadeActor';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
 import { DiceField, DiceTrait } from '../common.interface';
 import { MappingField } from '../fields/MappingField';
+import { PaceSchemaField } from '../fields/PaceSchemaField';
 import {
   boundTraitDie,
   makeAdditionalStatsSchema,
   makeDiceField,
   makeTraitDiceFields,
 } from '../shared';
+import * as migration from './_migration';
 import * as quarantine from './_quarantine';
+import * as shims from './_shims';
+import {
+  AdvanceSchema,
+  InitiativeSchema,
+  StatusSchema,
+} from './common.schemas';
 import { VehicleData } from './vehicle';
 
 const fields = foundry.data.fields;
@@ -66,15 +74,8 @@ declare namespace CommonActorData {
         }
       >;
     }>;
+    pace: PaceSchemaField;
     stats: foundry.data.fields.SchemaField<{
-      speed: foundry.data.fields.SchemaField<{
-        runningDie: DiceField;
-        runningMod: foundry.data.fields.NumberField<{
-          initial: 0;
-          integer: true;
-        }>;
-        value: foundry.data.fields.NumberField<{ initial: 6; integer: true }>;
-      }>;
       toughness: foundry.data.fields.SchemaField<{
         value: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
         armor: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
@@ -141,43 +142,9 @@ declare namespace CommonActorData {
     woundsOrFatigue: foundry.data.fields.SchemaField<{
       ignored: foundry.data.fields.NumberField<{ initial: 0 }>;
     }>;
-    advances: foundry.data.fields.SchemaField<{
-      mode: foundry.data.fields.StringField<{
-        initial: 'expanded';
-        choices: ['legacy', 'expanded'];
-      }>;
-      value: foundry.data.fields.NumberField<{ initial: 0 }>;
-      rank: foundry.data.fields.StringField<{
-        initial: 'Novice';
-        textSearch: true;
-      }>;
-      details: foundry.data.fields.HTMLField<{ initial: '' }>;
-      list: foundry.data.fields.ArrayField<
-        foundry.data.fields.SchemaField<{
-          type: foundry.data.fields.NumberField<{ initial: 0 }>;
-          notes: foundry.data.fields.HTMLField<{ initial: '' }>;
-          sort: foundry.data.fields.NumberField<{ initial: 0 }>;
-          planned: foundry.data.fields.BooleanField;
-          id: foundry.data.fields.StringField<{ initial: '' }>;
-          rank: foundry.data.fields.NumberField<{ initial: 0 }>;
-        }>
-      >;
-    }>;
-    status: foundry.data.fields.SchemaField<{
-      isShaken: foundry.data.fields.BooleanField;
-      isDistracted: foundry.data.fields.BooleanField;
-      isVulnerable: foundry.data.fields.BooleanField;
-      isStunned: foundry.data.fields.BooleanField;
-      isEntangled: foundry.data.fields.BooleanField;
-      isBound: foundry.data.fields.BooleanField;
-      isIncapacitated: foundry.data.fields.BooleanField;
-    }>;
-    initiative: foundry.data.fields.SchemaField<{
-      hasHesitant: foundry.data.fields.BooleanField;
-      hasLevelHeaded: foundry.data.fields.BooleanField;
-      hasImpLevelHeaded: foundry.data.fields.BooleanField;
-      hasQuick: foundry.data.fields.BooleanField;
-    }>;
+    advances: AdvanceSchema;
+    status: StatusSchema;
+    initiative: InitiativeSchema;
     additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
   }
 
@@ -229,11 +196,6 @@ declare namespace CommonActorData {
   type DerivedData = {
     advances: {
       list: Collection<Advance>;
-    };
-    stats: {
-      speed: {
-        adjusted: number;
-      };
     };
     details: {
       encumbrance: {
@@ -319,24 +281,9 @@ class CommonActorData<
         },
         { label: 'SWADE.Attributes' },
       ),
+      pace: new PaceSchemaField(),
       stats: new fields.SchemaField(
         {
-          speed: new fields.SchemaField(
-            {
-              runningDie: makeDiceField(6, 'SWADE.RunningDie'),
-              runningMod: new fields.NumberField({
-                initial: 0,
-                integer: true,
-                label: 'SWADE.RunningMod',
-              }),
-              value: new fields.NumberField({
-                initial: 6,
-                integer: true,
-                label: 'SWADE.BasePace',
-              }),
-            },
-            { label: 'SWADE.Pace' },
-          ),
           toughness: new fields.SchemaField(
             {
               value: new fields.NumberField({
@@ -578,10 +525,14 @@ class CommonActorData<
       {
         value: new fields.NumberField({
           initial: 0,
+          min: 0,
+          integer: true,
           label: 'SWADE.CurrentBennies',
         }),
         max: new fields.NumberField({
           initial: baseBennies,
+          min: 0,
+          integer: true,
           label: 'SWADE.BenniesMaxNum',
         }),
       },
@@ -592,14 +543,19 @@ class CommonActorData<
         value: new fields.NumberField({
           initial: 0,
           min: 0,
+          integer: true,
           label: 'SWADE.Wounds',
         }),
         max: new fields.NumberField({
           initial: maxWounds,
+          min: 0,
+          integer: true,
           label: 'SWADE.WoundsMax',
         }),
         ignored: new fields.NumberField({
           initial: 0,
+          min: 0,
+          integer: true,
           label: 'SWADE.IgnWounds',
         }),
       },
@@ -623,7 +579,29 @@ class CommonActorData<
     quarantine.ensureCurrencyIsNumeric(source);
     quarantine.ensureGeneralPowerPoints(source);
     quarantine.ensurePowerPointsAreNumeric(source);
+    migration.renamePace(source);
     return super.migrateData(source);
+  }
+
+  static override shimData(source) {
+    shims._shimPace(source);
+    return source;
+  }
+
+  get encumbered(): boolean {
+    if (!game.settings.get('swade', 'applyEncumbrance')) {
+      return false;
+    }
+    const encumbrance = this.details.encumbrance;
+    if (encumbrance.isEncumbered) return true;
+    return encumbrance.value > encumbrance.max;
+  }
+
+  get isIncapacitated(): boolean {
+    return (
+      this.status.isIncapacitated ||
+      this.parent?.statuses.has(CONFIG.specialStatusEffects.INCAPACITATED)
+    );
   }
 
   // specifying this to resolve depth issue
@@ -694,17 +672,6 @@ class CommonActorData<
     //set scale
     this.stats.scale = this.parent.calcScale(this.stats.size);
 
-    // Doing all pace calculations in here because of encumbrance
-    let pace = this.stats.speed.value;
-
-    //modify pace with wounds, core rules p. 95
-    if (game.settings.get('swade', 'enableWoundPace')) {
-      const woundPenalties = this.parent.calcWoundPenalties(false);
-      pace += woundPenalties;
-      // Minimum of 1"
-      pace = Math.max(pace, 1);
-    }
-
     //handle carry capacity
     foundry.utils.setProperty(
       this,
@@ -717,11 +684,7 @@ class CommonActorData<
       this.parent.calcMaxCarryCapacity(),
     );
 
-    //subtract encumbrance, if necessary
-    if (this.encumbered) pace -= 2;
-
-    //Clamp the pace so it's not a negative value
-    this.stats.speed.adjusted = Math.max(pace, 0);
+    this.#preparePace();
 
     // Toughness calculation
     if (this.details.autoCalcToughness) {
@@ -739,22 +702,6 @@ class CommonActorData<
     }
   }
 
-  get encumbered(): boolean {
-    if (!game.settings.get('swade', 'applyEncumbrance')) {
-      return false;
-    }
-    const encumbrance = this.details.encumbrance;
-    if (encumbrance.isEncumbered) return true;
-    return encumbrance.value > encumbrance.max;
-  }
-
-  get isIncapacitated(): boolean {
-    return (
-      this.status.isIncapacitated ||
-      this.parent?.statuses.has(CONFIG.specialStatusEffects.INCAPACITATED)
-    );
-  }
-
   // specifying this to resolve depth issue
   getRollData(
     this: CommonActorData,
@@ -763,7 +710,7 @@ class CommonActorData<
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
-      pace: this.stats.speed.adjusted || 0,
+      pace: this.pace[this.pace.base as string] || 0,
     };
 
     const globalMods = this.stats.globalMods;
@@ -829,6 +776,20 @@ class CommonActorData<
      * @param {SwadeActor} actor            The Actor refreshing their bennies
      */
     Hooks.callAll('swadeRefreshBennies', this.parent);
+  }
+
+  #preparePace(this: CommonActorData) {
+    const encumbered = this.encumbered;
+    const woundPenalties = this.parent?.calcWoundPenalties(false) ?? 0;
+    const enableWoundPace = game.settings.get('swade', 'enableWoundPace');
+
+    for (const key of PaceSchemaField.paceKeys) {
+      if (this.pace[key] === null) continue; //skip null values
+      let value = this.pace[key];
+      if (enableWoundPace) value += woundPenalties; //modify pace with wounds, core rules p. 95
+      if (encumbered) value -= 2; //subtract encumbrance, if necessary
+      this.pace[key] = Math.max(value, 1); //Clamp the pace so it's a minimum of 1
+    }
   }
 
   protected override async _preUpdate(
