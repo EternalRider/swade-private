@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.2.0
+
+### Added
+
+- Characters and NPCs can now define pace values for ground, fly, swim and burrow pace, as well as set a default per actor. You can set these values in the Actor Tweaks. Existing values have been migrated to the ground Pace. Existing active effects have been migrated to affect all pace values. (#768) **by @florad92**
+- You can now modify all pace values at the same time by setting the change to `system.pace`. (#768) **by @florad92**
+
 ## 4.1.0
 
 ### Added

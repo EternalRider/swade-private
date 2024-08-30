@@ -91,46 +91,6 @@
                 </select>
               </span>
             </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-pace'>
-                {{localize 'SWADE.BasePace'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-pace'
-                  type='number'
-                  name='system.stats.speed.value'
-                  value='{{doc.system.stats.speed.value}}'
-                />
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-running-die'>
-                {{localize 'SWADE.RunningDie'}}
-              </label>
-              <span class='form-fields'>
-                <select
-                  id='{{doc.uuid}}-running-die'
-                  class='running-die'
-                  name='system.stats.speed.runningDie'
-                  data-dtype='Number'
-                >
-                  {{selectOptions
-                    runningDieTypes
-                    selected=doc.system.stats.speed.runningDie
-                    localize=true
-                    valueAttr='key'
-                    labelAttr='label'
-                  }}
-                </select>
-                <input
-                  type='text'
-                  name='system.stats.speed.runningMod'
-                  value='{{signedString doc.system.stats.speed.runningMod}}'
-                  data-dtype='Number'
-                />
-              </span>
-            </div>
           {{/unless}}
           <div class='form-group'>
             <label for='{{doc.uuid}}-wounds-max'>
@@ -345,6 +305,62 @@
             </div>
           </section>
         {{/unless}}
+        <hr />
+        <fieldset>
+          <legend>{{localize 'SWADE.Pace'}}</legend>
+          {{formGroupSimple
+            'system.pace.base'
+            document=doc
+            source=true
+            rootId=doc.uuid
+          }}
+          {{formGroupSimple
+            'system.pace.ground'
+            document=doc
+            source=true
+            rootId=doc.uuid
+          }}
+          {{formGroupSimple
+            'system.pace.fly'
+            document=doc
+            source=true
+            rootId=doc.uuid
+          }}
+          {{formGroupSimple
+            'system.pace.swim'
+            document=doc
+            source=true
+            rootId=doc.uuid
+          }}
+          {{formGroupSimple
+            'system.pace.burrow'
+            document=doc
+            source=true
+            rootId=doc.uuid
+          }}
+          <div class='form-group'>
+            <label>{{localize 'SWADE.RunningDie'}}</label>
+            <span class='form-fields'>
+              {{formInputSimple
+                'system.pace.running.die'
+                document=doc
+                options=runningDieTypes
+                localize=true
+                labelAttr='label'
+                valueAttr='key'
+                classes='running-die'
+                rootId=doc.uuid
+              }}
+              <input
+                type='text'
+                id='{{doc.uuid}}-system.pace.running.mod'
+                name='system.pace.running.mod'
+                value='{{signedString doc.system.pace.running.mod}}'
+                data-dtype='Number'
+              />
+            </span>
+          </div>
+        </fieldset>
       {{/if}}
     </section>
 

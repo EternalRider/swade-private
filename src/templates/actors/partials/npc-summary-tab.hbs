@@ -23,9 +23,9 @@
           >{{localize 'SWADE.Pace'}}</div></a>
         <input
           type='text'
-          value='{{actor.system.stats.speed.adjusted}}'
+          value='{{lookup actor.system.pace actor.system.pace.base}}'
           data-dtype='Number'
-          disabled
+          readonly
         />
       </div>
       <div class='attribute flex3'>

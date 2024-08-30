@@ -823,8 +823,9 @@ SWADE:
       BleedOutModifier: Bleeding Out Modifier
       IgnoreWounds: Bleeding Out Ignore Wounds
   Validation:
-    OnlyOneAncestry: You can only have one ancestry at a time!
-    OnlyOneArchetype: You can only have one archetype at a time!
+    OnlyOneAncestry: You can only have one ancestry at a time.
+    OnlyOneArchetype: You can only have one archetype at a time.
+    InvalidBasePace: You cannot set Base Pace to a pace type with no value.
   DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
@@ -1525,6 +1526,23 @@ SWADE:
       Label: Food
     Supply:
       Label: Supply
+  Movement:
+    Pace:
+      Base: 
+        Label: Base Pace
+        Hint: Which Pace is the default for the actor
+      Ground:
+        Label: Ground
+      Fly:
+        Label: Fly
+      Swim:
+        Label: Swim
+      Burrow:
+        Label: Burrow
+    Running:
+      Dialog:
+        Title: Running
+        Content: Please select how you want to run
 TYPES:
   Actor:
     character: Player Character
