@@ -135,6 +135,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
           'system.actions.skill',
           'system.actions.trait',
         );
+        change.key = change.key.replaceAll(
+          'system.stats.speed.adjusted',
+          'system.pace',
+        );
       }
     }
     return data;
