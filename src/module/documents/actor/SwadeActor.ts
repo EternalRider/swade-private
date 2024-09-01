@@ -5,7 +5,7 @@ import {
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import {
   Context,
-  DocumentModificationOptions,
+  DocumentOnUpdateOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
@@ -148,12 +148,13 @@ class SwadeActor extends Actor {
   }
 
   get bennies(): number {
-    if (this.system instanceof VehicleData) return 0;
+    if (!('bennies' in this.system)) return 0;
     return this.system.bennies.value;
   }
 
   /** @returns an object that contains booleans which denote the current status of the actor */
   get status() {
+    if (!('status' in this.system)) return {};
     return this.system.status;
   }
 
@@ -184,7 +185,7 @@ class SwadeActor extends Actor {
   }
 
   get ancestry(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
       Logger.warn(
@@ -195,7 +196,7 @@ class SwadeActor extends Actor {
   }
 
   get archetype(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const archetypes = this.items.filter(
       (i) => i.type === 'ability' && i.system.subtype === 'archetype',
     );
@@ -222,7 +223,7 @@ class SwadeActor extends Actor {
   }
 
   get auras(): Record<string, AuraData> {
-    const auras = (this.flags.swade?.auras ?? {}) as Record<string, AuraData>;
+    const auras = (this.flags?.swade?.auras ?? {}) as Record<string, AuraData>;
     const specialAuras = ['aura1', 'aura2'];
     let aura;
     for (const key in auras) {
@@ -275,7 +276,7 @@ class SwadeActor extends Actor {
     attribute: Attribute,
     options: IRollOptions = {},
   ): Promise<TraitRoll | null> {
-    if (this.system instanceof VehicleData) return null;
+    if (!('attributes' in this.system)) return null;
     if (options.rof && options.rof > 1) {
       ui.notifications.warn(
         'Attribute Rolls with RoF greater than 1 are not currently supported',
@@ -402,7 +403,7 @@ class SwadeActor extends Actor {
     options: IRollOptions = { rof: 1 },
     tempSkill?: SwadeItem,
   ): Promise<TraitRoll | null> {
-    if (this.system instanceof VehicleData) {
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
       Logger.error('Only Extras and Wildcards can roll skills!', {
         toast: true,
       });
@@ -494,7 +495,7 @@ class SwadeActor extends Actor {
   }
 
   async rollWealthDie() {
-    if (this.system instanceof VehicleData) return null;
+    if (!('details' in this.system)) return null;
     const die = this.system.details.wealth.die ?? 6;
     const mod = this.system.details.wealth.modifier ?? 0;
     const wildDie = this.system.details.wealth['wild-die'] ?? 6;
@@ -511,7 +512,7 @@ class SwadeActor extends Actor {
       rolls.push(Roll.fromTerms([this._buildWildDie(wildDie)]));
     }
 
-    const pool = PoolTerm.fromRolls(rolls);
+    const pool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     pool.modifiers.push('kh');
 
     const roll = SwadeRoll.fromTerms([pool]);
@@ -578,7 +579,7 @@ class SwadeActor extends Actor {
       });
     }
 
-    if (this.system.encumbered) {
+    if ('encumbered' in this.system && this.system.encumbered) {
       pace += 2; //add the base value back, the roll modifier will take care of it
       mods.push({
         label: game.i18n.localize('SWADE.Encumbered'),
@@ -636,7 +637,7 @@ class SwadeActor extends Actor {
     const tempSkill = new SwadeItem({
       name: game.i18n.localize('SWADE.ArcaneSkill'),
       type: 'skill',
-      data: {
+      system: {
         die: arcaneSkillDie,
         'wild-die': {
           sides: 6,
@@ -684,7 +685,7 @@ class SwadeActor extends Actor {
   }
 
   async getBenny() {
-    if (this.system instanceof VehicleData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const combatant = this.token?.combatant as SwadeCombatant | undefined;
     await this.update({ 'system.bennies.value': this.bennies + 1 });
 
@@ -720,7 +721,7 @@ class SwadeActor extends Actor {
    * @param toChat Whether to post a chat message when toggling, defaults to `true`
    */
   async toggleConviction(toChat = true): Promise<void> {
-    if (this.system instanceof VehicleData) return;
+    if (!('details' in this.system)) return;
     const current = this.system.details.conviction.value;
     const active = this.system.details.conviction.active;
     let template = '';
@@ -882,12 +883,14 @@ class SwadeActor extends Actor {
   override getRollData(
     includeModifiers = true,
   ): Record<string, number | string> {
-    return this.system.getRollData?.(includeModifiers) ?? {};
+    let rollData;
+    if ('getRollData' in this.system) rollData = this.system.getRollData(includeModifiers);
+    return rollData ?? {};
   }
 
   /** Calculates the maximum carry capacity based on the strength die and any adjustment steps */
   calcMaxCarryCapacity(): number {
-    if (this.system instanceof VehicleData) return 0;
+    if (!('attributes' in this.system)) return 0;
     const unit = game.settings.get('swade', 'weightUnit');
     const strength = foundry.utils.deepClone(this.system.attributes.strength);
     const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
@@ -1001,7 +1004,7 @@ class SwadeActor extends Actor {
 
     const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
-    const numbness = this.system.woundsOrFatigue?.ignored;
+    const numbness = 'woundsOrFatigue' in this.system ? this.system.woundsOrFatigue?.ignored : 0;
     if (numbness > 0) {
       const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
         'SWADE.Fatigue',
@@ -1036,7 +1039,7 @@ class SwadeActor extends Actor {
       });
     }
 
-    if (!(this.system instanceof VehicleData)) {
+    if (!(this.system instanceof VehicleData || this.system instanceof GroupData)) {
       //Status penalties
       if (this.system.status.isDistracted) {
         mods.push({
@@ -1067,7 +1070,7 @@ class SwadeActor extends Actor {
     skill: SwadeItem,
     options: IRollOptions,
   ): [TraitRoll, RollModifier[]] {
-    if (this.system instanceof VehicleData) {
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
     if (!(skill.system instanceof SkillData)) {
@@ -1182,7 +1185,7 @@ class SwadeActor extends Actor {
 
   /** Calculates the Toughness value without armor and returns it */
   calcToughness(): number {
-    if (this.system instanceof VehicleData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
     /** base value of all toughness calculations */
     const toughnessBaseValue = 2;
 
@@ -1226,7 +1229,7 @@ class SwadeActor extends Actor {
   }
 
   calcParry(): number {
-    if (this.system instanceof VehicleData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
     /** base value of all parry calculations */
     const parryBaseValue = 2;
 
@@ -1311,7 +1314,7 @@ class SwadeActor extends Actor {
     target: 'parry' | 'toughness' | 'armor',
     derivedStat: number,
   ): number {
-    if (this.system instanceof VehicleData) return 0; // typeguarding
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0; // typeguarding
     const effects: DerivedModifier[] =
       target === 'armor'
         ? this.system.stats.toughness.armorEffects
@@ -1380,7 +1383,7 @@ class SwadeActor extends Actor {
    * @returns The total amount of armor for that location
    */
   private _getArmorForLocation(location: ArmorLocation): number {
-    if (this.system instanceof VehicleData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
 
     return Object.values(this._getArmorSourcesForLocation(location)).reduce(
       (acc, value) => (acc += value),
@@ -1396,7 +1399,7 @@ class SwadeActor extends Actor {
     location: ArmorLocation,
   ): Record<string, number> {
     const armorSources = {};
-    if (this.system instanceof VehicleData) return armorSources;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return armorSources;
 
     const [regularArmor, naturalArmor] = this.itemTypes.armor
       .filter((i) => {
@@ -1437,7 +1440,7 @@ class SwadeActor extends Actor {
   }
 
   getPTTooltip(target: 'parry' | 'toughness'): string {
-    if (this.system instanceof VehicleData) return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
     let tooltip =
       target === 'parry'
         ? `<h4>${game.i18n.localize('SWADE.Parry')}
@@ -1453,7 +1456,7 @@ class SwadeActor extends Actor {
   }
 
   getArmorTooltip(): string {
-    if (this.system instanceof VehicleData) return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
     let tooltip = '';
 
     const armor = this.armorPerLocation;
@@ -1527,7 +1530,7 @@ class SwadeActor extends Actor {
 
   protected override _onUpdate(
     changed: foundry.documents.BaseActor.UpdateData,
-    options: DocumentModificationOptions,
+    options: DocumentOnUpdateOptions<'Actor'>,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

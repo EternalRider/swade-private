@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource, Updates } from '../../../globals';
 import { constants } from '../../constants';
@@ -104,7 +103,7 @@ class GearData extends SwadePhysicalItemData<
 
   protected override async _preCreate(
     _data: foundry.documents.BaseItem.ConstructorData,
-    _options: DocumentModificationOptions,
+    _options: Item.DatabaseOperations['create'],
     _user: BaseUser,
   ) {
     if (this.parent?.actor?.type === 'npc') {
