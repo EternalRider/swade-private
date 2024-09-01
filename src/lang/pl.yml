@@ -778,8 +778,9 @@ SWADE:
       IgnoreWounds: Konanie ignorujące Rany
   Validation:
     OnlyOneRace: Możesz mieć tylko jedną rasę na raz!
-    OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz!
-    OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz!
+    OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz.
+    OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz.
+    InvalidBasePace: Nie możesz ustawić podstawowego Tempa na typ tempa bez wartości.
   DocumentLink: Link
   DocumentTweaks: Poprawki
   TargetVulnerable: Cel jest Odsłonięty
@@ -1441,6 +1442,23 @@ SWADE:
   DeleteFromParentWarning: '{name} zostanie trwale usunięty z {parent}.'
   HindMajor: Poważna
   HindMinor: Drobna
+  Movement:
+    Pace:
+      Base:
+        Hint: Które Tempo jest domyślne dla aktora
+        Label: Podstawowe Tempo
+      Ground:
+        Label: Na ziemi
+      Fly:
+        Label: Lot
+      Swim:
+        Label: Pływanie
+      Burrow:
+        Label: Pod ziemią
+    Running:
+      Dialog:
+        Title: Bieganie
+        Content: Wybierz jak chcesz biegać
 TYPES:
   Actor:
     character: Postać gracza
