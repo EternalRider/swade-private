@@ -1,9 +1,10 @@
 import {
   Context,
-  DocumentModificationOptions,
+  DocumentDatabaseOperations,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import {
+  AnyObject,
   DeepPartial,
   StoredDocument,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
@@ -28,7 +29,6 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
-import { DatabaseCreateOperation } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/_types.mjs';
 
 declare global {
   interface FlagConfig {
@@ -55,7 +55,7 @@ class SwadeItem extends Item {
   static RANGE_REGEX = /[0-9]+\/*/g;
 
   static override migrateData(
-    data: foundry.documents.BaseItem.ConstructorData,
+    data: foundry.documents.BaseItem.ConstructorData & AnyObject,
   ) {
     super.migrateData(data);
     if (data.flags?.swade?.embeddedPowers) {
@@ -256,7 +256,7 @@ class SwadeItem extends Item {
     const baseRoll = new Array<string>();
     for (const term of terms) {
       if (term instanceof foundry.dice.terms.Die) {
-        if (!term.modifiers.includes('x') && term.faces > 1) {
+        if (!term.modifiers.includes('x') && Number(term.faces) > 1) {
           term.modifiers.push('x');
         }
         if (!term.flavor) {
@@ -421,13 +421,13 @@ class SwadeItem extends Item {
     const token = this.actor.token;
 
     const tokenId = token ? `${token.parent?.id}.${token.id}` : null;
-    const hasAmmoManagement = !!this.system.hasAmmoManagement;
+    const hasAmmoManagement = 'hasAmmoManagement' in this.system && this.system.hasAmmoManagement;
     const hasMagazine =
-      hasAmmoManagement &&
+      hasAmmoManagement && 'reloadType' in this.system &&
       this.system.reloadType === constants.RELOAD_TYPE.MAGAZINE;
     const hasDamage = !!foundry.utils.getProperty(this, 'system.damage');
     const hasTrait = !!foundry.utils.getProperty(this, 'system.actions.trait');
-    const hasReloadButton = !!this.system.hasReloadButton;
+    const hasReloadButton = 'hasReloadButton' in this.system && this.system.hasReloadButton;
 
     const additionalActions: Record<string, ItemAction> =
       foundry.utils.getProperty(this, 'system.actions.additional') || {};
@@ -444,15 +444,14 @@ class SwadeItem extends Item {
     const hasMacros = Object.values(additionalActions).some(
       (v) => v.type === constants.ACTION_TYPE.MACRO,
     );
-    const hasTemplates =
-      !!this.system.templates &&
+    const hasTemplates = 'templates' in this.system &&
       Object.values(this.system.templates).some((v) => v);
 
     const templateData = {
       actorId: this.parent?.id,
       tokenId: tokenId,
       item: this,
-      data: await this.getChatData(),
+      data: await this.getChatData({}),
       hasAmmoManagement,
       hasMagazine,
       hasReloadButton,
@@ -491,7 +490,7 @@ class SwadeItem extends Item {
           macros: Object.entries(additionalActions)
             .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
             .map(([k, v]) => {
-              return { id: k, uuid: v.uuid };
+              return { id: k, uuid: v.uuid ?? '' };
             }),
         },
       },
@@ -522,7 +521,8 @@ class SwadeItem extends Item {
   }
 
   async consume(charges = 1): Promise<void> {
-    const usage = this.system._getUsageUpdates?.(charges);
+    if (!('_getUsageUpdates' in this.system)) return;
+    const usage = this.system._getUsageUpdates(charges);
     if (!usage) return;
 
     /**
@@ -560,7 +560,7 @@ class SwadeItem extends Item {
      */
     Hooks.call('swadeConsumeItem', this, charges, usage);
 
-    if (this.system.messageOnUse) {
+    if ('messageOnUse' in this.system && this.system.messageOnUse) {
       await this.#createChargeUsageMessage(charges);
     }
 
@@ -594,7 +594,7 @@ class SwadeItem extends Item {
         renderSheet: undefined,
         isItemGrant: true,
       },
-    );
+    ) ?? [];
     const created = grantedItems.map((i) => i.id);
     await this.setFlag('swade', 'hasGranted', created);
     Logger.debug([this.name, this.hasGranted]);
@@ -672,7 +672,7 @@ class SwadeItem extends Item {
         await item.delete();
       }
     }
-    if (this.system._shouldDelete) {
+    if ('_shouldDelete' in this.system && this.system._shouldDelete) {
       await this.delete();
     }
   }
@@ -805,7 +805,7 @@ class SwadeItem extends Item {
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     const canCreate = await super._preCreate(data, options, user);
@@ -818,7 +818,7 @@ class SwadeItem extends Item {
   }
 
   protected override async _preDelete(
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['delete'],
     user: BaseUser,
   ): Promise<void> {
     await super._preDelete(options, user);
@@ -827,7 +827,7 @@ class SwadeItem extends Item {
 
   protected override _onUpdate(
     changed: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['update'],
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
@@ -854,7 +854,9 @@ class SwadeItem extends Item {
 
   protected static override async _onCreateOperation(
     items: SwadeItem[],
-    operation: DatabaseCreateOperation, // TODO: Update alongside the DocumentModificationContext removal so isItemGrant can be typed correctly
+    operation: DocumentDatabaseOperations<Item, {
+      isItemGrant: boolean;
+    }>['create'],
     user: User.ConfiguredInstance
   ) {
     if (!operation.isItemGrant) {

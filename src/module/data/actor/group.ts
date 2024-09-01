@@ -104,6 +104,10 @@ class GroupData<
       }),
     );
   }
+
+  get wildcard() {
+    return false;
+  }
 }
 
 export { GroupData, GroupMember };
