@@ -1,4 +1,3 @@
-import type { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
@@ -95,7 +94,7 @@ export class CharacterData extends CommonActorData<
 
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Actor.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(createData, options, user);

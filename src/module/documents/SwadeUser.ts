@@ -1,6 +1,5 @@
 import { createGmBennyAddMessage } from '../chat';
 import { shouldShowBennyAnimation } from '../util';
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -112,7 +111,7 @@ export default class SwadeUser extends User {
 
   protected override async _onUpdate(
     changed: foundry.documents.BaseUser.UpdateData,
-    options: DocumentModificationOptions,
+    options: User.DatabaseOperations['update'],
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);

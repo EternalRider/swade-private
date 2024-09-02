@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
@@ -443,7 +442,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override async _onUpdate(
     changed: foundry.documents.BaseActiveEffect.UpdateData,
-    options: DocumentModificationOptions,
+    options: ActiveEffect.DatabaseOperations['update'],
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);
@@ -468,7 +467,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override async _preUpdate(
     changed: foundry.documents.BaseActiveEffect.UpdateData,
-    options: DocumentModificationOptions,
+    options: ActiveEffect.DatabaseOperations['update'],
     user: User.ConfiguredInstance,
   ) {
     super._preUpdate(changed, options, user);
@@ -479,7 +478,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preDelete(
-    options: DocumentModificationOptions,
+    options: ActiveEffect.DatabaseOperations['delete'],
     user: User.ConfiguredInstance,
   ) {
     super._preDelete(options, user);
@@ -501,7 +500,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override async _preCreate(
     data: foundry.documents.BaseActiveEffect.ConstructorData,
-    options: DocumentModificationOptions,
+    options: ActiveEffect.DatabaseOperations['create'],
     user: User.ConfiguredInstance,
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
@@ -564,7 +563,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override _onCreate(
     data: foundry.documents.BaseActiveEffect.ConstructorData,
-    options: DocumentModificationOptions,
+    options: ActiveEffect.DatabaseOperations['create'],
     userId: string,
   ): void {
     super._onCreate(data, options, userId);

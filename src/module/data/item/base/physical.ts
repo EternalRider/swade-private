@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
@@ -32,7 +31,7 @@ class SwadePhysicalItemData<
 
   protected override async _preUpdate(
     changed: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['update'],
     user: BaseUser,
   ) {
     await super._preUpdate(changed, options, user);

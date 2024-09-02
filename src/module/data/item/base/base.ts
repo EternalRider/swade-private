@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { constants } from '../../../constants';
 import { slugify } from '../../../util';
@@ -35,7 +34,7 @@ class SwadeBaseItemData<
 
   protected async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);

@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Advance } from '../../../interfaces/Advance.interface';
 import {
@@ -795,7 +794,7 @@ class CommonActorData<
   protected override async _preUpdate(
     this: CommonActorData,
     changed: foundry.documents.BaseActor.UpdateData,
-    options: DocumentModificationOptions,
+    options: Actor.DatabaseOperations['update'],
     user: BaseUser,
   ) {
     await super._preUpdate(changed, options, user);

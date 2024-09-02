@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { SWADE } from '../../config';
@@ -284,8 +283,8 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override async _preCreate(
-    data: CombatantDataConstructorData,
-    options: DocumentModificationOptions,
+    data: foundry.documents.BaseCombatant.ConstructorData,
+    options: Combatant.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
@@ -309,7 +308,7 @@ export default class SwadeCombatant extends Combatant {
 
   override _onUpdate(
     changed: foundry.documents.BaseCombatant.UpdateData,
-    options: DocumentModificationOptions,
+    options: Combatant.DatabaseOperations['update'],
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

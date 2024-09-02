@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { createEmbedElement } from '../../util';
 import { CommonActorData } from './common';
@@ -39,7 +38,7 @@ export class NpcData extends CommonActorData<
 
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
-    _options: DocumentModificationOptions,
+    _options: Actor.DatabaseOperations['create'],
     _user: BaseUser,
   ) {
     const isImported = foundry.utils.hasProperty(
@@ -55,7 +54,7 @@ export class NpcData extends CommonActorData<
 
   protected override _onUpdate(
     _changed: foundry.documents.BaseActor.UpdateData,
-    _options: DocumentModificationOptions,
+    _options: Actor.DatabaseOperations['update'],
     _userId: string,
   ) {
     ui.actors?.render(true);
