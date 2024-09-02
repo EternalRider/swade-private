@@ -29,6 +29,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Characters and NPCs can now define pace values for ground, fly, swim and burrow pace, as well as set a default per actor. You can set these values in the Actor Tweaks. Existing values have been migrated to the ground Pace. Existing active effects have been migrated to affect all pace values. (#768) **by @florad92**
 - You can now modify all pace values at the same time by setting the change to `system.pace`. (#768) **by @florad92**
 
+## 4.1.1
+
+### Fixed
+
+- Fixed styling of Vehicle embeds on Group sheet. (#1207) **by @michaeldougherty1976**
+- Group actors can no longer be added to the Combat Tracker. (#1208) **by @florad92**
+- Fixed Build Cost input in Item Tweaks. (#1209) **by @florad92**
+- Cleaned up documentation on `createEmbedElement` util function. (#1210) **by @michaeldougherty1976**
+- Combat tracker can now be progressed even while empty. (#1215) **by @florad92**
+- Item grants are no longer multiplied by the number of connected users with create permissions for an actor. (#1218) **by @jpmeehan5**
+
 ## 4.1.0
 
 ### Added

@@ -29,19 +29,12 @@
         </div>
       </fieldset>
       {{#if doc.system.build}}
-        <div class='form-group'>
-          <label for='{{doc.uuid}}-build-cost'>
-            {{localize 'SWADE.BuildCost'}}
-          </label>
-          <span class='form-fields'>
-            <input
-              id='{{doc.uuid}}-build-cost'
-              type='number'
-              name='system.build.points'
-              value='{{doc.system.build.cost}}'
-            />
-          </span>
-        </div>
+        {{formGroupSimple
+          'system.build.cost'
+          document=doc
+          rootId=doc.uuid
+          localize=true
+        }}
       {{/if}}
     {{/if}}
     <section class='tab' data-group='primary' data-tab='traits'>
