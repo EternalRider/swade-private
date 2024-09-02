@@ -5,6 +5,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .edge {
         .name {
@@ -32,6 +33,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .power {
         .name {
@@ -58,6 +60,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .hindrance {
         .name {
@@ -77,6 +80,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .skill {
         .name {
@@ -102,6 +106,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .ancestry {
         .name {
@@ -124,6 +129,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .ability {
         .name {
@@ -147,6 +153,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .action {
         .name {
@@ -170,6 +177,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .shield {
         .header {
@@ -192,17 +200,22 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
         }
         .item-img {
-          height: inherit;
-          width: inherit;
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
+            height: auto;
+            width: 100%;  
+            cursor: pointer;
+            border-style: none; 
+            margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+                margin-left: 0;
+                margin-right: 0;
+
                 .header-row {
                     background-color: black;
                     color: white;
@@ -236,6 +249,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .weapon {
         .header {
@@ -264,17 +278,22 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
         }
         .item-img {
-          height: inherit;
-          width: inherit;
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
+            height: auto;
+            width: 100%;  
+            cursor: pointer;
+            border-style: none; 
+            margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+                margin-left: 0;
+                margin-right: 0;
+
                 .header-row {
                     background-color: black;
                     color: white;
@@ -302,6 +321,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .gear {
         .header {
@@ -320,17 +340,22 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
         }
         .item-img {
-          height: inherit;
-          width: inherit;
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
+            height: auto;
+            width: 100%;  
+            cursor: pointer;
+            border-style: none; 
+            margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+                margin-left: 0;
+                margin-right: 0;
+
                 .header-row {
                     background-color: black;
                     color: white;
@@ -355,6 +380,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .consumable {
         .header {
@@ -373,17 +399,23 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
+
         }
         .item-img {
-          height: inherit;
-          width: inherit;
+          height: auto;
+          width: 100%;  
           cursor: pointer;
           border-style: none; 
           margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+                margin-left: 0;
+                margin-right: 0;
+
                 .header-row {
                     background-color: black;
                     color: white;
@@ -408,6 +440,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .armor {
         .header {
@@ -426,17 +459,22 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
         }
         .item-img {
-          height: inherit;
-          width: inherit;
+          height: auto;
+          width: 100%;
           cursor: pointer;
           border-style: none; 
           margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+                margin-left: 0;
+                margin-right: 0;
+
                 .header-row {
                     background-color: black;
                     color: white;
@@ -461,6 +499,7 @@
     border-style: solid;
     border-color: darkgray;
     padding: 3%;
+    color: var(--color-text-dark-primary);
 
     .vehicle {
         .header {
@@ -489,17 +528,22 @@
         .img-container {
             display: flex;
             justify-content: flex-end;
-            height: 30px;        
+            height: auto;   
+            width: 100%;     
         }
         .item-img {
-          height: inherit;
-          width: inherit;
+          height: auto;
+          width: 100%;
           cursor: pointer;
           border-style: none; 
           margin: 0;
         }
         .stats {
             .data-table {
+                background-color: rgba(0, 0, 0, 0.05);
+
+                margin-left: 0;
+                margin-right: 0;
                 .header-row {
                     background-color: black;
                     color: white;

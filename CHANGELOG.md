@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.1.1
+
+### Fixed
+
+- Fixed styling of Vehicle embeds on Group sheet. (#1207) **by @michaeldougherty1976**
+- Group actors can no longer be added to the Combat Tracker. (#1208) **by @florad92**
+- Fixed Build Cost input in Item Tweaks. (#1209) **by @florad92**
+- Cleaned up documentation on `createEmbedElement` util function. (#1210) **by @michaeldougherty1976**
+- Combat tracker can now be progressed even while empty. (#1215) **by @florad92**
+- Item grants are no longer multiplied by the number of connected users with create permissions for an actor. (#1218) **by @jpmeehan5**
+
 ## 4.1.0
 
 ### Added

@@ -1,6 +1,7 @@
 import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
+import { Logger } from '../../Logger';
 import { SWADE } from '../../config';
 import { firstOwner, getStatusEffectDataById } from '../../util';
 import type SwadeCombat from './SwadeCombat';
@@ -288,6 +289,13 @@ export default class SwadeCombatant extends Combatant {
     options: DocumentModificationOptions,
     user: BaseUser,
   ) {
+    if (this.actor?.type === 'group') {
+      Logger.warn('SWADE.Validation.NoGroupCombatants', {
+        localize: true,
+        toast: true,
+      });
+      return false;
+    }
     await super._preCreate(data, options, user);
     const combatants = game?.combat?.combatants.size ?? 0;
     const tokenID =

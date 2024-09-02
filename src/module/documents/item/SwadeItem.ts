@@ -855,9 +855,9 @@ class SwadeItem extends Item {
   protected static override async _onCreateOperation(
     items: SwadeItem[],
     operation: DatabaseCreateOperation, // TODO: Update alongside the DocumentModificationContext removal so isItemGrant can be typed correctly
-    user: User.ConfiguredInstance
+    user: User
   ) {
-    if (!operation.isItemGrant) {
+    if (!operation.isItemGrant && user.isSelf) {
       for (const item of items) {
         const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
         const equipStatus = foundry.utils.getProperty(
