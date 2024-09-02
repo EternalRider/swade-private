@@ -825,6 +825,7 @@ SWADE:
   Validation:
     OnlyOneAncestry: You can only have one ancestry at a time!
     OnlyOneArchetype: You can only have one archetype at a time!
+    NoGroupCombatants: Group Actors cannot be combatants.
   DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable

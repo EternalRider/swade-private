@@ -1,4 +1,5 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
+import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -302,13 +303,12 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
 /**
  * Utility function to create an HTML element for the purpose of storing embed content.
  * TODO: Evaluate if this is better somewhere else
- * @param  {any} objectToEmbed The object that the embed is for
- * @param  {string} template The handlebars template path to use
- * @param  {string} className The class name to attach to the outermost element for purposes of controlled styling
- * @param  {Partial<TextEditor.EnrichmentOptions>} options the enrichment options
+ * @param objectToEmbed The object that the embed is for
+ * @param template The handlebars template path to use
+ * @param className The class name to attach to the outermost element for purposes of controlled styling
  */
 export async function createEmbedElement(
-  objectToEmbed: any,
+  objectToEmbed: AnyObject,
   template: string,
   className: string,
 ): Promise<HTMLElement | HTMLCollection | null> {
