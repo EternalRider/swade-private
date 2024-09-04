@@ -706,6 +706,60 @@ class CreatureData<
     }
   }
 
+  /**
+   * Creates an HTMLElement for displaying in a tooltip, adding some context to an actor's movement speed
+   * @returns the constructed HTMLElement
+   */
+  getPaceTooltip(this: CreatureData): HTMLElement {
+    const element = document.createElement('div');
+    //current pace
+    const heading = document.createElement('h3');
+    heading.innerText =
+      game.i18n.localize('SWADE.Movement.Base') +
+      ': ' +
+      game.i18n.localize(
+        'SWADE.Movement.Pace.' +
+          (this.pace.base as string).capitalize() +
+          '.Label',
+      );
+    element.appendChild(heading);
+
+    //attempt to add other pace values as a list
+    const availableKeys = PaceSchemaField.paceKeys
+      .filter((key) => !!this.pace[key])
+      .filter((key) => key !== (this.pace.base as string));
+    if (availableKeys.length) {
+      const subheading = document.createElement('h4');
+      subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
+      element.appendChild(subheading);
+      const paceList = document.createElement('ul');
+      for (const key of availableKeys) {
+        const li = document.createElement('li');
+        const localized = game.i18n.localize(
+          `SWADE.Movement.Pace.${key.capitalize()}.Label`,
+        );
+        li.innerText = `${localized}: ${this.pace[key]}`;
+        paceList.appendChild(li);
+      }
+      element.appendChild(paceList);
+    }
+
+    //if the parent isn't a combatant add the out of combat pace
+    if (!this.parent.getCombatant()) {
+      element.appendChild(document.createElement('hr'));
+      const p = document.createElement('span');
+      const runningDie = this.pace.running.die as number;
+      const minutes = (this.attributes.vigor.die.sides as number) / 2;
+      const pace = (runningDie + this.pace[this.pace.base as string]) * 2;
+      p.innerText = game.i18n.format('SWADE.Movement.Running.OutOfCombat', {
+        pace,
+        minutes,
+      });
+      element.appendChild(p);
+    }
+    return element;
+  }
+
   // specifying this to resolve depth issue
   getRollData(
     this: CreatureData,
