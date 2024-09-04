@@ -55,43 +55,45 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     return html;
   }
 
-  override activateListeners(html: JQuery): void {
-    super.activateListeners(html);
+  override activateListeners(jquery: JQuery): void {
+    super.activateListeners(jquery);
 
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
+    const html = jquery[0];
+
     // Refresh
-    html[0]
+    html
       .querySelectorAll('.adjust-counter')
       .forEach((el) =>
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
 
-    this._setupItemContextMenu(html);
+    this._setupItemContextMenu(jquery);
 
     // Drag events for macros.
-    html.find('.attribute').each((i, el) => {
+    jquery.find('.attribute').each((i, el) => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     // Delete Item
-    html.find('.item-delete').on('click', (ev) => {
+    jquery.find('.item-delete').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.gear-card');
       this.actor.items.get(li.data('itemId'))?.deleteDialog();
     });
 
     // Roll Skill
-    html.find('.skill.item a').on('click', (event) => {
+    jquery.find('.skill.item a').on('click', (event) => {
       const element = event.currentTarget as Element;
       const item = element.parentElement!.dataset.itemId as string;
       this.actor.rollSkill(item);
     });
 
     // Add new object
-    html.find('.item-create').on('click', async (event) => {
+    jquery.find('.item-create').on('click', async (event) => {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type!;
@@ -129,7 +131,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     });
 
     //Toggle Equipmnent Card collapsible
-    html.find('.gear-card .card-header .item-name').on('click', (ev) => {
+    jquery.find('.gear-card .card-header .item-name').on('click', (ev) => {
       const card = $(ev.currentTarget).parents('.gear-card');
       const content = card.find('.card-content');
       content.toggleClass('collapsed');
@@ -141,9 +143,18 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     });
 
     // Active Effects
-    html
+    jquery
       .find('.status-container input[type="checkbox"]')
       .on('change', this._toggleStatusEffect.bind(this));
+
+    html
+      .querySelector('.attribute.pace input')
+      ?.addEventListener('mouseenter', (event) => {
+        game.tooltip.deactivate();
+        game.tooltip.activate(event.target as HTMLElement, {
+          content: this.actor.system.getPaceTooltip(),
+        });
+      });
   }
 
   override async getData() {

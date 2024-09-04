@@ -1528,6 +1528,8 @@ SWADE:
     Supply:
       Label: Supply
   Movement:
+    Base: Base Movement
+    Other: Other Movement Speeds
     Pace:
       Base: 
         Label: Base Pace
@@ -1541,6 +1543,7 @@ SWADE:
       Burrow:
         Label: Burrow
     Running:
+      OutOfCombat: You can run at {pace} Pace for {minutes} minutes outside of combat
       Dialog:
         Title: Running
         Content: Please select how you want to run

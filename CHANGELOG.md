@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Characters and NPCs can now define pace values for ground, fly, swim and burrow pace, as well as set a default per actor. You can set these values in the Actor Tweaks. Existing values have been migrated to the ground Pace. Existing active effects have been migrated to affect all pace values. (#768) **by @florad92**
 - You can now modify all pace values at the same time by setting the change to `system.pace`. (#768) **by @florad92**
+- Added a tooltip to the character and npc sheets which displays some additional information about pace such as other movement speeds and out-of-combat running pace. (#1182) **by @florad92**
 - Added `tokenSize` getter to `SwadeActor` and system DataModel classes (#1217) **by @florad92**
 
 ### Changed

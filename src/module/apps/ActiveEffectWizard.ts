@@ -1,10 +1,10 @@
 import { BaseActiveEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/module.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 
 export default class ActiveEffectWizard extends FormApplication {
   #effect: DeepPartial<BaseActiveEffect.Properties> = {
@@ -200,15 +200,15 @@ export default class ActiveEffectWizard extends FormApplication {
       },
       {
         label: game.i18n.localize('SWADE.Pace'),
-        key: 'system.stats.speed.value',
+        key: 'system.pace',
       },
       {
         label: game.i18n.localize('SWADE.RunningDie'),
-        key: 'system.stats.speed.runningDie',
+        key: 'system.pace.running.die',
       },
       {
         label: game.i18n.localize('SWADE.RunningMod'),
-        key: 'system.stats.speed.runningMod',
+        key: 'system.pace.running.mod',
       },
       {
         label: game.i18n.localize('SWADE.EncumbranceSteps'),
