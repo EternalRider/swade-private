@@ -3,7 +3,7 @@ import { AdvanceEditor } from '../apps/AdvanceEditor';
 import SettingConfigurator from '../apps/SettingConfigurator';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { constants } from '../constants';
-import { CommonActorData } from '../data/actor/common';
+import { CreatureData } from '../data/actor/base';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 
@@ -198,7 +198,7 @@ export default class SwadeTour extends Tour {
   }
 
   async makeAdvance(advance: TourAdvance) {
-    if (!this.actor || !(this.actor.system instanceof CommonActorData)) return;
+    if (!this.actor || !(this.actor.system instanceof CreatureData)) return;
     const advances = this.actor.system.advances.list;
     advances.set(advance.id, advance);
     await this.actor.update({ 'system.advances.list': advances.toJSON() });

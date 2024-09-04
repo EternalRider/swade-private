@@ -3,6 +3,7 @@ import { GroupData } from './group';
 import { NpcData } from './npc';
 import { VehicleData } from './vehicle';
 
+export * as base from './base';
 export { CharacterData } from './character';
 export { GroupData } from './group';
 export { NpcData } from './npc';

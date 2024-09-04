@@ -33,11 +33,12 @@ import {
 declare global {
   interface FlagConfig {
     Item: {
+      core?: { canPopout?: boolean };
       swade: {
         embeddedPowers: [string, foundry.documents.BaseItem.ConstructorData][];
         hasGranted?: string[];
         loadedAmmo?: foundry.documents.BaseItem.ConstructorData;
-        [key: string]: unknown;
+        macros?: { id: string; uuid: string }[];
       };
     };
   }
