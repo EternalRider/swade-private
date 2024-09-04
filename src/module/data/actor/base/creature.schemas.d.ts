@@ -1,4 +1,4 @@
-import { DiceField } from '../common.interface';
+import { DiceField } from '../../common.interface';
 
 type DataFieldLabel = { label: string };
 type DataFieldHint = { hint: string };
@@ -89,3 +89,27 @@ export type AdvanceSchema = foundry.data.fields.SchemaField<
   },
   DataFieldLabel
 >;
+
+type WildCardDataNumberOptions = {
+  initial: number;
+  min: 0;
+  integer: boolean;
+} & DataFieldLabel;
+
+export type WildCardDataSchema = {
+  bennies: foundry.data.fields.SchemaField<
+    {
+      value: foundry.data.fields.NumberField<WildCardDataNumberOptions>;
+      max: foundry.data.fields.NumberField<WildCardDataNumberOptions>;
+    },
+    DataFieldLabel
+  >;
+  wounds: foundry.data.fields.SchemaField<
+    {
+      value: foundry.data.fields.NumberField<WildCardDataNumberOptions>;
+      max: foundry.data.fields.NumberField<WildCardDataNumberOptions>;
+      ignored: foundry.data.fields.NumberField<WildCardDataNumberOptions>;
+    },
+    DataFieldLabel
+  >;
+};

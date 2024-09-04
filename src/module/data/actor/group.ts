@@ -4,6 +4,7 @@ import {
   DocumentFn,
   ForeignDocumentUUIDField,
 } from '../fields/ForeignDocumentUUIDField';
+import { SwadeBaseActorData } from './base';
 
 const fields = foundry.data.fields;
 
@@ -24,22 +25,18 @@ declare namespace GroupData {
   }
   type BaseData = {
     members: Map<string, GroupMember>;
-  }
-  type DerivedData = {}
+  };
+  type DerivedData = {};
 }
 
 class GroupData<
   Schema extends GroupData.Schema = GroupData.Schema,
   BaseData extends GroupData.BaseData = GroupData.BaseData,
   DerivedData extends GroupData.DerivedData = GroupData.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  SwadeActor,
-  BaseData,
-  DerivedData
-> {
+> extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
   static override defineSchema(): DataSchema {
     return {
+      ...super.defineSchema(),
       members: new fields.SetField(
         new ForeignDocumentUUIDField({
           type: 'Actor',
@@ -96,6 +93,7 @@ class GroupData<
     );
 
   override prepareBaseData(this: GroupData) {
+    super.prepareBaseData();
     this.members = new Map<string, GroupMember>(
       this.members.map<[string, GroupMember]>((fn: DocumentFn<SwadeActor>) => {
         const result = fn();

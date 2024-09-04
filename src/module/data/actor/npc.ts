@@ -1,22 +1,21 @@
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { createEmbedElement } from '../../util';
-import { CommonActorData } from './common';
+import { CreatureData } from './base/creature';
 
 const fields = foundry.data.fields;
 
 declare namespace NpcData {
-  interface Schema
-    extends CommonActorData.Schema,
-      ReturnType<(typeof NpcData)['wildcardData']> {
-    wildcard: foundry.data.fields.BooleanField<{ initial: false }>;
+  interface Schema extends CreatureData.Schema {
+    wildcard: foundry.data.fields.BooleanField<{
+      initial: false;
+      label: string;
+    }>;
   }
-
-  interface BaseData extends CommonActorData.BaseData {}
-
-  interface DerivedData extends CommonActorData.DerivedData {}
+  interface BaseData extends CreatureData.BaseData {}
+  interface DerivedData extends CreatureData.DerivedData {}
 }
 
-export class NpcData extends CommonActorData<
+export class NpcData extends CreatureData<
   NpcData.Schema,
   NpcData.BaseData,
   NpcData.DerivedData

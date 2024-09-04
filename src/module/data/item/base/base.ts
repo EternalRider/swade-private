@@ -1,13 +1,14 @@
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { constants } from '../../../constants';
+import type SwadeItem from '../../../documents/item/SwadeItem';
 import { slugify } from '../../../util';
 import { choiceSets, itemDescription } from '../common';
 import { ChoiceSets, ItemDescription } from '../item-common.interface';
 
 declare namespace SwadeBaseItemData {
   interface Schema extends DataSchema, ItemDescription, ChoiceSets {}
-  interface BaseData {}
-  interface DerivedData {}
+  type BaseData = {};
+  type DerivedData = {};
 }
 
 class SwadeBaseItemData<
@@ -16,7 +17,7 @@ class SwadeBaseItemData<
   DerivedData extends SwadeBaseItemData.DerivedData,
 > extends foundry.abstract.TypeDataModel<
   Schema,
-  Item.ConfiguredInstance,
+  SwadeItem,
   BaseData,
   DerivedData
 > {
@@ -32,7 +33,7 @@ class SwadeBaseItemData<
     return false;
   }
 
-  protected async _preCreate(
+  protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
     user: BaseUser,
