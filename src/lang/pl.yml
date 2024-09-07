@@ -983,7 +983,7 @@ SWADE:
     NoInjuryTable: Żadna Tabela Urazów nie została wybrana. Sprawdź ustawienia SWADE
     NoTargetsSelected: Wybierz cel, dla którego mają zostać zastosowane obrażenia.
   NumberOfDice:
-    Label: Kość
+    Label: Liczba kości
     Hint: Ustala ile kości Cech zostanie rzuconych dla tej akcji
   ResourcesUsed:
     Label: Użyte zasoby
