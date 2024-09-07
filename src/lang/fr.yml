@@ -842,8 +842,10 @@ SWADE:
   Resistance: Résistance
   Weakness: Faiblesse
   Validation:
-    OnlyOneAncestry: Vous ne pouvez avoir qu'une seule ascendance à la fois !
-    OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois !
+    OnlyOneAncestry: Vous ne pouvez avoir qu'une seule ascendance à la fois.
+    OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois.
+    InvalidBasePace: Vous ne pouvez pas définir l'allure de base sur un type d'allure
+      sans valeur.
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base
   Targets: 'Cibles :'
@@ -948,7 +950,7 @@ SWADE:
   CouldNotFindMacro: "Impossible de trouver la macro avec l'UUID : {uuid}"
   DmgMod: Modificateur de dégâts
   ResourcesUsed:
-    Hint: Quelle quantité de ressource arbitraire est utilisée pour cette action ?
+    Hint: Quelle quantité de ressource arbitraire est utilisée pour cette action
     Label: Utilisation d'une ressource
   Auras:
     WallConstraints:
@@ -1238,7 +1240,7 @@ SWADE:
       SaveChanges:
         Content: Les modifications ne sont PAS sauvegardées automatiquement pour le
           personnage. Vous devez utiliser le bouton d'enregistrement dans l'éditeur
-          ou ce bouton "Enregistrer les modifications".
+          ou ce bouton "Enregistrer les modifications"
         Title: Bouton de sauvegarde des modifications
       Title: Progressions
       Description: Voir comment SWADE suit les Progressions d'un personnage
@@ -1357,7 +1359,7 @@ SWADE:
     ChangeWarning1: Agissez avec prudence !
   HindranceSeverity:
     Major: Majeur seulement
-    Minor: mineur
+    Minor: mineur uniquement
     Either: Au choix
     Label: Sévérité
   RedrawBenny: Repiocher une carte avec un jeton
@@ -1455,7 +1457,7 @@ SWADE:
   ChaseReset: Le jeu de cartes "{deck}" a été réinitialisé.
   DialogConfirmPrompt: Êtes-vous sûr ?
   SettingConfigurator:
-    WorldTables: Tables sur l'univers
+    WorldTables: Tables d'univers
     WorldCompendiums: Compendiums de l'univers
   BenniesAdjustGM: Ajustez les Jetons du MJ
   Supplies:
@@ -1518,6 +1520,23 @@ SWADE:
   ChargesMax: Poids maximum
   IgnFatigueWounds: Ignorer les blessures/fatigue
   FatigueWounds: Blessures/Fatigue
+  Movement:
+    Pace:
+      Base:
+        Label: Allure de base
+        Hint: Quelle est l'allure par défaut de l'acteur ?
+      Fly:
+        Label: Vol
+      Swim:
+        Label: Nage
+      Ground:
+        Label: Sur terre
+      Burrow:
+        Label: Sous terre
+    Running:
+      Dialog:
+        Title: Course
+        Content: Veuillez choisir le mode de course
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
