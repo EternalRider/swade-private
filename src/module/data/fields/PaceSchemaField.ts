@@ -5,7 +5,7 @@ import {
 import { DataModelValidationFailure } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/validation-failure.mjs';
 import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import type SwadeActor from '../../documents/actor/SwadeActor';
-import { PaceSchema } from '../actor/common.schemas';
+import { PaceSchema } from '../actor/base/creature.schemas';
 import { makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;

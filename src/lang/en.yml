@@ -826,6 +826,7 @@ SWADE:
     OnlyOneAncestry: You can only have one ancestry at a time.
     OnlyOneArchetype: You can only have one archetype at a time.
     InvalidBasePace: You cannot set Base Pace to a pace type with no value.
+    NoGroupCombatants: Group Actors cannot be combatants.
   DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
@@ -1527,6 +1528,8 @@ SWADE:
     Supply:
       Label: Supply
   Movement:
+    Base: Base Movement
+    Other: Other Movement Speeds
     Pace:
       Base: 
         Label: Base Pace
@@ -1540,6 +1543,7 @@ SWADE:
       Burrow:
         Label: Burrow
     Running:
+      OutOfCombat: You can run at {pace} Pace for {minutes} minutes outside of combat
       Dialog:
         Title: Running
         Content: Please select how you want to run

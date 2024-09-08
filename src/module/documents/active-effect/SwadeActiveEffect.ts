@@ -138,6 +138,14 @@ export default class SwadeActiveEffect extends ActiveEffect {
           'system.stats.speed.adjusted',
           'system.pace',
         );
+        change.key = change.key.replaceAll(
+          'system.stats.speed.runningDie',
+          'system.pace.running.die',
+        );
+        change.key = change.key.replaceAll(
+          'system.stats.speed.runningMod',
+          'system.pace.running.mod',
+        );
       }
     }
     return data;

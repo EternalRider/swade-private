@@ -422,7 +422,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleStartOfTurnExpirations() {
-    if (this.combatant.isDefeated) return;
+    if (!this.combatant || this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect: SwadeActiveEffect) =>
@@ -434,7 +434,7 @@ export default class SwadeCombat extends Combat {
   }
 
   protected async _handleEndOfTurnExpirations() {
-    if (this.combatant.isDefeated) return;
+    if (!this.combatant || this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect) => effect.isTemporary && effect.isExpired('end'),

@@ -341,7 +341,7 @@ export default class CharacterSheet extends ActorSheet {
       }
     });
 
-    jquery[0]
+    html
       .querySelector<HTMLImageElement>('.profile-img')
       ?.addEventListener('contextmenu', () => {
         if (!this.actor.img) return;
@@ -352,13 +352,13 @@ export default class CharacterSheet extends ActorSheet {
         }).render(true);
       });
 
-    jquery[0]
+    html
       .querySelectorAll<HTMLButtonElement>('.adjust-counter')
       .forEach((el) =>
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
 
-    jquery[0]
+    html
       .querySelectorAll<HTMLButtonElement>(
         '.character-detail.ancestry button, .character-detail.archetype button',
       )
@@ -366,6 +366,15 @@ export default class CharacterSheet extends ActorSheet {
         btn.addEventListener('click', (ev) => {
           const id = ev.currentTarget.dataset.itemId as string;
           this.actor.items.get(id)?.sheet?.render(true);
+        });
+      });
+
+    html
+      .querySelector('.pace input')
+      ?.addEventListener('mouseenter', (event) => {
+        game.tooltip.deactivate();
+        game.tooltip.activate(event.target as HTMLElement, {
+          content: this.actor.system.getPaceTooltip(),
         });
       });
   }

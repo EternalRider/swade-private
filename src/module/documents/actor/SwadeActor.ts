@@ -26,6 +26,7 @@ import {
   NpcData,
   VehicleData,
 } from '../../data/actor';
+import { TokenSize } from '../../data/actor/base/base';
 import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
 import {
   ArmorData,
@@ -141,6 +142,11 @@ class SwadeActor extends Actor {
     );
   }
 
+  get tokenSize(): TokenSize {
+    if ('tokenSize' in this.system) return this.system.tokenSize;
+    return { height: 1, width: 1 };
+  }
+
   /** @returns true when the actor is currently in combat and has drawn a joker */
   get hasJoker(): boolean {
     const combatant = this.getCombatant(game.combats?.active);
@@ -185,7 +191,8 @@ class SwadeActor extends Actor {
   }
 
   get ancestry(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return;
     const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
       Logger.warn(
@@ -196,7 +203,8 @@ class SwadeActor extends Actor {
   }
 
   get archetype(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return;
     const archetypes = this.items.filter(
       (i) => i.type === 'ability' && i.system.subtype === 'archetype',
     );
@@ -403,7 +411,10 @@ class SwadeActor extends Actor {
     options: IRollOptions = { rof: 1 },
     tempSkill?: SwadeItem,
   ): Promise<TraitRoll | null> {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
+    if (
+      this.system instanceof VehicleData ||
+      this.system instanceof GroupData
+    ) {
       Logger.error('Only Extras and Wildcards can roll skills!', {
         toast: true,
       });
@@ -685,7 +696,8 @@ class SwadeActor extends Actor {
   }
 
   async getBenny() {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return;
     const combatant = this.token?.combatant as SwadeCombatant | undefined;
     await this.update({ 'system.bennies.value': this.bennies + 1 });
 
@@ -884,7 +896,8 @@ class SwadeActor extends Actor {
     includeModifiers = true,
   ): Record<string, number | string> {
     let rollData;
-    if ('getRollData' in this.system) rollData = this.system.getRollData(includeModifiers);
+    if ('getRollData' in this.system)
+      rollData = this.system.getRollData(includeModifiers);
     return rollData ?? {};
   }
 
@@ -1004,7 +1017,10 @@ class SwadeActor extends Actor {
 
     const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
-    const numbness = 'woundsOrFatigue' in this.system ? this.system.woundsOrFatigue?.ignored : 0;
+    const numbness =
+      'woundsOrFatigue' in this.system
+        ? this.system.woundsOrFatigue?.ignored
+        : 0;
     if (numbness > 0) {
       const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
         'SWADE.Fatigue',
@@ -1039,7 +1055,9 @@ class SwadeActor extends Actor {
       });
     }
 
-    if (!(this.system instanceof VehicleData || this.system instanceof GroupData)) {
+    if (
+      !(this.system instanceof VehicleData || this.system instanceof GroupData)
+    ) {
       //Status penalties
       if (this.system.status.isDistracted) {
         mods.push({
@@ -1070,7 +1088,10 @@ class SwadeActor extends Actor {
     skill: SwadeItem,
     options: IRollOptions,
   ): [TraitRoll, RollModifier[]] {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
+    if (
+      this.system instanceof VehicleData ||
+      this.system instanceof GroupData
+    ) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
     if (!(skill.system instanceof SkillData)) {
@@ -1185,7 +1206,8 @@ class SwadeActor extends Actor {
 
   /** Calculates the Toughness value without armor and returns it */
   calcToughness(): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return 0;
     /** base value of all toughness calculations */
     const toughnessBaseValue = 2;
 
@@ -1229,7 +1251,8 @@ class SwadeActor extends Actor {
   }
 
   calcParry(): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return 0;
     /** base value of all parry calculations */
     const parryBaseValue = 2;
 
@@ -1314,7 +1337,8 @@ class SwadeActor extends Actor {
     target: 'parry' | 'toughness' | 'armor',
     derivedStat: number,
   ): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0; // typeguarding
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return 0; // typeguarding
     const effects: DerivedModifier[] =
       target === 'armor'
         ? this.system.stats.toughness.armorEffects
@@ -1383,7 +1407,8 @@ class SwadeActor extends Actor {
    * @returns The total amount of armor for that location
    */
   private _getArmorForLocation(location: ArmorLocation): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return 0;
 
     return Object.values(this._getArmorSourcesForLocation(location)).reduce(
       (acc, value) => (acc += value),
@@ -1399,7 +1424,8 @@ class SwadeActor extends Actor {
     location: ArmorLocation,
   ): Record<string, number> {
     const armorSources = {};
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return armorSources;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return armorSources;
 
     const [regularArmor, naturalArmor] = this.itemTypes.armor
       .filter((i) => {
@@ -1440,7 +1466,8 @@ class SwadeActor extends Actor {
   }
 
   getPTTooltip(target: 'parry' | 'toughness'): string {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return '';
     let tooltip =
       target === 'parry'
         ? `<h4>${game.i18n.localize('SWADE.Parry')}
@@ -1456,7 +1483,8 @@ class SwadeActor extends Actor {
   }
 
   getArmorTooltip(): string {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData)
+      return '';
     let tooltip = '';
 
     const armor = this.armorPerLocation;

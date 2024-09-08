@@ -1,35 +1,36 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { Advance } from '../../../interfaces/Advance.interface';
+import { TypeDataModel } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { Advance } from '../../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
   RollModifier,
-} from '../../../interfaces/additional.interface';
-import { SWADE } from '../../config';
-import type SwadeActor from '../../documents/actor/SwadeActor';
-import { addUpModifiers, getRankFromAdvanceAsString } from '../../util';
-import { DiceField, DiceTrait } from '../common.interface';
-import { MappingField } from '../fields/MappingField';
-import { PaceSchemaField } from '../fields/PaceSchemaField';
+} from '../../../../interfaces/additional.interface';
+import { SWADE } from '../../../config';
+import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
+import { DiceField, DiceTrait } from '../../common.interface';
+import { MappingField } from '../../fields/MappingField';
+import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import {
   boundTraitDie,
   makeAdditionalStatsSchema,
   makeDiceField,
   makeTraitDiceFields,
-} from '../shared';
-import * as migration from './_migration';
-import * as quarantine from './_quarantine';
-import * as shims from './_shims';
+} from '../../shared';
+import * as migration from '../_migration';
+import * as quarantine from '../_quarantine';
+import * as shims from '../_shims';
+import { SwadeBaseActorData, TokenSize } from './base';
 import {
   AdvanceSchema,
   InitiativeSchema,
   StatusSchema,
-} from './common.schemas';
-import { VehicleData } from './vehicle';
+  WildCardDataSchema,
+} from './creature.schemas';
 
 const fields = foundry.data.fields;
 
-declare namespace CommonActorData {
-  interface Schema extends DataSchema {
+declare namespace CreatureData {
+  interface Schema extends DataSchema, WildCardDataSchema {
     attributes: foundry.data.fields.SchemaField<{
       agility: foundry.data.fields.SchemaField<DiceTrait>;
       smarts: foundry.data.fields.SchemaField<
@@ -73,7 +74,6 @@ declare namespace CommonActorData {
         }
       >;
     }>;
-    pace: PaceSchemaField;
     stats: foundry.data.fields.SchemaField<{
       toughness: foundry.data.fields.SchemaField<{
         value: foundry.data.fields.NumberField<{ initial: 0; integer: true }>;
@@ -144,6 +144,7 @@ declare namespace CommonActorData {
     advances: AdvanceSchema;
     status: StatusSchema;
     initiative: InitiativeSchema;
+    pace: PaceSchemaField;
     additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
   }
 
@@ -206,17 +207,12 @@ declare namespace CommonActorData {
   };
 }
 
-class CommonActorData<
-  Schema extends CommonActorData.Schema = CommonActorData.Schema,
-  BaseData extends CommonActorData.BaseData = CommonActorData.BaseData,
-  DerivedData extends CommonActorData.DerivedData = CommonActorData.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  SwadeActor,
-  BaseData,
-  DerivedData
-> {
-  static override defineSchema(): CommonActorData.Schema {
+class CreatureData<
+  Schema extends CreatureData.Schema = CreatureData.Schema,
+  BaseData extends CreatureData.BaseData = CreatureData.BaseData,
+  DerivedData extends CreatureData.DerivedData = CreatureData.DerivedData,
+> extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
+  static override defineSchema(): CreatureData.Schema {
     return {
       attributes: new fields.SchemaField(
         {
@@ -519,7 +515,10 @@ class CommonActorData<
     };
   }
 
-  protected static wildcardData = (baseBennies: number, maxWounds: number) => ({
+  protected static wildcardData = (
+    baseBennies: number,
+    maxWounds: number,
+  ): WildCardDataSchema => ({
     bennies: new fields.SchemaField(
       {
         value: new fields.NumberField({
@@ -572,7 +571,6 @@ class CommonActorData<
     );
   };
 
-  /** @inheritdoc */
   static override migrateData(source) {
     quarantine.ensureStrengthDie(source);
     quarantine.ensureCurrencyIsNumeric(source);
@@ -585,6 +583,11 @@ class CommonActorData<
   static override shimData(source) {
     shims._shimPace(source);
     return source;
+  }
+
+  override get tokenSize(): TokenSize {
+    const value = Math.max(1, Math.floor(this.stats.size / 4) + 1);
+    return { width: value, height: value };
   }
 
   get encumbered(): boolean {
@@ -604,7 +607,8 @@ class CommonActorData<
   }
 
   // specifying this to resolve depth issue
-  override prepareBaseData(this: CommonActorData) {
+  override prepareBaseData(this: CreatureData) {
+    super.prepareBaseData();
     for (const key in this.attributes) {
       const attribute = this.attributes[key];
       attribute.effects = new Array<RollModifier>();
@@ -645,7 +649,8 @@ class CommonActorData<
   }
 
   // specifying this to resolve depth issue
-  override prepareDerivedData(this: CommonActorData) {
+  override prepareDerivedData(this: CreatureData) {
+    super.prepareDerivedData();
     //die type bounding for attributes
     for (const key in this.attributes) {
       const attribute = this.attributes[key];
@@ -669,7 +674,7 @@ class CommonActorData<
     }
 
     //set scale
-    this.stats.scale = this.parent.calcScale(this.stats.size);
+    this.stats.scale = this.parent.calcScale(this.stats.size as number);
 
     //handle carry capacity
     foundry.utils.setProperty(
@@ -701,9 +706,63 @@ class CommonActorData<
     }
   }
 
+  /**
+   * Creates an HTMLElement for displaying in a tooltip, adding some context to an actor's movement speed
+   * @returns the constructed HTMLElement
+   */
+  getPaceTooltip(this: CreatureData): HTMLElement {
+    const element = document.createElement('div');
+    //current pace
+    const heading = document.createElement('h3');
+    heading.innerText =
+      game.i18n.localize('SWADE.Movement.Base') +
+      ': ' +
+      game.i18n.localize(
+        'SWADE.Movement.Pace.' +
+          (this.pace.base as string).capitalize() +
+          '.Label',
+      );
+    element.appendChild(heading);
+
+    //attempt to add other pace values as a list
+    const availableKeys = PaceSchemaField.paceKeys
+      .filter((key) => !!this.pace[key])
+      .filter((key) => key !== (this.pace.base as string));
+    if (availableKeys.length) {
+      const subheading = document.createElement('h4');
+      subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
+      element.appendChild(subheading);
+      const paceList = document.createElement('ul');
+      for (const key of availableKeys) {
+        const li = document.createElement('li');
+        const localized = game.i18n.localize(
+          `SWADE.Movement.Pace.${key.capitalize()}.Label`,
+        );
+        li.innerText = `${localized}: ${this.pace[key]}`;
+        paceList.appendChild(li);
+      }
+      element.appendChild(paceList);
+    }
+
+    //if the parent isn't a combatant add the out of combat pace
+    if (!this.parent.getCombatant()) {
+      element.appendChild(document.createElement('hr'));
+      const p = document.createElement('span');
+      const runningDie = this.pace.running.die as number;
+      const minutes = (this.attributes.vigor.die.sides as number) / 2;
+      const pace = (runningDie + this.pace[this.pace.base as string]) * 2;
+      p.innerText = game.i18n.format('SWADE.Movement.Running.OutOfCombat', {
+        pace,
+        minutes,
+      });
+      element.appendChild(p);
+    }
+    return element;
+  }
+
   // specifying this to resolve depth issue
   getRollData(
-    this: CommonActorData,
+    this: CreatureData,
     includeModifiers: boolean,
   ): Record<string, number | string> {
     const out: Record<string, number | string> = {
@@ -754,7 +813,7 @@ class CommonActorData<
   }
 
   // specifying this to resolve depth issue
-  async refreshBennies(this: CommonActorData, notify = true) {
+  async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
@@ -777,7 +836,7 @@ class CommonActorData<
     Hooks.callAll('swadeRefreshBennies', this.parent);
   }
 
-  #preparePace(this: CommonActorData) {
+  #preparePace(this: CreatureData) {
     const encumbered = this.encumbered;
     const woundPenalties = this.parent?.calcWoundPenalties(false) ?? 0;
     const enableWoundPace = game.settings.get('swade', 'enableWoundPace');
@@ -792,13 +851,12 @@ class CommonActorData<
   }
 
   protected override async _preUpdate(
-    this: CommonActorData,
-    changed: foundry.documents.BaseActor.UpdateData,
+    this: CreatureData,
+    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
     options: Actor.DatabaseOperations['update'],
-    user: BaseUser,
+    userId: string,
   ) {
-    await super._preUpdate(changed, options, user);
-    if (this instanceof VehicleData) return;
+    await super._preUpdate(changed, options, userId);
     if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
       foundry.utils.setProperty(
         options,
@@ -816,4 +874,4 @@ class CommonActorData<
   }
 }
 
-export { CommonActorData };
+export { CreatureData };

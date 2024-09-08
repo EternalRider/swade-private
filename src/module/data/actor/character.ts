@@ -1,19 +1,15 @@
 import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
-import { CommonActorData } from './common';
+import { CreatureData } from './base/creature';
 
 declare namespace CharacterData {
-  interface Schema
-    extends CommonActorData.Schema,
-      ReturnType<(typeof CharacterData)['wildcardData']> {}
-
-  interface BaseData extends CommonActorData.BaseData {}
-
-  interface DerivedData extends CommonActorData.DerivedData {}
+  interface Schema extends CreatureData.Schema {}
+  interface BaseData extends CreatureData.BaseData {}
+  interface DerivedData extends CreatureData.DerivedData {}
 }
 
-export class CharacterData extends CommonActorData<
+export class CharacterData extends CreatureData<
   CharacterData.Schema,
   CharacterData.BaseData,
   CharacterData.DerivedData
