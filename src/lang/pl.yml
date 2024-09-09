@@ -781,6 +781,7 @@ SWADE:
     OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz.
     OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz.
     InvalidBasePace: Nie możesz ustawić podstawowego Tempa na typ tempa bez wartości.
+    NoGroupCombatants: Grupy aktorów nie mogą być uczestnikami walki.
   DocumentLink: Link
   DocumentTweaks: Poprawki
   TargetVulnerable: Cel jest Odsłonięty
@@ -1459,6 +1460,9 @@ SWADE:
       Dialog:
         Title: Bieganie
         Content: Wybierz jak chcesz biegać
+      OutOfCombat: Możesz biec z prędkością {pace} przez {minutes} minut poza walką
+    Base: Podstawowy ruch
+    Other: Inne Prędkości Ruchu
 TYPES:
   Actor:
     character: Postać gracza
