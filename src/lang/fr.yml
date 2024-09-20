@@ -846,6 +846,7 @@ SWADE:
     OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois.
     InvalidBasePace: Vous ne pouvez pas définir l'allure de base sur un type d'allure
       sans valeur.
+    NoGroupCombatants: Les groupes ne peuvent pas être des combattants.
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base
   Targets: 'Cibles :'
@@ -1537,6 +1538,10 @@ SWADE:
       Dialog:
         Title: Course
         Content: Veuillez choisir le mode de course
+      OutOfCombat: Vous pouvez courir à {pace} pendant {minutes} minutes en dehors
+        des combats
+    Base: Mouvement de base
+    Other: Autres vitesses de déplacement
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
