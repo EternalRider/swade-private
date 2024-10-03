@@ -184,8 +184,8 @@ SWADE:
   Effects: Stany
   Hindrances: Zawady
   MajHind: Poważna Zawada
-  Major: "(Poważna)"
-  Minor: "(Drobna)"
+  Major: '(Poważna)'
+  Minor: '(Drobna)'
   Edges: Przewagi
   ArcBack: Zdolności nadprzyrodzone
   Req: Wymagania
@@ -259,12 +259,14 @@ SWADE:
   VehicleMod: Modyfikacja pojazdu
   OpSkill: Umiejętność Manewrowania
   ShowBennyAnimation: Pokaż animację Fuksa
-  ShowBennyAnimationDesc: Odtwórz animację, gdy wydajesz Fuksa. Dostępne tylko, jeśli
+  ShowBennyAnimationDesc:
+    Odtwórz animację, gdy wydajesz Fuksa. Dostępne tylko, jeśli
     Dice So Nice! jest zainstalowane
   WildDiePreset: Szablon Kości Figury
   WildDiePresetDesc: Wybierz szablon dla twojej Kości Figury.
   WildDieTheme: Motyw Kości Figury
-  WildDieThemeDesc: Wybierz motyw dla twojej Kości Figury. Wybierz 'Custom' by stworzyć
+  WildDieThemeDesc:
+    Wybierz motyw dla twojej Kości Figury. Wybierz 'Custom' by stworzyć
     własny albo 'None' jeśli nie chcesz aby twoja Kość Figury wyglądała inaczej. Miej
     na uwadze, że własnoręcznie stworzone Kości Figury aktualnie mogą być widziane
     tylko przez ciebie. Inni gracze będą je widzieć inaczej.
@@ -286,19 +288,20 @@ SWADE:
   Cancel: Anuluj
   Redraw: Przelosuj kartę
   RedrawBenny: Użyj Fuksa by przelosować kartę
-  Add: "Dodaj"
+  Add: 'Dodaj'
   ConfigInit: Konfiguruj inicjatywę
   IgnWounds: Ignoruj Rany
   Size: Rozmiar
   Scale: Skala
   PickACard: Wybierz kartę dla {name}
-  NoCardsLeft: Jest za mało kart w talii! Tylko {current} z {needed} wymaganych kart
+  NoCardsLeft:
+    Jest za mało kart w talii! Tylko {current} z {needed} wymaganych kart
     jest dostępne
   OldCard: Stara karta
   ActionCard: Karta Akcji
   ConvictionActive: Determinacja aktywna
-  ConvictionActivate: "{name} używa swojej Determinacji!"
-  ConvictionEnd: "{name} nie jest zbyt Zdeterminowany"
+  ConvictionActivate: '{name} używa swojej Determinacji!'
+  ConvictionEnd: '{name} nie jest zbyt Zdeterminowany'
   ConvictionExtend: Czy chcesz zwiększyć swoją Determinację?
   ConvictionExtendPrompt: Czy chcesz wydać Fuksa aby zwiększyć swoją Determinację?
   NoBennies: Masz za mało Fuksów!
@@ -309,7 +312,7 @@ SWADE:
   Items: Przedmioty
   Max: Maks
   Curr: Aktualny
-  DSNNone: "- Brak -"
+  DSNNone: '- Brak -'
   Duplicate: Kopiuj
   Reload: Przeładowanie
   Refresh: Odśwież tę kartę
@@ -322,8 +325,9 @@ SWADE:
     Title: Dodaj lub zamień akcje
     Add: Dodaj nową
     Replace: Zamień istniejącą
-    Content: "<p>Czy chcesz dodać akcje z {type} <strong>{source}</strong> jako nowe
-      akcje lub wymienić istniejące akcje?</p>"
+    Content:
+      '<p>Czy chcesz dodać akcje z {type} <strong>{source}</strong> jako nowe
+      akcje lub wymienić istniejące akcje?</p>'
   ppReload: Punkty Mocy do przeładowania
   ReloadNotPossible: Ten typ aktora nie przeładowuje
   ReloadUnneeded: Broń jest już w pełni załadowana
@@ -385,13 +389,14 @@ SWADE:
   Quick: Szybki
   BonusDamage: Dodatkowe obrażenia
   Joker: Joker
-  CustomWildDie: "- Niestandardowa Kość Figury -"
+  CustomWildDie: '- Niestandardowa Kość Figury -'
   Subtract: Odejmij
   DmgRolls: Rzuty na obrażenia
   SubtractPPDesc: Odejmij koszt PM od dostępnych PM
   AddPPDesc: Dodaj koszt PM do dostępnych PM
   RightClickZoom: Kliknij prawym przyciskiem myszy, aby powiększyć
-  SysMigrationWarning: Twoje dane systemu SWADE pochodzą ze zbyt starej wersji Foundry
+  SysMigrationWarning:
+    Twoje dane systemu SWADE pochodzą ze zbyt starej wersji Foundry
     i nie można ich w sposób niezawodny przenieść do najnowszej wersji. Proces ten
     zostanie podjęty, ale mogą wystąpić błędy.
   DeckShuffled: Talia kart automatycznie potasowana
@@ -453,11 +458,13 @@ SWADE:
   ItemTraitMod: Modyfikator Cech przedmiotu
   ItemDmgMod: Modyfikator obrażeń przedmiotu
   Duplicates: Znaleziono duplikaty
-  DuplicateItemsBodyText: Podczas dodawania {type} <strong>{name}</strong> do aktora
+  DuplicateItemsBodyText:
+    Podczas dodawania {type} <strong>{name}</strong> do aktora
     {target} znaleziono następujące duplikaty (według nazwy i typu). Nazwy nowych
     elementów zostały zmienione, aby odzwierciedlały ich źródło.
   NoActionDeckFound: Nie znaleziono Talii Akcji, tworzę nową
-  NoActionDeckDiscardPileFound: Nie znaleziono "stosu odrzuconych" Talii Akcji, tworzę
+  NoActionDeckDiscardPileFound:
+    Nie znaleziono "stosu odrzuconych" Talii Akcji, tworzę
     nowy
   Wealth: Majątek
   Characters: Postacie
@@ -516,7 +523,7 @@ SWADE:
   ChaseReset: Talia "{deck}" została zresetowana.
   Expiration:
     TabLabel: Zachowanie w czasie tury
-    Description: "<p>Efekty wygasają podczas <em>następnej tury celu lub później</em>.</p>"
+    Description: '<p>Efekty wygasają podczas <em>następnej tury celu lub później</em>.</p>'
     Behavior: Zasady wygasania
     BeginAuto: Początek tury, automatycznie
     BeginPrompt: Początek tury, zapytanie
@@ -526,7 +533,8 @@ SWADE:
     LooseTurnOnHold: Utrata tury przy Wstrzymaniu Akcji
     Remaining: Pozostało
   RemoveEffectTitle: Usunąć {label} ?
-  RemoveEffectBody: '<p style="text-align: center;">Usunąć <strong>{label}</strong>
+  RemoveEffectBody:
+    '<p style="text-align: center;">Usunąć <strong>{label}</strong>
     z <strong>{parent}</strong>?</p>'
   PPAbbreviation: PM
   ShowInChat: Pokaż na czacie
@@ -582,13 +590,15 @@ SWADE:
       HandNone: Brak
     Bennies:
       Name: Wydaj/otrzymaj a Fuksa
-      Hint: Naciśnij aby wydać Fuksa, przytrzymaj dodatkowo Alt aby zamiast tego otrzymać
+      Hint:
+        Naciśnij aby wydać Fuksa, przytrzymaj dodatkowo Alt aby zamiast tego otrzymać
         Fuksa
   Settings:
     ArbitFields: Dowolne ustawianie pól
     CharSheetDefaultWidth:
       Name: Domyślna szerokość karty postaci
-      Hint: 'Szerokość karty postaci otwartej po raz pierwszy, w pikselach. Domyślnie:
+      Hint:
+        'Szerokość karty postaci otwartej po raz pierwszy, w pikselach. Domyślnie:
         650.'
     HighlightTemplate:
       Name: Zawsze podświetlaj Wzorniki
@@ -599,33 +609,39 @@ SWADE:
       Name: Talia kart używana do inicjatywy
     ParryBase:
       Name: Umiejętność Walki SWID
-      Hint: Umiejętność, która będzie używana do obliczania Obrony aktorów. Więcej
+      Hint:
+        Umiejętność, która będzie używana do obliczania Obrony aktorów. Więcej
         informacji o Savage Worlds ID w dokumentacji!
     UseAttributeShorts:
       Name: Używaj skróconych nazw atrybutów
-      Hint: Użyj tej opcji, jeśli chcesz widzieć skrócone wersje nazw atrybutów w
+      Hint:
+        Użyj tej opcji, jeśli chcesz widzieć skrócone wersje nazw atrybutów w
         kartach postaci graczy i NPC, na przykład Zr zamiast Zręczność, Sp zamiast
         Spryt, itd. Musisz zamknąć i otworzyć ponownie wszystkie karty, by zobaczyć
         zmiany.
     WeightUnit:
       Name: Jednostka wagi
-      Hint: Ustawia mierzenie wagi w funtach lub kilogramach. Zmiana miary nie zmieni
+      Hint:
+        Ustawia mierzenie wagi w funtach lub kilogramach. Zmiana miary nie zmieni
         wagi w ustawieniach przedmiotów, a jedynie jak liczone będzie Obładowanie
     HideNpcItemChatCards:
       Name: Ukryj karty przedmiotów NPC na czacie
-      Hint: Gdy włączone, karty przedmiotów NPC są automatycznie wysyłane jako szept
+      Hint:
+        Gdy włączone, karty przedmiotów NPC są automatycznie wysyłane jako szept
         do wszystkich Mistrzów Gry, zamiast postowania ich w sposób umożliwiający
         zobaczenie wszystkim graczom
     EnableBennyNotify:
       Name: Powiadomienia o Fuksach
-      Hint: Wyświetla wiadomość na czacie, kiedy Fuksy są wydawane, otrzymywane albo
+      Hint:
+        Wyświetla wiadomość na czacie, kiedy Fuksy są wydawane, otrzymywane albo
         odświeżane.
     HideWC:
       Name: Ukryj Figury NPC
       Hint: Nie pokazuj graczom którzy spośród NPC są Figurami
     CreateInitChat:
       Name: Twórz wiadomości na czacie przy losowaniu inicjatywy
-      Hint: Jeśli opcja jest włączona, wylosowane Karty Akcji zostaną pokazane na
+      Hint:
+        Jeśli opcja jest włączona, wylosowane Karty Akcji zostaną pokazane na
         czacie.
     AutoInit:
       Name: Automatyczna inicjatywa
@@ -645,7 +661,8 @@ SWADE:
       Name: Przednia mapa wypukłości
     CoreSkillsList:
       Name: Lista umiejętności podstawowych
-      Hint: Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
+      Hint:
+        Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
         jako podstawowe dla wszystkich aktorów
     CoreSkillsPack:
       Name: Kompendium umiejętności podstawowych
@@ -658,14 +675,16 @@ SWADE:
       Hint: Nazwij swoją walutę
     JokersWild:
       Name: Jokery szaleją!
-      Hint: Kiedy postać gracza dostanie podczas walki jokera, wszyscy w drużynie
+      Hint:
+        Kiedy postać gracza dostanie podczas walki jokera, wszyscy w drużynie
         otrzymują po Fuksie
     AmmoManagement:
       Name: Zarządzanie amunicją
       Hint: Automatyzuje zużywanie amunicji. Sprawdź dokumentację by poznać szczegóły.
     PCAmmoFromInventory:
       Name: PC używają amunicji z ekwipunku
-      Hint: Po aktywacji sprzęt lub przedmiot zużywalny ustawiony jako amunicja zostanie
+      Hint:
+        Po aktywacji sprzęt lub przedmiot zużywalny ustawiony jako amunicja zostanie
         użyty podczas przeładowania broni
     NPCAmmoFromInventory:
       Name: NPC używają amunicji z ekwipunku
@@ -682,11 +701,13 @@ SWADE:
       Hint: Włączenie tej opcji ukrywa wszelkie interakcje z Punktami Mocy
     AlwaysGeneralPP:
       Name: Zawsze pokazuj ogólne Punkty Mocy
-      Hint: Gdy włączone, ogólne Punkty Mocy będą zawsze wyświetlane, nawet jeśli
+      Hint:
+        Gdy włączone, ogólne Punkty Mocy będą zawsze wyświetlane, nawet jeśli
         wszystkie moce są powiązane ze zdolnościami nadprzyrodzonymi
     ApplyEncumbrance:
       Name: Zastosuj kary za Obładowanie
-      Hint: Dodaje kary za Obładowanie. Weź pod uwagę, że ta opcja w chwili obecnej
+      Hint:
+        Dodaje kary za Obładowanie. Weź pod uwagę, że ta opcja w chwili obecnej
         NIE JEST UWZGLĘDNIONA podczas testów {vigor} przy rzutach na {fatigue}!
     VehicleMods:
       Name: Modyfikacje pojazdów
@@ -696,7 +717,8 @@ SWADE:
       Hint: Pojazdy używają Przewag i Zawad
     VehicleSkills:
       Name: Umiejętności prowadzenia pojazdów
-      Hint: Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
+      Hint:
+        Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
         jako umiejętności prowadzenia pojazdów
     BennyImageSheet:
       Name: Fuks
@@ -710,47 +732,55 @@ SWADE:
     StartingCurrency:
       PC:
         Name: Początkowa waluta postaci gracza
-        Hint: Ustala wartość waluty, którą aktor postaci gracza otrzymuje podczas
+        Hint:
+          Ustala wartość waluty, którą aktor postaci gracza otrzymuje podczas
           tworzenia
       NPC:
         Hint: Ustala wartość waluty, którą aktor NPC otrzymuje podczas tworzenia
         Name: Początkowa waluta NPC
     NPCCurrency:
       Name: NPC używają waluty
-      Hint: Gdy włączone, wszyscy NPC mają takie same opcje waluty jak bohaterowie
+      Hint:
+        Gdy włączone, wszyscy NPC mają takie same opcje waluty jak bohaterowie
         graczy
     DumbLuck:
       Name: Szczęśliwy Traf
       Hint: Wybranie tej opcji włącza zasady Szczęśliwego Trafu
     WoundCap:
       Name: Limit Ran
-      Hint: Wybranie tej opcji włącza zasady Limitu Ran podczas obliczania otrzymanych
+      Hint:
+        Wybranie tej opcji włącza zasady Limitu Ran podczas obliczania otrzymanych
         Ran.
     UnarmoredHero:
       Name: W Samej Przepasce
       Hint: Wybranie tej opcji włącza zasady W Samej Przepasce podczas rzutów na Wyparowanie
     GrittyDamage:
       Name: Paskudne Obrażenia
-      Hint: Wybranie tej opcji włącza zasady Paskudnych Ran i pozwala na wybranie
+      Hint:
+        Wybranie tej opcji włącza zasady Paskudnych Ran i pozwala na wybranie
         Tabeli Urazów do rzutów.
     InjuryTable:
       Name: Tabela Urazów
-      Hint: Wybierz odpowiednią tabelę do rzucania do wykorzystania w automatycznych
+      Hint:
+        Wybierz odpowiednią tabelę do rzucania do wykorzystania w automatycznych
         rzutach Paskudnych Urazów.
     HeroesNeverDie:
       Name: Bohaterowie Nie Umierają
-      Hint: Wybranie tej opcji włącza zasady Bohaterowie Nie Umierają podczas ustalania
+      Hint:
+        Wybranie tej opcji włącza zasady Bohaterowie Nie Umierają podczas ustalania
         skutków Eliminacji
     ArmorStacking:
       Choices:
         Core: Zasady Savage Worlds Adventure Edition
         SWPF: Pathfinder®️ for Savage Worlds
       Name: Sumowanie Pancerza
-      Hint: Wybierz które zasady będą stosowane przy sumowaniu Pancerza (obliczaniu
+      Hint:
+        Wybierz które zasady będą stosowane przy sumowaniu Pancerza (obliczaniu
         wartości w przypadku jego kilku warstw)
     StaticGmBennies:
       Name: Statyczne Fuksy MG
-      Hint: Ustala stałą wartość liczby Fuksów MG, które otrzymuje on podczas odświeżania
+      Hint:
+        Ustala stałą wartość liczby Fuksów MG, które otrzymuje on podczas odświeżania
         zamiast wyliczania ich na podstawie aktywnych graczy.
     GmBennies:
       Name: Fuksy Mistrza Gry
@@ -780,7 +810,6 @@ SWADE:
     OnlyOneRace: Możesz mieć tylko jedną rasę na raz!
     OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz!
     OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz!
-  DocumentLink: Link
   DocumentTweaks: Poprawki
   TargetVulnerable: Cel jest Odsłonięty
   WildAttack: Wściekły Atak
@@ -822,11 +851,12 @@ SWADE:
     Use: Użyj
     Consumables: Przedmioty zużywalne
     NotEnoughCharges: Za mało ładunków!
-    ChargesUsed: "<p>{charges} ładunki/ów użytych na <em>{name}</em></p>"
-  EmptyAncestralAbilitiesHint: "<strong>Uwaga:</strong> Ta funkcja została wyłączona
+    ChargesUsed: '<p>{charges} ładunki/ów użytych na <em>{name}</em></p>'
+  EmptyAncestralAbilitiesHint:
+    '<strong>Uwaga:</strong> Ta funkcja została wyłączona
     na rzecz przyznawania przedmiotów. Jeśli tworzysz nowe {ancestry} albo {archetype},
     przeciągnij i upuść przedmioty na jego kartę. Przeciągnięte {ancestry} albo {archetype}
-    automatycznie dodadzą te przedmioty do karty postaci aktora."
+    automatycznie dodadzą te przedmioty do karty postaci aktora.'
   NoTokenSelectedForResistRoll: Aby wykonać rzut na odporność, najpierw zaznacz token
   Templates:
     Cone:
@@ -850,7 +880,8 @@ SWADE:
     Toggle: Przełącz używanie spisu treści kompendium
     Dialog:
       Title: Potwierdź przełączenie
-      Content: Aby zmiana odniosła skutek, Foundry VTT oraz wszyscy podłączeni klienci
+      Content:
+        Aby zmiana odniosła skutek, Foundry VTT oraz wszyscy podłączeni klienci
         zostaną ponownie załadowani. Proszę potwierdzić.
     Header: Zawartość
   Category: Kategoria
@@ -894,7 +925,8 @@ SWADE:
     HasMaxValue: Ma maksymalną wartość
     Current: Aktualne {stat}
     Max: Maks {stat}
-    KeyErr: Klucz dodatkowej statystyki {invalid} jest błędny i został zmieniony na
+    KeyErr:
+      Klucz dodatkowej statystyki {invalid} jest błędny i został zmieniony na
       {key}
     Value: Wartość
     MaxLabel: Maksimum
@@ -932,14 +964,14 @@ SWADE:
       Label: Ustal obrażenia
       Hint: Kliknij aby ustalić obrażenia wybranego tokenu
     SoakModifier: Modyfikator Wyparowania
-    WoundsAboutToBeTaken: "<p><strong>{name}</strong> otrzyma <strong>{wounds}</strong>!</p>"
+    WoundsAboutToBeTaken: '<p><strong>{name}</strong> otrzyma <strong>{wounds}</strong>!</p>'
     SoakDialog:
       SoakRoll: Test Wigoru w celu Wyparowania
       WoundedTitle: Rzuć aby Wyparować Rany dla {name}?
       UnwoundedTitle: Dostosuj obrażenia aby ustalić status dla {name}?
-      WoundedPrompt: "<p>{name} otrzyma {wounds}. Czy chcesz podjąć próbę Wyparowania?</p>"
-      ShakenPrompt: "<p>{name} zaraz będzie W Szoku.</p>"
-      UnharmedPrompt: "<p>{name} może być nienaruszony.</p>"
+      WoundedPrompt: '<p>{name} otrzyma {wounds}. Czy chcesz podjąć próbę Wyparowania?</p>'
+      ShakenPrompt: '<p>{name} zaraz będzie W Szoku.</p>'
+      UnharmedPrompt: '<p>{name} może być nienaruszony.</p>'
       Benny: Wydaj Fuksa w celu Wyparowania
       GMBenny: Wydaj Fuksa MG w celu Wyparowania
       Free: Darmowe Wyparowanie
@@ -950,35 +982,40 @@ SWADE:
       NoVehicleSoak: Wyparowanie w przypadku pojazdów nie jest jeszcze wspierane
     RerollSoakDialog:
       Title: Przerzuć aby Wyparować Rany dla {name}?
-      Prompt: "<p>{name} otrzyma {wounds}. Czy chcesz przerzucić Wyparowanie?</p>"
-      PromptCritFail: "<p>{name} otrzyma {wounds}. Katastrofa nie pozwala na przerzuty.</p>"
+      Prompt: '<p>{name} otrzyma {wounds}. Czy chcesz przerzucić Wyparowanie?</p>'
+      PromptCritFail: '<p>{name} otrzyma {wounds}. Katastrofa nie pozwala na przerzuty.</p>'
       Benny: Wydaj Fuksa aby przerzucić
       GMBenny: Wydaj Fuksa MG aby przerzucić
       Free: Darmowy przerzut
       TakeWounds: Otrzymaj {wounds}
-    AdjustDamagePrompt: "<p>Dostosuj obrażenia do dowolnych zdolności i efektów, które
-      {name} może mieć.</p>"
+    AdjustDamagePrompt:
+      '<p>Dostosuj obrażenia do dowolnych zdolności i efektów, które
+      {name} może mieć.</p>'
     Result:
-      NoSignificantDamage: "<p><strong>{name}</strong> nie ponosi znacznych szkód.</p>"
-      SoakedAll: "<p><strong>{name}</strong> Wyparował wszystkie Rany i nie jest W
-        Szoku!</p>"
-      IsShaken: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>!</p>"
-      IsShakenWithWounds: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>
-        i otrzymał <strong>{wounds}</strong>!</p>"
-      IsIncapacitated: "<p><strong>{name}</strong> jest <strong>Wyeliminowany!</strong></p>"
+      NoSignificantDamage: '<p><strong>{name}</strong> nie ponosi znacznych szkód.</p>'
+      SoakedAll:
+        '<p><strong>{name}</strong> Wyparował wszystkie Rany i nie jest W
+        Szoku!</p>'
+      IsShaken: '<p><strong>{name}</strong> jest <strong>W Szoku</strong>!</p>'
+      IsShakenWithWounds:
+        '<p><strong>{name}</strong> jest <strong>W Szoku</strong>
+        i otrzymał <strong>{wounds}</strong>!</p>'
+      IsIncapacitated: '<p><strong>{name}</strong> jest <strong>Wyeliminowany!</strong></p>'
     Incapacitation:
       InjuryRoll: 'Wyeliminowany: Test Wigoru w celu uniknięcia Urazu'
-      Dies: "<p><strong>{name}</strong> umiera z powodu obrażeń!</p>"
-      PermanentInjury: "<p><strong>{name}</strong> doznaje trwałego Urazu oraz <strong>Kona!</strong></p>"
-      PermanentInjuryHND: "<p><strong>{name}</strong> doznaje trwałego Urazu!</p>"
-      TemporaryInjury: "<p><strong>{name}</strong> doznaje Urazu, który trwa do pełnego
-        wyleczenia Ran.</p>"
-      ShortInjury: "<p><strong>{name}</strong> doznaje Urazu, który trwa 24 godziny,
-        albo pełnego wyleczenia Ran (cokolwiek wydarzy się pierwsze).</p>"
+      Dies: '<p><strong>{name}</strong> umiera z powodu obrażeń!</p>'
+      PermanentInjury: '<p><strong>{name}</strong> doznaje trwałego Urazu oraz <strong>Kona!</strong></p>'
+      PermanentInjuryHND: '<p><strong>{name}</strong> doznaje trwałego Urazu!</p>'
+      TemporaryInjury:
+        '<p><strong>{name}</strong> doznaje Urazu, który trwa do pełnego
+        wyleczenia Ran.</p>'
+      ShortInjury:
+        '<p><strong>{name}</strong> doznaje Urazu, który trwa 24 godziny,
+        albo pełnego wyleczenia Ran (cokolwiek wydarzy się pierwsze).</p>'
       TakeFail: Doznaje trwałego Urazu
       TakeSuccess: Doznaje Urazu, który trwa do pełnego wyleczenia Ran
       Title: Przerzut Urazu dla {name}?
-      Prompt: "<p>{name} dozna Urazu. Czy chcesz przerzucić test Wigoru?</p>"
+      Prompt: '<p>{name} dozna Urazu. Czy chcesz przerzucić test Wigoru?</p>'
     NoInjuryTable: Żadna Tabela Urazów nie została wybrana. Sprawdź ustawienia SWADE
     NoTargetsSelected: Wybierz cel, dla którego mają zostać zastosowane obrażenia.
   NumberOfDice:
@@ -1000,25 +1037,29 @@ SWADE:
     Alpha: Przezroczystość aury
     WallConstraints:
       Label: Ograniczona ścianami
-      Hint: Ten przełącznik decyduje o tym, czy aura jest ograniczona przez ściany
+      Hint:
+        Ten przełącznik decyduje o tym, czy aura jest ograniczona przez ściany
         blokujące światło, czy może przez nie przechodzić
     UserAura1: Aura 1
     UserAura2: Aura 2
   Aura:
     Visibility:
       Label: Widziana przez
-      Hint: Wybierz, które tokeny (według nastawienia) mogą zobaczyć tę aurę. Zawsze
+      Hint:
+        Wybierz, które tokeny (według nastawienia) mogą zobaczyć tę aurę. Zawsze
         możesz zobaczyć wszystkie aury tokenu, do którego masz przynajmniej uprawnienia
         obserwatora
   TOURS:
     ERROR:
       ActorCreatePermission: Ten przewodnik wymaga uprawnień do tworzenia aktorów
       SettingPermission: Ten przewodnik wymaga uprawnień do modyfikowania zasad świata
-      JournalCreatePermission: Ten przewodnik wymaga uprawnień do tworzenia wpisów
+      JournalCreatePermission:
+        Ten przewodnik wymaga uprawnień do tworzenia wpisów
         w dzienniku
     AMMUNITION:
       Title: Amunicja
-      Description: Ten przewodnik pokaże ci, jak korzystać z automatycznego zarządzania
+      Description:
+        Ten przewodnik pokaże ci, jak korzystać z automatycznego zarządzania
         amunicją
       Actor: Przewodnik po amunicji demonstracyjna postać
       Items:
@@ -1031,22 +1072,26 @@ SWADE:
         PP: Magiczny pistolet
       GameSettings:
         Title: Ustawienia gry
-        Content: Na początek zarządzanie amunicją musi być włączone w ustawieniach
+        Content:
+          Na początek zarządzanie amunicją musi być włączone w ustawieniach
           systemu.
       SwadeSettings:
         Title: Ustawienia SWADE
         Content: Ustawienia amunicji znajdują się w ustawieniach <em>Savage Worlds</em>
       AmmoSettings:
         Title: Ustawienia amunicji
-        Content: Kontrolują one czy amunicja jest automatycznie zużywana przez broń
+        Content:
+          Kontrolują one czy amunicja jest automatycznie zużywana przez broń
           zasięgową.
       AmmoManagement:
         Title: Zarządzanie amunicją
-        Content: To ustawienie kontroluje, czy użycie broni dystansowej zużywa jakąkolwiek
+        Content:
+          To ustawienie kontroluje, czy użycie broni dystansowej zużywa jakąkolwiek
           amunicję, zarówno z wewnętrznego licznika strzałów broni, jak i z ekwipunku.
       PCInventory:
         Title: Amunicja z ekwipunku
-        Content: Kolejne trzy ustawienia kontrolują, czy przy przeładowaniu broni
+        Content:
+          Kolejne trzy ustawienia kontrolują, czy przy przeładowaniu broni
           zużywane są zewnętrzne przedmioty, w zależności od typu aktora. Jeśli te
           opcje są odznaczone, ale zarządzanie amunicją jest włączone, aktorzy danego
           typu będą zużywać strzały z przedmiotu, ale będą mogły swobodnie przeładowywać.
@@ -1058,13 +1103,15 @@ SWADE:
         Content: Lista broni postaci znajduje się w zakładce sprzęt.
       ReloadNone:
         Title: Typ przeładowania — brak
-        Content: Ta broń całkowicie ignoruje licznik strzałów, pobierając amunicję
+        Content:
+          Ta broń całkowicie ignoruje licznik strzałów, pobierając amunicję
           bezpośrednio z powiązanego przedmiotu. To ustawienie najlepiej sprawdza
           się w przypadku broni korzystających wyłącznie z zewnętrznej amunicji, takich
           jak kołczan ze strzałami czy karabin bębenkowy.
       AmmoNone:
         Title: Pole amunicji
-        Content: To ustawienie powinno być przypisane do przedmiotu wyposażenia (np.
+        Content:
+          To ustawienie powinno być przypisane do przedmiotu wyposażenia (np.
           strzały) lub przedmiotu zużywalnego (np. beczka z nabojami) w ekwipunku
           postaci. Ilość przedmiotów wyposażenia jest zużywana bezpośrednio. W przypadku
           przedmiotów zużywalnych, zużywane są ich ładunki, przy czym każda ilość
@@ -1072,59 +1119,71 @@ SWADE:
           odpowiadać nazwie przedmiotu, który ma być zużyty.
       ReloadSelf:
         Title: Typ przeładowania — własne
-        Content: Te bronie używają własnej ilości do resetowania licznika strzałów.
+        Content:
+          Te bronie używają własnej ilości do resetowania licznika strzałów.
           To ustawienie najlepiej sprawdza się w przypadku broni rzucanych lub innych
           przedmiotów, które są samowystarczalne i zużywają się podczas użycia.
       AmmoSelf:
         Title: Pole amunicji
-        Content: To pole jest ignorowane, gdy typ przeładowania jest ustawiony na
+        Content:
+          To pole jest ignorowane, gdy typ przeładowania jest ustawiony na
           własne
       ReloadSingle:
         Title: Typ przeładowania — pojedyncze
-        Content: Te bronie przeładowują pojedynczy strzał przy każdym naciśnięciu
+        Content:
+          Te bronie przeładowują pojedynczy strzał przy każdym naciśnięciu
           przycisku przeładowania. To ustawienie jest idealne dla rewolwerów lub innych
           broni z ciężką amunicją, które przeładowuje się powoli.
       AmmoSingle:
         Title: Pole amunicji
-        Content: To pole działa podobnie do przeładuj — brak, ale ilość lub ładunki
+        Content:
+          To pole działa podobnie do przeładuj — brak, ale ilość lub ładunki
           są zużywane podczas przeładowania, a nie podczas strzelania, ponieważ strzelanie
           zużywa liczbę strzałów w liczniku.
       ReloadFull:
         Title: Typ przeładowania — pełne
-        Content: Ta broń resetują cały licznik strzałów przy każdym naciśnięciu przycisku
+        Content:
+          Ta broń resetują cały licznik strzałów przy każdym naciśnięciu przycisku
           przeładowania. To ustawienie może być używane jako uproszczona wersja metody
           magazynków lub dla broni, które nie mają wymiennych magazynków, takich jak
           broń z rezerwuarami cieczy.
       AmmoFull:
         Title: Pole amunicji
-        Content: To pole działa podobnie do przeładuj — brak, ale ilość lub ładunki
+        Content:
+          To pole działa podobnie do przeładuj — brak, ale ilość lub ładunki
           są zużywane podczas przeładowania, zamiast podczas strzelania, ponieważ
           strzelanie zużywa licznik strzałów.
       ReloadMagazine:
         Title: Typ przeładowania — magazynek
-        Content: Te bronie używają w pełni wymiennych magazynków, które można zamieniać
+        Content:
+          Te bronie używają w pełni wymiennych magazynków, które można zamieniać
           w razie potrzeby, śledząc liczbę strzałów pozostałych w każdym magazynku.
       AmmoMagazine:
         Title: Pole amunicji
-        Content: Przedmiot nazwany tutaj MUSI być przedmiotem zużywalnym z podtypem
+        Content:
+          Przedmiot nazwany tutaj MUSI być przedmiotem zużywalnym z podtypem
           magazynek, aby działał poprawnie. Ponadto, ładunki przedmiotu zużywalnego
           powinny odpowiadać licznikowi strzałów broni.
       ReloadBattery:
         Title: Typ przeładowania — bateria
-        Content: Ta broń działa podobnie do magazynków, ale z wymiennymi akumulatorami,
+        Content:
+          Ta broń działa podobnie do magazynków, ale z wymiennymi akumulatorami,
           które są zużywane proporcjonalnie do liczby oddanych strzałów.
       AmmoBattery:
         Title: Pole amunicji
-        Content: Przedmiot nazwany tutaj MUSI być przedmiotem zużywalnym z podtypem
+        Content:
+          Przedmiot nazwany tutaj MUSI być przedmiotem zużywalnym z podtypem
           bateria, aby działał poprawnie. Ponadto maksymalna liczba ładunków przedmiotu
           zużywalnego powinna wynosić 100.
       ReloadPP:
         Title: Typ przeładowania — Punkty Mocy
-        Content: Te bronie nie przeładowują się fizyczną amunicją, lecz poprzez wyczerpywanie
+        Content:
+          Te bronie nie przeładowują się fizyczną amunicją, lecz poprzez wyczerpywanie
           punktów mocy posiadacza, jak to ma miejsce w <em>Rifts® for Savage Worlds</em>
       AmmoPP:
         Title: Pole amunicji
-        Content: Zamiast podawać nazwę przedmiotu, wskaż ważny typ umiejętności nadprzyrodzonej
+        Content:
+          Zamiast podawać nazwę przedmiotu, wskaż ważny typ umiejętności nadprzyrodzonej
           postaci, taki jak Ogólne, Magia, Cuda czy Psionika
     TWEAKS:
       Title: Poprawki
@@ -1132,53 +1191,64 @@ SWADE:
       Actor: Przewodnik po poprawkach demonstracyjna postać
       AccessTweaks:
         Title: Dostęp do poprawek
-        Content: Menu poprawek znajduje się w nagłówku każdego arkusza postaci i oferuje
+        Content:
+          Menu poprawek znajduje się w nagłówku każdego arkusza postaci i oferuje
           dodatkowe opcje konfiguracyjne
       TraitTweaks:
         Title: Poprawki Cech
-        Content: Ta zakładka oferuje szeroki zestaw dodatkowych pól, które umożliwiają
+        Content:
+          Ta zakładka oferuje szeroki zestaw dodatkowych pól, które umożliwiają
           dostosowanie Cech postaci
       Advances:
         Title: Rodzaj Rozwinięć
-        Content: Rozszerzony rozwój (domyślne) oferuje ulepszone zarządzanie danymi,
+        Content:
+          Rozszerzony rozwój (domyślne) oferuje ulepszone zarządzanie danymi,
           które określają rodzaj rozwoju i automatycznie obliczają rangę postaci.
           Rozwój Legacy to po prostu duże pole tekstowe, w którym możesz napisać,
           co chcesz, bez zarządzania danymi.
       Unshake:
         Title: Modyfikator wyjścia z Szoku
-        Content: Dodaje premię do automatycznego rzutu na Szok, który jest wywoływany
+        Content:
+          Dodaje premię do automatycznego rzutu na Szok, który jest wywoływany
           na początku tury postaci W Szoku.
       Soak:
         Title: Modyfikator Wyparowania
-        Content: Dodaje premię do rzutu na Wyparowanie, który jest wywoływany przez
+        Content:
+          Dodaje premię do rzutu na Wyparowanie, który jest wywoływany przez
           przycisk odbierający obrażenia na kartach obrażeń.
       Initiative:
         Title: Modyfikatory inicjatywy
-        Content: Modyfikuje sposób obsługi inicjatywy postaci zgodnie z zasadami zawartymi
+        Content:
+          Modyfikuje sposób obsługi inicjatywy postaci zgodnie z zasadami zawartymi
           w podstawowej książce zasad.
       AutoCalc:
         Title: Automatyczne wyliczenia
-        Content: Przełącza, czy statystyki postaci są obliczane na podstawie jej atrybutów
+        Content:
+          Przełącza, czy statystyki postaci są obliczane na podstawie jej atrybutów
           i wyposażenia, czy ustalane ręcznie.
     ADDSTATS:
       Title: Dodatkowe statystyki
-      Description: Naucz się jak skonfigurować dodatkowe statystyki w swoim świecie
+      Description:
+        Naucz się jak skonfigurować dodatkowe statystyki w swoim świecie
         gry
       Actor: Przewodnik po dodatkowych statystykach demonstracyjna postać
       GameSettings:
         Title: Ustawienia gry
-        Content: Na początek dodatkowe statystyki muszą być skonfigurowane w ustawieniach
+        Content:
+          Na początek dodatkowe statystyki muszą być skonfigurowane w ustawieniach
           systemu.
       SwadeSettings:
         Title: Ustawienia SWADE
         Content: Dodatkowe statystyki znajdują się w ustawieniach <em>Savage Worlds</em>.
       StatSettings:
         Title: Konfiguracja dodatkowych statystyk
-        Content: Wszystkie statystyki muszą najpierw zostać utworzone na tej stronie,
+        Content:
+          Wszystkie statystyki muszą najpierw zostać utworzone na tej stronie,
           aby mogły być później włączone dla aktorów i przedmiotów.
       StatKey:
         Title: Klucz statystyki
-        Content: Klucze statystyk określają, jak dodatkowa statystyka jest oznaczona
+        Content:
+          Klucze statystyk określają, jak dodatkowa statystyka jest oznaczona
           w danych (actor.system.additionalStats.stat-key) i muszą być unikalne.
       StatLabel:
         Title: Etykieta
@@ -1188,11 +1258,13 @@ SWADE:
         Content: Każdy typ ma unikalne zasady.
       HasMax:
         Title: Ma maksymalną wartość
-        Content: Dodaje pole do wskazania maksymalnej wartości dodatkowej statystyki
+        Content:
+          Dodaje pole do wskazania maksymalnej wartości dodatkowej statystyki
           oraz jej bieżącej wartości (dostępne tylko dla liczb i tekstu).
       ActorDisplay:
         Title: Dodatkowe statystyki na karcie aktora
-        Content: Dodatkowe statystyki, które są włączone dla postaci, wyświetlają
+        Content:
+          Dodatkowe statystyki, które są włączone dla postaci, wyświetlają
           się w zakładce podsumowania.
       Checkbox:
         Title: Dodatkowe statystyki - pole wyboru
@@ -1202,27 +1274,32 @@ SWADE:
         Content: Akceptowana jest każda liczba, w tym liczby dziesiętne.
       Die:
         Title: Dodatkowe statystyki - kość
-        Content: Pierwsze pole akceptuje każdy prawidłowy zapis rzutu kostką w Foundry;
+        Content:
+          Pierwsze pole akceptuje każdy prawidłowy zapis rzutu kostką w Foundry;
           dodaj „x”, aby kostka eksplodowała (np. 1d6x). Drugie pole to liczba, która
           jest dodawana do wyniku. Kliknij etykietę, aby wykonać rzut kostką.
       Text:
         Title: Dodatkowe statystyki - tekst
-        Content: Proste pole tekstowe; szerokość nie jest zbyt duża, więc długie fragmenty
+        Content:
+          Proste pole tekstowe; szerokość nie jest zbyt duża, więc długie fragmenty
           tekstu powinny być umieszczane w opisie lub innych polach.
       Selection:
         Title: Dodatkowe statystyki - wybór
         Content: Stała lista opcji oparta na ustawieniach gry.
       AccessTweaks:
         Title: Włączanie i wyłączanie dodatkowych statystyk
-        Content: Dodatkowe statystyki mogą być włączane lub wyłączane w zakładce dodatkowe
+        Content:
+          Dodatkowe statystyki mogą być włączane lub wyłączane w zakładce dodatkowe
           statystyki w menu poprawek.
       AddStatTweaks:
         Title: Zakładka dodatkowe statystyki
-        Content: Każda dodatkowa statystyka jest domyślnie wyłączona i musi być włączana
+        Content:
+          Każda dodatkowa statystyka jest domyślnie wyłączona i musi być włączana
           indywidualnie dla każdego aktora lub przedmiotu.
     AURAS:
       Title: Aury
-      Description: Wprowadzone w wersji 3.2, aury tworzą trwałe wizualizacje, które
+      Description:
+        Wprowadzone w wersji 3.2, aury tworzą trwałe wizualizacje, które
         podążają za tokenami.
       Actor: Przewodnik po aurach demonstracyjna postać
       AccessAuras:
@@ -1230,28 +1307,34 @@ SWADE:
         Content: Aury można znaleźć w menu poprawek
       Auramancer:
         Title: Zakładka aur
-        Content: Aury mają swoją własną zakładkę w menu poprawek. Postacie mogą mieć
+        Content:
+          Aury mają swoją własną zakładkę w menu poprawek. Postacie mogą mieć
           maksymalnie dwie aury.
       Enable:
         Title: Włączanie aur
-        Content: Każda aura może być włączana indywidualnie; działają również w pełni
+        Content:
+          Każda aura może być włączana indywidualnie; działają również w pełni
           z niezwiązanymi tokenami, co pozwala na ustawienie aur osobno, nawet jeśli
           mają wspólne źródło aktora.
       Constrained:
         Title: Ograniczenie ścianami
-        Content: Ten przełącznik decyduje, czy aura jest ograniczona przez ściany
+        Content:
+          Ten przełącznik decyduje, czy aura jest ograniczona przez ściany
           blokujące światło, czy może przez nie przechodzić.
       Radius:
         Title: Promień aury
-        Content: Promień aury, mierzony w jednostkach siatki. Wskazówka jednostki
+        Content:
+          Promień aury, mierzony w jednostkach siatki. Wskazówka jednostki
           wyświetlana tutaj odpowiada jednostce miary bieżącej sceny.
       Color:
         Title: Kolor i przezroczystość aury
-        Content: Aury wyświetlają się podobnie do okrągłych szablonów obszaru wokół
+        Content:
+          Aury wyświetlają się podobnie do okrągłych szablonów obszaru wokół
           postaci źródłowej; te ustawienia pozwalają kontrolować ich wizualny wygląd.
       Visibility:
         Title: Widoczność aury
-        Content: Wybierz, które tokeny (według nastawienia) mogą zobaczyć tę aurę.
+        Content:
+          Wybierz, które tokeny (według nastawienia) mogą zobaczyć tę aurę.
           Zawsze możesz zobaczyć wszystkie aury tokenu, do którego masz przynajmniej
           uprawnienia obserwatora.
     ADVANCES:
@@ -1274,32 +1357,39 @@ SWADE:
         Content: Ten formularz umożliwia konfigurację nowego Rozwinięcia.
       Type:
         Title: Wybór typu Rozwinięcia
-        Content: Wybierz, jaki to rodzaj Rozwinięcia. Obecnie nie uruchamia to dodatkowej
+        Content:
+          Wybierz, jaki to rodzaj Rozwinięcia. Obecnie nie uruchamia to dodatkowej
           walidacji ani wyboru, ale przyszłe aktualizacje systemu mogą to zmienić.
       Rank:
         Title: Ranga Rozwinięcia
-        Content: Ranga, jaką twoja postać osiągnie po zdobyciu tego Rozwinięcia. Nie
+        Content:
+          Ranga, jaką twoja postać osiągnie po zdobyciu tego Rozwinięcia. Nie
           można jej edytować bezpośrednio, ponieważ jest wyliczana na podstawie całkowitej
           liczby postępów twojej postaci.
       Number:
         Title: Numer Rozwinięcia
-        Content: To ustawienie kontroluje kolejność Rozwinięć. Zmiana tej wartości
+        Content:
+          To ustawienie kontroluje kolejność Rozwinięć. Zmiana tej wartości
           przeniesie postęp na wcześniejsze miejsce na liście.
       Planned:
         Title: Planowane Rozwinięcia
-        Content: Możesz oznaczyć postępy jako zaplanowane, aby nie były liczone do
+        Content:
+          Możesz oznaczyć postępy jako zaplanowane, aby nie były liczone do
           rangi twojej postaci.
       Notes:
         Title: Notatki Rozwinięcia
-        Content: Zamieść tutaj wszelkie istotne informacje dotyczące twojego Rozwinięcia;
+        Content:
+          Zamieść tutaj wszelkie istotne informacje dotyczące twojego Rozwinięcia;
           jakie cechy zwiększyłeś, jakie przewagi wybrałeś itp.
       SaveChanges:
         Title: Przycisk zapisu zmian
-        Content: Zmiany NIE są automatycznie zapisywane na postaci. Musisz użyć przycisku
+        Content:
+          Zmiany NIE są automatycznie zapisywane na postaci. Musisz użyć przycisku
           zapisu w edytorze ProseMirror lub tego przycisku „zapisz zmiany”
     HEADQUARTERS:
       Title: Siedziby
-      Description: Dowiedz się o nowym typie strony w dzienniku, siedziba! Przydatne
+      Description:
+        Dowiedz się o nowym typie strony w dzienniku, siedziba! Przydatne
         dla fortec w <em>Fantasy Companion</em>, schronisk w <em>Horror Companion</em>
         i baz w <em>Super Powers Companion</em>.
       JournalEntry: Przewodnik po siedzibach dziennik
@@ -1309,35 +1399,42 @@ SWADE:
         Content: Siedziba musi być tworzona w ramach nadrzędnego dziennika.
       CreatePage:
         Title: Stwórz stronę siedziby
-        Content: Siedziby są nowym typem strony w dzienniku, podobnie jak tekst, obraz
+        Content:
+          Siedziby są nowym typem strony w dzienniku, podobnie jak tekst, obraz
           i PDF.
       HQPage:
         Title: Strona siedziby
-        Content: Siedziby są podobne do stron tekstowych, ale oferują bardziej strukturalne
+        Content:
+          Siedziby są podobne do stron tekstowych, ale oferują bardziej strukturalne
           wprowadzenie. Sekcje są wzorowane na czterech krokach przedstawionych w
           każdym z podręczników.
       Advantage:
         Title: Przewagi
-        Content: Konkretne przewagi zależą od gatunku, w który grasz; możesz przeciągnąć
+        Content:
+          Konkretne przewagi zależą od gatunku, w który grasz; możesz przeciągnąć
           wyniki rzutów do tej sekcji.
       Complication:
         Title: Problemy
-        Content: Podobnie jak w przypadku przewag, możesz przeciągnąć wyniki rzutów
+        Content:
+          Podobnie jak w przypadku przewag, możesz przeciągnąć wyniki rzutów
           do tej sekcji.
       Form:
         Title: Formularz
-        Content: Sekcja formularza jest podzielona na trzy części, abyś miał miejsce
+        Content:
+          Sekcja formularza jest podzielona na trzy części, abyś miał miejsce
           na opisanie każdego aspektu swojej siedziby.
       Upgrades:
         Title: Ulepszenia
-        Content: Możesz wymienić swoje ulepszenia tutaj. To pole akceptuje pełne formatowanie
+        Content:
+          Możesz wymienić swoje ulepszenia tutaj. To pole akceptuje pełne formatowanie
           HTML, więc możesz użyć listy punktowanej, tabeli lub innego systemu organizacyjnego,
           który ci odpowiada.
   SWID:
     Long: Savage Worlds ID
     Short: SWID
     Regenerate: Napraw Savage Worlds ID
-    ChangeWarning2: Zmiana Savage Worlds ID przedmiotu może spowodować przerwanie
+    ChangeWarning2:
+      Zmiana Savage Worlds ID przedmiotu może spowodować przerwanie
       odniesień do przedmiotu! Postępuj ostrożnie i tylko jeśli jesteś pewien.
     ChangeWarning3: Czy chcesz kontynuować?
     ChangeWarning1: Postępuj ostrożnie!
@@ -1380,7 +1477,7 @@ SWADE:
     Redraw: Karta przelosowana
     RedrawDialog:
       Content: Wylosować nową kartę przy użyciu Fuksa, czy za darmo?
-  FollowerCount: "{count} podążający"
+  FollowerCount: '{count} podążający'
   Benny: Fuks
   Free: Za darmo
   SettingConfigurator:
@@ -1389,7 +1486,8 @@ SWADE:
   GroupSheet: Savage Worlds Group Sheet
   RunningHint:
     Header: <strong>Całkowity dystans biegu.</strong>
-    Reminder: <p>Bieganie podczas twojej tury powoduje karę -2 do wszystkich twoich
+    Reminder:
+      <p>Bieganie podczas twojej tury powoduje karę -2 do wszystkich twoich
       akcji.</p>
   Advance: Rozwinięcie
   BenniesMaxNum: Maksimum Fuksów
@@ -1411,12 +1509,14 @@ SWADE:
     Sheet:
       Members:
         Header: Członkowie
-        Hint: Ady dodać członków albo przeciągnij i upuść ich na kartę, albo skopiuj
+        Hint:
+          Ady dodać członków albo przeciągnij i upuść ich na kartę, albo skopiuj
           i wklej ich UUID. Działa to również z tokenami aktorów w scenie.
         Empty: Na razie brak członków
       Lock:
         Label: Przełącz blokadę karty
-        Hint: Gdy karta jest zablokowana, żaden aktor nie może zostać dodany ani usunięty
+        Hint:
+          Gdy karta jest zablokowana, żaden aktor nie może zostać dodany ani usunięty
           z grupy
       Stash:
         Header: Schowek
@@ -1436,7 +1536,8 @@ SWADE:
     Supply:
       Label: Zasób
     Label: Zasoby
-  DeleteFromParentWarningPermanent: '{name} zostanie trwale usunięty z {parent} i
+  DeleteFromParentWarningPermanent:
+    '{name} zostanie trwale usunięty z {parent} i
     nie może to zostać cofnięte.'
   DeleteFromParentWarning: '{name} zostanie trwale usunięty z {parent}.'
   HindMajor: Poważna

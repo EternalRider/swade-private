@@ -109,7 +109,8 @@ SWADE:
     Ao adicionar o {type} <strong>{name}</strong> ao Ator {target} as seguintes
     duplicatas foram encontradas (por nome e tipo). Os novos items foram
     renomeados para refletir sua origem.
-  NoActionDeckDiscardPileFound: Nenhuma pilha de descarte do Baralho de Ação encontrada,
+  NoActionDeckDiscardPileFound:
+    Nenhuma pilha de descarte do Baralho de Ação encontrada,
     criando uma
   Characters: Personagens
   SettingRules: Regras de Ambientação
@@ -237,7 +238,8 @@ SWADE:
       Name: Baralho a ser usado para Iniciativa
     ParryBase:
       Name: SWID da Perícia Lutar
-      Hint: O ID Savage Worlds da perícia que será usada para calcular o Aparar de
+      Hint:
+        O ID Savage Worlds da perícia que será usada para calcular o Aparar de
         atores. Leia mais sobre o ID Savage Worlds na documentação!
     UseAttributeShorts:
       Hint: >-
@@ -259,7 +261,8 @@ SWADE:
       Hint: Não mostrar aos jogadores quais NPCs são Cartas Selvagens
     CreateInitChat:
       Name: Criar Mensagem no Chat para Iniciativa
-      Hint: Quando as cartas de ação forem compradas, o Foundry enviará as cartas
+      Hint:
+        Quando as cartas de ação forem compradas, o Foundry enviará as cartas
         de ação compradas para o Chat, se ativado.
     AutoInit:
       Name: Iniciativa Automática
@@ -399,15 +402,18 @@ SWADE:
         determinar a incapacitação
     VehicleSkills:
       Name: Perícias de Operação
-      Hint: Insira uma lista de perícias separadas por vírgula para serem definidas
+      Hint:
+        Insira uma lista de perícias separadas por vírgula para serem definidas
         como perícias de Operação para todos os veículos
     CharSheetDefaultWidth:
       Name: Largura padrão para fichas de personagem
-      Hint: 'Largura das fichas de personagem quando abertas pela primeira vez, em
+      Hint:
+        'Largura das fichas de personagem quando abertas pela primeira vez, em
         pixels. Padrão: 650.'
     StaticGmBennies:
       Name: Benes de GM Estáticos
-      Hint: Define um valor estático para o número de Benes que o GM recebe ao recarregar,
+      Hint:
+        Define um valor estático para o número de Benes que o GM recebe ao recarregar,
         em vez de se basear no número de jogadores ativos.
     GmBennies:
       Hint: Define quantos Benes o GM recebe ao recarregar
@@ -439,12 +445,12 @@ SWADE:
       Raise: Você é estabilizado com sucesso
       BleedOutModifier: Modificador de Sangramento
       IgnoreWounds: Sangramento Ignora Ferimentos
-  DocumentLink: Link
   DocumentTweaks: Ajustes
   TargetVulnerable: Alvo está Vulnerável
   WildAttack: Ataque Selvagem
   ItemType: Tipo de Item
-  NoTokenSelectedForResistRoll: Para fazer rolagens de resistência, seleciona um token
+  NoTokenSelectedForResistRoll:
+    Para fazer rolagens de resistência, seleciona um token
     primeiro
   Templates:
     Cone:
@@ -540,7 +546,8 @@ SWADE:
         Você pode adicionar qualquer nome de perícia que você quiser ou
         selecionar uma da lista de sugestões
   OtherStats: Outros Atributos
-  HotbarDropOwnedItemWarning: Você só pode criar botões de macro de Itens possuídos
+  HotbarDropOwnedItemWarning:
+    Você só pode criar botões de macro de Itens possuídos
     por alguém
   MessageOnUse:
     Label: Mensagem ao Usar
@@ -878,7 +885,8 @@ SWADE:
     tentada, mas erros podem ocorrer.
   DeckShuffled: Baralho de Cartas automaticamente embaralhado
   BasePace: Movimentação Base
-  WarningPackLocked: Você não pode editar um compêndio bloqueado. Por favor, desbloqueie
+  WarningPackLocked:
+    Você não pode editar um compêndio bloqueado. Por favor, desbloqueie
     primeiro
   ActionCardEditor: Editor de Carta de Ação
   ChangeBennyWarning: Alterar estas configurações requer que você atualize a página!
@@ -899,7 +907,8 @@ SWADE:
     Type: Tipo
     HasMaxValue: Tem Valor Máximo
     Current: '{stat} Atual'
-    KeyErr: A chave de Atributo adicional {invalid} é inválida e foi alterada para
+    KeyErr:
+      A chave de Atributo adicional {invalid} é inválida e foi alterada para
       {key}
     Value: Valor
     MaxLabel: Máximo
@@ -960,7 +969,8 @@ SWADE:
     Title: Adicionar ou substituir ações
     Add: Adicionar como nova
     Replace: Substituir a existente
-    Content: <p>Você deseja adicionar as ações do <strong>{source}</strong> {type}
+    Content:
+      <p>Você deseja adicionar as ações do <strong>{source}</strong> {type}
       como novas ações ou substituir as ações existentes?</p>
   ResourcesUsed:
     Label: Recursos utilizados
@@ -981,7 +991,8 @@ SWADE:
     Range: Raio da Aura
     WallConstraints:
       Label: Restrito por Paredes
-      Hint: Essa opção determina se a aura é limitada por paredes que bloqueiam a
+      Hint:
+        Essa opção determina se a aura é limitada por paredes que bloqueiam a
         luz ou se pode passar por elas
     Color: Cor
     Alpha: Transparência da Aura
@@ -989,26 +1000,31 @@ SWADE:
     UserAura2: Aura 2
   Aura:
     Visibility:
-      Hint: Selecione quais tokens (por Disposição) podem ver essa aura. Você sempre
+      Hint:
+        Selecione quais tokens (por Disposição) podem ver essa aura. Você sempre
         pode ver todas as auras de uma ficha da qual você tenha pelo menos a permissão
         de Observador
       Label: Visível para
   TOURS:
     AMMUNITION:
       SwadeSettings:
-        Content: As configurações de munição podem ser encontradas nas regras de ambientação
+        Content:
+          As configurações de munição podem ser encontradas nas regras de ambientação
           nas configurações gerais do <em>Savage Worlds</em>
         Title: Configurações do SWADE
       AmmoSettings:
-        Content: Estes controlam se a munição é consumida automaticamente por armas
+        Content:
+          Estes controlam se a munição é consumida automaticamente por armas
           de longo alcance.
         Title: Configurações de Munição
       AmmoManagement:
-        Content: Essa configuração controla se o disparo de uma arma de alcance consome
+        Content:
+          Essa configuração controla se o disparo de uma arma de alcance consome
           alguma munição, seja do contador de tiros interno da arma ou do inventário.
         Title: Gerenciamento de Munição
       PCInventory:
-        Content: As próximas três configurações controlam se os itens externos são
+        Content:
+          As próximas três configurações controlam se os itens externos são
           consumidos quando uma arma é recarregada, com base no tipo de ator. Se essas
           configurações não estiverem habilitadas, mas o gerenciamento de munição
           estiver, os atores de um determinado tipo consumirão os tiros em um item,
@@ -1017,13 +1033,15 @@ SWADE:
           não o uso de munição a longo prazo.
         Title: Munição do inventário
       ReloadNone:
-        Content: Essas armas ignoram totalmente o contador de tiros, puxando diretamente
+        Content:
+          Essas armas ignoram totalmente o contador de tiros, puxando diretamente
           do item de munição vinculado. Essa configuração é melhor para armas que
           usam apenas munição externa, como uma aljava de flechas ou um canhão de
           guerra alimentado por tambor.
         Title: Procedimento de recarga — Nenhum
       AmmoNone:
-        Content: Este deve ser definido como um Equipamento (por exemplo, flechas)
+        Content:
+          Este deve ser definido como um Equipamento (por exemplo, flechas)
           ou item consumível (por exemplo, barril de balas) no inventário do personagem.
           A quantidade de um item de equipamento é consumida diretamente. Em vez disso,
           os itens consumíveis usam suas cargas, sendo que cada quantidade representa
@@ -1031,41 +1049,49 @@ SWADE:
           ao nome do item a ser consumido <em></em> .
         Title: O campo de munição
       ReloadSingle:
-        Content: Essas armas recarregam um único tiro a cada vez que o botão Recarregar
+        Content:
+          Essas armas recarregam um único tiro a cada vez que o botão Recarregar
           é pressionado. Essa configuração é ideal para revólveres ou outras armas
           com munições volumosas que demoram a ser recarregadas.
         Title: Procedimento de recarga — individual
       AmmoSingle:
-        Content: Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
+        Content:
+          Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
           a quantidade ou as cargas são consumidas pelo recarregamento em vez de pelo
           disparo da arma, já que o disparo da arma consome do contador de tiros.
         Title: O campo de munição
       AmmoFull:
-        Content: Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
+        Content:
+          Esse campo funciona de forma semelhante a Recarregar — Nenhum, mas
           a quantidade ou as cargas são consumidas pelo recarregamento em vez de pelo
           disparo da arma, já que o disparo da arma consome do contador de tiros.
         Title: O campo de munição
       ReloadBattery:
         Title: Procedimento de recarga — Bateria
-        Content: Essas armas funcionam de forma semelhante aos carregadores, mas com
+        Content:
+          Essas armas funcionam de forma semelhante aos carregadores, mas com
           baterias intercambiáveis que se esgotam proporcionalmente aos disparos efetuados.
       ReloadPP:
         Title: Procedimento de recarga — Pontos de Poder
-        Content: Essas armas não são recarregadas com munição física, mas esgotando
+        Content:
+          Essas armas não são recarregadas com munição física, mas esgotando
           os pontos de poder do usuário, conforme apresentado em <em>Rifts® for Savage
           Worlds</em>
       AmmoMagazine:
-        Content: O item nomeado aqui DEVE ser um consumível com o subtipo Carregador
+        Content:
+          O item nomeado aqui DEVE ser um consumível com o subtipo Carregador
           para funcionar corretamente. Além disso, as cargas do consumível devem corresponder
           ao contador de tiros da arma.
         Title: O campo de munição
       AmmoBattery:
-        Content: O item nomeado aqui DEVE ser um consumível com o subtipo Bateria
+        Content:
+          O item nomeado aqui DEVE ser um consumível com o subtipo Bateria
           para funcionar corretamente. Além disso, as cargas máximas do consumível
           devem estar fora de 100.
         Title: O campo de munição
       AmmoPP:
-        Content: Em vez de nomear um item, nomeie um tipo arcano válido no personagem,
+        Content:
+          Em vez de nomear um item, nomeie um tipo arcano válido no personagem,
           como geral, magia, milagres ou psiônica
         Title: O campo de munição
       Title: Munição
@@ -1081,14 +1107,16 @@ SWADE:
         PP: Arma de mago
       GameSettings:
         Title: Configurações do Jogo
-        Content: Primeiro, o Gerenciamento de Munição deve ser ativado nas configurações
+        Content:
+          Primeiro, o Gerenciamento de Munição deve ser ativado nas configurações
           do sistema do jogo.
       CharacterWeapons:
         Title: Armas de personagens
         Content: As armas de um personagem são listadas na aba de Equipamento.
       ReloadSelf:
         Title: Procedimento de recarga — Self
-        Content: Essas armas usam sua própria quantidade para reiniciar o contador
+        Content:
+          Essas armas usam sua própria quantidade para reiniciar o contador
           de tiros. Essa configuração é a melhor para armas de arremesso ou qualquer
           outra coisa que seja autônoma e se utilize sozinha.
       AmmoSelf:
@@ -1096,13 +1124,15 @@ SWADE:
         Content: Este campo é ignorado quando o tipo de recarga é definido como próprio
       ReloadFull:
         Title: Procedimento de recarga — completo
-        Content: Essas armas recarregam todo o contador de tiros a cada vez que o
+        Content:
+          Essas armas recarregam todo o contador de tiros a cada vez que o
           botão Recarregar é pressionado. Isso pode ser usado como uma versão simplificada
           do método do carregador ou para armas que não têm carregadores destacáveis,
           como uma arma com reservatórios de líquido.
       ReloadMagazine:
         Title: Procedimento de recarga — Carregador
-        Content: Essas armas usam carregadores totalmente removíveis que podem ser
+        Content:
+          Essas armas usam carregadores totalmente removíveis que podem ser
           trocados conforme necessário, monitorando a quantidade de tiros restantes
           por carregador.
     TWEAKS:
@@ -1127,7 +1157,8 @@ SWADE:
     Regenerate: Regenerar ID do Savage Worlds
     ChangeWarning1: Prossiga com cuidado!
     Long: ID Savage Worlds
-    ChangeWarning2: Alterar a ID do Savage Worlds de um item pode quebrar as referências
+    ChangeWarning2:
+      Alterar a ID do Savage Worlds de um item pode quebrar as referências
       ao item! Proceda com cautela e somente se tiver certeza.
     ChangeWarning3: Você quer continuar?
   RequiredCrew: Tripulação Requerida
@@ -1219,7 +1250,8 @@ SWADE:
   Draw: Sacar
   Reset: Redefinir
   ConvictionExtendPrompt: Você quer gastar um Bene para estender sua convicção?
-  CharacterSummaryTypeErr: Não é possível usar o resumidor de personagem para o ator
+  CharacterSummaryTypeErr:
+    Não é possível usar o resumidor de personagem para o ator
     do tipo {type}
   ChaseReset: O deck "{deck}" foi redefinido.
   ChaseLayout: Layout
@@ -1237,7 +1269,8 @@ SWADE:
         Hint: Quando travada, nenhum Ator pode ser adicionado ou removido do grupo
       Members:
         Header: Membros
-        Hint: Para adicionar membros, arraste e solte-os sobre a ficha ou copie e
+        Hint:
+          Para adicionar membros, arraste e solte-os sobre a ficha ou copie e
           cole seus UUIDs. Isso também funciona para tokens de atores em uma cena.
         Empty: Sem membros ainda
   Supplies:
@@ -1281,10 +1314,12 @@ SWADE:
   disabledAE: Desabilitado devido a Efeito Ativo
   RunningHint:
     Header: <strong>Distância total de corrida.</strong>
-    Reminder: <p>Correr durante o seu turno causa -2 de penalidade em todas as suas
+    Reminder:
+      <p>Correr durante o seu turno causa -2 de penalidade em todas as suas
       ações.</p>
   DeleteFromParentWarning: '{name} será permanentemente excluído de {parent}.'
-  DeleteFromParentWarningPermanent: '{name} será permanentemente excluído de {parent}
+  DeleteFromParentWarningPermanent:
+    '{name} será permanentemente excluído de {parent}
     e não poderá ser recuperado.'
 ITEM:
   TypeWeapon: Arma

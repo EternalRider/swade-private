@@ -15,7 +15,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
-import { copyToClipboard, getDieSidesRange } from '../util';
+import { getDieSidesRange } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = {
@@ -429,12 +429,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     }
 
-    buttons.unshift({
-      label: 'SWADE.DocumentLink',
-      class: 'copy-link',
-      icon: 'fas fa-link',
-      onclick: () => copyToClipboard(this.item.link),
-    });
     return buttons;
   }
 

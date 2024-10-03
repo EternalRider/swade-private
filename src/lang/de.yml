@@ -390,7 +390,8 @@ SWADE:
   UnstablePlatform: Unsicheren Grund
   NoSceneAvailable: Es ist keine Szene verfügbar oder die Spielfläche wurde ausgeschaltet
   SetUpChase: Verfolgungsjagd erstellen
-  NotADeckCompendium: Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
+  NotADeckCompendium:
+    Bei diesem Compendium scheint es sich nicht um ein Legacy Deck
     zu handeln
   ConvertToDeck: Zu Deck konvertieren
   PPAbbreviation: MP
@@ -486,12 +487,15 @@ SWADE:
     <strong>{parent}</strong>entfernen?</p>
   WorldBasics: Basiseinstellungen
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
-  NoActionDeckDiscardPileFound: Kein Aktionskarten-Ablagestapel gefunden, es wird
+  NoActionDeckDiscardPileFound:
+    Kein Aktionskarten-Ablagestapel gefunden, es wird
     einer erstellt
   Subtract: Abziehen
-  ChangeBennyWarning: Nach Änderung dieser Einstellungen muss die Seite neu geladen
+  ChangeBennyWarning:
+    Nach Änderung dieser Einstellungen muss die Seite neu geladen
     werden!
-  CannotAddAncestryToAncestry: Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp
+  CannotAddAncestryToAncestry:
+    Ein Volk/Archetyp kann nicht zu einem Volk/Archetyp
     hinzugefügt werden!
   Keybindings:
     Bennies:
@@ -703,7 +707,6 @@ SWADE:
   ItemTraitMod: Eigenschaftsmodifikator
   TargetVulnerable: Ziel ist Verwundbar
   WildAttack: Rücksichtsloser Angriff
-  DocumentLink: Link
   DocumentTweaks: Optionen
   ItemType: Typ
   Source: Quelle
@@ -737,7 +740,8 @@ SWADE:
     NotEnoughCharges: Nicht genug Ladungen!
     ChargesUsed: <p>{charges} Ladung(en) von <em>{name}</em> genutzt</p>
   ItemSheet: Savage Worlds Itembogen
-  EmptyAncestralAbilitiesHint: <strong>Warnung:</strong> Dieses Feature ist veraltet.
+  EmptyAncestralAbilitiesHint:
+    <strong>Warnung:</strong> Dieses Feature ist veraltet.
     Beim Erstellen von einem neuen {ancestry}/{archetype} sollten stattdessen Items
     in den Reiter Eigenschaften gezogen werden. Dann fügen {ancestry} bzw. {archetype}
     Akteuren diese Items hinzu, wenn sie auf sie angewendet werden.
@@ -801,7 +805,8 @@ SWADE:
         Beliebigen Fertigkeitsnamen eingeben oder einen aus der Liste der Vorschläge
         auswählen
   OtherStats: Andere Stats
-  HotbarDropOwnedItemWarning: Macros können nur für Items erstellt werden die Akteuren
+  HotbarDropOwnedItemWarning:
+    Macros können nur für Items erstellt werden die Akteuren
     gehören!
   AdditionalStats:
     SelectHint: Durch Semikolon getrennte Liste von Optionen eingeben
@@ -843,7 +848,8 @@ SWADE:
     ApplyDamage:
       Label: Schaden berechnen
       Hint: Klicken, um Schaden für gewählte Figur zu berechnen
-    WoundsAboutToBeTaken: <p><strong>{name}</strong> droht, <strong>{wounds}</strong>
+    WoundsAboutToBeTaken:
+      <p><strong>{name}</strong> droht, <strong>{wounds}</strong>
       zu erleiden!</p>
     SoakDialog:
       WoundedTitle: Für {name} Schaden wegstecken würfeln?
@@ -873,7 +879,8 @@ SWADE:
     AdjustDamagePrompt: <p>Schaden entsprechend Fähigkeiten/Effekten von {name} anpassen.</p>
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> nimmt keinen signifikanten Schaden.</p>
-      SoakedAll: <p><strong>{name}</strong> hat allen Schaden weggesteckt und ist
+      SoakedAll:
+        <p><strong>{name}</strong> hat allen Schaden weggesteckt und ist
         nicht Angeschlagen!</p>
       IsShaken: <p><strong>{name}</strong> ist <strong>Angeschlagen</strong>!</p>
       IsShakenWithWounds: >-
@@ -884,12 +891,15 @@ SWADE:
     SoakModifier: Schaden-Wegstecken-Modifikator
     Incapacitation:
       Dies: <p><strong>{name}</strong> stirbt durch den Schaden!</p>
-      PermanentInjury: <p><strong>{name}</strong> erleidet eine permanente Verletzung
+      PermanentInjury:
+        <p><strong>{name}</strong> erleidet eine permanente Verletzung
         und <strong>Verblutet</strong>!</p>
       PermanentInjuryHND: <p><strong>{name}</strong> erleidet eine permanente Verletzung!</p>
-      TemporaryInjury: <p><strong>{name}</strong> erleidet eine Verletzung, die anhält,
+      TemporaryInjury:
+        <p><strong>{name}</strong> erleidet eine Verletzung, die anhält,
         bis alle Wunden geheilt sind.</p>
-      ShortInjury: <p><strong>{name}</strong> erleidet eine Verletzung, die 24 Stunden
+      ShortInjury:
+        <p><strong>{name}</strong> erleidet eine Verletzung, die 24 Stunden
         anhält, oder bis alle Wunden geheilt sind (je nachdem, was zuerst eintrifft).</p>
       Title: Verletzungsgrad für {name} neu würfeln?
       TakeFail: Erleide permanente Verletzung
@@ -906,11 +916,13 @@ SWADE:
   TOURS:
     ADDSTATS:
       ActorDisplay:
-        Content: Zusätzliche Werte, die im Übersichtsreiter von Akteuren angezeigt
+        Content:
+          Zusätzliche Werte, die im Übersichtsreiter von Akteuren angezeigt
           werden können.
     TWEAKS:
       Soak:
-        Content: Bonus für Würfe auf Wunden wegstecken, wenn die Schadens-Buttons
+        Content:
+          Bonus für Würfe auf Wunden wegstecken, wenn die Schadens-Buttons
           der System-Chatkarten genutzt werden.
         Title: Schaden-Wegstecken-Modifikator
       Title: Optionen
@@ -918,7 +930,8 @@ SWADE:
       Title: Munition
     HEADQUARTERS:
       Upgrades:
-        Content: Aufwertungen können hier aufgeführt werden. HTML wird vollständig
+        Content:
+          Aufwertungen können hier aufgeführt werden. HTML wird vollständig
           unterstützt, Stichpunktlisten, Tabellen und ähnliches können also beliebig
           genutzt werden.
         Title: Aufwertungen
@@ -934,7 +947,8 @@ SWADE:
     Enabled: Aktiviert
     WallConstraints:
       Label: Durch Wände beschränkt
-      Hint: Schaltet um, ob die Aura durch Wände begrenzt wird, die Licht blockieren,
+      Hint:
+        Schaltet um, ob die Aura durch Wände begrenzt wird, die Licht blockieren,
         oder diese durchdringt
     UserAura2: Aura 2
     TabHeader: Auramancer
@@ -999,13 +1013,15 @@ SWADE:
   Aura:
     Visibility:
       Label: Sichtbar für
-      Hint: Wählt, welche Figuren (nach Gesinnung) diese Aura sehen. Du siehst immer
+      Hint:
+        Wählt, welche Figuren (nach Gesinnung) diese Aura sehen. Du siehst immer
         Auren für Figuren, von denen du mindestens Beobachter bist
   SWID:
     Long: Savage Worlds ID
     Short: SWID
     Regenerate: Savage Worlds ID neu generieren
-    ChangeWarning2: Die Savage Worlds ID zu ändern, kann Verweise auf dieses Item
+    ChangeWarning2:
+      Die Savage Worlds ID zu ändern, kann Verweise auf dieses Item
       ungültig machen! Hier ist Vorsicht geboten.
     ChangeWarning3: Fortfahren?
     ChangeWarning1: Vorsicht!
@@ -1034,7 +1050,8 @@ SWADE:
     Title: Aktionen hinzufügen/ersetzen
     Replace: Existierende ersetzen
     Add: Neu hinzufügen
-    Content: <p>Sollen die Aktionen von <strong>{source}</strong> ({type}) als neue
+    Content:
+      <p>Sollen die Aktionen von <strong>{source}</strong> ({type}) als neue
       Aktionen hinzugefügt, oder existierende ersetzt werden?</p>
   Headquarters:
     Advantage: Vorteil
@@ -1098,7 +1115,8 @@ SWADE:
     BlackJoker: Schwarzer Joker / Herz Joker
     BlueJoker: Blauer Joker / Karo Joker
     GreenJoker: Grüner Joker / Kreuz Joker
-  CharacterSummaryTypeErr: Charakterübersicht kann nicht für Akteure vom Typ {type}
+  CharacterSummaryTypeErr:
+    Charakterübersicht kann nicht für Akteure vom Typ {type}
     genutzt werden
   ChaseLayout: Layout
   ChaseRows: Zeilen

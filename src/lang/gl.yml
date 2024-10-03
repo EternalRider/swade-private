@@ -52,7 +52,7 @@ SWADE:
   WildDie: Dado salvaxe
   Mod:
     Value: Valor
-    Ignore: "¿Ignorar?"
+    Ignore: '¿Ignorar?'
     Custom:
       Add: Engadir modificador personalizado
     Support: Apoio
@@ -130,8 +130,8 @@ SWADE:
   MinStr: For. Mín.
   Ok: Correcto
   MajHind: Atranco maior
-  Major: "(Maior)"
-  Minor: "(Menor)"
+  Major: '(Maior)'
+  Minor: '(Menor)'
   Edges: Vantaxes
   ArcBack: Trasfondo Arcano
   Conv: Convencemento
@@ -267,9 +267,11 @@ SWADE:
   ManCheck: Tirada de Manobra
   CardSoundDesc: Soa un efecto cando se reparte Iniciativa
   HideWCDesc: Ocultar aos xogadores que PNX son Comodíns
-  EnableWoundPaceDesc: Cando estea activado, Paso modifícase automaticamente coas
+  EnableWoundPaceDesc:
+    Cando estea activado, Paso modifícase automaticamente coas
     Feridas
-  EnableBennyNotifyDesc: Mostrar mensaxes de chat cando se ganan, empregan ou restauran
+  EnableBennyNotifyDesc:
+    Mostrar mensaxes de chat cando se ganan, empregan ou restauran
     os Benis.
   SettingConfDesc: Axusta o sistema a ambientación que está a usar
   PickACard: Escolle unha carta
@@ -318,7 +320,8 @@ SWADE:
   WildDiePreset: Tema do dado salvaxe
   AmmoManagement: Xestión de munición
   CoreSkill: Habilidade básica
-  CoreSkillsDesc: Introduza unha lista de habilidades separadas por comas para definilas
+  CoreSkillsDesc:
+    Introduza unha lista de habilidades separadas por comas para definilas
     como habilidades iniciais dos actores
   RemoveGroupLeader: Retirar como líder de grupo
   AddTokenFollowers: Engade como seguidores os tokens seleccionados
@@ -326,25 +329,30 @@ SWADE:
   PPCost: Custo de PP
   ActionDeckReset: Restablecer o mazo de acción
   ShowBennyAnimation: Mostrar benis animados
-  ShowBennyAnimationDesc: Reproduce unha animación o usar un Beni. So si DSN está
+  ShowBennyAnimationDesc:
+    Reproduce unha animación o usar un Beni. So si DSN está
     instalado
   Crew: Tripulación requirida
   Passengers: Pasaxeiros Adicionais
   String: Texto
   Number: Número
   NoPowerPoints: Sen Puntos de Poder
-  NoPowerPointsDesc: Cando marcas esta opción, agóchanse todas referencias aos Puntos
+  NoPowerPointsDesc:
+    Cando marcas esta opción, agóchanse todas referencias aos Puntos
     de Poder
   WealthType: Sistema de Riqueza
   WealthDie.Label: Riqueza
-  AmmoManagementDesc: Cando está activado, e resulta aplicable, as accións restan
+  AmmoManagementDesc:
+    Cando está activado, e resulta aplicable, as accións restan
     munición do cargador da arma. A tarxetas de obxecto gañan ademais un novo botón
     de recarga e pode que non sexas capaz de facer unha tirada de ataque se non tes
     munición abondo
   HideNpcItemChatCards: Agochar as cartas de chat para os Obxectos dos PNX
-  HideNpcItemChatCardsDesc: Cando está activado, as tarxetas do chat dos PNX mándanse
+  HideNpcItemChatCardsDesc:
+    Cando está activado, as tarxetas do chat dos PNX mándanse
     automaticamente coma mensaxes privadas ao GM, en lugar de aparecer publicamente
-  CoreSkillsPackDesc: Escolle o Compendio no que se identificarán as Habilidades Básicas
+  CoreSkillsPackDesc:
+    Escolle o Compendio no que se identificarán as Habilidades Básicas
     dos PJ
   ShowCharacterSummary: Amosar Resumo de Personaxe
   CharacterSummary: Resumo de Personaxe
@@ -377,22 +385,25 @@ SWADE:
   RightClickZoom: Click dereito para zoom
   DeckShuffled: Cartas baralladas automaticamente
   BasePace: Paso Estándar
-  WarningPackLocked: Non podes editar un Compendio bloqueado. Por favor, desbloquéao
+  WarningPackLocked:
+    Non podes editar un Compendio bloqueado. Por favor, desbloquéao
     primeiro
   ActionCardEditor: Editor dos Mazos de Acción
   CardValue: Valor
   CardSuit: Pao
   IsJoker: É o Joker
   OpenACEditor: Abrir en Editor de Mazos de Acción
-  "Yes": Si
-  "No": Non
+  'Yes': Si
+  'No': Non
   OpSkill: Habilidade de Manexo
   RerollWithBenny: Repetir con Beni
   FreeReroll: Repetir de balde
-  JokersWildDesc: Dálle un Beni a cada personaxe xogador cada vez que algunha delas
+  JokersWildDesc:
+    Dálle un Beni a cada personaxe xogador cada vez que algunha delas
     recibe un Joker na iniciativa
   ParryBase: Nome da habilidade da que depende a Parada
-  ParryBaseDesc: O nome da habilidade que se empregará para calcular a Parada dos
+  ParryBaseDesc:
+    O nome da habilidade que se empregará para calcular a Parada dos
     personaxes
   AutoCalcParry: Calcular automaticamente a Parada, incluíndo Escudos
   Subtype: Subtipo
@@ -407,15 +418,17 @@ SWADE:
   DiceConf: Configuración dos Dados
   DiceConfDesc: Configura os axustes da integración SWADE / Dice So Nice
   DiceConfLabel: Abrir Configuración de Dados
-  DSNNone: "- Nada -"
+  DSNNone: '- Nada -'
   Reload: Recarga
   Refresh: Recarga esta tarxeta
   Ammo: Munición
   ReloadUnneeded: A arma está xa cargada ao máximo
-  WeightUnitDesc: Elixe se os pesos mídense en libras ou quilos. Cambiar isto NON
+  WeightUnitDesc:
+    Elixe se os pesos mídense en libras ou quilos. Cambiar isto NON
     mudará o peso dos obxectos xa creados, só como se calcula a Carga
   UseAttributeShorts: Usar abreviaturas nos nomes dos Atributos
-  UseAttributeShortsDesc: Activa esta opción se queres ver a abreviatura do nome dos
+  UseAttributeShortsDesc:
+    Activa esta opción se queres ver a abreviatura do nome dos
     atributos nas fichas de PX e PNX. Por exemplo, Axi en lugar de Axilidade. Precisas
     pechar e volver abrir as fichas para que esta opción teña efecto.
   BennyImageSheet: Beni
@@ -427,7 +440,8 @@ SWADE:
   ChangeBennyWarning: Mudar estas opcións require que actualices a páxina!
   3DBennies: Benis en 3D
   HardChoices: Eleccións Difíciles
-  HardChoicesDesc: Marcar esta opción activará a regra de ambientación "Eleccións
+  HardChoicesDesc:
+    Marcar esta opción activará a regra de ambientación "Eleccións
     Difíciles"
   WealthSelectionNoneOther: Ningunha / Outra
   Mod.Custom.Add: Engadir modificador personalizado
@@ -436,7 +450,8 @@ SWADE:
   WorldBasics: Conceptos básicos
   Expiration.LooseTurnOnHold: Perder a quenda En Agarda
   Benny3DBackBumpDesc: Bump map traseiro do beni
-  DuplicateItemsBodyText: Ao agregar {type} <strong>{name}</strong> al Actor {target},
+  DuplicateItemsBodyText:
+    Ao agregar {type} <strong>{name}</strong> al Actor {target},
     atopáronse os seguintes duplicados (por nome e tipo). Mudouse o nome dos novos
     elementos para reflectir a súa orixe.
   ActionDeckPresetLight: Mazo de Acción (Cor Clara)
@@ -446,16 +461,19 @@ SWADE:
   Modifier: Modificador
   ArcaneSkill: Habilidade arcana
   ActivateArcaneDevice: Activar artefacto
-  WildDiePresetDesc: Elixe un estilo de DNS para o teu Dado Salvaxe. Elixe 'Personalizado'
+  WildDiePresetDesc:
+    Elixe un estilo de DNS para o teu Dado Salvaxe. Elixe 'Personalizado'
     se queres crear o teu propio estilo, ou 'Ningún' se non queres que o teu Dado
     Salvaxe teña un aspecto diferente. Ten en conta que os Dados Salvaxe con estilos
     propios só os verás ti, non o resto de xogadores.
-  PCAmmoFromInventoryDesc: Cando esté activada a opción para configurar un Item como
+  PCAmmoFromInventoryDesc:
+    Cando esté activada a opción para configurar un Item como
     'Equipado', podes escoller que es empregue coma munición e se gaste ao recargar
     a arma
   ArchetypeAbilities: Capacidades de arquetipo
   Checkbox: Casilla de selección
-  SysMigrationWarning: O teu sistema SWADE é dunha versión de Foundry demasiado antiga,
+  SysMigrationWarning:
+    O teu sistema SWADE é dunha versión de Foundry demasiado antiga,
     e non pode migrarse con seguridade á versión máis recente. O proceso porase en
     marcha, pero poden ocorrer erros.
   CardFace: Frontal da carta
@@ -484,8 +502,9 @@ SWADE:
   Modifiers: Modificadores
   Benny3DFrontBumpDesc: Bump map frontal do beni
   Duplicates: Atopáronse duplicados
-  NoActionDeckFound: "Non se atopou un Mazo de Acción: creando un"
-  NoActionDeckDiscardPileFound: "Non se atopou Descarte do Mazo de Acción: creando\
+  NoActionDeckFound: 'Non se atopou un Mazo de Acción: creando un'
+  NoActionDeckDiscardPileFound:
+    "Non se atopou Descarte do Mazo de Acción: creando\
     \ un"
   MAPenalty.Label: Penalización de acción múltiple
   ApplyEncumbrance: Aplicar penalizadores por Carga
@@ -505,11 +524,13 @@ SWADE:
   RemoveEffectTitle: Eliminar {label} ?
   LayOutChaseWithDeck: Usa o Mazo para crear unha Persecución
   ClearChaseCards: Retira as cartas de Persecución da escena
-  RemoveEffectBody: '<p style="text-align: center;">Remove <strong>{label}</strong>
+  RemoveEffectBody:
+    '<p style="text-align: center;">Remove <strong>{label}</strong>
     from <strong>{parent}</strong>?</p>'
   CARD.TypeAdventure: Carta de Aventura
   CARD.TypePoker: Carta de Póker
-  ApplyEncumbranceHint: Aplicar penalizadores por Carga. Por favor, ten en conta que
+  ApplyEncumbranceHint:
+    Aplicar penalizadores por Carga. Por favor, ten en conta que
     o sistema NON SOPORTA aínda as probas de Vigor para resistir Fatiga!
   ArcaneDevice: Artefacto arcano
   CopyMarkdown: Copia Markdown
@@ -518,20 +539,24 @@ SWADE:
   Settings:
     HighlightTemplate:
       Name: Destacar siempre las plantillas
-      Hint: Cuando se activa, las plantillas de medición siempre se resaltan a sí
+      Hint:
+        Cuando se activa, las plantillas de medición siempre se resaltan a sí
         mismas en lugar de la rejilla.
     FantasyCompanionEntangle:
-      Hint: Utiliza el estado de aferrado de Fantasy Companion en lugar de la versión
+      Hint:
+        Utiliza el estado de aferrado de Fantasy Companion en lugar de la versión
         Core. Requiere una recarga para que surta efecto
       Name: Fantasy Companion aferrado
     UseAttributeShorts:
-      Hint: Activa esta opción si quieres ver los nombres de los atributos abreviados
+      Hint:
+        Activa esta opción si quieres ver los nombres de los atributos abreviados
         en las hojas de PJ y PNJ, es decir, Agi en lugar de Agilidad, Ast en lugar
         de Astucia, etc. Tendrás que cerrar y volver a abrir todas las hojas abiertas
         para que esta opción tenga efecto.
       Name: Utilizar nombres de atributos acortados
     HideNpcItemChatCards:
-      Hint: Cuando se activan, las tarjetas de chat de objetos de PNJ se envían automáticamente
+      Hint:
+        Cuando se activan, las tarjetas de chat de objetos de PNJ se envían automáticamente
         como un susurro a todos los Gamemasters en lugar de ser publicadas para que
         todos las vean
       Name: Ocultar tarjetas de chat de objetos de PNJ
@@ -542,14 +567,16 @@ SWADE:
       Hint: Mapa frontal del bump del beni
       Name: Mapa frontal del bump
     CoreSkillsList:
-      Hint: Introduzca una lista separada por comas de las habilidades que se definirán
+      Hint:
+        Introduzca una lista separada por comas de las habilidades que se definirán
         como competencias básicas para todos los actores
       Name: Lista de habilidades básicas
     JokersWild:
       Hint: Da un beni a cada PJ cuando uno de ellos recibe un comodín
       Name: Comodín salvaje
     AmmoManagement:
-      Hint: Cuando se activa, y es aplicable, las acciones restan munición del cargador
+      Hint:
+        Cuando se activa, y es aplicable, las acciones restan munición del cargador
         del arma. Las cartas de objetos también ganan un nuevo botón de recarga y
         no podrás lanzar un ataque si no hay suficiente munición disponible
       Name: Gestión de la munición
@@ -557,16 +584,19 @@ SWADE:
       Hint: Habilitar la regla de convicción
       Name: Convicción
     NoPowerPoints:
-      Hint: Cuando se activa esta opción se ocultan todas las interacciones de Puntos
+      Hint:
+        Cuando se activa esta opción se ocultan todas las interacciones de Puntos
         de poder
       Name: Sin puntos de poder
     ApplyEncumbrance:
-      Hint: Aplicar penalizaciones por sobrecarga. Por favor, ten en cuenta que esto
+      Hint:
+        Aplicar penalizaciones por sobrecarga. Por favor, ten en cuenta que esto
         actualmente NO ESTÁ SOPORTADO para las pruebas de {vigor} para resistir la
         {fatiga}
       Name: Aplicar penalizaciones de carga
     WeightUnit:
-      Hint: Establece si los pesos se miden en libras o en kilogramos. Cambiar esto
+      Hint:
+        Establece si los pesos se miden en libras o en kilogramos. Cambiar esto
         NO cambiará los pesos de los objetos, sólo cómo se calcula la carga
       Name: Unidad de peso
     InitDiscardPile:
@@ -575,11 +605,13 @@ SWADE:
       Name: Mazo de cartas para usar en la iniciativa
     ParryBase:
       Name: Nombre de la habilidad de combate localizada
-      Hint: Nombre de la habilidad que se utilizará para calcular la parada de un
+      Hint:
+        Nombre de la habilidad que se utilizará para calcular la parada de un
         personaje
     EnableBennyNotify:
       Name: Notificaciones de Beni
-      Hint: Muestra mensajes de chat cuando se gastan, se dan o se actualizan los
+      Hint:
+        Muestra mensajes de chat cuando se gastan, se dan o se actualizan los
         bennies.
     HideWC:
       Name: Ocultar los Comodines PNJ
@@ -606,7 +638,8 @@ SWADE:
       Hint: Renombra tu moneda
     PCAmmoFromInventory:
       Name: Los PJ utilizan la munición del inventario
-      Hint: Cuando se activa la opción de establecer un elemento `Equipable` se puede
+      Hint:
+        Cuando se activa la opción de establecer un elemento `Equipable` se puede
         establecer para ser utilizado como munición y se utilizará al recargar el
         arma
     NPCAmmoFromInventory:
@@ -637,7 +670,7 @@ SWADE:
       RollSpirit: Tirada de Espíritu
       Title: Quitar el Aturdido de {name}
       UnshakeModifier: Modificador para quitar el aturdimiento
-      Question: "¿Qué quieres hacer?"
+      Question: '¿Qué quieres hacer?'
       Success: Ya no estás aturdido
     Stunned:
       Title: Tirada de vigor para eliminar el Conmocionado
@@ -649,7 +682,7 @@ SWADE:
       Fail: Has muerto
       Success: Aguanta, por ahora.
       Raise: Se ha estabilizado
-  DeleteEmbeddedActionPrompt: "¿Estás seguro de que quieres eliminar la acción {action}?"
+  DeleteEmbeddedActionPrompt: '¿Estás seguro de que quieres eliminar la acción {action}?'
   ItemEquipStatus:
     MainHand: Mano principal
     Label: Localización
@@ -659,7 +692,8 @@ SWADE:
     OffHand: Mano mala
     TwoHands: A dos manos
   DestroyOnEmpty: Destruir cuando esté vacío
-  EmptyAncestralAbilitiesHint: Esta {ancestry} o {archetype} aún no tiene ninguna habilidad.
+  EmptyAncestralAbilitiesHint:
+    Esta {ancestry} o {archetype} aún no tiene ninguna habilidad.
     Arrastra y suelta algo en la hoja para empezar.
   Templates:
     Cone:
@@ -679,13 +713,13 @@ SWADE:
   CompendiumTOC:
     Dialog:
       Title: Confirmar la alternancia
-      Content: Para que el cambio surta efecto, se recargará Foundry VTT y todos los
+      Content:
+        Para que el cambio surta efecto, se recargará Foundry VTT y todos los
         clientes conectados. Por favor, confirmalo.
     Toggle: interrumpir el uso del Compendio TOC
     Header: Contenido
-  CustomWildDie: "- Dado salvaje personalizado -"
+  CustomWildDie: '- Dado salvaje personalizado -'
   BenniesSpendGM: Gasta un beni del DJ
-  DocumentLink: Enlace
   DocumentTweaks: Ajustes
   TargetVulnerable: El objetivo es vulnerable
   WildAttack: Ataque salvaje
@@ -693,7 +727,7 @@ SWADE:
   Source: Fuente
   Properties: Propiedades
   AddAction: Añadir acción
-  DeleteEmbeddedPowerPrompt: "¿Estás seguro de que quieres eliminar el poder {power}?"
+  DeleteEmbeddedPowerPrompt: '¿Estás seguro de que quieres eliminar el poder {power}?'
   TrademarkWeapon:
     Regular: Regular
     Improved: Mejorada
@@ -715,7 +749,7 @@ SWADE:
     WildSides: Paso do dado de riqueza
     Modifier: Modificador ao dado de riqueza
   MAPenalty:
-    None: "No"
+    None: 'No'
     Label: Penalización de acción múltiple
   ActiveEffects:
     ResetDuration: Restablecer la duración
@@ -750,7 +784,8 @@ SWADE:
     Long: Alcance longo
     Extreme: Alcance extremo
   RunningMod: Modificador de correr
-  WildDieThemeDesc: elixa un Tema DSN para o seu dado salvaxe. Seleccione personalizado
+  WildDieThemeDesc:
+    elixa un Tema DSN para o seu dado salvaxe. Seleccione personalizado
     se desexa crear o seu propio ou Ningún se non desexa que o seu dado salvaxe teña
     un aspecto diferente. Por favor, ten en conta que os dado salvaxe creados por
     ti mesmo só os podes ver ti. Os demais xogadores veranos de forma diferente.

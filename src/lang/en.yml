@@ -194,7 +194,7 @@ SWADE:
   Major: (Major)
   Minor: (Minor)
   HindMajor: Major
-  HindMinor: Minor  
+  HindMinor: Minor
   Edges: Edges
   ArcBack: Arcane Background
   Value: Value
@@ -827,7 +827,6 @@ SWADE:
     OnlyOneArchetype: You can only have one archetype at a time.
     InvalidBasePace: You cannot set Base Pace to a pace type with no value.
     NoGroupCombatants: Group Actors cannot be combatants.
-  DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
@@ -1531,7 +1530,7 @@ SWADE:
     Base: Base Movement
     Other: Other Movement Speeds
     Pace:
-      Base: 
+      Base:
         Label: Base Pace
         Hint: Which Pace is the default for the actor
       Ground:

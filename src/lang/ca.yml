@@ -634,12 +634,14 @@ SWADE:
       Hint: Selecciona la taula de tirades per Danys Greus.
     UnarmoredHero:
       Name: Heroi sense armadura
-      Hint: Si marqueu-ho, s'habilitarà la regla de heroi sense armadura quan tireu
+      Hint:
+        Si marqueu-ho, s'habilitarà la regla de heroi sense armadura quan tireu
         per absorbir
     ArbitFields: Camps de configuració arbitraria
     HeroesNeverDie:
       Name: Els herois mai moren
-      Hint: Si marqueu això, s'habilitarà la regla de "Els herois mai moren" quan
+      Hint:
+        Si marqueu això, s'habilitarà la regla de "Els herois mai moren" quan
         es determina la incapacitat
   EffectCallbacks:
     Shaken:
@@ -663,7 +665,6 @@ SWADE:
       BleedOutModifier: Modificador de dessagnament
       IgnoreWounds: Ignora les ferides per dessagnament
   BenniesSpendGM: Gasta un beni del DJ
-  DocumentLink: Enllaç
   DocumentTweaks: Paràmetres
   TargetVulnerable: L'objectiu és vulnerable
   WildAttack: Atac salvatge
@@ -845,13 +846,16 @@ SWADE:
     NoTargetsSelected: Selecciona un objectiu per aplicar-hi el mal.
     Incapacitation:
       InjuryRoll: Tirada de vigor per resistir lesions en cas d'incapacitat
-      PermanentInjury: <p><strong>{name}</strong> pateix una lesió permanent i s'està
+      PermanentInjury:
+        <p><strong>{name}</strong> pateix una lesió permanent i s'està
         <strong>dessagnant!</strong></p>
-      ShortInjury: <p><strong>{name}</strong> pateix una lesió que desapareixerà en
+      ShortInjury:
+        <p><strong>{name}</strong> pateix una lesió que desapareixerà en
         24 hores, o quan totes les ferides es curen (el que sigui abans).</p>
       Dies: <p><strong>{name}</strong> mor pels danys!</p>
       PermanentInjuryHND: <p><strong>{name}</strong> pateix una lesió permanent!</p>
-      TemporaryInjury: <p><strong>{name}</strong> pateix una lesió que desapareixerà
+      TemporaryInjury:
+        <p><strong>{name}</strong> pateix una lesió que desapareixerà
         quan totes les ferides es curin.</p>
       TakeFail: Pateix una lesió permanent
       TakeSuccess: Patir una lesió que desapareix quan totes les ferides es curen
