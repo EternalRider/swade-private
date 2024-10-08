@@ -194,7 +194,7 @@ SWADE:
   Major: (Major)
   Minor: (Minor)
   HindMajor: Major
-  HindMinor: Minor
+  HindMinor: Minor  
   Edges: Edges
   ArcBack: Arcane Background
   Value: Value
@@ -1530,7 +1530,7 @@ SWADE:
     Base: Base Movement
     Other: Other Movement Speeds
     Pace:
-      Base:
+      Base: 
         Label: Base Pace
         Hint: Which Pace is the default for the actor
       Ground:

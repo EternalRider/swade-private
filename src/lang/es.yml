@@ -638,12 +638,10 @@ SWADE:
       Hint: Selecciona la tabla apropiada para obtener automáticamente el Daño descarnado.
     UnarmoredHero:
       Name: Héroe sin armadura
-      Hint:
-        Al marcar esta casilla se activará la regla de configuración Héroe sin
+      Hint: Al marcar esta casilla se activará la regla de configuración Héroe sin
         armadura al tirar para absorber
     HeroesNeverDie:
-      Hint:
-        Al marcar esta opción, se activará la regla "Los héroes nunca mueren"
+      Hint: Al marcar esta opción, se activará la regla "Los héroes nunca mueren"
         al determinar la incapacitación
       Name: Los héroes nunca mueren
     ArbitFields: Campos de configuración secundarios
@@ -834,21 +832,17 @@ SWADE:
     SoakModifier: Modificador para absorción
     Incapacitation:
       Title: Repetir la tirada de gravedad de la lesión {name}?
-      Prompt:
-        <p>{name} está a punto de ser herido. ¿Quieres repetir la tirada de
+      Prompt: <p>{name} está a punto de ser herido. ¿Quieres repetir la tirada de
         Vigor?</p>
       Dies: <p><strong>{name}</strong> muere por los daños!</p>
-      TemporaryInjury:
-        <p><strong>{name}</strong> sufre una herida que desaparecerá
+      TemporaryInjury: <p><strong>{name}</strong> sufre una herida que desaparecerá
         cuando se curen todas las heridas.</p>
       TakeSuccess: Sufrir una lesión que desaparece cuando se curan todas las heridas
       InjuryRoll: Tirada de Vigor para resistir las heridas tras la incapacitación
-      PermanentInjury:
-        <p><strong>{name}</strong> sufre una lesión permanente y se
+      PermanentInjury: <p><strong>{name}</strong> sufre una lesión permanente y se
         <strong>está desangrando!</strong></p>
       PermanentInjuryHND: <p><strong>{name}</strong> sufre una lesión permanente!</p>
-      ShortInjury:
-        <p><strong>{name}</strong> sufre una herida que desaparecerá en
+      ShortInjury: <p><strong>{name}</strong> sufre una herida que desaparecerá en
         24 horas, o cuando todas las Heridas estén curadas (lo que ocurra antes).</p>
       TakeFail: Sufre una lesión permanente
   Rolls:

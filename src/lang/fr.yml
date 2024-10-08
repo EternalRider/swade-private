@@ -150,8 +150,8 @@ SWADE:
   Effects: Effets actifs
   Hindrances: Handicaps
   MajHind: Handicap majeur
-  Major: '(majeur)'
-  Minor: '(mineur)'
+  Major: "(majeur)"
+  Minor: "(mineur)"
   Edges: Atouts
   ArcBack: Arcanes
   Req: Prérequis
@@ -213,12 +213,10 @@ SWADE:
   VehicleMod: Mod. de véhicule
   OpSkill: Compétence de manœuvre
   ShowBennyAnimation: Montrer l'animation du jeton
-  ShowBennyAnimationDesc:
-    Joue une animation lors de l'utilisation d'un jeton. Seulement
+  ShowBennyAnimationDesc: Joue une animation lors de l'utilisation d'un jeton. Seulement
     disponible si Dice So Nice! est installé
   WildDiePreset: Thème du dé joker
-  WildDiePresetDesc:
-    Sélectionnez un thème DSN pour votre dé joker. Sélectionnez «
+  WildDiePresetDesc: Sélectionnez un thème DSN pour votre dé joker. Sélectionnez «
     Personnalisé » si vous voulez créer le vôtre ou « Aucun » si vous ne voulez pas
     que votre dé joker soit différent. Gardez à l'esprit que pour le moment, vous
     seul pouvez voir votre dé joker personnalisé. Les autres joueurs le verront différemment.
@@ -244,8 +242,7 @@ SWADE:
   Size: Taille
   Scale: Échelle
   PickACard: Piocher une carte
-  NoCardsLeft:
-    Il n'y a plus assez de cartes dans la pioche ! Il ne reste que {current}
+  NoCardsLeft: Il n'y a plus assez de cartes dans la pioche ! Il ne reste que {current}
     pour {needed} cartes nécessaires
   OldCard: Ancienne carte
   ActionCard: Carte d'action
@@ -265,7 +262,7 @@ SWADE:
   Items: Objets
   Max: Max.
   Curr: Actuel
-  DSNNone: '- Aucun -'
+  DSNNone: "- Aucun -"
   Reload: Recharger
   Refresh: Rafraîchir cette carte
   Ammo: Munitions
@@ -314,14 +311,12 @@ SWADE:
   SubtractPPDesc: Soustraire le coût en PP du total disponible
   AddPPDesc: Ajouter le coût en PP au total disponible
   RightClickZoom: '[Clic-droit] pour zoomer'
-  SysMigrationWarning:
-    Votre installation de SWADE est ancienne et ne peut pas être
+  SysMigrationWarning: Votre installation de SWADE est ancienne et ne peut pas être
     migrée vers la nouvelle version. La migration va être tentée, mais des erreurs
     peuvent se produire.
   DeckShuffled: La pioche a été automatiquement mélangée
   BasePace: Allure de base
-  WarningPackLocked:
-    Vous ne pouvez pas éditer un compendium verrouillé. Déverrouillez-le
+  WarningPackLocked: Vous ne pouvez pas éditer un compendium verrouillé. Déverrouillez-le
     d'abord
   ActionCardEditor: Éditeur de cartes d'action
   CardFace: Figure
@@ -337,8 +332,7 @@ SWADE:
   CopyMarkdown: Copier le Markdown
   Imperial: Impériale
   Metric: Métrique
-  ChangeBennyWarning:
-    Changer ces paramètres nécessite un rechargement de la page
+  ChangeBennyWarning: Changer ces paramètres nécessite un rechargement de la page
     !
   3DBennies: Jetons 3D
   WealthSelectionNoneOther: Aucun/Autre
@@ -348,13 +342,11 @@ SWADE:
   ItemTraitMod: Modificateur de trait d'objet
   ItemDmgMod: Modification d'objet de dégâts
   Duplicates: Doublons trouvés
-  DuplicateItemsBodyText:
-    En ajoutant le {type} <strong>{name}</strong> à l'acteur
+  DuplicateItemsBodyText: En ajoutant le {type} <strong>{name}</strong> à l'acteur
     {target}, des éléments en double (nom/type) ont été trouvés. Les nouveaux objets
     ont été renommés pour signaler leur provenance.
   NoActionDeckFound: Aucun jeu de cartes d'action trouvé, création en cours
-  NoActionDeckDiscardPileFound:
-    Aucune défausse de carte d'action trouvée, création
+  NoActionDeckDiscardPileFound: Aucune défausse de carte d'action trouvée, création
     en cours
   Wealth: Richesse
   Characters: Personnages
@@ -394,8 +386,7 @@ SWADE:
   ModOther: Autres modificateurs
   Snapfire: Tir statique
   UnstablePlatform: Plateforme instable
-  CannotAddAncestryToAncestry:
-    Vous ne pouvez pas ajouter une espèce/un archétype
+  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une espèce/un archétype
     à une espèce/un archétype !
   LayOutChaseWithDeck: Utiliser les cartes pour gérer la poursuite
   ClearChaseCards: Retirer les cartes de poursuite de la scène
@@ -406,8 +397,7 @@ SWADE:
   ConvertToDeck: Convertir en jeu de cartes
   Expiration:
     TabLabel: Comportement du tour
-    Description:
-      "<p>Les effets s'arrêtent lors <em>du prochain tour de la cible,
+    Description: "<p>Les effets s'arrêtent lors <em>du prochain tour de la cible,
       ou plus tard</em></p>"
     Behavior: Comportement des fins d'effet
     BeginAuto: Début du tour automatique
@@ -418,8 +408,7 @@ SWADE:
     LooseTurnOnHold: perte du tour En attente
     Remaining: Restant
   RemoveEffectTitle: Supprimer {label} ?
-  RemoveEffectBody:
-    "<p style='text-align: center;'>Supprimer <strong>{label}</strong>
+  RemoveEffectBody: "<p style='text-align: center;'>Supprimer <strong>{label}</strong>
     de <strong>{parent}</strong> ?</p>"
   PPAbbreviation: PP
   ShowInChat: 'Afficher dans la discussion'
@@ -474,19 +463,16 @@ SWADE:
       HandNone: Aucune
     Bennies:
       Name: Dépenser/recevoir un jeton
-      Hint:
-        Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
+      Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
         recevoir un jeton
   Settings:
     HighlightTemplate:
       Name: Toujours surligner les gabarits
-      Hint:
-        Quand l’option est activée, les gabarits de mesure sont toujours surlignés,
+      Hint: Quand l’option est activée, les gabarits de mesure sont toujours surlignés,
         au lieu de la grille.
     FantasyCompanionEntangle:
       Name: Statut Entravé du Compagnon Fantasy
-      Hint:
-        Utiliser le statut Entravé du Compagnon Fantasy au lieu de celui du livre
+      Hint: Utiliser le statut Entravé du Compagnon Fantasy au lieu de celui du livre
         de base. Changer ce paramètre nécessite un rechargement
     InitDiscardPile:
       Name: Défausse de l'initiative
@@ -494,8 +480,7 @@ SWADE:
       Name: Jeu de cartes pour l'initiative
     ParryBase:
       Name: SWID de la compétence de combat
-      Hint:
-        L'identifiant SWID de la compétence avec laquelle calculer la Parade des
+      Hint: L'identifiant SWID de la compétence avec laquelle calculer la Parade des
         acteurs. Il est préconisé de laisser <em>fighting</em>, afin d'assurer une
         compatibilité plus aisée avec les différentes modules d'automatisation pour
         SWADE. À la place, assurez-vous que le SWID de la compétence Combat vaut <em>fighting</em>,
@@ -504,20 +489,17 @@ SWADE:
         du système SWADE pour plus d'informations à propos du SWID !
     UseAttributeShorts:
       Name: Utiliser des noms d'attributs courts
-      Hint:
-        Activez cette option si vous voulez des noms d'attributs courts sur les
+      Hint: Activez cette option si vous voulez des noms d'attributs courts sur les
         fiches des PJs et des PNJs (c.a.d. Agi au lieu d'Agilité ...). Vous devez
         rouvrir toutes les fiches ouvertes pour que cette option prenne effet.
     WeightUnit:
       Name: Unité de poids
-      Hint:
-        Indique si les poids sont mesurés en livres ou en kilogrammes. Changer
+      Hint: Indique si les poids sont mesurés en livres ou en kilogrammes. Changer
         ce paramètre ne changera PAS le poids des objets, uniquement le calcul de
         l'encombrement
     HideNpcItemChatCards:
       Name: Cacher les cartes de la discussion d'objets des PNJ
-      Hint:
-        Quand l'option est activée, les cartes de la discussion d'objets des PNJ
+      Hint: Quand l'option est activée, les cartes de la discussion d'objets des PNJ
         sont automatiquement envoyées en message privé à tous les meneurs de jeu au
         lieu d'être envoyées dans la discussion publique
     EnableBennyNotify:
@@ -528,8 +510,7 @@ SWADE:
       Hint: Ne montre pas aux joueurs le signe Joker des PNJ
     CreateInitChat:
       Name: Créer un message dans la discussion pour l'initiative
-      Hint:
-        Quand les cartes d'actions sont tirées, Foundry affichera le tirage des
+      Hint: Quand les cartes d'actions sont tirées, Foundry affichera le tirage des
         cartes dans le chat si autorisé.
     AutoInit:
       Name: Initiative automatique
@@ -548,8 +529,7 @@ SWADE:
       Name: Relief de la texture du jeton, côté face
     CoreSkillsList:
       Name: Liste des compétences de base
-      Hint:
-        Entrez la liste des compétences de base de tous les acteurs, en séparant
+      Hint: Entrez la liste des compétences de base de tous les acteurs, en séparant
         chaque nom par une virgule
     CoreSkillsPack:
       Name: Compendium des compétences de base
@@ -565,15 +545,13 @@ SWADE:
       Hint: Donnez un jeton à tous les PJ lorsque l'un d'entre eux tire un joker
     AmmoManagement:
       Name: Gestion des munitions
-      Hint:
-        Quand l'option est activée, et si c'est applicable, les actions soustraient
+      Hint: Quand l'option est activée, et si c'est applicable, les actions soustraient
         des munitions du chargeur de votre arme. Les cartes d'objet ont aussi un nouveau
         bouton Recharger, et vous ne pourrez pas effectuer d'attaque si vous n'avez
         plus assez de munitions.
     PCAmmoFromInventory:
       Name: Les PJ utilisent les munitions de l'inventaire
-      Hint:
-        Quand l'option est activée, il est possible de marquer un objet « d’Équipement
+      Hint: Quand l'option est activée, il est possible de marquer un objet « d’Équipement
         » comme munition. Il sera utilisé pour recharger l'arme
     NPCAmmoFromInventory:
       Name: Les PNJ utilisent les munitions de leur inventaire
@@ -581,21 +559,18 @@ SWADE:
       Name: Les véhicules utilisent les munitions de leur inventaire
     EnableWoundPace:
       Name: Allure affectée par les blessures
-      Hint:
-        Quand l'option est activée, l'Allure est automatiquement affectée par
+      Hint: Quand l'option est activée, l'Allure est automatiquement affectée par
         les blessures
     EnableConv:
       Name: Conviction
       Hint: Active la règle d'univers Conviction
     NoPowerPoints:
       Name: Pas de points de pouvoir
-      Hint:
-        Lorsqu’elle est activée, cette option cache toutes les interactions des
+      Hint: Lorsqu’elle est activée, cette option cache toutes les interactions des
         points de pouvoir
     ApplyEncumbrance:
       Name: Appliquer les pénalités d'encombrement
-      Hint:
-        Appliquer les pénalités d'encombrement. Gardez à l'esprit que cela n'AFFECTE
+      Hint: Appliquer les pénalités d'encombrement. Gardez à l'esprit que cela n'AFFECTE
         PAS les jets de {vigor} pour résister à la {fatigue} !
     VehicleMods:
       Name: Mods du véhicule
@@ -615,8 +590,7 @@ SWADE:
     ArbitFields: Données diverses de l'univers
     AlwaysGeneralPP:
       Name: Toujours afficher les Points de pouvoir génériques
-      Hint:
-        Quand l'option est cochée, les Point de pouvoirs générique sont toujours
+      Hint: Quand l'option est cochée, les Point de pouvoirs générique sont toujours
         visibles, même si tous les pouvoirs ont un Arcane associé
     StartingCurrency:
       PC:
@@ -626,46 +600,38 @@ SWADE:
         Hint: Défini le montant de départ d'un PNJ reçoit à la création
         Name: Montant de départ d'un PNJ
     NPCCurrency:
-      Hint:
-        Quand l'option est cochée, tous les PNJ ont les mêmes options d'un Personnage
+      Hint: Quand l'option est cochée, tous les PNJ ont les mêmes options d'un Personnage
         joueur
       Name: les PNJ utilisent de l'argent
     UnarmoredHero:
       Name: Héros sans armure
-      Hint:
-        Cocher cette option activera la règle d'univers Héros sans armure lors
+      Hint: Cocher cette option activera la règle d'univers Héros sans armure lors
         des jet d'encaissement
     WoundCap:
-      Hint:
-        Cocher cette option, active la règle d'univers Limite de blessures lors
+      Hint: Cocher cette option, active la règle d'univers Limite de blessures lors
         du calcul des blessures.
       Name: Limite de blessures
     InjuryTable:
       Name: Tables des blessures
-      Hint:
-        Sélectionnez la table correspondante pour les jets automatiques des Dégâts
+      Hint: Sélectionnez la table correspondante pour les jets automatiques des Dégâts
         handicapants.
     GrittyDamage:
       Name: Dégâts handicapants
-      Hint:
-        Cocher cette option, active la règle d'univers des Dégâts handicapants
+      Hint: Cocher cette option, active la règle d'univers des Dégâts handicapants
         et permet de choisir la table des blessures à utiliser.
     HeroesNeverDie:
       Name: Les héros ne meurent jamais
-      Hint:
-        Cocher cette option active la règle d'univers les Héros de meurent jamais
+      Hint: Cocher cette option active la règle d'univers les Héros de meurent jamais
         quand le système vérifie l'état d'incapacité
     DumbLuck:
       Name: Chance insolente
       Hint: Cocher cette option activera la règle d'univers Chance insolente
     VehicleSkills:
       Name: Compétences de manœuvre
-      Hint:
-        Saisissez la liste de compétences, séparées par une virgule, qui peut
+      Hint: Saisissez la liste de compétences, séparées par une virgule, qui peut
         servir à diriger un véhicule dans votre monde
     CharSheetDefaultWidth:
-      Hint:
-        "Largeur des feuilles de personnage à l'ouverture, en pixels. Valeur par
+      Hint: "Largeur des feuilles de personnage à l'ouverture, en pixels. Valeur par
         défaut : 650."
       Name: Largeur par défaut des feuilles de personnages
   EffectCallbacks:
@@ -722,8 +688,7 @@ SWADE:
     Use: Utiliser
     Consumables: Consommables
     NotEnoughCharges: Pas assez de charges !
-  EmptyAncestralAbilitiesHint:
-    <strong>Avertissement:</strong> Cette fonctionnalité
+  EmptyAncestralAbilitiesHint: <strong>Avertissement:</strong> Cette fonctionnalité
     a été abandonnée au profit de l'octroi d'éléments. Si vous créez une nouvelle
     {ancestry} ou {archetype}, glissez-déposez les éléments dans l'onglet Propriétés
     à la place. Le {ancestry} ou {archetype} ajoutera ces éléments à l'acteur lorsqu'il
@@ -736,8 +701,7 @@ SWADE:
     HasMaxValue: A une valeur maximale
     Current: Valeur actuelle {stat}
     Max: Valeur Max {stat}
-    KeyErr:
-      La clé de statistique supplémentaire {invalid} n'est pas valide et a été
+    KeyErr: La clé de statistique supplémentaire {invalid} n'est pas valide et a été
       remplacée par {key}
   Attribute: Attribut
   AttributeManager:
@@ -748,19 +712,17 @@ SWADE:
   ColdBodied: Corps froid
   CompendiumTOC:
     Dialog:
-      Content:
-        Afin que le changement soit pris en compte, FoundryVTT et les autres
+      Content: Afin que le changement soit pris en compte, FoundryVTT et les autres
         clients doivent être rafraîchis. Merci de confirmer.
       Title: Confirmer
     Header: Contenu
     Toggle: Cocher pour utiliser la table des matières du Compendium
-  CustomWildDie: '- Dé Joker spécial -'
+  CustomWildDie: "- Dé Joker spécial -"
   DieSides: Faces du dé
   EffectWizard:
     EnterSkill:
       Label: Entrez une compétence
-      Hint:
-        Vous pouvez saisir n'importe quel nom de compétence ou en sélectionner
+      Hint: Vous pouvez saisir n'importe quel nom de compétence ou en sélectionner
         un de la liste suggérée
     Value: Valeur
     Preview: Prévisualisation
@@ -771,8 +733,7 @@ SWADE:
   EncumbranceSteps: Etapes d'encombrement
   HeavyArmor: Armure lourde
   HeavyWeapon: Arme lourde
-  HotbarDropOwnedItemWarning:
-    Vous pouvez seulement créer des boutons de macro pour
+  HotbarDropOwnedItemWarning: Vous pouvez seulement créer des boutons de macro pour
     les items possédés
   IgnFatigue: Ignorer la fatigue
   ItemGrants:
@@ -783,8 +744,7 @@ SWADE:
   MessageOnUse:
     Label: Messag eà l'utilisation
     Hint: Afficher un message dans le tchat lorsque cet item est utilisé
-  NoTokenSelectedForResistRoll:
-    Pour faire un test de Résistance, sélectionnez d'abord
+  NoTokenSelectedForResistRoll: Pour faire un test de Résistance, sélectionnez d'abord
     un token
   OtherStats: Autres stats
   Resist: Resister
@@ -821,8 +781,7 @@ SWADE:
   WildCard: Joker
   WildDieSides: Faces du dé joker
   WildDieTheme: Thème du dé Joker
-  WildDieThemeDesc:
-    Sélectionnez un thème DSN pour votre dé joker. Choisissez 'Custom'
+  WildDieThemeDesc: Sélectionnez un thème DSN pour votre dé joker. Choisissez 'Custom'
     si vous voulez créer le votre, ou 'Aucun/None' si vous ne voulez pas que votre
     dé joker soit différent. Gardez en tête que les thèmes 'custom' ne seront que
     vus par vous. Les autres joueurs le verront différents.
@@ -850,8 +809,7 @@ SWADE:
     Battery: Batterie
     Self: Soi-même
   RemoveAmmo: Enlever les munitions
-  NoMags:
-    Vous n'avez pas de consommables identifiés comme des chargeurs dans votre
+  NoMags: Vous n'avez pas de consommables identifiés comme des chargeurs dans votre
     inventaire
   ConsumableType:
     Label: Sous-type
@@ -896,8 +854,7 @@ SWADE:
       Accept: Accepter
       SoakRoll: Jet de Vigueur pour l'encaissement
       WoundedTitle: Jet d'encaissement pour {name} ?
-      WoundedPrompt:
-        <p>{name} est sur le point de subir {wounds} blessures. Voulez
+      WoundedPrompt: <p>{name} est sur le point de subir {wounds} blessures. Voulez
         vous faire un jet d'encaissement ?</p>
       ApplyShaken: Appliquer l'état Secoué
       NoVehicleSoak: L'encaissement pour les véhicules n'est pas encore mis en place
@@ -906,59 +863,46 @@ SWADE:
       Benny: Dépenser un jeton pour relancer
       Free: Relancer gratuitement
       TakeWounds: Prends {wounds] blessures(s)
-      Prompt:
-        <p>{name} va subir {wounds} blessures(s). voulez-vous relancer le jet
+      Prompt: <p>{name} va subir {wounds} blessures(s). voulez-vous relancer le jet
         d'encaissement ?</p>
-      PromptCritFail:
-        <p>{name} est sur le point de subir {wounds} blessures(s). Un
+      PromptCritFail: <p>{name} est sur le point de subir {wounds} blessures(s). Un
         échec critique empêche de relancer le jet.</p>
       GMBenny: Dépenser un jeton du MJ pour relancer
     Result:
       NoSignificantDamage: <p><strong>{name}</strong> n'a pas subit de dégâts significatifs.</p>
       IsIncapacitated: <p><strong>{name}</strong> est <strong>en Incapacité !</strong></p>
-      SoakedAll:
-        <p><strong>{name}</strong> encaisse toutes les blessures et n'est
+      SoakedAll: <p><strong>{name}</strong> encaisse toutes les blessures et n'est
         pas Secoué !</p>
       IsShaken: <p><strong>{name}</strong> est <strong>Secoué</strong> !</p>
-      IsShakenWithWounds:
-        <p><strong>{name}</strong> est <strong>Secoué </strong>
+      IsShakenWithWounds: <p><strong>{name}</strong> est <strong>Secoué </strong>
         avec <strong>{wounds}</strong> blessure(s) !</p>
     Incapacitation:
       InjuryRoll: jet de Vigueur pour résister aux blessures suite à son incapacité
-      PermanentInjury:
-        <p><strong>{name}</strong> subit une blessure permanente et
+      PermanentInjury: <p><strong>{name}</strong> subit une blessure permanente et
         est en <strong>Hémorragie !</strong></p>
       Title: Relancer la sévérité de la séquelle pour {name] ?
-      Prompt:
-        <p>{name} est sur le point de subir une séquelle. Voulez-vous relancer
+      Prompt: <p>{name} est sur le point de subir une séquelle. Voulez-vous relancer
         le jet de Vigueur ?</p>
-      PermanentInjuryHND:
-        <p><strong>{name}</strong> vient de subir une blessure permanente
+      PermanentInjuryHND: <p><strong>{name}</strong> vient de subir une blessure permanente
         !</p>
       Dies: <p><strong>{name}</strong> meurt à cause des dégâts !</p>
-      TemporaryInjury:
-        <p><strong>{name}</strong> subit une séquelle qui disparaitra
+      TemporaryInjury: <p><strong>{name}</strong> subit une séquelle qui disparaitra
         lorsque toutes les blessures auront été soignées.</p>
-      ShortInjury:
-        <p><strong>{name}</strong> souffre d'une séquelle qui disparaîtra
+      ShortInjury: <p><strong>{name}</strong> souffre d'une séquelle qui disparaîtra
         dans les 24 heures ou lorsque toutes les blessures seront guéries (selon la
         première éventualité).</p>
       TakeFail: Souffre d'une séquelle permanente
-      TakeSuccess:
-        Souffre d'une séquelle qui disparaitra lorsque toutes les blessures
+      TakeSuccess: Souffre d'une séquelle qui disparaitra lorsque toutes les blessures
         auront été guéries
     ApplyDamage:
       Label: Résolution des dommages
       Hint: '[Click] pour résoudre les dommages avec le jeton sélectionné'
     SoakModifier: Modificateur d'encaissement
-    WoundsAboutToBeTaken:
-      <p><strong>{name}</strong> est sur le point de subir <strong>{wounds}</strong>
+    WoundsAboutToBeTaken: <p><strong>{name}</strong> est sur le point de subir <strong>{wounds}</strong>
       blessures !</p>
-    AdjustDamagePrompt:
-      <p>Ajustement des dégâts pour chaque capacité et effet que
+    AdjustDamagePrompt: <p>Ajustement des dégâts pour chaque capacité et effet que
       possède {name}.</p>
-    NoInjuryTable:
-      Aucune table des blessures sélectionnée. Veuillez regarder la configuration
+    NoInjuryTable: Aucune table des blessures sélectionnée. Veuillez regarder la configuration
       du système SWADE
     NoTargetsSelected: Veuillez sélectionner une cible pour appliquer les dégâts.
   RunningMod: Modificateur de course
@@ -986,8 +930,7 @@ SWADE:
     Label: Utilisation d'une ressource
   Auras:
     WallConstraints:
-      Hint:
-        Cela défini si l'aura est bloquée par les murs qui ne laissent pas passer
+      Hint: Cela défini si l'aura est bloquée par les murs qui ne laissent pas passer
         la lumière ou si elle les ignore
       Label: Limité par les murs
     TabHeader: Gestionnaire d'auras
@@ -1001,12 +944,10 @@ SWADE:
     AMMUNITION:
       GameSettings:
         Title: Configuration des options
-        Content:
-          En premier, la gestion des munitions doit être activée dans les paramètres
+        Content: En premier, la gestion des munitions doit être activée dans les paramètres
           du système de jeu.
       Title: Munitions
-      Description:
-        Cette présentation vous montre comment utiliser la gestion automatique
+      Description: Cette présentation vous montre comment utiliser la gestion automatique
         des munitions
       Actor: Capitaine Démo des Munitions
       Items:
@@ -1019,13 +960,11 @@ SWADE:
         PP: Artéfact magique
       SwadeSettings:
         Title: Paramètres pour SWADE
-        Content:
-          La gestion des munitions est située dans la configuration des règles
+        Content: La gestion des munitions est située dans la configuration des règles
           du système <em>Savage Worlds Adventure Edition</em>
       PCInventory:
         Title: Munitions depuis l'inventaire
-        Content:
-          Ces trois paramètres indiquent si des objets de l'inventaire sont
+        Content: Ces trois paramètres indiquent si des objets de l'inventaire sont
           consommés quand l'arme est rechargée, pour les personnages joueurs, les
           personnages non-joueurs et les véhicules. Si la gestion des munitions est
           activée mais cette coche, munition de l'inventaire, n'est pas cochée, chaque
@@ -1035,15 +974,13 @@ SWADE:
           le long terme.
       ReloadNone:
         Title: Méthode de rechargement - Aucune
-        Content:
-          Les armes sans Rechargement ignorent totalement leur compteur de
+        Content: Les armes sans Rechargement ignorent totalement leur compteur de
           coups. Cette méthode est adaptée aux armes qui sont alimentée par un objet
           externe au moment du tir, comme un arc qui prend ses flèches d'un carquois,
           ou une mitrailleuse Gatling alimentée par un tambour.
       AmmoNone:
         Title: Le champ munition
-        Content:
-          On indique ici une objet de type Équipement (e.g. flèche) ou Consommable
+        Content: On indique ici une objet de type Équipement (e.g. flèche) ou Consommable
           (e.g. chargeur de balles) parmi ceux de l'inventaire du personnage. Dans
           le cas d'un objet d'équipement, chaque coup réduit la quantité de l'objet
           de un. Dans le cas d'un consommable, chaque coup réduit ses charges de un,
@@ -1051,19 +988,16 @@ SWADE:
           porter le nom <em>exact</em> de l'objet à consommer.
       ReloadSelf:
         Title: Méthode de rechargement - Propre
-        Content:
-          Les coups portés par les armes en Rechargement Propre réduisent la
+        Content: Les coups portés par les armes en Rechargement Propre réduisent la
           quantité de l'arme elle-même. Cette méthode est adaptée aux armes de jet,
           ou toute arme similaire qui se consomme elle-même.
       AmmoSettings:
         Title: Gestion des munitions
-        Content:
-          Ces paramètres définissent si l'utilisation d'armes à distance consomme
+        Content: Ces paramètres définissent si l'utilisation d'armes à distance consomme
           des munitions.
       AmmoManagement:
         Title: Gestion des munitions
-        Content:
-          Cette option définit si une arme à distance utilise la gestion des
+        Content: Cette option définit si une arme à distance utilise la gestion des
           munitions ou pas, que ce soit simplement en comptant le nombre de coups
           restants au niveau de l'arme, ou en allant jusqu'à gérer des munitions dans
           l'inventaire.
@@ -1071,67 +1005,57 @@ SWADE:
         Title: Armes du personnage
         Content: Les armes d'un personnage sont dans l'onglet inventaire.
       AmmoMagazine:
-        Content:
-          Un magasin DOIT forcément être un consommable de sous-type Magasin
+        Content: Un magasin DOIT forcément être un consommable de sous-type Magasin
           pour que cette méthode fonctionne correctement. De plus, le nombre de charges
           du consommable doit être égal au nombre de coups de l'arme.
         Title: Le champ munition
       AmmoBattery:
         Title: Le champ munition
-        Content:
-          L'objet munition DOIT être un consommable de sous-type Batterie.
+        Content: L'objet munition DOIT être un consommable de sous-type Batterie.
           De plus, le nombre de charges maximales du consommable doit être 100.
       AmmoSelf:
         Title: Le champ munition
         Content: Le champ munition est ignoré pour les armes en Rechargement propre
       ReloadSingle:
         Title: Méthode de rechargement — Unitaire
-        Content:
-          Les armes en Rechargement unitaire recharge un seul coup à chaque
+        Content: Les armes en Rechargement unitaire recharge un seul coup à chaque
           utilisation du bouton Rechargement. Cette méthode est adaptée aux armes
           comme les mousquets, les arbalètes ou autres armes qui ne peuvent garder
           qu'une seule munition à la fois.
       AmmoFull:
         Title: Le champ munition
-        Content:
-          Cette méthode fonctionne comme les armes sans chargement, mais la
+        Content: Cette méthode fonctionne comme les armes sans chargement, mais la
           quantité, ou charges dans le cas de consommable, est réduite lorsque l'arme
           est rechargée, et chaque tir avec l'arme réduit le compteur de coups de
           l'arme.
       AmmoSingle:
         Title: Le champ munition
-        Content:
-          Ce champ fonctionne comme pour les armes sans rechargement. Toutefois,
+        Content: Ce champ fonctionne comme pour les armes sans rechargement. Toutefois,
           la quantité de la munition, ou les charges du consommable, est réduite en
           utilisant l'action Rechargement, plutôt que lorsque l'on tire avec l'arme.
       ReloadFull:
         Title: Méthode de rechargement — Complète
-        Content:
-          Les armes en rechargement complet recharge la totalité de leur compteur
+        Content: Les armes en rechargement complet recharge la totalité de leur compteur
           de coups en une seule action de rechargement. Cette méthode est une version
           simplifiée de la méthode par chargeur, ou pour les armes qui n'ont pas de
           chargeur détachable tel qu'une arme avec un réservoir liquide.
       ReloadMagazine:
-        Content:
-          Ces armes à rechargement par magasin utilisent des chargeurs détachable
+        Content: Ces armes à rechargement par magasin utilisent des chargeurs détachable
           qui peuvent être retirés et échangés à tout moment, en faisant le suivi
           du nombre de munitions restantes par magasin.
         Title: Méthode de rechargement — Chargeur
       ReloadBattery:
         Title: Méthode de rechargement — Batterie
-        Content:
-          Ces armes fonctionnent comme avec des magasins, mais chaque coup
+        Content: Ces armes fonctionnent comme avec des magasins, mais chaque coup
           tiré épuise une pourcentage de la batterie.
       ReloadPP:
         Title: Méthode de rechargement — Points de pouvoir
-        Content:
-          Ces armes ne consomment pas des munitions physiques mais épuisent
+        Content: Ces armes ne consomment pas des munitions physiques mais épuisent
           les Points de pouvoir de tireur, cas qui se présente notamment avec <em>Rifts®
           pour Savage Worlds</em>
       AmmoPP:
         Title: Le champ munition
-        Content:
-          Plutôt que d'indiquer le nom d'un objet, il faut indiquer ici un
+        Content: Plutôt que d'indiquer le nom d'un objet, il faut indiquer ici un
           type d'Arcanes valide pour ce personnage, comme general, magie, miracles
           ou psioniques
     TWEAKS:
@@ -1139,42 +1063,34 @@ SWADE:
       Actor: Capitaine Démo des Ajustements
       AccessTweaks:
         Title: Accès aux Ajustements
-        Content:
-          Le menu Ajustements est placé dans la barre de titre de la feuille
+        Content: Le menu Ajustements est placé dans la barre de titre de la feuille
           de personnage et offre du paramétrage supplémentaire pour le personnage
       TraitTweaks:
         Title: Ajustement des caractéristiques
-        Content:
-          Cet onglet propose un large éventail de champ supplémentaires à paramétrer
+        Content: Cet onglet propose un large éventail de champ supplémentaires à paramétrer
           pour le personnage
-      Description:
-        En apprendre plus à propos des options du menu Ajustements des
+      Description: En apprendre plus à propos des options du menu Ajustements des
         feuilles de personnage
       Unshake:
         Title: Annuler Secoué
-        Content:
-          Ajoute un bonus (ou un malus) au jet pour annuler l'état Secoué qui
+        Content: Ajoute un bonus (ou un malus) au jet pour annuler l'état Secoué qui
           est proposé automatiquement au début du tour du personnage.
       Soak:
         Title: Modificateur d'Encaissement
-        Content:
-          Ajoute un bonus (ou un malus) au jet d'Encaissement qui est proposé
+        Content: Ajoute un bonus (ou un malus) au jet d'Encaissement qui est proposé
           suite au bouton Appliquer les dégâts d'un message de chat.
       Initiative:
         Title: Modificateurs d'initiative
-        Content:
-          Permet la gestion automatique de certains effets liés à la l'initiative
+        Content: Permet la gestion automatique de certains effets liés à la l'initiative
           issus du livre de base (comme l'Atout Vif ou le Handicap Hésitant).
       AutoCalc:
-        Content:
-          Permet de choisir entre la saisie manuelle des caractéristiques dérivées
+        Content: Permet de choisir entre la saisie manuelle des caractéristiques dérivées
           du personnage ou leur calcul automatique à partir de ses Traits et de son
           équipement.
         Title: Calculs automatiques
       Advances:
         Title: Gestion des progressions
-        Content:
-          Le mode Étendu (par défaut) propose une saisie guidée des progressions
+        Content: Le mode Étendu (par défaut) propose une saisie guidée des progressions
           du personnage et calcule automatiquement son rang. Le mode Libre est une
           simple saisie de texte sans gestion particulière de la donnée.
     ADDSTATS:
@@ -1182,65 +1098,54 @@ SWADE:
       Title: Caractéristiques additionnelles
       GameSettings:
         Title: Configuration des options
-        Content:
-          Tout d'abord, les caractéristiques additionnelles doivent être définies
+        Content: Tout d'abord, les caractéristiques additionnelles doivent être définies
           dans la configuration des options.
       SwadeSettings:
         Title: Configuration SWADE
-        Content:
-          Les Caractéristiques additionnelles sont situées dans la configuration
+        Content: Les Caractéristiques additionnelles sont situées dans la configuration
           des règles de <em>SWADE</em>.
       Die:
         Title: Dé
-        Content:
-          Le premier champ attend une expression Foundry valide pour un jet
+        Content: Le premier champ attend une expression Foundry valide pour un jet
           de dé ; ajouter un x s'il peut explorer (e.g. 1d6x). Le second champ est
           pour ajouter un nombre entier au jet. Cliquer le libellé de la caractéristique
           pour effectuer le jet de dé ainsi décrit.
       Text:
         Title: Texte
-        Content:
-          Un simple champ de saisie. Sa longueur n'est pas très élevée, alors
+        Content: Un simple champ de saisie. Sa longueur n'est pas très élevée, alors
           pour saisir du texte plus long, préférer l'usage de la description ou zones
           similaires de la feuille de personnage.
       Checkbox:
         Title: Case à cocher
-        Content:
-          Une Caractéristique additionnelle en case à coche ne peut être que
+        Content: Une Caractéristique additionnelle en case à coche ne peut être que
           vraie (cochée) ou fausse (décochée).
       StatSettings:
         Title: Configuration des Caractéristiques additionnelles
-        Content:
-          Toutes les Caractéristiques doivent en premier lieu être déclarée
+        Content: Toutes les Caractéristiques doivent en premier lieu être déclarée
           dans cet onglet, avant de pouvoir être retrouvées et exploitées les acteurs
           (personnages, véhicules) ou les objets (par exemple compétences, armes,
           atouts).
       StatKey:
         Title: Clé de la caractéristique
-        Content:
-          La clé d'une Caractéristique indique comment la valeur d'une caractéristique
+        Content: La clé d'une Caractéristique indique comment la valeur d'une caractéristique
           est trouvée parmi les données du système (actor.system.additionalStats.stat-key),
           c'est notamment important pour les Effets Actifs, et elle doit être unique.
       StatDType:
-        Content:
-          Le type définit la façon de saisir la valeur de la caractéristique
+        Content: Le type définit la façon de saisir la valeur de la caractéristique
           et comment elle est gérée par le système.
         Title: Type
       HasMax:
         Title: A une valeur maximale
-        Content:
-          Déclare que la caractéristique a, pour un personnage ou objet donné,
+        Content: Déclare que la caractéristique a, pour un personnage ou objet donné,
           une valeur actuelle et une valeur maximale, ajoutant un champ de saisie
           pour ce maximum (uniquement possible pour les Caractéristiques Numériques
           et Texte).
       ActorDisplay:
         Title: Sur un acteur
-        Content:
-          Les Caractéristiques additionnelles actives pour le personnage (ou
+        Content: Les Caractéristiques additionnelles actives pour le personnage (ou
           véhicule) sont affichées dans l'onglet Résumé.
       StatLabel:
-        Content:
-          Le nom de la Caractéristique, le libellé sous lequel elle va apparaître
+        Content: Le nom de la Caractéristique, le libellé sous lequel elle va apparaître
           dans la fiche de personnage ou sur l'objet.
         Title: Libellé
       Number:
@@ -1248,53 +1153,44 @@ SWADE:
         Title: Numérique
       Selection:
         Title: Sélection des statistiques complémentaires
-        Content:
-          Valeur à sélectionner dans une liste déroulante de choix proposés
+        Content: Valeur à sélectionner dans une liste déroulante de choix proposés
           par l'univers.
       AccessTweaks:
         Title: Activation et désactivation
-        Content:
-          Les Caractéristiques additionnelles sont à activer ou désactiver,
+        Content: Les Caractéristiques additionnelles sont à activer ou désactiver,
           pour chaque acteur, depuis l'onglet Caractéristiques additionnelles du menu
           Ajustements.
       AddStatTweaks:
         Title: Onglet Caractéristiques additionnelles
-        Content:
-          Chaque Caractéristique additionnelle démarre par défaut désactivée
+        Content: Chaque Caractéristique additionnelle démarre par défaut désactivée
           et doit individuellement être activée si elle s'applique à l'acteur et doit
           être affichée sur sa fiche (par exemple, dans un univers Cyberpunk qui gèrerait
           une Tension liée à la possession d'implants cybernétiques, il n'est utile
           d'afficher cette caractéristique que sur les personnages disposant d'implants).
-      Description:
-        Apprendre à configurer des caractéristiques spécifiques à votre
+      Description: Apprendre à configurer des caractéristiques spécifiques à votre
         univers
     AURAS:
       Actor: Capitaine Démo des Auras
       Constrained:
         Title: Limité par les murs
-        Content:
-          Cette option permet de déterminer si l'aura est limitée par les murs
+        Content: Cette option permet de déterminer si l'aura est limitée par les murs
           qui bloquent la lumière ou si elle peut les traverser.
       Color:
         Title: Couleur et transparence de l'aura
-        Content:
-          Les auras s'affichent comme des gabarits circulaires autour du personnage
+        Content: Les auras s'affichent comme des gabarits circulaires autour du personnage
           source ; ces paramètres vous permettent de contrôler leur affichage.
       Radius:
         Title: Rayon de l'aura
-        Content:
-          Le rayon de l'Aura, mesuré en unités de grille. L'indice d'unité
+        Content: Le rayon de l'Aura, mesuré en unités de grille. L'indice d'unité
           affiché ici correspond à l'unité de mesure de la scène actuelle.
       Title: Auras
       Visibility:
         Title: Visibilité de l'aura
-        Content:
-          Sélectionnez les jetons (par Disposition) qui peuvent voir cette
+        Content: Sélectionnez les jetons (par Disposition) qui peuvent voir cette
           aura. Vous pouvez toujours voir toutes les auras d'un jeton dont vous avez
           au moins la permission d'Observateur.
       Enable:
-        Content:
-          Chaque aura peut être activée individuellement ; elles fonctionnent
+        Content: Chaque aura peut être activée individuellement ; elles fonctionnent
           également avec des jetons non liés, ce qui vous permet de définir des auras
           individuellement même si elles partagent un acteur source commun.
         Title: Activation des auras
@@ -1303,27 +1199,22 @@ SWADE:
         Title: Accès aux auras
       Auramancer:
         Title: L'onglet Aura
-        Content:
-          Les auras ont leur propre onglet dans le menu Ajustements. Les personnages
+        Content: Les auras ont leur propre onglet dans le menu Ajustements. Les personnages
           peuvent avoir un maximum de deux auras.
-      Description:
-        Depuis la version 3.2, l'Aura crée un effet visuel persistent qui
+      Description: Depuis la version 3.2, l'Aura crée un effet visuel persistent qui
         suit le token.
     ADVANCES:
       Type:
-        Content:
-          Choisissez le type de Progression dont il s'agit. Actuellement, cette
+        Content: Choisissez le type de Progression dont il s'agit. Actuellement, cette
           Progression ne déclenche aucune autre validation ou sélection, mais les
           futures mises à jour du système pourraient changer cela.
         Title: Choix du type de Progression
       Notes:
         Title: Notes pour les Progressions
-        Content:
-          Incluez ici toute information pertinente sur votre Progression ;
+        Content: Incluez ici toute information pertinente sur votre Progression ;
           quels traits vous avez augmentés, quels atouts vous avez sélectionnés, etc.
       SaveChanges:
-        Content:
-          Les modifications ne sont PAS sauvegardées automatiquement pour le
+        Content: Les modifications ne sont PAS sauvegardées automatiquement pour le
           personnage. Vous devez utiliser le bouton d'enregistrement dans l'éditeur
           ou ce bouton "Enregistrer les modifications".
         Title: Bouton de sauvegarde des modifications
@@ -1332,8 +1223,7 @@ SWADE:
       Actor: Démonstration des Progressions d'un personnage
       AccessAdvanceMode:
         Title: Définir le mode de Progression
-        Content:
-          Le mode de Progression d'un personnage peut être modifié dans le
+        Content: Le mode de Progression d'un personnage peut être modifié dans le
           menu Ajustement de la fiche de personnage.
       Mode:
         Title: Sélection du mode de Progression
@@ -1345,74 +1235,61 @@ SWADE:
         Content: Ce bouton permet de créer une nouvelle Progression à utiliser
       Editor:
         Title: L'éditeur de Progressions
-        Content:
-          Cette fiche de configuration fournit les information sur une nouvelle
+        Content: Cette fiche de configuration fournit les information sur une nouvelle
           Progression.
       Rank:
         Title: Rang de Progression
-        Content:
-          Le rang que votre personnage atteindra en arrivant à cette Progression.
+        Content: Le rang que votre personnage atteindra en arrivant à cette Progression.
           Ce rang ne peut pas être modifié directement, car il est calculé à partir
           du nombre total de Progressions de votre personnage.
       Number:
         Title: Numéro de Progressions
-        Content:
-          Cette option permet de contrôler l'ordre des Progressions. Si vous
+        Content: Cette option permet de contrôler l'ordre des Progressions. Si vous
           modifiez cette valeur, la Progression se fera plus tôt dans la liste.
       Planned:
         Title: Progressions planifiées
-        Content:
-          Vous pouvez marquer les Progressions comme étant planifiées pour
+        Content: Vous pouvez marquer les Progressions comme étant planifiées pour
           éviter qu'elles ne comptent dans le rang de votre personnage.
     HEADQUARTERS:
       Title: Quartier général
       JournalEntry: Visite du journal des Quartiers Généraux
-      Description:
-        Découvrez le nouveau type de page de journal, le quartier général
+      Description: Découvrez le nouveau type de page de journal, le quartier général
         ! Utile pour les Forteresses du <em>Companion Fantastique</em>, les Loges
         du <em>Companion d'Horreur</em> et les Bases du <em>Companion Supers Pouvoirs</em>.
       HeadquartersPage: Visite des pages des Quartiers Généraux
       CreatePage:
         Title: Créer une page de quartier général
-        Content:
-          Les quartiers généraux sont un nouveau type de page de journal, au
+        Content: Les quartiers généraux sont un nouveau type de page de journal, au
           même titre que le texte, l'image et le pdf.
       CreateJournal:
         Title: Créer un journal
         Content: Le quartier général doit être créé au sein d'un journal parent.
       HQPage:
-        Content:
-          Les quartiers généraux ressemblent à des pages de texte, mais fournissent
+        Content: Les quartiers généraux ressemblent à des pages de texte, mais fournissent
           des données plus structurées. Les sections s'inspirent des quatre étapes
           prévues dans chacun des compagnons.
         Title: La page du Quartier Général
       Advantage:
         Title: Atout
-        Content:
-          Les atouts spécifiques dépendent du genre que vous jouez ; vous pouvez
+        Content: Les atouts spécifiques dépendent du genre que vous jouez ; vous pouvez
           faire glisser les résultats des jets de dé dans cette section.
       Complication:
-        Content:
-          Comme pour les atouts, vous pouvez faire glisser les résultats des
+        Content: Comme pour les atouts, vous pouvez faire glisser les résultats des
           jets de dés dans cette section.
         Title: Complications
       Form:
         Title: Fiche
-        Content:
-          La section de la fiche est divisée en trois parties afin que vous
+        Content: La section de la fiche est divisée en trois parties afin que vous
           puissiez décrire tous les aspects de votre siège.
       Upgrades:
         Title: Améliorations
-        Content:
-          Vous pouvez dresser la liste de vos améliorations ici. Il s'agit
+        Content: Vous pouvez dresser la liste de vos améliorations ici. Il s'agit
           d'une entrée en rendu HTML, alors n'hésitez pas à utiliser une liste à puces,
           un tableau ou tout autre système d'organisation qui vous semble logique.
     ERROR:
-      ActorCreatePermission:
-        Cette présentation nécessite l'autorisation de créer
+      ActorCreatePermission: Cette présentation nécessite l'autorisation de créer
         des acteurs
-      SettingPermission:
-        Cette Présentation nécessite de modifier les paramètres de
+      SettingPermission: Cette Présentation nécessite de modifier les paramètres de
         l'univers
       JournalCreatePermission: Cette présentation nécessite la création d'un journal
   Magazine:
@@ -1425,16 +1302,14 @@ SWADE:
   AddOrReplaceActions:
     Add: Ajouter une nouvelle action
     Replace: Remplacer une action existante
-    Content:
-      <p>voulez-vous ajouter les actions de {type} <strong>{source}</strong>
+    Content: <p>voulez-vous ajouter les actions de {type} <strong>{source}</strong>
       en tant que nouvelles actions ou remplacer les actions existantes ?</p>
     Title: Ajouter ou remplacer des actions
   BaseParry: Parade de base
   Aura:
     Visibility:
       Label: Visible pour
-      Hint:
-        Sélectionne quels tokens (par disposition) peuvent voir cette aura. Vous
+      Hint: Sélectionne quels tokens (par disposition) peuvent voir cette aura. Vous
         pouvez toujours voir toutes les auras d'un token sur lequel vous avez la permission
         d'observateur
   Requirements:
@@ -1454,8 +1329,7 @@ SWADE:
     Long: Savage Worlds ID
     Short: SWID
     Regenerate: Régénérer les Savage Worlds ID
-    ChangeWarning2:
-      Changer le Savage Worlds ID d'un objet peut casser les références
+    ChangeWarning2: Changer le Savage Worlds ID d'un objet peut casser les références
       à l'objet ! Procédez avec prudence et seulement si vous êtes sûr de vous.
     ChangeWarning3: Voulez-vous continuer ?
     ChangeWarning1: Agissez avec prudence !
@@ -1498,8 +1372,7 @@ SWADE:
   InnatePower: Pouvoir inné
   RefreshOnly: Mise à jour
   NotOwnedError: Vous devez avoir les droits sur cet objet ou acteur pour le faire
-  GrantsItemsError:
-    La mise à jour ne fonctionne pas pour les éléments qui en donnent
+  GrantsItemsError: La mise à jour ne fonctionne pas pour les éléments qui en donnent
     d'autres
   NoUpdatedItemFound: Aucun objet éligible à une mise à jour n'a été trouvé
   DiscardMagazine: Suppression du chargeur vide
@@ -1524,8 +1397,7 @@ SWADE:
   NoDescription: Aucune description disponible
   Draw: Piocher
   Reset: Réinitialiser
-  ConvictionExtendPrompt:
-    Voulez-vous dépenser un Jeton pour prolonger votre conviction
+  ConvictionExtendPrompt: Voulez-vous dépenser un Jeton pour prolonger votre conviction
     ?
   Cards:
     Spades: Piques
@@ -1550,8 +1422,7 @@ SWADE:
     BlackJoker: Joker Noir / Cœur
     BlueJoker: Joker Bleu / Carreau
     GreenJoker: Joker vert / Trèfle
-  CharacterSummaryTypeErr:
-    Impossible d'utiliser le résumé de personnage pour un acteur
+  CharacterSummaryTypeErr: Impossible d'utiliser le résumé de personnage pour un acteur
     de type {type}
   ChaseLayout: Disposition
   ChaseRows: Lignes
@@ -1579,7 +1450,7 @@ ITEM:
   TypeConsumable: Consommable
 CARD:
   TypeAdventure: " Cartes d'aventure"
-  TypePoker: ' Cartes de poker'
+  TypePoker: " Cartes de poker"
 Actor: Acteur
 Vehicles: Véhicules
 Ground Vehicles: Véhicules terrestres
