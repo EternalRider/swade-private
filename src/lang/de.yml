@@ -368,6 +368,7 @@ SWADE:
     Value: Wert
     Ignore: Ignorieren?
     None: Aktuell keine Modifikatoren
+    Active: Aktiv
   Illumination:
     _name: Beleuchtung
     Dim: Düster
@@ -428,6 +429,7 @@ SWADE:
     Modes:
       Legacy: Legacy
       Expanded: Erweitert
+      Label: Modus
   Appearance: Erscheinungsbild
   CharacterGoals: Ziele
   Background: Hintergrund
@@ -690,9 +692,26 @@ SWADE:
     CharSheetDefaultWidth:
       Hint: 'Breite des Charakterbogens beim ersten Öffnen, in Pixeln. Default: 650.'
       Name: Standardbreite für Charakterbögen
+    GmBennies:
+      Hint: Legt fest, wieviele Bennys die Spielleitung beim Auffrischen erhält
+      Name: SL-Bennys
+    StaticGmBennies:
+      Hint: Setzt eine feste Zahl Bennys, welche die SL beim Auffrischen erhält (statt
+        die Zahl aktiver Spieler zu nutzen).
+      Name: Feste SL-Bennys
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Abenteuer-Edition Kernregeln
+        SWPF: Pathfinder®️ für Savage Worlds
+      Name: Rüstung stapeln
+      Hint: Legt fest, wie das Tragen mehrerer Rüstungen abgehandelt wird
+    Bumpmaps: Bumpmaps
   Validation:
-    OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben!
-    OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
+    OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben.
+    OnlyOneArchetype: Ein Charakter kann nur einen Archetypen auf einmal haben.
+    NoGroupCombatants: Gruppenakteure können keine Kampfteilnehmer sein.
+    InvalidBasePace: Die Grundbewegegung kann nicht auf eine Beweungsart ohne Wert
+      gesetzt werden.
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt wurde
@@ -812,6 +831,9 @@ SWADE:
     Key: Wertschlüssel
     Label: Bezeichnung
     KeyErr: Weitere Werte Schlüssel {invalid} ist ungültig und wurde geändert zu {key}
+    OptionLabel: Option
+    Value: Wert
+    MaxLabel: Maximum
   MessageOnUse:
     Label: Nachricht bei Verwendung
     Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
@@ -819,6 +841,7 @@ SWADE:
     EmptyHint: Dieses Item gewährt derzeit keine Items
     Header: Gewährte Items
     When: Items gewähren wenn
+    Mutation: Mutation
   IgnFatigue: Erschöpfung ignorieren
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
@@ -1111,6 +1134,42 @@ SWADE:
     WorldCompendiums: Weltkompendien
     WorldTables: Welttabellen
   ApOver: Aktion Panzerbrechend
+  Group:
+    Sheet:
+      Members:
+        Empty: Keine Mitglieder
+        Header: Mitglieder
+        Hint: Mitglieder zum Hinzufügen per Drag&Drop in den Bogen ziehen oder UUID
+          einfügen. Funktioniert auch mit Spielfigur-Akteuren in einer Szene.
+  GroupSheet: Savage Worlds Gruppenbogen
+  Advance: Aufstieg
+  BenniesMaxNum: Maximale Bennys
+  EdF: '{item} bearbeiten'
+  EdRightClick: '[Rechtsklick] zum Bearbeiten'
+  Value: Wert
+  SpeedUnit: Einheit
+  Stats: Werte
+  ID: ID
+  SortNum: Sortier-Nr.
+  IgnFatigueWounds: Wunden/Erschöpfung ignorieren
+  FatigueWounds: Wunden/Erschöpfung
+  ShotsCurrent: Aktuelle Schüsse
+  ActionsOverride: Überschreiben
+  DeleteFromParentWarningPermanent: '{name} wird permanent aus {parent} gelöscht und
+    kann nicht wiederhergestellt werden.'
+  DeleteFromParentWarning: '{name} wird permanent aus {parent} gelöscht.'
+  ActionDeckPresetPEG: Aktionskartendeck (PEG)
+  disabledAE: Inaktiv durch Aktiven Effekt
+  RunningHint:
+    Header: <strong>Gesamt-Sprintdistanz.</strong>
+    Reminder: <p>Durchs Sprinten erleiden alle Aktionen im Zug einen Abzug von -2.</p>
+  BenniesAdjustGM: SL-Bennys anpassen
+  BenniesAdjustGMText: Anzahl Bennys, welche die SL gerade haben sollte.
+  HindMajor: Schwer
+  HindMinor: Leicht
+  MaxLabel: Maximum
+  BuildCost: Wert
+  ChargesMax: Max. Ladungen
 TYPES:
   Actor:
     Character: Charakter
