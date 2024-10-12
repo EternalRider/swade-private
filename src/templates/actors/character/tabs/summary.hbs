@@ -302,7 +302,7 @@
         {{/if}}
       {{/each}}
     </ol>
-    {{#if actor.hasArcaneBackground}}
+    {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
       <ol class='quick-list'>
         {{#each actor.itemTypes.power}}
           {{#if system.favorite}}

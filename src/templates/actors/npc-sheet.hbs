@@ -151,7 +151,7 @@
     </div>
   </header>
 
-  {{#if actor.hasArcaneBackground}}
+  {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
   <nav class="flexrow tabs" data-group="primary">
     <a class="item" data-tab="summary">{{localize "SWADE.Summary"}}</a>
     <a class="item" data-tab="powers">{{localize "SWADE.Pow"}}</a>
@@ -164,7 +164,7 @@
       {{> "systems/swade/templates/actors/partials/npc-summary-tab.hbs"}}
     </section>
     {{!-- Powers Tab --}} 
-    {{#if actor.hasArcaneBackground}}
+    {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
       <section class="tab powers" data-group="primary" data-tab="powers">
         {{> "systems/swade/templates/actors/partials/powers-tab.hbs"}}
       </section>
