@@ -29,8 +29,10 @@ import {
 import { TokenSize } from '../../data/actor/base/base';
 import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
 import {
+  AbilityData,
   ArmorData,
   ConsumableData,
+  EdgeData,
   GearData,
   ShieldData,
   SkillData,
@@ -136,10 +138,15 @@ class SwadeActor extends Actor {
   /** @returns true when the actor has an arcane background or a special ability that grants powers. */
   get hasArcaneBackground(): boolean {
     return !!this.items.find(
-      (i) =>
-        (i.type === 'edge' && i.system.isArcaneBackground) ||
-        (i.type === 'ability' && i.system.grantsPowers),
+      (i: SwadeItem<'edge' | 'ability' | 'power'>) =>
+        (i.system instanceof EdgeData && i.system.isArcaneBackground) ||
+        (i.system instanceof AbilityData && i.system.grantsPowers),
     );
+  }
+
+  /** @returns whether the actor has any power items at all */
+  get hasPowers(): boolean {
+    return !!this.items.find((i) => i.type === 'power');
   }
 
   get tokenSize(): TokenSize {
