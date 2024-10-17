@@ -203,7 +203,7 @@ SWADE:
   Major: (Major)
   Minor: (Minor)
   HindMajor: Major
-  HindMinor: Minor  
+  HindMinor: Minor
   Edges: Edges
   ArcBack: Arcane Background
   Value: Value
@@ -748,8 +748,8 @@ SWADE:
     StaticGmBennies:
       Name: Static Gamemaster Bennies
       Hint: >-
-        Sets a static value for the number of Bennies the GM recieves on a refresh instead of
-        basing it on the number of active players.
+        Sets a static value for the number of Bennies the GM receives on a
+        refresh instead of basing it on the number of active players.
     GmBennies:
       Name: Gamemaster Bennies
       Hint: Sets how many Bennies the GM receives on a refresh
@@ -971,7 +971,7 @@ SWADE:
   FatigueWounds: Wounds/Fatigue
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
-  Targets: 'Targets:'
+  Targets: Targets
   Rolls:
     RollResult: Roll Result
     SwadeRoll: Roll
@@ -1512,7 +1512,9 @@ SWADE:
     Sheet:
       Members:
         Header: Members
-        Hint: To add members either drag & drop them onto the sheet or copy & paste their UUID. This also works with token actors in a scene.
+        Hint: >-
+          To add members either drag & drop them onto the sheet or copy & paste
+          their UUID. This also works with token actors in a scene.
         Empty: No members yet
       Stash:
         Header: Stash
@@ -1539,7 +1541,7 @@ SWADE:
     Base: Base Movement
     Other: Other Movement Speeds
     Pace:
-      Base: 
+      Base:
         Label: Base Pace
         Hint: Which Pace is the default for the actor
       Ground:
@@ -1555,7 +1557,7 @@ SWADE:
       Dialog:
         Title: Running
         Content: Please select how you want to run
-  
+  ApplicableEffects: Applicable Effects
 TYPES:
   Actor:
     character: Player Character

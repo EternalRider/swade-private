@@ -204,6 +204,21 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
     </div>
   {{/if}}
 
+  <!-- Transferrable Effects Controls -->
+  {{#if effects}}
+    <div class='card-buttons'>
+      <h4 class='actions-subheading'>
+        <i class='fa-solid fa-plug'></i>
+        {{localize 'SWADE.ApplicableEffects'}}
+      </h4>
+      <ul class='effects'>
+        {{#each effects as |effect|}}
+          <li class='effect'>{{{effect}}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+
   <!-- Power Controls -->
   {{#if (eq item.type 'power')}}
     <div class='card-buttons pp-controls'>

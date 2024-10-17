@@ -368,7 +368,7 @@ class SwadeItem extends Item {
   }
 
   async getChatData(
-    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
+    enrichOptions: Partial<TextEditor.EnrichmentOptions> = {},
   ): Promise<ItemChatCardData> {
     // Item properties
     const chips =
@@ -448,28 +448,35 @@ class SwadeItem extends Item {
 
     const additionalActions: Record<string, ItemAction> =
       foundry.utils.getProperty(this, 'system.actions.additional') || {};
+    const actionValues = Object.values(additionalActions);
 
-    const hasTraitActions = Object.values(additionalActions).some(
+    const hasTraitActions = actionValues.some(
       (v) => v.type === constants.ACTION_TYPE.TRAIT,
     );
-    const hasDamageActions = Object.values(additionalActions).some(
+    const hasDamageActions = actionValues.some(
       (v) => v.type === constants.ACTION_TYPE.DAMAGE,
     );
-    const hasResistRolls = Object.values(additionalActions).some(
+    const hasResistRolls = actionValues.some(
       (v) => v.type === constants.ACTION_TYPE.RESIST,
     );
-    const hasMacros = Object.values(additionalActions).some(
+    const hasMacros = actionValues.some(
       (v) => v.type === constants.ACTION_TYPE.MACRO,
     );
     const hasTemplates =
       'templates' in this.system &&
-      Object.values(this.system.templates).some((v) => v);
+      Object.values(this.system.templates).some(Boolean);
+
+    const effects: string[] = [];
+    for (const effect of this.effects.filter((e) => !e.transfer)) {
+      effects.push(await TextEditor.enrichHTML(effect.link));
+    }
 
     const templateData = {
       actorId: this.parent?.id,
       tokenId: tokenId,
       item: this,
-      data: await this.getChatData({}),
+      data: await this.getChatData(),
+      effects,
       hasAmmoManagement,
       hasMagazine,
       hasReloadButton,
