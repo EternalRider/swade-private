@@ -20,7 +20,7 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    <a class='item' data-tab='actions' data-group='main'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='actions' data-group='main'>{{localize 'SWADE.Actions.Name'}}</a>
     <a class='item' data-tab='effects' data-group='main'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
@@ -30,6 +30,7 @@
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
+      {{formGroupSimple "system.hidden"}}
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
       {{> 'systems/swade/templates/item/partials/templates.hbs'}}

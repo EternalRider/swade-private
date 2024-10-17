@@ -8,10 +8,10 @@ import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
-import { actions, bonusDamage, favorite, templates } from './common';
+import { actions, activities, favorite, templates } from './common';
 import {
   Actions,
-  BonusDamage,
+  Activities,
   Favorite,
   Templates,
 } from './item-common.interface';
@@ -20,7 +20,7 @@ declare namespace PowerData {
   interface Schema
     extends SwadeBaseItemData.Schema,
       Actions,
-      BonusDamage,
+      Activities,
       Favorite,
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
@@ -52,19 +52,36 @@ class PowerData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...actions(),
-      ...bonusDamage(),
+      ...activities(),
       ...favorite(),
       ...templates(),
-      rank: new fields.StringField({ initial: '', textSearch: true, label: 'SWADE.Rank' }),
+      rank: new fields.StringField({
+        initial: '',
+        textSearch: true,
+        label: 'SWADE.Rank',
+      }),
       pp: new fields.NumberField({ initial: 0, label: 'SWADE.PP' }),
       damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
-      range: new fields.StringField({ initial: '', label: 'SWADE.Range._name' }),
+      range: new fields.StringField({
+        initial: '',
+        label: 'SWADE.Range._name',
+      }),
       duration: new fields.StringField({ initial: '', label: 'SWADE.Dur' }),
-      trapping: new fields.StringField({ initial: '', textSearch: true, label: 'SWADE.Trap' }),
-      arcane: new fields.StringField({ initial: '', textSearch: true,  label: 'SWADE.Arcane' }),
+      trapping: new fields.StringField({
+        initial: '',
+        textSearch: true,
+        label: 'SWADE.Trap',
+      }),
+      arcane: new fields.StringField({
+        initial: '',
+        textSearch: true,
+        label: 'SWADE.Arcane',
+      }),
       ap: new fields.NumberField({ initial: 0, label: 'SWADE.AP' }),
       innate: new fields.BooleanField({ label: 'SWADE.InnatePower' }),
-      modifiers: new fields.ArrayField(new fields.ObjectField(), { label: 'SWADE.Modifiers' }),
+      modifiers: new fields.ArrayField(new fields.ObjectField(), {
+        label: 'SWADE.Modifiers',
+      }),
     };
   }
 
@@ -136,10 +153,16 @@ class PowerData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/power-embeds.hbs', 'power-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/power-embeds.hbs',
+      'power-embed',
+    );
   }
-
 }
 
 export { PowerData };

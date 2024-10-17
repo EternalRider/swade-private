@@ -109,7 +109,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.edge}}
+        {{#each itemsByType.edge}}
           <li class='edge item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
@@ -130,7 +130,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.hindrance}}
+        {{#each itemsByType.hindrance}}
           <li class='hindrance item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
@@ -168,7 +168,7 @@
             </a>
           </li>
         {{/if}}
-        {{#each actor.itemTypes.ability}}
+        {{#each itemsByType.ability}}
           {{#if (eq system.subtype 'special')}}
             <li class='ability item' data-item-id='{{id}}'>
               <a
@@ -185,7 +185,7 @@
     <section class='gear abilities'>
       <header class='header-field flexrow'>
         <div>
-          <span>{{localize 'SWADE.Actions'}}</span>
+          <span>{{localize 'SWADE.Actions.Name'}}</span>
         </div>
         <div class='header-field-add'>
           <a class='item-create' data-type='action'>
@@ -194,7 +194,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.action}}
+        {{#each itemsByType.action}}
           <li class='action item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}

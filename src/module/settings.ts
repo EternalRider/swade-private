@@ -1,3 +1,4 @@
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';

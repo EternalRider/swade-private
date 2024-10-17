@@ -363,6 +363,10 @@ class SwadeItem extends Item {
     return state;
   }
 
+  override getRollData(): Record<string, unknown> {
+    return super.getRollData() as Record<string, unknown>;
+  }
+
   async getChatData(
     enrichOptions: Partial<TextEditor.EnrichmentOptions>,
   ): Promise<ItemChatCardData> {

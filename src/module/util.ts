@@ -7,7 +7,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor from './documents/actor/SwadeActor';
-import SwadeItem from './documents/item/SwadeItem';
+import SwadeItem, { SystemItemTypes } from './documents/item/SwadeItem';
 
 /**
  * @internal
@@ -325,10 +325,10 @@ export async function createEmbedElement(
  * @param type An optional item type for narrowing the possible list of resulting items
  * @returns a list of items that has matched the swid and type
  */
-export async function getItemsBySwid(
+export async function getItemsBySwid<T extends SystemItemTypes>(
   swid: string,
-  type?: string,
-): Promise<SwadeItem[]> {
+  type?: T,
+): Promise<SwadeItem<T>[]> {
   //get world items first
   let items: SwadeItem[] = game.items.filter((i) => i.system.swid === swid);
   //filter by type if necessary

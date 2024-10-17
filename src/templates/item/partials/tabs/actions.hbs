@@ -21,13 +21,17 @@
                 name='system.actions.additional.{{id}}.name'
                 value='{{action.name}}'
                 placeholder='{{localize "SWADE.Name"}}'
+                {{disabled action.resolved}}
               />
               <span>{{localize 'SWADE.Name'}}</span>
             </label>
           </div>
           <div class='right'>
             <label class='float-label'>
-              <select name='system.actions.additional.{{id}}.type'>
+              <select
+                name='system.actions.additional.{{id}}.type'
+                {{disabled action.resolved}}
+              >
                 {{selectOptions
                   @root.actionTypes
                   selected=action.type
@@ -42,6 +46,7 @@
             class='action-delete invisible'
             title='{{localize "Delete"}}'
             data-action-id='{{id}}'
+            {{disabled action.resolved}}
           >
             <i class='fas fa-trash fa-2x'></i>
           </button>
@@ -53,6 +58,7 @@
                   name='system.actions.additional.{{id}}.override'
                   value='{{action.override}}'
                   placeholder='{{localize "SWADE.AltTrait"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.AltTrait'}}</span>
               </label>
@@ -64,6 +70,7 @@
                   name='system.actions.additional.{{id}}.modifier'
                   value='{{action.modifier}}'
                   placeholder='{{localize "SWADE.RollExample"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.TraitMod'}}</span>
               </label>
@@ -76,6 +83,7 @@
                   value='{{action.dice}}'
                   placeholder='{{localize "SWADE.NumberOfDice.Label"}}'
                   data-tooltip='{{localize "SWADE.NumberOfDice.Hint"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.NumberOfDice.Label'}}</span>
               </label>
@@ -88,6 +96,7 @@
                     name='system.actions.additional.{{id}}.resourcesUsed'
                     value='{{action.resourcesUsed}}'
                     placeholder='{{localize "SWADE.ShotsUsed"}}'
+                    {{disabled action.resolved}}
                   />
                   <span>{{localize 'SWADE.ShotsUsed'}}</span>
                 {{else}}
@@ -97,6 +106,7 @@
                     value='{{action.resourcesUsed}}'
                     placeholder='{{localize "SWADE.ResourcesUsed.Label"}}'
                     data-tooltip='{{localize "SWADE.ResourcesUsed.Hint"}}'
+                    {{disabled action.resolved}}
                   />
                   <span>{{localize 'SWADE.ResourcesUsed.Label'}}</span>
                 {{/if}}
@@ -110,6 +120,7 @@
                   name='system.actions.additional.{{id}}.override'
                   value='{{action.override}}'
                   placeholder='{{localize "SWADE.AltTrait"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.AltTrait'}}</span>
               </label>
@@ -124,6 +135,7 @@
                   name='system.actions.additional.{{id}}.modifier'
                   value='{{action.modifier}}'
                   placeholder='{{localize "SWADE.TraitMod"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.TraitMod'}}</span>
               </label>
@@ -136,6 +148,7 @@
                   name='system.actions.additional.{{id}}.override'
                   value='{{action.override}}'
                   placeholder='{{localize "SWADE.DmgOver"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.DmgOver'}}</span>
               </label>
@@ -147,6 +160,7 @@
                   name='system.actions.additional.{{id}}.modifier'
                   value='{{action.modifier}}'
                   placeholder='{{localize "SWADE.RollExample"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.DmgMod'}}</span>
               </label>
@@ -158,6 +172,7 @@
                   name='system.actions.additional.{{id}}.ap'
                   value='{{action.ap}}'
                   placeholder='{{localize "SWADE.ApOver"}}'
+                  {{disabled action.resolved}}
                 />
                 <span>{{localize 'SWADE.ApOver'}}</span>
               </label>
@@ -168,6 +183,7 @@
                 type='checkbox'
                 name='system.actions.additional.{{id}}.isHeavyWeapon'
                 {{checked action.isHeavyWeapon}}
+                {{disabled action.resolved}}
               />
               <label for='{{@root.item.id}}-{{id}}-heavy-weapon'>
                 {{localize 'SWADE.HeavyWeapon'}}
@@ -181,13 +197,17 @@
                   name='system.actions.additional.{{id}}.uuid'
                   value='{{action.uuid}}'
                   placeholder='UUID'
+                  {{disabled action.resolved}}
                 />
                 <span>UUID</span>
               </label>
             </div>
             <div class='full-width'>
               <label class='float-label'>
-                <select name='system.actions.additional.{{id}}.macroActor'>
+                <select
+                  name='system.actions.additional.{{id}}.macroActor'
+                  {{disabled action.resolved}}
+                >
                   {{selectOptions
                     @root.macroActorTypes
                     selected=action.macroActor

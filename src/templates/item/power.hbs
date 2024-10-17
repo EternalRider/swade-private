@@ -119,7 +119,7 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
   </nav>
 
   {{!-- Main Section --}}
@@ -149,6 +149,7 @@
       {{> 'systems/swade/templates/item/partials/templates.hbs'}}
       <hr>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{formGroupSimple "system.activities" stacked=true}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
     </section>
     <section class='tab actions' data-group='main' data-tab='actions'>

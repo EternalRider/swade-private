@@ -30,6 +30,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - You can now modify all pace values at the same time by setting the change to `system.pace`. (#768) **by @florad92**
 - Added a tooltip to the character and npc sheets which displays some additional information about pace such as other movement speeds and out-of-combat running pace. (#1182) **by @florad92**
 - Added `tokenSize` getter to `SwadeActor` and system DataModel classes (#1217) **by @florad92**
+- Added _Activities_ to the system. Activities allow you to add the SWID of an `action` Item to another item that supports item actions, except `action` Items. `action` Items linked in that way get resolved and can be used like any other item-action. (#1202) **by @florad92**
+- Added a toggle to `action` Items to mark them as hidden so they do not clutter the sheet. This is primarily intended to be used in conjunction with Activtities. (#1202) **by @florad92**
+- Added a toggle to show hidden actions on the actor sheet to the Tweaks window. (#1202) **by @florad92**
 
 ### Changed
 
@@ -41,6 +44,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - SwadeBaseActorData -> CreatureData -> CharacterData/NpcData
     - SwadeBaseActorData -> GroupData
     - SwadeBaseActorData -> VehicleData
+- The tweaks window finally scrolls, allowing for a more compact size. (#1202) **by @florad92**
+- The Powers tab is now displayed if the actor has an arcane background, an ability that grants powers or any stray powers at all. (#1018) **by @florad92 and @mhilbrunner**
 
 ## 4.1.1
 
