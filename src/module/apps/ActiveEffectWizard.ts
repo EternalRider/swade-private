@@ -118,7 +118,8 @@ export default class ActiveEffectWizard extends FormApplication {
   async #createEffect() {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
-      transfer: this.object instanceof SwadeItem,
+      transfer:
+        this.object instanceof SwadeItem && this.object.type !== 'power', // only transfer on non-power items
     });
 
     getDocumentClass('ActiveEffect').create(data, {
