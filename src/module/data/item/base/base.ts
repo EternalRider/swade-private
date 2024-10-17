@@ -109,6 +109,9 @@ class SwadeBaseItemData<
       this.updateSource({ swid: slugify(data.name) });
     }
   }
+
+  /** Prepare any fields that are formulas  */
+  prepareFormulaFields(): void {}
 }
 
 export { SwadeBaseItemData };

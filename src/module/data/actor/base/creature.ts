@@ -710,6 +710,9 @@ class CreatureData<
     if (this.details.autoCalcParry) {
       this.stats.parry.value = this.parent.calcParry();
     }
+    for (const item of this.parent.items) {
+      item.system.prepareFormulaFields();
+    }
   }
 
   /**
