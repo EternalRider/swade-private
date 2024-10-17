@@ -26,7 +26,7 @@ import {
   NpcData,
   VehicleData,
 } from '../../data/actor';
-import { TokenSize } from '../../data/actor/base/base';
+import { SwadeBaseActorData, TokenSize } from '../../data/actor/base/base';
 import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
 import {
   AbilityData,
@@ -63,6 +63,7 @@ declare global {
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
       jokerBonus?: string | number;
+      hiddenActionOverride?: boolean;
     };
   }
 }
@@ -266,14 +267,9 @@ class SwadeActor extends Actor {
   }
 
   override prepareEmbeddedDocuments() {
-    for (const item of this.items) item.overrides = {};
-    for (const effect of this.effects) {
-      effect._safePrepareData();
-    }
-    this.applyActiveEffects();
-    for (const item of this.items) {
-      item._safePrepareData();
-    }
+    if (this.system instanceof SwadeBaseActorData) {
+      this.system.prepareEmbeddedDocuments();
+    } else super.prepareEmbeddedDocuments();
   }
 
   override prepareDerivedData() {
@@ -876,13 +872,17 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns an array containing the found items
    */
-  getItemsBySwid(swid: string, type?: string): SwadeItem[] {
+  getItemsBySwid<T extends SystemItemTypes>(
+    swid: string,
+    type?: T,
+  ): SwadeItem<T>[] {
     const swidFilter = (i: SwadeItem) => i.system.swid === swid;
     if (!type) return this.items.filter(swidFilter);
     const itemTypes = this.itemTypes;
-    if (!Object.hasOwn(itemTypes, type))
+    if (!Object.hasOwn(itemTypes, type)) {
       throw new Error(`Type ${type} is invalid!`);
-    return itemTypes[type].filter(swidFilter);
+    }
+    return itemTypes[type].filter(swidFilter) as SwadeItem<T>[];
   }
 
   /**
@@ -891,8 +891,11 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns The matching item, or undefined if none was found.
    */
-  getSingleItemBySwid(swid: string, type?: string): SwadeItem | undefined {
-    return this.getItemsBySwid(swid, type)[0];
+  getSingleItemBySwid<T extends SystemItemTypes>(
+    swid: string,
+    type?: T,
+  ): SwadeItem<T> | undefined {
+    return this.getItemsBySwid<T>(swid, type)[0];
   }
 
   /**
@@ -991,18 +994,10 @@ class SwadeActor extends Actor {
     });
   }
 
-  async getDriver(): Promise<SwadeActor | undefined> {
-    if (!(this.system instanceof VehicleData)) return;
-    const driverId = this.system.driver.id;
-    let driver: SwadeActor | undefined = undefined;
-    if (driverId) {
-      try {
-        driver = (await fromUuid(driverId)) as SwadeActor;
-      } catch (error) {
-        ui.notifications.error('The Driver could not be found!');
-      }
-    }
-    return driver;
+  async getDriver(): Promise<SwadeActor | null> {
+    if (!(this.system instanceof VehicleData)) return null;
+    if (!this.system.driver.id) return null;
+    return (await fromUuid(this.system.driver.id)) as SwadeActor | null;
   }
 
   getTraitRollModifiers(
@@ -1270,8 +1265,8 @@ class SwadeActor extends Actor {
       'skill',
     );
 
-    const skillDie = (parryBaseSkill?.system as SkillData)?.die.sides ?? 0;
-    const skillMod = (parryBaseSkill?.system as SkillData)?.die.modifier ?? 0;
+    const skillDie = parryBaseSkill?.system?.die.sides ?? 0;
+    const skillMod = parryBaseSkill?.system?.die.modifier ?? 0;
 
     //base parry calculation
     parryTotal = Math.round(skillDie / 2) + parryBaseValue;

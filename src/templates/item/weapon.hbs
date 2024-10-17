@@ -96,7 +96,7 @@
         {{localize 'SWADE.Pow'}}
       </a>
     {{/if}}
-    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
@@ -105,8 +105,10 @@
     <section class='tab description full-page' data-group='main' data-tab='description'>
       {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
     </section>
+    {{!-- Properties --}}
     <section class='tab properties' data-group='main' data-tab='properties'>
-      <div class="form-group"><label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
+      <div class="form-group">
+        <label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
         <span class="form-fields">
           <select name="system.trademark" data-dtype="Number">
             {{selectOptions
@@ -225,7 +227,7 @@
           {{localize 'SWADE.ReloadType.Label'}}
         </label>
         <span class='form-fields'>
-          <select name='system.reloadType' data-dtype='String'>
+          <select name='system.reloadType'>
               {{selectOptions
                 reloadTypeOptions
                 selected=item.system.reloadType
@@ -245,7 +247,7 @@
             type='text' 
             name='system.ppReloadCost'
             value='{{item.system.ppReloadCost}}'
-            data-dtype='number'
+            data-dtype='Number'
           />
         </span>
       </div>
@@ -259,6 +261,7 @@
         </span>
       </div>
       {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{formGroupSimple "system.activities" stacked=true}}
       {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
       <div class='form-group'>
         <label for="{{item.uuid}}-arcane-device">

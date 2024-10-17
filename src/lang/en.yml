@@ -153,7 +153,7 @@ SWADE:
   Protection: Protection
   Dmg: Damage
   DmgOver: Action Damage
-  ApOver: Action Armor Piercing
+  ApOver: Action AP
   Resist: Resist
   ResistRolls: Resistance Rolls
   MacroActor:
@@ -167,7 +167,16 @@ SWADE:
   ShieldBonus: Shield Bonus
   Notes: Notes
   ActionsEffects: Actions & Effects
-  Actions: Actions
+  Actions:
+    Name: Actions
+    Hidden:
+      Label: Hidden
+      Hint: Hidden actions are not displayed on the actor sheet
+    DisplayHidden:
+      Label: Display hidden Actions
+    Activities:
+      Label: Activities
+      Hint: SWIDs of Actions that are linked to this Item
   DmgModUni: Damage Modifier
   SkillModUni: Trait Modifier
   ShotsUsed: Shots Used
@@ -1546,6 +1555,7 @@ SWADE:
       Dialog:
         Title: Running
         Content: Please select how you want to run
+  
 TYPES:
   Actor:
     character: Player Character
