@@ -3,10 +3,13 @@
     {{#if content}}
       <section class='content'>{{{content}}}</section>
     {{/if}}
-    <section>
+    <section class='targets'>
       {{#if targets.length}}
-        <span>{{localize 'SWADE.Targets'}}</span>
-        <ul class='targets'>
+        <h4 class='actions-subheading'>
+          <i class='fa-solid fa-reflect-both'></i>
+          {{localize 'SWADE.Targets'}}
+        </h4>
+        <ul class='target-list'>
           {{#each targets}}
             <li>
               <button class='target' data-token-uuid='{{uuid}}'>

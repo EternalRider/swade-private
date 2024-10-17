@@ -35,6 +35,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added a toggle to `action` Items to mark them as hidden so they do not clutter the sheet. This is primarily intended to be used in conjunction with Activities. (#1202) **by @florad92**
 - Added a toggle to show hidden actions on the actor sheet to the Tweaks window. (#1202) **by @florad92**
 - Added the Effects tab to the Item Sheet for Powers. Effects created with the AEGIS/Active Effect Wizard are set to not transfer to the actor by default so they can be used to apply to the targets of your powers instead of the casting actor. (#717) **by @florad92**
+- Added the ability to drag&drop Active Effects onto tokens on the canvas. You can drop the effect on multiple tokens at the same time by selecting the tokens they are should be applied to and the dropping the effect on a single token. You can also drop an Active Effect on a token you own without having to select it. (#1023) **by @florad92**
+- Added non-transferred Active Effects to the item chat cards as draggable elements. They can be used to drag&drop to sheets and the canvas. (#1023) **by @florad92**
 
 ### Changed
 
