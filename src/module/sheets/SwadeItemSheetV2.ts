@@ -758,17 +758,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           name: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
           condition: this.object.isOwner,
-          callback: (_li) => {
-            new ActiveEffectWizard(this.object).render(true);
-          },
+          callback: () => new ActiveEffectWizard(this.object).render(true),
         },
         {
           name: 'SWADE.ActiveEffects.AddUnguided',
           icon: '<i class="fa-solid fa-file-plus"></i>',
           condition: this.object.isOwner,
-          callback: (_li) => {
-            this.#createActiveEffect();
-          },
+          callback: () => this.#createActiveEffect(),
         },
       ],
       { eventName: 'click' },
