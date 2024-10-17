@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     - SwadeBaseActorData -> VehicleData
 - The tweaks window finally scrolls, allowing for a more compact size. (#1202) **by @florad92**
 - The Powers tab is now displayed if the actor has an arcane background, an ability that grants powers or any stray powers at all. (#1018) **by @florad92 and @mhilbrunner**
+- The range of a Power can now be set as a formula which is evaluated. (#1010) **by @florad92**
 
 ## 4.1.1
 

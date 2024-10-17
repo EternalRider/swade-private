@@ -1,9 +1,11 @@
 import { PotentialSource } from '../../../globals';
+import { Logger } from '../../Logger';
 import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
 } from '../../documents/item/SwadeItem.interface';
 import { createEmbedElement } from '../../util';
+import { FormulaField } from '../fields/FormulaField';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -26,7 +28,7 @@ declare namespace PowerData {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
     damage: foundry.data.fields.StringField<{ initial: '' }>;
-    range: foundry.data.fields.StringField<{ initial: '' }>;
+    range: foundry.data.fields.StringField<{ initial: '@sma' }>;
     duration: foundry.data.fields.StringField<{ initial: '' }>;
     trapping: foundry.data.fields.StringField<{
       initial: '';
@@ -38,7 +40,9 @@ declare namespace PowerData {
     modifiers: foundry.data.fields.ArrayField<foundry.data.fields.ObjectField>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
-  interface DerivedData extends SwadeBaseItemData.DerivedData {}
+  interface DerivedData extends SwadeBaseItemData.DerivedData {
+    power: number;
+  }
 }
 
 class PowerData extends SwadeBaseItemData<
@@ -63,7 +67,7 @@ class PowerData extends SwadeBaseItemData<
       pp: new fields.NumberField({ initial: 0, label: 'SWADE.PP' }),
       damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
       range: new fields.StringField({
-        initial: '',
+        initial: '@sma',
         label: 'SWADE.Range._name',
       }),
       duration: new fields.StringField({ initial: '', label: 'SWADE.Dur' }),
@@ -77,7 +81,7 @@ class PowerData extends SwadeBaseItemData<
         textSearch: true,
         label: 'SWADE.Arcane',
       }),
-      ap: new fields.NumberField({ initial: 0, label: 'SWADE.AP' }),
+      ap: new fields.NumberField({ initial: 0, label: 'SWADE.Ap' }),
       innate: new fields.BooleanField({ label: 'SWADE.InnatePower' }),
       modifiers: new fields.ArrayField(new fields.ObjectField(), {
         label: 'SWADE.Modifiers',
@@ -90,6 +94,18 @@ class PowerData extends SwadeBaseItemData<
     quarantine.ensurePowerPointsAreNumeric(source);
     migrations.renameActionProperties(source);
     return super.migrateData(source);
+  }
+
+  override prepareFormulaFields(): void {
+    const field = new FormulaField();
+    const cleaned = field.clean(this.range);
+    if (Roll.validate(cleaned)) {
+      this.range = new FormulaField().initialize(cleaned as string, this);
+    } else {
+      Logger.warn(
+        `Range "${cleaned}" cannot be evaluated as it is not a valid formula`,
+      );
+    }
   }
 
   /** @inheritdoc */
