@@ -34,7 +34,7 @@ export class SwadeRoll<T extends SwadeRollData = EmptyObject> extends Roll<T> {
     const roll = msg['rolls'][0] as SwadeRoll;
 
     roll.rerollMode = 'free';
-    const evaluated = await roll.reroll({ async: true });
+    const evaluated = await roll.reroll();
     await evaluated.toMessage(
       {
         speaker: speaker,
@@ -73,7 +73,7 @@ export class SwadeRoll<T extends SwadeRollData = EmptyObject> extends Roll<T> {
 
     roll.applyReroll(actor);
 
-    const evaluated = await roll.reroll({ async: true });
+    const evaluated = await roll.reroll();
     await evaluated.toMessage(
       {
         speaker: speaker,

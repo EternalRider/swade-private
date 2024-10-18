@@ -446,7 +446,7 @@ export default class SwadeCombat extends Combat {
 
   protected async _playInitiativeSound() {
     if (!game.settings.get('swade', 'initiativeSound')) return;
-    AudioHelper.play(this.#initSoundData, true);
+    foundry.audio.AudioHelper.play(this.#initSoundData, true);
   }
 
   protected override _playCombatSound(type: string): void {
