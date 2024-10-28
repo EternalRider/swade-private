@@ -721,16 +721,6 @@ export default class SwadeCoreHooks {
       (t) => t.button,
     );
     measure.tools.splice(measure.tools.length - 1, 0, ...newTemplateButtons);
-
-    //get the tile tools
-    const tile = sceneControlButtons.find((a) => a.name === 'tiles')!;
-    //added the button to clear chase cards
-    tile.tools.push({
-      name: 'clear-chase-cards',
-      title: 'SWADE.ClearChaseCards',
-      icon: 'fa-solid fa-shipping-fast',
-      onClick: () => chaseUtils.removeChaseTiles(canvas.scene!),
-    });
   }
 
   static async onDropActorSheetData(

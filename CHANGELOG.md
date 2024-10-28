@@ -51,6 +51,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The tweaks window finally scrolls, allowing for a more compact size. (#1202) **by @florad92**
 - The Powers tab is now displayed if the actor has an arcane background, an ability that grants powers or any stray powers at all. (#1018) **by @florad92 and @mhilbrunner**
 - The range of a Power can now be set as a formula which is evaluated. (#1010) **by @florad92**
+- [BREAKING] The Chase layout tools now require and leverage Complete Card Management
+  - `layoutChase` is now asynchronous
 
 ## 4.1.1
 
