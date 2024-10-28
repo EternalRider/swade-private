@@ -14,7 +14,7 @@
     </summary>
   <div class="content card-content">
     {{#if (or hasTraitRoll hasDamage hasAmmoManagement hasMacros hasReloadButton system.isArcaneDevice)}}
-      {{>"systems/swade/templates/shared-partials/action-card.hbs" item=this}}
+      {{>"swade.npc-action-card" item=this}}
     {{/if}}
       <span class="description">
       {{#if system.description}}
