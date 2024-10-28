@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- [BREAKING] Refactored SWADE's handlebars partials to use a key-value record instead of the full paths as an array. (#1230) **by @jpmeehan5**
 - Actor and Item Tweaks now show the source instead of adjusted values. (#1219) **by @florad92**
 - [BREAKING] Refactored actor data models to have a more clear inheritance chain. **by @florad92**
   - Added SwadeBaseActorData

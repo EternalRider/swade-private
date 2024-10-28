@@ -5,7 +5,7 @@
   <figure class='grid-under gu-4'></figure>
 
   {{!-- Sheet Header --}}
-  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+  {{> 'swade.item-header'}}
 
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
@@ -17,7 +17,7 @@
     {{formGroupSimple "system.ap" rootId=item.uuid}}
     {{formGroupSimple "system.arcane" rootId=item.uuid}}
     <hr>
-    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+    {{> 'swade.item-additional-stats'}}
   </section>
 
   {{!-- Sheet Tab Navigation --}}
@@ -45,7 +45,7 @@
           data-dtype="String"
         />
       </div>
-      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+      {{> 'swade.item-tab-description'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
@@ -56,17 +56,17 @@
           <input id="{{item.uuid}}-innate" type='checkbox' name='system.innate' {{checked item.system.innate}}/>
         </span>
       </div>
-      {{> 'systems/swade/templates/item/partials/templates.hbs'}}
+      {{> 'swade.item-templates'}}
       <hr>
-      {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
+      {{> 'swade.item-action-properties'}}
       {{formGroupSimple "system.activities" stacked=true}}
-      {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
+      {{> 'swade.item-bonus-damage'}}
     </section>
     <section class='tab actions' data-group='main' data-tab='actions'>
-      {{> 'systems/swade/templates/item/partials/tabs/actions.hbs'}}
+      {{> 'swade.item-tab-actions'}}
     </section>
     <section class='tab effects' data-group='main' data-tab='effects'>
-      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+      {{> 'swade.item-tab-effects'}}
     </section>
   </section>
 
