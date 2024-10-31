@@ -159,6 +159,7 @@ SWADE:
   MacroActor:
     Default: Default
     Self: Self
+    Target: Target
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
@@ -1061,6 +1062,7 @@ SWADE:
     Label: Resources Used
     Hint: How much of an arbitrary resource is used for this action
   CouldNotFindMacro: Could not find Macro with UUID {uuid}
+  CouldNotFindTarget: This macro requires selecting a target!
   Magazine:
     NoneLoaded: No magazine loaded
     Select: Select a magazine

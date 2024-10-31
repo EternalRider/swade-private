@@ -91,6 +91,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return {
       default: 'SWADE.MacroActor.Default',
       self: 'SWADE.MacroActor.Self',
+      target: 'SWADE.MacroActor.Target',
     };
   }
 
