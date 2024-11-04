@@ -342,7 +342,8 @@ SWADE:
   CopyMarkdown: Copia Markdown
   Imperial: Imperial
   Metric: Mètric
-  ChangeBennyWarning: Per canviar aquesta configuració, caldrà que actualitzeu la pàgina.
+  ChangeBennyWarning: Per canviar aquesta configuració, caldrà que actualitzeu la
+    pàgina.
   3DBennies: Benis en 3D
   WealthSelectionNoneOther: Cap / Altres
   Modifiers: Modificadors
@@ -356,7 +357,8 @@ SWADE:
     trobat els duplicats següents (per nom i tipus). Els nous elements s'han
     canviat de nom per reflectir la seva font.
   NoActionDeckFound: No s'ha trobat cap baralla d'acció, creant-ne una
-  NoActionDeckDiscardPileFound: No s'ha trobat cap pila de descart de la baralla d'acció, creant-ne una
+  NoActionDeckDiscardPileFound: No s'ha trobat cap pila de descart de la baralla d'acció,
+    creant-ne una
   Wealth: Riquesa
   Characters: Personatges
   SettingRules: Configuració de regles
@@ -697,7 +699,8 @@ SWADE:
   EmptyAncestralAbilitiesHint: >-
     Aquesta {ancestry} o {archetype} encara no té cap habilitat. Arrossegueu i
     deixeu anar alguna cosa a la fitxa per començar.
-  NoTokenSelectedForResistRoll: Per fer una tirada de resistència, primer selecciona un token
+  NoTokenSelectedForResistRoll: Per fer una tirada de resistència, primer selecciona
+    un token
   Templates:
     Cone:
       Short: Con
@@ -840,7 +843,8 @@ SWADE:
         <p><strong>{name}</strong> està <strong>atordit</strong> amb
         <strong>{wounds}</strong>!</p>
       IsIncapacitated: <p><strong>{name}</strong> està <strong>incapacitat!</strong></p>
-    NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració de SWADE
+    NoInjuryTable: No s'ha seleccionat cap taula de lesions. Veure la configuració
+      de SWADE
     NoTargetsSelected: Selecciona un objectiu per aplicar-hi el mal.
     Incapacitation:
       InjuryRoll: Tirada de vigor per resistir lesions en cas d'incapacitat
