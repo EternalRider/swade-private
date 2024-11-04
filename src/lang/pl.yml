@@ -778,8 +778,11 @@ SWADE:
       IgnoreWounds: Konanie ignorujące Rany
   Validation:
     OnlyOneRace: Możesz mieć tylko jedną rasę na raz!
-    OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz!
-    OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz!
+    OnlyOneArchetype: Możesz mieć tylko jeden archetyp na raz.
+    OnlyOneAncestry: Możesz mieć tylko jedno pochodzenie na raz.
+    InvalidBasePace: Nie możesz ustawić podstawowego Tempa na typ tempa bez wartości.
+    NoGroupCombatants: Grupy aktorów nie mogą być uczestnikami walki.
+  DocumentLink: Link
   DocumentTweaks: Poprawki
   TargetVulnerable: Cel jest Odsłonięty
   WildAttack: Wściekły Atak
@@ -981,7 +984,7 @@ SWADE:
     NoInjuryTable: Żadna Tabela Urazów nie została wybrana. Sprawdź ustawienia SWADE
     NoTargetsSelected: Wybierz cel, dla którego mają zostać zastosowane obrażenia.
   NumberOfDice:
-    Label: Kość
+    Label: Liczba kości
     Hint: Ustala ile kości Cech zostanie rzuconych dla tej akcji
   ResourcesUsed:
     Label: Użyte zasoby
@@ -1440,6 +1443,26 @@ SWADE:
   DeleteFromParentWarning: '{name} zostanie trwale usunięty z {parent}.'
   HindMajor: Poważna
   HindMinor: Drobna
+  Movement:
+    Pace:
+      Base:
+        Hint: Które Tempo jest domyślne dla aktora
+        Label: Podstawowe Tempo
+      Ground:
+        Label: Na ziemi
+      Fly:
+        Label: Lot
+      Swim:
+        Label: Pływanie
+      Burrow:
+        Label: Pod ziemią
+    Running:
+      Dialog:
+        Title: Bieganie
+        Content: Wybierz jak chcesz biegać
+      OutOfCombat: Możesz biec z prędkością {pace} przez {minutes} minut poza walką
+    Base: Podstawowy ruch
+    Other: Inne Prędkości Ruchu
 TYPES:
   Actor:
     character: Postać gracza
