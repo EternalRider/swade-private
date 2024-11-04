@@ -93,7 +93,8 @@ SWADE:
   Parry: Parade
   Notes: Notizen
   ActionsEffects: Aktionen & Effekte
-  Actions: Aktionen
+  Actions:
+    Name: Aktionen
   DmgModUni: Schadensmodifikator
   SkillModUni: Eigenschaftsmodifikator
   ShotsUsed: Schuss verbraucht
@@ -1050,6 +1051,7 @@ SWADE:
   MacroActor:
     Default: Default
     Self: Selbst
+    Target: Ziel
   RefreshOnly: Auffrischen
   NotOwnedError: Item/Akteur muss im Besitz sein
   AddOrReplaceActions:
@@ -1132,7 +1134,7 @@ SWADE:
   SettingConfigurator:
     WorldCompendiums: Weltkompendien
     WorldTables: Welttabellen
-  ApOver: Aktion Panzerbrechend
+  ApOver: Aktion PB
   Group:
     Sheet:
       Members:
