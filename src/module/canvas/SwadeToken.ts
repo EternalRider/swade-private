@@ -1,6 +1,6 @@
 import {
-  SingleAttributeBar,
   ObjectAttributeBar,
+  SingleAttributeBar,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { AuraPointSource } from './AuraPointSource';
@@ -11,9 +11,36 @@ declare global {
   }
 }
 export default class SwadeToken extends Token {
+  declare shape: PIXI.Rectangle | PIXI.Polygon | PIXI.Circle; //TODO
   #blk = 0x000000;
 
   auras = new Collection<AuraPointSource>();
+
+  /**
+   * This token's shape at its canvas position
+   * thanks to stwlam for this!
+   */
+  get localShape() {
+    switch (this.shape.type) {
+      case PIXI.SHAPES.RECT:
+        return this.bounds;
+      case PIXI.SHAPES.POLY: {
+        const shape = this.shape.clone();
+        const bounds = this.bounds;
+        shape.points = shape.points.map((c, i) =>
+          i % 2 === 0 ? c + bounds.x : c + bounds.y,
+        );
+        return shape;
+      }
+      case PIXI.SHAPES.CIRC: {
+        const shape = this.shape.clone();
+        const center = this.center;
+        shape.x = center.x;
+        shape.y = center.y;
+        return shape;
+      }
+    }
+  }
 
   protected override _drawBar(
     number: number,
@@ -22,9 +49,6 @@ export default class SwadeToken extends Token {
   ): void {
     if (data?.attribute === 'wounds') {
       return this._drawWoundsBar(number, bar, data as ObjectAttributeBar);
-    }
-    if (data?.attribute === 'fatigue') {
-      return this._drawFatigueBar(number, bar, data as ObjectAttributeBar);
     }
     return super._drawBar(number, bar, data);
   }

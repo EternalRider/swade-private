@@ -232,6 +232,7 @@ class CreatureData<
               unShakeBonus: new fields.NumberField({
                 initial: 0,
                 integer: true,
+                label: 'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
               }),
             },
             { label: 'SWADE.AttrSpr' },
@@ -333,11 +334,11 @@ class CreatureData<
         {
           autoCalcToughness: new fields.BooleanField({
             initial: true,
-            label: 'SWADE.InclArmor',
+            hint: 'SWADE.InclArmor',
           }),
           autoCalcParry: new fields.BooleanField({
             initial: true,
-            label: 'SWADE.AutoCalcParry',
+            hint: 'SWADE.AutoCalcParry',
           }),
           archetype: new fields.StringField({
             initial: '',
@@ -450,7 +451,12 @@ class CreatureData<
         {
           mode: new fields.StringField({
             initial: 'expanded',
-            choices: ['legacy', 'expanded'],
+            blank: false,
+            nullable: false,
+            choices: {
+              legacy: 'SWADE.Advances.Modes.Legacy',
+              expanded: 'SWADE.Advances.Modes.Expanded',
+            },
             label: 'SWADE.Advances.Modes.Label',
           }),
           value: new fields.NumberField({ initial: 0, label: 'SWADE.Advance' }),
@@ -703,6 +709,9 @@ class CreatureData<
 
     if (this.details.autoCalcParry) {
       this.stats.parry.value = this.parent.calcParry();
+    }
+    for (const item of this.parent.items) {
+      item.system.prepareFormulaFields();
     }
   }
 

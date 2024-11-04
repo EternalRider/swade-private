@@ -1108,7 +1108,6 @@ SWADE:
       IgnoreWounds: 失血忽略损伤
       BleedOutModifier: 失血调整值
   BenniesSpendGM: 使用1GM助力点
-  DocumentLink: 关联
   DocumentTweaks: 微调
   TargetVulnerable: 目标陷入脆弱
   WildAttack: 不羁攻击

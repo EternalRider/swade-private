@@ -4,6 +4,7 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
@@ -184,6 +185,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
     data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
 
+    const hiddenActionOverride = this.actor.getFlag(
+      'swade',
+      'hiddenActionOverride',
+    );
+
     const itemsByType: Record<string, SwadeItem[]> = {};
     for (const item of this.actor.items) {
       const type = item.type;
@@ -203,6 +209,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       );
 
       itemsByType[type] ??= [];
+      if (
+        item.system instanceof ActionData &&
+        item.system.hidden &&
+        !hiddenActionOverride
+      ) {
+        continue; //do not display hidden actions
+      }
       itemsByType[type].push(item);
     }
 

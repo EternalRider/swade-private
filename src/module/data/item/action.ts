@@ -1,12 +1,18 @@
+import {
+  DocumentOnCreateOptions,
+  DocumentOnDeleteOptions,
+  DocumentOnUpdateOptions,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { TypeDataModel } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { PotentialSource } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
-import { actions, bonusDamage, category, favorite, templates } from './common';
+import { actions, category, favorite, templates } from './common';
 import {
   Actions,
-  BonusDamage,
   Category,
   Favorite,
   Templates,
@@ -18,8 +24,13 @@ declare namespace ActionData {
       Favorite,
       Category,
       Templates,
-      Actions,
-      BonusDamage {}
+      Actions {
+    hidden: foundry.data.fields.BooleanField<{
+      initial: boolean;
+      label: string;
+      hint: string;
+    }>;
+  }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -37,7 +48,11 @@ class ActionData extends SwadeBaseItemData<
       ...category(),
       ...templates(),
       ...actions(),
-      ...bonusDamage(),
+      hidden: new foundry.data.fields.BooleanField({
+        initial: false,
+        label: 'SWADE.Actions.Hidden.Label',
+        hint: 'SWADE.Actions.Hidden.Hint',
+      }),
     };
   }
 
@@ -47,27 +62,69 @@ class ActionData extends SwadeBaseItemData<
     return super.migrateData(source);
   }
 
-  /** @inheritdoc */
-  protected override _initialize(options?: any) {
-    super._initialize(options);
-    this._applyShims();
+  get canHaveCategory() {
+    return true;
   }
 
-  async toEmbed(
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/action-embeds.hbs', 'action-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/action-embeds.hbs',
+      'action-embed',
+    );
   }
 
   protected _applyShims() {
     shims.actionProperties(this);
   }
 
-  get canHaveCategory() {
-    return true;
+  protected override _initialize(options?: any) {
+    super._initialize(options);
+    this._applyShims();
+  }
+
+  #triggerActivityUpdate() {
+    const items = this.parent.actor?.items.filter(
+      (i) => 'activities' in i.system && i.system.activities.has(this.swid),
+    );
+    for (const item of items) {
+      item._safePrepareData();
+      item.sheet.render();
+    }
+  }
+
+  protected override _onUpdate(
+    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    options: DocumentOnUpdateOptions<'Item'>,
+    userId: string,
+  ): void {
+    super._onUpdate(changed, options, userId);
+    if (foundry.utils.hasProperty(changed, 'system.actions'))
+      this.#triggerActivityUpdate();
+  }
+  protected override _onCreate(
+    data: TypeDataModel.ParentAssignmentType<this>,
+    options: DocumentOnCreateOptions<'Item'>,
+    userId: string,
+  ): void {
+    super._onCreate(data, options, userId);
+    this.#triggerActivityUpdate();
+  }
+
+  protected override _onDelete(
+    options: DocumentOnDeleteOptions<'Item'>,
+    userId: string,
+  ): void {
+    super._onDelete(options, userId);
+    this.#triggerActivityUpdate();
   }
 }
 

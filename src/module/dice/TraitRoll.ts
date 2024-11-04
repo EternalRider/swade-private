@@ -1,4 +1,5 @@
-import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
+import RollTerm from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/dice/terms/term.mjs';
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import {
   ActorRollData,
   RollPart,
@@ -115,7 +116,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   }
 
   override async toMessage<
-    T extends DeepPartial<ChatMessageDataConstructorData> = {},
+    T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
   >(
     messageData: T,
     {

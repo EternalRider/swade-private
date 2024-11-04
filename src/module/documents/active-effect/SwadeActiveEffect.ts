@@ -523,6 +523,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {
       this.updateSource({ name: this.parent.name });
     }
+    if (!this.origin && this.parent) {
+      this.updateSource({ origin: this.parent.uuid });
+    }
 
     //localize names, just to be sure
     this.updateSource({ name: game.i18n.localize(this.name) });

@@ -2,14 +2,15 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { PotentialSource, Updates } from '../../../globals';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
 import {
   actions,
+  activities,
   arcaneDevice,
-  bonusDamage,
   category,
   equippable,
   favorite,
@@ -18,6 +19,7 @@ import {
 } from './common';
 import {
   Actions,
+  Activities,
   ArcaneDevice,
   Category,
   Equippable,
@@ -25,7 +27,6 @@ import {
   GrantEmbedded,
   Vehicular,
 } from './item-common.interface';
-import { createEmbedElement } from '../../util';
 
 declare namespace GearData {
   interface Schema
@@ -34,6 +35,7 @@ declare namespace GearData {
       ArcaneDevice,
       Vehicular,
       Actions,
+      Activities,
       Favorite,
       Category,
       GrantEmbedded {
@@ -57,7 +59,7 @@ class GearData extends SwadePhysicalItemData<
       ...arcaneDevice(),
       ...vehicular(),
       ...actions(),
-      ...bonusDamage(),
+      ...activities(),
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
@@ -116,10 +118,16 @@ class GearData extends SwadePhysicalItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/gear-embeds.hbs', 'gear-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/gear-embeds.hbs',
+      'gear-embed',
+    );
   }
-
 }
 
 export { GearData };

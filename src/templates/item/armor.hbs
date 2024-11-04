@@ -5,11 +5,11 @@
   <figure class='grid-under gu-4'></figure>
 
   {{!-- Sheet Header --}}
-  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+  {{> 'swade.item-header'}}
 
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
-    {{> 'systems/swade/templates/item/partials/equipped.hbs'}}
+    {{> 'swade.item-equipped'}}
     <div class="form-group">
       <label for="{{item.uuid}}-armor">
         {{localize "SWADE.Armor"}}
@@ -96,7 +96,7 @@
       </div>
     </div>
     <hr>
-    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+    {{> 'swade.item-additional-stats'}}
   </section>
 
   {{!-- Sheet Tab Navigation --}}
@@ -112,14 +112,14 @@
         {{localize 'SWADE.Pow'}}
       </a>
     {{/if}}
-    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
   {{!-- Main Section --}}
   <section class='sheet-body'>
     <section class='tab description full-page' data-group='main' data-tab='description'>
-      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+      {{> 'swade.item-tab-description'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
@@ -170,20 +170,21 @@
           <input id="{{item.uuid}}-notes" type='text' name='system.notes' value='{{item.system.notes}}' placeholder='{{localize "SWADE.Notes"}}' />
         </span>
       </div>
-      {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
-      {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
-      {{> 'systems/swade/templates/item/partials/grants.hbs'}}
+      {{> 'swade.item-action-properties'}}
+      {{formGroupSimple "system.activities" stacked=true}}
+      {{> 'swade.item-bonus-damage'}}
+      {{> 'swade.item-grants'}}
     </section>
     {{#if item.isArcaneDevice}}
       <section class='tab powers' data-group='main' data-tab='powers'>
-        {{> 'systems/swade/templates/item/partials/tabs/powers.hbs'}}
+        {{> 'swade.item-tab-powers'}}
       </section>
     {{/if}}
     <section class='tab actions' data-group='main' data-tab='actions'>
-      {{> 'systems/swade/templates/item/partials/tabs/actions.hbs'}}
+      {{> 'swade.item-tab-actions'}}
     </section>
     <section class='tab effects' data-group='main' data-tab='effects'>
-      {{> 'systems/swade/templates/item/partials/tabs/effects.hbs'}}
+      {{> 'swade.item-tab-effects'}}
     </section>
   </section>
 
