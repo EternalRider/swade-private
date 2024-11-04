@@ -63,7 +63,7 @@
         {{!-- If combat is at round 0 (i.e., not begun), nest followers under leaders --}}
         {{#unless (and (eq ../round 0) groupId)}}
         <li class="combatant actor directory-item flexrow {{css}}" data-combatant-id="{{id}}">
-            {{> "systems/swade/templates/sidebar/combatant-details.hbs" user=../user combat=../combat}}
+            {{> "swade.combatant-details" user=../user combat=../combat}}
             {{!-- Before initiative is dealt, group followers as a nested list --}}
             {{#if (eq ../round 0)}}
             <ol class="subdirectory">
@@ -71,7 +71,7 @@
             {{#each ../turns}}
             {{#if (eq groupId leader.id)}}
             <li class="combatant actor directory-item flexrow {{css}}" data-combatant-id="{{id}}">
-            {{> "systems/swade/templates/sidebar/combatant-details.hbs" user=../user combat=../combat}}
+            {{> "swade.combatant-details" user=../user combat=../combat}}
             </li>
             {{/if}}
             {{/each}}

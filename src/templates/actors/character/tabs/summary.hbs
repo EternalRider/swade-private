@@ -132,7 +132,7 @@
 {{/if}}
 
 <span class='attributes primary'>
-  {{> "systems/swade/templates/actors/character/partials/attributes.hbs"}}
+  {{> "swade.character-attributes"}}
 </span>
 <span class='attributes derived'>
   <header class='section-header'>
@@ -234,7 +234,7 @@
     </header>
     <ol class='skill-list'>
       {{#each skills}}
-        {{>"systems/swade/templates/actors/character/partials/skill-card.hbs"}}
+        {{>"swade.character-skill-card"}}
       {{/each}}
     </ol>
   </div>
@@ -243,7 +243,7 @@
 <span class='quickaccess note-box'>
   <div class='note-header'>&nbsp;</div>
   <div class='note-main'>
-    {{> "systems/swade/templates/actors/character/partials/setting-fields.hbs"}}
+    {{> "swade.character-setting-field"}}
     <header class='section-header'>
       <span class='name'>{{localize 'SWADE.QuickAccess'}}</span>
       <button
@@ -298,15 +298,15 @@
     <ol class='quick-list'>
       {{#each actor.itemTypes.weapon}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
-    {{#if actor.hasArcaneBackground}}
+    {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
       <ol class='quick-list'>
         {{#each actor.itemTypes.power}}
           {{#if system.favorite}}
-            {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+            {{> "swade.character-item-card"}}
           {{/if}}
         {{/each}}
       </ol>
@@ -314,56 +314,56 @@
     <ol class='quick-list'>
       {{#each actor.itemTypes.armor}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.shield}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.consumable}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.gear}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.edge}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.hindrance}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.ability}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>
     <ol class='quick-list'>
       {{#each actor.itemTypes.action}}
         {{#if system.favorite}}
-          {{> "systems/swade/templates/actors/character/partials/item-card.hbs"}}
+          {{> "swade.character-item-card"}}
         {{/if}}
       {{/each}}
     </ol>

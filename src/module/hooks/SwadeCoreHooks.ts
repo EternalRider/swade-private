@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { HotReloadData } from '../../globals';
+import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
+import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -720,16 +721,6 @@ export default class SwadeCoreHooks {
       (t) => t.button,
     );
     measure.tools.splice(measure.tools.length - 1, 0, ...newTemplateButtons);
-
-    //get the tile tools
-    const tile = sceneControlButtons.find((a) => a.name === 'tiles')!;
-    //added the button to clear chase cards
-    tile.tools.push({
-      name: 'clear-chase-cards',
-      title: 'SWADE.ClearChaseCards',
-      icon: 'fa-solid fa-shipping-fast',
-      onClick: () => chaseUtils.removeChaseTiles(canvas.scene!),
-    });
   }
 
   static async onDropActorSheetData(
@@ -918,13 +909,42 @@ export default class SwadeCoreHooks {
       );
     }
   }
+
   static async onTargetToken(user: BaseUser, token: Token, targeted: boolean) {
     if (!targeted) return;
     token.ring?.flashColor(user.color, {
       duration: 1000,
-      easing: (pt) => {
+      easing: (pt: number) => {
         return (Math.sin(2 * Math.PI * pt - Math.PI / 2) + 1) / 2;
       },
     });
+  }
+
+  static async onDropCanvasData(canvas: Canvas, data: CanvasDropData) {
+    const { uuid, x, y, type } = data;
+    if (type !== 'ActiveEffect' || !canvas.tokens?.active) return;
+    //grab the tokens at the drop position
+    const tokensAtDropPosition = [...canvas.tokens.placeables]
+      .sort((a, b) => b.document.sort - a.document.sort)
+      .sort((a, b) => b.document.elevation - a.document.elevation)
+      .filter((t) => t.localShape.contains(x, y));
+    const targets = new Set<SwadeToken>(tokensAtDropPosition);
+    if (!targets?.size) return;
+    const controlled = new Set<SwadeToken>(canvas.tokens?.controlled);
+    if (controlled.size && targets.isSubset(controlled)) {
+      //add the controlled to the target if the set of targeted tokens is a subset of the controlled tokens
+      controlled.forEach((t) => targets.add(t));
+    }
+    const effect = await fromUuid(uuid);
+    if (!effect) return;
+    const effectData = foundry.utils.mergeObject(effect.toObject(), {
+      flags: { swade: { favorite: true } },
+      origin: effect.parent.uuid,
+    });
+    await Promise.allSettled(
+      targets.map((token) =>
+        token.actor.createEmbeddedDocuments('ActiveEffect', [effectData]),
+      ),
+    );
   }
 }

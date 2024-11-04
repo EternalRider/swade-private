@@ -22,6 +22,7 @@ import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { ActionData } from '../data/item';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -435,7 +436,7 @@ export default class CharacterSheet extends ActorSheet {
       );
 
       const enrichedNotes = await TextEditor.enrichHTML(
-        item.system.notes,
+        item.system.notes as string,
         itemEnrichmentOptions,
       );
 
@@ -456,9 +457,20 @@ export default class CharacterSheet extends ActorSheet {
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
+    const hiddenActionOverride = this.actor.getFlag(
+      'swade',
+      'hiddenActionOverride',
+    );
     for (const item of items) {
       const type = item.type;
       itemTypes[type] ??= [];
+      if (
+        item.system instanceof ActionData &&
+        item.system.hidden &&
+        !hiddenActionOverride
+      ) {
+        continue; //do not display hidden actions
+      }
       itemTypes[type].push(item);
     }
 
@@ -1366,7 +1378,7 @@ export default class CharacterSheet extends ActorSheet {
       this.actor.items.get(docId) ??
       Array.from(this.actor.allApplicableEffects()).find((e) => e.id === docId);
     const text =
-      doc instanceof SwadeItem ? doc.system.description : doc.description;
+      doc instanceof SwadeItem ? doc?.system?.description : doc?.description;
     if (!text) return;
     element.querySelector<HTMLElement>(
       '.content .description, .content.description',

@@ -2,14 +2,15 @@ import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundr
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
 import {
   actions,
+  activities,
   arcaneDevice,
-  bonusDamage,
   category,
   equippable,
   favorite,
@@ -17,14 +18,13 @@ import {
 } from './common';
 import {
   Actions,
+  Activities,
   ArcaneDevice,
-  BonusDamage,
   Category,
   Equippable,
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
-import { createEmbedElement } from '../../util';
 
 declare namespace ArmorData {
   interface Schema
@@ -32,7 +32,7 @@ declare namespace ArmorData {
       Equippable,
       ArcaneDevice,
       Actions,
-      BonusDamage,
+      Activities,
       Favorite,
       Category,
       GrantEmbedded {
@@ -64,7 +64,7 @@ class ArmorData extends SwadePhysicalItemData<
       ...equippable(),
       ...arcaneDevice(),
       ...actions(),
-      ...bonusDamage(),
+      ...activities(),
       ...favorite(),
       ...category(),
       ...grantEmbedded(),
@@ -166,10 +166,16 @@ class ArmorData extends SwadePhysicalItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/armor-embeds.hbs', 'armor-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/armor-embeds.hbs',
+      'armor-embed',
+    );
   }
-
 }
 
 export { ArmorData };

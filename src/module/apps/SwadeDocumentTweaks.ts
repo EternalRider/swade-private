@@ -17,10 +17,10 @@ export default class SwadeDocumentTweaks extends FormApplication<
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      width: 380,
+      width: 400,
+      height: 600,
       classes: ['swade', 'doc-tweaks', 'swade-app'],
       template: 'systems/swade/templates/actors/apps/tweaks-dialog.hbs',
-      height: 'auto' as const,
       tabs: [
         {
           group: 'primary',
@@ -77,7 +77,6 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
-      advanceTypes: this.#getAdvanceTypes(),
       runningDieTypes: getDieSidesRange(1, 12),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.gridUnits,
@@ -175,13 +174,6 @@ export default class SwadeDocumentTweaks extends FormApplication<
       delete data[k];
     }
     return data;
-  }
-
-  #getAdvanceTypes(): Record<string, string> {
-    return {
-      legacy: 'SWADE.Advances.Modes.Legacy',
-      expanded: 'SWADE.Advances.Modes.Expanded',
-    };
   }
 
   async #resetVisibility(ev: PointerEvent) {

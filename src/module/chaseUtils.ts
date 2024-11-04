@@ -1,4 +1,19 @@
-export function layoutChase(deck: Cards) {
+import type { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
+import type { CCMGridConfig } from '../types/CCM';
+import type DialogV2 from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/dialog.mjs';
+
+const { createFormGroup, createNumberInput, createSelectInput } = foundry.applications.fields;
+
+export async function layoutChase(deck: Cards) {
+  // Now requires CCM
+  const ccmModule = game.modules.get('complete-card-management');
+  if (!ccmModule) {
+    return ui.notifications.error('SWADE.NoCCMInstall', { localize: true })
+  }
+  else if (!ccmModule.active) {
+    return ui.notifications.error('SWADE.NoCCMActive', { localize: true } )
+  }
+
   //return if no canvas or scene is available
   if (!canvas || !canvas.ready || !canvas.scene) {
     return ui.notifications.warn('SWADE.NoSceneAvailable', { localize: true });
@@ -8,215 +23,67 @@ export function layoutChase(deck: Cards) {
     return ui.notifications.warn('SWADE.ChaseNoDeck', { localize: true });
   }
 
-  // Create the dialog template
-  const template = `
-            <style scoped>
-                .custom-sizing-spacing {
-                    margin: 1em 0;
-                }
-                .fields-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, min-content);
-                    justify-content: center;
-                    align-items: center;
-                    grid-gap: 1em;
-                }
-            </style>
-            <form>
-                <fieldset>
-                    <legend>${game.i18n.localize('SWADE.ChaseLayout')}</legend>
-                    <div class="fields-grid">
-                        <label for="card-rows">${game.i18n.localize('SWADE.ChaseRows')}:</label><input id="card-rows" type="number" min="1" style="width: 50px;" value="1">
-                        <label for="card-columns">${game.i18n.localize('SWADE.ChaseColumns')}:</label><input id="card-columns" type="number" min="1" style="width: 50px;" value="9">
-                    </div>
-                </fieldset>
-                <br>
-            </form>
-        `;
-
-  // Create the Dialog
-  const buttons: Record<string, DialogButton> = {
-    ok: {
-      label: game.i18n.localize('SWADE.Draw'),
-      callback: (html: JQuery<HTMLElement>) => {
-        createChaseTiles(html, deck);
-      },
-    },
-    resetTable: {
-      label: game.i18n.localize('SWADE.Reset'),
-      callback: async () => {
-        await deck.reset({ chatNotification: false });
-        await deck.shuffle({ chatNotification: false });
-        ui.notifications.info(
-          game.i18n.format('SWADE.ChaseReset', { deck: deck.name }),
-        );
-        removeChaseTiles(canvas.scene!);
-      },
-    },
-    cancel: {
-      label: game.i18n.localize('SWADE.Cancel'),
-    },
-  };
-
-  new Dialog({
-    title: game.i18n.localize('SWADE.SetUpChase'),
-    content: template,
-    buttons: buttons,
-    default: 'ok',
-  }).render(true);
-}
-
-export async function removeChaseTiles(scene: Scene) {
-  const chaseCards = scene.tiles.filter((t) =>
-    Boolean(t.getFlag('swade', 'isChaseCard')),
-  );
-  // If there are any, delete them and display a notice
-  if (chaseCards.length) {
-    for (const card of chaseCards) {
-      await card.delete();
-    }
-    ui.notifications.info('SWADE.ChaseCardsCleared', { localize: true });
-  }
-}
-
-// This function adds tiles to the scene.
-async function createChaseTiles(html: JQuery<HTMLElement>, deck: Cards) {
-  //return if no canvas or scene is available
-  if (!canvas || !canvas.ready || !canvas.scene) return;
-
-  // Get size of grid square.
-  const grid = canvas.scene.grid.size;
-  // Set spacing to half a grid square.
-  let spacing = grid / 2;
-  // Define the number of rows.
-  const rows = Number(html.find('#card-rows').first().val());
-  // Define the number of columns.
-  const columns = Number(html.find('#card-columns').first().val());
-  // Calculate the total number of cards to be drawn.
-  const cardsToDraw = rows * columns;
-
-  /**
-   * Set the dimensions of the card. This assumes U.S.poker card sizes and
-   * is based on the size of the grid squares. This emulates the scale between minis and playing
-   * cards on the tabletop.
-   */
-  let cardHeight = grid * (deck.height ?? 3.5);
-  let cardWidth = grid * (deck.width ?? 2.5);
-
-  // Draw the cards.
-  //@ts-expect-error It's technically a protected method but we're borrowing here
-  const cardsDrawn = deck._drawCards(cardsToDraw, CONST.CARD_DRAW_MODES.TOP);
-  const updates = cardsDrawn.map((v) => {
-    return {
-      _id: v.id,
-      drawn: true,
-    };
+  const layout = document.createElement('fieldset')
+  const legend = document.createElement('legend');
+  legend.innerText = game.i18n.localize('SWADE.ChaseLayout')
+  layout.prepend(legend);
+  const rowInput = createNumberInput({
+    name: 'rows',
+    min: 1,
+    max: 54,
+    step: 1,
+    value: 1
   });
-  // set the cards to drawn
-  await deck.updateEmbeddedDocuments('Card', updates);
+  const rows = createFormGroup({
+    input: rowInput,
+    label: game.i18n.localize('SWADE.ChaseRows')
+  })
+  const columnInput = createNumberInput({
+    name: 'columns',
+    min: 1,
+    max: 54,
+    step: 1,
+    value: 9
+  });
+  const columns = createFormGroup({
+    input: columnInput,
+    label: game.i18n.localize('SWADE.ChaseColumns')
+  })
+  const discardOptions = game.cards.reduce((acc, stack: Cards) => {
+    if (stack.type === 'pile') acc.push({ value: stack.id!, label: stack.name })
+    return acc;
+  }, [] as FormSelectOption[])
+  const discardInput = createSelectInput({
+    name: 'to',
+    options: discardOptions
+  })
+  const discard = createFormGroup({
+    input: discardInput,
+    label: game.i18n.localize('SWADE.ChaseDiscard')
+  })
+  layout.append(rows, columns, discard);
 
-  /**
-   * Get the width and height of the scene and it's rectangle area.
-   * This will be compared to the size of the spread later to make sure the cards aren't tiled off canvas.
-   */
-  const dimensions = canvas.scene.dimensions;
-  const sceneWidth = dimensions.sceneWidth;
-  const sceneHeight = dimensions.sceneHeight;
-  const sceneRectX = dimensions.sceneRect.x;
-  const sceneRectY = dimensions.sceneRect.y;
+  const gridConfig = await foundry.applications.api.DialogV2.prompt<Partial<DialogV2.WaitOptions>, CCMGridConfig>({
+    window: { 
+      title: 'SWADE.SetUpChase', 
+      contentClasses: ['standard-form']
+    },
+    content: layout.outerHTML,
+    ok: {
+      callback: async (_event, button, _dialog) => ({
+        from: deck,
+        to: game.cards.get(button.form?.elements['to'].value),
+        rows: button.form?.elements['rows'].value,
+        columns: button.form?.elements['columns'].value
+      })
+    },
+    rejectClose: false
+  })
 
-  /**
-   * Calculate the default width and height of the full spread based on number of cards, card sizes, and spacing between cards.
-   */
-  // Calculate the total spacing between columns.
-  let totalSpacingX = spacing * (columns - 1);
-  // Calculate the total spacing between rows.
-  let totalSpacingY = spacing * (rows - 1);
-  // Calculate the total width of the spread based on card sizes, number of columns, and spacing.
-  let fullSpreadWidth = cardWidth * columns + totalSpacingX;
-  // Calculate the total height of the spread based on card sizes, number of rows, and spacing.
-  let fullSpreadHeight = cardHeight * rows + totalSpacingY;
+  if (!gridConfig) return;
 
-  // Check to see if the default full spread is bigger than the scene, and if so...
-  if (fullSpreadWidth > sceneWidth || fullSpreadHeight > sceneHeight) {
-    let newSpreadRatio = 1;
+  await ccm!.api.grid(gridConfig);
 
-    // If it's bigger than the width...
-    if (fullSpreadWidth > sceneWidth) {
-      // Identify the ratio between the scene width and the full spread width.
-      newSpreadRatio = sceneWidth / fullSpreadWidth;
-      // Modify the card width based on the new ratio.
-      cardWidth = cardWidth * newSpreadRatio;
-      // Modify the card height based on the new ratio.
-      cardHeight = cardHeight * newSpreadRatio;
-      // Modify the spacing based on the new ratio.
-      spacing = spacing * newSpreadRatio;
-      // Calculate the new total horizontal spacing.
-      totalSpacingX = spacing * (columns - 1);
-      // Calculate the new total vertical spacing.
-      totalSpacingY = spacing * (rows - 1);
-      // Calculate the new full spread dimensions.
-      fullSpreadWidth = cardWidth * columns + totalSpacingX;
-      fullSpreadHeight = cardHeight * rows + totalSpacingY;
-    }
-
-    /**
-     * It's necessary to run these calculations again if the height is
-     * still bigger than the canvas even after resizing for the width.
-     */
-
-    if (fullSpreadHeight > sceneHeight) {
-      // Identify the ratio between the scene height and the full spread height.
-      newSpreadRatio = sceneHeight / fullSpreadHeight;
-      // Modify the card width based on the new ratio.
-      cardWidth = cardWidth * newSpreadRatio;
-      // Modify the card height based on the new ratio.
-      cardHeight = cardHeight * newSpreadRatio;
-      // Modify the spacing based on the new ratio.
-      spacing = spacing * newSpreadRatio;
-      // Calculate the new total horizontal spacing.
-      totalSpacingX = spacing * (columns - 1);
-      // Calculate the new total vertical spacing.
-      totalSpacingY = spacing * (rows - 1);
-      // Calculate the new full spread dimensions.
-      fullSpreadWidth = cardWidth * columns + totalSpacingX;
-      fullSpreadHeight = cardHeight * rows + totalSpacingY;
-    }
-  }
-
-  // Calculate the start positions so that the chase track is centered on the scene.
-  const startX = sceneRectX + (sceneWidth - fullSpreadWidth) / 2;
-  const startY = sceneRectY + (sceneHeight - fullSpreadHeight) / 2;
-
-  // Set the first value of positionY and positionX to the base start positions.
-  let positionY = startY;
-  let positionX = startX;
-  let counter = 0;
-  const tiles = new Array<Record<string, unknown>>();
-  // For each row, position a card in each column
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      // Set the tile data for size and position. Use a flag to identify the tile as a Chase card for deletion later.
-      const tData = {
-        texture: { src: cardsDrawn[counter].currentFace?.img },
-        width: cardWidth,
-        height: cardHeight,
-        x: positionX,
-        y: positionY,
-        'flags.swade.isChaseCard': true,
-      };
-      // Update positionX for the next card's placement.
-      positionX = positionX + cardWidth + spacing;
-      // Save the tile data
-      tiles.push(tData);
-      // Increment the counter for the next card in the cardDraws Array.
-      counter++;
-    }
-    // Update positionY for the next row of cards.
-    positionY = positionY + cardHeight + spacing;
-    // Reset positionX to the original horizontal start position for the new row.
-    positionX = startX;
-  }
-  //finally, create the cards on the scene
-  await canvas.scene.createEmbeddedDocuments('Tile', tiles);
+  // TODO: Integrate CCM with Types so this is properly typed
+  canvas['cards'].activate()
 }

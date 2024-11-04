@@ -5,110 +5,19 @@
   <figure class='grid-under gu-4'></figure>
 
   {{!-- Sheet Header --}}
-  {{> 'systems/swade/templates/item/partials/header.hbs'}}
+  {{> 'swade.item-header'}}
 
   {{!-- Sidebar --}}
   <section class='sheet-sidebar'>
-    <div class="form-group">
-      <label for="{{item.uuid}}-rank">
-        {{localize "SWADE.Rank"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-rank"
-          name="system.rank"
-          type="text"
-          value="{{item.system.rank}}"
-          placeholder="{{localize 'SWADE.Rank'}}"
-          data-dtype="String"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-pp">
-        {{localize "SWADE.PPShort"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-pp"
-          name="system.pp"
-          type="text"
-          value="{{item.system.pp}}"
-          placeholder="{{localize 'SWADE.PP'}}"
-          data-dtype="String"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-range">
-        {{localize "SWADE.Range._name"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-range"
-          name="system.range"
-          type="text"
-          value="{{item.system.range}}"
-          placeholder="{{localize 'SWADE.Range._name'}}"
-          data-dtype="String"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-duration">
-        {{localize "SWADE.Dur"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-duration"
-          name="system.duration"
-          type="text"
-          value="{{item.system.duration}}"
-          placeholder="{{localize 'SWADE.Dur'}}"
-          data-dtype="String"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-damage">
-        {{localize "SWADE.Dmg"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-damage"
-          name="system.damage"
-          type="text"
-          value="{{item.system.damage}}"
-          placeholder="{{localize 'SWADE.Dmg'}}"
-          data-dtype="String"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-ap">
-        {{localize "SWADE.Ap"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-ap"
-          name="system.ap"
-          type="number"
-          value="{{item.system.ap}}"
-          placeholder="{{localize 'SWADE.Ap'}}"
-          data-dtype="Number"
-      /></span>
-    </div>
-    <div class="form-group">
-      <label for="{{item.uuid}}-arcane">
-        {{localize "SWADE.Arcane"}}
-      </label>
-      <span class="form-fields">
-        <input
-          id="{{item.uuid}}-arcane"
-          name="system.arcane"
-          type="text"
-          value="{{item.system.arcane}}"
-          placeholder="{{localize 'SWADE.Arcane'}}"
-          data-dtype="String"
-      /></span>
-    </div>
+    {{formGroupSimple "system.rank" rootId=item.uuid}}
+    {{formGroupSimple "system.pp" rootId=item.uuid label="SWADE.PPShort"}}
+    {{formGroupSimple "system.range" rootId=item.uuid source=true}}
+    {{formGroupSimple "system.duration" rootId=item.uuid}}
+    {{formGroupSimple "system.damage" rootId=item.uuid}}
+    {{formGroupSimple "system.ap" rootId=item.uuid}}
+    {{formGroupSimple "system.arcane" rootId=item.uuid}}
     <hr>
-    {{> 'systems/swade/templates/item/partials/additional-stats.hbs'}}
+    {{> 'swade.item-additional-stats'}}
   </section>
 
   {{!-- Sheet Tab Navigation --}}
@@ -119,7 +28,8 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions'}}</a>
+    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
+    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
   {{!-- Main Section --}}
@@ -135,7 +45,7 @@
           data-dtype="String"
         />
       </div>
-      {{> 'systems/swade/templates/item/partials/tabs/description.hbs'}}
+      {{> 'swade.item-tab-description'}}
     </section>
     <section class='tab properties' data-group='main' data-tab='properties'>
       <div class="form-group">
@@ -146,13 +56,17 @@
           <input id="{{item.uuid}}-innate" type='checkbox' name='system.innate' {{checked item.system.innate}}/>
         </span>
       </div>
-      {{> 'systems/swade/templates/item/partials/templates.hbs'}}
+      {{> 'swade.item-templates'}}
       <hr>
-      {{> 'systems/swade/templates/item/partials/action-properties.hbs'}}
-      {{> 'systems/swade/templates/item/partials/bonus-damage.hbs'}}
+      {{> 'swade.item-action-properties'}}
+      {{formGroupSimple "system.activities" stacked=true}}
+      {{> 'swade.item-bonus-damage'}}
     </section>
     <section class='tab actions' data-group='main' data-tab='actions'>
-      {{> 'systems/swade/templates/item/partials/tabs/actions.hbs'}}
+      {{> 'swade.item-tab-actions'}}
+    </section>
+    <section class='tab effects' data-group='main' data-tab='effects'>
+      {{> 'swade.item-tab-effects'}}
     </section>
   </section>
 
