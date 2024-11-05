@@ -1512,8 +1512,8 @@ class SwadeActor extends Actor {
   getCombatant(combat?: Combat): SwadeCombatant | undefined {
     if (!combat) return;
     const combatant = this.isToken
-      ? combat?.getCombatantByToken(this.token?.id as string)
-      : combat?.getCombatantByActor(this.id as string);
+      ? combat?.getCombatantsByToken(this.token?.id as string)[0]
+      : combat?.getCombatantsByActor(this.id as string)[0];
     return combatant as SwadeCombatant;
   }
 

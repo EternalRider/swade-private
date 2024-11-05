@@ -5,7 +5,6 @@ import { constants } from '../../constants';
 import { VehicleData } from '../../data/actor';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
-import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
 
 declare global {
@@ -32,7 +31,7 @@ declare global {
 export default class SwadeActiveEffect extends ActiveEffect {
   declare parent?: SwadeActor | SwadeItem;
 
-  static get defaultName(): string {
+  static override defaultName(): string {
     return game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
     });
@@ -460,12 +459,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
       const actor = this.actor as SwadeActor;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
       const combatant = actor?.isToken
-        ? (activeCombat?.getCombatantByToken(
-            actor.token?.id as string,
-          ) as SwadeCombatant)
-        : (activeCombat?.getCombatantByActor(
-            actor.id as string,
-          ) as SwadeCombatant);
+        ? activeCombat?.getCombatantsByToken(actor.token?.id as string)?.[0]
+        : activeCombat?.getCombatantsByActor(actor.id as string)?.[0];
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
         await combatant?.toggleHold();
@@ -519,7 +514,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;
       this.updateSource({ img: path });
     }
-    const isDefaultName = data.name === SwadeActiveEffect.defaultName;
+    const isDefaultName = data.name === SwadeActiveEffect.defaultName();
     if (this.parent instanceof SwadeItem && (!data.name || isDefaultName)) {
       this.updateSource({ name: this.parent.name });
     }

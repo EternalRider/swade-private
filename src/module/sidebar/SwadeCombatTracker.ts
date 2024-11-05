@@ -1,9 +1,9 @@
-import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
+import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.mjs';
 import { Updates } from '../../globals';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
-import { getStatusEffectDataById, reshuffleActionDeck } from '../util';
+import { reshuffleActionDeck } from '../util';
 
 /** This class defines a a new Combat Tracker specifically designed for SWADE */
 export default class SwadeCombatTracker extends CombatTracker {
@@ -171,17 +171,12 @@ export default class SwadeCombatTracker extends CombatTracker {
 
   /** Toggle Incapacitation */
   protected async _onToggleIncapacitated(c: SwadeCombatant) {
-    if (!c.actor.isWildcard) await this._onToggleDefeatedStatus(c);
-    const token = c.token;
-    if (!token) return;
-    const effect = getStatusEffectDataById(
-      CONFIG.specialStatusEffects.INCAPACITATED,
-    );
-    if (token.object) {
-      await token.object.toggleEffect(effect, { overlay: true });
-    } else {
-      await token.toggleActiveEffect(effect, { overlay: true });
+    if (!c.actor) return;
+    if (!c.actor.isWildcard) {
+      await this._onToggleDefeatedStatus(c);
+      // if (!c.actor.statuses.has('incapacitated')) return;
     }
+    await c.actor.toggleStatusEffect('incapacitated', { overlay: true });
   }
 
   /** Toggle Hold */
@@ -518,7 +513,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     if (existingCombatantTokens.length > 0) {
       // Get their combatant objects and push them into the combatants array
       for (const t of existingCombatantTokens) {
-        const c = game?.combat?.getCombatantByToken(t.id);
+        const c = game?.combat?.getCombatantsByToken(t.id)[0];
         if (c) {
           combatants?.push(c);
         }

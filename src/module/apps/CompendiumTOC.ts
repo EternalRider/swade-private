@@ -1,4 +1,4 @@
-import { StoredDocument } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import type Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
@@ -141,7 +141,8 @@ export class CompendiumTOC extends Compendium<
       const options: Record<string, unknown> = {};
       if (pageId) options.pageId = pageId;
       const doc = await this.collection.getDocument(documentId);
-      await doc?.sheet?._render(true, options);
+      if (!doc) return;
+      await doc.sheet?._render(true, options);
       // Resolves issue where initial render of a compendium page would fail
       if (pageId) doc.sheet.goToPage(pageId);
     }
@@ -302,7 +303,7 @@ export class CompendiumTOC extends Compendium<
     }
 
     //sort all items by type
-    const itemsByType: Record<string, StoredDocument<SwadeItem>[]> = {};
+    const itemsByType: Record<string, Document.Stored<SwadeItem>[]> = {};
     const leftovers = items.filter(
       (i) => !['edge', 'power', 'hindrance'].includes(i.type),
     );
@@ -312,7 +313,7 @@ export class CompendiumTOC extends Compendium<
       itemsByType[type].push(item);
     }
 
-    const itemsByCategory: Record<string, StoredDocument<SwadeItem>[]> = {};
+    const itemsByCategory: Record<string, Document.Stored<SwadeItem>[]> = {};
 
     //first we handle items by type
     for (const type in itemsByType) {
@@ -355,7 +356,7 @@ export class CompendiumTOC extends Compendium<
   }
 
   protected _groupHindrances(
-    hindrances: StoredDocument<SwadeItem<'hindrance'>>[],
+    hindrances: Document.Stored<SwadeItem<'hindrance'>>[],
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
@@ -383,9 +384,9 @@ export class CompendiumTOC extends Compendium<
   }
 
   protected _groupPowers(
-    powers: StoredDocument<SwadeItem>[],
+    powers: Document.Stored<SwadeItem>[],
   ): CompendiumGroup[] {
-    const groups: Record<string, StoredDocument<SwadeItem>[]> = {};
+    const groups: Record<string, Document.Stored<SwadeItem>[]> = {};
     for (const power of powers) {
       const rank = foundry.utils.getProperty(power, 'system.rank') as string;
       if (!groups[rank]) groups[rank] = [];
@@ -411,9 +412,9 @@ export class CompendiumTOC extends Compendium<
   }
 
   protected _groupEdges(
-    edges: StoredDocument<SwadeItem<'edge'>>[],
+    edges: Document.Stored<SwadeItem<'edge'>>[],
   ): CompendiumGroup[] {
-    const groups: Record<string, StoredDocument<SwadeItem<'edge'>>[]> = {};
+    const groups: Record<string, Document.Stored<SwadeItem<'edge'>>[]> = {};
     for (const edge of edges) {
       const cat: string = foundry.utils.getProperty(edge, 'system.category');
       if (!groups[cat]) groups[cat] = [];
@@ -440,7 +441,7 @@ export class CompendiumTOC extends Compendium<
   }
 
   protected async _groupUnCategorized(
-    docs: StoredDocument<SwadeItem>[] | ActorIndexEntry[],
+    docs: Document.Stored<SwadeItem>[] | ActorIndexEntry[],
   ): Promise<CompendiumEntry[]> {
     const mapped = docs.map(async (doc) => {
       const isItem = doc?.documentName === 'Item';

@@ -227,7 +227,7 @@ export default class SwadeCombatant extends Combatant {
   async actNow() {
     if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
-    let targetCombatant = this.parent.combatant as SwadeCombatant;
+    let targetCombatant = this.parent.combatant as SwadeCombatant | undefined;
     if (this.id === targetCombatant?.id) {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
