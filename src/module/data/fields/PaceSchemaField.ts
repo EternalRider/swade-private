@@ -84,7 +84,7 @@ export class PaceSchemaField<
   }
 
   protected _castChangeDelta(delta) {
-    //@ts-ignore
+    //@ts-expect-error Protected prototype property
     return fields.NumberField.prototype._castChangeDelta(delta);
   }
 

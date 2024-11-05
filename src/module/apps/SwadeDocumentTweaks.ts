@@ -79,7 +79,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
       runningDieTypes: getDieSidesRange(1, 12),
       auras: {
-        units: canvas.scene?.grid?.units ?? game.system.gridUnits,
+        units: canvas.scene?.grid?.units ?? game.system.grid.units,
         auras: this.object.auras,
         defaultColor: game.user!.color ?? '#000000',
         visibilityChoices: [

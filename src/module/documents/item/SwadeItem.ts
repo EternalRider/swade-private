@@ -1,12 +1,9 @@
-import {
-  Context,
-  DocumentDatabaseOperations,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import type { DocumentDatabaseOperations } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import type Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import {
   AnyObject,
   DeepPartial,
-  StoredDocument,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -95,7 +92,7 @@ class SwadeItem extends Item {
 
   constructor(
     data: foundry.documents.BaseItem.ConstructorData,
-    context?: Context<SwadeActor>,
+    context?: Document.ConstructionContext<SwadeActor>,
   ) {
     super(data, context);
     this.overrides ??= {};
@@ -561,7 +558,7 @@ class SwadeItem extends Item {
 
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
 
-    let updatedItems = new Array<StoredDocument<SwadeItem>>();
+    let updatedItems = new Array<Document.Stored<SwadeItem>>();
     // Persist the updates
     if (!foundry.utils.isEmpty(itemUpdates)) {
       await this.update(itemUpdates);
@@ -573,7 +570,7 @@ class SwadeItem extends Item {
       updatedItems = (await this.actor?.updateEmbeddedDocuments(
         'Item',
         resourceUpdates,
-      )) as Array<StoredDocument<SwadeItem>>;
+      )) as Array<Document.Stored<SwadeItem>>;
     }
 
     /**
@@ -691,7 +688,7 @@ class SwadeItem extends Item {
     await this.unsetFlag('swade', 'hasGranted');
   }
 
-  async #postConsumptionCleanup(updatedItems: StoredDocument<SwadeItem>[]) {
+  async #postConsumptionCleanup(updatedItems: Document.Stored<SwadeItem>[]) {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (item && item.system._shouldDelete) {

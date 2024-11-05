@@ -2,7 +2,7 @@ import { StatusEffect as v11StatusEffect } from '@league-of-foundry-developers/f
 import { constants } from './constants';
 
 // shim until v12
-type StatusEffect = v11StatusEffect & { img?: string }
+type StatusEffect = v11StatusEffect & { img?: string };
 
 /** @internal */
 export const statusEffects: StatusEffect[] = [
@@ -46,8 +46,7 @@ export const statusEffects: StatusEffect[] = [
     id: 'dead',
     _id: 'dead000000000000',
     name: 'COMBAT.CombatantDefeated',
-    flags: { swade: { related: { incapacitated: {} } } },
-    // statuses: ['incapacitated'], TODO: After status effect handling rework
+    statuses: ['incapacitated'],
   },
   {
     img: 'systems/swade/assets/icons/status/status_aiming.svg',
