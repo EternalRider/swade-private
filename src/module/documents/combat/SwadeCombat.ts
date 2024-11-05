@@ -90,8 +90,13 @@ export default class SwadeCombat extends Combat {
       if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
       // Set up edges
-      const hasHesitant = c.actor?.system.initiative.hasHesitant;
-      const hasQuick = c.actor?.system.initiative.hasQuick;
+      let hasHesitant = false;
+      let hasQuick = false;
+      const actorModel = c.actor?.system;
+      if (actorModel && 'initiative' in actorModel) {
+        hasHesitant = actorModel.initiative.hasHesitant ?? false;
+        hasQuick = actorModel.initiative.hasQuick ?? false;
+      }
       const isIncapacitated = c.isIncapacitated;
 
       // Figure out how many cards to draw
@@ -132,8 +137,8 @@ export default class SwadeCombat extends Combat {
             const cardB = b.value!;
             const card = cardA - cardB;
             if (card !== 0) return card;
-            const suitA = a.system['suit'];
-            const suitB = b.system['suit'];
+            const suitA = a.system['suit'] as number;
+            const suitB = b.system['suit'] as number;
             const suit = suitA - suitB;
             return suit;
           });

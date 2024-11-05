@@ -8,7 +8,7 @@ import { Accordion } from '../style/Accordion';
 
 export default class ActiveEffectWizard extends FormApplication {
   #effect: DeepPartial<BaseActiveEffect.Properties> = {
-    name: SwadeActiveEffect.defaultName,
+    name: SwadeActiveEffect.defaultName(),
     img: 'systems/swade/assets/icons/active-effect.svg',
   };
 

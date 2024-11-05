@@ -1,16 +1,16 @@
-import { ClientDocument } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.mjs';
-import { DocumentType } from '@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes.mjs';
+import type { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
+import type Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { DocumentUUIDField } = foundry.data.fields;
 
 /** A function that resolves into the fetched document or the source UUID as a string */
-export type DocumentFn<T extends ClientDocument = ClientDocument> = () =>
+export type DocumentFn<T extends Document.Any = Document.Any> = () =>
   | T
   | string;
 
 export class ForeignDocumentUUIDField extends DocumentUUIDField {
-  declare type: DocumentType;
+  declare type: Document.Type;
   declare idOnly: boolean;
   /** @inheritdoc */
   static get _defaults() {
@@ -24,12 +24,12 @@ export class ForeignDocumentUUIDField extends DocumentUUIDField {
   /** @inheritdoc */
   initialize(value: string, _model, _options = {}): DocumentFn {
     if (this.idOnly) return () => value;
-    const typeClass = getDocumentClass<DocumentType>(this.type);
+    const typeClass = getDocumentClass<Document.Type>(this.type);
     return () => {
       try {
         const doc = fromUuidSync(value);
         if (doc instanceof typeClass)
-          return doc as CONFIG[DocumentType]['documentClass'];
+          return doc as CONFIG[Document.Type]['documentClass'];
         return value;
       } catch (error) {
         console.error(error);
@@ -44,8 +44,8 @@ export class ForeignDocumentUUIDField extends DocumentUUIDField {
 
   override _toInput(config) {
     // Prepare array of visible options
-    const collection = game.scenes.viewed.tokens;
-    const options: { value: string; label: string }[] = collection.reduce(
+    const collection = game.scenes.viewed?.tokens;
+    const options: FormSelectOption[] = (collection ?? []).reduce(
       (arr, doc: TokenDocument) => {
         if (!doc.visible) return arr;
         arr.push({ value: doc.id, label: doc.name });
