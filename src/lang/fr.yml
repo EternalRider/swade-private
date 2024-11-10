@@ -857,7 +857,7 @@ SWADE:
     NoGroupCombatants: Les groupes ne peuvent pas être des combattants.
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base
-  Targets: 'Cibles :'
+  Targets: 'Cibles'
   Rolls:
     SwadeRoll: Jet
     DamageRoll: Jet de dégâts
@@ -1497,7 +1497,7 @@ SWADE:
   BenniesMaxNum: Nombre de Jeton maximum
   EdF: Editer {item}
   EdRightClick: '[Right Click] pour éditer'
-  ApOver: Action de Perce Armure
+  ApOver: Action de PA
   ShotsCurrent: Balles restantes
   Value: Valeur
   MaxLabel: Maximum
