@@ -95,6 +95,14 @@ SWADE:
   ActionsEffects: Aktionen & Effekte
   Actions:
     Name: Aktionen
+    Hidden:
+      Label: Versteckt
+      Hint: Versteckte Aktionen werden nicht auf dem Bogen angezeigt
+    DisplayHidden:
+      Label: Versteckte Aktionen anzeigen
+    Activities:
+      Label: Aktivitäten
+      Hint: SWIDs von mit diesem Item verbundenen Aktionen
   DmgModUni: Schadensmodifikator
   SkillModUni: Eigenschaftsmodifikator
   ShotsUsed: Schuss verbraucht
@@ -845,7 +853,7 @@ SWADE:
   IgnFatigue: Erschöpfung ignorieren
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
-  Targets: 'Ziele:'
+  Targets: 'Ziele'
   Rolls:
     RollResult: Würfelergebnis
     SwadeRoll: Wurf
@@ -948,6 +956,7 @@ SWADE:
     ERROR:
       ActorCreatePermission: Diese Tour erfordert die Berechtigung, Akteure zu erstellen
       SettingPermission: Diese Tour erfordert die Veränderung von Welteinstellungen
+      JournalCreatePermission: Diese Tour erfordert die Berechtigung, Notizen zu erstellen
   RequiredCrew: Nötige Besatzung
   NumberOfDice:
     Hint: Anzahl Eigens.-Würfel, die für diese Aktion gewürfelt werden
@@ -1142,6 +1151,12 @@ SWADE:
         Header: Mitglieder
         Hint: Mitglieder zum Hinzufügen per Drag&Drop in den Bogen ziehen oder UUID
           einfügen. Funktioniert auch mit Spielfigur-Akteuren in einer Szene.
+      Stash:
+        Header: Vorrat
+        Empty: Keine Items
+      Lock:
+        Label: Bogen (ent)sperren
+        Hint: Gesperrt können keine Akteure hinzugefügt oder entfernt werden
   GroupSheet: Savage Worlds Gruppenbogen
   Advance: Aufstieg
   BenniesMaxNum: Maximale Bennys
@@ -1171,6 +1186,32 @@ SWADE:
   MaxLabel: Maximum
   BuildCost: Wert
   ChargesMax: Max. Ladungen
+  NoCCMInstall: Das 'Complete Card Management'-Modul ist nicht installiert.
+  NoCCMActive: Das 'Complete Card Management'-Modul ist nicht aktiv.
+  ChaseDiscard: Ablagestapel
+  CouldNotFindTarget: Dieses Makro erfordert ein ausgewähltes Ziel!
+  Movement:
+    Base: Grundbewegung
+    Pace:
+      Base:
+        Label: Grundbewegung
+        Hint: Default-Bewegung für diesen Akteur
+      Ground:
+        Label: Boden
+      Fly:
+        Label: Fliegen
+      Burrow:
+        Label: Graben
+      Swim:
+        Label: Schwimmen
+    Other: Andere Bewegung
+    Running:
+      OutOfCombat: Kann außerhalb vom Kampf mit {pace} Bewegung für {minutes} Minuten
+        rennen
+      Dialog:
+        Title: Rennen
+        Content: Wählen, wie gerannt werden soll
+  ApplicableEffects: Anwendbare Effekte
 TYPES:
   Actor:
     Character: Charakter
@@ -1179,6 +1220,7 @@ TYPES:
     npc: NSC
     vehicle: Fahrzeug
     character: Charakter
+    group: Gruppe
   Item:
     Weapon: Waffe
     Armor: Rüstung
@@ -1202,6 +1244,7 @@ TYPES:
     gear: Ausrüstung
     weapon: Waffe
     skill: Fertigkeit
+    ancestry: Volk
   Card:
     Adventure: Abenteuerkarte
     Poker: Pokerkarte
