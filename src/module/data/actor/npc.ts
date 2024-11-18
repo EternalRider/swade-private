@@ -79,7 +79,7 @@ export class NpcData extends CreatureData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/actor-embeds.hbs',
-      'actor-embed',
+      ['actor-embed', 'npc'],
     );
   }
 }

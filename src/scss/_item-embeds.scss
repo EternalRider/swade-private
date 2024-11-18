@@ -1,566 +1,350 @@
-.edge-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
+.item-embed {
+  background: url('assets/paperboard-texture.webp') center top repeat;
+  box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+  border-width: 1px;
+  border-style: solid;
+  border-color: darkgray;
+  padding: 3%;
+  color: var(--color-text-dark-primary);
 
-    .edge {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
+  .name {
+    font-family: 'Anton', 'Signika', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+  }
+  .description {
+    padding: 0;
+  }
+  .center {
+    justify-content: center;
+  }
+
+  &.edge {
+    .requirements {
+      .req-header {
+        font-family: 'Roboto Slab', 'Signika', sans-serif;
+        font-size: 12px;
+        color: rgb(151, 40, 36);
+        text-transform: uppercase;
+      }
+    }
+  }
+  &.power {
+    .fields {
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+    }
+  }
+  &.hindrance {
+    //NO-OP
+  }
+  &.skill {
+    .name {
+      font-family: 'Anton', 'Signika', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+    .core {
+      color: #8c160f;
+    }
+    .description {
+      padding: 0;
+    }
+    .center {
+      justify-content: center;
+    }
+  }
+  &.ancestry {
+    .name {
+      border-bottom-color: rgb(120, 46, 34);
+      border-bottom-style: solid;
+      border-bottom-width: 0.666667px;
+    }
+  }
+  &.ability {
+    .name {
+      border-bottom-color: rgb(120, 46, 34);
+      border-bottom-style: solid;
+      border-bottom-width: 0.666667px;
+    }
+  }
+  &.action {
+    .name {
+      border-bottom-color: rgb(120, 46, 34);
+      border-bottom-style: solid;
+      border-bottom-width: 0.666667px;
+    }
+  }
+  &.shield {
+    .header {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .name {
+      flex-basis: 75%;
+    }
+    .notes {
+      padding-left: 1em;
+      text-indent: -1em;
+    }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
+    }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
+    }
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+        margin-left: 0;
+        margin-right: 0;
+
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
+        }
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
+        }
+      }
+    }
+    .notes {
+      div {
+        span {
+          font-weight: bold;
+          font-style: italic;
+        }
+      }
+    }
+  }
+  &.weapon {
+    .header {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .name {
+      flex-basis: 75%;
+    }
+    .notes {
+      padding-left: 1em;
+      text-indent: -1em;
+      div {
+        span {
+          font-weight: bold;
+          font-style: italic;
+        }
+      }
+    }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
+    }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
+    }
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+        margin-left: 0;
+        margin-right: 0;
+
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
+        }
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
+          .damage:first-letter {
             text-transform: uppercase;
+          }
         }
-        .requirements {
-            .req-header {
-                font-family: 'Roboto Slab', 'Signika', sans-serif;
-                font-size: 12px;
-                color:rgb(151, 40, 36);
-                text-transform: uppercase;
-            }
-        }
-        .description {
-            padding: 0;
-        }
+      }
     }
-}
-.power-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .power {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-        .fields {
-            ul {
-                list-style: none;
-                padding: 0;
-            }            
-        }
-        .description {
-            padding: 0;
-        }
+  }
+  &.gear {
+    .header {
+      width: 100%;
+      justify-content: space-between;
     }
-}
-
-.hindrance-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .hindrance {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-        .description {
-            padding: 0;
-        }
+    .name {
+      flex-basis: 75%;
     }
-}
-.skill-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .skill {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;            
-        }
-        .core {
-            color: #8c160f;
-        }
-        .description {
-            padding: 0;
-        }
-        .center {
-            justify-content: center;
-        }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
     }
-}
-.ancestry-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .ancestry {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            border-bottom-color: rgb(120, 46, 34);
-            border-bottom-style: solid;
-            border-bottom-width: 0.666667px;
-        }
-        .description {
-            padding: 0;
-        }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
     }
-}
-.ability-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+        margin-left: 0;
+        margin-right: 0;
 
-    .ability {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            border-bottom-color: rgb(120, 46, 34);
-            border-bottom-style: solid;
-            border-bottom-width: 0.666667px;
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
         }
-        .description {
-            padding: 0;
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
         }
+      }
     }
-}
-
-.action-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .action {
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            border-bottom-color: rgb(120, 46, 34);
-            border-bottom-style: solid;
-            border-bottom-width: 0.666667px;
-        }
-        .description {
-            padding: 0;
-        }
+  }
+  &.consumable {
+    .header {
+      width: 100%;
+      justify-content: space-between;
     }
-}
-
-.shield-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .shield {
-        .header {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
-        }
-        .description {
-            padding: 0;
-        }
-        .notes {
-            padding-left: 1em;
-            text-indent: -1em;        
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-        }
-        .item-img {
-            height: auto;
-            width: 100%;  
-            cursor: pointer;
-            border-style: none; 
-            margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-                margin-left: 0;
-                margin-right: 0;
-
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                }
-            }
-        }
-        .notes {
-            div {
-                span {
-                    font-weight: bold;
-                    font-style: italic;
-                }
-            }
-        }
-    
+    .name {
+      flex-basis: 75%;
     }
-}
-.weapon-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .weapon {
-        .header {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
-        }
-        .description {
-            padding: 0;
-        }
-        .notes {
-            padding-left: 1em;
-            text-indent: -1em;     
-            div {
-                span {
-                    font-weight: bold;
-                    font-style: italic;
-                }
-            }   
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-        }
-        .item-img {
-            height: auto;
-            width: 100%;  
-            cursor: pointer;
-            border-style: none; 
-            margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-                margin-left: 0;
-                margin-right: 0;
-
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                    .damage:first-letter{
-                        text-transform: uppercase;
-                    }
-                }
-            }
-        }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
     }
-}
-.gear-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .gear {
-        .header {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
-        }
-        .description {
-            padding: 0;
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-        }
-        .item-img {
-            height: auto;
-            width: 100%;  
-            cursor: pointer;
-            border-style: none; 
-            margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-                margin-left: 0;
-                margin-right: 0;
-
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                }
-            }
-        }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
     }
-}
-.consumable-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+        margin-left: 0;
+        margin-right: 0;
 
-    .consumable {
-        .header {
-            width: 100%;
-            justify-content: space-between;
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
         }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
         }
-        .description {
-            padding: 0;
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-
-        }
-        .item-img {
-          height: auto;
-          width: 100%;  
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-                margin-left: 0;
-                margin-right: 0;
-
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                }
-            }
-        }
+      }
     }
-}
-.armor-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .armor {
-        .header {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
-        }
-        .description {
-            padding: 0;
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-        }
-        .item-img {
-          height: auto;
-          width: 100%;
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-                margin-left: 0;
-                margin-right: 0;
-
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                }
-            }
-        }
+  }
+  &.armor {
+    .header {
+      width: 100%;
+      justify-content: space-between;
     }
-}
-.vehicle-embed {
-    background: url('assets/paperboard-texture.webp') center top repeat;
-    box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgray;
-    padding: 3%;
-    color: var(--color-text-dark-primary);
-
-    .vehicle {
-        .header {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .name {
-            font-family: 'Anton', 'Signika', sans-serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-basis: 75%;
-        }
-        .description {
-            padding: 0;
-        }
-        .notes {
-            padding-left: 1em;
-            text-indent: -1em;     
-            div {
-                span {
-                    font-weight: bold;
-                    font-style: italic;
-                }
-            }   
-        }
-        .img-container {
-            display: flex;
-            justify-content: flex-end;
-            height: auto;   
-            width: 100%;     
-        }
-        .item-img {
-          height: auto;
-          width: 100%;
-          cursor: pointer;
-          border-style: none; 
-          margin: 0;
-        }
-        .stats {
-            .data-table {
-                background-color: rgba(0, 0, 0, 0.05);
-
-                margin-left: 0;
-                margin-right: 0;
-                .header-row {
-                    background-color: black;
-                    color: white;
-                    text-transform: uppercase;
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 8px;
-                }
-                .data-row {
-                    text-align: center;
-                    font-family: Roboto Slab, Signika, sans-serif;
-                    font-size: 10px;
-                    .damage:first-letter{
-                        text-transform: uppercase;
-                    }
-                }
-            }
-        }
+    .name {
+      flex-basis: 75%;
     }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
+    }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
+    }
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+        margin-left: 0;
+        margin-right: 0;
+
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
+        }
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
+        }
+      }
+    }
+  }
 }

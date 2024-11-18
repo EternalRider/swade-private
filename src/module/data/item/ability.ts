@@ -1,6 +1,7 @@
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { builder, category, favorite, grants } from './common';
@@ -11,14 +12,13 @@ import {
   Favorite,
   Grants,
 } from './item-common.interface';
-import { createEmbedElement } from '../../util';
 
 declare namespace AbilityData {
   interface Schema
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      Grants, 
+      Grants,
       Builder {
     subtype: foundry.data.fields.StringField<{
       initial: typeof constants.ABILITY_TYPE.SPECIAL;
@@ -94,10 +94,16 @@ class AbilityData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/ability-embeds.hbs', 'ability-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/ability-embeds.hbs',
+      ['item-embed', 'ability'],
+    );
   }
-
 }
 
 export { AbilityData };

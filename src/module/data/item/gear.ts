@@ -125,7 +125,7 @@ class GearData extends SwadePhysicalItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/gear-embeds.hbs',
-      'gear-embed',
+      ['item-embed', 'gear'],
     );
   }
 }

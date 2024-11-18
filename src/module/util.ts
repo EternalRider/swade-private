@@ -1,5 +1,4 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -308,13 +307,14 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
  * @param className The class name to attach to the outermost element for purposes of controlled styling
  */
 export async function createEmbedElement(
-  objectToEmbed: AnyObject,
+  objectToEmbed: any,
   template: string,
-  className: string,
+  className: string[],
 ): Promise<HTMLElement | HTMLCollection | null> {
   const content = await renderTemplate(template, objectToEmbed);
-  const elem = document.createElement('div') as HTMLElement;
-  elem.className = className;
+  const elem = document.createElement('div');
+  elem.classList;
+  elem.className = className.join(' ');
   elem.innerHTML = content;
   return elem;
 }
