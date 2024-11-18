@@ -162,7 +162,7 @@ class ShieldData extends SwadePhysicalItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/shield-embeds.hbs',
-      'shield-embed',
+      ['item-embed', 'shield'],
     );
   }
 }

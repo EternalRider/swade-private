@@ -249,7 +249,7 @@ class VehicleData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
-      'vehicle-embed',
+      ['actor-embed', 'vehicle'],
     );
   }
 

@@ -196,7 +196,7 @@ class ConsumableData extends SwadePhysicalItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/consumable-embeds.hbs',
-      'consumable-embed',
+      ['item-embed', 'consumable'],
     );
   }
 }

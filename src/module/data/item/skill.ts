@@ -28,8 +28,13 @@ class SkillData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...makeTraitDiceFields(),
-      attribute: new foundry.data.fields.StringField({ initial: '', label: 'SWADE.Attribute' }),
-      isCoreSkill: new foundry.data.fields.BooleanField({ label: 'SWADE.CoreSkill' }),
+      attribute: new foundry.data.fields.StringField({
+        initial: '',
+        label: 'SWADE.Attribute',
+      }),
+      isCoreSkill: new foundry.data.fields.BooleanField({
+        label: 'SWADE.CoreSkill',
+      }),
     };
   }
 
@@ -75,10 +80,16 @@ class SkillData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/skill-embeds.hbs', 'skill-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/skill-embeds.hbs',
+      ['item-embed', 'skill'],
+    );
   }
-
 }
 
 export { SkillData };

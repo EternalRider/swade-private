@@ -62,7 +62,7 @@ class AncestryData extends SwadeBaseItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/ancestry-embeds.hbs',
-      'ancestry-embed',
+      ['item-embed', 'ancestry'],
     );
   }
 }
