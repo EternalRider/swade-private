@@ -2,10 +2,11 @@ import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/typ
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
-import { VehicleData } from '../../data/actor';
+import { GroupData, VehicleData } from '../../data/actor';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
+import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -29,8 +30,6 @@ declare global {
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
-  declare parent?: SwadeActor | SwadeItem;
-
   static override defaultName(): string {
     return game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
@@ -46,11 +45,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get statusId() {
-    const [statusId] = foundry.utils.getProperty(
-      this,
-      'statuses',
-    ) as Set<string>;
-    return statusId;
+    return this.statuses.first();
   }
 
   override get isSuppressed(): boolean {
@@ -67,7 +62,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expiresAtStartOfTurn(): boolean {
-    const expiration = this.getFlag('swade', 'expiration') ?? -1;
+    const expiration =
+      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
     return [
       constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
       constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
@@ -75,7 +71,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expiresAtEndOfTurn(): boolean {
-    const expiration = this.getFlag('swade', 'expiration') ?? -1;
+    const expiration =
+      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
     return [
       constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
       constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
@@ -83,7 +80,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expirationText(): string {
-    const expiration = this.getFlag('swade', 'expiration') ?? -1;
+    const expiration =
+      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
     switch (expiration) {
       case constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto:
         return game.i18n.localize('SWADE.Expiration.BeginAuto');
@@ -168,7 +166,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     } else if (ptMatch && doc instanceof SwadeActor) {
       this._handlePTModifierMatch(ptMatch, change, doc);
     } else {
-      return super.apply(doc, change);
+      return super.apply(doc as SwadeActor, change);
     }
   }
 
@@ -237,7 +235,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
       label: this.name ?? game.i18n.localize('SWADE.Addi'),
       value: Number.isNumeric(value) ? Number(value) : value,
       effectID: this.id,
-      ignore: this.getFlag('swade', 'conditionalEffect') ?? ignore,
+      ignore:
+        (this as SwadeActiveEffect).getFlag('swade', 'conditionalEffect') ??
+        ignore,
     };
     // Technically doesn't handle an effect that adds to the same item multiple times,
     // but necessary to avoid duplication on refresh
@@ -250,7 +250,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   private async _applyRelatedEffects() {
-    const related = this.getFlag('swade', 'related') ?? {};
+    const related =
+      (this as SwadeActiveEffect).getFlag('swade', 'related') ?? {};
     if (!this.actor || !this.statusId) return;
     const toCreate: foundry.documents.BaseActiveEffect.ConstructorData[] = [];
     for (const [id, mutation] of Object.entries(related)) {
@@ -323,7 +324,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
     change: EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
+    if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
+      return; // Really shouldn't be a vehicle or group
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])
@@ -348,7 +350,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
     change: EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof VehicleData) return; // Really shouldn't be a vehicle
+    if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
+      return; // Really shouldn't be a vehicle or group
     if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
       super.apply(doc, change);
       return;
@@ -384,7 +387,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
       return callbackFn(this);
     }
 
-    const expiration = this.getFlag('swade', 'expiration');
+    const expiration = (this as SwadeActiveEffect).getFlag(
+      'swade',
+      'expiration',
+    );
     const startOfTurnAuto =
       expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto;
     const startOfTurnPrompt =
@@ -453,7 +459,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);
-    if (this.getFlag('swade', 'loseTurnOnHold')) {
+    if ((this as SwadeActiveEffect).getFlag('swade', 'loseTurnOnHold')) {
       const activeCombat = game.combats?.active;
       // Get the AE's Actor.
       const actor = this.actor as SwadeActor;
@@ -543,7 +549,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       if (!data.duration?.combat) {
         this.updateSource({ 'duration.combat': combat.id });
       }
-      if (this.getFlag('swade', 'loseTurnOnHold')) {
+      if ((this as SwadeActiveEffect).getFlag('swade', 'loseTurnOnHold')) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
             combatant.setFlag('swade', 'turnLost', true),
@@ -578,9 +584,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override _displayScrollingStatus(enabled: boolean) {
     super._displayScrollingStatus(enabled);
-    const tokens = this.target.getActiveTokens(true);
+    const tokens = this.target?.getActiveTokens(true);
     const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(
-      this.statusId,
+      this.statusId ?? '',
     );
 
     const negativeColor = '#D41159';

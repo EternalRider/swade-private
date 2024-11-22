@@ -28,6 +28,9 @@ import {
 } from './SwadeItem.interface';
 
 declare global {
+  interface DocumentClassConfig {
+    Item: typeof SwadeItem;
+  }
   interface FlagConfig {
     Item: {
       core?: { canPopout?: boolean };
@@ -166,7 +169,8 @@ class SwadeItem extends Item {
   }
 
   get embeddedPowers() {
-    const flagContent = this.getFlag('swade', 'embeddedPowers') ?? [];
+    const flagContent =
+      (this as SwadeItem).getFlag('swade', 'embeddedPowers') ?? [];
     return new Map(flagContent);
   }
 
@@ -183,12 +187,14 @@ class SwadeItem extends Item {
   }
 
   get hasGranted(): string[] {
-    return this.getFlag('swade', 'hasGranted') ?? [];
+    return (this as SwadeItem).getFlag('swade', 'hasGranted') ?? [];
   }
 
   get grantedBy(): SwadeItem | undefined {
     if (this.parent) {
-      return this.parent.items.find((i) => i.hasGranted.includes(this.id!));
+      return this.parent.items.find((i: SwadeItem) =>
+        i.hasGranted.includes(this.id!),
+      ) as SwadeItem;
     }
   }
 
@@ -234,9 +240,11 @@ class SwadeItem extends Item {
       options.isHeavyWeapon;
     let apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} 0`;
 
-    this.actor.system.stats.globalMods.ap.forEach((e) => {
-      ap += Number(e.value);
-    });
+    if (this.actor && 'stats' in this.actor.system) {
+      this.actor?.system.stats.globalMods.ap.forEach((e) => {
+        ap += Number(e.value);
+      });
+    }
 
     if (ap) {
       apFlavor = ` - ${game.i18n.localize('SWADE.Ap')} ${ap}`;
@@ -244,7 +252,7 @@ class SwadeItem extends Item {
     const rollParts = [damage];
 
     //Additional Mods
-    if (this.actor) {
+    if (this.actor && 'stats' in this.actor.system) {
       modifiers.push(...this.actor.system.stats.globalMods.damage);
     }
     if (options.additionalMods) {
@@ -276,9 +284,10 @@ class SwadeItem extends Item {
 
     //Conviction Modifier
     if (
-      this.parent?.type !== 'vehicle' &&
+      this.parent &&
+      'details' in this.parent.system &&
       game.settings.get('swade', 'enableConviction') &&
-      this.parent?.system.details.conviction.active
+      this.parent.system.details.conviction.active
     ) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Conv'),
@@ -314,7 +323,7 @@ class SwadeItem extends Item {
     Hooks.call('swadeRollDamage', this.actor, this, roll, modifiers, options);
 
     if (options.suppressChat) {
-      return DamageRoll.fromTerms<DamageRoll['constructor']>([
+      return DamageRoll.fromTerms<DamageRoll>([
         ...roll.terms,
         ...DamageRoll.parse(
           roll.modifiers.reduce(modifierReducer, ''),
@@ -403,7 +412,7 @@ class SwadeItem extends Item {
   async roll(options: IRollOptions = {}) {
     //return early if there's no parent or this isn't a skill
     if (!('canRoll' in this.system) || !this.system.canRoll) return null;
-    return this.parent.rollSkill(this.id, options);
+    return this.parent!.rollSkill(this.id, options);
   }
 
   override async deleteDialog(
@@ -760,7 +769,7 @@ class SwadeItem extends Item {
   }
 
   async findSimilarInCompendium(): Promise<SwadeItem | null> {
-    const sourceId = this.getFlag('core', 'sourceId') as string;
+    const sourceId = this._stats.compendiumSource;
     let possibleItem: SwadeItem | null = null;
     if (sourceId) {
       possibleItem = (await fromUuid(sourceId)) as SwadeItem | null;
@@ -875,8 +884,11 @@ class SwadeItem extends Item {
     }
   }
 
-  protected static override async _onCreateOperation(
-    items: SwadeItem[],
+  protected static override async _onCreateOperation<
+    T extends Document.AnyConstructor,
+  >(
+    this: T,
+    items: InstanceType<Document.ConfiguredClass<T>>[],
     operation: DocumentDatabaseOperations<
       Item,
       {
@@ -886,7 +898,7 @@ class SwadeItem extends Item {
     user: User.ConfiguredInstance,
   ) {
     if (!operation.isItemGrant && user.isSelf) {
-      for (const item of items) {
+      for (const item of items as SwadeItem[]) {
         const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
         const equipStatus = foundry.utils.getProperty(
           item,
@@ -909,7 +921,7 @@ class SwadeItem extends Item {
         }
       }
     }
-    await super._onCreateOperation(items, operation, user);
+    await super._onCreateOperation(items as SwadeItem[], operation, user);
   }
 }
 
