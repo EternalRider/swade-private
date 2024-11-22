@@ -3,10 +3,7 @@ import {
   StatusEffect,
   ToggleActiveEffectOptions,
 } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import {
-  Context,
-  DocumentOnUpdateOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
@@ -68,12 +65,12 @@ declare global {
   }
 }
 
-type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
+// type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
 
-interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
-  type: ActorType;
-  system: DataModelConfig['Actor'][ActorType];
-}
+// interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
+//   type: ActorType;
+//   system: DataModelConfig['Actor'][ActorType];
+// }
 
 class SwadeActor extends Actor {
   static getWoundsColor(current: number, max: number) {
@@ -97,7 +94,7 @@ class SwadeActor extends Actor {
 
   constructor(
     data: foundry.documents.BaseActor.ConstructorData,
-    ctx?: Context<TokenDocument>,
+    ctx?: Document.ConstructionContext<TokenDocument>,
   ) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
@@ -226,7 +223,7 @@ class SwadeActor extends Actor {
 
   override get itemTypes() {
     const types = Object.fromEntries<SwadeItem[]>(
-      game.documentTypes.Item.map((t: SystemItemTypes) => [t, []]),
+      game.documentTypes.Item.map((t: SystemItemTypes | 'base') => [t, []]),
     ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
     for (const item of this.items.values()) {
       types[item.type].push(item);
@@ -374,7 +371,7 @@ class SwadeActor extends Actor {
     const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
-      speaker: ChatMessage.getSpeaker({ actor: this }),
+      speaker: ChatMessage.getSpeaker({ actor: this as SwadeActor }),
       flavor:
         options.flavour ??
         `${game.i18n.localize(label)} ${game.i18n.localize(
@@ -1560,7 +1557,7 @@ class SwadeActor extends Actor {
 
   protected override _onUpdate(
     changed: foundry.documents.BaseActor.UpdateData,
-    options: DocumentOnUpdateOptions<'Actor'>,
+    options: Document.OnUpdateOptions<'Actor'>,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

@@ -11,8 +11,8 @@ import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { normalizeRollModifiers } from '../util';
 
-export class SwadeRoll<T extends SwadeRollData = EmptyObject> extends Roll<T> {
-  constructor(formula: string, data?: T, options: SwadeRollOptions = {}) {
+export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
+  constructor(formula: string, data?: D, options: SwadeRollOptions = {}) {
     super(formula, data, options);
   }
 
