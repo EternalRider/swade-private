@@ -31,7 +31,9 @@ declare global {
 
 export default class SwadeCombatant extends Combatant {
   get isIncapacitated(): boolean {
-    return !!this.actor?.system?.isIncapacitated;
+    return (this.actor &&
+      'isIncapacitated' in this.actor.system &&
+      this.actor.system.isIncapacitated) as boolean;
   }
 
   override get isDefeated(): boolean {
@@ -123,7 +125,7 @@ export default class SwadeCombatant extends Combatant {
     let cardsToDraw = 1;
     if (!!this.initiative && !this.roundHeld) return cardsToDraw;
     const actor = this.actor;
-    if (!actor) return cardsToDraw;
+    if (!actor || !('initiative' in actor.system)) return cardsToDraw;
     const initiative = actor.system.initiative;
     if (initiative?.hasLevelHeaded || initiative?.hasHesitant) cardsToDraw = 2;
     if (initiative?.hasImpLevelHeaded) cardsToDraw = 3;
@@ -266,7 +268,7 @@ export default class SwadeCombatant extends Combatant {
     const data = getStatusEffectDataById('holding');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
-      initiative: currentCombatant?.initiative - 0.0001,
+      initiative: (currentCombatant?.initiative ?? 0) - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,
@@ -379,14 +381,14 @@ export default class SwadeCombatant extends Combatant {
       else
         game.swade.sockets.giveBenny(
           [firstOwner(c.actor)?.id as string],
-          [c.actor.uuid as string],
+          [c.actor?.uuid ?? ''],
         );
     }
   }
 
   async #createJokersWildMessage() {
     await getDocumentClass('ChatMessage').create({
-      user: game.userId,
+      author: game.userId,
       content: await renderTemplate(SWADE.bennies.templates.joker, {
         speaker: game.user,
       }),

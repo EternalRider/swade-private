@@ -3,7 +3,6 @@ import {
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
 import { constants } from '../constants';
-import { CharacterData, NpcData } from '../data/actor';
 import { SwadeRoll } from './SwadeRoll';
 
 export class DamageRoll extends SwadeRoll<ActorRollData> {
@@ -72,16 +71,17 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     this.options['isHeavyWeapon'] = isHeavyWeapon;
   }
 
-  override applyReroll(actor: Actor | null): boolean {
-    if (!actor || !actor.system.stats.globalMods.hasOwnProperty('bennyDamage'))
-      return false;
+  override applyReroll(actor: Actor.ConfiguredInstance | null): boolean {
     if (
-      (actor.system as CharacterData | NpcData).stats.globalMods.bennyDamage
-        ?.length > 0
+      !actor ||
+      !('stats' in actor.system) ||
+      !('bennyDamage' in actor.system.stats.globalMods)
     ) {
+      return false;
+    }
+    if (actor.system.stats.globalMods.bennyDamage?.length > 0) {
       let adjustRoll = false;
-      for (const mod of (actor.system as CharacterData | NpcData).stats
-        .globalMods.bennyDamage) {
+      for (const mod of actor.system.stats.globalMods.bennyDamage) {
         const hasMod = this.modifiers.find((m) => m.label === mod.label);
         if (!hasMod) {
           adjustRoll = true;

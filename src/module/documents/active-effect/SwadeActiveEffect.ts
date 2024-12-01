@@ -584,7 +584,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   protected override _displayScrollingStatus(enabled: boolean) {
     super._displayScrollingStatus(enabled);
-    const tokens = this.target?.getActiveTokens(true);
+    const tokens = (this.target as SwadeActor)?.getActiveTokens(true);
     const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(
       this.statusId ?? '',
     );
@@ -602,7 +602,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     for (const token of tokens) {
       token.ring?.flashColor(color, {
         duration: 1000,
-        easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+        easing: CONFIG.Token.ring?.ringClass.createSpikeEasing(0.4),
       });
     }
   }

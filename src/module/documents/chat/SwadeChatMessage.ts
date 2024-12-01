@@ -134,7 +134,7 @@ export default class SwadeChatMessage extends ChatMessage {
       data.content = await this.#renderMessageBody(false, data.content);
     } else {
       // Otherwise, show "rolled privately" messages for Roll content
-      const name = this.user?.name ?? game.i18n.localize('CHAT.UnknownUser');
+      const name = this.author?.name ?? game.i18n.localize('CHAT.UnknownUser');
       data.flavor = game.i18n.format('CHAT.PrivateRollContent', { user: name });
       data.content = await this.#renderMessageBody(true);
       messageData.alias = name;

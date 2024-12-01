@@ -1,4 +1,4 @@
-import { TypeDataModel } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
+import type { TypeDataModel } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Advance } from '../../../../interfaces/Advance.interface';
 import {

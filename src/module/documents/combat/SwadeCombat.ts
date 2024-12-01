@@ -23,7 +23,7 @@ export default class SwadeCombat extends Combat {
   /** Compares two combatants by name. */
   static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
-    return a.name > b.name ? 1 : -1;
+    return a.name! > b.name! ? 1 : -1;
   }
 
   /** Compares two combatants by ID. */
@@ -43,9 +43,9 @@ export default class SwadeCombat extends Combat {
     return game.settings.get('swade', 'autoInit');
   }
 
-  #debouncedCombatSound: this['_playCombatSound'];
+  #debouncedCombatSound: SwadeCombat['_playCombatSound'];
 
-  #initSoundData: AudioHelper.PlayData = {
+  #initSoundData: foundry.audio.AudioHelper.PlayData = {
     src: SwadeCombat.INITIATIVE_SOUND,
     volume: 0.8,
     autoplay: true,
@@ -114,7 +114,7 @@ export default class SwadeCombat extends Combat {
           cardsToPickFrom.push(oldCard);
           const result = await this.pickACard({
             cards: cardsToPickFrom,
-            combatantName: c.name,
+            combatantName: c.name!,
             oldCardId: oldCard?.id!,
           });
           pickedCard = result.picked;
@@ -148,7 +148,7 @@ export default class SwadeCombat extends Combat {
         //Level Headed
         const result = await this.pickACard({
           cards: cardsToPickFrom,
-          combatantName: c.name,
+          combatantName: c.name!,
           enableRedraw: hasQuick,
           isQuickDraw: hasQuick,
         });
@@ -161,7 +161,7 @@ export default class SwadeCombat extends Combat {
         if (cardValue <= 5) {
           const result = await this.pickACard({
             cards: [pickedCard],
-            combatantName: c.name,
+            combatantName: c.name!,
             enableRedraw: true,
             isQuickDraw: true,
           });
@@ -270,7 +270,7 @@ export default class SwadeCombat extends Combat {
     if (b.initiative === a.initiative) {
       return SwadeCombat.nameSortCombatants(a, b);
     } else {
-      return b.initiative - a.initiative;
+      return super._sortCombatants(a, b);
     }
   }
 
@@ -526,7 +526,9 @@ export default class SwadeCombat extends Combat {
     user: SwadeUser,
     combatant: SwadeCombatant,
   ): boolean {
-    const initiative = combatant.actor?.system.initiative;
+    if (!combatant.actor || !('initiative' in combatant.actor.system))
+      return false;
+    const initiative = combatant.actor.system.initiative;
     const edges =
       initiative.hasLevelHeaded ||
       initiative.hasImpLevelHeaded ||
@@ -550,7 +552,7 @@ export default class SwadeCombat extends Combat {
     //remove the holding status from any combatants that have it
     await Promise.allSettled(
       this.combatants
-        .filter((c) => c.actor?.statuses.has('holding'))
+        .filter((c) => c.actor?.statuses.has('holding') ?? false)
         .flatMap((c) =>
           c.actor?.effects.filter((e) => e.statuses.has('holding')),
         )
