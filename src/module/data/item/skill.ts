@@ -1,6 +1,6 @@
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
-import { TraitDie } from '../../documents/actor/actor-data-source';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';

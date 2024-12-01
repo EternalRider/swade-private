@@ -62,9 +62,9 @@ class SwadeItem extends Item {
     if (data.flags?.swade?.embeddedPowers) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       for (const [key, item] of data.flags.swade.embeddedPowers) {
-        if (item.system && !item.data) continue;
-        item.system = { ...item.data };
-        delete item.data;
+        if (item.system && !(item as any).data) continue;
+        item.system = { ...(item as any).data };
+        delete (item as any).data;
       }
     }
     if (data?.system?.grants) {
@@ -86,7 +86,7 @@ class SwadeItem extends Item {
     // eslint-disable-next-line deprecation/deprecation
     if (
       data.type === 'ability' &&
-      ['ancestry', 'race'].includes(data.system?.subtype)
+      ['ancestry', 'race'].includes(data.system?.subtype as string)
     ) {
       data.type = 'ancestry';
     }
@@ -363,7 +363,7 @@ class SwadeItem extends Item {
       Logger.warn('You cannot set this state on the item ' + this.name, {
         toast: true,
       });
-      return this.system.equipStatus;
+      return this.system.equipStatus as EquipState;
     }
     await this.update({ 'system.equipStatus': state });
     return state;
@@ -506,8 +506,8 @@ class SwadeItem extends Item {
 
     // Basic chat message data
     const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
-      user: game.user?.id,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      author: game.user?.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.parent?.id,
@@ -536,7 +536,10 @@ class SwadeItem extends Item {
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
     } else {
       // Apply the roll mode to the message
-      msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode'));
+      msgClass.applyRollMode(
+        chatData,
+        game.settings.get('core', 'rollMode') ?? 'roll',
+      );
     }
 
     // Create the chat message
@@ -736,7 +739,10 @@ class SwadeItem extends Item {
         name: this.name,
       }),
     };
-    msgClass.applyRollMode(createData, game.settings.get('core', 'rollMode'));
+    msgClass.applyRollMode(
+      createData,
+      game.settings.get('core', 'rollMode') ?? 'roll',
+    );
     return msgClass.create(createData);
   }
 
@@ -895,9 +901,9 @@ class SwadeItem extends Item {
         isItemGrant: boolean;
       }
     >['create'],
-    user: User.ConfiguredInstance,
+    user: BaseUser,
   ) {
-    if (!operation.isItemGrant && user.isSelf) {
+    if (!operation.isItemGrant && (user as User).isSelf) {
       for (const item of items as SwadeItem[]) {
         const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
         const equipStatus = foundry.utils.getProperty(

@@ -1,4 +1,7 @@
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import {
+  EmptyObject,
+  InexactPartial,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
@@ -153,14 +156,14 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
   override async toMessage<
     T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
   >(
-    messageData: T,
+    messageData: T = {} as T,
     {
       rollMode = 'publicroll',
       create = true,
-    }: {
-      rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
-      create?: boolean | undefined;
-    } = {},
+    }: InexactPartial<{
+      rollMode: keyof CONFIG.Dice.RollModes | 'roll';
+      create: boolean | undefined;
+    }> = {},
   ) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
