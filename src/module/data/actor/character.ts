@@ -118,18 +118,31 @@ export class CharacterData extends CreatureData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
+  
+    // Enrich biography text
     this.enrichedBiography = await TextEditor.enrichHTML(
       this.details.biography.value,
       options,
     );
-
-    // Combine weapons and armor into a displayable gear array. For now, these are the only items we display under gear.
-    //TODO: Refactor to a handlebar helper
+  
+    // Combine weapons and armor into a displayable gear array
     const displayableGear = this.parent.itemTypes.armor.concat(
       this.parent.itemTypes.weapon,
     );
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
-
+  
+    // Enrich and strip ability descriptions to plain text
+    if (this.parent.itemTypes.ability) {
+      for (const ability of this.parent.itemTypes.ability) {
+        const enrichedHTML = await TextEditor.enrichHTML(
+          ability.system.description,
+          options,
+        );
+        ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
+      }
+    }
+  
+    // Create the embed element
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/actor-embeds.hbs',
