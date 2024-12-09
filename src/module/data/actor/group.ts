@@ -65,6 +65,12 @@ class GroupData<
         hint: 'SWADE.Group.Sheet.Lock.Hint',
       }),
       supplyLevels: this.makeSupplyLevelSchema(),
+      currency: new fields.NumberField({
+        initial: 0,
+        integer: true,
+        label: 'SWADE.Currency',
+        hint: 'SWADE.Currency',
+      }), // New currency field
     };
   }
 

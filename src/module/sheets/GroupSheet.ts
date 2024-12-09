@@ -128,7 +128,14 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   };
 
   override async _prepareContext(options: any) {
-    return foundry.utils.mergeObject(await super._prepareContext(options), {
+    const baseContext = await super._prepareContext(options);
+  
+    const settingrules = {
+      wealthType: game.settings.get('swade', 'wealthType'),
+      currencyName: game.settings.get('swade', 'currencyName')
+    };
+
+    return foundry.utils.mergeObject(baseContext, {
       members: this._prepareMembers(),
       itemTypes: await this._prepareItems(),
       benny: game.settings.get('swade', 'bennyImageSheet'),
@@ -137,8 +144,10 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
         rollData: this.actor.getRollData(),
         secrets: this.isEditable,
       }),
+      settingrules, // Add the setting rules here
     });
-  }
+    }
+    
 
   protected override _onFirstRender(
     context: GroupSheetRenderContext,
