@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Deprecated
 
-
 ### Removed
 
 ### Fixed
@@ -38,6 +37,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to drag&drop Active Effects onto tokens on the canvas. You can drop the effect on multiple tokens at the same time by selecting the tokens they are should be applied to and the dropping the effect on a single token. You can also drop an Active Effect on a token you own without having to select it. (#1023) **by @florad92**
 - Added non-transferred Active Effects to the item chat cards as draggable elements. They can be used to drag&drop to sheets and the canvas. (#1023) **by @florad92**
 - Added Targeted mode for macros, which will return the current' users first target as the `actor` and `token` for macro reference. (#1024) **by @jpmeehan5**
+- Added Currency field to Group Actor Sheet **by @jestevens210**
+- Added Severity Indicator to Hindrance Header on Item Sheet **by @jestevens210**
+- Updated Embed styles to inherit from current journal styles **by @jestevens210**
 
 ### Changed
 
@@ -1467,7 +1469,7 @@ m
 
 ### Changed
 
-- Changed the way the system is delivered. The system is now bundled as a singular JS file, reducing the number of JS files from 44 to 1. In addition to that we're now delivering sourcemaps which should help with troubleshooting. For more information please visit [ticket #464] (https://gitlab.com/peginc/swade/-/issues/464). All in all this should not have any noticeable drawbacks for end users and should slightly increase the responsiveness of the system on world load.
+- Changed the way the system is delivered. The system is now bundled as a singular JS file, reducing the number of JS files from 44 to 1. In addition to that we're now delivering sourcemaps which should help with troubleshooting. For more information please visit [ticket #464] (<https://gitlab.com/peginc/swade/-/issues/464>). All in all this should not have any noticeable drawbacks for end users and should slightly increase the responsiveness of the system on world load.
 - Changed the way the Quick Access behaves. Instead of automatically displaying all equipped items it now only displays favored items. See `Added` for the list of document types that can be favored. Status Effects are automatically shown in the Quick Access.
 - The inputs for the Crew and Passengers on Vehicles now are now saved as numbers instead of strings.
 - Split up the About tab into subsections: `Advances`,`Background` and `Notes`. The `Background` subsection now contains the biography, along some additional fields for character appearance and goals.
@@ -1737,6 +1739,7 @@ m
 
 - Deprecated the old roll dialog. It will be removed with version `1.0.0`
 - Deprecated the use of bare numbers and strings as modifiers in rolls. Instead please pass an array with objects containing a `label` and a `value` property. See the example below
+
   ```JS
    [
     {
@@ -1891,11 +1894,13 @@ m
 - Added the _Action Card Editor_. This is an alternative interface for Journal Entry compendiums. Any GM can open it by right-clicking a Journal Entry compendium and selecting the "Open in Action Card editor option. This is primarily meant for people that want to create their own Action Card decks.
 - Added the character summarizer, which is based on @penllawen 's Summarizer Macro. The Summarizer provides a compact statblock for any NPC or Player character in the form of HTML.
   Currently the summarizer is only usable via a macro, see example
+
   ```JS
   const actor = game.actors.getName("SomeActor");
   const summarizer = new game.swade.CharacterSummarizer(actor);
   summarizer.getSummary(); //Returns the finished summary as HTML in a string
   ```
+
 - Added new Combat Tracker UI
   - Overhauled the Combat Tracker UI
   - Added a button to the Combat Tracker that lets you shuffle the Action Card deck without having to open up its Rollable Table
@@ -2294,7 +2299,7 @@ gioness if it is marked as natural armor, has at least the torso location and is
 
 ### Removed
 
-- Removed spanish translation from core game system because a properly maintained community translation is available here: https://foundryvtt.com/packages/swade-es/
+- Removed spanish translation from core game system because a properly maintained community translation is available here: <https://foundryvtt.com/packages/swade-es/>
 
 ### Fixed
 
