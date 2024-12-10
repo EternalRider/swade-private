@@ -4,31 +4,17 @@
     <header class='section-header'>
       {{localize 'SWADE.Headquarters.Advantage'}}
     </header>
-    <div class='editor-wrapper'>
-      {{editor
-        enriched.advantage
-        target='system.advantage'
-        editable=true
-        button=false
-        engine='prosemirror'
-        collaborate=true
-      }}
-    </div>
+    <prose-mirror name="system.advantage" value="{{document.system.advantage}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      {{{enriched.advantage}}}
+    </prose-mirror>
   </section>
   <section class='hq-complication'>
     <header class='section-header'>
       {{localize 'SWADE.Headquarters.Complication'}}
     </header>
-    <div class='editor-wrapper'>
-      {{editor
-        enriched.complication
-        target='system.complication'
-        editable=true
-        button=false
-        engine='prosemirror'
-        collaborate=true
-      }}
-    </div>
+    <prose-mirror name="system.complication" value="{{document.system.complication}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      {{{enriched.complication}}}
+    </prose-mirror>
   </section>
   <section class='hq-form'>
     <header class='section-header'>
@@ -38,61 +24,33 @@
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Description'}}
       </header>
-      <div class='hq-form-part editor-wrapper'>
-        {{editor
-          enriched.form.description
-          target='system.form.description'
-          editable=true
-          button=false
-          engine='prosemirror'
-          collaborate=true
-        }}
-      </div>
+      <prose-mirror name="system.form.description" value="{{document.system.form.description}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+        {{{enriched.form.description}}}
+      </prose-mirror>
     </div>
     <div class='hq-acquisition'>
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Acquisition'}}
       </header>
-      <div class='hq-form-part editor-wrapper'>
-        {{editor
-          enriched.form.acquisition
-          target='system.form.acquisition'
-          editable=true
-          button=false
-          engine='prosemirror'
-          collaborate=true
-        }}
-      </div>
+      <prose-mirror name="system.form.acquisition" value="{{document.system.form.acquisition}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+        {{{enriched.form.acquisition}}}
+      </prose-mirror>
     </div>
     <div class='hq-maintenance'>
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Maintenance'}}
       </header>
-      <div class='hq-form-part editor-wrapper'>
-        {{editor
-          enriched.form.maintenance
-          target='system.form.maintenance'
-          editable=true
-          button=false
-          engine='prosemirror'
-          collaborate=true
-        }}
-      </div>
+      <prose-mirror name="system.form.maintenance" value="{{document.system.form.maintenance}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+        {{{enriched.form.maintenance}}}
+      </prose-mirror>
     </div>
   </section>
   <section class='hq-upgrades'>
     <header class='hq-upgrades section-header'>
       {{localize 'SWADE.Headquarters.Upgrades'}}
     </header>
-    <div class='hq-upgrades editor-wrapper'>
-      {{editor
-        enriched.upgrades
-        target='system.upgrades'
-        editable=true
-        button=false
-        engine='prosemirror'
-        collaborate=true
-      }}
-    </div>
+    <prose-mirror name="system.upgrades" value="{{document.system.upgrades}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      {{{enriched.upgrades}}}
+    </prose-mirror>
   </section>
 </form>
