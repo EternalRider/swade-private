@@ -52,6 +52,9 @@ interface SwadeItem<ItemType extends SystemItemTypes = SystemItemTypes> {
 }
 
 class SwadeItem extends Item {
+  /** Used for item enrichers */
+  declare plainTextDescription?: string;
+
   overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 

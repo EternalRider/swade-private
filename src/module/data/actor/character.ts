@@ -2,6 +2,7 @@ import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/f
 import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import { CreatureData } from './base/creature';
+import { WildCardDataSchema } from './base/creature.schemas';
 
 declare namespace CharacterData {
   interface Schema extends CreatureData.Schema {}
@@ -10,7 +11,7 @@ declare namespace CharacterData {
 }
 
 export class CharacterData extends CreatureData<
-  CharacterData.Schema,
+  CharacterData.Schema & WildCardDataSchema,
   CharacterData.BaseData,
   CharacterData.DerivedData
 > {
@@ -113,24 +114,27 @@ export class CharacterData extends CreatureData<
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
+
+  declare enrichedBiography?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-  
+
     // Enrich biography text
     this.enrichedBiography = await TextEditor.enrichHTML(
       this.details.biography.value,
-      options,
+      { ...options },
     );
-  
+
     // Combine weapons and armor into a displayable gear array
     const displayableGear = this.parent.itemTypes.armor.concat(
       this.parent.itemTypes.weapon,
     );
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
-  
+
     // Enrich and strip ability descriptions to plain text
     if (this.parent.itemTypes.ability) {
       for (const ability of this.parent.itemTypes.ability) {
@@ -141,7 +145,7 @@ export class CharacterData extends CreatureData<
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
     }
-  
+
     // Create the embed element
     return await createEmbedElement(
       this,
