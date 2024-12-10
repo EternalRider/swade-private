@@ -58,6 +58,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - [BREAKING] The Chase layout tools now require and leverage Complete Card Management
   - `layoutChase` is now asynchronous
 
+### Fixed
+
+- Fixed compendium drops not working on initial drag action (#1239) **by @jpmeehan5**
+
 ## 4.1.1
 
 ### Fixed
