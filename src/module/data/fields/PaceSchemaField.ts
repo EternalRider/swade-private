@@ -7,6 +7,7 @@ import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/src
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { PaceSchema } from '../actor/base/creature.schemas';
 import { makeDiceField } from '../shared';
+import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 
 const fields = foundry.data.fields;
 
@@ -56,7 +57,7 @@ export class PaceSchemaField<
     super(definePaceSchema(), { label: 'SWADE.Pace' } as Options);
   }
 
-  static get paceKeys() {
+  static get paceKeys(): Exclude<keyof PaceSchema, 'base' | 'running'>[] {
     return ['ground', 'fly', 'swim', 'burrow'];
   }
 
@@ -83,43 +84,46 @@ export class PaceSchemaField<
     return result;
   }
 
-  protected _castChangeDelta(delta) {
+  protected override _castChangeDelta(delta) {
     //@ts-expect-error Protected prototype property
     return fields.NumberField.prototype._castChangeDelta(delta);
   }
 
-  protected _applyChangeAdd(
-    value,
+  // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
+  protected override _applyChangeAdd(
+    value: SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
-      value[key] += delta;
+      value[key]! += delta;
     }
     return value;
   }
 
-  protected _applyChangeMultiply(
-    value,
+  // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
+  protected override _applyChangeMultiply(
+    value: SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
-      if (value[key] !== null) value[key] *= delta;
+      if (value[key] !== null) value[key]! *= delta;
     }
     return value;
   }
 
+  // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected _applyChangeDowngrade(
-    value,
+    value: SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
-      if (value[key] !== null) value[key] = Math.min(value[key], delta);
+      if (value[key] !== null) value[key] = Math.min(value[key]!, delta);
     }
     return value;
   }

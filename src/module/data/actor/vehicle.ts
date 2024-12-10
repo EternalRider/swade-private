@@ -236,16 +236,17 @@ class VehicleData<
     this.scale = this.parent.calcScale(this.size);
   }
 
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     this: VehicleData,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
