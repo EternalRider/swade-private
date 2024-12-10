@@ -104,14 +104,14 @@ export class CompendiumTOC extends Compendium<
     return foundry.utils.mergeObject(await super.getData(options), data);
   }
 
-  protected override async _onDragStart(event: DragEvent) {
+  protected override _onDragStart(event: DragEvent) {
     const src = event.currentTarget as HTMLElement;
     if (!src.dataset.documentId) return;
-    const document = await this.collection.getDocument(src.dataset.documentId);
-    if (!document) return;
+    const indexData = this.collection.index.get(src.dataset.documentId);
+    if (!indexData) return;
     const dragData = {
       type: this.metadata.type,
-      uuid: document.uuid,
+      uuid: indexData.uuid,
     };
     event.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
   }
@@ -477,7 +477,7 @@ export class CompendiumTOC extends Compendium<
           pages = doc.pages
             .map((p) => {
               return {
-                id: p.id,
+                id: p.id!,
                 name: p.name,
                 sort: p.sort,
               };
@@ -550,7 +550,7 @@ export class CompendiumTOC extends Compendium<
       //Priority 3: Normal token art
       const texture = prototypeToken.texture;
       path = texture.src;
-      scale = (texture.scaleX + texture.scaleY) / 2; // get the average
+      scale = (texture.scaleX! + texture.scaleY!) / 2; // get the average
     } else if (actor.token.img) {
       //legacy code
       path = actor.token.img;
@@ -609,7 +609,7 @@ interface CompendiumEntry {
   name: string;
   id: string;
   artwork?: TokenArt;
-  img?: string | null;
+  img?: string | null | TokenArt;
   /** only relevant for actors */
   isWildcard?: boolean;
   /** array of pages in the journal entry */
