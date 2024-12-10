@@ -28,6 +28,7 @@ import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
 import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
+import type { Plugin } from 'prosemirror-state';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -453,7 +454,7 @@ export default class SwadeCoreHooks {
         e.draggable = true;
         e.addEventListener('dragstart', (ev) => {
           const dragData = game.tables
-            ?.get(msg.getFlag('core', 'RollTable'))
+            ?.get(msg.getFlag('core', 'RollTable') ?? '')
             ?.results.get(e.dataset.resultId as string)
             .toDragData();
           if (!dragData) return;
@@ -703,7 +704,7 @@ export default class SwadeCoreHooks {
                   await gm?.setFlag(
                     'swade',
                     'bennies',
-                    Number(button.form.elements['gm-bennies'].value),
+                    Number(button.form!.elements['gm-bennies'].value),
                   ),
               },
             ],
@@ -764,8 +765,8 @@ export default class SwadeCoreHooks {
       const cardB = b.value!;
       const card = cardA - cardB;
       if (card !== 0) return card;
-      const suitA = a.system['suit'];
-      const suitB = b.system['suit'];
+      const suitA = a.system['suit'] as number;
+      const suitB = b.system['suit'] as number;
       const suit = suitA - suitB;
       return suit;
     });
@@ -896,12 +897,12 @@ export default class SwadeCoreHooks {
 
   static onCreateProseMirrorEditor(
     uuid: string,
-    plugins: Record<string, ProseMirror.Plugin>,
+    plugins: Record<string, Plugin>,
     _options: unknown,
   ) {
     const [prefix] = uuid.split('#');
-    const type = fromUuidSync(prefix)?.type;
-    if (uuid.includes('JournalEntryPage') && type === 'headquarters') {
+    const doc = fromUuidSync(prefix, { strict: false });
+    if (doc instanceof JournalEntryPage && doc.type === 'headquarters') {
       // Delete the default content link plugin.
       delete plugins.contentLinks;
       plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
