@@ -61,6 +61,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Fixed compendium drops not working on initial drag action (#1239) **by @jpmeehan5**
+- Fixed console error with prosemirror editors for compendium items (#1229) **by @jpmeehan5**
+- Fixed wild die dice so nice configuration menu (#1197) **by @jpmeehan5**
 
 ## 4.1.1
 

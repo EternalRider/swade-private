@@ -26,7 +26,7 @@ export declare class Dice3D {
     whisper?: Array<{ id: string } | string> | null,
     blind?: boolean,
     chatMessageID?: string,
-    speaker?: ChatSpeakerData,
+    speaker?: ChatMessage['speaker'],
   ): Promise<boolean>;
 
   /**
