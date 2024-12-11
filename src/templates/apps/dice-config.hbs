@@ -16,16 +16,7 @@
       <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
         {{selectOptions this.choices selected=this.value localize=true}}
       </select>
-
-      {{else if this.isSelectOptGroup}}
-      <select name="{{this.module}}.{{this.key}}" {{disabled this.disabled}}>
-          {{#each this.groups as |group key|}}
-            <optgroup label="{{key}}">
-              {{selectOptions group selected=../value localize=true}}
-            </optgroup>
-          {{/each}}
-      </select>
-
+      
       {{else if this.isRange}}
       <input
         type="range"
