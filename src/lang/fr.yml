@@ -127,7 +127,16 @@ SWADE:
   Parry: Parade
   Notes: Notes
   ActionsEffects: Actions et effets
-  Actions: Actions
+  Actions:
+    Name: Actions
+    Hidden:
+      Label: Caché
+      Hint: Les actions cachées ne sont pas affichées sur la fiche d'acteur
+    DisplayHidden:
+      Label: Afficher les actions cachées
+    Activities:
+      Label: Activités
+      Hint: SWID des actions liées à cet élément
   DmgModUni: Modificateur de dégâts (universel)
   SkillModUni: Modificateur de comp. (universel)
   ShotsUsed: Mun. utilisées
@@ -848,7 +857,7 @@ SWADE:
     NoGroupCombatants: Les groupes ne peuvent pas être des combattants.
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base
-  Targets: 'Cibles :'
+  Targets: 'Cibles'
   Rolls:
     SwadeRoll: Jet
     DamageRoll: Jet de dégâts
@@ -947,6 +956,7 @@ SWADE:
   MacroActor:
     Default: Défaut
     Self: Soi-même
+    Target: Cible
   CouldNotFindMacro: "Impossible de trouver la macro avec l'UUID : {uuid}"
   DmgMod: Modificateur de dégâts
   ResourcesUsed:
@@ -1487,7 +1497,7 @@ SWADE:
   BenniesMaxNum: Nombre de Jeton maximum
   EdF: Editer {item}
   EdRightClick: '[Right Click] pour éditer'
-  ApOver: Action de Perce Armure
+  ApOver: Action de PA
   ShotsCurrent: Balles restantes
   Value: Valeur
   MaxLabel: Maximum
@@ -1541,6 +1551,11 @@ SWADE:
         des combats
     Base: Mouvement de base
     Other: Autres vitesses de déplacement
+  NoCCMActive: Le module Complete Card Management n'est pas activé.
+  ChaseDiscard: Défausse pour la poursuite
+  ApplicableEffects: Effets applicables
+  NoCCMInstall: Le module Complete Card Management n'est pas installé.
+  CouldNotFindTarget: Cette macro nécessite la sélection d'une cible !
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ

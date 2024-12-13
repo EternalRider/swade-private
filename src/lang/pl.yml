@@ -147,12 +147,13 @@ SWADE:
   Protection: Ochrona
   Dmg: Obrażenia
   DmgOver: Obrażenia akcji
-  ApOver: Akcja Przebijanie Pancerza
+  ApOver: Akcja PP
   Resist: Test odporności
   ResistRolls: Rzut na odporność
   MacroActor:
     Default: Domyślny
     Self: Własny
+    Target: Cel
   Ap: PP
   APLong: Przebicie Pancerza
   RoF: SzS
@@ -161,7 +162,16 @@ SWADE:
   ShieldBonus: Bonus tarczy
   Notes: Uwagi
   ActionsEffects: Akcje i stany
-  Actions: Akcje
+  Actions:
+    Name: Akcje
+    Hidden:
+      Label: Ukryte
+      Hint: Ukryte akcje nie są wyświetlane na arkuszu postaci
+    DisplayHidden:
+      Label: Wyświetl ukryte akcje
+    Activities:
+      Label: Aktywności
+      Hint: SWID-y akcji powiązanych z tym przedmiotem
   DmgModUni: Modyfikator obrażeń
   SkillModUni: Modyfikator Cechy
   ShotsUsed: Zużycie pocisków
@@ -382,7 +392,7 @@ SWADE:
   Trait: Cecha
   AltTrait: Akcja Cechy
   ClickSuggestions: Kliknij, aby wyświetlić sugestie
-  Quick: Szybki
+  Quick: Błyskawiczny refleks
   BonusDamage: Dodatkowe obrażenia
   Joker: Joker
   CustomWildDie: "- Niestandardowa Kość Figury -"
@@ -912,7 +922,7 @@ SWADE:
   IgnFatigue: Ignoruj Zmęczenie
   BaseDamage: Bazowe obrażenia
   RefreshPP: Odśwież Punkty Mocy
-  Targets: 'Cele:'
+  Targets: 'Cele'
   Rolls:
     RollResult: Wynik rzutu
     SwadeRoll: Rzut
@@ -1463,6 +1473,11 @@ SWADE:
       OutOfCombat: Możesz biec z prędkością {pace} przez {minutes} minut poza walką
     Base: Podstawowy ruch
     Other: Inne Prędkości Ruchu
+  NoCCMActive: Moduł Complete Card Management nie jest aktywny.
+  ChaseDiscard: Stos kart odrzuconych
+  ApplicableEffects: Efekty do zastosowania
+  NoCCMInstall: Moduł Complete Card Management nie jest zainstalowany.
+  CouldNotFindTarget: Makro wymaga wybrania celu!
 TYPES:
   Actor:
     character: Postać gracza

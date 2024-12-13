@@ -216,7 +216,8 @@ SWADE:
   VehicleMod: Mod. de Vehículo
   OpSkill: Habilidad de operación
   ShowBennyAnimation: Mostrar animación de Beni
-  ShowBennyAnimationDesc: Reproducir animación al usar un Beni. Solo si Dice So Nice! esta instalado
+  ShowBennyAnimationDesc: Reproducir animación al usar un Beni. Solo si Dice So Nice!
+    esta instalado
   WildDiePreset: Tema del dado salvaje
   WildDiePresetDesc: >-
     Selecciona un tema DSN para tu dado salvaje. Selecciona 'Personalizado' si
@@ -354,7 +355,8 @@ SWADE:
     los siguientes duplicados (por nombre y tipo). Se ha cambiado el nombre de
     los nuevos elementos para reflejar su origen.
   NoActionDeckFound: No se encontró ningún mazo de acción, creando uno
-  NoActionDeckDiscardPileFound: No se encontró ninguna pila de descarte del mazo de acción, creando una
+  NoActionDeckDiscardPileFound: No se encontró ninguna pila de descarte del mazo de
+    acción, creando una
   Wealth: Riqueza
   Characters: Personajes
   SettingRules: Ajustes de reglas
@@ -701,7 +703,8 @@ SWADE:
   EmptyAncestralAbilitiesHint: >-
     Esta {ancestry} o {archetype} aún no tiene ninguna habilidad. Arrastra y suelta
     algo en la hoja para empezar.
-  NoTokenSelectedForResistRoll: Para hacer una tirada de resistencia, primero selecciona un token
+  NoTokenSelectedForResistRoll: Para hacer una tirada de resistencia, primero selecciona
+    un token
   Templates:
     Cone:
       Short: Cono

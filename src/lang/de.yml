@@ -93,7 +93,16 @@ SWADE:
   Parry: Parade
   Notes: Notizen
   ActionsEffects: Aktionen & Effekte
-  Actions: Aktionen
+  Actions:
+    Name: Aktionen
+    Hidden:
+      Label: Versteckt
+      Hint: Versteckte Aktionen werden nicht auf dem Bogen angezeigt
+    DisplayHidden:
+      Label: Versteckte Aktionen anzeigen
+    Activities:
+      Label: Aktivitäten
+      Hint: SWIDs von mit diesem Item verbundenen Aktionen
   DmgModUni: Schadensmodifikator
   SkillModUni: Eigenschaftsmodifikator
   ShotsUsed: Schuss verbraucht
@@ -368,6 +377,7 @@ SWADE:
     Value: Wert
     Ignore: Ignorieren?
     None: Aktuell keine Modifikatoren
+    Active: Aktiv
   Illumination:
     _name: Beleuchtung
     Dim: Düster
@@ -428,6 +438,7 @@ SWADE:
     Modes:
       Legacy: Legacy
       Expanded: Erweitert
+      Label: Modus
   Appearance: Erscheinungsbild
   CharacterGoals: Ziele
   Background: Hintergrund
@@ -690,9 +701,26 @@ SWADE:
     CharSheetDefaultWidth:
       Hint: 'Breite des Charakterbogens beim ersten Öffnen, in Pixeln. Default: 650.'
       Name: Standardbreite für Charakterbögen
+    GmBennies:
+      Hint: Legt fest, wieviele Bennys die Spielleitung beim Auffrischen erhält
+      Name: SL-Bennys
+    StaticGmBennies:
+      Hint: Setzt eine feste Zahl Bennys, welche die SL beim Auffrischen erhält (statt
+        die Zahl aktiver Spieler zu nutzen).
+      Name: Feste SL-Bennys
+    ArmorStacking:
+      Choices:
+        Core: Savage Worlds Abenteuer-Edition Kernregeln
+        SWPF: Pathfinder®️ für Savage Worlds
+      Name: Rüstung stapeln
+      Hint: Legt fest, wie das Tragen mehrerer Rüstungen abgehandelt wird
+    Bumpmaps: Bumpmaps
   Validation:
-    OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben!
-    OnlyOneArchetype: Ein charakter kann nur einen Archetypen auf einmal haben!
+    OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben.
+    OnlyOneArchetype: Ein Charakter kann nur einen Archetypen auf einmal haben.
+    NoGroupCombatants: Gruppenakteure können keine Kampfteilnehmer sein.
+    InvalidBasePace: Die Grundbewegegung kann nicht auf eine Beweungsart ohne Wert
+      gesetzt werden.
   SettingRules: Settingregeln
   DuplicateItemsBodyText: >-
     Während <strong>({type}) {name}</strong> zum Akteur {target} hinzugefügt wurde
@@ -811,6 +839,9 @@ SWADE:
     Key: Wertschlüssel
     Label: Bezeichnung
     KeyErr: Weitere Werte Schlüssel {invalid} ist ungültig und wurde geändert zu {key}
+    OptionLabel: Option
+    Value: Wert
+    MaxLabel: Maximum
   MessageOnUse:
     Label: Nachricht bei Verwendung
     Hint: Zeigt eine Chat-Nachricht an, wenn dieses Item verwendet wird
@@ -818,10 +849,11 @@ SWADE:
     EmptyHint: Dieses Item gewährt derzeit keine Items
     Header: Gewährte Items
     When: Items gewähren wenn
+    Mutation: Mutation
   IgnFatigue: Erschöpfung ignorieren
   BaseDamage: Basisschaden
   RefreshPP: Machtpunkte auffrischen
-  Targets: 'Ziele:'
+  Targets: 'Ziele'
   Rolls:
     RollResult: Würfelergebnis
     SwadeRoll: Wurf
@@ -924,6 +956,7 @@ SWADE:
     ERROR:
       ActorCreatePermission: Diese Tour erfordert die Berechtigung, Akteure zu erstellen
       SettingPermission: Diese Tour erfordert die Veränderung von Welteinstellungen
+      JournalCreatePermission: Diese Tour erfordert die Berechtigung, Notizen zu erstellen
   RequiredCrew: Nötige Besatzung
   NumberOfDice:
     Hint: Anzahl Eigens.-Würfel, die für diese Aktion gewürfelt werden
@@ -1027,6 +1060,7 @@ SWADE:
   MacroActor:
     Default: Default
     Self: Selbst
+    Target: Ziel
   RefreshOnly: Auffrischen
   NotOwnedError: Item/Akteur muss im Besitz sein
   AddOrReplaceActions:
@@ -1109,7 +1143,75 @@ SWADE:
   SettingConfigurator:
     WorldCompendiums: Weltkompendien
     WorldTables: Welttabellen
-  ApOver: Aktion Panzerbrechend
+  ApOver: Aktion PB
+  Group:
+    Sheet:
+      Members:
+        Empty: Keine Mitglieder
+        Header: Mitglieder
+        Hint: Mitglieder zum Hinzufügen per Drag&Drop in den Bogen ziehen oder UUID
+          einfügen. Funktioniert auch mit Spielfigur-Akteuren in einer Szene.
+      Stash:
+        Header: Vorrat
+        Empty: Keine Items
+      Lock:
+        Label: Bogen (ent)sperren
+        Hint: Gesperrt können keine Akteure hinzugefügt oder entfernt werden
+  GroupSheet: Savage Worlds Gruppenbogen
+  Advance: Aufstieg
+  BenniesMaxNum: Maximale Bennys
+  EdF: '{item} bearbeiten'
+  EdRightClick: '[Rechtsklick] zum Bearbeiten'
+  Value: Wert
+  SpeedUnit: Einheit
+  Stats: Werte
+  ID: ID
+  SortNum: Sortier-Nr.
+  IgnFatigueWounds: Wunden/Erschöpfung ignorieren
+  FatigueWounds: Wunden/Erschöpfung
+  ShotsCurrent: Aktuelle Schüsse
+  ActionsOverride: Überschreiben
+  DeleteFromParentWarningPermanent: '{name} wird permanent aus {parent} gelöscht und
+    kann nicht wiederhergestellt werden.'
+  DeleteFromParentWarning: '{name} wird permanent aus {parent} gelöscht.'
+  ActionDeckPresetPEG: Aktionskartendeck (PEG)
+  disabledAE: Inaktiv durch Aktiven Effekt
+  RunningHint:
+    Header: <strong>Gesamt-Sprintdistanz.</strong>
+    Reminder: <p>Durchs Sprinten erleiden alle Aktionen im Zug einen Abzug von -2.</p>
+  BenniesAdjustGM: SL-Bennys anpassen
+  BenniesAdjustGMText: Anzahl Bennys, welche die SL gerade haben sollte.
+  HindMajor: Schwer
+  HindMinor: Leicht
+  MaxLabel: Maximum
+  BuildCost: Wert
+  ChargesMax: Max. Ladungen
+  NoCCMInstall: Das 'Complete Card Management'-Modul ist nicht installiert.
+  NoCCMActive: Das 'Complete Card Management'-Modul ist nicht aktiv.
+  ChaseDiscard: Ablagestapel
+  CouldNotFindTarget: Dieses Makro erfordert ein ausgewähltes Ziel!
+  Movement:
+    Base: Grundbewegung
+    Pace:
+      Base:
+        Label: Grundbewegung
+        Hint: Default-Bewegung für diesen Akteur
+      Ground:
+        Label: Boden
+      Fly:
+        Label: Fliegen
+      Burrow:
+        Label: Graben
+      Swim:
+        Label: Schwimmen
+    Other: Andere Bewegung
+    Running:
+      OutOfCombat: Kann außerhalb vom Kampf mit {pace} Bewegung für {minutes} Minuten
+        rennen
+      Dialog:
+        Title: Rennen
+        Content: Wählen, wie gerannt werden soll
+  ApplicableEffects: Anwendbare Effekte
 TYPES:
   Actor:
     Character: Charakter
@@ -1118,6 +1220,7 @@ TYPES:
     npc: NSC
     vehicle: Fahrzeug
     character: Charakter
+    group: Gruppe
   Item:
     Weapon: Waffe
     Armor: Rüstung
@@ -1141,6 +1244,7 @@ TYPES:
     gear: Ausrüstung
     weapon: Waffe
     skill: Fertigkeit
+    ancestry: Volk
   Card:
     Adventure: Abenteuerkarte
     Poker: Pokerkarte
