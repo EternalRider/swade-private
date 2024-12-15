@@ -1,4 +1,5 @@
 import { constants } from '../constants';
+import type { NpcData } from '../data/actor';
 import { getDieSidesRange } from '../util';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
 
@@ -152,7 +153,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
-          content: this.actor.system.getPaceTooltip(),
+          content: (this.actor.system as NpcData).getPaceTooltip(),
         });
       });
   }
@@ -164,7 +165,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
 
     data.enrichedBiography = await TextEditor.enrichHTML(
-      this.actor.system.details.biography.value,
+      (this.actor.system as NpcData).details.biography.value,
       {
         relativeTo: this.actor,
         rollData: this.actor.getRollData(),
