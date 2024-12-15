@@ -1,12 +1,12 @@
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { GroupData, VehicleData } from '../../data/actor';
+import { BaseEffectData } from '../../data/effect/base';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
-import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
+import type { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -15,21 +15,18 @@ declare global {
   interface FlagConfig {
     ActiveEffect: {
       swade: {
-        removeEffect?: boolean;
-        expiration?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>;
-        loseTurnOnHold?: boolean;
-        favorite?: boolean;
         related?: Record<
           string,
           foundry.documents.BaseActiveEffect.ConstructorData
         >;
-        conditionalEffect?: boolean;
       };
     };
   }
 }
 
 export default class SwadeActiveEffect extends ActiveEffect {
+  declare system: BaseEffectData;
+
   static override defaultName(): string {
     return game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
@@ -62,8 +59,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expiresAtStartOfTurn(): boolean {
-    const expiration =
-      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
+    const expiration = this.system.expiration ?? -1;
     return [
       constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
       constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
@@ -71,8 +67,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expiresAtEndOfTurn(): boolean {
-    const expiration =
-      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
+    const expiration = this.system.expiration ?? -1;
     return [
       constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
       constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
@@ -80,8 +75,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   get expirationText(): string {
-    const expiration =
-      (this as SwadeActiveEffect).getFlag('swade', 'expiration') ?? -1;
+    const expiration = this.system.expiration ?? -1;
     switch (expiration) {
       case constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto:
         return game.i18n.localize('SWADE.Expiration.BeginAuto');
@@ -144,6 +138,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
           'system.pace.running.mod',
         );
       }
+    }
+    if (data?.flags?.swade) {
+      const flags = data.flags.swade;
+      data.system = flags;
     }
     return data;
   }
@@ -235,9 +233,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       label: this.name ?? game.i18n.localize('SWADE.Addi'),
       value: Number.isNumeric(value) ? Number(value) : value,
       effectID: this.id,
-      ignore:
-        (this as SwadeActiveEffect).getFlag('swade', 'conditionalEffect') ??
-        ignore,
+      ignore: this.system.conditionalEffect || ignore,
     };
     // Technically doesn't handle an effect that adds to the same item multiple times,
     // but necessary to avoid duplication on refresh
@@ -387,10 +383,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       return callbackFn(this);
     }
 
-    const expiration = (this as SwadeActiveEffect).getFlag(
-      'swade',
-      'expiration',
-    );
+    const expiration = this.system.expiration;
     const startOfTurnAuto =
       expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto;
     const startOfTurnPrompt =
@@ -459,14 +452,15 @@ export default class SwadeActiveEffect extends ActiveEffect {
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);
-    if ((this as SwadeActiveEffect).getFlag('swade', 'loseTurnOnHold')) {
+    if (this.system.loseTurnOnHold) {
       const activeCombat = game.combats?.active;
-      // Get the AE's Actor.
-      const actor = this.actor as SwadeActor;
+      if (!this.actor || !activeCombat) return;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
-      const combatant = actor?.isToken
-        ? activeCombat?.getCombatantsByToken(actor.token?.id as string)?.[0]
-        : activeCombat?.getCombatantsByActor(actor.id as string)?.[0];
+      const combatant = this.actor.isToken
+        ? activeCombat?.getCombatantsByToken(
+            this.actor.token?.id as string,
+          )?.[0]
+        : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
       if (combatant?.getFlag('swade', 'roundHeld')) {
         await combatant?.setFlag('swade', 'turnLost', true);
         await combatant?.toggleHold();
@@ -549,7 +543,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       if (!data.duration?.combat) {
         this.updateSource({ 'duration.combat': combat.id });
       }
-      if ((this as SwadeActiveEffect).getFlag('swade', 'loseTurnOnHold')) {
+      if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
             combatant.setFlag('swade', 'turnLost', true),

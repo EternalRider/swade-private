@@ -141,6 +141,7 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels = data.item.config;
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
   CONFIG.Card.dataModels = data.card.config;
+  CONFIG.ActiveEffect.dataModels = data.effect.config;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
