@@ -558,6 +558,7 @@ SWADE:
     None: None
     LooseTurnOnHold: Lose Turn on Hold
     Remaining: Remaining
+  RemoveEffectLabel: Remove Effect
   RemoveEffectTitle: Remove {label} ?
   RemoveEffectBody: >-
     <p style="text-align: center;">Remove <strong>{label}</strong> from
@@ -610,6 +611,8 @@ SWADE:
     ResetDuration: Reset Duration
     AddGuided: Open Wizard
     AddUnguided: Add Empty Effect
+    Conditional: Conditional Effect
+    ConditionalTooltip: Ignore roll modifiers by default
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand

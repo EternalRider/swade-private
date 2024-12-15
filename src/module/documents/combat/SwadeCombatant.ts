@@ -188,6 +188,7 @@ export default class SwadeCombatant extends Combatant {
   async toggleHold() {
     if (!this.parent) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.roundHeld) {
       const round = Math.max(this.parent.round, 1);
       // Add flag for on hold to show icon on token
@@ -207,6 +208,7 @@ export default class SwadeCombatant extends Combatant {
   async toggleTurnLost() {
     if (!this.parent) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.turnLost) {
       await this.update({
         'flags.swade': {
@@ -229,6 +231,7 @@ export default class SwadeCombatant extends Combatant {
   async actNow() {
     if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     let targetCombatant = this.parent.combatant as SwadeCombatant | undefined;
     if (this.id === targetCombatant?.id) {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
@@ -266,6 +269,7 @@ export default class SwadeCombatant extends Combatant {
   async actAfterCurrentCombatant() {
     if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
       initiative: (currentCombatant?.initiative ?? 0) - 0.0001,
