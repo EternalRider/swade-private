@@ -37,11 +37,11 @@
     <div class='form-group behavior'>
       <label>{{localize 'SWADE.Expiration.Behavior'}}</label>
       <span class='form-fields'>
-        <select name='flags.swade.expiration' data-dtype='Number'>
+        <select name='system.expiration' data-dtype='Number'>
           {{selectOptions
             expirationOptions
             localize=true
-            selected=effect.flags.swade.expiration
+            selected=effect.system.expiration
             blank='SWADE.Expiration.None'
           }}
         </select>
@@ -81,6 +81,19 @@
   </section>
   <section class='presets'>
     <h2>{{localize 'SWADE.EffectWizard.Changes'}}</h2>
+    <div
+      class='form-group conditional'
+      data-tooltip='{{localize "SWADE.ActiveEffects.ConditionalTooltip"}}'
+    >
+      <label>{{localize 'SWADE.ActiveEffects.Conditional'}}</label>
+      <span class='form-fields'>
+        <input
+          type='checkbox'
+          name='system.conditional'
+          {{checked effect.system.conditionalEffect}}
+        />
+      </span>
+    </div>
     <details
       data-category='attribute'
       {{collapsible collapsibleStates 'attribute'}}

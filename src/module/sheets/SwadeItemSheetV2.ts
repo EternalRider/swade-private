@@ -15,7 +15,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
-import { copyToClipboard, getDieSidesRange } from '../util';
+import { getDieSidesRange } from '../util';
 
 export default class SwadeItemSheetV2 extends ItemSheet {
   collapsibleStates: CollapsibleStates = {
@@ -91,6 +91,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     return {
       default: 'SWADE.MacroActor.Default',
       self: 'SWADE.MacroActor.Self',
+      target: 'SWADE.MacroActor.Target',
     };
   }
 
@@ -429,12 +430,6 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     }
 
-    buttons.unshift({
-      label: 'SWADE.DocumentLink',
-      class: 'copy-link',
-      icon: 'fas fa-link',
-      onclick: () => copyToClipboard(this.item.link),
-    });
     return buttons;
   }
 
@@ -764,17 +759,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           name: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
           condition: this.object.isOwner,
-          callback: (_li) => {
-            new ActiveEffectWizard(this.object).render(true);
-          },
+          callback: () => new ActiveEffectWizard(this.object).render(true),
         },
         {
           name: 'SWADE.ActiveEffects.AddUnguided',
           icon: '<i class="fa-solid fa-file-plus"></i>',
           condition: this.object.isOwner,
-          callback: (_li) => {
-            this.#createActiveEffect();
-          },
+          callback: () => this.#createActiveEffect(),
         },
       ],
       { eventName: 'click' },

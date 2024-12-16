@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { Logger } from '../Logger';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeCombatant from '../documents/combat/SwadeCombatant';
@@ -90,7 +89,7 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
         (
           combatant: SwadeCombatant,
           _changed: foundry.documents.BaseCombatant.UpdateData,
-          _options: DocumentModificationOptions,
+          _options: Combatant.DatabaseOperations['update'],
           triggeringUser: string,
         ) => {
           if (triggeringUser !== userId || combatant.id !== combatantId) return;

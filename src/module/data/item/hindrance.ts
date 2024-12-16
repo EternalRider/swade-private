@@ -67,10 +67,16 @@ class HindranceData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/hindrance-embeds.hbs', 'hindrance-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/hindrance-embeds.hbs',
+      ['item-embed', 'hindrance'],
+    );
   }
-
 }
 
 export { HindranceData };

@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
@@ -24,7 +23,7 @@ export default class SwadeCombat extends Combat {
   /** Compares two combatants by name. */
   static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
-    return a.name > b.name ? 1 : -1;
+    return a.name! > b.name! ? 1 : -1;
   }
 
   /** Compares two combatants by ID. */
@@ -44,9 +43,9 @@ export default class SwadeCombat extends Combat {
     return game.settings.get('swade', 'autoInit');
   }
 
-  #debouncedCombatSound: this['_playCombatSound'];
+  #debouncedCombatSound: SwadeCombat['_playCombatSound'];
 
-  #initSoundData: AudioHelper.PlayData = {
+  #initSoundData: foundry.audio.AudioHelper.PlayData = {
     src: SwadeCombat.INITIATIVE_SOUND,
     volume: 0.8,
     autoplay: true,
@@ -91,8 +90,13 @@ export default class SwadeCombat extends Combat {
       if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
 
       // Set up edges
-      const hasHesitant = c.actor?.system.initiative.hasHesitant;
-      const hasQuick = c.actor?.system.initiative.hasQuick;
+      let hasHesitant = false;
+      let hasQuick = false;
+      const actorModel = c.actor?.system;
+      if (actorModel && 'initiative' in actorModel) {
+        hasHesitant = actorModel.initiative.hasHesitant ?? false;
+        hasQuick = actorModel.initiative.hasQuick ?? false;
+      }
       const isIncapacitated = c.isIncapacitated;
 
       // Figure out how many cards to draw
@@ -110,7 +114,7 @@ export default class SwadeCombat extends Combat {
           cardsToPickFrom.push(oldCard);
           const result = await this.pickACard({
             cards: cardsToPickFrom,
-            combatantName: c.name,
+            combatantName: c.name!,
             oldCardId: oldCard?.id!,
           });
           pickedCard = result.picked;
@@ -133,8 +137,8 @@ export default class SwadeCombat extends Combat {
             const cardB = b.value!;
             const card = cardA - cardB;
             if (card !== 0) return card;
-            const suitA = a.system['suit'];
-            const suitB = b.system['suit'];
+            const suitA = a.system['suit'] as number;
+            const suitB = b.system['suit'] as number;
             const suit = suitA - suitB;
             return suit;
           });
@@ -144,7 +148,7 @@ export default class SwadeCombat extends Combat {
         //Level Headed
         const result = await this.pickACard({
           cards: cardsToPickFrom,
-          combatantName: c.name,
+          combatantName: c.name!,
           enableRedraw: hasQuick,
           isQuickDraw: hasQuick,
         });
@@ -157,7 +161,7 @@ export default class SwadeCombat extends Combat {
         if (cardValue <= 5) {
           const result = await this.pickACard({
             cards: [pickedCard],
-            combatantName: c.name,
+            combatantName: c.name!,
             enableRedraw: true,
             isQuickDraw: true,
           });
@@ -266,7 +270,7 @@ export default class SwadeCombat extends Combat {
     if (b.initiative === a.initiative) {
       return SwadeCombat.nameSortCombatants(a, b);
     } else {
-      return b.initiative - a.initiative;
+      return super._sortCombatants(a, b);
     }
   }
 
@@ -379,6 +383,16 @@ export default class SwadeCombat extends Combat {
     return super.previousRound();
   }
 
+  /**
+   * Called by CombatTracker#_onCombatControl
+   */
+  async resetDeck() {
+    await reshuffleActionDeck();
+    ui.notifications.info('SWADE.ActionDeckResetNotification', {
+      localize: true,
+    });
+  }
+
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
   ): Record<string, unknown> | undefined {
@@ -447,7 +461,7 @@ export default class SwadeCombat extends Combat {
 
   protected async _playInitiativeSound() {
     if (!game.settings.get('swade', 'initiativeSound')) return;
-    AudioHelper.play(this.#initSoundData, true);
+    foundry.audio.AudioHelper.play(this.#initSoundData, true);
   }
 
   protected override _playCombatSound(type: string): void {
@@ -522,7 +536,9 @@ export default class SwadeCombat extends Combat {
     user: SwadeUser,
     combatant: SwadeCombatant,
   ): boolean {
-    const initiative = combatant.actor?.system.initiative;
+    if (!combatant.actor || !('initiative' in combatant.actor.system))
+      return false;
+    const initiative = combatant.actor.system.initiative;
     const edges =
       initiative.hasLevelHeaded ||
       initiative.hasImpLevelHeaded ||
@@ -531,7 +547,7 @@ export default class SwadeCombat extends Combat {
   }
 
   override async _preDelete(
-    options: DocumentModificationOptions,
+    options: Combat.DatabaseOperations['delete'],
     user: BaseUser,
   ) {
     await super._preDelete(options, user);
@@ -546,7 +562,7 @@ export default class SwadeCombat extends Combat {
     //remove the holding status from any combatants that have it
     await Promise.allSettled(
       this.combatants
-        .filter((c) => c.actor?.statuses.has('holding'))
+        .filter((c) => c.actor?.statuses.has('holding') ?? false)
         .flatMap((c) =>
           c.actor?.effects.filter((e) => e.statuses.has('holding')),
         )

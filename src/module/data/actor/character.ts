@@ -1,21 +1,17 @@
-import type { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
-import { CommonActorData } from './common';
 import { createEmbedElement } from '../../util';
+import { CreatureData } from './base/creature';
+import { WildCardDataSchema } from './base/creature.schemas';
 
 declare namespace CharacterData {
-  interface Schema
-    extends CommonActorData.Schema,
-      ReturnType<(typeof CharacterData)['wildcardData']> {}
-
-  interface BaseData extends CommonActorData.BaseData {}
-
-  interface DerivedData extends CommonActorData.DerivedData {}
+  interface Schema extends CreatureData.Schema {}
+  interface BaseData extends CreatureData.BaseData {}
+  interface DerivedData extends CreatureData.DerivedData {}
 }
 
-export class CharacterData extends CommonActorData<
-  CharacterData.Schema,
+export class CharacterData extends CreatureData<
+  CharacterData.Schema & WildCardDataSchema,
   CharacterData.BaseData,
   CharacterData.DerivedData
 > {
@@ -95,7 +91,7 @@ export class CharacterData extends CommonActorData<
 
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Actor.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(createData, options, user);
@@ -118,19 +114,43 @@ export class CharacterData extends CommonActorData<
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
-  async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,// eslint-disable-line @typescript-eslint/no-unused-vars
-    options: TextEditor.EnrichmentOptions,// eslint-disable-line @typescript-eslint/no-unused-vars
+
+  declare enrichedBiography?: string;
+
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedBiography = await TextEditor.enrichHTML(this.details.biography.value, options);
 
-    // Combine weapons and armor into a displayable gear array. For now, these are the only items we display under gear.
-    //TODO: Refactor to a handlebar helper
-    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
+    // Enrich biography text
+    this.enrichedBiography = await TextEditor.enrichHTML(
+      this.details.biography.value,
+      { ...options },
+    );
+
+    // Combine weapons and armor into a displayable gear array
+    const displayableGear = this.parent.itemTypes.armor.concat(
+      this.parent.itemTypes.weapon,
+    );
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
 
-    return await createEmbedElement(this,'systems/swade/templates/embeds/actor-embeds.hbs', 'actor-embed');
-  }
+    // Enrich and strip ability descriptions to plain text
+    if (this.parent.itemTypes.ability) {
+      for (const ability of this.parent.itemTypes.ability) {
+        const enrichedHTML = await TextEditor.enrichHTML(
+          ability.system.description,
+          options,
+        );
+        ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
+      }
+    }
 
+    // Create the embed element
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/actor-embeds.hbs',
+      ['actor-embed', 'character'],
+    );
+  }
 }

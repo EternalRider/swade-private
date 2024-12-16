@@ -23,6 +23,20 @@
   data-group='primary'
   data-tab='stash'
 >
+<fieldset>
+  <legend>{{settingrules.currencyName}}</legend>
+  <div class="form-group">
+    <label for="currency">{{settingrules.currencyName}}</label>
+    <input
+      id="currency"
+      type="number"
+      name="system.currency"
+      value="{{system.currency}}"
+      data-dtype="Number"
+      placeholder="{{localize "SWADE.Currency"}}"
+    />
+  </div>
+</fieldset>
   <fieldset>
     <legend>{{localize 'SWADE.Weapons'}}</legend>
     <ol class='fieldset-list'>

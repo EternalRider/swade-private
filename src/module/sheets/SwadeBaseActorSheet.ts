@@ -4,18 +4,19 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
+import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 /** @noInheritDoc */
 export default class SwadeBaseActorSheet extends ActorSheet {
-  override activateListeners(html: JQuery) {
-    super.activateListeners(html);
+  override activateListeners(jquery: JQuery) {
+    super.activateListeners(jquery);
 
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    const inputs = html.find<HTMLInputElement>('input');
+    const inputs = jquery.find<HTMLInputElement>('input');
     inputs.on('focus', (ev) => ev.currentTarget.select());
     inputs
       .addBack()
@@ -23,42 +24,42 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       .on('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
-    html.find('li.active-effect, li.item').each((i, el) => {
+    jquery.find('li.active-effect, li.item').each((i, el) => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     // Update Item
-    html.find('.item-edit').on('click', (ev) => {
+    jquery.find('.item-edit').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
       const item = this.actor.items.get(li.data('itemId'));
       item?.sheet?.render(true);
     });
 
-    html.find('.item-show').on('click', (ev) => {
+    jquery.find('.item-show').on('click', (ev) => {
       const li = $(ev.currentTarget).parents('.item');
       this.actor.items.get(li.data('itemId'))?.show();
     });
 
     // Edit armor modifier
-    html.find('.armor-value').on('click', (ev) => {
+    jquery.find('.armor-value').on('click', (ev) => {
       const target = ev.currentTarget.dataset.target ?? '';
       this._modifyDefense(target);
     });
 
     // Roll attribute
-    html.find('.attribute-value').on('click', (event) => {
+    jquery.find('.attribute-value').on('click', (event) => {
       const attribute = event.currentTarget.dataset.attribute as Attribute;
       this.actor.rollAttribute(attribute);
     });
 
-    html.find('.attribute-manager').on('click', () => {
+    jquery.find('.attribute-manager').on('click', () => {
       new AttributeManager(this.actor).render(true);
     });
 
     // Roll Damage
-    html.find('.damage-roll').on('click', (event) => {
+    jquery.find('.damage-roll').on('click', (event) => {
       const element = event.currentTarget as Element;
       const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
@@ -66,7 +67,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     // Use Consumable
-    html.find('.use-consumable').on('click', async (event) => {
+    jquery.find('.use-consumable').on('click', async (event) => {
       const element = event.currentTarget as Element;
       const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
@@ -74,34 +75,34 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     //Add Benny
-    html.find('.benny-add').on('click', () => {
+    jquery.find('.benny-add').on('click', () => {
       this.actor.getBenny();
     });
 
     //Remove Benny
-    html.find('.benny-subtract').on('click', () => {
+    jquery.find('.benny-subtract').on('click', () => {
       this.actor.spendBenny();
     });
 
     //Toggle Conviction
-    html.find('.conviction-toggle').on('click', async () => {
+    jquery.find('.conviction-toggle').on('click', async () => {
       await this.actor.toggleConviction();
     });
 
     // Filter power list
-    html.find('.arcane-tabs .arcane').on('click', (ev: any) => {
+    jquery.find('.arcane-tabs .arcane').on('click', (ev: any) => {
       const arcane = ev.currentTarget.dataset.arcane;
-      html.find('.arcane-tabs .arcane').removeClass('active');
+      jquery.find('.arcane-tabs .arcane').removeClass('active');
       ev.currentTarget.classList.add('active');
-      this._filterPowers(html, arcane);
+      this._filterPowers(jquery, arcane);
     });
 
     //Running Die
-    html.find('.running-die').on('click', async () => {
+    jquery.find('.running-die').on('click', async () => {
       await this.actor.rollRunningDie();
     });
 
-    html.find('.effect-action').on('click', async (ev) => {
+    jquery.find('.effect-action').on('click', async (ev) => {
       const a = ev.currentTarget;
       const data = a.closest('li')!.dataset;
       const effectUuid = data.effectUuid;
@@ -123,7 +124,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
 
-    html.find('.add-effect').on('click', async (ev) => {
+    jquery.find('.add-effect').on('click', async (ev) => {
       const transfer = $(ev.currentTarget).data('transfer');
       if (ev.shiftKey) {
         await CONFIG.ActiveEffect.documentClass.create(
@@ -141,7 +142,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
 
-    html.find('.additional-stats .roll').on('click', async (ev) => {
+    jquery.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
       const statData = foundry.utils.getProperty(
@@ -164,9 +165,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     //Wealth Die Roll
-    html.find('.currency .roll').on('click', () => this.actor.rollWealthDie());
+    jquery
+      .find('.currency .roll')
+      .on('click', () => this.actor.rollWealthDie());
 
-    html.find('.profile-img').on('contextmenu', () => {
+    jquery.find('.profile-img').on('contextmenu', () => {
       if (!this.actor.img) return;
       new ImagePopout(this.actor.img, {
         title: this.actor.name!,
@@ -181,6 +184,11 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     data.config = SWADE;
 
     data.allApplicableEffects = Array.from(this.actor.allApplicableEffects());
+
+    const hiddenActionOverride = this.actor.getFlag(
+      'swade',
+      'hiddenActionOverride',
+    );
 
     const itemsByType: Record<string, SwadeItem[]> = {};
     for (const item of this.actor.items) {
@@ -201,6 +209,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       );
 
       itemsByType[type] ??= [];
+      if (
+        item.system instanceof ActionData &&
+        item.system.hidden &&
+        !hiddenActionOverride
+      ) {
+        continue; //do not display hidden actions
+      }
       itemsByType[type].push(item);
     }
 

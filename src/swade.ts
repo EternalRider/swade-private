@@ -141,6 +141,7 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels = data.item.config;
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
   CONFIG.Card.dataModels = data.card.config;
+  CONFIG.ActiveEffect.dataModels = data.effect.config;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -370,6 +371,11 @@ Hooks.on(
 Hooks.on('userConnected', SwadeCoreHooks.onUserConnected);
 Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
+
+/* ------------------------------------ */
+/* Canvas Interactions  			          */
+/* ------------------------------------ */
+Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
 
 /* ------------------------------------ */
 /* System Hooks              	          */

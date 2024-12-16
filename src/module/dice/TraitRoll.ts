@@ -1,11 +1,11 @@
-import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
+import RollTerm from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/dice/terms/term.mjs';
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import {
   ActorRollData,
   RollPart,
   SwadeRollOptions,
 } from '../../interfaces/roll.interface';
 import { constants } from '../constants';
-import { CharacterData, NpcData } from '../data/actor';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 import { chunkArray, count } from '../util';
 import { SwadeRoll } from './SwadeRoll';
@@ -18,11 +18,11 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     const roll = await new SwadeRoll(`1d6[${label}]`, {}, options).evaluate();
     await game.dice3d?.showForRoll(
       roll,
-      game.user,
+      game.user!,
       true,
       msg['whisper'] || null,
       msg['blind'],
-      null,
+      undefined,
       msg['speaker'],
     );
     await msg.update({ rolls: [roll, ...msg['rolls']] });
@@ -115,9 +115,9 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
   }
 
   override async toMessage<
-    T extends DeepPartial<ChatMessageDataConstructorData> = {},
+    T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
   >(
-    messageData: T,
+    messageData: T = {} as T,
     {
       rollMode = 'publicroll',
       create = true,
@@ -137,16 +137,16 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return super.toMessage(messageData, { rollMode, create });
   }
 
-  override applyReroll(actor: Actor | null): boolean {
-    if (!actor || !actor.system.stats.globalMods.hasOwnProperty('bennyTrait'))
-      return false;
+  override applyReroll(actor: Actor.ConfiguredInstance | null): boolean {
     if (
-      (actor.system as CharacterData | NpcData).stats.globalMods.bennyTrait
-        ?.length > 0
-    ) {
+      !actor ||
+      !('stats' in actor.system) ||
+      !('bennyTrait' in actor.system.stats.globalMods)
+    )
+      return false;
+    if (actor.system.stats.globalMods.bennyTrait?.length > 0) {
       let adjustRoll = false;
-      for (const mod of (actor.system as CharacterData | NpcData).stats
-        .globalMods.bennyTrait) {
+      for (const mod of actor.system.stats.globalMods.bennyTrait) {
         const hasMod = this.modifiers.find((m) => m.label === mod.label);
         if (!hasMod) {
           adjustRoll = true;

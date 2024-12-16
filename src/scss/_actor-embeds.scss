@@ -10,6 +10,7 @@
     word-break: normal;
   }
 }
+
 .actor-embed {
   background: url('assets/paperboard-texture.webp') center top repeat;
   box-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
@@ -17,13 +18,16 @@
   border-style: solid;
   border-color: darkgray;
   padding: 2px;
+  color: var(--color-text-dark-primary);
+
+  &.character,
+  &.npc {
     .header {
       margin-top: 5px;
       display: flex;
       flex-direction: row;
       justify-content: center;
     }
-
     .wildcard-indicator {
       width: 32px;
       height: 32px;
@@ -36,50 +40,126 @@
     }
 
     .profile-img-container {
-        height: 120px;        
+      height: 120px;
     }
     .profile-img {
       height: inherit;
       width: inherit;
       object-fit: contain;
       cursor: pointer;
-      border-style: none; 
+      border-style: none;
     }
     .embed-section {
-        display:block;
-        margin-bottom: 2px;
-        margin-top: 2px;        
+      display: block;
+      margin-bottom: 2px;
+      margin-top: 2px;
     }
-    .attributes, .skills, .edges, .hindrances, .powers, .gear, .derived, .health {
+    .attributes,
+    .skills,
+    .edges,
+    .hindrances,
+    .powers,
+    .gear,
+    .derived,
+    .health {
       padding-left: 1em;
-      text-indent: -1em;  
+      text-indent: -1em;
     }
     .power {
       font-style: italic;
     }
 
     .items-list {
+      display: inline;
+      list-style: none;
+      padding: 0;
+      .item.power {
         display: inline;
-        list-style: none;
-        padding: 0;
-        .item.power {
-          display: inline;          
-          &:last-child:after {
-            content: ';';
-          }
-          &:not(:last-child)::after {
-            content: ', ';
-          }
+        &:last-child:after {
+          content: ';';
         }
+        &:not(:last-child)::after {
+          content: ', ';
+        }
+      }
 
-        .item {
-          display: inline;          
-          li:last-child:after {
-            content: '';
-          }
-          &:not(:last-child)::after {
-            content: ', ';
+      .item {
+        display: inline;
+        li:last-child:after {
+          content: '';
+        }
+        &:not(:last-child)::after {
+          content: ', ';
+        }
+      }
+    }
+  }
+  &.vehicle {
+    .header {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .name {
+      font-family: 'Anton', 'Signika', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+      flex-basis: 75%;
+    }
+    .description {
+      padding: 0;
+    }
+    .notes {
+      padding-left: 1em;
+      text-indent: -1em;
+      div {
+        span {
+          font-weight: bold;
+          font-style: italic;
+        }
+      }
+    }
+    .img-container {
+      display: flex;
+      justify-content: flex-end;
+      height: auto;
+      width: 100%;
+    }
+    .item-img {
+      height: auto;
+      width: 100%;
+      cursor: pointer;
+      border-style: none;
+      margin: 0;
+    }
+    .stats {
+      .data-table {
+        background-color: rgba(0, 0, 0, 0.05);
+
+        margin-left: 0;
+        margin-right: 0;
+        .header-row {
+          background-color: black;
+          color: white;
+          text-transform: uppercase;
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 8px;
+        }
+        .data-row {
+          text-align: center;
+          font-family:
+            Roboto Slab,
+            Signika,
+            sans-serif;
+          font-size: 10px;
+          .damage:first-letter {
+            text-transform: uppercase;
           }
         }
+      }
     }
+  }
 }

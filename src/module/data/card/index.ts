@@ -9,7 +9,7 @@ export const config = {
 declare global {
   interface DataModelConfig {
     Card: {
-      poker: PokerData; 
-    }
+      poker: typeof PokerData;
+    };
   }
 }

@@ -16,3 +16,19 @@ export function splitTopSpeed(source: any) {
     }
   }
 }
+
+export function renamePace(source: any) {
+  const oldSpeed = source.stats?.speed;
+  if (foundry.utils.hasProperty(source, 'pace') || !oldSpeed) return;
+  const oldPace = oldSpeed?.value;
+  const oldRunningDie = oldSpeed?.runningDie;
+  const oldRunningMod = oldSpeed?.runningMod;
+  const runningDie = {
+    die: typeof oldRunningMod === 'number' ? oldRunningDie : 6,
+    mod: typeof oldRunningDie === 'number' ? oldRunningMod : 0,
+  };
+  source.pace = {
+    ground: typeof oldPace === 'number' ? oldPace : 6,
+    running: runningDie,
+  };
+}

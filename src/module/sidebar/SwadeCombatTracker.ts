@@ -1,9 +1,8 @@
-import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document';
+import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.mjs';
 import { Updates } from '../../globals';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
-import { getStatusEffectDataById, reshuffleActionDeck } from '../util';
 
 /** This class defines a a new Combat Tracker specifically designed for SWADE */
 export default class SwadeCombatTracker extends CombatTracker {
@@ -32,12 +31,6 @@ export default class SwadeCombatTracker extends CombatTracker {
         li.addEventListener('dragleave', this._onDragLeave.bind(this));
       }
     });
-
-    html
-      .querySelectorAll<HTMLElement>('.combat-control[data-control=resetDeck]')
-      .forEach((e) =>
-        e.addEventListener('click', this._onReshuffleActionDeck.bind(this)),
-      );
   }
 
   override async getData(options?: Partial<ApplicationOptions>) {
@@ -78,15 +71,6 @@ export default class SwadeCombatTracker extends CombatTracker {
     container.scrollTop =
       combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
     super.scrollToTurn();
-  }
-
-  /** Reset the Action Deck */
-  protected async _onReshuffleActionDeck(event: PointerEvent) {
-    event.stopImmediatePropagation();
-    await reshuffleActionDeck();
-    ui.notifications.info('SWADE.ActionDeckResetNotification', {
-      localize: true,
-    });
   }
 
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
@@ -135,6 +119,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
   /** Toggle Defeated and reallocate followers */
   protected override async _onToggleDefeatedStatus(c: SwadeCombatant) {
+    let fInitiative = c.initiative ?? 0;
     if (c.isGroupLeader && c.followers.some((f) => !f.isDefeated)) {
       const selected = await this.#promptNewLeaderSelection(c);
       if (!selected) return; //abort toggle since no new leader was designated?
@@ -151,12 +136,11 @@ export default class SwadeCombatTracker extends CombatTracker {
       //un-assign the old leader
       updates.push({
         _id: c.id,
-        initiative: c.initiative + 0.001,
+        initiative: fInitiative + 0.001,
         'flags.swade.groupId': selected.id,
         'flags.swade.isGroupLeader': false,
       });
       if (c.groupId) updates['flags.swade.-=groupId'] = null;
-      let fInitiative = c.initiative;
       for (const f of c.followers.filter((f) => f.id !== selected.id)) {
         updates.push({
           _id: f.id,
@@ -171,17 +155,12 @@ export default class SwadeCombatTracker extends CombatTracker {
 
   /** Toggle Incapacitation */
   protected async _onToggleIncapacitated(c: SwadeCombatant) {
-    if (!c.actor.isWildcard) await this._onToggleDefeatedStatus(c);
-    const token = c.token;
-    if (!token) return;
-    const effect = getStatusEffectDataById(
-      CONFIG.specialStatusEffects.INCAPACITATED,
-    );
-    if (token.object) {
-      await token.object.toggleEffect(effect, { overlay: true });
-    } else {
-      await token.toggleActiveEffect(effect, { overlay: true });
+    if (!c.actor) return;
+    if (!c.actor.isWildcard) {
+      await this._onToggleDefeatedStatus(c);
+      // if (!c.actor.statuses.has('incapacitated')) return;
     }
+    await c.actor.toggleStatusEffect('incapacitated', { overlay: true });
   }
 
   /** Toggle Hold */
@@ -518,13 +497,13 @@ export default class SwadeCombatTracker extends CombatTracker {
     if (existingCombatantTokens.length > 0) {
       // Get their combatant objects and push them into the combatants array
       for (const t of existingCombatantTokens) {
-        const c = game?.combat?.getCombatantByToken(t.id);
+        const c = game?.combat?.getCombatantsByToken(t.id)[0];
         if (c) {
           combatants?.push(c);
         }
       }
     }
-    let fInitiative = targetCombatant.initiative;
+    let fInitiative = targetCombatant.initiative ?? 0;
     if (combatants?.length) {
       for (const c of combatants) {
         await c.update({
@@ -554,7 +533,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     if (matchingCombatants && combatant) {
       await combatant.unsetGroupId();
       await combatant.setIsGroupLeader(true);
-      let fInitiative = combatant.initiative;
+      let fInitiative = combatant.initiative ?? 0;
       for (const c of matchingCombatants) {
         await c.update({ initiative: (fInitiative -= 0.001) });
         await c?.setGroupId(combatantId);

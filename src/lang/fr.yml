@@ -13,7 +13,7 @@ SWADE:
   ActionDeckPresetDark: Cartes d'action (sombre)
   Name: Nom
   Tough: Résistance
-  Ancestry: Espèce
+  Ancestry: Ascendance
   Archetype: Archétype
   Pace: Allure
   Running: Course
@@ -127,7 +127,16 @@ SWADE:
   Parry: Parade
   Notes: Notes
   ActionsEffects: Actions et effets
-  Actions: Actions
+  Actions:
+    Name: Actions
+    Hidden:
+      Label: Caché
+      Hint: Les actions cachées ne sont pas affichées sur la fiche d'acteur
+    DisplayHidden:
+      Label: Afficher les actions cachées
+    Activities:
+      Label: Activités
+      Hint: SWID des actions liées à cet élément
   DmgModUni: Modificateur de dégâts (universel)
   SkillModUni: Modificateur de comp. (universel)
   ShotsUsed: Mun. utilisées
@@ -366,6 +375,7 @@ SWADE:
     Value: Valeur
     Ignore: Ignorer ?
     None: Aucun modificateur pour le moment
+    Active: Actif
   Illumination:
     _name: Illumination
     Dim: Pénombre
@@ -386,8 +396,8 @@ SWADE:
   ModOther: Autres modificateurs
   Snapfire: Tir statique
   UnstablePlatform: Plateforme instable
-  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une espèce/un archétype
-    à une espèce/un archétype !
+  CannotAddAncestryToAncestry: Vous ne pouvez pas ajouter une ascendance/un archétype
+    à une ascendance/un archétype !
   LayOutChaseWithDeck: Utiliser les cartes pour gérer la poursuite
   ClearChaseCards: Retirer les cartes de poursuite de la scène
   NoSceneAvailable: Il n'y a pas de scène disponible, ou vous avez désactivé le canevas
@@ -430,13 +440,14 @@ SWADE:
     Heroic: Héroïque
     Legendary: Légendaire
   Advances:
-    EditorTitle: Éditeur avancé
-    Toggle: Activer/Désactiver le plan de progression
-    Delete: Supprimer la progression
+    EditorTitle: Éditeur de Progressions
+    Toggle: Activer/Désactiver le plan de Progression
+    Delete: Supprimer la Progression
     Planned: Planifié
     Modes:
       Legacy: Libre
       Expanded: Étendu
+      Label: Mode
     Types:
       Edge: Nouvel atout
       SingleSkill: Augmentation d'une Compétence
@@ -634,6 +645,20 @@ SWADE:
       Hint: "Largeur des feuilles de personnage à l'ouverture, en pixels. Valeur par
         défaut : 650."
       Name: Largeur par défaut des feuilles de personnages
+    Bumpmaps: Texture
+    StaticGmBennies:
+      Name: Jetons fixes du MJ
+      Hint: Définit une valeur fixe pour le nombre de Jetons que le MJ reçoit lors
+        d'un rafraîchissement au lieu de se baser sur le nombre de joueurs actifs.
+    GmBennies:
+      Name: Jetons du MJ
+      Hint: Définit le nombre de Jetons que le MJ reçoit lors d'un rafraîchissement
+    ArmorStacking:
+      Choices:
+        Core: Règles de base de Savage Worlds Adventure Edition
+        SWPF: Pathfinder®️ pour Savage Worlds
+      Name: Cumul d'armure
+      Hint: Sélectionner les règles à utiliser lors de la gestion du cumul des armures
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
@@ -656,7 +681,6 @@ SWADE:
       IgnoreWounds: Le jet d'hémmoragie ignore les blessures
       BleedOutModifier: Modificateur pour les jets d'hémmoragie
   BenniesSpendGM: Dépenser un jeton du MJ
-  DocumentLink: Lien
   DocumentTweaks: Ajustements
   TargetVulnerable: La cible est Vulnérable
   WildAttack: Attaque totale
@@ -689,6 +713,7 @@ SWADE:
     Use: Utiliser
     Consumables: Consommables
     NotEnoughCharges: Pas assez de charges !
+    ChargesUsed: <p>{charges} charge(s) utilisée(s) avec <em>{name}</em></p>
   EmptyAncestralAbilitiesHint: <strong>Avertissement:</strong> Cette fonctionnalité
     a été abandonnée au profit de l'octroi d'éléments. Si vous créez une nouvelle
     {ancestry} ou {archetype}, glissez-déposez les éléments dans l'onglet Propriétés
@@ -704,6 +729,9 @@ SWADE:
     Max: Valeur Max {stat}
     KeyErr: La clé de statistique supplémentaire {invalid} n'est pas valide et a été
       remplacée par {key}
+    Value: Valeur
+    MaxLabel: Maximum
+    OptionLabel: Option
   Attribute: Attribut
   AttributeManager:
     Open: Gérer les attributs
@@ -741,6 +769,7 @@ SWADE:
     Header: Cet objet fourni
     When: Fournir les objets lorsque
     EmptyHint: Cet objet ne fourni actuellement aucun autre objet
+    Mutation: Mutation
   ItemIsAmmo: Est une munition
   MessageOnUse:
     Label: Messag eà l'utilisation
@@ -821,11 +850,14 @@ SWADE:
   Resistance: Résistance
   Weakness: Faiblesse
   Validation:
-    OnlyOneAncestry: Vous ne pouvez avoir qu'une seule espèce à la fois !
-    OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois !
+    OnlyOneAncestry: Vous ne pouvez avoir qu'une seule ascendance à la fois.
+    OnlyOneArchetype: Vous ne pouvez avoir qu'un seul archétype à la fois.
+    InvalidBasePace: Vous ne pouvez pas définir l'allure de base sur un type d'allure
+      sans valeur.
+    NoGroupCombatants: Les groupes ne peuvent pas être des combattants.
   TOCBlockList: Sommaires des compendiums bloqués
   BaseDamage: Dégâts de base
-  Targets: 'Cibles :'
+  Targets: 'Cibles'
   Rolls:
     SwadeRoll: Jet
     DamageRoll: Jet de dégâts
@@ -924,10 +956,11 @@ SWADE:
   MacroActor:
     Default: Défaut
     Self: Soi-même
+    Target: Cible
   CouldNotFindMacro: "Impossible de trouver la macro avec l'UUID : {uuid}"
   DmgMod: Modificateur de dégâts
   ResourcesUsed:
-    Hint: Quelle quantité de ressource arbitraire est utilisée pour cette action ?
+    Hint: Quelle quantité de ressource arbitraire est utilisée pour cette action
     Label: Utilisation d'une ressource
   Auras:
     WallConstraints:
@@ -1217,7 +1250,7 @@ SWADE:
       SaveChanges:
         Content: Les modifications ne sont PAS sauvegardées automatiquement pour le
           personnage. Vous devez utiliser le bouton d'enregistrement dans l'éditeur
-          ou ce bouton "Enregistrer les modifications".
+          ou ce bouton "Enregistrer les modifications"
         Title: Bouton de sauvegarde des modifications
       Title: Progressions
       Description: Voir comment SWADE suit les Progressions d'un personnage
@@ -1336,7 +1369,7 @@ SWADE:
     ChangeWarning1: Agissez avec prudence !
   HindranceSeverity:
     Major: Majeur seulement
-    Minor: mineur
+    Minor: mineur uniquement
     Either: Au choix
     Label: Sévérité
   RedrawBenny: Repiocher une carte avec un jeton
@@ -1368,6 +1401,8 @@ SWADE:
     RevertRoundContent: Voulez-vous revenir au round précédent ?
     DiscardedCards: Cartes défaussées
     Redraw: Carte re-piochée
+    DealAll: Distribuez pour tous
+    DealNPC: Distribuez pour les PNJs
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
@@ -1432,8 +1467,95 @@ SWADE:
   ChaseReset: Le jeu de cartes "{deck}" a été réinitialisé.
   DialogConfirmPrompt: Êtes-vous sûr ?
   SettingConfigurator:
-    WorldTables: Tables sur l'univers
+    WorldTables: Tables d'univers
     WorldCompendiums: Compendiums de l'univers
+  BenniesAdjustGM: Ajustez les Jetons du MJ
+  Supplies:
+    Level:
+      Out: Epuisé
+      Low: Bas
+      High: Haut
+      VeryHigh: Trés haut
+    Label: Fournitures
+    Ammo:
+      Label: Munitions
+    Fuel:
+      Label: Carburant
+    Food:
+      Label: Nourriture
+    Supply:
+      Label: Approvisionnement
+  GroupSheet: Fiche de groupe pour Savage Worlds
+  ActionDeckPresetPEG: Cartes d'action (PEG)
+  disabledAE: Désactivé en raison de l'effet actif
+  RunningHint:
+    Header: <strong>Distance totale de course.</strong>
+    Reminder: <p>Courir pendant votre tour entraîne une pénalité de -2 à toutes vos
+      actions.</p>
+  Advance: Progression
+  BenniesAdjustGMText: Entrez le nombre de Jetons que le MJ devrait avoir actuellement.
+  BenniesMaxNum: Nombre de Jeton maximum
+  EdF: Editer {item}
+  EdRightClick: '[Right Click] pour éditer'
+  ApOver: Action de PA
+  ShotsCurrent: Balles restantes
+  Value: Valeur
+  MaxLabel: Maximum
+  SpeedUnit: Unité
+  Stats: Stats
+  BuildCost: Coût de création
+  ID: ID
+  SortNum: Numéro de triage
+  Group:
+    Sheet:
+      Members:
+        Header: Membres
+        Hint: Pour ajouter des membres, vous pouvez faire un glisser/déposer sur la
+          feuille ou copier et coller leur UUID. Cela fonctionne également avec les
+          acteurs d'une scène.
+        Empty: Pas encore de membres
+      Stash:
+        Header: Réserve
+        Empty: Aucun élément n'est présent
+      Lock:
+        Label: Changer le verrouillage de la fiche
+        Hint: Lorsqu'il est verrouillé, aucun acteur ne peut être ajouté ou supprimé
+          du groupe
+  DeleteFromParentWarningPermanent: '{name} sera définitivement supprimée de {parent}
+    et ne peut être récupéré.'
+  DeleteFromParentWarning: '{name} sera définitivement supprimé de {parent}.'
+  HindMajor: Majeur
+  HindMinor: mineur
+  ActionsOverride: Surcharge
+  ChargesMax: Poids maximum
+  IgnFatigueWounds: Ignorer les blessures/fatigue
+  FatigueWounds: Blessures/Fatigue
+  Movement:
+    Pace:
+      Base:
+        Label: Allure de base
+        Hint: Quelle est l'allure par défaut de l'acteur ?
+      Fly:
+        Label: Vol
+      Swim:
+        Label: Nage
+      Ground:
+        Label: Sur terre
+      Burrow:
+        Label: Sous terre
+    Running:
+      Dialog:
+        Title: Course
+        Content: Veuillez choisir le mode de course
+      OutOfCombat: Vous pouvez courir à {pace} pendant {minutes} minutes en dehors
+        des combats
+    Base: Mouvement de base
+    Other: Autres vitesses de déplacement
+  NoCCMActive: Le module Complete Card Management n'est pas activé.
+  ChaseDiscard: Défausse pour la poursuite
+  ApplicableEffects: Effets applicables
+  NoCCMInstall: Le module Complete Card Management n'est pas installé.
+  CouldNotFindTarget: Cette macro nécessite la sélection d'une cible !
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1498,6 +1620,7 @@ TYPES:
     npc: PNJ
     character: Personnage joueur
     vehicle: Véhicule
+    group: Groupe
   Item:
     weapon: Arme
     armor: Armure
@@ -1510,6 +1633,7 @@ TYPES:
     consumable: Consommable
     action: Action
     skill: Compétence
+    ancestry: Ascendance
   Card:
     adventure: Cartes d'aventure
     poker: Cartes de poker

@@ -1,7 +1,6 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
-import { TraitDie } from '../../documents/actor/actor-data-source';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
@@ -29,8 +28,13 @@ class SkillData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...makeTraitDiceFields(),
-      attribute: new foundry.data.fields.StringField({ initial: '', label: 'SWADE.Attribute' }),
-      isCoreSkill: new foundry.data.fields.BooleanField({ label: 'SWADE.CoreSkill' }),
+      attribute: new foundry.data.fields.StringField({
+        initial: '',
+        label: 'SWADE.Attribute',
+      }),
+      isCoreSkill: new foundry.data.fields.BooleanField({
+        label: 'SWADE.CoreSkill',
+      }),
     };
   }
 
@@ -62,7 +66,7 @@ class SkillData extends SwadeBaseItemData<
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
@@ -76,10 +80,16 @@ class SkillData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/skill-embeds.hbs', 'skill-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/skill-embeds.hbs',
+      ['item-embed', 'skill'],
+    );
   }
-
 }
 
 export { SkillData };

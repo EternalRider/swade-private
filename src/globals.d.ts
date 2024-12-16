@@ -1,3 +1,4 @@
+import type { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.d.mts';
 import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.d.mts';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
@@ -35,13 +36,10 @@ declare global {
   }
 }
 
-export interface HotReloadData {
-  packageType: string;
-  packageId: string;
-  content: string;
-  path: string;
-  extension: string;
-}
+export interface CanvasDropData
+  extends DropData<foundry.abstract.Document.Any>,
+    DropData.UUID,
+    Canvas.DropPosition {}
 
 export type ActorMetadata = CompendiumCollection.Metadata & { type: 'Actor' };
 export type ItemMetadata = CompendiumCollection.Metadata & { type: 'Item' };
@@ -79,10 +77,13 @@ export interface DieSidesOption {
   label: string;
 }
 
-export interface SwadeApplicationTab extends foundry.applications.api.ApplicationV2.Tab {
+export interface SwadeApplicationTab
+  extends foundry.applications.api.ApplicationV2.Tab {
   tabCssClass: string;
 }
 
-export interface SwadeDocumentSheetConfiguration<Document extends foundry.abstract.Document.Any> extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
+export interface SwadeDocumentSheetConfiguration<
+  Document extends foundry.abstract.Document.Any,
+> extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
   dragDrop: DragDropConfiguration[];
 }

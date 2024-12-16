@@ -1,30 +1,30 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
 import {
   actions,
-  bonusDamage,
+  activities,
   category,
   equippable,
   favorite,
-  grantEmbedded,  
+  grantEmbedded,
 } from './common';
 import {
   Actions,
+  Activities,
   Category,
   ChoicesType,
   Equippable,
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
-import { createEmbedElement } from '../../util';
 
 declare namespace ConsumableData {
   interface Schema
@@ -33,6 +33,7 @@ declare namespace ConsumableData {
       Favorite,
       Category,
       Actions,
+      Activities,
       GrantEmbedded {
     charges: foundry.data.fields.SchemaField<{
       value: foundry.data.fields.NumberField<{ initial: 1 }>;
@@ -64,14 +65,19 @@ class ConsumableData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...actions(),
-      ...bonusDamage(),
+      ...activities(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
         value: new fields.NumberField({ initial: 1, label: 'SWADE.Charges' }),
         max: new fields.NumberField({ initial: 1, label: 'SWADE.ChargesMax' }),
       }),
-      messageOnUse: new fields.BooleanField({ initial: true, label: 'SWADE.MessageOnUse.Label' }),
-      destroyOnEmpty: new fields.BooleanField({ label: 'SWADE.DestroyOnEmpty' }),
+      messageOnUse: new fields.BooleanField({
+        initial: true,
+        label: 'SWADE.MessageOnUse.Label',
+      }),
+      destroyOnEmpty: new fields.BooleanField({
+        label: 'SWADE.DestroyOnEmpty',
+      }),
       subtype: new fields.StringField({
         initial: constants.CONSUMABLE_TYPE.REGULAR,
         choices: Object.values(constants.CONSUMABLE_TYPE),
@@ -146,7 +152,7 @@ class ConsumableData extends SwadePhysicalItemData<
 
   protected override async _preUpdate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['update'],
     user: BaseUser,
   ) {
     await super._preUpdate(data, options, user);
@@ -177,16 +183,22 @@ class ConsumableData extends SwadePhysicalItemData<
       foundry.utils.setProperty(data, 'system.charges.max', 100);
     }
   }
-  
+
   async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/consumable-embeds.hbs', 'consumable-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/consumable-embeds.hbs',
+      ['item-embed', 'consumable'],
+    );
   }
-
 }
 
 export { ConsumableData };

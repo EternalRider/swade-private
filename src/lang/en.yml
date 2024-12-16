@@ -153,12 +153,13 @@ SWADE:
   Protection: Protection
   Dmg: Damage
   DmgOver: Action Damage
-  ApOver: Action Armor Piercing
+  ApOver: Action AP
   Resist: Resist
   ResistRolls: Resistance Rolls
   MacroActor:
     Default: Default
     Self: Self
+    Target: Target
   Ap: AP
   APLong: Armor Piercing
   RoF: RoF
@@ -167,7 +168,16 @@ SWADE:
   ShieldBonus: Shield Bonus
   Notes: Notes
   ActionsEffects: Actions & Effects
-  Actions: Actions
+  Actions:
+    Name: Actions
+    Hidden:
+      Label: Hidden
+      Hint: Hidden actions are not displayed on the actor sheet
+    DisplayHidden:
+      Label: Display hidden Actions
+    Activities:
+      Label: Activities
+      Hint: SWIDs of Actions that are linked to this Item
   DmgModUni: Damage Modifier
   SkillModUni: Trait Modifier
   ShotsUsed: Shots Used
@@ -194,7 +204,7 @@ SWADE:
   Major: (Major)
   Minor: (Minor)
   HindMajor: Major
-  HindMinor: Minor  
+  HindMinor: Minor
   Edges: Edges
   ArcBack: Arcane Background
   Value: Value
@@ -526,12 +536,15 @@ SWADE:
   CannotAddAncestryToAncestry: You cannot add a ancestry/archetype to an ancestry/archetype!
   LayOutChaseWithDeck: Use Deck to lay out Chase
   ClearChaseCards: Clear Chase cards from Scene
+  NoCCMInstall: The Complete Card Management module is not installed.
+  NoCCMActive: The Complete Card Management module is not active.
   NoSceneAvailable: There is no scene available or you've disabled the canvas
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
   ChaseLayout: Layout
   ChaseRows: Rows
   ChaseColumns: Columns
+  ChaseDiscard: Discard Pile
   ChaseNoDeck: Please provide a deck!
   ChaseReset: The deck "{deck}" has been reset.
   Expiration:
@@ -545,6 +558,7 @@ SWADE:
     None: None
     LooseTurnOnHold: Lose Turn on Hold
     Remaining: Remaining
+  RemoveEffectLabel: Remove Effect
   RemoveEffectTitle: Remove {label} ?
   RemoveEffectBody: >-
     <p style="text-align: center;">Remove <strong>{label}</strong> from
@@ -597,6 +611,8 @@ SWADE:
     ResetDuration: Reset Duration
     AddGuided: Open Wizard
     AddUnguided: Add Empty Effect
+    Conditional: Conditional Effect
+    ConditionalTooltip: Ignore roll modifiers by default
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand
@@ -739,8 +755,8 @@ SWADE:
     StaticGmBennies:
       Name: Static Gamemaster Bennies
       Hint: >-
-        Sets a static value for the number of Bennies the GM recieves on a refresh instead of
-        basing it on the number of active players.
+        Sets a static value for the number of Bennies the GM receives on a
+        refresh instead of basing it on the number of active players.
     GmBennies:
       Name: Gamemaster Bennies
       Hint: Sets how many Bennies the GM receives on a refresh
@@ -823,10 +839,10 @@ SWADE:
       BleedOutModifier: Bleeding Out Modifier
       IgnoreWounds: Bleeding Out Ignore Wounds
   Validation:
-    OnlyOneAncestry: You can only have one ancestry at a time!
-    OnlyOneArchetype: You can only have one archetype at a time!
+    OnlyOneAncestry: You can only have one ancestry at a time.
+    OnlyOneArchetype: You can only have one archetype at a time.
+    InvalidBasePace: You cannot set Base Pace to a pace type with no value.
     NoGroupCombatants: Group Actors cannot be combatants.
-  DocumentLink: Link
   DocumentTweaks: Tweaks
   TargetVulnerable: Target is Vulnerable
   WildAttack: Wild Attack
@@ -962,7 +978,7 @@ SWADE:
   FatigueWounds: Wounds/Fatigue
   BaseDamage: Base Damage
   RefreshPP: Refresh Power Points
-  Targets: 'Targets:'
+  Targets: Targets
   Rolls:
     RollResult: Roll Result
     SwadeRoll: Roll
@@ -1049,6 +1065,7 @@ SWADE:
     Label: Resources Used
     Hint: How much of an arbitrary resource is used for this action
   CouldNotFindMacro: Could not find Macro with UUID {uuid}
+  CouldNotFindTarget: This macro requires selecting a target!
   Magazine:
     NoneLoaded: No magazine loaded
     Select: Select a magazine
@@ -1503,7 +1520,9 @@ SWADE:
     Sheet:
       Members:
         Header: Members
-        Hint: To add members either drag & drop them onto the sheet or copy & paste their UUID. This also works with token actors in a scene.
+        Hint: >-
+          To add members either drag & drop them onto the sheet or copy & paste
+          their UUID. This also works with token actors in a scene.
         Empty: No members yet
       Stash:
         Header: Stash
@@ -1526,6 +1545,27 @@ SWADE:
       Label: Food
     Supply:
       Label: Supply
+  Movement:
+    Base: Base Movement
+    Other: Other Movement Speeds
+    Pace:
+      Base:
+        Label: Base Pace
+        Hint: Which Pace is the default for the actor
+      Ground:
+        Label: Ground
+      Fly:
+        Label: Fly
+      Swim:
+        Label: Swim
+      Burrow:
+        Label: Burrow
+    Running:
+      OutOfCombat: You can run at {pace} Pace for {minutes} minutes outside of combat
+      Dialog:
+        Title: Running
+        Content: Please select how you want to run
+  ApplicableEffects: Applicable Effects
 TYPES:
   Actor:
     character: Player Character

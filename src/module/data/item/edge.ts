@@ -167,16 +167,22 @@ class EdgeData extends SwadeBaseItemData<
     }
     return chips;
   }
-  
+
   async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/edge-embeds.hbs', 'edge-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/edge-embeds.hbs',
+      ['item-embed', 'edge'],
+    );
   }
-
 }
 
 export { EdgeData };

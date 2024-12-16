@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
@@ -39,7 +38,7 @@ class AncestryData extends SwadeBaseItemData<
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
@@ -63,7 +62,7 @@ class AncestryData extends SwadeBaseItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/ancestry-embeds.hbs',
-      'ancestry-embed',
+      ['item-embed', 'ancestry'],
     );
   }
 }

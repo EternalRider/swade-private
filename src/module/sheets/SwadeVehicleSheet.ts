@@ -1,5 +1,6 @@
 import IDriverData from '../../interfaces/DriverData.interface';
 import { constants } from '../constants';
+import type { VehicleData } from '../data/actor';
 import type SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import SwadeBaseActorSheet from './SwadeBaseActorSheet';
@@ -159,8 +160,8 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     }
     data.equipStatusEnum = constants.EQUIP_STATE;
     data.enrichedDescription = await TextEditor.enrichHTML(
-      this.actor.system.description,
-      { async: true, secrets: this.options.editable },
+      (this.actor.system as VehicleData).description,
+      { secrets: this.options.editable },
     );
     return data;
   }
@@ -257,7 +258,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
   private async _fetchDriver() {
     if (this.actor.type !== 'vehicle') return null;
 
-    const driverId = this.actor.system.driver.id;
+    const driverId = (this.actor.system as VehicleData).driver.id;
     const driver = await this.actor.getDriver();
     const userCanViewDriver =
       game.user?.isGM ||
@@ -290,7 +291,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
 
   private async _openDriverSheet() {
     if (this.actor.type !== 'vehicle') return;
-    const driverId = this.actor.system.driver.id;
+    const driverId = (this.actor.system as VehicleData).driver.id;
     if (!driverId) return;
     const driver = (await fromUuid(driverId)) as SwadeActor | null;
     driver?.sheet?.render(true);
@@ -335,7 +336,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    */
   private _calcModsPercentage(modsUsed: number): number {
     if (this.actor.type !== 'vehicle') return 0;
-    const maxMods = this.actor.system.maxMods;
+    const maxMods = (this.actor.system as VehicleData).maxMods!;
     const p = (modsUsed / maxMods) * 100;
 
     //cap the percentage at 100

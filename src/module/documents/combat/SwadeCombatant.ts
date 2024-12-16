@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { Logger } from '../../Logger';
@@ -32,7 +31,9 @@ declare global {
 
 export default class SwadeCombatant extends Combatant {
   get isIncapacitated(): boolean {
-    return !!this.actor?.system?.isIncapacitated;
+    return (this.actor &&
+      'isIncapacitated' in this.actor.system &&
+      this.actor.system.isIncapacitated) as boolean;
   }
 
   override get isDefeated(): boolean {
@@ -124,7 +125,7 @@ export default class SwadeCombatant extends Combatant {
     let cardsToDraw = 1;
     if (!!this.initiative && !this.roundHeld) return cardsToDraw;
     const actor = this.actor;
-    if (!actor) return cardsToDraw;
+    if (!actor || !('initiative' in actor.system)) return cardsToDraw;
     const initiative = actor.system.initiative;
     if (initiative?.hasLevelHeaded || initiative?.hasHesitant) cardsToDraw = 2;
     if (initiative?.hasImpLevelHeaded) cardsToDraw = 3;
@@ -187,6 +188,7 @@ export default class SwadeCombatant extends Combatant {
   async toggleHold() {
     if (!this.parent) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.roundHeld) {
       const round = Math.max(this.parent.round, 1);
       // Add flag for on hold to show icon on token
@@ -206,6 +208,7 @@ export default class SwadeCombatant extends Combatant {
   async toggleTurnLost() {
     if (!this.parent) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.turnLost) {
       await this.update({
         'flags.swade': {
@@ -228,7 +231,8 @@ export default class SwadeCombatant extends Combatant {
   async actNow() {
     if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
-    let targetCombatant = this.parent.combatant as SwadeCombatant;
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
+    let targetCombatant = this.parent.combatant as SwadeCombatant | undefined;
     if (this.id === targetCombatant?.id) {
       targetCombatant = this.parent.turns.find((c) => !c.roundHeld)!;
     }
@@ -265,9 +269,10 @@ export default class SwadeCombatant extends Combatant {
   async actAfterCurrentCombatant() {
     if (!this.parent || !game.user?.isGM) return;
     const data = getStatusEffectDataById('holding');
+    if (!data) throw new Error('Could not find an effect with ID of "holding"');
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
-      initiative: currentCombatant?.initiative - 0.0001,
+      initiative: (currentCombatant?.initiative ?? 0) - 0.0001,
       flags: {
         swade: {
           cardValue: currentCombatant?.cardValue,
@@ -285,8 +290,8 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override async _preCreate(
-    data: CombatantDataConstructorData,
-    options: DocumentModificationOptions,
+    data: foundry.documents.BaseCombatant.ConstructorData,
+    options: Combatant.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     if (this.actor?.type === 'group') {
@@ -317,7 +322,7 @@ export default class SwadeCombatant extends Combatant {
 
   override _onUpdate(
     changed: foundry.documents.BaseCombatant.UpdateData,
-    options: DocumentModificationOptions,
+    options: Combatant.DatabaseOperations['update'],
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
@@ -380,14 +385,14 @@ export default class SwadeCombatant extends Combatant {
       else
         game.swade.sockets.giveBenny(
           [firstOwner(c.actor)?.id as string],
-          [c.actor.uuid as string],
+          [c.actor?.uuid ?? ''],
         );
     }
   }
 
   async #createJokersWildMessage() {
     await getDocumentClass('ChatMessage').create({
-      user: game.userId,
+      author: game.userId,
       content: await renderTemplate(SWADE.bennies.templates.joker, {
         speaker: game.user,
       }),

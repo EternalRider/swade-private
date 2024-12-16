@@ -1,5 +1,5 @@
 <section class='flexrow grid-row --grid-row-npc-summary attributes-container'>
-  {{> "systems/swade/templates/actors/partials/attributes.hbs"}}
+  {{> "swade.npc-attributes"}}
   <div class='attributes secondary'>
     <header class='header-field'>
       <span>{{localize 'SWADE.Derived'}}</span>
@@ -17,15 +17,15 @@
           }}: {{actor.system.stats.scale}}'
         />
       </div>
-      <div class='attribute flex2'>
-        <a class='running-die' title='{{localize "SWADE.RollRun"}}'><div
-            class='attribute-label'
-          >{{localize 'SWADE.Pace'}}</div></a>
+      <div class='attribute flex2 pace'>
+        <a class='running-die' data-tooltip="SWADE.RollRun">
+          <div class='attribute-label'>{{localize 'SWADE.Pace'}}</div>
+        </a>
         <input
           type='text'
-          value='{{actor.system.stats.speed.adjusted}}'
+          value='{{lookup actor.system.pace actor.system.pace.base}}'
           data-dtype='Number'
-          disabled
+          readonly
         />
       </div>
       <div class='attribute flex3'>
@@ -109,7 +109,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.edge}}
+        {{#each itemsByType.edge}}
           <li class='edge item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
@@ -130,7 +130,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.hindrance}}
+        {{#each itemsByType.hindrance}}
           <li class='hindrance item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
@@ -168,7 +168,7 @@
             </a>
           </li>
         {{/if}}
-        {{#each actor.itemTypes.ability}}
+        {{#each itemsByType.ability}}
           {{#if (eq system.subtype 'special')}}
             <li class='ability item' data-item-id='{{id}}'>
               <a
@@ -185,7 +185,7 @@
     <section class='gear abilities'>
       <header class='header-field flexrow'>
         <div>
-          <span>{{localize 'SWADE.Actions'}}</span>
+          <span>{{localize 'SWADE.Actions.Name'}}</span>
         </div>
         <div class='header-field-add'>
           <a class='item-create' data-type='action'>
@@ -194,7 +194,7 @@
         </div>
       </header>
       <ul class='items-list'>
-        {{#each actor.itemTypes.action}}
+        {{#each itemsByType.action}}
           <li class='action item' data-item-id='{{id}}'>
             <a class='item-show' title='{{localize "SWADE.EdRightClick"}}'>
               {{name}}
@@ -204,7 +204,7 @@
       </ul>
     </section>
     <section class='gear'>
-      {{> "systems/swade/templates/setting-fields.hbs"}}
+      {{> "swade.npc-setting"}}
     </section>
   </div>
   {{! Right panel }}
@@ -218,7 +218,7 @@
           </a>
         </div>
       </header>
-      {{> "systems/swade/templates/effect-list.hbs"}}
+      {{> "swade.effect-list"}}
     </section>
     <section class='gear'>
       <header class='header-field flexrow'>
@@ -272,27 +272,27 @@
       <div class='quickaccess-list'>
         <ol class='gear-list weapon-list'>
           {{#each itemsByType.weapon as |item|}}
-            {{>"systems/swade/templates/actors/partials/weapon-card.hbs" item=item}}
+            {{>"swade.weapon-card" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list armor-list'>
           {{#each itemsByType.armor as |item|}}
-            {{> "systems/swade/templates/actors/partials/armor-card.hbs" item=item}}
+            {{> "swade.armor-card" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list shield-list'>
           {{#each itemsByType.shield as |item|}}
-            {{> "systems/swade/templates/actors/partials/shield-card.hbs" item=item}}
+            {{> "swade.shield-card" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list items-list'>
           {{#each itemsByType.consumable as |item|}}
-            {{> "systems/swade/templates/actors/partials/consumable-card.hbs" item=item}}
+            {{> "swade.consumable-card" item=item}}
           {{/each}}
         </ol>
         <ol class='gear-list items-list'>
           {{#each itemsByType.gear as |item|}}
-            {{> "systems/swade/templates/actors/partials/misc-card.hbs" item=item}}
+            {{> "swade.misc-card" item=item}}
           {{/each}}
         </ol>
       </div>

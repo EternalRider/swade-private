@@ -42,9 +42,9 @@ export const itemDescription = () => ({
 
 export const builder = () => ({
   build: new fields.SchemaField({
-    cost: new fields.NumberField({ integer: true, label: 'SWADE.BuildCost' })
-  })
-})
+    cost: new fields.NumberField({ label: 'SWADE.BuildCost' }),
+  }),
+});
 
 export const physicalItem = () => ({
   quantity: new fields.NumberField({ initial: 1, label: 'SWADE.Quantity' }),
@@ -71,6 +71,14 @@ export const vehicular = () => ({
   mods: new fields.NumberField({ initial: 1, label: 'SWADE.Mods' }),
 });
 
+export const bonusDamage = () => ({
+  bonusDamageDie: makeDiceField(6),
+  bonusDamageDice: new fields.NumberField({
+    initial: 1,
+    label: 'SWADE.NumberOfDice.Label',
+  }),
+});
+
 export const actions = () => ({
   actions: new fields.SchemaField({
     trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
@@ -78,7 +86,11 @@ export const actions = () => ({
     dmgMod: new fields.StringField({ initial: '', label: 'SWADE.DmgMod' }),
     additional: new MappingField(
       new fields.SchemaField({
-        name: new fields.StringField({ blank: false, nullable: false, label: 'SWADE.Name' }),
+        name: new fields.StringField({
+          blank: false,
+          nullable: false,
+          label: 'SWADE.Name',
+        }),
         type: new fields.StringField({
           initial: constants.ACTION_TYPE.TRAIT,
           choices: Object.values(constants.ACTION_TYPE),
@@ -129,11 +141,17 @@ export const actions = () => ({
       { initial: {} },
     ),
   }),
+  ...bonusDamage(),
 });
 
-export const bonusDamage = () => ({
-  bonusDamageDie: makeDiceField(6),
-  bonusDamageDice: new fields.NumberField({ initial: 1, label: 'SWADE.NumberOfDice.Label' }),
+export const activities = () => ({
+  activities: new fields.SetField(
+    new fields.StringField({ blank: false, nullable: false }),
+    {
+      label: 'SWADE.Actions.Activities.Label',
+      hint: 'SWADE.Actions.Activities.Hint',
+    },
+  ),
 });
 
 export const favorite = () => ({
@@ -163,7 +181,10 @@ export const category = () => ({
 
 export const grantEmbedded = () => ({
   ...grants(),
-  grantOn: new fields.NumberField({ initial: constants.GRANT_ON.CARRIED, label: 'SWADE.ItemGrants.When' }),
+  grantOn: new fields.NumberField({
+    initial: constants.GRANT_ON.CARRIED,
+    label: 'SWADE.ItemGrants.When',
+  }),
 });
 
 export const grants = () => ({
@@ -176,9 +197,20 @@ export const grants = () => ({
         required: true,
         label: 'SWADE.Item',
       }),
-      img: new fields.StringField({ initial: null, nullable: true, label: 'Image' }),
-      name: new fields.StringField({ initial: null, nullable: true, label: 'SWADE.Name' }),
-      mutation: new fields.ObjectField({ required: false, label: 'SWADE.ItemGrants.Mutation' }),
+      img: new fields.StringField({
+        initial: null,
+        nullable: true,
+        label: 'Image',
+      }),
+      name: new fields.StringField({
+        initial: null,
+        nullable: true,
+        label: 'SWADE.Name',
+      }),
+      mutation: new fields.ObjectField({
+        required: false,
+        label: 'SWADE.ItemGrants.Mutation',
+      }),
     }),
   ),
 });
@@ -195,7 +227,10 @@ export const choiceSets = () => ({
             initial: true,
             nullable: false,
           }),
-          mutation: new fields.ObjectField({ required: false, label: 'SWADE.ItemGrants.Mutation' }),
+          mutation: new fields.ObjectField({
+            required: false,
+            label: 'SWADE.ItemGrants.Mutation',
+          }),
         }),
       ),
     }),

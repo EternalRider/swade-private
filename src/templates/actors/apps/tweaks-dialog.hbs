@@ -1,4 +1,4 @@
-<form autocomplete='off'>
+<form autocomplete='off' class='tweaks-form'>
   {{#if isActor}}
     <nav class='tabs' data-group='primary'>
       <a class='item' data-group='primary' data-tab='traits'>
@@ -13,538 +13,523 @@
         {{localize 'SWADE.Auras.TabHeader'}}
       </a>
     </nav>
-  {{/if}}
-  <main class='sheet-body'>
-    {{#if isItem}}
-      <fieldset class='swid'>
-        <p class='notification warning'>
-          {{localize 'SWADE.SWID.ChangeWarning1'}}
-        </p>
-        <legend>{{localize 'SWADE.SWID.Long'}}</legend>
-        <div class='form-group flexrow'>
-          {{formInputSimple 'system.swid' document=doc}}
-          <button type='button' class='regenerate-swid'>
-            <i class='fa-solid fa-arrows-rotate'></i>
-          </button>
-        </div>
-      </fieldset>
-      {{#if doc.system.build}}
-        {{formGroupSimple
-          'system.build.cost'
-          document=doc
-          rootId=doc.uuid
-          localize=true
-        }}
-      {{/if}}
-    {{/if}}
-    <section class='tab' data-group='primary' data-tab='traits'>
-      {{#if isActor}}
+    <main class='sheet-body'>
+      <section class='tab' data-group='primary' data-tab='traits'>
         <!--Max Values-->
+        <div class='form-group slim'>
+          <label for='{{doc.uuid}}-flags.swade.hiddenActionOverride'>
+            {{localize 'SWADE.Actions.DisplayHidden.Label'}}
+          </label>
+          <div class='form-fields'>
+            <input
+              type='checkbox'
+              name='flags.swade.hiddenActionOverride'
+              id='{{doc.uuid}}-flags.swade.hiddenActionOverride'
+              {{checked doc.flags.swade.hiddenActionOverride}}
+            />
+          </div>
+        </div>
         <section>
           {{#if isNPC}}
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-wildcard'>
-                {{localize 'SWADE.WildCard'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  type='checkbox'
-                  name='system.wildcard'
-                  id='{{doc.uuid}}-wildcard'
-                  {{checked doc.isWildcard}}
-                />
-              </span>
-            </div>
+            {{formGroupSimple
+              'system.wildcard'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
           {{/if}}
           {{#unless isVehicle}}
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-animalSmarts'>
-                {{localize 'SWADE.AnimalSmarts'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  type='checkbox'
-                  name='system.attributes.smarts.animal'
-                  id='{{doc.uuid}}-animalSmarts'
-                  {{checked doc.system.attributes.smarts.animal}}
-                />
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-advances'>
-                {{localize 'SWADE.Adv'}}
-              </label>
-              <span class='form-fields'>
-                <select name='system.advances.mode' id='{{doc.uuid}}-advances'>
-                  {{selectOptions
-                    advanceTypes
-                    selected=doc.system.advances.mode
-                    localize=true
-                  }}
-                </select>
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-pace'>
-                {{localize 'SWADE.BasePace'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-pace'
-                  type='number'
-                  name='system.stats.speed.value'
-                  value='{{doc.system.stats.speed.value}}'
-                />
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-running-die'>
-                {{localize 'SWADE.RunningDie'}}
-              </label>
-              <span class='form-fields'>
-                <select
-                  id='{{doc.uuid}}-running-die'
-                  class='running-die'
-                  name='system.stats.speed.runningDie'
-                  data-dtype='Number'
-                >
-                  {{selectOptions
-                    runningDieTypes
-                    selected=doc.system.stats.speed.runningDie
-                    localize=true
-                    valueAttr='key'
-                    labelAttr='label'
-                  }}
-                </select>
-                <input
-                  type='text'
-                  name='system.stats.speed.runningMod'
-                  value='{{signedString doc.system.stats.speed.runningMod}}'
-                  data-dtype='Number'
-                />
-              </span>
-            </div>
+            {{formGroupSimple
+              'system.attributes.smarts.animal'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+            {{formGroupSimple
+              'system.advances.mode'
+              classes='slim'
+              label='SWADE.Adv'
+              blank=false
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
           {{/unless}}
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-wounds-max'>
-              {{localize 'SWADE.WoundsMax'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                id='{{doc.uuid}}-wounds-max'
-                type='number'
-                name='system.wounds.max'
-                value='{{doc.system.wounds.max}}'
-              />
-            </span>
-          </div>
+          {{formGroupSimple
+            'system.wounds.max'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
           {{#unless isVehicle}}
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-fatigue-max'>
-                {{localize 'SWADE.FatigueMax'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-fatigue-max'
-                  type='number'
-                  name='system.fatigue.max'
-                  value='{{doc.system.fatigue.max}}'
-                  data-dtype='number'
-                />
-              </span>
-            </div>
+            {{formGroupSimple
+              'system.fatigue.max'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+            {{formGroupSimple
+              'system.bennies.max'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
           {{/unless}}
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-bennies-max'>
-              {{localize 'SWADE.BenniesMax'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                id='{{doc.uuid}}-bennies-max'
-                class='bennies-max'
-                name='system.bennies.max'
-                type='number'
-                value='{{doc.system.bennies.max}}'
-              />
-            </span>
-          </div>
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-wounds-ignore'>
-              {{localize 'SWADE.IgnWounds'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                id='{{doc.uuid}}-wounds-ignore'
-                name='system.wounds.ignored'
-                type='number'
-                value='{{doc.system.wounds.ignored}}'
-              />
-            </span>
-          </div>
+          {{formGroupSimple
+            'system.wounds.ignored'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
           {{#unless isVehicle}}
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-fatigue-ignore'>
-                {{localize 'SWADE.IgnFatigue'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-fatigue-ignore'
-                  name='system.fatigue.ignored'
-                  type='number'
-                  value='{{doc.system.fatigue.ignored}}'
-                />
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-unshake'>
-                {{localize 'SWADE.EffectCallbacks.Shaken.UnshakeModifier'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-unshake'
-                  name='system.attributes.spirit.unShakeBonus'
-                  type='number'
-                  value='{{doc.system.attributes.spirit.unShakeBonus}}'
-                />
-              </span>
-            </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-soak'>
-                {{localize 'SWADE.DamageApplicator.SoakModifier'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  id='{{doc.uuid}}-soak'
-                  name='system.attributes.vigor.soakBonus'
-                  type='number'
-                  value='{{doc.system.attributes.vigor.soakBonus}}'
-                />
-              </span>
-            </div>
+            {{formGroupSimple
+              'system.fatigue.ignored'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+            {{formGroupSimple
+              'system.attributes.spirit.unShakeBonus'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+            {{formGroupSimple
+              'system.attributes.vigor.soakBonus'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
           {{/unless}}
           {{#if isVehicle}}
-            <div class='form-group'>
-              <label>{{localize 'SWADE.MaxCargo'}}</label>
-              <span class='form-fields'>
-                <input
-                  name='system.maxCargo'
-                  type='number'
-                  value='{{doc.system.maxCargo}}'
-                />
-              </span>
-            </div>
+            {{formGroupSimple
+              'system.maxCargo'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
             {{#if hasModSlots}}
-              <div class='form-group'>
-                <label>{{localize 'SWADE.MaxMods'}}</label>
-                <span class='form-fields'>
-                  <input
-                    name='system.maxMods'
-                    type='number'
-                    value='{{doc.system.maxMods}}'
-                  />
-                </span>
-              </div>
+              {{formGroupSimple
+                'system.maxMods'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
             {{/if}}
           {{/if}}
         </section>
         <!--Initiative-->
-        <section>
-          <h3>{{localize 'SWADE.Init'}}</h3>
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-hasLevelHeaded'>
-              {{localize 'SWADE.LevelHeaded'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                name='system.initiative.hasLevelHeaded'
-                id='{{doc.uuid}}-hasLevelHeaded'
-                {{checked doc.system.initiative.hasLevelHeaded}}
-              />
-            </span>
-          </div>
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-hasImpLevelHeaded'>
-              {{localize 'SWADE.ImprovedLevelHeaded'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                name='system.initiative.hasImpLevelHeaded'
-                id='{{doc.uuid}}-hasImpLevelHeaded'
-                {{checked doc.system.initiative.hasImpLevelHeaded}}
-              />
-            </span>
-          </div>
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-hasQuick'>
-              {{localize 'SWADE.Quick'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                name='system.initiative.hasQuick'
-                id='{{doc.uuid}}-hasQuick'
-                {{checked doc.system.initiative.hasQuick}}
-              />
-            </span>
-          </div>
+        <fieldset>
+          <legend>{{localize 'SWADE.Init'}}</legend>
+          {{formGroupSimple
+            'system.initiative.hasLevelHeaded'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
+          {{formGroupSimple
+            'system.initiative.hasImpLevelHeaded'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
+          {{formGroupSimple
+            'system.initiative.hasQuick'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
           <hr />
-          <div class='form-group'>
-            <label for='{{doc.uuid}}-hasHesitant'>
-              {{localize 'SWADE.Hesitant'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                name='system.initiative.hasHesitant'
-                id='{{doc.uuid}}-hasHesitant'
-                {{checked doc.system.initiative.hasHesitant}}
-              />
-            </span>
-          </div>
-        </section>
+          {{formGroupSimple
+            'system.initiative.hasHesitant'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
+        </fieldset>
         {{#unless isVehicle}}
           <!--Automatic Calculations-->
-          <section>
-            <h3>{{localize 'SWADE.AutoCalc'}}</h3>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-autoCalcToughness'>
-                {{localize 'SWADE.Tough'}}
+          <fieldset>
+            <legend>{{localize 'SWADE.AutoCalc'}}</legend>
+            {{formGroupSimple
+              'system.details.autoCalcToughness'
+              label='SWADE.Tough'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+            {{formGroupSimple
+              'system.details.autoCalcParry'
+              label='SWADE.Parry'
+              classes='slim'
+              document=doc
+              rootId=doc.uuid
+              source=true
+            }}
+          </fieldset>
+          <!--Pace-->
+          <fieldset>
+            <legend>{{localize 'SWADE.Pace'}}</legend>
+            {{formGroupSimple
+              'system.pace.base'
+              classes='slim'
+              document=doc
+              source=true
+              rootId=doc.uuid
+            }}
+            {{formGroupSimple
+              'system.pace.ground'
+              classes='slim'
+              document=doc
+              source=true
+              rootId=doc.uuid
+            }}
+            {{formGroupSimple
+              'system.pace.fly'
+              classes='slim'
+              document=doc
+              source=true
+              rootId=doc.uuid
+            }}
+            {{formGroupSimple
+              'system.pace.swim'
+              classes='slim'
+              document=doc
+              source=true
+              rootId=doc.uuid
+            }}
+            {{formGroupSimple
+              'system.pace.burrow'
+              classes='slim'
+              document=doc
+              source=true
+              rootId=doc.uuid
+            }}
+            <div class='form-group slim'>
+              <label for='{{doc.uuid}}-system.pace.running.die'>
+                {{localize 'SWADE.RunningDie'}}
               </label>
               <span class='form-fields'>
+                <select
+                  name='system.pace.running.die'
+                  id='{{doc.uuid}}-system.pace.running.die'
+                  class='running-die'
+                >
+                  {{selectOptions
+                    runningDieTypes
+                    selected=doc.system._source.pace.running.die
+                    localize=true
+                    labelAttr='label'
+                    valueAttr='key'
+                  }}
+                </select>
                 <input
-                  type='checkbox'
-                  name='system.details.autoCalcToughness'
-                  id='{{doc.uuid}}-autoCalcToughness'
-                  {{checked doc.system.details.autoCalcToughness}}
+                  type='text'
+                  id='{{doc.uuid}}-system.pace.running.mod'
+                  name='system.pace.running.mod'
+                  value='{{signedString doc.system_source.pace.running.mod}}'
+                  data-dtype='Number'
                 />
               </span>
-              <p class='notes'>{{localize 'SWADE.InclArmor'}}</p>
             </div>
-            <div class='form-group'>
-              <label for='{{doc.uuid}}-autoCalcParry'>
-                {{localize 'SWADE.Parry'}}
-              </label>
-              <span class='form-fields'>
-                <input
-                  type='checkbox'
-                  name='system.details.autoCalcParry'
-                  id='{{doc.uuid}}-autoCalcParry'
-                  {{checked doc.system.details.autoCalcParry}}
-                />
-              </span>
-              <p class='notes'>{{localize 'SWADE.AutoCalcParry'}}</p>
-            </div>
-          </section>
+          </fieldset>
         {{/unless}}
-      {{/if}}
-    </section>
-
-    {{#if hasSettingFields}}
-      <section
-        class='tab {{itemTabActive}}'
-        data-group='primary'
-        data-tab='additional-stats'
-      >
-        {{#if isItem}}<h2>{{localize 'SWADE.AddStats'}}</h2>{{/if}}
-        <header class='form-group flexrow additionalStats-header'>
-          <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
-          <div class='centered'>
-            {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
-          </div>
-          <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
-        </header>
-        {{#each settingFields as |attr key|}}
-          <div class='flexrow'>
-            <div style='text-align: left'>
-              <label for='{{doc.uuid}}-{{key}}-useField'>{{attr.label}}</label>
-            </div>
-            <div class='centered'>
-              <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
-            </div>
-            <div class='centered'>
-              <input
-                type='checkbox'
-                name='system.additionalStats.{{key}}.useField'
-                id='{{doc.uuid}}-{{key}}-useField'
-                {{checked attr.useField}}
-              />
-            </div>
-          </div>
-        {{/each}}
       </section>
-    {{/if}}
-    <section class='tab' data-group='primary' data-tab='auras'>
-      <!-- User Defined Aura 1-->
-      <h3>{{localize 'SWADE.Auras.UserAura1'}}</h3>
-      <div class='form-group'>
-        <label for='{{doc.uuid}}-enable-aura1'>
-          {{localize 'SWADE.Auras.Enabled'}}
-        </label>
-        <input
-          id='{{doc.uuid}}-enable-aura1'
-          type='checkbox'
-          name='flags.swade.auras.aura1.enabled'
-          {{checked auras.auras.aura1.enabled}}
-        />
-      </div>
-      <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
-        <label for='{{doc.uuid}}-constrain-aura1'>
-          {{localize 'SWADE.Auras.WallConstraints.Label'}}
-        </label>
-        <input
-          id='{{doc.uuid}}-constrain-aura1'
-          type='checkbox'
-          name='flags.swade.auras.aura1.walls'
-          {{checked auras.auras.aura1.walls}}
-        />
-      </div>
-      <div class='form-group slim'>
-        <label for='{{doc.uuid}}-radius-aura1'>
-          {{localize 'SWADE.Auras.Range'}}
-          <span class='units'>({{auras.units}})</span></label>
-        <span class='form-fields'>
-          <input
-            id='{{doc.uuid}}-radius-aura1'
-            type='number'
-            name='flags.swade.auras.aura1.radius'
-            value='{{auras.auras.aura1.radius}}'
-            min='0'
-            step='1'
-            placeholder='{{auras.units}}'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label>
-          {{localize 'SWADE.Auras.Color'}}
-        </label>
-        <span class='form-fields'>
-          <color-picker
-            name='flags.swade.auras.aura1.color'
-            value={{auras.auras.aura1.color}}
-            default={{defaultColor}}
-          />
-        </span>
-      </div>
-      <div class='form-group slim'>
-        <label>{{localize 'SWADE.Auras.Alpha'}}</label>
-        <span class='form-fields'>
-          {{rangePicker
-            name='flags.swade.auras.aura1.alpha'
-            value=auras.auras.aura1.alpha
-            min=0
-            max=1
-            step=0.05
-          }}
-        </span>
-      </div>
-      <div class='form-group slim' data-tooltip='SWADE.Aura.Visibility.Hint'>
-        <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
-        <span class='form-fields'>
-          <select
-            data-dtype='Number'
-            data-aura-id='aura1'
-            name='flags.swade.auras.aura1.visibleTo'
-            size='3'
-            multiple
+      {{#if hasSettingFields}}
+        <section
+          class='tab {{itemTabActive}}'
+          data-group='primary'
+          data-tab='additional-stats'
+        >
+          {{#if isItem}}<h2>{{localize 'SWADE.AddStats'}}</h2>{{/if}}
+          <header class='form-group flexrow additionalStats-header'>
+            <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
+            <div class='centered'>
+              {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+            </div>
+            <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
+          </header>
+          {{#each settingFields as |attr key|}}
+            <div class='flexrow'>
+              <div style='text-align: left'>
+                <label
+                  for='{{doc.uuid}}-{{key}}-useField'
+                >{{attr.label}}</label>
+              </div>
+              <div class='centered'>
+                <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+              </div>
+              <div class='centered'>
+                <input
+                  type='checkbox'
+                  name='system.additionalStats.{{key}}.useField'
+                  id='{{doc.uuid}}-{{key}}-useField'
+                  {{checked attr.useField}}
+                />
+              </div>
+            </div>
+          {{/each}}
+        </section>
+      {{/if}}
+      <section class='tab' data-group='primary' data-tab='auras'>
+        <!-- User Defined Aura 1-->
+        <fieldset>
+          <legend>{{localize 'SWADE.Auras.UserAura1'}}</legend>
+          <div class='form-group slim'>
+            <label for='{{doc.uuid}}-enable-aura1'>
+              {{localize 'SWADE.Auras.Enabled'}}
+            </label>
+            <input
+              id='{{doc.uuid}}-enable-aura1'
+              type='checkbox'
+              name='flags.swade.auras.aura1.enabled'
+              {{checked auras.auras.aura1.enabled}}
+            />
+          </div>
+          <div
+            class='form-group slim'
+            data-tooltip='SWADE.Auras.WallConstraints.Hint'
           >
-            {{selectOptions
-              auras.visibilityChoices
-              selected=auras.auras.aura1.visibleTo
-              localize=true
-              valueAttr='key'
-              labelAttr='label'
-            }}
-          </select>
-        </span>
-      </div>
-      <!-- User Defined Aura 2-->
-      <h3>{{localize 'SWADE.Auras.UserAura2'}}</h3>
-      <div class='form-group'>
-        <label for='{{doc.uuid}}-enable-aura2'>
-          {{localize 'SWADE.Auras.Enabled'}}
-        </label>
-        <input
-          id='{{doc.uuid}}-enable-aura2'
-          type='checkbox'
-          name='flags.swade.auras.aura2.enabled'
-          {{checked auras.auras.aura2.enabled}}
-        />
-      </div>
-      <div class='form-group' data-tooltip='SWADE.Auras.WallConstraints.Hint'>
-        <label for='{{doc.uuid}}-constrain-aura2'>
-          {{localize 'SWADE.Auras.WallConstraints.Label'}}
-        </label>
-        <input
-          id='{{doc.uuid}}-constrain-aura2'
-          type='checkbox'
-          name='flags.swade.auras.aura2.walls'
-          {{checked auras.auras.aura2.walls}}
-        />
-      </div>
-      <div class='form-group slim'>
-        <label for='{{doc.uuid}}-radius-aura2'>
-          {{localize 'SWADE.Auras.Range'}}
-          <span class='units'>({{auras.units}})</span>
-        </label>
-        <span class='form-fields'>
-          <input
-            id='{{doc.uuid}}-radius-aura2'
-            type='number'
-            name='flags.swade.auras.aura2.radius'
-            value='{{auras.auras.aura2.radius}}'
-            min='0'
-            step='1'
-            placeholder='{{auras.units}}'
-          />
-        </span>
-      </div>
-      <div class='form-group'>
-        <label>{{localize 'SWADE.Auras.Color'}}</label>
-        <span class='form-fields'>
-          <color-picker
-            name='flags.swade.auras.aura2.color'
-            value={{auras.auras.aura2.color}}
-            default={{defaultColor}}
-          />
-        </span>
-      </div>
-      <div class='form-group slim'>
-        <label>{{localize 'SWADE.Auras.Alpha'}}</label>
-        <span class='form-fields'>
-          {{rangePicker
-            name='flags.swade.auras.aura2.alpha'
-            value=auras.auras.aura2.alpha
-            min=0
-            max=1
-            step=0.05
-          }}
-        </span>
-      </div>
-      <div class='form-group slim' data-tooltip='SWADE.Aura.Visibility.Hint'>
-        <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
-        <span class='form-fields'>
-          <select
-            data-dtype='Number'
-            data-aura-id='aura2'
-            name='flags.swade.auras.aura2.visibleTo'
-            size='3'
-            multiple
+            <label for='{{doc.uuid}}-constrain-aura1'>
+              {{localize 'SWADE.Auras.WallConstraints.Label'}}
+            </label>
+            <input
+              id='{{doc.uuid}}-constrain-aura1'
+              type='checkbox'
+              name='flags.swade.auras.aura1.walls'
+              {{checked auras.auras.aura1.walls}}
+            />
+          </div>
+          <div class='form-group slim'>
+            <label for='{{doc.uuid}}-radius-aura1'>
+              {{localize 'SWADE.Auras.Range'}}
+              <span class='units'>({{auras.units}})</span></label>
+            <span class='form-fields'>
+              <input
+                id='{{doc.uuid}}-radius-aura1'
+                type='number'
+                name='flags.swade.auras.aura1.radius'
+                value='{{auras.auras.aura1.radius}}'
+                min='0'
+                step='1'
+                placeholder='{{auras.units}}'
+              />
+            </span>
+          </div>
+          <div class='form-group slim'>
+            <label>
+              {{localize 'SWADE.Auras.Color'}}
+            </label>
+            <span class='form-fields'>
+              <color-picker
+                name='flags.swade.auras.aura1.color'
+                value={{auras.auras.aura1.color}}
+                default={{defaultColor}}
+              />
+            </span>
+          </div>
+          <div class='form-group stacked'>
+            <label>{{localize 'SWADE.Auras.Alpha'}}</label>
+            <span class='form-fields'>
+              {{rangePicker
+                name='flags.swade.auras.aura1.alpha'
+                value=auras.auras.aura1.alpha
+                min=0
+                max=1
+                step=0.05
+              }}
+            </span>
+          </div>
+          <div
+            class='form-group slim'
+            data-tooltip='SWADE.Aura.Visibility.Hint'
           >
-            {{selectOptions
-              auras.visibilityChoices
-              selected=auras.auras.aura2.visibleTo
-              localize=true
-              valueAttr='key'
-              labelAttr='label'
-            }}
-          </select>
-        </span>
+            <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
+            <span class='form-fields'>
+              <select
+                data-dtype='Number'
+                data-aura-id='aura1'
+                name='flags.swade.auras.aura1.visibleTo'
+                size='3'
+                multiple
+              >
+                {{selectOptions
+                  auras.visibilityChoices
+                  selected=auras.auras.aura1.visibleTo
+                  localize=true
+                  valueAttr='key'
+                  labelAttr='label'
+                }}
+              </select>
+            </span>
+          </div>
+        </fieldset>
+        <!-- User Defined Aura 2-->
+        <fieldset>
+          <legend>{{localize 'SWADE.Auras.UserAura2'}}</legend>
+          <div class='form-group slim'>
+            <label for='{{doc.uuid}}-enable-aura2'>
+              {{localize 'SWADE.Auras.Enabled'}}
+            </label>
+            <input
+              id='{{doc.uuid}}-enable-aura2'
+              type='checkbox'
+              name='flags.swade.auras.aura2.enabled'
+              {{checked auras.auras.aura2.enabled}}
+            />
+          </div>
+          <div
+            class='form-group slim'
+            data-tooltip='SWADE.Auras.WallConstraints.Hint'
+          >
+            <label for='{{doc.uuid}}-constrain-aura2'>
+              {{localize 'SWADE.Auras.WallConstraints.Label'}}
+            </label>
+            <input
+              id='{{doc.uuid}}-constrain-aura2'
+              type='checkbox'
+              name='flags.swade.auras.aura2.walls'
+              {{checked auras.auras.aura2.walls}}
+            />
+          </div>
+          <div class='form-group slim'>
+            <label for='{{doc.uuid}}-radius-aura2'>
+              {{localize 'SWADE.Auras.Range'}}
+              <span class='units'>({{auras.units}})</span>
+            </label>
+            <span class='form-fields'>
+              <input
+                id='{{doc.uuid}}-radius-aura2'
+                type='number'
+                name='flags.swade.auras.aura2.radius'
+                value='{{auras.auras.aura2.radius}}'
+                min='0'
+                step='1'
+                placeholder='{{auras.units}}'
+              />
+            </span>
+          </div>
+          <div class='form-group slim'>
+            <label>{{localize 'SWADE.Auras.Color'}}</label>
+            <span class='form-fields'>
+              <color-picker
+                name='flags.swade.auras.aura2.color'
+                value={{auras.auras.aura2.color}}
+                default={{defaultColor}}
+              />
+            </span>
+          </div>
+          <div class='form-group stacked'>
+            <label>{{localize 'SWADE.Auras.Alpha'}}</label>
+            <span class='form-fields'>
+              {{rangePicker
+                name='flags.swade.auras.aura2.alpha'
+                value=auras.auras.aura2.alpha
+                min=0
+                max=1
+                step=0.05
+              }}
+            </span>
+          </div>
+          <div
+            class='form-group slim'
+            data-tooltip='SWADE.Aura.Visibility.Hint'
+          >
+            <label>{{localize 'SWADE.Aura.Visibility.Label'}}</label>
+            <span class='form-fields'>
+              <select
+                data-dtype='Number'
+                data-aura-id='aura2'
+                name='flags.swade.auras.aura2.visibleTo'
+                size='3'
+                multiple
+              >
+                {{selectOptions
+                  auras.visibilityChoices
+                  selected=auras.auras.aura2.visibleTo
+                  localize=true
+                  valueAttr='key'
+                  labelAttr='label'
+                }}
+              </select>
+            </span>
+          </div>
+        </fieldset>
+      </section>
+    </main>
+  {{else}}
+    <span aria-hidden='true'></span>
+    <main class='sheet-body'>
+      <div class='tab active' data-tab=''>
+        <fieldset class='swid'>
+          <p class='notification warning'>
+            {{localize 'SWADE.SWID.ChangeWarning1'}}
+          </p>
+          <legend>{{localize 'SWADE.SWID.Long'}}</legend>
+          <div class='form-group flexrow'>
+            {{formInputSimple 'system.swid' document=doc}}
+            <button type='button' class='regenerate-swid'>
+              <i class='fa-solid fa-arrows-rotate'></i>
+            </button>
+          </div>
+        </fieldset>
+        {{#if doc.system.build}}
+          {{formGroupSimple
+            'system.build.cost'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+          }}
+        {{/if}}
+        {{#if hasSettingFields}}
+          <h2>{{localize 'SWADE.AddStats'}}</h2>
+          <header class='form-group flexrow additionalStats-header'>
+            <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
+            <div class='centered'>
+              {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+            </div>
+            <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
+          </header>
+          {{#each settingFields as |attr key|}}
+            <div class='flexrow'>
+              <div style='text-align: left'>
+                <label
+                  for='{{doc.uuid}}-{{key}}-useField'
+                >{{attr.label}}</label>
+              </div>
+              <div class='centered'>
+                <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+              </div>
+              <div class='centered'>
+                <input
+                  type='checkbox'
+                  name='system.additionalStats.{{key}}.useField'
+                  id='{{doc.uuid}}-{{key}}-useField'
+                  {{checked attr.useField}}
+                />
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
       </div>
-    </section>
-  </main>
+    </main>
+  {{/if}}
   <footer class='sheet-footer'>
     <button type='submit'>
       <i class='fas fa-save'></i>{{localize 'Save Changes'}}

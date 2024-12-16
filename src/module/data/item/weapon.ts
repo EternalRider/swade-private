@@ -1,4 +1,3 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import {
@@ -24,8 +23,8 @@ import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
 import {
   actions,
+  activities,
   arcaneDevice,
-  bonusDamage,
   category,
   equippable,
   favorite,
@@ -37,8 +36,8 @@ import { ConsumableData } from './consumable';
 import { GearData } from './gear';
 import {
   Actions,
+  Activities,
   ArcaneDevice,
-  BonusDamage,
   Category,
   ChoicesType,
   Equippable,
@@ -55,7 +54,7 @@ declare namespace WeaponData {
       ArcaneDevice,
       Vehicular,
       Actions,
-      BonusDamage,
+      Activities,
       Favorite,
       Templates,
       Category,
@@ -105,13 +104,16 @@ class WeaponData extends SwadePhysicalItemData<
       ...arcaneDevice(),
       ...vehicular(),
       ...actions(),
-      ...bonusDamage(),
+      ...activities(),
       ...favorite(),
       ...templates(),
       ...category(),
       ...grantEmbedded(),
       damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
-      range: new fields.StringField({ initial: '', label: 'SWADE.Range._name' }),
+      range: new fields.StringField({
+        initial: '',
+        label: 'SWADE.Range._name',
+      }),
       rangeType: new fields.NumberField({
         integer: true,
         nullable: true,
@@ -120,19 +122,34 @@ class WeaponData extends SwadePhysicalItemData<
         label: 'SWADE.Weapon.RangeType.Label',
       }),
       rof: new fields.NumberField({ initial: 1, label: 'SWADE.RoF' }),
-      ap: new fields.NumberField({ initial: 0, integer: true, label: 'SWADE.AP' }),
+      ap: new fields.NumberField({
+        initial: 0,
+        integer: true,
+        label: 'SWADE.AP',
+      }),
       parry: new fields.NumberField({ initial: 0, label: 'SWADE.Parry' }),
       minStr: new fields.StringField({ initial: '', label: 'SWADE.MinStr' }),
       shots: new fields.NumberField({ initial: 0, label: 'SWADE.Mag' }),
-      currentShots: new fields.NumberField({ initial: 0, label: 'SWADE.ShotsCurrent' }),
+      currentShots: new fields.NumberField({
+        initial: 0,
+        label: 'SWADE.ShotsCurrent',
+      }),
       ammo: new fields.StringField({ initial: '', label: 'SWADE.Ammo' }),
       reloadType: new fields.StringField({
         initial: constants.RELOAD_TYPE.NONE,
         choices: Object.values(constants.RELOAD_TYPE),
         label: 'SWADE.ReloadType.Label',
       }),
-      ppReloadCost: new fields.NumberField({ initial: 2, label: 'SWADE.PPCost' }),
-      trademark: new fields.NumberField({ initial: 0, min: 0, integer: true, label: 'SWADE.TrademarkWeapon.Label' }),
+      ppReloadCost: new fields.NumberField({
+        initial: 2,
+        label: 'SWADE.PPCost',
+      }),
+      trademark: new fields.NumberField({
+        initial: 0,
+        min: 0,
+        integer: true,
+        label: 'SWADE.TrademarkWeapon.Label',
+      }),
       isHeavyWeapon: new fields.BooleanField({ label: 'SWADE.HeavyWeapon' }),
     };
   }
@@ -299,7 +316,7 @@ class WeaponData extends SwadePhysicalItemData<
 
     const noReload = this.reloadType === constants.RELOAD_TYPE.NONE;
     const selfReload = this.reloadType === constants.RELOAD_TYPE.SELF;
-    const ammo = this.parent?.actor.items.getName(this.ammo);
+    const ammo = this.actor?.items.getName(this.ammo as string);
     if (noReload && !ammo) {
       if (!this.shots && !this.currentShots) return true;
       return false;
@@ -387,6 +404,10 @@ class WeaponData extends SwadePhysicalItemData<
     }
 
     return { actorUpdates, itemUpdates, resourceUpdates };
+  }
+
+  override prepareDerivedData(this: WeaponData): void {
+    super.prepareDerivedData();
   }
 
   /**
@@ -707,7 +728,7 @@ class WeaponData extends SwadePhysicalItemData<
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentModificationOptions,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ): Promise<undefined> {
     await super._preCreate(data, options, user);
@@ -721,10 +742,16 @@ class WeaponData extends SwadePhysicalItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, options);
-    return await createEmbedElement(this,'systems/swade/templates/embeds/weapon-embeds.hbs', 'weapon-embed');
+    this.enrichedDescription = await TextEditor.enrichHTML(
+      this.description,
+      options,
+    );
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/weapon-embeds.hbs',
+      ['item-embed', 'weapon'],
+    );
   }
-
 }
 
 export { WeaponData };

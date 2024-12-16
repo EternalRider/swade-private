@@ -45,9 +45,9 @@ export default class ItemChatCardHelper {
       );
       return null;
     }
-    
+
     if (actor.type === 'vehicle') {
-      actor = await actor.getDriver() ?? actor;
+      actor = (await actor.getDriver()) ?? actor;
     }
 
     const actionObj = foundry.utils.getProperty(
@@ -307,11 +307,21 @@ export default class ItemChatCardHelper {
           { toast: true },
         );
       }
-      const targetActor =
-        action.macroActor === constants.MACRO_ACTOR.SELF
-          ? item.actor
-          : undefined;
-      await macro?.execute({ actor: targetActor, item });
+      let targetActor;
+      let targetToken;
+      if (action.macroActor === constants.MACRO_ACTOR.SELF) {
+        targetActor = item.actor;
+      } else if (action.macroActor === constants.MACRO_ACTOR.TARGET) {
+        targetToken = game.user!.targets.first();
+        if (targetToken) targetActor = targetToken.actor;
+        if (!targetActor) {
+          ui.notifications.error('SWADE.CouldNotFindTarget', {
+            localize: true,
+          });
+          return null;
+        }
+      }
+      await macro?.execute({ actor: targetActor, item, token: targetToken });
       return null;
     }
     this.refreshItemCard(actor);

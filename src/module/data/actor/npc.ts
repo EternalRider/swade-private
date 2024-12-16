@@ -1,24 +1,23 @@
-import { DocumentModificationOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { CommonActorData } from './common';
 import { createEmbedElement } from '../../util';
+import { CreatureData } from './base/creature';
+import { WildCardDataSchema } from './base/creature.schemas';
 
 const fields = foundry.data.fields;
 
 declare namespace NpcData {
-  interface Schema
-    extends CommonActorData.Schema,
-      ReturnType<(typeof NpcData)['wildcardData']> {
-    wildcard: foundry.data.fields.BooleanField<{ initial: false }>;
+  interface Schema extends CreatureData.Schema {
+    wildcard: foundry.data.fields.BooleanField<{
+      initial: false;
+      label: string;
+    }>;
   }
-
-  interface BaseData extends CommonActorData.BaseData {}
-
-  interface DerivedData extends CommonActorData.DerivedData {}
+  interface BaseData extends CreatureData.BaseData {}
+  interface DerivedData extends CreatureData.DerivedData {}
 }
 
-export class NpcData extends CommonActorData<
-  NpcData.Schema,
+export class NpcData extends CreatureData<
+  NpcData.Schema & WildCardDataSchema,
   NpcData.BaseData,
   NpcData.DerivedData
 > {
@@ -26,7 +25,10 @@ export class NpcData extends CommonActorData<
     return {
       ...super.defineSchema(),
       ...this.wildcardData(2, 0),
-      wildcard: new fields.BooleanField({ initial: false, label: 'SWADE.WildCard' }),
+      wildcard: new fields.BooleanField({
+        initial: false,
+        label: 'SWADE.WildCard',
+      }),
     };
   }
 
@@ -36,7 +38,7 @@ export class NpcData extends CommonActorData<
 
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
-    _options: DocumentModificationOptions,
+    _options: Actor.DatabaseOperations['create'],
     _user: BaseUser,
   ) {
     const isImported = foundry.utils.hasProperty(
@@ -52,25 +54,48 @@ export class NpcData extends CommonActorData<
 
   protected override _onUpdate(
     _changed: foundry.documents.BaseActor.UpdateData,
-    _options: DocumentModificationOptions,
+    _options: Actor.DatabaseOperations['update'],
     _userId: string,
   ) {
     ui.actors?.render(true);
   }
 
-  async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,// eslint-disable-line @typescript-eslint/no-unused-vars
-    options: TextEditor.EnrichmentOptions,// eslint-disable-line @typescript-eslint/no-unused-vars
+  declare enrichedBiography?: string;
+
+  override async toEmbed(
+    config: TextEditor.DocumentHTMLEmbedConfig,
+    options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedBiography = await TextEditor.enrichHTML(this.details.biography.value, options);
 
-    // Combine weapons and armor into a displayable gear array. For now, these are the only items we display under gear.
-    // TODO: refactor to a handlebar helper
-    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
+    // Enrich biography text
+    this.enrichedBiography = await TextEditor.enrichHTML(
+      this.details.biography.value,
+      { ...options },
+    );
+
+    // Combine weapons and armor into a displayable gear array
+    const displayableGear = this.parent.itemTypes.armor.concat(
+      this.parent.itemTypes.weapon,
+    );
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
 
-    return await createEmbedElement(this,'systems/swade/templates/embeds/actor-embeds.hbs', 'actor-embed');
-  }
+    // Enrich and strip ability descriptions to plain text
+    if (this.parent.itemTypes.ability) {
+      for (const ability of this.parent.itemTypes.ability) {
+        const enrichedHTML = await TextEditor.enrichHTML(
+          ability.system.description,
+          options,
+        );
+        ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
+      }
+    }
 
+    // Create the embed element
+    return await createEmbedElement(
+      this,
+      'systems/swade/templates/embeds/actor-embeds.hbs',
+      ['actor-embed', 'npc'],
+    );
+  }
 }

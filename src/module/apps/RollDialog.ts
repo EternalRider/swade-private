@@ -66,7 +66,7 @@ export class RollDialog extends FormApplication<
     return this.ctx.title ?? 'SWADE Rolldialog';
   }
 
-  override get rollMode(): foundry.CONST.DICE_ROLL_MODES {
+  get rollMode(): foundry.CONST.DICE_ROLL_MODES {
     return this.form!.querySelector<HTMLSelectElement>('#rollMode')!
       .value as foundry.CONST.DICE_ROLL_MODES;
   }
@@ -80,7 +80,7 @@ export class RollDialog extends FormApplication<
   }
 
   get isAttack(): boolean {
-    return (this.ctx?.item?.type === 'weapon' ?? false) && this.isTraitRoll;
+    return this.ctx?.item?.type === 'weapon' && this.isTraitRoll;
   }
 
   get modifiers(): RollModifier[] {
@@ -195,7 +195,7 @@ export class RollDialog extends FormApplication<
     return super.close(options);
   }
 
-  async #evaluateRoll(): Promise<SwadeRoll> {
+  async #evaluateRoll(): Promise<SwadeRoll<any>> {
     this.#checkForAndAddBonusDamage();
 
     const roll = this.#buildRollForEvaluation();
@@ -210,7 +210,6 @@ export class RollDialog extends FormApplication<
       const traitPool = terms[0];
       if (traitPool instanceof foundry.dice.terms.PoolTerm) {
         const wildDie = new WildDie();
-        // @ts-expect-error Roll Class
         const wildRoll = this.rollCls.fromTerms([wildDie]);
         traitPool.rolls.push(wildRoll);
         traitPool.terms.push(wildRoll.formula);
@@ -362,9 +361,9 @@ export class RollDialog extends FormApplication<
 }
 
 export interface RollDialogContext {
-  roll: SwadeRoll;
+  roll: SwadeRoll<any>;
   mods: RollModifier[];
-  speaker: ChatSpeakerData;
+  speaker: foundry.documents.BaseChatMessage.Properties['speaker'];
   flavor: string;
   title: string;
   item?: SwadeItem;

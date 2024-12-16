@@ -1,5 +1,3 @@
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import {
   AdditionalStats,
   Attribute,
@@ -22,6 +20,7 @@ import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { ActionData } from '../data/item';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -341,7 +340,7 @@ export default class CharacterSheet extends ActorSheet {
       }
     });
 
-    jquery[0]
+    html
       .querySelector<HTMLImageElement>('.profile-img')
       ?.addEventListener('contextmenu', () => {
         if (!this.actor.img) return;
@@ -352,13 +351,13 @@ export default class CharacterSheet extends ActorSheet {
         }).render(true);
       });
 
-    jquery[0]
+    html
       .querySelectorAll<HTMLButtonElement>('.adjust-counter')
       .forEach((el) =>
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
 
-    jquery[0]
+    html
       .querySelectorAll<HTMLButtonElement>(
         '.character-detail.ancestry button, .character-detail.archetype button',
       )
@@ -366,6 +365,15 @@ export default class CharacterSheet extends ActorSheet {
         btn.addEventListener('click', (ev) => {
           const id = ev.currentTarget.dataset.itemId as string;
           this.actor.items.get(id)?.sheet?.render(true);
+        });
+      });
+
+    html
+      .querySelector('.pace input')
+      ?.addEventListener('mouseenter', (event) => {
+        game.tooltip.deactivate();
+        game.tooltip.activate(event.target as HTMLElement, {
+          content: this.actor.system.getPaceTooltip(),
         });
       });
   }
@@ -426,7 +434,7 @@ export default class CharacterSheet extends ActorSheet {
       );
 
       const enrichedNotes = await TextEditor.enrichHTML(
-        item.system.notes,
+        item.system.notes as string,
         itemEnrichmentOptions,
       );
 
@@ -447,9 +455,20 @@ export default class CharacterSheet extends ActorSheet {
     }
 
     const itemTypes: Record<string, SwadeItem[]> = {};
+    const hiddenActionOverride = this.actor.getFlag(
+      'swade',
+      'hiddenActionOverride',
+    );
     for (const item of items) {
       const type = item.type;
       itemTypes[type] ??= [];
+      if (
+        item.system instanceof ActionData &&
+        item.system.hidden &&
+        !hiddenActionOverride
+      ) {
+        continue; //do not display hidden actions
+      }
       itemTypes[type].push(item);
     }
 
@@ -543,7 +562,10 @@ export default class CharacterSheet extends ActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
+  protected _handleDropModifierKeys(
+    event: DragEvent,
+    item: Item.ConstructorData,
+  ) {
     const key = 'system.equipStatus';
     if (event.shiftKey) {
       if (item.type === 'weapon') {
@@ -634,7 +656,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _createActiveEffect(
-    data: ActiveEffectDataConstructorData = {
+    data: ActiveEffect.ConstructorData = {
       name: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),
@@ -1357,7 +1379,7 @@ export default class CharacterSheet extends ActorSheet {
       this.actor.items.get(docId) ??
       Array.from(this.actor.allApplicableEffects()).find((e) => e.id === docId);
     const text =
-      doc instanceof SwadeItem ? doc.system.description : doc.description;
+      doc instanceof SwadeItem ? doc?.system?.description : doc?.description;
     if (!text) return;
     element.querySelector<HTMLElement>(
       '.content .description, .content.description',

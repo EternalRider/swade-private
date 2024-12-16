@@ -180,7 +180,7 @@ function combatantColor(id: string): string | undefined {
 
 function groupColor(id: string): string | undefined {
   const fallback = 'transparent';
-  const c = game.combat?.combatants.get(id) as SwadeCombatant;
+  const c = game.combat?.combatants.get(id);
   if (!c) return fallback;
   const groupColor = c.getFlag('swade', 'groupColor');
   if (groupColor) return groupColor || fallback;
@@ -200,38 +200,32 @@ function groupColor(id: string): string | undefined {
 // Right now this just removes the '@' and capitalizes and 'str' values
 // aka @str+1d6 formats to Str+1d6
 function formatDamage(damageStr: string) {
-  return damageStr
-    .replace('@', '')
-    .replace('str','Str');
+  return damageStr.replace('@', '').replace('str', 'Str');
 }
 
-// This helper will take in the locations property found on armor items and will return the list of locations that have armor values in a 
+// This helper will take in the locations property found on armor items and will return the list of locations that have armor values in a
 // localized string formatted list for display
-function formatArmorLocations(locations:any) {
-    // Translate hit locations
-    const armorLocations:string[] = [];
-    const headLocation = game.i18n.localize('SWADE.Head');
-    const torsoLocation = game.i18n.localize('SWADE.Torso');
-    const armsLocation = game.i18n.localize('SWADE.Arms');
-    const legsLocation = game.i18n.localize('SWADE.Legs');
+function formatArmorLocations(locations: any) {
+  // Translate hit locations
+  const armorLocations: string[] = [];
+  const headLocation = game.i18n.localize('SWADE.Head');
+  const torsoLocation = game.i18n.localize('SWADE.Torso');
+  const armsLocation = game.i18n.localize('SWADE.Arms');
+  const legsLocation = game.i18n.localize('SWADE.Legs');
 
-    // Create an array of locations based on whether there are values there
-    if (locations.head) 
-      armorLocations.push(headLocation);
-    if (locations.torso) 
-      armorLocations.push(torsoLocation);
-    if (locations.arms) 
-      armorLocations.push(armsLocation);
-    if (locations.legs) 
-      armorLocations.push(legsLocation);
+  // Create an array of locations based on whether there are values there
+  if (locations.head) armorLocations.push(headLocation);
+  if (locations.torso) armorLocations.push(torsoLocation);
+  if (locations.arms) armorLocations.push(armsLocation);
+  if (locations.legs) armorLocations.push(legsLocation);
 
-    // Use localized list formatting
-    const formatter = game.i18n.getListFormatter({
-      style: 'long',
-      type: 'unit',
-    });
+  // Use localized list formatting
+  const formatter = game.i18n.getListFormatter({
+    style: 'long',
+    type: 'unit',
+  });
 
-    return formatter.format(armorLocations);
+  return formatter.format(armorLocations);
 }
 
 // This helper will take in the hindrance severity value and format it to an appropriate localized display if the value is 'either', otherwise just return
@@ -241,12 +235,13 @@ function formatHindranceSeverity(severity: string) {
   const majorSeverity = game.i18n.localize('SWADE.HindMajor');
 
   // If it's just minor or major, return their respective localizations.
-  if (severity !== 'minor' && severity !== 'major' && severity !== 'either') return '';
+  if (severity !== 'minor' && severity !== 'major' && severity !== 'either')
+    return '';
   if (severity === 'minor') return minorSeverity;
   if (severity === 'major') return majorSeverity;
-  
+
   // If it's 'either' then localize the list of both combined
-  if (this.severity === 'either') {    
+  if (this.severity === 'either') {
     const formatter = game.i18n.getListFormatter({
       style: 'long',
       type: 'disjunction',
@@ -322,6 +317,7 @@ function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
     document,
     ...inputConfig
   } = options.hash;
+  inputConfig.localize ??= true;
   const groupConfig = {
     label,
     hint,
@@ -338,7 +334,7 @@ function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
     options.data.root.actor ??
     options.data.root.document;
   let field: foundry.data.fields.DataField;
-  if (path.startsWith('system')) {
+  if (path.startsWith('system') && 'system' in doc) {
     const splitPath = path.split('.');
     splitPath.shift();
     field = doc.system.schema.getField(splitPath.join('.'));
@@ -399,6 +395,6 @@ export function registerCustomHelpers() {
     formInputSimple,
     formatDamage,
     formatArmorLocations,
-    formatHindranceSeverity
+    formatHindranceSeverity,
   });
 }

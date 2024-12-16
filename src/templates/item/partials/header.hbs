@@ -29,6 +29,19 @@
 {{/if}}
 <span class='item-detail type' title='{{localize "Type"}}'>
   {{localize itemType}}
+  {{#if item.system.severity}}
+    (
+    {{#if (eq item.system.severity "either")}}
+      {{localize "SWADE.HindranceSeverity.Either"}}
+    {{else if (eq item.system.severity "major")}}
+      {{localize "SWADE.HindranceSeverity.Major"}}
+    {{else if (eq item.system.severity "minor")}}
+      {{localize "SWADE.HindranceSeverity.Minor"}}
+    {{else}}
+      {{formatHindranceSeverity item.system.severity}}
+    {{/if}}
+    )
+  {{/if}}
 </span>
 <div class='item-detail source form-group' title='{{localize "SWADE.Source"}}'>
   <span class='form-fields'>

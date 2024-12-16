@@ -1,4 +1,4 @@
-import { TraitDie } from '../../documents/actor/actor-data-source';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 
 export function ensureStrengthDie(source: any) {
   const strength: TraitDie | undefined = source.attributes?.strength?.die;

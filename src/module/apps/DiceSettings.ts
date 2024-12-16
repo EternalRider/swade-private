@@ -68,11 +68,10 @@ export default class DiceSettings extends FormApplication<
         settings[flag].choices = this._prepareSystemList();
       }
       if (flag === 'dsnWildDie') {
-        settings[flag].isSelectOptGroup = true;
-        settings[flag].groups = this._prepareColorsetList();
+        settings[flag].isSelect = true;
+        settings[flag].choices = this._prepareColorsetList();
         settings[flag].disabled =
           game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none';
-        console.log(settings[flag]);
       }
     }
 

@@ -1,5 +1,4 @@
 import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -7,7 +6,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor from './documents/actor/SwadeActor';
-import SwadeItem from './documents/item/SwadeItem';
+import SwadeItem, { SystemItemTypes } from './documents/item/SwadeItem';
 
 /**
  * @internal
@@ -308,13 +307,14 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
  * @param className The class name to attach to the outermost element for purposes of controlled styling
  */
 export async function createEmbedElement(
-  objectToEmbed: AnyObject,
+  objectToEmbed: any,
   template: string,
-  className: string,
+  className: string[],
 ): Promise<HTMLElement | HTMLCollection | null> {
   const content = await renderTemplate(template, objectToEmbed);
-  const elem = document.createElement('div') as HTMLElement;
-  elem.className = className;
+  const elem = document.createElement('div');
+  elem.classList;
+  elem.className = className.join(' ');
   elem.innerHTML = content;
   return elem;
 }
@@ -325,10 +325,10 @@ export async function createEmbedElement(
  * @param type An optional item type for narrowing the possible list of resulting items
  * @returns a list of items that has matched the swid and type
  */
-export async function getItemsBySwid(
+export async function getItemsBySwid<T extends SystemItemTypes>(
   swid: string,
-  type?: string,
-): Promise<SwadeItem[]> {
+  type?: T,
+): Promise<SwadeItem<T>[]> {
   //get world items first
   let items: SwadeItem[] = game.items.filter((i) => i.system.swid === swid);
   //filter by type if necessary

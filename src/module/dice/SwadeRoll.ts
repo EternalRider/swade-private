@@ -1,4 +1,7 @@
-import { ChatMessageDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData';
+import {
+  EmptyObject,
+  InexactPartial,
+} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
@@ -11,8 +14,8 @@ import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { normalizeRollModifiers } from '../util';
 
-export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
-  constructor(formula: string, data?: T, options: SwadeRollOptions = {}) {
+export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
+  constructor(formula: string, data?: D, options: SwadeRollOptions = {}) {
     super(formula, data, options);
   }
 
@@ -34,7 +37,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     const roll = msg['rolls'][0] as SwadeRoll;
 
     roll.rerollMode = 'free';
-    const evaluated = await roll.reroll({ async: true });
+    const evaluated = await roll.reroll();
     await evaluated.toMessage(
       {
         speaker: speaker,
@@ -73,7 +76,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
 
     roll.applyReroll(actor);
 
-    const evaluated = await roll.reroll({ async: true });
+    const evaluated = await roll.reroll();
     await evaluated.toMessage(
       {
         speaker: speaker,
@@ -115,7 +118,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     this.options['messageId'] = messageId;
   }
 
-  get messageId(){
+  get messageId() {
     return this.options['messageId'];
   }
 
@@ -150,18 +153,17 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     return chatData;
   }
 
-  //@ts-expect-error The types for this are a MESS
   override async toMessage<
-    T extends DeepPartial<ChatMessageDataConstructorData> = {},
+    T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
   >(
-    messageData: T,
+    messageData: T = {} as T,
     {
       rollMode = 'publicroll',
       create = true,
-    }: {
-      rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
-      create?: boolean | undefined;
-    } = {},
+    }: InexactPartial<{
+      rollMode: keyof CONFIG.Dice.RollModes | 'roll';
+      create: boolean | undefined;
+    }> = {},
   ) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
@@ -181,14 +183,13 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
     const msg = new cls(messageData);
 
     // Either create or return the data
-    //@ts-expect-error foo bar
     if (create) return cls.create(msg.toObject(), { rollMode });
     if (rollMode) msg.applyRollMode(rollMode);
     return msg.toObject();
   }
 
   protected async _getToMessageContent(
-    messageData: ChatMessageDataConstructorData,
+    messageData: foundry.documents.BaseChatMessage.ConstructorData,
   ): Promise<string> {
     return messageData.content ?? '';
   }
@@ -244,7 +245,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
         }
       } else if (term instanceof foundry.dice.terms.Die) {
         // Grab the right dice
-        const faces = term.faces;
+        const faces = term.faces!;
         let total = 0;
         term.results.forEach((result) => {
           total += result.result;
@@ -271,7 +272,7 @@ export class SwadeRoll<T extends SwadeRollData = {}> extends Roll<T> {
   }
 
   protected _getDieClass(die: foundry.dice.terms.Die) {
-    const faces = die.faces;
+    const faces = die.faces!;
     let total = 0;
     die.results.forEach((result) => {
       total += result.result;

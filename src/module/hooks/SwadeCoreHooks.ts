@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { HotReloadData } from '../../globals';
+import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
 import { damageApplicator } from '../apps/DamageApplicator';
+import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
@@ -27,6 +28,9 @@ import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
 import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
+import type { Plugin } from 'prosemirror-state';
+import { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
+import { BaseEffectData } from '../data/effect/base';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -452,7 +456,7 @@ export default class SwadeCoreHooks {
         e.draggable = true;
         e.addEventListener('dragstart', (ev) => {
           const dragData = game.tables
-            ?.get(msg.getFlag('core', 'RollTable'))
+            ?.get(msg.getFlag('core', 'RollTable') ?? '')
             ?.results.get(e.dataset.resultId as string)
             .toDragData();
           if (!dragData) return;
@@ -702,7 +706,7 @@ export default class SwadeCoreHooks {
                   await gm?.setFlag(
                     'swade',
                     'bennies',
-                    Number(button.form.elements['gm-bennies'].value),
+                    Number(button.form!.elements['gm-bennies'].value),
                   ),
               },
             ],
@@ -720,16 +724,6 @@ export default class SwadeCoreHooks {
       (t) => t.button,
     );
     measure.tools.splice(measure.tools.length - 1, 0, ...newTemplateButtons);
-
-    //get the tile tools
-    const tile = sceneControlButtons.find((a) => a.name === 'tiles')!;
-    //added the button to clear chase cards
-    tile.tools.push({
-      name: 'clear-chase-cards',
-      title: 'SWADE.ClearChaseCards',
-      icon: 'fa-solid fa-shipping-fast',
-      onClick: () => chaseUtils.removeChaseTiles(canvas.scene!),
-    });
   }
 
   static async onDropActorSheetData(
@@ -768,13 +762,13 @@ export default class SwadeCoreHooks {
       },
     );
 
-    const cards = Array.from(deck.cards.values()).sort((a: Card, b: Card) => {
+    const cards = Array.from(deck.cards.values() as Card[]).sort((a, b) => {
       const cardA = a.value!;
       const cardB = b.value!;
       const card = cardA - cardB;
       if (card !== 0) return card;
-      const suitA = a.system['suit'];
-      const suitB = b.system['suit'];
+      const suitA = a.system['suit'] as number;
+      const suitB = b.system['suit'] as number;
       const suit = suitA - suitB;
       return suit;
     });
@@ -827,66 +821,75 @@ export default class SwadeCoreHooks {
 
   static onRenderActiveEffectConfig(
     app: ActiveEffectConfig,
-    html: JQuery<HTMLElement>,
-    _data: ActiveEffectConfig.Data,
+    [html]: JQuery<HTMLElement>,
   ) {
-    const expiration = app.document.getFlag('swade', 'expiration');
-    const loseTurnOnHold = app.document.getFlag('swade', 'loseTurnOnHold');
-    const createOption = (
-      label: string,
-      exp?: ValueOf<typeof constants.STATUS_EFFECT_EXPIRATION>,
-    ) => {
-      return `<option value="${exp}" ${
-        exp === expiration ? 'selected' : ''
-      }>${label}</option>`;
-    };
-    const expirationOpt = [
-      createOption(game.i18n.localize('SWADE.Expiration.None')),
-      createOption(
-        game.i18n.localize('SWADE.Expiration.BeginAuto'),
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
-      ),
-      createOption(
-        game.i18n.localize('SWADE.Expiration.BeginPrompt'),
-        constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
-      ),
-      createOption(
-        game.i18n.localize('SWADE.Expiration.EndAuto'),
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
-      ),
-      createOption(
-        game.i18n.localize('SWADE.Expiration.EndPrompt'),
-        constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
-      ),
+    const effect = app.document as ActiveEffect;
+    if (!(effect.system instanceof BaseEffectData)) return;
+    const systemSchema = effect.system.schema;
+
+    const conditionalGroup = systemSchema.fields.conditionalEffect.toFormGroup(
+      { localize: true },
+      { value: effect.system.conditionalEffect, disabled: !app.isEditable },
+    );
+
+    const expirationOptions: FormSelectOption[] = [
+      {
+        label: 'SWADE.Expiration.BeginAuto',
+        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
+      },
+      {
+        label: 'SWADE.Expiration.BeginPrompt',
+        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
+      },
+      {
+        label: 'SWADE.Expiration.EndAuto',
+        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
+      },
+      {
+        label: 'SWADE.Expiration.EndPrompt',
+        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
+      },
     ];
+    const expirationGroup = systemSchema.fields.expiration.toFormGroup(
+      { localize: true },
+      {
+        options: expirationOptions,
+        localize: true,
+        value: effect.system.expiration,
+        blank: 'SWADE.Expiration.None',
+        disabled: !app.isEditable,
+        dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
+      },
+    );
+    const loseTurnOnHoldGroup = systemSchema.fields.loseTurnOnHold.toFormGroup(
+      { localize: true },
+      { value: effect.system.loseTurnOnHold, disabled: !app.isEditable },
+    );
+
     const tab = `
     <a class="item" data-tab="expiration">
       <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize(
         'SWADE.Expiration.TabLabel',
       )}
     </a>`;
-    const section = `
+    const durationSection = `
     <section class="tab" data-tab="expiration">
     ${game.i18n.localize('SWADE.Expiration.Description')}
-    <div class="form-group">
-      <label>${game.i18n.localize('SWADE.Expiration.Behavior')}</label>
-      <div class="form-fields">
-        <select name="flags.swade.expiration" data-dtype="Number">
-          ${expirationOpt.join('\n')}
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>${game.i18n.localize('SWADE.Expiration.LooseTurnOnHold')}</label>
-      <div class="form-fields">
-        <input type="checkbox" name="flags.swade.loseTurnOnHold"
-        data-dtype="Boolean" ${loseTurnOnHold ? 'checked' : ''}>
-      </div>
-    </div>
-  </section>`;
+    ${expirationGroup.outerHTML}
+    ${loseTurnOnHoldGroup.outerHTML}
+    </section>`;
 
-    html.find('nav.sheet-tabs a[data-tab="duration"]').after(tab);
-    html.find('section[data-tab="duration"]').after(section);
+    html
+      .querySelector('section[data-tab="details"] .form-group.stacked')
+      ?.insertAdjacentElement('afterend', conditionalGroup);
+    html
+      .querySelector('nav.sheet-tabs a[data-tab="duration"]')
+      ?.insertAdjacentHTML('afterend', tab);
+    html
+      .querySelector('section[data-tab="duration"]')
+      ?.insertAdjacentHTML('afterend', durationSection);
+
+    app.setPosition();
   }
 
   static onHotReload({
@@ -905,12 +908,12 @@ export default class SwadeCoreHooks {
 
   static onCreateProseMirrorEditor(
     uuid: string,
-    plugins: Record<string, ProseMirror.Plugin>,
+    plugins: Record<string, Plugin>,
     _options: unknown,
   ) {
     const [prefix] = uuid.split('#');
-    const type = fromUuidSync(prefix)?.type;
-    if (uuid.includes('JournalEntryPage') && type === 'headquarters') {
+    const doc = fromUuidSync(prefix, { strict: false });
+    if (doc instanceof JournalEntryPage && doc.type === 'headquarters') {
       // Delete the default content link plugin.
       delete plugins.contentLinks;
       plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
@@ -918,13 +921,42 @@ export default class SwadeCoreHooks {
       );
     }
   }
+
   static async onTargetToken(user: BaseUser, token: Token, targeted: boolean) {
     if (!targeted) return;
     token.ring?.flashColor(user.color, {
       duration: 1000,
-      easing: (pt) => {
+      easing: (pt: number) => {
         return (Math.sin(2 * Math.PI * pt - Math.PI / 2) + 1) / 2;
       },
     });
+  }
+
+  static async onDropCanvasData(canvas: Canvas, data: CanvasDropData) {
+    const { uuid, x, y, type } = data;
+    if (type !== 'ActiveEffect' || !canvas.tokens?.active) return;
+    //grab the tokens at the drop position
+    const tokensAtDropPosition = [...canvas.tokens.placeables]
+      .sort((a, b) => b.document.sort - a.document.sort)
+      .sort((a, b) => b.document.elevation - a.document.elevation)
+      .filter((t) => t.localShape.contains(x, y));
+    const targets = new Set<SwadeToken>(tokensAtDropPosition);
+    if (!targets?.size) return;
+    const controlled = new Set<SwadeToken>(canvas.tokens?.controlled);
+    if (controlled.size && targets.isSubset(controlled)) {
+      //add the controlled to the target if the set of targeted tokens is a subset of the controlled tokens
+      controlled.forEach((t) => targets.add(t));
+    }
+    const effect = await fromUuid(uuid);
+    if (!effect) return;
+    const effectData = foundry.utils.mergeObject(effect.toObject(), {
+      flags: { swade: { favorite: true } },
+      origin: effect.parent.uuid,
+    });
+    await Promise.allSettled(
+      targets.map((token) =>
+        token.actor.createEmbeddedDocuments('ActiveEffect', [effectData]),
+      ),
+    );
   }
 }
