@@ -44,7 +44,7 @@ declare global {
   }
 }
 
-type SystemItemTypes = Exclude<foundry.documents.BaseItem.TypeNames, 'base'>;
+type SystemItemTypes = Exclude<string & keyof Game.Model['Item'], 'base'>;
 
 interface SwadeItem<ItemType extends SystemItemTypes = SystemItemTypes> {
   type: ItemType;
