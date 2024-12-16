@@ -48,7 +48,7 @@ type SystemItemTypes = Exclude<foundry.documents.BaseItem.TypeNames, 'base'>;
 
 interface SwadeItem<ItemType extends SystemItemTypes = SystemItemTypes> {
   type: ItemType;
-  system: DataModelConfig['Item'][ItemType];
+  system: InstanceType<DataModelConfig['Item'][ItemType]>;
 }
 
 class SwadeItem extends Item {

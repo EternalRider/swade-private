@@ -44,18 +44,18 @@ export const config = {
 declare global {
   interface DataModelConfig {
     Item: {
-      ability: AbilityData;
-      action: ActionData;
-      ancestry: AncestryData;
-      armor: ArmorData;
-      consumable: ConsumableData;
-      edge: EdgeData;
-      gear: GearData;
-      hindrance: HindranceData;
-      power: PowerData;
-      shield: ShieldData;
-      skill: SkillData;
-      weapon: WeaponData;
+      ability: typeof AbilityData;
+      action: typeof ActionData;
+      ancestry: typeof AncestryData;
+      armor: typeof ArmorData;
+      consumable: typeof ConsumableData;
+      edge: typeof EdgeData;
+      gear: typeof GearData;
+      hindrance: typeof HindranceData;
+      power: typeof PowerData;
+      shield: typeof ShieldData;
+      skill: typeof SkillData;
+      weapon: typeof WeaponData;
     };
   }
 }

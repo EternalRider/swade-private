@@ -28,8 +28,8 @@ export class FormulaField extends foundry.data.fields.DataField {
     _options?: AnyObject,
   ): number {
     value = this._cast(value);
-    if (!model.parent.actor) return 0;
-    const rollData = model.parent.actor.getRollData();
+    if (!model.parent?.actor) return 0;
+    const rollData = model.parent?.actor?.getRollData();
     const roll = new Roll(value, rollData);
     roll.terms = roll.terms.map((term) => {
       if (term instanceof foundry.dice.terms.DiceTerm) {

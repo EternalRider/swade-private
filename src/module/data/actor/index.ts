@@ -19,10 +19,10 @@ export const config = {
 declare global {
   interface DataModelConfig {
     Actor: {
-      character: CharacterData;
-      npc: NpcData;
-      vehicle: VehicleData;
-      group: GroupData;
+      character: typeof CharacterData;
+      npc: typeof NpcData;
+      vehicle: typeof VehicleData;
+      group: typeof GroupData;
     };
   }
 }

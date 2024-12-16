@@ -383,6 +383,16 @@ export default class SwadeCombat extends Combat {
     return super.previousRound();
   }
 
+  /**
+   * Called by CombatTracker#_onCombatControl
+   */
+  async resetDeck() {
+    await reshuffleActionDeck();
+    ui.notifications.info('SWADE.ActionDeckResetNotification', {
+      localize: true,
+    });
+  }
+
   protected _getInitResetUpdate(
     combatant: SwadeCombatant,
   ): Record<string, unknown> | undefined {

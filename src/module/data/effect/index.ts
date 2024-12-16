@@ -9,7 +9,7 @@ export const config = {
 declare global {
   interface DataModelConfig {
     ActiveEffect: {
-      base: BaseEffectData;
+      base: typeof BaseEffectData;
     };
   }
 }

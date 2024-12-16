@@ -10,10 +10,10 @@ export type DocumentFn<T extends Document.Any = Document.Any> = () =>
   | string;
 
 export class ForeignDocumentUUIDField extends DocumentUUIDField {
-  declare type: Document.Type;
-  declare idOnly: boolean;
-  /** @inheritdoc */
-  static get _defaults() {
+  // declare type: Document.Type;
+  // declare idOnly: boolean;
+
+  static override get _defaults() {
     return foundry.utils.mergeObject(super._defaults, {
       nullable: true,
       readonly: false,
@@ -21,8 +21,7 @@ export class ForeignDocumentUUIDField extends DocumentUUIDField {
     });
   }
 
-  /** @inheritdoc */
-  initialize(value: string, _model, _options = {}): DocumentFn {
+  override initialize(value: string, _model, _options = {}): DocumentFn {
     if (this.idOnly) return () => value;
     const typeClass = getDocumentClass<Document.Type>(this.type);
     return () => {
@@ -38,7 +37,7 @@ export class ForeignDocumentUUIDField extends DocumentUUIDField {
     };
   }
 
-  toObject(value): string {
+  override toObject(value): string {
     return value.uuid ?? value;
   }
 
