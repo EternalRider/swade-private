@@ -62,7 +62,7 @@ declare global {
   }
 }
 
-type SystemActorTypes = Exclude<Actor.TypeNames, 'base'>;
+type SystemActorTypes = Exclude<string & keyof Game.Model['Actor'], 'base'>;
 
 interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
   type: ActorType;
