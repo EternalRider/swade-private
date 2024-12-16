@@ -66,7 +66,7 @@ type SystemActorTypes = Exclude<Actor.TypeNames, 'base'>;
 
 interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
   type: ActorType;
-  system: DataModelConfig['Actor'][ActorType];
+  system: InstanceType<DataModelConfig['Actor'][ActorType]>;
 }
 
 class SwadeActor extends Actor {

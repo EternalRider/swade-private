@@ -1,3 +1,4 @@
+import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { DerivedModifier } from '../../../interfaces/additional.interface';
 import SwadeActor from '../../documents/actor/SwadeActor';
 import { createEmbedElement } from '../../util';
@@ -206,7 +207,7 @@ class VehicleData<
     };
   }
 
-  static override migrateData(source: object): object {
+  static override migrateData(source: AnyObject): AnyObject {
     migrations.splitTopSpeed(source);
     return super.migrateData(source);
   }

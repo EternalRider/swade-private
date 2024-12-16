@@ -66,6 +66,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed console error with prosemirror editors for compendium items (#1229) **by @jpmeehan5**
 - Fixed wild die dice so nice configuration menu (#1197) **by @jpmeehan5**
 - Fixed lack of html parsing for vehicle mods and arcane device powers (#1232) **by @jpmeehan5**
+- Refactored shuffle action deck button on the Combat Tracker to remove console error (#1227) **by @jpmeehan5**
 
 ## 4.1.1
 

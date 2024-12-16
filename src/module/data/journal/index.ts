@@ -9,7 +9,7 @@ export const config = {
 declare global {
   interface DataModelConfig {
     JournalEntryPage: {
-      headquarters: HeadquartersData;
+      headquarters: typeof HeadquartersData;
     };
   }
 }
