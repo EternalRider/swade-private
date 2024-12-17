@@ -697,7 +697,7 @@ SWADE:
     ApplyEncumbrance:
       Name: Zastosuj kary za Obładowanie
       Hint: Dodaje kary za Obładowanie. Weź pod uwagę, że ta opcja w chwili obecnej
-        NIE JEST UWZGLĘDNIONA podczas testów {vigor} przy rzutach na {fatigue}!
+        NIE JEST UWZGLĘDNIONA podczas testów {vigor}u przy rzutach na {fatigue}!
     VehicleMods:
       Name: Modyfikacje pojazdów
       Hint: Pojazdy używają slotów na modyfikacje
