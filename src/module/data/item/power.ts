@@ -176,7 +176,7 @@ class PowerData extends SwadeBaseItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/power-embeds.hbs',
-      'power-embed',
+      ['item-embed', 'power'],
     );
   }
 }

@@ -1,5 +1,3 @@
-import { ActiveEffectDataConstructorData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/activeEffectData';
-import { ItemDataSource } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData';
 import {
   AdditionalStats,
   Attribute,
@@ -564,7 +562,10 @@ export default class CharacterSheet extends ActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(event: DragEvent, item: ItemDataSource) {
+  protected _handleDropModifierKeys(
+    event: DragEvent,
+    item: Item.ConstructorData,
+  ) {
     const key = 'system.equipStatus';
     if (event.shiftKey) {
       if (item.type === 'weapon') {
@@ -655,7 +656,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _createActiveEffect(
-    data: ActiveEffectDataConstructorData = {
+    data: ActiveEffect.ConstructorData = {
       name: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),

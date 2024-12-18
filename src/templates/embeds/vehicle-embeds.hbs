@@ -1,42 +1,39 @@
-<div class="vehicle flexcol">
-    <div class="flexrow header">
-        <span class="name">{{parent.name}}</span>
-        <div class="img-container">
-            <img
-                class="item-img"
-                src="{{parent.img}}"
-                data-edit="img"
-                alt="{{parent.name}}"
-                title='{{localize 'SWADE.RightClickZoom'}}'
-            />
-        </div>
-    </div>
-    <section class="stats flexcol">
-        <table class="data-table">
-            <tr class="header-row">
-                <td>{{localize 'SWADE.Size'}}</td>
-                <td>{{localize 'SWADE.Handling'}}</td>
-                <td>{{localize 'SWADE.Topspeed'}}</td>
-                <td>{{localize 'SWADE.Tough'}}</td>                
-                <td>{{localize 'SWADE.Crew'}}</td>
-                <td>{{localize 'SWADE.Price'}}</td>
-            </tr>            
-            <tr class="data-row">
-                <td>{{size}}</td>
-                <td class="handling">{{signedString handling}}</td>
-                <td class="topspeed">{{topspeed.value}}</td>
-                <td class="toughness">{{toughness.total}}{{#if toughness.armor}}&nbsp;({{toughness.armor}}){{/if}}</td>                
-                <td class="crew">{{crew.required.max}}</td>
-                <td class="cost">{{cost}}</td>
-            </tr>
+<div>
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="6">
+                        {{parent.name}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{localize 'SWADE.Size'}}</td>
+                    <td>{{localize 'SWADE.Handling'}}</td>
+                    <td>{{localize 'SWADE.Topspeed'}}</td>
+                    <td>{{localize 'SWADE.Tough'}}</td>                
+                    <td>{{localize 'SWADE.Crew'}}</td>
+                    <td>{{localize 'SWADE.Price'}}</td>
+                </tr>            
+                <tr>
+                    <td>{{size}}</td>
+                    <td>{{signedString handling}}</td>
+                    <td>{{topspeed.value}}</td>
+                    <td>{{toughness.total}}{{#if toughness.armor}}&nbsp;({{toughness.armor}}){{/if}}</td>                
+                    <td>{{crew.required.max}}</td>
+                    <td>{{cost}}</td>
+                </tr>
+            </tbody>
         </table>
     </section>
     {{#if notes}}
-    <section class="notes">
+    <section>
         <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
     </section>
     {{/if}}
-    <section class="description">
+    <section>
         {{{enrichedDescription}}}
     </section>
 </div>

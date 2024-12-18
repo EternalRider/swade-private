@@ -1,12 +1,6 @@
 import ApplicationV2 from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/application.mjs';
-import {
-  StatusEffect,
-  ToggleActiveEffectOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import {
-  Context,
-  DocumentOnUpdateOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
+import { ToggleActiveEffectOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
+import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
@@ -49,7 +43,7 @@ import {
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem, { SystemItemTypes } from '../item/SwadeItem';
-import { TraitDie } from './actor-data-source';
+import { TraitDie } from './SwadeActor.interface';
 
 declare global {
   interface DocumentClassConfig {
@@ -68,11 +62,11 @@ declare global {
   }
 }
 
-type SystemActorTypes = Exclude<foundry.documents.BaseActor.TypeNames, 'base'>;
+type SystemActorTypes = Exclude<string & keyof Game.Model['Actor'], 'base'>;
 
 interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
   type: ActorType;
-  system: DataModelConfig['Actor'][ActorType];
+  system: InstanceType<DataModelConfig['Actor'][ActorType]>;
 }
 
 class SwadeActor extends Actor {
@@ -97,7 +91,7 @@ class SwadeActor extends Actor {
 
   constructor(
     data: foundry.documents.BaseActor.ConstructorData,
-    ctx?: Context<TokenDocument>,
+    ctx?: Document.ConstructionContext<TokenDocument>,
   ) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
@@ -163,7 +157,7 @@ class SwadeActor extends Actor {
 
   get bennies(): number {
     if (!('bennies' in this.system)) return 0;
-    return this.system.bennies.value;
+    return this.system.bennies.value!;
   }
 
   /** @returns an object that contains booleans which denote the current status of the actor */
@@ -226,7 +220,7 @@ class SwadeActor extends Actor {
 
   override get itemTypes() {
     const types = Object.fromEntries<SwadeItem[]>(
-      game.documentTypes.Item.map((t: SystemItemTypes) => [t, []]),
+      game.documentTypes.Item.map((t: SystemItemTypes | 'base') => [t, []]),
     ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
     for (const item of this.items.values()) {
       types[item.type].push(item);
@@ -299,12 +293,12 @@ class SwadeActor extends Actor {
 
     rolls.push(
       Roll.fromTerms([
-        this._buildTraitDie(abl.die.sides, game.i18n.localize(label)),
+        this._buildTraitDie(abl.die.sides!, game.i18n.localize(label)),
       ]),
     );
 
     if (this.isWildcard) {
-      rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides)]));
+      rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides!)]));
     }
 
     const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
@@ -374,7 +368,7 @@ class SwadeActor extends Actor {
     const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
-      speaker: ChatMessage.getSpeaker({ actor: this }),
+      speaker: ChatMessage.getSpeaker({ actor: this as SwadeActor }),
       flavor:
         options.flavour ??
         `${game.i18n.localize(label)} ${game.i18n.localize(
@@ -737,7 +731,7 @@ class SwadeActor extends Actor {
    */
   async toggleConviction(toChat = true): Promise<void> {
     if (!('details' in this.system)) return;
-    const current = this.system.details.conviction.value;
+    const current = this.system.details.conviction.value!;
     const active = this.system.details.conviction.active;
     let template = '';
 
@@ -766,7 +760,7 @@ class SwadeActor extends Actor {
 
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
-    effect: StatusEffect | string,
+    effect: CONFIG.StatusEffect | string,
     { overlay = false, active }: Partial<ToggleActiveEffectOptions> = {},
   ) {
     const statusEffect =
@@ -916,8 +910,8 @@ class SwadeActor extends Actor {
     if (!('attributes' in this.system)) return 0;
     const unit = game.settings.get('swade', 'weightUnit');
     const strength = foundry.utils.deepClone(this.system.attributes.strength);
-    const stepAdjust = Math.max(strength.encumbranceSteps * 2, 0);
-    strength.die.sides += stepAdjust;
+    const stepAdjust = Math.max(strength.encumbranceSteps! * 2, 0);
+    strength.die.sides! += stepAdjust;
     //bound the adjusted strength die to 12
     const encumbDie = this._boundTraitDie(strength.die);
 
@@ -972,7 +966,7 @@ class SwadeActor extends Actor {
     }
 
     // Calculate handling
-    const handling = this.system.handling;
+    const handling = this.system.handling!;
     const wounds = this.calcWoundPenalties();
     const basePenalty = handling + wounds;
 
@@ -1021,7 +1015,7 @@ class SwadeActor extends Actor {
     const fatigue = this.calcFatiguePenalties();
     const numbness =
       'woundsOrFatigue' in this.system
-        ? this.system.woundsOrFatigue?.ignored
+        ? this.system.woundsOrFatigue?.ignored!
         : 0;
     if (numbness > 0) {
       const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
@@ -1114,7 +1108,7 @@ class SwadeActor extends Actor {
     //Add Wild Die
     if (this.isWildcard) {
       rolls.push(
-        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides)]),
+        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides!)]),
       );
     }
 
@@ -1216,8 +1210,8 @@ class SwadeActor extends Actor {
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
 
     //get the base values we need
-    const vigor: number = this.system.attributes.vigor.die.sides;
-    const vigMod: number = this.system.attributes.vigor.die.modifier;
+    const vigor = this.system.attributes.vigor.die.sides!;
+    const vigMod = this.system.attributes.vigor.die.modifier!;
     // const toughMod = this.system.stats.toughness.modifier;
 
     let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
@@ -1229,7 +1223,7 @@ class SwadeActor extends Actor {
       value: finalToughness,
     });
 
-    const size: number = this.system.stats.size ?? 0;
+    const size = this.system.stats.size ?? 0;
     finalToughness += size;
     if (size !== 0) {
       sources.push({
@@ -1245,7 +1239,7 @@ class SwadeActor extends Actor {
         finalToughness += Number(armor.system.toughness);
         sources.push({
           label: armor.name,
-          value: armor.system.toughness,
+          value: armor.system.toughness!,
         });
       }
     }
@@ -1560,7 +1554,7 @@ class SwadeActor extends Actor {
 
   protected override _onUpdate(
     changed: foundry.documents.BaseActor.UpdateData,
-    options: DocumentOnUpdateOptions<'Actor'>,
+    options: Document.OnUpdateOptions<'Actor'>,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

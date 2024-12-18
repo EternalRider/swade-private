@@ -1,3 +1,4 @@
+import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { DerivedModifier } from '../../../interfaces/additional.interface';
 import SwadeActor from '../../documents/actor/SwadeActor';
 import { createEmbedElement } from '../../util';
@@ -206,7 +207,7 @@ class VehicleData<
     };
   }
 
-  static override migrateData(source: object): object {
+  static override migrateData(source: AnyObject): AnyObject {
     migrations.splitTopSpeed(source);
     return super.migrateData(source);
   }
@@ -236,20 +237,21 @@ class VehicleData<
     this.scale = this.parent.calcScale(this.size);
   }
 
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     this: VehicleData,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
-      'vehicle-embed',
+      ['actor-embed', 'vehicle'],
     );
   }
 

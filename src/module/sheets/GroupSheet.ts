@@ -1,5 +1,9 @@
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import { PhysicalItem, SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
+import {
+  PhysicalItem,
+  SwadeApplicationTab,
+  SwadeDocumentSheetConfiguration,
+} from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { GroupMember } from '../data/actor/group';
@@ -11,7 +15,9 @@ import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
 export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   declare actor: SwadeActor<'group'>;
-  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor<'group'>>> = {
+  static override DEFAULT_OPTIONS: DeepPartial<
+    SwadeDocumentSheetConfiguration<SwadeActor<'group'>>
+  > = {
     classes: ['group', 'standard-form'],
     position: { height: 700, width: 700 },
     window: { resizable: true },
@@ -119,7 +125,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    if (!game.user.isGM) return;
+    if (!game.user!.isGM) return;
     this.actor.update({ 'system.locked': !this.actor.system.locked });
   }
 
@@ -128,7 +134,14 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   };
 
   override async _prepareContext(options: any) {
-    return foundry.utils.mergeObject(await super._prepareContext(options), {
+    const baseContext = await super._prepareContext(options);
+
+    const settingrules = {
+      wealthType: game.settings.get('swade', 'wealthType'),
+      currencyName: game.settings.get('swade', 'currencyName'),
+    };
+
+    return foundry.utils.mergeObject(baseContext, {
       members: this._prepareMembers(),
       itemTypes: await this._prepareItems(),
       benny: game.settings.get('swade', 'bennyImageSheet'),
@@ -137,6 +150,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
         rollData: this.actor.getRollData(),
         secrets: this.isEditable,
       }),
+      settingrules, // Add the setting rules here
     });
   }
 
@@ -231,7 +245,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
           : uuid,
         toughness: actor?.system.stats?.toughness?.value ?? NaN,
         armor: actor?.armorPerLocation.torso ?? NaN,
-        pace: actor?.system.stats?.speed?.adjusted ?? NaN,
+        pace: actor?.system.pace[actor.system.pace.base] ?? NaN,
         parry: actor?.system.stats?.parry?.value ?? NaN,
         bennies: actor?.bennies ?? NaN,
         wounds: {
@@ -278,11 +292,11 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
 }
 
 interface GroupSheetRenderContext extends SwadeActorSheetV2.RenderContext {
-  members: SwadeActor[],
-  itemTypes: SwadeItem[],
-  benny: string,
-  unlocked: boolean,
-  description: string,
+  members: SwadeActor[];
+  itemTypes: SwadeItem[];
+  benny: string;
+  unlocked: boolean;
+  description: string;
 }
 
 type ItemTypes = Record<PhysicalItem, RenderedItem[]>;

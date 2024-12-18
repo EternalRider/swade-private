@@ -78,7 +78,7 @@ class ActionData extends SwadeBaseItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/action-embeds.hbs',
-      'action-embed',
+      ['item-embed', 'action'],
     );
   }
 
@@ -118,7 +118,6 @@ class ActionData extends SwadeBaseItemData<
     super._onCreate(data, options, userId);
     this.#triggerActivityUpdate();
   }
-
   protected override _onDelete(
     options: DocumentOnDeleteOptions<'Item'>,
     userId: string,

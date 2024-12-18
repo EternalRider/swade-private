@@ -1,4 +1,4 @@
-import { TraitDie } from '../../documents/actor/actor-data-source';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 
 export function makeDiceField(initial = 4, label = 'SWADE.DieSides') {
   return new foundry.data.fields.NumberField({

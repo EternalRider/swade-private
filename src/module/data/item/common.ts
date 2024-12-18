@@ -42,7 +42,7 @@ export const itemDescription = () => ({
 
 export const builder = () => ({
   build: new fields.SchemaField({
-    cost: new fields.NumberField({ integer: true, label: 'SWADE.BuildCost' }),
+    cost: new fields.NumberField({ label: 'SWADE.BuildCost' }),
   }),
 });
 

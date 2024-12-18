@@ -1,40 +1,37 @@
-<div class="shield flexcol">
-    <div class="flexrow header">
-        <span class="name">{{parent.name}}</span>
-        <div class="img-container">
-            <img
-                class="item-img"
-                src="{{parent.img}}"
-                data-edit="img"
-                alt="{{parent.name}}"
-                title='{{localize 'SWADE.RightClickZoom'}}'
-            />
-        </div>
-    </div>
-    <section class="stats flexcol">
-        <table class="data-table">
-            <tr class="header-row">
-                <td>{{localize 'SWADE.Parry'}}</td>
-                <td>{{localize 'SWADE.Cover._name'}}</td>
-                <td>{{localize 'SWADE.MinStrShort'}}</td>
-                <td>{{localize 'SWADE.Weight'}}</td>
-                <td>{{localize 'SWADE.Price'}}</td>
-            </tr>            
-            <tr class="data-row">
-                <td>{{signedString parry}}</td>
-                <td>{{signedString cover}}</td>
-                <td>{{minStr}}</td>
-                <td>{{weight}}</td>
-                <td>{{price}}</td>
-            </tr>
+<div>
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th colspan="5">
+                        {{parent.name}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{localize 'SWADE.Parry'}}</td>
+                    <td>{{localize 'SWADE.Cover._name'}}</td>
+                    <td>{{localize 'SWADE.MinStrShort'}}</td>
+                    <td>{{localize 'SWADE.Weight'}}</td>
+                    <td>{{localize 'SWADE.Price'}}</td>
+                </tr>            
+                <tr>
+                    <td>{{signedString parry}}</td>
+                    <td>{{signedString cover}}</td>
+                    <td>{{minStr}}</td>
+                    <td>{{weight}}</td>
+                    <td>{{price}}</td>
+                </tr>
+            </tbody>
         </table>
     </section>
     {{#if notes}}
-    <section class="notes">
+    <section>
         <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
     </section>
     {{/if}}
-    <section class="description">
+    <section>
         {{{enrichedDescription}}}
     </section>
 </div>

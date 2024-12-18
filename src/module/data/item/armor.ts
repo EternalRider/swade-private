@@ -173,7 +173,7 @@ class ArmorData extends SwadePhysicalItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/armor-embeds.hbs',
-      'armor-embed',
+      ['item-embed', 'armor'],
     );
   }
 }

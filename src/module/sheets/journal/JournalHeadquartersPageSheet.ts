@@ -1,15 +1,13 @@
-import { JournalEntryPage } from '../../../interfaces/v11-compat';
+import type { HeadquartersData } from '../../data/journal';
 
 export default class JournalHeadquartersPageSheet extends JournalPageSheet {
-  static get defaultOptions() {
+  static override get defaultOptions() {
     const options = foundry.utils.mergeObject(super.defaultOptions, {
       submitOnChange: true,
     });
     options.classes.push('headquarters-journal');
     return options;
   }
-
-  declare document: JournalEntryPage;
 
   override get template() {
     return `systems/swade/templates/journal/page-headquarters-${
@@ -19,7 +17,7 @@ export default class JournalHeadquartersPageSheet extends JournalPageSheet {
 
   override async getData(options) {
     const context = super.getData(options);
-    const system = this.document.system;
+    const system = this.document.system as HeadquartersData;
     context.title = Object.fromEntries(
       Array.fromRange(4, 1).map((n) => [
         `level${n}`,

@@ -749,7 +749,7 @@ class WeaponData extends SwadePhysicalItemData<
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/weapon-embeds.hbs',
-      'weapon-embed',
+      ['item-embed', 'weapon'],
     );
   }
 }

@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Deprecated
 
-
 ### Removed
 
 ### Fixed
@@ -30,6 +29,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Characters and NPCs can now define pace values for ground, fly, swim and burrow pace, as well as set a default per actor. You can set these values in the Actor Tweaks. Existing values have been migrated to the ground Pace. Existing active effects have been migrated to affect all pace values. (#768) **by @florad92**
 - You can now modify all pace values at the same time by setting the change to `system.pace`. (#768) **by @florad92**
 - Added a tooltip to the character and npc sheets which displays some additional information about pace such as other movement speeds and out-of-combat running pace. (#1182) **by @florad92**
+- Implemented a data model for the `base` Active Effect type and migrated all uses of flags to corresponding properties under `system`. (#1127) **by @jpmeehan5**
+  - Exposed the `conditionalEffect` property in the UI of both AEGIS and the Active Effect Configuration Sheet. (#1073) **by @jpmeehan5**
 - Added `tokenSize` getter to `SwadeActor` and system DataModel classes (#1217) **by @florad92**
 - Added _Activities_ to the system. Activities allow you to add the SWID of an `action` Item to another item that supports item actions, except `action` Items. `action` Items linked in that way get resolved and can be used like any other item-action. (#1202) **by @florad92**
 - Added a toggle to `action` Items to mark them as hidden so they do not clutter the sheet. This is primarily intended to be used in conjunction with Activities. (#1202) **by @florad92**
@@ -38,6 +39,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added the ability to drag&drop Active Effects onto tokens on the canvas. You can drop the effect on multiple tokens at the same time by selecting the tokens they are should be applied to and the dropping the effect on a single token. You can also drop an Active Effect on a token you own without having to select it. (#1023) **by @florad92**
 - Added non-transferred Active Effects to the item chat cards as draggable elements. They can be used to drag&drop to sheets and the canvas. (#1023) **by @florad92**
 - Added Targeted mode for macros, which will return the current' users first target as the `actor` and `token` for macro reference. (#1024) **by @jpmeehan5**
+- Added Currency field to Group Actor Sheet **by @jestevens210**
+- Added Severity Indicator to Hindrance Header on Item Sheet **by @jestevens210**
+- Updated Embed styles to inherit from current journal styles **by @jestevens210**
 
 ### Changed
 
@@ -55,6 +59,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The range of a Power can now be set as a formula which is evaluated. (#1010) **by @florad92**
 - [BREAKING] The Chase layout tools now require and leverage Complete Card Management
   - `layoutChase` is now asynchronous
+
+### Fixed
+
+- Fixed compendium drops not working on initial drag action (#1239) **by @jpmeehan5**
+- Fixed console error with prosemirror editors for compendium items (#1229) **by @jpmeehan5**
+- Fixed wild die dice so nice configuration menu (#1197) **by @jpmeehan5**
+- Fixed lack of html parsing for vehicle mods and arcane device powers (#1232) **by @jpmeehan5**
+- Refactored shuffle action deck button on the Combat Tracker to remove console error (#1227) **by @jpmeehan5**
 
 ## 4.1.1
 
@@ -1467,7 +1479,7 @@ m
 
 ### Changed
 
-- Changed the way the system is delivered. The system is now bundled as a singular JS file, reducing the number of JS files from 44 to 1. In addition to that we're now delivering sourcemaps which should help with troubleshooting. For more information please visit [ticket #464] (https://gitlab.com/peginc/swade/-/issues/464). All in all this should not have any noticeable drawbacks for end users and should slightly increase the responsiveness of the system on world load.
+- Changed the way the system is delivered. The system is now bundled as a singular JS file, reducing the number of JS files from 44 to 1. In addition to that we're now delivering sourcemaps which should help with troubleshooting. For more information please visit [ticket #464] (<https://gitlab.com/peginc/swade/-/issues/464>). All in all this should not have any noticeable drawbacks for end users and should slightly increase the responsiveness of the system on world load.
 - Changed the way the Quick Access behaves. Instead of automatically displaying all equipped items it now only displays favored items. See `Added` for the list of document types that can be favored. Status Effects are automatically shown in the Quick Access.
 - The inputs for the Crew and Passengers on Vehicles now are now saved as numbers instead of strings.
 - Split up the About tab into subsections: `Advances`,`Background` and `Notes`. The `Background` subsection now contains the biography, along some additional fields for character appearance and goals.
@@ -1737,6 +1749,7 @@ m
 
 - Deprecated the old roll dialog. It will be removed with version `1.0.0`
 - Deprecated the use of bare numbers and strings as modifiers in rolls. Instead please pass an array with objects containing a `label` and a `value` property. See the example below
+
   ```JS
    [
     {
@@ -1891,11 +1904,13 @@ m
 - Added the _Action Card Editor_. This is an alternative interface for Journal Entry compendiums. Any GM can open it by right-clicking a Journal Entry compendium and selecting the "Open in Action Card editor option. This is primarily meant for people that want to create their own Action Card decks.
 - Added the character summarizer, which is based on @penllawen 's Summarizer Macro. The Summarizer provides a compact statblock for any NPC or Player character in the form of HTML.
   Currently the summarizer is only usable via a macro, see example
+
   ```JS
   const actor = game.actors.getName("SomeActor");
   const summarizer = new game.swade.CharacterSummarizer(actor);
   summarizer.getSummary(); //Returns the finished summary as HTML in a string
   ```
+
 - Added new Combat Tracker UI
   - Overhauled the Combat Tracker UI
   - Added a button to the Combat Tracker that lets you shuffle the Action Card deck without having to open up its Rollable Table
@@ -2294,7 +2309,7 @@ gioness if it is marked as natural armor, has at least the torso location and is
 
 ### Removed
 
-- Removed spanish translation from core game system because a properly maintained community translation is available here: https://foundryvtt.com/packages/swade-es/
+- Removed spanish translation from core game system because a properly maintained community translation is available here: <https://foundryvtt.com/packages/swade-es/>
 
 ### Fixed
 

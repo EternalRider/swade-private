@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { AbilitySubType } from '../globals';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { RollModifierGroup } from '../interfaces/additional.interface';
@@ -391,7 +390,7 @@ export interface SwadeConfig {
   swid: {
     ignoreSystem: boolean;
   };
-  statusEffects: StatusEffect[];
+  statusEffects: CONFIG.StatusEffect[];
   negativeStatusEffects: string[];
   wildCardIcons: {
     regular: string;
