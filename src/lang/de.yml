@@ -448,6 +448,8 @@ SWADE:
     ResetDuration: Dauer zurücksetzen
     AddGuided: Wizard öffnen
     AddUnguided: Leeren Effekt hinzufügen
+    Conditional: Bedingter Effekt
+    ConditionalTooltip: Würfelmodifikatoren per Default ignorieren
   EffectCallbacks:
     Shaken:
       RollSpirit: Willenskraft würfeln
@@ -1152,7 +1154,7 @@ SWADE:
         Hint: Mitglieder zum Hinzufügen per Drag&Drop in den Bogen ziehen oder UUID
           einfügen. Funktioniert auch mit Spielfigur-Akteuren in einer Szene.
       Stash:
-        Header: Vorrat
+        Header: Lager
         Empty: Keine Items
       Lock:
         Label: Bogen (ent)sperren
@@ -1212,6 +1214,22 @@ SWADE:
         Title: Rennen
         Content: Wählen, wie gerannt werden soll
   ApplicableEffects: Anwendbare Effekte
+  Supplies:
+    Ammo:
+      Label: Munition
+    Fuel:
+      Label: Treibstoff
+    Level:
+      VeryHigh: Sehr Hoch
+      Out: Leer
+      Low: Niedrig
+      High: Hoch
+    Food:
+      Label: Nahrung
+    Supply:
+      Label: Vorrat
+    Label: Vorräte
+  RemoveEffectLabel: Effekt entfernen
 TYPES:
   Actor:
     Character: Charakter
