@@ -230,7 +230,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       const roll = new Roll(`${statData.value}${modifier}`);
       await roll.evaluate();
       await roll.toMessage({
-        speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
+        speaker: CONFIG.ChatMessage.documentClass.getSpeaker({ actor: this.item.actor }),
         flavor: `${this.item.name} - ${statData.label}`,
       });
     });

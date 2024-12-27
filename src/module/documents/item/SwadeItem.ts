@@ -736,7 +736,7 @@ class SwadeItem extends Item {
   async #createChargeUsageMessage(charges: number) {
     const msgClass = getDocumentClass('ChatMessage');
     const createData = {
-      speaker: msgClass.getSpeaker(),
+      speaker: msgClass.getSpeaker({ actor: this.actor! }),
       content: game.i18n.format('SWADE.Consumable.ChargesUsed', {
         charges,
         name: this.name,

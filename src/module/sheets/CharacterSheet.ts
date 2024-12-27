@@ -305,7 +305,7 @@ export default class CharacterSheet extends ActorSheet {
       );
       await roll.evaluate();
       await roll.toMessage({
-        speaker: ChatMessage.getSpeaker(),
+        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
         flavor: statData.label,
       });
     });

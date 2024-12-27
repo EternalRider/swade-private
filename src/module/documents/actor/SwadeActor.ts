@@ -530,7 +530,7 @@ class SwadeActor extends Actor {
     return RollDialog.asPromise({
       roll: roll,
       mods: mods,
-      speaker: ChatMessage.getSpeaker(),
+      speaker: ChatMessage.getSpeaker({ actor: this }),
       actor: this,
       flavor: game.i18n.localize('SWADE.WealthDie.Label'),
       title: game.i18n.localize('SWADE.WealthDie.Label'),
@@ -659,11 +659,12 @@ class SwadeActor extends Actor {
     //return early if there no bennies to spend
     if (this.bennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {
+      const speaker = CONFIG.ChatMessage.documentClass.getSpeaker({ actor: this });
       const message = await renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
-        speaker: game.user,
+        speaker: speaker,
       });
-      const chatData = { content: message };
+      const chatData = { content: message, speaker: speaker };
       await CONFIG.ChatMessage.documentClass.create(chatData);
     }
     await this.update({ 'system.bennies.value': this.bennies - 1 });
@@ -700,11 +701,12 @@ class SwadeActor extends Actor {
 
     const hiddenNPC = combatant?.isNPC && combatant?.hidden;
     if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
+      const speaker = getDocumentClass('ChatMessage').getSpeaker({ actor: this });
       const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
-        speaker: game.user,
+        speaker: speaker,
       });
-      await getDocumentClass('ChatMessage').create({ content });
+      await getDocumentClass('ChatMessage').create({ content: content, speaker: speaker });
     }
 
     /**

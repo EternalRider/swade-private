@@ -725,7 +725,7 @@ class CreatureData<
     if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
-        speaker: game.user,
+        speaker: getDocumentClass('ChatMessage').getSpeaker({actor: this}),
       });
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);

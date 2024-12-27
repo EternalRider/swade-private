@@ -39,7 +39,7 @@ export default class SwadeUser extends User {
         CONFIG.SWADE.bennies.templates.spend,
         {
           target: game.user,
-          speaker: game.user,
+          speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
         },
       );
       const chatData = {
