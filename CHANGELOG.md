@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Changed
+
+- Actors are now used as chat speaker in more situations (e.g. for Benny messages). (#749) **by @mhilbrunner**
+
 ## 4.2.0
 
 ### Added
