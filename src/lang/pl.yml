@@ -583,6 +583,8 @@ SWADE:
     ResetDuration: Reset czasu trwania
     AddGuided: Otwórz kreator
     AddUnguided: Dodaj pusty stan
+    Conditional: Efekt warunkowy
+    ConditionalTooltip: Domyślnie ignoruj modyfikatory rzutów
   Keybindings:
     OpenFavoriteCards:
       Name: Otwórz ulubioną rękę kart
@@ -1478,6 +1480,7 @@ SWADE:
   ApplicableEffects: Efekty do zastosowania
   NoCCMInstall: Moduł Complete Card Management nie jest zainstalowany.
   CouldNotFindTarget: Makro wymaga wybrania celu!
+  RemoveEffectLabel: Usuń efekt
 TYPES:
   Actor:
     character: Postać gracza
