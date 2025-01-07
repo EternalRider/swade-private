@@ -1,3 +1,4 @@
+import type { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -6,7 +7,6 @@ import { BaseEffectData } from '../../data/effect/base';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
-import type { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 
 declare global {
   interface DocumentClassConfig {
@@ -124,6 +124,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
         change.key = change.key.replaceAll(
           'system.actions.skill',
           'system.actions.trait',
+        );
+        change.key = change.key.replaceAll(
+          'system.stats.speed.value',
+          'system.pace',
         );
         change.key = change.key.replaceAll(
           'system.stats.speed.adjusted',

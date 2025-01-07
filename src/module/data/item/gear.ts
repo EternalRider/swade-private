@@ -39,7 +39,7 @@ declare namespace GearData {
       Favorite,
       Category,
       GrantEmbedded {
-    isAmmo: foundry.data.fields.BooleanField;
+    isAmmo: foundry.data.fields.BooleanField<{ label: string }>;
   }
   interface BaseData extends SwadePhysicalItemData.BaseData {}
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
@@ -113,15 +113,16 @@ class GearData extends SwadePhysicalItemData<
     }
   }
 
-  async toEmbed(
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/gear-embeds.hbs',

@@ -12,7 +12,7 @@ declare namespace HindranceData {
       initial: typeof constants.HINDRANCE_SEVERITY.EITHER;
       blank: false;
     }>;
-    major: foundry.data.fields.BooleanField;
+    major: foundry.data.fields.BooleanField<{ label: string }>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -62,15 +62,16 @@ class HindranceData extends SwadeBaseItemData<
     ];
   }
 
-  async toEmbed(
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/hindrance-embeds.hbs',
