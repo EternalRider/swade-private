@@ -50,15 +50,17 @@ class AncestryData extends SwadeBaseItemData<
       return false;
     }
   }
+
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/ancestry-embeds.hbs',

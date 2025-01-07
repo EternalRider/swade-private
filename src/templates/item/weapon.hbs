@@ -187,25 +187,6 @@
           />
         </span>
       </div>
-      {{#if item.system.isVehicular}}
-        {{#if settingRules.modSlots}}
-          <div class='form-group'>
-            <label for='{{item.uuid}}-mods'>
-              {{localize 'SWADE.ModSlots'}}
-            </label>
-            <span class='form-fields'>
-              <input
-                id="{{item.uuid}}-mods"
-                name='system.mods'
-                type='number'
-                value='{{item.system.mods}}'
-                placeholder='{{localize "SWADE.ModSlots"}}'
-                data-dtype="Number"
-              />
-            </span>
-          </div>
-        {{/if}}
-      {{/if}}
       <div class="form-group">
         <label for="{{item.uuid}}-ammo">
           {{localize "SWADE.Ammo"}}
@@ -279,6 +260,25 @@
           <input id="{{item.uuid}}-vehicular" type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
         </span>
       </div>
+      {{#if item.system.isVehicular}}
+        {{#if settingRules.modSlots}}
+          <div class='form-group'>
+            <label for='{{item.uuid}}-mods'>
+              {{localize 'SWADE.ModSlots'}}
+            </label>
+            <span class='form-fields'>
+              <input
+                id="{{item.uuid}}-mods"
+                name='system.mods'
+                type='number'
+                value='{{item.system.mods}}'
+                placeholder='{{localize "SWADE.ModSlots"}}'
+                data-dtype="Number"
+              />
+            </span>
+          </div>
+        {{/if}}
+      {{/if}}
       <div class="form-group">
         <label for="{{item.uuid}}-heavy-weapon">
           {{localize "SWADE.HeavyWeapon"}}

@@ -5,11 +5,12 @@ import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
+import { DocumentDatabaseOperations } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 declare namespace SkillData {
   interface Schema extends SwadeBaseItemData.Schema, DiceTrait {
     attribute: foundry.data.fields.StringField<{ initial: '' }>;
-    isCoreSkill: foundry.data.fields.BooleanField;
+    isCoreSkill: foundry.data.fields.BooleanField<{ label: string }>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {
     die: TraitDie;
@@ -66,7 +67,12 @@ class SkillData extends SwadeBaseItemData<
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
+    options: DocumentDatabaseOperations<
+      Item,
+      {
+        isItemGrant: boolean;
+      }
+    >['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);
@@ -75,15 +81,16 @@ class SkillData extends SwadeBaseItemData<
     }
   }
 
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/skill-embeds.hbs',

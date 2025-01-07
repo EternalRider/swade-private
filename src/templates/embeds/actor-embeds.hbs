@@ -11,12 +11,17 @@
         <span>{{localize "SWADE.AttrStr"}}</span><span style="margin-left: 2px;">d{{attributes.strength.die.sides}}, </span>
         <span>{{localize "SWADE.AttrVig"}}</span><span style="margin-left: 2px;">d{{attributes.vigor.die.sides}}</span>
     </section>
-
+    <section>
+        <strong>{{localize 'SWADE.Size'}}:</strong> {{stats.size}},
+        <strong>{{localize 'SWADE.Pace'}}:</strong> {{pace.ground}},
+        <strong>{{localize 'SWADE.Parry'}}:</strong> {{stats.parry.value}},
+        <strong>{{localize 'SWADE.Tough'}}:</strong> {{stats.toughness.value}} ({{stats.toughness.armor}})
+    </section>
     {{#if parent.itemTypes.skill}}
     <section>
         <strong>{{localize 'SWADE.Skills'}}:</strong>
         {{#each parent.itemTypes.skill}}
-            {{#if @index}}, {{/if}}<span data-item-id="{{id}}">{{name}} d{{system.die.sides}}{{modifier system.die.modifier}}</span>
+            <span style="margin-left: 2px;" data-item-id="{{id}}">{{name}} d{{system.die.sides}}{{modifier system.die.modifier}}</span>{{#unless @last}},{{/unless}}
         {{/each}}
     </section>
     {{/if}}
@@ -24,23 +29,23 @@
     <section>
         <strong>{{localize 'SWADE.Edges'}}:</strong>
         {{#each parent.itemTypes.edge}}
-            {{#if @index}}, {{/if}}<span>{{name}}</span>
+            <span style="margin-left: 2px;">{{name}}</span>{{#unless @last}},{{/unless}}
         {{/each}}
     </section>
     {{/if}}
     {{#if parent.itemTypes.hindrance}}
-    <section class= "embed-section hindrances">
+    <section class="embed-section hindrances">
         <strong>{{localize 'SWADE.Hindrances'}}:</strong>
         {{#each parent.itemTypes.hindrance}}
-            {{#if @index}}, {{/if}}<span>{{name}}</span>
-        {{/each}}     
+            <span style="margin-left: 2px;">{{name}}</span>{{#unless @last}},{{/unless}}
+        {{/each}}
     </section>
     {{/if}}
     {{#if parent.itemTypes.power}}
     <section>
         <strong>{{localize 'SWADE.Pow'}}:</strong>
         {{#each parent.itemTypes.power}}
-            {{#if @index}}, {{/if}}<span><em>{{name}}</em></span>
+            <span style="margin-left: 2px;"><em>{{name}}</em></span>{{#unless @last}},{{/unless}}
         {{/each}}
         {{#if @root.powerPoints}}
             {{#each @root.powerPoints}}
@@ -52,27 +57,25 @@
     </section>
     {{/if}}
     {{#if displayableGear}}
-    <section>
-        <strong>{{localize 'SWADE.Inv'}}:</strong>
-        {{#each parent.itemTypes.armor}}
-            {{#if @index}}, {{/if}}<span>{{name}} ({{signedString system.armor}})</span>
-        {{/each}}
-        {{#if parent.itemTypes.armor.length}}, {{/if}}
-        {{#each parent.itemTypes.weapon}}
-            {{#if @index}}, {{/if}}<span>{{name}}
-                ({{#if system.range}}{{localize 'SWADE.Range._name'}} {{system.range}}{{/if}}
-                {{#if system.damage}}{{#if system.range}}, {{/if}}{{localize 'SWADE.Dmg'}} {{formatDamage system.damage}}{{/if}}
-                {{#if system.ap}}, {{localize 'SWADE.Ap'}} {{system.ap}}{{/if}})
-            </span>
-        {{/each}}
-    </section>
+        <section>
+            <strong>{{localize 'SWADE.Inv'}}:</strong>
+            {{#if parent.itemTypes.armor.length}}
+                {{#each parent.itemTypes.armor}}
+                    <span style="margin-left: 2px;">{{name}} ({{signedString system.armor}})</span>{{#unless @last}}, {{/unless}}
+                {{/each}}
+            {{/if}}
+            {{#if parent.itemTypes.weapon.length}}
+                {{#if parent.itemTypes.armor.length}}, {{/if}}
+                {{#each parent.itemTypes.weapon}}
+                    <span style="margin-left: 2px;">{{name}}
+                        ({{#if system.range}}{{localize 'SWADE.Range._name'}} {{system.range}}{{/if}}
+                        {{#if system.damage}}{{#if system.range}}, {{/if}}{{localize 'SWADE.Dmg'}} {{formatDamage system.damage}}{{/if}}
+                        {{#if system.ap}}, {{localize 'SWADE.Ap'}} {{system.ap}}{{/if}})
+                    </span>{{#unless @last}}, {{/unless}}
+                {{/each}}
+            {{/if}}
+        </section>
     {{/if}}
-    <section>
-        <strong>{{localize 'SWADE.Size'}}:</strong> {{stats.size}},
-        <strong>{{localize 'SWADE.Pace'}}:</strong> {{stats.speed.value}},
-        <strong>{{localize 'SWADE.Parry'}}:</strong> {{stats.parry.value}},
-        <strong>{{localize 'SWADE.Tough'}}:</strong> {{stats.toughness.value}} ({{stats.toughness.armor}})
-    </section>
     {{#if parent.itemTypes.ability}}
     <section style="embed-section abilities">
         <strong>{{localize 'SWADE.SpecialAbilities'}}:</strong>
