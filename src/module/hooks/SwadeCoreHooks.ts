@@ -36,6 +36,10 @@ import { BaseEffectData } from '../data/effect/base';
 export default class SwadeCoreHooks {
   static onSetup() {
     registerCompendiumArt();
+
+    // Improve discoverability of map notes
+    game.settings.settings.get("core.notesDisplayToggle").default = true;
+
   }
 
   static async onReady() {

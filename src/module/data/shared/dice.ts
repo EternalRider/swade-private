@@ -6,7 +6,7 @@ export function makeDiceField(initial = 4, label = 'SWADE.DieSides') {
     initial,
     min: 0,
     integer: true,
-    positive: true,
+    nullable: false,
   });
 }
 
@@ -19,6 +19,7 @@ export function makeTraitDiceFields() {
         label: 'SWADE.TraitMod',
         initial: 0,
         integer: true,
+        nullable: false,
       }),
     }),
     'wild-die': new fields.SchemaField({

@@ -40,7 +40,7 @@ declare namespace ConsumableData {
       max: foundry.data.fields.NumberField<{ initial: 1 }>;
     }>;
     messageOnUse: foundry.data.fields.BooleanField<{ initial: true }>;
-    destroyOnEmpty: foundry.data.fields.BooleanField;
+    destroyOnEmpty: foundry.data.fields.BooleanField<{ label: string }>;
     subtype: foundry.data.fields.StringField<{
       initial: typeof constants.CONSUMABLE_TYPE.REGULAR;
       choices: ChoicesType<typeof constants.CONSUMABLE_TYPE>;
@@ -184,15 +184,16 @@ class ConsumableData extends SwadePhysicalItemData<
     }
   }
 
-  async toEmbed(
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/consumable-embeds.hbs',

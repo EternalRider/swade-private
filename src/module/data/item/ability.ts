@@ -25,7 +25,7 @@ declare namespace AbilityData {
       choices: ChoicesType<typeof constants.ABILITY_TYPE>;
       textSearch: true;
     }>;
-    grantsPowers: foundry.data.fields.BooleanField;
+    grantsPowers: foundry.data.fields.BooleanField<{ label: string }>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -89,15 +89,17 @@ class AbilityData extends SwadeBaseItemData<
       return false;
     }
   }
-  async toEmbed(
+
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/ability-embeds.hbs',

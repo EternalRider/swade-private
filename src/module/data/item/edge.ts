@@ -20,7 +20,7 @@ declare namespace EdgeData {
       Favorite,
       Category,
       Grants {
-    isArcaneBackground: foundry.data.fields.BooleanField;
+    isArcaneBackground: foundry.data.fields.BooleanField<{ label: string }>;
     requirements: foundry.data.fields.ArrayField<
       foundry.data.fields.EmbeddedDataField<RequirementsField>,
       {
@@ -168,15 +168,16 @@ class EdgeData extends SwadeBaseItemData<
     return chips;
   }
 
-  async toEmbed(
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/edge-embeds.hbs',
