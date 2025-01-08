@@ -1,4 +1,3 @@
-import { DocumentPreCreateOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemAction } from '../../../../interfaces/additional.interface';
 import { constants } from '../../../constants';
@@ -84,7 +83,7 @@ class SwadeBaseItemData<
 
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentPreCreateOptions<'Item'>,
+    options: Item.DatabaseOperations['create'],
     user: BaseUser,
   ) {
     await super._preCreate(data, options, user);

@@ -39,13 +39,13 @@ declare namespace ArmorData {
     minStr: foundry.data.fields.StringField<{ initial: '' }>;
     armor: foundry.data.fields.NumberField<{ initial: 0 }>;
     toughness: foundry.data.fields.NumberField<{ initial: 0 }>;
-    isNaturalArmor: foundry.data.fields.BooleanField;
-    isHeavyArmor: foundry.data.fields.BooleanField;
+    isNaturalArmor: foundry.data.fields.BooleanField<{ label: string }>;
+    isHeavyArmor: foundry.data.fields.BooleanField<{ label: string }>;
     locations: foundry.data.fields.SchemaField<{
-      head: foundry.data.fields.BooleanField;
-      torso: foundry.data.fields.BooleanField<{ initial: true }>;
-      arms: foundry.data.fields.BooleanField;
-      legs: foundry.data.fields.BooleanField;
+      head: foundry.data.fields.BooleanField<{ label: string }>;
+      torso: foundry.data.fields.BooleanField<{ label: string; initial: true }>;
+      arms: foundry.data.fields.BooleanField<{ label: string }>;
+      legs: foundry.data.fields.BooleanField<{ label: string }>;
     }>;
   }
   interface BaseData extends SwadePhysicalItemData.BaseData {}
@@ -56,7 +56,6 @@ class ArmorData extends SwadePhysicalItemData<
   ArmorData.BaseData,
   ArmorData.DerivedData
 > {
-  /** @inheritdoc */
   static override defineSchema(): ArmorData.Schema {
     const fields = foundry.data.fields;
     return {
@@ -82,7 +81,6 @@ class ArmorData extends SwadePhysicalItemData<
     };
   }
 
-  /** @inheritdoc */
   static override migrateData(source: PotentialSource<ArmorData>) {
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
@@ -90,7 +88,6 @@ class ArmorData extends SwadePhysicalItemData<
     return super.migrateData(source);
   }
 
-  /** @inheritdoc */
   protected override _initialize(options?: any) {
     super._initialize(options);
     this._applyShims();
@@ -161,15 +158,16 @@ class ArmorData extends SwadePhysicalItemData<
     }
   }
 
-  async toEmbed(
+  declare enrichedDescription?: string;
+
+  override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/armor-embeds.hbs',

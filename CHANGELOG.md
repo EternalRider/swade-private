@@ -22,6 +22,31 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## [Unreleased]
+
+### Changed
+
+- Actors are now used as chat speaker in more situations (e.g. for Benny messages). (#749) **by @mhilbrunner**
+
+## 4.2.1
+
+### Added
+
+- Added setup hook to show Journal Pins on scenes by default **by jestevens210**
+
+### Changed
+
+- Moved the "mod slots" input on the weapon sheet to be with the "is vehicular" checkbox. **by @jpmeehan5**
+- Marked trait dice and modifiers as non-nullable. (#1245) **by @jpmeehan5**
+
+### Fixed
+
+- Added more migration paths for pace related Active Effects. (#1242) **by @florad92**
+- Fixed multiply embedding Item documents running into depth recursion checks. **by @jpmeehan5**
+- Fixed Actor Embeds for new Pace key. **by jestevens210**
+- Fixed Actor Embeds adding additional spaces between items. **by jestevens210**
+- Fixed Actions without a parent erroring in \_onCreate. (#1245) **by @jpmeehan5**
+
 ## 4.2.0
 
 ### Added

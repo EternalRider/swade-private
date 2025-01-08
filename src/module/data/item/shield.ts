@@ -150,15 +150,17 @@ class ShieldData extends SwadePhysicalItemData<
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }
   }
+
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/shield-embeds.hbs',

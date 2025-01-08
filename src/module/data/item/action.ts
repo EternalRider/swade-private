@@ -1,9 +1,4 @@
-import {
-  DocumentOnCreateOptions,
-  DocumentOnDeleteOptions,
-  DocumentOnUpdateOptions,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { TypeDataModel } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
+import type TypeDataModel from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
 import { PotentialSource } from '../../../globals';
 import { createEmbedElement } from '../../util';
@@ -40,7 +35,6 @@ class ActionData extends SwadeBaseItemData<
   ActionData.BaseData,
   ActionData.DerivedData
 > {
-  /** @inheritdoc */
   static override defineSchema(): ActionData.Schema {
     return {
       ...super.defineSchema(),
@@ -56,7 +50,6 @@ class ActionData extends SwadeBaseItemData<
     };
   }
 
-  /** @inheritdoc */
   static override migrateData(source: PotentialSource<ActionData>) {
     migrations.renameActionProperties(source);
     return super.migrateData(source);
@@ -66,15 +59,16 @@ class ActionData extends SwadeBaseItemData<
     return true;
   }
 
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/action-embeds.hbs',
@@ -92,9 +86,10 @@ class ActionData extends SwadeBaseItemData<
   }
 
   #triggerActivityUpdate() {
-    const items = this.parent.actor?.items.filter(
-      (i) => 'activities' in i.system && i.system.activities.has(this.swid),
-    );
+    const items =
+      this.parent.actor?.items.filter(
+        (i) => 'activities' in i.system && i.system.activities.has(this.swid),
+      ) ?? [];
     for (const item of items) {
       item._safePrepareData();
       item.sheet.render();
@@ -103,7 +98,7 @@ class ActionData extends SwadeBaseItemData<
 
   protected override _onUpdate(
     changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
-    options: DocumentOnUpdateOptions<'Item'>,
+    options: Item.DatabaseOperations['update'],
     userId: string,
   ): void {
     super._onUpdate(changed, options, userId);
@@ -112,14 +107,14 @@ class ActionData extends SwadeBaseItemData<
   }
   protected override _onCreate(
     data: TypeDataModel.ParentAssignmentType<this>,
-    options: DocumentOnCreateOptions<'Item'>,
+    options: Item.DatabaseOperations['create'],
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
     this.#triggerActivityUpdate();
   }
   protected override _onDelete(
-    options: DocumentOnDeleteOptions<'Item'>,
+    options: Item.DatabaseOperations['delete'],
     userId: string,
   ): void {
     super._onDelete(options, userId);
