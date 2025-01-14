@@ -10,9 +10,11 @@
   .ammo-counter {
     display: flex;
     column-gap: $medium-spacing;
+
     .ammo-name {
       margin-left: auto;
     }
+
     .magazine {
       text-decoration-style: dotted;
     }
@@ -38,6 +40,7 @@
       overflow: hidden;
       height: 30px;
       word-break: break-all;
+
       &:hover {
         color: #111;
       }
@@ -46,12 +49,14 @@
 
   .card-content {
     margin: 5px 0;
+
     h3 {
       font-size: var(--font-size-12);
       margin: 0;
       font-weight: bold;
     }
-    > * {
+
+    >* {
       user-select: text;
     }
   }
@@ -79,8 +84,10 @@
       margin: 0;
       padding: 0;
       display: inline-flex;
+      flex-wrap: wrap;
       gap: 0.5rem;
       list-style: none;
+
       .effect {
         .content-link {
           cursor: grabbing;
@@ -110,9 +117,11 @@
   .message-header .message-sender {
     white-space: normal;
   }
+
   .initiative-redraw {
     text-align: end;
   }
+
   .initiative-draw {
     position: relative;
     display: grid;
@@ -120,6 +129,7 @@
     gap: 1em;
     align-items: center;
     margin: 0.5em;
+
     .action-card {
       grid-column: 1;
       position: relative;
@@ -131,29 +141,37 @@
         z-index 0.2s step-end;
       transform-origin: center left;
       z-index: 0;
+
       &.rotate-deg-2 {
         transform: rotate(2deg);
       }
+
       &.rotate-deg-negative-2 {
         transform: rotate(-2deg);
       }
+
       &.rotate-deg-3 {
         transform: rotate(3deg);
       }
+
       &.rotate-deg-negative-3 {
         transform: rotate(-3deg);
       }
+
       &.rotate-deg-4 {
         transform: rotate(4deg);
       }
+
       &.rotate-deg-negative-4 {
         transform: rotate(-4deg);
       }
+
       .card-face {
         position: relative;
         height: 75px;
         border: none;
       }
+
       &:hover {
         transform: scale(4.75) rotate(0deg);
         filter: drop-shadow(4px 6px 4px rgb(0 0 0 / 50%));
@@ -163,6 +181,7 @@
           z-index 0.2s step-start;
       }
     }
+
     .card-name {
       grid-column: 2;
       font-size: 1.125em;
@@ -171,38 +190,47 @@
       margin-bottom: 0;
     }
   }
+
   .discarded-cards {
     &.compact {
       padding-top: 0;
     }
+
     position: relative;
     padding: 0.5rem 0;
     z-index: 1;
+
     &:hover {
       z-index: 1;
       transition: z-index 0.2s step-start;
     }
+
     .initiative-draw {
       margin-left: -0.5em;
       scale: 90%;
       position: relative;
       z-index: 0;
       transition: z-index 0.2s step-end;
+
       .action-card:hover {
         transform: scale(5.25) rotate(0deg);
       }
     }
   }
+
   &:first-child .initiative-draw .picked-card,
   &:nth-of-type(2) .initiative-draw .picked-card {
     transform-origin: top left;
+
     &:hover {
       transform-origin: top left;
     }
   }
+
   &:last-child .initiative-draw .picked-card,
   &:nth-last-of-type(2):not(:nth-of-type(2)) .initiative-draw .picked-card {
     transform-origin: bottom left;
+
     &:hover {
       transform-origin: bottom left;
     }
@@ -218,10 +246,12 @@
     padding: 0.5rem;
     text-align: center;
     font-weight: 700;
+
     .icon {
       max-width: 3rem;
       border: none;
     }
+
     .text-icon {
       font-size: 2rem;
     }

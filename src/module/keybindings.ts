@@ -8,10 +8,11 @@ export function registerKeybindings() {
     onDown: (_ctx) => {
       const favoriteCards = game.user?.getFlag('swade', 'favoriteCardsDoc');
       if (!favoriteCards) {
-        return ui.notifications.warn(
+        ui.notifications.warn(
           'SWADE.Keybindings.OpenFavoriteCards.NoCardsWarning',
           { localize: true },
         );
+        return;
       }
       game.cards?.get(favoriteCards)?.sheet?.render(true);
     },

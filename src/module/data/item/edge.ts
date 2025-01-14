@@ -1,5 +1,3 @@
-import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
-import { DataModelValidationFailure } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/validation-failure.mjs';
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
@@ -22,13 +20,13 @@ declare namespace EdgeData {
       Grants {
     isArcaneBackground: foundry.data.fields.BooleanField<{ label: string }>;
     requirements: foundry.data.fields.ArrayField<
-      foundry.data.fields.EmbeddedDataField<RequirementsField>,
+      foundry.data.fields.EmbeddedDataField<typeof RequirementsField>,
       {
         initial: Requirement[];
         validate: (
           value: Requirement[],
-          _options: DataField.ValidationOptions<DataField.Any>,
-        ) => DataModelValidationFailure | undefined;
+          _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any>,
+        ) => foundry.data.validation.DataModelValidationFailure | undefined;
       }
     >;
   }
@@ -64,7 +62,7 @@ class EdgeData extends SwadeBaseItemData<
           ],
           validate: (
             value: Requirement[],
-            _options: DataField.ValidationOptions<DataField.Any>,
+            _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any>,
           ) => {
             const failures =
               new foundry.data.validation.DataModelValidationFailure({

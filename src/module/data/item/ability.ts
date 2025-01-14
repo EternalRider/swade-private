@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { createEmbedElement } from '../../util';
@@ -74,7 +73,7 @@ class AbilityData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(data, options, user);
     //Stop Archetypes from being added to the actor as an item if the actor already has one

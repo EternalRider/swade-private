@@ -1,10 +1,7 @@
-import type { DocumentDatabaseOperations } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import type Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import {
   AnyObject,
   DeepPartial,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -98,7 +95,7 @@ class SwadeItem extends Item {
 
   constructor(
     data: foundry.documents.BaseItem.ConstructorData,
-    context?: Document.ConstructionContext<SwadeActor>,
+    context?: foundry.abstract.Document.ConstructionContext<SwadeActor>,
   ) {
     super(data, context);
     this.overrides ??= {};
@@ -573,7 +570,7 @@ class SwadeItem extends Item {
 
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
 
-    let updatedItems = new Array<Document.Stored<SwadeItem>>();
+    let updatedItems = new Array<foundry.abstract.Document.Stored<SwadeItem>>();
     // Persist the updates
     if (!foundry.utils.isEmpty(itemUpdates)) {
       await this.update(itemUpdates);
@@ -585,7 +582,7 @@ class SwadeItem extends Item {
       updatedItems = (await this.actor?.updateEmbeddedDocuments(
         'Item',
         resourceUpdates,
-      )) as Array<Document.Stored<SwadeItem>>;
+      )) as Array<foundry.abstract.Document.Stored<SwadeItem>>;
     }
 
     /**
@@ -703,7 +700,9 @@ class SwadeItem extends Item {
     await this.unsetFlag('swade', 'hasGranted');
   }
 
-  async #postConsumptionCleanup(updatedItems: Document.Stored<SwadeItem>[]) {
+  async #postConsumptionCleanup(
+    updatedItems: foundry.abstract.Document.Stored<SwadeItem>[],
+  ) {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (item && item.system._shouldDelete) {
@@ -769,9 +768,12 @@ class SwadeItem extends Item {
       system: foundry.utils.deepClone(newItem.system),
     };
     foundry.utils.mergeObject(updates, {
-      'system.favorite': this.system.favorite,
-      'system.equipStatus': this.system.equipStatus,
-      'system.quantity': this.system.quantity,
+      'system.favorite':
+        'favorite' in this.system ? this.system.favorite : null,
+      'system.equipStatus':
+        'equipStatus' in this.system ? this.system.equipStatus : null,
+      'system.quantity':
+        'quantity' in this.system ? this.system.quantity : null,
     });
     await this.update(updates);
     return this;
@@ -847,7 +849,7 @@ class SwadeItem extends Item {
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     const canCreate = await super._preCreate(data, options, user);
     if (canCreate === false) return false;
@@ -860,7 +862,7 @@ class SwadeItem extends Item {
 
   protected override async _preDelete(
     options: Item.DatabaseOperations['delete'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ): Promise<void> {
     await super._preDelete(options, user);
     if (this.parent) await this.removeGranted();
@@ -894,17 +896,17 @@ class SwadeItem extends Item {
   }
 
   protected static override async _onCreateOperation<
-    T extends Document.AnyConstructor,
+    T extends foundry.abstract.Document.AnyConstructor,
   >(
     this: T,
-    items: InstanceType<Document.ConfiguredClass<T>>[],
+    items: InstanceType<foundry.abstract.Document.ToConfiguredClass<T>>[],
     operation: DocumentDatabaseOperations<
       Item,
       {
         isItemGrant: boolean;
       }
     >['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     if (!operation.isItemGrant && (user as User).isSelf) {
       for (const item of items as SwadeItem[]) {

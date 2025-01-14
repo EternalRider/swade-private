@@ -24,13 +24,20 @@ Both Characters and NPCs share similar data structures; the main difference is t
 - Numb (Ignore wounds and fatigue): `system.woundsOrFatigue.ignored`
 - Enable Conviction: `system.details.conviction.active`
 - Size: `system.stats.size`
-- Pace: `system.stats.speed.value`
-- Running Die: `system.stats.speed.runningDie`
-- Running Modifier: `system.stats.speed.runningMod`
 - Wealth Die
   - Die Sides: `system.details.wealth.die`
   - Modifier: `system.details.wealth.modifier`
   - Wild-Die Sides: `system.details.wealth.wild-die`
+
+#### Movement
+
+- Pace, all speeds: `system.pace`
+  - Ground Pace: `system.pace.ground`
+  - Fly Pace: `system.pace.fly`
+  - Swim Pace: `system.pace.swim`
+  - Burrow Pace: `system.pace.burrow`
+- Running Die: `system.pace.running.die`
+- Running Modifier: `system.pace.running.mod`
 
 #### Initiative
 

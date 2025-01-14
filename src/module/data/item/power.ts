@@ -36,8 +36,11 @@ declare namespace PowerData {
     }>;
     arcane: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     ap: foundry.data.fields.NumberField<{ initial: 0 }>;
-    innate: foundry.data.fields.BooleanField;
-    modifiers: foundry.data.fields.ArrayField<foundry.data.fields.ObjectField>;
+    innate: foundry.data.fields.BooleanField<{ label: string }>;
+    modifiers: foundry.data.fields.ArrayField<
+      foundry.data.fields.ObjectField,
+      { label: string }
+    >;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {
@@ -100,7 +103,9 @@ class PowerData extends SwadeBaseItemData<
     const field = new FormulaField();
     const cleaned = field.clean(this.range);
     if (Roll.validate(cleaned)) {
-      this.range = new FormulaField().initialize(cleaned as string, this);
+      this.range = String(
+        new FormulaField().initialize(cleaned as string, this),
+      );
     } else {
       Logger.warn(
         `Range "${cleaned}" cannot be evaluated as it is not a valid formula`,
@@ -164,15 +169,17 @@ class PowerData extends SwadeBaseItemData<
     const ab = this.parent.actor.system.powerPoints[arcane];
     return ab.value >= resourcesUsed;
   }
+
+  declare enrichedDescription?: string;
+
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(
-      this.description,
-      options,
-    );
+    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
+      ...options,
+    });
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/power-embeds.hbs',

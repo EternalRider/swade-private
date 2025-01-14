@@ -1,8 +1,6 @@
-import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
-
 export class AddStatsValueField extends foundry.data.fields.DataField {
-  constructor(options: DataFieldOptions.Any = {}) {
-    super(options as DataField.DefaultOptions);
+  constructor(options: foundry.data.fields.DataField.Options.Any = {}) {
+    super(options as foundry.data.fields.DataField.DefaultOptions);
   }
 
   protected _cast(value: string | number | boolean) {
@@ -14,7 +12,7 @@ export class AddStatsValueField extends foundry.data.fields.DataField {
 
   protected override _validateType(
     value: any,
-    _options: DataField.ValidationOptions<DataField.Any> = {},
+    _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any> = {},
   ): boolean | void {
     const validTypes = ['string', 'number', 'boolean'];
     if (!!value && !validTypes.includes(foundry.utils.getType(value))) {

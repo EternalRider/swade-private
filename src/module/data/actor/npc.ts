@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { createEmbedElement } from '../../util';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -39,7 +38,7 @@ export class NpcData extends CreatureData<
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
     _options: Actor.DatabaseOperations['create'],
-    _user: BaseUser,
+    _user: foundry.documents.BaseUser,
   ) {
     const isImported = foundry.utils.hasProperty(
       createData,

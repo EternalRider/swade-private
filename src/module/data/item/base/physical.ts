@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
 import { builder, physicalItem } from '../common';
@@ -21,7 +20,7 @@ class SwadePhysicalItemData<
     return {
       ...super.defineSchema(),
       ...physicalItem(),
-      ...builder()
+      ...builder(),
     };
   }
 
@@ -32,7 +31,7 @@ class SwadePhysicalItemData<
   protected override async _preUpdate(
     changed: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['update'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preUpdate(changed, options, user);
     const diff = foundry.utils.diffObject(this.toObject(), changed);

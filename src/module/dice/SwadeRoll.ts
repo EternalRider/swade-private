@@ -1,7 +1,7 @@
 import {
   EmptyObject,
   InexactPartial,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,

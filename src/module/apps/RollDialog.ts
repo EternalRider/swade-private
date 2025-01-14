@@ -147,7 +147,9 @@ export class RollDialog extends FormApplication<
       modGroups: new Array<RollModifierGroup>(),
       extraButtonLabel: '',
       rollMode: game.settings.get('core', 'rollMode'),
-      modifiers: this.modifiers.map(normalizeRollModifiers),
+      modifiers: this.modifiers
+        .map(normalizeRollModifiers)
+        .map(this.#fillModifierLabels.bind(this)),
       formula: this.#buildRollForEvaluation().formula,
       isTraitRoll: this.isTraitRoll,
     };
@@ -275,6 +277,18 @@ export class RollDialog extends FormApplication<
     const roll = new this.rollCls(formula, this.#getRollData()) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
+  }
+
+  #fillModifierLabels(mod: RollModifier): RollModifier {
+    if (typeof mod.value === 'string' && mod.value.startsWith('@')) {
+      const key = mod.value.split('@')[1];
+      const rollData = this.#getRollData();
+      const value = rollData[key];
+      const match = value.match(/\[(\w+)\]/); //extract the roll flavor text
+      if (value && match) mod.label = match[1];
+    }
+    mod.label ||= game.i18n.localize('SWADE.Addi');
+    return mod;
   }
 
   #resolve(roll: SwadeRoll) {

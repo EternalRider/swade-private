@@ -1,4 +1,3 @@
-import type { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -150,7 +149,10 @@ export default class SwadeActiveEffect extends ActiveEffect {
     return data;
   }
 
-  override apply(doc: SwadeActor | SwadeItem, change: EffectChangeData) {
+  override apply(
+    doc: SwadeActor | SwadeItem,
+    change: ActiveEffect.EffectChangeData,
+  ) {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
@@ -174,7 +176,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private _getAffectedItems(
     parent: SwadeActor | SwadeItem,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
   ) {
     const items = new Array<SwadeItem>();
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
@@ -203,7 +205,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       affectedItems.push(...this._getAffectedItems(parent, c)),
     );
     for (const item of affectedItems) {
-      for (const change of this.changes as EffectChangeData[]) {
+      for (const change of this.changes as ActiveEffect.EffectChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (!match) continue;
         const key = match[3].trim();
@@ -271,7 +273,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private _handleItemMatch(
     match: RegExpMatchArray,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
     doc: SwadeActor | SwadeItem,
   ) {
     //get the properties from the match
@@ -306,7 +308,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private _handleAttributeMatch(
     match: RegExpMatchArray,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
     const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
@@ -321,7 +323,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private _handleGlobalModifierMatch(
     match: RegExpMatchArray,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
     if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
@@ -347,7 +349,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   private _handlePTModifierMatch(
     match: RegExpMatchArray,
-    change: EffectChangeData,
+    change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
     if (doc.system instanceof VehicleData || doc.system instanceof GroupData)

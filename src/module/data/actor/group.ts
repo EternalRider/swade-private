@@ -13,7 +13,7 @@ interface GroupMember {
 }
 
 declare namespace GroupData {
-  interface Schema extends DataSchema {
+  interface Schema extends foundry.data.fields.DataSchema {
     supplyLevels: ReturnType<(typeof GroupData)['makeSupplyLevelSchema']>;
     members: foundry.data.fields.SetField<ForeignDocumentUUIDField>;
     description: foundry.data.fields.HTMLField<{ textSearch: true }>;
@@ -34,7 +34,7 @@ class GroupData<
   BaseData extends GroupData.BaseData = GroupData.BaseData,
   DerivedData extends GroupData.DerivedData = GroupData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
-  static override defineSchema(): DataSchema {
+  static override defineSchema(): foundry.data.fields.DataSchema {
     return {
       ...super.defineSchema(),
       members: new fields.SetField(
@@ -42,7 +42,7 @@ class GroupData<
           type: 'Actor',
           validate: (
             value: string,
-            _options: DataField.ValidationOptions<foundry.data.fields.StringField>,
+            _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
           ) => {
             if (value.startsWith('Compendium')) {
               return new foundry.data.validation.DataModelValidationFailure({
@@ -101,11 +101,13 @@ class GroupData<
   override prepareBaseData(this: GroupData) {
     super.prepareBaseData();
     this.members = new Map<string, GroupMember>(
-      this.members.map<[string, GroupMember]>((fn: DocumentFn<SwadeActor>) => {
-        const result = fn();
-        if (typeof result === 'string') return [result, { actor: null }];
-        return [result.uuid as string, { actor: result }];
-      }),
+      this.members.map<[string, GroupMember]>(
+        (fn: DocumentFn<SwadeActor<'character' | 'npc'>>) => {
+          const result = fn();
+          if (typeof result === 'string') return [result, { actor: null }];
+          return [result.uuid as string, { actor: result }];
+        },
+      ),
     );
   }
 

@@ -1,5 +1,4 @@
-import type { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.d.mts';
-import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.d.mts';
+import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 // import { AuraPointSource } from './module/canvas/AuraPointSource';
@@ -37,8 +36,8 @@ declare global {
 }
 
 export interface CanvasDropData
-  extends DropData<foundry.abstract.Document.Any>,
-    DropData.UUID,
+  extends foundry.abstract.Document.DropData<foundry.abstract.Document.Any>,
+    foundry.abstract.Document.DropData.UUID,
     Canvas.DropPosition {}
 
 export type ActorMetadata = CompendiumCollection.Metadata & { type: 'Actor' };

@@ -1,5 +1,4 @@
-import RollTerm from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/dice/terms/term.mjs';
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
   ActorRollData,
   RollPart,
@@ -175,10 +174,13 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     //clone the terms and remove the pool;
     const mods = this.terms.slice(1);
     //cut up the modifiers and add them up into a single number
-    const modTotal = chunkArray<RollTerm>(mods, 2).reduce((acc, cur) => {
-      const [op, num] = cur;
-      return (acc += Number(`${op.total?.toString().trim()}${num.total}`));
-    }, 0);
+    const modTotal = chunkArray<foundry.dice.terms.RollTerm>(mods, 2).reduce(
+      (acc, cur) => {
+        const [op, num] = cur;
+        return (acc += Number(`${op.total?.toString().trim()}${num.total}`));
+      },
+      0,
+    );
 
     for (let i = 0; i < pool.rolls.length; i++) {
       const roll = pool.rolls[i];

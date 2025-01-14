@@ -1,11 +1,12 @@
-import type TypeDataModel from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Advance } from '../../../../interfaces/Advance.interface';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
+import type SwadeActor from '../../../documents/actor/SwadeActor';
+import type SwadeItem from '../../../documents/item/SwadeItem';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
 import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
@@ -20,12 +21,13 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
-import type SwadeItem from '../../../documents/item/SwadeItem';
 
 const fields = foundry.data.fields;
 
 declare namespace CreatureData {
-  interface Schema extends DataSchema, ReturnType<typeof creatureSchema> {}
+  interface Schema
+    extends foundry.data.fields.DataSchema,
+      ReturnType<typeof creatureSchema> {}
 
   type BaseData = {
     attributes: {
@@ -725,7 +727,9 @@ class CreatureData<
     if (notify && game.settings.get('swade', 'notifyBennies')) {
       const message = await renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
-        speaker: getDocumentClass('ChatMessage').getSpeaker({actor: this}),
+        speaker: getDocumentClass('ChatMessage').getSpeaker({
+          actor: this.parent,
+        }),
       });
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);
@@ -760,7 +764,9 @@ class CreatureData<
 
   protected override async _preUpdate(
     this: CreatureData,
-    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, SwadeActor>
+    >,
     options: Actor.DatabaseOperations['update'],
     userId: string,
   ) {
