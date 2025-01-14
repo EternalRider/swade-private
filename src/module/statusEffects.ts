@@ -1,11 +1,7 @@
-import { StatusEffect as v11StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { constants } from './constants';
 
-// shim until v12
-type StatusEffect = v11StatusEffect & { img?: string };
-
 /** @internal */
-export const statusEffects: StatusEffect[] = [
+export const statusEffects: CONFIG.StatusEffect[] = [
   {
     img: 'systems/swade/assets/icons/status/status_shaken.svg',
     id: 'shaken',
@@ -21,11 +17,9 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
-        loseTurnOnHold: true,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+      loseTurnOnHold: true,
     },
   },
   {
@@ -79,10 +73,8 @@ export const statusEffects: StatusEffect[] = [
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
     },
   },
   {
@@ -110,10 +102,8 @@ export const statusEffects: StatusEffect[] = [
         value: '2',
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
     },
     statuses: ['vulnerable'],
   },
@@ -132,10 +122,8 @@ export const statusEffects: StatusEffect[] = [
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
     },
   },
   {
@@ -236,10 +224,8 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
     },
   },
   {
@@ -288,10 +274,12 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+      loseTurnOnHold: true,
+    },
     flags: {
       swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
-        loseTurnOnHold: true,
         related: {
           distracted: {},
           prone: {},
@@ -316,10 +304,8 @@ export const statusEffects: StatusEffect[] = [
         value: 'true',
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
     },
   },
   {
@@ -330,10 +316,8 @@ export const statusEffects: StatusEffect[] = [
     duration: {
       rounds: 1,
     },
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
     },
   },
   {
@@ -428,10 +412,8 @@ export const statusEffects: StatusEffect[] = [
         mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
       },
     ],
-    flags: {
-      swade: {
-        expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
-      },
+    system: {
+      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
     },
   },
 ];

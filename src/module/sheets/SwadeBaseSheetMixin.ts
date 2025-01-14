@@ -1,18 +1,32 @@
-import type { AnyObject, DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
-import type { SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
+import type {
+  AnyObject,
+  DeepPartial,
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type {
+  SwadeApplicationTab,
+  SwadeDocumentSheetConfiguration,
+} from '../../globals';
 
-type DocumentSheetRenderOptions = foundry.applications.api.DocumentSheetV2.RenderOptions;
+type DocumentSheetRenderOptions =
+  foundry.applications.api.DocumentSheetV2.RenderOptions;
 
 /* eslint-disable @typescript-eslint/naming-convention */
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 export function SwadeBaseSheetMixin<
-Document extends Actor.ConfiguredInstance | Item.ConfiguredInstance, 
-RenderContext extends AnyObject
+  Document extends Actor.ConfiguredInstance | Item.ConfiguredInstance,
+  RenderContext extends AnyObject,
 >(Base: typeof foundry.applications.api.DocumentSheetV2) {
-  return class SwadeBaseSheet extends HandlebarsApplicationMixin(Base)<Document, RenderContext, SwadeDocumentSheetConfiguration<Document>, DocumentSheetRenderOptions> {
-    static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<Document>> = {
+  return class SwadeBaseSheet extends HandlebarsApplicationMixin(Base)<
+    Document,
+    RenderContext,
+    SwadeDocumentSheetConfiguration<Document>,
+    DocumentSheetRenderOptions
+  > {
+    static override DEFAULT_OPTIONS: DeepPartial<
+      SwadeDocumentSheetConfiguration<Document>
+    > = {
       classes: ['swade'],
       form: {
         submitOnChange: true,
@@ -31,9 +45,11 @@ RenderContext extends AnyObject
       _target: HTMLImageElement,
     ) {
       const { img } =
-        (this.document.constructor as Actor.ConfiguredClass | Item.ConfiguredClass).getDefaultArtwork?.(
-          this.document.toObject(),
-        ) ?? {};
+        (
+          this.document.constructor as
+            | Actor.ConfiguredClass
+            | Item.ConfiguredClass
+        ).getDefaultArtwork?.(this.document.toObject()) ?? {};
       const fp = new FilePicker({
         current: this.document.img,
         type: 'image',
@@ -75,7 +91,10 @@ RenderContext extends AnyObject
      * @param context Prepared context data
      * @param options Provided render options
      */
-    protected override _onRender(context: DeepPartial<RenderContext>, options: DeepPartial<DocumentSheetRenderOptions>) {
+    protected override _onRender(
+      context: DeepPartial<RenderContext>,
+      options: DeepPartial<DocumentSheetRenderOptions>,
+    ) {
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
       this.#disableOverrides();
@@ -152,7 +171,9 @@ RenderContext extends AnyObject
      * Utility method for _prepareContext to create the tab navigation.
      */
     protected _getTabs() {
-      return Object.values((this.constructor as typeof SwadeBaseSheet).TABS).reduce(
+      return Object.values(
+        (this.constructor as typeof SwadeBaseSheet).TABS,
+      ).reduce(
         (acc: Record<string, SwadeApplicationTab>, v: SwadeApplicationTab) => {
           const isActive = this.tabGroups[v.group] === v.id;
           acc[v.id] = {
@@ -192,10 +213,11 @@ RenderContext extends AnyObject
         this.document.overrides ?? {},
       );
       for (const override of Object.keys(flatOverrides)) {
-        const input: HTMLInputElement | null = this.element.querySelector(`[name="${override}"]`);
+        const input: HTMLInputElement | null = this.element.querySelector(
+          `[name="${override}"]`,
+        );
         if (input) input.disabled = true;
       }
     }
   };
 }
-  

@@ -1,7 +1,5 @@
-import ApplicationV2 from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/api/application.mjs';
 import { ToggleActiveEffectOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -66,7 +64,7 @@ type SystemActorTypes = Exclude<string & keyof Game.Model['Actor'], 'base'>;
 
 interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
   type: ActorType;
-  system: InstanceType<DataModelConfig['Actor'][ActorType]>;
+  // system: InstanceType<DataModelConfig['Actor'][ActorType]>;
 }
 
 class SwadeActor extends Actor {
@@ -91,7 +89,7 @@ class SwadeActor extends Actor {
 
   constructor(
     data: foundry.documents.BaseActor.ConstructorData,
-    ctx?: Document.ConstructionContext<TokenDocument>,
+    ctx?: foundry.abstract.Document.ConstructionContext<TokenDocument>,
   ) {
     if (game.swade.ready && ctx?.pack && data._id) {
       const art = game.swade.compendiumArt.map.get(
@@ -208,7 +206,9 @@ class SwadeActor extends Actor {
     if (this.system instanceof VehicleData || this.system instanceof GroupData)
       return;
     const archetypes = this.items.filter(
-      (i) => i.type === 'ability' && i.system.subtype === 'archetype',
+      (i) =>
+        i.type === 'ability' &&
+        (i as SwadeItem<'ability'>).system.subtype === 'archetype',
     );
     if (archetypes.length > 1) {
       Logger.warn(
@@ -530,7 +530,7 @@ class SwadeActor extends Actor {
     return RollDialog.asPromise({
       roll: roll,
       mods: mods,
-      speaker: ChatMessage.getSpeaker(),
+      speaker: ChatMessage.getSpeaker({ actor: this }),
       actor: this,
       flavor: game.i18n.localize('SWADE.WealthDie.Label'),
       title: game.i18n.localize('SWADE.WealthDie.Label'),
@@ -556,7 +556,7 @@ class SwadeActor extends Actor {
       paceKey = await foundry.applications.api.DialogV2.wait({
         window: {
           title: 'SWADE.Movement.Running.Dialog.Title',
-        } satisfies Partial<ApplicationV2.WindowConfiguration>,
+        } satisfies Partial<foundry.applications.api.ApplicationV2.WindowConfiguration>,
         content: `<p>${game.i18n.localize('SWADE.Movement.Running.Dialog.Content')}</p>`,
         buttons: availableKeys.map((key) => {
           return {
@@ -659,11 +659,14 @@ class SwadeActor extends Actor {
     //return early if there no bennies to spend
     if (this.bennies < 1) return;
     if (game.settings.get('swade', 'notifyBennies')) {
+      const speaker = CONFIG.ChatMessage.documentClass.getSpeaker({
+        actor: this,
+      });
       const message = await renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
-        speaker: game.user,
+        speaker: speaker,
       });
-      const chatData = { content: message };
+      const chatData = { content: message, speaker: speaker };
       await CONFIG.ChatMessage.documentClass.create(chatData);
     }
     await this.update({ 'system.bennies.value': this.bennies - 1 });
@@ -700,11 +703,17 @@ class SwadeActor extends Actor {
 
     const hiddenNPC = combatant?.isNPC && combatant?.hidden;
     if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
+      const speaker = getDocumentClass('ChatMessage').getSpeaker({
+        actor: this,
+      });
       const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
-        speaker: game.user,
+        speaker: speaker,
       });
-      await getDocumentClass('ChatMessage').create({ content });
+      await getDocumentClass('ChatMessage').create({
+        content: content,
+        speaker: speaker,
+      });
     }
 
     /**
@@ -1554,7 +1563,7 @@ class SwadeActor extends Actor {
 
   protected override _onUpdate(
     changed: foundry.documents.BaseActor.UpdateData,
-    options: Document.OnUpdateOptions<'Actor'>,
+    options: foundry.abstract.Document.OnUpdateOptions<'Actor'>,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

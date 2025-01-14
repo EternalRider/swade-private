@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { SwadeDocumentSheetConfiguration, Updates } from '../../globals';
 import type SwadeActor from '../documents/actor/SwadeActor';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
@@ -8,10 +8,13 @@ import type SwadeItem from '../documents/item/SwadeItem';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-
-export class SwadeActorSheetV2<RenderContext extends SwadeActorSheetV2.RenderContext> extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
+export class SwadeActorSheetV2<
+  RenderContext extends SwadeActorSheetV2.RenderContext,
+> extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
   // declare element: HTMLFormElement;
-  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor>> = {
+  static override DEFAULT_OPTIONS: DeepPartial<
+    SwadeDocumentSheetConfiguration<SwadeActor>
+  > = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
     actions: {
@@ -294,17 +297,17 @@ export class SwadeActorSheetV2<RenderContext extends SwadeActorSheetV2.RenderCon
 
 export namespace SwadeActorSheetV2 {
   export type RenderContext = {
-      user: SwadeUser,
-      editable: boolean,
-      owner: boolean,
-      limited: boolean,
-      // Add the actor document.
-      actor: SwadeActor,
-      items: SwadeItem[],
-      // Add the actor's data to context.data for easier access, as well as flags.
-      system: SwadeActor['system'],
-      flags: SwadeActor['flags'],
-      // Adding a pointer to CONFIG.SWADE
-      config: typeof CONFIG.SWADE,
-    }
+    user: SwadeUser;
+    editable: boolean;
+    owner: boolean;
+    limited: boolean;
+    // Add the actor document.
+    actor: SwadeActor;
+    items: SwadeItem[];
+    // Add the actor's data to context.data for easier access, as well as flags.
+    system: SwadeActor['system'];
+    flags: SwadeActor['flags'];
+    // Adding a pointer to CONFIG.SWADE
+    config: typeof CONFIG.SWADE;
+  };
 }

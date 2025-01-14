@@ -1,5 +1,4 @@
-import type TypeDataModel from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/type-data.mjs';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { PotentialSource } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
@@ -12,6 +11,7 @@ import {
   Favorite,
   Templates,
 } from './item-common.interface';
+import type SwadeItem from '../../documents/item/SwadeItem';
 
 declare namespace ActionData {
   interface Schema
@@ -97,7 +97,12 @@ class ActionData extends SwadeBaseItemData<
   }
 
   protected override _onUpdate(
-    changed: DeepPartial<TypeDataModel.ParentAssignmentType<this>>,
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        ActionData.Schema,
+        SwadeItem
+      >
+    >,
     options: Item.DatabaseOperations['update'],
     userId: string,
   ): void {
@@ -106,7 +111,10 @@ class ActionData extends SwadeBaseItemData<
       this.#triggerActivityUpdate();
   }
   protected override _onCreate(
-    data: TypeDataModel.ParentAssignmentType<this>,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      ActionData.Schema,
+      SwadeItem
+    >,
     options: Item.DatabaseOperations['create'],
     userId: string,
   ): void {

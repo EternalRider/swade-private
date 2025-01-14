@@ -1,14 +1,12 @@
-import type {
-  DataField,
-  ObjectField,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
-
 /**
  * A subclass of ObjectField that represents a mapping of keys to the provided DataField type.
  * @param model The class of DataField which should be embedded in this field.
  * @param options Options which configure the behavior of the field.
  */
-export class MappingField<Model extends DataField.Any = DataField.Any> extends foundry.data.fields.ObjectField {
+export class MappingField<
+  Model extends
+    foundry.data.fields.DataField.Any = foundry.data.fields.DataField.Any,
+> extends foundry.data.fields.ObjectField {
   /**The embedded DataField definition which is contained in this field.*/
   declare model: Model;
   /** Keys that will be created if no data is provided. */
@@ -24,7 +22,7 @@ export class MappingField<Model extends DataField.Any = DataField.Any> extends f
         'MappingField must have a DataField as its contained element',
       );
     }
-    super(options as ObjectField.DefaultOptions);
+    super(options as foundry.data.fields.ObjectField.DefaultOptions);
     this.model = model;
   }
 
@@ -90,7 +88,10 @@ export class MappingField<Model extends DataField.Any = DataField.Any> extends f
    * @returns An object of value-specific errors by key.
    */
   protected _validateValues(value: object, options: object) {
-    const errors: Record<string, foundry.data.validation.DataModelValidationFailure> = {};
+    const errors: Record<
+      string,
+      foundry.data.validation.DataModelValidationFailure
+    > = {};
     for (const [k, v] of Object.entries(value)) {
       const error = this.model.validate(v, options);
       if (error) errors[k] = error;
@@ -133,7 +134,8 @@ export type MappingFieldInitialValueBuilder = (
   existing?: Record<string, any>,
 ) => any;
 
-export interface MappingFieldOptions extends Partial<DataFieldOptions<object>> {
+export interface MappingFieldOptions
+  extends Partial<foundry.data.fields.DataField.Options<object>> {
   /** Keys that will be created if no data is provided. */
   initialKeys?: string[];
   /** Function to calculate the initial value for a key. */

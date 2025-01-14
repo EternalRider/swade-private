@@ -139,23 +139,26 @@ async function removeStunned(effect: SwadeActiveEffect) {
   const result = roll?.successes ?? constants.ROLL_RESULT.FAIL;
   //no roll or failed
   if (result < constants.ROLL_RESULT.SUCCESS) {
-    return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Fail', {
+    ui.notifications.info('SWADE.EffectCallbacks.Stunned.Fail', {
       localize: true,
     });
+    return;
   }
   //normal success, still vulnerable
   if (result === constants.ROLL_RESULT.SUCCESS) {
     await effect.delete();
-    return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Success', {
+    ui.notifications.info('SWADE.EffectCallbacks.Stunned.Success', {
       localize: true,
     });
+    return;
   }
 
   if (result >= constants.ROLL_RESULT.RAISE) {
     await effect.delete();
-    return ui.notifications.info('SWADE.EffectCallbacks.Stunned.Raise', {
+    ui.notifications.info('SWADE.EffectCallbacks.Stunned.Raise', {
       localize: true,
     });
+    return;
   }
 }
 
@@ -201,22 +204,25 @@ async function bleedOut(effect: SwadeActiveEffect) {
     if (toUpdate.length) {
       await game.combat?.updateEmbeddedDocuments('Combatant', toUpdate);
     }
-    return ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Fail', {
+    ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Fail', {
       localize: true,
     });
+    return;
   }
   //hanging on
   if (result === constants.ROLL_RESULT.SUCCESS) {
-    return ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Success', {
+    ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Success', {
       localize: true,
     });
+    return;
   }
 
   //stabilizing
   if (result >= constants.ROLL_RESULT.RAISE) {
     await effect.delete();
-    return ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Raise', {
+    ui.notifications.info('SWADE.EffectCallbacks.BleedingOut.Raise', {
       localize: true,
     });
+    return;
   }
 }

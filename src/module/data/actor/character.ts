@@ -1,4 +1,3 @@
-import type BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import { CreatureData } from './base/creature';
@@ -92,7 +91,7 @@ export class CharacterData extends CreatureData<
   protected override async _preCreate(
     createData: foundry.documents.BaseActor.ConstructorData,
     options: Actor.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(createData, options, user);
     this.parent.updateSource({

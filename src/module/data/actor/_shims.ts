@@ -1,8 +1,6 @@
-import { LogCompatibilityWarningOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/logging.mjs';
-
 export function _shimPace(source) {
   const descriptor = { configurable: true };
-  const options: LogCompatibilityWarningOptions = {
+  const options: foundry.utils.LogCompatibilityWarningOptions = {
     since: '4.2',
     until: '5.0',
   };

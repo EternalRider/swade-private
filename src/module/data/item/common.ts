@@ -1,4 +1,3 @@
-import { DataField } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
 import { constants } from '../../constants';
 import { MappingField } from '../fields/MappingField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
@@ -32,7 +31,7 @@ export const itemDescription = () => ({
     label: 'SWADE.SWID.Long',
     validate: (
       value: string,
-      _options: DataField.ValidationOptions<foundry.data.fields.StringField>,
+      _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
     ) => {
       validateSwid(value);
     },

@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
 import { grants } from './common';
@@ -39,7 +38,7 @@ class AncestryData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(data, options, user);
     //Stop Ancestries/Archetypes from being added to the actor as an item if the actor already has one

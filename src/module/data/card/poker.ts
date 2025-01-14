@@ -1,15 +1,17 @@
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+
 declare namespace PokerData {
-  interface Schema extends DataSchema {
-    isJoker: foundry.data.fields.BooleanField;
+  interface Schema extends foundry.data.fields.DataSchema {
+    isJoker: foundry.data.fields.BooleanField<{ label: string }>;
     suit: foundry.data.fields.NumberField<{ min: 1; max: 4 }>;
   }
-  interface BaseData {}
-  interface DerivedData {}
+  interface BaseData extends EmptyObject {}
+  interface DerivedData extends EmptyObject {}
 }
 
 class PokerData extends foundry.abstract.TypeDataModel<
   PokerData.Schema,
-  JournalEntryPage.ConfiguredInstance,
+  Card.ConfiguredInstance,
   PokerData.BaseData,
   PokerData.DerivedData
 > {

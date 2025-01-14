@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -153,7 +152,7 @@ class ConsumableData extends SwadePhysicalItemData<
   protected override async _preUpdate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['update'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preUpdate(data, options, user);
     if (

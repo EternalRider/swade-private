@@ -1,5 +1,3 @@
-import type Document from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
-
 declare global {
   interface DocumentClassConfig {
     Cards: typeof SwadeCards;
@@ -25,7 +23,10 @@ export default class SwadeCards extends Cards {
     }
 
     // Draw from the sorted stack
-    const drawn = this._drawCards(number, how) as Document.Stored<Card>[];
+    const drawn = this._drawCards(
+      number,
+      how,
+    ) as foundry.abstract.Document.Stored<Card>[];
 
     // Process the card data
     const toCreate = new Array<foundry.documents.BaseCard.ConstructorData>();
@@ -45,6 +46,6 @@ export default class SwadeCards extends Cards {
       this.deleteEmbeddedDocuments('Card', toDelete),
     ]);
     const updated = await this.updateEmbeddedDocuments('Card', toUpdate);
-    return updated as Document.Stored<Card>[];
+    return updated as foundry.abstract.Document.Stored<Card>[];
   }
 }

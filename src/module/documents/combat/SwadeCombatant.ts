@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { SWADE } from '../../config';
@@ -292,7 +291,7 @@ export default class SwadeCombatant extends Combatant {
   override async _preCreate(
     data: foundry.documents.BaseCombatant.ConstructorData,
     options: Combatant.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     if (this.actor?.type === 'group') {
       Logger.warn('SWADE.Validation.NoGroupCombatants', {

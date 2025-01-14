@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
@@ -548,7 +547,7 @@ export default class SwadeCombat extends Combat {
 
   override async _preDelete(
     options: Combat.DatabaseOperations['delete'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preDelete(options, user);
     const jokerDrawn = this.combatants.some((c: SwadeCombatant) => c.hasJoker);

@@ -1,4 +1,3 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor/vehicle';
@@ -434,7 +433,7 @@ async function attemptSoak(
     });
   }
   if (options?.reroll) {
-    soakModifiers.push(...actor.system.stats.globalMods.bennyTrait)
+    soakModifiers.push(...actor.system.stats.globalMods.bennyTrait);
   }
   // Roll Vigor and get the data.
   const vigorRoll = await actor.rollAttribute('vigor', {
@@ -445,10 +444,11 @@ async function attemptSoak(
   });
 
   if (game.dice3d) {
-    game.dice3d.waitFor3DAnimationByMessageID(vigorRoll?.messageId).then(() => applySoak());
-  }
-  else {
-    applySoak()
+    game.dice3d
+      .waitFor3DAnimationByMessageID(vigorRoll?.messageId)
+      .then(() => applySoak());
+  } else {
+    applySoak();
   }
 
   async function applySoak() {
@@ -471,8 +471,7 @@ async function attemptSoak(
 
       const isShaken = actor.system.status.isShaken;
       // If they're already Shaken, remove the Status Effect.
-      if (isShaken)
-        await actor.toggleActiveEffect('shaken', { active: false });
+      if (isShaken) await actor.toggleActiveEffect('shaken', { active: false });
 
       /**
        * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
@@ -494,9 +493,11 @@ async function attemptSoak(
         woundsRemaining = bestSoakAttempt;
       }
       // Construct text for number of Wounds remaining.
-      const woundsRemainingText = `${woundsRemaining} ${woundsRemaining > 1 || woundsRemaining === 0
+      const woundsRemainingText = `${woundsRemaining} ${
+        woundsRemaining > 1 || woundsRemaining === 0
           ? game.i18n.localize('SWADE.Wounds')
-          : game.i18n.localize('SWADE.Wound')}`;
+          : game.i18n.localize('SWADE.Wound')
+      }`;
 
       // Build default buttons
       const buttons: Record<string, DialogButton> = {
@@ -505,14 +506,16 @@ async function attemptSoak(
             'SWADE.DamageApplicator.RerollSoakDialog.TakeWounds',
             {
               wounds: woundsRemainingText,
-            }
+            },
           ),
           icon: '<i class="fas fa-droplet"></i>',
           callback: async () => {
             // Construct text for the new Wounds value to be accepted (singular or plural Wounds).
-            const newWoundsValueText = `${newWoundsValue} ${newWoundsValue > 1 || newWoundsValue === 0 // newWoundsValue should never be zero here
+            const newWoundsValueText = `${newWoundsValue} ${
+              newWoundsValue > 1 || newWoundsValue === 0 // newWoundsValue should never be zero here
                 ? game.i18n.localize('SWADE.Wounds')
-                : game.i18n.localize('SWADE.Wound')}`;
+                : game.i18n.localize('SWADE.Wound')
+            }`;
             // Update Wounds on the Actor
             await actor.update({
               'system.wounds.value': newWoundsValue,
@@ -529,15 +532,17 @@ async function attemptSoak(
                 {
                   name: actor.name,
                   wounds: newWoundsValueText,
-                }
+                },
               );
             }
             // Output Chat Message.
             await ChatMessage.create({ content: message });
             // If Gritty Damage is in play, roll on the Injury Table.
-            if (actor.isWildcard &&
+            if (
+              actor.isWildcard &&
               game.settings.get('swade', 'grittyDamage') &&
-              !damageContext.doubleShaken) {
+              !damageContext.doubleShaken
+            ) {
               await rollInjuryTable();
             }
 
@@ -550,14 +555,17 @@ async function attemptSoak(
             damageContext.status = statusToApply;
             damageContext.wounds.applied = woundsRemaining;
             damageContext.wounds.taken = newWoundsValue - existingWounds;
-            damageContext.wounds.soaked = Math.min(woundsSoaked, woundsInflicted);
+            damageContext.wounds.soaked = Math.min(
+              woundsSoaked,
+              woundsInflicted,
+            );
 
             Hooks.call('swadeTakeDamage', actor, damageContext);
           },
         },
         rerollBenny: {
           label: game.i18n.localize(
-            'SWADE.DamageApplicator.RerollSoakDialog.Benny'
+            'SWADE.DamageApplicator.RerollSoakDialog.Benny',
           ),
           icon: '<i class="fas fa-dice"></i>',
           callback: async () => {
@@ -569,13 +577,13 @@ async function attemptSoak(
               woundsText,
               damageContext,
               woundsRemaining,
-              { reroll: true }
+              { reroll: true },
             );
           },
         },
         rerollGmBenny: {
           label: game.i18n.localize(
-            'SWADE.DamageApplicator.RerollSoakDialog.GMBenny'
+            'SWADE.DamageApplicator.RerollSoakDialog.GMBenny',
           ),
           icon: '<i class="fas fa-dice"></i>',
           callback: async () => {
@@ -587,13 +595,13 @@ async function attemptSoak(
               woundsText,
               damageContext,
               woundsRemaining,
-              { reroll: true }
+              { reroll: true },
             );
           },
         },
         rerollFree: {
           label: game.i18n.localize(
-            'SWADE.DamageApplicator.RerollSoakDialog.Free'
+            'SWADE.DamageApplicator.RerollSoakDialog.Free',
           ),
           icon: '<i class="fas fa-dice"></i>',
           callback: async () => {
@@ -603,7 +611,7 @@ async function attemptSoak(
               statusToApply,
               woundsText,
               damageContext,
-              woundsRemaining
+              woundsRemaining,
             );
           },
         },
@@ -616,18 +624,16 @@ async function attemptSoak(
       const gmHasBennies = isGM && game?.user?.bennies && game.user.bennies > 0;
 
       // If the Actor does not have Bennies, delete the button for spending Actor Bennies
-      if (!actorHasBennies)
-        delete buttons.rerollBenny;
+      if (!actorHasBennies) delete buttons.rerollBenny;
       // If the user is a GM and does not have Bennies, delete the button for spending GM Bennies.
-      if (!gmHasBennies)
-        delete buttons.rerollGmBenny;
+      if (!gmHasBennies) delete buttons.rerollGmBenny;
 
       let content = game.i18n.format(
         'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
         {
           name: actor.name,
           wounds: woundsRemainingText,
-        }
+        },
       );
 
       // Crit fail check to deny rerolling soaks. Per RAW Extras can't soak,
@@ -642,7 +648,7 @@ async function attemptSoak(
           {
             name: actor.name,
             wounds: woundsRemainingText,
-          }
+          },
         );
       }
 
@@ -892,7 +898,7 @@ interface DamageContext {
  * @category Interfaces
  */
 interface ToggleStatus {
-  effectData: StatusEffect;
+  effectData: CONFIG.StatusEffect;
   options: {
     overlay: boolean;
     active: boolean;
