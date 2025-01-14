@@ -1,7 +1,5 @@
-import { LogCompatibilityWarningOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/utils/module.mjs';
-
 export function actionProperties(data: any) {
-  const options: LogCompatibilityWarningOptions = {
+  const options: foundry.utils.LogCompatibilityWarningOptions = {
     since: '3.1',
     until: '4.0',
   };

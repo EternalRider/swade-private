@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import { addUpModifiers, createEmbedElement } from '../../util';
@@ -73,7 +72,7 @@ class SkillData extends SwadeBaseItemData<
         isItemGrant: boolean;
       }
     >['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(data, options, user);
     if (this.parent && !options.isItemGrant && options.renderSheet !== null) {

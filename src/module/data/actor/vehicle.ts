@@ -1,4 +1,4 @@
-import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { DerivedModifier } from '../../../interfaces/additional.interface';
 import SwadeActor from '../../documents/actor/SwadeActor';
 import { createEmbedElement } from '../../util';
@@ -7,7 +7,7 @@ import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
 
 declare namespace VehicleData {
-  interface Schema extends DataSchema {
+  interface Schema extends foundry.data.fields.DataSchema {
     size: foundry.data.fields.NumberField<{ initial: 0 }>;
     scale: foundry.data.fields.NumberField<{ initial: 0 }>;
     classification: foundry.data.fields.StringField<{
@@ -215,7 +215,7 @@ class VehicleData<
   declare parent: SwadeActor;
 
   override get tokenSize(): TokenSize {
-    const value = Math.max(1, Math.floor(this.size / 4) + 1);
+    const value = Math.max(1, Math.floor(this.size! / 4) + 1);
     return { width: value, height: value };
   }
 
@@ -234,7 +234,7 @@ class VehicleData<
   /** @inheritdoc */
   override prepareDerivedData() {
     super.prepareDerivedData();
-    this.scale = this.parent.calcScale(this.size);
+    this.scale = this.parent.calcScale(this.size!);
   }
 
   declare enrichedDescription?: string;

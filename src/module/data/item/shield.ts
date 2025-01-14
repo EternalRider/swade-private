@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
@@ -143,7 +142,7 @@ class ShieldData extends SwadePhysicalItemData<
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
-    user: BaseUser,
+    user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(data, options, user);
     if (this.parent?.actor?.type === 'npc') {

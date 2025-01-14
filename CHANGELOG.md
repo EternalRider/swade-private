@@ -22,6 +22,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.2.2
+
+### Changed
+
+- Many more type fixes
+- Actors are now used as chat speaker in more situations (e.g. for Benny messages). (#749) **by @mhilbrunner**
+- Improved the way power ranges are calculated. For this change to fully take effect it is necessary to surround any formulas you wish to multiply etc in parenthesis, so `@sma*2` should be written as `(@sma)*2`. This is to account for the cases where the attribute die has a modifier, which should also factor into the range calculation. A smarts of `d12+2` would then be resolved into `12 + 2 * 2` without parenthesis, and `(12 + 2) * 2` with parenthesis. (#1249) **by @florad92**
+- Updated the Active Effect documentation the new Pace keys. (#1256) **by @florad92**
+
+### Fixed
+
+- The PaceSchemaField now properly accounts for all Active Effect modes. **by @florad92**
+- Fixed issue with multiple Power embeds. **by @jpmeehan5**
+- Fixed chat card wrapping for draggable Active Effects. **by @jestevens210**
+- Fixed an issue that could result in the roll Dialog crashing when a value such as the item damage modifier is a resolved value such as `@sma`. (#1254) **by @florad92**
+
 ## 4.2.1
 
 ### Added

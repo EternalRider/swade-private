@@ -512,9 +512,9 @@ function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
   }
 
   //check the active effects
-  const effects = new Array<Partial<ActiveEffectData>>();
+  const effects = new Array<ActiveEffect.ConstructorData>();
   for (const effect of data.effects) {
-    const changes = new Array<EffectChangeData>();
+    const changes = new Array<ActiveEffect.EffectChangeData>();
     for (const change of effect.changes) {
       if (change.key === 'system.powerPoints.value') {
         changes.push({

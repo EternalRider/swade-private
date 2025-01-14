@@ -1,5 +1,5 @@
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
   EquipState,
   PotentialSource,

@@ -1,67 +1,67 @@
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';
 import { constants } from './constants';
 
 declare global {
-  namespace ClientSettings {
-    interface Values {
-      'swade.systemMigrationVersion': string;
-      'swade.initiativeSound': boolean;
-      'swade.autoInit': boolean;
-      'swade.initMessage': ValueOf<typeof constants.INIT_MESSAGE_TYPE>;
-      'swade.actionDeck': string;
-      'swade.actionDeckDiscardPile': string;
-      'swade.hideNPCWildcards': boolean;
-      'swade.notifyBennies': boolean;
-      'swade.hideNpcItemChatCards': boolean;
-      'swade.useAttributeShorts': boolean;
-      'swade.coreSkills': string;
-      'swade.coreSkillsCompendium': string;
-      'swade.wealthType': 'currency' | 'wealthDie' | 'none';
-      'swade.currencyName': string;
-      'swade.npcsUseCurrency': boolean;
-      'swade.jokersWild': boolean;
-      /** @deprecated */
-      'swade.parryBaseSkill': string;
-      'swade.parryBaseSwid': string;
-      'swade.weightUnit': 'imperial' | 'metric';
-      'swade.ammoManagement': boolean;
-      'swade.ammoFromInventory': boolean;
-      'swade.npcAmmo': boolean;
-      'swade.vehicleAmmo': boolean;
-      'swade.enableConviction': boolean;
-      'swade.enableWoundPace': boolean;
-      'swade.noPowerPoints': boolean;
-      'swade.alwaysGeneralPP': boolean;
-      'swade.staticGmBennies': boolean;
-      'swade.gmBennies': number;
-      'swade.vehicleMods': boolean;
-      'swade.vehicleEdges': boolean;
-      'swade.vehicleSkills': string;
-      'swade.bennyImageSheet': string;
-      'swade.bennyImage3DBack': string;
-      'swade.bennyImage3DFront': string;
-      'swade.3dBennyFrontBump': string;
-      'swade.3dBennyBackBump': string;
-      'swade.grittyDamage': boolean;
-      'swade.injuryTable': string;
-      'swade.woundCap': boolean;
-      'swade.unarmoredHero': boolean;
-      'swade.hardChoices': boolean;
-      'swade.dumbLuck': boolean;
-      'swade.applyEncumbrance': boolean;
-      'swade.highlightTemplate': boolean;
-      'swade.settingFields': {
-        actor: Record<string, PrototypeAdditionalStat>;
-        item: Record<string, PrototypeAdditionalStat>;
-      };
-      'swade.tocBlockList': Record<string, boolean>;
-      'swade.npcStartingCurrency': number;
-      'swade.pcStartingCurrency': number;
-      'swade.armorStacking': string;
-    }
+  interface SettingConfig {
+    'swade.systemMigrationVersion': string;
+    'swade.initiativeSound': boolean;
+    'swade.autoInit': boolean;
+    'swade.initMessage': ValueOf<typeof constants.INIT_MESSAGE_TYPE>;
+    'swade.actionDeck': string;
+    'swade.actionDeckDiscardPile': string;
+    'swade.hideNPCWildcards': boolean;
+    'swade.notifyBennies': boolean;
+    'swade.hideNpcItemChatCards': boolean;
+    'swade.useAttributeShorts': boolean;
+    'swade.coreSkills': string;
+    'swade.coreSkillsCompendium': string;
+    'swade.wealthType': 'currency' | 'wealthDie' | 'none';
+    'swade.currencyName': string;
+    'swade.npcsUseCurrency': boolean;
+    'swade.jokersWild': boolean;
+    /** @deprecated */
+    'swade.parryBaseSkill': string;
+    'swade.parryBaseSwid': string;
+    'swade.weightUnit': 'imperial' | 'metric';
+    'swade.ammoManagement': boolean;
+    'swade.ammoFromInventory': boolean;
+    'swade.npcAmmo': boolean;
+    'swade.vehicleAmmo': boolean;
+    'swade.enableConviction': boolean;
+    'swade.enableWoundPace': boolean;
+    'swade.noPowerPoints': boolean;
+    'swade.alwaysGeneralPP': boolean;
+    'swade.staticGmBennies': boolean;
+    'swade.gmBennies': number;
+    'swade.vehicleMods': boolean;
+    'swade.vehicleEdges': boolean;
+    'swade.vehicleSkills': string;
+    'swade.bennyImageSheet': string;
+    'swade.bennyImage3DBack': string;
+    'swade.bennyImage3DFront': string;
+    'swade.3dBennyFrontBump': string;
+    'swade.3dBennyBackBump': string;
+    'swade.grittyDamage': boolean;
+    'swade.injuryTable': string;
+    'swade.heroesNeverDie': boolean;
+    'swade.woundCap': boolean;
+    'swade.unarmoredHero': boolean;
+    'swade.hardChoices': boolean;
+    'swade.dumbLuck': boolean;
+    'swade.applyEncumbrance': boolean;
+    'swade.highlightTemplate': boolean;
+    'swade.charSheetDefaultWidth': number;
+    'swade.settingFields': {
+      actor: Record<string, PrototypeAdditionalStat>;
+      item: Record<string, PrototypeAdditionalStat>;
+    };
+    'swade.tocBlockList': Record<string, boolean>;
+    'swade.npcStartingCurrency': number;
+    'swade.pcStartingCurrency': number;
+    'swade.armorStacking': string;
   }
 }
 /** @internal */
@@ -424,7 +424,6 @@ export function registerSettingRules() {
     name: 'SWADE.Settings.ArbitFields',
     default: { actor: {}, item: {} },
     scope: 'world',
-    //@ts-expect-error The types can't really cope with this but Foundry can
     type: Object,
     config: false,
   });
@@ -433,7 +432,6 @@ export function registerSettingRules() {
     name: 'SWADE.TOCBlockList',
     default: {},
     scope: 'world',
-    //@ts-expect-error The types can't really cope with this but Foundry can
     type: Object,
     config: false,
   });
@@ -445,7 +443,6 @@ export function registerSettingRules() {
     default: 'systems/swade/assets/bennie.webp',
     scope: 'world',
     config: false,
-    filePicker: 'image',
   });
 
   game.settings.register('swade', 'woundCap', {
@@ -551,7 +548,6 @@ export function register3DBennySettings() {
     default: 'systems/swade/assets/benny/benny-chip-front.png',
     scope: 'world',
     config: false,
-    filePicker: 'image',
   });
 
   game.settings.register('swade', 'bennyImage3DBack', {
@@ -561,7 +557,6 @@ export function register3DBennySettings() {
     default: 'systems/swade/assets/benny/benny-chip-front.png',
     scope: 'world',
     config: false,
-    filePicker: 'image',
   });
 
   game.settings.register('swade', '3dBennyFrontBump', {
@@ -571,7 +566,6 @@ export function register3DBennySettings() {
     default: 'systems/swade/assets/benny/benny_bump.png',
     scope: 'world',
     config: false,
-    filePicker: 'image',
   });
 
   game.settings.register('swade', '3dBennyBackBump', {
@@ -581,6 +575,5 @@ export function register3DBennySettings() {
     default: 'systems/swade/assets/benny/benny_bump.png',
     scope: 'world',
     config: false,
-    filePicker: 'image',
   });
 }

@@ -1,13 +1,7 @@
-import {
-  DataField,
-  SchemaField,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/fields.mjs';
-import { DataModelValidationFailure } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/validation-failure.mjs';
-import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { PaceSchema } from '../actor/base/creature.schemas';
 import { makeDiceField } from '../shared';
-import { EffectChangeData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/_types.mjs';
 
 const fields = foundry.data.fields;
 
@@ -51,7 +45,8 @@ function definePaceSchema(): PaceSchema {
 }
 
 export class PaceSchemaField<
-  Options extends SchemaField.Options<PaceSchema> = SchemaField.DefaultOptions,
+  Options extends
+    foundry.data.fields.SchemaField.Options<PaceSchema> = foundry.data.fields.SchemaField.DefaultOptions,
 > extends foundry.data.fields.SchemaField<PaceSchema, Options> {
   constructor() {
     super(definePaceSchema(), { label: 'SWADE.Pace' } as Options);
@@ -62,12 +57,14 @@ export class PaceSchemaField<
   }
 
   protected override _validateType(
-    value: SchemaField.InitializedType<
+    value: foundry.data.fields.SchemaField.InitializedType<
       PaceSchema,
-      SimpleMerge<Options, SchemaField.DefaultOptions>
+      SimpleMerge<Options, foundry.data.fields.SchemaField.DefaultOptions>
     >,
-    options?: DataField.ValidationOptions<DataField.Any> | undefined,
-  ): boolean | void | DataModelValidationFailure {
+    options?:
+      | foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any>
+      | undefined,
+  ): boolean | void | foundry.data.validation.DataModelValidationFailure {
     let result = super._validateType(value, options);
     if (!value?.base) return result;
     if (value[value.base] === null) {
@@ -91,10 +88,10 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeAdd(
-    value: SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: EffectChangeData,
+    _change: ActiveEffect.EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       value[key]! += delta;
@@ -104,10 +101,10 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeMultiply(
-    value: SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: EffectChangeData,
+    _change: ActiveEffect.EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       if (value[key] !== null) value[key]! *= delta;
@@ -116,14 +113,40 @@ export class PaceSchemaField<
   }
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
-  protected _applyChangeDowngrade(
-    value: SchemaField.InitializedType<PaceSchema>,
+  protected override _applyChangeDowngrade(
+    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: EffectChangeData,
+    _change: ActiveEffect.EffectChangeData,
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       if (value[key] !== null) value[key] = Math.min(value[key]!, delta);
+    }
+    return value;
+  }
+
+  // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
+  protected override _applyChangeUpgrade(
+    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    delta: number,
+    _model: SwadeActor,
+    _change: ActiveEffect.EffectChangeData,
+  ) {
+    for (const key of PaceSchemaField.paceKeys) {
+      if (value[key] !== null) value[key] = Math.max(value[key]!, delta);
+    }
+    return value;
+  }
+
+  // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
+  protected override _applyChangeOverride(
+    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    delta: number,
+    _model: SwadeActor,
+    _change: ActiveEffect.EffectChangeData,
+  ) {
+    for (const key of PaceSchemaField.paceKeys) {
+      value[key] = delta;
     }
     return value;
   }

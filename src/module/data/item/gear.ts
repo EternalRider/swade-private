@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { PotentialSource, Updates } from '../../../globals';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
@@ -106,7 +105,7 @@ class GearData extends SwadePhysicalItemData<
   protected override async _preCreate(
     _data: foundry.documents.BaseItem.ConstructorData,
     _options: Item.DatabaseOperations['create'],
-    _user: BaseUser,
+    _user: foundry.documents.BaseUser,
   ) {
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });

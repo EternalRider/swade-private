@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ItemAction } from '../../../../interfaces/additional.interface';
 import { constants } from '../../../constants';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
@@ -14,7 +13,10 @@ import { ShieldData } from '../shield';
 import { WeaponData } from '../weapon';
 
 declare namespace SwadeBaseItemData {
-  interface Schema extends DataSchema, ItemDescription, ChoiceSets {}
+  interface Schema
+    extends foundry.data.fields.DataSchema,
+      ItemDescription,
+      ChoiceSets {}
   type BaseData = {};
   type DerivedData = {};
 }
@@ -84,8 +86,8 @@ class SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.documents.BaseItem.ConstructorData,
     options: Item.DatabaseOperations['create'],
-    user: BaseUser,
-  ) {
+    user: foundry.documents.BaseUser,
+  ): Promise<false | void> {
     await super._preCreate(data, options, user);
 
     if (this.actor?.type === 'group' && !this.isPhysicalItem) {

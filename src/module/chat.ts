@@ -137,14 +137,14 @@ export function createMagazineTooltip(
     const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
 
     const content = loadedAmmo
-      ? `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`
+      ? `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system!.description ?? ''}`
       : game.i18n.localize('SWADE.Magazine.NoneLoaded');
 
     game.tooltip.activate(magazine, {
       text: await TextEditor.enrichHTML(content, {
-        relativeTo: item.uuid,
-        rollData: item.getRollData(),
-        secrets: item.testUserPermission(
+        relativeTo: item,
+        rollData: item?.getRollData() ?? {},
+        secrets: item?.testUserPermission(
           game.user,
           CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
         ),

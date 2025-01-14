@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
   PhysicalItem,
   SwadeApplicationTab,

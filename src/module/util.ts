@@ -74,6 +74,9 @@ export async function reshuffleActionDeck() {
  * @returns A string which contains all trait roll modifiers, reduced into a parsable string
  */
 export function modifierReducer(acc: string, cur: RollModifier): string {
+  if (typeof cur.value === 'string' && cur.value.startsWith('@')) {
+    return (acc += '+' + cur.value);
+  }
   return (acc += `${cur.value}[${cur.label}]`);
 }
 

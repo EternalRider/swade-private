@@ -1,7 +1,7 @@
 import {
   DeepPartial,
   ValueOf,
-} from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Updates } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';

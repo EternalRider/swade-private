@@ -5,7 +5,7 @@ import { ChoicesType } from '../item/item-common.interface';
 import { AddStatsValueField } from './AddStatsValueField';
 
 declare namespace RequirementsField {
-  interface Schema extends DataSchema {
+  interface Schema extends foundry.data.fields.DataSchema {
     type: foundry.data.fields.StringField<{
       required: true;
       initial: typeof constants.REQUIREMENT_TYPE.RANK;
@@ -65,7 +65,11 @@ class RequirementsField extends foundry.abstract
         label: 'SWADE.Requirements.Editor.SWID',
       }),
       /** For attribute and skill requirements this is used  to denote the die type, for Ranks it is used to denote the rank*/
-      value: new AddStatsValueField({ initial: '', required: true, label: 'SWADE.Requirements.Editor.Value' }),
+      value: new AddStatsValueField({
+        initial: '',
+        required: true,
+        label: 'SWADE.Requirements.Editor.Value',
+      }),
       /** A simple label, for display */
       label: new fields.StringField({ required: false }),
       combinator: new fields.StringField({

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/src/types/utils.mjs';
+import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
@@ -38,8 +38,7 @@ export default class SwadeCoreHooks {
     registerCompendiumArt();
 
     // Improve discoverability of map notes
-    game.settings.settings.get("core.notesDisplayToggle").default = true;
-
+    game.settings.settings.get('core.notesDisplayToggle').default = true;
   }
 
   static async onReady() {

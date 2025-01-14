@@ -201,12 +201,8 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
   ) {
-    if (foundry.utils.getProperty(item, 'system.actions.dmgMod')) {
-      additionalMods.push({
-        label: game.i18n.localize('SWADE.ItemDmgMod'),
-        value: foundry.utils.getProperty(item, 'system.actions.dmgMod'),
-      });
-    }
+    const dmgMod = ItemChatCardHelper.getDamageMod(item);
+    if (dmgMod) additionalMods.push(dmgMod);
     const roll = await item.rollDamage({ additionalMods });
     this.callActionHook(actor, item, 'damage', roll);
     return roll;
@@ -278,13 +274,8 @@ export default class ItemChatCardHelper {
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
-      const dmgMod = foundry.utils.getProperty(item, 'system.actions.dmgMod');
-      if (dmgMod) {
-        mods.push({
-          label: game.i18n.localize('SWADE.ItemDmgMod'),
-          value: dmgMod,
-        });
-      }
+      const dmgMod = ItemChatCardHelper.getDamageMod(item);
+      if (dmgMod) mods.push(dmgMod);
       if (action.modifier) {
         mods.push({
           label: action.name,
@@ -439,5 +430,18 @@ export default class ItemChatCardHelper {
     if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);
+  }
+
+  private static getDamageMod(item: SwadeItem): RollModifier | null {
+    const value = foundry.utils.getProperty(
+      item,
+      'system.actions.dmgMod',
+    ) as string;
+    if (!value) return null;
+    let label = game.i18n.localize('SWADE.ItemDmgMod');
+    if (value.startsWith('@')) {
+      label = ''; //empty label for a modifer;
+    }
+    return { label, value };
   }
 }

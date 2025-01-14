@@ -1,16 +1,18 @@
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+
 declare namespace HeadquartersData {
-  interface Schema extends DataSchema {
-    advantage: foundry.data.fields.HTMLField;
-    complication: foundry.data.fields.HTMLField;
-    upgrades: foundry.data.fields.HTMLField;
+  interface Schema extends foundry.data.fields.DataSchema {
+    advantage: foundry.data.fields.HTMLField<{ label: string }>;
+    complication: foundry.data.fields.HTMLField<{ label: string }>;
+    upgrades: foundry.data.fields.HTMLField<{ label: string }>;
     form: foundry.data.fields.SchemaField<{
-      description: foundry.data.fields.HTMLField;
-      acquisition: foundry.data.fields.HTMLField;
-      maintenance: foundry.data.fields.HTMLField;
+      description: foundry.data.fields.HTMLField<{ label: string }>;
+      acquisition: foundry.data.fields.HTMLField<{ label: string }>;
+      maintenance: foundry.data.fields.HTMLField<{ label: string }>;
     }>;
   }
-  interface BaseData {}
-  interface DerivedData {}
+  interface BaseData extends EmptyObject {}
+  interface DerivedData extends EmptyObject {}
 }
 
 class HeadquartersData extends foundry.abstract.TypeDataModel<
@@ -22,13 +24,23 @@ class HeadquartersData extends foundry.abstract.TypeDataModel<
   static override defineSchema(): HeadquartersData.Schema {
     const fields = foundry.data.fields;
     return {
-      advantage: new fields.HTMLField({ label: 'SWADE.Headquarters.Advantage' }),
-      complication: new fields.HTMLField({ label: 'SWADE.Headquarters.Complication' }),
+      advantage: new fields.HTMLField({
+        label: 'SWADE.Headquarters.Advantage',
+      }),
+      complication: new fields.HTMLField({
+        label: 'SWADE.Headquarters.Complication',
+      }),
       upgrades: new fields.HTMLField({ label: 'SWADE.Headquarters.Upgrades' }),
       form: new fields.SchemaField({
-        description: new fields.HTMLField({ label: 'SWADE.Headquarters.Description' }),
-        acquisition: new fields.HTMLField({ label: 'SWADE.Headquarters.Acquisition' }),
-        maintenance: new fields.HTMLField({ label: 'SWADE.Headquarters.Maintenance' }),
+        description: new fields.HTMLField({
+          label: 'SWADE.Headquarters.Description',
+        }),
+        acquisition: new fields.HTMLField({
+          label: 'SWADE.Headquarters.Acquisition',
+        }),
+        maintenance: new fields.HTMLField({
+          label: 'SWADE.Headquarters.Maintenance',
+        }),
       }),
     };
   }
