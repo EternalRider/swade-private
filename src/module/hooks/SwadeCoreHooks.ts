@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
 import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { Plugin } from 'prosemirror-state';
 import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
@@ -12,6 +13,7 @@ import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { BaseEffectData } from '../data/effect/base';
 import { SwadeRoll } from '../dice/SwadeRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -28,9 +30,6 @@ import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
 import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
-import type { Plugin } from 'prosemirror-state';
-import { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
-import { BaseEffectData } from '../data/effect/base';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -842,11 +841,11 @@ export default class SwadeCoreHooks {
       },
       {
         label: 'SWADE.Expiration.BeginPrompt',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
+        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
       },
       {
         label: 'SWADE.Expiration.EndAuto',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
+        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
       },
       {
         label: 'SWADE.Expiration.EndPrompt',

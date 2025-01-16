@@ -28,6 +28,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Actors are now used as chat speaker in more situations (e.g. for Benny messages). (#749) **by @mhilbrunner**
 
+## 4.2.3
+
+### Fixed
+
+- Improved overzealous Active Effect migration. (#1261) **by @jpmeehan5**
+- Improved handling of missing core skill packs when creating `character` Actors. (#1258) **by @florad92**
+- Fixed mixed-up Active Effect Expiration options. (#1260) **by @florad92**
+
 ## 4.2.2
 
 ### Changed
