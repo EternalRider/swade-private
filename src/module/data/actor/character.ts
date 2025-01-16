@@ -38,11 +38,12 @@ export class CharacterData extends CreatureData<
 
     //only do this if this is a PC with no prior skills
     if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
-      //Set compendium source
-      const pack = game.packs.get(
-        game.settings.get('swade', 'coreSkillsCompendium'),
-        { strict: true },
-      ) as CompendiumCollection<ItemMetadata>;
+      const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
+      //Set compendium source, including a fallback to the system compendium of the required one cannot be found
+      const pack = (game.packs.get(coreSkillsPack) ??
+        game.packs.get('swade.skills')) as CompendiumCollection<ItemMetadata>;
+
+      if (!pack) return; //critical fallback point, simply skip core skills if neither pack can be located
 
       const skillIndex = await pack.getDocuments();
 

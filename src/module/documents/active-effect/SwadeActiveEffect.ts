@@ -144,7 +144,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     }
     if (data?.flags?.swade) {
       const flags = data.flags.swade;
-      data.system = flags;
+      data.system = foundry.utils.mergeObject(data.system, flags);
     }
     return data;
   }
@@ -186,7 +186,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const name = match[2].trim();
     //filter the items down, according to type and name/id
     const collection =
-      parent instanceof SwadeItem ? parent.parent?.items ?? [] : parent.items;
+      parent instanceof SwadeItem ? (parent.parent?.items ?? []) : parent.items;
     items.push(
       ...collection.filter(
         (i) => i.type === type && (i.name === name || i.id === name),
