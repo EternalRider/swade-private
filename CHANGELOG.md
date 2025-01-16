@@ -22,6 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.2.3
+
+### Fixed
+
+- Improved overzealous Active Effect migration. (#1261) **by @jpmeehan5**
+- Improved handling of missing core skill packs when creating `character` Actors. (#1258) **by @florad92**
+- Fixed mixed-up Active Effect Expiration options. (#1260) **by @florad92**
+
 ## 4.2.2
 
 ### Changed
