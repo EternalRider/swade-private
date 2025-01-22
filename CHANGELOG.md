@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.2.4
+
+### Fixed
+
+- Fixed AE migration logic again. For real this time. (#1262) **by @jpmeehan5**
+
 ## 4.2.3
 
 ### Fixed
