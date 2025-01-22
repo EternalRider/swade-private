@@ -326,8 +326,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
-      return; // Really shouldn't be a vehicle or group
+    if (doc.system instanceof GroupData) return; // Really shouldn't be a vehicle or group
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])

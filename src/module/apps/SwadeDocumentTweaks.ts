@@ -77,6 +77,7 @@ export default class SwadeDocumentTweaks extends FormApplication<
       isNPC: this.object.type === 'npc',
       isVehicle: this.object.type === 'vehicle',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
+      hasEnergy: game.settings.get('swade', 'vehicleEnergy'),
       runningDieTypes: getDieSidesRange(1, 12),
       auras: {
         units: canvas.scene?.grid?.units ?? game.system.grid.units,

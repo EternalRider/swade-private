@@ -88,6 +88,21 @@
           <p class='notes'>{{localize 'SWADE.Settings.VehicleMods.Hint'}}</p>
         </div>
         <div class='form-group'>
+          <label for='vehicleEnergy'>
+            {{localize 'SWADE.Settings.VehicleEnergy.Name'}}
+          </label>
+          <div class='form-fields'>
+            <input
+              id='vehicleEnergy'
+              type='checkbox'
+              name='settingRules.vehicleEnergy'
+              data-dtype='Boolean'
+              {{checked settingRules.vehicleEnergy}}
+            />
+          </div>
+          <p class='notes'>{{localize 'SWADE.Settings.VehicleEnergy.Hint'}}</p>
+        </div>
+        <div class='form-group'>
           <label for='vehicleEdges'>
             {{localize 'SWADE.Settings.VehicleEdges.Name'}}
           </label>

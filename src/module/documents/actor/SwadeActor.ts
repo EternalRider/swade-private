@@ -658,13 +658,17 @@ class SwadeActor extends Actor {
   async spendBenny() {
     //return early if there no bennies to spend
     if (this.bennies < 1) return;
+    const msgClass = getDocumentClass('ChatMessage');
     if (game.settings.get('swade', 'notifyBennies')) {
+      const speaker = msgClass.getSpeaker({
+        actor: this,
+      });
       const message = await renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
         speaker: speaker,
       });
       const chatData = { content: message, speaker: speaker };
-      await CONFIG.ChatMessage.documentClass.create(chatData);
+      await msgClass.create(chatData);
     }
     await this.update({ 'system.bennies.value': this.bennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
@@ -698,13 +702,21 @@ class SwadeActor extends Actor {
     const combatant = this.token?.combatant as SwadeCombatant | undefined;
     await this.update({ 'system.bennies.value': this.bennies + 1 });
 
+    const msgClass = getDocumentClass('ChatMessage');
+
     const hiddenNPC = combatant?.isNPC && combatant?.hidden;
     if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
+      const speaker = msgClass.getSpeaker({
+        actor: this,
+      });
       const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: speaker,
       });
-      await getDocumentClass('ChatMessage').create({ content });
+      await msgClass.create({
+        content: content,
+        speaker: speaker,
+      });
     }
 
     /**
@@ -988,10 +1000,12 @@ class SwadeActor extends Actor {
     });
   }
 
-  async getDriver(): Promise<SwadeActor | null> {
+  async getDriver(): Promise<SwadeActor<'character' | 'npc'> | null> {
     if (!(this.system instanceof VehicleData)) return null;
     if (!this.system.driver.id) return null;
-    return (await fromUuid(this.system.driver.id)) as SwadeActor | null;
+    return (await fromUuid(this.system.driver.id)) as SwadeActor<
+      'character' | 'npc'
+    > | null;
   }
 
   getTraitRollModifiers(
