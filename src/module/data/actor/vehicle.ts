@@ -1,75 +1,58 @@
-import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
-import { DerivedModifier } from '../../../interfaces/additional.interface';
-import SwadeActor from '../../documents/actor/SwadeActor';
+import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import {
+  DerivedModifier,
+  RollModifier,
+} from '../../../interfaces/additional.interface';
 import { createEmbedElement } from '../../util';
-import { makeAdditionalStatsSchema } from '../shared';
+import {
+  boundTraitDie,
+  makeAdditionalStatsSchema,
+  makeTraitDiceFields,
+} from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
+import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
+import { constants } from '../../constants';
 
 declare namespace VehicleData {
-  interface Schema extends foundry.data.fields.DataSchema {
-    size: foundry.data.fields.NumberField<{ initial: 0 }>;
-    scale: foundry.data.fields.NumberField<{ initial: 0 }>;
-    classification: foundry.data.fields.StringField<{
-      initial: '';
-      textSearch: true;
-    }>;
-    handling: foundry.data.fields.NumberField<{ initial: 0 }>;
-    cost: foundry.data.fields.NumberField<{ initial: 0 }>;
-    topspeed: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<{ initial: 0; min: 0 }>;
-      unit: foundry.data.fields.StringField;
-    }>;
-    description: foundry.data.fields.HTMLField<{
-      initial: '';
-      textSearch: true;
-    }>;
-    toughness: foundry.data.fields.SchemaField<{
-      total: foundry.data.fields.NumberField<{ initial: 0 }>;
-      armor: foundry.data.fields.NumberField<{ initial: 0 }>;
-    }>;
-    wounds: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<{ initial: 0 }>;
-      max: foundry.data.fields.NumberField<{ initial: 3 }>;
-      ignored: foundry.data.fields.NumberField<{ initial: 0 }>;
-    }>;
-    crew: foundry.data.fields.SchemaField<{
-      required: foundry.data.fields.SchemaField<{
-        value: foundry.data.fields.NumberField<{ initial: 1 }>;
-        max: foundry.data.fields.NumberField<{ initial: 1 }>;
-      }>;
-      optional: foundry.data.fields.SchemaField<{
-        value: foundry.data.fields.NumberField<{ initial: 0 }>;
-        max: foundry.data.fields.NumberField<{ initial: 0 }>;
-      }>;
-    }>;
-    driver: foundry.data.fields.SchemaField<{
-      id: foundry.data.fields.StringField<{ initial: null; nullable: true }>;
-      skill: foundry.data.fields.StringField<{ initial: '' }>;
-      skillAlternative: foundry.data.fields.StringField<{ initial: '' }>;
-    }>;
-    status: foundry.data.fields.SchemaField<{
-      isOutOfControl: foundry.data.fields.BooleanField;
-      isWrecked: foundry.data.fields.BooleanField;
-    }>;
-    initiative: foundry.data.fields.SchemaField<{
-      hasHesitant: foundry.data.fields.BooleanField;
-      hasLevelHeaded: foundry.data.fields.BooleanField;
-      hasImpLevelHeaded: foundry.data.fields.BooleanField;
-      hasQuick: foundry.data.fields.BooleanField;
-    }>;
-    additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
-    maxCargo: foundry.data.fields.NumberField<{ initial: 0 }>;
-    maxMods: foundry.data.fields.NumberField<{ initial: 0 }>;
-  }
+  interface Schema extends ReturnType<typeof createVehicleSchema> {}
 
   interface BaseData {
+    attributes: {
+      agility: {
+        effects: Array<RollModifier>;
+      };
+      smarts: {
+        effects: Array<RollModifier>;
+      };
+      spirit: {
+        effects: Array<RollModifier>;
+      };
+      strength: {
+        effects: Array<RollModifier>;
+      };
+      vigor: {
+        effects: Array<RollModifier>;
+      };
+    };
     stats: {
       globalMods: {
         attack: Array<DerivedModifier>;
         damage: Array<DerivedModifier>;
         ap: Array<DerivedModifier>;
+        agility: Array<DerivedModifier>;
+        smarts: Array<DerivedModifier>;
+        spirit: Array<DerivedModifier>;
+        strength: Array<DerivedModifier>;
+        vigor: Array<DerivedModifier>;
+        trait: Array<DerivedModifier>;
       };
+    };
+    cargo: {
+      value: number;
+    };
+    mods: {
+      value: number;
     };
   }
 
@@ -78,163 +61,270 @@ declare namespace VehicleData {
   }
 }
 
+function createVehicleSchema() {
+  const fields = foundry.data.fields;
+  return {
+    attributes: new fields.SchemaField(
+      {
+        // Found in HC Haunted Car
+        agility: new fields.SchemaField(
+          {
+            ...makeTraitDiceFields(),
+            enabled: new fields.BooleanField({
+              label: 'SWADE.VehicleAttributes.Agility',
+            }),
+          },
+          {
+            label: 'SWADE.AttrAgi',
+          },
+        ),
+        // HC Haunted Car & Sentient Vehicles
+        smarts: new fields.SchemaField(
+          {
+            ...makeTraitDiceFields(),
+            enabled: new fields.BooleanField({
+              label: 'SWADE.VehicleAttributes.Smarts',
+            }),
+          },
+          { label: 'SWADE.AttrSma' },
+        ),
+        // HC Haunted Car & Sentient Vehicles
+        spirit: new fields.SchemaField(
+          {
+            ...makeTraitDiceFields(),
+            enabled: new fields.BooleanField({
+              label: 'SWADE.VehicleAttributes.Spirit',
+            }),
+          },
+          { label: 'SWADE.AttrSpr' },
+        ),
+        strength: new fields.SchemaField(
+          {
+            ...makeTraitDiceFields(),
+            encumbranceSteps: new fields.NumberField({
+              initial: 0,
+              integer: true,
+              label: 'SWADE.EncumbranceSteps',
+            }),
+            enabled: new fields.BooleanField({
+              label: 'SWADE.VehicleAttributes.Strength',
+            }),
+          },
+          { label: 'SWADE.AttrStr' },
+        ),
+        vigor: new fields.SchemaField(
+          {
+            ...makeTraitDiceFields(),
+            enabled: new fields.BooleanField({
+              label: 'SWADE.VehicleAttributes.Vigor',
+            }),
+          },
+          { label: 'SWADE.AttrVig' },
+        ),
+      },
+      { label: 'SWADE.Attributes' },
+    ),
+    size: new fields.NumberField({ initial: 0, label: 'SWADE.Size' }),
+    scale: new fields.NumberField({ initial: 0, label: 'SWADE.Scale' }),
+    classification: new fields.StringField({
+      initial: '',
+      textSearch: true,
+      label: 'SWADE.Class',
+    }),
+    handling: new fields.NumberField({ initial: 0, label: 'SWADE.Handling' }),
+    cost: new fields.NumberField({ initial: 0, label: 'SWADE.Price' }),
+    topspeed: new fields.SchemaField(
+      {
+        value: new fields.NumberField({
+          initial: 0,
+          min: 0,
+          label: 'SWADE.Topspeed',
+        }),
+        unit: new fields.StringField({ label: 'SWADE.SpeedUnit' }),
+      },
+      { label: 'SWADE.Topspeed' },
+    ),
+    description: new fields.HTMLField({
+      initial: '',
+      textSearch: true,
+      label: 'SWADE.Desc',
+    }),
+    toughness: new fields.SchemaField(
+      {
+        total: new fields.NumberField({ initial: 0, label: 'SWADE.Tough' }),
+        armor: new fields.NumberField({ initial: 0, label: 'SWADE.Armor' }),
+      },
+      { label: 'SWADE.Tough' },
+    ),
+    wounds: new fields.SchemaField(
+      {
+        value: new fields.NumberField({ initial: 0, label: 'SWADE.Wounds' }),
+        max: new fields.NumberField({ initial: 3, label: 'SWADE.WoundsMax' }),
+        ignored: new fields.NumberField({
+          initial: 0,
+          label: 'SWADE.IgnWounds',
+        }),
+      },
+      { label: 'SWADE.Wounds' },
+    ),
+    energy: new fields.SchemaField(
+      {
+        value: new fields.NumberField({
+          initial: 0,
+          label: 'SWADE.Energy.Value',
+        }),
+        max: new fields.NumberField({ initial: 0, label: 'SWADE.Energy.Max' }),
+        enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
+      },
+      { label: 'SWADE.Energy.Label' },
+    ),
+    crew: new fields.SchemaField(
+      {
+        required: new fields.SchemaField(
+          {
+            value: new fields.NumberField({
+              initial: 1,
+              label: 'SWADE.Value',
+            }),
+            max: new fields.NumberField({
+              initial: 1,
+              label: 'SWADE.MaxLabel',
+            }),
+          },
+          { label: 'SWADE.RequiredCrew' },
+        ),
+        optional: new fields.SchemaField(
+          {
+            value: new fields.NumberField({
+              initial: 0,
+              label: 'SWADE.Value',
+            }),
+            max: new fields.NumberField({
+              initial: 0,
+              label: 'SWADE.MaxLabel',
+            }),
+          },
+          { label: 'SWADE.Passengers' },
+        ),
+      },
+      { label: 'SWADE.Crew' },
+    ),
+    driver: new fields.SchemaField(
+      {
+        id: new ForeignDocumentUUIDField({
+          idOnly: true,
+          label: 'SWADE.ID',
+          type: 'Actor',
+        }),
+        skill: new fields.StringField({
+          initial: '',
+          label: 'SWADE.OpSkill',
+        }),
+        skillAlternative: new fields.StringField({
+          initial: '',
+          label: 'SWADE.AltSkill',
+        }),
+      },
+      { label: 'SWADE.Operator' },
+    ),
+    status: new fields.SchemaField(
+      {
+        isOutOfControl: new fields.BooleanField({
+          label: 'SWADE.OutOfControl',
+        }),
+        isWrecked: new fields.BooleanField({ label: 'SWADE.Wrecked' }),
+      },
+      { label: 'SWADE.Status' },
+    ),
+    initiative: new fields.SchemaField(
+      {
+        hasHesitant: new fields.BooleanField({ label: 'SWADE.Hesitant' }),
+        hasLevelHeaded: new fields.BooleanField({
+          label: 'SWADE.LevelHeaded',
+        }),
+        hasImpLevelHeaded: new fields.BooleanField({
+          label: 'SWADE.ImprovedLevelHeaded',
+        }),
+        hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
+      },
+      { label: 'SWADE.Init' },
+    ),
+    additionalStats: makeAdditionalStatsSchema(),
+    cargo: new fields.SchemaField({
+      max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
+    }),
+    mods: new fields.SchemaField({
+      max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxMods' }),
+    }),
+  };
+}
+
 class VehicleData<
   Schema extends VehicleData.Schema = VehicleData.Schema,
   BaseData extends VehicleData.BaseData = VehicleData.BaseData,
   DerivedData extends VehicleData.DerivedData = VehicleData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
   static override defineSchema() {
-    const fields = foundry.data.fields;
     return {
       ...super.defineSchema(),
-      size: new fields.NumberField({ initial: 0, label: 'SWADE.Size' }),
-      scale: new fields.NumberField({ initial: 0, label: 'SWADE.Scale' }),
-      classification: new fields.StringField({
-        initial: '',
-        textSearch: true,
-        label: 'SWADE.Class',
-      }),
-      handling: new fields.NumberField({ initial: 0, label: 'SWADE.Handling' }),
-      cost: new fields.NumberField({ initial: 0, label: 'SWADE.Price' }),
-      topspeed: new fields.SchemaField(
-        {
-          value: new fields.NumberField({
-            initial: 0,
-            min: 0,
-            label: 'SWADE.Topspeed',
-          }),
-          unit: new fields.StringField({ label: 'SWADE.SpeedUnit' }),
-        },
-        { label: 'SWADE.Topspeed' },
-      ),
-      description: new fields.HTMLField({
-        initial: '',
-        textSearch: true,
-        label: 'SWADE.Desc',
-      }),
-      toughness: new fields.SchemaField(
-        {
-          total: new fields.NumberField({ initial: 0, label: 'SWADE.Tough' }),
-          armor: new fields.NumberField({ initial: 0, label: 'SWADE.Armor' }),
-        },
-        { label: 'SWADE.Tough' },
-      ),
-      wounds: new fields.SchemaField(
-        {
-          value: new fields.NumberField({ initial: 0, label: 'SWADE.Wounds' }),
-          max: new fields.NumberField({ initial: 3, label: 'SWADE.WoundsMax' }),
-          ignored: new fields.NumberField({
-            initial: 0,
-            label: 'SWADE.IgnWounds',
-          }),
-        },
-        { label: 'SWADE.Wounds' },
-      ),
-      crew: new fields.SchemaField(
-        {
-          required: new fields.SchemaField(
-            {
-              value: new fields.NumberField({
-                initial: 1,
-                label: 'SWADE.Value',
-              }),
-              max: new fields.NumberField({
-                initial: 1,
-                label: 'SWADE.MaxLabel',
-              }),
-            },
-            { label: 'SWADE.RequiredCrew' },
-          ),
-          optional: new fields.SchemaField(
-            {
-              value: new fields.NumberField({
-                initial: 0,
-                label: 'SWADE.Value',
-              }),
-              max: new fields.NumberField({
-                initial: 0,
-                label: 'SWADE.MaxLabel',
-              }),
-            },
-            { label: 'SWADE.Passengers' },
-          ),
-        },
-        { label: 'SWADE.Crew' },
-      ),
-      driver: new fields.SchemaField(
-        {
-          id: new fields.StringField({
-            initial: null,
-            nullable: true,
-            label: 'SWADE.ID',
-          }),
-          skill: new fields.StringField({
-            initial: '',
-            label: 'SWADE.OpSkill',
-          }),
-          skillAlternative: new fields.StringField({
-            initial: '',
-            label: 'SWADE.AltSkill',
-          }),
-        },
-        { label: 'SWADE.Operator' },
-      ),
-      status: new fields.SchemaField(
-        {
-          isOutOfControl: new fields.BooleanField({
-            label: 'SWADE.OutOfControl',
-          }),
-          isWrecked: new fields.BooleanField({ label: 'SWADE.Wrecked' }),
-        },
-        { label: 'SWADE.Status' },
-      ),
-      initiative: new fields.SchemaField(
-        {
-          hasHesitant: new fields.BooleanField({ label: 'SWADE.Hesitant' }),
-          hasLevelHeaded: new fields.BooleanField({
-            label: 'SWADE.LevelHeaded',
-          }),
-          hasImpLevelHeaded: new fields.BooleanField({
-            label: 'SWADE.ImprovedLevelHeaded',
-          }),
-          hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
-        },
-        { label: 'SWADE.Init' },
-      ),
-      additionalStats: makeAdditionalStatsSchema(),
-      maxCargo: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
-      maxMods: new fields.NumberField({ initial: 0, label: 'SWADE.MaxMods' }),
+      ...createVehicleSchema(),
     };
   }
 
   static override migrateData(source: AnyObject): AnyObject {
     migrations.splitTopSpeed(source);
+    migrations.shiftCargoModsMax(source);
     return super.migrateData(source);
   }
-
-  declare parent: SwadeActor;
 
   override get tokenSize(): TokenSize {
     const value = Math.max(1, Math.floor(this.size! / 4) + 1);
     return { width: value, height: value };
   }
 
-  /** @inheritdoc */
-  override prepareBaseData() {
+  override prepareBaseData(this: VehicleData) {
     //setup the global modifier container object
     this.stats = {
       globalMods: {
         attack: new Array<DerivedModifier>(),
         damage: new Array<DerivedModifier>(),
         ap: new Array<DerivedModifier>(),
+        agility: new Array<DerivedModifier>(),
+        smarts: new Array<DerivedModifier>(),
+        spirit: new Array<DerivedModifier>(),
+        strength: new Array<DerivedModifier>(),
+        vigor: new Array<DerivedModifier>(),
+        trait: new Array<DerivedModifier>(),
       },
     };
+    for (const attribute of Object.values(this.attributes)) {
+      attribute.effects = new Array<RollModifier>();
+    }
+    this.mods.value = 0;
+    this.cargo.value = 0;
   }
 
-  /** @inheritdoc */
-  override prepareDerivedData() {
+  override prepareDerivedData(this: VehicleData) {
     super.prepareDerivedData();
+    //die type bounding for attributes
+    for (const key in this.attributes) {
+      const attribute = this.attributes[key];
+      attribute.die = boundTraitDie(attribute.die);
+      attribute['wild-die'].sides = Math.min(attribute['wild-die'].sides, 12);
+    }
+
     this.scale = this.parent.calcScale(this.size!);
+    this.mods.value += this.parent.items.reduce((total: number, i) => {
+      // probably need to check for equip status too
+      if (
+        'mods' in i.system &&
+        i.system.isVehicular &&
+        i.system.equipStatus > constants.EQUIP_STATE.CARRIED
+      ) {
+        return total + (i.system.mods ?? 0);
+      }
+      return total;
+    }, 0);
   }
 
   declare enrichedDescription?: string;
@@ -263,7 +353,7 @@ class VehicleData<
     return false;
   }
 
-  getRollData(): Record<string, number | string> {
+  getRollData(this: VehicleData): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       topspeed: this.topspeed.value || 0,

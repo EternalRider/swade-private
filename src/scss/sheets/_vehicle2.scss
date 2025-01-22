@@ -1,0 +1,136 @@
+.application.sheet.swade.actor.vehicle {
+  .section-header {
+    line-height: 30px;
+    font-size: 20px;
+    text-align: center;
+    display: block;
+    a.helper-button {
+      font-size: 12px;
+      vertical-align: middle;
+    }
+  }
+  [data-application-part='header'] {
+    .sheet-portrait {
+      flex: 0 0 120px;
+      img {
+        border: none;
+        cursor: pointer;
+      }
+    }
+    .name {
+      margin-bottom: 2px;
+      line-height: 36px;
+      input {
+        font-size: 32px;
+        &:not(:focus) {
+          background: none;
+          border: none;
+        }
+      }
+    }
+    .vehicle-stats {
+      .label {
+        line-height: 22px;
+        font-size: 20px;
+        text-align: center;
+      }
+      .divider {
+        flex: 0 0 10px;
+        font-size: 24px;
+        margin-left: 4px;
+      }
+      .max:not(:focus) {
+        background: none;
+        border: none;
+      }
+      margin: 0 3px;
+    }
+    .classification {
+      margin-top: 2px;
+      input:not(:focus) {
+        background: none;
+        border: none;
+      }
+    }
+    .vehicle-status {
+      flex: 0 0 150px;
+      .form-fields {
+        flex: 0 0 40px;
+      }
+    }
+  }
+  [data-application-part='traits'] {
+    align-items: start;
+    .attributes {
+      .attribute-list {
+        display: flex;
+      }
+      .attribute-label {
+        text-align: center;
+      }
+      .attribute {
+        --height: 28px;
+        text-align: center;
+        margin: 0;
+        line-height: var(--height);
+        margin-top: 2px;
+        flex-wrap: nowrap;
+        border: none;
+        border-bottom: 1px dashed black;
+        border-radius: 4px;
+        button {
+          border: none;
+          background-color: transparent;
+        }
+        .die {
+          border: none;
+          height: var(--height);
+          filter: brightness(0.5);
+        }
+        .modifier {
+          margin: 0;
+          width: 100%;
+          font-size: 1.25em;
+          line-height: var(--height);
+        }
+      }
+    }
+    .derived {
+      .derived-stat {
+        .label {
+          text-align: center;
+        }
+        margin: 0 3px;
+      }
+    }
+  }
+  [data-application-part='crew'] {
+    align-items: start;
+    .reset-driver {
+      flex: 0 0 20px;
+    }
+    .add-driver {
+      margin: 5px;
+    }
+    .right {
+      .form-group {
+        margin: 5px 0;
+      }
+    }
+  }
+  ul.item-list,
+  ul.effect-list,
+  ul.effect-section {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li img {
+      width: 28px;
+      flex: 0 0 32px;
+      margin-right: 4px;
+    }
+    .controls {
+      flex: 0 0 60px;
+    }
+  }
+}

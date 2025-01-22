@@ -44,6 +44,7 @@ import {
 } from './module/settings';
 import CharacterSheet from './module/sheets/CharacterSheet';
 import { GroupSheet } from './module/sheets/GroupSheet';
+import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
@@ -93,6 +94,7 @@ Hooks.once('init', () => {
       SwadeItemSheetV2,
       SwadeNPCSheet,
       SwadeVehicleSheet,
+      SwadeVehicleSheetV2,
     },
     apps: {
       SwadeDocumentTweaks,
@@ -255,6 +257,11 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.GroupSheet',
   });
+  Actors.registerSheet('swade', SwadeVehicleSheetV2, {
+    types: ['vehicle'],
+    makeDefault: true,
+    label: 'SWADE.VehicleSheet',
+  });
 
   Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
@@ -268,7 +275,6 @@ Hooks.once('init', () => {
   });
   Actors.registerSheet('swade', SwadeVehicleSheet, {
     types: ['vehicle'],
-    makeDefault: true,
     label: 'SWADE.CommunityVicSheet',
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {

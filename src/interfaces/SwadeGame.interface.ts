@@ -17,6 +17,7 @@ import CharacterSheet from '../module/sheets/CharacterSheet';
 import SwadeItemSheetV2 from '../module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from '../module/sheets/SwadeNPCSheet';
 import SwadeVehicleSheet from '../module/sheets/SwadeVehicleSheet';
+import SwadeVehicleSheetV2 from '../module/sheets/VehicleSheetV2';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
 import SwadeTour from '../module/tours/SwadeTour';
 import {
@@ -32,6 +33,7 @@ export interface SwadeGame {
     SwadeNPCSheet: typeof SwadeNPCSheet;
     SwadeVehicleSheet: typeof SwadeVehicleSheet;
     SwadeItemSheetV2: typeof SwadeItemSheetV2;
+    SwadeVehicleSheetV2: typeof SwadeVehicleSheetV2;
   };
   apps: {
     SwadeDocumentTweaks: typeof SwadeDocumentTweaks;

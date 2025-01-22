@@ -7,6 +7,7 @@ SWADE:
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
   GroupSheet: Savage Worlds Group Sheet
+  VehicleSheet: Savage Worlds Vehicle Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
@@ -273,7 +274,20 @@ SWADE:
   Mods: Mods
   ModSlots: Mod Slots
   MaxMods: Maximum Mods
+  VehicleAttributes:
+    Label: Vehicle Attributes
+    Agility: Vehicle Has Agility
+    Spirit: Vehicle Has Spirit
+    Smarts: Vehicle Has Smarts
+    Strength: Vehicle Has Strength
+    Vigor: Vehicle Has Vigor
+  Energy:
+    Label: Energy
+    Value: Current Energy
+    Max: Max Energy
+    Enable: Enable Energy
   Operator: Operator
+  OperatorIdHint: Drop an Actor or select a Token
   ManCheck: Maneuver Check
   AltSkill: Alternative Skill
   Class: Classification
@@ -577,6 +591,7 @@ SWADE:
   ActionsOverride: Override
   EffectsTemporary: Temporary Effects
   EffectsPermanent: Permanent Effects
+  EffectsInactive: Inactive Effects
   Ranks:
     Novice: Novice
     Seasoned: Seasoned
@@ -741,8 +756,11 @@ SWADE:
       Hint: >-
         Apply encumbrance penalties. Please keep in mind that this currently
         does NOT SUPPORT {vigor} tests to resist {fatigue}!
+    VehicleEnergy:
+      Name: Vehicle Energy
+      Hint: Vehicles use Energy
     VehicleMods:
-      Name: Vehicles Mods
+      Name: Vehicle Mods
       Hint: Vehicles use Mod-Slots
     VehicleEdges:
       Name: Vehicle Edges

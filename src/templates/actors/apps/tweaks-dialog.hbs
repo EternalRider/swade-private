@@ -112,7 +112,7 @@
           {{/unless}}
           {{#if isVehicle}}
             {{formGroupSimple
-              'system.maxCargo'
+              'system.cargo.max'
               classes='slim'
               document=doc
               rootId=doc.uuid
@@ -120,13 +120,67 @@
             }}
             {{#if hasModSlots}}
               {{formGroupSimple
-                'system.maxMods'
+                'system.mods.max'
                 classes='slim'
                 document=doc
                 rootId=doc.uuid
                 source=true
               }}
             {{/if}}
+            {{#if hasEnergy}}
+              {{formGroupSimple
+                'system.energy.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+              {{formGroupSimple
+                'system.energy.max'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+            {{/if}}
+            <fieldset>
+              <legend>{{localize 'SWADE.VehicleAttributes.Label'}}</legend>
+              {{formGroupSimple
+                'system.attributes.agility.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+              {{formGroupSimple
+                'system.attributes.smarts.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+              {{formGroupSimple
+                'system.attributes.spirit.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+              {{formGroupSimple
+                'system.attributes.strength.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+              {{formGroupSimple
+                'system.attributes.vigor.enabled'
+                classes='slim'
+                document=doc
+                rootId=doc.uuid
+                source=true
+              }}
+            </fieldset>
           {{/if}}
         </section>
         <!--Initiative-->

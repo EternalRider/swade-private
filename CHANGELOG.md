@@ -22,11 +22,27 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## [Unreleased]
+## 4.3.0
+
+### Added
+
+- Brand new Vehicle sheet, implementing a wide variety of community requests as well as utilizing AppV2
+  - Added Strength attribute that can be enabled in the Tweaks menu for walkers
+  - Added Energy attribute
+  - Migrated `maxCargo` and `maxMods` to `cargo.max` and `mods.max` so the current values can be added in data prep
+
+## 4.2.2
 
 ### Changed
 
+- Many more type fixes
 - Actors are now used as chat speaker in more situations (e.g. for Benny messages). (#749) **by @mhilbrunner**
+- Improved the way power ranges are calculated. For this change to fully take effect it is necessary to surround any formulas you wish to multiply etc in parenthesis, so `@sma*2` should be written as `(@sma)*2`. This is to account for the cases where the attribute die has a modifier, which should also factor into the range calculation. A smarts of `d12+2` would then be resolved into `12 + 2 * 2` without parenthesis, and `(12 + 2) * 2` with parenthesis. (#1249) **by @florad92**
+
+### Fixed
+
+- The PaceSchemaField now properly accounts for all Active Effect modes. **by @florad92**
+- Fixed issue with multiple Power embeds. **by @jpmeehan5**
 
 ## 4.2.3
 
