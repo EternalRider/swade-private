@@ -1,3 +1,11 @@
+.game.theme-dark {
+  .application.sheet.swade.actor.vehicle {
+    .attributes .attribute .die {
+      filter: invert(0.8);
+    }
+  }
+}
+
 .application.sheet.swade.actor.vehicle {
   .section-header {
     line-height: 30px;
@@ -42,6 +50,9 @@
       .max:not(:focus) {
         background: none;
         border: none;
+      }
+      .flexrow {
+        text-align: center;
       }
       margin: 0 3px;
     }
@@ -97,10 +108,23 @@
     }
     .derived {
       .derived-stat {
-        .label {
-          text-align: center;
-        }
         margin: 0 3px;
+        text-align: center;
+        &.size {
+          flex: 0 0 40px;
+        }
+        &.handling {
+          flex: 0 0 50px;
+        }
+        &.top-speed {
+          flex: 0 0 90px;
+          .flexrow {
+            gap: 5px;
+            .speed-unit {
+              flex: 0 0 35px;
+            }
+          }
+        }
       }
     }
   }
