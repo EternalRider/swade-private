@@ -466,8 +466,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
             this.actor.token?.id as string,
           )?.[0]
         : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
-      if (combatant?.getFlag('swade', 'roundHeld')) {
-        await combatant?.setFlag('swade', 'turnLost', true);
+      if (combatant?.system.roundHeld) {
+        await combatant?.update({ 'system.turnLost': true });
         await combatant?.toggleHold();
       }
     }
@@ -501,7 +501,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (combat && combatant) {
       // If status is Holding, turn off Hold for Combatant.
       if (this.statusId === 'holding') {
-        await combatant?.unsetFlag('swade', 'roundHeld');
+        await combatant?.update({ 'system.roundHeld': null });
       }
     }
   }
@@ -531,7 +531,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ name: game.i18n.localize(this.name) });
 
     //automatically favorite status effects
-    if (this.statusId) this.updateSource({ 'flags.swade.favorite': true });
+    if (this.statusId) this.updateSource({ 'system.favorite': true });
 
     //set the world time at creation
     this.updateSource({ duration: { startTime: game.time.worldTime } });
@@ -551,7 +551,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
-            combatant.setFlag('swade', 'turnLost', true),
+            combatant.update({ 'system.turnLost': true }),
             combatant.toggleHold(),
           ]);
         }
