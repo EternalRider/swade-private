@@ -1057,12 +1057,9 @@ class SwadeActor extends Actor {
       mods.push(...options.additionalMods);
     }
 
-    //Joker
-    if (this.hasJoker) {
-      mods.push({
-        label: game.i18n.localize('SWADE.Joker'),
-        value: (this.getFlag('swade', 'jokerBonus') as string | number) ?? 2,
-      });
+    // Joker, Dramatic Task Complication
+    if (game.combats.active && 'rollModifiers' in game.combats.active.system) {
+      mods.push(...game.combats.active.system.rollModifiers(this));
     }
 
     if (

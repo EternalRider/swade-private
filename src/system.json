@@ -186,6 +186,10 @@
       "poker": {},
       "adventure": {}
     },
+    "Combat": {
+      "chase": {},
+      "dt": {}
+    },
     "JournalEntryPage": {
       "headquarters": {
         "htmlFields": [

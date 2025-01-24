@@ -952,7 +952,7 @@ export default class SwadeCoreHooks {
     const effect = await fromUuid(uuid);
     if (!effect) return;
     const effectData = foundry.utils.mergeObject(effect.toObject(), {
-      flags: { swade: { favorite: true } },
+      system: { favorite: true },
       origin: effect.parent.uuid,
     });
     await Promise.allSettled(
