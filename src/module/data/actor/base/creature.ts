@@ -380,10 +380,10 @@ function creatureSchema() {
       {
         isShaken: new fields.BooleanField({ label: 'SWADE.Shaken' }),
         isDistracted: new fields.BooleanField({
-          label: 'SWADE.Distracted',
+          label: 'SWADE.Distr',
         }),
         isVulnerable: new fields.BooleanField({
-          label: 'SWADE.Vulnerable',
+          label: 'SWADE.Vuln',
         }),
         isStunned: new fields.BooleanField({ label: 'SWADE.Stunned' }),
         isEntangled: new fields.BooleanField({ label: 'SWADE.Entangled' }),

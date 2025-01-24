@@ -73,7 +73,7 @@
           class='flexrow'
         >
           <img src='{{item.img}}' />
-          <span class='name'>{{item.name}}</span>
+          <a class='name' data-action='showItem'>{{item.name}}</a>
           <span class='controls'>
             <a data-action='openItem'>
               <i class='fa-solid fa-edit'></i>
@@ -112,7 +112,7 @@
           class='flexrow'
         >
           <img src='{{item.img}}' />
-          <span class='name'>{{item.name}}</span>
+          <a class='name' data-action='showItem'>{{item.name}}</a>
           <span class='controls'>
             <a data-action='openItem'>
               <i class='fa-solid fa-edit'></i>
@@ -163,31 +163,37 @@
     </div>
     {{/if}}
     <div class='derived'>
-      <label class='section-header'>{{localize 'SWADE.Derived'}}</label>
+      <label class='section-header'>{{localize 'SWADE.Stats'}}</label>
       <div class='flexrow'>
-        <div class='flexcol derived-stat'>
+        <div class='flexcol derived-stat size'>
           <label for='{{actor.uuid}}-size' class='label'>{{localize 'SWADE.Size'}}</label>
           <div class='flexrow'>
             <input id='{{actor.uuid}}-size' type='number' name='system.size' value='{{system.size}}' />
           </div>
         </div>
-        <div class='flexcol derived-stat'>
+        <div class='flexcol derived-stat handling'>
           <label for='{{actor.uuid}}-handling' class='label'>{{localize 'SWADE.Handling'}}</label>
           <div class='flexrow'>
             <input id='{{actor.uuid}}-handling' type='number' name='{{propName}}' value='{{prop}}' />
           </div>
         </div>
-        <div class='flexcol derived-stat'>
+        <div class='flexcol derived-stat top-speed'>
           <label for='{{actor.uuid}}-top-speed' class='label'>{{localize 'SWADE.Topspeed'}}</label>
           <div class='flexrow'>
-            <input id='{{actor.uuid}}-top-speed' type='number' name='system.topspeed.value' value='{{system.topspeed.value}}' />
-            <input type='text' name='system.topspeed.unit' value='{{system.topspeed.unit}}' />
+            <input class='speed-value' id='{{actor.uuid}}-top-speed' type='number' name='system.topspeed.value' value='{{system.topspeed.value}}' />
+            <input class='speed-unit' type='text' name='system.topspeed.unit' value='{{system.topspeed.unit}}' />
           </div>
         </div>
-        <div class='flexcol derived-stat'>
+        <div class='flexcol derived-stat toughness'>
           <label for='{{actor.uuid}}-toughness' class='label'>{{localize 'SWADE.Tough'}}</label>
           <div class='flexrow'>
             <input id='{{actor.uuid}}-toughness' type='number' name='system.toughness.total' value='{{system.toughness.total}}' />
+          </div>
+        </div>
+        <div class='flexcol derived-stat armor'>
+          <label for='{{actor.uuid}}-armor' class='label'>{{localize 'SWADE.Armor'}}</label>
+          <div class='flexrow'>
+            <input id='{{actor.uuid}}-armor' type='number' name='system.toughness.armor' value='{{system.toughness.armor}}' />
           </div>
         </div>
       </div>

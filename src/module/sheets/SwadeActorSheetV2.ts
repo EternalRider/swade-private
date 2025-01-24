@@ -49,6 +49,7 @@ export class SwadeActorSheetV2<
     },
     actions: {
       createDocument: SwadeActorSheetV2.createEmbeddedDocument,
+      showItem: SwadeActorSheetV2.showItem,
       openItem: SwadeActorSheetV2.openItem,
       deleteItem: SwadeActorSheetV2.deleteItem,
       openEffect: SwadeActorSheetV2.openItem,
@@ -85,6 +86,14 @@ export class SwadeActorSheetV2<
       parent: this.actor,
       renderSheet: target.dataset.renderSheet,
     });
+  }
+
+  static showItem(
+    this: SwadeActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    (this._getEmbeddedDocument(target) as SwadeItem)?.show();
   }
 
   static openItem(

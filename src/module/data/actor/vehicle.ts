@@ -233,6 +233,12 @@ function createVehicleSchema() {
           label: 'SWADE.OutOfControl',
         }),
         isWrecked: new fields.BooleanField({ label: 'SWADE.Wrecked' }),
+        isDistracted: new fields.BooleanField({
+          label: 'SWADE.Distr',
+        }),
+        isVulnerable: new fields.BooleanField({
+          label: 'SWADE.Vuln',
+        }),
       },
       { label: 'SWADE.Status' },
     ),
