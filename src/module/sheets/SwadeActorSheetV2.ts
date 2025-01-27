@@ -61,9 +61,10 @@ export class SwadeActorSheetV2<
 
   static async createEmbeddedDocument(
     this: SwadeActorSheetV2,
-    _event: PointerEvent,
+    event: PointerEvent,
     target: HTMLElement,
   ) {
+    event.preventDefault(); // helps buttons in the headers of <details> elements
     const documentClass = getDocumentClass(
       target.dataset.documentClass as 'Item' | 'ActiveEffect',
     );

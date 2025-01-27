@@ -46,50 +46,50 @@
   data-group='primary'
 >
   <div class='left'>
-    <div class='mods'>
-      <label class='section-header'>
-        {{localize 'SWADE.Mods'}}
-        {{#if showModCount}}
-        ({{system.mods.value}} / {{system.mods.max}})
-        {{/if}}
-        {{#if editable}}
-        <a class='helper-button'
-          data-action='createDocument' 
-          data-document-class='Item' 
-          data-type='gear' 
-          data-system.is-vehicular='true' 
-          data-system.equip-status='3' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
-        {{/if}}
-        </label>
-      <ul class='item-list'>
-      {{#each gearMods as |item|}}
-        <li 
-          data-item-id='{{item.id}}' 
-          data-document-class='Item' 
-          data-drag='true' 
-          class='flexrow'
-        >
-          <img src='{{item.img}}' />
-          <a class='name' data-action='showItem'>{{item.name}}</a>
-          <span class='controls'>
-            <a data-action='openItem'>
-              <i class='fa-solid fa-edit'></i>
-            </a>
-            {{#if @root.editable}}
-            <a data-action='deleteItem'>
-              <i class='fa-solid fa-trash'></i>
-            </a>
-            {{/if}}
-          </span>
-        </li>
-      {{/each}}
-      </ul>
-    </div>
-    <div class='weapons'>
-      <label class='section-header'>
+    <details class='mods' data-summary-id='mods'>
+      <summary class='section-header'>
+      {{localize 'SWADE.Mods'}}
+      {{#if showModCount}}
+      ({{system.mods.value}} / {{system.mods.max}})
+      {{/if}}
+      {{#if editable}}
+      <a class='helper-button'
+        data-action='createDocument' 
+        data-document-class='Item' 
+        data-type='gear' 
+        data-system.is-vehicular='true' 
+        data-system.equip-status='3' 
+      >
+        <i class='fa-solid fa-plus'></i>
+      </a>
+      {{/if}}
+      </summary>
+    <ul class='item-list'>
+    {{#each gearMods as |item|}}
+      <li 
+        data-item-id='{{item.id}}' 
+        data-document-class='Item' 
+        data-drag='true' 
+        class='flexrow'
+      >
+        <img src='{{item.img}}' />
+        <a class='name' data-action='showItem'>{{item.name}}</a>
+        <span class='controls'>
+          <a data-action='openItem'>
+            <i class='fa-solid fa-edit'></i>
+          </a>
+          {{#if @root.editable}}
+          <a data-action='deleteItem'>
+            <i class='fa-solid fa-trash'></i>
+          </a>
+          {{/if}}
+        </span>
+      </li>
+    {{/each}}
+    </ul>
+    </details>
+    <details class='weapons' data-summary-id='weapons'>
+      <summary class='section-header'>
         {{localize 'SWADE.Weapons'}}
         {{#if editable}}
         <a class='helper-button'
@@ -102,7 +102,7 @@
           <i class='fa-solid fa-plus'></i>
         </a>
         {{/if}}
-      </label>
+      </summary>
       <ul class='item-list'>
       {{#each weaponMods as |item|}}
         <li 
@@ -126,7 +126,7 @@
         </li>
       {{/each}}
       </ul>
-    </div>
+    </details>
   </div>
   <div class='right'>
     {{#if attributes.enabled}}
