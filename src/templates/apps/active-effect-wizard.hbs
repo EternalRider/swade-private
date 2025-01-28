@@ -125,36 +125,40 @@
         </div>
       </span>
     </details>
-    <details data-category='skill' {{collapsible collapsibleStates 'skill'}}>
-      <summary>{{localize 'SWADE.Skills'}}</summary>
-      <span class='content'>
-        <div class='form-group'>
-          <label for='aewizard-skill'>
-            {{localize 'SWADE.EffectWizard.EnterSkill.Label'}}
-          </label>
-          <span class='form-fields'>
-            <input
-              id='aewizard-skill'
-              type='text'
-              class='target'
-              list='{{object.id}}-skills'
-            />
-          </span>
-          <p class='hint'>{{localize 'SWADE.EffectWizard.EnterSkill.Hint'}}</p>
-        </div>
-        <div class='flexrow button-list'>
-          <button type='button' data-key='die.sides'>
-            {{localize 'SWADE.DieSides'}}
-          </button>
-          <button type='button' data-key='wild-die.sides'>
-            {{localize 'SWADE.WildDieSides'}}
-          </button>
-          <button type='button' data-key='die.modifier'>
-            {{localize 'SWADE.Modifier'}}
-          </button>
-        </div>
-      </span>
-    </details>
+    {{#unless isVehicle}}
+      <details data-category='skill' {{collapsible collapsibleStates 'skill'}}>
+        <summary>{{localize 'SWADE.Skills'}}</summary>
+        <span class='content'>
+          <div class='form-group'>
+            <label for='aewizard-skill'>
+              {{localize 'SWADE.EffectWizard.EnterSkill.Label'}}
+            </label>
+            <span class='form-fields'>
+              <input
+                id='aewizard-skill'
+                type='text'
+                class='target'
+                list='{{object.id}}-skills'
+              />
+            </span>
+            <p class='hint'>{{localize
+                'SWADE.EffectWizard.EnterSkill.Hint'
+              }}</p>
+          </div>
+          <div class='flexrow button-list'>
+            <button type='button' data-key='die.sides'>
+              {{localize 'SWADE.DieSides'}}
+            </button>
+            <button type='button' data-key='wild-die.sides'>
+              {{localize 'SWADE.WildDieSides'}}
+            </button>
+            <button type='button' data-key='die.modifier'>
+              {{localize 'SWADE.Modifier'}}
+            </button>
+          </div>
+        </span>
+      </details>
+    {{/unless}}
     <details
       data-category='derived'
       {{collapsible collapsibleStates 'derived'}}

@@ -6,6 +6,7 @@ import type {
   SwadeApplicationTab,
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
@@ -34,6 +35,7 @@ export function SwadeBaseSheetMixin<
       },
       actions: {
         editImg: SwadeBaseSheet._onEditImage,
+        openAegis: SwadeBaseSheet._openAegis,
       },
     };
 
@@ -59,6 +61,14 @@ export function SwadeBaseSheetMixin<
         left: this.position.left + 10,
       });
       fp.browse();
+    }
+
+    static async _openAegis(
+      this: SwadeBaseSheet,
+      _event: PointerEvent,
+      _target: HTMLImageElement,
+    ) {
+      new ActiveEffectWizard(this.document).render(true);
     }
 
     // This is marked as private because there's no real need
