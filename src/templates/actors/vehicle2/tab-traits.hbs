@@ -1,14 +1,6 @@
 {{#*inline 'effect-list'}}
 <li class='effect-list-label'>
   {{localize label}}
-  {{#if @root.editable}}
-  <a class='helper-button'
-    data-action='createDocument' 
-    data-document-class='ActiveEffect'
-  >
-    <i class='fa-solid fa-plus'></i>
-  </a>
-  {{/if}}
 </li>
 <ul class='effect-list'>
 {{#each effectList as |effect|}}
@@ -199,7 +191,16 @@
       </div>
     </div>
     <div class='effects'>
-      <label class='section-header'>{{localize 'SWADE.Effects'}}</label>
+      <label class='section-header'>
+        {{localize 'SWADE.Effects'}}  
+        {{#if editable}}
+        <a class='helper-button'
+          data-action='openAegis' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
+        {{/if}}
+      </label>
       <ul class='effect-section'>
         {{> effect-list label='SWADE.EffectsTemporary' effectList=effects.temporary}}
         {{> effect-list label='SWADE.EffectsPermanent' effectList=effects.passive}}

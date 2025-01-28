@@ -35,6 +35,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Dramatic Tasks will add a -2 penalty for clubs (complications), similar to the +2 bonus for jokers.
   - Included migration for `flags.swade` data to `system`.
 
+### Changed
+
+- Improved the AE Wizard when called from a vehicle. (#892) **by @jpmeehan5**
+
 ## 4.2.3
 
 ### Fixed
