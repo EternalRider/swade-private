@@ -230,7 +230,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       const roll = new Roll(`${statData.value}${modifier}`);
       await roll.evaluate();
       await roll.toMessage({
-        speaker: CONFIG.ChatMessage.documentClass.getSpeaker({ actor: this.item.actor }),
+        speaker: CONFIG.ChatMessage.documentClass.getSpeaker({
+          actor: this.item.actor,
+        }),
         flavor: `${this.item.name} - ${statData.label}`,
       });
     });
@@ -272,6 +274,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
+      showMods: game.settings.get('swade', 'vehicleMods'),
+      showEnergy: game.settings.get('swade', 'vehicleEnergy'),
       isArcaneDevice: this.item.isArcaneDevice,
       ranges: this.#rangeSuggestions(),
       equipStatusOptions: this.#equipStatusOptions(),
@@ -884,6 +888,8 @@ interface SwadeItemSheetData extends OptionsPartial {
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;
   collapsibleStates: CollapsibleStates;
+  showMods: boolean;
+  showEnergy: boolean;
   isArcaneDevice: boolean;
   enrichedDescription: string;
   settingRules: {

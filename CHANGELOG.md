@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Added Chase and Dramatic Task subtypes for Combat. Creating a combat now prompts a dialog asking which type of combat to create.
   - Dramatic Tasks will add a -2 penalty for clubs (complications), similar to the +2 bonus for jokers.
   - Included migration for `flags.swade` data to `system`.
+- Added Mods and Energy fields for Armor items. These show if and only if the Vehicle Mods/Energy settings are enabled. (#1259) **by @jpmeehan5**
 
 ## 4.2.3
 

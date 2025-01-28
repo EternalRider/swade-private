@@ -35,9 +35,9 @@ declare namespace ArmorData {
       Favorite,
       Category,
       GrantEmbedded {
-    minStr: foundry.data.fields.StringField<{ initial: '' }>;
-    armor: foundry.data.fields.NumberField<{ initial: 0 }>;
-    toughness: foundry.data.fields.NumberField<{ initial: 0 }>;
+    minStr: foundry.data.fields.StringField<{ initial: ''; label: string }>;
+    armor: foundry.data.fields.NumberField<{ initial: 0; label: string }>;
+    toughness: foundry.data.fields.NumberField<{ initial: 0; label: string }>;
     isNaturalArmor: foundry.data.fields.BooleanField<{ label: string }>;
     isHeavyArmor: foundry.data.fields.BooleanField<{ label: string }>;
     locations: foundry.data.fields.SchemaField<{
@@ -45,6 +45,34 @@ declare namespace ArmorData {
       torso: foundry.data.fields.BooleanField<{ label: string; initial: true }>;
       arms: foundry.data.fields.BooleanField<{ label: string }>;
       legs: foundry.data.fields.BooleanField<{ label: string }>;
+    }>;
+    energy: foundry.data.fields.SchemaField<
+      {
+        value: foundry.data.fields.NumberField<{
+          integer: true;
+          initial: 0;
+          label: string;
+        }>;
+        max: foundry.data.fields.NumberField<{
+          integer: true;
+          initial: 0;
+          label: string;
+        }>;
+        enabled: foundry.data.fields.BooleanField<{ label: string }>;
+      },
+      { label: string }
+    >;
+    mods: foundry.data.fields.SchemaField<{
+      value: foundry.data.fields.NumberField<{
+        integer: true;
+        initial: 0;
+        label: string;
+      }>;
+      max: foundry.data.fields.NumberField<{
+        integer: true;
+        initial: 0;
+        label: string;
+      }>;
     }>;
   }
   interface BaseData extends SwadePhysicalItemData.BaseData {}
@@ -76,6 +104,34 @@ class ArmorData extends SwadePhysicalItemData<
         torso: new fields.BooleanField({ initial: true, label: 'SWADE.Torso' }),
         arms: new fields.BooleanField({ label: 'SWADE.Arms' }),
         legs: new fields.BooleanField({ label: 'SWADE.Legs' }),
+      }),
+      energy: new fields.SchemaField(
+        {
+          value: new fields.NumberField({
+            integer: true,
+            initial: 0,
+            label: 'SWADE.Energy.Value',
+          }),
+          max: new fields.NumberField({
+            integer: true,
+            initial: 0,
+            label: 'SWADE.Energy.Max',
+          }),
+          enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
+        },
+        { label: 'SWADE.Energy.Label' },
+      ),
+      mods: new fields.SchemaField({
+        value: new fields.NumberField({
+          integer: true,
+          initial: 0,
+          label: 'SWADE.Mods',
+        }),
+        max: new fields.NumberField({
+          integer: true,
+          initial: 0,
+          label: 'SWADE.MaxMods',
+        }),
       }),
     };
   }

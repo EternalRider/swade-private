@@ -759,10 +759,10 @@ SWADE:
         does NOT SUPPORT {vigor} tests to resist {fatigue}!
     VehicleEnergy:
       Name: Vehicle Energy
-      Hint: Vehicles use Energy
+      Hint: Vehicles and Armor use Energy
     VehicleMods:
       Name: Vehicle Mods
-      Hint: Vehicles use Mod-Slots
+      Hint: Vehicles and Armor use Mod-Slots
     VehicleEdges:
       Name: Vehicle Edges
       Hint: Vehicles use Edges and Hindrances
