@@ -12,7 +12,7 @@ export interface PrototypeAdditionalStat {
 export interface AdditionalStat extends PrototypeAdditionalStat {
   key?: string;
   useField?: boolean;
-  value?: string | number;
+  value?: string | number | boolean;
   max?: string | number;
   modifier?: string;
   options?: Record<string, string>;
