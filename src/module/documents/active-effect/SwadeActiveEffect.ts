@@ -142,9 +142,26 @@ export default class SwadeActiveEffect extends ActiveEffect {
         );
       }
     }
-    if (data?.flags?.swade) {
+
+    const flags = data.flags?.swade;
+
+    if (flags) {
+      const keys = [
+        'removeEffect',
+        'expiration',
+        'loseTurnOnHold',
+        'favorite',
+        'conditionalEffect',
+      ];
       const flags = data.flags.swade;
-      data.system = foundry.utils.mergeObject(data.system, flags);
+      data.system ??= {};
+
+      for (const key of keys) {
+        if (key in flags) {
+          data.system[key] = flags[key];
+          delete flags[key];
+        }
+      }
     }
     return data;
   }
@@ -186,7 +203,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     const name = match[2].trim();
     //filter the items down, according to type and name/id
     const collection =
-      parent instanceof SwadeItem ? (parent.parent?.items ?? []) : parent.items;
+      parent instanceof SwadeItem ? parent.parent?.items ?? [] : parent.items;
     items.push(
       ...collection.filter(
         (i) => i.type === type && (i.name === name || i.id === name),
