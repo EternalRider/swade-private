@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Fixed AE migration logic again. For real this time. (#1262) **by @jpmeehan5**
+- Item Grants now handle missing grants more gracefully. (#1265) **by @florad92**
 
 ## 4.2.3
 
