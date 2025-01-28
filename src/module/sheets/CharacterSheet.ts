@@ -694,7 +694,7 @@ export default class CharacterSheet extends ActorSheet {
         img: effect.img,
         disabled: effect.disabled,
         description: effect.description,
-        favorite: effect.getFlag('swade', 'favorite') ?? false,
+        favorite: effect.system.favorite ?? false,
       };
       if (effect.parent !== this.actor) {
         val.origin = effect.sourceName; // legacy inclusion to maintain NPC/Vehicle sheets until they can be upgraded
@@ -712,7 +712,6 @@ export default class CharacterSheet extends ActorSheet {
             startRound: effect.duration.startRound,
             startTurn: effect.duration.startTurn,
             remaining: effect.duration.remaining,
-            //@ts-expect-error New v11 property
             label: effect.duration.label,
           };
         }

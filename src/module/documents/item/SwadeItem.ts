@@ -666,9 +666,9 @@ class SwadeItem extends Item {
   ): Promise<ItemGrantChainLink[]> {
     if (!this.canGrantItems || ignored.has(this.uuid)) return [];
     ignored.add(this.uuid);
-    const grantedItems = (await Promise.all(
-      this.grantsItems.map((g) => fromUuid(g.uuid)),
-    )) as SwadeItem[];
+    const grantedItems = (
+      await Promise.all(this.grantsItems.map((g) => fromUuid(g.uuid)))
+    ).filter((i) => !!i) as SwadeItem[];
 
     const grants: ItemGrantChainLink[] = [];
     for (const item of grantedItems) {

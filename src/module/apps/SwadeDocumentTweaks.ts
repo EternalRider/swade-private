@@ -148,6 +148,20 @@ export default class SwadeDocumentTweaks extends FormApplication<
       } else if (field.useField && !fieldExistsOnDoc) {
         //add new field
         newFields[key] = prototypeFields[key];
+        switch (prototypeFields[key].dtype) {
+          case 'Die':
+          case 'String':
+            newFields[key].value = '';
+            if (prototypeFields[key].max) newFields[key].max = '';
+            break;
+          case 'Number':
+            newFields[key].value = 0;
+            if (prototypeFields[key].max) newFields[key].max = 0;
+            break;
+          case 'Boolean':
+            newFields[key].value = false;
+            break;
+        }
       } else {
         //delete field
         newFields[`-=${key}`] = field;
