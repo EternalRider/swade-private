@@ -77,12 +77,59 @@ export function SwadeBaseSheetMixin<
       this.#dragDrop = this.#createDragDropHandlers();
     }
 
-    override async _prepareContext(options: DocumentSheetRenderOptions) {
+    protected override async _prepareContext(
+      options: DocumentSheetRenderOptions,
+    ) {
       const context = await super._prepareContext(options);
       return foundry.utils.mergeObject(context, {
         tabs: this._getTabs(),
         document: this.document,
       });
+    }
+
+    protected override _preSyncPartState(
+      partId: string,
+      newElement: HTMLElement,
+      priorElement: HTMLElement,
+      state: SwadeBaseSheetMixin.PartState,
+    ) {
+      super._preSyncPartState(partId, newElement, priorElement, state);
+
+      state.collapsibles = {};
+      const collapsibles = priorElement.querySelectorAll('details');
+      for (const details of collapsibles) {
+        const id = details.dataset.summaryId as string;
+        state.collapsibles[id] = details.open;
+      }
+    }
+
+    protected override _syncPartState(
+      partId: string,
+      newElement: HTMLElement,
+      priorElement: HTMLElement,
+      state: SwadeBaseSheetMixin.PartState,
+    ) {
+      super._syncPartState(partId, newElement, priorElement, state);
+
+      const collapsibles = newElement.querySelectorAll('details');
+      for (const details of collapsibles) {
+        const id = details.dataset.summaryId as string;
+        if (id in state.collapsibles) {
+          details.open = state.collapsibles[id];
+        }
+      }
+    }
+
+    protected override _onFirstRender(
+      context: unknown,
+      options: unknown,
+    ): void {
+      super._onFirstRender(context, options);
+
+      const collapsibles = this.element.querySelectorAll('details');
+      for (const details of collapsibles) {
+        details.open = true;
+      }
     }
 
     /**
@@ -220,4 +267,11 @@ export function SwadeBaseSheetMixin<
       }
     }
   };
+}
+
+declare namespace SwadeBaseSheetMixin {
+  interface PartState
+    extends foundry.applications.api.HandlebarsApplicationMixin.PartState {
+    collapsibles: Record<string, boolean>;
+  }
 }

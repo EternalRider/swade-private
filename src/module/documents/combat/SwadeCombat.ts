@@ -84,7 +84,6 @@ export default class SwadeCombat extends Combat {
             label: title,
             callback: (event, button) => {
               const fd = new FormDataExtended(button.form);
-              console.log(data, fd.object);
               foundry.utils.mergeObject(data, fd.object);
               return this.create(data, {
                 renderSheet: false,
