@@ -36,7 +36,7 @@
     <button type='button' data-action='maneuverCheck' {{#unless operator}}disabled{{/unless}}>
       {{localize 'SWADE.ManCheck'}}
     </button>
-    <details class='abilities'>
+    <details class='abilities' data-summary-id='abilities'>
       <summary class='section-header'>
         {{localize 'SWADE.SpecialAbilities'}}
         {{#if editable}}
@@ -48,8 +48,8 @@
           <i class='fa-solid fa-plus'></i>
         </a>
         {{/if}}
-        </summary>
-      <ul class='item-list'>
+      </summary>
+      <ul class='item-list content'>
       {{#each abilities as |item|}}
         <li 
           data-item-id='{{item.id}}' 
@@ -74,7 +74,7 @@
       </ul>
     </details>
     {{#if showEdges}}
-    <details class='edges'>
+    <details class='edges' data-summary-id='edges'>
       <summary class='section-header'>
         {{localize 'SWADE.Edges'}}
         {{#if editable}}
@@ -86,8 +86,8 @@
           <i class='fa-solid fa-plus'></i>
         </a>
         {{/if}}
-        </summary>
-      <ul class='item-list'>
+      </summary>
+      <ul class='item-list content'>
       {{#each edges as |item|}}
         <li 
           data-item-id='{{item.id}}' 
@@ -111,7 +111,7 @@
       {{/each}}
       </ul>
     </details>
-    <details class='hindrances'>
+    <details class='hindrances' data-summary-id='hindrances'>
       <summary class='section-header'>
         {{localize 'SWADE.Hindrances'}}
         {{#if editable}}
@@ -123,8 +123,8 @@
           <i class='fa-solid fa-plus'></i>
         </a>
         {{/if}}
-        </summary>
-      <ul class='item-list'>
+      </summary>
+      <ul class='item-list content'>
       {{#each hindrances as |item|}}
         <li 
           data-item-id='{{item.id}}' 

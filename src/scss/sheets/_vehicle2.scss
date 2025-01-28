@@ -11,7 +11,9 @@
     line-height: 30px;
     font-size: 20px;
     text-align: center;
-    display: block;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
     a.helper-button {
       font-size: 12px;
       vertical-align: middle;
@@ -72,7 +74,11 @@
   }
   [data-application-part='traits'] {
     align-items: start;
+    .mods {
+      margin-bottom: 15px;
+    }
     .attributes {
+      margin-bottom: 15px;
       .attribute-list {
         display: flex;
       }
@@ -107,6 +113,7 @@
       }
     }
     .derived {
+      margin-bottom: 15px;
       .derived-stat {
         margin: 0 3px;
         text-align: center;
@@ -154,7 +161,7 @@
       margin-right: 4px;
     }
     .controls {
-      flex: 0 0 60px;
+      flex: 0 0 50px;
     }
   }
 }
