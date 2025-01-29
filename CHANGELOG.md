@@ -39,6 +39,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Improved the AE Wizard when called from a vehicle. (#892) **by @jpmeehan5**
+- Mutations are merged into the data passed to `handleChoices`, allowing them to override the available `choiceSets`. (#1213) **by @jpmeehan5 and @kristianserrano**
 
 ## 4.2.4
 

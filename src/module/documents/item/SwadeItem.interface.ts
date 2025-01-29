@@ -58,7 +58,7 @@ export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
-  mutation?: DeepPartial<foundry.documents.BaseItem.ConstructorData>;
+  mutation: DeepPartial<foundry.documents.BaseItem.ConstructorData> | undefined;
   missing?: boolean;
   major?: boolean;
 }

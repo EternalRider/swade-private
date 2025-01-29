@@ -672,7 +672,11 @@ class SwadeItem extends Item {
 
     const grants: ItemGrantChainLink[] = [];
     for (const item of grantedItems) {
-      const choiceUpdate = await item.handleChoices(item.toObject());
+      const grant = this.grantsItems.find((g) => g.uuid === item.uuid);
+      const choiceUpdate = await item.handleChoices(
+        foundry.utils.mergeObject(item.toObject(), grant.mutation ?? {}),
+      );
+
       grants.push({
         item: new SwadeItem(
           foundry.utils.mergeObject(item.toObject(), choiceUpdate),
