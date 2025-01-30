@@ -465,6 +465,8 @@ SWADE:
     ResetDuration: Réinitialiser la durée
     AddGuided: Ouvrir le guide
     AddUnguided: Ajouter un Effet Actif vide
+    Conditional: Effet conditionnel
+    ConditionalTooltip: Par défaut Ignorer les modificateurs de jets
   Keybindings:
     OpenFavoriteCards:
       Name: Ouvrir la main préférée
@@ -1556,6 +1558,7 @@ SWADE:
   ApplicableEffects: Effets applicables
   NoCCMInstall: Le module Complete Card Management n'est pas installé.
   CouldNotFindTarget: Cette macro nécessite la sélection d'une cible !
+  RemoveEffectLabel: Suppression de l'effet
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
