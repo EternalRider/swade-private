@@ -30,7 +30,7 @@
                 {{#if combat.round}}
                     <h3 class="encounter-title noborder">
                         {{localize 'COMBAT.Round'}} {{combat.round}}
-                        {{#if isDramaticTask}}
+                        {{#if combat.system.maxRounds}}
                             / {{combat.system.maxRounds}}
                         {{/if}}
                     </h3>
