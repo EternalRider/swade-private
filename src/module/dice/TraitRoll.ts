@@ -113,9 +113,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return cloned;
   }
 
-  override async toMessage<
-    T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
-  >(
+  override async toMessage<T extends ChatMessage.CreateData = EmptyObject>(
     messageData: T = {} as T,
     {
       rollMode = 'publicroll',

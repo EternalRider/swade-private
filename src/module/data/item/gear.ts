@@ -103,10 +103,15 @@ class GearData extends SwadePhysicalItemData<
   }
 
   protected override async _preCreate(
-    _data: foundry.documents.BaseItem.ConstructorData,
-    _options: Item.DatabaseOperations['create'],
-    _user: foundry.documents.BaseUser,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      GearData.Schema,
+      Item
+    >,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }

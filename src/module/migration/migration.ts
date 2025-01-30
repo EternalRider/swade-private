@@ -338,9 +338,7 @@ export function migrateActorData(actor: ActorData) {
  * @param {object} item             Item data to migrate
  * @returns {object}                The updateData to apply
  */
-export function migrateItemData(
-  item: foundry.documents.BaseItem.ConstructorData,
-) {
+export function migrateItemData(item: Item.CreateData) {
   const updateData: UpdateData = {};
   _migrateWeaponAPToNumber(item, updateData);
   _migratePowerEquipToFavorite(item, updateData);
@@ -399,9 +397,7 @@ export function migrateEffectData(_effect: ActiveEffectData) {
  * @param {object} data   The data to clean
  * @private
  */
-export function removeDeprecatedObjects(
-  data: foundry.documents.BaseItem.ConstructorData | ActorData,
-) {
+export function removeDeprecatedObjects(data: Item.CreateData | ActorData) {
   for (const [k, v] of Object.entries(data)) {
     if (getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
@@ -434,7 +430,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
   if (actor.system instanceof VehicleData) return;
   const parryModifier = actor._source.system.stats.parry.modifier ?? 0;
   const toughModifier = actor._source.system.stats.toughness.modifier ?? 0;
-  const effects = new Array<Partial<ActiveEffectData>>();
+  const effects = new Array<ActiveEffect.CreateData>();
   const updateData: UpdateData = {};
   if (parryModifier) {
     updateData['system.stats.parry.modifier'] = 0;
@@ -478,7 +474,10 @@ async function _migratePTModifiers(actor: SwadeActor) {
   }
 }
 
-function _migrateVehicleOperator(data: ActorData, updateData: UpdateData) {
+function _migrateVehicleOperator(
+  data: Actor.UpdateData,
+  updateData: UpdateData,
+) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.system.driver?.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
@@ -488,7 +487,10 @@ function _migrateVehicleOperator(data: ActorData, updateData: UpdateData) {
   return updateData;
 }
 
-function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
+function _migrateGeneralPowerPoints(
+  data: Actor.UpdateData,
+  updateData: UpdateData,
+) {
   if (data.type === 'vehicle') return updateData;
 
   const isOld =
@@ -512,7 +514,7 @@ function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
   }
 
   //check the active effects
-  const effects = new Array<ActiveEffect.ConstructorData>();
+  const effects = new Array<ActiveEffect.CreateData>();
   for (const effect of data.effects) {
     const changes = new Array<ActiveEffect.EffectChangeData>();
     for (const change of effect.changes) {
@@ -537,7 +539,7 @@ function _migrateGeneralPowerPoints(data: ActorData, updateData: UpdateData) {
 }
 
 function _migrateWeaponAPToNumber(
-  data: foundry.documents.BaseItem.ConstructorData,
+  data: Item.CreateData,
   updateData: UpdateData,
 ) {
   if (data.type !== 'weapon') return updateData;
@@ -548,7 +550,7 @@ function _migrateWeaponAPToNumber(
 }
 
 function _migratePowerEquipToFavorite(
-  data: foundry.documents.BaseItem.ConstructorData,
+  data: Item.CreateData,
   updateData: UpdateData,
 ) {
   if (data.type !== 'power') return updateData;
@@ -563,10 +565,7 @@ function _migratePowerEquipToFavorite(
   }
 }
 
-function _migrateItemEquipState(
-  data: foundry.documents.BaseItem.ConstructorData,
-  updateData: UpdateData,
-) {
+function _migrateItemEquipState(data: Item.CreateData, updateData: UpdateData) {
   if (
     data.type !== 'armor' &&
     data.type !== 'weapon' &&
@@ -604,7 +603,7 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
 }
 
 function _migrateWeaponAutoReload(
-  data: foundry.documents.BaseItem.ConstructorData,
+  data: Item.CreateData,
   updateData: UpdateData,
 ) {
   if (data.type !== 'weapon') return;
@@ -619,7 +618,7 @@ function _migrateWeaponAutoReload(
 }
 
 function _ensureBatteryMaxCharges(
-  data: foundry.documents.BaseItem.ConstructorData,
+  data: Item.CreateData,
   updateData: UpdateData,
 ) {
   if (data.type !== 'consumable') return;
@@ -628,10 +627,7 @@ function _ensureBatteryMaxCharges(
   }
 }
 
-function _fixWorldItemGrants(
-  data: foundry.documents.BaseItem.ConstructorData,
-  updateData: UpdateData,
-) {
+function _fixWorldItemGrants(data: Item.CreateData, updateData: UpdateData) {
   if (!data.system.grants) return;
   updateData['system.grants'] = structuredClone(data.system.grants);
   for (const grant of updateData['system.grants'] as Array<ItemGrant>) {
@@ -643,19 +639,13 @@ function _fixWorldItemGrants(
   }
 }
 
-function _generateSWID(
-  data: foundry.documents.BaseItem.ConstructorData,
-  updateData: UpdateData,
-) {
+function _generateSWID(data: Item.CreateData, updateData: UpdateData) {
   if (data.system.swid === constants.RESERVED_SWID.DEFAULT) {
     updateData['system.swid'] = slugify(data.name);
   }
 }
 
-function _setRangeType(
-  data: foundry.documents.BaseItem.ConstructorData,
-  updateData: UpdateData,
-) {
+function _setRangeType(data: Item.CreateData, updateData: UpdateData) {
   if (data.type !== 'weapon' || data.system.rangeType !== null) return;
   const hasShots = !!data.system.shots;
   const hasRange = !!data.system.range;

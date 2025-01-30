@@ -200,10 +200,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(
-    event: DragEvent,
-    item: foundry.documents.BaseItem.ConstructorData,
-  ) {
+  protected _handleDropModifierKeys(event: DragEvent, item: Item.CreateData) {
     const equipKey = 'system.equipStatus';
     const isEquippable =
       item.type === 'gear' &&
