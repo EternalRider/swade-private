@@ -50,6 +50,9 @@ export default class SwadeCombatTracker extends CombatTracker {
       );
     }
     data.cardsIcon = CONFIG.Cards.sidebarIcon;
+    data.isDramaticTask = this.viewed?.type === 'dramaticTask';
+    data.isChase = this.viewed?.type === 'chase';
+    data.typeLabel = CONFIG.Combat.typeLabels[this.viewed?.type];
     return data;
   }
 
@@ -71,6 +74,12 @@ export default class SwadeCombatTracker extends CombatTracker {
         li.addEventListener('dragleave', this._onDragLeave.bind(this));
       }
     });
+    const tokenInput = html.querySelector<HTMLInputElement>(
+      'input[name="system.tokens.value"]',
+    );
+    tokenInput?.addEventListener('change', () =>
+      this.viewed?.update({ 'system.tokens.value': tokenInput.value }),
+    );
   }
 
   /**
@@ -98,7 +107,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     return combatant.isOwner && !combatant.groupId; // Followers can neither draw nor redraw.
   }
 
-  protected override async _onCombatantControl(event) {
+  protected override async _onCombatantControl(event: JQuery.ClickEvent) {
     event.preventDefault();
     event.stopImmediatePropagation();
     const btn = event.currentTarget as HTMLElement;

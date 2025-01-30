@@ -1,4 +1,3 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -192,7 +191,7 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   //     until: '5.0',
   //   },
   // );
-  return data as StatusEffect | undefined;
+  return data as CONFIG.StatusEffect | undefined;
 }
 /** @internal */
 export function getDieSidesRange(

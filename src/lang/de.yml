@@ -1214,25 +1214,11 @@ SWADE:
   ApplicableEffects: Anwendbare Effekte
 TYPES:
   Actor:
-    Character: Charakter
-    Npc: NSC
-    Vehicle: Fahrzeug
     npc: NSC
     vehicle: Fahrzeug
     character: Charakter
     group: Gruppe
   Item:
-    Weapon: Waffe
-    Armor: Rüstung
-    Shield: Schild
-    Gear: Ausrüstung
-    Edge: Talent
-    Hindrance: Handicap
-    Skill: Fertigkeit
-    Power: Macht
-    Ability: Eigenschaft
-    Consumable: Verbrauchsgegenstand
-    Action: Aktion
     action: Aktion
     consumable: Verbrauchsgegenstand
     ability: Eigenschaft
@@ -1246,8 +1232,6 @@ TYPES:
     skill: Fertigkeit
     ancestry: Volk
   Card:
-    Adventure: Abenteuerkarte
-    Poker: Pokerkarte
     poker: Pokerkarte
     adventure: Abenteuerkarte
   JournalEntryPage:

@@ -30,9 +30,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Added Strength attribute that can be enabled in the Tweaks menu for walkers
   - Added Energy attribute
   - Migrated `maxCargo` and `maxMods` to `cargo.max` and `mods.max` so the current values can be added in data prep
-- Implemented data models for Combatant and Combat. (#1128) **by @jpmeehan5**
+- Implemented data models for Combatant and Combat. (#1128) **by @jpmeehan5 and @florad92**
   - Added Chase and Dramatic Task subtypes for Combat. Creating a combat now prompts a dialog asking which type of combat to create.
-  - Dramatic Tasks will add a -2 penalty for clubs (complications), similar to the +2 bonus for jokers.
+  - Dramatic Tasks will add a -2 penalty for clubs (complications), similar to the +2 bonus for jokers. They also prompt for the number of rounds and tokens required, and include a handy visualization in the Combat Tracker.
   - Included migration for `flags.swade` data to `system`.
 - Added Mods and Energy fields for Armor items. These show if and only if the Vehicle Mods/Energy settings are enabled. (#1259) **by @jpmeehan5**
 
@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Improved the AE Wizard when called from a vehicle. (#892) **by @jpmeehan5**
 - Mutations are merged into the data passed to `handleChoices`, allowing them to override the available `choiceSets`. (#1213) **by @jpmeehan5 and @kristianserrano**
+- [BREAKING] Renamed the Handlebars helper `times` to `multiply` to better reflect the functionality
 
 ## 4.2.4
 
