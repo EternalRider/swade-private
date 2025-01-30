@@ -295,9 +295,9 @@ export default class SwadeCombatant extends Combatant {
   }
 
   override async _preCreate(
-    data: foundry.documents.BaseCombatant.ConstructorData,
-    options: Combatant.DatabaseOperations['create'],
-    user: User,
+    data: Combatant.CreateData,
+    options: Combatant.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
     if (this.actor?.type === 'group') {
       Logger.warn('SWADE.Validation.NoGroupCombatants', {

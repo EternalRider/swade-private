@@ -4,8 +4,11 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
-export default class ActiveEffectWizard extends FormApplication {
-  #effect: ActiveEffect.ConstructorData = {
+export default class ActiveEffectWizard extends FormApplication<
+  FormApplicationOptions,
+  SwadeActor | SwadeItem
+> {
+  #effect: ActiveEffect.CreateData = {
     name: SwadeActiveEffect.defaultName(),
     img: 'systems/swade/assets/icons/active-effect.svg',
   };

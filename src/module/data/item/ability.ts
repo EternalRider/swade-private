@@ -71,11 +71,15 @@ class AbilityData extends SwadeBaseItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
-    user: foundry.documents.BaseUser,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      AbilityData.Schema,
+      Item
+    >,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preCreate(data, options, user);
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
     //Stop Archetypes from being added to the actor as an item if the actor already has one
     const subType = this.subtype;
     if (

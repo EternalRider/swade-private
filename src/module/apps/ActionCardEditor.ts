@@ -90,7 +90,7 @@ export default class ActionCardEditor extends FormApplication<
     const cards = Object.entries(data.card) as [string, CardData][];
     const updates = new Array<Record<string, unknown>>();
     for (const [id, value] of cards) {
-      const newData: foundry.documents.BaseCard.ConstructorData = {
+      const newData: Card.CreateData = {
         name: value.name,
         faces: [
           {

@@ -58,7 +58,7 @@ export interface ItemGrant {
   uuid: string;
   img: string | null;
   name: string | null;
-  mutation: DeepPartial<foundry.documents.BaseItem.ConstructorData> | undefined;
+  mutation: DeepPartial<Item.CreateData> | undefined;
   missing?: boolean;
   major?: boolean;
 }
@@ -72,7 +72,7 @@ export interface ChoiceSet {
 export interface MutationOption {
   name: string;
   addToName?: boolean;
-  mutation?: DeepPartial<foundry.documents.BaseItem.ConstructorData>;
+  mutation?: Item.UpdateData;
 }
 
 export interface ItemGrantChainLink {

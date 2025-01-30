@@ -133,7 +133,7 @@ export default class SwadeCombat extends Combat {
     ids = Array.isArray(ids) ? ids : [ids];
 
     const currentId = this.combatant?.id;
-    const messages: foundry.documents.BaseChatMessage.ConstructorData[] = [];
+    const messages: ChatMessage.CreateData[] = [];
     const updates: Updates[] = [];
 
     //Check if enough cards are available

@@ -36,8 +36,8 @@ export class NpcData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: foundry.documents.BaseActor.ConstructorData,
-    _options: Actor.DatabaseOperations['create'],
+    createData: Actor.CreateData,
+    _options: Actor.DatabaseOperation.PreCreateOperationInstance,
     _user: foundry.documents.BaseUser,
   ) {
     const isImported = foundry.utils.hasProperty(

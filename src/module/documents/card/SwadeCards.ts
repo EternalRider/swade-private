@@ -29,7 +29,7 @@ export default class SwadeCards extends Cards {
     ) as foundry.abstract.Document.Stored<Card>[];
 
     // Process the card data
-    const toCreate = new Array<foundry.documents.BaseCard.ConstructorData>();
+    const toCreate = new Array<Card.CreateData>();
     const toUpdate = new Array<foundry.documents.BaseCard.UpdateData>();
     const toDelete = new Array<string>();
     for (const card of drawn) {

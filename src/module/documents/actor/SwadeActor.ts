@@ -40,7 +40,7 @@ import {
   shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
-import SwadeItem, { SystemItemTypes } from '../item/SwadeItem';
+import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './SwadeActor.interface';
 
 declare global {
@@ -60,14 +60,9 @@ declare global {
   }
 }
 
-type SystemActorTypes = Exclude<string & keyof Game.Model['Actor'], 'base'>;
-
-interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
-  type: ActorType;
-  // system: InstanceType<DataModelConfig['Actor'][ActorType]>;
-}
-
-class SwadeActor extends Actor {
+class SwadeActor<
+  Subtype extends Actor.SubType = Actor.SubType,
+> extends Actor<Subtype> {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -88,7 +83,7 @@ class SwadeActor extends Actor {
   }
 
   constructor(
-    data: foundry.documents.BaseActor.ConstructorData,
+    data: Actor.CreateData,
     ctx?: foundry.abstract.Document.ConstructionContext<TokenDocument>,
   ) {
     if (game.swade.ready && ctx?.pack && data._id) {
@@ -220,7 +215,7 @@ class SwadeActor extends Actor {
 
   override get itemTypes() {
     const types = Object.fromEntries<SwadeItem[]>(
-      game.documentTypes.Item.map((t: SystemItemTypes | 'base') => [t, []]),
+      game.documentTypes.Item.map((t) => [t, []]),
     ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
     for (const item of this.items.values()) {
       types[item.type].push(item);
@@ -368,7 +363,7 @@ class SwadeActor extends Actor {
     const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
-      speaker: ChatMessage.getSpeaker({ actor: this as SwadeActor }),
+      speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor:
         options.flavour ??
         `${game.i18n.localize(label)} ${game.i18n.localize(
@@ -878,7 +873,7 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns an array containing the found items
    */
-  getItemsBySwid<T extends SystemItemTypes>(
+  getItemsBySwid<T extends Item.SubType>(
     swid: string,
     type?: T,
   ): SwadeItem<T>[] {
@@ -897,7 +892,7 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns The matching item, or undefined if none was found.
    */
-  getSingleItemBySwid<T extends SystemItemTypes>(
+  getSingleItemBySwid<T extends Item.SubType>(
     swid: string,
     type?: T,
   ): SwadeItem<T> | undefined {
@@ -1564,8 +1559,8 @@ class SwadeActor extends Actor {
   }
 
   protected override _onUpdate(
-    changed: foundry.documents.BaseActor.UpdateData,
-    options: foundry.abstract.Document.OnUpdateOptions<'Actor'>,
+    changed: Actor.UpdateData,
+    options: Actor.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

@@ -153,9 +153,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     return chatData;
   }
 
-  override async toMessage<
-    T extends foundry.documents.BaseChatMessage.ConstructorData = EmptyObject,
-  >(
+  override async toMessage<T extends ChatMessage.CreateData = EmptyObject>(
     messageData: T = {} as T,
     {
       rollMode = 'publicroll',
@@ -189,7 +187,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
   }
 
   protected async _getToMessageContent(
-    messageData: foundry.documents.BaseChatMessage.ConstructorData,
+    messageData: ChatMessage.CreateData,
   ): Promise<string> {
     return messageData.content ?? '';
   }

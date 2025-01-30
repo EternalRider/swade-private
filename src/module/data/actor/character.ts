@@ -90,8 +90,8 @@ export class CharacterData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: foundry.documents.BaseActor.ConstructorData,
-    options: Actor.DatabaseOperations['create'],
+    createData: Actor.CreateData,
+    options: Actor.DatabaseOperation.PreCreateOperationInstance,
     user: foundry.documents.BaseUser,
   ) {
     await super._preCreate(createData, options, user);

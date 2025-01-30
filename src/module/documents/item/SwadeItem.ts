@@ -30,34 +30,33 @@ declare global {
   }
   interface FlagConfig {
     Item: {
-      core?: { canPopout?: boolean };
       swade: {
-        embeddedPowers: [string, foundry.documents.BaseItem.ConstructorData][];
+        embeddedPowers: [string, Item.CreateData][];
         hasGranted?: string[];
-        loadedAmmo?: foundry.documents.BaseItem.ConstructorData;
+        loadedAmmo?: Item.CreateData;
         macros?: { id: string; uuid: string }[];
       };
     };
   }
+  namespace Item {
+    namespace DatabaseOperation {
+      interface Create {
+        isItemGrant?: boolean;
+      }
+    }
+  }
 }
 
-type SystemItemTypes = Exclude<string & keyof Game.Model['Item'], 'base'>;
-
-interface SwadeItem<ItemType extends SystemItemTypes = SystemItemTypes> {
-  type: ItemType;
-  system: InstanceType<DataModelConfig['Item'][ItemType]>;
-}
-
-class SwadeItem extends Item {
+class SwadeItem<
+  Subtype extends Item.SubType = Item.SubType,
+> extends Item<Subtype> {
   /** Used for item enrichers */
   declare plainTextDescription?: string;
 
-  overrides: DeepPartial<foundry.documents.BaseItem.ConstructorData> = {};
+  overrides: DeepPartial<Item.CreateData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
-  static override migrateData(
-    data: foundry.documents.BaseItem.ConstructorData & AnyObject,
-  ) {
+  static override migrateData(data: Item.CreateData & AnyObject) {
     super.migrateData(data);
     if (data.flags?.swade?.embeddedPowers) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -94,7 +93,7 @@ class SwadeItem extends Item {
   }
 
   constructor(
-    data: foundry.documents.BaseItem.ConstructorData,
+    data: Item.CreateData,
     context?: foundry.abstract.Document.ConstructionContext<SwadeActor>,
   ) {
     super(data, context);
@@ -169,8 +168,7 @@ class SwadeItem extends Item {
   }
 
   get embeddedPowers() {
-    const flagContent =
-      (this as SwadeItem).getFlag('swade', 'embeddedPowers') ?? [];
+    const flagContent = this.getFlag('swade', 'embeddedPowers') ?? [];
     return new Map(flagContent);
   }
 
@@ -187,7 +185,7 @@ class SwadeItem extends Item {
   }
 
   get hasGranted(): string[] {
-    return (this as SwadeItem).getFlag('swade', 'hasGranted') ?? [];
+    return this.getFlag('swade', 'hasGranted') ?? [];
   }
 
   get grantedBy(): SwadeItem | undefined {
@@ -505,7 +503,7 @@ class SwadeItem extends Item {
     const html = await renderTemplate(template, templateData);
 
     // Basic chat message data
-    const chatData: foundry.documents.BaseChatMessage.ConstructorData = {
+    const chatData: ChatMessage.CreateData = {
       author: game.user?.id,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
@@ -823,7 +821,7 @@ class SwadeItem extends Item {
     return possibleItem;
   }
 
-  async handleChoices(data: foundry.documents.BaseItem.ConstructorData) {
+  async handleChoices(data: Item.CreateData) {
     const choiceUpdate = {};
     if (data.system?.choiceSets?.length > 0) {
       for (const choiceSet of data.system.choiceSets) {
@@ -851,9 +849,9 @@ class SwadeItem extends Item {
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
-    user: foundry.documents.BaseUser,
+    data: Item.CreateData,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
     const canCreate = await super._preCreate(data, options, user);
     if (canCreate === false) return false;
@@ -865,21 +863,24 @@ class SwadeItem extends Item {
   }
 
   protected override async _preDelete(
-    options: Item.DatabaseOperations['delete'],
-    user: foundry.documents.BaseUser,
+    options: Item.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
   ): Promise<void> {
     await super._preDelete(options, user);
     if (this.parent) await this.removeGranted();
   }
 
   protected override _onUpdate(
-    changed: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['update'],
+    changed: Item.UpdateData,
+    options: Item.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
-    if (!game.users!.get(userId)?.isSelf) return; //return early to prevent multi-application
-    const grantOn = foundry.utils.getProperty(this, 'system.grantOn');
+    if (userId !== game.userId) return; //return early to prevent multi-application
+    const grantOn: number | undefined = foundry.utils.getProperty(
+      this,
+      'system.grantOn',
+    );
     if (
       this.canGrantItems &&
       this.parent &&
@@ -899,23 +900,18 @@ class SwadeItem extends Item {
     }
   }
 
-  protected static override async _onCreateOperation<
-    T extends foundry.abstract.Document.AnyConstructor,
-  >(
-    this: T,
-    items: InstanceType<foundry.abstract.Document.ToConfiguredClass<T>>[],
-    operation: DocumentDatabaseOperations<
-      Item,
-      {
-        isItemGrant: boolean;
-      }
-    >['create'],
-    user: foundry.documents.BaseUser,
+  protected static override async _onCreateOperation(
+    items: Item.Implementation[],
+    operation: Item.DatabaseOperation.Create,
+    user: User.Implementation,
   ) {
-    if (!operation.isItemGrant && (user as User).isSelf) {
-      for (const item of items as SwadeItem[]) {
-        const grantOn = foundry.utils.getProperty(item, 'system.grantOn');
-        const equipStatus = foundry.utils.getProperty(
+    if (!operation.isItemGrant && user.isSelf) {
+      for (const item of items) {
+        const grantOn: number | undefined = foundry.utils.getProperty(
+          item,
+          'system.grantOn',
+        );
+        const equipStatus: number | undefined = foundry.utils.getProperty(
           item,
           'system.equipStatus',
         );
@@ -936,9 +932,8 @@ class SwadeItem extends Item {
         }
       }
     }
-    await super._onCreateOperation(items as SwadeItem[], operation, user);
+    await super._onCreateOperation(items, operation, user);
   }
 }
 
 export default SwadeItem;
-export { SystemItemTypes };

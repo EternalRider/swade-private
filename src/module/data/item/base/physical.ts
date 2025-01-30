@@ -1,3 +1,4 @@
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
 import { builder, physicalItem } from '../common';
@@ -11,9 +12,11 @@ declare namespace SwadePhysicalItemData {
 }
 
 class SwadePhysicalItemData<
-  Schema extends SwadePhysicalItemData.Schema,
-  BaseData extends SwadePhysicalItemData.BaseData,
-  DerivedData extends SwadePhysicalItemData.DerivedData,
+  Schema extends SwadePhysicalItemData.Schema = SwadePhysicalItemData.Schema,
+  BaseData extends
+    SwadePhysicalItemData.BaseData = SwadePhysicalItemData.BaseData,
+  DerivedData extends
+    SwadePhysicalItemData.DerivedData = SwadePhysicalItemData.DerivedData,
 > extends SwadeBaseItemData<Schema, BaseData, DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): SwadePhysicalItemData.Schema {
@@ -29,9 +32,11 @@ class SwadePhysicalItemData<
   }
 
   protected override async _preUpdate(
-    changed: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['update'],
-    user: foundry.documents.BaseUser,
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>
+    >,
+    options: Item.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
   ) {
     await super._preUpdate(changed, options, user);
     const diff = foundry.utils.diffObject(this.toObject(), changed);
