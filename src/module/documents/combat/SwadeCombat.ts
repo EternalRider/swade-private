@@ -1,6 +1,7 @@
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
 import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
@@ -8,7 +9,6 @@ import SwadeUser from '../SwadeUser';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 import SwadeCards from '../card/SwadeCards';
 import SwadeCombatant from './SwadeCombatant';
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 
 declare global {
   interface DocumentClassConfig {
@@ -46,6 +46,7 @@ export default class SwadeCombat extends Combat {
     );
     const typeSelect = foundry.applications.fields.createSelectInput({
       options: typeOptions,
+      value: 'base',
       localize: true,
       name: 'type',
     });
@@ -69,6 +70,20 @@ export default class SwadeCombat extends Combat {
       html += linkGroup.outerHTML;
     }
 
+    //inputs for dramatic task relevant data
+    html += CONFIG.Combat.dataModels.dramaticTask.schema
+      .getField('maxRounds')
+      ?.toFormGroup({ classes: ['slim', 'hidden'], localize: true })?.outerHTML;
+
+    html += CONFIG.Combat.dataModels.dramaticTask.schema
+      .getField('tokens.max')
+      ?.toFormGroup({
+        label: 'SWADE.DramaticTask.MaxTokens.Label',
+        hint: 'SWADE.DramaticTask.MaxTokens.Hint',
+        classes: ['slim', 'hidden'],
+        localize: true,
+      })?.outerHTML;
+
     // Collect data
     const label = game.i18n.localize(this.metadata.label);
     const title = game.i18n.format('DOCUMENT.Create', { type: label });
@@ -82,8 +97,8 @@ export default class SwadeCombat extends Combat {
           position: { width: 360 },
           ok: {
             label: title,
-            callback: (event, button) => {
-              const fd = new FormDataExtended(button.form);
+            callback: (_event: PointerEvent, button: HTMLButtonElement) => {
+              const fd = new FormDataExtended(button.form as HTMLFormElement);
               foundry.utils.mergeObject(data, fd.object);
               return this.create(data, {
                 renderSheet: false,
@@ -92,6 +107,27 @@ export default class SwadeCombat extends Combat {
             },
           },
           rejectClose: false,
+          render: (_event: Event, html: HTMLDialogElement) => {
+            const typeSelect = html.querySelector<HTMLSelectElement>(
+              'select[name="type"]',
+            );
+            const roundsInput = html
+              .querySelector<HTMLDivElement>('input[name="system.maxRounds"]')
+              ?.closest('.form-group');
+            const tokenInput = html
+              .querySelector<HTMLDivElement>('input[name="system.tokens.max"]')
+              ?.closest('.form-group');
+
+            typeSelect?.addEventListener('change', () => {
+              if (typeSelect.value === 'dramaticTask') {
+                roundsInput?.classList.remove('hidden');
+                tokenInput?.classList.remove('hidden');
+              } else {
+                roundsInput?.classList.add('hidden');
+                tokenInput?.classList.add('hidden');
+              }
+            });
+          },
         },
         dialogOptions,
       ),

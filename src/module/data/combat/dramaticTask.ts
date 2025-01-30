@@ -1,21 +1,40 @@
+import type { RollModifier } from '../../../interfaces/additional.interface';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { BaseCombat } from './baseCombat';
-import type { RollModifier } from '../../../interfaces/additional.interface';
 
-function dtSchema() {
+function dramaticTaskSchema() {
   const fields = foundry.data.fields;
   return {
     tokens: new fields.SchemaField({
-      value: new fields.NumberField(),
-      max: new fields.NumberField(),
+      value: new fields.NumberField({
+        min: 0,
+        initial: 0,
+        nullable: false,
+        integer: true,
+      }),
+      max: new fields.NumberField({
+        min: 1,
+        initial: 6,
+        nullable: false,
+        integer: true,
+      }),
     }),
-    maxTurns: new fields.NumberField(),
+    maxRounds: new fields.NumberField({
+      min: 1,
+      initial: 4,
+      nullable: false,
+      integer: true,
+      label: 'SWADE.DramaticTask.MaxRounds.Label',
+      hint: 'SWADE.DramaticTask.MaxRounds.Hint',
+    }),
   };
 }
 
-export class DramaticTask extends BaseCombat<ReturnType<typeof dtSchema>> {
+export class DramaticTask extends BaseCombat<
+  ReturnType<typeof dramaticTaskSchema>
+> {
   static override defineSchema(): {} {
-    return dtSchema();
+    return dramaticTaskSchema();
   }
 
   override rollModifiers(actor: SwadeActor): RollModifier[] {
