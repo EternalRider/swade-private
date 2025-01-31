@@ -35,9 +35,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Dramatic Tasks will add a -2 penalty for clubs (complications), similar to the +2 bonus for jokers. They also prompt for the number of rounds and tokens required, and include a handy visualization in the Combat Tracker.
   - Included migration for `flags.swade` data to `system`.
 - Added Mods and Energy fields for Armor items. These show if and only if the Vehicle Mods/Energy settings are enabled. (#1259) **by @jpmeehan5**
-- Added logic for cleaner attribute tracking in Token Configuration window
+- Added logic for cleaner attribute tracking in Token Configuration window **by @roth-michael**
   - Now shows localized labels for trackable attributes
-  - Now allows for selection of Power Points and Additional Stats (#1016, #1144)
+  - Now allows for selection of Power Points (#1016) Additional Stats (#1144), and Encumbrance (#930)
 
 ### Changed
 

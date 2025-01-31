@@ -20,14 +20,15 @@ export default class SwadeTokenConfig extends TokenConfig {
             if (fullLabel.length) currData.label = fullLabel.join(': ');
         }
 
-        // Special handling for Additional Stats and Power Points
-        for (const [key, value] of Object.entries(sourceSystem['additionalStats'] ?? {})) {
+        // Special handling for Additional Stats, Power Points, and Encumbrance
+        for (const [key, value] of Object.entries(sourceSystem.additionalStats ?? {})) {
             if (value.dtype !== 'Number') continue;
             data.barAttributes.push({group: game.i18n.localize('SWADE.AddStats'), value: `additionalStats.${key}`, label: value.label});
         }
-        for (const key of Object.keys(sourceSystem['powerPoints'] ?? {})) {
+        for (const key of Object.keys(sourceSystem.powerPoints ?? {})) {
             data.barAttributes.push({group: game.i18n.localize('SWADE.PP'), value: `powerPoints.${key}`, label: key});
         }
+        if (sourceSystem.details?.encumbrance?.max) data.barAttributes.push({group: game.i18n.localize('TOKEN.BarAttributes'), value: 'details.encumbrance', label: game.i18n.localize('SWADE.CarryWeight')})
 
         // Final sort
         data.barAttributes.sort((a, b) => (a.group === b.group) ? a.label.compare(b.label) : a.group.compare(b.group));
