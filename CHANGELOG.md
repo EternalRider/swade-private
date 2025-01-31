@@ -45,6 +45,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Mutations are merged into the data passed to `handleChoices`, allowing them to override the available `choiceSets`. (#1213) **by @jpmeehan5 and @kristianserrano**
 - [BREAKING] Renamed the Handlebars helper `times` to `multiply` to better reflect the functionality
 
+### Fixed
+
+- Confirming critical fails with Dice So Nice active no longer displays the original trait roll again (#1267) **by @roth-michael**
+
 ## 4.2.4
 
 ### Fixed

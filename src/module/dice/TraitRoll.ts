@@ -24,7 +24,9 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       undefined,
       msg['speaker'],
     );
-    await msg.update({ rolls: [roll, ...msg['rolls']] });
+    const previousRolls = msg['rolls'];
+    previousRolls.forEach(r => r.dice.forEach(d => d.results.forEach(i => i.hidden = true)));
+    await msg.update({ rolls: [roll, ...previousRolls] });
   }
   constructor(
     formula: string,
