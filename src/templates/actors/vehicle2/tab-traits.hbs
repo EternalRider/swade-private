@@ -56,29 +56,29 @@
       </a>
       {{/if}}
       </summary>
-    <ul class='item-list'>
-    {{#each gearMods as |item|}}
-      <li 
-        data-item-id='{{item.id}}' 
-        data-document-class='Item' 
-        data-drag='true' 
-        class='flexrow'
-      >
-        <img src='{{item.img}}' />
-        <a class='name' data-action='showItem'>{{item.name}}</a>
-        <span class='controls'>
-          <a data-action='openItem'>
-            <i class='fa-solid fa-edit'></i>
-          </a>
-          {{#if @root.editable}}
-          <a data-action='deleteItem'>
-            <i class='fa-solid fa-trash'></i>
-          </a>
-          {{/if}}
-        </span>
-      </li>
-    {{/each}}
-    </ul>
+      <ul class='item-list content'>
+      {{#each gearMods as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
     </details>
     <details class='weapons' data-summary-id='weapons'>
       <summary class='section-header'>
@@ -95,7 +95,7 @@
         </a>
         {{/if}}
       </summary>
-      <ul class='item-list'>
+      <ul class='item-list content'>
       {{#each weaponMods as |item|}}
         <li 
           data-item-id='{{item.id}}' 

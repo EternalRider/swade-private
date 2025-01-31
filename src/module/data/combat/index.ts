@@ -1,14 +1,14 @@
 import { BaseCombat } from './baseCombat';
-import { DramaticTask } from './dramaticTask';
-import { Chase } from './chase';
 import { BaseCombatant } from './baseCombatant';
+import { Chase } from './chase';
+import { DramaticTask } from './dramaticTask';
 
-export { BaseCombat, Chase, DramaticTask, BaseCombatant };
+export { BaseCombat, BaseCombatant, Chase, DramaticTask };
 
 export const combatConfig = {
   base: BaseCombat,
   chase: Chase,
-  dt: DramaticTask,
+  dramaticTask: DramaticTask,
 };
 
 export const combatantConfig = {
@@ -20,7 +20,7 @@ declare global {
     Combat: {
       base: typeof BaseCombat;
       chase: typeof Chase;
-      dt: typeof DramaticTask;
+      dramaticTask: typeof DramaticTask;
     };
     Combatant: {
       base: typeof BaseCombatant;

@@ -9,7 +9,6 @@ import { constants } from '../constants';
 import { GroupMember } from '../data/actor/group';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
-import { Accordion } from '../style/Accordion';
 import { mapRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
@@ -172,9 +171,6 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     super._onRender(context, options);
     if (this.actor.system.locked) this.element.classList.add('locked');
     else this.element.classList.remove('locked');
-    this.element.querySelectorAll('details').forEach((el) => {
-      new Accordion(el, '.content', { duration: 200 });
-    });
   }
 
   protected override _onClose(_options: unknown) {
@@ -182,16 +178,6 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
       if (!member.actor) continue;
       delete member.actor.apps[this.id];
     }
-  }
-
-  protected override _preSyncPartState(
-    partId: string,
-    newElement: HTMLElement,
-    priorElement: HTMLElement,
-    state: foundry.applications.api.HandlebarsApplicationMixin.PartState,
-  ) {
-    super._preSyncPartState(partId, newElement, priorElement, state);
-    if (partId === 'stash') this._preSyncStash(newElement, priorElement);
   }
 
   protected async _prepareItems(): Promise<ItemTypes> {
@@ -260,15 +246,6 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
       });
     }
     return members;
-  }
-
-  protected _preSyncStash(newElement: HTMLElement, priorElement: HTMLElement) {
-    priorElement.querySelectorAll<HTMLElement>('details[open]').forEach((e) => {
-      const id = e.closest<HTMLElement>('[data-item-id]')?.dataset.itemId;
-      const selector = `[data-item-id="${id}"] details`;
-      const element = newElement.querySelector<HTMLDetailsElement>(selector);
-      if (element) element.open = true;
-    });
   }
 
   protected override async _onDropActor(

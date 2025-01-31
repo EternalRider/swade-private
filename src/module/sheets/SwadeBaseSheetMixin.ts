@@ -7,6 +7,7 @@ import type {
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import { Accordion } from '../style/Accordion';
 
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
@@ -108,7 +109,8 @@ export function SwadeBaseSheetMixin<
       state.collapsibles = {};
       const collapsibles = priorElement.querySelectorAll('details');
       for (const details of collapsibles) {
-        const id = details.dataset.summaryId as string;
+        const id = details.dataset.summaryId;
+        if (!id) continue;
         state.collapsibles[id] = details.open;
       }
     }
@@ -123,7 +125,7 @@ export function SwadeBaseSheetMixin<
 
       const collapsibles = newElement.querySelectorAll('details');
       for (const details of collapsibles) {
-        const id = details.dataset.summaryId as string;
+        const id = details.dataset.summaryId ?? '';
         if (id in state.collapsibles) {
           details.open = state.collapsibles[id];
         }
@@ -155,6 +157,9 @@ export function SwadeBaseSheetMixin<
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
       this.#disableOverrides();
+      this.element.querySelectorAll('details').forEach((el) => {
+        new Accordion(el, '.content', { duration: 200 });
+      });
     }
 
     /**

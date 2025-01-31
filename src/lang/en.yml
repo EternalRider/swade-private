@@ -1586,6 +1586,14 @@ SWADE:
         Title: Running
         Content: Please select how you want to run
   ApplicableEffects: Applicable Effects
+  DramaticTask:
+    Successes: Successes
+    MaxRounds:
+      Label: Maximum Rounds
+      Hint: How many rounds does the Dramatic Task run?
+    MaxTokens:
+      Label: Successes
+      Hint: Target number of successes the participants need to achieve
 TYPES:
   Actor:
     character: Player Character
@@ -1610,6 +1618,6 @@ TYPES:
     poker: Poker Card
   Combat:
     chase: Chase
-    dt: Dramatic Task
+    dramaticTask: Dramatic Task
   JournalEntryPage:
     headquarters: Headquarters

@@ -25,10 +25,10 @@
       </label>
       <span class='form-fields'>
         <select data-dtype='Number' name='system.details.wealth.die'>
-          {{selectOptions 
+          {{selectOptions
             wealthDieTypes
             selected=actor.system.details.wealth.die
-            localize=true 
+            localize=true
             valueAttr='key'
             labelAttr='label'
           }}
@@ -93,7 +93,7 @@
               {{{enrichedNotes}}}
             </span>
             <span class='weight'>{{formatNumber
-                (times system.weight system.quantity)
+                (multiply system.weight system.quantity)
               }}</span>
             <span class='item-controls'>
               {{#if isOwner}}
@@ -133,7 +133,9 @@
               {{/if}}
             </span>
           </summary>
-          <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
+          <div class='content description'><p>{{localize
+                'SWADE.NoDescription'
+              }}</p></div>
         </details>
       </li>
     {{/each}}
@@ -176,7 +178,7 @@
               {{{enrichedNotes}}}
             </span>
             <span class='weight'>{{formatNumber
-                (times system.weight system.quantity)
+                (multiply system.weight system.quantity)
               }}</span>
             <span class='item-controls'>
               {{#if isOwner}}
@@ -216,7 +218,9 @@
               {{/if}}
             </span>
           </summary>
-          <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
+          <div class='content description'><p>{{localize
+                'SWADE.NoDescription'
+              }}</p></div>
         </details>
       </li>
     {{/each}}
@@ -259,7 +263,7 @@
               {{{enrichedNotes}}}
             </span>
             <span class='weight'>
-              {{formatNumber (times system.weight system.quantity)}}
+              {{formatNumber (multiply system.weight system.quantity)}}
             </span>
             <span class='item-controls'>
               {{#if isOwner}}
@@ -299,7 +303,9 @@
               {{/if}}
             </span>
           </summary>
-          <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
+          <div class='content description'><p>{{localize
+                'SWADE.NoDescription'
+              }}</p></div>
         </details>
       </li>
     {{/each}}
@@ -348,7 +354,7 @@
               {{/unless}}
             </span>
             <span class='weight'>
-              {{formatNumber (times system.weight system.quantity)}}
+              {{formatNumber (multiply system.weight system.quantity)}}
             </span>
             <span class='item-controls'>
               {{#if isOwner}}
@@ -388,7 +394,9 @@
               {{/if}}
             </span>
           </summary>
-          <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
+          <div class='content description'><p>{{localize
+                'SWADE.NoDescription'
+              }}</p></div>
         </details>
       </li>
     {{/each}}
@@ -423,7 +431,7 @@
               {{name}}
             </a>
             <span class='weight'>
-              {{formatNumber (times system.weight system.quantity)}}
+              {{formatNumber (multiply system.weight system.quantity)}}
             </span>
             <span class='item-controls'>
               {{#if isOwner}}
@@ -463,7 +471,9 @@
               {{/if}}
             </span>
           </summary>
-          <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
+          <div class='content description'>
+            <p>{{localize 'SWADE.NoDescription'}}</p>
+          </div>
         </details>
       </li>
     {{/each}}
