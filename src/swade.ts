@@ -62,6 +62,7 @@ import {
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
+import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
 
 /* ------------------------------------ */
 /* Initialize system					          */
@@ -243,16 +244,17 @@ Hooks.once('init', () => {
   registerSettings();
   registerSettingRules();
   register3DBennySettings();
-
+  
   //register keyboard shortcuts
   registerKeybindings();
-
+  
   registerEffectCallbacks();
   registerAuraHooks();
-
+  
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
+  DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, 'core', TokenConfig);
 
   Actors.registerSheet('swade', GroupSheet, {
     types: ['group'],
@@ -306,6 +308,11 @@ Hooks.once('init', () => {
       makeDefault: true,
       label: 'SWADE.HeadquartersSheet',
     },
+  );
+  DocumentSheetConfig.registerSheet(
+    TokenDocument,
+    'swade',
+    SwadeTokenConfig
   );
 
   // Register Tours
