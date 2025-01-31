@@ -661,6 +661,9 @@ SWADE:
         SWPF: Pathfinder®️ pour Savage Worlds
       Name: Cumul d'armure
       Hint: Sélectionner les règles à utiliser lors de la gestion du cumul des armures
+    VehicleEnergy:
+      Name: Energie du véhicule
+      Hint: Armure et véhicules utilisent l'energie
   EffectCallbacks:
     Shaken:
       RollSpirit: Jet d'Âme
@@ -1405,6 +1408,7 @@ SWADE:
     Redraw: Carte re-piochée
     DealAll: Distribuez pour tous
     DealNPC: Distribuez pour les PNJs
+    LinkScene: Scène liée
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
@@ -1559,6 +1563,22 @@ SWADE:
   NoCCMInstall: Le module Complete Card Management n'est pas installé.
   CouldNotFindTarget: Cette macro nécessite la sélection d'une cible !
   RemoveEffectLabel: Suppression de l'effet
+  VehicleAttributes:
+    Agility: Agilité
+    Smarts: Intellect
+    Strength: Force
+    Vigor: Vigueur
+    Label: Attributs de véhicule
+    Spirit: Âme
+  Energy:
+    Label: Energie
+    Value: Energie actuelle
+    Max: Energie max
+    Enable: Energie disponible
+  OperatorIdHint: Glisser un acteur ou un token
+  EffectsInactive: Effets inactifs
+  VehicleSheet: Feuille de véhicule
+  Complication: Complication
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1642,3 +1662,6 @@ TYPES:
     poker: Cartes de poker
   JournalEntryPage:
     headquarters: Quartier général
+  Combat:
+    dt: Scène dramatique
+    chase: Poursuite
