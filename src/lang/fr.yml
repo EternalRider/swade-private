@@ -587,7 +587,7 @@ SWADE:
         PAS les jets de {vigor} pour résister à la {fatigue} !
     VehicleMods:
       Name: Mods du véhicule
-      Hint: Le véhicule a des emplacements de Mods
+      Hint: Les véhicules et armures ont des emplacements de Mods
     VehicleEdges:
       Name: Atouts du véhicule
       Hint: Le véhicule utilise des atouts et des handicaps
