@@ -5,9 +5,25 @@
 >
   <fieldset>
     <legend>{{localize tabs.supplies.label}}</legend>
-    {{formGroupSimple 'system.supplyLevels.ammo' localize=true}}
-    {{formGroupSimple 'system.supplyLevels.fuel' localize=true}}
-    {{formGroupSimple 'system.supplyLevels.food' localize=true}}
-    {{formGroupSimple 'system.supplyLevels.supply' localize=true}}
+    {{formGroupSimple
+      'system.supplyLevels.ammo'
+      localize=true
+      rootId=actor.uuid
+    }}
+    {{formGroupSimple
+      'system.supplyLevels.fuel'
+      localize=true
+      rootId=actor.uuid
+    }}
+    {{formGroupSimple
+      'system.supplyLevels.food'
+      localize=true
+      rootId=actor.uuid
+    }}
+    {{formGroupSimple
+      'system.supplyLevels.supply'
+      localize=true
+      rootId=actor.uuid
+    }}
   </fieldset>
 </section>
