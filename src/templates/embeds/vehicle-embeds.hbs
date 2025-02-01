@@ -1,39 +1,53 @@
 <div>
-    <section>
+    <section class="table-wrapper">
         <table>
             <thead>
                 <tr>
-                    <th colspan="6">
-                        {{parent.name}}
-                    </th>
+                    {{#if energy.value}}
+                        <th colspan="7">{{parent.name}}</th>
+                    {{else}}
+                        <th colspan="6">{{parent.name}}</th>
+                    {{/if}}
                 </tr>
+                {{#if enrichedDescription}}
+                <tr>
+                    {{#if energy.value}}
+                        <td colspan="7" class="centered">{{{enrichedDescription}}}</td>
+                    {{else}}
+                        <td colspan="6" class="centered">{{{enrichedDescription}}}</td>
+                    {{/if}}
+                </tr>
+                {{/if}}
             </thead>
             <tbody>
                 <tr>
-                    <td>{{localize 'SWADE.Size'}}</td>
-                    <td>{{localize 'SWADE.Handling'}}</td>
-                    <td>{{localize 'SWADE.Topspeed'}}</td>
-                    <td>{{localize 'SWADE.Tough'}}</td>                
-                    <td>{{localize 'SWADE.Crew'}}</td>
-                    <td>{{localize 'SWADE.Price'}}</td>
+                    <th>{{localize 'SWADE.Size'}}</th>
+                    <th>{{localize 'SWADE.Handling'}}</th>
+                    <th>{{localize 'SWADE.Topspeed'}}</th>
+                    <th>{{localize 'SWADE.Tough'}}</th>                
+                    <th>{{localize 'SWADE.Crew'}}</th>
+                    {{#if energy.value}}<th>{{localize 'SWADE.Energy.Label'}}</th>{{/if}}
+                    <th>{{localize 'SWADE.Price'}}</th>
                 </tr>            
                 <tr>
-                    <td>{{size}}</td>
-                    <td>{{signedString handling}}</td>
-                    <td>{{topspeed.value}}</td>
-                    <td>{{toughness.total}}{{#if toughness.armor}}&nbsp;({{toughness.armor}}){{/if}}</td>                
-                    <td>{{crew.required.max}}</td>
-                    <td>{{cost}}</td>
+                    <td class="centered">{{size}}</td>
+                    <td class="centered">{{signedString handling}}</td>
+                    <td class="centered">{{topspeed.value}}</td>
+                    <td class="centered">{{toughness.total}}{{#if toughness.armor}}&nbsp;({{toughness.armor}}){{/if}}</td>                
+                    <td class="centered">{{crew.required.max}}</td>
+                    {{#if energy.value}}<td class="centered">{{energy.value}}</td>{{/if}}
+                    <td class="centered">{{cost}}</td>
                 </tr>
+                {{#if notes}}
+                <tr>
+                    {{#if energy.value}}
+                        <td colspan="7"><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</td>
+                    {{else}}
+                        <td colspan="6"><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</td>
+                    {{/if}}
+                </tr>
+                {{/if}}
             </tbody>
         </table>
-    </section>
-    {{#if notes}}
-    <section>
-        <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
-    </section>
-    {{/if}}
-    <section>
-        {{{enrichedDescription}}}
     </section>
 </div>
