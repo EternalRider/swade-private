@@ -2,15 +2,15 @@
 <div class='flexcol vehicle-stats'>
   <label for='{{actor.uuid}}-{{propName}}' class='label'>{{localize label}}</label>
   <div class='flexrow'>
-    <input class='value' id='{{actor.uuid}}-{{propName}}' type='number' name='{{concat propName '.value'}}' value='{{prop.value}}' />
+    <input class='value' min="0" id='{{actor.uuid}}-{{propName}}' type='number' name='{{concat propName '.value'}}' value='{{prop.value}}' />
     <span class='divider'>/</span>
-    <input class='max' type='number' name='{{concat propName '.max'}}' value='{{prop.max}}' />
+    <input class='max' min="0" type='number' name='{{concat propName '.max'}}' value='{{prop.max}}' />
   </div>
 </div>
 {{/inline}}
 <section class='flexrow'>
   <div class='sheet-portrait'>
-    <img src='{{actor.img}}' data-action='editImg' />
+    <img src='{{actor.img}}' data-action='editImg' data-tooltip="SWADE.RightClickZoom"/>
   </div>
   <div class='flexcol'>
     <div class='name'>
@@ -29,9 +29,9 @@
     {{#if hasEnergy}}
       {{> vehicle-stats label='SWADE.Energy.Label' propName='system.energy' prop=system.energy}}
     {{/if}}
-    {{formGroupSimple 'system.status.isOutOfControl' document=actor}}
-    {{formGroupSimple 'system.status.isWrecked' document=actor}}
-    {{formGroupSimple 'system.status.isDistracted' document=actor}}
-    {{formGroupSimple 'system.status.isVulnerable' document=actor}}
+    {{formGroupSimple 'system.status.isOutOfControl' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isWrecked' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isDistracted' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isVulnerable' document=actor rootId=actor.uuid}}
   </div>
 </section>

@@ -17,7 +17,7 @@ type DocumentSheetRenderOptions =
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 export function SwadeBaseSheetMixin<
-  Document extends Actor.ConfiguredInstance | Item.ConfiguredInstance,
+  Document extends Actor.Implementation | Item.Implementation,
   RenderContext extends AnyObject,
 >(Base: typeof foundry.applications.api.DocumentSheetV2) {
   return class SwadeBaseSheet extends HandlebarsApplicationMixin(Base)<
@@ -35,7 +35,7 @@ export function SwadeBaseSheetMixin<
         closeOnSubmit: false,
       },
       actions: {
-        editImg: SwadeBaseSheet._onEditImage,
+        editImg: { handler: SwadeBaseSheet._onEditImage, buttons: [0, 2] },
         openAegis: SwadeBaseSheet._openAegis,
       },
     };
@@ -44,24 +44,35 @@ export function SwadeBaseSheetMixin<
 
     static async _onEditImage(
       this: SwadeBaseSheet,
-      _event: PointerEvent,
+      event: PointerEvent,
       _target: HTMLImageElement,
     ) {
-      const { img } =
-        (
-          this.document.constructor as
-            | Actor.ConfiguredClass
-            | Item.ConfiguredClass
-        ).getDefaultArtwork?.(this.document.toObject()) ?? {};
-      const fp = new FilePicker({
-        current: this.document.img,
-        type: 'image',
-        redirectToRoot: img ? [img] : [],
-        callback: (path) => this.document.update({ img: path }),
-        top: this.position.top + 40,
-        left: this.position.left + 10,
-      });
-      fp.browse();
+      if (!this.document.img) return;
+      if (event.button === 2) {
+        //ContextMenu event
+        if (!this.document.img) return;
+        new ImagePopout(this.document.img, {
+          title: this.document.name!,
+          shareable: this.document.isOwner ?? game.user?.isGM,
+          uuid: this.document.uuid,
+        }).render(true);
+      } else {
+        const { img } =
+          (
+            this.document.constructor as
+              | Actor.ImplementationClass
+              | Item.ImplementationClass
+          ).getDefaultArtwork?.(this.document.toObject()) ?? {};
+        const fp = new FilePicker({
+          current: this.document.img,
+          type: 'image',
+          redirectToRoot: img ? [img] : [],
+          callback: (path) => this.document.update({ img: path }),
+          top: this.position.top + 40,
+          left: this.position.left + 10,
+        });
+        await fp.browse();
+      }
     }
 
     static async _openAegis(

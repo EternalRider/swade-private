@@ -4,13 +4,13 @@ import {
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
 import { RollModifier } from '../../interfaces/additional.interface';
-import SwadeActor from '../documents/actor/SwadeActor';
-import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
-import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
-import { constants } from '../constants';
-import { Logger } from '../Logger';
-import SwadeItem from '../documents/item/SwadeItem';
 import AttributeManager from '../apps/AttributeManager';
+import { constants } from '../constants';
+import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import SwadeActor from '../documents/actor/SwadeActor';
+import SwadeItem from '../documents/item/SwadeItem';
+import { Logger } from '../Logger';
+import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
 class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderContext> {
   declare actor: SwadeActor<'vehicle'>;
@@ -242,7 +242,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    console.log('Rolling Maneuver Check');
     this.actor.rollManeuverCheck();
   }
 
@@ -251,7 +250,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    console.log('Resetting Driver');
     this.actor.update({ 'system.driver.id': null });
   }
 
@@ -265,7 +263,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   protected static async rollAttribute(
     this: SwadeVehicleSheetV2,
-    event: PointerEvent,
+    _event: PointerEvent,
     target: HTMLElement,
   ) {
     const attribute = target.dataset.attribute as
@@ -278,7 +276,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   protected static async changeEquip(
     this: SwadeVehicleSheetV2,
-    event: PointerEvent,
+    _event: PointerEvent,
     target: HTMLElement,
   ) {
     console.log(this, event, target);
