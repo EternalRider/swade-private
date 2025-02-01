@@ -1579,6 +1579,14 @@ SWADE:
   EffectsInactive: Effets inactifs
   VehicleSheet: Feuille de véhicule
   Complication: Complication
+  DramaticTask:
+    Successes: Réussites
+    MaxRounds:
+      Label: Nombre de rounds de la Scène
+      Hint: Combien de rounds dure la Scène Dramatique ?
+    MaxTokens:
+      Label: Nombre de réussites
+      Hint: Nombre de réussites que les participants doivent atteindre
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1665,3 +1673,4 @@ TYPES:
   Combat:
     dt: Scène dramatique
     chase: Poursuite
+    dramaticTask: Scène Dramatique
