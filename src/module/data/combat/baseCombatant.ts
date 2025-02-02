@@ -1,4 +1,7 @@
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import {
+  DeepPartial,
+  EmptyObject,
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import type SwadeCombatant from '../../documents/combat/SwadeCombatant';
 import { SWADE } from '../../config';
 import { firstOwner } from '../../util';
@@ -48,7 +51,7 @@ export class BaseCombatant<
       Schema,
       SwadeCombatant
     >,
-    _options: Combatant.DatabaseOperations['create'],
+    _options: Combatant.DatabaseOperation.PreCreateOperationInstance,
     _user: User,
   ) {
     const combatants = game?.combat?.combatants.size ?? 0;
@@ -66,11 +69,13 @@ export class BaseCombatant<
   }
 
   override _onUpdate(
-    changed: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      Schema,
-      SwadeCombatant
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        Schema,
+        SwadeCombatant
+      >
     >,
-    options: Combatant.DatabaseOperations['update'],
+    options: Combatant.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

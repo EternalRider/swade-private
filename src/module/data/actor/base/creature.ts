@@ -763,14 +763,17 @@ class CreatureData<
   }
 
   protected override async _preUpdate(
-    this: CreatureData,
     changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, SwadeActor>
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        CreatureData.Schema,
+        SwadeActor
+      >
     >,
-    options: Actor.DatabaseOperations['update'],
-    userId: string,
+    options: Actor.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preUpdate(changed, options, userId);
+    const allowed = await super._preUpdate(changed, options, user);
+    if (allowed === false) return false;
     if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
       foundry.utils.setProperty(
         options,

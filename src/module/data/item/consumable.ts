@@ -154,7 +154,7 @@ class ConsumableData extends SwadePhysicalItemData<
     changed: DeepPartial<
       foundry.abstract.TypeDataModel.ParentAssignmentType<
         ConsumableData.Schema,
-        Item
+        Item<'consumable'>
       >
     >,
     options: Item.DatabaseOperation.PreUpdateOperationInstance,
@@ -171,7 +171,7 @@ class ConsumableData extends SwadePhysicalItemData<
         (changed.system?.quantity ?? 0) > 1 &&
         this.charges.value! < this.charges.max!
       ) {
-        delete changed.system.quantity;
+        delete changed.system!.quantity;
         Logger.warn(
           'Partially filled magazines can only have a quantity of 1',
           { toast: true },

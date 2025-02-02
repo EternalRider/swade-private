@@ -736,7 +736,7 @@ class WeaponData extends SwadePhysicalItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       WeaponData.Schema,
-      Item
+      Item<'weapon'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,

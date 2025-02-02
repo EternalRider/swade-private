@@ -66,7 +66,7 @@ class SkillData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       SkillData.Schema,
-      Item
+      Item<'skill'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,
