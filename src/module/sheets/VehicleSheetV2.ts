@@ -172,9 +172,9 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   _prepareDriverOptions(): foundry.applications.fields.FormSelectOption[] {
     const scene = canvas.scene;
-    if (!scene) return [];
+    if (!scene || this.document.pack) return [];
     return scene.tokens
-      .filter((t) => !['group', 'vehicle'].includes(t.actor?.type) && t.visible)
+      .filter((t) => t.actor && !['group', 'vehicle'].includes(t.actor?.type) && t.visible)
       .map((t) => ({ value: t.actor.uuid, label: t.name }));
   }
 
