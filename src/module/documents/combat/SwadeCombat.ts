@@ -40,7 +40,7 @@ export default class SwadeCombat extends Combat {
     data = {},
     createOptions = {},
     dialogOptions: DeepPartial<foundry.applications.api.DialogV2.WaitOptions> = {},
-  ) {
+  ): Promise<SwadeCombat | null | undefined> {
     const typeOptions = Object.entries(CONFIG.Combat.typeLabels).map(
       ([value, label]) => ({ value, label }),
     );
@@ -89,7 +89,7 @@ export default class SwadeCombat extends Combat {
     const title = game.i18n.format('DOCUMENT.Create', { type: label });
 
     // Render the confirmation dialog window
-    return foundry.applications.api.DialogV2.prompt(
+    return foundry.applications.api.DialogV2.prompt<{}, SwadeCombat>(
       foundry.utils.mergeObject(
         {
           content: html,
@@ -646,8 +646,8 @@ export default class SwadeCombat extends Combat {
   }
 
   override async _preDelete(
-    options: Combat.DatabaseOperations['delete'],
-    user: User,
+    options: Combat.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
   ) {
     await super._preDelete(options, user);
     const jokerDrawn = this.combatants.some((c: SwadeCombatant) => c.hasJoker);

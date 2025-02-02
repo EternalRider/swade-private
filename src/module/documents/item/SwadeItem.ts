@@ -16,6 +16,7 @@ import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import {
+  ChoiceSet,
   ItemChatCardAction,
   ItemChatCardChip,
   ItemChatCardData,
@@ -670,7 +671,7 @@ class SwadeItem<
 
     const grants: ItemGrantChainLink[] = [];
     for (const item of grantedItems) {
-      const grant = this.grantsItems.find((g) => g.uuid === item.uuid);
+      const grant = this.grantsItems.find((g) => g.uuid === item.uuid)!;
       const choiceUpdate = await item.handleChoices(
         foundry.utils.mergeObject(item.toObject(), grant.mutation ?? {}),
       );
@@ -824,7 +825,7 @@ class SwadeItem<
   async handleChoices(data: Item.CreateData) {
     const choiceUpdate = {};
     if (data.system?.choiceSets?.length > 0) {
-      for (const choiceSet of data.system.choiceSets) {
+      for (const choiceSet of data.system.choiceSets as Array<ChoiceSet>) {
         if (choiceSet.choice !== null) continue;
 
         Object.assign(
@@ -842,7 +843,7 @@ class SwadeItem<
         foundry.utils.mergeObject(choiceUpdate, update);
       }
       foundry.utils.mergeObject(choiceUpdate, {
-        'system.choiceSets': data.system.choiceSets,
+        'system.choiceSets': data.system!.choiceSets,
       });
     }
     return choiceUpdate;

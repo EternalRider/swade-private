@@ -38,7 +38,7 @@ class AncestryData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       AncestryData.Schema,
-      Item
+      Item<'ancestry'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,

@@ -73,7 +73,7 @@ class AbilityData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       AbilityData.Schema,
-      Item
+      Item<'ability'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,

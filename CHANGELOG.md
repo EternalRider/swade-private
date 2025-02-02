@@ -41,13 +41,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Renamed Community Vehicle Sheet to Legacy Vehicle Sheet. **by @jpmeehan5**
 - Improved the AE Wizard when called from a vehicle. (#892) **by @jpmeehan5**
 - Mutations are merged into the data passed to `handleChoices`, allowing them to override the available `choiceSets`. (#1213) **by @jpmeehan5 and @kristianserrano**
 - [BREAKING] Renamed the Handlebars helper `times` to `multiply` to better reflect the functionality
 
 ### Fixed
 
-- Confirming critical fails with Dice So Nice active no longer displays the original trait roll again (#1267) **by @roth-michael**
+- Confirming critical fails with Dice So Nice active no longer displays the original trait roll again. (#1267) **by @roth-michael**
+- Fixed issue preventing disabling fav status on effects on the character sheet. **by @jpmeehan5**
 
 ## 4.2.4
 
