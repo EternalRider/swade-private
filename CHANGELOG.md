@@ -50,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Confirming critical fails with Dice So Nice active no longer displays the original trait roll again. (#1267) **by @roth-michael**
 - Fixed issue preventing disabling fav status on effects on the character sheet. **by @jpmeehan5**
+- Add an error message when attempting to lay out chase cards on a too small scene (#1272) **by @perror**
 
 ## 4.2.4
 
