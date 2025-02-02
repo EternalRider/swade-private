@@ -1,5 +1,7 @@
-import { ToggleActiveEffectOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import {
+  NullishProps,
+  ValueOf,
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -57,6 +59,21 @@ declare global {
       jokerBonus?: string | number;
       hiddenActionOverride?: boolean;
     };
+  }
+
+  namespace Actor {
+    namespace DatabaseOperation {
+      interface Update {
+        swade?: {
+          wounds?: {
+            value?: number;
+          };
+          fatigue?: {
+            value?: number;
+          };
+        };
+      }
+    }
   }
 }
 
@@ -214,12 +231,7 @@ class SwadeActor<
   }
 
   override get itemTypes() {
-    const types = Object.fromEntries<SwadeItem[]>(
-      game.documentTypes.Item.map((t) => [t, []]),
-    ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
-    for (const item of this.items.values()) {
-      types[item.type].push(item);
-    }
+    const types = super.itemTypes;
     //sort the items before returning them
     for (const type in types) {
       types[type].sort((a, b) => a.sort - b.sort);
@@ -768,7 +780,10 @@ class SwadeActor<
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
     effect: CONFIG.StatusEffect | string,
-    { overlay = false, active }: Partial<ToggleActiveEffectOptions> = {},
+    {
+      overlay = false,
+      active,
+    }: NullishProps<{ overlay: boolean; active: boolean }> = {},
   ) {
     const statusEffect =
       typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
@@ -1575,9 +1590,9 @@ class SwadeActor<
       foundry.utils.hasProperty(options, 'swade.fatigue.value')
     ) {
       const isDamage = foundry.utils.hasProperty(changed, 'system.wounds.value')
-        ? changed.system.wounds.value > options.swade.wounds.value
+        ? changed.system.wounds.value > options.swade!.wounds!.value!
         : foundry.utils.hasProperty(changed, 'system.fatigue.value')
-          ? changed.system.fatigue.value > options.swade.fatigue.value
+          ? changed.system.fatigue.value > options.swade!.fatigue!.value!
           : false;
       const tokens = this.getActiveTokens(true, false);
       for (const token of tokens) {

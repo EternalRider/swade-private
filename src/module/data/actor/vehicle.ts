@@ -127,11 +127,13 @@ function createVehicleSchema() {
     size: new fields.NumberField({
       initial: 0,
       integer: true,
+      nullable: false,
       label: 'SWADE.Size',
     }),
     scale: new fields.NumberField({
       initial: 0,
       integer: true,
+      nullable: false,
       label: 'SWADE.Scale',
     }),
     classification: new fields.StringField({

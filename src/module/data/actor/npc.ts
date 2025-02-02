@@ -1,3 +1,4 @@
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { createEmbedElement } from '../../util';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -36,10 +37,15 @@ export class NpcData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: Actor.CreateData,
-    _options: Actor.DatabaseOperation.PreCreateOperationInstance,
-    _user: foundry.documents.BaseUser,
+    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      NpcData.Schema,
+      Actor<'npc'>
+    >,
+    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
+    const allowed = await super._preCreate(createData, options, user);
+    if (allowed === false) return false;
     const isImported = foundry.utils.hasProperty(
       createData,
       'flags.core.sourceId',
@@ -52,10 +58,16 @@ export class NpcData extends CreatureData<
   }
 
   protected override _onUpdate(
-    _changed: foundry.documents.BaseActor.UpdateData,
-    _options: Actor.DatabaseOperations['update'],
-    _userId: string,
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        NpcData.Schema,
+        Actor<'npc'>
+      >
+    >,
+    options: Actor.DatabaseOperation.OnUpdateOperation,
+    userId: string,
   ) {
+    super._onUpdate(changed, options, userId);
     ui.actors?.render(true);
   }
 

@@ -205,7 +205,7 @@ class ArmorData extends SwadePhysicalItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       ArmorData.Schema,
-      Item
+      Item<'armor'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,
