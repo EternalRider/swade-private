@@ -3,7 +3,9 @@ import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import { createEmbedElement } from '../../util';
+import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
 import {
   boundTraitDie,
   makeAdditionalStatsSchema,
@@ -11,8 +13,6 @@ import {
 } from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
-import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
-import { constants } from '../../constants';
 
 declare namespace VehicleData {
   interface Schema extends ReturnType<typeof createVehicleSchema> {}
@@ -124,14 +124,26 @@ function createVehicleSchema() {
       },
       { label: 'SWADE.Attributes' },
     ),
-    size: new fields.NumberField({ initial: 0, label: 'SWADE.Size' }),
-    scale: new fields.NumberField({ initial: 0, label: 'SWADE.Scale' }),
+    size: new fields.NumberField({
+      initial: 0,
+      integer: true,
+      label: 'SWADE.Size',
+    }),
+    scale: new fields.NumberField({
+      initial: 0,
+      integer: true,
+      label: 'SWADE.Scale',
+    }),
     classification: new fields.StringField({
       initial: '',
       textSearch: true,
       label: 'SWADE.Class',
     }),
-    handling: new fields.NumberField({ initial: 0, label: 'SWADE.Handling' }),
+    handling: new fields.NumberField({
+      initial: 0,
+      integer: true,
+      label: 'SWADE.Handling',
+    }),
     cost: new fields.NumberField({ initial: 0, label: 'SWADE.Price' }),
     topspeed: new fields.SchemaField(
       {
@@ -158,10 +170,21 @@ function createVehicleSchema() {
     ),
     wounds: new fields.SchemaField(
       {
-        value: new fields.NumberField({ initial: 0, label: 'SWADE.Wounds' }),
-        max: new fields.NumberField({ initial: 3, label: 'SWADE.WoundsMax' }),
+        value: new fields.NumberField({
+          initial: 0,
+          min: 0,
+          integer: true,
+          label: 'SWADE.Wounds',
+        }),
+        max: new fields.NumberField({
+          initial: 3,
+          min: 0,
+          integer: true,
+          label: 'SWADE.WoundsMax',
+        }),
         ignored: new fields.NumberField({
           initial: 0,
+          integer: true,
           label: 'SWADE.IgnWounds',
         }),
       },
@@ -171,9 +194,16 @@ function createVehicleSchema() {
       {
         value: new fields.NumberField({
           initial: 0,
+          integer: true,
+          min: 0,
           label: 'SWADE.Energy.Value',
         }),
-        max: new fields.NumberField({ initial: 0, label: 'SWADE.Energy.Max' }),
+        max: new fields.NumberField({
+          initial: 0,
+          integer: true,
+          min: 0,
+          label: 'SWADE.Energy.Max',
+        }),
         enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
       },
       { label: 'SWADE.Energy.Label' },
@@ -184,10 +214,14 @@ function createVehicleSchema() {
           {
             value: new fields.NumberField({
               initial: 1,
+              integer: true,
+              min: 0,
               label: 'SWADE.Value',
             }),
             max: new fields.NumberField({
               initial: 1,
+              integer: true,
+              min: 0,
               label: 'SWADE.MaxLabel',
             }),
           },
@@ -197,10 +231,14 @@ function createVehicleSchema() {
           {
             value: new fields.NumberField({
               initial: 0,
+              integer: true,
+              min: 0,
               label: 'SWADE.Value',
             }),
             max: new fields.NumberField({
               initial: 0,
+              integer: true,
+              min: 0,
               label: 'SWADE.MaxLabel',
             }),
           },

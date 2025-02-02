@@ -48,9 +48,7 @@ export class ForeignDocumentUUIDField<
 
   override initialize(value: PersistedType, _model, _options = {}) {
     if (this.idOnly) return () => value;
-    const typeClass = getDocumentClass<foundry.abstract.Document.Type>(
-      this.type,
-    );
+    const typeClass = getDocumentClass<this['type']>(this.type);
     return () => {
       try {
         const doc = fromUuidSync(value);
@@ -65,7 +63,7 @@ export class ForeignDocumentUUIDField<
   }
 
   override toObject(value): PersistedType {
-    return value.uuid ?? value;
+    return value?.uuid ?? value;
   }
 
   override _toInput(config) {
@@ -74,7 +72,7 @@ export class ForeignDocumentUUIDField<
       const collection = game.scenes.viewed?.tokens;
       const options: foundry.applications.fields.FormSelectOption[] = (
         collection ?? []
-      ).reduce((arr, doc: TokenDocument.ConfiguredInstance) => {
+      ).reduce((arr, doc: TokenDocument.Implementation) => {
         if (!doc.visible || !doc.actor) return arr;
         arr.push({ value: doc.actor.uuid, label: doc.name });
         return arr;
