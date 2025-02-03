@@ -642,7 +642,7 @@ SWADE:
         Widerstand gegen {fatigue}!
     VehicleMods:
       Name: Fahrzeug-Modifikationen
-      Hint: Fahrzeuge nutzen Modifikations-Plätze
+      Hint: Fahrzeuge/Rüstung nutzen Modifikations-Plätze
     VehicleEdges:
       Name: Fahrzeug-Talente
       Hint: Fahrzeuge nutzen Talente und Handicaps
@@ -717,6 +717,9 @@ SWADE:
       Name: Rüstung stapeln
       Hint: Legt fest, wie das Tragen mehrerer Rüstungen abgehandelt wird
     Bumpmaps: Bumpmaps
+    VehicleEnergy:
+      Hint: Fahrzeuge/Rüstung nutzen Energie
+      Name: Fahrzeug-Energie
   Validation:
     OnlyOneAncestry: Ein Charakter kann nur ein Volk auf einmal haben.
     OnlyOneArchetype: Ein Charakter kann nur einen Archetypen auf einmal haben.
@@ -1230,6 +1233,22 @@ SWADE:
       Label: Vorrat
     Label: Vorräte
   RemoveEffectLabel: Effekt entfernen
+  VehicleAttributes:
+    Label: Fahrzeugattribute
+    Agility: Fahrzeug Hat Geschick
+    Spirit: Fahrzeug Hat Willenskraft
+    Strength: Fahrzeug Hat Stärke
+    Vigor: Fahrzeug Hat Konstitution
+    Smarts: Fahrzeug Hat Verstand
+  Energy:
+    Max: Max. Energie
+    Enable: Energie aktiv
+    Label: Energie
+    Value: Akt. Energie
+  OperatorIdHint: Akteur reinziehen oder Figur wählen
+  VehicleSheet: Savage Worlds Fahrzeugbogen
+  Complication: Komplikation
+  EffectsInactive: Inaktive Effekte
 TYPES:
   Actor:
     npc: NSC
@@ -1254,3 +1273,5 @@ TYPES:
     adventure: Abenteuerkarte
   JournalEntryPage:
     headquarters: Stützpunkte
+  Combat:
+    dramaticTask: Dramatische Aufgabe
