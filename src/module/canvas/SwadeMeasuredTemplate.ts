@@ -31,7 +31,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: BaseMeasuredTemplate.ConstructorData = {
+    const templateBaseData: BaseMeasuredTemplate.CreateData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,
@@ -79,7 +79,10 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
       const now = Date.now(); // Apply a 20ms throttle
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
-      const snapped = canvas.grid.getSnappedPoint(center, {mode: CONST.GRID_SNAPPING_MODES.CENTER, resolution: 2});
+      const snapped = canvas.grid.getSnappedPoint(center, {
+        mode: CONST.GRID_SNAPPING_MODES.CENTER,
+        resolution: 2,
+      });
       this.document.updateSource({ x: snapped?.x, y: snapped?.y });
       this.refresh();
       moveTime = now;
@@ -95,7 +98,10 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     // Confirm the workflow (left-click)
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
-      const dest = canvas.grid.getSnappedPoint(this.document, {mode: CONST.GRID_SNAPPING_MODES.CENTER, resolution: 2});
+      const dest = canvas.grid.getSnappedPoint(this.document, {
+        mode: CONST.GRID_SNAPPING_MODES.CENTER,
+        resolution: 2,
+      });
       this.document.updateSource(dest);
       canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
         this.document.toObject(),
@@ -178,7 +184,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   override highlightGrid() {
     //return early if te object doesn't actually exist yet
-    if (!this.id || !this.shape) return;
+    if (this.shape) return;
 
     const highlightRAW = game.settings.get('swade', 'highlightTemplate');
     //defer to the core highlighting if the setting is off

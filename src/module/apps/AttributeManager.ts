@@ -45,14 +45,14 @@ export default class AttributeManager extends FormApplication<
     const data: AttributeManagerData = {
       isExtra: !this.object.isWildcard,
       dieSides:
-        this.object.type === 'npc'
-          ? getDieSidesRange(4, 24)
-          : getDieSidesRange(4, 20),
+        this.object.type === 'character'
+          ? getDieSidesRange(4, 20)
+          : getDieSidesRange(4, 24),
       wildDieSides: getDieSidesRange(4, 12),
       dieSidesWithMinimum:
-        this.object.type === 'npc'
-          ? getDieSidesRange(1, 24)
-          : getDieSidesRange(1, 20),
+        this.object.type === 'character'
+          ? getDieSidesRange(1, 20)
+          : getDieSidesRange(1, 24),
     };
     return foundry.utils.mergeObject(await super.getData(options), data);
   }
@@ -66,6 +66,7 @@ export default class AttributeManager extends FormApplication<
 interface AttributeManagerData
   extends Partial<FormApplication.Data<{}, FormApplicationOptions>> {
   isExtra: boolean;
+  isVehicle: boolean;
   dieSides: DieSidesOption[];
   wildDieSides: DieSidesOption[];
   dieSidesWithMinimum: DieSidesOption[];

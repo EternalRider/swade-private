@@ -3,10 +3,10 @@ SWADE:
   ButtonSubmit: Submit
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
-  CommunityVicSheet: Community Vehicle Sheet
-  CommunityItemSheet: Community Item Sheet
+  CommunityVicSheet: Legacy Vehicle Sheet
   ItemSheet: Savage Worlds Item Sheet
   GroupSheet: Savage Worlds Group Sheet
+  VehicleSheet: Savage Worlds Vehicle Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
   Expand: Expand
   OfficialSheet: Savage Worlds Official Sheet by Pinnacle
@@ -273,7 +273,20 @@ SWADE:
   Mods: Mods
   ModSlots: Mod Slots
   MaxMods: Maximum Mods
+  VehicleAttributes:
+    Label: Vehicle Attributes
+    Agility: Vehicle Has Agility
+    Spirit: Vehicle Has Spirit
+    Smarts: Vehicle Has Smarts
+    Strength: Vehicle Has Strength
+    Vigor: Vehicle Has Vigor
+  Energy:
+    Label: Energy
+    Value: Current Energy
+    Max: Max Energy
+    Enable: Enable Energy
   Operator: Operator
+  OperatorIdHint: Drop an Actor or select a Token
   ManCheck: Maneuver Check
   AltSkill: Alternative Skill
   Class: Classification
@@ -455,6 +468,7 @@ SWADE:
     BlueJoker: Blue Joker / Diamonds Joker
     GreenJoker: Green Joker / Clubs Joker
   IsJoker: Is Joker
+  Complication: Complication
   OpenACEditor: Open in Action Card Editor
   'Yes': 'Yes'
   'No': 'No'
@@ -542,6 +556,7 @@ SWADE:
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
   ChaseLayout: Layout
+  ChaseLayoutError: Not enough space on the scene to lay out the chase.
   ChaseRows: Rows
   ChaseColumns: Columns
   ChaseDiscard: Discard Pile
@@ -577,6 +592,7 @@ SWADE:
   ActionsOverride: Override
   EffectsTemporary: Temporary Effects
   EffectsPermanent: Permanent Effects
+  EffectsInactive: Inactive Effects
   Ranks:
     Novice: Novice
     Seasoned: Seasoned
@@ -741,9 +757,12 @@ SWADE:
       Hint: >-
         Apply encumbrance penalties. Please keep in mind that this currently
         does NOT SUPPORT {vigor} tests to resist {fatigue}!
+    VehicleEnergy:
+      Name: Vehicle Energy
+      Hint: Vehicles and Armor use Energy
     VehicleMods:
-      Name: Vehicles Mods
-      Hint: Vehicles use Mod-Slots
+      Name: Vehicle Mods
+      Hint: Vehicles and Armor use Mod-Slots
     VehicleEdges:
       Name: Vehicle Edges
       Hint: Vehicles use Edges and Hindrances
@@ -1497,6 +1516,7 @@ SWADE:
     Hint: Drag & Drop Combatants to set up the surprise round
     Unassigned: Unassigned
   Combat:
+    LinkScene: Link Scene
     DealAll: Deal All
     DealNPC: Deal NPCs
     StartSurpriseRound: Start Surprise Round
@@ -1566,6 +1586,14 @@ SWADE:
         Title: Running
         Content: Please select how you want to run
   ApplicableEffects: Applicable Effects
+  DramaticTask:
+    Successes: Successes
+    MaxRounds:
+      Label: Maximum Rounds
+      Hint: How many rounds does the Dramatic Task run?
+    MaxTokens:
+      Label: Successes
+      Hint: Target number of successes the participants need to achieve
 TYPES:
   Actor:
     character: Player Character
@@ -1588,5 +1616,8 @@ TYPES:
   Card:
     adventure: Adventure Card
     poker: Poker Card
+  Combat:
+    chase: Chase
+    dramaticTask: Dramatic Task
   JournalEntryPage:
     headquarters: Headquarters

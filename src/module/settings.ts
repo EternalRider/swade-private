@@ -36,6 +36,7 @@ declare global {
     'swade.alwaysGeneralPP': boolean;
     'swade.staticGmBennies': boolean;
     'swade.gmBennies': number;
+    'swade.vehicleEnergy': foundry.data.fields.BooleanField;
     'swade.vehicleMods': boolean;
     'swade.vehicleEdges': boolean;
     'swade.vehicleSkills': string;
@@ -390,6 +391,15 @@ export function registerSettingRules() {
     default: 0,
     scope: 'world',
     type: Number,
+    config: false,
+  });
+
+  game.settings.register('swade', 'vehicleEnergy', {
+    name: 'SWADE.Settings.VehicleEnergy.Name',
+    hint: 'SWADE.Settings.VehicleEnergy.Hint',
+    default: false,
+    scope: 'world',
+    type: new foundry.data.fields.BooleanField(),
     config: false,
   });
 

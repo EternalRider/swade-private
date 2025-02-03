@@ -49,6 +49,19 @@ export const constants = {
     MAIN_HAND: 4,
     TWO_HANDS: 5,
   } as const,
+  /**
+   * Array position corresponds to value of EQUIP_STATE
+   * @enum
+   */
+  EQUIP_STATE_ICONS: [
+    'fas fa-archive',
+    'fas fa-shopping-bag',
+    'fas fa-hand-paper',
+    'fas fa-tshirt',
+    'fas fa-hand-paper fa-flip-horizontal',
+    'fas fa-sign-language',
+  ],
+  /** @enum */
   RELOAD_TYPE: {
     NONE: 'none',
     SELF: 'self',

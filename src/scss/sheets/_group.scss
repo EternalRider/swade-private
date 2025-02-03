@@ -140,43 +140,7 @@
 
   .stash {
     .item {
-      //The details/summary styles should probably be moved to a separate file to make them more universal
-      details {
-        border-bottom: 2px groove var(--color-fieldset-border);
-        &[open] {
-          summary:before {
-            transform: rotate(90deg);
-          }
-        }
-      }
-      summary {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        position: relative;
-        margin-left: 1.2em;
-        padding-bottom: 0.25rem;
-        &:hover,
-        &:focus {
-          text-shadow: 0 0 10px var(--color-shadow-primary);
-        }
-        &::before {
-          content: '';
-          border-width: 0.4em;
-          border-style: solid;
-          border-color: transparent transparent transparent
-            var(--color-text-primary);
-          position: absolute;
-          left: -1rem;
-          transform: rotate(0);
-          transform-origin: 0.2em 50%;
-          transition: 200ms transform ease;
-        }
-        &::marker {
-          display: none;
-        }
-      }
+      border-bottom: 2px groove var(--color-fieldset-border);
       .img {
         border: none;
         max-width: 2rem;

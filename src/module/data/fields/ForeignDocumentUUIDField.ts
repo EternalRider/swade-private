@@ -48,40 +48,40 @@ export class ForeignDocumentUUIDField<
 
   override initialize(value: PersistedType, _model, _options = {}) {
     if (this.idOnly) return () => value;
-    const typeClass = getDocumentClass<foundry.abstract.Document.Type>(
-      this.type,
-    );
+    const typeClass = getDocumentClass<this['type']>(this.type);
     return () => {
       try {
         const doc = fromUuidSync(value);
         if (doc instanceof typeClass)
-          return doc as CONFIG[foundry.abstract.Document.Type]['documentClass'];
+          return doc as Document.ConfiguredClassForName<this['type']>;
         return value;
       } catch (error) {
         console.error(error);
-        return value;
+        return value ?? null;
       }
     };
   }
 
   override toObject(value): PersistedType {
-    return value.uuid ?? value;
+    return value?.uuid ?? value;
   }
 
   override _toInput(config) {
-    // Prepare array of visible options
-    const collection = game.scenes.viewed?.tokens;
-    const options: foundry.applications.fields.FormSelectOption[] = (
-      collection ?? []
-    ).reduce((arr, doc: TokenDocument) => {
-      if (!doc.visible) return arr;
-      arr.push({ value: doc.id, label: doc.name });
-      return arr;
-    }, []);
-    Object.assign(config, { options });
+    if (!config.options) {
+      // Prepare array of visible options
+      const collection = game.scenes.viewed?.tokens;
+      const options: foundry.applications.fields.FormSelectOption[] = (
+        collection ?? []
+      ).reduce((arr, doc: TokenDocument.Implementation) => {
+        if (!doc.visible || !doc.actor) return arr;
+        arr.push({ value: doc.actor.uuid, label: doc.name });
+        return arr;
+      }, []);
+      Object.assign(config, { options });
+    }
 
     // Allow blank
-    if (!this.required || this.nullable) config.blank = '';
+    if (!this.required || this.nullable) config.blank ??= '';
 
     // Create select input
     return foundry.applications.fields.createSelectInput(config);

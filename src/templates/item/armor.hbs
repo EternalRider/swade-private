@@ -162,6 +162,26 @@
           <input id="{{item.uuid}}-weight" name='system.weight' type='text' value='{{item.system.weight}}' placeholder='{{localize "SWADE.Weight"}}' data-dtype='Number'/>
         </span>
       </div>
+      {{#if showMods}}
+      <div class="form-group">
+        <label>{{localize "SWADE.Mods"}}</label>
+        <span class="form-fields">
+          <input type="number" name="system.mods.value" value="{{item.system.mods.value}}">
+          /
+          <input type="number" name="system.mods.max" value="{{item.system.mods.max}}">
+        </span>
+      </div>
+      {{/if}}
+      {{#if showEnergy}}
+      <div class="form-group">
+        <label>{{localize "SWADE.Energy.Label"}}</label>
+        <span class="form-fields">
+          <input type="number" name="system.energy.value" value="{{item.system.energy.value}}">
+          /
+          <input type="number" name="system.energy.max" value="{{item.system.energy.max}}">
+        </span>
+      </div>
+      {{/if}}
       <div class='form-group'>
         <label for="{{item.uuid}}-notes">
           {{localize 'SWADE.Notes'}}
@@ -171,8 +191,8 @@
         </span>
       </div>
       {{> 'swade.item-action-properties'}}
-      {{formGroupSimple "system.activities" stacked=true}}
       {{> 'swade.item-bonus-damage'}}
+      {{formGroupSimple "system.activities" stacked=true}}
       {{> 'swade.item-grants'}}
     </section>
     {{#if item.isArcaneDevice}}

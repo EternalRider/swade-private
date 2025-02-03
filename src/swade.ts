@@ -46,7 +46,9 @@ import CharacterSheet from './module/sheets/CharacterSheet';
 import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
+import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
+import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
 import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
@@ -93,6 +95,7 @@ Hooks.once('init', () => {
       SwadeItemSheetV2,
       SwadeNPCSheet,
       SwadeVehicleSheet,
+      SwadeVehicleSheetV2,
     },
     apps: {
       SwadeDocumentTweaks,
@@ -142,6 +145,8 @@ Hooks.once('init', () => {
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
   CONFIG.Card.dataModels = data.card.config;
   CONFIG.ActiveEffect.dataModels = data.effect.config;
+  CONFIG.Combat.dataModels = data.combat.combatConfig;
+  CONFIG.Combatant.dataModels = data.combat.combatantConfig;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -249,11 +254,21 @@ Hooks.once('init', () => {
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
+  DocumentSheetConfig.unregisterSheet(
+    CONFIG.Token.documentClass,
+    'core',
+    TokenConfig,
+  );
 
   Actors.registerSheet('swade', GroupSheet, {
     types: ['group'],
     makeDefault: true,
     label: 'SWADE.GroupSheet',
+  });
+  Actors.registerSheet('swade', SwadeVehicleSheetV2, {
+    types: ['vehicle'],
+    makeDefault: true,
+    label: 'SWADE.VehicleSheet',
   });
 
   Actors.registerSheet('swade', CharacterSheet, {
@@ -268,7 +283,6 @@ Hooks.once('init', () => {
   });
   Actors.registerSheet('swade', SwadeVehicleSheet, {
     types: ['vehicle'],
-    makeDefault: true,
     label: 'SWADE.CommunityVicSheet',
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {
@@ -299,12 +313,16 @@ Hooks.once('init', () => {
       label: 'SWADE.HeadquartersSheet',
     },
   );
+  DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
 
   // Register Tours
   registerSWADETours();
 
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.SwadeRoll = SwadeRoll;
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.TraitRoll = TraitRoll;
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;

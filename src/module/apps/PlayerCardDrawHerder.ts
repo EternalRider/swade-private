@@ -88,8 +88,8 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
         'updateCombatant',
         (
           combatant: SwadeCombatant,
-          _changed: foundry.documents.BaseCombatant.UpdateData,
-          _options: Combatant.DatabaseOperations['update'],
+          _changed: Combatant.UpdateData,
+          _options: Combatant.DatabaseOperation.OnUpdateOperation,
           triggeringUser: string,
         ) => {
           if (triggeringUser !== userId || combatant.id !== combatantId) return;

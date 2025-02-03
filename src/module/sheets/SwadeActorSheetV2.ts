@@ -4,12 +4,14 @@ import type SwadeActor from '../documents/actor/SwadeActor';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeItem from '../documents/item/SwadeItem';
+import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { ActorSheetV2 } = foundry.applications.sheets;
+const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
 export class SwadeActorSheetV2<
-  RenderContext extends SwadeActorSheetV2.RenderContext,
+  RenderContext extends
+    SwadeActorSheetV2.RenderContext = SwadeActorSheetV2.RenderContext,
 > extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
   // declare element: HTMLFormElement;
   static override DEFAULT_OPTIONS: DeepPartial<
@@ -17,13 +19,83 @@ export class SwadeActorSheetV2<
   > = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
+    window: {
+      controls: [
+        // v12 bug requires redefining existing window controls due to the array overwriting instead of merging
+        {
+          icon: 'fa-solid fa-gears',
+          label: 'SWADE.Tweaks',
+          action: 'openTweaks',
+        },
+        {
+          action: 'configurePrototypeToken',
+          icon: 'fa-solid fa-user-circle',
+          label: 'TOKEN.TitlePrototype',
+          ownership: 'OWNER',
+        },
+        {
+          action: 'showPortraitArtwork',
+          icon: 'fa-solid fa-image',
+          label: 'SIDEBAR.CharArt',
+          ownership: 'OWNER',
+        },
+        {
+          action: 'showTokenArtwork',
+          icon: 'fa-solid fa-image',
+          label: 'SIDEBAR.TokenArt',
+          ownership: 'OWNER',
+        },
+      ],
+    },
     actions: {
+      createDocument: SwadeActorSheetV2.createEmbeddedDocument,
+      showItem: SwadeActorSheetV2.showItem,
       openItem: SwadeActorSheetV2.openItem,
       deleteItem: SwadeActorSheetV2.deleteItem,
       openEffect: SwadeActorSheetV2.openItem,
       deleteEffect: SwadeActorSheetV2.deleteItem,
+      toggleEffect: SwadeActorSheetV2.toggleEffect,
+      openTweaks: SwadeActorSheetV2.openTweaks,
     },
   };
+
+  static async createEmbeddedDocument(
+    this: SwadeActorSheetV2,
+    event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    event.preventDefault(); // helps buttons in the headers of <details> elements
+    const documentClass = getDocumentClass(
+      target.dataset.documentClass as 'Item' | 'ActiveEffect',
+    );
+    const docData = {
+      name: documentClass.defaultName({
+        type: target.dataset.type,
+        parent: this.actor,
+      }),
+    };
+    // Loop through the dataset and add it to our docData
+    for (const [dataKey, value] of Object.entries(target.dataset)) {
+      // These data attributes are reserved for the action handling
+      if (['action', 'documentClass', 'renderSheet'].includes(dataKey))
+        continue;
+      // Nested properties use dot notation like `data-system.prop`
+      foundry.utils.setProperty(docData, dataKey, value);
+    }
+
+    await documentClass.create(docData, {
+      parent: this.actor,
+      renderSheet: target.dataset.renderSheet,
+    });
+  }
+
+  static showItem(
+    this: SwadeActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    (this._getEmbeddedDocument(target) as SwadeItem)?.show();
+  }
 
   static openItem(
     this: SwadeActorSheetV2,
@@ -55,6 +127,25 @@ export class SwadeActorSheetV2<
     target: HTMLElement,
   ) {
     this._getEmbeddedDocument(target)?.deleteDialog();
+  }
+
+  static async toggleEffect(
+    this: SwadeActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    const effect = this._getEmbeddedDocument(
+      target,
+    ) as ActiveEffect.ConfiguredInstance;
+    effect.update({ disabled: !effect.disabled });
+  }
+
+  static async openTweaks(
+    this: SwadeActorSheetV2,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ) {
+    new SwadeDocumentTweaks(this.actor).render(true);
   }
 
   override async _prepareContext(options) {

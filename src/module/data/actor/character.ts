@@ -1,5 +1,6 @@
 import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
+import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
 
@@ -48,7 +49,10 @@ export class CharacterData extends CreatureData<
       const skillIndex = await pack.getDocuments();
 
       // extract skill data
-      const skills = skillIndex
+      const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
+        SkillData.Schema,
+        Item<'skill'>
+      >[] = skillIndex
         .filter((i) => i.type === 'skill')
         .filter((i) => coreSkills.includes(i.name!))
         .map((s) => s.toObject());
@@ -90,11 +94,15 @@ export class CharacterData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: foundry.documents.BaseActor.ConstructorData,
-    options: Actor.DatabaseOperations['create'],
-    user: foundry.documents.BaseUser,
+    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      CharacterData.Schema,
+      Actor<'character'>
+    >,
+    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preCreate(createData, options, user);
+    const allowed = await super._preCreate(createData, options, user);
+    if (allowed === false) return false;
     this.parent.updateSource({
       prototypeToken: {
         actorLink: true,

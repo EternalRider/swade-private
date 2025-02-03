@@ -13,24 +13,17 @@ export default class SwadeCombatTracker extends CombatTracker {
     });
   }
 
-  override activateListeners(jquery: JQuery<HTMLElement>) {
-    super.activateListeners(jquery);
-    const html = jquery[0];
-    if (!game.user?.isGM) this._contextMenu(jquery);
-    //make combatants draggable for GMs
-    html.querySelectorAll<HTMLLIElement>('.combatant').forEach((li) => {
-      const id = li.dataset.combatantId!;
-      const comb = this.viewed?.combatants.get(id) as SwadeCombatant | null;
-      if (comb?.isOwner || game.user?.isGM) {
-        // Add draggable attribute and dragstart listener.
-        li.setAttribute('draggable', 'true');
-        li.classList.add('draggable');
-        li.addEventListener('dragstart', this._onDragStart.bind(this));
-        li.addEventListener('drop', this._onDrop.bind(this));
-        li.addEventListener('dragover', this._onDragOver.bind(this));
-        li.addEventListener('dragleave', this._onDragLeave.bind(this));
-      }
-    });
+  /** @privateRemarks scrollToTurn override because core Foundry targets .active which is applied on .combat-control elements as well */
+  override scrollToTurn() {
+    const combat = this.viewed;
+    if (!combat || combat.turn === null) return;
+    const active = this.element.find('.combatant.active')[0];
+    const container = active?.parentElement;
+    if (!active || !container) return;
+    const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
+    container.scrollTop =
+      combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
+    super.scrollToTurn();
   }
 
   override async getData(options?: Partial<ApplicationOptions>) {
@@ -57,25 +50,52 @@ export default class SwadeCombatTracker extends CombatTracker {
       );
     }
     data.cardsIcon = CONFIG.Cards.sidebarIcon;
+    data.isDramaticTask = this.viewed?.type === 'dramaticTask';
+    data.isChase = this.viewed?.type === 'chase';
+    data.typeLabel = CONFIG.Combat.typeLabels[this.viewed?.type];
     return data;
   }
 
-  /** scrollToTurn override because core Foundry targets .active which is applied on .combat-control elements as well */
-  override scrollToTurn() {
-    const combat = this.viewed;
-    if (!combat || combat.turn === null) return;
-    const active = this.element.find('.combatant.active')[0];
-    const container = active?.parentElement;
-    if (!active || !container) return;
-    const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
-    container.scrollTop =
-      combat.turn * active.offsetHeight - (nViewable / 2) * active.offsetHeight;
-    super.scrollToTurn();
+  override activateListeners(jquery: JQuery<HTMLElement>) {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+    if (!game.user?.isGM) this._contextMenu(jquery);
+    //make combatants draggable for GMs
+    html.querySelectorAll<HTMLLIElement>('.combatant').forEach((li) => {
+      const id = li.dataset.combatantId!;
+      const comb = this.viewed?.combatants.get(id) as SwadeCombatant | null;
+      if (comb?.isOwner || game.user?.isGM) {
+        // Add draggable attribute and dragstart listener.
+        li.setAttribute('draggable', 'true');
+        li.classList.add('draggable');
+        li.addEventListener('dragstart', this._onDragStart.bind(this));
+        li.addEventListener('drop', this._onDrop.bind(this));
+        li.addEventListener('dragover', this._onDragOver.bind(this));
+        li.addEventListener('dragleave', this._onDragLeave.bind(this));
+      }
+    });
+    const tokenInput = html.querySelector<HTMLInputElement>(
+      'input[name="system.tokens.value"]',
+    );
+    tokenInput?.addEventListener('change', () =>
+      this.viewed?.update({ 'system.tokens.value': tokenInput.value }),
+    );
+  }
+
+  /**
+   * Handle new Combat creation request by presenting a form asking what type
+   */
+  protected override async _onCombatCreate(
+    event: JQuery.ClickEvent,
+  ): Promise<void> {
+    event.preventDefault();
+    const cls = getDocumentClass('Combat');
+    await cls.createDialog({ active: true });
   }
 
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
     if (!combatant.isOwner) return false;
-    const firstRound = combatant.getFlag('swade', 'firstRound') ?? 0;
+    const firstRound = combatant.system.firstRound ?? 0;
     // The Combatant can draw on or after their first round, but not if they're in a group or defeated.
     return (
       firstRound <= (combatant.combat?.round ?? 0) &&
@@ -87,7 +107,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     return combatant.isOwner && !combatant.groupId; // Followers can neither draw nor redraw.
   }
 
-  protected override async _onCombatantControl(event) {
+  protected override async _onCombatantControl(event: JQuery.ClickEvent) {
     event.preventDefault();
     event.stopImmediatePropagation();
     const btn = event.currentTarget as HTMLElement;
@@ -97,19 +117,19 @@ export default class SwadeCombatTracker extends CombatTracker {
     }) as SwadeCombatant;
     // Switch control action
     switch (btn.dataset.control) {
-      // Toggle combatant defeated flag to reallocate potential followers.
+      // Toggle combatant defeated status to reallocate potential followers.
       case 'toggleIncapacitated':
         return this._onToggleIncapacitated(c);
-      // Toggle combatant roundHeld flag
+      // Toggle combatant roundHeld property
       case 'toggleHold':
         return this._onToggleHoldStatus(c);
-      // Toggle combatant turnLost flag
+      // Toggle combatant turnLost property
       case 'toggleLostTurn':
         return this._onToggleTurnLostStatus(c);
-      // Toggle combatant turnLost flag
+      // Toggle combatant turnLost property
       case 'actNow':
         return this._onActNow(c);
-      // Toggle combatant turnLost flag
+      // Toggle combatant turnLost property
       case 'actAfter':
         return this._onActAfterCurrentCombatant(c);
       default:
@@ -129,23 +149,27 @@ export default class SwadeCombatTracker extends CombatTracker {
           _id: selected.id,
           initiative: c.initiative,
           cardString: c.cardString,
-          'flags.swade.-=groupId': null,
-          'flags.swade.isGroupLeader': true,
+          system: {
+            groupId: null,
+            isGroupLeader: true,
+          },
         },
       ];
       //un-assign the old leader
       updates.push({
         _id: c.id,
         initiative: fInitiative + 0.001,
-        'flags.swade.groupId': selected.id,
-        'flags.swade.isGroupLeader': false,
+        system: {
+          groupId: selected.id,
+          isGroupLeader: false,
+        },
       });
-      if (c.groupId) updates['flags.swade.-=groupId'] = null;
+      if (c.groupId) updates['system.groupId'] = null;
       for (const f of c.followers.filter((f) => f.id !== selected.id)) {
         updates.push({
           _id: f.id,
           initiative: (fInitiative -= 0.001),
-          'flags.swade.groupId': selected.id,
+          'system.groupId': selected.id,
         });
       }
       await this.viewed?.updateEmbeddedDocuments('Combatant', updates);
@@ -209,9 +233,9 @@ export default class SwadeCombatTracker extends CombatTracker {
     // If a follower, set as group leader
     if (!leader.isGroupLeader) {
       await leader.update({
-        'flags.swade': {
+        system: {
           isGroupLeader: true,
-          '-=groupId': null,
+          groupId: null,
         },
       });
     }
@@ -223,7 +247,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     // Set groupId of dragged combatant to the selected target's id
     await combatant.update({
       initiative,
-      'flags.swade': {
+      system: {
         cardValue,
         suitValue,
         hasJoker,
@@ -237,7 +261,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       for (const f of followers) {
         await f.update({
           initiative,
-          'flags.swade': {
+          system: {
             cardValue,
             suitValue,
             hasJoker,
@@ -437,9 +461,9 @@ export default class SwadeCombatTracker extends CombatTracker {
     const combatantId = li.attr('data-combatant-id') as string;
     const combatant = this.viewed!.combatants.get(combatantId)!;
     await combatant.update({
-      'flags.swade': {
+      system: {
         isGroupLeader: true,
-        '-=groupId': null,
+        groupId: null,
       },
     });
   }
@@ -467,13 +491,11 @@ export default class SwadeCombatTracker extends CombatTracker {
     );
     if (selectedTokens.length < 1) return; //return if no valid tokens are found
     await targetCombatant.update({
-      flags: {
-        swade: {
-          cardValue: targetCombatant.cardValue!,
-          suitValue: targetCombatant.suitValue!,
-          isGroupLeader: true,
-          '-=groupId': null,
-        },
+      system: {
+        cardValue: targetCombatant.cardValue!,
+        suitValue: targetCombatant.suitValue!,
+        isGroupLeader: true,
+        groupId: null,
       },
     });
     // Filter for tokens that do not already have combatants
@@ -508,11 +530,9 @@ export default class SwadeCombatTracker extends CombatTracker {
       for (const c of combatants) {
         await c.update({
           initiative: (fInitiative -= 0.001),
-          flags: {
-            swade: {
-              groupId: targetCombatantId,
-              '-=isGroupLeader': null,
-            },
+          system: {
+            groupId: targetCombatantId,
+            '-=isGroupLeader': null,
           },
         });
       }
@@ -558,13 +578,13 @@ export default class SwadeCombatTracker extends CombatTracker {
       //make sure the new leader is actually registered as a leader
       {
         _id: gl.id,
-        'flags.swade.isGroupLeader': true,
+        'system.isGroupLeader': true,
       },
       // Set groupId of dragged combatant to the selected target's id
       {
         _id: combatant.id,
         initiative,
-        'flags.swade': {
+        system: {
           cardValue,
           suitValue,
           hasJoker,
@@ -578,13 +598,11 @@ export default class SwadeCombatTracker extends CombatTracker {
         updates.push({
           _id: follower.id,
           initiative: (fInitiative -= 0.001),
-          flags: {
-            swade: {
-              cardValue,
-              suitValue,
-              hasJoker,
-              groupId,
-            },
+          system: {
+            cardValue,
+            suitValue,
+            hasJoker,
+            groupId,
           },
         });
       }

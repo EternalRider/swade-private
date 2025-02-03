@@ -32,3 +32,10 @@ export function renamePace(source: any) {
     running: runningDie,
   };
 }
+
+export function shiftCargoModsMax(source: any) {
+  const oldMaxCargo = source.maxCargo;
+  if (oldMaxCargo) foundry.utils.setProperty(source, 'cargo.max', oldMaxCargo);
+  const oldMaxMods = source.maxMods;
+  if (oldMaxMods) foundry.utils.setProperty(source, 'mods.max', oldMaxMods);
+}

@@ -1,5 +1,6 @@
 @import 'scss/variables';
 @import 'scss/checkmark';
+@import 'scss/details-summary';
 @import 'scss/float-label';
 @import 'scss/fonts';
 @import 'scss/base';
@@ -40,6 +41,7 @@
 
 //sheets
 @import 'scss/sheets/group';
+@import 'scss/sheets//vehicle2';
 
 // Highlight code in journals
 @import '../node_modules/highlight.js/scss/a11y-dark.scss';

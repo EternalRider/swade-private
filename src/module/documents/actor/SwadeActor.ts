@@ -1,5 +1,7 @@
-import { ToggleActiveEffectOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import {
+  NullishProps,
+  ValueOf,
+} from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -40,7 +42,7 @@ import {
   shouldShowBennyAnimation,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
-import SwadeItem, { SystemItemTypes } from '../item/SwadeItem';
+import SwadeItem from '../item/SwadeItem';
 import { TraitDie } from './SwadeActor.interface';
 
 declare global {
@@ -58,16 +60,26 @@ declare global {
       hiddenActionOverride?: boolean;
     };
   }
+
+  namespace Actor {
+    namespace DatabaseOperation {
+      interface Update {
+        swade?: {
+          wounds?: {
+            value?: number;
+          };
+          fatigue?: {
+            value?: number;
+          };
+        };
+      }
+    }
+  }
 }
 
-type SystemActorTypes = Exclude<string & keyof Game.Model['Actor'], 'base'>;
-
-interface SwadeActor<ActorType extends SystemActorTypes = SystemActorTypes> {
-  type: ActorType;
-  // system: InstanceType<DataModelConfig['Actor'][ActorType]>;
-}
-
-class SwadeActor extends Actor {
+class SwadeActor<
+  Subtype extends Actor.SubType = Actor.SubType,
+> extends Actor<Subtype> {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -88,7 +100,7 @@ class SwadeActor extends Actor {
   }
 
   constructor(
-    data: foundry.documents.BaseActor.ConstructorData,
+    data: Actor.CreateData,
     ctx?: foundry.abstract.Document.ConstructionContext<TokenDocument>,
   ) {
     if (game.swade.ready && ctx?.pack && data._id) {
@@ -219,12 +231,7 @@ class SwadeActor extends Actor {
   }
 
   override get itemTypes() {
-    const types = Object.fromEntries<SwadeItem[]>(
-      game.documentTypes.Item.map((t: SystemItemTypes | 'base') => [t, []]),
-    ) as Record<foundry.documents.BaseItem.TypeNames, SwadeItem[]>;
-    for (const item of this.items.values()) {
-      types[item.type].push(item);
-    }
+    const types = super.itemTypes;
     //sort the items before returning them
     for (const type in types) {
       types[type].sort((a, b) => a.sort - b.sort);
@@ -368,7 +375,7 @@ class SwadeActor extends Actor {
     const retVal = await RollDialog.asPromise({
       roll: roll,
       mods: modifiers,
-      speaker: ChatMessage.getSpeaker({ actor: this as SwadeActor }),
+      speaker: ChatMessage.getSpeaker({ actor: this }),
       flavor:
         options.flavour ??
         `${game.i18n.localize(label)} ${game.i18n.localize(
@@ -658,8 +665,9 @@ class SwadeActor extends Actor {
   async spendBenny() {
     //return early if there no bennies to spend
     if (this.bennies < 1) return;
+    const msgClass = getDocumentClass('ChatMessage');
     if (game.settings.get('swade', 'notifyBennies')) {
-      const speaker = CONFIG.ChatMessage.documentClass.getSpeaker({
+      const speaker = msgClass.getSpeaker({
         actor: this,
       });
       const message = await renderTemplate(SWADE.bennies.templates.spend, {
@@ -667,7 +675,7 @@ class SwadeActor extends Actor {
         speaker: speaker,
       });
       const chatData = { content: message, speaker: speaker };
-      await CONFIG.ChatMessage.documentClass.create(chatData);
+      await msgClass.create(chatData);
     }
     await this.update({ 'system.bennies.value': this.bennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
@@ -701,16 +709,18 @@ class SwadeActor extends Actor {
     const combatant = this.token?.combatant as SwadeCombatant | undefined;
     await this.update({ 'system.bennies.value': this.bennies + 1 });
 
+    const msgClass = getDocumentClass('ChatMessage');
+
     const hiddenNPC = combatant?.isNPC && combatant?.hidden;
     if (game.settings.get('swade', 'notifyBennies') && !hiddenNPC) {
-      const speaker = getDocumentClass('ChatMessage').getSpeaker({
+      const speaker = msgClass.getSpeaker({
         actor: this,
       });
       const content = await renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: speaker,
       });
-      await getDocumentClass('ChatMessage').create({
+      await msgClass.create({
         content: content,
         speaker: speaker,
       });
@@ -770,7 +780,10 @@ class SwadeActor extends Actor {
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
     effect: CONFIG.StatusEffect | string,
-    { overlay = false, active }: Partial<ToggleActiveEffectOptions> = {},
+    {
+      overlay = false,
+      active,
+    }: NullishProps<{ overlay: boolean; active: boolean }> = {},
   ) {
     const statusEffect =
       typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
@@ -875,7 +888,7 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns an array containing the found items
    */
-  getItemsBySwid<T extends SystemItemTypes>(
+  getItemsBySwid<T extends Item.SubType>(
     swid: string,
     type?: T,
   ): SwadeItem<T>[] {
@@ -894,7 +907,7 @@ class SwadeActor extends Actor {
    * @param type Optionally, a type name to restrict the search
    * @returns The matching item, or undefined if none was found.
    */
-  getSingleItemBySwid<T extends SystemItemTypes>(
+  getSingleItemBySwid<T extends Item.SubType>(
     swid: string,
     type?: T,
   ): SwadeItem<T> | undefined {
@@ -997,10 +1010,12 @@ class SwadeActor extends Actor {
     });
   }
 
-  async getDriver(): Promise<SwadeActor | null> {
+  async getDriver(): Promise<SwadeActor<'character' | 'npc'> | null> {
     if (!(this.system instanceof VehicleData)) return null;
     if (!this.system.driver.id) return null;
-    return (await fromUuid(this.system.driver.id)) as SwadeActor | null;
+    return (await fromUuid(this.system.driver.id)) as SwadeActor<
+      'character' | 'npc'
+    > | null;
   }
 
   getTraitRollModifiers(
@@ -1052,12 +1067,9 @@ class SwadeActor extends Actor {
       mods.push(...options.additionalMods);
     }
 
-    //Joker
-    if (this.hasJoker) {
-      mods.push({
-        label: game.i18n.localize('SWADE.Joker'),
-        value: (this.getFlag('swade', 'jokerBonus') as string | number) ?? 2,
-      });
+    // Joker, Dramatic Task Complication
+    if (game.combats.active && 'rollModifiers' in game.combats.active.system) {
+      mods.push(...game.combats.active.system.rollModifiers(this));
     }
 
     if (
@@ -1562,8 +1574,8 @@ class SwadeActor extends Actor {
   }
 
   protected override _onUpdate(
-    changed: foundry.documents.BaseActor.UpdateData,
-    options: foundry.abstract.Document.OnUpdateOptions<'Actor'>,
+    changed: Actor.UpdateData,
+    options: Actor.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
@@ -1578,9 +1590,9 @@ class SwadeActor extends Actor {
       foundry.utils.hasProperty(options, 'swade.fatigue.value')
     ) {
       const isDamage = foundry.utils.hasProperty(changed, 'system.wounds.value')
-        ? changed.system.wounds.value > options.swade.wounds.value
+        ? changed.system.wounds.value > options.swade!.wounds!.value!
         : foundry.utils.hasProperty(changed, 'system.fatigue.value')
-          ? changed.system.fatigue.value > options.swade.fatigue.value
+          ? changed.system.fatigue.value > options.swade!.fatigue!.value!
           : false;
       const tokens = this.getActiveTokens(true, false);
       for (const token of tokens) {

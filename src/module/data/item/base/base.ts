@@ -22,9 +22,10 @@ declare namespace SwadeBaseItemData {
 }
 
 class SwadeBaseItemData<
-  Schema extends SwadeBaseItemData.Schema,
-  BaseData extends SwadeBaseItemData.BaseData,
-  DerivedData extends SwadeBaseItemData.DerivedData,
+  Schema extends SwadeBaseItemData.Schema = SwadeBaseItemData.Schema,
+  BaseData extends SwadeBaseItemData.BaseData = SwadeBaseItemData.BaseData,
+  DerivedData extends
+    SwadeBaseItemData.DerivedData = SwadeBaseItemData.DerivedData,
 > extends foundry.abstract.TypeDataModel<
   Schema,
   SwadeItem,
@@ -84,11 +85,12 @@ class SwadeBaseItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
-    user: foundry.documents.BaseUser,
-  ): Promise<false | void> {
-    await super._preCreate(data, options, user);
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void> {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
 
     if (this.actor?.type === 'group' && !this.isPhysicalItem) {
       ui.notifications?.warn('Groups can only hold physical items!');

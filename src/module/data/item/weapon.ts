@@ -1,4 +1,3 @@
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
   EquipState,
@@ -200,10 +199,12 @@ class WeaponData extends SwadePhysicalItemData<
 
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    modifiers.push(...this.parent.actor.system.stats.globalMods.attack);
+    modifiers.push(
+      ...(this.parent.actor?.system.stats.globalMods.attack ?? []),
+    );
     if (
       this.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
-      !this.parent.actor.getFlag('swade', 'ambidextrous')
+      !this.parent.actor?.getFlag('swade', 'ambidextrous')
     ) {
       modifiers.push({
         label: game.i18n.localize('SWADE.OffHandPenalty'),
@@ -566,7 +567,7 @@ class WeaponData extends SwadePhysicalItemData<
     if (!this.usesAmmoFromInventory) return this.#handleSimpleReload();
 
     let magazines = new Array<SwadeItem<'consumable'>>();
-    const consumables = this.parent.actor?.itemTypes.consumable;
+    const consumables = this.parent.actor?.itemTypes.consumable ?? [];
     const predicate = (type: ValueOf<typeof constants.CONSUMABLE_TYPE>) => {
       return (i: SwadeItem<'consumable'>) =>
         i.type === 'consumable' &&
@@ -733,11 +734,15 @@ class WeaponData extends SwadePhysicalItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
-    user: BaseUser,
-  ): Promise<undefined> {
-    await super._preCreate(data, options, user);
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      WeaponData.Schema,
+      Item<'weapon'>
+    >,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
+  ): Promise<boolean | void> {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.MAIN_HAND });
     }

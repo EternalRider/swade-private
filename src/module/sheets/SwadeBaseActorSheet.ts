@@ -496,6 +496,17 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     super._onDragStart(event);
   }
 
+  protected override async _onDropItemCreate(
+    itemData: Item['_source'][] | Item['_source'],
+  ): Promise<Item.Implementation[]> {
+    const items = await super._onDropItemCreate(itemData);
+    const typesToRender = ['power', 'skill'];
+    for (const item of items) {
+      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+    }
+    return items;
+  }
+
   protected _onDragAttribute(event: DragEvent) {
     const btn = (event.currentTarget as HTMLElement).querySelector('button');
     event.dataTransfer?.setData(

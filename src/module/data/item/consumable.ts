@@ -1,3 +1,4 @@
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
@@ -150,19 +151,27 @@ class ConsumableData extends SwadePhysicalItemData<
   }
 
   protected override async _preUpdate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['update'],
-    user: foundry.documents.BaseUser,
+    changed: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        ConsumableData.Schema,
+        Item<'consumable'>
+      >
+    >,
+    options: Item.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preUpdate(data, options, user);
+    await super._preUpdate(changed, options, user);
     if (
-      foundry.utils.hasProperty(data, 'system.quantity') &&
+      foundry.utils.hasProperty(changed, 'system.quantity') &&
       this.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
       this.charges.value !== 0 &&
       this.charges.value !== this.charges.max
     ) {
-      if (data.system.quantity > 1 && this.charges.value < this.charges.max) {
-        delete data.system.quantity;
+      if (
+        (changed.system?.quantity ?? 0) > 1 &&
+        this.charges.value! < this.charges.max!
+      ) {
+        delete changed.system!.quantity;
         Logger.warn(
           'Partially filled magazines can only have a quantity of 1',
           { toast: true },
@@ -170,16 +179,16 @@ class ConsumableData extends SwadePhysicalItemData<
       }
     }
     if (
-      foundry.utils.hasProperty(data, 'system.charges.max') &&
+      foundry.utils.hasProperty(changed, 'system.charges.max') &&
       this.subtype === constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(data, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, 'system.charges.max', 100);
     }
     if (
-      foundry.utils.getProperty(data, 'system.subtype') ===
+      foundry.utils.getProperty(changed, 'system.subtype') ===
       constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(data, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, 'system.charges.max', 100);
     }
   }
 

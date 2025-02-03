@@ -1,0 +1,153 @@
+<section
+  class='{{tabs.crew.tabCssClass}} flexrow'
+  data-tab='crew'
+  data-group='primary'
+>
+  <div class='left'>
+    <div class='flexrow'>
+      <label class='section-header'>{{localize 'SWADE.Operator'}}</label>
+      {{#if operator}}
+      <a class='reset-driver' data-action='resetDriver'>
+        <i class='fas fa-trash'></i>
+      </a>
+      {{/if}}
+    </div>
+    {{#if operator}}
+      <figure class='operator'>
+        <img src='{{operator.img}}' />
+        <figcaption>{{operator.name}}</figcaption>
+      </figure>
+    {{else}}
+    <div class='add-driver'>
+      {{log driverOptions}}
+      {{formInputSimple 'system.driver.id' source=true localize=true blank='SWADE.OperatorIdHint' options=driverOptions}}
+    </div>
+    {{/if}}
+  </div>
+  <div class='right'>
+    {{formGroupSimple
+      'system.driver.skill'
+      document=actor
+      options=opSkills.options
+      blank=opSkills.blank
+      sort=true
+    }}
+    {{formGroupSimple 'system.driver.skillAlternative' document=actor}}
+    <button type='button' data-action='maneuverCheck' {{#unless operator}}disabled{{/unless}}>
+      {{localize 'SWADE.ManCheck'}}
+    </button>
+    <details class='abilities' data-summary-id='abilities'>
+      <summary class='section-header'>
+        {{localize 'SWADE.SpecialAbilities'}}
+        {{#if editable}}
+        <a class='helper-button'
+          data-action='createDocument' 
+          data-document-class='Item' 
+          data-type='ability' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
+        {{/if}}
+      </summary>
+      <ul class='item-list content'>
+      {{#each abilities as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
+    </details>
+    {{#if showEdges}}
+    <details class='edges' data-summary-id='edges'>
+      <summary class='section-header'>
+        {{localize 'SWADE.Edges'}}
+        {{#if editable}}
+        <a class='helper-button'
+          data-action='createDocument' 
+          data-document-class='Item' 
+          data-type='edge' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
+        {{/if}}
+      </summary>
+      <ul class='item-list content'>
+      {{#each edges as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
+    </details>
+    <details class='hindrances' data-summary-id='hindrances'>
+      <summary class='section-header'>
+        {{localize 'SWADE.Hindrances'}}
+        {{#if editable}}
+        <a class='helper-button'
+          data-action='createDocument' 
+          data-document-class='Item' 
+          data-type='hindrance' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
+        {{/if}}
+      </summary>
+      <ul class='item-list content'>
+      {{#each hindrances as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
+    </details>
+    {{/if}}
+  </div>
+</section>

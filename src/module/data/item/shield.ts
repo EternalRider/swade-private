@@ -140,11 +140,15 @@ class ShieldData extends SwadePhysicalItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: Item.DatabaseOperations['create'],
-    user: foundry.documents.BaseUser,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      ShieldData.Schema,
+      Item<'shield'>
+    >,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preCreate(data, options, user);
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
     if (this.parent?.actor?.type === 'npc') {
       this.updateSource({ equipStatus: constants.EQUIP_STATE.EQUIPPED });
     }

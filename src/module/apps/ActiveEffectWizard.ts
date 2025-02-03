@@ -4,8 +4,11 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
-export default class ActiveEffectWizard extends FormApplication {
-  #effect: ActiveEffect.ConstructorData = {
+export default class ActiveEffectWizard extends FormApplication<
+  FormApplicationOptions,
+  SwadeActor | SwadeItem
+> {
+  #effect: ActiveEffect.CreateData = {
     name: SwadeActiveEffect.defaultName(),
     img: 'systems/swade/assets/icons/active-effect.svg',
   };
@@ -41,6 +44,15 @@ export default class ActiveEffectWizard extends FormApplication {
       this.#effect.name = object.name;
       this.#effect.img = object.img;
     }
+  }
+
+  /**
+   * Determine if the target of this AE is a vehicle
+   */
+  get targetIsVehicle() {
+    if (this.object instanceof SwadeActor) {
+      return this.object.type === 'vehicle';
+    } else return this.object.parent?.type === 'vehicle';
   }
 
   override activateListeners(jquery: JQuery<HTMLElement>): void {
@@ -88,6 +100,7 @@ export default class ActiveEffectWizard extends FormApplication {
 
   override async getData(options?: Partial<ApplicationOptions>) {
     const data = {
+      isVehicle: this.targetIsVehicle,
       effect: this.#effect,
       changes: this.#changes,
       collapsibleStates: this.#collapsibleStates,
@@ -134,20 +147,33 @@ export default class ActiveEffectWizard extends FormApplication {
   }
 
   #getDerivedPresets(): ActiveEffectPreset[] {
-    return [
-      {
-        label: game.i18n.localize('SWADE.Tough'),
-        key: 'system.stats.toughness.value',
-      },
-      {
-        label: game.i18n.localize('SWADE.Armor'),
-        key: 'system.stats.toughness.armor',
-      },
-      {
-        label: game.i18n.localize('SWADE.Parry'),
-        key: 'system.stats.parry.value',
-      },
-    ];
+    if (this.targetIsVehicle) {
+      return [
+        {
+          label: game.i18n.localize('SWADE.Tough'),
+          key: 'system.toughness.total',
+        },
+        {
+          label: game.i18n.localize('SWADE.Armor'),
+          key: 'system.toughness.armor',
+        },
+      ];
+    } else {
+      return [
+        {
+          label: game.i18n.localize('SWADE.Tough'),
+          key: 'system.stats.toughness.value',
+        },
+        {
+          label: game.i18n.localize('SWADE.Armor'),
+          key: 'system.stats.toughness.armor',
+        },
+        {
+          label: game.i18n.localize('SWADE.Parry'),
+          key: 'system.stats.parry.value',
+        },
+      ];
+    }
   }
 
   #getGlobalModPresets(): ActiveEffectPreset[] {
@@ -192,84 +218,101 @@ export default class ActiveEffectWizard extends FormApplication {
   }
 
   #getOtherStatsPresets(): ActiveEffectPreset[] {
-    return [
-      {
-        label: game.i18n.localize('SWADE.Size'),
-        key: 'system.stats.size',
-      },
-      {
-        label: game.i18n.localize('SWADE.Pace'),
-        key: 'system.pace',
-      },
-      {
-        label: game.i18n.localize('SWADE.RunningDie'),
-        key: 'system.pace.running.die',
-      },
-      {
-        label: game.i18n.localize('SWADE.RunningMod'),
-        key: 'system.pace.running.mod',
-      },
-      {
-        label: game.i18n.localize('SWADE.EncumbranceSteps'),
-        key: 'system.attributes.strength.encumbranceSteps',
-      },
-      {
-        label: game.i18n.localize('SWADE.IgnWounds'),
-        key: 'system.wounds.ignored',
-      },
-      {
-        label: game.i18n.localize('SWADE.WoundsMax'),
-        key: 'system.wounds.max',
-      },
-      {
-        label: game.i18n.localize('SWADE.BenniesMax'),
-        key: 'system.bennies.max',
-      },
-      {
-        label: game.i18n.localize('SWADE.FatigueMax'),
-        key: 'system.fatigue.max',
-      },
-      {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
-        ),
-        key: 'system.attributes.spirit.unShakeBonus',
-      },
-      {
-        label: game.i18n.localize('SWADE.DamageApplicator.SoakModifier'),
-        key: 'system.attributes.vigor.soakBonus',
-      },
-      {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.Stunned.UnStunModifier',
-        ),
-        key: 'system.attributes.vigor.unStunBonus',
-      },
-      {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
-        ),
-        key: 'system.attributes.vigor.bleedOut.modifier',
-      },
-      {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds',
-        ),
-        key: 'system.attributes.vigor.bleedOut.ignoreWounds',
-      },
-      {
-        label: game.i18n.localize('SWADE.WealthDie.Sides'),
-        key: 'system.details.wealth.die',
-      },
-      {
-        label: game.i18n.localize('SWADE.WealthDie.WildSides'),
-        key: 'system.details.wealth.wild-die',
-      },
-      {
-        label: game.i18n.localize('SWADE.WealthDie.Modifier'),
-        key: 'system.details.wealth.modifier',
-      },
-    ];
+    if (this.targetIsVehicle) {
+      return [
+        {
+          label: game.i18n.localize('SWADE.Size'),
+          key: 'system.size',
+        },
+        {
+          label: game.i18n.localize('SWADE.IgnWounds'),
+          key: 'system.wounds.ignored',
+        },
+        {
+          label: game.i18n.localize('SWADE.WoundsMax'),
+          key: 'system.wounds.max',
+        },
+      ];
+    } else {
+      return [
+        {
+          label: game.i18n.localize('SWADE.Size'),
+          key: 'system.stats.size',
+        },
+        {
+          label: game.i18n.localize('SWADE.Pace'),
+          key: 'system.pace',
+        },
+        {
+          label: game.i18n.localize('SWADE.RunningDie'),
+          key: 'system.pace.running.die',
+        },
+        {
+          label: game.i18n.localize('SWADE.RunningMod'),
+          key: 'system.pace.running.mod',
+        },
+        {
+          label: game.i18n.localize('SWADE.EncumbranceSteps'),
+          key: 'system.attributes.strength.encumbranceSteps',
+        },
+        {
+          label: game.i18n.localize('SWADE.IgnWounds'),
+          key: 'system.wounds.ignored',
+        },
+        {
+          label: game.i18n.localize('SWADE.WoundsMax'),
+          key: 'system.wounds.max',
+        },
+        {
+          label: game.i18n.localize('SWADE.BenniesMax'),
+          key: 'system.bennies.max',
+        },
+        {
+          label: game.i18n.localize('SWADE.FatigueMax'),
+          key: 'system.fatigue.max',
+        },
+        {
+          label: game.i18n.localize(
+            'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
+          ),
+          key: 'system.attributes.spirit.unShakeBonus',
+        },
+        {
+          label: game.i18n.localize('SWADE.DamageApplicator.SoakModifier'),
+          key: 'system.attributes.vigor.soakBonus',
+        },
+        {
+          label: game.i18n.localize(
+            'SWADE.EffectCallbacks.Stunned.UnStunModifier',
+          ),
+          key: 'system.attributes.vigor.unStunBonus',
+        },
+        {
+          label: game.i18n.localize(
+            'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
+          ),
+          key: 'system.attributes.vigor.bleedOut.modifier',
+        },
+        {
+          label: game.i18n.localize(
+            'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds',
+          ),
+          key: 'system.attributes.vigor.bleedOut.ignoreWounds',
+        },
+        {
+          label: game.i18n.localize('SWADE.WealthDie.Sides'),
+          key: 'system.details.wealth.die',
+        },
+        {
+          label: game.i18n.localize('SWADE.WealthDie.WildSides'),
+          key: 'system.details.wealth.wild-die',
+        },
+        {
+          label: game.i18n.localize('SWADE.WealthDie.Modifier'),
+          key: 'system.details.wealth.modifier',
+        },
+      ];
+    }
   }
 
   #getExpirationOptions(): Record<number, string> {

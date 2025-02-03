@@ -4,7 +4,6 @@ import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
-import { DocumentDatabaseOperations } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 
 declare namespace SkillData {
   interface Schema extends SwadeBaseItemData.Schema, DiceTrait {
@@ -65,19 +64,15 @@ class SkillData extends SwadeBaseItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseItem.ConstructorData,
-    options: DocumentDatabaseOperations<
-      Item,
-      {
-        isItemGrant: boolean;
-      }
-    >['create'],
-    user: foundry.documents.BaseUser,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      SkillData.Schema,
+      Item<'skill'>
+    >,
+    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preCreate(data, options, user);
-    if (this.parent && !options.isItemGrant && options.renderSheet !== null) {
-      options.renderSheet = true;
-    }
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
   }
 
   declare enrichedDescription?: string;

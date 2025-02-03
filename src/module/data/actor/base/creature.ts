@@ -5,6 +5,8 @@ import {
   RollModifier,
 } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
+import type SwadeActor from '../../../documents/actor/SwadeActor';
+import type SwadeItem from '../../../documents/item/SwadeItem';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
 import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
@@ -19,8 +21,6 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
-import type SwadeItem from '../../../documents/item/SwadeItem';
-import type SwadeActor from '../../../documents/actor/SwadeActor';
 
 const fields = foundry.data.fields;
 
@@ -380,10 +380,10 @@ function creatureSchema() {
       {
         isShaken: new fields.BooleanField({ label: 'SWADE.Shaken' }),
         isDistracted: new fields.BooleanField({
-          label: 'SWADE.Distracted',
+          label: 'SWADE.Distr',
         }),
         isVulnerable: new fields.BooleanField({
-          label: 'SWADE.Vulnerable',
+          label: 'SWADE.Vuln',
         }),
         isStunned: new fields.BooleanField({ label: 'SWADE.Stunned' }),
         isEntangled: new fields.BooleanField({ label: 'SWADE.Entangled' }),
@@ -763,14 +763,17 @@ class CreatureData<
   }
 
   protected override async _preUpdate(
-    this: CreatureData,
     changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, SwadeActor>
+      foundry.abstract.TypeDataModel.ParentAssignmentType<
+        CreatureData.Schema,
+        SwadeActor
+      >
     >,
-    options: Actor.DatabaseOperations['update'],
-    userId: string,
+    options: Actor.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
   ) {
-    await super._preUpdate(changed, options, userId);
+    const allowed = await super._preUpdate(changed, options, user);
+    if (allowed === false) return false;
     if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
       foundry.utils.setProperty(
         options,

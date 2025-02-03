@@ -1,6 +1,7 @@
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
+import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
 import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
@@ -31,6 +32,107 @@ export default class SwadeCombat extends Combat {
   }
 
   static INITIATIVE_SOUND = 'systems/swade/assets/card-flip.wav';
+
+  /**
+   * @privateRemarks Adapted from v13 implementation
+   */
+  static override async createDialog(
+    data = {},
+    createOptions = {},
+    dialogOptions: DeepPartial<foundry.applications.api.DialogV2.WaitOptions> = {},
+  ): Promise<SwadeCombat | null | undefined> {
+    const typeOptions = Object.entries(CONFIG.Combat.typeLabels).map(
+      ([value, label]) => ({ value, label }),
+    );
+    const typeSelect = foundry.applications.fields.createSelectInput({
+      options: typeOptions,
+      value: 'base',
+      localize: true,
+      name: 'type',
+    });
+    const typeGroup = foundry.applications.fields.createFormGroup({
+      label: game.i18n.localize('Type'),
+      input: typeSelect,
+    });
+
+    let html = typeGroup.outerHTML;
+
+    if (game.scenes.current) {
+      const linkInput = document.createElement('input');
+      linkInput.type = 'checkbox';
+      linkInput.name = 'scene';
+      linkInput.setAttribute('checked', '');
+      linkInput.setAttribute('value', game.scenes.current.id);
+      const linkGroup = foundry.applications.fields.createFormGroup({
+        label: game.i18n.localize('SWADE.Combat.LinkScene'),
+        input: linkInput,
+      });
+      html += linkGroup.outerHTML;
+    }
+
+    //inputs for dramatic task relevant data
+    html += CONFIG.Combat.dataModels.dramaticTask.schema
+      .getField('maxRounds')
+      ?.toFormGroup({ classes: ['slim', 'hidden'], localize: true })?.outerHTML;
+
+    html += CONFIG.Combat.dataModels.dramaticTask.schema
+      .getField('tokens.max')
+      ?.toFormGroup({
+        label: 'SWADE.DramaticTask.MaxTokens.Label',
+        hint: 'SWADE.DramaticTask.MaxTokens.Hint',
+        classes: ['slim', 'hidden'],
+        localize: true,
+      })?.outerHTML;
+
+    // Collect data
+    const label = game.i18n.localize(this.metadata.label);
+    const title = game.i18n.format('DOCUMENT.Create', { type: label });
+
+    // Render the confirmation dialog window
+    return foundry.applications.api.DialogV2.prompt<{}, SwadeCombat>(
+      foundry.utils.mergeObject(
+        {
+          content: html,
+          window: { title },
+          position: { width: 360 },
+          ok: {
+            label: title,
+            callback: (_event: PointerEvent, button: HTMLButtonElement) => {
+              const fd = new FormDataExtended(button.form as HTMLFormElement);
+              foundry.utils.mergeObject(data, fd.object);
+              return this.create(data, {
+                renderSheet: false,
+                ...createOptions,
+              });
+            },
+          },
+          rejectClose: false,
+          render: (_event: Event, html: HTMLDialogElement) => {
+            const typeSelect = html.querySelector<HTMLSelectElement>(
+              'select[name="type"]',
+            );
+            const roundsInput = html
+              .querySelector<HTMLDivElement>('input[name="system.maxRounds"]')
+              ?.closest('.form-group');
+            const tokenInput = html
+              .querySelector<HTMLDivElement>('input[name="system.tokens.max"]')
+              ?.closest('.form-group');
+
+            typeSelect?.addEventListener('change', () => {
+              if (typeSelect.value === 'dramaticTask') {
+                roundsInput?.classList.remove('hidden');
+                tokenInput?.classList.remove('hidden');
+              } else {
+                roundsInput?.classList.add('hidden');
+                tokenInput?.classList.add('hidden');
+              }
+            });
+          },
+        },
+        dialogOptions,
+      ),
+    );
+  }
 
   get actionDeck(): SwadeCards {
     return game.cards!.get(game.settings.get('swade', 'actionDeck'), {
@@ -67,7 +169,7 @@ export default class SwadeCombat extends Combat {
     ids = Array.isArray(ids) ? ids : [ids];
 
     const currentId = this.combatant?.id;
-    const messages: foundry.documents.BaseChatMessage.ConstructorData[] = [];
+    const messages: ChatMessage.CreateData[] = [];
     const updates: Updates[] = [];
 
     //Check if enough cards are available
@@ -171,7 +273,7 @@ export default class SwadeCombat extends Combat {
         //normal card draw
         pickedCard = cardsToPickFrom[0];
       }
-      const newFlags = {
+      const systemData = {
         cardValue: pickedCard.value!,
         suitValue: pickedCard.system['suit'],
         hasJoker: pickedCard.system['isJoker'],
@@ -185,7 +287,7 @@ export default class SwadeCombat extends Combat {
       const update = {
         _id: id,
         initiative,
-        flags: { swade: newFlags },
+        system: systemData,
       };
 
       //Handle group leader changes
@@ -197,7 +299,7 @@ export default class SwadeCombat extends Combat {
         updates.push({
           _id: f.id,
           initiative: (fInitiative -= 0.001),
-          'flags.swade': newFlags,
+          system: systemData,
         });
       }
 
@@ -214,12 +316,10 @@ export default class SwadeCombat extends Combat {
               ? game?.users?.filter((u) => u.isGM)
               : [],
           content: '', //keep the content empty so we don't trigger validation warnings
-          flags: {
-            swade: {
-              isRedraw,
-              pickedCard: pickedCard.id,
-              cards: cardsToPickFrom.map((c) => c.toObject()),
-            },
+          'flags.swade': {
+            isRedraw,
+            pickedCard: pickedCard.id,
+            cards: cardsToPickFrom.map((c) => c.toObject()),
           },
         },
         messageOptions,
@@ -402,9 +502,9 @@ export default class SwadeCombat extends Combat {
       if (turnLost && groupId) {
         return {
           initiative: null,
-          'flags.swade': {
+          system: {
             hasJoker: false,
-            '-=turnLost': null,
+            turnLost: null,
           },
         };
       } else {
@@ -414,7 +514,7 @@ export default class SwadeCombat extends Combat {
     } else if (!roundHeld || turnLost) {
       return {
         initiative: null,
-        'flags.swade': {
+        system: {
           suitValue: null,
           cardValue: null,
           hasJoker: false,
@@ -425,7 +525,7 @@ export default class SwadeCombat extends Combat {
     }
     return {
       initiative: null,
-      'flags.swade': {
+      system: {
         suitValue: null,
         cardValue: null,
         hasJoker: false,
@@ -546,8 +646,8 @@ export default class SwadeCombat extends Combat {
   }
 
   override async _preDelete(
-    options: Combat.DatabaseOperations['delete'],
-    user: foundry.documents.BaseUser,
+    options: Combat.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
   ) {
     await super._preDelete(options, user);
     const jokerDrawn = this.combatants.some((c: SwadeCombatant) => c.hasJoker);

@@ -5,7 +5,7 @@ export default class SwadeChatLog extends ChatLog {
   protected override async _processDiceCommand(
     command: string,
     matches: RegExpMatchArray[],
-    chatData: foundry.documents.BaseChatMessage.ConstructorData,
+    chatData: ChatMessage.CreateData,
     createOptions: DocumentOnCreateOptions<'ChatMessage'>,
   ): Promise<void> {
     const actor =

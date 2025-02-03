@@ -13,7 +13,7 @@ function add(a, b) {
   return result.signedString();
 }
 
-function times(a: number, b: number) {
+function multiply(a: number, b: number) {
   return a * b;
 }
 
@@ -371,8 +371,8 @@ export function registerCustomHelpers() {
   Handlebars.registerHelper({
     readonly: (val) => (val ? 'readonly' : ''),
     add,
+    multiply,
     signedString,
-    times,
     isOdd,
     isEven,
     formatNumber,

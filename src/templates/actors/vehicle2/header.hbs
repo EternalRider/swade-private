@@ -1,0 +1,37 @@
+{{#*inline 'vehicle-stats'}}
+<div class='flexcol vehicle-stats'>
+  <label for='{{actor.uuid}}-{{propName}}' class='label'>{{localize label}}</label>
+  <div class='flexrow'>
+    <input class='value' min="0" id='{{actor.uuid}}-{{propName}}' type='number' name='{{concat propName '.value'}}' value='{{prop.value}}' />
+    <span class='divider'>/</span>
+    <input class='max' min="0" type='number' name='{{concat propName '.max'}}' value='{{prop.max}}' />
+  </div>
+</div>
+{{/inline}}
+<section class='flexrow'>
+  <div class='sheet-portrait'>
+    <img src='{{actor.img}}' data-action='editImg' data-tooltip="SWADE.RightClickZoom"/>
+  </div>
+  <div class='flexcol'>
+    <div class='name'>
+      {{formInputSimple 'name' document=actor}}
+    </div>
+    <div class='flexrow'>
+      {{> vehicle-stats label='SWADE.Wounds' propName='system.wounds' prop=system.wounds}}
+      {{> vehicle-stats label='SWADE.RequiredCrew' propName='system.crew.required' prop=system.crew.required}}
+      {{> vehicle-stats label='SWADE.Passengers' propName='system.crew.optional' prop=system.crew.optional}}
+    </div>
+    <div class='classification'>
+      {{formInputSimple 'system.classification' document=actor}}
+    </div>
+  </div>
+  <div class='flexcol vehicle-status'>
+    {{#if hasEnergy}}
+      {{> vehicle-stats label='SWADE.Energy.Label' propName='system.energy' prop=system.energy}}
+    {{/if}}
+    {{formGroupSimple 'system.status.isOutOfControl' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isWrecked' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isDistracted' document=actor rootId=actor.uuid}}
+    {{formGroupSimple 'system.status.isVulnerable' document=actor rootId=actor.uuid}}
+  </div>
+</section>

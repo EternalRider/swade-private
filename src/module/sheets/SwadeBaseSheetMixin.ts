@@ -6,6 +6,8 @@ import type {
   SwadeApplicationTab,
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
+import ActiveEffectWizard from '../apps/ActiveEffectWizard';
+import { Accordion } from '../style/Accordion';
 
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
@@ -15,7 +17,7 @@ type DocumentSheetRenderOptions =
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 export function SwadeBaseSheetMixin<
-  Document extends Actor.ConfiguredInstance | Item.ConfiguredInstance,
+  Document extends Actor.Implementation | Item.Implementation,
   RenderContext extends AnyObject,
 >(Base: typeof foundry.applications.api.DocumentSheetV2) {
   return class SwadeBaseSheet extends HandlebarsApplicationMixin(Base)<
@@ -33,7 +35,8 @@ export function SwadeBaseSheetMixin<
         closeOnSubmit: false,
       },
       actions: {
-        editImg: SwadeBaseSheet._onEditImage,
+        editImg: { handler: SwadeBaseSheet._onEditImage, buttons: [0, 2] },
+        openAegis: SwadeBaseSheet._openAegis,
       },
     };
 
@@ -41,24 +44,43 @@ export function SwadeBaseSheetMixin<
 
     static async _onEditImage(
       this: SwadeBaseSheet,
+      event: PointerEvent,
+      _target: HTMLImageElement,
+    ) {
+      if (!this.document.img) return;
+      if (event.button === 2) {
+        //ContextMenu event
+        if (!this.document.img) return;
+        new ImagePopout(this.document.img, {
+          title: this.document.name!,
+          shareable: this.document.isOwner ?? game.user?.isGM,
+          uuid: this.document.uuid,
+        }).render(true);
+      } else {
+        const { img } =
+          (
+            this.document.constructor as
+              | Actor.ImplementationClass
+              | Item.ImplementationClass
+          ).getDefaultArtwork?.(this.document.toObject()) ?? {};
+        const fp = new FilePicker({
+          current: this.document.img,
+          type: 'image',
+          redirectToRoot: img ? [img] : [],
+          callback: (path) => this.document.update({ img: path }),
+          top: this.position.top + 40,
+          left: this.position.left + 10,
+        });
+        await fp.browse();
+      }
+    }
+
+    static async _openAegis(
+      this: SwadeBaseSheet,
       _event: PointerEvent,
       _target: HTMLImageElement,
     ) {
-      const { img } =
-        (
-          this.document.constructor as
-            | Actor.ConfiguredClass
-            | Item.ConfiguredClass
-        ).getDefaultArtwork?.(this.document.toObject()) ?? {};
-      const fp = new FilePicker({
-        current: this.document.img,
-        type: 'image',
-        redirectToRoot: img ? [img] : [],
-        callback: (path) => this.document.update({ img: path }),
-        top: this.position.top + 40,
-        left: this.position.left + 10,
-      });
-      fp.browse();
+      new ActiveEffectWizard(this.document).render(true);
     }
 
     // This is marked as private because there's no real need
@@ -77,12 +99,60 @@ export function SwadeBaseSheetMixin<
       this.#dragDrop = this.#createDragDropHandlers();
     }
 
-    override async _prepareContext(options: DocumentSheetRenderOptions) {
+    protected override async _prepareContext(
+      options: DocumentSheetRenderOptions,
+    ) {
       const context = await super._prepareContext(options);
       return foundry.utils.mergeObject(context, {
         tabs: this._getTabs(),
         document: this.document,
       });
+    }
+
+    protected override _preSyncPartState(
+      partId: string,
+      newElement: HTMLElement,
+      priorElement: HTMLElement,
+      state: SwadeBaseSheetMixin.PartState,
+    ) {
+      super._preSyncPartState(partId, newElement, priorElement, state);
+
+      state.collapsibles = {};
+      const collapsibles = priorElement.querySelectorAll('details');
+      for (const details of collapsibles) {
+        const id = details.dataset.summaryId;
+        if (!id) continue;
+        state.collapsibles[id] = details.open;
+      }
+    }
+
+    protected override _syncPartState(
+      partId: string,
+      newElement: HTMLElement,
+      priorElement: HTMLElement,
+      state: SwadeBaseSheetMixin.PartState,
+    ) {
+      super._syncPartState(partId, newElement, priorElement, state);
+
+      const collapsibles = newElement.querySelectorAll('details');
+      for (const details of collapsibles) {
+        const id = details.dataset.summaryId ?? '';
+        if (id in state.collapsibles) {
+          details.open = state.collapsibles[id];
+        }
+      }
+    }
+
+    protected override _onFirstRender(
+      context: unknown,
+      options: unknown,
+    ): void {
+      super._onFirstRender(context, options);
+
+      const collapsibles = this.element.querySelectorAll('details');
+      for (const details of collapsibles) {
+        details.open = true;
+      }
     }
 
     /**
@@ -98,6 +168,9 @@ export function SwadeBaseSheetMixin<
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
       this.#disableOverrides();
+      this.element.querySelectorAll('details').forEach((el) => {
+        new Accordion(el, '.content', { duration: 200 });
+      });
     }
 
     /**
@@ -220,4 +293,11 @@ export function SwadeBaseSheetMixin<
       }
     }
   };
+}
+
+export declare namespace SwadeBaseSheetMixin {
+  interface PartState
+    extends foundry.applications.api.HandlebarsApplicationMixin.PartState {
+    collapsibles: Record<string, boolean>;
+  }
 }

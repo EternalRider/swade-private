@@ -73,6 +73,7 @@ export const SWADE: SwadeConfig = {
       'enableConviction',
       'jokersWild',
       'vehicleMods',
+      'vehicleEnergy',
       'vehicleEdges',
       'vehicleSkills',
       'enableWoundPace',

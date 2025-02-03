@@ -1,0 +1,43 @@
+<section
+  class='{{tabs.cargo.tabCssClass}}'
+  data-tab='cargo'
+  data-group='primary'
+>
+  {{#if editable}}
+    <a data-action='createCargo'>
+      <i class='fa-solid fa-plus'></i>
+      {{localize 'SWADE.Add'}}
+    </a>
+  {{/if}}
+  <ul class='item-list'>
+    {{#each cargo as |item|}}
+      <li
+        data-item-id='{{item.id}}'
+        data-document-class='Item'
+        data-drag='true'
+        class='flexrow'
+      >
+        <img src='{{item.img}}' />
+        <a class='name' data-action='showItem'>{{item.name}}</a>
+        <span class='controls'>
+          <a data-action='openItem'>
+            <i class='fa-solid fa-edit'></i>
+          </a>
+          {{!-- <a data-action='changeEquip'>
+            <i
+              class='{{lookup
+                  @root.config.CONST.EQUIP_STATE_ICONS
+                  item.system.equipStatus
+                }}'
+            ></i>
+          </a> --}}
+          {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+          {{/if}}
+        </span>
+      </li>
+    {{/each}}
+  </ul>
+</section>

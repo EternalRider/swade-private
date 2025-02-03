@@ -554,7 +554,7 @@ export default class CharacterSheet extends ActorSheet {
       return this._onSortItem(event, itemData) as Promise<SwadeItem[]>;
     }
 
-    //handle keyboard modifiers on drop
+    //handle keyboard modifiers on drop for physical items.
     if (item.isPhysicalItem) {
       this._handleDropModifierKeys(event, itemData);
     }
@@ -562,10 +562,18 @@ export default class CharacterSheet extends ActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(
-    event: DragEvent,
-    item: Item.ConstructorData,
-  ) {
+  protected override async _onDropItemCreate(
+    itemData: Item['_source'][] | Item['_source'],
+  ): Promise<Item.Implementation[]> {
+    const items = await super._onDropItemCreate(itemData);
+    const typesToRender = ['power', 'skill'];
+    for (const item of items) {
+      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+    }
+    return items;
+  }
+
+  protected _handleDropModifierKeys(event: DragEvent, item: Item.CreateData) {
     const key = 'system.equipStatus';
     if (event.shiftKey) {
       if (item.type === 'weapon') {
@@ -656,7 +664,7 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _createActiveEffect(
-    data: ActiveEffect.ConstructorData = {
+    data: ActiveEffect.CreateData = {
       name: game.i18n.format('DOCUMENT.New', {
         type: game.i18n.localize('DOCUMENT.ActiveEffect'),
       }),

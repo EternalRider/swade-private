@@ -1,4 +1,3 @@
-import { StatusEffect } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/documents/token.mjs';
 import { DieSidesOption } from '../globals';
 import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
@@ -6,7 +5,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor from './documents/actor/SwadeActor';
-import SwadeItem, { SystemItemTypes } from './documents/item/SwadeItem';
+import SwadeItem from './documents/item/SwadeItem';
 
 /**
  * @internal
@@ -192,7 +191,7 @@ export function getStatusEffectDataById(idToSearchFor: string) {
   //     until: '5.0',
   //   },
   // );
-  return data as StatusEffect | undefined;
+  return data as CONFIG.StatusEffect | undefined;
 }
 /** @internal */
 export function getDieSidesRange(
@@ -328,7 +327,7 @@ export async function createEmbedElement(
  * @param type An optional item type for narrowing the possible list of resulting items
  * @returns a list of items that has matched the swid and type
  */
-export async function getItemsBySwid<T extends SystemItemTypes>(
+export async function getItemsBySwid<T extends Item.SubType>(
   swid: string,
   type?: T,
 ): Promise<SwadeItem<T>[]> {

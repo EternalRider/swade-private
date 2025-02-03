@@ -200,10 +200,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
     return this._onDropItemCreate(itemData);
   }
 
-  protected _handleDropModifierKeys(
-    event: DragEvent,
-    item: foundry.documents.BaseItem.ConstructorData,
-  ) {
+  protected _handleDropModifierKeys(event: DragEvent, item: Item.CreateData) {
     const equipKey = 'system.equipStatus';
     const isEquippable =
       item.type === 'gear' &&
@@ -336,7 +333,7 @@ export default class SwadeVehicleSheet extends SwadeBaseActorSheet {
    */
   private _calcModsPercentage(modsUsed: number): number {
     if (this.actor.type !== 'vehicle') return 0;
-    const maxMods = (this.actor.system as VehicleData).maxMods!;
+    const maxMods = (this.actor.system as VehicleData).mods.max!;
     const p = (modsUsed / maxMods) * 100;
 
     //cap the percentage at 100

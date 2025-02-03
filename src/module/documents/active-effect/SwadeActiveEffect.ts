@@ -2,7 +2,6 @@ import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { GroupData, VehicleData } from '../../data/actor';
-import { BaseEffectData } from '../../data/effect/base';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
@@ -14,18 +13,15 @@ declare global {
   interface FlagConfig {
     ActiveEffect: {
       swade: {
-        related?: Record<
-          string,
-          foundry.documents.BaseActiveEffect.ConstructorData
-        >;
+        related?: Record<string, ActiveEffect.CreateData>;
       };
     };
   }
 }
 
-export default class SwadeActiveEffect extends ActiveEffect {
-  declare system: BaseEffectData;
-
+export default class SwadeActiveEffect<
+  Subtype extends ActiveEffect.SubType = ActiveEffect.SubType,
+> extends ActiveEffect<Subtype> {
   static override defaultName(): string {
     return game.i18n.format('DOCUMENT.New', {
       type: game.i18n.localize('DOCUMENT.ActiveEffect'),
@@ -34,7 +30,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
 
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
-    this.changes.forEach((c) =>
+    this.changes.forEach((c: ActiveEffect.EffectChangeData) =>
       affectedItems.push(...this._getAffectedItems(this.parent!, c)),
     );
     return affectedItems.length > 0;
@@ -269,10 +265,9 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   private async _applyRelatedEffects() {
-    const related =
-      (this as SwadeActiveEffect).getFlag('swade', 'related') ?? {};
+    const related = this.getFlag('swade', 'related') ?? {};
     if (!this.actor || !this.statusId) return;
-    const toCreate: foundry.documents.BaseActiveEffect.ConstructorData[] = [];
+    const toCreate: ActiveEffect.CreateData[] = [];
     for (const [id, mutation] of Object.entries(related)) {
       const statusEffect = getStatusEffectDataById(id);
       //skip if the effect already exists on the actor
@@ -343,8 +338,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
-      return; // Really shouldn't be a vehicle or group
+    if (doc.system instanceof GroupData) return; // Really shouldn't be a vehicle or group
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])
@@ -470,8 +464,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _onUpdate(
-    changed: foundry.documents.BaseActiveEffect.UpdateData,
-    options: ActiveEffect.DatabaseOperations['update'],
+    changed: ActiveEffect.UpdateData,
+    options: ActiveEffect.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);
@@ -484,17 +478,17 @@ export default class SwadeActiveEffect extends ActiveEffect {
             this.actor.token?.id as string,
           )?.[0]
         : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
-      if (combatant?.getFlag('swade', 'roundHeld')) {
-        await combatant?.setFlag('swade', 'turnLost', true);
+      if (combatant?.system.roundHeld) {
+        await combatant?.update({ 'system.turnLost': true });
         await combatant?.toggleHold();
       }
     }
   }
 
   protected override async _preUpdate(
-    changed: foundry.documents.BaseActiveEffect.UpdateData,
-    options: ActiveEffect.DatabaseOperations['update'],
-    user: User.ConfiguredInstance,
+    changed: ActiveEffect.UpdateData,
+    options: ActiveEffect.DatabaseOperation.PreUpdateOperationInstance,
+    user: User.Implementation,
   ) {
     super._preUpdate(changed, options, user);
     //return early if the parent isn't an actor or we're not actually affecting items
@@ -504,8 +498,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override async _preDelete(
-    options: ActiveEffect.DatabaseOperations['delete'],
-    user: User.ConfiguredInstance,
+    options: ActiveEffect.DatabaseOperation.PreDeleteOperationInstance,
+    user: User.Implementation,
   ) {
     super._preDelete(options, user);
     const parent = this.parent;
@@ -519,15 +513,15 @@ export default class SwadeActiveEffect extends ActiveEffect {
     if (combat && combatant) {
       // If status is Holding, turn off Hold for Combatant.
       if (this.statusId === 'holding') {
-        await combatant?.unsetFlag('swade', 'roundHeld');
+        await combatant?.update({ 'system.roundHeld': null });
       }
     }
   }
 
   protected override async _preCreate(
-    data: foundry.documents.BaseActiveEffect.ConstructorData,
-    options: ActiveEffect.DatabaseOperations['create'],
-    user: User.ConfiguredInstance,
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.DatabaseOperation.PreCreateOperationInstance,
+    user: User.Implementation,
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
     if (this.parent?.type === 'group') return false;
@@ -549,7 +543,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
     this.updateSource({ name: game.i18n.localize(this.name) });
 
     //automatically favorite status effects
-    if (this.statusId) this.updateSource({ 'flags.swade.favorite': true });
+    if (this.statusId) this.updateSource({ 'system.favorite': true });
 
     //set the world time at creation
     this.updateSource({ duration: { startTime: game.time.worldTime } });
@@ -569,7 +563,7 @@ export default class SwadeActiveEffect extends ActiveEffect {
       if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
-            combatant.setFlag('swade', 'turnLost', true),
+            combatant.update({ 'system.turnLost': true }),
             combatant.toggleHold(),
           ]);
         }
@@ -591,8 +585,8 @@ export default class SwadeActiveEffect extends ActiveEffect {
   }
 
   protected override _onCreate(
-    data: foundry.documents.BaseActiveEffect.ConstructorData,
-    options: ActiveEffect.DatabaseOperations['create'],
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.DatabaseOperation.OnCreateOperation,
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
