@@ -51,9 +51,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Skill sheets are no longer forcibly opened when a skill is created. (#1214) **by @florad92**
 - Resolved an issue where attempting to edit the severity of a hindrance while the compendium TOC app was open would always set it to Minor unless isMajor was checked. **by @jpmeehan5**
-
-### Fixed
-
 - Confirming critical fails with Dice So Nice active no longer displays the original trait roll again. (#1267) **by @roth-michael**
 - Fixed issue preventing disabling fav status on effects on the character sheet. **by @jpmeehan5**
 - Add an error message when attempting to lay out chase cards on a too small scene (#1272) **by @perror**
