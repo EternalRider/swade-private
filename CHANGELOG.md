@@ -50,6 +50,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Skill sheets are no longer forcibly opened when a skill is created. (#1214) **by @florad92**
+- Resolved an issue where attempting to edit the severity of a hindrance while the compendium TOC app was open would always set it to Minor unless isMajor was checked. **by @jpmeehan5**
 
 ### Fixed
 
