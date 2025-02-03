@@ -485,8 +485,8 @@ SWADE:
   Benny3DFrontBumpDesc: Bump map frontal do beni
   Duplicates: Atopáronse duplicados
   NoActionDeckFound: "Non se atopou un Mazo de Acción: creando un"
-  NoActionDeckDiscardPileFound: "Non se atopou Descarte do Mazo de Acción: creando\
-    \ un"
+  NoActionDeckDiscardPileFound: "Non se atopou Descarte do Mazo de Acción: creando
+    un"
   MAPenalty.Label: Penalización de acción múltiple
   ApplyEncumbrance: Aplicar penalizadores por Carga
   CannotAddAncestryToAncestry: Non podes engadir unha raza/arquetipo a unha raza/arquetipo!
@@ -659,8 +659,8 @@ SWADE:
     OffHand: Mano mala
     TwoHands: A dos manos
   DestroyOnEmpty: Destruir cuando esté vacío
-  EmptyAncestralAbilitiesHint: Esta {ancestry} o {archetype} aún no tiene ninguna habilidad.
-    Arrastra y suelta algo en la hoja para empezar.
+  EmptyAncestralAbilitiesHint: Esta {ancestry} o {archetype} aún no tiene ninguna
+    habilidad. Arrastra y suelta algo en la hoja para empezar.
   Templates:
     Cone:
       Short: Cono
