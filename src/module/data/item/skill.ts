@@ -73,9 +73,6 @@ class SkillData extends SwadeBaseItemData<
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
-    if (this.parent && !options.isItemGrant && options.renderSheet !== null) {
-      options.renderSheet = true;
-    }
   }
 
   declare enrichedDescription?: string;

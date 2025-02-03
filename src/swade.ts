@@ -244,17 +244,21 @@ Hooks.once('init', () => {
   registerSettings();
   registerSettingRules();
   register3DBennySettings();
-  
+
   //register keyboard shortcuts
   registerKeybindings();
-  
+
   registerEffectCallbacks();
   registerAuraHooks();
-  
+
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
-  DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, 'core', TokenConfig);
+  DocumentSheetConfig.unregisterSheet(
+    CONFIG.Token.documentClass,
+    'core',
+    TokenConfig,
+  );
 
   Actors.registerSheet('swade', GroupSheet, {
     types: ['group'],
@@ -309,11 +313,7 @@ Hooks.once('init', () => {
       label: 'SWADE.HeadquartersSheet',
     },
   );
-  DocumentSheetConfig.registerSheet(
-    TokenDocument,
-    'swade',
-    SwadeTokenConfig
-  );
+  DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
 
   // Register Tours
   registerSWADETours();

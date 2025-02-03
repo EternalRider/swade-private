@@ -85,10 +85,10 @@ export async function layoutChase(deck: Cards) {
   if (!gridConfig) return;
 
   try {
-  await ccm!.api.grid(gridConfig);
-      } catch (error) {
+    await ccm!.api.grid(gridConfig);
+  } catch (error) {
     ui.notifications.warn('SWADE.ChaseLayoutError', { localize: true });
-      }
+  }
 
   // TODO: Integrate CCM with Types so this is properly typed
   canvas['cards'].activate();

@@ -554,12 +554,23 @@ export default class CharacterSheet extends ActorSheet {
       return this._onSortItem(event, itemData) as Promise<SwadeItem[]>;
     }
 
-    //handle keyboard modifiers on drop
+    //handle keyboard modifiers on drop for physical items.
     if (item.isPhysicalItem) {
       this._handleDropModifierKeys(event, itemData);
     }
 
     return this._onDropItemCreate(itemData);
+  }
+
+  protected override async _onDropItemCreate(
+    itemData: Item['_source'][] | Item['_source'],
+  ): Promise<Item.Implementation[]> {
+    const items = await super._onDropItemCreate(itemData);
+    const typesToRender = ['power', 'skill'];
+    for (const item of items) {
+      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+    }
+    return items;
   }
 
   protected _handleDropModifierKeys(event: DragEvent, item: Item.CreateData) {

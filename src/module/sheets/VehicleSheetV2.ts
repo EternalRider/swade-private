@@ -174,7 +174,10 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     const scene = canvas.scene;
     if (!scene || this.document.pack) return [];
     return scene.tokens
-      .filter((t) => t.actor && !['group', 'vehicle'].includes(t.actor?.type) && t.visible)
+      .filter(
+        (t) =>
+          t.actor && !['group', 'vehicle'].includes(t.actor?.type) && t.visible,
+      )
       .map((t) => ({ value: t.actor.uuid, label: t.name }));
   }
 
