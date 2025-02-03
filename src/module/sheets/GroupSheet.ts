@@ -11,6 +11,7 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { mapRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
+import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 
 export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   declare actor: SwadeActor<'group'>;
@@ -173,6 +174,40 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     else this.element.classList.remove('locked');
   }
 
+  protected override _syncPartState(
+    partId: string,
+    newElement: HTMLElement,
+    priorElement: HTMLElement,
+    state: GroupSheet.PartState,
+  ) {
+    super._syncPartState(partId, newElement, priorElement, state);
+    switch (partId) {
+      case 'members': {
+        const members = newElement.querySelectorAll<HTMLLIElement>('.member');
+        for (const member of members) {
+          const uuid = member.dataset.memberUuid!;
+          const selector = `.member[data-member-uuid="${uuid}"] .wounds`;
+          const oldBar = priorElement.querySelector<HTMLElement>(selector);
+          const newBar = member.querySelector<HTMLElement>('.wounds');
+
+          const oldBackground = oldBar?.style.getPropertyValue('--_background');
+          const newBackground =
+            newBar?.style?.getPropertyValue('--_background');
+
+          const oldColor = oldBar?.style?.getPropertyValue('--_wounds-color');
+          const newColor = newBar?.style?.getPropertyValue('--_wounds-color');
+
+          const frames: Keyframe[] = [
+            { background: oldBackground, color: oldColor },
+            { background: newBackground, color: newColor },
+          ];
+          oldBar?.animate(frames, { duration: 250, easing: 'ease-in-out' });
+        }
+        break;
+      }
+    }
+  }
+
   protected override _onClose(_options: unknown) {
     for (const member of this.actor.system.members.values()) {
       if (!member.actor) continue;
@@ -303,4 +338,8 @@ interface RenderedMember {
     color: string;
   };
   cssClass?: string;
+}
+
+declare namespace GroupSheet {
+  interface PartState extends SwadeBaseSheetMixin.PartState {}
 }

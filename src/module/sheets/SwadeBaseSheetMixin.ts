@@ -295,7 +295,7 @@ export function SwadeBaseSheetMixin<
   };
 }
 
-declare namespace SwadeBaseSheetMixin {
+export declare namespace SwadeBaseSheetMixin {
   interface PartState
     extends foundry.applications.api.HandlebarsApplicationMixin.PartState {
     collapsibles: Record<string, boolean>;
