@@ -45,6 +45,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Improved the AE Wizard when called from a vehicle. (#892) **by @jpmeehan5**
 - Mutations are merged into the data passed to `handleChoices`, allowing them to override the available `choiceSets`. (#1213) **by @jpmeehan5 and @kristianserrano**
 - [BREAKING] Renamed the Handlebars helper `times` to `multiply` to better reflect the functionality
+- Powers now open their sheet when dropped onto the Character Sheet and the NPC Sheet. (#906) **by @florad92**
+
+### Fixed
+
+- Skill sheets are no longer forcibly opened when a skill is created. (#1214) **by @florad92**
 
 ### Fixed
 
