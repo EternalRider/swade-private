@@ -3,8 +3,7 @@ SWADE:
   ButtonSubmit: Submit
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
-  CommunityVicSheet: Community Vehicle Sheet
-  CommunityItemSheet: Community Item Sheet
+  CommunityVicSheet: Legacy Vehicle Sheet
   ItemSheet: Savage Worlds Item Sheet
   GroupSheet: Savage Worlds Group Sheet
   VehicleSheet: Savage Worlds Vehicle Sheet
@@ -557,6 +556,7 @@ SWADE:
   ChaseCardsCleared: All chase cards have been removed from the scene.
   SetUpChase: Set Up Chase
   ChaseLayout: Layout
+  ChaseLayoutError: Not enough space on the scene to lay out the chase.
   ChaseRows: Rows
   ChaseColumns: Columns
   ChaseDiscard: Discard Pile

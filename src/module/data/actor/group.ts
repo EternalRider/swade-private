@@ -98,7 +98,7 @@ class GroupData<
       { label: 'SWADE.Supplies.Label' },
     );
 
-  override prepareBaseData(this: GroupData) {
+  override prepareBaseData() {
     super.prepareBaseData();
     this.members = new Map<string, GroupMember>(
       this.members.map<[string, GroupMember]>(

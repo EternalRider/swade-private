@@ -44,10 +44,11 @@ import {
 } from './module/settings';
 import CharacterSheet from './module/sheets/CharacterSheet';
 import { GroupSheet } from './module/sheets/GroupSheet';
-import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
+import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
 import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
+import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
 import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
@@ -62,7 +63,6 @@ import {
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
-import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
 
 /* ------------------------------------ */
 /* Initialize system					          */
@@ -244,17 +244,21 @@ Hooks.once('init', () => {
   registerSettings();
   registerSettingRules();
   register3DBennySettings();
-  
+
   //register keyboard shortcuts
   registerKeybindings();
-  
+
   registerEffectCallbacks();
   registerAuraHooks();
-  
+
   // Register sheets
   Actors.unregisterSheet('core', ActorSheet);
   Items.unregisterSheet('core', ItemSheet);
-  DocumentSheetConfig.unregisterSheet(CONFIG.Token.documentClass, 'core', TokenConfig);
+  DocumentSheetConfig.unregisterSheet(
+    CONFIG.Token.documentClass,
+    'core',
+    TokenConfig,
+  );
 
   Actors.registerSheet('swade', GroupSheet, {
     types: ['group'],
@@ -309,17 +313,16 @@ Hooks.once('init', () => {
       label: 'SWADE.HeadquartersSheet',
     },
   );
-  DocumentSheetConfig.registerSheet(
-    TokenDocument,
-    'swade',
-    SwadeTokenConfig
-  );
+  DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
 
   // Register Tours
   registerSWADETours();
 
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.SwadeRoll = SwadeRoll;
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.TraitRoll = TraitRoll;
+  //@ts-expect-error Types don't allow this, but seems a supported use case
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;

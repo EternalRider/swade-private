@@ -111,7 +111,7 @@ export default class SwadeUser extends User {
 
   protected override async _onUpdate(
     changed: foundry.documents.BaseUser.UpdateData,
-    options: User.DatabaseOperations['update'],
+    options: User.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);

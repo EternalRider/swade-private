@@ -66,16 +66,13 @@ class SkillData extends SwadeBaseItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       SkillData.Schema,
-      Item
+      Item<'skill'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
-    if (this.parent && !options.isItemGrant && options.renderSheet !== null) {
-      options.renderSheet = true;
-    }
   }
 
   declare enrichedDescription?: string;

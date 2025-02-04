@@ -282,21 +282,25 @@ export class CompendiumTOC extends Compendium<
     const categories: CompendiumCategory[] = [];
 
     //always group powers by type and then rank
-    const powers = items.filter((i) => i.type === 'power');
+    const powers: foundry.abstract.Document.Stored<SwadeItem<'power'>>[] =
+      items.filter((i) => i.type === 'power');
     if (powers.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.power'),
         groups: this._groupPowers(powers),
       });
     }
-    const edges = items.filter((i) => i.type === 'edge');
+    const edges: foundry.abstract.Document.Stored<SwadeItem<'edge'>>[] =
+      items.filter((i) => i.type === 'edge');
     if (edges.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.edge'),
         groups: this._groupEdges(edges),
       });
     }
-    const hindrances = items.filter((i) => i.type === 'hindrance');
+    const hindrances: foundry.abstract.Document.Stored<
+      SwadeItem<'hindrance'>
+    >[] = items.filter((i) => i.type === 'hindrance');
     if (hindrances.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.hindrance'),
@@ -366,14 +370,11 @@ export class CompendiumTOC extends Compendium<
         if (hindrance.system.isMajor) {
           suffix = game.i18n.localize('SWADE.Major');
         } else if (
-          (hindrance.system.severity = constants.HINDRANCE_SEVERITY.MINOR)
+          hindrance.system.severity === constants.HINDRANCE_SEVERITY.MINOR
         ) {
           suffix = game.i18n.localize('SWADE.Minor');
         } else {
-          suffix =
-            game.i18n.localize('SWADE.Major') +
-            '/' +
-            game.i18n.localize('SWADE.Minor');
+          suffix = `(${game.i18n.localize('SWADE.HindMajor')} / ${game.i18n.localize('SWADE.HindMinor')})`;
         }
         const name = `${hindrance.name} ${suffix}`;
         return {

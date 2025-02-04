@@ -103,7 +103,7 @@ class ActionData extends SwadeBaseItemData<
         SwadeItem
       >
     >,
-    options: Item.DatabaseOperations['update'],
+    options: Item.DatabaseOperation.OnUpdateOperation,
     userId: string,
   ): void {
     super._onUpdate(changed, options, userId);
@@ -115,14 +115,14 @@ class ActionData extends SwadeBaseItemData<
       ActionData.Schema,
       SwadeItem
     >,
-    options: Item.DatabaseOperations['create'],
+    options: Item.DatabaseOperation.OnCreateOperation,
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
     this.#triggerActivityUpdate();
   }
   protected override _onDelete(
-    options: Item.DatabaseOperations['delete'],
+    options: Item.DatabaseOperation.OnDeleteOperation,
     userId: string,
   ): void {
     super._onDelete(options, userId);

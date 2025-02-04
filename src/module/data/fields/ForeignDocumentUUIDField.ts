@@ -53,7 +53,7 @@ export class ForeignDocumentUUIDField<
       try {
         const doc = fromUuidSync(value);
         if (doc instanceof typeClass)
-          return doc as CONFIG[foundry.abstract.Document.Type]['documentClass'];
+          return doc as Document.ConfiguredClassForName<this['type']>;
         return value;
       } catch (error) {
         console.error(error);

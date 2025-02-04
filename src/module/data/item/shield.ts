@@ -142,7 +142,7 @@ class ShieldData extends SwadePhysicalItemData<
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<
       ShieldData.Schema,
-      Item
+      Item<'shield'>
     >,
     options: Item.DatabaseOperation.PreCreateOperationInstance,
     user: User.Implementation,

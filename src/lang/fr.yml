@@ -1467,6 +1467,7 @@ SWADE:
   CharacterSummaryTypeErr: Impossible d'utiliser le résumé de personnage pour un acteur
     de type {type}
   ChaseLayout: Disposition
+  ChaseLayoutError: Trop peu d'espace disponible pour mettre en place cette disposition
   ChaseRows: Lignes
   ChaseColumns: Colonnes
   ChaseNoDeck: Veuillez choisir un jeu de cartes !
