@@ -315,19 +315,16 @@ class WeaponData extends SwadePhysicalItemData<
     if (!game.settings.get('swade', 'ammoManagement') || this.isMelee)
       return true;
 
-    const noReload = this.reloadType === constants.RELOAD_TYPE.NONE;
-    const selfReload = this.reloadType === constants.RELOAD_TYPE.SELF;
-    const ammo = this.actor?.items.getName(this.ammo as string);
-    if (noReload && !ammo) {
-      if (!this.shots && !this.currentShots) return true;
-      return false;
-    } else if (noReload) {
+    if (this.reloadType === constants.RELOAD_TYPE.NONE) {
+      if (!this.usesAmmoFromInventory) return true;
+      const ammo = this.actor?.items.getName(this.ammo as string);
+      if (!ammo) return false;
       const ammoCount =
         ammo?.type === 'consumable'
           ? ammo?.system['charges']['value']
           : ammo?.system['quantity'];
       return resourcesUsed <= ammoCount;
-    } else if (selfReload) {
+    } else if (this.reloadType === constants.RELOAD_TYPE.SELF) {
       const usesRemaining =
         Number(this.shots) * (Number(this.quantity) - 1) +
         Number(this.currentShots);

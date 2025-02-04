@@ -1,5 +1,6 @@
 import type { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
+  AdditionalStats,
   SwadeApplicationTab,
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
@@ -95,6 +96,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.gearMods = this._prepareMods('gear');
         context.weaponMods = this._prepareMods('weapon');
         context.attributes = this._prepareAttributes();
+        this._prepareAdditionalStats(context);
         break;
       case 'crew':
         context.opSkills = this._prepareOpSkillList();
@@ -224,6 +226,23 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return { enabled, list };
   }
 
+  _prepareAdditionalStats(context: SwadeVehicleSheetV2.RenderContext) {
+    const additionalStats = structuredClone<AdditionalStats>(
+      this.actor.system.additionalStats,
+    );
+    for (const [key, attr] of Object.entries(additionalStats)) {
+      if (!attr.dtype) delete additionalStats[key];
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        attr.options = options[key].optionString
+          ?.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    context.hasAdditionalStatsFields = !!Object.keys(additionalStats).length;
+    context.additionalStats = additionalStats;
+  }
+
   _prepareCargo() {
     const itemTypes = this.actor.itemTypes;
     const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
@@ -282,7 +301,8 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    console.log(this, event, target);
+    // TODO: Use v13 ContextMenu
+    console.log(this, _event, target);
     const item = this._getEmbeddedDocument(target);
     console.log(item);
   }
@@ -342,6 +362,8 @@ declare namespace SwadeVehicleSheetV2 {
     gearMods: SwadeItem<'gear'>[];
     weaponMods: SwadeItem<'weapon'>[];
     attributes: AttributeContext;
+    hasAdditionalStatsFields: boolean;
+    additionalStats: AdditionalStats;
     opSkills: foundry.applications.fields.SelectInputConfig;
     operator: SwadeActor | null;
     driverOptions: foundry.applications.fields.FormSelectOption[];

@@ -7,7 +7,7 @@ function baseCombatSchema() {
   return {};
 }
 
-declare namespace BaseCombat {
+export declare namespace BaseCombat {
   interface Schema extends ReturnType<typeof baseCombatSchema> {}
   interface BaseData extends EmptyObject {}
   interface DerivedData extends EmptyObject {}
