@@ -133,6 +133,15 @@
           }
         }
       }
+      .additional-stats {
+        margin-top: 5px;
+        .form-group {
+          margin: 2px 0;
+          .check-container {
+            line-height: 20px;
+          }
+        }
+      }
     }
   }
   [data-application-part='crew'] {
