@@ -720,7 +720,7 @@ class CreatureData<
       out[name] = `1d${die}[${skill.name}]${modString}`;
     }
 
-    return out;
+    return { ...out, ...super.getRollData() };
   }
 
   // specifying this to resolve depth issue

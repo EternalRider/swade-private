@@ -71,7 +71,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     this.options['isHeavyWeapon'] = isHeavyWeapon;
   }
 
-  override applyReroll(actor: Actor.ConfiguredInstance | null): boolean {
+  override applyReroll(actor: Actor.Implementation | null): boolean {
     if (
       !actor ||
       !('stats' in actor.system) ||

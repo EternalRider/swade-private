@@ -1,4 +1,3 @@
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
   ActorRollData,
   RollPart,
@@ -117,16 +116,13 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return cloned;
   }
 
-  override async toMessage<T extends ChatMessage.CreateData = EmptyObject>(
-    messageData: T = {} as T,
+  override async toMessage<const Create extends boolean | null | undefined>(
+    messageData: SwadeRoll.MessageData = {},
     {
       rollMode = 'publicroll',
       create = true,
-    }: {
-      rollMode?: keyof CONFIG.Dice.RollModes | 'roll';
-      create?: boolean | undefined;
-    } = {},
-  ) {
+    }: Roll.ToMessageOptions<Create> = {},
+  ): Promise<Roll.ToMessageReturn<Create>> {
     foundry.utils.setProperty(
       messageData,
       'flags.swade.targets',
@@ -138,7 +134,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     return super.toMessage(messageData, { rollMode, create });
   }
 
-  override applyReroll(actor: Actor.ConfiguredInstance | null): boolean {
+  override applyReroll(actor: Actor.Implementation | null): boolean {
     if (
       !actor ||
       !('stats' in actor.system) ||

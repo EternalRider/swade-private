@@ -220,21 +220,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     jquery.find('.additional-stats .rollable').on('click', async (ev) => {
       const stat = ev.currentTarget.dataset.stat!;
-      const statData = this.item.system.additionalStats[stat]!;
-      let modifier = statData.modifier ?? '';
-      if (!modifier.match(/^[+-]/)) {
-        modifier = '+' + modifier;
-      }
-      //return of there's no value to roll
-      if (!statData.value) return;
-      const roll = new Roll(`${statData.value}${modifier}`);
-      await roll.evaluate();
-      await roll.toMessage({
-        speaker: CONFIG.ChatMessage.documentClass.getSpeaker({
-          actor: this.item.actor,
-        }),
-        flavor: `${this.item.name} - ${statData.label}`,
-      });
+      await this.item.system.rollAdditionalStat(stat);
     });
 
     jquery
