@@ -1,12 +1,10 @@
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Advance } from '../../../../interfaces/Advance.interface';
 import {
-  AdditionalStat,
   DerivedModifier,
   RollModifier,
 } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
-import { SwadeRoll } from '../../../dice/SwadeRoll';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import type SwadeItem from '../../../documents/item/SwadeItem';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
@@ -674,7 +672,7 @@ class CreatureData<
   }
 
   // specifying this to resolve depth issue
-  getRollData(
+  override getRollData(
     this: CreatureData,
     includeModifiers = true,
   ): Record<string, number | string> {
@@ -723,26 +721,6 @@ class CreatureData<
     }
 
     return out;
-  }
-
-  async rollAdditionalStat(stat: string) {
-    const statData: AdditionalStat = this.additionalStats[stat];
-    if (statData.dtype !== 'Die') return;
-    let modifier = statData.modifier || '';
-    if (!!modifier && !modifier.match(/^[+-]/)) {
-      modifier = '+' + modifier;
-    }
-    //return early if there's no data to roll
-    if (!statData.value) return;
-    const roll = new SwadeRoll(
-      `${statData.value}${modifier}`,
-      this.getRollData(),
-    );
-    await roll.evaluate();
-    await roll.toMessage({
-      speaker: ChatMessage.getSpeaker({ actor: this.parent }),
-      flavor: statData.label,
-    });
   }
 
   // specifying this to resolve depth issue
