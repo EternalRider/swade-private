@@ -274,7 +274,13 @@ export class RollDialog extends FormApplication<
         .filter((v) => !v.ignore) //remove the disabled modifiers
         .map(normalizeRollModifiers)
         .reduce(modifierReducer, '');
-    const roll = new this.rollCls(formula, this.#getRollData()) as SwadeRoll;
+    // Create new roll from pure formula text
+    const intermediateRoll = new this.rollCls(formula, this.#getRollData());
+    const oldTerms = this.ctx.roll.terms;
+    const newTerms = intermediateRoll.terms;
+    // Replace "duplicate" terms with the originals to retain any extra data set on them
+    newTerms.splice(0, oldTerms.length, ...oldTerms);
+    const roll = this.rollCls.fromTerms(newTerms) as SwadeRoll;
     roll.modifiers = this.modifiers;
     return roll;
   }

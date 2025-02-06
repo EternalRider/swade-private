@@ -5,6 +5,7 @@ export type Builder = ReturnType<typeof common.builder>;
 export type PhysicalItem = ReturnType<typeof common.physicalItem>;
 export type Templates = ReturnType<typeof common.templates>;
 export type ItemDescription = ReturnType<typeof common.itemDescription>;
+export type AdditionalStats = ReturnType<typeof common.additionalStats>;
 export type ChoiceSets = ReturnType<typeof common.choiceSets>;
 export type Favorite = ReturnType<typeof common.favorite>;
 export type Category = ReturnType<typeof common.category>;

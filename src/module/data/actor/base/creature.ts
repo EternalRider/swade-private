@@ -12,7 +12,6 @@ import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import {
   boundTraitDie,
-  makeAdditionalStatsSchema,
   makeDiceField,
   makeTraitDiceFields,
 } from '../../shared';
@@ -26,7 +25,7 @@ const fields = foundry.data.fields;
 
 declare namespace CreatureData {
   interface Schema
-    extends foundry.data.fields.DataSchema,
+    extends SwadeBaseActorData.Schema,
       ReturnType<typeof creatureSchema> {}
 
   type BaseData = {
@@ -405,7 +404,6 @@ function creatureSchema() {
       },
       { label: 'SWADE.Init' },
     ),
-    additionalStats: makeAdditionalStatsSchema(),
   };
 }
 
@@ -416,7 +414,10 @@ class CreatureData<
   DerivedData extends CreatureData.DerivedData = CreatureData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
   static override defineSchema(): CreatureData.Schema {
-    return creatureSchema();
+    return {
+      ...super.defineSchema(),
+      ...creatureSchema(),
+    };
   }
 
   protected static wildcardData = (
@@ -671,9 +672,9 @@ class CreatureData<
   }
 
   // specifying this to resolve depth issue
-  getRollData(
+  override getRollData(
     this: CreatureData,
-    includeModifiers: boolean,
+    includeModifiers = true,
   ): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
@@ -719,7 +720,7 @@ class CreatureData<
       out[name] = `1d${die}[${skill.name}]${modString}`;
     }
 
-    return out;
+    return { ...out, ...super.getRollData() };
   }
 
   // specifying this to resolve depth issue

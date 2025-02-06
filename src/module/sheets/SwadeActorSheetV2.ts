@@ -1,10 +1,10 @@
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { SwadeDocumentSheetConfiguration, Updates } from '../../globals';
-import type SwadeActor from '../documents/actor/SwadeActor';
-import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
-import type SwadeUser from '../documents/SwadeUser';
-import type SwadeItem from '../documents/item/SwadeItem';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import type SwadeUser from '../documents/SwadeUser';
+import type SwadeActor from '../documents/actor/SwadeActor';
+import type SwadeItem from '../documents/item/SwadeItem';
+import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -56,6 +56,7 @@ export class SwadeActorSheetV2<
       deleteEffect: SwadeActorSheetV2.deleteItem,
       toggleEffect: SwadeActorSheetV2.toggleEffect,
       openTweaks: SwadeActorSheetV2.openTweaks,
+      rollAdditionalStat: SwadeActorSheetV2.rollAdditionalStat,
     },
   };
 
@@ -146,6 +147,14 @@ export class SwadeActorSheetV2<
     _target: HTMLElement,
   ) {
     new SwadeDocumentTweaks(this.actor).render(true);
+  }
+
+  static async rollAdditionalStat(
+    this: SwadeActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    await this.actor.system.rollAdditionalStat(target.dataset.stat);
   }
 
   override async _prepareContext(options) {

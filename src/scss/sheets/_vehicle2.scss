@@ -3,6 +3,24 @@
     .attributes .attribute .die {
       filter: invert(0.8);
     }
+    [data-application-part='cargo'] {
+      .item-list .item:not(.header):nth-child(even) {
+        background-color: var(--color-cool-4);
+      }
+    }
+  }
+}
+
+.game.theme-light {
+  [data-application-part='cargo'] {
+    .capacity-meter {
+      &::-webkit-meter-bar {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+    .item-list .item:not(.header):nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
@@ -17,6 +35,21 @@
     a.helper-button {
       font-size: 12px;
       vertical-align: middle;
+    }
+  }
+  ul.item-list,
+  ul.effect-list,
+  ul.effect-section {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li img {
+      width: 28px;
+      flex: 0 0 32px;
+      margin-right: 4px;
+    }
+    .controls {
+      flex: 0 0 50px;
     }
   }
   [data-application-part='header'] {
@@ -158,19 +191,52 @@
       }
     }
   }
-  ul.item-list,
-  ul.effect-list,
-  ul.effect-section {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    li img {
-      width: 28px;
-      flex: 0 0 32px;
-      margin-right: 4px;
+  [data-application-part='cargo'] {
+    .header {
+      justify-content: space-between;
+      white-space: nowrap;
     }
-    .controls {
-      flex: 0 0 50px;
+    .capacity-meter {
+      width: 100%;
+      &::-webkit-meter-optimum-value {
+        background-color: var(--color-level-info-bg);
+      }
+      &::-webkit-meter-suboptimum-value {
+        background-color: var(--color-level-warning-bg);
+      }
+    }
+    .item-list {
+      .item {
+        display: grid;
+        grid-template-columns: 2rem 1fr 0.2fr 0.2fr 50px;
+        grid-template-areas: 'img name quantity weight controls';
+        gap: 0.25rem;
+        align-items: center;
+        &.header {
+          border-bottom: 1px groove var(--color-fieldset-border);
+        }
+        .img {
+          grid-area: img;
+          margin-right: 4px;
+          max-width: 2rem;
+          max-height: 2rem;
+          border: none;
+        }
+        .name {
+          grid-area: name;
+        }
+        .quantity {
+          text-align: center;
+          grid-area: quantity;
+        }
+        .weight {
+          text-align: center;
+          grid-area: weight;
+        }
+        .controls {
+          grid-area: controls;
+        }
+      }
     }
   }
 }
