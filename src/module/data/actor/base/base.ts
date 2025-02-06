@@ -52,10 +52,11 @@ class SwadeBaseActorData<
       this.getRollData(),
     );
     await roll.evaluate();
-    await roll.toMessage({
+    const message = await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.parent }),
       flavor: statData.label,
     });
+    return message;
   }
 
   /**
