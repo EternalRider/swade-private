@@ -4,19 +4,15 @@ import {
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
+import SwadeItem from '../../documents/item/SwadeItem';
 import { createEmbedElement } from '../../util';
 import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
-import {
-  boundTraitDie,
-  makeAdditionalStatsSchema,
-  makeTraitDiceFields,
-} from '../shared';
+import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
 
 declare namespace VehicleData {
   interface Schema extends ReturnType<typeof createVehicleSchema> {}
-
   interface BaseData {
     attributes: {
       agility: {
@@ -58,6 +54,10 @@ declare namespace VehicleData {
 
   interface DerivedData {
     scale: number;
+    cargo: {
+      value: number;
+      items: SwadeItem[];
+    };
   }
 }
 
@@ -295,7 +295,6 @@ function createVehicleSchema() {
       },
       { label: 'SWADE.Init' },
     ),
-    additionalStats: makeAdditionalStatsSchema(),
     cargo: new fields.SchemaField({
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
     }),
@@ -371,6 +370,27 @@ class VehicleData<
       }
       return total;
     }, 0);
+    this.cargo.items = this.#prepareCargo();
+    this.cargo.value = this.cargo.items.reduce(
+      (acc, item: SwadeItem<CargoItemType>) => {
+        return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
+      },
+      0,
+    );
+  }
+
+  #prepareCargo(): SwadeItem<CargoItemType>[] {
+    const itemTypes = this.parent.itemTypes;
+    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
+      !i.system.isVehicular ||
+      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
+    return [
+      ...itemTypes.gear.filter(notMod),
+      ...itemTypes.weapon.filter(notMod),
+      ...itemTypes.armor,
+      ...itemTypes.shield,
+      ...itemTypes.consumable,
+    ];
   }
 
   declare enrichedDescription?: string;
@@ -399,13 +419,13 @@ class VehicleData<
     return false;
   }
 
-  getRollData(this: VehicleData): Record<string, number | string> {
+  override getRollData(this: VehicleData): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       topspeed: this.topspeed.value || 0,
     };
-    return out;
+    return { ...out, ...super.getRollData() };
   }
 }
-
+type CargoItemType = 'gear' | 'weapon' | 'armor' | 'shield' | 'consumable';
 export { VehicleData };

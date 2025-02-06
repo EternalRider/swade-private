@@ -1,13 +1,21 @@
-import { ItemAction } from '../../../../interfaces/additional.interface';
+import {
+  AdditionalStat,
+  ItemAction,
+} from '../../../../interfaces/additional.interface';
 import { constants } from '../../../constants';
+import { SwadeRoll } from '../../../dice/SwadeRoll';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import type SwadeItem from '../../../documents/item/SwadeItem';
 import { slugify } from '../../../util';
 import { ArmorData } from '../armor';
-import { choiceSets, itemDescription } from '../common';
+import { additionalStats, choiceSets, itemDescription } from '../common';
 import { ConsumableData } from '../consumable';
 import { GearData } from '../gear';
-import { ChoiceSets, ItemDescription } from '../item-common.interface';
+import {
+  AdditionalStats,
+  ChoiceSets,
+  ItemDescription,
+} from '../item-common.interface';
 import { PowerData } from '../power';
 import { ShieldData } from '../shield';
 import { WeaponData } from '../weapon';
@@ -16,7 +24,8 @@ declare namespace SwadeBaseItemData {
   interface Schema
     extends foundry.data.fields.DataSchema,
       ItemDescription,
-      ChoiceSets {}
+      ChoiceSets,
+      AdditionalStats {}
   type BaseData = {};
   type DerivedData = {};
 }
@@ -37,6 +46,7 @@ class SwadeBaseItemData<
     return {
       ...itemDescription(),
       ...choiceSets(),
+      ...additionalStats(),
     };
   }
   get isPhysicalItem(): boolean {
@@ -51,6 +61,31 @@ class SwadeBaseItemData<
     super.prepareDerivedData();
     /// @ts-expect-error This should suffice as a type guard
     if ('activities' in this) this._prepareActivities();
+  }
+
+  async rollAdditionalStat(stat: string) {
+    const statData: AdditionalStat = this.additionalStats[stat];
+    //return early if there's no data to roll or if it's not a die stat
+    if (
+      !statData ||
+      !statData.value ||
+      statData.dtype !== constants.ADDITIONAL_STATS_TYPE.DIE
+    )
+      return;
+    let modifier = statData.modifier || '';
+    if (modifier && !modifier.match(/^[+-]/)) {
+      modifier = '+' + modifier;
+    }
+    const roll = new SwadeRoll(
+      `${statData.value}${modifier}`,
+      this.actor?.getRollData() ?? {},
+    );
+    await roll.evaluate();
+    const message = await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      flavor: statData.label,
+    });
+    return message;
   }
 
   /**

@@ -74,7 +74,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   };
 
   protected override _getTabs() {
-    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'traits';
+    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'cargo';
     return super._getTabs();
   }
 
@@ -96,7 +96,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.gearMods = this._prepareMods('gear');
         context.weaponMods = this._prepareMods('weapon');
         context.attributes = this._prepareAttributes();
-        this._prepareAdditionalStats(context);
         break;
       case 'crew':
         context.opSkills = this._prepareOpSkillList();
@@ -106,9 +105,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.abilities = itemTypes.ability;
         context.edges = itemTypes.edge;
         context.hindrances = itemTypes.hindrance;
-        break;
-      case 'cargo':
-        context.cargo = this._prepareCargo();
         break;
       case 'description':
         context.enrichedDescription = await TextEditor.enrichHTML(
@@ -243,20 +239,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     context.additionalStats = additionalStats;
   }
 
-  _prepareCargo() {
-    const itemTypes = this.actor.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
-      !i.system.isVehicular ||
-      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
-    return [
-      ...itemTypes.gear.filter(notMod),
-      ...itemTypes.weapon.filter(notMod),
-      ...itemTypes.armor,
-      ...itemTypes.shield,
-      ...itemTypes.consumable,
-    ];
-  }
-
   /** Actions */
 
   protected static async maneuverCheck(
@@ -371,7 +353,10 @@ declare namespace SwadeVehicleSheetV2 {
     abilities: SwadeItem<'ability'>[];
     edges: SwadeItem<'edge'>[];
     hindrances: SwadeItem<'hindrance'>[];
-    cargo: SwadeItem[];
+    cargo: {
+      items: SwadeItem[];
+      current: number;
+    };
     enrichedDescription: string;
   }
 }
