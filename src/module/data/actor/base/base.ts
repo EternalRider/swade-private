@@ -1,7 +1,10 @@
 import type SwadeActor from '../../../documents/actor/SwadeActor';
+import { makeAdditionalStatsSchema } from '../../shared/additionalStats';
 
 declare namespace SwadeBaseActorData {
-  type Schema = {};
+  interface Schema {
+    additionalStats: ReturnType<typeof makeAdditionalStatsSchema>;
+  }
   type BaseData = {};
   type DerivedData = {};
 }
@@ -20,7 +23,9 @@ class SwadeBaseActorData<
 > {
   /** @inheritdoc */
   static override defineSchema(): SwadeBaseActorData.Schema {
-    return {};
+    return {
+      additionalStats: makeAdditionalStatsSchema(),
+    };
   }
 
   get tokenSize(): TokenSize {

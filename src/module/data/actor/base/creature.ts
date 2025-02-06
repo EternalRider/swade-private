@@ -1,10 +1,12 @@
 import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { Advance } from '../../../../interfaces/Advance.interface';
 import {
+  AdditionalStat,
   DerivedModifier,
   RollModifier,
 } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
+import { SwadeRoll } from '../../../dice/SwadeRoll';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import type SwadeItem from '../../../documents/item/SwadeItem';
 import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
@@ -12,7 +14,6 @@ import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import {
   boundTraitDie,
-  makeAdditionalStatsSchema,
   makeDiceField,
   makeTraitDiceFields,
 } from '../../shared';
@@ -26,7 +27,7 @@ const fields = foundry.data.fields;
 
 declare namespace CreatureData {
   interface Schema
-    extends foundry.data.fields.DataSchema,
+    extends SwadeBaseActorData.Schema,
       ReturnType<typeof creatureSchema> {}
 
   type BaseData = {
@@ -405,7 +406,6 @@ function creatureSchema() {
       },
       { label: 'SWADE.Init' },
     ),
-    additionalStats: makeAdditionalStatsSchema(),
   };
 }
 
@@ -416,7 +416,10 @@ class CreatureData<
   DerivedData extends CreatureData.DerivedData = CreatureData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
   static override defineSchema(): CreatureData.Schema {
-    return creatureSchema();
+    return {
+      ...super.defineSchema(),
+      ...creatureSchema(),
+    };
   }
 
   protected static wildcardData = (
@@ -673,7 +676,7 @@ class CreatureData<
   // specifying this to resolve depth issue
   getRollData(
     this: CreatureData,
-    includeModifiers: boolean,
+    includeModifiers = true,
   ): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
@@ -720,6 +723,26 @@ class CreatureData<
     }
 
     return out;
+  }
+
+  async rollAdditionalStat(stat: string) {
+    const statData: AdditionalStat = this.additionalStats[stat];
+    if (statData.dtype !== 'Die') return;
+    let modifier = statData.modifier || '';
+    if (!!modifier && !modifier.match(/^[+-]/)) {
+      modifier = '+' + modifier;
+    }
+    //return early if there's no data to roll
+    if (!statData.value) return;
+    const roll = new SwadeRoll(
+      `${statData.value}${modifier}`,
+      this.getRollData(),
+    );
+    await roll.evaluate();
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.parent }),
+      flavor: statData.label,
+    });
   }
 
   // specifying this to resolve depth issue

@@ -1,16 +1,14 @@
 import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
+  AdditionalStat,
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { constants } from '../../constants';
+import { SwadeRoll } from '../../dice/SwadeRoll';
 import { createEmbedElement } from '../../util';
 import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
-import {
-  boundTraitDie,
-  makeAdditionalStatsSchema,
-  makeTraitDiceFields,
-} from '../shared';
+import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
 
@@ -295,7 +293,6 @@ function createVehicleSchema() {
       },
       { label: 'SWADE.Init' },
     ),
-    additionalStats: makeAdditionalStatsSchema(),
     cargo: new fields.SchemaField({
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
     }),
@@ -405,6 +402,25 @@ class VehicleData<
       topspeed: this.topspeed.value || 0,
     };
     return out;
+  }
+  async rollAdditionalStat(stat: string) {
+    const statData: AdditionalStat = this.additionalStats[stat];
+    if (statData.dtype !== 'Die') return;
+    let modifier = statData.modifier || '';
+    if (!!modifier && !modifier.match(/^[+-]/)) {
+      modifier = '+' + modifier;
+    }
+    //return early if there's no data to roll
+    if (!statData.value) return;
+    const roll = new SwadeRoll(
+      `${statData.value}${modifier}`,
+      this.getRollData(),
+    );
+    await roll.evaluate();
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.parent }),
+      flavor: statData.label,
+    });
   }
 }
 
