@@ -1,3 +1,5 @@
+import { AdditionalStat } from '../../../../interfaces/additional.interface';
+import { SwadeRoll } from '../../../dice/SwadeRoll';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import { makeAdditionalStatsSchema } from '../../shared/additionalStats';
 
@@ -30,6 +32,30 @@ class SwadeBaseActorData<
 
   get tokenSize(): TokenSize {
     return { width: 1, height: 1 };
+  }
+
+  getRollData(_includeModifiers = true): Record<string, number | string> {
+    return {};
+  }
+
+  async rollAdditionalStat(stat: string) {
+    const statData: AdditionalStat = this.additionalStats[stat];
+    if (statData.dtype !== 'Die') return;
+    let modifier = statData.modifier || '';
+    if (!!modifier && !modifier.match(/^[+-]/)) {
+      modifier = '+' + modifier;
+    }
+    //return early if there's no data to roll
+    if (!statData.value) return;
+    const roll = new SwadeRoll(
+      `${statData.value}${modifier}`,
+      this.getRollData(),
+    );
+    await roll.evaluate();
+    await roll.toMessage({
+      speaker: ChatMessage.getSpeaker({ actor: this.parent }),
+      flavor: statData.label,
+    });
   }
 
   /**
