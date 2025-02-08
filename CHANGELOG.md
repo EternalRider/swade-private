@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.3.3
+
+### Fixed
+
+- Fixed an issue preventing actor and item sheet from opening if they had an additional stat set that was removed from system settings. (#1279) **by @mhilbrunner**
+- Fixed an issue preventing rolls during combat for actors that aren't combatants. (#1278) **by @mhilbrunner**
+
 ## 4.3.2
 
 ### Changed
@@ -32,17 +39,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Wild Die customization fixed (#1264) **by @roth-michael**
 - Fixed an issue preventing items from rolling additional stats when the modifier was empty. (#1276) **by @florad92**
-
-# 4.3.1
-
-### Added
-
-- Added "Additional Stats" display to the new Vehicle Sheet **by @jpmeehan5**
-
-### Fixed
-
-- Reverted change to storing combatant data in `system` due to v12 bug preventing players from updating that property. (#1274) **by @jpmeehan5**
-- If a weapon with reload type: none doesn't have an associated ammo but the actor doesn't use ammo from inventory, it can still fire. (#1273) **by @jpmeehan5**
 
 # 4.3.1
 
