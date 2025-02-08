@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## 4.3.2
+## 4.3.3
 
 ### Fixed
 
