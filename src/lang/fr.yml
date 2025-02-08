@@ -3,7 +3,7 @@ SWADE:
   ButtonSubmit: Soumettre
   CommunityCharSheet: Ancienne fiche de personnage
   CommunityNPCSheet: Fiche de PNJ communautaire
-  CommunityVicSheet: Fiche de véhicule communautaire
+  CommunityVicSheet: Fiche de véhicule historique
   CommunityItemSheet: Fiche d'objet communautaire
   ItemSheet: Savage Worlds Fiche d'objet
   Expand: Agrandir
@@ -1467,7 +1467,7 @@ SWADE:
   CharacterSummaryTypeErr: Impossible d'utiliser le résumé de personnage pour un acteur
     de type {type}
   ChaseLayout: Disposition
-  ChaseLayoutError: Trop peu d'espace disponible pour mettre en place cette disposition
+  ChaseLayoutError: Trop peu d'espace disponible pour mettre en place cette poursuite.
   ChaseRows: Lignes
   ChaseColumns: Colonnes
   ChaseNoDeck: Veuillez choisir un jeu de cartes !
