@@ -184,7 +184,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   override highlightGrid() {
     //return early if te object doesn't actually exist yet
-    if (this.shape) return;
+    if (!this.shape) return;
 
     const highlightRAW = game.settings.get('swade', 'highlightTemplate');
     //defer to the core highlighting if the setting is off

@@ -36,7 +36,7 @@ export class BaseCombat<
     const combatant = this.parent.getCombatantsByActor(actor)[0];
     const mods: RollModifier[] = [];
 
-    if (combatant.hasJoker) {
+    if (combatant?.hasJoker) {
       mods.push({
         label: game.i18n.localize('SWADE.Joker'),
         value: actor.getFlag('swade', 'jokerBonus') ?? 2,

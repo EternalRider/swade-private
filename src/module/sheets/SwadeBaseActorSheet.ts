@@ -506,10 +506,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
+    const options = game.settings.get('swade', 'settingFields').actor;
     for (const [key, attr] of Object.entries(stats)) {
-      if (!attr.dtype) delete stats[key];
+      if (!options[key] || !attr.dtype) {
+        delete stats[key];
+        continue;
+      }
       if (attr.dtype === 'Selection') {
-        const options = game.settings.get('swade', 'settingFields').actor;
         attr.options = options[key].optionString
           ?.split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});

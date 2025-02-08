@@ -622,10 +622,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     const stats = foundry.utils.deepClone(
       this.item.system.additionalStats,
     ) as AdditionalStats;
+    const options = game.settings.get('swade', 'settingFields').item;
     for (const [key, attr] of Object.entries(stats)) {
-      if (!attr.dtype) delete stats[key];
+      if (!options[key] || !attr.dtype) {
+        delete stats[key];
+        continue;
+      }
       if (attr.dtype === 'Selection') {
-        const options = game.settings.get('swade', 'settingFields').item;
         const optionString = options[key].optionString ?? '';
         attr.options = optionString
           .split(';')
