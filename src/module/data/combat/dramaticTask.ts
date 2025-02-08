@@ -41,7 +41,7 @@ export class DramaticTask extends BaseCombat<
     const combatant = this.parent.getCombatantsByActor(actor)[0];
     const mods = super.rollModifiers(actor);
 
-    if (combatant.suitValue === 1) {
+    if (combatant?.suitValue === 1) {
       mods.push({
         label: game.i18n.localize('SWADE.Complication'),
         value: -2,

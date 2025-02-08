@@ -24,6 +24,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 4.3.2
 
+### Fixed
+
+- Fixed an issue preventing actor and item sheet from opening if they had an additional stat set that was removed from system settings. (#1279) **by @mhilbrunner**
+- Fixed an issue preventing rolls during combat for actors that aren't combatants. (#1278) **by @mhilbrunner**
+
+## 4.3.2
+
 ### Changed
 
 - Expanded the cargo tab of the Vehicle Sheet (#1277) **by @florad92**
