@@ -1,7 +1,4 @@
-import {
-  EmptyObject,
-  InexactPartial,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
@@ -153,19 +150,16 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     return chatData;
   }
 
-  override async toMessage<T extends ChatMessage.CreateData = EmptyObject>(
-    messageData: T = {} as T,
+  override async toMessage<const Create extends boolean | null | undefined>(
+    messageData: SwadeRoll.MessageData = {},
     {
       rollMode = 'publicroll',
       create = true,
-    }: InexactPartial<{
-      rollMode: keyof CONFIG.Dice.RollModes | 'roll';
-      create: boolean | undefined;
-    }> = {},
-  ) {
+    }: Roll.ToMessageOptions<Create> = {},
+  ): Promise<Roll.ToMessageReturn<Create>> {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
-    const existingRolls = messageData['rolls'] ?? [];
+    const existingRolls: SwadeRoll[] = messageData.rolls ?? [];
     messageData = foundry.utils.mergeObject(
       {
         user: game.user!.id,
@@ -175,7 +169,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
       messageData,
     );
 
-    messageData['rolls'] = [...existingRolls, this];
+    messageData.rolls = [...existingRolls, this];
     // Either create the message or just return the chat data
     const cls = getDocumentClass('ChatMessage');
     const msg = new cls(messageData);
@@ -286,5 +280,11 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     if (total > faces) return 'exploded';
     if (roll.dice.some((d) => d.results[0].result === 1)) return 'min';
     return '';
+  }
+}
+
+export declare namespace SwadeRoll {
+  interface MessageData extends Roll.MessageData {
+    rolls?: any[];
   }
 }

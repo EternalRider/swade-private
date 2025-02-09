@@ -1594,6 +1594,9 @@ SWADE:
     MaxTokens:
       Label: Successes
       Hint: Target number of successes the participants need to achieve
+  Vehicle:
+    Cargo:
+      Capacity: Cargo Capacity
 TYPES:
   Actor:
     character: Player Character

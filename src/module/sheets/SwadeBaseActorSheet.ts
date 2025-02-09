@@ -1,5 +1,4 @@
 import { AdditionalStats, Attribute } from '../../globals';
-import { AdditionalStat } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
@@ -145,23 +144,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     jquery.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
-      const statData = foundry.utils.getProperty(
-        this.actor,
-        `system.additionalStats.${stat}`,
-      ) as AdditionalStat;
-      let modifier = statData.modifier ?? '0';
-      if (!!modifier && !modifier.match(/^[+-]/)) {
-        modifier = '+' + modifier;
-      }
-      const roll = new Roll(
-        `${statData.value}${modifier}`,
-        this.actor.getRollData(),
-      );
-      await roll.evaluate();
-      await roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: statData.label,
-      });
+      await this.actor.system.rollAdditionalStat(stat);
     });
 
     //Wealth Die Roll
@@ -523,10 +506,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
+    const options = game.settings.get('swade', 'settingFields').actor;
     for (const [key, attr] of Object.entries(stats)) {
-      if (!attr.dtype) delete stats[key];
+      if (!options[key] || !attr.dtype) {
+        delete stats[key];
+        continue;
+      }
       if (attr.dtype === 'Selection') {
-        const options = game.settings.get('swade', 'settingFields').actor;
         attr.options = options[key].optionString
           ?.split(';')
           .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});

@@ -199,7 +199,7 @@ export default class SwadeActiveEffect<
     const name = match[2].trim();
     //filter the items down, according to type and name/id
     const collection =
-      parent instanceof SwadeItem ? parent.parent?.items ?? [] : parent.items;
+      parent instanceof SwadeItem ? (parent.parent?.items ?? []) : parent.items;
     items.push(
       ...collection.filter(
         (i) => i.type === type && (i.name === name || i.id === name),
@@ -478,8 +478,8 @@ export default class SwadeActiveEffect<
             this.actor.token?.id as string,
           )?.[0]
         : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
-      if (combatant?.system.roundHeld) {
-        await combatant?.update({ 'system.turnLost': true });
+      if (combatant?.getFlag('swade', 'roundHeld')) {
+        await combatant?.update({ 'flags.swade.turnLost': true });
         await combatant?.toggleHold();
       }
     }
@@ -513,7 +513,7 @@ export default class SwadeActiveEffect<
     if (combat && combatant) {
       // If status is Holding, turn off Hold for Combatant.
       if (this.statusId === 'holding') {
-        await combatant?.update({ 'system.roundHeld': null });
+        await combatant?.update({ 'flags.swade.-=roundHeld': null });
       }
     }
   }
@@ -563,7 +563,7 @@ export default class SwadeActiveEffect<
       if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
-            combatant.update({ 'system.turnLost': true }),
+            combatant.update({ 'flags.swade.turnLost': true }),
             combatant.toggleHold(),
           ]);
         }

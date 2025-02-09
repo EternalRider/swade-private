@@ -8,34 +8,54 @@ declare global {
   interface DocumentClassConfig {
     Combatant: typeof SwadeCombatant;
   }
+
+  interface FlagConfig {
+    Combatant: {
+      swade?: {
+        suitValue?: number;
+        cardValue?: number;
+        cardString?: string;
+        hasJoker?: boolean;
+        groupId?: string;
+        isGroupLeader?: boolean;
+        roundHeld?: number;
+        turnLost?: boolean;
+        firstRound?: number;
+        groupColor?: string;
+      };
+    };
+  }
 }
 
-export default class SwadeCombatant extends Combatant {
+export default class SwadeCombatant<
+  out SubType extends Combatant.SubType = Combatant.SubType,
+> extends Combatant<SubType> {
   static override migrateData(data: AnyMutableObject) {
-    const flags = data.flags?.swade;
+    // TODO: Revert for 5.0 when bugfix is in for v13
+    // const flags = data.flags?.swade;
 
-    if (flags) {
-      const keys = [
-        'suitValue',
-        'cardValue',
-        'cardString',
-        'hasJoker',
-        'groupId',
-        'isGroupLeader',
-        'roundHeld',
-        'turnLost',
-        'firstRound',
-        'groupColor',
-      ];
-      data.system ??= {};
+    // if (flags) {
+    //   const keys = [
+    //     'suitValue',
+    //     'cardValue',
+    //     'cardString',
+    //     'hasJoker',
+    //     'groupId',
+    //     'isGroupLeader',
+    //     'roundHeld',
+    //     'turnLost',
+    //     'firstRound',
+    //     'groupColor',
+    //   ];
+    //   data.system ??= {};
 
-      for (const key of keys) {
-        if (key in flags) {
-          data.system[key] = flags[key];
-          delete flags[key];
-        }
-      }
-    }
+    //   for (const key of keys) {
+    //     if (key in flags) {
+    //       data.system[key] = flags[key];
+    //       delete flags[key];
+    //     }
+    //   }
+    // }
 
     return super.migrateData(data);
   }
@@ -60,75 +80,75 @@ export default class SwadeCombatant extends Combatant {
   }
 
   get suitValue() {
-    return this.system.suitValue;
+    return this.getFlag('swade', 'suitValue');
   }
 
   async setCardValue(cardValue: number) {
-    return this.update({ 'system.cardValue': cardValue });
+    return this.setFlag('swade', 'cardValue', cardValue);
   }
 
   get cardValue() {
-    return this.system.cardValue;
+    return this.getFlag('swade', 'cardValue');
   }
 
   async setSuitValue(suitValue: number) {
-    return this.update('system.suitValue', suitValue);
+    return this.setFlag('swade', 'suitValue', suitValue);
   }
 
   get cardString() {
-    return this.system.cardString;
+    return this.getFlag('swade', 'cardString');
   }
 
   async setCardString(cardString: string) {
-    return this.update({ 'system.cardString': cardString });
+    return this.setFlag('swade', 'cardString', cardString);
   }
 
   get hasJoker() {
-    return this.system.hasJoker;
+    return !!this.getFlag('swade', 'hasJoker');
   }
 
   async setJoker(joker: boolean) {
-    return this.update({ 'system.hasJoker': joker });
+    return this.setFlag('swade', 'hasJoker', joker);
   }
 
   get groupId() {
-    return this.system.groupId;
+    return this.getFlag('swade', 'groupId');
   }
 
   async setGroupId(groupId: string) {
-    return this.update({ 'system.groupId': groupId });
+    return this.setFlag('swade', 'groupId', groupId);
   }
 
   async unsetGroupId() {
-    return this.update({ 'system.groupId': null });
+    return this.unsetFlag('swade', 'groupId');
   }
 
   get isGroupLeader() {
-    return this.system.isGroupLeader;
+    return !!this.getFlag('swade', 'isGroupLeader');
   }
 
   async setIsGroupLeader(groupLeader: boolean) {
-    return this.update({ 'system.isGroupLeader': groupLeader });
+    return this.setFlag('swade', 'isGroupLeader', groupLeader);
   }
 
   async unsetIsGroupLeader() {
-    return this.update({ 'system.isGroupLeader': null });
+    return this.unsetFlag('swade', 'isGroupLeader');
   }
 
   get roundHeld() {
-    return this.system.roundHeld;
+    return this.getFlag('swade', 'roundHeld');
   }
 
   async setRoundHeld(roundHeld: number) {
-    return this.update({ 'system.roundHeld': roundHeld });
+    return this.setFlag('swade', 'roundHeld', roundHeld);
   }
 
   get turnLost() {
-    return this.system.turnLost;
+    return !!this.getFlag('swade', 'turnLost');
   }
 
   async setTurnLost(turnLost: boolean) {
-    return this.update({ 'system.turnLost': turnLost });
+    return this.setFlag('swade', 'turnLost', turnLost);
   }
 
   get cardsToDraw(): number {
@@ -172,7 +192,7 @@ export default class SwadeCombatant extends Combatant {
     updates.push({
       _id: this.id,
       initiative,
-      system: { cardValue, suitValue, hasJoker, cardString },
+      'flags.swade': { cardValue, suitValue, hasJoker, cardString },
     });
 
     //update followers, if applicable
@@ -183,7 +203,7 @@ export default class SwadeCombatant extends Combatant {
         updates.push({
           _id: follower.id,
           initiative: (fInitiative -= 0.001), //card value is the primary sort value, followed by the suit, so treat the suit as a decimal value.
-          system: {
+          'flags.swade': {
             cardString,
             cardValue,
             hasJoker,
@@ -207,7 +227,7 @@ export default class SwadeCombatant extends Combatant {
       ]);
     } else {
       await Promise.all([
-        this.update({ 'system.roundHeld': null }),
+        this.update({ 'flags.swade.-=roundHeld': null }),
         this.actor?.toggleActiveEffect(data, { active: false }),
       ]);
     }
@@ -220,17 +240,17 @@ export default class SwadeCombatant extends Combatant {
     if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.turnLost) {
       await this.update({
-        system: {
+        'flags.swade': {
           turnLost: true,
-          roundHeld: null,
+          '-=roundHeld': null,
         },
       });
       await this.actor?.toggleActiveEffect(data, { active: false });
     } else {
       await this.update({
-        system: {
+        'flags.swade': {
           roundHeld: this.parent.round,
-          turnLost: null,
+          '-=turnLost': null,
         },
       });
       await this.actor?.toggleActiveEffect(data, { active: false });
@@ -250,20 +270,21 @@ export default class SwadeCombatant extends Combatant {
     // Get the other turns that interrupted this target combatant
     const otherInterruptors = this.parent.turns.filter(
       (t) =>
-        t.initiative < targetInitiative + 1 && t.initiative > targetInitiative,
+        (t.initiative ?? 0) < targetInitiative + 1 &&
+        (t.initiative ?? 0) > targetInitiative,
     );
     for (const t of otherInterruptors) {
       // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
-      if (Math.abs(t.initiative - initiative) < Number.EPSILON)
-        initiative = t.initiative - 0.000001;
+      if (Math.abs((t.initiative ?? 0) - initiative) < Number.EPSILON)
+        initiative = (t.initiative ?? 0) - 0.000001;
     }
     await this.update({
       initiative,
-      system: {
+      'flags.swade': {
         cardValue: targetCombatant?.cardValue,
         suitValue: targetCombatant?.suitValue,
         cardString: '',
-        roundHeld: null,
+        '-=roundHeld': null,
       },
     });
     await this.actor?.toggleActiveEffect(data, { active: false });
@@ -280,11 +301,11 @@ export default class SwadeCombatant extends Combatant {
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
       initiative: (currentCombatant?.initiative ?? 0) - 0.0001,
-      system: {
+      'flags.swade': {
         cardValue: currentCombatant?.cardValue,
         suitValue: currentCombatant?.suitValue,
         cardString: '',
-        roundHeld: null,
+        '-=roundHeld': null,
       },
     });
     await this.actor?.toggleActiveEffect(data, { active: false });

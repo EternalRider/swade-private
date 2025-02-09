@@ -64,7 +64,6 @@ publish-artifacts:
     - apk update
     - apk add zip curl
   script: |
-
     cd dist
     zip -r ../$PACKAGE_ARCHIVE.zip .
     cd ..
@@ -97,11 +96,28 @@ release:
 
 publish-latest-manifest:
   stage: publish
-  image: alpine:latest
-  before_script:
-    - apk update
-    - apk add zip curl
+  image: curlimages/curl:latest
   script: |
     curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file dist/$PACKAGE_TYPE.json "$PACKAGE_REGISTRY_URL/latest/$PACKAGE_TYPE.json"
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'
+
+publish-foundry-manifest:
+  stage: publish
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+  script: |
+      node tools/foundry-release.js \
+      --authToken=$FOUNDRY_API_TOKEN \
+      --packageVersion=${CI_COMMIT_TAG:1} \
+      --manifest=$CI_PROJECT_URL/-/releases/$CI_COMMIT_TAG/downloads/$PACKAGE_TYPE.json \
+      --releaseNotes=$CI_PROJECT_URL/-/releases/$CI_COMMIT_TAG
+      --dryRun=false
+  cache:
+    <<: *global_cache
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 week
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/'

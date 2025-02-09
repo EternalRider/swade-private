@@ -95,7 +95,7 @@ export default class SwadeCombatTracker extends CombatTracker {
 
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
     if (!combatant.isOwner) return false;
-    const firstRound = combatant.system.firstRound ?? 0;
+    const firstRound = combatant.getFlag('swade', 'firstRound') ?? 0;
     // The Combatant can draw on or after their first round, but not if they're in a group or defeated.
     return (
       firstRound <= (combatant.combat?.round ?? 0) &&
@@ -149,8 +149,8 @@ export default class SwadeCombatTracker extends CombatTracker {
           _id: selected.id,
           initiative: c.initiative,
           cardString: c.cardString,
-          system: {
-            groupId: null,
+          'flags.swade': {
+            '-=groupId': null,
             isGroupLeader: true,
           },
         },
@@ -159,17 +159,17 @@ export default class SwadeCombatTracker extends CombatTracker {
       updates.push({
         _id: c.id,
         initiative: fInitiative + 0.001,
-        system: {
+        'flags.swade': {
           groupId: selected.id,
           isGroupLeader: false,
         },
       });
-      if (c.groupId) updates['system.groupId'] = null;
+      if (c.groupId) updates['flags.swade.-=groupId'] = null;
       for (const f of c.followers.filter((f) => f.id !== selected.id)) {
         updates.push({
           _id: f.id,
           initiative: (fInitiative -= 0.001),
-          'system.groupId': selected.id,
+          'flags.swade.groupId': selected.id,
         });
       }
       await this.viewed?.updateEmbeddedDocuments('Combatant', updates);
@@ -233,9 +233,9 @@ export default class SwadeCombatTracker extends CombatTracker {
     // If a follower, set as group leader
     if (!leader.isGroupLeader) {
       await leader.update({
-        system: {
+        'flags.swade': {
           isGroupLeader: true,
-          groupId: null,
+          '-=groupId': null,
         },
       });
     }
@@ -247,7 +247,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     // Set groupId of dragged combatant to the selected target's id
     await combatant.update({
       initiative,
-      system: {
+      'flags.swade': {
         cardValue,
         suitValue,
         hasJoker,
@@ -261,7 +261,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       for (const f of followers) {
         await f.update({
           initiative,
-          system: {
+          'flags.swade': {
             cardValue,
             suitValue,
             hasJoker,
@@ -461,9 +461,9 @@ export default class SwadeCombatTracker extends CombatTracker {
     const combatantId = li.attr('data-combatant-id') as string;
     const combatant = this.viewed!.combatants.get(combatantId)!;
     await combatant.update({
-      system: {
+      'flags.swade': {
         isGroupLeader: true,
-        groupId: null,
+        '-=groupId': null,
       },
     });
   }
@@ -491,7 +491,7 @@ export default class SwadeCombatTracker extends CombatTracker {
     );
     if (selectedTokens.length < 1) return; //return if no valid tokens are found
     await targetCombatant.update({
-      system: {
+      'flags.swade': {
         cardValue: targetCombatant.cardValue!,
         suitValue: targetCombatant.suitValue!,
         isGroupLeader: true,
@@ -530,7 +530,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       for (const c of combatants) {
         await c.update({
           initiative: (fInitiative -= 0.001),
-          system: {
+          'flags.swade': {
             groupId: targetCombatantId,
             '-=isGroupLeader': null,
           },
@@ -578,13 +578,13 @@ export default class SwadeCombatTracker extends CombatTracker {
       //make sure the new leader is actually registered as a leader
       {
         _id: gl.id,
-        'system.isGroupLeader': true,
+        'flags.swade.isGroupLeader': true,
       },
       // Set groupId of dragged combatant to the selected target's id
       {
         _id: combatant.id,
         initiative,
-        system: {
+        'flags.swade': {
           cardValue,
           suitValue,
           hasJoker,
@@ -598,7 +598,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         updates.push({
           _id: follower.id,
           initiative: (fInitiative -= 0.001),
-          system: {
+          'flags.swade': {
             cardValue,
             suitValue,
             hasJoker,

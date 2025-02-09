@@ -16,7 +16,9 @@ declare global {
   }
 }
 
-export default class SwadeCombat extends Combat {
+export default class SwadeCombat<
+  out SubType extends Combat.SubType = Combat.SubType,
+> extends Combat<SubType> {
   /** an internal helper flag that's being checked to see if we're currently asking to advance the round */
   #roundAdvanceDialog: boolean = false;
 
@@ -287,7 +289,7 @@ export default class SwadeCombat extends Combat {
       const update = {
         _id: id,
         initiative,
-        system: systemData,
+        'flags.swade': systemData,
       };
 
       //Handle group leader changes
@@ -299,7 +301,7 @@ export default class SwadeCombat extends Combat {
         updates.push({
           _id: f.id,
           initiative: (fInitiative -= 0.001),
-          system: systemData,
+          'flags.swade': systemData,
         });
       }
 
@@ -502,9 +504,9 @@ export default class SwadeCombat extends Combat {
       if (turnLost && groupId) {
         return {
           initiative: null,
-          system: {
+          'flags.swade': {
             hasJoker: false,
-            turnLost: null,
+            '-=turnLost': null,
           },
         };
       } else {
@@ -514,7 +516,7 @@ export default class SwadeCombat extends Combat {
     } else if (!roundHeld || turnLost) {
       return {
         initiative: null,
-        system: {
+        'flags.swade': {
           suitValue: null,
           cardValue: null,
           hasJoker: false,
@@ -525,7 +527,7 @@ export default class SwadeCombat extends Combat {
     }
     return {
       initiative: null,
-      system: {
+      'flags.swade': {
         suitValue: null,
         cardValue: null,
         hasJoker: false,

@@ -1,5 +1,6 @@
 import type { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 import {
+  AdditionalStats,
   SwadeApplicationTab,
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
@@ -73,7 +74,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   };
 
   protected override _getTabs() {
-    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'traits';
+    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'cargo';
     return super._getTabs();
   }
 
@@ -104,9 +105,6 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.abilities = itemTypes.ability;
         context.edges = itemTypes.edge;
         context.hindrances = itemTypes.hindrance;
-        break;
-      case 'cargo':
-        context.cargo = this._prepareCargo();
         break;
       case 'description':
         context.enrichedDescription = await TextEditor.enrichHTML(
@@ -224,18 +222,21 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return { enabled, list };
   }
 
-  _prepareCargo() {
-    const itemTypes = this.actor.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
-      !i.system.isVehicular ||
-      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
-    return [
-      ...itemTypes.gear.filter(notMod),
-      ...itemTypes.weapon.filter(notMod),
-      ...itemTypes.armor,
-      ...itemTypes.shield,
-      ...itemTypes.consumable,
-    ];
+  _prepareAdditionalStats(context: SwadeVehicleSheetV2.RenderContext) {
+    const additionalStats = structuredClone<AdditionalStats>(
+      this.actor.system.additionalStats,
+    );
+    for (const [key, attr] of Object.entries(additionalStats)) {
+      if (!attr.dtype) delete additionalStats[key];
+      if (attr.dtype === 'Selection') {
+        const options = game.settings.get('swade', 'settingFields').actor;
+        attr.options = options[key].optionString
+          ?.split(';')
+          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+      }
+    }
+    context.hasAdditionalStatsFields = !!Object.keys(additionalStats).length;
+    context.additionalStats = additionalStats;
   }
 
   /** Actions */
@@ -282,7 +283,8 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    console.log(this, event, target);
+    // TODO: Use v13 ContextMenu
+    console.log(this, _event, target);
     const item = this._getEmbeddedDocument(target);
     console.log(item);
   }
@@ -342,6 +344,8 @@ declare namespace SwadeVehicleSheetV2 {
     gearMods: SwadeItem<'gear'>[];
     weaponMods: SwadeItem<'weapon'>[];
     attributes: AttributeContext;
+    hasAdditionalStatsFields: boolean;
+    additionalStats: AdditionalStats;
     opSkills: foundry.applications.fields.SelectInputConfig;
     operator: SwadeActor | null;
     driverOptions: foundry.applications.fields.FormSelectOption[];
@@ -349,7 +353,10 @@ declare namespace SwadeVehicleSheetV2 {
     abilities: SwadeItem<'ability'>[];
     edges: SwadeItem<'edge'>[];
     hindrances: SwadeItem<'hindrance'>[];
-    cargo: SwadeItem[];
+    cargo: {
+      items: SwadeItem[];
+      current: number;
+    };
     enrichedDescription: string;
   }
 }

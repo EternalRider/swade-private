@@ -6,7 +6,6 @@ import {
 } from '../../globals';
 import { Advance } from '../../interfaces/Advance.interface';
 import {
-  AdditionalStat,
   ItemAction,
   RollModifier,
 } from '../../interfaces/additional.interface';
@@ -21,7 +20,6 @@ import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
 import { ActionData } from '../data/item';
-import { SwadeRoll } from '../dice/SwadeRoll';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -290,24 +288,7 @@ export default class CharacterSheet extends ActorSheet {
     jquery.find('.additional-stats .roll').on('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat!;
-      const statData = this.actor.system.additionalStats[
-        stat
-      ] as AdditionalStat;
-      let modifier = statData.modifier || '';
-      if (!!modifier && !modifier.match(/^[+-]/)) {
-        modifier = '+' + modifier;
-      }
-      //return early if there's no data to roll
-      if (!statData.value) return;
-      const roll = new SwadeRoll(
-        `${statData.value}${modifier}`,
-        this.actor.getRollData(),
-      );
-      await roll.evaluate();
-      await roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: statData.label,
-      });
+      await this.actor.system.rollAdditionalStat(stat);
     });
 
     //Wealth Die Roll
@@ -1032,10 +1013,13 @@ export default class CharacterSheet extends ActorSheet {
     const stats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );
+    const options = game.settings.get('swade', 'settingFields').actor;
     for (const [key, attr] of Object.entries(stats)) {
-      if (!attr.dtype) delete stats[key];
+      if (!options[key] || !attr.dtype) {
+        delete stats[key];
+        continue;
+      }
       if (attr.dtype === 'Selection') {
-        const options = game.settings.get('swade', 'settingFields').actor;
         const optionString = options[key]?.optionString ?? '';
         attr.options = optionString
           .split(';')
