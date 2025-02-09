@@ -438,10 +438,18 @@ export default class ItemChatCardHelper {
       'system.actions.dmgMod',
     ) as string;
     if (!value) return null;
-    let label = game.i18n.localize('SWADE.ItemDmgMod');
+
+    // Ensure `item.name` exists to avoid errors
+    const itemName = item?.name ?? game.i18n.localize('SWADE.Item');
+
+    // Localize the label and include the item name
+    let label = `${itemName} ${game.i18n.localize('SWADE.ItemDmgMod')}`;
+
+    // If the value starts with "@", use an empty label
     if (value.startsWith('@')) {
-      label = ''; //empty label for a modifer;
+      label = ''; // Empty label for a modifier
     }
+
     return { label, value };
   }
 }
