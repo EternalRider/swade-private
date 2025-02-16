@@ -1588,6 +1588,9 @@ SWADE:
     MaxTokens:
       Label: Nombre de réussites
       Hint: Nombre de réussites que les participants doivent atteindre
+  Vehicle:
+    Cargo:
+      Capacity: Capacité de la soute
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
