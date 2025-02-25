@@ -64,6 +64,48 @@ import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
 
+const swadeAPI = {
+  sheets: {
+    CharacterSheet,
+    SwadeItemSheetV2,
+    SwadeNPCSheet,
+    SwadeVehicleSheet,
+    SwadeVehicleSheetV2,
+  },
+  apps: {
+    SwadeDocumentTweaks,
+    AdvanceEditor,
+    SettingConfigurator,
+    CompendiumTOC,
+    AttributeManager,
+    ActiveEffectWizard,
+  },
+  dice: {
+    Benny,
+    WildDie,
+  },
+  util: {
+    getStatusEffectDataById,
+    slugify,
+    getItemsBySwid,
+  },
+  compendiumArt: {
+    map: new Map<string, ArtworkMapping>(),
+  },
+  rollItemMacro,
+  sockets: new SwadeSocketHandler(),
+  migrations: migrations,
+  itemChatCardHelper: ItemChatCardHelper,
+  CharacterSummarizer,
+  RollDialog,
+  effectCallbacks: new Collection(),
+  ready: false,
+  data,
+  SwadeTour,
+};
+
+globalThis.swade = swadeAPI;
+
 /* ------------------------------------ */
 /* Initialize system					          */
 /* ------------------------------------ */
@@ -89,45 +131,7 @@ Hooks.once('init', () => {
   deepFreeze(CONFIG.SWADE.CONST);
 
   //set up global game object
-  game.swade = {
-    sheets: {
-      CharacterSheet,
-      SwadeItemSheetV2,
-      SwadeNPCSheet,
-      SwadeVehicleSheet,
-      SwadeVehicleSheetV2,
-    },
-    apps: {
-      SwadeDocumentTweaks,
-      AdvanceEditor,
-      SettingConfigurator,
-      CompendiumTOC,
-      AttributeManager,
-      ActiveEffectWizard,
-    },
-    dice: {
-      Benny,
-      WildDie,
-    },
-    util: {
-      getStatusEffectDataById,
-      slugify,
-      getItemsBySwid,
-    },
-    compendiumArt: {
-      map: new Map<string, ArtworkMapping>(),
-    },
-    rollItemMacro,
-    sockets: new SwadeSocketHandler(),
-    migrations: migrations,
-    itemChatCardHelper: ItemChatCardHelper,
-    CharacterSummarizer,
-    RollDialog,
-    effectCallbacks: new Collection(),
-    ready: false,
-    data,
-    SwadeTour,
-  };
+  game.swade = swadeAPI;
 
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
