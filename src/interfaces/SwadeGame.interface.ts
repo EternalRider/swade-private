@@ -6,7 +6,7 @@ import { RollDialog } from '../module/apps/RollDialog';
 import SettingConfigurator from '../module/apps/SettingConfigurator';
 import SwadeDocumentTweaks from '../module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from '../module/CharacterSummarizer';
-import { fields } from '../module/data';
+import * as data from '../module/data';
 import Benny from '../module/dice/Benny';
 import WildDie from '../module/dice/WildDie';
 import SwadeActiveEffect from '../module/documents/active-effect/SwadeActiveEffect';
@@ -63,12 +63,7 @@ export interface SwadeGame {
   migrations: typeof migrations;
   effectCallbacks: Collection<StatusEffectCallback>;
   ready: boolean;
-  data: Record<
-    string,
-    | typeof foundry.abstract.TypeDataModel
-    | Record<string, typeof foundry.abstract.TypeDataModel>
-  >;
-  fields: typeof fields;
+  data: typeof data;
   SwadeTour: typeof SwadeTour;
 }
 
