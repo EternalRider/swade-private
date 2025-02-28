@@ -204,14 +204,22 @@ class SwadeItem<
 
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
+
+    // Ensure `this` is properly referenced
+    const itemName = this?.name ?? game.i18n.localize('SWADE.Item'); // Use optional chaining to prevent errors
+
     if (foundry.utils.getProperty(this, 'system.actions.traitMod')) {
       modifiers.push({
-        label: game.i18n.localize('SWADE.ItemTraitMod'),
+        label: `${itemName} ${game.i18n.localize('SWADE.ItemTraitMod')}`, // Combine name and localized string
         value: foundry.utils.getProperty(this, 'system.actions.traitMod'),
       });
     }
-    if ('traitModifiers' in this.system && this.system.traitModifiers)
+
+    if (this.system?.traitModifiers) {
+      // Ensure `this.system` exists before accessing properties
       modifiers.push(...this.system.traitModifiers);
+    }
+
     return modifiers;
   }
 

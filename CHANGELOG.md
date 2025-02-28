@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.3.4
+
+## Changed
+
+- Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
+
 ## 4.3.3
 
 ### Fixed
