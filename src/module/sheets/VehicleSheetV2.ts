@@ -1,4 +1,4 @@
-import type { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { DeepPartial } from 'fvtt-types/utils';
 import {
   AdditionalStats,
   SwadeApplicationTab,

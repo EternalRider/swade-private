@@ -25,11 +25,13 @@ declare namespace BaseEffectData {
   type Schema = ReturnType<typeof baseEffectSchema>;
 }
 
-export class BaseEffectData extends foundry.abstract.TypeDataModel<
+class BaseEffectData extends foundry.abstract.TypeDataModel<
   BaseEffectData.Schema,
-  SwadeActiveEffect
+  SwadeActiveEffect<'base'>
 > {
   static override defineSchema(): BaseEffectData.Schema {
     return baseEffectSchema();
   }
 }
+
+export { BaseEffectData };

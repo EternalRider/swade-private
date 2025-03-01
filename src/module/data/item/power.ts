@@ -138,6 +138,19 @@ class PowerData extends SwadeBaseItemData<
     return { value, max };
   }
 
+  get ppModifiers() {
+    let cost = this.pp;
+    const modifiers: string[] = [];
+    for (const e of this.parent.effects.filter(
+      (e) => e.type === 'modifier' && e.active,
+    )) {
+      cost += e.system.cost ?? 0;
+      modifiers.push(e.name);
+    }
+    const formatter = game.i18n.getListFormatter({ type: 'unit' });
+    return { cost, modifierList: formatter.format(modifiers) };
+  }
+
   async getChatChips(): Promise<ItemChatCardChip[]> {
     return [
       { text: this.rank },

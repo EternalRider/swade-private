@@ -1,4 +1,4 @@
-import { EditorView } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/prosemirror/prosemirror.mjs';
+import type { EditorView } from 'prosemirror-view';
 
 /** This plugin is used when dropping a TableResult onto a editor to give the user a choice between
  * creating a content link or instead grabbing the TableResult and inserting the content.
@@ -48,7 +48,6 @@ export class ProseMirrorTableResultDropFillerPlugin extends ProseMirror.ProseMir
     const link = await TextEditor.getContentLink(data, options);
     if (!link) return;
     const tr = view.state.tr;
-    console.log(this.schema.text);
     if (selection.empty && pos) tr.insertText(link, pos.pos);
     else tr.replaceSelectionWith(this.schema.text(link));
     view.dispatch(tr);

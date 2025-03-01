@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import { PotentialSource } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';

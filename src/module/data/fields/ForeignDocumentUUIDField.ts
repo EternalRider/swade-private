@@ -1,4 +1,4 @@
-import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { SimpleMerge } from 'fvtt-types/utils';
 
 /** A function that resolves into the fetched document or the source UUID as a string */
 export type DocumentFn<

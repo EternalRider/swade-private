@@ -146,6 +146,9 @@
   "changelog": "https://gitlab.com/peginc/swade/-/releases",
   "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md",
   "documentTypes": {
+    "ActiveEffect": {
+      "modifier": {}
+    },
     "Actor": {
       "character": {
         "htmlFields": [

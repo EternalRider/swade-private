@@ -1,7 +1,4 @@
-import {
-  NullishProps,
-  ValueOf,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';

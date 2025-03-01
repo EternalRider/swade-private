@@ -4,7 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ES6", "ES2022"],
-    "types": ["@league-of-foundry-developers/foundry-vtt-types"],
+    "types": ["@types/fvtt-types"],
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

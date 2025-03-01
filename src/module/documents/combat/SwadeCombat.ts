@@ -1,7 +1,7 @@
 import { Updates } from '../../../globals';
 import { reshuffleActionDeck } from '../../util';
 
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
 import { CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';

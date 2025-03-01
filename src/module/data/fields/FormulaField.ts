@@ -1,4 +1,4 @@
-import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { AnyObject } from 'fvtt-types/utils';
 
 export class FormulaField extends foundry.data.fields.DataField {
   protected _cast(value: any): string {

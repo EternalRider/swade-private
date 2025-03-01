@@ -113,6 +113,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
 
     if (!this.isEditable) return;
 
+    // Disable overridden inputs
+    const overrides = foundry.utils.flattenObject(this.item.overrides);
+    for (const key of Object.keys(overrides)) {
+      jquery.find(`[name="${key}"]`).attr('disabled', 'override');
+    }
+
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
       const targetIsButton = 'button' === target?.type;
@@ -755,27 +761,28 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           callback: () => new ActiveEffectWizard(this.object).render(true),
         },
         {
+          name: 'SWADE.ActiveEffects.AddModifier',
+          icon: '<i class="fa-solid fa-bolt"></i>',
+          condition: this.object.isOwner,
+          callback: () => this.#createActiveEffect('modifier'),
+        },
+        {
           name: 'SWADE.ActiveEffects.AddUnguided',
           icon: '<i class="fa-solid fa-file-plus"></i>',
           condition: this.object.isOwner,
-          callback: () => this.#createActiveEffect(),
+          callback: () => this.#createActiveEffect('base'),
         },
       ],
       { eventName: 'click' },
     );
   }
 
-  async #createActiveEffect() {
-    const newEffect = await CONFIG.ActiveEffect.documentClass.create(
-      {
-        name: game.i18n.format('DOCUMENT.New', {
-          type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-        }),
-        transfer: true,
-      },
-      { parent: this.item },
+  async #createActiveEffect(type: ActiveEffect.SubType) {
+    const name = SwadeActiveEffect.defaultName({ type, parent: this.item });
+    return ActiveEffect.create(
+      { name, type },
+      { parent: this.item, renderSheet: true },
     );
-    newEffect?.sheet?.render(true);
   }
 
   #toggleEffect(

@@ -383,7 +383,7 @@ export class RollDialog extends FormApplication<
 export interface RollDialogContext {
   roll: SwadeRoll<any>;
   mods: RollModifier[];
-  speaker: foundry.documents.BaseChatMessage.Properties['speaker'];
+  speaker: foundry.documents.BaseChatMessage.CreateData['speaker'];
   flavor: string;
   title: string;
   item?: SwadeItem;

@@ -110,9 +110,17 @@
           <input
             type='number'
             class='pp-adjust'
-            value='{{item.system.pp}}'
+            value='{{item.system.ppModifiers.cost}}'
           />
         </span>
+        {{#if item.system.ppModifiers.modifierList}}
+          <span class='flexrow ppModifiers'>
+            <span>
+              <strong>{{localize 'SWADE.PPMods'}}:</strong>
+              {{item.system.ppModifiers.modifierList}}
+            </span>
+          </span>
+        {{/if}}
         {{#unless (or powersTab @root.settingrules.noPowerPoints)}}
           <span class='flexrow' style='display: flex'>
             <button
