@@ -22,9 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
-## 4.3.4
+## 4.4.0
 
-## Changed
+### Added
+
+- New Active Effect Subtype: Modifier. (#878) **by @jpmeehan5**
+  - Modifiers can only be created on items and directly adjust the item they're on
+  - Modifiers include a special "cost" field that represents either the build or power point cost for the modifier.
+  - Powers with active modifiers will display a list when they're used.
+  - Active modifiers will disable any affected fields on the item sheet.
+- The SWADE API is now exposed prior to the `init` hook in the global `swade` object. This is identical to the `game.swade` object that is added during the `init` hook.
+
+### Changed
 
 - Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
 

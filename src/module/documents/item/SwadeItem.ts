@@ -1,7 +1,4 @@
-import {
-  AnyObject,
-  DeepPartial,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { AnyObject, DeepPartial } from 'fvtt-types/utils';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -24,6 +21,7 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
+import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 
 declare global {
   interface DocumentClassConfig {
@@ -53,8 +51,6 @@ class SwadeItem<
 > extends Item<Subtype> {
   /** Used for item enrichers */
   declare plainTextDescription?: string;
-
-  overrides: DeepPartial<Item.CreateData> = {};
   static RANGE_REGEX = /[0-9]+\/*/g;
 
   static override migrateData(data: Item.CreateData & AnyObject) {
@@ -93,13 +89,10 @@ class SwadeItem<
     return data;
   }
 
-  constructor(
-    data: Item.CreateData,
-    context?: foundry.abstract.Document.ConstructionContext<SwadeActor>,
-  ) {
-    super(data, context);
-    this.overrides ??= {};
-  }
+  /**
+   * An object that tracks which tracks the changes to the data model which were applied by active effects
+   */
+  overrides: DeepPartial<Item.CreateData> = {};
 
   get isMeleeWeapon(): boolean {
     return this.system['isMelee'] ?? false;
@@ -227,6 +220,45 @@ class SwadeItem<
     if ('usesAmmoFromInventory' in this.system)
       return !!this.system.usesAmmoFromInventory;
     return false;
+  }
+
+  override prepareEmbeddedDocuments() {
+    super.prepareEmbeddedDocuments();
+    this.applyModifiers();
+  }
+
+  /**
+   * Apply modifier effects to this item.
+   */
+  applyModifiers() {
+    const overrides: DeepPartial<Item.CreateData> = {};
+
+    const changes: Array<
+      ActiveEffect.EffectChangeData & { effect: SwadeActiveEffect }
+    > = [];
+    // TODO: In v13 just use the getter on the embedded collection
+    for (const effect of this.effects.filter((e) => e.type === 'modifier')) {
+      if (!effect.active) continue;
+      changes.push(
+        ...effect.changes.map((change) => {
+          const c = foundry.utils.deepClone(change);
+          c.effect = effect;
+          c.priority = c.priority ?? c.mode * 10;
+          return c;
+        }),
+      );
+    }
+    changes.sort((a, b) => a.priority - b.priority);
+
+    // Apply all changes
+    for (const change of changes) {
+      if (!change.key) continue;
+      const changes = change.effect.apply(this, change);
+      Object.assign(overrides, changes);
+    }
+
+    // Expand the set of final overrides
+    this.overrides = foundry.utils.expandObject(overrides);
   }
 
   async rollDamage(options: IRollOptions = {}): Promise<DamageRoll | null> {
@@ -480,7 +512,9 @@ class SwadeItem<
       Object.values(this.system.templates).some(Boolean);
 
     const effects: string[] = [];
-    for (const effect of this.effects.filter((e) => !e.transfer)) {
+    for (const effect of this.effects.filter(
+      (e) => !e.transfer && e.type !== 'modifier',
+    )) {
       effects.push(await TextEditor.enrichHTML(effect.link));
     }
 

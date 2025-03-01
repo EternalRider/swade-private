@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';

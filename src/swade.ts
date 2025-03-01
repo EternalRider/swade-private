@@ -1,4 +1,5 @@
-import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
+import type { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
+import type { SwadeGame } from './interfaces/SwadeGame.interface';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { Logger } from './module/Logger';
@@ -64,7 +65,7 @@ import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
 
-const swadeAPI = {
+const swadeAPI: SwadeGame = {
   sheets: {
     CharacterSheet,
     SwadeItemSheetV2,

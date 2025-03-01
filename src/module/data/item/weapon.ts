@@ -1,4 +1,4 @@
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { ValueOf } from 'fvtt-types/utils';
 import {
   EquipState,
   PotentialSource,

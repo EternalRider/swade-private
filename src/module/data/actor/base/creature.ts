@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import { Advance } from '../../../../interfaces/Advance.interface';
 import {
   DerivedModifier,

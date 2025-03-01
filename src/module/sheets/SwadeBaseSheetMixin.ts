@@ -1,7 +1,4 @@
-import type {
-  AnyObject,
-  DeepPartial,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { AnyObject, DeepPartial } from 'fvtt-types/utils';
 import type {
   SwadeApplicationTab,
   SwadeDocumentSheetConfiguration,

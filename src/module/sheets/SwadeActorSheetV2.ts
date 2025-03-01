@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import { SwadeDocumentSheetConfiguration, Updates } from '../../globals';
 import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
 import type SwadeUser from '../documents/SwadeUser';

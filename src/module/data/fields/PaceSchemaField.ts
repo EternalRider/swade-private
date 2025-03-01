@@ -1,4 +1,4 @@
-import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { SimpleMerge } from 'fvtt-types/utils';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { PaceSchema } from '../actor/base/creature.schemas';
 import { makeDiceField } from '../shared';

@@ -240,6 +240,7 @@ SWADE:
   PP: Power Points
   PPShort: P. Points
   PPCost: PP Cost
+  PPMods: Power Modifiers
   CurPP: Current Power Points
   MaxPP: Maximum Power Points
   MaxLabel: Maximum
@@ -627,8 +628,12 @@ SWADE:
     ResetDuration: Reset Duration
     AddGuided: Open Wizard
     AddUnguided: Add Empty Effect
+    AddModifier: Add Modifier
     Conditional: Conditional Effect
     ConditionalTooltip: Ignore roll modifiers by default
+    ModifierCost:
+      Label: Modifier Cost
+      Hint: The build or power point cost for this modifier
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand
@@ -1598,6 +1603,8 @@ SWADE:
     Cargo:
       Capacity: Cargo Capacity
 TYPES:
+  ActiveEffect:
+    modifier: Modifier
   Actor:
     character: Player Character
     npc: NPC

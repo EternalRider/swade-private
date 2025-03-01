@@ -231,10 +231,17 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
             type='number'
             class='pp-adjust'
             data-dtype='Number'
-            value='{{item.system.pp}}'
+            value='{{item.system.ppModifiers.cost}}'
           />
         </span>
-
+        {{#if item.system.ppModifiers.modifierList}}
+          <span class='flexrow'>
+            <span>
+              <strong>{{localize 'SWADE.PPMods'}}:</strong>
+              {{item.system.ppModifiers.modifierList}}
+            </span>
+          </span>
+        {{/if}}
         {{#unless settingRules.noPowerPoints}}
           <span class='flexrow'>
             <button

@@ -56,7 +56,7 @@
       font-weight: bold;
     }
 
-    >* {
+    > * {
       user-select: text;
     }
   }
@@ -71,6 +71,10 @@
     span {
       line-height: 28px;
       text-align: center;
+      &.ppModifiers {
+        /** Ensures the list doesn't break the grid layout **/
+        max-width: 230px;
+      }
     }
 
     button {

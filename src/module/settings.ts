@@ -1,4 +1,4 @@
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { ValueOf } from 'fvtt-types/utils';
 import { PrototypeAdditionalStat } from '../interfaces/additional.interface';
 import CompendiumTOCSettings from './apps/CompendiumTOCSettings';
 import SettingConfigurator from './apps/SettingConfigurator';

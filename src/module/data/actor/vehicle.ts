@@ -1,4 +1,4 @@
-import type { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { AnyObject } from 'fvtt-types/utils';
 import {
   DerivedModifier,
   RollModifier,
