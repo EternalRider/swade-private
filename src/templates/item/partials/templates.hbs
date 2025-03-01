@@ -1,6 +1,7 @@
 <hr />
-<h4>{{localize 'SWADE.Templates.Possible'}}</h4>
-<div class='column-grid three-columns'>
+<div class='templates'>
+  <h4>{{localize 'SWADE.Templates.Possible'}}</h4>
+  <div class='column-grid three-columns'>
   <div
     class='form-group'
     data-tooltip='{{localize "SWADE.Templates.Small.Long"}}'
@@ -12,10 +13,10 @@
       {{checked item.system.templates.small}}
       data-dtype='Boolean'
     />
-    <label for='{{item.uuid}}-sbt'>
-      {{localize 'SWADE.Templates.Small.Short'}}
-    </label>
-  </div>
+      <label for='{{item.uuid}}-sbt'>
+        {{localize 'SWADE.Templates.Small.Short'}}
+      </label>
+    </div>
   <div
     class='form-group'
     data-tooltip='{{localize "SWADE.Templates.Medium.Long"}}'
@@ -27,10 +28,10 @@
       {{checked item.system.templates.medium}}
       data-dtype='Boolean'
     />
-    <label for='{{item.uuid}}-mbt'>
-      {{localize 'SWADE.Templates.Medium.Short'}}
-    </label>
-  </div>
+      <label for='{{item.uuid}}-mbt'>
+        {{localize 'SWADE.Templates.Medium.Short'}}
+      </label>
+    </div>
   <div
     class='form-group'
     data-tooltip='{{localize "SWADE.Templates.Large.Long"}}'
@@ -42,11 +43,11 @@
       {{checked item.system.templates.large}}
       data-dtype='Boolean'
     />
-    <label for='{{item.uuid}}-lbt'>
-      {{localize 'SWADE.Templates.Large.Short'}}
-    </label>
-  </div>
-  <div class='form-group'>
+      <label for='{{item.uuid}}-lbt'>
+        {{localize 'SWADE.Templates.Large.Short'}}
+      </label>
+    </div>
+    <div class='form-group'>
     <input
       id='{{item.uuid}}-cone'
       type='checkbox'
@@ -54,11 +55,11 @@
       {{checked item.system.templates.cone}}
       data-dtype='Boolean'
     />
-    <label for='{{item.uuid}}-cone'>
-      {{localize 'SWADE.Templates.Cone.Short'}}
-    </label>
-  </div>
-  <div class='form-group'>
+      <label for='{{item.uuid}}-cone'>
+        {{localize 'SWADE.Templates.Cone.Short'}}
+      </label>
+    </div>
+    <div class='form-group'>
     <input
       id='{{item.uuid}}-stream'
       type='checkbox'
@@ -66,8 +67,9 @@
       {{checked item.system.templates.stream}}
       data-dtype='Boolean'
     />
-    <label for='{{item.uuid}}-stream'>
-      {{localize 'SWADE.Templates.Stream.Short'}}
-    </label>
+      <label for='{{item.uuid}}-stream'>
+        {{localize 'SWADE.Templates.Stream.Short'}}
+      </label>
+    </div>
   </div>
 </div>
