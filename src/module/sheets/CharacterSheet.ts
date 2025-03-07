@@ -784,7 +784,10 @@ export default class CharacterSheet extends ActorSheet {
       const template = button.dataset.template!;
       SwadeMeasuredTemplate.fromPreset(template, item);
     } else {
-      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
+      ItemChatCardHelper.handleAction(item, this.actor, action, {
+        additionalMods,
+        event: ev?.originalEvent,
+      });
     }
   }
 
