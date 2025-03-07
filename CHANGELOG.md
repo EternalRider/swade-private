@@ -38,6 +38,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added Complete Card Management as a recommended module in the system manifest. (#1269) **by @jpmeehan5**
 - Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
 - The character sheet now leverages `Item.defaultName` rather than just capitalizing the `type`. This means repeatedly creating items will append distinct numbers to each new entry to guarantee a unique name. **by @jpmeehan5**
+- The signature of `ItemChatCardHelper.handleAction` and `ItemChatCardHelper.handleAdditionalActions` has been changed. The fourth argument has been changed from `modifiers` as an array to an `options` that takes `mods` as an array as well as a possible `event` property. This `event` property is forwarded to the scope of macro actions. (#1288) **by @jpmeehan5**
 
 ## 4.3.3
 
