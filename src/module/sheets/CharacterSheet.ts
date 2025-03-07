@@ -789,12 +789,11 @@ export default class CharacterSheet extends ActorSheet {
   }
 
   protected async _inlineItemCreate(button: HTMLButtonElement) {
-    const type = button.dataset.type!;
+    const type = button.dataset.type as Item.SubType | 'choice' | 'advance';
     // item creation helper func
-    const createItem = (type: string, name?: string) => {
+    const createItem = (type: Item.SubType, name?: string) => {
       const itemData = {
-        name:
-          name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
+        name: name ?? SwadeItem.defaultName({ type, parent: this.actor }),
         type: type,
         system: Object.assign({}, button.dataset),
       };
