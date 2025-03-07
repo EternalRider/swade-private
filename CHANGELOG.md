@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Added Complete Card Management as a recommended module in the system manifest. (#1269) **by @jpmeehan5**
 - Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
 
 ## 4.3.3
