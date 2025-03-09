@@ -57,7 +57,7 @@ export class PaceSchemaField<
   }
 
   protected override _validateType(
-    value: foundry.data.fields.SchemaField.InitializedType<
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<
       PaceSchema,
       SimpleMerge<Options, foundry.data.fields.SchemaField.DefaultOptions>
     >,
@@ -88,7 +88,7 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeAdd(
-    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: ActiveEffect.EffectChangeData,
@@ -101,7 +101,7 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeMultiply(
-    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: ActiveEffect.EffectChangeData,
@@ -114,7 +114,7 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeDowngrade(
-    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: ActiveEffect.EffectChangeData,
@@ -127,7 +127,7 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeUpgrade(
-    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: ActiveEffect.EffectChangeData,
@@ -140,7 +140,7 @@ export class PaceSchemaField<
 
   // @ts-expect-error Breaking inheritance intentionally via the _castChangeDelta trick
   protected override _applyChangeOverride(
-    value: foundry.data.fields.SchemaField.InitializedType<PaceSchema>,
+    value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
     _change: ActiveEffect.EffectChangeData,

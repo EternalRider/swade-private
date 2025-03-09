@@ -3,7 +3,6 @@ SWADE:
   ButtonSubmit: Submit
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
-  CommunityVicSheet: Legacy Vehicle Sheet
   ItemSheet: Savage Worlds Item Sheet
   GroupSheet: Savage Worlds Group Sheet
   VehicleSheet: Savage Worlds Vehicle Sheet
@@ -1602,6 +1601,14 @@ SWADE:
   Vehicle:
     Cargo:
       Capacity: Cargo Capacity
+    Crew:
+      Add: Add Crew member
+      Remove: Remove Crew member
+      Role: Role
+      Roles:
+        Operator: Operator
+        Gunner: Gunner
+        Other: Other
 TYPES:
   ActiveEffect:
     modifier: Modifier

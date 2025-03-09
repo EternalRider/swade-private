@@ -1,18 +1,23 @@
-import type { AnyObject } from 'fvtt-types/utils';
+import type { AnyObject, ValueOf } from 'fvtt-types/utils';
 import {
   DerivedModifier,
   RollModifier,
 } from '../../../interfaces/additional.interface';
+import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
 import { createEmbedElement } from '../../util';
-import { ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
+import LocalDocumentField from '../fields/LocalDocumentField';
+import { MemberField } from '../fields/MemberField';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
 
 declare namespace VehicleData {
-  interface Schema extends ReturnType<typeof createVehicleSchema> {}
+  interface Schema
+    extends SwadeBaseActorData.Schema,
+      ReturnType<typeof createVehicleSchema> {}
   interface BaseData {
     attributes: {
       agility: {
@@ -50,14 +55,43 @@ declare namespace VehicleData {
     mods: {
       value: number;
     };
+    crew: {
+      required: number;
+      members: Array<CrewMember>;
+    };
   }
 
   interface DerivedData {
     scale: number;
     cargo: {
       value: number;
-      items: SwadeItem[];
+      items: SwadeItem<CargoItemType>[];
     };
+  }
+
+  interface CrewMember {
+    uuid: string;
+    actor: SwadeActor<VehicleData.CrewActorType> | null;
+    role: ValueOf<typeof constants.CREW_ROLE>;
+    weapon?: SwadeItem<'weapon'>;
+    sort: number;
+  }
+  type CrewActorType = 'character' | 'npc';
+  type CargoItemType = 'gear' | 'weapon' | 'armor' | 'shield' | 'consumable';
+}
+
+function validateCrewMember(
+  value: any,
+  _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+) {
+  const actor = fromUuidSync(value.uuid);
+  // Optional chaining `actor.type` so that on game load, when `fromUuidSync` can only return null, this doesn't throw.
+  if (['vehicle', 'group'].includes(actor?.type)) {
+    return new foundry.data.validation.DataModelValidationFailure({
+      unresolved: true,
+      invalidValue: value,
+      message: `Cannot contain an actor of type ${actor.type}!`,
+    });
   }
 }
 
@@ -214,12 +248,6 @@ function createVehicleSchema() {
       {
         required: new fields.SchemaField(
           {
-            value: new fields.NumberField({
-              initial: 1,
-              integer: true,
-              min: 0,
-              label: 'SWADE.Value',
-            }),
             max: new fields.NumberField({
               initial: 1,
               integer: true,
@@ -246,16 +274,33 @@ function createVehicleSchema() {
           },
           { label: 'SWADE.Passengers' },
         ),
+        members: new fields.ArrayField(
+          new MemberField(
+            {
+              role: new fields.StringField({
+                initial: constants.CREW_ROLE.GUNNER,
+                choices: {
+                  [constants.CREW_ROLE.OPERATOR]:
+                    'SWADE.Vehicle.Crew.Roles.Operator',
+                  [constants.CREW_ROLE.GUNNER]:
+                    'SWADE.Vehicle.Crew.Roles.Gunner',
+                  [constants.CREW_ROLE.OTHER]: 'SWADE.Vehicle.Crew.Roles.Other',
+                },
+                label: 'SWADE.Vehicle.Crew.Role',
+              }),
+              sort: new fields.IntegerSortField(),
+              weapons: new fields.ArrayField(
+                new LocalDocumentField(SwadeItem, { types: ['weapon'] }),
+              ),
+            },
+            { validate: validateCrewMember },
+          ),
+        ),
       },
       { label: 'SWADE.Crew' },
     ),
     driver: new fields.SchemaField(
       {
-        id: new ForeignDocumentUUIDField({
-          idOnly: true,
-          label: 'SWADE.ID',
-          type: 'Actor',
-        }),
         skill: new fields.StringField({
           initial: '',
           label: 'SWADE.OpSkill',
@@ -309,6 +354,8 @@ class VehicleData<
   BaseData extends VehicleData.BaseData = VehicleData.BaseData,
   DerivedData extends VehicleData.DerivedData = VehicleData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
+  declare enrichedDescription?: string;
+
   static override defineSchema() {
     return {
       ...super.defineSchema(),
@@ -319,12 +366,52 @@ class VehicleData<
   static override migrateData(source: AnyObject): AnyObject {
     migrations.splitTopSpeed(source);
     migrations.shiftCargoModsMax(source);
+    migrations.migrateDriver(source);
     return super.migrateData(source);
+  }
+
+  get encumbered() {
+    return false;
+  }
+
+  get wildcard() {
+    return false;
   }
 
   override get tokenSize(): TokenSize {
     const value = Math.max(1, Math.floor(this.size! / 4) + 1);
     return { width: value, height: value };
+  }
+
+  async rollManeuverCheck(
+    actor: SwadeActor<VehicleData.CrewActorType> = this.operators[0],
+  ) {
+    //Return early if no driver was found
+    if (!actor) return;
+
+    //Get skillname
+    const skillName = this.driver.skill || this.driver.skillAlternative;
+
+    // Calculate the final handling
+    const handling = this.handling!;
+    const wounds = this.parent.calcWoundPenalties();
+
+    //Handling is capped at a certain penalty
+    const totalHandling = Math.max(
+      handling + wounds,
+      SWADE.vehicles.maxHandlingPenalty,
+    );
+
+    //Find the operating skill
+    const skill = actor.itemTypes.skill.find((i) => i.name === skillName);
+    return actor.rollSkill(skill?.id, {
+      additionalMods: [
+        {
+          label: game.i18n.localize('SWADE.Handling'),
+          value: totalHandling,
+        },
+      ],
+    });
   }
 
   override prepareBaseData(this: VehicleData) {
@@ -347,6 +434,10 @@ class VehicleData<
     }
     this.mods.value = 0;
     this.cargo.value = 0;
+    this.crew.members = this.crew.members
+      .sort((a, b) => a.sort - b.sort)
+      .map(this._mapCrewMember.bind(this));
+    this.crew.required.value = this.crew.members.length;
   }
 
   override prepareDerivedData(this: VehicleData) {
@@ -372,28 +463,12 @@ class VehicleData<
     }, 0);
     this.cargo.items = this.#prepareCargo();
     this.cargo.value = this.cargo.items.reduce(
-      (acc, item: SwadeItem<CargoItemType>) => {
+      (acc, item: SwadeItem<VehicleData.CargoItemType>) => {
         return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
       },
       0,
     );
   }
-
-  #prepareCargo(): SwadeItem<CargoItemType>[] {
-    const itemTypes = this.parent.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
-      !i.system.isVehicular ||
-      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
-    return [
-      ...itemTypes.gear.filter(notMod),
-      ...itemTypes.weapon.filter(notMod),
-      ...itemTypes.armor,
-      ...itemTypes.shield,
-      ...itemTypes.consumable,
-    ];
-  }
-
-  declare enrichedDescription?: string;
 
   override async toEmbed(
     this: VehicleData,
@@ -411,14 +486,6 @@ class VehicleData<
     );
   }
 
-  get encumbered() {
-    return false;
-  }
-
-  get wildcard() {
-    return false;
-  }
-
   override getRollData(this: VehicleData): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
@@ -426,6 +493,34 @@ class VehicleData<
     };
     return { ...out, ...super.getRollData() };
   }
+
+  protected _mapCrewMember(member: any): VehicleData.CrewMember {
+    const actor = member.uuid;
+    if (typeof actor === 'string') return { ...member, actor: null };
+    const weapons = member.weapons.map((fn) => fn());
+    return {
+      ...member,
+      name: actor.token?.name ?? actor.name,
+      img: actor.token?.texture?.src ?? actor.img,
+      uuid: actor.uuid,
+      actor,
+      weapons,
+    };
+  }
+
+  #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
+    const itemTypes = this.parent.itemTypes;
+    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
+      !i.system.isVehicular ||
+      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
+    return [
+      ...itemTypes.gear.filter(notMod),
+      ...itemTypes.weapon.filter(notMod),
+      ...itemTypes.armor,
+      ...itemTypes.shield,
+      ...itemTypes.consumable,
+    ];
+  }
 }
-type CargoItemType = 'gear' | 'weapon' | 'armor' | 'shield' | 'consumable';
+
 export { VehicleData };

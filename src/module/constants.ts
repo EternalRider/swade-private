@@ -188,4 +188,9 @@ export const constants = {
     'consumable',
     'gear',
   ] as PhysicalItem[],
+  CREW_ROLE: {
+    OPERATOR: 'operator',
+    GUNNER: 'gunner',
+    OTHER: 'other',
+  },
 };

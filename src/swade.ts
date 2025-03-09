@@ -48,7 +48,6 @@ import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
-import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
 import SwadeChatLog from './module/sidebar/SwadeChatLog';
@@ -70,7 +69,6 @@ const swadeAPI: SwadeGame = {
     CharacterSheet,
     SwadeItemSheetV2,
     SwadeNPCSheet,
-    SwadeVehicleSheet,
     SwadeVehicleSheetV2,
   },
   apps: {
@@ -285,10 +283,6 @@ Hooks.once('init', () => {
     types: ['npc'],
     makeDefault: true,
     label: 'SWADE.CommunityNPCSheet',
-  });
-  Actors.registerSheet('swade', SwadeVehicleSheet, {
-    types: ['vehicle'],
-    label: 'SWADE.CommunityVicSheet',
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
