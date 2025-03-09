@@ -353,7 +353,7 @@ function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
 
 function formGroupSimple(path: string, options: Handlebars.HelperOptions) {
   const { field, inputConfig, groupConfig } = prepareFormRendering(
-    path,
+    path.toString(),
     options,
   );
   const group = field.toFormGroup(groupConfig, inputConfig);
@@ -361,7 +361,7 @@ function formGroupSimple(path: string, options: Handlebars.HelperOptions) {
 }
 
 function formInputSimple(path: string, options: Handlebars.HelperOptions) {
-  const { field, inputConfig } = prepareFormRendering(path, options);
+  const { field, inputConfig } = prepareFormRendering(path.toString(), options);
   const group = field.toInput(inputConfig);
   return new Handlebars.SafeString(group.outerHTML);
 }

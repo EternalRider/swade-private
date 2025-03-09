@@ -12,18 +12,6 @@ export async function preloadHandlebarsTemplates() {
     'swade.npc-action-card':
       'systems/swade/templates/shared-partials/action-card.hbs',
 
-    //Vehicle Partials
-    'swade.vehicle-summary':
-      'systems/swade/templates/actors/vehicle-partials/summary-tab.hbs',
-    'swade.vehicle-cargo':
-      'systems/swade/templates/actors/vehicle-partials/cargo-tab.hbs',
-    'swade.vehicle-description':
-      'systems/swade/templates/actors/vehicle-partials/description-tab.hbs',
-    'swade.vehicle-vitals':
-      'systems/swade/templates/actors/vehicle-partials/vitals.hbs',
-    'swade.vehicle-crew':
-      'systems/swade/templates/actors/vehicle-partials/crew-tab.hbs',
-
     //Gear Cards
     'swade.weapon-card':
       'systems/swade/templates/actors/partials/weapon-card.hbs',
