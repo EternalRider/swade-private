@@ -1,4 +1,4 @@
-import type { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { DeepPartial } from 'fvtt-types/utils';
 import {
   AdditionalStats,
   SwadeApplicationTab,
@@ -23,15 +23,17 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     window: { resizable: true },
     actions: {
       maneuverCheck: SwadeVehicleSheetV2.maneuverCheck,
-      resetDriver: SwadeVehicleSheetV2.resetDriver,
       rollAttribute: SwadeVehicleSheetV2.rollAttribute,
       changeEquip: SwadeVehicleSheetV2.changeEquip,
       manageAttributes: SwadeVehicleSheetV2.manageAttributes,
       createCargo: SwadeVehicleSheetV2.createCargo,
+      addCrewMember: SwadeVehicleSheetV2.addCrewMember,
+      deleteCrewMember: SwadeVehicleSheetV2.deleteCrewMember,
+      openCrewMember: SwadeVehicleSheetV2.openCrewMember,
     },
   };
 
-  static override PARTS = {
+  static PARTS = {
     header: {
       template: 'systems/swade/templates/actors/vehicle2/header.hbs',
     },
@@ -74,7 +76,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   };
 
   protected override _getTabs() {
-    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'cargo';
+    this.tabGroups.primary ??= this.actor.limited ? 'description' : 'traits';
     return super._getTabs();
   }
 
@@ -96,15 +98,19 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.gearMods = this._prepareMods('gear');
         context.weaponMods = this._prepareMods('weapon');
         context.attributes = this._prepareAttributes();
+        this._prepareAdditionalStats(context);
         break;
       case 'crew':
         context.opSkills = this._prepareOpSkillList();
-        context.operator = await this.actor.getDriver();
-        context.driverOptions = this._prepareDriverOptions();
+        context.weaponOptions = this._prepareWeaponOptions();
         context.showEdges = game.settings.get('swade', 'vehicleEdges');
         context.abilities = itemTypes.ability;
         context.edges = itemTypes.edge;
         context.hindrances = itemTypes.hindrance;
+        context.tokenOptions = this._prepareTokenOptions();
+        context.weaponsPerMember = this.actor.system._source.crew.members.map(
+          (m) => m.weapons ?? [],
+        );
         break;
       case 'description':
         context.enrichedDescription = await TextEditor.enrichHTML(
@@ -120,7 +126,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return context;
   }
 
-  _prepareEffects() {
+  protected _prepareEffects() {
     const effects: Record<string, SwadeActiveEffect[]> = {
       passive: [],
       temporary: [],
@@ -139,7 +145,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return effects;
   }
 
-  _prepareMods(type: 'gear' | 'weapon') {
+  protected _prepareMods(type: 'gear' | 'weapon') {
     const mods = this.actor.items.filter(
       (i) =>
         i.type === type &&
@@ -149,7 +155,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return mods;
   }
 
-  _prepareOpSkillList(): foundry.applications.fields.SelectInputConfig {
+  protected _prepareOpSkillList(): foundry.applications.fields.SelectInputConfig {
     const skills = game.settings.get('swade', 'vehicleSkills');
     const skillList = skills.split(/[,]/);
 
@@ -168,15 +174,30 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     };
   }
 
-  _prepareDriverOptions(): foundry.applications.fields.FormSelectOption[] {
-    const scene = canvas.scene;
-    if (!scene || this.document.pack) return [];
-    return scene.tokens
-      .filter(
-        (t) =>
-          t.actor && !['group', 'vehicle'].includes(t.actor?.type) && t.visible,
-      )
-      .map((t) => ({ value: t.actor.uuid, label: t.name }));
+  protected _prepareTokenOptions(): foundry.applications.fields.FormSelectOption[] {
+    const collection = game.scenes.viewed?.tokens ?? [];
+    const options: foundry.applications.fields.FormSelectOption[] =
+      collection.reduce((arr, doc: TokenDocument.Implementation) => {
+        if (
+          !doc.visible ||
+          !doc.actor ||
+          ['group', 'vehicle'].includes(doc.actor.type) ||
+          this.actor.system.crew.members.find((m) => m.uuid === doc.actor.uuid) //make sure we can't add the same one twice
+        )
+          return arr;
+        arr.push({ value: doc.actor.uuid, label: doc.name });
+        return arr;
+      }, []);
+    return options;
+  }
+
+  _prepareWeaponOptions(): foundry.applications.fields.FormSelectOption[] {
+    return this.actor.itemTypes.weapon
+      .filter((w: SwadeItem<'weapon'>) => w.system.isVehicular && w.isReadied)
+      .map((w: SwadeItem<'weapon'>) => ({
+        value: w.id,
+        label: w.name,
+      }));
   }
 
   _prepareAttributes(): SwadeVehicleSheetV2.AttributeContext {
@@ -244,17 +265,15 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async maneuverCheck(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    target: HTMLElement,
   ) {
-    this.actor.rollManeuverCheck();
-  }
-
-  protected static async resetDriver(
-    this: SwadeVehicleSheetV2,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
-    this.actor.update({ 'system.driver.id': null });
+    const uuid =
+      target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
+    const operator = this.actor.system.crew.members.find(
+      (m) => m.uuid === uuid,
+    );
+    if (!operator.actor) return;
+    await this.actor.system.rollManeuverCheck(operator.actor);
   }
 
   protected static async manageAttributes(
@@ -303,6 +322,40 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     );
   }
 
+  protected static async addCrewMember(
+    this: SwadeVehicleSheetV2,
+    _event: PointerEvent,
+    target: HTMLButtonElement,
+  ) {
+    const uuid = (target.previousElementSibling as HTMLInputElement).value;
+    if (uuid) await this._addCrewMember(uuid);
+  }
+
+  protected static async deleteCrewMember(
+    this: SwadeVehicleSheetV2,
+    _event: PointerEvent,
+    target: HTMLButtonElement,
+  ) {
+    const index = Number(target.dataset.index);
+    const members = this.actor.system._source.crew.members;
+    await this.actor.update({
+      'system.crew.members': members.toSpliced(index, 1),
+    });
+  }
+
+  protected static async openCrewMember(
+    this: SwadeVehicleSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    const uuid =
+      target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
+    const operator = this.actor.system.crew.members.find(
+      (m) => m.uuid === uuid,
+    );
+    operator?.actor?.sheet.render(true);
+  }
+
   /** Drop Handling */
 
   protected override async _onDropActor(
@@ -320,10 +373,18 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
       );
       return false;
     }
-    await this.actor.update({
-      'system.driver.id': actor.uuid,
-    });
+    if (this.tabGroups.primary !== 'crew') return false;
+    await this._addCrewMember(actor.uuid);
     return true;
+  }
+
+  protected async _addCrewMember(uuid: string) {
+    const existingMembers = this.actor.system._source.crew.members;
+    const count = existingMembers.length;
+    const role =
+      count === 0 ? constants.CREW_ROLE.OPERATOR : constants.CREW_ROLE.GUNNER;
+    const newMembers = [...existingMembers, { uuid, role, sort: count - 1 }];
+    await this.actor.update({ 'system.crew.members': newMembers });
   }
 }
 
@@ -347,8 +408,9 @@ declare namespace SwadeVehicleSheetV2 {
     hasAdditionalStatsFields: boolean;
     additionalStats: AdditionalStats;
     opSkills: foundry.applications.fields.SelectInputConfig;
-    operator: SwadeActor | null;
-    driverOptions: foundry.applications.fields.FormSelectOption[];
+    weaponOptions: foundry.applications.fields.FormSelectOption[];
+    tokenOptions: foundry.applications.fields.FormSelectOption[];
+    weaponsPerMember: string[];
     showEdges: boolean;
     abilities: SwadeItem<'ability'>[];
     edges: SwadeItem<'edge'>[];

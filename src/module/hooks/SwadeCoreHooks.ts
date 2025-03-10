@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FormSelectOption } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/applications/forms/fields.mjs';
-import BaseUser from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/user.mjs';
 import type { Plugin } from 'prosemirror-state';
 import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
@@ -24,12 +22,12 @@ import * as migrations from '../migration/migration';
 import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
-import SwadeVehicleSheet from '../sheets/SwadeVehicleSheet';
 import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
 import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
+import { ModifierData } from '../data/effect/modifier';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -826,72 +824,83 @@ export default class SwadeCoreHooks {
     [html]: JQuery<HTMLElement>,
   ) {
     const effect = app.document as ActiveEffect;
-    if (!(effect.system instanceof BaseEffectData)) return;
-    const systemSchema = effect.system.schema;
+    if (effect.system instanceof BaseEffectData) {
+      const systemSchema = effect.system.schema;
 
-    const conditionalGroup = systemSchema.fields.conditionalEffect.toFormGroup(
-      { localize: true },
-      { value: effect.system.conditionalEffect, disabled: !app.isEditable },
-    );
+      const conditionalGroup =
+        systemSchema.fields.conditionalEffect.toFormGroup(
+          { localize: true },
+          { value: effect.system.conditionalEffect, disabled: !app.isEditable },
+        );
 
-    const expirationOptions: FormSelectOption[] = [
-      {
-        label: 'SWADE.Expiration.BeginAuto',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
-      },
-      {
-        label: 'SWADE.Expiration.BeginPrompt',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
-      },
-      {
-        label: 'SWADE.Expiration.EndAuto',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
-      },
-      {
-        label: 'SWADE.Expiration.EndPrompt',
-        value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
-      },
-    ];
-    const expirationGroup = systemSchema.fields.expiration.toFormGroup(
-      { localize: true },
-      {
-        options: expirationOptions,
-        localize: true,
-        value: effect.system.expiration,
-        blank: 'SWADE.Expiration.None',
-        disabled: !app.isEditable,
-        dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
-      },
-    );
-    const loseTurnOnHoldGroup = systemSchema.fields.loseTurnOnHold.toFormGroup(
-      { localize: true },
-      { value: effect.system.loseTurnOnHold, disabled: !app.isEditable },
-    );
+      const expirationOptions: foundry.applications.fields.FormSelectOption[] =
+        [
+          {
+            label: 'SWADE.Expiration.BeginAuto',
+            value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
+          },
+          {
+            label: 'SWADE.Expiration.BeginPrompt',
+            value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
+          },
+          {
+            label: 'SWADE.Expiration.EndAuto',
+            value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
+          },
+          {
+            label: 'SWADE.Expiration.EndPrompt',
+            value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
+          },
+        ];
+      const expirationGroup = systemSchema.fields.expiration.toFormGroup(
+        { localize: true },
+        {
+          options: expirationOptions,
+          localize: true,
+          value: effect.system.expiration,
+          blank: 'SWADE.Expiration.None',
+          disabled: !app.isEditable,
+          dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
+        },
+      );
+      const loseTurnOnHoldGroup =
+        systemSchema.fields.loseTurnOnHold.toFormGroup(
+          { localize: true },
+          { value: effect.system.loseTurnOnHold, disabled: !app.isEditable },
+        );
 
-    const tab = `
+      const tab = `
     <a class="item" data-tab="expiration">
       <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize(
         'SWADE.Expiration.TabLabel',
       )}
     </a>`;
-    const durationSection = `
+      const durationSection = `
     <section class="tab" data-tab="expiration">
     ${game.i18n.localize('SWADE.Expiration.Description')}
     ${expirationGroup.outerHTML}
     ${loseTurnOnHoldGroup.outerHTML}
     </section>`;
 
-    html
-      .querySelector('section[data-tab="details"] .form-group.stacked')
-      ?.insertAdjacentElement('afterend', conditionalGroup);
-    html
-      .querySelector('nav.sheet-tabs a[data-tab="duration"]')
-      ?.insertAdjacentHTML('afterend', tab);
-    html
-      .querySelector('section[data-tab="duration"]')
-      ?.insertAdjacentHTML('afterend', durationSection);
-
-    app.setPosition();
+      html
+        .querySelector('section[data-tab="details"] .form-group.stacked')
+        ?.insertAdjacentElement('afterend', conditionalGroup);
+      html
+        .querySelector('nav.sheet-tabs a[data-tab="duration"]')
+        ?.insertAdjacentHTML('afterend', tab);
+      html
+        .querySelector('section[data-tab="duration"]')
+        ?.insertAdjacentHTML('afterend', durationSection);
+    } else if (effect.system instanceof ModifierData) {
+      const costGroup = effect.system.schema.fields.cost.toFormGroup(
+        { localize: true },
+        { value: effect.system.cost },
+      );
+      html
+        .querySelector('section[data-tab="details"] .form-group.stacked')
+        ?.insertAdjacentElement('afterend', costGroup);
+      app.setPosition();
+    }
   }
 
   static onHotReload({
@@ -924,7 +933,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static async onTargetToken(user: BaseUser, token: Token, targeted: boolean) {
+  static async onTargetToken(user: User, token: Token, targeted: boolean) {
     if (!targeted) return;
     token.ring?.flashColor(user.color, {
       duration: 1000,

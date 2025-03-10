@@ -1,4 +1,3 @@
-import BaseMeasuredTemplate from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/documents/measured-template.mjs';
 import SwadeItem from '../documents/item/SwadeItem';
 
 declare global {
@@ -31,7 +30,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: BaseMeasuredTemplate.CreateData = {
+    const templateBaseData: MeasuredTemplate.CreateData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,

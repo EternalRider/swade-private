@@ -3,7 +3,6 @@ SWADE:
   ButtonSubmit: Submit
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
-  CommunityVicSheet: Legacy Vehicle Sheet
   ItemSheet: Savage Worlds Item Sheet
   GroupSheet: Savage Worlds Group Sheet
   VehicleSheet: Savage Worlds Vehicle Sheet
@@ -119,6 +118,7 @@ SWADE:
   Aiming: Aiming
   Berserk: Berserk
   Defending: Defending
+  Burrowing: Burrowing
   Flying: Flying
   Unfamiliar:
     '2': Unfamiliar (-2)
@@ -240,6 +240,7 @@ SWADE:
   PP: Power Points
   PPShort: P. Points
   PPCost: PP Cost
+  PPMods: Power Modifiers
   CurPP: Current Power Points
   MaxPP: Maximum Power Points
   MaxLabel: Maximum
@@ -494,8 +495,8 @@ SWADE:
   Modifiers: Modifiers
   ActionTraitMod: Action Trait Modifier
   ActionDmgMod: Action Damage Modifier
-  ItemTraitMod: Item Trait Modifier
-  ItemDmgMod: Item Damage Modifier
+  ItemTraitMod: Trait Modifier
+  ItemDmgMod: Damage Modifier
   Duplicates: Duplicates Found
   DuplicateItemsBodyText: >-
     While adding the {type} <strong>{name}</strong> to the Actor {target} the
@@ -627,8 +628,12 @@ SWADE:
     ResetDuration: Reset Duration
     AddGuided: Open Wizard
     AddUnguided: Add Empty Effect
+    AddModifier: Add Modifier
     Conditional: Conditional Effect
     ConditionalTooltip: Ignore roll modifiers by default
+    ModifierCost:
+      Label: Modifier Cost
+      Hint: The build or power point cost for this modifier
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand
@@ -1597,7 +1602,17 @@ SWADE:
   Vehicle:
     Cargo:
       Capacity: Cargo Capacity
+    Crew:
+      Add: Add Crew member
+      Remove: Remove Crew member
+      Role: Role
+      Roles:
+        Operator: Operator
+        Gunner: Gunner
+        Other: Other
 TYPES:
+  ActiveEffect:
+    modifier: Modifier
   Actor:
     character: Player Character
     npc: NPC

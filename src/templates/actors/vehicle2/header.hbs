@@ -9,16 +9,21 @@
 </div>
 {{/inline}}
 <section class='flexrow'>
-  <div class='sheet-portrait'>
-    <img src='{{actor.img}}' data-action='editImg' data-tooltip="SWADE.RightClickZoom"/>
-  </div>
+  <img class="sheet-portrait" src='{{actor.img}}' data-action='editImg' data-tooltip="SWADE.RightClickZoom"/>
   <div class='flexcol'>
     <div class='name'>
       {{formInputSimple 'name' document=actor}}
     </div>
     <div class='flexrow'>
       {{> vehicle-stats label='SWADE.Wounds' propName='system.wounds' prop=system.wounds}}
-      {{> vehicle-stats label='SWADE.RequiredCrew' propName='system.crew.required' prop=system.crew.required}}
+      <div class='flexcol vehicle-stats'>
+        <label for='{{actor.uuid}}-system.crew.required.max' class='label'>{{localize 'SWADE.RequiredCrew'}}</label>
+        <div class='flexrow'>
+          <input class='max' type='number' value='{{system.crew.required.value}}' readonly/>
+          <span class='divider'>/</span>
+          <input class='max' min="0" id='{{actor.uuid}}-system.crew.required.max' type='number' name='system.crew.required.max' value='{{system.crew.required.max}}' />
+        </div>
+      </div>
       {{> vehicle-stats label='SWADE.Passengers' propName='system.crew.optional' prop=system.crew.optional}}
     </div>
     <div class='classification'>
@@ -26,9 +31,6 @@
     </div>
   </div>
   <div class='flexcol vehicle-status'>
-    {{#if hasEnergy}}
-      {{> vehicle-stats label='SWADE.Energy.Label' propName='system.energy' prop=system.energy}}
-    {{/if}}
     {{formGroupSimple 'system.status.isOutOfControl' document=actor rootId=actor.uuid}}
     {{formGroupSimple 'system.status.isWrecked' document=actor rootId=actor.uuid}}
     {{formGroupSimple 'system.status.isDistracted' document=actor rootId=actor.uuid}}

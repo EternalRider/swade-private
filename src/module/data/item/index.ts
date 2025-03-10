@@ -17,6 +17,7 @@ export { ActionData } from './action';
 export { AncestryData } from './ancestry';
 export { ArmorData } from './armor';
 export * as base from './base';
+export * as common from './common';
 export { ConsumableData } from './consumable';
 export { EdgeData } from './edge';
 export { GearData } from './gear';

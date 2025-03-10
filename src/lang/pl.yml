@@ -3,7 +3,7 @@ SWADE:
   ButtonSubmit: Wyślij
   CommunityCharSheet: Legacy Character Sheet
   CommunityNPCSheet: Community NPC Sheet
-  CommunityVicSheet: Community Vehicle Sheet
+  CommunityVicSheet: Legacy Vehicle Sheet
   CommunityItemSheet: Community Item Sheet
   ItemSheet: Savage Worlds Item Sheet
   HeadquartersSheet: Savage Worlds Headquarters Sheet
@@ -701,8 +701,8 @@ SWADE:
       Hint: Dodaje kary za Obładowanie. Weź pod uwagę, że ta opcja w chwili obecnej
         NIE JEST UWZGLĘDNIONA podczas testów {vigor}u przy rzutach na {fatigue}!
     VehicleMods:
-      Name: Modyfikacje pojazdów
-      Hint: Pojazdy używają slotów na modyfikacje
+      Name: Modyfikacje pojazdu
+      Hint: Pojazdy i Pancerz używają slotów na modyfikacje
     VehicleEdges:
       Name: Przewagi pojazdów
       Hint: Pojazdy używają Przewag i Zawad
@@ -767,6 +767,9 @@ SWADE:
     GmBennies:
       Name: Fuksy Mistrza Gry
       Hint: Ustaw ile Fuksów powinien otrzymać MG podczas odświeżania
+    VehicleEnergy:
+      Name: Energia pojazdu
+      Hint: Pojazdy i Pancerz używają energii
   EffectCallbacks:
     Shaken:
       RollSpirit: Rzut na Ducha
@@ -1394,6 +1397,7 @@ SWADE:
     Redraw: Karta przelosowana
     RedrawDialog:
       Content: Wylosować nową kartę przy użyciu Fuksa, czy za darmo?
+    LinkScene: Powiąż scenę
   FollowerCount: "{count} podążający"
   Benny: Fuks
   Free: Za darmo
@@ -1481,6 +1485,34 @@ SWADE:
   NoCCMInstall: Moduł Complete Card Management nie jest zainstalowany.
   CouldNotFindTarget: Makro wymaga wybrania celu!
   RemoveEffectLabel: Usuń efekt
+  Energy:
+    Value: Aktualna energia
+    Label: Energia
+    Max: Maksymalna energia
+    Enable: Włącz energię
+  Complication: Komplikacja
+  EffectsInactive: Nieaktywne efekty
+  DramaticTask:
+    Successes: Sukcesy
+    MaxRounds:
+      Label: Maksimum rund
+      Hint: Ile rund trwa "wyścig z czasem"?
+    MaxTokens:
+      Label: Sukcesy
+      Hint: Docelowa liczba sukcesów, które uczestnicy muszą osiągnąć
+  VehicleSheet: Savage Worlds Vehicle Sheet
+  VehicleAttributes:
+    Label: Atrybuty pojazdu
+    Agility: Pojazd ma Zręczność
+    Spirit: Pojazd ma Ducha
+    Smarts: Pojazd ma Spryt
+    Strength: Pojazd ma Siłę
+    Vigor: Pojazd ma Wigor
+  OperatorIdHint: Porzuć aktora lub wybierz token
+  Vehicle:
+    Cargo:
+      Capacity: Pojemność ładunku
+  ChaseLayoutError: Za mało miejsca na scenie, aby przeprowadzić pościg.
 TYPES:
   Actor:
     character: Postać gracza
@@ -1505,3 +1537,6 @@ TYPES:
     poker: Karta Pokerowa
   JournalEntryPage:
     headquarters: Siedziby
+  Combat:
+    chase: Pościg
+    dramaticTask: Wyścig z czasem

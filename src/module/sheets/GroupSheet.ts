@@ -1,4 +1,4 @@
-import { DeepPartial } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial } from 'fvtt-types/utils';
 import {
   PhysicalItem,
   SwadeApplicationTab,
@@ -266,7 +266,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
           : uuid,
         toughness: actor?.system.stats?.toughness?.value ?? NaN,
         armor: actor?.armorPerLocation.torso ?? NaN,
-        pace: actor?.system.pace[actor.system.pace.base] ?? NaN,
+        pace: actor?.system.pace.default ?? NaN,
         parry: actor?.system.stats?.parry?.value ?? NaN,
         bennies: actor?.bennies ?? NaN,
         wounds: {

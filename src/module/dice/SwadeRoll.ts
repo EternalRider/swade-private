@@ -1,4 +1,4 @@
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { EmptyObject } from 'fvtt-types/utils';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,

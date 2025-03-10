@@ -1,7 +1,4 @@
-import {
-  DeepPartial,
-  EmptyObject,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { DeepPartial, EmptyObject } from 'fvtt-types/utils';
 import type SwadeCombatant from '../../documents/combat/SwadeCombatant';
 import { SWADE } from '../../config';
 import { firstOwner } from '../../util';

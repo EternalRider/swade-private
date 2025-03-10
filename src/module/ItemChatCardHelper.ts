@@ -15,7 +15,9 @@ import { getTrait } from './util';
  * A helper class for Item chat card logic
  */
 export default class ItemChatCardHelper {
-  static async onChatCardAction(event): Promise<SwadeRoll | null> {
+  static async onChatCardAction(
+    event: JQuery.ClickEvent,
+  ): Promise<SwadeRoll | null> {
     event.preventDefault();
 
     // Extract card data
@@ -99,7 +101,10 @@ export default class ItemChatCardHelper {
 
     if (!actor) return null;
 
-    const roll = await this.handleAction(item, actor, action, additionalMods);
+    const roll = await this.handleAction(item, actor, action, {
+      additionalMods,
+      event: event?.originalEvent,
+    });
 
     //Only refresh the card if there is a roll and the item isn't a power
     if (roll && item.type !== 'power') await this.refreshItemCard(actor);
@@ -136,9 +141,12 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     action: string,
-    additionalMods: RollModifier[] = [],
-  ): Promise<SwadeRoll | null> {
-    let roll: SwadeRoll | null = null;
+    {
+      additionalMods = [],
+      event,
+    }: { additionalMods: RollModifier[]; event?: Event },
+  ): Promise<SwadeRoll<any> | null> {
+    let roll: SwadeRoll<any> | null = null;
 
     switch (action) {
       case 'damage':
@@ -161,12 +169,10 @@ export default class ItemChatCardHelper {
         await this.refreshItemCard(actor);
         break;
       default:
-        roll = await this.handleAdditionalActions(
-          item,
-          actor,
-          action,
-          additionalMods,
-        );
+        roll = await this.handleAdditionalActions(item, actor, action, {
+          mods: additionalMods,
+          event,
+        });
         // No need to call the hook here, as handleAdditionalActions already calls the hook
         // This is so an external API can directly use handleAdditionalActions to use an action and still fire the hook
         break;
@@ -219,8 +225,8 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     key: string,
-    mods: RollModifier[] = [],
-  ): Promise<SwadeRoll | null> {
+    { mods = [], event }: { mods: RollModifier[]; event?: Event },
+  ): Promise<SwadeRoll<any> | null> {
     const action = foundry.utils.getProperty(
       item,
       `system.actions.additional.${key}`,
@@ -229,7 +235,7 @@ export default class ItemChatCardHelper {
     // if there isn't actually any action then return early
     if (!action) return null;
 
-    let roll: SwadeRoll | null = null;
+    let roll: SwadeRoll<any> | null = null;
 
     if (
       action.type === constants.ACTION_TYPE.TRAIT ||
@@ -312,7 +318,12 @@ export default class ItemChatCardHelper {
           return null;
         }
       }
-      await macro?.execute({ actor: targetActor, item, token: targetToken });
+      await macro?.execute({
+        actor: targetActor,
+        item,
+        token: targetToken,
+        event,
+      });
       return null;
     }
     this.refreshItemCard(actor);
@@ -425,7 +436,7 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     item: SwadeItem,
     action: string,
-    roll: SwadeRoll | null,
+    roll: SwadeRoll<any> | null,
   ) {
     if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
@@ -438,10 +449,18 @@ export default class ItemChatCardHelper {
       'system.actions.dmgMod',
     ) as string;
     if (!value) return null;
-    let label = game.i18n.localize('SWADE.ItemDmgMod');
+
+    // Ensure `item.name` exists to avoid errors
+    const itemName = item?.name ?? game.i18n.localize('SWADE.Item');
+
+    // Localize the label and include the item name
+    let label = `${itemName} ${game.i18n.localize('SWADE.ItemDmgMod')}`;
+
+    // If the value starts with "@", use an empty label
     if (value.startsWith('@')) {
-      label = ''; //empty label for a modifer;
+      label = ''; // Empty label for a modifier
     }
+
     return { label, value };
   }
 }

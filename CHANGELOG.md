@@ -22,6 +22,43 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.4.0
+
+### Added
+
+- New Active Effect Subtype: Modifier. (#878) **by @jpmeehan5**
+  - Modifiers can only be created on items and directly adjust the item they're on
+  - Modifiers include a special "cost" field that represents either the build or power point cost for the modifier.
+  - Powers with active modifiers will display a list when they're used.
+  - Active modifiers will disable any affected fields on the item sheet.
+- The SWADE API is now exposed prior to the `init` hook in the global `swade` object. This is identical to the `game.swade` object that is added during the `init` hook.
+- Added `system.pace.default` which provides the selected pace value. (#1285) **by @jpmeehan5**
+- Added `burrowing` status which overrides your base pace to `"burrow"`. **by @jpmeehan5**
+
+#### Changed
+
+- Reworked vehicle crew. You can now assign multiple crew members to a given vehicle and give them one of the `Operator`, `Gunner` or `Other` Roles.
+  - Operators can roll maneuver checks and be assigned installed weapons
+  - Gunners can be assigned guns.
+- The `flying` status now overrides your base pace to `"fly"`. Also changed the color & position in status tray. **by @jpmeehan5**
+- Added Complete Card Management as a recommended module in the system manifest. (#1269) **by @jpmeehan5**
+- Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
+- The character sheet now leverages `Item.defaultName` rather than just capitalizing the `type`. This means repeatedly creating items will append distinct numbers to each new entry to guarantee a unique name. **by @jpmeehan5**
+- The signature of `ItemChatCardHelper.handleAction` and `ItemChatCardHelper.handleAdditionalActions` has been changed. The fourth argument has been changed from `modifiers` as an array to an `options` that takes `mods` as an array as well as a possible `event` property. This `event` property is forwarded to the scope of macro actions. (#1288) **by @jpmeehan5**
+- Reworked vehicle crew. You can now assign multiple crew members to a given vehicle and give them one of the `Operator`, `Gunner` or `Other` Roles. (#77) (#100) (#133) **by @florad92**
+  - Operators can roll maneuver checks and be assigned installed weapons
+  - Gunners can be assigned guns.
+  - The ability for gunners to roll weapon attacks and damage directly through the vehicle is planned to be added at a later date after foundry v13 Stable Releases.
+- [BREAKING] Tightened validation of the `damage` fields on Powers and Weapons. (#1289) **by @florad92**
+
+### Removed
+
+- [BREAKING] Deprecated and removed the Community Vehicle Sheet as it is being completely replaced by the new Vehicle Sheet. **by @florad92**
+
+### Fixed
+
+- Fixed an issue with the cleaning of values in the `FormulaField` which could result in malformed values for power ranges. (#1290) **by @florad92**
+
 ## 4.3.3
 
 ### Fixed
