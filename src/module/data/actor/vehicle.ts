@@ -8,7 +8,7 @@ import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
 import { createEmbedElement } from '../../util';
-import LocalDocumentField from '../fields/LocalDocumentField';
+import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
