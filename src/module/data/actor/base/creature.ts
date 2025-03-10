@@ -84,6 +84,9 @@ declare namespace CreatureData {
         isEncumbered: boolean;
       };
     };
+    pace: {
+      default: number;
+    };
   };
 }
 
@@ -582,7 +585,7 @@ class CreatureData<
     }
 
     //set scale
-    this.stats.scale = this.parent.calcScale(this.stats.size as number);
+    this.stats.scale = this.parent.calcScale(this.stats.size!);
 
     //handle carry capacity
     foundry.utils.setProperty(
@@ -629,16 +632,14 @@ class CreatureData<
       game.i18n.localize('SWADE.Movement.Base') +
       ': ' +
       game.i18n.localize(
-        'SWADE.Movement.Pace.' +
-          (this.pace.base as string).capitalize() +
-          '.Label',
+        'SWADE.Movement.Pace.' + this.pace.base!.capitalize() + '.Label',
       );
     element.appendChild(heading);
 
     //attempt to add other pace values as a list
     const availableKeys = PaceSchemaField.paceKeys
       .filter((key) => !!this.pace[key])
-      .filter((key) => key !== (this.pace.base as string));
+      .filter((key) => key !== this.pace.base!);
     if (availableKeys.length) {
       const subheading = document.createElement('h4');
       subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
@@ -659,9 +660,9 @@ class CreatureData<
     if (!this.parent.getCombatant()) {
       element.appendChild(document.createElement('hr'));
       const p = document.createElement('span');
-      const runningDie = this.pace.running.die as number;
-      const minutes = (this.attributes.vigor.die.sides as number) / 2;
-      const pace = (runningDie + this.pace[this.pace.base as string]) * 2;
+      const runningDie = this.pace.running.die!;
+      const minutes = this.attributes.vigor.die.sides! / 2;
+      const pace = (runningDie + this.pace.default) * 2;
       p.innerText = game.i18n.format('SWADE.Movement.Running.OutOfCombat', {
         pace,
         minutes,
@@ -679,7 +680,7 @@ class CreatureData<
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
-      pace: this.pace[this.pace.base as string] || 0,
+      pace: this.pace.default || 0,
     };
 
     const globalMods = this.stats.globalMods;
@@ -695,7 +696,7 @@ class CreatureData<
         mod = structuredClone<RollModifier[]>([
           {
             label: game.i18n.localize('SWADE.TraitMod'),
-            value: attribute.die.modifier as number,
+            value: attribute.die.modifier!,
           },
           ...globalMods[key],
           ...globalMods.trait,
@@ -761,6 +762,8 @@ class CreatureData<
       if (encumbered) value -= 2; //subtract encumbrance, if necessary
       this.pace[key] = Math.max(value, 1); //Clamp the pace so it's a minimum of 1
     }
+
+    this.pace.default = this.pace[this.pace.base!];
   }
 
   protected override async _preUpdate(
