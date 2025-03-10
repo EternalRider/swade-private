@@ -16,6 +16,7 @@ import {
   UsageUpdates,
 } from '../../documents/item/SwadeItem.interface';
 import { createEmbedElement, notificationExists } from '../../util';
+import { FormulaField } from '../fields';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -58,7 +59,7 @@ declare namespace WeaponData {
       Templates,
       Category,
       GrantEmbedded {
-    damage: foundry.data.fields.StringField<{ initial: '' }>;
+    damage: FormulaField;
     range: foundry.data.fields.StringField<{ initial: '' }>;
     rangeType: foundry.data.fields.NumberField<{
       integer: true;
@@ -108,7 +109,7 @@ class WeaponData extends SwadePhysicalItemData<
       ...templates(),
       ...category(),
       ...grantEmbedded(),
-      damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
+      damage: new FormulaField({ initial: '', label: 'SWADE.Dmg' }),
       range: new fields.StringField({
         initial: '',
         label: 'SWADE.Range._name',
