@@ -32,9 +32,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Powers with active modifiers will display a list when they're used.
   - Active modifiers will disable any affected fields on the item sheet.
 - The SWADE API is now exposed prior to the `init` hook in the global `swade` object. This is identical to the `game.swade` object that is added during the `init` hook.
+- Added `system.pace.default` which provides the selected pace value. (#1285) **by @jpmeehan5**
+- Added `burrowing` status which overrides your base pace to `"burrow"`. **by @jpmeehan5**
 
-### Changed
+#### Changed
 
+- Reworked vehicle crew. You can now assign multiple crew members to a given vehicle and give them one of the `Operator`, `Gunner` or `Other` Roles.
+  - Operators can roll maneuver checks and be assigned installed weapons
+  - Gunners can be assigned guns.
+- The `flying` status now overrides your base pace to `"fly"`. Also changed the color & position in status tray. **by @jpmeehan5**
 - Added Complete Card Management as a recommended module in the system manifest. (#1269) **by @jpmeehan5**
 - Item Trait and Damage mods now include `name` instead of generic Item Modifier label **by @jestevens210**
 - The character sheet now leverages `Item.defaultName` rather than just capitalizing the `type`. This means repeatedly creating items will append distinct numbers to each new entry to guarantee a unique name. **by @jpmeehan5**
