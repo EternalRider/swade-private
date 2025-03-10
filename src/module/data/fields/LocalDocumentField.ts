@@ -84,4 +84,4 @@ class LocalDocumentField<
   }
 }
 
-export default LocalDocumentField;
+export { LocalDocumentField };
