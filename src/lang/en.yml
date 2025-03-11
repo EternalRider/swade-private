@@ -51,6 +51,7 @@ SWADE:
   Tweaks: Tweaks
   AttrAgiShort: Agi
   AttrSmaShort: Sma
+  AttrSmaShortPowerRange: Sm
   AttrSprShort: Spi
   AttrStrShort: Str
   AttrVigShort: Vig
