@@ -1,4 +1,5 @@
-import { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
+import type { ArtworkMapping } from './interfaces/ArtworkMapping.interface';
+import type { SwadeGame } from './interfaces/SwadeGame.interface';
 import CharacterSummarizer from './module/CharacterSummarizer';
 import ItemChatCardHelper from './module/ItemChatCardHelper';
 import { Logger } from './module/Logger';
@@ -47,7 +48,6 @@ import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
 import SwadeNPCSheet from './module/sheets/SwadeNPCSheet';
 import SwadeTokenConfig from './module/sheets/SwadeTokenConfig';
-import SwadeVehicleSheet from './module/sheets/SwadeVehicleSheet';
 import SwadeVehicleSheetV2 from './module/sheets/VehicleSheetV2';
 import JournalHeadquartersPageSheet from './module/sheets/journal/JournalHeadquartersPageSheet';
 import SwadeChatLog from './module/sidebar/SwadeChatLog';
@@ -63,6 +63,47 @@ import {
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
 import './swade.scss';
+
+const swadeAPI: SwadeGame = {
+  sheets: {
+    CharacterSheet,
+    SwadeItemSheetV2,
+    SwadeNPCSheet,
+    SwadeVehicleSheetV2,
+  },
+  apps: {
+    SwadeDocumentTweaks,
+    AdvanceEditor,
+    SettingConfigurator,
+    CompendiumTOC,
+    AttributeManager,
+    ActiveEffectWizard,
+  },
+  dice: {
+    Benny,
+    WildDie,
+  },
+  util: {
+    getStatusEffectDataById,
+    slugify,
+    getItemsBySwid,
+  },
+  compendiumArt: {
+    map: new Map<string, ArtworkMapping>(),
+  },
+  rollItemMacro,
+  sockets: new SwadeSocketHandler(),
+  migrations: migrations,
+  itemChatCardHelper: ItemChatCardHelper,
+  CharacterSummarizer,
+  RollDialog,
+  effectCallbacks: new Collection(),
+  ready: false,
+  data,
+  SwadeTour,
+};
+
+globalThis.swade = swadeAPI;
 
 /* ------------------------------------ */
 /* Initialize system					          */
@@ -89,45 +130,7 @@ Hooks.once('init', () => {
   deepFreeze(CONFIG.SWADE.CONST);
 
   //set up global game object
-  game.swade = {
-    sheets: {
-      CharacterSheet,
-      SwadeItemSheetV2,
-      SwadeNPCSheet,
-      SwadeVehicleSheet,
-      SwadeVehicleSheetV2,
-    },
-    apps: {
-      SwadeDocumentTweaks,
-      AdvanceEditor,
-      SettingConfigurator,
-      CompendiumTOC,
-      AttributeManager,
-      ActiveEffectWizard,
-    },
-    dice: {
-      Benny,
-      WildDie,
-    },
-    util: {
-      getStatusEffectDataById,
-      slugify,
-      getItemsBySwid,
-    },
-    compendiumArt: {
-      map: new Map<string, ArtworkMapping>(),
-    },
-    rollItemMacro,
-    sockets: new SwadeSocketHandler(),
-    migrations: migrations,
-    itemChatCardHelper: ItemChatCardHelper,
-    CharacterSummarizer,
-    RollDialog,
-    effectCallbacks: new Collection(),
-    ready: false,
-    data,
-    SwadeTour,
-  };
+  game.swade = swadeAPI;
 
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
@@ -183,8 +186,12 @@ Hooks.once('init', () => {
 
   //register custom status effects
   CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
-  CONFIG.specialStatusEffects.COLDBODIED = 'cold-bodied';
-  CONFIG.specialStatusEffects.INCAPACITATED = 'incapacitated';
+  Object.assign(CONFIG.specialStatusEffects, {
+    COLDBODIED: 'cold-bodied',
+    INCAPACITATED: 'incapacitated',
+    BURROW: 'burrowing',
+    FLY: 'flying',
+  });
 
   // v11 Active Effect handling
   CONFIG.ActiveEffect.legacyTransferral = false;
@@ -280,10 +287,6 @@ Hooks.once('init', () => {
     types: ['npc'],
     makeDefault: true,
     label: 'SWADE.CommunityNPCSheet',
-  });
-  Actors.registerSheet('swade', SwadeVehicleSheet, {
-    types: ['vehicle'],
-    label: 'SWADE.CommunityVicSheet',
   });
   Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,

@@ -1,11 +1,11 @@
 import { PotentialSource } from '../../../globals';
-import { Logger } from '../../Logger';
 import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
 } from '../../documents/item/SwadeItem.interface';
 import { createEmbedElement } from '../../util';
-import { FormulaField } from '../fields/FormulaField';
+import { FormulaField } from '../fields';
+import { FormulaDerivedValueField } from '../fields/FormulaDerivedValueField';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -27,7 +27,7 @@ declare namespace PowerData {
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
-    damage: foundry.data.fields.StringField<{ initial: '' }>;
+    damage: FormulaField;
     range: foundry.data.fields.StringField<{ initial: '@sma' }>;
     duration: foundry.data.fields.StringField<{ initial: '' }>;
     trapping: foundry.data.fields.StringField<{
@@ -68,7 +68,11 @@ class PowerData extends SwadeBaseItemData<
         label: 'SWADE.Rank',
       }),
       pp: new fields.NumberField({ initial: 0, label: 'SWADE.PP' }),
-      damage: new fields.StringField({ initial: '', label: 'SWADE.Dmg' }),
+      damage: new FormulaField({
+        initial: '',
+        blank: true,
+        label: 'SWADE.Dmg',
+      }),
       range: new fields.StringField({
         initial: '@sma',
         label: 'SWADE.Range._name',
@@ -100,16 +104,10 @@ class PowerData extends SwadeBaseItemData<
   }
 
   override prepareFormulaFields(): void {
-    const field = new FormulaField();
+    const field = new FormulaDerivedValueField();
     const cleaned = field.clean(this.range);
     if (Roll.validate(cleaned)) {
-      this.range = String(
-        new FormulaField().initialize(cleaned as string, this),
-      );
-    } else {
-      Logger.warn(
-        `Range "${cleaned}" cannot be evaluated as it is not a valid formula`,
-      );
+      this.range = String(field.initialize(cleaned as string, this));
     }
   }
 
@@ -136,6 +134,19 @@ class PowerData extends SwadeBaseItemData<
       `system.powerPoints.${arcane}.max`,
     );
     return { value, max };
+  }
+
+  get ppModifiers() {
+    let cost = this.pp;
+    const modifiers: string[] = [];
+    for (const e of this.parent.effects.filter(
+      (e) => e.type === 'modifier' && e.active,
+    )) {
+      cost += e.system.cost ?? 0;
+      modifiers.push(e.name);
+    }
+    const formatter = game.i18n.getListFormatter({ type: 'unit' });
+    return { cost, modifierList: formatter.format(modifiers) };
   }
 
   async getChatChips(): Promise<ItemChatCardChip[]> {

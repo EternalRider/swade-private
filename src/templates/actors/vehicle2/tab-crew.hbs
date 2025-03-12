@@ -4,25 +4,102 @@
   data-group='primary'
 >
   <div class='left'>
-    <div class='flexrow'>
-      <label class='section-header'>{{localize 'SWADE.Operator'}}</label>
-      {{#if operator}}
-      <a class='reset-driver' data-action='resetDriver'>
-        <i class='fas fa-trash'></i>
-      </a>
-      {{/if}}
+    <div class='form-group stacked'>
+      <label for='{{actor.uuid}}-system.crew.members'>
+        {{localize 'SWADE.Crew'}}
+      </label>
+      <span class='form-fields'>
+        <select
+          id='{{actor.uuid}}-system.crew.members'
+          placeholder='{{localize "SWADE.OperatorIdHint"}}'
+        >
+          {{selectOptions
+            tokenOptions
+            blank='SWADE.OperatorIdHint'
+            localize=true
+          }}
+        </select>
+        <button
+          type='button'
+          class='widget'
+          data-action='addCrewMember'
+          data-tooltip='SWADE.Vehicle.Crew.Add'
+        >
+          <i class='fa-solid fa-plus'></i>
+        </button>
+      </span>
     </div>
-    {{#if operator}}
-      <figure class='operator'>
-        <img src='{{operator.img}}' />
-        <figcaption>{{operator.name}}</figcaption>
-      </figure>
-    {{else}}
-    <div class='add-driver'>
-      {{log driverOptions}}
-      {{formInputSimple 'system.driver.id' source=true localize=true blank='SWADE.OperatorIdHint' options=driverOptions}}
-    </div>
-    {{/if}}
+    <ul class='crew-list'>
+      {{#each actor.system.crew.members}}
+        <li data-member-uuid='{{uuid}}'>
+          <fieldset class='crew-member'>
+            <legend class='flexrow'>
+              <a
+                class='flexrow avatar'
+                role='button'
+                data-action='openCrewMember'
+              >
+                <img src='{{img}}' />
+                {{name}}
+              </a>
+              <button
+                class='delete-member flex0'
+                type='button'
+                data-action='deleteCrewMember'
+                data-tooltip='SWADE.Vehicle.Crew.Remove'
+                data-index='{{@index}}'
+              >
+                <i class='fa-solid fa-trash'></i>
+              </button>
+            </legend>
+            <input
+              type='text'
+              class='hidden'
+              aria-hidden='true'
+              value='{{uuid}}'
+              name='{{concat "system.crew.members." @index ".uuid"}}'
+            />
+            {{formGroupSimple
+              'system.crew.members.element.role'
+              name=(concat 'system.crew.members.' @index '.role')
+              localize=true
+              value=role
+              blank=false
+            }}
+            {{#if (eq role 'operator')}}
+              <button
+                type='button'
+                data-action='maneuverCheck'
+                {{disabled (not actor)}}
+              >
+                {{localize 'SWADE.ManCheck'}}
+              </button>
+
+            {{/if}}
+            {{#if (or (eq role 'operator') (eq role 'gunner'))}}
+              <div class='form-group stacked no-gap'>
+                <label
+                  for='{{@root.actor.uuid}}-system.crew.members.{{@index}}.weapons'
+                >
+                  {{localize 'SWADE.Weapons'}}
+                </label>
+                <span class='form-fields'>
+                  <multi-select
+                    id='{{@root.actor.uuid}}-system.crew.members.{{@index}}.weapons'
+                    name='system.crew.members.{{@index}}.weapons'
+                  >
+                    {{selectOptions
+                      @root.weaponOptions
+                      selected=(lookup @root.weaponsPerMember @index)
+                    }}
+                  </multi-select>
+                </span>
+              </div>
+            {{/if}}
+          </fieldset>
+        </li>
+      {{/each}}
+    </ul>
   </div>
   <div class='right'>
     {{formGroupSimple
@@ -33,121 +110,121 @@
       sort=true
     }}
     {{formGroupSimple 'system.driver.skillAlternative' document=actor}}
-    <button type='button' data-action='maneuverCheck' {{#unless operator}}disabled{{/unless}}>
-      {{localize 'SWADE.ManCheck'}}
-    </button>
     <details class='abilities' data-summary-id='abilities'>
       <summary class='section-header'>
         {{localize 'SWADE.SpecialAbilities'}}
         {{#if editable}}
-        <a class='helper-button'
-          data-action='createDocument' 
-          data-document-class='Item' 
-          data-type='ability' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
+          <a
+            class='helper-button'
+            data-action='createDocument'
+            data-document-class='Item'
+            data-type='ability'
+          >
+            <i class='fa-solid fa-plus'></i>
+          </a>
         {{/if}}
       </summary>
       <ul class='item-list content'>
-      {{#each abilities as |item|}}
-        <li 
-          data-item-id='{{item.id}}' 
-          data-document-class='Item' 
-          data-drag='true' 
-          class='flexrow'
-        >
-          <img src='{{item.img}}' />
-          <a class='name' data-action='showItem'>{{item.name}}</a>
-          <span class='controls'>
-            <a data-action='openItem'>
-              <i class='fa-solid fa-edit'></i>
-            </a>
-            {{#if @root.editable}}
-            <a data-action='deleteItem'>
-              <i class='fa-solid fa-trash'></i>
-            </a>
-            {{/if}}
-          </span>
-        </li>
-      {{/each}}
+        {{#each abilities as |item|}}
+          <li
+            data-item-id='{{item.id}}'
+            data-document-class='Item'
+            data-drag='true'
+            class='flexrow'
+          >
+            <img src='{{item.img}}' />
+            <a class='name' data-action='showItem'>{{item.name}}</a>
+            <span class='controls'>
+              <a data-action='openItem'>
+                <i class='fa-solid fa-edit'></i>
+              </a>
+              {{#if @root.editable}}
+                <a data-action='deleteItem'>
+                  <i class='fa-solid fa-trash'></i>
+                </a>
+              {{/if}}
+            </span>
+          </li>
+        {{/each}}
       </ul>
     </details>
     {{#if showEdges}}
-    <details class='edges' data-summary-id='edges'>
-      <summary class='section-header'>
-        {{localize 'SWADE.Edges'}}
-        {{#if editable}}
-        <a class='helper-button'
-          data-action='createDocument' 
-          data-document-class='Item' 
-          data-type='edge' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
-        {{/if}}
-      </summary>
-      <ul class='item-list content'>
-      {{#each edges as |item|}}
-        <li 
-          data-item-id='{{item.id}}' 
-          data-document-class='Item' 
-          data-drag='true' 
-          class='flexrow'
-        >
-          <img src='{{item.img}}' />
-          <a class='name' data-action='showItem'>{{item.name}}</a>
-          <span class='controls'>
-            <a data-action='openItem'>
-              <i class='fa-solid fa-edit'></i>
+      <details class='edges' data-summary-id='edges'>
+        <summary class='section-header'>
+          {{localize 'SWADE.Edges'}}
+          {{#if editable}}
+            <a
+              class='helper-button'
+              data-action='createDocument'
+              data-document-class='Item'
+              data-type='edge'
+            >
+              <i class='fa-solid fa-plus'></i>
             </a>
-            {{#if @root.editable}}
-            <a data-action='deleteItem'>
-              <i class='fa-solid fa-trash'></i>
+          {{/if}}
+        </summary>
+        <ul class='item-list content'>
+          {{#each edges as |item|}}
+            <li
+              data-item-id='{{item.id}}'
+              data-document-class='Item'
+              data-drag='true'
+              class='flexrow'
+            >
+              <img src='{{item.img}}' />
+              <a class='name' data-action='showItem'>{{item.name}}</a>
+              <span class='controls'>
+                <a data-action='openItem'>
+                  <i class='fa-solid fa-edit'></i>
+                </a>
+                {{#if @root.editable}}
+                  <a data-action='deleteItem'>
+                    <i class='fa-solid fa-trash'></i>
+                  </a>
+                {{/if}}
+              </span>
+            </li>
+          {{/each}}
+        </ul>
+      </details>
+      <details class='hindrances' data-summary-id='hindrances'>
+        <summary class='section-header'>
+          {{localize 'SWADE.Hindrances'}}
+          {{#if editable}}
+            <a
+              class='helper-button'
+              data-action='createDocument'
+              data-document-class='Item'
+              data-type='hindrance'
+            >
+              <i class='fa-solid fa-plus'></i>
             </a>
-            {{/if}}
-          </span>
-        </li>
-      {{/each}}
-      </ul>
-    </details>
-    <details class='hindrances' data-summary-id='hindrances'>
-      <summary class='section-header'>
-        {{localize 'SWADE.Hindrances'}}
-        {{#if editable}}
-        <a class='helper-button'
-          data-action='createDocument' 
-          data-document-class='Item' 
-          data-type='hindrance' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
-        {{/if}}
-      </summary>
-      <ul class='item-list content'>
-      {{#each hindrances as |item|}}
-        <li 
-          data-item-id='{{item.id}}' 
-          data-document-class='Item' 
-          data-drag='true' 
-          class='flexrow'
-        >
-          <img src='{{item.img}}' />
-          <a class='name' data-action='showItem'>{{item.name}}</a>
-          <span class='controls'>
-            <a data-action='openItem'>
-              <i class='fa-solid fa-edit'></i>
-            </a>
-            {{#if @root.editable}}
-            <a data-action='deleteItem'>
-              <i class='fa-solid fa-trash'></i>
-            </a>
-            {{/if}}
-          </span>
-        </li>
-      {{/each}}
-      </ul>
-    </details>
+          {{/if}}
+        </summary>
+        <ul class='item-list content'>
+          {{#each hindrances as |item|}}
+            <li
+              data-item-id='{{item.id}}'
+              data-document-class='Item'
+              data-drag='true'
+              class='flexrow'
+            >
+              <img src='{{item.img}}' />
+              <a class='name' data-action='showItem'>{{item.name}}</a>
+              <span class='controls'>
+                <a data-action='openItem'>
+                  <i class='fa-solid fa-edit'></i>
+                </a>
+                {{#if @root.editable}}
+                  <a data-action='deleteItem'>
+                    <i class='fa-solid fa-trash'></i>
+                  </a>
+                {{/if}}
+              </span>
+            </li>
+          {{/each}}
+        </ul>
+      </details>
     {{/if}}
   </div>
 </section>

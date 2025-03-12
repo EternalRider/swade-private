@@ -1,4 +1,4 @@
-import type { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { EmptyObject } from 'fvtt-types/utils';
 import type SwadeCombat from '../../documents/combat/SwadeCombat';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import type { RollModifier } from '../../../interfaces/additional.interface';

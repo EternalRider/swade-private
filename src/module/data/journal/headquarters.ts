@@ -1,4 +1,4 @@
-import { EmptyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { EmptyObject } from 'fvtt-types/utils';
 
 declare namespace HeadquartersData {
   interface Schema extends foundry.data.fields.DataSchema {

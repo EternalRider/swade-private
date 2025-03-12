@@ -127,12 +127,6 @@ export const statusEffects: CONFIG.StatusEffect[] = [
     },
   },
   {
-    img: 'systems/swade/assets/icons/status/status_flying.svg',
-    id: 'flying',
-    _id: 'flying0000000000',
-    name: 'SWADE.Flying',
-  },
-  {
     img: 'systems/swade/assets/icons/status/status_holding.svg',
     id: 'holding',
     _id: 'holding000000000',
@@ -367,6 +361,32 @@ export const statusEffects: CONFIG.StatusEffect[] = [
     id: 'torch',
     _id: 'torch00000000000',
     name: 'SWADE.Torch',
+  },
+  {
+    img: 'systems/swade/assets/icons/status/status_burrowing.svg',
+    id: 'burrowing',
+    _id: 'burrowing0000000',
+    name: 'SWADE.Burrowing',
+    changes: [
+      {
+        key: 'system.pace.base',
+        value: 'burrow',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      },
+    ],
+  },
+  {
+    img: 'systems/swade/assets/icons/status/status_flying.svg',
+    id: 'flying',
+    _id: 'flying0000000000',
+    name: 'SWADE.Flying',
+    changes: [
+      {
+        key: 'system.pace.base',
+        value: 'fly',
+        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
+      },
+    ],
   },
   {
     id: 'invisible',

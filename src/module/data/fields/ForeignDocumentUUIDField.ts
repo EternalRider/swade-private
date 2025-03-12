@@ -1,4 +1,4 @@
-import { SimpleMerge } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { SimpleMerge } from 'fvtt-types/utils';
 
 /** A function that resolves into the fetched document or the source UUID as a string */
 export type DocumentFn<
@@ -7,7 +7,6 @@ export type DocumentFn<
 
 declare namespace ForeignDocumentUUIDField {
   type Options = foundry.data.fields.DocumentUUIDField.Options;
-
   type DefaultOptions = SimpleMerge<
     foundry.data.fields.DocumentUUIDField.DefaultOptions,
     {
@@ -53,7 +52,9 @@ export class ForeignDocumentUUIDField<
       try {
         const doc = fromUuidSync(value);
         if (doc instanceof typeClass)
-          return doc as Document.ConfiguredClassForName<this['type']>;
+          return doc as foundry.abstract.Document.ConfiguredClassForName<
+            this['type']
+          >;
         return value;
       } catch (error) {
         console.error(error);

@@ -1,4 +1,4 @@
 export interface TemplateConfig {
   button: SceneControlTool;
-  data: foundry.documents.BaseMeasuredTemplate.ConstructorData;
+  data: foundry.documents.BaseMeasuredTemplate.CreateData;
 }

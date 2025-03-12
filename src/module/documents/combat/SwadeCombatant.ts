@@ -1,4 +1,4 @@
-import { AnyMutableObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { AnyMutableObject } from 'fvtt-types/utils';
 import { Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { getStatusEffectDataById } from '../../util';

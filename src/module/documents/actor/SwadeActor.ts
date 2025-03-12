@@ -1,7 +1,4 @@
-import {
-  NullishProps,
-  ValueOf,
-} from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
 import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
@@ -426,13 +423,9 @@ class SwadeActor<
     }
     let skill: SwadeItem | undefined;
     skill = this.items.find((i) => i.id == skillId);
-    if (tempSkill) {
-      skill = tempSkill;
-    }
+    if (tempSkill) skill = tempSkill;
 
-    if (!skill) {
-      return this.makeUnskilledAttempt(options);
-    }
+    if (!skill) return this.makeUnskilledAttempt(options);
 
     const skillRoll = this._handleComplexSkill(skill, options);
     const roll = skillRoll[0];
@@ -442,9 +435,7 @@ class SwadeActor<
 
     //Build Flavour
     let flavour = '';
-    if (options.flavour) {
-      flavour = ` - ${options.flavour}`;
-    }
+    if (options.flavour) flavour = ` - ${options.flavour}`;
 
     /**
      * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
@@ -973,49 +964,28 @@ class SwadeActor<
     return retVal;
   }
 
-  /** Helper Function for Vehicle Actors, to roll Maneuvering checks */
+  /**
+   * @deprecated
+   * Helper Function for Vehicle Actors, to roll Maneuvering checks
+   */
   async rollManeuverCheck() {
-    if (!(this.system instanceof VehicleData)) return;
-    const driver = await this.getDriver();
-
-    //Return early if no driver was found
-    if (!driver) return;
-
-    //Get skillname
-    let skillName = this.system.driver.skill;
-    if (skillName === '') {
-      skillName = this.system.driver.skillAlternative;
-    }
-
-    // Calculate handling
-    const handling = this.system.handling!;
-    const wounds = this.calcWoundPenalties();
-    const basePenalty = handling + wounds;
-
-    //Handling is capped at a certain penalty
-    const totalHandling = Math.max(
-      basePenalty,
-      SWADE.vehicles.maxHandlingPenalty,
+    foundry.utils.logCompatibilityWarning(
+      'SwadeActor#rollManeuverCheck has been moved to the VehicleData class and can be accessed via system.rollManeuverCheck',
+      { since: '4.4', until: '5.1' },
     );
-
-    //Find the operating skill
-    const skill = driver.itemTypes.skill.find((i) => i.name === skillName);
-    driver.rollSkill(skill?.id, {
-      additionalMods: [
-        {
-          label: game.i18n.localize('SWADE.Handling'),
-          value: totalHandling,
-        },
-      ],
-    });
+    if (!(this.system instanceof VehicleData)) return;
+    await this.system.rollManeuverCheck();
   }
 
+  /** @deprecated */
   async getDriver(): Promise<SwadeActor<'character' | 'npc'> | null> {
-    if (!(this.system instanceof VehicleData)) return null;
-    if (!this.system.driver.id) return null;
-    return (await fromUuid(this.system.driver.id)) as SwadeActor<
-      'character' | 'npc'
-    > | null;
+    foundry.utils.logCompatibilityWarning(
+      'SwadeActor#getDriver deprecated in favor of the crew members array, which can be found at system.crew.members',
+      { since: '4.4', until: '5.1' },
+    );
+    this.crew.members
+      .find((m) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
+      .map((m) => m.actor) ?? null;
   }
 
   getTraitRollModifiers(

@@ -22,10 +22,19 @@ declare global {
 export default class SwadeActiveEffect<
   Subtype extends ActiveEffect.SubType = ActiveEffect.SubType,
 > extends ActiveEffect<Subtype> {
-  static override defaultName(): string {
-    return game.i18n.format('DOCUMENT.New', {
-      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-    });
+  static override defaultName(
+    context: foundry.abstract.Document.DefaultNameContext<
+      ActiveEffect.SubType,
+      Exclude<ActiveEffect.Parent, null>
+    > = {},
+  ): string {
+    // Base active effect should just be called "Active Effect"
+    if (!('type' in context) || context.type === 'base') {
+      return game.i18n.format('DOCUMENT.New', {
+        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+      });
+    }
+    return super.defaultName(context);
   }
 
   get affectsItems() {

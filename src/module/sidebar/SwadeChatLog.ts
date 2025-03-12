@@ -1,4 +1,3 @@
-import { DocumentOnCreateOptions } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs';
 import { SwadeRoll } from '../dice/SwadeRoll';
 
 export default class SwadeChatLog extends ChatLog {
@@ -6,7 +5,7 @@ export default class SwadeChatLog extends ChatLog {
     command: string,
     matches: RegExpMatchArray[],
     chatData: ChatMessage.CreateData,
-    createOptions: DocumentOnCreateOptions<'ChatMessage'>,
+    createOptions: ChatMessage.DatabaseOperation.OnCreateOperation,
   ): Promise<void> {
     const actor =
       ChatMessage.getSpeakerActor(chatData.speaker) || game.user.character;

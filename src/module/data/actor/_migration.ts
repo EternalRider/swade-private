@@ -1,3 +1,5 @@
+import { constants } from '../../constants';
+
 export function splitTopSpeed(source: any) {
   if (
     Object.hasOwn(source, 'topspeed') &&
@@ -38,4 +40,25 @@ export function shiftCargoModsMax(source: any) {
   if (oldMaxCargo) foundry.utils.setProperty(source, 'cargo.max', oldMaxCargo);
   const oldMaxMods = source.maxMods;
   if (oldMaxMods) foundry.utils.setProperty(source, 'mods.max', oldMaxMods);
+}
+
+export function migrateDriver(source: any) {
+  if (foundry.utils.hasProperty(source, 'driver.id') && !!source.driver.id) {
+    foundry.utils.mergeObject(source.crew, {
+      members: [{ uuid: source.driver.id, role: constants.CREW_ROLE.OPERATOR }],
+    });
+    delete source.driver.id;
+    Object.defineProperty(source.driver, 'id', {
+      configurable: true,
+      get: () => {
+        foundry.utils.logCompatibilityWarning(
+          'The driver.id property has been replaced by the crew member list',
+          { since: '4.4', until: '5.1' },
+        );
+        return source.crew.members.find(
+          (m) => m.role === constants.CREW_ROLE.OPERATOR,
+        )?.uuid;
+      },
+    });
+  }
 }

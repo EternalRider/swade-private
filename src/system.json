@@ -2,11 +2,21 @@
   "id": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "4.3-dev",
+  "version": "4.4-dev",
   "compatibility": {
     "minimum": 12,
     "verified": 12,
     "max": 12
+  },
+  "relationships": {
+    "recommends": [
+      {
+        "id": "complete-card-management",
+        "manifest": "https://github.com/MetaMorphic-Digital/complete-card-management/releases/download/v1.0.2/module.json",
+        "reason": "For laying out chases.",
+        "type": "module"
+      }
+    ]
   },
   "authors": [
     {
@@ -146,6 +156,9 @@
   "changelog": "https://gitlab.com/peginc/swade/-/releases",
   "license": "https://gitlab.com/peginc/swade/-/blob/master/LICENSE.md",
   "documentTypes": {
+    "ActiveEffect": {
+      "modifier": {}
+    },
     "Actor": {
       "character": {
         "htmlFields": [

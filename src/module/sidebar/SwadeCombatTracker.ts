@@ -1,4 +1,3 @@
-import { DropData } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/data/abstract/client-document.mjs';
 import { Updates } from '../../globals';
 import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import SwadeCombat from '../documents/combat/SwadeCombat';
@@ -223,7 +222,7 @@ export default class SwadeCombatTracker extends CombatTracker {
   protected override async _onDrop(ev: DragEvent) {
     const data = JSON.parse(
       ev.dataTransfer!.getData('text/plain'),
-    ) as DropData<SwadeCombatant>;
+    ) as foundry.abstract.Document.DropData<SwadeCombatant>;
     const combatant = await SwadeCombatant.fromDropData(data);
     const target = ev.currentTarget as HTMLLIElement;
     const leaderId = target.dataset.combatantId!;

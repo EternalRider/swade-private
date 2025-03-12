@@ -1,59 +1,33 @@
-import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
-
-export class FormulaField extends foundry.data.fields.DataField {
-  protected _cast(value: any): string {
+export class FormulaField extends foundry.data.fields.StringField {
+  protected override _cast(value: any): string {
     if (typeof value !== 'string') {
-      value = value.toString();
+      value = value?.toString() ?? '';
+    } else {
+      if (game.settings.get('core', 'language') !== 'en') {
+        value = value
+          .replace(new RegExp('^' + game.i18n.localize('SWADE.AttrSma')), '@sma')
+          .replace(new RegExp('^' + game.i18n.localize('SWADE.AttrSmaShortPowerRange')), '@sma');
+      }
+      value = value
+        .replace(/^-/, '') // Core, HYPHEN-MINUS, only remove at beginning as minus may be used in formulas
+        .replace(/–/, '') // SFC, EN DASH not minus, so safe to remove
+        .replace(/—/, '') // EM DASH not minus, so safe to remove
+        .replace(/―/, '') // FIGURE DASH not minus, so safe to remove
+        .replace(/―/, '') // HORIZONTAL BAR not minus, so safe to remove
+        .replace(/( )(x)([ ]*[0-9])*/g, '$1*$3') // core rules power ranges, turns ' x 5' and ' x5' into '*5' (matches <space><x><optional space><number>)
+        .replace(/×/g, '*') // U+00D7 Multiplication Sign, used e.g. in Fantasy Companion power ranges
+        .replace(/^Smarts/, '@sma')
+        .replace(/^Sm/, '@sma');
+      return value;
     }
-    return value.replace('Sm', '@sma').replace(' x ', '*');
   }
 
   protected override _validateType(
     value: any,
     _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any> = {},
   ): boolean | void {
-    if (Number(value) === 0) return true;
+    if (!value) console.log(this);
+    if (this.blank && Number(value) === 0) return true;
     return Roll.validate(value);
-  }
-
-  override initialize(
-    value: string,
-    model: foundry.abstract.DataModel.Any,
-    _options?: AnyObject,
-  ): number {
-    value = this._cast(value);
-    if (!model.parent?.actor) return 0;
-    const rollData = model.parent?.actor?.getRollData();
-    const roll = new Roll(value, rollData);
-    const simplifiedTerms = new Array<foundry.dice.terms.RollTerm>();
-    for (const term of roll.terms) {
-      const simplified = this.#simplifyTerm(term);
-      if (Array.isArray(simplified)) simplifiedTerms.push(...simplified);
-      else simplifiedTerms.push(simplified);
-    }
-    roll.terms = simplifiedTerms;
-    const evaluated = new Roll(roll.resetFormula()).evaluateSync();
-    return evaluated.total;
-  }
-
-  #simplifyTerm(
-    term: foundry.dice.terms.RollTerm,
-  ): foundry.dice.terms.RollTerm | foundry.dice.terms.RollTerm[] {
-    if (term instanceof foundry.dice.terms.DiceTerm) {
-      return new foundry.dice.terms.NumericTerm({
-        number: (term.number ?? 1) * (term.faces ?? 0),
-      });
-    }
-    if (term instanceof foundry.dice.terms.ParentheticalTerm) {
-      term.roll.terms = term.roll.terms.map(this.#simplifyTerm.bind(this));
-      term.roll = new Roll(term.roll.resetFormula());
-      term.term = term.roll.formula;
-      return term;
-    }
-    return term;
-  }
-
-  override toObject(value): string {
-    return value.toString();
   }
 }

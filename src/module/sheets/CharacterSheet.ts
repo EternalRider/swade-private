@@ -784,17 +784,19 @@ export default class CharacterSheet extends ActorSheet {
       const template = button.dataset.template!;
       SwadeMeasuredTemplate.fromPreset(template, item);
     } else {
-      ItemChatCardHelper.handleAction(item, this.actor, action, additionalMods);
+      ItemChatCardHelper.handleAction(item, this.actor, action, {
+        additionalMods,
+        event: ev?.originalEvent,
+      });
     }
   }
 
   protected async _inlineItemCreate(button: HTMLButtonElement) {
-    const type = button.dataset.type!;
+    const type = button.dataset.type as Item.SubType | 'choice' | 'advance';
     // item creation helper func
-    const createItem = (type: string, name?: string) => {
+    const createItem = (type: Item.SubType, name?: string) => {
       const itemData = {
-        name:
-          name ?? game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
+        name: name ?? SwadeItem.defaultName({ type, parent: this.actor }),
         type: type,
         system: Object.assign({}, button.dataset),
       };

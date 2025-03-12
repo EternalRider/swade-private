@@ -25,6 +25,10 @@
 }
 
 .application.sheet.swade.actor.vehicle {
+  .no-gap {
+    gap: 0;
+  }
+
   .section-header {
     line-height: 30px;
     font-size: 20px;
@@ -55,10 +59,11 @@
   [data-application-part='header'] {
     .sheet-portrait {
       flex: 0 0 120px;
-      img {
-        border: none;
-        cursor: pointer;
-      }
+      max-width: 120px;
+      max-height: 120px;
+      border: none;
+      cursor: pointer;
+      object-fit: contain;
     }
     .name {
       margin-bottom: 2px;
@@ -166,8 +171,13 @@
           }
         }
       }
+      .additional-stats,
+      .energy {
+        margin-top: 0.25rem;
+        padding-top: 0.25rem;
+        border-top: 1px solid var(--color-border-light-primary);
+      }
       .additional-stats {
-        margin-top: 5px;
         .form-group {
           margin: 2px 0;
           .check-container {
@@ -179,11 +189,26 @@
   }
   [data-application-part='crew'] {
     align-items: start;
-    .reset-driver {
-      flex: 0 0 20px;
-    }
-    .add-driver {
-      margin: 5px;
+    .crew-list {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+      .crew-member {
+        padding: 0.5rem;
+        gap: 0.5rem;
+      }
+      .avatar {
+        gap: 0.25rem;
+        img {
+          border: unset;
+          border-radius: unset;
+          max-width: 32px;
+          max-height: 32px;
+        }
+      }
+      .delete-member {
+        margin-left: 0.75rem;
+      }
     }
     .right {
       .form-group {

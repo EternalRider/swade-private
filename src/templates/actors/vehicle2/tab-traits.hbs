@@ -42,18 +42,18 @@
       <summary class='section-header'>
       {{localize 'SWADE.Mods'}}
       {{#if showModCount}}
-      ({{system.mods.value}} / {{system.mods.max}})
+        ({{system.mods.value}} / {{system.mods.max}})
       {{/if}}
       {{#if editable}}
-      <a class='helper-button'
-        data-action='createDocument' 
-        data-document-class='Item' 
-        data-type='gear' 
-        data-system.is-vehicular='true' 
-        data-system.equip-status='3' 
-      >
-        <i class='fa-solid fa-plus'></i>
-      </a>
+        <a class='helper-button'
+          data-action='createDocument' 
+          data-document-class='Item' 
+          data-type='gear' 
+          data-system.is-vehicular='true' 
+          data-system.equip-status='3' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
       {{/if}}
       </summary>
       <ul class='item-list content'>
@@ -83,16 +83,17 @@
     <details class='weapons' data-summary-id='weapons'>
       <summary class='section-header'>
         {{localize 'SWADE.Weapons'}}
-        {{#if editable}}
-        <a class='helper-button'
-          data-action='createDocument' 
-          data-document-class='Item' 
-          data-type='weapon' 
-          data-system.is-vehicular='true' 
-          data-system.equip-status='4' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
+          {{#if editable}}
+          <a class='helper-button'
+            role="button"
+            data-action='createDocument' 
+            data-document-class='Item' 
+            data-type='weapon' 
+            data-system.is-vehicular='true' 
+            data-system.equip-status='4' 
+          >
+            <i class='fa-solid fa-plus'></i>
+          </a>
         {{/if}}
       </summary>
       <ul class='item-list content'>
@@ -110,9 +111,9 @@
               <i class='fa-solid fa-edit'></i>
             </a>
             {{#if @root.editable}}
-            <a data-action='deleteItem'>
-              <i class='fa-solid fa-trash'></i>
-            </a>
+              <a data-action='deleteItem'>
+                <i class='fa-solid fa-trash'></i>
+              </a>
             {{/if}}
           </span>
         </li>
@@ -122,37 +123,37 @@
   </div>
   <div class='right'>
     {{#if attributes.enabled}}
-    <div class='attributes'>
-      <label class='section-header'>
-        {{localize 'SWADE.Attributes'}} 
-        <a class='helper-button' data-action='manageAttributes'>
-          <i class='fa-solid fa-gear'></i>
-        </a>
-      </label>
-      <div class='attribute-list'>
-        {{#each attributes.list}}
-        <div class='form-group'>
-          <label class='attribute-label'>{{localize field.label}}</label>
-          <div class='attribute'>
-            <button
-              type='button'
-              data-tooltip='{{tooltip}}'
-              data-attribute='{{field.name}}'
-              data-action='rollAttribute'
-            >
-              <img
-                class='die'
-                src='systems/swade/assets/official/dice/d{{value.die.sides}}.svg'
-              />
-              <span class='modifier'>
-                {{signedString value.die.modifier}}
-              </span>
-            </button>
-          </div>
+      <div class='attributes'>
+        <label class='section-header'>
+          {{localize 'SWADE.Attributes'}} 
+          <a class='helper-button' data-action='manageAttributes'>
+            <i class='fa-solid fa-gear'></i>
+          </a>
+        </label>
+        <div class='attribute-list'>
+          {{#each attributes.list}}
+            <div class='form-group'>
+              <label class='attribute-label'>{{localize field.label}}</label>
+              <div class='attribute'>
+                <button
+                  type='button'
+                  data-tooltip='{{tooltip}}'
+                  data-attribute='{{field.name}}'
+                  data-action='rollAttribute'
+                >
+                  <img
+                    class='die'
+                    src='systems/swade/assets/official/dice/d{{value.die.sides}}.svg'
+                  />
+                  <span class='modifier'>
+                    {{signedString value.die.modifier}}
+                  </span>
+                </button>
+              </div>
+            </div>
+          {{/each}}
         </div>
-        {{/each}}
       </div>
-    </div>
     {{/if}}
     <div class='derived'>
       <label class='section-header'>{{localize 'SWADE.Stats'}}</label>
@@ -189,6 +190,15 @@
           </div>
         </div>
       </div>
+      {{#if hasEnergy}}
+        <div class='form-group energy'>
+          <label for='{{actor.uuid}}-system.energy.value' class='label'>{{localize 'SWADE.Energy.Label'}}</label>
+          <div class='form-fields'>
+            <input min="0" id='{{actor.uuid}}-system.energy.value' type='number' name='system.energy.value' placeholder="{{localize 'SWADE.Energy.Value'}}" value='{{system.energy.value}}' />
+            <input min="0" type='number' name='system.energy.max' placeholder="{{localize 'SWADE.Energy.Max'}}" value='{{system.energy.max}}' />
+          </div>
+        </div>
+      {{/if}}
       {{#if hasAdditionalStatsFields}}
         <div class='additional-stats'>
           {{#each additionalStats as |attr key|}}
@@ -269,11 +279,9 @@
       <label class='section-header'>
         {{localize 'SWADE.Effects'}}  
         {{#if editable}}
-        <a class='helper-button'
-          data-action='openAegis' 
-        >
-          <i class='fa-solid fa-plus'></i>
-        </a>
+          <a class='helper-button' data-action='openAegis'>
+            <i class='fa-solid fa-plus'></i>
+          </a>
         {{/if}}
       </label>
       <ul class='effect-section'>
