@@ -348,8 +348,8 @@ SWADE:
   Modifiers: Modificateurs
   ActionTraitMod: Modificateur de trait d'action
   ActionDmgMod: Modificateur de dégâts pour les actions
-  ItemTraitMod: Modificateur de trait d'objet
-  ItemDmgMod: Modification d'objet de dégâts
+  ItemTraitMod: Modificateur de trait
+  ItemDmgMod: Modificateur de dégâts
   Duplicates: Doublons trouvés
   DuplicateItemsBodyText: En ajoutant le {type} <strong>{name}</strong> à l'acteur
     {target}, des éléments en double (nom/type) ont été trouvés. Les nouveaux objets
@@ -467,6 +467,10 @@ SWADE:
     AddUnguided: Ajouter un Effet Actif vide
     Conditional: Effet conditionnel
     ConditionalTooltip: Par défaut Ignorer les modificateurs de jets
+    AddModifier: Ajout d'un modificateur
+    ModifierCost:
+      Label: Coût du modificateur
+      Hint: Le coût en points de construction ou de pouvoir de ce modificateur
   Keybindings:
     OpenFavoriteCards:
       Name: Ouvrir la main préférée
@@ -1591,6 +1595,17 @@ SWADE:
   Vehicle:
     Cargo:
       Capacity: Capacité de la soute
+    Crew:
+      Add: Ajout d'un membre d'équipage
+      Role: Rôle
+      Roles:
+        Operator: Opérateur
+        Gunner: Canonnier
+        Other: Autre
+      Remove: Suppression d'un membre d'équipage
+  PPMods: Modificateurs de pouvoir
+  AttrSmaShortPowerRange: Int
+  Burrowing: Enfouissement
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1678,3 +1693,5 @@ TYPES:
     dt: Scène dramatique
     chase: Poursuite
     dramaticTask: Scène Dramatique
+  ActiveEffect:
+    modifier: Modificateur
