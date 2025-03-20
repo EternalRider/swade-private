@@ -534,6 +534,7 @@
     grid-template-columns: repeat(12, 10px);
     min-height: 70px;
     .counter-header {
+      max-height: 25px;
       grid-row: 1;
       grid-column: 1 / -1;
     }
