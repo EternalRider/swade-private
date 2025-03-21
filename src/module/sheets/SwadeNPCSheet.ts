@@ -149,6 +149,15 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       .on('change', this._toggleStatusEffect.bind(this));
 
     html
+      .querySelector('.attribute.size input')
+      ?.addEventListener('mouseenter', (event) => {
+        game.tooltip.deactivate();
+        game.tooltip.activate(event.target as HTMLElement, {
+          content: (this.actor.system as NpcData).getSizeTooltip(),
+        });
+      });
+
+    html
       .querySelector('.attribute.pace input')
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();

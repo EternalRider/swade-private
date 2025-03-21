@@ -167,6 +167,21 @@ export function getRankFromAdvance(advance: number): number {
 }
 
 /** @internal */
+export function getScaleName(scaleMod: number): string {
+  const modMax = 6;
+
+  if (scaleMod < -modMax) {
+    return game.i18n.format('SWADE.Scales.SmallerThan', {scale: getScaleName(-modMax)})
+  }
+  if (scaleMod > modMax) {
+    return game.i18n.format('SWADE.Scales.LargerThan', {scale: getScaleName(modMax)})
+  }
+  const index = Math.floor((scaleMod+modMax)/2);
+  return SWADE.scales[index];
+}
+
+
+/** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
   return SWADE.ranks[getRankFromAdvance(advance)];
 }

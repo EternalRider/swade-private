@@ -139,7 +139,7 @@
     <span class='name'>{{localize 'SWADE.Derived'}}</span>
   </header>
   <span class='flexrow derived-list'>
-    <div class='stat'>
+    <div class='stat size'>
       <span class='stat-label'>{{localize 'SWADE.Size'}}</span>
       <span class='stat-value flexrow'>
         <input
@@ -147,9 +147,6 @@
           type='text'
           value='{{actor.system.stats.size}}'
           data-dtype='Number'
-          data-tooltip='{{localize
-            "SWADE.Scale"
-          }}: {{actor.system.stats.scale}}'
         />
       </span>
     </div>
@@ -176,7 +173,7 @@
         </button>
       </span>
     </div>
-    <div class='stat'>
+    <div class='stat parry'>
       <span class='stat-label'>{{localize 'SWADE.Parry'}}</span>
       <span class='stat-value flexrow'>
         <input
@@ -197,7 +194,7 @@
         </button>
       </span>
     </div>
-    <div class='stat'>
+    <div class='stat toughness'>
       <span class='stat-label'>{{localize 'SWADE.Tough'}}</span>
       <span class='stat-value flexrow'>
         <input
