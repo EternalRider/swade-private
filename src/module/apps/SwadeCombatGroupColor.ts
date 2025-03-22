@@ -28,7 +28,7 @@ export default class SwadeCombatGroupColor extends FormApplication<
 
   override async _onChangeColorPicker(event) {
     super._onChangeColorPicker(event);
-    this.object.update('flags.swade.groupColor', event.currentTarget.value);
+    this.object.setFlag('swade', 'groupColor', event.currentTarget.value);
   }
 
   async _onResetColor() {
@@ -42,7 +42,7 @@ export default class SwadeCombatGroupColor extends FormApplication<
       groupColor = gm.color!;
     }
 
-    await this.object.update({ 'flags.swade.groupColor': null });
+    await this.object.setFlag('swade', 'groupColor', null);
     $(this.form!).find('#groupColor').val(groupColor);
   }
 
