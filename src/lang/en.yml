@@ -538,6 +538,7 @@ SWADE:
     Total: Total Cover
   Range:
     _name: Range
+    _nameShort: Range
     Medium: Medium Range
     Long: Long Range
     Extreme: Extreme Range

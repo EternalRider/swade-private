@@ -574,11 +574,14 @@
           padding: 5px;
           height: calc(100% - 30px);
           overflow-y: auto;
-          .power-details {
+          .power-details, .trapping {
             font-size: 12px;
             line-height: 12px;
             font-weight: 600;
             text-indent: 5px;
+          }
+          .trapping {
+            padding-top: $small-spacing;
           }
           .power-description {
             line-height: 15px;
