@@ -82,25 +82,29 @@
       <div class="power-details">
         <div class="flexrow">
           {{#if system.rank}}
-          <div>{{localize 'SWADE.Rank'}}: {{system.rank}}</div>
+          <div>{{localize 'SWADE.Rank'}}:&nbsp;{{system.rank}}</div>
           {{/if}} {{#if system.pp}}
-          <div>{{system.pp}} PP</div>
+          <div>{{localize 'SWADE.PPAbbreviation'}}:&nbsp;{{system.pp}}</div>
           {{/if}}
         </div>
         <div class="flexrow">
           {{#if system.range}}
-          <div>{{localize 'SWADE.Range._name'}}: {{system.range}}</div>
+          <div>{{localize 'SWADE.Range._name'}}:&nbsp;{{system.range}}</div>
           {{/if}} {{#if system.duration}}
-          <div>{{localize 'SWADE.Dur'}}: {{system.duration}}</div>
+          <div>{{localize 'SWADE.Dur'}}:&nbsp;{{system.duration}}</div>
           {{/if}}
         </div>
-        {{#if system.damage}}
-        <div>
-          {{localize 'SWADE.Dmg'}}:
-          <a class="damage-roll">{{system.damage}}</a>
+        <div class="flexrow">
+          {{#if system.damage}}
+          <div>{{localize 'SWADE.Dmg'}}:&nbsp;<a class="damage-roll">{{system.damage}}</a></div>
+          {{/if}} {{#if system.ap}}
+          <span>{{localize "SWADE.Ap"}}:&nbsp;{{system.ap}}</span>
+          {{/if}}
         </div>
-        {{/if}}
       </div>
+      {{#if system.trapping}}
+        <div class="trapping">{{localize "SWADE.Trapping"}}:&nbsp;{{system.trapping}}</div>
+      {{/if}}
       <div class="power-description">{{{enrichedDescription}}}</div>
     </div>
   </div>
