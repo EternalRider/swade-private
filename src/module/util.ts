@@ -55,6 +55,9 @@ export function getTrait(
   if (!trait) {
     trait = actor.items.find((i) => i.type === 'skill' && i.name === traitName);
   }
+  if (!trait) {
+    trait = actor.items.find((i) => i.type === 'skill' && i.system.swid === slugify(traitName));
+  }
   return trait;
 }
 
