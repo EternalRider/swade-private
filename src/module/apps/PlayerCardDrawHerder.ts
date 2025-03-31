@@ -2,7 +2,7 @@ import { Logger } from '../Logger';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeCombatant from '../documents/combat/SwadeCombatant';
 
-export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
+export class PlayerCardDrawHerder extends Application<Application.Options> {
   #callback: () => void;
   #isResolved = false;
   ctx: HerderInternalContext;
@@ -14,7 +14,7 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
   constructor(
     ctx: HerderConstructionContext,
     resolve: () => void,
-    options?: Partial<ApplicationOptions>,
+    options?: Partial<Application.Options>,
   ) {
     super(options);
     this.#callback = resolve;
@@ -41,7 +41,7 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
       ?.addEventListener('click', this.close.bind(this));
   }
 
-  override getData(options?: Partial<ApplicationOptions>) {
+  override getData(options?: Partial<Application.Options>) {
     const data = {
       draws: this.ctx.draws.map((draw) => {
         return {
@@ -89,7 +89,7 @@ export class PlayerCardDrawHerder extends Application<ApplicationOptions> {
         (
           combatant: SwadeCombatant,
           _changed: Combatant.UpdateData,
-          _options: Combatant.DatabaseOperation.OnUpdateOperation,
+          _options: Combatant.Database.OnUpdateOperation,
           triggeringUser: string,
         ) => {
           if (triggeringUser !== userId || combatant.id !== combatantId) return;

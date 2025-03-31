@@ -474,7 +474,7 @@ export default class SwadeActiveEffect<
 
   protected override async _onUpdate(
     changed: ActiveEffect.UpdateData,
-    options: ActiveEffect.DatabaseOperation.OnUpdateOperation,
+    options: ActiveEffect.Database.OnUpdateOperation,
     userId: string,
   ) {
     await super._onUpdate(changed, options, userId);
@@ -496,7 +496,7 @@ export default class SwadeActiveEffect<
 
   protected override async _preUpdate(
     changed: ActiveEffect.UpdateData,
-    options: ActiveEffect.DatabaseOperation.PreUpdateOperationInstance,
+    options: ActiveEffect.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     super._preUpdate(changed, options, user);
@@ -507,7 +507,7 @@ export default class SwadeActiveEffect<
   }
 
   protected override async _preDelete(
-    options: ActiveEffect.DatabaseOperation.PreDeleteOperationInstance,
+    options: ActiveEffect.Database.PreDeleteOptions,
     user: User.Implementation,
   ) {
     super._preDelete(options, user);
@@ -529,7 +529,7 @@ export default class SwadeActiveEffect<
 
   protected override async _preCreate(
     data: ActiveEffect.CreateData,
-    options: ActiveEffect.DatabaseOperation.PreCreateOperationInstance,
+    options: ActiveEffect.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
@@ -595,7 +595,7 @@ export default class SwadeActiveEffect<
 
   protected override _onCreate(
     data: ActiveEffect.CreateData,
-    options: ActiveEffect.DatabaseOperation.OnCreateOperation,
+    options: ActiveEffect.Database.OnCreateOperation,
     userId: string,
   ): void {
     super._onCreate(data, options, userId);

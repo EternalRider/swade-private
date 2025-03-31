@@ -207,7 +207,7 @@ class ArmorData extends SwadePhysicalItemData<
       ArmorData.Schema,
       Item<'armor'>
     >,
-    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    options: Item.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);

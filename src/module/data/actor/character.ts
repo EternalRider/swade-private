@@ -98,7 +98,7 @@ export class CharacterData extends CreatureData<
       CharacterData.Schema,
       Actor<'character'>
     >,
-    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(createData, options, user);

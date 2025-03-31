@@ -27,7 +27,7 @@ declare namespace PowerData {
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
-    damage: FormulaField;
+    damage: FormulaField<{ label: string }>;
     range: foundry.data.fields.StringField<{ initial: '@sma' }>;
     duration: foundry.data.fields.StringField<{ initial: '' }>;
     trapping: foundry.data.fields.StringField<{

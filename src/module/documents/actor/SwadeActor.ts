@@ -59,7 +59,7 @@ declare global {
   }
 
   namespace Actor {
-    namespace DatabaseOperation {
+    namespace Database {
       interface Update {
         swade?: {
           wounds?: {
@@ -264,10 +264,17 @@ class SwadeActor<
     return auras;
   }
 
+  /**
+   * Helper property to prevent double-application of modifiers
+   */
+  declare _embeddedPreparation: boolean | undefined;
+
   override prepareEmbeddedDocuments() {
+    this._embeddedPreparation = true;
     if (this.system instanceof SwadeBaseActorData) {
       this.system.prepareEmbeddedDocuments();
     } else super.prepareEmbeddedDocuments();
+    delete this._embeddedPreparation;
   }
 
   override prepareDerivedData() {
@@ -1545,7 +1552,7 @@ class SwadeActor<
 
   protected override _onUpdate(
     changed: Actor.UpdateData,
-    options: Actor.DatabaseOperation.OnUpdateOperation,
+    options: Actor.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

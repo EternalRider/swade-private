@@ -35,7 +35,7 @@ class SwadePhysicalItemData<
     changed: DeepPartial<
       foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>
     >,
-    options: Item.DatabaseOperation.PreUpdateOperationInstance,
+    options: Item.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     await super._preUpdate(changed, options, user);

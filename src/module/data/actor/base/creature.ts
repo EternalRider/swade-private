@@ -773,7 +773,7 @@ class CreatureData<
         SwadeActor
       >
     >,
-    options: Actor.DatabaseOperation.PreUpdateOperationInstance,
+    options: Actor.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preUpdate(changed, options, user);

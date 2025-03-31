@@ -736,7 +736,7 @@ class WeaponData extends SwadePhysicalItemData<
       WeaponData.Schema,
       Item<'weapon'>
     >,
-    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    options: Item.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
     const allowed = await super._preCreate(data, options, user);
