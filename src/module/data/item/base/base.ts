@@ -121,7 +121,7 @@ class SwadeBaseItemData<
 
   protected override async _preCreate(
     data: foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>,
-    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    options: Item.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
     const allowed = await super._preCreate(data, options, user);

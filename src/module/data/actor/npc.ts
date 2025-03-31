@@ -41,7 +41,7 @@ export class NpcData extends CreatureData<
       NpcData.Schema,
       Actor<'npc'>
     >,
-    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(createData, options, user);
@@ -64,7 +64,7 @@ export class NpcData extends CreatureData<
         Actor<'npc'>
       >
     >,
-    options: Actor.DatabaseOperation.OnUpdateOperation,
+    options: Actor.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

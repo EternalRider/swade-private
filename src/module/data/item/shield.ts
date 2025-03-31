@@ -144,7 +144,7 @@ class ShieldData extends SwadePhysicalItemData<
       ShieldData.Schema,
       Item<'shield'>
     >,
-    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    options: Item.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);

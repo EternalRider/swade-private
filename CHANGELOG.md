@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.4.1
+
+### Fixed
+
+- Fixed an issue where modifiers would be applied twice after their containing item was updated. (#1292) **by @jpmeehan5**
+
 ## 4.4.0
 
 ### Added
