@@ -617,6 +617,18 @@ SWADE:
       Attribute: Raise Attribute
       Hindrance: Decrease Hindrance
     Number: Advance number
+  Scales:
+    Description: "Scale: {scale} ({name})"
+    LargerThan: Larger than {scale}
+    SmallerThan: Smaller than {scale}
+    Names:
+      Tiny: Tiny
+      VerySmall: Very Small
+      Small: Small
+      Normal: Normal
+      Large: Large
+      Huge: Huge
+      Gargantuan: Gargantuan
   AddAdvance: Add Advance
   Appearance: Appearance
   CharacterGoals: Goals

@@ -20,6 +20,9 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
+import {
+  getScaleName
+} from '../../../util'
 
 const fields = foundry.data.fields;
 
@@ -618,6 +621,21 @@ class CreatureData<
     for (const item of this.parent.items) {
       item.system.prepareFormulaFields();
     }
+  }
+
+  /**
+   * Creates an HTMLElement for displaying in a tooltip, adding some context to an actor's size
+   */
+  getSizeTooltip(this: CreatureData): HTMLElement {
+    const scale = this.stats?.scale?.signedString();
+    const element = document.createElement('div');
+    const p = document.createElement('p');
+    p.innerText = game.i18n.format('SWADE.Scales.Description', {
+      scale: scale,
+      name: getScaleName(this.stats?.scale)
+    });
+    element.appendChild(p);
+    return element;
   }
 
   /**
