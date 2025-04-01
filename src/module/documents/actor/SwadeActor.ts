@@ -17,7 +17,8 @@ import {
   NpcData,
   VehicleData,
 } from '../../data/actor';
-import { SwadeBaseActorData, TokenSize } from '../../data/actor/base/base';
+import { CreatureData, SwadeBaseActorData } from '../../data/actor/base';
+import { TokenSize } from '../../data/actor/base/base';
 import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
 import {
   AbilityData,
@@ -59,7 +60,7 @@ declare global {
   }
 
   namespace Actor {
-    namespace DatabaseOperation {
+    namespace Database {
       interface Update {
         swade?: {
           wounds?: {
@@ -264,10 +265,17 @@ class SwadeActor<
     return auras;
   }
 
+  /**
+   * Helper property to prevent double-application of modifiers
+   */
+  declare _embeddedPreparation: boolean | undefined;
+
   override prepareEmbeddedDocuments() {
+    this._embeddedPreparation = true;
     if (this.system instanceof SwadeBaseActorData) {
       this.system.prepareEmbeddedDocuments();
     } else super.prepareEmbeddedDocuments();
+    delete this._embeddedPreparation;
   }
 
   override prepareDerivedData() {
@@ -1238,102 +1246,34 @@ class SwadeActor<
   }
 
   calcParry(): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return 0;
-    /** base value of all parry calculations */
-    const parryBaseValue = 2;
-
-    let parryTotal = 0;
-    const sources: DerivedModifier[] = this.system.stats.parry.sources;
-    const parryBaseSkill = this.getSingleItemBySwid(
-      game.settings.get('swade', 'parryBaseSwid'),
-      'skill',
-    );
-
-    const skillDie = parryBaseSkill?.system?.die.sides ?? 0;
-    const skillMod = parryBaseSkill?.system?.die.modifier ?? 0;
-
-    //base parry calculation
-    parryTotal = Math.round(skillDie / 2) + parryBaseValue;
-
-    //add modifier if the skill die is 12
-    if (skillDie >= 12) {
-      parryTotal += Math.floor(skillMod / 2);
+    if (
+      this.system instanceof VehicleData ||
+      this.system instanceof CreatureData
+    ) {
+      return this._calcDerivedEffects('parry', this.system.calcParry());
     }
-
-    if (parryBaseSkill) {
-      sources.push({
-        label: foundry.utils.getProperty(parryBaseSkill, 'name'),
-        value: parryTotal,
-      });
-    } else {
-      sources.push({
-        label: game.i18n.localize('SWADE.BaseParry'),
-        value: parryBaseValue,
-      });
-    }
-
-    this.system.stats.parry.shield = 0;
-
-    //add shields
-    for (const shield of this.itemTypes.shield) {
-      if (!(shield.system instanceof ShieldData)) continue;
-      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
-        const shieldParry = shield.system.parry ?? 0;
-        parryTotal += shieldParry;
-        this.system.stats.parry.shield += shieldParry;
-        sources.push({
-          label: shield.name,
-          value: shieldParry,
-        });
-      }
-    }
-
-    //add equipped weapons
-    const ambidextrous = this.getFlag('swade', 'ambidextrous') as
-      | undefined
-      | boolean;
-    for (const weapon of this.itemTypes.weapon) {
-      if (!(weapon.system instanceof WeaponData)) continue;
-      let parryBonus = 0;
-
-      if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
-        // only add parry bonus if it's in the main hand or actor is ambidextrous
-        if (
-          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
-          ambidextrous
-        )
-          parryBonus += weapon.system.parry ?? 0;
-
-        //add trademark weapon bonus
-        parryBonus += Number(weapon.system.trademark);
-      }
-      if (parryBonus !== 0) {
-        sources.push({
-          label: weapon.name,
-          value: parryBonus,
-        });
-      }
-      parryTotal += parryBonus;
-    }
-
-    return this._calcDerivedEffects('parry', parryTotal);
+    return 0;
   }
 
   private _calcDerivedEffects(
     target: 'parry' | 'toughness' | 'armor',
     derivedStat: number,
   ): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return 0; // typeguarding
-    const effects: DerivedModifier[] =
-      target === 'armor'
-        ? this.system.stats.toughness.armorEffects
-        : this.system.stats[target].effects;
-    const sources: DerivedModifier[] =
-      target === 'armor'
-        ? new Array<DerivedModifier>() // currently gets discarded
-        : this.system.stats[target].sources;
+    let effects: DerivedModifier[] = [];
+    let sources: DerivedModifier[] = [];
+    if (
+      this.system instanceof CreatureData ||
+      this.system instanceof VehicleData
+    ) {
+      effects =
+        target === 'armor'
+          ? (this.system.stats.toughness?.armorEffects ?? [])
+          : this.system.stats[target].effects;
+      sources =
+        target === 'armor'
+          ? new Array<DerivedModifier>() // currently gets discarded
+          : this.system.stats[target].sources;
+    }
 
     effects.forEach((e: DerivedModifier) => {
       switch (e.mode) {
@@ -1545,7 +1485,7 @@ class SwadeActor<
 
   protected override _onUpdate(
     changed: Actor.UpdateData,
-    options: Actor.DatabaseOperation.OnUpdateOperation,
+    options: Actor.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

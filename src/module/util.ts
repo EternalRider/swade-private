@@ -55,6 +55,9 @@ export function getTrait(
   if (!trait) {
     trait = actor.items.find((i) => i.type === 'skill' && i.name === traitName);
   }
+  if (!trait) {
+    trait = actor.items.find((i) => i.type === 'skill' && i.system.swid === slugify(traitName));
+  }
   return trait;
 }
 
@@ -165,6 +168,21 @@ export function getRankFromAdvance(advance: number): number {
     return constants.RANK.LEGENDARY;
   }
 }
+
+/** @internal */
+export function getScaleName(scaleMod: number): string {
+  const modMax = 6;
+
+  if (scaleMod < -modMax) {
+    return game.i18n.format('SWADE.Scales.SmallerThan', {scale: getScaleName(-modMax)})
+  }
+  if (scaleMod > modMax) {
+    return game.i18n.format('SWADE.Scales.LargerThan', {scale: getScaleName(modMax)})
+  }
+  const index = Math.floor((scaleMod+modMax)/2);
+  return SWADE.scales[index];
+}
+
 
 /** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {

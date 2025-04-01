@@ -3,7 +3,7 @@ SWADE:
   ButtonSubmit: Einreichen
   CommunityCharSheet: Legacy Charakterbogen
   CommunityNPCSheet: Community NSC-Bogen
-  CommunityVicSheet: Community Fahrzeugbogen
+  CommunityVicSheet: Alter Fahrzeugbogen
   CommunityItemSheet: Community Gegenstandsbogen
   ModHint: Bitte stell sicher das alle Modifikatoren ein + oder - enthalten
   ActionDeckPresetLight: Aktionskarten (Hell)
@@ -86,7 +86,7 @@ SWADE:
   DmgOver: Aktionsschaden
   Resist: Widerstand
   ResistRolls: Widerstandsproben
-  Ap: Pzbr
+  Ap: PB
   APLong: Panzerbrechend
   RoF: Feuerrate
   Mag: Schuss
@@ -294,7 +294,7 @@ SWADE:
     anders aussehen soll. Bitte beachte, dass selbst erstellte Wildcard-Würfel
     derzeit nur von dir selber gesehen werden können. Andere Spieler werden
     diese anders sehen.
-  Trapping: Ausprägungen
+  Trapping: Ausprägung
   AddBenny: Einen Benny hinzufügen
   CurrentBennies: Derzeitige Bennys
   RerollWithBenny: Mit Benny nochmal würfeln
@@ -998,6 +998,7 @@ SWADE:
       Content: Frei oder für Benny neue Karte ziehen?
     DealAll: Alle austeilen
     DealNPC: NSCs austeilen
+    LinkScene: Szene verknüpfen
   GlobalMod:
     Trait: Alle Eigenschaften
     Spirit: Willenskraft und Wil.-Fertigkeiten
@@ -1249,6 +1250,18 @@ SWADE:
   VehicleSheet: Savage Worlds Fahrzeugbogen
   Complication: Komplikation
   EffectsInactive: Inaktive Effekte
+  DramaticTask:
+    Successes: Erfolge
+    MaxRounds:
+      Label: Maximale Runden
+      Hint: Wie viele Runden dauert die Dramatische Aufgabe?
+    MaxTokens:
+      Label: Erfolge
+      Hint: Zielzahl Erfolge, die Teilnehmer erlangen müssen
+  ChaseLayoutError: Zu wenig Platz in der Szene für das Verfolgungs-Layout.
+  Vehicle:
+    Cargo:
+      Capacity: Frachtkapazität
 TYPES:
   Actor:
     npc: NSC
@@ -1275,3 +1288,4 @@ TYPES:
     headquarters: Stützpunkte
   Combat:
     dramaticTask: Dramatische Aufgabe
+    chase: Verfolgung

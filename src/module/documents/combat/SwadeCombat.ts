@@ -648,7 +648,7 @@ export default class SwadeCombat<
   }
 
   override async _preDelete(
-    options: Combat.DatabaseOperation.PreDeleteOperationInstance,
+    options: Combat.Database.PreDeleteOptions,
     user: User.Implementation,
   ) {
     await super._preDelete(options, user);

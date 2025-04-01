@@ -1,5 +1,4 @@
 import { PotentialSource } from '../../../globals';
-import { Logger } from '../../Logger';
 import {
   ItemChatCardChip,
   ItemDisplayPowerPoints,
@@ -28,7 +27,7 @@ declare namespace PowerData {
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
-    damage: FormulaField;
+    damage: FormulaField<{ label: string }>;
     range: foundry.data.fields.StringField<{ initial: '@sma' }>;
     duration: foundry.data.fields.StringField<{ initial: '' }>;
     trapping: foundry.data.fields.StringField<{
@@ -109,10 +108,6 @@ class PowerData extends SwadeBaseItemData<
     const cleaned = field.clean(this.range);
     if (Roll.validate(cleaned)) {
       this.range = String(field.initialize(cleaned as string, this));
-    } else {
-      Logger.warn(
-        `Range "${cleaned}" cannot be evaluated as it is not a valid formula`,
-      );
     }
   }
 

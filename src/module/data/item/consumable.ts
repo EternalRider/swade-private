@@ -157,7 +157,7 @@ class ConsumableData extends SwadePhysicalItemData<
         Item<'consumable'>
       >
     >,
-    options: Item.DatabaseOperation.PreUpdateOperationInstance,
+    options: Item.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     await super._preUpdate(changed, options, user);

@@ -5,16 +5,13 @@
       <span>{{localize 'SWADE.Derived'}}</span>
     </header>
     <div class='flexrow attributes-list'>
-      <div class='attribute flex2'>
+      <div class='attribute flex2 size'>
         <div class='attribute-label'>{{localize 'SWADE.Size'}}</div>
         <input
           name='system.stats.size'
           type='text'
           value='{{actor.system.stats.size}}'
           data-dtype='Number'
-          data-tooltip='{{localize
-            "SWADE.Scale"
-          }}: {{actor.system.stats.scale}}'
         />
       </div>
       <div class='attribute flex2 pace'>
@@ -28,7 +25,7 @@
           readonly
         />
       </div>
-      <div class='attribute flex3'>
+      <div class='attribute flex3 parry'>
         <div class='attribute-label'>{{localize 'SWADE.Parry'}}</div>
         <div class='toughness-block'>
           <input
@@ -49,7 +46,7 @@
           </button>
         </div>
       </div>
-      <div class='attribute flex3'>
+      <div class='attribute flex3 toughness'>
         <div class='attribute-label'>{{localize 'SWADE.Tough'}}</div>
         <div class='toughness-block'>
           <input

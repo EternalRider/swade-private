@@ -1,4 +1,4 @@
-import type { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import type { ValueOf } from 'fvtt-types/utils';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
 // import { AuraPointSource } from './module/canvas/AuraPointSource';
@@ -13,7 +13,6 @@ declare global {
   }
 
   interface AssumeHookRan {
-    init: never;
     ready: never;
   }
 

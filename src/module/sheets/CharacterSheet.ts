@@ -350,7 +350,16 @@ export default class CharacterSheet extends ActorSheet {
       });
 
     html
-      .querySelector('.pace input')
+      .querySelector('.stat.size input')
+      ?.addEventListener('mouseenter', (event) => {
+        game.tooltip.deactivate();
+        game.tooltip.activate(event.target as HTMLElement, {
+          content: this.actor.system.getSizeTooltip(),
+        });
+      });
+
+    html
+      .querySelector('.stat.pace input')
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {

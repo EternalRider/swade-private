@@ -216,10 +216,11 @@
             source=true
           }}
         </fieldset>
-        {{#unless isVehicle}}
-          <!--Automatic Calculations-->
-          <fieldset>
-            <legend>{{localize 'SWADE.AutoCalc'}}</legend>
+
+        <!--Automatic Calculations-->
+        <fieldset>
+          <legend>{{localize 'SWADE.AutoCalc'}}</legend>
+          {{#unless isVehicle}}
             {{formGroupSimple
               'system.details.autoCalcToughness'
               label='SWADE.Tough'
@@ -228,16 +229,18 @@
               rootId=doc.uuid
               source=true
             }}
-            {{formGroupSimple
-              'system.details.autoCalcParry'
-              label='SWADE.Parry'
-              classes='slim'
-              document=doc
-              rootId=doc.uuid
-              source=true
-            }}
-          </fieldset>
-          <!--Pace-->
+          {{/unless}}
+          {{formGroupSimple
+            'system.details.autoCalcParry'
+            label='SWADE.Parry'
+            classes='slim'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
+        </fieldset>
+        <!--Pace-->
+        {{#unless isVehicle}}
           <fieldset>
             <legend>{{localize 'SWADE.Pace'}}</legend>
             {{formGroupSimple

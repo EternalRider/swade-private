@@ -301,6 +301,16 @@ export const SWADE: SwadeConfig = {
     'SWADE.Ranks.Legendary',
   ],
 
+  scales: [
+    'SWADE.Scales.Names.Tiny',
+    'SWADE.Scales.Names.VerySmall',
+    'SWADE.Scales.Names.Small',
+    'SWADE.Scales.Names.Normal',
+    'SWADE.Scales.Names.Large',
+    'SWADE.Scales.Names.Huge',
+    'SWADE.Scales.Names.Gargantuan',
+  ],
+
   textSearch: {
     actor: [
       'system.details.archetype',
@@ -402,6 +412,7 @@ export interface SwadeConfig {
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   prototypeRollGroups: RollModifierGroup[];
   ranks: string[];
+  scales: string[];
   textSearch: {
     scene: Array<string>;
     rolltable: Array<string>;

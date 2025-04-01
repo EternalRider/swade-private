@@ -49,7 +49,7 @@ export class BaseCombatantModel<
   //     Schema,
   //     SwadeCombatant
   //   >,
-  //   _options: Combatant.DatabaseOperation.PreCreateOperationInstance,
+  //   _options: Combatant.Database.PreUpdateOptions,
   //   _user: User,
   // ) {
   //   const combatants = game?.combat?.combatants.size ?? 0;
@@ -73,7 +73,7 @@ export class BaseCombatantModel<
         SwadeCombatant
       >
     >,
-    options: Combatant.DatabaseOperation.OnUpdateOperation,
+    options: Combatant.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

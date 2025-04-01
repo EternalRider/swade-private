@@ -35,7 +35,7 @@ class ModifierData extends foundry.abstract.TypeDataModel<
       ModifierData.Schema,
       ActiveEffect<'modifier'>
     >,
-    options: ActiveEffect.DatabaseOperation.PreCreateOperationInstance,
+    options: ActiveEffect.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);
@@ -55,7 +55,7 @@ class ModifierData extends foundry.abstract.TypeDataModel<
         ActiveEffect<'modifier'>
       >
     >,
-    options: ActiveEffect.DatabaseOperation.PreUpdateOperationInstance,
+    options: ActiveEffect.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preUpdate(changed, options, user);

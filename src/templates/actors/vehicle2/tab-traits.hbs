@@ -170,23 +170,25 @@
             <input id='{{actor.uuid}}-handling' type='number' name='system.handling' value='{{system.handling}}' />
           </div>
         </div>
-        <div class='flexcol derived-stat top-speed'>
+        <div class='flexcol derived-stat top-speed split'>
           <label for='{{actor.uuid}}-top-speed' class='label'>{{localize 'SWADE.Topspeed'}}</label>
           <div class='flexrow'>
             <input class='speed-value' id='{{actor.uuid}}-top-speed' type='number' name='system.topspeed.value' value='{{system.topspeed.value}}' />
             <input class='speed-unit' type='text' name='system.topspeed.unit' value='{{system.topspeed.unit}}' />
           </div>
         </div>
-        <div class='flexcol derived-stat toughness'>
-          <label for='{{actor.uuid}}-toughness' class='label'>{{localize 'SWADE.Tough'}}</label>
+        <div class='flexcol derived-stat parry split'>
+          <label for='{{actor.uuid}}-parry' class='label'>{{localize 'SWADE.Parry'}}</label>
           <div class='flexrow'>
-            <input id='{{actor.uuid}}-toughness' type='number' name='system.toughness.total' value='{{system.toughness.total}}' />
+            <input id='{{actor.uuid}}-parry' class='slim' type='number' name='system.stats.parry.value' value='{{system.stats.parry.value}}' {{readonly system.details.autoCalcParry}}/>
+            <input id='{{actor.uuid}}-parry' class='slim' type='number' name='system.stats.parry.shield' value='{{system.stats.parry.shield}}' data-tooltip="TYPES.Item.shield" {{readonly system.details.autoCalcParry}}/>
           </div>
         </div>
-        <div class='flexcol derived-stat armor'>
-          <label for='{{actor.uuid}}-armor' class='label'>{{localize 'SWADE.Armor'}}</label>
+        <div class='flexcol derived-stat toughness split'>
+          <label for='{{actor.uuid}}-toughness' class='label'>{{localize 'SWADE.Tough'}}</label>
           <div class='flexrow'>
-            <input id='{{actor.uuid}}-armor' type='number' name='system.toughness.armor' value='{{system.toughness.armor}}' />
+            <input id='{{actor.uuid}}-toughness' class='slim' type='number' name='system.toughness.total' value='{{system.toughness.total}}' />
+            <input id='{{actor.uuid}}-armor' class='slim' type='number' name='system.toughness.armor' value='{{system.toughness.armor}}' data-tooltip="TYPES.Item.armor"/>
           </div>
         </div>
       </div>
@@ -250,6 +252,7 @@
                     type='text'
                     name='system.additionalStats.{{key}}.value'
                     data-dtype='{{attr.dtype}}'
+                    data-tooltip='{{attr.value}}'
                     value='{{attr.value}}'
                     placeholder='{{localize
                       "SWADE.AdditionalStats.Current"

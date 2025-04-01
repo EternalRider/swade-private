@@ -138,6 +138,9 @@ async function soakPrompt(
   woundsInflicted: number,
   statusToApply: Status,
 ) {
+  const speaker = ChatMessage.getSpeaker({ actor });
+  const name = speaker.alias;
+
   // Set singular Wound or plural Wounds for chat message
   const woundsText = `${woundsInflicted} ${
     woundsInflicted > 1
@@ -148,7 +151,7 @@ async function soakPrompt(
   let message = game.i18n.format(
     'SWADE.DamageApplicator.WoundsAboutToBeTaken',
     {
-      name: actor.name,
+      name: name,
       wounds: woundsText,
     },
   );
@@ -191,10 +194,11 @@ async function soakPrompt(
             content: game.i18n.format(
               'SWADE.DamageApplicator.Result.IsShakenWithWounds',
               {
-                name: actor.name,
+                name: name,
                 wounds: woundsText,
               },
             ),
+            speaker: speaker,
           });
         }
         if (
@@ -222,13 +226,13 @@ async function soakPrompt(
       icon: '<i class="fas fa-face-hushed"></i>',
       callback: async (_html) => {
         message = game.i18n.format('SWADE.DamageApplicator.Result.IsShaken', {
-          name: actor.name,
+          name: name,
         });
 
         // Apply Shaken Status Effect.
         await applyShaken(actor);
         // Output chat message.
-        await ChatMessage.create({ content: message });
+        await ChatMessage.create({ content: message, speaker: speaker });
 
         /**
          * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
@@ -250,9 +254,10 @@ async function soakPrompt(
           content: game.i18n.format(
             'SWADE.DamageApplicator.Result.NoSignificantDamage',
             {
-              name: actor.name,
+              name: name,
             },
           ),
+          speaker: speaker,
         });
 
         /**
@@ -330,7 +335,7 @@ async function soakPrompt(
     // Set the title
     title = game.i18n.format(
       'SWADE.DamageApplicator.SoakDialog.UnwoundedTitle',
-      { name: actor.name },
+      { name: name },
     );
 
     // If the status is Shaken...
@@ -341,7 +346,7 @@ async function soakPrompt(
       // Set the prompt text.
       prompt = game.i18n.format(
         'SWADE.DamageApplicator.SoakDialog.ShakenPrompt',
-        { name: actor.name },
+        { name: name },
       );
       // Set the default button to Apply Shaken
       defaultButton = 'applyShaken';
@@ -352,19 +357,19 @@ async function soakPrompt(
       // If there is no damage applied at all, change prompt to unharmed.
       prompt = game.i18n.format(
         'SWADE.DamageApplicator.SoakDialog.UnharmedPrompt',
-        { name: actor.name },
+        { name: name },
       );
       defaultButton = 'accept';
     }
   } else {
     // In all other circumstances, set the title to Wounded title.
     title = game.i18n.format('SWADE.DamageApplicator.SoakDialog.WoundedTitle', {
-      name: actor.name,
+      name: name,
     });
     // Set the prompt text to Wounded text
     prompt = game.i18n.format(
       'SWADE.DamageApplicator.SoakDialog.WoundedPrompt',
-      { name: actor.name, wounds: woundsText },
+      { name: name, wounds: woundsText },
     );
 
     // Since status to apply is Wounded delete Apply Shaken and Accept buttons
@@ -381,7 +386,7 @@ async function soakPrompt(
   // Construct the Dialog and render it.
   const adjustDamage = new Handlebars.SafeString(
     game.i18n.format('SWADE.DamageApplicator.AdjustDamagePrompt', {
-      name: actor?.name,
+      name: name,
     }),
   );
   const content = await renderTemplate(
@@ -452,6 +457,9 @@ async function attemptSoak(
   }
 
   async function applySoak() {
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const name = speaker.alias;
+
     let message = '';
     // Calculate how many Wounds have been Soaked with the roll
     const woundsSoaked = vigorRoll?.successes ?? 0;
@@ -465,9 +473,9 @@ async function attemptSoak(
     if (woundsRemaining <= 0) {
       statusToApply = Status.NONE;
       message = game.i18n.format('SWADE.DamageApplicator.Result.SoakedAll', {
-        name: actor.name,
+        name: name,
       });
-      await ChatMessage.create({ content: message });
+      await ChatMessage.create({ content: message, speaker: speaker });
 
       const isShaken = actor.system.status.isShaken;
       // If they're already Shaken, remove the Status Effect.
@@ -530,13 +538,16 @@ async function attemptSoak(
               message = game.i18n.format(
                 'SWADE.DamageApplicator.Result.IsShakenWithWounds',
                 {
-                  name: actor.name,
+                  name: name,
                   wounds: newWoundsValueText,
                 },
               );
             }
             // Output Chat Message.
-            await ChatMessage.create({ content: message });
+            if (message) {
+              await ChatMessage.create({ content: message, speaker: speaker });
+            }
+
             // If Gritty Damage is in play, roll on the Injury Table.
             if (
               actor.isWildcard &&
@@ -631,7 +642,7 @@ async function attemptSoak(
       let content = game.i18n.format(
         'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
         {
-          name: actor.name,
+          name: name,
           wounds: woundsRemainingText,
         },
       );
@@ -646,7 +657,7 @@ async function attemptSoak(
         content = game.i18n.format(
           'SWADE.DamageApplicator.RerollSoakDialog.PromptCritFail',
           {
-            name: actor.name,
+            name: name,
             wounds: woundsRemainingText,
           },
         );
@@ -658,7 +669,7 @@ async function attemptSoak(
           title: game.i18n.format(
             'SWADE.DamageApplicator.RerollSoakDialog.Title',
             {
-              name: actor.name,
+              name: name,
             },
           ),
           content: content,
@@ -682,6 +693,9 @@ async function applyShaken(actor: SwadeActor) {
 
 // Function for applying the Incapacitated Status Effect
 async function applyIncapacitated(actor: SwadeActor) {
+  const speaker = ChatMessage.getSpeaker({ actor });
+  const name = speaker.alias;
+
   const statuses: ToggleStatus[] = [];
   const statusIncapacitated = getStatusEffectDataById('incapacitated');
   if (statusIncapacitated) {
@@ -703,7 +717,7 @@ async function applyIncapacitated(actor: SwadeActor) {
       case constants.ROLL_RESULT.CRITFAIL:
         message = game.i18n.format(
           'SWADE.DamageApplicator.Incapacitation.Dies',
-          { name: actor.name },
+          { name: name },
         );
         break;
       case constants.ROLL_RESULT.FAIL:
@@ -712,7 +726,7 @@ async function applyIncapacitated(actor: SwadeActor) {
           ignoreBleedOut
             ? 'SWADE.DamageApplicator.Incapacitation.PermanentInjuryHND'
             : 'SWADE.DamageApplicator.Incapacitation.PermanentInjury',
-          { name: actor.name },
+          { name: name },
         );
         // If there's an Status Effect data for Bleeding Out.
         if (statusBleedingOut && !ignoreBleedOut) {
@@ -730,18 +744,18 @@ async function applyIncapacitated(actor: SwadeActor) {
         await rollInjuryTable();
         message = game.i18n.format(
           'SWADE.DamageApplicator.Incapacitation.TemporaryInjury',
-          { name: actor.name },
+          { name: name },
         );
         break;
       default: // Raises
         await rollInjuryTable();
         message = game.i18n.format(
           'SWADE.DamageApplicator.Incapacitation.ShortInjury',
-          { name: actor.name },
+          { name: name },
         );
         break;
     }
-    await ChatMessage.create({ content: message });
+    await ChatMessage.create({ content: message, speaker: speaker });
   }
   statuses.forEach((s) => {
     actor.toggleActiveEffect(s.effectData, s.options);
@@ -752,6 +766,9 @@ async function resistInjury(
   actor: SwadeActor,
   bestRoll: number = constants.ROLL_RESULT.CRITFAIL,
 ): Promise<number> {
+  const speaker = ChatMessage.getSpeaker({ actor });
+  const name = speaker.alias;
+
   const vigorRoll = await actor.rollAttribute('vigor', {
     title: game.i18n.localize(
       'SWADE.DamageApplicator.Incapacitation.InjuryRoll',
@@ -820,12 +837,12 @@ async function resistInjury(
   const dialogResult: RerollDialogReturn = await Dialog.wait(
     {
       title: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Title', {
-        name: actor.name,
+        name: name,
       }),
       content: game.i18n.format(
         'SWADE.DamageApplicator.Incapacitation.Prompt',
         {
-          name: actor.name,
+          name: name,
         },
       ),
       buttons: buttons,
