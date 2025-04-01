@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Trait Rolls on items now support SWIDs. **by @mhilbrunner**
+- Vehicles now support parry calculation based on the operator's skill. (#1282) **by @florad92**
 
 ### Changed
 

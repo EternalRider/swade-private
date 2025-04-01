@@ -1,7 +1,7 @@
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
-import { GroupData, VehicleData } from '../../data/actor';
+import { GroupData } from '../../data/actor';
 import { getStatusEffectDataById, isFirstOwner } from '../../util';
 import SwadeActor from '../actor/SwadeActor';
 import SwadeItem from '../item/SwadeItem';
@@ -347,7 +347,7 @@ export default class SwadeActiveEffect<
     change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof GroupData) return; // Really shouldn't be a vehicle or group
+    if (doc.system instanceof GroupData) return; // Really shouldn't be a group
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
       doc.system.stats.globalMods.hasOwnProperty(match[1])
@@ -372,8 +372,8 @@ export default class SwadeActiveEffect<
     change: ActiveEffect.EffectChangeData,
     doc: SwadeActor,
   ) {
-    if (doc.system instanceof VehicleData || doc.system instanceof GroupData)
-      return; // Really shouldn't be a vehicle or group
+    // Really shouldn't be a group
+    if (doc.system instanceof GroupData) return;
     if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
       super.apply(doc, change);
       return;
@@ -388,7 +388,7 @@ export default class SwadeActiveEffect<
         : autoCalc
           ? 'effects'
           : 'sources';
-    doc.system.stats[match[1]][target].push({
+    doc.system.stats[match[1]][target]?.push({
       label: this.name,
       value: Number(change.value),
       mode: change.mode,
