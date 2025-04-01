@@ -191,7 +191,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return options;
   }
 
-  _prepareWeaponOptions(): foundry.applications.fields.FormSelectOption[] {
+  protected _prepareWeaponOptions(): foundry.applications.fields.FormSelectOption[] {
     return this.actor.itemTypes.weapon
       .filter((w: SwadeItem<'weapon'>) => w.system.isVehicular && w.isReadied)
       .map((w: SwadeItem<'weapon'>) => ({
@@ -200,7 +200,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
       }));
   }
 
-  _prepareAttributes(): SwadeVehicleSheetV2.AttributeContext {
+  protected _prepareAttributes(): SwadeVehicleSheetV2.AttributeContext {
     const enabled = Object.values(this.actor.system.attributes).some(
       (a) => a.enabled,
     );
@@ -243,7 +243,9 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return { enabled, list };
   }
 
-  _prepareAdditionalStats(context: SwadeVehicleSheetV2.RenderContext) {
+  protected _prepareAdditionalStats(
+    context: SwadeVehicleSheetV2.RenderContext,
+  ) {
     const additionalStats = structuredClone<AdditionalStats>(
       this.actor.system.additionalStats,
     );

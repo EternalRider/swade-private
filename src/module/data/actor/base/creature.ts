@@ -5,11 +5,17 @@ import {
   RollModifier,
 } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
+import { constants } from '../../../constants';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import type SwadeItem from '../../../documents/item/SwadeItem';
-import { addUpModifiers, getRankFromAdvanceAsString } from '../../../util';
+import {
+  addUpModifiers,
+  getRankFromAdvanceAsString,
+  getScaleName,
+} from '../../../util';
 import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
+import { ShieldData, WeaponData } from '../../item';
 import {
   boundTraitDie,
   makeDiceField,
@@ -20,9 +26,6 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
-import {
-  getScaleName
-} from '../../../util'
 
 const fields = foundry.data.fields;
 
@@ -632,10 +635,96 @@ class CreatureData<
     const p = document.createElement('p');
     p.innerText = game.i18n.format('SWADE.Scales.Description', {
       scale: scale,
-      name: getScaleName(this.stats?.scale)
+      name: getScaleName(this.stats?.scale),
     });
     element.appendChild(p);
     return element;
+  }
+
+  override getParryBaseSkill() {
+    return this.parent.getSingleItemBySwid(
+      game.settings.get('swade', 'parryBaseSwid'),
+      'skill',
+    );
+  }
+
+  calcParry(): number {
+    /** base value of all parry calculations */
+    const parryBaseValue = 2;
+
+    let parryTotal = 0;
+    const sources: DerivedModifier[] = this.stats.parry.sources;
+    const parryBaseSkill = this.getParryBaseSkill();
+
+    const skillDie = parryBaseSkill?.system?.die.sides ?? 0;
+    const skillMod = parryBaseSkill?.system?.die.modifier ?? 0;
+
+    //base parry calculation
+    parryTotal = Math.round(skillDie / 2) + parryBaseValue;
+
+    //add modifier if the skill die is 12
+    if (skillDie >= 12) {
+      parryTotal += Math.floor(skillMod / 2);
+    }
+
+    if (parryBaseSkill) {
+      sources.push({
+        label: foundry.utils.getProperty(parryBaseSkill, 'name'),
+        value: parryTotal,
+      });
+    } else {
+      sources.push({
+        label: game.i18n.localize('SWADE.BaseParry'),
+        value: parryBaseValue,
+      });
+    }
+
+    this.stats.parry.shield = 0;
+
+    const itemTypes = this.parent.itemTypes;
+
+    //add shields
+    for (const shield of itemTypes.shield) {
+      if (!(shield.system instanceof ShieldData)) continue;
+      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
+        const shieldParry = shield.system.parry ?? 0;
+        parryTotal += shieldParry;
+        this.stats.parry.shield += shieldParry;
+        sources.push({
+          label: shield.name,
+          value: shieldParry,
+        });
+      }
+    }
+
+    //add equipped weapons
+    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as
+      | undefined
+      | boolean;
+    for (const weapon of itemTypes.weapon) {
+      if (!(weapon.system instanceof WeaponData)) continue;
+      let parryBonus = 0;
+
+      if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
+        // only add parry bonus if it's in the main hand or actor is ambidextrous
+        if (
+          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
+          ambidextrous
+        )
+          parryBonus += weapon.system.parry ?? 0;
+
+        //add trademark weapon bonus
+        parryBonus += Number(weapon.system.trademark);
+      }
+      if (parryBonus !== 0) {
+        sources.push({
+          label: weapon.name,
+          value: parryBonus,
+        });
+      }
+      parryTotal += parryBonus;
+    }
+    return parryTotal;
   }
 
   /**
