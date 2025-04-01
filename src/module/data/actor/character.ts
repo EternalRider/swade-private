@@ -112,13 +112,11 @@ export class CharacterData extends CreatureData<
 
     await this.#addCoreSkills();
 
-    const isImported = foundry.utils.hasProperty(
-      createData,
-      'flags.core.sourceId',
-    );
-
     //Handle starting currency
-    if (!isImported) {
+    if (
+      !this.parent._stats.compendiumSource &&
+      !this.parent._stats.duplicateSource
+    ) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }

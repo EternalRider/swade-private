@@ -46,13 +46,12 @@ export class NpcData extends CreatureData<
   ) {
     const allowed = await super._preCreate(createData, options, user);
     if (allowed === false) return false;
-    const isImported = foundry.utils.hasProperty(
-      createData,
-      'flags.core.sourceId',
-    );
 
     //Handle starting currency
-    if (!isImported) {
+    if (
+      !this.parent._stats.compendiumSource &&
+      !this.parent._stats.duplicateSource
+    ) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
