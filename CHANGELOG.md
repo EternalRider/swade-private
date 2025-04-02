@@ -22,6 +22,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.0
+
+### Added
+
+- Added v13 compatibility
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+- [BREAKING] Removed v12 compatibility
+- Finished deprecation period for Ancestry
+
 ## 4.4.1
 
 ### Added
