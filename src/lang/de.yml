@@ -450,6 +450,10 @@ SWADE:
     AddUnguided: Leeren Effekt hinzufügen
     Conditional: Bedingter Effekt
     ConditionalTooltip: Würfelmodifikatoren per Default ignorieren
+    AddModifier: + Modifikator
+    ModifierCost:
+      Hint: Build- oder MP-Kosten für Modifikator
+      Label: Modifikator-Kosten
   EffectCallbacks:
     Shaken:
       RollSpirit: Willenskraft würfeln
@@ -1262,6 +1266,17 @@ SWADE:
   Vehicle:
     Cargo:
       Capacity: Frachtkapazität
+    Crew:
+      Add: Besatzung hinzufügen
+      Remove: Besatzung entfernen
+      Role: Rolle
+      Roles:
+        Gunner: Schütze
+        Other: Andere
+        Operator: Fahrer
+  AttrSmaShortPowerRange: Ver
+  Burrowing: Graben
+  PPMods: Machtmodifikatoren
 TYPES:
   Actor:
     npc: NSC
@@ -1289,3 +1304,5 @@ TYPES:
   Combat:
     dramaticTask: Dramatische Aufgabe
     chase: Verfolgung
+  ActiveEffect:
+    modifier: Modifikator
