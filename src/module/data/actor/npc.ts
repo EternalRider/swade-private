@@ -41,18 +41,17 @@ export class NpcData extends CreatureData<
       NpcData.Schema,
       Actor<'npc'>
     >,
-    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(createData, options, user);
     if (allowed === false) return false;
-    const isImported = foundry.utils.hasProperty(
-      createData,
-      'flags.core.sourceId',
-    );
 
     //Handle starting currency
-    if (!isImported) {
+    if (
+      !this.parent._stats.compendiumSource &&
+      !this.parent._stats.duplicateSource
+    ) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
@@ -64,7 +63,7 @@ export class NpcData extends CreatureData<
         Actor<'npc'>
       >
     >,
-    options: Actor.DatabaseOperation.OnUpdateOperation,
+    options: Actor.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);

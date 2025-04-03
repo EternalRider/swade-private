@@ -98,7 +98,7 @@ export class CharacterData extends CreatureData<
       CharacterData.Schema,
       Actor<'character'>
     >,
-    options: Actor.DatabaseOperation.PreCreateOperationInstance,
+    options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(createData, options, user);
@@ -112,13 +112,11 @@ export class CharacterData extends CreatureData<
 
     await this.#addCoreSkills();
 
-    const isImported = foundry.utils.hasProperty(
-      createData,
-      'flags.core.sourceId',
-    );
-
     //Handle starting currency
-    if (!isImported) {
+    if (
+      !this.parent._stats.compendiumSource &&
+      !this.parent._stats.duplicateSource
+    ) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }

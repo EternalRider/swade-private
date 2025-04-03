@@ -155,17 +155,24 @@
       .derived-stat {
         margin: 0 3px;
         text-align: center;
+        input:read-only {
+          pointer-events: initial;
+        }
         &.size {
           flex: 0 0 40px;
         }
         &.handling {
           flex: 0 0 50px;
         }
-        &.top-speed {
-          flex: 0 0 90px;
+        &.split {
+          flex-grow: 0;
+          flex-shrink: 0;
+          flex-basis: 80px;
+          align-items: center;
           .flexrow {
             gap: 5px;
-            .speed-unit {
+            justify-content: space-evenly;
+            .slim {
               flex: 0 0 35px;
             }
           }

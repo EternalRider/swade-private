@@ -1,4 +1,4 @@
-import { AnyObject, DeepPartial } from 'fvtt-types/utils';
+import { AnyObject, DeepPartial, InexactPartial } from 'fvtt-types/utils';
 import { EquipState } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -38,7 +38,7 @@ declare global {
     };
   }
   namespace Item {
-    namespace DatabaseOperation {
+    namespace Database {
       interface Create {
         isItemGrant?: boolean;
       }
@@ -222,9 +222,26 @@ class SwadeItem<
     return false;
   }
 
+  // Special implementation to help with modifiers on temp docs
+  override clone<Save extends boolean = false>(
+    data: Item.UpdateData = {},
+    options: foundry.abstract.Document.CloneContext<Save> &
+      InexactPartial<
+        foundry.abstract.Document.ConstructionContext<Item.Parent>
+      > = {},
+  ) {
+    if (options.save) return super.clone<true>(data, options);
+    if (this.parent) this.parent._embeddedPreparation = true;
+    const item = super.clone<false>(data, options);
+    if (item.parent) {
+      delete item.parent._embeddedPreparation;
+    }
+    return item;
+  }
+
   override prepareEmbeddedDocuments() {
     super.prepareEmbeddedDocuments();
-    this.applyModifiers();
+    if (!this.actor || this.actor._embeddedPreparation) this.applyModifiers();
   }
 
   /**
@@ -249,7 +266,6 @@ class SwadeItem<
       );
     }
     changes.sort((a, b) => a.priority - b.priority);
-
     // Apply all changes
     for (const change of changes) {
       if (!change.key) continue;
@@ -893,7 +909,7 @@ class SwadeItem<
 
   protected override async _preCreate(
     data: Item.CreateData,
-    options: Item.DatabaseOperation.PreCreateOperationInstance,
+    options: Item.DatabaseeOptions,
     user: User.Implementation,
   ) {
     const canCreate = await super._preCreate(data, options, user);
@@ -906,7 +922,7 @@ class SwadeItem<
   }
 
   protected override async _preDelete(
-    options: Item.DatabaseOperation.PreDeleteOperationInstance,
+    options: Item.DatabaseeOptions,
     user: User.Implementation,
   ): Promise<void> {
     await super._preDelete(options, user);
@@ -915,7 +931,7 @@ class SwadeItem<
 
   protected override _onUpdate(
     changed: Item.UpdateData,
-    options: Item.DatabaseOperation.OnUpdateOperation,
+    options: Item.Database.OnUpdateOperation,
     userId: string,
   ) {
     super._onUpdate(changed, options, userId);
@@ -945,7 +961,7 @@ class SwadeItem<
 
   protected static override async _onCreateOperation(
     items: Item.Implementation[],
-    operation: Item.DatabaseOperation.Create,
+    operation: Item.Database.Create,
     user: User.Implementation,
   ) {
     if (!operation.isItemGrant && user.isSelf) {

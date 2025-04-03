@@ -5,7 +5,7 @@ export default class SwadeChatLog extends ChatLog {
     command: string,
     matches: RegExpMatchArray[],
     chatData: ChatMessage.CreateData,
-    createOptions: ChatMessage.DatabaseOperation.OnCreateOperation,
+    createOptions: ChatMessage.Database.OnCreateOperation,
   ): Promise<void> {
     const actor =
       ChatMessage.getSpeakerActor(chatData.speaker) || game.user.character;

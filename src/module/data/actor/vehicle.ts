@@ -10,6 +10,7 @@ import SwadeItem from '../../documents/item/SwadeItem';
 import { createEmbedElement } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
+import { ShieldData, WeaponData } from '../item';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
 import { SwadeBaseActorData, TokenSize } from './base/base';
@@ -47,6 +48,10 @@ declare namespace VehicleData {
         strength: Array<DerivedModifier>;
         vigor: Array<DerivedModifier>;
         trait: Array<DerivedModifier>;
+      };
+      parry: {
+        sources: Array<DerivedModifier>;
+        effects: Array<DerivedModifier>;
       };
     };
     cargo: {
@@ -226,6 +231,29 @@ function createVehicleSchema() {
       },
       { label: 'SWADE.Wounds' },
     ),
+    stats: new fields.SchemaField({
+      parry: new fields.SchemaField(
+        {
+          value: new fields.NumberField({
+            initial: 0,
+            integer: true,
+            label: 'SWADE.Parry',
+          }),
+          shield: new fields.NumberField({
+            initial: 0,
+            integer: true,
+            label: 'SWADE.ShieldBonus',
+          }),
+          modifier: new fields.NumberField({
+            initial: 0,
+            integer: true,
+            required: false,
+            label: 'SWADE.Modifier',
+          }),
+        },
+        { label: 'SWADE.Parry' },
+      ),
+    }),
     energy: new fields.SchemaField(
       {
         value: new fields.NumberField({
@@ -327,6 +355,15 @@ function createVehicleSchema() {
       },
       { label: 'SWADE.Status' },
     ),
+    details: new fields.SchemaField(
+      {
+        autoCalcParry: new fields.BooleanField({
+          initial: true,
+          hint: 'SWADE.AutoCalcParry',
+        }),
+      },
+      { label: 'SWADE.Details' },
+    ),
     initiative: new fields.SchemaField(
       {
         hasHesitant: new fields.BooleanField({ label: 'SWADE.Hesitant' }),
@@ -416,19 +453,23 @@ class VehicleData<
 
   override prepareBaseData(this: VehicleData) {
     //setup the global modifier container object
-    this.stats = {
-      globalMods: {
-        attack: new Array<DerivedModifier>(),
-        damage: new Array<DerivedModifier>(),
-        ap: new Array<DerivedModifier>(),
-        agility: new Array<DerivedModifier>(),
-        smarts: new Array<DerivedModifier>(),
-        spirit: new Array<DerivedModifier>(),
-        strength: new Array<DerivedModifier>(),
-        vigor: new Array<DerivedModifier>(),
-        trait: new Array<DerivedModifier>(),
-      },
+    this.stats.globalMods = {
+      attack: new Array<DerivedModifier>(),
+      damage: new Array<DerivedModifier>(),
+      ap: new Array<DerivedModifier>(),
+      agility: new Array<DerivedModifier>(),
+      smarts: new Array<DerivedModifier>(),
+      spirit: new Array<DerivedModifier>(),
+      strength: new Array<DerivedModifier>(),
+      vigor: new Array<DerivedModifier>(),
+      trait: new Array<DerivedModifier>(),
     };
+    this.stats.parry.sources = new Array<DerivedModifier>();
+    this.stats.parry.effects = new Array<DerivedModifier>();
+
+    //parry autocalc
+    if (this.details.autoCalcParry) this.stats.parry.value = 0;
+
     for (const attribute of Object.values(this.attributes)) {
       attribute.effects = new Array<RollModifier>();
     }
@@ -468,6 +509,100 @@ class VehicleData<
       },
       0,
     );
+
+    if (this.details.autoCalcParry)
+      this.stats.parry.value = this.parent.calcParry();
+  }
+
+  override getParryBaseSkill() {
+    const operator = this.crew.members.find(
+      (m) => m.role === constants.CREW_ROLE.OPERATOR,
+    );
+    const skillCandidates = operator?.actor.itemTypes.skill ?? [];
+    return (skillCandidates.find((s) => s.name === this.driver.skill) ||
+      skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as
+      | SwadeItem<'skill'>
+      | undefined;
+  }
+
+  calcParry(): number {
+    /** base value of all parry calculations */
+    const parryBaseValue = 2;
+
+    let parryTotal = 0;
+    const sources: DerivedModifier[] = this.stats.parry.sources;
+    const parryBaseSkill = this.getParryBaseSkill();
+
+    const skillDie = parryBaseSkill?.system?.die.sides ?? 0;
+    const skillMod = parryBaseSkill?.system?.die.modifier ?? 0;
+
+    //base parry calculation
+    parryTotal = Math.round(skillDie / 2) + parryBaseValue;
+
+    //add modifier if the skill die is 12
+    if (skillDie >= 12) {
+      parryTotal += Math.floor(skillMod / 2);
+    }
+
+    if (parryBaseSkill) {
+      sources.push({
+        label: foundry.utils.getProperty(parryBaseSkill, 'name'),
+        value: parryTotal,
+      });
+    } else {
+      sources.push({
+        label: game.i18n.localize('SWADE.BaseParry'),
+        value: parryBaseValue,
+      });
+    }
+
+    this.stats.parry.shield = 0;
+
+    const itemTypes = this.parent.itemTypes;
+
+    //add shields
+    for (const shield of itemTypes.shield) {
+      if (!(shield.system instanceof ShieldData)) continue;
+      if (shield.system.equipStatus === constants.EQUIP_STATE.EQUIPPED) {
+        const shieldParry = shield.system.parry ?? 0;
+        parryTotal += shieldParry;
+        this.stats.parry.shield += shieldParry;
+        sources.push({
+          label: shield.name,
+          value: shieldParry,
+        });
+      }
+    }
+
+    //add equipped weapons
+    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as
+      | undefined
+      | boolean;
+    for (const weapon of itemTypes.weapon) {
+      if (!(weapon.system instanceof WeaponData)) continue;
+      let parryBonus = 0;
+
+      if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
+        // only add parry bonus if it's in the main hand or actor is ambidextrous
+        if (
+          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
+          ambidextrous
+        )
+          parryBonus += weapon.system.parry ?? 0;
+
+        //add trademark weapon bonus
+        parryBonus += Number(weapon.system.trademark);
+      }
+      if (parryBonus !== 0) {
+        sources.push({
+          label: weapon.name,
+          value: parryBonus,
+        });
+      }
+      parryTotal += parryBonus;
+    }
+
+    return parryTotal;
   }
 
   override async toEmbed(

@@ -1,12 +1,23 @@
-export class FormulaField extends foundry.data.fields.StringField {
+export class FormulaField<
+  Options extends
+    foundry.data.fields.StringField.Options = foundry.data.fields.StringField.DefaultOptions,
+> extends foundry.data.fields.StringField<Options> {
   protected override _cast(value: any): string {
     if (typeof value !== 'string') {
       value = value?.toString() ?? '';
     } else {
       if (game.settings.get('core', 'language') !== 'en') {
         value = value
-          .replace(new RegExp('^' + game.i18n.localize('SWADE.AttrSma')), '@sma')
-          .replace(new RegExp('^' + game.i18n.localize('SWADE.AttrSmaShortPowerRange')), '@sma');
+          .replace(
+            new RegExp('^' + game.i18n.localize('SWADE.AttrSma')),
+            '@sma',
+          )
+          .replace(
+            new RegExp(
+              '^' + game.i18n.localize('SWADE.AttrSmaShortPowerRange'),
+            ),
+            '@sma',
+          );
       }
       value = value
         .replace(/^-/, '') // Core, HYPHEN-MINUS, only remove at beginning as minus may be used in formulas

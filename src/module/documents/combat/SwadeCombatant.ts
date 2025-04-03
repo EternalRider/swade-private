@@ -317,7 +317,7 @@ export default class SwadeCombatant<
 
   override async _preCreate(
     data: Combatant.CreateData,
-    options: Combatant.DatabaseOperation.PreCreateOperationInstance,
+    options: Combatant.Database.PreUpdateOptions,
     user: User.Implementation,
   ) {
     if (this.actor?.type === 'group') {

@@ -1,6 +1,7 @@
 import { AdditionalStat } from '../../../../interfaces/additional.interface';
 import { SwadeRoll } from '../../../dice/SwadeRoll';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
+import type SwadeItem from '../../../documents/item/SwadeItem';
 import { makeAdditionalStatsSchema } from '../../shared/additionalStats';
 
 declare namespace SwadeBaseActorData {
@@ -57,6 +58,10 @@ class SwadeBaseActorData<
       flavor: statData.label,
     });
     return message;
+  }
+
+  getParryBaseSkill(): SwadeItem<'skill'> | undefined {
+    return undefined;
   }
 
   /**

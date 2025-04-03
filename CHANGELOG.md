@@ -22,6 +22,43 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.0
+
+### Added
+
+- Added v13 compatibility
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+- [BREAKING] Removed v12 compatibility
+- Finished deprecation period for Ancestry
+
+## 4.4.1
+
+### Added
+
+- Trait Rolls on items now support SWIDs. **by @mhilbrunner**
+- Vehicles now support parry calculation based on the operator's skill. (#1282) **by @florad92**
+
+### Changed
+
+- Added tooltip for Size field on PC actor sheets displaying Scale name. **by @mhilbrunner**
+- Tooltips for string type Additional Stats now display the current value. **by @mhilbrunner**
+- Added more details to power cards in Quick Access, and trappings to NPC cards. **by @mhilbrunner**
+
+### Fixed
+
+- Fixed an issue where modifiers would be applied twice after their containing item was updated. (#1292) **by @jpmeehan5**
+- Updated logic for starting currency overrides to use `_stats` instead of old `flags.core.sourceId`. **by @jpmeehan5**
+- Fixed error when setting combatant group color in combat tracker. **by @mhilbrunner**
+- Fixed Damage Applicator not using actor as chat speaker and sometimes emitting empty chat messages
+- Fixed Benny +/- buttons moving when the first Benny is added on PC sheets. **by @mhilbrunner**
+- Fixed various parsing edge cases for the range field. **by @mhilbrunner**
+
 ## 4.4.0
 
 ### Added

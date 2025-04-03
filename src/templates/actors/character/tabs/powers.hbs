@@ -22,21 +22,14 @@
       </summary>
       <span class="content">
         <span class="power-details">
-          {{#if system.damage}}
-          <button type="button" class="damage-roll">
-            {{localize "SWADE.Dmg"}}: {{system.damage}}
-          </button>
-          {{/if}}
-          {{#if system.ap}}
-            <span>{{localize "SWADE.Ap"}}: {{system.ap}}</span>
-          {{/if}}
-          <span>{{localize "SWADE.Rank"}}: {{system.rank}}</span>
-          <span>{{localize "SWADE.PP"}}: {{system.pp}}</span>
-          <span>{{localize "SWADE.Range._name"}}: {{system.range}}</span>
-          <span>{{localize "SWADE.Dur"}}: {{system.duration}}</span>
+          {{#if system.rank}}<span>{{system.rank}}</span>{{/if}}
+          <span>{{localize "SWADE.PP"}}:&nbsp;{{system.pp}}</span>
+          <span>{{localize "SWADE.Range._name"}}:&nbsp;{{system.range}}</span>
+          <span>{{localize "SWADE.Dur"}}:&nbsp;{{system.duration}}</span>
+          {{#if system.ap}}<span>{{localize "SWADE.Ap"}}:&nbsp;{{system.ap}}</span>{{/if}}
         </span>
         <div class="trapping">
-          {{localize "SWADE.Trapping"}}: {{system.trapping}}
+          {{localize "SWADE.Trapping"}}:&nbsp;{{system.trapping}}
         </div>
         <div class="description"><p>{{localize 'SWADE.NoDescription'}}</p></div>
         {{> "swade.npc-action-card" item=this powersTab=true}}
