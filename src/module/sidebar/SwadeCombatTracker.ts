@@ -301,7 +301,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       name: 'SWADE.MakeGroupLeader',
       icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
-        const combatantId = li.attr('data-combatant-id') as string;
+        const combatantId = li.getAttribute('data-combatant-id') as string;
         const combatant = this.viewed!.combatants.get(combatantId, {
           strict: true,
         }) as SwadeCombatant;
@@ -315,7 +315,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       name: 'SWADE.SetGroupColor',
       icon: '<i class="fa-solid fa-palette"></i>',
       condition: (li) => {
-        const combatantId = li.attr('data-combatant-id') as string;
+        const combatantId = li.getAttribute('data-combatant-id') as string;
         const combatant = this.viewed?.combatants.get(combatantId, {
           strict: true,
         }) as SwadeCombatant;
@@ -329,7 +329,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       name: 'SWADE.RemoveGroupLeader',
       icon: '<i class="fa-solid fa-users-slash"></i>',
       condition: (li) => {
-        const combatantId = li.attr('data-combatant-id') as string;
+        const combatantId = li.getAttribute('data-combatant-id') as string;
         const combatant = this.viewed?.combatants.get(combatantId)!;
         return combatant.isGroupLeader && combatant!.actor!.isOwner;
       },
@@ -342,7 +342,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
         const combatant = this.viewed?.combatants.get(
-          li.attr('data-combatant-id') as string,
+          li.getAttribute('data-combatant-id') as string,
         ) as SwadeCombatant;
         const selectedTokens = (canvas?.tokens?.controlled ?? []).filter(
           (t) => t.id !== combatant.tokenId,
@@ -361,7 +361,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       name: 'SWADE.GroupByName',
       icon: '<i class="fa-solid fa-users"></i>',
       condition: (li) => {
-        const combatantId = li.attr('data-combatant-id') as string;
+        const combatantId = li.getAttribute('data-combatant-id') as string;
         const combatant = this.viewed?.combatants.get(combatantId)!;
         return (
           !!this.viewed!.combatants.find(
@@ -387,7 +387,7 @@ export default class SwadeCombatTracker extends CombatTracker {
         name: game.i18n.format('SWADE.Follow', { name: gl.name }),
         icon: '<i class="fa-solid fa-user-friends"></i>',
         condition: (li) => {
-          const combatantId = li.attr('data-combatant-id') as string;
+          const combatantId = li.getAttribute('data-combatant-id') as string;
           const combatant = this.viewed?.combatants.get(combatantId)!;
           return combatant.groupId !== gl.id && combatantId !== gl.id;
         },
@@ -562,8 +562,8 @@ export default class SwadeCombatTracker extends CombatTracker {
     }
   }
 
-  async #onFollowLeader(li: JQuery<HTMLElement>, gl: SwadeCombatant) {
-    const combatantId = li.attr('data-combatant-id') as string;
+  async #onFollowLeader(li: HTMLElement, gl: SwadeCombatant) {
+    const combatantId = li.getAttribute('data-combatant-id') as string;
     const combatant = this.viewed?.combatants.get(combatantId, {
       strict: true,
     }) as SwadeCombatant;
@@ -610,8 +610,8 @@ export default class SwadeCombatTracker extends CombatTracker {
     await this.viewed?.updateEmbeddedDocuments('Combatant', updates);
   }
 
-  async #onUnfollowLeader(li: JQuery<HTMLElement>) {
-    const combatantId = li.attr('data-combatant-id') as string;
+  async #onUnfollowLeader(li: HTMLElement) {
+    const combatantId = li.getAttribute('data-combatant-id') as string;
     const combatant = this.viewed?.combatants.get(
       combatantId,
     ) as SwadeCombatant | null;

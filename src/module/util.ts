@@ -374,4 +374,14 @@ export async function getItemsBySwid<T extends Item.SubType>(
   return items;
 }
 
+export function getParents(element?: HTMLElement | null, selector?: string): HTMLElement[] {
+  const parents: HTMLElement[] = [];
+  element = element?.parentElement;
+  while (element) {
+    if (!selector || element.matches(selector)) parents.push(element);
+    element = element.parentElement;
+  }
+  return parents;
+}
+
 type Ownership = Record<string, number>;
