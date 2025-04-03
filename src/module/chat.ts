@@ -57,9 +57,6 @@ export function chatListeners(html: HTMLElement) {
         await ItemChatCardHelper.refreshItemCard(actor, messageId);
       }
     }
-  })
-
-  html.on('click', '.card-buttons button', async (event) => {
   });
 }
 
