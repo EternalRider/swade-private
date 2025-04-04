@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.4.2
+
+### Fixed
+
+- Properly set maximum compatibility to v12. **by @jpmeehan5**
+- Fixed display issue for non-power items. **by @mhilbrunner**
+
 ## 4.4.1
 
 ### Added
