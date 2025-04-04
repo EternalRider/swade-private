@@ -30,6 +30,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Update Actor embed template to include Super Powers **by @jestevens210**
+
 ### Deprecated
 
 ### Removed
