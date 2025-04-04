@@ -911,9 +911,11 @@ export default class SwadeCoreHooks {
       html
         .querySelector('nav.sheet-tabs a[data-tab="duration"]')
         ?.insertAdjacentHTML('afterend', tab);
-      html
-        .querySelector('section[data-tab="duration"]')
-        ?.insertAdjacentHTML('afterend', durationSection);
+      if (!html.querySelector('section.tab[data-tab="expiration"]')) {
+        html
+          .querySelector('section[data-tab="duration"]')
+          ?.insertAdjacentHTML('afterend', durationSection);
+      }
     } else if (effect.system instanceof ModifierData) {
       const costGroup = effect.system.schema.fields.cost.toFormGroup(
         { localize: true },
