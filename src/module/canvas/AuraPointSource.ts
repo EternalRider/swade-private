@@ -6,32 +6,33 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
 ) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static sourceType = 'light';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static effectsCollection = 'auras';
   graphics!: PIXI.Graphics;
   id: string;
+  sourceId: string;
   declare object: SwadeToken;
 
   constructor({ object, id }: { object: SwadeToken; id: string }) {
     super({ object });
     this.id = id;
+    this.sourceId = `${object.sourceId}.Aura.${id}`;
   }
 
   static get defaultData(): AuraData {
     return {
+      ...super.defaultData,
       enabled: false,
       walls: false,
       color: game.user?.color ?? '#000000',
       alpha: 0.25,
       radius: 5,
-      visibleTo: [],
+      visibleTo: []
     };
   }
 
-  get sourceId() {
-    return this.object.sourceId + `.Aura.${this.id}`;
-  }
-
   get auraData() {
-    return this.object.actor.auras[this.id] as AuraData;
+    return this.object!.actor?.auras[this.id] as AuraData;
   }
 
   /** @override */
@@ -54,14 +55,14 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
   }
 
   /** @override */
-  protected _isActive(): boolean {
-    const isActive = super._isActive();
+  protected get active(): boolean {
+    const isActive = super.active;
     return isActive && (this._checkPermission() || this._checkDisposition());
   }
 
   protected _checkPermission(): boolean {
     return (
-      this.object.actor?.permission >=
+      (this.object!.actor?.permission ?? 0) >=
       foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
     );
   }
@@ -70,7 +71,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
     const visibleTo = Array.isArray(this.auraData.visibleTo)
       ? this.auraData.visibleTo
       : [this.auraData.visibleTo];
-    return !!canvas.tokens?.controlled.some((t) =>
+    return !!canvas?.tokens?.controlled.some((t) =>
       visibleTo.includes(t.document.disposition),
     );
   }
