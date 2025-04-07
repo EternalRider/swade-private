@@ -21,7 +21,7 @@ export default class ItemChatCardHelper {
     event.preventDefault();
 
     // Extract card data
-    const button = event.currentTarget as HTMLElement;
+    const button = event.target as HTMLElement;
     button.disabled = true;
     const card = button.closest('.chat-card') as HTMLElement;
     const messageId = card.closest('.message').dataset.messageId;
@@ -423,7 +423,7 @@ export default class ItemChatCardHelper {
 
     //update the message and render the chatlog/chat popout
     await message.update({ content: content.body.innerHTML });
-    ui.chat?.render(true);
+    // ui.chat?.render(true);
     for (const appId in message.apps) {
       const app = message.apps[appId] as FormApplication;
       if (app.rendered) {

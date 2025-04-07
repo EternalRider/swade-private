@@ -6,7 +6,7 @@ export function chatListeners(html: HTMLElement) {
   html.addEventListener('click', (event) => {
     if (event.target?.closest('.card-header .item-name')) {
       // TODO: Check if this needs to be parents at all, vs just closest
-      const parents = getParents(event.currentTarget as HTMLElement, '.item-card');
+      const parents = getParents(event.target as HTMLElement, '.item-card');
       const toToggle = parents.flatMap(p => Array.from(p.querySelectorAll('.card-content')));
       // TODO: css wizardry to do this sans-jQuery
       $(toToggle).slideToggle();
@@ -15,7 +15,7 @@ export function chatListeners(html: HTMLElement) {
 
   html.addEventListener('click', async (event) => {
     if (event.target?.closest('.card-buttons button')) {
-      const element = event.currentTarget as HTMLElement;
+      const element = event.target as HTMLElement;
       const chatCard = element.closest<HTMLElement>('.chat-card')!;
       const actor = ItemChatCardHelper.getChatCardActor(chatCard);
       if (!actor) return;
