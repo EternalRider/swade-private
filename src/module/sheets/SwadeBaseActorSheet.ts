@@ -93,7 +93,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const arcane = ev.currentTarget.dataset.arcane;
       jquery.find('.arcane-tabs .arcane').removeClass('active');
       ev.currentTarget.classList.add('active');
-      this._filterPowers(jquery, arcane);
+      this._filterPowers(jquery[0], arcane);
     });
 
     //Running Die
@@ -428,10 +428,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     }).render(true);
   }
 
-  protected _filterPowers(html: JQuery, arcane: string) {
+  protected _filterPowers(html: HTMLElement, arcane: string) {
     this.options['activeArcane'] = arcane;
     // Show, hide powers
-    html.find('.power').each((id: number, pow: any) => {
+    html.querySelectorAll('.power').forEach(pow => {
       if (pow.dataset.arcane == arcane || arcane == 'All') {
         pow.classList.add('active');
       } else {
@@ -439,7 +439,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
     // Show, Hide powerpoints
-    html.find('.power-counter').each((id: number, ct: any) => {
+    html.querySelectorAll('.power-counter').forEach(ct => {
       if (ct.dataset.arcane == arcane) {
         ct.classList.add('active');
       } else {
