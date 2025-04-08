@@ -335,8 +335,8 @@ Hooks.on('createProseMirrorEditor', SwadeCoreHooks.onCreateProseMirrorEditor);
 Hooks.on('renderCombatantConfig', SwadeCoreHooks.onRenderCombatantConfig);
 Hooks.on('renderActiveEffectConfig', SwadeCoreHooks.onRenderActiveEffectConfig);
 Hooks.on('renderCompendium', SwadeCoreHooks.onRenderCompendium);
-Hooks.on('renderChatMessage', SwadeCoreHooks.onRenderChatMessage);
-Hooks.on('renderPlayerList', SwadeCoreHooks.onRenderPlayerList);
+Hooks.on('renderChatMessageHTML', SwadeCoreHooks.onRenderChatMessageHTML);
+Hooks.on('renderPlayers', SwadeCoreHooks.onRenderPlayers);
 Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 
 /* ------------------------------------ */
@@ -355,22 +355,9 @@ Hooks.on(
 /* Context Options    				          */
 /* ------------------------------------ */
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
-Hooks.on(
-  'getActorEntryContext',
-  SwadeCoreHooks.onGetActorDirectoryEntryContext,
-);
-Hooks.on(
-  'getActorDirectoryEntryContext',
-  SwadeCoreHooks.onGetActorDirectoryEntryContext,
-);
-Hooks.on(
-  'getCardsDirectoryEntryContext',
-  SwadeCoreHooks.onGetCardsDirectoryEntryContext,
-);
-Hooks.on(
-  'getCompendiumDirectoryEntryContext',
-  SwadeCoreHooks.onGetCompendiumDirectoryEntryContext,
-);
+Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
+Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
+Hooks.on('getCompendiumContextOptions', SwadeCoreHooks.onGetCompendiumContextOptions);
 
 /* ------------------------------------ */
 /* Update Hooks              	          */
