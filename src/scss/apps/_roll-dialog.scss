@@ -45,6 +45,13 @@
       padding: 0;
       border: 1px solid var(--color-border-light-tertiary);
       background-color: var(--color-text-light-2);
+      transition: height 200ms ease;
+      height: 334.25px;
+      overflow: hidden;
+      &.collapsed {
+        border: none;
+        height: 0px;
+      }
     }
     .searchBox {
       margin: 0.5em;

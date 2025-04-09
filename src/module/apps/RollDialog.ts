@@ -87,19 +87,20 @@ export class RollDialog extends FormApplication<
     return this.ctx.mods;
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
-    $(document).on('keydown.chooseDefault', this.#onKeyDown.bind(this));
-    html[0]
+  override activateListeners(jquery: JQuery<HTMLElement>): void {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+    document.addEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    html
       .querySelector<HTMLButtonElement>('button#close')
       ?.addEventListener('click', this.close.bind(this));
-    html[0]
+    html
       .querySelector<HTMLButtonElement>('button.add-modifier')
       ?.addEventListener('click', () => {
         this.#addModifier();
         this.render();
       });
-    html[0]
+    html
       .querySelectorAll<HTMLButtonElement>('.modifier .add-preset')
       .forEach((btn) => {
         btn.addEventListener('click', (ev) => {
@@ -107,18 +108,30 @@ export class RollDialog extends FormApplication<
           this.render();
         });
       });
-    html[0]
+    html
       .querySelector<HTMLButtonElement>('button.toggle-list')
       ?.addEventListener('click', (ev) => {
         const target = ev.currentTarget as HTMLButtonElement;
-        const width = getComputedStyle(target).width;
-        html[0]
+        const style = getComputedStyle(target);
+        const width = parseFloat(style.width)
+          - parseFloat(style.paddingLeft)
+          - parseFloat(style.paddingRight)
+          - parseFloat(style.marginLeft)
+          - parseFloat(style.marginRight)
+          - parseFloat(style.borderLeftWidth)
+          - parseFloat(style.borderRightWidth);
+        html
           .querySelector('.fas.fa-caret-right')
           ?.classList.toggle('rotate');
-        html.find('.searchBox').outerWidth(width, true);
-        html.find('.dropdown').outerWidth(width).slideToggle({ duration: 200 });
+        const searchBox = html.querySelector('.searchBox');
+        if (searchBox) searchBox.style.width = width + 'px';
+        const dropdown = html.querySelector('.dropdown');
+        if (dropdown) {
+          dropdown.style.width = style.width;
+          dropdown.classList.toggle('collapsed');
+        }
       });
-    html[0]
+    html
       .querySelectorAll<HTMLButtonElement>('button.submit-roll')
       .forEach((btn) => {
         btn.addEventListener('click', (ev) => {
@@ -128,7 +141,7 @@ export class RollDialog extends FormApplication<
         });
       });
 
-    html[0]
+    html
       .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
       .forEach((el) =>
         el.addEventListener('change', (ev) => {
@@ -193,7 +206,7 @@ export class RollDialog extends FormApplication<
   override close(options?: Application.CloseOptions): Promise<void> {
     //fallback if the roll has not yet been resolved
     if (!this.#isResolved) this.#callback(null);
-    $(document).off('keydown.chooseDefault');
+    document.removeEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
     return super.close(options);
   }
 

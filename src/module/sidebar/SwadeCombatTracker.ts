@@ -16,7 +16,7 @@ export default class SwadeCombatTracker extends CombatTracker {
   override scrollToTurn() {
     const combat = this.viewed;
     if (!combat || combat.turn === null) return;
-    const active = this.element.find('.combatant.active')[0];
+    const active = this.element.querySelector('.combatant.active');
     const container = active?.parentElement;
     if (!active || !container) return;
     const nViewable = Math.floor(container.offsetHeight / active.offsetHeight);
@@ -109,7 +109,7 @@ export default class SwadeCombatTracker extends CombatTracker {
   protected override async _onCombatantControl(event: JQuery.ClickEvent) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    const btn = event.currentTarget as HTMLElement;
+    const btn = event.target as HTMLElement;
     const li = btn.closest('.combatant') as HTMLLIElement;
     const c = this.viewed!.combatants.get(li.dataset.combatantId as string, {
       strict: true,
@@ -132,7 +132,7 @@ export default class SwadeCombatTracker extends CombatTracker {
       case 'actAfter':
         return this._onActAfterCurrentCombatant(c);
       default:
-        return super._onCombatantControl(event);
+        return super._onCombatantControl(event, btn);
     }
   }
 
@@ -412,12 +412,12 @@ export default class SwadeCombatTracker extends CombatTracker {
   }
 
   protected override async _onCombatantMouseDown(
-    event: JQuery.ClickEvent,
+    event: PointerEvent,
   ): Promise<boolean | void> {
     if ((event.target as HTMLElement).classList.contains('dealt')) {
-      return this.#onRedrawCard(event.originalEvent as PointerEvent);
+      return this.#onRedrawCard(event);
     }
-    return super._onCombatantMouseDown(event);
+    return super._onCombatantMouseDown(event, event.target);
   }
 
   async #promptNewLeaderSelection(c: SwadeCombatant): Promise<SwadeCombatant> {

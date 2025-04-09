@@ -40,7 +40,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     // override escape and enter keys for this Application
-    $(document).on('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    document.addEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
 
     html[0]
       .querySelector<HTMLButtonElement>('button#close')
@@ -68,7 +68,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
   override close(options?: Application.CloseOptions): Promise<void> {
     this.#callback(this.selection);
-    $(document).off('keydown.chooseDefault');
+    document.removeEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
     return super.close(options);
   }
 

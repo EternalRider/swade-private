@@ -93,7 +93,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     // Filter power list
     html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.addEventListener('click', (ev: any) => {
       const arcane = ev.currentTarget.dataset.arcane;
-      jquery.find('.arcane-tabs .arcane').removeClass('active');
+      html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.classList.remove('active'));
       ev.currentTarget.classList.add('active');
       this._filterPowers(html, arcane);
     }));
