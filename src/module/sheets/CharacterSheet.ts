@@ -77,11 +77,11 @@ export default class CharacterSheet extends ActorSheet {
 
     // Input focus and update
     const inputs = html.querySelectorAll('input');
-    inputs.forEach(el => el.addEventListener('focus', (ev) => ev.currentTarget.select()))
+    inputs.forEach(el => el.addEventListener('focus', (ev) => ev.currentTarget.select()));
 
     html
       .querySelector('[name="system.details.currency"]')
-      ?.addEventListener('change', this._onChangeInputDelta.bind(this))
+      ?.addEventListener('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
     html.querySelectorAll('li.item, .attribute').forEach((el) => {
