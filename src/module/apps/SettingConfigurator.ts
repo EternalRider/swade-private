@@ -67,10 +67,8 @@ export default class SettingConfigurator extends FormApplication {
     html.querySelector('#reset')?.addEventListener('click', () => this._resetSettings());
     html.querySelector('#submit')?.addEventListener('click', () => this.close());
     html
-      .querySelectorAll('.attributes')
-      .forEach(el => el.addEventListener('click', '.attribute-control', (e) =>
-        this._onClickAttributeControl(e),
-      ));
+      .querySelectorAll('.attributes .attribute-control')
+      .forEach(el => el.addEventListener('click', (e) => this._onClickAttributeControl(e)));
   }
 
   async _updateObject(_event, formData) {
