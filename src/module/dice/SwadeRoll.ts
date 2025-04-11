@@ -25,7 +25,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     return newRoll;
   }
 
-  static async rerollFree(event: MouseEvent) {
+  static async rerollFree(event: PointerEvent) {
     event.preventDefault();
     const target = event.currentTarget as HTMLButtonElement;
     const id = target.closest<HTMLElement>('.message')!.dataset.messageId!;
@@ -51,7 +51,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     );
   }
 
-  static async rerollBenny(event: MouseEvent) {
+  static async rerollBenny(event: PointerEvent) {
     event.preventDefault();
     const target = event.currentTarget as HTMLButtonElement;
     const id = target.closest<HTMLElement>('.message')!.dataset.messageId!;

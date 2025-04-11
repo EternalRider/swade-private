@@ -18,6 +18,7 @@ export class RollDialog extends FormApplication<
   #callback: (roll: SwadeRoll | null) => void;
   #isResolved = false;
   #extraButtonUsed = false;
+  #keydownListener;
 
   static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
     return new Promise<SwadeRoll | null>(
@@ -90,7 +91,10 @@ export class RollDialog extends FormApplication<
   override activateListeners(jquery: JQuery<HTMLElement>): void {
     super.activateListeners(jquery);
     const html = jquery[0];
-    document.addEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    if (!this.#keydownListener) {
+      this.#keydownListener = this.#onKeyDown.bind(this);
+      document.addEventListener('keydown', this.#keydownListener);
+    }
     html
       .querySelector<HTMLButtonElement>('button#close')
       ?.addEventListener('click', this.close.bind(this));
@@ -206,7 +210,7 @@ export class RollDialog extends FormApplication<
   override close(options?: Application.CloseOptions): Promise<void> {
     //fallback if the roll has not yet been resolved
     if (!this.#isResolved) this.#callback(null);
-    document.removeEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    document.removeEventListener('keydown', this.#keydownListener);
     return super.close(options);
   }
 
@@ -355,7 +359,7 @@ export class RollDialog extends FormApplication<
     }
   }
 
-  #addPreset(ev: MouseEvent): void {
+  #addPreset(ev: PointerEvent): void {
     const target = ev.currentTarget as HTMLButtonElement;
     const group = CONFIG.SWADE.prototypeRollGroups.find(
       (v) => v.name === target.dataset.group,
@@ -387,8 +391,9 @@ export class RollDialog extends FormApplication<
       if (modValue) {
         this.#addModifier();
         return this.render();
+      } else {
+        return this.submit();
       }
-      return this.submit();
     }
   }
 }

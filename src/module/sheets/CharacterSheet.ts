@@ -742,7 +742,7 @@ export default class CharacterSheet extends ActorSheet {
     return { temporary, permanent, favorite };
   }
 
-  protected async _handleItemActions(ev: MouseEvent) {
+  protected async _handleItemActions(ev: PointerEvent) {
     const button = ev.currentTarget as HTMLButtonElement;
     const action = button.dataset.action!;
     const itemId = button.closest('.chat-card.item-card')?.dataset.itemId;
@@ -873,7 +873,7 @@ export default class CharacterSheet extends ActorSheet {
     await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
-  protected async _handleCounterAdjust(ev: MouseEvent) {
+  protected async _handleCounterAdjust(ev: PointerEvent) {
     const target = ev.currentTarget as HTMLElement;
     const action = target.dataset.action;
 

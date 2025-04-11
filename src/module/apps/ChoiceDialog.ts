@@ -8,6 +8,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
   #callback: (value: ChoiceSet) => void;
   #parent: SwadeItem;
   protected selection: ChoiceSet;
+  #keyDownListener;
 
   static asPromise(ctx: ChoiceDialogContext): Promise<ChoiceSet> {
     return new Promise<ChoiceSet>((resolve) => new ChoiceDialog(ctx, resolve));
@@ -40,7 +41,10 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     // override escape and enter keys for this Application
-    document.addEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    if (!this.#keyDownListener) {
+      this.#keyDownListener = this.#onKeyDown.bind(this);
+      document.addEventListener('keydown', this.#keyDownListener);
+    }
 
     html[0]
       .querySelector<HTMLButtonElement>('button#close')
@@ -68,7 +72,7 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
 
   override close(options?: Application.CloseOptions): Promise<void> {
     this.#callback(this.selection);
-    document.removeEventListener('keydown.chooseDefault', this.#onKeyDown.bind(this));
+    document.removeEventListener('keydown', this.#keyDownListener);
     return super.close(options);
   }
 

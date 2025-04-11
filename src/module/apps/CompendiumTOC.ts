@@ -122,7 +122,7 @@ export class CompendiumTOC extends Compendium<
     this.render(true);
   }
 
-  protected async _onClickLink(ev: MouseEvent) {
+  protected async _onClickLink(ev: PointerEvent) {
     const target = ev.currentTarget;
     if (target.className === 'toggle-search-mode') {
       this.#fullTextSearch = !this.#fullTextSearch;

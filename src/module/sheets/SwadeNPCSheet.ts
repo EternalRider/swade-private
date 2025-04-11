@@ -196,7 +196,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
-  protected async _handleCounterAdjust(ev: MouseEvent) {
+  protected async _handleCounterAdjust(ev: PointerEvent) {
     const target = ev.currentTarget as HTMLElement;
     const action = target.dataset.action;
 
