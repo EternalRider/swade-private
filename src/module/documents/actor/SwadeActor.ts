@@ -50,7 +50,6 @@ declare global {
   interface FlagConfig {
     swade: {
       ambidextrous?: boolean;
-      auras?: Record<string, AuraData>;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
@@ -235,34 +234,6 @@ class SwadeActor<
       types[type].sort((a, b) => a.sort - b.sort);
     }
     return types;
-  }
-
-  get auras(): Record<string, AuraData> {
-    const auras = (this.flags?.swade?.auras ?? {}) as Record<string, AuraData>;
-    const specialAuras = ['aura1', 'aura2'];
-    let aura;
-    for (const key in auras) {
-      if (specialAuras.includes(key)) continue;
-      aura = auras[key] ?? {};
-      auras[key] = foundry.utils.mergeObject(
-        aura,
-        AuraPointSource.defaultData,
-        { overwrite: false },
-      );
-    }
-
-    //special case: the user-defined auras
-    auras.aura1 = foundry.utils.mergeObject(
-      auras.aura1 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    auras.aura2 = foundry.utils.mergeObject(
-      auras.aura2 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    return auras;
   }
 
   /**

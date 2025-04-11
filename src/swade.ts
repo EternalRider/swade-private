@@ -10,7 +10,7 @@ import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
-import SwadeDocumentTweaks from './module/apps/SwadeDocumentTweaks';
+import SwadeDocumentTweaks, { SwadeActorTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import { SWADE } from './module/config';
@@ -72,6 +72,8 @@ const swadeAPI: SwadeGame = {
   },
   apps: {
     SwadeDocumentTweaks,
+    SwadeActorTweaks,
+    SwadeItemTweaks,
     AdvanceEditor,
     SettingConfigurator,
     CompendiumTOC,

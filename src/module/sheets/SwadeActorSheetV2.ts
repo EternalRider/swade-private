@@ -1,6 +1,6 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { SwadeDocumentSheetConfiguration, Updates } from '../../globals';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeItem from '../documents/item/SwadeItem';
@@ -146,7 +146,7 @@ export class SwadeActorSheetV2<
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    new SwadeDocumentTweaks(this.actor).render(true);
+    new SwadeActorTweaks({ document: this.document }).render({ force: true });
   }
 
   static async rollAdditionalStat(

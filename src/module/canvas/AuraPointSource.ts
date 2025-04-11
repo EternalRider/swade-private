@@ -24,7 +24,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
       ...super.defaultData,
       enabled: false,
       walls: false,
-      color: game.user?.color ?? '#000000',
+      color: '#000000',
       alpha: 0.25,
       radius: 5,
       visibleTo: []
@@ -32,7 +32,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
   }
 
   get auraData() {
-    return this.object!.actor?.auras[this.id] as AuraData;
+    return this.object!.actor?.system?.auras[this.id] as AuraData;
   }
 
   /** @override */
@@ -41,7 +41,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
     this.graphics.clear();
     this.graphics
       .beginFill(
-        this.auraData?.color ?? game.user?.color ?? '#000000',
+        this.auraData?.color ?? '#000000',
         this.auraData?.alpha,
       )
       .lineStyle(2, this.auraData?.color, 1)

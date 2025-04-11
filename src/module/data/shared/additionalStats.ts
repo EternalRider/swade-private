@@ -4,7 +4,7 @@ import { MappingField } from '../fields/MappingField';
 
 const fields = foundry.data.fields;
 export function makeAdditionalStatsSchema() {
-  return new MappingField(
+  return new fields.TypedObjectField(
     new fields.SchemaField({
       label: new fields.StringField({
         nullable: false,

@@ -14,7 +14,7 @@ import { Logger } from '../Logger';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import AttributeManager from '../apps/AttributeManager';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -597,7 +597,7 @@ export default class CharacterSheet extends ActorSheet {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
+        onclick: () => new SwadeActorTweaks({ document: this.actor }).render({ force: true }),
       };
 
       buttons = [tweaks, ...buttons];
