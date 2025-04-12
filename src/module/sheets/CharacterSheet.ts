@@ -1344,8 +1344,12 @@ export default class CharacterSheet extends ActorSheet {
       {
         name: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
-        callback: (i) =>
-          this.actor.items.get(i.dataset.itemId)?.sheet?.render(true),
+        callback: (i) => {
+          const itemId = i.dataset.itemId;
+          const effectId = i.dataset.effectId;
+          if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
+          if (effectId) this.actor.effects.get(effectId)?.sheet?.render({ force: true });
+        }
       },
       {
         name: 'SWADE.Duplicate',
