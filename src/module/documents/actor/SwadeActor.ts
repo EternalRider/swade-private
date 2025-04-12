@@ -1,6 +1,5 @@
-import { NullishProps, ValueOf } from 'fvtt-types/utils';
+import { AnyObject, NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
-import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
@@ -8,7 +7,6 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
-import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import {
@@ -94,6 +92,16 @@ class SwadeActor<
     //get the value from the parameter
     const value = mapRange(current, 0, max, 0, 1);
     return Color.fromHSV([hue, value, 0.75]);
+  }
+
+  static override migrateData(data: Actor.CreateData & AnyObject) {
+    super.migrateData(data);
+    if (data.flags?.swade?.auras) {
+      data.system ??= {};
+      data.system.auras = data.flags.swade.auras;
+      delete data.flags.swade.auras;
+    }
+    return data;
   }
 
   constructor(
