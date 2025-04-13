@@ -1,6 +1,5 @@
 import { constants } from '../../constants';
 import { AddStatsValueField } from '../fields/AddStatsValueField';
-import { MappingField } from '../fields/MappingField';
 
 const fields = foundry.data.fields;
 export function makeAdditionalStatsSchema() {
