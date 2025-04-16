@@ -14,10 +14,12 @@
       {{/if}}
     </div>
   </header>
-  <div class='card-content collapsed' style='display: none;'>
-    <div>{{localize 'SWADE.Armor'}}: {{item.system.armor}}</div>
-    {{#unless (isEmpty item.system.notes)}}
-      <div>{{item.system.notes}}</div>
-    {{/unless}}
+  <div class='card-content collapsed'>
+    <div>
+      <div>{{localize 'SWADE.Armor'}}: {{item.system.armor}}</div>
+      {{#unless (isEmpty item.system.notes)}}
+        <div>{{item.system.notes}}</div>
+      {{/unless}}
+    </div>
   </div>
 </li>

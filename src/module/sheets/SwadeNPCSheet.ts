@@ -34,12 +34,13 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
 
   // Override to set resizable initial size
   override async _renderInner(data) {
-    const html = await super._renderInner(data);
-    this.form = html[0];
+    const jquery = await super._renderInner(data);
+    const html = jquery[0];
+    this.form = html;
 
     // Resize resizable classes
-    const resizable = html.find('.resizable');
-    resizable.each((_, el) => {
+    const resizable = html.querySelectorAll('.resizable');
+    resizable.forEach(el => {
       const heightDelta =
         (this.position.height as number) - (this.options.height as number);
       el.style.height = `${heightDelta + parseInt(el.dataset.baseSize!)}px`;
@@ -49,11 +50,11 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     const arcane = !this.options['activeArcane']
       ? 'All'
       : this.options['activeArcane'];
-    html.find('.arcane-tabs .arcane').removeClass('active');
-    html.find(`[data-arcane='${arcane}']`).addClass('active');
+    html.querySelector('.arcane-tabs .arcane')?.classList.remove('active');
+    html.querySelector(`[data-arcane='${arcane}']`)?.classList.add('active');
     this._filterPowers(html, arcane);
 
-    return html;
+    return jquery;
   }
 
   override activateListeners(jquery: JQuery): void {
@@ -71,30 +72,30 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         el.addEventListener('click', this._handleCounterAdjust.bind(this)),
       );
 
-    this._setupItemContextMenu(jquery);
+    this._setupItemContextMenu(html);
 
     // Drag events for macros.
-    jquery.find('.attribute').each((i, el) => {
+    html.querySelectorAll('.attribute').forEach(el => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     // Delete Item
-    jquery.find('.item-delete').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.gear-card');
-      this.actor.items.get(li.data('itemId'))?.deleteDialog();
-    });
+    html.querySelectorAll('.item-delete').forEach(el => el.addEventListener('click', (ev) => {
+      const li = ev.currentTarget?.closest('.gear-card');
+      this.actor.items.get(li.dataset.itemId)?.deleteDialog();
+    }));
 
     // Roll Skill
-    jquery.find('.skill.item a').on('click', (event) => {
+    html.querySelectorAll('.skill.item a').forEach(el => el.addEventListener('click', (event) => {
       const element = event.currentTarget as Element;
       const item = element.parentElement!.dataset.itemId as string;
       this.actor.rollSkill(item);
-    });
+    }));
 
     // Add new object
-    jquery.find('.item-create').on('click', async (event) => {
+    html.querySelectorAll('.item-create').forEach(el => el.addEventListener('click', async (event) => {
       event.preventDefault();
       const header = event.currentTarget;
       const type = header.dataset.type!;
@@ -129,24 +130,19 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       await this.actor.createEmbeddedDocuments('Item', [itemData], {
         renderSheet: true,
       });
-    });
+    }));
 
     //Toggle Equipmnent Card collapsible
-    jquery.find('.gear-card .card-header .item-name').on('click', (ev) => {
-      const card = $(ev.currentTarget).parents('.gear-card');
-      const content = card.find('.card-content');
-      content.toggleClass('collapsed');
-      if (content.hasClass('collapsed')) {
-        content.slideUp();
-      } else {
-        content.slideDown();
-      }
-    });
+    html.querySelectorAll('.gear-card .card-header .item-name').forEach(el => el.addEventListener('click', (ev) => {
+      const card = ev.currentTarget.closest('.gear-card');
+      const content = card.querySelector('.card-content');
+      content.classList.toggle('collapsed');
+    }));
 
     // Active Effects
-    jquery
-      .find('.status-container input[type="checkbox"]')
-      .on('change', this._toggleStatusEffect.bind(this));
+    html
+      .querySelectorAll('.status-container input[type="checkbox"]')
+      .forEach(el => el.addEventListener('change', this._toggleStatusEffect.bind(this)))
 
     html
       .querySelector('.attribute.size input')
@@ -157,6 +153,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         });
       });
 
+    // TODO: fix this tooltip. No mouseenter event on a readonly input
     html
       .querySelector('.attribute.pace input')
       ?.addEventListener('mouseenter', (event) => {
@@ -192,14 +189,14 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     return data;
   }
 
-  protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
+  protected async _toggleStatusEffect(ev: Event) {
     const key = ev.target.dataset.key as string;
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
   }
 
-  protected async _handleCounterAdjust(ev: MouseEvent) {
+  protected async _handleCounterAdjust(ev: PointerEvent) {
     const target = ev.currentTarget as HTMLElement;
     const action = target.dataset.action;
 
@@ -221,26 +218,26 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     }
   }
 
-  protected _setupItemContextMenu(html: JQuery<HTMLElement>) {
-    const items: ContextMenuEntry[] = [
+  protected _setupItemContextMenu(html: HTMLElement) {
+    const items: ContextMenu.Entry[] = [
       {
         name: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
         condition: (i) => {
-          const item = this.actor.items.get(i.data('itemId'));
+          const item = this.actor.items.get(i.dataset.itemId);
           return (
             item?.type === 'weapon' &&
             !!item.system.shots &&
             game.settings.get('swade', 'ammoManagement')
           );
         },
-        callback: (i) => this.actor.items.get(i.data('itemId'))?.reload(),
+        callback: (i) => this.actor.items.get(i.dataset.itemId)?.reload(),
       },
       {
         name: 'SWADE.RemoveAmmo',
         icon: '<i class="fa-solid fa-right-from-bracket"></i>',
         condition: (i) => {
-          const item = this.actor.items.get(i.data('itemId'));
+          const item = this.actor.items.get(i.dataset.itemId);
           const isWeapon = item?.type === 'weapon';
           const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
           return (
@@ -251,21 +248,21 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
               item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );
         },
-        callback: (i) => this.actor.items.get(i.data('itemId'))?.removeAmmo(),
+        callback: (i) => this.actor.items.get(i.dataset.itemId)?.removeAmmo(),
       },
       {
         name: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
         callback: (i) =>
-          this.actor.items.get(i.data('itemId'))?.sheet?.render(true),
+          this.actor.items.get(i.dataset.itemId)?.sheet?.render(true),
       },
       {
         name: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: (i) =>
-          !!this.actor.items.get(i.data('itemId'))?.isPhysicalItem,
+          !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
         callback: async (i) => {
-          const item = this.actor.items.get(i.data('itemId'));
+          const item = this.actor.items.get(i.dataset.itemId);
           const cloned = await item?.clone(
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
             { save: true },
@@ -276,10 +273,10 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       {
         name: 'SWADE.Del',
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: (i) => this.actor.items.get(i.data('itemId'))?.deleteDialog(),
+        callback: (i) => this.actor.items.get(i.dataset.itemId)?.deleteDialog(),
       },
     ];
 
-    ContextMenu.create(this, html, 'li.item', items);
+    foundry.applications.ux.ContextMenu.create(this, html, 'li.item', items, { jQuery: false });
   }
 }

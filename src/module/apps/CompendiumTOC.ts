@@ -65,7 +65,9 @@ export class CompendiumTOC extends Compendium<
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
-    html.find('a').on('click', this._onClickLink.bind(this));
+    html[0]
+      .querySelectorAll('a')
+      .forEach(el => el.addEventListener('click', this._onClickLink.bind(this)));
     html[0]
       .querySelectorAll<HTMLDivElement>('.content')
       .forEach((e) => (e.style.columnWidth = this.columnWidth));
@@ -120,7 +122,7 @@ export class CompendiumTOC extends Compendium<
     this.render(true);
   }
 
-  protected async _onClickLink(ev: JQuery.ClickEvent) {
+  protected async _onClickLink(ev: PointerEvent) {
     const target = ev.currentTarget;
     if (target.className === 'toggle-search-mode') {
       this.#fullTextSearch = !this.#fullTextSearch;

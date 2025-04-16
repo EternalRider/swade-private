@@ -356,7 +356,7 @@ class SwadeActor<
      * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    const permitContinue = Hooks.callAll(
+    const permitContinue = Hooks.call(
       'swadePreRollAttribute',
       this,
       attribute,
@@ -364,7 +364,7 @@ class SwadeActor<
       modifiers,
       options,
     );
-    if (!permitContinue) return null;
+    if (permitContinue === false) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([

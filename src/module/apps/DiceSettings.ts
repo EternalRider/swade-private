@@ -35,11 +35,12 @@ export default class DiceSettings extends FormApplication<
   /**
    * @override
    */
-  override activateListeners(html: JQuery) {
-    super.activateListeners(html);
+  override activateListeners(jquery: JQuery) {
+    super.activateListeners(jquery);
 
-    html.find('#reset').on('click', () => this._resetSettings());
-    html.find('#submit').on('click', async () => {
+    const html = jquery[0];
+    html.querySelector('#reset')?.addEventListener('click', () => this._resetSettings());
+    html.querySelector('#submit')?.addEventListener('click', async () => {
       await this.close();
       location.reload();
     });

@@ -12,96 +12,98 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   override activateListeners(jquery: JQuery) {
     super.activateListeners(jquery);
 
+    const html = jquery[0];
+
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    const inputs = jquery.find<HTMLInputElement>('input');
-    inputs.on('focus', (ev) => ev.currentTarget.select());
-    inputs
-      .addBack()
-      .find('[name="system.details.currency"]')
-      .on('change', this._onChangeInputDelta.bind(this));
+    const inputs = html.querySelectorAll('input');
+    inputs.forEach(el => el.addEventListener('focus', (ev) => ev.currentTarget.select()));
+
+    html
+      .querySelector('[name="system.details.currency"]')
+      ?.addEventListener('change', this._onChangeInputDelta.bind(this));
 
     // Drag events for macros.
-    jquery.find('li.active-effect, li.item').each((i, el) => {
+    html.querySelectorAll('li.active-effect, li.item').forEach((el) => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     // Update Item
-    jquery.find('.item-edit').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'));
+    html.querySelectorAll('.item-edit').forEach(el => el.addEventListener('click', (ev) => {
+      const li = ev.currentTarget.closest('.item');
+      const item = this.actor.items.get(li.dataset.itemId);
       item?.sheet?.render(true);
-    });
+    }));
 
-    jquery.find('.item-show').on('click', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      this.actor.items.get(li.data('itemId'))?.show();
-    });
+    html.querySelectorAll('.item-show').forEach(el => el.addEventListener('click', (ev) => {
+      const li = ev.currentTarget.closest('.item');
+      this.actor.items.get(li.dataset.itemId)?.show();
+    }));
 
     // Edit armor modifier
-    jquery.find('.armor-value').on('click', (ev) => {
+    html.querySelector('.armor-value')?.addEventListener('click', (ev) => {
       const target = ev.currentTarget.dataset.target ?? '';
       this._modifyDefense(target);
     });
 
     // Roll attribute
-    jquery.find('.attribute-value').on('click', (event) => {
+    html.querySelectorAll('.attribute-value').forEach(el => el.addEventListener('click', (event) => {
       const attribute = event.currentTarget.dataset.attribute as Attribute;
       this.actor.rollAttribute(attribute);
-    });
+    }));
 
-    jquery.find('.attribute-manager').on('click', () => {
+    html.querySelector('.attribute-manager')?.addEventListener('click', () => {
       new AttributeManager(this.actor).render(true);
     });
 
     // Roll Damage
-    jquery.find('.damage-roll').on('click', (event) => {
+    html.querySelectorAll('.damage-roll').forEach(el => el.addEventListener('click', (event) => {
       const element = event.currentTarget as Element;
-      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const id = element.closest('[data-item-id]')?.getAttribute('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
       return item.rollDamage();
-    });
+    }));
 
     // Use Consumable
-    jquery.find('.use-consumable').on('click', async (event) => {
+    html.querySelectorAll('.use-consumable').forEach(el => el.addEventListener('click', async (event) => {
       const element = event.currentTarget as Element;
-      const id = $(element).parents('[data-item-id]').attr('data-item-id')!;
+      const id = element.closest('[data-item-id]')?.getAttribute('data-item-id')!;
       const item = this.actor.items.get(id, { strict: true });
       return item.consume();
-    });
+    }));
 
     //Add Benny
-    jquery.find('.benny-add').on('click', () => {
+    html.querySelector('.benny-add')?.addEventListener('click', () => {
       this.actor.getBenny();
     });
 
     //Remove Benny
-    jquery.find('.benny-subtract').on('click', () => {
+    html.querySelector('.benny-subtract')?.addEventListener('click', () => {
       this.actor.spendBenny();
     });
 
     //Toggle Conviction
-    jquery.find('.conviction-toggle').on('click', async () => {
+    html.querySelector('.conviction-toggle')?.addEventListener('click', async () => {
       await this.actor.toggleConviction();
     });
 
     // Filter power list
-    jquery.find('.arcane-tabs .arcane').on('click', (ev: any) => {
+    html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.addEventListener('click', (ev: any) => {
       const arcane = ev.currentTarget.dataset.arcane;
-      jquery.find('.arcane-tabs .arcane').removeClass('active');
+      html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.classList.remove('active'));
       ev.currentTarget.classList.add('active');
-      this._filterPowers(jquery, arcane);
-    });
+      this._filterPowers(html, arcane);
+    }));
 
     //Running Die
-    jquery.find('.running-die').on('click', async () => {
+    html.querySelector('.running-die')?.addEventListener('click', async () => {
       await this.actor.rollRunningDie();
     });
 
-    jquery.find('.effect-action').on('click', async (ev) => {
+    html.querySelectorAll('.effect-action').forEach(el => el.addEventListener('click', async (ev) => {
       const a = ev.currentTarget;
       const data = a.closest('li')!.dataset;
       const effectUuid = data.effectUuid;
@@ -109,7 +111,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       const action = a.dataset.action;
       switch (action) {
         case 'edit':
-          return effect.sheet?.render(true);
+          return effect.sheet?.render({ force: true });
         case 'delete':
           return effect.deleteDialog();
         case 'toggle':
@@ -121,17 +123,17 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           Logger.warn(`The action ${action} is not currently supported`);
           break;
       }
-    });
+    }));
 
-    jquery.find('.add-effect').on('click', async (ev) => {
-      const transfer = $(ev.currentTarget).data('transfer');
+    html.querySelector('.add-effect')?.addEventListener('click', async (ev) => {
+      const transfer = ev.currentTarget.dataset.transfer;
       if (ev.shiftKey) {
         await CONFIG.ActiveEffect.documentClass.create(
           {
             name: game.i18n.format('DOCUMENT.New', {
               type: game.i18n.localize('DOCUMENT.ActiveEffect'),
             }),
-            icon: 'systems/swade/assets/icons/active-effect.svg',
+            img: 'systems/swade/assets/icons/active-effect.svg',
             transfer: transfer,
           },
           { renderSheet: true, parent: this.actor },
@@ -141,20 +143,21 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
 
-    jquery.find('.additional-stats .roll').on('click', async (ev) => {
+    html.querySelectorAll('.additional-stats .roll').forEach(el => el.addEventListener('click', async (ev) => {
       const button = ev.currentTarget;
       const stat = button.dataset.stat;
       await this.actor.system.rollAdditionalStat(stat);
-    });
+    }));
 
     //Wealth Die Roll
-    jquery
-      .find('.currency .roll')
-      .on('click', () => this.actor.rollWealthDie());
+    html
+      .querySelector('.currency .roll')
+      ?.addEventListener('click', () => this.actor.rollWealthDie());
 
-    jquery.find('.profile-img').on('contextmenu', () => {
+    html.querySelector('.profile-img')?.addEventListener('contextmenu', () => {
       if (!this.actor.img) return;
-      new ImagePopout(this.actor.img, {
+      new ImagePopout({
+        src: this.actor.img,
         title: this.actor.name!,
         shareable: this.actor.isOwner ?? game.user?.isGM ?? false,
         uuid: this.actor.uuid,
@@ -316,29 +319,33 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       );
     //Create Dialog window
     return new Promise((resolve) => {
-      new Dialog({
-        title: game.i18n.format('DOCUMENT.Create', {
-          type: game.i18n.localize('DOCUMENT.Item'),
-        }),
+      foundry.applications.api.DialogV2.wait({
+        window: {
+          title: game.i18n.format('DOCUMENT.Create', {
+            type: game.i18n.localize('DOCUMENT.Item'),
+          })
+        },
         content: dlg,
-        buttons: {
-          ok: {
+        buttons: [
+          {
+            action: 'ok',
             label: game.i18n.localize('SWADE.Ok'),
             icon: '<i class="fas fa-check"></i>',
-            callback: (html: JQuery<HTMLElement>) => {
+            default: true,
+            callback: (html: HTMLElement) => {
               resolve({
-                type: html.find('select[name="type"]').val() as string,
-                name: html.find('input[name="name"]').val() as string,
+                type: html.querySelector('select[name="type"]')?.value as string,
+                name: html.querySelector('input[name="name"]')?.value as string,
               });
             },
           },
-          cancel: {
+          {
+            action: 'cancel',
             icon: '<i class="fas fa-times"></i>',
             label: game.i18n.localize('SWADE.Cancel'),
-          },
-        },
-        default: 'ok',
-      }).render(true);
+          }
+        ]
+      });
     });
   }
 
@@ -351,10 +358,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
   protected override async _onResize(event: any) {
     super._onResize(event);
-    const html = $(event.path);
-    const selector = `#${this.id} .resizable`;
-    const resizable = html.find(selector);
-    resizable.each((_, el) => {
+    let html = this.element;
+    html = html instanceof HTMLElement ? html : html[0];
+    const resizable = html.querySelectorAll('.resizable');
+    resizable.forEach((el) => {
       const heightDelta =
         (this.position.height as number) - (this.options.height as number);
       el.style.height = `${heightDelta + parseInt(el.dataset.baseSize!)}px`;
@@ -405,33 +412,37 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         <label>${game.i18n.format('SWADE.EdF', { item: targetLabel })}</label>
         <input name="modifier" value="${targetPropertyValue}" type="text"/>
       </div></form>`;
-    new Dialog({
-      title: title,
+    foundry.applications.api.DialogV2.wait({
+      window: {
+        title: title
+      },
       content: template,
-      buttons: {
-        set: {
+      buttons: [
+        {
+          action: 'set',
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize('SWADE.Ok'),
-          callback: (html: JQuery) => {
-            const mod = html.find('input[name="modifier"]').val();
+          default: true,
+          callback: (html: HTMLElement) => {
+            const mod = html.querySelector('input[name="modifier"]')?.value;
             const newData = {};
             newData[targetPropertyPath] = parseInt(mod as string);
             this.actor.update(newData);
           },
         },
-        cancel: {
+        {
+          action: 'cancel',
           icon: '<i class="fas fa-times"></i>',
           label: game.i18n.localize('SWADE.Cancel'),
         },
-      },
-      default: 'set',
-    }).render(true);
+      ],
+    });
   }
 
-  protected _filterPowers(html: JQuery, arcane: string) {
+  protected _filterPowers(html: HTMLElement, arcane: string) {
     this.options['activeArcane'] = arcane;
     // Show, hide powers
-    html.find('.power').each((id: number, pow: any) => {
+    html.querySelectorAll('.power').forEach(pow => {
       if (pow.dataset.arcane == arcane || arcane == 'All') {
         pow.classList.add('active');
       } else {
@@ -439,7 +450,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
     // Show, Hide powerpoints
-    html.find('.power-counter').each((id: number, ct: any) => {
+    html.querySelectorAll('.power-counter').forEach(ct => {
       if (ct.dataset.arcane == arcane) {
         ct.classList.add('active');
       } else {

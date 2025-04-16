@@ -55,12 +55,14 @@
 }
 
 .dialog-buttons-column {
-  .dialog-buttons {
+  .dialog-buttons,.form-footer {
     flex-direction: column;
+    align-items: normal;
   }
-  .dialog-button {
+  .dialog-button,button {
     cursor: pointer;
-    & + .dialog-button {
+    flex: none;
+    & + .dialog-button,button {
       margin-top: $small-spacing;
     }
   }

@@ -16,7 +16,7 @@ import { getTrait } from './util';
  */
 export default class ItemChatCardHelper {
   static async onChatCardAction(
-    event: MouseEvent,
+    event: PointerEvent,
   ): Promise<SwadeRoll | null> {
     event.preventDefault();
 
