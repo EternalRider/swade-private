@@ -2,6 +2,16 @@
   .type-label {
     line-height: calc(var(--sidebar-header-height) / 2);
   }
+  li.combatant,
+  li.combatant-group {
+    .token-initiative {
+      flex: 0 0 60px;
+      .initiative {
+        font-size: var(--font-size-20);
+      }
+    }
+  }
+
   li.combatant {
     .roll {
       background: url(../../icons/svg/card-hand.svg) no-repeat 50% 50%;
@@ -11,10 +21,25 @@
           no-repeat 50% 50%;
       }
     }
-    .token-initiative {
-      flex: 0 0 60px;
-      border-right-width: 3px;
-      border-right-style: solid;
+  }
+
+  li.combatant-group {
+    color: var(--color-text-primary);
+    display: flex;
+    flex-direction: column;
+    padding: var(--element-spacing);
+    margin: 0;
+    cursor: var(--cursor-pointer);
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: var(--element-spacing);
+    }
+    .group-turns {
+      padding: 0;
+    }
+    &:not(.expanded) .group-turns {
+      display: none;
     }
     &.dropTarget {
       background-color: #666;
@@ -23,9 +48,10 @@
         font-size: 1.2em;
       }
     }
-    ol.subdirectory {
-      border-left: none;
-      flex-basis: 100%;
+
+    .combatant {
+      border-radius: 4px;
+      border-left-style: solid;
     }
   }
 

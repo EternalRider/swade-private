@@ -96,7 +96,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
       window: {
         title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
           name: effect.parent?.name,
-        })
+        }),
       },
       content: `<p>${content}</p>`,
       buttons,
@@ -116,7 +116,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
         if (characterHasNoBennies && button) button.disabled = true;
         if (gmHasNoBennies && gmButton) gmButton.disabled = true;
       },
-      classes: ['dialog', 'dialog-buttons-column', 'swade-app']
+      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
     };
     foundry.applications.api.DialogV2.wait(data);
   });

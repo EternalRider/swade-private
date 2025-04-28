@@ -18,7 +18,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     if (!this.isEditable) return;
 
     const inputs = html.querySelectorAll('input');
-    inputs.forEach(el => el.addEventListener('focus', (ev) => ev.currentTarget.select()));
+    inputs.forEach((el) =>
+      el.addEventListener('focus', (ev) => ev.currentTarget.select()),
+    );
 
     html
       .querySelector('[name="system.details.currency"]')
@@ -32,16 +34,20 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     // Update Item
-    html.querySelectorAll('.item-edit').forEach(el => el.addEventListener('click', (ev) => {
-      const li = ev.currentTarget.closest('.item');
-      const item = this.actor.items.get(li.dataset.itemId);
-      item?.sheet?.render(true);
-    }));
+    html.querySelectorAll('.item-edit').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li.dataset.itemId);
+        item?.sheet?.render(true);
+      }),
+    );
 
-    html.querySelectorAll('.item-show').forEach(el => el.addEventListener('click', (ev) => {
-      const li = ev.currentTarget.closest('.item');
-      this.actor.items.get(li.dataset.itemId)?.show();
-    }));
+    html.querySelectorAll('.item-show').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        this.actor.items.get(li.dataset.itemId)?.show();
+      }),
+    );
 
     // Edit armor modifier
     html.querySelector('.armor-value')?.addEventListener('click', (ev) => {
@@ -50,30 +56,40 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     // Roll attribute
-    html.querySelectorAll('.attribute-value').forEach(el => el.addEventListener('click', (event) => {
-      const attribute = event.currentTarget.dataset.attribute as Attribute;
-      this.actor.rollAttribute(attribute);
-    }));
+    html.querySelectorAll('.attribute-value').forEach((el) =>
+      el.addEventListener('click', (event) => {
+        const attribute = event.currentTarget.dataset.attribute as Attribute;
+        this.actor.rollAttribute(attribute);
+      }),
+    );
 
     html.querySelector('.attribute-manager')?.addEventListener('click', () => {
       new AttributeManager(this.actor).render(true);
     });
 
     // Roll Damage
-    html.querySelectorAll('.damage-roll').forEach(el => el.addEventListener('click', (event) => {
-      const element = event.currentTarget as Element;
-      const id = element.closest('[data-item-id]')?.getAttribute('data-item-id')!;
-      const item = this.actor.items.get(id, { strict: true });
-      return item.rollDamage();
-    }));
+    html.querySelectorAll('.damage-roll').forEach((el) =>
+      el.addEventListener('click', (event) => {
+        const element = event.currentTarget as Element;
+        const id = element
+          .closest('[data-item-id]')
+          ?.getAttribute('data-item-id')!;
+        const item = this.actor.items.get(id, { strict: true });
+        return item.rollDamage();
+      }),
+    );
 
     // Use Consumable
-    html.querySelectorAll('.use-consumable').forEach(el => el.addEventListener('click', async (event) => {
-      const element = event.currentTarget as Element;
-      const id = element.closest('[data-item-id]')?.getAttribute('data-item-id')!;
-      const item = this.actor.items.get(id, { strict: true });
-      return item.consume();
-    }));
+    html.querySelectorAll('.use-consumable').forEach((el) =>
+      el.addEventListener('click', async (event) => {
+        const element = event.currentTarget as Element;
+        const id = element
+          .closest('[data-item-id]')
+          ?.getAttribute('data-item-id')!;
+        const item = this.actor.items.get(id, { strict: true });
+        return item.consume();
+      }),
+    );
 
     //Add Benny
     html.querySelector('.benny-add')?.addEventListener('click', () => {
@@ -86,44 +102,52 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     });
 
     //Toggle Conviction
-    html.querySelector('.conviction-toggle')?.addEventListener('click', async () => {
-      await this.actor.toggleConviction();
-    });
+    html
+      .querySelector('.conviction-toggle')
+      ?.addEventListener('click', async () => {
+        await this.actor.toggleConviction();
+      });
 
     // Filter power list
-    html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.addEventListener('click', (ev: any) => {
-      const arcane = ev.currentTarget.dataset.arcane;
-      html.querySelectorAll('.arcane-tabs .arcane').forEach(el => el.classList.remove('active'));
-      ev.currentTarget.classList.add('active');
-      this._filterPowers(html, arcane);
-    }));
+    html.querySelectorAll('.arcane-tabs .arcane').forEach((el) =>
+      el.addEventListener('click', (ev: any) => {
+        const arcane = ev.currentTarget.dataset.arcane;
+        html
+          .querySelectorAll('.arcane-tabs .arcane')
+          .forEach((el) => el.classList.remove('active'));
+        ev.currentTarget.classList.add('active');
+        this._filterPowers(html, arcane);
+      }),
+    );
 
     //Running Die
     html.querySelector('.running-die')?.addEventListener('click', async () => {
       await this.actor.rollRunningDie();
     });
 
-    html.querySelectorAll('.effect-action').forEach(el => el.addEventListener('click', async (ev) => {
-      const a = ev.currentTarget;
-      const data = a.closest('li')!.dataset;
-      const effectUuid = data.effectUuid;
-      const effect = (await fromUuid(effectUuid)) as SwadeActiveEffect;
-      const action = a.dataset.action;
-      switch (action) {
-        case 'edit':
-          return effect.sheet?.render({ force: true });
-        case 'delete':
-          return effect.deleteDialog();
-        case 'toggle':
-          return effect.update({ disabled: !effect?.disabled });
-        case 'open-origin':
-          (effect.parent as SwadeItem).sheet.render(true);
-          break;
-        default:
-          Logger.warn(`The action ${action} is not currently supported`);
-          break;
-      }
-    }));
+    html.querySelectorAll('.effect-action').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const a = ev.currentTarget;
+        const data = a.closest('li')!.dataset;
+        const effectUuid = data.effectUuid;
+        const effect = (await fromUuid(effectUuid)) as SwadeActiveEffect;
+        const action = a.dataset.action;
+        switch (action) {
+          case 'edit':
+            return effect.sheet?.render({ force: true });
+          case 'delete':
+            return effect.deleteDialog();
+          case 'toggle':
+            return effect.update({ disabled: !effect?.disabled });
+          case 'open-origin':
+            (effect.parent as SwadeItem).sheet.render(true);
+            break;
+          default:
+            Logger.warn(`The action ${action} is not currently supported`);
+            break;
+        }
+      }),
+    );
 
     html.querySelector('.add-effect')?.addEventListener('click', async (ev) => {
       const transfer = ev.currentTarget.dataset.transfer;
@@ -143,11 +167,13 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
 
-    html.querySelectorAll('.additional-stats .roll').forEach(el => el.addEventListener('click', async (ev) => {
-      const button = ev.currentTarget;
-      const stat = button.dataset.stat;
-      await this.actor.system.rollAdditionalStat(stat);
-    }));
+    html.querySelectorAll('.additional-stats .roll').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const button = ev.currentTarget;
+        const stat = button.dataset.stat;
+        await this.actor.system.rollAdditionalStat(stat);
+      }),
+    );
 
     //Wealth Die Roll
     html
@@ -323,7 +349,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         window: {
           title: game.i18n.format('DOCUMENT.Create', {
             type: game.i18n.localize('DOCUMENT.Item'),
-          })
+          }),
         },
         content: dlg,
         buttons: [
@@ -334,7 +360,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
             default: true,
             callback: (html: HTMLElement) => {
               resolve({
-                type: html.querySelector('select[name="type"]')?.value as string,
+                type: html.querySelector('select[name="type"]')
+                  ?.value as string,
                 name: html.querySelector('input[name="name"]')?.value as string,
               });
             },
@@ -343,8 +370,8 @@ export default class SwadeBaseActorSheet extends ActorSheet {
             action: 'cancel',
             icon: '<i class="fas fa-times"></i>',
             label: game.i18n.localize('SWADE.Cancel'),
-          }
-        ]
+          },
+        ],
       });
     });
   }
@@ -414,7 +441,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       </div></form>`;
     foundry.applications.api.DialogV2.wait({
       window: {
-        title: title
+        title: title,
       },
       content: template,
       buttons: [
@@ -442,7 +469,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
   protected _filterPowers(html: HTMLElement, arcane: string) {
     this.options['activeArcane'] = arcane;
     // Show, hide powers
-    html.querySelectorAll('.power').forEach(pow => {
+    html.querySelectorAll('.power').forEach((pow) => {
       if (pow.dataset.arcane == arcane || arcane == 'All') {
         pow.classList.add('active');
       } else {
@@ -450,7 +477,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
       }
     });
     // Show, Hide powerpoints
-    html.querySelectorAll('.power-counter').forEach(ct => {
+    html.querySelectorAll('.power-counter').forEach((ct) => {
       if (ct.dataset.arcane == arcane) {
         ct.classList.add('active');
       } else {

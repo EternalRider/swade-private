@@ -1,5 +1,6 @@
 import { BaseCombat } from './baseCombat';
 import { BaseCombatantModel } from './baseCombatant';
+import { BaseCombatantGroupModel } from './baseCombatantGroup';
 import { Chase } from './chase';
 import { DramaticTask } from './dramaticTask';
 
@@ -15,6 +16,10 @@ export const combatantConfig = {
   base: BaseCombatantModel,
 };
 
+export const combatantGroupConfig = {
+  base: BaseCombatantGroupModel,
+};
+
 declare global {
   interface DataModelConfig {
     Combat: {
@@ -24,6 +29,9 @@ declare global {
     };
     Combatant: {
       base: typeof BaseCombatantModel;
+    };
+    CombatantGroup: {
+      base: typeof BaseCombatantGroupModel;
     };
   }
 }

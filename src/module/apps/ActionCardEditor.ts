@@ -84,10 +84,14 @@ export default class ActionCardEditor extends FormApplication<
     const html = jquery[0];
     html
       .querySelectorAll('.card-face')
-      .forEach(el => el.addEventListener('click', (ev) => this._showCard(ev)));
+      .forEach((el) =>
+        el.addEventListener('click', (ev) => this._showCard(ev)),
+      );
     html
       .querySelectorAll('.add-card')
-      .forEach(el => el.addEventListener('click', async () => this._createNewCard()));
+      .forEach((el) =>
+        el.addEventListener('click', async () => this._createNewCard()),
+      );
   }
 
   protected override async _updateObject(_event: Event, formData = {}) {

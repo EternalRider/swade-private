@@ -136,6 +136,7 @@ Hooks.once('init', () => {
   CONFIG.ActiveEffect.dataModels = data.effect.config;
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
+  CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -357,7 +358,10 @@ Hooks.on(
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
 Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
 Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
-Hooks.on('getCompendiumContextOptions', SwadeCoreHooks.onGetCompendiumContextOptions);
+Hooks.on(
+  'getCompendiumContextOptions',
+  SwadeCoreHooks.onGetCompendiumContextOptions,
+);
 
 /* ------------------------------------ */
 /* Update Hooks              	          */
