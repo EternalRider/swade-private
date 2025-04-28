@@ -9,7 +9,9 @@ export default class SwadeCombatGroupColor extends FormApplication<
   override activateListeners(jquery: JQuery<HTMLElement>) {
     super.activateListeners(jquery);
     const html = jquery[0];
-    html.querySelector('.reset-color')?.addEventListener('click', this._onResetColor.bind(this));
+    html
+      .querySelector('.reset-color')
+      ?.addEventListener('click', this._onResetColor.bind(this));
   }
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {

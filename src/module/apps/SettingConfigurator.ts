@@ -64,11 +64,17 @@ export default class SettingConfigurator extends FormApplication {
     super.activateListeners(jquery);
 
     const html = jquery[0];
-    html.querySelector('#reset')?.addEventListener('click', () => this._resetSettings());
-    html.querySelector('#submit')?.addEventListener('click', () => this.close());
+    html
+      .querySelector('#reset')
+      ?.addEventListener('click', () => this._resetSettings());
+    html
+      .querySelector('#submit')
+      ?.addEventListener('click', () => this.close());
     html
       .querySelectorAll('.attributes .attribute-control')
-      .forEach(el => el.addEventListener('click', (e) => this._onClickAttributeControl(e)));
+      .forEach((el) =>
+        el.addEventListener('click', (e) => this._onClickAttributeControl(e)),
+      );
   }
 
   async _updateObject(_event, formData) {

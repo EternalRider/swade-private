@@ -1,0 +1,25 @@
+<section class='dramatic-task'>
+  {{#if isDramaticTask}}
+    {{#if user.isGM}}
+      <h4 class='token-header'>{{localize 'SWADE.DramaticTask.Successes'}}:
+        <input
+          type='number'
+          class='max-tokens'
+          name='system.tokens.value'
+          min='0'
+          value='{{combat.system.tokens.value}}'
+        />
+        /
+        {{combat.system.tokens.max}}</h4>
+    {{else}}
+      <h4 class='token-header'>{{localize 'SWADE.DramaticTask.Successes'}}:
+        {{combat.system.tokens.value}}
+        /
+        {{combat.system.tokens.max}}</h4>
+    {{/if}}
+    <progress
+      value='{{combat.system.tokens.value}}'
+      max='{{combat.system.tokens.max}}'
+    ></progress>
+  {{/if}}
+</section>
