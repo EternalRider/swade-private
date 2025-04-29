@@ -115,6 +115,9 @@ Hooks.once('init', () => {
   //freeze the constants
   deepFreeze(CONFIG.SWADE.CONST);
 
+  // Initialize socket handler
+  swadeAPI.sockets.registerSocketListeners();
+
   //set up global game object
   game.swade = swadeAPI;
 
