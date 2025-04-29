@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.4.3
+
+### Fixed
+
+- Sockets properly initialized once more (#1301) **by roth-michael**
+
 ## 4.4.2
 
 ### Fixed

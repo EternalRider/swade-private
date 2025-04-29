@@ -5,10 +5,6 @@ import { isFirstGM, isFirstOwner } from './util';
 export default class SwadeSocketHandler {
   identifier = 'system.swade';
 
-  constructor() {
-    this.registerSocketListeners();
-  }
-
   /** registers all the socket listeners */
   registerSocketListeners(): void {
     game.socket?.on(this.identifier, (data) => {
