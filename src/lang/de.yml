@@ -395,6 +395,7 @@ SWADE:
     Medium: Reichweite, Mittel
     Long: Reichweite, Weit
     Extreme: Reichweite, Extrem
+    _nameShort: RW
   ModOther: Andere Modifikatioren
   Snapfire: Schnellschuss
   UnstablePlatform: Unsicheren Grund
@@ -1277,6 +1278,18 @@ SWADE:
   AttrSmaShortPowerRange: Ver
   Burrowing: Graben
   PPMods: Machtmodifikatoren
+  Scales:
+    LargerThan: Größer als {scale}
+    SmallerThan: Kleiner als {scale}
+    Names:
+      Tiny: Winzig
+      VerySmall: Sehr klein
+      Small: Klein
+      Normal: Normal
+      Large: Groß
+      Huge: Riesig
+      Gargantuan: Gigantisch
+    Description: 'Größe: {scale} ({name})'
 TYPES:
   Actor:
     npc: NSC
