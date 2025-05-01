@@ -115,6 +115,9 @@ Hooks.once('init', () => {
   //freeze the constants
   deepFreeze(CONFIG.SWADE.CONST);
 
+  // Initialize socket handler
+  swadeAPI.sockets.registerSocketListeners();
+
   //set up global game object
   game.swade = swadeAPI;
 
@@ -136,6 +139,7 @@ Hooks.once('init', () => {
   CONFIG.ActiveEffect.dataModels = data.effect.config;
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
+  CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -335,8 +339,8 @@ Hooks.on('createProseMirrorEditor', SwadeCoreHooks.onCreateProseMirrorEditor);
 Hooks.on('renderCombatantConfig', SwadeCoreHooks.onRenderCombatantConfig);
 Hooks.on('renderActiveEffectConfig', SwadeCoreHooks.onRenderActiveEffectConfig);
 Hooks.on('renderCompendium', SwadeCoreHooks.onRenderCompendium);
-Hooks.on('renderChatMessage', SwadeCoreHooks.onRenderChatMessage);
-Hooks.on('renderPlayerList', SwadeCoreHooks.onRenderPlayerList);
+Hooks.on('renderChatMessageHTML', SwadeCoreHooks.onRenderChatMessageHTML);
+Hooks.on('renderPlayers', SwadeCoreHooks.onRenderPlayers);
 Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 
 /* ------------------------------------ */
@@ -355,21 +359,11 @@ Hooks.on(
 /* Context Options    				          */
 /* ------------------------------------ */
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
+Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
+Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
 Hooks.on(
-  'getActorEntryContext',
-  SwadeCoreHooks.onGetActorDirectoryEntryContext,
-);
-Hooks.on(
-  'getActorDirectoryEntryContext',
-  SwadeCoreHooks.onGetActorDirectoryEntryContext,
-);
-Hooks.on(
-  'getCardsDirectoryEntryContext',
-  SwadeCoreHooks.onGetCardsDirectoryEntryContext,
-);
-Hooks.on(
-  'getCompendiumDirectoryEntryContext',
-  SwadeCoreHooks.onGetCompendiumDirectoryEntryContext,
+  'getCompendiumContextOptions',
+  SwadeCoreHooks.onGetCompendiumContextOptions,
 );
 
 /* ------------------------------------ */

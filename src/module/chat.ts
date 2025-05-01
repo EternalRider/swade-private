@@ -1,61 +1,61 @@
 import { SWADE } from './config';
 import ItemChatCardHelper from './ItemChatCardHelper';
+import { getParents } from './util';
 
-export function chatListeners(html: JQuery<HTMLElement>) {
-  html.on('click', '.card-header .item-name', (event) => {
-    $(event.currentTarget)
-      .parents('.item-card')
-      .find('.card-content')
-      .slideToggle();
+export function chatListeners(html: HTMLElement) {
+  html.addEventListener('click', (event) => {
+    if (event.target?.closest('.card-header .item-name')) {
+      // TODO: Check if this needs to be parents at all, vs just closest
+      const parents = getParents(event.target as HTMLElement, '.item-card');
+      const toToggle = parents.flatMap(p => Array.from(p.querySelectorAll('.card-content')));
+      // TODO: css wizardry to do this sans-jQuery
+      $(toToggle).slideToggle();
+    }
   });
 
-  html.on('click', '.card-buttons button', async (event) => {
-    const element = event.currentTarget as HTMLElement;
-    const chatCard = element.closest<HTMLElement>('.chat-card')!;
-    const actor = ItemChatCardHelper.getChatCardActor(chatCard);
-    if (!actor) return;
-    const itemId = $(element).parents('[data-item-id]').data().itemId;
-    const action = element.dataset.action;
-    const messageId = $(element).parents('[data-message-id]').data().messageId;
-
-    // Bind item cards
-    ItemChatCardHelper.onChatCardAction(event);
-
-    //handle Power Item Card PP adjustment
-    if (action === 'pp-adjust') {
-      const ppToAdjust = $(element)
-        .closest('.flexcol')
-        .find('input.pp-adjust')
-        .val() as string;
-      const adjustment = element.dataset.adjust;
-      const power = actor.items.get(itemId, { strict: true });
-      const arcane = foundry.utils.getProperty(power, 'system.arcane');
-      const key = `system.powerPoints.${arcane || 'general'}.value`;
-      const oldPP = foundry.utils.getProperty(actor, key) as number;
-      if (adjustment === 'plus') {
-        await actor.update({ [key]: oldPP + parseInt(ppToAdjust, 10) });
-      } else if (adjustment === 'minus') {
-        await actor.update({ [key]: oldPP - parseInt(ppToAdjust, 10) });
+  html.addEventListener('click', async (event) => {
+    if (event.target?.closest('.card-buttons button')) {
+      const element = event.target as HTMLElement;
+      const chatCard = element.closest<HTMLElement>('.chat-card')!;
+      const actor = ItemChatCardHelper.getChatCardActor(chatCard);
+      if (!actor) return;
+      const itemId = element.closest('[data-item-id]')?.dataset.itemId;
+      const action = element.dataset.action;
+      const messageId = element.closest('[data-message-id]')?.dataset.messageId;
+    
+      // Bind item cards
+      ItemChatCardHelper.onChatCardAction(event);
+    
+      //handle Power Item Card PP adjustment
+      if (action === 'pp-adjust') {
+        const ppToAdjust = element.closest('.flexcol')?.querySelector('input.pp-adjust')?.value as string;
+        const adjustment = element.dataset.adjust;
+        const power = actor.items.get(itemId, { strict: true });
+        const arcane = foundry.utils.getProperty(power, 'system.arcane');
+        const key = `system.powerPoints.${arcane || 'general'}.value`;
+        const oldPP = foundry.utils.getProperty(actor, key) as number;
+        if (adjustment === 'plus') {
+          await actor.update({ [key]: oldPP + parseInt(ppToAdjust, 10) });
+        } else if (adjustment === 'minus') {
+          await actor.update({ [key]: oldPP - parseInt(ppToAdjust, 10) });
+        }
+        await ItemChatCardHelper.refreshItemCard(actor, messageId);
       }
-      await ItemChatCardHelper.refreshItemCard(actor, messageId);
-    }
-
-    //handle Arcane Device Item Card PP adjustment
-    if (action === 'arcane-device-pp-adjust') {
-      const adPPToAdjust = $(element)
-        .parents('.chat-card.item-card')
-        .find('input.arcane-device-pp-adjust')
-        .val() as string;
-      const adjustment = element.getAttribute('data-adjust') as string;
-      const item = actor.items.get(itemId, { strict: true });
-      const key = 'system.powerPoints.value';
-      const oldPP = foundry.utils.getProperty(item, key) as number;
-      if (adjustment === 'plus') {
-        await item.update({ [key]: oldPP + parseInt(adPPToAdjust, 10) });
-      } else if (adjustment === 'minus') {
-        await item.update({ [key]: oldPP - parseInt(adPPToAdjust, 10) });
+    
+      //handle Arcane Device Item Card PP adjustment
+      if (action === 'arcane-device-pp-adjust') {
+        const adPPToAdjust = element.closest('.chat-card.item-card')?.querySelector('input.arcane-device-pp-adjust')?.value as string;
+        const adjustment = element.getAttribute('data-adjust') as string;
+        const item = actor.items.get(itemId, { strict: true });
+        const key = 'system.powerPoints.value';
+        const oldPP = foundry.utils.getProperty(item, key) as number;
+        if (adjustment === 'plus') {
+          await item.update({ [key]: oldPP + parseInt(adPPToAdjust, 10) });
+        } else if (adjustment === 'minus') {
+          await item.update({ [key]: oldPP - parseInt(adPPToAdjust, 10) });
+        }
+        await ItemChatCardHelper.refreshItemCard(actor, messageId);
       }
-      await ItemChatCardHelper.refreshItemCard(actor, messageId);
     }
   });
 }
@@ -65,10 +65,9 @@ export function chatListeners(html: JQuery<HTMLElement>) {
  */
 export async function hideChatActionButtons(
   msg: ChatMessage,
-  jquery: JQuery<HTMLElement>,
+  html: HTMLElement,
   _data: any,
 ) {
-  const html = jquery[0];
   // If the user is the message author or the actor owner, proceed
   const actor = game.actors?.get(msg.speaker.actor ?? '');
   if (actor?.isOwner || game.user?.isGM || msg.isAuthor) return;
@@ -120,9 +119,8 @@ export async function hideChatActionButtons(
 
 export function createMagazineTooltip(
   _msg: ChatMessage,
-  html: JQuery<HTMLElement>,
+  card: HTMLElement,
 ) {
-  const card = html[0];
   const magazine = card.querySelector<HTMLElement>(
     '.swade.chat-card .magazine',
   );

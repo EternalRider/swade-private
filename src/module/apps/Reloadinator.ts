@@ -78,7 +78,7 @@ export default class Reloadinator extends Application {
     await super.close(options);
   }
 
-  private async _onClickOption(ev: MouseEvent) {
+  private async _onClickOption(ev: PointerEvent) {
     ev.preventDefault();
     if (this.weapon.type !== 'weapon') return;
     const target = ev.currentTarget as HTMLButtonElement;

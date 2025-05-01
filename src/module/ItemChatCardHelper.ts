@@ -16,14 +16,14 @@ import { getTrait } from './util';
  */
 export default class ItemChatCardHelper {
   static async onChatCardAction(
-    event: JQuery.ClickEvent,
+    event: PointerEvent,
   ): Promise<SwadeRoll | null> {
     event.preventDefault();
 
     // Extract card data
-    const button = event.currentTarget;
+    const button = event.target as HTMLElement;
     button.disabled = true;
-    const card = button.closest('.chat-card');
+    const card = button.closest('.chat-card') as HTMLElement;
     const messageId = card.closest('.message').dataset.messageId;
     const message = game.messages?.get(messageId)!;
     const action = button.dataset.action;
@@ -81,7 +81,7 @@ export default class ItemChatCardHelper {
 
     //if it's a power and the No Power Points rule is in effect
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
-      const ppCost = $(card).find('input.pp-adjust').val() as number;
+      const ppCost = card.querySelector('input.pp-adjust').value as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
       if (action === 'formula' || actionObj?.type === 'trait') {
@@ -372,19 +372,20 @@ export default class ItemChatCardHelper {
       'text/html',
     );
 
-    const messageData = $(content).find('.chat-card.item-card').first().data();
+    const messageData = content.querySelector('.chat-card.item-card').dataset;
 
     const item = actor.items.get(messageData.itemId);
+    function setTextIfPresent(selector: string, text: string) {
+      const field = content.querySelector(selector);
+      if (field) field.textContent = text;
+    }
     if (item?.type === 'weapon') {
       const currentShots = item.system.currentShots;
       const maxShots = item.system.shots;
 
       //update message content
-      $(content)
-        .find('.ammo-counter .current-shots')
-        .first()
-        .text(currentShots);
-      $(content).find('.ammo-counter .max-shots').first().text(maxShots);
+      setTextIfPresent('.ammo-counter .current-shots', currentShots);
+      setTextIfPresent('.ammo-counter .max-shots', maxShots);
     }
 
     if (item?.type === 'power') {
@@ -398,15 +399,15 @@ export default class ItemChatCardHelper {
         `system.powerPoints.${arcane}.max`,
       );
       //update message content
-      $(content).find('.pp-counter .current-pp').first().text(curPP);
-      $(content).find('.pp-counter .max-pp').first().text(maxPP);
+      setTextIfPresent('.pp-counter .current-pp', curPP);
+      setTextIfPresent('.pp-counter .max-pp', maxPP);
     }
 
     if (item?.type === 'consumable') {
       //update message content
       const charges = item.system.charges;
-      $(content).find('.pp-counter .current-pp').first().text(charges.value);
-      $(content).find('.pp-counter .max-pp').first().text(charges.max);
+      setTextIfPresent('.pp-counter .current-pp', charges.value);
+      setTextIfPresent('.pp-counter .max-pp', charges.max);
     }
 
     if (item?.isArcaneDevice) {
@@ -416,13 +417,13 @@ export default class ItemChatCardHelper {
       );
       const maxPP = foundry.utils.getProperty(item, 'system.powerPoints.max');
       //update message content
-      $(content).find('.pp-counter .current-pp').first().text(currentPP);
-      $(content).find('.pp-counter .max-pp').first().text(maxPP);
+      setTextIfPresent('.pp-counter .current-pp', currentPP);
+      setTextIfPresent('.pp-counter .max-pp', maxPP);
     }
 
     //update the message and render the chatlog/chat popout
     await message.update({ content: content.body.innerHTML });
-    ui.chat?.render(true);
+    // ui.chat?.render(true);
     for (const appId in message.apps) {
       const app = message.apps[appId] as FormApplication;
       if (app.rendered) {

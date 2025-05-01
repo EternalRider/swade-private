@@ -23,8 +23,9 @@ async function removeShaken(effect: SwadeActiveEffect) {
   await new Promise((resolve) => {
     let roll: TraitRoll | null = null;
     let processed = false;
-    const buttons: Record<string, DialogButton> = {
-      roll: {
+    const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
+      {
+        action: 'roll',
         label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.RollSpirit'),
         icon: '<i class="fas fa-dice"></i>',
         callback: async () => {
@@ -60,7 +61,8 @@ async function removeShaken(effect: SwadeActiveEffect) {
           resolve(roll);
         },
       },
-      benny: {
+      {
+        action: 'benny',
         label: game.i18n.localize('SWADE.BenniesSpend'),
         icon: '<i class="fas fa-coins"></i>',
         callback: async () => {
@@ -72,7 +74,8 @@ async function removeShaken(effect: SwadeActiveEffect) {
           resolve(roll);
         },
       },
-      gmBenny: {
+      {
+        action: 'gmBenny',
         label: game.i18n.localize('SWADE.BenniesSpendGM'),
         icon: '<i class="fas fa-coins"></i>',
         callback: async () => {
@@ -84,16 +87,18 @@ async function removeShaken(effect: SwadeActiveEffect) {
           resolve(roll);
         },
       },
-    };
+    ];
 
-    if (!game.user?.isGM) delete buttons.gmBenny;
+    if (!game.user?.isGM) buttons.pop();
 
     const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
-    const data: DialogData = {
-      title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
-        name: effect.parent?.name,
-      }),
-      content: `<p><${content}/p>`,
+    const data: foundry.applications.api.DialogV2.Configuration = {
+      window: {
+        title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
+          name: effect.parent?.name,
+        }),
+      },
+      content: `<p>${content}</p>`,
       buttons,
       default: 'roll',
       close: async () => {
@@ -102,21 +107,18 @@ async function removeShaken(effect: SwadeActiveEffect) {
           resolve(roll);
         }
       },
-      render: (html: JQuery<HTMLElement>) => {
-        const button = html.find('button[data-button="benny"]');
-        const gmButton = html.find('button[data-button="gmBenny"]');
+      render: (_ev, html: HTMLElement) => {
+        const button = html.querySelector('button[data-action="benny"]');
+        const gmButton = html.querySelector('button[data-action="gmBenny"]');
         const gmHasNoBennies = game.user?.isGM && game.user.bennies <= 0;
         const characterHasNoBennies =
           effect.parent instanceof SwadeActor && effect.parent.bennies <= 0;
-        if (characterHasNoBennies) button.prop('disabled', true);
-        if (gmHasNoBennies) gmButton?.prop('disabled', true);
+        if (characterHasNoBennies && button) button.disabled = true;
+        if (gmHasNoBennies && gmButton) gmButton.disabled = true;
       },
+      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
     };
-    const options: DialogOptions = foundry.utils.mergeObject(
-      Dialog.defaultOptions,
-      { classes: ['dialog', 'dialog-buttons-column', 'swade-app'] },
-    );
-    new Dialog(data, options).render(true);
+    foundry.applications.api.DialogV2.wait(data);
   });
 }
 

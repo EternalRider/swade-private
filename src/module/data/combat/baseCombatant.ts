@@ -8,18 +8,15 @@ import { firstOwner } from '../../util';
  * Used to prevent type recursion issues
  */
 function baseCombatantSchema() {
-  // const fields = foundry.data.fields;
+  const fields = foundry.data.fields;
   return {
-    // suitValue: new fields.NumberField(),
-    // cardValue: new fields.NumberField(),
-    // cardString: new fields.StringField(),
-    // hasJoker: new fields.BooleanField(),
-    // groupId: new fields.StringField(),
-    // isGroupLeader: new fields.BooleanField(),
-    // roundHeld: new fields.NumberField(),
-    // turnLost: new fields.BooleanField(),
-    // firstRound: new fields.NumberField(),
-    // groupColor: new fields.StringField(),
+    suitValue: new fields.NumberField(),
+    cardValue: new fields.NumberField(),
+    cardString: new fields.StringField(),
+    hasJoker: new fields.BooleanField(),
+    roundHeld: new fields.NumberField(),
+    turnLost: new fields.BooleanField(),
+    firstRound: new fields.NumberField(),
   };
 }
 
@@ -44,27 +41,27 @@ export class BaseCombatantModel<
     return baseCombatantSchema();
   }
 
-  // override async _preCreate(
-  //   data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-  //     Schema,
-  //     SwadeCombatant
-  //   >,
-  //   _options: Combatant.Database.PreUpdateOptions,
-  //   _user: User,
-  // ) {
-  //   const combatants = game?.combat?.combatants.size ?? 0;
-  //   const tokenID =
-  //     data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
-  //   const tokenIndex =
-  //     canvas.tokens?.controlled.map((t) => t.id).indexOf(tokenID as string) ??
-  //     0;
-  //   const sortValue = tokenIndex + combatants;
-  //   this.updateSource({
-  //     firstRound: this.parent.combat?.round,
-  //     cardValue: sortValue,
-  //     suitValue: sortValue,
-  //   });
-  // }
+  override async _preCreate(
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
+      Schema,
+      SwadeCombatant
+    >,
+    _options: Combatant.Database.PreUpdateOptions,
+    _user: User,
+  ) {
+    const combatants = game?.combat?.combatants.size ?? 0;
+    const tokenID =
+      data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
+    const tokenIndex =
+      canvas.tokens?.controlled.map((t) => t.id).indexOf(tokenID as string) ??
+      0;
+    const sortValue = tokenIndex + combatants;
+    this.updateSource({
+      firstRound: this.parent.combat?.round,
+      cardValue: sortValue,
+      suitValue: sortValue,
+    });
+  }
 
   override _onUpdate(
     changed: DeepPartial<
@@ -78,10 +75,10 @@ export class BaseCombatantModel<
   ) {
     super._onUpdate(changed, options, userId);
     const hasCardChanged =
-      foundry.utils.hasProperty(changed, 'flags.swade.cardValue') ||
-      foundry.utils.hasProperty(changed, 'flags.swade.suitValue');
+      foundry.utils.hasProperty(changed, 'system.cardValue') ||
+      foundry.utils.hasProperty(changed, 'system.suitValue');
     const holdRemoved =
-      foundry.utils.getProperty(changed, 'flags.swade.roundHeld') === null;
+      foundry.utils.getProperty(changed, 'system.roundHeld') === null;
     if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }

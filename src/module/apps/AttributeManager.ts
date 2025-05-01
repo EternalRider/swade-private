@@ -36,7 +36,9 @@ export default class AttributeManager extends FormApplication<
 
   override activateListeners(html: JQuery<HTMLElement>): void {
     super.activateListeners(html);
-    html.find('footer button').on('click', this.close.bind(this));
+    html[0]
+      .querySelector('footer button')
+      ?.addEventListener('click', this.close.bind(this));
   }
 
   override async getData(

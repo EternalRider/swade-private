@@ -98,17 +98,19 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   override activateListeners(jquery: JQuery<HTMLElement>): void {
     super.activateListeners(jquery);
     this.#setupAccordions();
-    this.#setupEffectCreateMenu(jquery);
 
     const html = jquery[0];
 
-    jquery.find('.profile-img').on('contextmenu', () => {
+    this.#setupEffectCreateMenu(html);
+
+    html.querySelector('.profile-img')?.addEventListener('contextmenu', () => {
       if (!this.item.img) return;
-      new ImagePopout(this.item.img, {
+      new ImagePopout({
+        src: this.item.img,
         title: this.item.name!,
         shareable: this.item?.isOwner ?? game.user?.isGM,
         uuid: this.item.uuid,
-      }).render(true);
+      }).render({ force: true });
     });
 
     if (!this.isEditable) return;
@@ -116,7 +118,9 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     // Disable overridden inputs
     const overrides = foundry.utils.flattenObject(this.item.overrides);
     for (const key of Object.keys(overrides)) {
-      jquery.find(`[name="${key}"]`).attr('disabled', 'override');
+      html
+        .querySelectorAll(`[name="${key}"]`)
+        .forEach((el) => el.setAttribute('disabled', 'override'));
     }
 
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
@@ -130,9 +134,11 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     });
 
     // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
-    jquery.find('.inline-delete').on('click', () => this.item.delete());
+    html
+      .querySelector('.inline-delete')
+      ?.addEventListener('click', () => this.item.delete());
 
-    jquery.find('.add-action').on('click', () => {
+    html.querySelector('.add-action')?.addEventListener('click', () => {
       const id = foundry.utils.randomID(8);
       this.collapsibleStates[id] = true;
       this.item.update({
@@ -145,103 +151,117 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
     });
 
-    jquery.find('.action-delete').on('click', async (ev) => {
-      const id = ev.currentTarget.dataset.actionId;
-      const action = foundry.utils.getProperty(
-        this.item,
-        `system.actions.additional.${id}`,
-      ) as ItemAction;
-      const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
-        action: action.name,
-      });
-      await Dialog.confirm({
-        content: `<p class="text-center">${text}</p>`,
-        yes: () => {
-          this.item.update({
-            'system.actions.additional': {
-              [`-=${id}`]: null,
-            },
-          });
-        },
-        defaultYes: false,
-        options: foundry.utils.mergeObject(Dialog.defaultOptions, {
+    html.querySelectorAll('.action-delete').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.actionId;
+        const action = foundry.utils.getProperty(
+          this.item,
+          `system.actions.additional.${id}`,
+        ) as ItemAction;
+        const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
+          action: action.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
           classes: ['dialog', 'swade-app'],
-        }),
-      });
-    });
+          yes: {
+            callback: async () =>
+              await this.item.update({
+                [`system.actions.additional.-=${id}`]: null,
+              }),
+          },
+        });
+      }),
+    );
 
-    jquery.find('.power-delete').on('click', async (ev) => {
-      const id = $(ev.currentTarget).parents('details').data('powerId');
-      const power = this.item.embeddedPowers.get(id);
-      const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
-        power: power?.name,
-      });
-      await Dialog.confirm({
-        content: `<p class="text-center">${text}</p>`,
-        yes: async () => await this.#deleteEmbeddedDocument(id),
-        defaultYes: false,
-        options: foundry.utils.mergeObject(Dialog.defaultOptions, {
+    html.querySelectorAll('.power-delete').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget?.closest('details')?.dataset.powerId;
+        const power = this.item.embeddedPowers.get(id);
+        const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
+          power: power?.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
           classes: ['dialog', 'swade-app'],
-        }),
-      });
-    });
+          yes: {
+            callback: async () => await this.#deleteEmbeddedDocument(id),
+          },
+        });
+      }),
+    );
 
-    jquery.find('.grant-delete').on('click', async (ev) => {
-      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
-      const grants = this.item.grantsItems;
-      grants.findSplice((v) => v.uuid === uuid);
-      await this.item.update({ 'system.grants': grants });
-    });
+    html.querySelectorAll('.grant-delete').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const uuid = ev.currentTarget?.closest('.granted-item')?.dataset.uuid;
+        const grants = this.item.grantsItems;
+        grants.findSplice((v) => v.uuid === uuid);
+        await this.item.update({ 'system.grants': grants });
+      }),
+    );
 
-    jquery.find('.grant-name').on('click', async (ev) => {
-      const uuid = $(ev.currentTarget).parents('.granted-item').data('uuid');
-      const doc = (await fromUuid(uuid)) as SwadeItem | null;
-      doc?.sheet?.render(true);
-    });
+    html.querySelectorAll('.grant-name').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const uuid = ev.currentTarget?.closest('.granted-item')?.dataset.uuid;
+        const doc = (await fromUuid(uuid)) as SwadeItem | null;
+        // TODO: change args once this sheet is AppV2
+        doc?.sheet?.render(true);
+      }),
+    );
 
-    jquery.find('.effect-action').on('click', (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const a = ev.currentTarget;
-      const effectId = a.closest('details')!.dataset.effectId! as string;
-      const effect = this.item.effects.get(effectId, { strict: true });
-      const action = a.dataset.action as string;
-      const toggle = a.dataset.toggle as string;
+    html.querySelectorAll('.effect-action').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const a = ev.currentTarget;
+        const effectId = a.closest('details')!.dataset.effectId! as string;
+        const effect = this.item.effects.get(effectId, { strict: true });
+        const action = a.dataset.action as string;
+        const toggle = a.dataset.toggle as string;
 
-      switch (action) {
-        case 'edit':
-          return effect.sheet?.render(true);
-        case 'delete':
-          return effect.delete();
-        case 'toggle':
-          return effect.update(this.#toggleEffect(effect, toggle));
-      }
-    });
+        switch (action) {
+          case 'edit':
+            return effect.sheet?.render({ force: true });
+          case 'delete':
+            return effect.delete();
+          case 'toggle':
+            return effect.update(this.#toggleEffect(effect, toggle));
+        }
+      }),
+    );
 
-    jquery.find('.power .damage').on('click', (ev) => {
-      const id = $(ev.currentTarget).parents('details').data('powerId');
-      const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
-      tempPower.rollDamage();
-    });
+    html.querySelectorAll('.power .damage').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const id = ev.currentTarget?.closest('details')?.dataset.powerId;
+        const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
+        tempPower.rollDamage();
+      }),
+    );
 
-    jquery.find('.additional-stats .rollable').on('click', async (ev) => {
-      const stat = ev.currentTarget.dataset.stat!;
-      await this.item.system.rollAdditionalStat(stat);
-    });
+    html.querySelectorAll('.additional-stats .rollable').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const stat = ev.currentTarget.dataset.stat!;
+        await this.item.system.rollAdditionalStat(stat);
+      }),
+    );
 
-    jquery
-      .find('.use-consumable')
-      .on('click', async () => await this.item.consume());
+    html
+      .querySelectorAll('.use-consumable')
+      .forEach((el) =>
+        el.addEventListener('click', async () => await this.item.consume()),
+      );
 
-    jquery.find('.loaded-ammo-name').on('mouseenter', async (ev) => {
-      const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
-      const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
-      game.tooltip.activate(ev.currentTarget, {
-        text: await TextEditor.enrichHTML(content, {
-          secrets: this.item.isOwner,
-        }),
-      });
-    });
+    html.querySelectorAll('.loaded-ammo-name').forEach((el) =>
+      el.addEventListener('mouseenter', async (ev) => {
+        const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
+        const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
+        game.tooltip.activate(ev.currentTarget, {
+          content: await TextEditor.enrichHTML(content, {
+            secrets: this.item.isOwner,
+          }),
+        });
+      }),
+    );
 
     html
       .querySelector('button.open-requirements-editor')
@@ -579,17 +599,21 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       item,
       actionKey,
     ) as ItemActions;
-    const data: DialogData = {
-      title: game.i18n.localize('SWADE.AddOrReplaceActions.Title'),
+    foundry.applications.api.DialogV2.wait({
+      window: {
+        title: game.i18n.localize('SWADE.AddOrReplaceActions.Title'),
+      },
+      classes: ['dialog', 'swade-app'],
       content: game.i18n.format('SWADE.AddOrReplaceActions.Content', {
         source: item.name,
         type: game.i18n.localize('TYPES.Item.' + item.type),
       }),
-      default: 'add',
-      buttons: {
-        add: {
+      buttons: [
+        {
+          action: 'add',
           label: game.i18n.localize('SWADE.AddOrReplaceActions.Add'),
           icon: '<i class="fa-solid fa-copy"></i>',
+          default: true,
           callback: () => {
             const newActions: ItemActions = {};
             //give the actions new keys to make sure there are no id collisions
@@ -599,7 +623,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
             this.item.update({ [actionKey]: newActions });
           },
         },
-        replace: {
+        {
+          action: 'replace',
           label: game.i18n.localize('SWADE.AddOrReplaceActions.Replace'),
           icon: '<i class="fa-solid fa-rotate"></i>',
           callback: () =>
@@ -608,9 +633,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
               { recursive: false, diff: false },
             ),
         },
-      },
-    };
-    new Dialog(data, { classes: ['dialog', 'swade-app'] }).render(true);
+      ],
+    });
   }
 
   async #deleteEmbeddedDocument(id: string) {
@@ -749,7 +773,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       });
   }
 
-  #setupEffectCreateMenu(html: JQuery<HTMLElement> = $('body')) {
+  #setupEffectCreateMenu(html: HTMLElement) {
     this.#effectCreateDropDown = new ContextMenu(
       html,
       '.effects .header',
@@ -758,7 +782,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           name: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
           condition: this.object.isOwner,
-          callback: () => new ActiveEffectWizard(this.object).render(true),
+          callback: () => new ActiveEffectWizard(this.document).render(true),
         },
         {
           name: 'SWADE.ActiveEffects.AddModifier',
@@ -773,7 +797,10 @@ export default class SwadeItemSheetV2 extends ItemSheet {
           callback: () => this.#createActiveEffect('base'),
         },
       ],
-      { eventName: 'click' },
+      {
+        eventName: 'click',
+        jQuery: false,
+      },
     );
   }
 

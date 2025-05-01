@@ -79,10 +79,19 @@ export default class ActionCardEditor extends FormApplication<
     };
   }
 
-  override activateListeners(html: JQuery) {
-    super.activateListeners(html);
-    html.find('.card-face').on('click', (ev) => this._showCard(ev));
-    html.find('.add-card').on('click', async () => this._createNewCard());
+  override activateListeners(jquery: JQuery) {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+    html
+      .querySelectorAll('.card-face')
+      .forEach((el) =>
+        el.addEventListener('click', (ev) => this._showCard(ev)),
+      );
+    html
+      .querySelectorAll('.add-card')
+      .forEach((el) =>
+        el.addEventListener('click', async () => this._createNewCard()),
+      );
   }
 
   protected override async _updateObject(_event: Event, formData = {}) {
@@ -128,11 +137,12 @@ export default class ActionCardEditor extends FormApplication<
     return card;
   }
 
-  private _showCard(event: JQuery.ClickEvent<HTMLElement>) {
-    const id = event.currentTarget.dataset.id!;
+  private _showCard(event: PointerEvent) {
+    const id = event.currentTarget?.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card) return;
-    new ImagePopout(card.currentFace?.img!, {
+    new ImagePopout({
+      src: card.currentFace?.img!,
       shareable: true,
     }).render(true);
   }
