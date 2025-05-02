@@ -448,8 +448,8 @@ function creatureSchema() {
             [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 'TOKEN.DISPOSITION.HOSTILE',
             [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 'TOKEN.DISPOSITION.NEUTRAL',
             [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 'TOKEN.DISPOSITION.FRIENDLY',
-            required: true
-          }
+          },
+          required: true
         }), {
           label: 'SWADE.Aura.Visibility.Label',
           hint: 'SWADE.Aura.Visibility.Hint',

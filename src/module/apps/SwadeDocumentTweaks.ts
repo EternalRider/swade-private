@@ -162,7 +162,7 @@ export class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject>
     }
   };
 
-  protected override _configureRenderParts(_options) {
+  protected override _configureRenderParts(options) {
     const hasSettingFields = !foundry.utils.isEmpty(this.settingFields);
     const parts = super._configureRenderParts(options);
     if (!hasSettingFields) delete parts.additionalStats;
@@ -183,6 +183,8 @@ export class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject>
     const partContext = await super._preparePartContext(partId, context, options);
     if (partId === 'tabs') {
       if (!partContext.hasSettingFields) delete partContext.tabs.additionalStats;
+    } else if (partId === 'auras') {
+      partContext.auraFields = this.document.system.schema.fields.auras.element.fields;
     }
     if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
     return partContext;
