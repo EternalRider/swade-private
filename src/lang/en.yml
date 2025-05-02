@@ -959,7 +959,7 @@ SWADE:
         In order for the change to take effect, Foundry VTT and all connected
         clients will be reloaded. Please confirm.
     Header: Contents
-  Category: Item Category
+  Category: Category
   ItemIsAmmo: Is Ammunition
   Vision:
     SeeHeat: See Heat

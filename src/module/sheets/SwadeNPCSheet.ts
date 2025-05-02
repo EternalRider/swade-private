@@ -196,6 +196,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     data.parryTooltip = this.actor.getPTTooltip('parry');
     data.toughnessTooltip = this.actor.getPTTooltip('toughness');
     data.armorTooltip = this.actor.getArmorTooltip();
+    data.category = this.actor.system.category;
     return data;
   }
 
