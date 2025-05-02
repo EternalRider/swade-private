@@ -21,7 +21,7 @@ declare global {
     Canvas: {
       auras: {
         collection: foundry.utils.Collection<AuraPointSource>;
-        filter: VisualEffectsMaskingFilter;
+        filter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
       };
     };
   }

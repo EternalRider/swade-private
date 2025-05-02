@@ -92,5 +92,5 @@ export async function preloadHandlebarsTemplates() {
       'systems/swade/templates/item/partials/tabs/effects.hbs',
   };
 
-  return loadTemplates(templatePaths);
+  return foundry.applications.handlebars.loadTemplates(templatePaths);
 }

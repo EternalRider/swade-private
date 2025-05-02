@@ -17,7 +17,7 @@ import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
 
-export default class SwadeItemSheetV2 extends ItemSheet {
+export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
   collapsibleStates: CollapsibleStates = {
     powers: {},
     actions: {},

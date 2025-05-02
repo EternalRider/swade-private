@@ -253,9 +253,9 @@ export default class SwadeCoreHooks {
     options: ContextMenu.Entry[],
   ) {
     const newOptions: ContextMenu.Entry[] = [];
-    
+
     // Don't want to add to context menu for compendium entries
-    if (app instanceof Compendium) return;
+    if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
     // Invoke character summarizer on selected character
     newOptions.push({
@@ -335,7 +335,7 @@ export default class SwadeCoreHooks {
     options: ContextMenu.Entry[],
   ) {
     // Don't want to add to context menu for compendium entries
-    if (app instanceof Compendium) return;
+    if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
     const actionCardEditor: ContextMenu.Entry = {
       name: 'SWADE.OpenACEditor',
@@ -615,7 +615,7 @@ export default class SwadeCoreHooks {
     form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
-  static onRenderChatLog(app: ChatLog, html: HTMLElement, data: any) {
+  static onRenderChatLog(app: foundry.applications.sidebar.tabs.ChatLog, html: HTMLElement, data: any) {
     chat.chatListeners(html);
   }
 

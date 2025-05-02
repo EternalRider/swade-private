@@ -1,6 +1,6 @@
 import type { HeadquartersData } from '../../data/journal';
 
-export default class JournalHeadquartersPageSheet extends JournalPageSheet {
+export default class JournalHeadquartersPageSheet extends foundry.appv1.sheets.JournalPageSheet {
   static override get defaultOptions() {
     const options = foundry.utils.mergeObject(super.defaultOptions, {
       submitOnChange: true,
