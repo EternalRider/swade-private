@@ -58,6 +58,14 @@
             }}
           {{/unless}}
           {{formGroupSimple
+            'system.category'
+            classes='slim'
+            label='SWADE.Category'
+            document=doc
+            rootId=doc.uuid
+            source=true
+          }}
+          {{formGroupSimple
             'system.wounds.max'
             classes='slim'
             document=doc
