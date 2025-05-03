@@ -1,29 +1,32 @@
 import type { HeadquartersData } from '../../data/journal';
 
-export default class JournalHeadquartersPageSheet extends JournalPageSheet {
-  static override get defaultOptions() {
-    const options = foundry.utils.mergeObject(super.defaultOptions, {
+export default class JournalHeadquartersPageSheet extends foundry.applications.sheets.journal.JournalEntryPageHandlebarsSheet {
+  static DEFAULT_OPTIONS = {
+    classes: ['headquarters-journal'],
+    form: {
       submitOnChange: true,
-    });
-    options.classes.push('headquarters-journal');
-    return options;
-  }
+    },
+  };
 
-  override get template() {
-    return `systems/swade/templates/journal/page-headquarters-${
-      this.isEditable ? 'edit' : 'view'
-    }.hbs`;
-  }
+  static EDIT_PARTS = {
+    header: super.EDIT_PARTS.header,
+    content: {
+      template: `systems/swade/templates/journal/page-headquarters-edit.hbs`,
+      classes: ["standard-form", 'scrollable']
+    },
+    footer: super.EDIT_PARTS.footer
+  };
 
-  override async getData(options) {
-    const context = super.getData(options);
+  static VIEW_PARTS = {
+    content: {
+      template: `systems/swade/templates/journal/page-headquarters-view.hbs`,
+      root: true
+    }
+  };
+
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
     const system = this.document.system as HeadquartersData;
-    context.title = Object.fromEntries(
-      Array.fromRange(4, 1).map((n) => [
-        `level${n}`,
-        context.data.title.level + n - 1,
-      ]),
-    );
     context.enriched = {
       advantage: await this.#enrich(system.advantage),
       complication: await this.#enrich(system.complication),
@@ -35,10 +38,6 @@ export default class JournalHeadquartersPageSheet extends JournalPageSheet {
       },
     };
     return context;
-  }
-
-  override activateListeners(html: JQuery<HTMLElement>) {
-    super.activateListeners(html);
   }
 
   async #enrich(text: string): Promise<string> {
