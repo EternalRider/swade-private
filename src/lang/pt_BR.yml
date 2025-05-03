@@ -102,8 +102,8 @@ SWADE:
   Modifiers: Modificadores
   ActionTraitMod: Mod. Característica da Ação
   ActionDmgMod: Mod. de Dano da Ação
-  ItemTraitMod: Mod. Característica do Item
-  ItemDmgMod: Mod. de Dano do Item
+  ItemTraitMod: Modificador de Característica
+  ItemDmgMod: Modificador de Dano
   Duplicates: Duplicatas Encontradas
   DuplicateItemsBodyText: >-
     Ao adicionar o {type} <strong>{name}</strong> ao Ator {target} as seguintes
@@ -213,6 +213,11 @@ SWADE:
     ResetDuration: Redefinir Duração
     AddGuided: Abrir Assistente
     AddUnguided: Adc Efeito Vazio
+    AddModifier: Adicionar Modificador
+    Conditional: Efeito Condicional
+    ModifierCost:
+      Label: Custo do Modificador
+    ConditionalTooltip: Ignorar modificadores de rolagem por padrão
   Keybindings:
     OpenFavoriteCards:
       Name: Abrir Mão de Cartas favorita
@@ -317,8 +322,8 @@ SWADE:
       Name: Convicção
       Hint: Habilita a Regra de Ambientação Convicção
     VehicleMods:
-      Hint: Veículos usam Espaços de Modificações
-      Name: Modificações de Veículos
+      Hint: Veículos e Armaduras usam Espaços de Modificações
+      Name: Modificações de Veículo
     VehicleEdges:
       Name: Vantagens de Veículo
       Hint: Veículos usam Vantagens e Complicações
@@ -749,7 +754,16 @@ SWADE:
   RoF: CdT
   Mag: Tiros
   ActionsEffects: Ações e Efeitos
-  Actions: Ações
+  Actions:
+    Activities:
+      Label: Atividades
+      Hint: SWIDs de ações que estão vinculadas a este item
+    Hidden:
+      Label: Oculta
+      Hint: Ações ocultas não são exibidas na ficha do ator
+    DisplayHidden:
+      Label: Exibir ações ocultas
+    Name: Ações
   DmgModUni: Modificador de Dano
   SkillModUni: Modificador de Perícia
   ShotsUsed: Tiros Usados
@@ -887,8 +901,8 @@ SWADE:
   NoSceneAvailable: Não há cena disponível ou você desativou a tela de jogo
   ChaseCardsCleared: Todas as cartas de perseguição foram removidas da cena.
   Validation:
-    OnlyOneAncestry: Você só pode ter uma raça de cada vez!
-    OnlyOneArchetype: Você só pode ter um arquétipo de cada vez!
+    OnlyOneAncestry: Você só pode ter uma raça de cada vez.
+    OnlyOneArchetype: Você só pode ter um arquétipo de cada vez.
   MigrateCompendium: Forçar a migração do compêndio
   AdditionalStats:
     SelectHint: Insita uma lista de opções, separadas por ponto-e-vírgula
@@ -905,7 +919,7 @@ SWADE:
     OptionLabel: Opção
   IgnFatigue: Ignorar Fadiga
   BaseDamage: Dano Base
-  Targets: 'Alvos:'
+  Targets: 'Alvos'
   Rolls:
     RollResult: Resultado da Rolagem
     SwadeRoll: Rolagem
@@ -974,6 +988,7 @@ SWADE:
   MacroActor:
     Default: Padrão
     Self: Próprio
+    Target: Alvo
   Auras:
     TabHeader: Auramante
     Enabled: Habilitado
@@ -1285,6 +1300,39 @@ SWADE:
   DeleteFromParentWarning: '{name} será permanentemente excluído de {parent}.'
   DeleteFromParentWarningPermanent: '{name} será permanentemente excluído de {parent}
     e não poderá ser recuperado.'
+  RemoveEffectLabel: Remover efeito
+  Scales:
+    Description: 'Escala: {scale} ({name})'
+    LargerThan: Maior que {scale}
+    SmallerThan: Menor que {scale}
+  Vehicle:
+    Crew:
+      Role: Função
+      Roles:
+        Operator: Operador
+        Gunner: Artilheiro
+        Other: Outro
+  VehicleAttributes:
+    Label: Atributos do veículo
+    Agility: Veículo tem Agilidade
+    Spirit: Veículo tem Espírito
+    Smarts: Veículo tem Astúcia
+  Energy:
+    Enable: Habilitar Energia
+    Value: Energia Atual
+    Max: Energia Máxima
+    Label: Energia
+  Complication: ''
+  ChaseDiscard: Pilha de Descarte
+  EffectsInactive: Efeitos inativos
+  DramaticTask:
+    MaxRounds:
+      Label: Máximo de Rodadas
+    MaxTokens:
+      Label: Sucessos
+    Successes: Sucessos
+  HindMajor: Maior
+  HindMinor: Menor
 ITEM:
   TypeWeapon: Arma
   TypeArmor: Armadura
@@ -1328,3 +1376,5 @@ TYPES:
     poker: Carta de Poker
   JournalEntryPage:
     headquarters: Sede
+  ActiveEffect:
+    modifier: Modificador
