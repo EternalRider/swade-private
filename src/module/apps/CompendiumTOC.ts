@@ -4,7 +4,7 @@ import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeItem from '../documents/item/SwadeItem';
 
-export class CompendiumTOC extends Compendium<
+export class CompendiumTOC extends foundry.applications.sidebar.apps.Compendium<
   CompendiumTOCMetadata,
   TOCApplicationOptions<CompendiumTOCMetadata>
 > {

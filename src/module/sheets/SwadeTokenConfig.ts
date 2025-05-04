@@ -1,4 +1,4 @@
-export default class SwadeTokenConfig extends TokenConfig {
+export default class SwadeTokenConfig extends foundry.applications.sheets.TokenConfig {
   override async _preparePartContext(partId, context, options) {
     await super._preparePartContext(partId, context, options);
     if (partId !== 'resources') return context;

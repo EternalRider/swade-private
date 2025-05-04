@@ -26,7 +26,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 import * as util from '../util';
 
-export default class CharacterSheet extends ActorSheet {
+export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   _equipStateMenu: ContextMenu;
   _effectCreateDropDown: ContextMenu;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};

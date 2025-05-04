@@ -23,7 +23,7 @@ export function registerKeybindings() {
     hint: 'SWADE.Keybindings.Bennies.Hint',
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
     editable: [{ key: 'KeyB' }],
-    reservedModifiers: [KeyboardManager.MODIFIER_KEYS.ALT],
+    reservedModifiers: [foundry.helpers.interaction.KeyboardManager.MODIFIER_KEYS.ALT],
     onDown: (ctx) => {
       if (ctx.isAlt) {
         game.user?.getBenny();
