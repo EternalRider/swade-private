@@ -1,6 +1,6 @@
 import { SwadeRoll } from '../dice/SwadeRoll';
 
-export default class SwadeChatLog extends ChatLog {
+export default class SwadeChatLog extends foundry.applications.sidebar.tabs.ChatLog {
   protected override async _processDiceCommand(
     command: string,
     matches: RegExpMatchArray[],

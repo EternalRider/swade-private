@@ -116,7 +116,7 @@ class SkillData extends SwadeBaseItemData<
           .flatMap((scene) => scene.tokens.contents)
           .filter((token) => !token.actorLink)
           .map((token) => token.actor)
-          .filter((doc) => doc.type === 'vehicle'),
+          .filter((doc) => doc?.type === 'vehicle'),
       );
     //filter down to only the vehicles this skill's actor is an operator of
     const filtered = allVehicles.filter((vehicle) =>

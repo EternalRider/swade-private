@@ -10,7 +10,7 @@ declare global {
     Token: typeof SwadeToken;
   }
 }
-export default class SwadeToken extends Token {
+export default class SwadeToken extends foundry.canvas.placeables.Token {
   declare shape: PIXI.Rectangle | PIXI.Polygon | PIXI.Circle; //TODO
   #blk = 0x000000;
 

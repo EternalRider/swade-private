@@ -1,6 +1,6 @@
 import InfraVisionFilter from './InfravisionFilter';
 
-export default class DetectionModeInfravision extends DetectionMode {
+export default class DetectionModeInfravision extends foundry.canvas.perception.DetectionMode {
   static override getDetectionFilter(): PIXI.Filter {
     return (this._detectionFilter ??= InfraVisionFilter.create());
   }
@@ -20,7 +20,7 @@ export default class DetectionModeInfravision extends DetectionMode {
     const src = visionSource?.object?.document;
     const isBlind =
       src instanceof TokenDocument &&
-      this.type === DetectionMode.DETECTION_TYPES.SIGHT &&
+      this.type === foundry.canvas.perception.DetectionMode.DETECTION_TYPES.SIGHT &&
       src.hasStatusEffect(CONFIG.specialStatusEffects.BLIND);
     return !isBlind;
   }
