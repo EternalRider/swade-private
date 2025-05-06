@@ -146,8 +146,6 @@ export default class SwadeCombat<
     return game.settings.get('swade', 'autoInit');
   }
 
-  #debouncedCombatSound: SwadeCombat['_playCombatSound'];
-
   #initSoundData: foundry.audio.AudioHelper.PlayData = {
     src: SwadeCombat.INITIATIVE_SOUND,
     volume: 0.8,
@@ -155,13 +153,8 @@ export default class SwadeCombat<
     loop: false,
   };
 
-  constructor(...args) {
-    super(...args);
-    this.#debouncedCombatSound = foundry.utils.debounce(
-      super._playCombatSound,
-      200,
-    );
-  }
+  #debouncedCombatSound: SwadeCombat['_playCombatSound'] =
+    foundry.utils.debounce(super._playCombatSound, 200);
 
   override async rollInitiative(
     ids: string | string[],
@@ -172,7 +165,8 @@ export default class SwadeCombat<
 
     const currentId = this.combatant?.id;
     const messages: ChatMessage.CreateData[] = [];
-    const updates: Updates[] = [];
+    const combatantUpdates: Combatant.UpdateData[] = [];
+    const groupUpdates: Updates[] = [];
 
     //Check if enough cards are available
     if (ids.length > this.actionDeck.availableCards.length) {
@@ -189,8 +183,14 @@ export default class SwadeCombat<
       const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
       if (!c.isOwner) continue;
       const roundHeld = !!c.roundHeld;
-      //Do not draw cards for defeated, holding or grouped combatants
-      if (c.isDefeated || roundHeld || !!c.groupId || c.turnLost) continue;
+      //Do not draw cards for defeated, holding or non-leader grouped combatants
+      if (
+        c.isDefeated ||
+        roundHeld ||
+        (c.group && !c.isGroupLeader) ||
+        c.turnLost
+      )
+        continue;
 
       // Set up edges
       let hasHesitant = false;
@@ -289,19 +289,15 @@ export default class SwadeCombat<
       const update = {
         _id: id,
         initiative,
-        'flags.swade': systemData,
+        system: systemData,
       };
 
       //Handle group leader changes
-      updates.push(update);
-
-      //handle potential followers
-      let fInitiative = initiative;
-      for (const f of c.followers) {
-        updates.push({
-          _id: f.id,
-          initiative: (fInitiative -= 0.001),
-          'flags.swade': systemData,
+      combatantUpdates.push(update);
+      if (c.isGroupLeader) {
+        groupUpdates.push({
+          _id: c.group.id,
+          initiative: update.initiative,
         });
       }
 
@@ -329,10 +325,11 @@ export default class SwadeCombat<
       messages.push(messageData);
     }
 
-    if (!updates.length) return this;
+    if (!combatantUpdates.length) return this;
 
     // Update the combat instance with the new combatants
-    await this.updateEmbeddedDocuments('Combatant', updates);
+    await this.updateEmbeddedDocuments('Combatant', combatantUpdates);
+    await this.updateEmbeddedDocuments('CombatantGroup', groupUpdates);
 
     // Create multiple chat messages
     this._playInitiativeSound();
@@ -353,10 +350,7 @@ export default class SwadeCombat<
     return this;
   }
 
-  protected override _sortCombatants(
-    a: SwadeCombatant,
-    b: SwadeCombatant,
-  ): number {
+  override _sortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     const currentRound = game.combat?.round ?? 0;
 
     if (
@@ -373,6 +367,94 @@ export default class SwadeCombat<
     } else {
       return super._sortCombatants(a, b);
     }
+  }
+
+  protected override _onCreateDescendantDocuments<
+    DescendantDocumentType extends Combat.DescendantClass,
+    Parent extends Combat.Stored,
+    CreateData extends
+      foundry.abstract.Document.CreateDataFor<DescendantDocumentType>,
+    Operation extends foundry.abstract.types.DatabaseCreateOperation<
+      CreateData,
+      Parent,
+      false
+    >,
+  >(
+    parent: Parent,
+    collection: DescendantDocumentType['metadata']['collection'],
+    documents: InstanceType<DescendantDocumentType>,
+    data: CreateData[],
+    options: foundry.abstract.Document.Database.CreateOptions<Operation>,
+    userId: string,
+  ) {
+    super._onCreateDescendantDocuments(
+      parent,
+      collection,
+      documents,
+      data,
+      options,
+      userId,
+    );
+    if (collection === 'groups')
+      this.#onModifyCombatantGroups(parent, documents, options);
+  }
+
+  protected override _onUpdateDescendantDocuments<
+    DescendantDocumentType extends Combat.DescendantClass,
+    Parent extends Combat.Stored,
+    UpdateData extends
+      foundry.abstract.Document.UpdateDataFor<DescendantDocumentType>,
+    Operation extends foundry.abstract.types.DatabaseUpdateOperation<
+      UpdateData,
+      Parent
+    >,
+  >(
+    parent: Parent,
+    collection: DescendantDocumentType['metadata']['collection'],
+    documents: InstanceType<DescendantDocumentType>,
+    changes: UpdateData[],
+    options: foundry.abstract.Document.Database.UpdateOptions<Operation>,
+    userId: string,
+  ) {
+    super._onUpdateDescendantDocuments(
+      parent,
+      collection,
+      documents,
+      changes,
+      options,
+      userId,
+    );
+    if (collection === 'groups')
+      this.#onModifyCombatantGroups(parent, documents, options);
+  }
+
+  protected override _onDeleteDescendantDocuments<
+    DescendantDocumentType extends Combat.DescendantClass,
+    Parent extends Combat.Stored,
+    Operation extends foundry.abstract.types.DatabaseDeleteOperation<Parent>,
+  >(
+    parent: Parent,
+    collection: DescendantDocumentType['metadata']['collection'],
+    documents: InstanceType<DescendantDocumentType>,
+    ids: string[],
+    options: foundry.abstract.Document.Database.DeleteOptions<Operation>,
+    userId: string,
+  ) {
+    super._onDeleteDescendantDocuments(
+      parent,
+      collection,
+      documents,
+      ids,
+      options,
+      userId,
+    );
+    if (collection === 'groups')
+      this.#onModifyCombatantGroups(parent, documents, options);
+  }
+
+  #onModifyCombatantGroups(parent: Combat.Stored, _documents, options) {
+    if (ui.combat.viewed === parent && options.render !== false)
+      ui.combat.render();
   }
 
   /**
@@ -410,8 +492,17 @@ export default class SwadeCombat<
       const update = this._getInitResetUpdate(combatant as SwadeCombatant);
       if (update) combatant.updateSource(update);
     }
+    for (const group of this.groups) {
+      group.updateSource({
+        initiative: group.system.leaderCombatant._source.initiative,
+      });
+    }
     await this.update(
-      { turn: 0, combatants: this.combatants.toObject() },
+      {
+        turn: 0,
+        combatants: this.combatants.toObject(),
+        groups: this.groups.toObject(),
+      },
       { diff: false },
     );
     return this;
@@ -466,7 +557,7 @@ export default class SwadeCombat<
   }
 
   override async nextRound() {
-    if (game.user?.isGM) await this._nextRoundAsGM();
+    if (game.user.isGM) await this._nextRoundAsGM();
     else await this._nextRoundAsUser();
     return this;
   }
@@ -499,12 +590,11 @@ export default class SwadeCombat<
   ): Record<string, unknown> | undefined {
     const roundHeld = combatant.roundHeld;
     const turnLost = combatant.turnLost;
-    const groupId = combatant.groupId;
     if (roundHeld) {
-      if (turnLost && groupId) {
+      if (turnLost) {
         return {
           initiative: null,
-          'flags.swade': {
+          system: {
             hasJoker: false,
             '-=turnLost': null,
           },
@@ -516,7 +606,7 @@ export default class SwadeCombat<
     } else if (!roundHeld || turnLost) {
       return {
         initiative: null,
-        'flags.swade': {
+        system: {
           suitValue: null,
           cardValue: null,
           hasJoker: false,
@@ -527,7 +617,7 @@ export default class SwadeCombat<
     }
     return {
       initiative: null,
-      'flags.swade': {
+      system: {
         suitValue: null,
         cardValue: null,
         hasJoker: false,
@@ -574,13 +664,12 @@ export default class SwadeCombat<
     if (this.#roundAdvanceDialog) return;
     this.#roundAdvanceDialog = true; //set the flag
     //run the dialog
-    const advance = await Dialog.confirm({
-      title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle'),
+    const advance = await foundry.applications.api.DialogV2.confirm({
+      window: { title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle') },
       content:
         '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
-      defaultYes: true,
       rejectClose: false,
-      options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
+      classes: ['swade-app'],
     });
     this.#roundAdvanceDialog = false; //unset the flag
     if (!advance) return;
@@ -614,10 +703,13 @@ export default class SwadeCombat<
     const [localDraws, remoteDraws] = this.combatants
       .filter(
         (c: SwadeCombatant) =>
-          c.hasPlayerOwner && !c.isNPC && c.initiative === null,
+          c.hasPlayerOwner &&
+          !c.isNPC &&
+          c.initiative === null &&
+          (!c.group || c.isGroupLeader),
       )
       .map((c: SwadeCombatant) => {
-        return { combatant: c, user: c.players[0] as SwadeUser };
+        return { combatant: c, user: c.players[0]! };
       })
       .sort((a, b) => a.user.name.localeCompare(b.user.name))
       .partition((v) => this._determineIfRemoteDraw(v.user, v.combatant));
@@ -644,7 +736,8 @@ export default class SwadeCombat<
       initiative.hasLevelHeaded ||
       initiative.hasImpLevelHeaded ||
       initiative.hasQuick;
-    return user.active && edges;
+    const groupOwner = !combatant.group || combatant.group.isOwner;
+    return user.active && edges && groupOwner;
   }
 
   override async _preDelete(

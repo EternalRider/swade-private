@@ -117,16 +117,15 @@ export class RollDialog extends FormApplication<
       ?.addEventListener('click', (ev) => {
         const target = ev.currentTarget as HTMLButtonElement;
         const style = getComputedStyle(target);
-        const width = parseFloat(style.width)
-          - parseFloat(style.paddingLeft)
-          - parseFloat(style.paddingRight)
-          - parseFloat(style.marginLeft)
-          - parseFloat(style.marginRight)
-          - parseFloat(style.borderLeftWidth)
-          - parseFloat(style.borderRightWidth);
-        html
-          .querySelector('.fas.fa-caret-right')
-          ?.classList.toggle('rotate');
+        const width =
+          parseFloat(style.width) -
+          parseFloat(style.paddingLeft) -
+          parseFloat(style.paddingRight) -
+          parseFloat(style.marginLeft) -
+          parseFloat(style.marginRight) -
+          parseFloat(style.borderLeftWidth) -
+          parseFloat(style.borderRightWidth);
+        html.querySelector('.fas.fa-caret-right')?.classList.toggle('rotate');
         const searchBox = html.querySelector('.searchBox');
         if (searchBox) searchBox.style.width = width + 'px';
         const dropdown = html.querySelector('.dropdown');

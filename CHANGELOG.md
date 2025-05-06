@@ -30,6 +30,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Update Actor embed template to include Super Powers **by @jestevens210**
 - [BREAKING] Auras are back! They have moved from `flags.auras` to `system.auras`. There is a migration in place for both `Actor`s and `ActiveEffect`s which should update this data automatically. **by @roth-michael**
 - [BREAKING] The following sheets and windows have been converted to AppV2
   - SwadeDocumentTweaks
@@ -42,6 +43,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - [BREAKING] Removed v12 compatibility
 - Finished deprecation period for Ancestry
+
+## 4.4.3
+
+### Fixed
+
+- Sockets properly initialized once more (#1301) **by roth-michael**
 
 ## 4.4.2
 

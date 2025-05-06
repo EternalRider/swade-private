@@ -2,28 +2,11 @@ import { AnyMutableObject } from 'fvtt-types/utils';
 import { Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { getStatusEffectDataById } from '../../util';
-import type SwadeCombat from './SwadeCombat';
+// import type SwadeCombat from './SwadeCombat';
 
 declare global {
   interface DocumentClassConfig {
     Combatant: typeof SwadeCombatant;
-  }
-
-  interface FlagConfig {
-    Combatant: {
-      swade?: {
-        suitValue?: number;
-        cardValue?: number;
-        cardString?: string;
-        hasJoker?: boolean;
-        groupId?: string;
-        isGroupLeader?: boolean;
-        roundHeld?: number;
-        turnLost?: boolean;
-        firstRound?: number;
-        groupColor?: string;
-      };
-    };
   }
 }
 
@@ -31,31 +14,27 @@ export default class SwadeCombatant<
   out SubType extends Combatant.SubType = Combatant.SubType,
 > extends Combatant<SubType> {
   static override migrateData(data: AnyMutableObject) {
-    // TODO: Revert for 5.0 when bugfix is in for v13
-    // const flags = data.flags?.swade;
+    const flags = data.flags?.swade;
 
-    // if (flags) {
-    //   const keys = [
-    //     'suitValue',
-    //     'cardValue',
-    //     'cardString',
-    //     'hasJoker',
-    //     'groupId',
-    //     'isGroupLeader',
-    //     'roundHeld',
-    //     'turnLost',
-    //     'firstRound',
-    //     'groupColor',
-    //   ];
-    //   data.system ??= {};
+    if (flags) {
+      const keys = [
+        'suitValue',
+        'cardValue',
+        'cardString',
+        'hasJoker',
+        'roundHeld',
+        'turnLost',
+        'firstRound',
+      ];
+      data.system ??= {};
 
-    //   for (const key of keys) {
-    //     if (key in flags) {
-    //       data.system[key] = flags[key];
-    //       delete flags[key];
-    //     }
-    //   }
-    // }
+      for (const key of keys) {
+        if (key in flags) {
+          data.system[key] = flags[key];
+          delete flags[key];
+        }
+      }
+    }
 
     return super.migrateData(data);
   }
@@ -73,82 +52,70 @@ export default class SwadeCombatant<
     return super.isDefeated;
   }
 
-  get followers(): SwadeCombatant[] {
-    const combat = this.parent as SwadeCombat;
-    return (combat?.combatants.filter((f) => f.groupId === this.id) ??
-      []) as SwadeCombatant[];
-  }
-
   get suitValue() {
-    return this.getFlag('swade', 'suitValue');
+    return this.system.suitValue;
   }
 
   async setCardValue(cardValue: number) {
-    return this.setFlag('swade', 'cardValue', cardValue);
+    return this.update({ 'system.cardValue': cardValue });
   }
 
   get cardValue() {
-    return this.getFlag('swade', 'cardValue');
+    return this.system.cardValue;
   }
 
   async setSuitValue(suitValue: number) {
-    return this.setFlag('swade', 'suitValue', suitValue);
+    return this.update({ 'system.suitValue': suitValue });
   }
 
   get cardString() {
-    return this.getFlag('swade', 'cardString');
+    return this.system.cardString;
   }
 
   async setCardString(cardString: string) {
-    return this.setFlag('swade', 'cardString', cardString);
+    return this.update({ 'system.cardString': cardString });
   }
 
   get hasJoker() {
-    return !!this.getFlag('swade', 'hasJoker');
+    return !!this.system.hasJoker;
   }
 
   async setJoker(joker: boolean) {
-    return this.setFlag('swade', 'hasJoker', joker);
-  }
-
-  get groupId() {
-    return this.getFlag('swade', 'groupId');
-  }
-
-  async setGroupId(groupId: string) {
-    return this.setFlag('swade', 'groupId', groupId);
-  }
-
-  async unsetGroupId() {
-    return this.unsetFlag('swade', 'groupId');
+    return this.update({ 'system.hasJoker': joker });
   }
 
   get isGroupLeader() {
-    return !!this.getFlag('swade', 'isGroupLeader');
+    if (!this.group) return false;
+    else {
+      if (this.group.system?.leader)
+        return this.group.system.leader === this.id;
+      else return this.group.members.first() === this;
+    }
   }
 
   async setIsGroupLeader(groupLeader: boolean) {
-    return this.setFlag('swade', 'isGroupLeader', groupLeader);
+    if (!this.group) return null;
+    return this.group.update({ 'system.leader': groupLeader ? this.id : null });
   }
 
   async unsetIsGroupLeader() {
-    return this.unsetFlag('swade', 'isGroupLeader');
+    return this.group?.update({ 'system.leader': null });
   }
 
   get roundHeld() {
-    return this.getFlag('swade', 'roundHeld');
+    return this.system.roundHeld;
   }
 
   async setRoundHeld(roundHeld: number) {
-    return this.setFlag('swade', 'roundHeld', roundHeld);
+    return this.update({ 'system.roundHeld': roundHeld });
   }
 
   get turnLost() {
-    return !!this.getFlag('swade', 'turnLost');
+    return !!this.system.turnLost;
   }
 
   async setTurnLost(turnLost: boolean) {
-    return this.setFlag('swade', 'turnLost', turnLost);
+    return this.update({ 'system.turnLost': turnLost });
   }
 
   get cardsToDraw(): number {
@@ -192,26 +159,9 @@ export default class SwadeCombatant<
     updates.push({
       _id: this.id,
       initiative,
-      'flags.swade': { cardValue, suitValue, hasJoker, cardString },
+      system: { cardValue, suitValue, hasJoker, cardString },
     });
 
-    //update followers, if applicable
-    if (this.isGroupLeader) {
-      const followers = combat!.combatants.filter((f) => f.groupId === this.id);
-      let fInitiative = initiative;
-      for (const follower of followers) {
-        updates.push({
-          _id: follower.id,
-          initiative: (fInitiative -= 0.001), //card value is the primary sort value, followed by the suit, so treat the suit as a decimal value.
-          'flags.swade': {
-            cardString,
-            cardValue,
-            hasJoker,
-            suitValue,
-          },
-        });
-      }
-    }
     await combat?.updateEmbeddedDocuments('Combatant', updates);
   }
 
@@ -227,7 +177,7 @@ export default class SwadeCombatant<
       ]);
     } else {
       await Promise.all([
-        this.update({ 'flags.swade.-=roundHeld': null }),
+        this.update({ 'system.-=roundHeld': null }),
         this.actor?.toggleActiveEffect(data, { active: false }),
       ]);
     }
@@ -240,7 +190,7 @@ export default class SwadeCombatant<
     if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.turnLost) {
       await this.update({
-        'flags.swade': {
+        system: {
           turnLost: true,
           '-=roundHeld': null,
         },
@@ -248,7 +198,7 @@ export default class SwadeCombatant<
       await this.actor?.toggleActiveEffect(data, { active: false });
     } else {
       await this.update({
-        'flags.swade': {
+        system: {
           roundHeld: this.parent.round,
           '-=turnLost': null,
         },
@@ -280,7 +230,7 @@ export default class SwadeCombatant<
     }
     await this.update({
       initiative,
-      'flags.swade': {
+      system: {
         cardValue: targetCombatant?.cardValue,
         suitValue: targetCombatant?.suitValue,
         cardString: '',
@@ -301,7 +251,7 @@ export default class SwadeCombatant<
     const currentCombatant = this.parent.combatant as SwadeCombatant;
     await this.update({
       initiative: (currentCombatant?.initiative ?? 0) - 0.0001,
-      'flags.swade': {
+      system: {
         cardValue: currentCombatant?.cardValue,
         suitValue: currentCombatant?.suitValue,
         cardString: '',

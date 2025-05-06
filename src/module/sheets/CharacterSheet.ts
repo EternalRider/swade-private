@@ -26,7 +26,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 import * as util from '../util';
 
-export default class CharacterSheet extends ActorSheet {
+export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   _equipStateMenu: ContextMenu;
   _effectCreateDropDown: ContextMenu;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
@@ -77,7 +77,9 @@ export default class CharacterSheet extends ActorSheet {
 
     // Input focus and update
     const inputs = html.querySelectorAll('input');
-    inputs.forEach(el => el.addEventListener('focus', (ev) => ev.currentTarget.select()));
+    inputs.forEach((el) =>
+      el.addEventListener('focus', (ev) => ev.currentTarget.select()),
+    );
 
     html
       .querySelector('[name="system.details.currency"]')
@@ -92,35 +94,45 @@ export default class CharacterSheet extends ActorSheet {
 
     html
       .querySelectorAll('.status input[type="checkbox"]')
-      .forEach(el => el.addEventListener('change', this._toggleStatusEffect.bind(this)));
+      .forEach((el) =>
+        el.addEventListener('change', this._toggleStatusEffect.bind(this)),
+      );
 
     //Display Advances on About tab
-    html.querySelector('.character-detail.advances a')?.addEventListener('click', async () => {
-      this.activateTab('about', { group: 'primary' });
-      this.activateTab('advances', { group: 'about' });
-    });
+    html
+      .querySelector('.character-detail.advances a')
+      ?.addEventListener('click', async () => {
+        this.activateTab('about', { group: 'primary' });
+        this.activateTab('advances', { group: 'about' });
+      });
 
     //Toggle Conviction
-    html.querySelector('.conviction-toggle')?.addEventListener('click', async () => {
-      await this.actor.toggleConviction();
-    });
+    html
+      .querySelector('.conviction-toggle')
+      ?.addEventListener('click', async () => {
+        await this.actor.toggleConviction();
+      });
 
     //Roll Attribute
-    html.querySelectorAll('.attribute button').forEach(el => el.addEventListener('click', async (ev) => {
-      const attribute = ev.currentTarget.dataset.attribute as Attribute;
-      await this.actor.rollAttribute(attribute);
-    }));
+    html.querySelectorAll('.attribute button').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const attribute = ev.currentTarget.dataset.attribute as Attribute;
+        await this.actor.rollAttribute(attribute);
+      }),
+    );
 
     html.querySelector('.attribute-manager')?.addEventListener('click', () => {
       new AttributeManager(this.actor).render(true);
     });
 
     // Roll Skill
-    html.querySelectorAll('.skill-card .skill-die').forEach(el => el.addEventListener('click', async (ev) => {
-      const element = ev.currentTarget as HTMLElement;
-      const item = element.parentElement!.dataset.itemId!;
-      await this.actor.rollSkill(item);
-    }));
+    html.querySelectorAll('.skill-card .skill-die').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const element = ev.currentTarget as HTMLElement;
+        const item = element.parentElement!.dataset.itemId!;
+        await this.actor.rollSkill(item);
+      }),
+    );
 
     //Running Die
     html.querySelector('.running-die')?.addEventListener('click', async () => {
@@ -128,82 +140,98 @@ export default class CharacterSheet extends ActorSheet {
     });
 
     // Roll Damage
-    html.querySelectorAll('.damage-roll').forEach(el => el.addEventListener('click', async (ev) => {
-      const id = ev.currentTarget.closest('.item')?.dataset.itemId;
-      await this.actor.items.get(id)?.rollDamage();
-    }));
+    html.querySelectorAll('.damage-roll').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.closest('.item')?.dataset.itemId;
+        await this.actor.items.get(id)?.rollDamage();
+      }),
+    );
 
     // Use Consumable
-    html.querySelectorAll('.use-consumable').forEach(el => el.addEventListener('click', async (ev) => {
-      const id = ev.currentTarget.closest('.item')?.dataset.itemId;
-      await this.actor.items.get(id)?.consume();
-    }));
+    html.querySelectorAll('.use-consumable').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.closest('.item')?.dataset.itemId;
+        await this.actor.items.get(id)?.consume();
+      }),
+    );
 
     //Edit Item
-    html.querySelectorAll('.item-edit').forEach(el => el.addEventListener('click', (ev) => {
-      const li = ev.currentTarget.closest('.item');
-      const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
-      item.sheet?.render(true);
-    }));
+    html.querySelectorAll('.item-edit').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
+        item.sheet?.render(true);
+      }),
+    );
 
     //Show Item
-    html.querySelectorAll('.item-show').forEach(el => el.addEventListener('click', (ev) => {
-      const li = ev.currentTarget.closest('.item');
-      const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
-      item.show();
-    }));
+    html.querySelectorAll('.item-show').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
+        item.show();
+      }),
+    );
 
     // Delete Item
-    html.querySelectorAll('.item-delete').forEach(el => el.addEventListener('click', async (ev) => {
-      const li = ev.currentTarget.closest('.item');
-      const item = this.actor.items.get(li?.dataset.itemId);
-      item?.deleteDialog();
-    }));
+    html.querySelectorAll('.item-delete').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId);
+        item?.deleteDialog();
+      }),
+    );
 
-    html.querySelectorAll('.item-create').forEach(el => el.addEventListener('click', async (ev) => {
-      this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
-    }));
+    html.querySelectorAll('.item-create').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
+      }),
+    );
 
     //Item toggles
-    html.querySelectorAll('.item-toggle').forEach(el => el.addEventListener('click', async (ev) => {
-      const target = ev.currentTarget;
-      const li = target.closest('.item');
-      const itemID = li?.dataset.itemId;
-      const item = this.actor.items.get(itemID, { strict: true });
-      const toggle = target.dataset.toggle as string;
-      await item.update(this._toggleItem(item, toggle));
-    }));
+    html.querySelectorAll('.item-toggle').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const target = ev.currentTarget;
+        const li = target.closest('.item');
+        const itemID = li?.dataset.itemId;
+        const item = this.actor.items.get(itemID, { strict: true });
+        const toggle = target.dataset.toggle as string;
+        await item.update(this._toggleItem(item, toggle));
+      }),
+    );
 
-    html.querySelectorAll('.effect-action').forEach(el => el.addEventListener('click', async (ev) => {
-      const a = ev.currentTarget;
-      const effectId = a.closest('.effect')!.dataset.effectId as string;
-      const sourceId = a.closest('.effect')!.dataset.sourceId as string;
-      const sourceItem = this.actor.items.get(sourceId)!;
-      const effect = sourceId
-        ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
-        : (this.actor.effects.get(effectId) as SwadeActiveEffect);
-      if (!effect) return;
-      const action = a.dataset.action as string;
-      const toggle = a.dataset.toggle as string;
-      if (!effect) return;
+    html.querySelectorAll('.effect-action').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const a = ev.currentTarget;
+        const effectId = a.closest('.effect')!.dataset.effectId as string;
+        const sourceId = a.closest('.effect')!.dataset.sourceId as string;
+        const sourceItem = this.actor.items.get(sourceId)!;
+        const effect = sourceId
+          ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
+          : (this.actor.effects.get(effectId) as SwadeActiveEffect);
+        if (!effect) return;
+        const action = a.dataset.action as string;
+        const toggle = a.dataset.toggle as string;
+        if (!effect) return;
 
-      switch (action) {
-        case 'edit':
-          return effect.sheet?.render({force: true});
-        case 'delete':
-          return effect.deleteDialog();
-        case 'toggle':
-          return effect.update(this._toggleItem(effect, toggle));
-        case 'open-origin':
-          if (sourceItem) {
-            sourceItem.sheet?.render(true);
-          }
-          return;
-        default:
-          Logger.warn(`The action ${action} is not currently supported`);
-          break;
-      }
-    }));
+        switch (action) {
+          case 'edit':
+            return effect.sheet?.render({ force: true });
+          case 'delete':
+            return effect.deleteDialog();
+          case 'toggle':
+            return effect.update(this._toggleItem(effect, toggle));
+          case 'open-origin':
+            if (sourceItem) {
+              sourceItem.sheet?.render(true);
+            }
+            return;
+          default:
+            Logger.warn(`The action ${action} is not currently supported`);
+            break;
+        }
+      }),
+    );
 
     html.querySelector('.armor-display')?.addEventListener('click', () => {
       const armorPropertyPath = 'system.stats.toughness.armor';
@@ -231,9 +259,9 @@ export default class CharacterSheet extends ActorSheet {
             default: true,
             callback: (html: HTMLElement) => {
               const newData = {};
-              newData[armorPropertyPath] = html
-                .querySelector('input[name="modifier"]')
-                ?.value;
+              newData[armorPropertyPath] = html.querySelector(
+                'input[name="modifier"]',
+              )?.value;
               this.actor.update(newData);
             },
           },
@@ -242,7 +270,7 @@ export default class CharacterSheet extends ActorSheet {
             icon: '<i class="fas fa-times"></i>',
             label: game.i18n.localize('Cancel'),
           },
-        ]
+        ],
       });
     });
 
@@ -272,9 +300,9 @@ export default class CharacterSheet extends ActorSheet {
             default: true,
             callback: (html: HTMLElement) => {
               const newData = {};
-              newData[parryPropertyPath] = html
-                .querySelector('input[name="modifier"]')
-                ?.value as number;
+              newData[parryPropertyPath] = html.querySelector(
+                'input[name="modifier"]',
+              )?.value as number;
               this.actor.update(newData);
             },
           },
@@ -283,21 +311,25 @@ export default class CharacterSheet extends ActorSheet {
             icon: '<i class="fas fa-times"></i>',
             label: game.i18n.localize('Cancel'),
           },
-        ]
+        ],
       });
     });
 
     //Item Action Buttons
     html
       .querySelectorAll('.card-buttons button')
-      .forEach(el => el.addEventListener('click', this._handleItemActions.bind(this)));
+      .forEach((el) =>
+        el.addEventListener('click', this._handleItemActions.bind(this)),
+      );
 
     //Additional Stats roll
-    html.querySelectorAll('.additional-stats .roll').forEach(el => el.addEventListener('click', async (ev) => {
-      const button = ev.currentTarget;
-      const stat = button.dataset.stat!;
-      await this.actor.system.rollAdditionalStat(stat);
-    }));
+    html.querySelectorAll('.additional-stats .roll').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const button = ev.currentTarget;
+        const stat = button.dataset.stat!;
+        await this.actor.system.rollAdditionalStat(stat);
+      }),
+    );
 
     //Wealth Die Roll
     html
@@ -305,29 +337,31 @@ export default class CharacterSheet extends ActorSheet {
       ?.addEventListener('click', () => this.actor.rollWealthDie());
 
     //Advances
-    html.querySelectorAll('.advance-action').forEach(el => el.addEventListener('click', async (ev) => {
-      if (this.actor.type === 'vehicle') return;
-      const button = ev.currentTarget;
-      const id = button.closest('li.advance')?.dataset.advanceId;
-      switch (button.dataset.action) {
-        case 'edit':
-          new AdvanceEditor({
-            advance: this.actor.system.advances.list.get(id, {
-              strict: true,
-            }),
-            actor: this.actor,
-          }).render(true);
-          break;
-        case 'delete':
-          await this.#deleteAdvance(id);
-          break;
-        case 'toggle-planned':
-          await this.#toggleAdvancePlanned(id);
-          break;
-        default:
-          throw new Error(`Action ${button.dataset.action} not supported`);
-      }
-    }));
+    html.querySelectorAll('.advance-action').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        if (this.actor.type === 'vehicle') return;
+        const button = ev.currentTarget;
+        const id = button.closest('li.advance')?.dataset.advanceId;
+        switch (button.dataset.action) {
+          case 'edit':
+            new AdvanceEditor({
+              advance: this.actor.system.advances.list.get(id, {
+                strict: true,
+              }),
+              actor: this.actor,
+            }).render(true);
+            break;
+          case 'delete':
+            await this.#deleteAdvance(id);
+            break;
+          case 'toggle-planned':
+            await this.#toggleAdvancePlanned(id);
+            break;
+          default:
+            throw new Error(`Action ${button.dataset.action} not supported`);
+        }
+      }),
+    );
 
     html
       .querySelector<HTMLImageElement>('.profile-img')
@@ -640,7 +674,7 @@ export default class CharacterSheet extends ActorSheet {
         window: {
           title: game.i18n.format('DOCUMENT.Create', {
             type: game.i18n.localize('DOCUMENT.Item'),
-          })
+          }),
         },
         content: dlg,
         buttons: [
@@ -661,7 +695,7 @@ export default class CharacterSheet extends ActorSheet {
             icon: '<i class="fas fa-times"></i>',
             label: game.i18n.localize('Cancel'),
           },
-        ]
+        ],
       });
     });
   }
@@ -750,12 +784,10 @@ export default class CharacterSheet extends ActorSheet {
     const additionalMods = new Array<RollModifier>();
     const ppToAdjust = button
       .closest('.chat-card.item-card')
-      ?.querySelector('input.pp-adjust')
-      ?.value as string;
+      ?.querySelector('input.pp-adjust')?.value as string;
     const arcaneDevicePPToAdjust = button
       .closest('.chat-card.item-card')
-      ?.querySelector('input.arcane-device-pp-adjust')
-      ?.value as string;
+      ?.querySelector('input.arcane-device-pp-adjust')?.value as string;
 
     //if it's a power and the No Power Points rule is in effect
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
@@ -949,7 +981,7 @@ export default class CharacterSheet extends ActorSheet {
     if (this.actor.type === 'vehicle') return;
     foundry.applications.api.DialogV2.confirm({
       window: {
-        title: game.i18n.localize('SWADE.Advances.Delete')
+        title: game.i18n.localize('SWADE.Advances.Delete'),
       },
       content: `<form>
         <div style="text-align: center;">
@@ -965,11 +997,11 @@ export default class CharacterSheet extends ActorSheet {
           const arr = advances.toJSON();
           arr.forEach((a, i) => (a.sort = i + 1));
           this.actor.update({ 'system.advances.list': arr });
-        }
+        },
       },
       no: {
-        default: false
-      }
+        default: false,
+      },
     });
   }
 
@@ -977,7 +1009,7 @@ export default class CharacterSheet extends ActorSheet {
     if (this.actor.type === 'vehicle') return;
     foundry.applications.api.DialogV2.confirm({
       window: {
-        title: game.i18n.localize('SWADE.Advances.Toggle')
+        title: game.i18n.localize('SWADE.Advances.Toggle'),
       },
       content: `<form>
         <div style="text-align: center;">
@@ -996,11 +1028,11 @@ export default class CharacterSheet extends ActorSheet {
             { 'system.advances.list': advances.toJSON() },
             { diff: false },
           );
-        }
+        },
       },
       no: {
-        default: false
-      }
+        default: false,
+      },
     });
   }
 
@@ -1036,7 +1068,7 @@ export default class CharacterSheet extends ActorSheet {
     const flatOverrides = foundry.utils.flattenObject(this.actor.overrides);
     const disabledText = game.i18n.localize('SWADE.disabledAE');
     for (const override of Object.keys(flatOverrides)) {
-      html.querySelectorAll(`[name="${override}"]`).forEach(input => {
+      html.querySelectorAll(`[name="${override}"]`).forEach((input) => {
         input.disabled = true;
         if (input.dataset.tooltip) {
           input.dataset.tooltip += '<br>' + disabledText;

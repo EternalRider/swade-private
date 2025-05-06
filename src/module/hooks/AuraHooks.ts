@@ -6,8 +6,8 @@ export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
     CONFIG.Canvas.auras = {
       collection: new foundry.utils.Collection<AuraPointSource>(),
-      filter: VisualEffectsMaskingFilter.create({
-        mode: VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
+      filter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
+        mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
         visionTexture: canvas.masks.vision.renderTexture,
       }),
     };

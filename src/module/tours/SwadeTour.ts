@@ -7,7 +7,7 @@ import { CreatureData } from '../data/actor/base';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 
-export default class SwadeTour extends Tour {
+export default class SwadeTour extends foundry.nue.Tour {
   configurator?: SettingConfigurator;
   actor?: SwadeActor;
   item?: SwadeItem;

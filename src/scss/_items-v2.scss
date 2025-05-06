@@ -168,7 +168,7 @@
     }
   }
 
-  section.description.active {
+  .window-content .description.active {
     display: grid;
     grid-template-rows: max-content 1fr;
     &.full-page {

@@ -40,7 +40,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
 
     // Resize resizable classes
     const resizable = html.querySelectorAll('.resizable');
-    resizable.forEach(el => {
+    resizable.forEach((el) => {
       const heightDelta =
         (this.position.height as number) - (this.options.height as number);
       el.style.height = `${heightDelta + parseInt(el.dataset.baseSize!)}px`;
@@ -75,74 +75,84 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     this._setupItemContextMenu(html);
 
     // Drag events for macros.
-    html.querySelectorAll('.attribute').forEach(el => {
+    html.querySelectorAll('.attribute').forEach((el) => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     // Delete Item
-    html.querySelectorAll('.item-delete').forEach(el => el.addEventListener('click', (ev) => {
-      const li = ev.currentTarget?.closest('.gear-card');
-      this.actor.items.get(li.dataset.itemId)?.deleteDialog();
-    }));
+    html.querySelectorAll('.item-delete').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const li = ev.currentTarget?.closest('.gear-card');
+        this.actor.items.get(li.dataset.itemId)?.deleteDialog();
+      }),
+    );
 
     // Roll Skill
-    html.querySelectorAll('.skill.item a').forEach(el => el.addEventListener('click', (event) => {
-      const element = event.currentTarget as Element;
-      const item = element.parentElement!.dataset.itemId as string;
-      this.actor.rollSkill(item);
-    }));
+    html.querySelectorAll('.skill.item a').forEach((el) =>
+      el.addEventListener('click', (event) => {
+        const element = event.currentTarget as Element;
+        const item = element.parentElement!.dataset.itemId as string;
+        this.actor.rollSkill(item);
+      }),
+    );
 
     // Add new object
-    html.querySelectorAll('.item-create').forEach(el => el.addEventListener('click', async (event) => {
-      event.preventDefault();
-      const header = event.currentTarget;
-      const type = header.dataset.type!;
+    html.querySelectorAll('.item-create').forEach((el) =>
+      el.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const header = event.currentTarget;
+        const type = header.dataset.type!;
 
-      // item creation helper func
-      const createItem = (type: string, name?: string) => {
-        const itemData = {
-          name:
-            name ??
-            game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
-          type: type,
-          system: Object.assign({}, header.dataset),
+        // item creation helper func
+        const createItem = (type: string, name?: string) => {
+          const itemData = {
+            name:
+              name ??
+              game.i18n.format('DOCUMENT.New', { type: type.capitalize() }),
+            type: type,
+            system: Object.assign({}, header.dataset),
+          };
+          delete itemData.system['type'];
+          return itemData;
         };
-        delete itemData.system['type'];
-        return itemData;
-      };
 
-      let itemData: any;
+        let itemData: any;
 
-      // Getting back to main logic
-      if (type === 'choice') {
-        const dialogInput = await this._chooseItemType();
-        itemData = createItem(dialogInput.type, dialogInput.name);
-      } else {
-        itemData = createItem(type);
-      }
-      foundry.utils.setProperty(
-        itemData,
-        'system.equipStatus',
-        constants.EQUIP_STATE.EQUIPPED,
-      );
-      await this.actor.createEmbeddedDocuments('Item', [itemData], {
-        renderSheet: true,
-      });
-    }));
+        // Getting back to main logic
+        if (type === 'choice') {
+          const dialogInput = await this._chooseItemType();
+          itemData = createItem(dialogInput.type, dialogInput.name);
+        } else {
+          itemData = createItem(type);
+        }
+        foundry.utils.setProperty(
+          itemData,
+          'system.equipStatus',
+          constants.EQUIP_STATE.EQUIPPED,
+        );
+        await this.actor.createEmbeddedDocuments('Item', [itemData], {
+          renderSheet: true,
+        });
+      }),
+    );
 
     //Toggle Equipmnent Card collapsible
-    html.querySelectorAll('.gear-card .card-header .item-name').forEach(el => el.addEventListener('click', (ev) => {
-      const card = ev.currentTarget.closest('.gear-card');
-      const content = card.querySelector('.card-content');
-      content.classList.toggle('collapsed');
-    }));
+    html.querySelectorAll('.gear-card .card-header .item-name').forEach((el) =>
+      el.addEventListener('click', (ev) => {
+        const card = ev.currentTarget.closest('.gear-card');
+        const content = card.querySelector('.card-content');
+        content.classList.toggle('collapsed');
+      }),
+    );
 
     // Active Effects
     html
       .querySelectorAll('.status-container input[type="checkbox"]')
-      .forEach(el => el.addEventListener('change', this._toggleStatusEffect.bind(this)))
+      .forEach((el) =>
+        el.addEventListener('change', this._toggleStatusEffect.bind(this)),
+      );
 
     html
       .querySelector('.attribute.size input')
@@ -277,6 +287,8 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       },
     ];
 
-    foundry.applications.ux.ContextMenu.create(this, html, 'li.item', items, { jQuery: false });
+    foundry.applications.ux.ContextMenu.create(this, html, 'li.item', items, {
+      jQuery: false,
+    });
   }
 }

@@ -117,6 +117,9 @@ Hooks.once('init', () => {
   //freeze the constants
   deepFreeze(CONFIG.SWADE.CONST);
 
+  // Initialize socket handler
+  swadeAPI.sockets.registerSocketListeners();
+
   //set up global game object
   game.swade = swadeAPI;
 
@@ -138,6 +141,7 @@ Hooks.once('init', () => {
   CONFIG.ActiveEffect.dataModels = data.effect.config;
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
+  CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -188,29 +192,29 @@ Hooks.once('init', () => {
   CONFIG.Canvas.detectionModes.seeHeat = new DetectionModeInfravision({
     id: 'seeHeat',
     label: 'SWADE.Vision.SeeHeat',
-    type: DetectionMode.DETECTION_TYPES.OTHER,
+    type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER,
   });
   CONFIG.Canvas.detectionModes.senseHeat = new DetectionModeInfravision({
     id: 'senseHeat',
     label: 'SWADE.Vision.SenseHeat',
     walls: false,
-    type: DetectionMode.DETECTION_TYPES.OTHER,
+    type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER,
   });
 
-  CONFIG.Canvas.visionModes.infraVision = new VisionMode({
+  CONFIG.Canvas.visionModes.infraVision = new foundry.canvas.perception.VisionMode({
     id: 'infraVision',
     label: 'SWADE.Vision.Infravision',
     canvas: {
-      shader: ColorAdjustmentsSamplerShader,
+      shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
       uniforms: {
         saturation: -0.5,
         tint: InfravisionBackgroundVisionShader.COLOR_TINT,
       },
     },
     lighting: {
-      background: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-      illumination: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
-      coloration: { visibility: VisionMode.LIGHTING_VISIBILITY.DISABLED },
+      background: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+      illumination: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
+      coloration: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
     },
     vision: {
       darkness: { adaptive: false },
@@ -228,7 +232,7 @@ Hooks.once('init', () => {
   CONFIG.Item.compendiumIndexFields.push('system.swid');
 
   // @ts-expect-error Yes we're calling a protected function
-  JournalTextPageSheet._converter.setOption('tables', true);
+  foundry.appv1.sheets.JournalTextPageSheet._converter.setOption('tables', true);
 
   //register custom Handlebars helpers
   registerCustomHelpers();
@@ -247,36 +251,36 @@ Hooks.once('init', () => {
   registerAuraHooks();
 
   // Register sheets
-  Actors.unregisterSheet('core', ActorSheet);
-  Items.unregisterSheet('core', ItemSheet);
-  DocumentSheetConfig.unregisterSheet(
+  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+  foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
+  foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
     CONFIG.Token.documentClass,
     'core',
-    TokenConfig,
+    foundry.applications.sheets.TokenConfig,
   );
 
-  Actors.registerSheet('swade', GroupSheet, {
+  foundry.documents.collections.Actors.registerSheet('swade', GroupSheet, {
     types: ['group'],
     makeDefault: true,
     label: 'SWADE.GroupSheet',
   });
-  Actors.registerSheet('swade', SwadeVehicleSheetV2, {
+  foundry.documents.collections.Actors.registerSheet('swade', SwadeVehicleSheetV2, {
     types: ['vehicle'],
     makeDefault: true,
     label: 'SWADE.VehicleSheet',
   });
 
-  Actors.registerSheet('swade', CharacterSheet, {
+  foundry.documents.collections.Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
     makeDefault: true,
     label: 'SWADE.OfficialSheet',
   });
-  Actors.registerSheet('swade', SwadeNPCSheet, {
+  foundry.documents.collections.Actors.registerSheet('swade', SwadeNPCSheet, {
     types: ['npc'],
     makeDefault: true,
     label: 'SWADE.CommunityNPCSheet',
   });
-  Items.registerSheet('swade', SwadeItemSheetV2, {
+  foundry.documents.collections.Items.registerSheet('swade', SwadeItemSheetV2, {
     makeDefault: true,
     types: [
       'ability',
@@ -294,7 +298,7 @@ Hooks.once('init', () => {
     ],
     label: 'SWADE.ItemSheet',
   });
-  DocumentSheetConfig.registerSheet(
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(
     JournalEntryPage,
     'swade',
     JournalHeadquartersPageSheet,
@@ -304,7 +308,7 @@ Hooks.once('init', () => {
       label: 'SWADE.HeadquartersSheet',
     },
   );
-  DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
 
   // Register Tours
   registerSWADETours();
@@ -359,7 +363,10 @@ Hooks.on(
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
 Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
 Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
-Hooks.on('getCompendiumContextOptions', SwadeCoreHooks.onGetCompendiumContextOptions);
+Hooks.on(
+  'getCompendiumContextOptions',
+  SwadeCoreHooks.onGetCompendiumContextOptions,
+);
 
 /* ------------------------------------ */
 /* Update Hooks              	          */

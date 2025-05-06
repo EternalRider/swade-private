@@ -588,7 +588,8 @@
           padding: 5px;
           height: calc(100% - 30px);
           overflow-y: auto;
-          .power-details, .trapping {
+          .power-details,
+          .trapping {
             font-size: 12px;
             line-height: 12px;
             font-weight: 600;

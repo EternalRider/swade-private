@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export default class SwadeMeasuredTemplate extends MeasuredTemplate {
+export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
