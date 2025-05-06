@@ -30,6 +30,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- [BREAKING] Auras are back! They have moved from `flags.auras` to `system.auras`. There is a migration in place for both `Actor`s and `ActiveEffect`s which should update this data automatically. **by @roth-michael**
+- [BREAKING] The following sheets and windows have been converted to AppV2
+  - SwadeDocumentTweaks
+  - SwadeTokenConfig
+  - JournalHeadquartersPageSheet
+
 ### Deprecated
 
 ### Removed
