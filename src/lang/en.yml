@@ -934,6 +934,9 @@ SWADE:
     Cone:
       Short: Cone
       Long: Cone Template
+    SmallCone:
+      Short: Small Cone
+      Long: Small Cone Template
     Stream:
       Short: Stream
       Long: Stream Template
