@@ -1,6 +1,5 @@
-import { NullishProps, ValueOf } from 'fvtt-types/utils';
+import { AnyObject, NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
-import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
@@ -8,7 +7,6 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
-import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import {
@@ -50,7 +48,6 @@ declare global {
   interface FlagConfig {
     swade: {
       ambidextrous?: boolean;
-      auras?: Record<string, AuraData>;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
@@ -95,6 +92,16 @@ class SwadeActor<
     //get the value from the parameter
     const value = mapRange(current, 0, max, 0, 1);
     return Color.fromHSV([hue, value, 0.75]);
+  }
+
+  static override migrateData(data: Actor.CreateData & AnyObject) {
+    super.migrateData(data);
+    if (data.flags?.swade?.auras) {
+      data.system ??= {};
+      data.system.auras = data.flags.swade.auras;
+      delete data.flags.swade.auras;
+    }
+    return data;
   }
 
   constructor(
@@ -235,34 +242,6 @@ class SwadeActor<
       types[type].sort((a, b) => a.sort - b.sort);
     }
     return types;
-  }
-
-  get auras(): Record<string, AuraData> {
-    const auras = (this.flags?.swade?.auras ?? {}) as Record<string, AuraData>;
-    const specialAuras = ['aura1', 'aura2'];
-    let aura;
-    for (const key in auras) {
-      if (specialAuras.includes(key)) continue;
-      aura = auras[key] ?? {};
-      auras[key] = foundry.utils.mergeObject(
-        aura,
-        AuraPointSource.defaultData,
-        { overwrite: false },
-      );
-    }
-
-    //special case: the user-defined auras
-    auras.aura1 = foundry.utils.mergeObject(
-      auras.aura1 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    auras.aura2 = foundry.utils.mergeObject(
-      auras.aura2 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    return auras;
   }
 
   /**

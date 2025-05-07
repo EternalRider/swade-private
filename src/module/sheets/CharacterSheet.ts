@@ -14,7 +14,7 @@ import { Logger } from '../Logger';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import AttributeManager from '../apps/AttributeManager';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -631,7 +631,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeDocumentTweaks(this.actor).render(true),
+        onclick: () => new SwadeActorTweaks({ document: this.actor }).render({ force: true }),
       };
 
       buttons = [tweaks, ...buttons];
@@ -1376,8 +1376,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       {
         name: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
-        callback: (i) =>
-          this.actor.items.get(i.dataset.itemId)?.sheet?.render(true),
+        callback: (i) => {
+          const itemId = i.dataset.itemId;
+          const effectId = i.dataset.effectId;
+          if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
+          if (effectId) this.actor.effects.get(effectId)?.sheet?.render({ force: true });
+        }
       },
       {
         name: 'SWADE.Duplicate',

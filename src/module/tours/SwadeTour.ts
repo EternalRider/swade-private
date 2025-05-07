@@ -1,7 +1,7 @@
 import { Advance } from '../../interfaces/Advance.interface';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import SettingConfigurator from '../apps/SettingConfigurator';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import { constants } from '../constants';
 import { CreatureData } from '../data/actor/base';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -11,7 +11,7 @@ export default class SwadeTour extends foundry.nue.Tour {
   configurator?: SettingConfigurator;
   actor?: SwadeActor;
   item?: SwadeItem;
-  tweaks?: SwadeDocumentTweaks;
+  tweaks?: SwadeActorTweaks;
   advanceEditor?: AdvanceEditor;
   journalEntry?: JournalEntry;
   journalEntryPage?: JournalEntryPage;
@@ -281,8 +281,7 @@ export default class SwadeTour extends foundry.nue.Tour {
       }
       case constants.TOUR_TAB_PARENTS.TWEAKS: {
         if (!this.tweaks) {
-          this.tweaks = new SwadeDocumentTweaks(this.actor!);
-          //@ts-expect-error Calling _render because it's async unlike render
+          this.tweaks = new SwadeActorTweaks({ document: this.actor! });
           await this.tweaks._render(true);
         }
         this.tweaks.activateTab(tab.id);

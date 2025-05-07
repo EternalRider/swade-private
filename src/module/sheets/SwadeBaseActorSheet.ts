@@ -1,7 +1,7 @@
 import { AdditionalStats, Attribute } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
@@ -317,7 +317,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets.ActorSheet
 
   protected _onConfigureEntity(event: JQuery.ClickEvent) {
     event.preventDefault();
-    new SwadeDocumentTweaks(this.actor).render(true);
+    new SwadeActorTweaks({ document: this.actor }).render({ force: true });
   }
 
   protected async _chooseItemType(

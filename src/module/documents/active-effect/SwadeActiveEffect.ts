@@ -145,6 +145,10 @@ export default class SwadeActiveEffect<
           'system.stats.speed.runningMod',
           'system.pace.running.mod',
         );
+        change.key = change.key.replaceAll(
+          'flags.swade.auras',
+          'system.auras'
+        );
       }
     }
 

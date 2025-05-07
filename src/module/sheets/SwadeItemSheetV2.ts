@@ -7,7 +7,7 @@ import {
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
@@ -436,7 +436,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeDocumentTweaks(this.item).render(true),
+        onclick: () => new SwadeItemTweaks({ document: this.item }).render({ force: true }),
       });
       buttons.unshift({
         label: 'SWADE.RefreshOnly',
