@@ -1,5 +1,16 @@
 <section class='tab{{#if tab.active}} active{{/if}}' data-group='{{tab.group}}' data-tab='{{tab.id}}'>
   <!--Max Values-->
+  <section>
+    {{formGroupSimple
+      'system.category'
+      classes=''
+      label='SWADE.Category'
+      blank=false
+      document=doc
+      rootId=doc.uuid
+      source=true
+    }}
+  </section>
   <div class='form-group slim'>
     <label for='{{document.uuid}}-flags.swade.hiddenActionOverride'>
       {{localize 'SWADE.Actions.DisplayHidden.Label'}}
