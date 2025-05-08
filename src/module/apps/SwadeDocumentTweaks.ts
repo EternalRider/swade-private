@@ -42,6 +42,14 @@ export default class SwadeDocumentTweaks<
     return `DocumentTweaks-${this.document.documentName}-${this.document.id}`;
   }
 
+  protected override _initializeApplicationOptions(options) {
+    if (!options.classes?.includes('themed')) {
+      options.classes ??= [];
+      options.classes.push('themed', 'theme-light');
+    }
+    return super._initializeApplicationOptions(options);
+  }
+
   /** Add the Document name into the window title*/
   override get title() {
     return `${this.document.name}: ${game.i18n.localize('SWADE.Tweaks')}`;

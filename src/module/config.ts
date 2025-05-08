@@ -326,6 +326,7 @@ export const SWADE: SwadeConfig = {
 
   textSearch: {
     actor: [
+      'system.category',
       'system.details.archetype',
       'system.details.appearance',
       'system.details.notes',
@@ -345,7 +346,9 @@ export const SWADE: SwadeConfig = {
       'system.arcane',
       'system.trapping',
     ],
-    journalentry: [],
+    journalentry: [
+      'pages'
+    ],
     macro: [],
     playlist: [],
     rolltable: [],
