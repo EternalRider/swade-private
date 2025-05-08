@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - SwadeDocumentTweaks
   - SwadeTokenConfig
   - JournalHeadquartersPageSheet
+- Add `category` key to base Actor data **by @jestevens210**
 
 ### Deprecated
 
