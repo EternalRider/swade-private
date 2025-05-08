@@ -36,7 +36,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - SwadeDocumentTweaks
   - SwadeTokenConfig
   - JournalHeadquartersPageSheet
+  - CompendiumTOC
 - Add `category` key to base Actor data **by @jestevens210**
+- Add ability to filter by category in Actor TOC compendia **by @roth-michael**
 
 ### Deprecated
 

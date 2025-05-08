@@ -326,6 +326,7 @@ export const SWADE: SwadeConfig = {
 
   textSearch: {
     actor: [
+      'system.category',
       'system.details.archetype',
       'system.details.appearance',
       'system.details.notes',
