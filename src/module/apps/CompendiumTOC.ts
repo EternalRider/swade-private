@@ -123,12 +123,6 @@ export class CompendiumTOC<
       .querySelectorAll<HTMLDivElement>('.content')
       .forEach((e) => (e.style.columnWidth = this.columnWidth));
     new ResizeObserver(this._onObserveResize.bind(this)).observe(html);
-
-    // Replace dark theme with light theme
-    if (this.options.classes.includes('themed')) return;
-    if (!this.element.classList.contains('theme-dark')) return;
-    this.element.classList.remove('theme-dark');
-    this.element.classList.add('theme-light');
   }
 
   override async _prepareContext(options) {
@@ -192,12 +186,20 @@ export class CompendiumTOC<
     this.render(true);
   }
 
-  static #onToggleSearchMode() {
+  static #onToggleSearchMode(
+    this: CompendiumTOC,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
     this.#fullTextSearch = !this.#fullTextSearch;
     this.render();
   }
 
-  static #onCreateDocument() {
+  static #onCreateDocument(
+    this: CompendiumTOC,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
     this.documentClass.createDialog(
       {},
       {
@@ -207,8 +209,11 @@ export class CompendiumTOC<
     );
   }
 
-  static async #onOpenDocument(ev: PointerEvent) {
-    const target = ev.target;
+  static async #onOpenDocument(
+    this: CompendiumTOC,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
     const entryId = target?.closest('[data-entry-id]')?.dataset.entryId;
     const pageId = target?.closest('[data-page-id]')?.dataset.pageId;
     if (!entryId) return;
@@ -277,29 +282,31 @@ export class CompendiumTOC<
       //   searchFields = CONFIG.SWADE.textSearch.scene;
       //   break;
     }
-    pack.getIndex({ fields: searchFields });
-    const searchConfig = {
-      filters: []
-    };
-    if (category?.length) searchConfig.filters.push({
-      field: 'system.category',
-      value: category
-    });
-    if (this.#fullTextSearch) {
-      searchConfig.query = query;
-    }
-    let searchResults = pack.search(searchConfig);
-    if (!this.#fullTextSearch) {
-      searchResults = searchResults.filter(i => rgx.test(i.name));
-    }
-    for (const li of children) {
-      if (searchResults.some((e) => e._id === li.dataset.entryId)) {
-        li.style.display = 'flex';
-      } else {
-        li.style.display = 'none';
+    pack.getIndex({ fields: searchFields }).then(() => {
+      const searchConfig = {
+        filters: []
+      };
+      if (category?.length) searchConfig.filters.push({
+        field: 'system.category',
+        value: category
+      });
+      if (this.#fullTextSearch) {
+        searchConfig.query = query;
       }
-    }
-    this._fitColumns(this.element, html);
+      let searchResults = pack.search(searchConfig);
+      if (this.isJournal) searchResults = searchResults.flatMap(i => i.pages);
+      if (!this.#fullTextSearch) {
+        searchResults = searchResults.filter(i => rgx.test(i.name));
+      }
+      for (const li of children) {
+        if (searchResults.some((e) => [li.dataset.entryId, li.dataset.pageId].includes(e._id))) {
+          li.style.display = 'flex';
+        } else {
+          li.style.display = 'none';
+        }
+      }
+      this._fitColumns(this.element, html);
+    });
   }
 
   protected async _groupContent(): Promise<CompendiumCategory[]> {

@@ -346,7 +346,9 @@ export const SWADE: SwadeConfig = {
       'system.arcane',
       'system.trapping',
     ],
-    journalentry: [],
+    journalentry: [
+      'pages'
+    ],
     macro: [],
     playlist: [],
     rolltable: [],
