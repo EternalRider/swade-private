@@ -3,6 +3,11 @@
         {{parent.name}}
     </h3>
     <section>{{{enrichedBiography}}}</section>
+    {{#if parent.system.category}}
+    <section>
+        <strong>{{localize 'SWADE.Category'}}:</strong> {{parent.system.category}}
+    </section>
+    {{/if}}
     <section>
         <strong>{{localize 'SWADE.Attributes'}}:</strong>
         <span>{{localize "SWADE.AttrAgi"}}</span><span style="margin-left: 2px;">d{{attributes.agility.die.sides}},
