@@ -13,7 +13,6 @@ import {
   getRankFromAdvanceAsString,
   getScaleName,
 } from '../../../util';
-import { MappingField } from '../../fields/MappingField';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import { ShieldData, WeaponData } from '../../item';
 import {
@@ -304,8 +303,10 @@ function creatureSchema() {
       },
       { label: 'SWADE.Details' },
     ),
-    powerPoints: new MappingField(CreatureData.makePowerPointsSchema(), {
-      initialKeys: ['general'],
+    powerPoints: new fields.TypedObjectField(CreatureData.makePowerPointsSchema(), {
+      initial: {
+        general: CreatureData.makePowerPointsSchema().getInitialValue()
+      },
       required: true,
       label: 'SWADE.PP',
     }),
@@ -532,8 +533,8 @@ class CreatureData<
   static makePowerPointsSchema = () => {
     return new fields.SchemaField(
       {
-        value: new fields.NumberField({ initial: 0, label: 'SWADE.CurPP' }),
-        max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxPP' }),
+        value: new fields.NumberField({ initial: 0, min: 0, integer: true, label: 'SWADE.CurPP' }),
+        max: new fields.NumberField({ initial: 0, min: 0, integer: true, label: 'SWADE.MaxPP' }),
       },
       { label: 'SWADE.PP' },
     );
