@@ -631,7 +631,10 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         label: game.i18n.localize('SWADE.Tweaks'),
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeActorTweaks({ document: this.actor }).render({ force: true }),
+        onclick: () =>
+          new SwadeActorTweaks({ document: this.actor }).render({
+            force: true,
+          }),
       };
 
       buttons = [tweaks, ...buttons];
@@ -1380,8 +1383,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
-          if (effectId) this.actor.effects.get(effectId)?.sheet?.render({ force: true });
-        }
+          if (effectId)
+            this.actor.effects.get(effectId)?.sheet?.render({ force: true });
+        },
       },
       {
         name: 'SWADE.Duplicate',

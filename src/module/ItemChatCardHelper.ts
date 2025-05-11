@@ -21,7 +21,7 @@ export default class ItemChatCardHelper {
     event.preventDefault();
 
     // Extract card data
-    const button = event.target as HTMLElement;
+    const button = event.target as HTMLButtonElement;
     button.disabled = true;
     const card = button.closest('.chat-card') as HTMLElement;
     const messageId = card.closest('.message').dataset.messageId;
@@ -61,14 +61,14 @@ export default class ItemChatCardHelper {
     // one that spawned the chat card. So swap that actor in.
     if (actionObj?.type === constants.ACTION_TYPE.RESIST) {
       // swap the selected token's actor in as the target for the roll
-      if (!canvas.tokens || canvas.tokens.controlled.length !== 1) {
+      if (!canvas?.tokens || canvas.tokens.controlled.length !== 1) {
         ui.notifications.warn('SWADE.NoTokenSelectedForResistRoll', {
           localize: true,
         });
         button.disabled = false;
         return null;
       }
-      actor = canvas.tokens?.controlled[0].actor ?? actor;
+      actor = canvas.tokens.controlled[0].actor ?? actor;
     } else if (
       !actor.isOwner &&
       !message.isAuthor &&
@@ -93,7 +93,7 @@ export default class ItemChatCardHelper {
     }
 
     if (action === 'template') {
-      const template = button.dataset.template;
+      const template = button.dataset.template!;
       SwadeMeasuredTemplate.fromPreset(template, item);
       button.disabled = false;
       return null;

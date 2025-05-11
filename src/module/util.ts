@@ -56,7 +56,9 @@ export function getTrait(
     trait = actor.items.find((i) => i.type === 'skill' && i.name === traitName);
   }
   if (!trait) {
-    trait = actor.items.find((i) => i.type === 'skill' && i.system.swid === slugify(traitName));
+    trait = actor.items.find(
+      (i) => i.type === 'skill' && i.system.swid === slugify(traitName),
+    );
   }
   return trait;
 }
@@ -100,7 +102,7 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
     throw new Error('Invalid modifier value ' + mod.value);
   }
   return {
-    value: normalizedValue,
+    value: normalizedValue.replaceAll('−', '-'),
     label: mod.label,
     ignore: mod.ignore,
   };
@@ -174,15 +176,18 @@ export function getScaleName(scaleMod: number): string {
   const modMax = 6;
 
   if (scaleMod < -modMax) {
-    return game.i18n.format('SWADE.Scales.SmallerThan', {scale: getScaleName(-modMax)})
+    return game.i18n.format('SWADE.Scales.SmallerThan', {
+      scale: getScaleName(-modMax),
+    });
   }
   if (scaleMod > modMax) {
-    return game.i18n.format('SWADE.Scales.LargerThan', {scale: getScaleName(modMax)})
+    return game.i18n.format('SWADE.Scales.LargerThan', {
+      scale: getScaleName(modMax),
+    });
   }
-  const index = Math.floor((scaleMod+modMax)/2);
+  const index = Math.floor((scaleMod + modMax) / 2);
   return SWADE.scales[index];
 }
-
 
 /** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
@@ -372,16 +377,6 @@ export async function getItemsBySwid<T extends Item.SubType>(
     items.push(...documents);
   }
   return items;
-}
-
-export function getParents(element?: HTMLElement | null, selector?: string): HTMLElement[] {
-  const parents: HTMLElement[] = [];
-  element = element?.parentElement;
-  while (element) {
-    if (!selector || element.matches(selector)) parents.push(element);
-    element = element.parentElement;
-  }
-  return parents;
 }
 
 type Ownership = Record<string, number>;

@@ -1,5 +1,5 @@
 import { AnyObject, DeepPartial, InexactPartial } from 'fvtt-types/utils';
-import { EquipState } from '../../../globals';
+import { EquipState, ItemActions } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
@@ -9,8 +9,10 @@ import { Logger } from '../../Logger';
 import { ChoiceDialog } from '../../apps/ChoiceDialog';
 import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
+import { SwadePhysicalItemData } from '../../data/item/base';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
+import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 import SwadeActor from '../actor/SwadeActor';
 import {
   ChoiceSet,
@@ -21,7 +23,6 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
-import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 
 declare global {
   interface DocumentClassConfig {
@@ -33,7 +34,6 @@ declare global {
         embeddedPowers: [string, Item.CreateData][];
         hasGranted?: string[];
         loadedAmmo?: Item.CreateData;
-        macros?: { id: string; uuid: string }[];
       };
     };
   }
@@ -153,7 +153,7 @@ class SwadeItem<
   }
 
   get isPhysicalItem(): boolean {
-    return this.system.isPhysicalItem || false;
+    return this.system instanceof SwadePhysicalItemData;
   }
 
   get canHaveCategory(): boolean {
@@ -452,50 +452,6 @@ class SwadeItem<
       });
     }
 
-    const data: ItemChatCardData = {
-      description: await TextEditor.enrichHTML(
-        this.system.description,
-        enrichOptions,
-      ),
-      chips: chips,
-      actions: actions,
-    };
-    return data;
-  }
-
-  /** A shorthand function to roll skills directly */
-  async roll(options: IRollOptions = {}) {
-    //return early if there's no parent or this isn't a skill
-    if (!('canRoll' in this.system) || !this.system.canRoll) return null;
-    return this.parent!.rollSkill(this.id, options);
-  }
-
-  override async deleteDialog(
-    options?: Partial<DialogOptions> | undefined,
-  ): Promise<false | this | null | undefined> {
-    if (!this.parent) return super.deleteDialog(options);
-    const type = game.i18n.localize(`TYPES.Item.${this.type}`);
-    const proceed = await foundry.applications.api.DialogV2.confirm({
-      rejectClose: false,
-      window: {
-        title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
-      },
-      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
-    });
-    if (!proceed) return false;
-    return this.delete();
-  }
-
-  /**
-   * Assembles data and creates a chat card for the item
-   * @returns the rendered chat card
-   */
-  async show() {
-    // Basic template rendering data
-    if (!this.actor) return;
-    const token = this.actor.token;
-
-    const tokenId = token ? `${token.parent?.id}.${token.id}` : null;
     const hasAmmoManagement =
       'hasAmmoManagement' in this.system && this.system.hasAmmoManagement;
     const hasMagazine =
@@ -507,7 +463,7 @@ class SwadeItem<
     const hasReloadButton =
       'hasReloadButton' in this.system && this.system.hasReloadButton;
 
-    const additionalActions: Record<string, ItemAction> =
+    const additionalActions: ItemActions =
       foundry.utils.getProperty(this, 'system.actions.additional') || {};
     const actionValues = Object.values(additionalActions);
 
@@ -534,11 +490,18 @@ class SwadeItem<
       effects.push(await TextEditor.enrichHTML(effect.link));
     }
 
+    const data: ItemChatCardData = {
+      description: await TextEditor.enrichHTML(
+        this.system.description,
+        enrichOptions,
+      ),
+      chips: chips,
+      actions: actions,
+    };
+
     const templateData = {
-      actorId: this.parent?.id,
-      tokenId: tokenId,
       item: this,
-      data: await this.getChatData(),
+      data,
       effects,
       hasAmmoManagement,
       hasMagazine,
@@ -557,31 +520,54 @@ class SwadeItem<
       },
     };
 
-    // Render the chat card template
-    const template = 'systems/swade/templates/chat/item-card.hbs';
-    const html = await renderTemplate(template, templateData);
+    return templateData;
+  }
+
+  /** A shorthand function to roll skills directly */
+  async roll(options: IRollOptions = {}) {
+    //return early if there's no parent or this isn't a skill
+    if (!('canRoll' in this.system) || !this.system.canRoll) return null;
+    return this.parent!.rollSkill(this.id, options);
+  }
+
+  override async deleteDialog(
+    options?: Partial<Dialog.Options> | undefined,
+  ): Promise<false | this | null | undefined> {
+    if (!this.parent) return super.deleteDialog(options);
+    const type = game.i18n.localize(`TYPES.Item.${this.type}`);
+    const proceed = await foundry.applications.api.DialogV2.confirm({
+      rejectClose: false,
+      window: {
+        title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
+      },
+      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
+    });
+    if (!proceed) return false;
+    return this.delete();
+  }
+
+  /**
+   * Assembles data and creates a chat card for the item
+   * @returns the rendered chat card
+   */
+  async show() {
+    // Basic template rendering data
+    if (!this.actor) return;
 
     // Basic chat message data
     const chatData: ChatMessage.CreateData = {
+      type: 'itemCard',
+      title: this.name,
       author: game.user?.id,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      content: html,
-      speaker: {
-        actor: this.parent?.id,
-        token: token?.id,
-        scene: token?.parent?.id,
+      speaker: ChatMessage.getSpeaker({
+        actor: this.parent,
+        token: this.actor?.token,
+        scene: this.actor?.token?.parent,
         alias: this.parent?.name,
-      },
-      flags: {
-        core: { canPopout: true },
-        swade: {
-          macros: Object.entries(additionalActions)
-            .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
-            .map(([k, v]) => {
-              return { id: k, uuid: v.uuid ?? '' };
-            }),
-        },
-      },
+      }),
+      system: { uuid: this.uuid },
+      flags: { core: { canPopout: true } },
     };
 
     const msgClass = getDocumentClass('ChatMessage');
@@ -658,10 +644,10 @@ class SwadeItem<
     await this.#postConsumptionCleanup(updatedItems);
   }
 
-  async reload() {
+  async reload(): Promise<boolean> {
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    if (!('reload' in this.system) || !ammoManagement) return;
-    else this.system.reload();
+    if (!('reload' in this.system) || !ammoManagement) return false;
+    else return this.system.reload();
   }
 
   async removeAmmo() {

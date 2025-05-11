@@ -199,6 +199,9 @@
       "poker": {},
       "adventure": {}
     },
+    "ChatMessage": {
+      "itemCard": {}
+    },
     "Combat": {
       "chase": {},
       "dramaticTask": {}

@@ -2,6 +2,10 @@
   font-style: normal;
   font-size: var(--font-size-12);
 
+  h4 {
+    font-size: var(--font-size-12);
+  }
+
   .pp-counter,
   .ammo-counter {
     margin: $small-spacing 0;
@@ -40,6 +44,8 @@
       overflow: hidden;
       height: 30px;
       word-break: break-all;
+      font-size: 1.25em;
+      border-bottom: 1px solid var(--color-scrollbar);
 
       &:hover {
         color: #111;
@@ -79,9 +85,12 @@
 
     button {
       font-size: var(--font-size-12);
-      height: 24px;
-      line-height: 20px;
+      height: var(--font-size-24);
+      min-height: var(--font-size-20);
+      line-height: var(--font-size-20);
       margin: 2px 0;
+      padding: 0;
+      width: 100%;
     }
 
     .effects {
@@ -260,4 +269,14 @@
       font-size: 2rem;
     }
   }
+}
+
+.dice-result .dice-tooltip-collapser {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 250ms ease;
+}
+
+.dice-roll.expanded .dice-tooltip-collapser {
+  grid-template-rows: 1fr;
 }

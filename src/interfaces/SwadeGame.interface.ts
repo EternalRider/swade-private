@@ -4,7 +4,11 @@ import AttributeManager from '../module/apps/AttributeManager';
 import { CompendiumTOC } from '../module/apps/CompendiumTOC';
 import { RollDialog } from '../module/apps/RollDialog';
 import SettingConfigurator from '../module/apps/SettingConfigurator';
-import SwadeDocumentTweaks, { SwadeActorTweaks, SwadeItemTweaks } from '../module/apps/SwadeDocumentTweaks';
+import {
+  SwadeActorTweaks,
+  SwadeDocumentTweaks,
+  SwadeItemTweaks,
+} from '../module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from '../module/CharacterSummarizer';
 import * as data from '../module/data';
 import Benny from '../module/dice/Benny';
