@@ -1,5 +1,6 @@
 import { CompendiumTOC } from './CompendiumTOC';
 
+/* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(ApplicationV2) {
