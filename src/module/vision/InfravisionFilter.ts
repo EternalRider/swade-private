@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-export default class InfraVisionFilter extends foundry.canvas.rendering.filters.AbstractBaseFilter {
+export default class InfraVisionFilter extends foundry.canvas.rendering.filters
+  .AbstractBaseFilter {
   static override defaultUniforms = {
     luminanceThreshold: 0.5,
     alphaThreshold: 0.1,

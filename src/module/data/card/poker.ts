@@ -11,7 +11,7 @@ declare namespace PokerData {
 
 class PokerData extends foundry.abstract.TypeDataModel<
   PokerData.Schema,
-  Card.ConfiguredInstance,
+  Card.Implementation,
   PokerData.BaseData,
   PokerData.DerivedData
 > {

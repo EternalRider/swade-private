@@ -1,14 +1,16 @@
 import { SwadeRoll } from '../dice/SwadeRoll';
 
-export default class SwadeChatLog extends foundry.applications.sidebar.tabs.ChatLog {
-  protected override async _processDiceCommand(
-    command: string,
+export default class SwadeChatLog extends foundry.applications.sidebar.tabs
+  .ChatLog {
+  protected async _processDiceCommand(
+    command: 'selfroll' | 'publicroll' | 'gmroll' | 'blindroll',
     matches: RegExpMatchArray[],
     chatData: ChatMessage.CreateData,
     createOptions: ChatMessage.Database.OnCreateOperation,
   ): Promise<void> {
     const actor =
-      ChatMessage.getSpeakerActor(chatData.speaker) || game.user.character;
+      ChatMessage.implementation.getSpeakerActor(chatData.speaker) ||
+      game.user.character;
     const rollData = actor?.getRollData() ?? {};
     const rolls: (Roll | SwadeRoll)[] = [];
     for (const match of matches) {
@@ -22,7 +24,9 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs.Chat
     chatData.rolls = rolls;
     chatData.sound = CONFIG.sounds.dice;
     if (!rolls.every((r) => r instanceof SwadeRoll)) {
-      chatData.content = rolls.reduce((t, r) => t + (r.total as number), 0);
+      chatData.content = rolls
+        .reduce((t, r) => t + (r.total as number), 0)
+        .toString();
     }
     createOptions.rollMode = command;
   }

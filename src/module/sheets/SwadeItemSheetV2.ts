@@ -436,7 +436,8 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeItemTweaks({ document: this.item }).render({ force: true }),
+        onclick: () =>
+          new SwadeItemTweaks({ document: this.item }).render({ force: true }),
       });
       buttons.unshift({
         label: 'SWADE.RefreshOnly',

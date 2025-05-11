@@ -8,7 +8,8 @@ import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 /** @noInheritDoc */
-export default class SwadeBaseActorSheet extends foundry.appv1.sheets.ActorSheet {
+export default class SwadeBaseActorSheet extends foundry.appv1.sheets
+  .ActorSheet {
   override activateListeners(jquery: JQuery) {
     super.activateListeners(jquery);
 

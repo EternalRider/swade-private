@@ -89,7 +89,7 @@ export default class SwadeCombatant<
     else {
       if (this.group.system?.leader)
         return this.group.system.leader === this.id;
-      else return this.group.members.first() === this;
+      else return this.group.members?.first() === this;
     }
   }
 

@@ -33,7 +33,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: {
       template: 'systems/swade/templates/actors/vehicle2/header.hbs',
     },
@@ -355,18 +355,17 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     const operator = this.actor.system.crew.members.find(
       (m) => m.uuid === uuid,
     );
-    operator?.actor?.sheet.render(true);
+    operator?.actor?.sheet?.render(true);
   }
 
   /** Drop Handling */
 
   protected override async _onDropActor(
     _event: DragEvent,
-    data: DropData<SwadeActor>,
+    data: foundry.abstract.Document.DropData<SwadeActor>,
   ) {
     if (!this.actor.isOwner) return false;
-    const actor =
-      await getDocumentClass('Actor').fromDropData<typeof SwadeActor>(data);
+    const actor = await getDocumentClass('Actor').fromDropData(data);
     if (!actor) return false;
     if (actor.type === 'group' || actor.type === 'vehicle') {
       Logger.warn(

@@ -27,7 +27,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
       color: '#000000',
       alpha: 0.25,
       radius: 5,
-      visibleTo: []
+      visibleTo: [],
     };
   }
 
@@ -40,10 +40,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
     this.graphics ??= new PIXI.Graphics();
     this.graphics.clear();
     this.graphics
-      .beginFill(
-        this.auraData?.color ?? '#000000',
-        this.auraData?.alpha,
-      )
+      .beginFill(this.auraData?.color ?? '#000000', this.auraData?.alpha)
       .lineStyle(2, this.auraData?.color, 1)
       .drawShape(this.shape)
       .endFill();

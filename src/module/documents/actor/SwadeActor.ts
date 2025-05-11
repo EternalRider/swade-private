@@ -970,9 +970,7 @@ class SwadeActor<
       'SwadeActor#getDriver deprecated in favor of the crew members array, which can be found at system.crew.members',
       { since: '4.4', until: '5.1' },
     );
-    this.crew.members
-      .find((m) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
-      .map((m) => m.actor) ?? null;
+    return this.system.operator;
   }
 
   getTraitRollModifiers(

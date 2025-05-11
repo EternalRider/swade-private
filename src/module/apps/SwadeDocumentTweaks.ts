@@ -5,15 +5,12 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { getDieSidesRange } from '../util';
 
-export default class SwadeDocumentTweaks<
+class SwadeDocumentTweaks<
   Document extends SwadeActor | SwadeItem,
-  RenderContext extends AnyObject
+  RenderContext extends AnyObject,
 > extends foundry.applications.api.HandlebarsApplicationMixin(
-  foundry.applications.api.DocumentSheetV2
-)<
-  Document,
-  RenderContext
-> {
+  foundry.applications.api.DocumentSheetV2,
+)<Document, RenderContext> {
   settingFields: AdditionalStats;
 
   constructor(options) {
@@ -30,13 +27,23 @@ export default class SwadeDocumentTweaks<
     this.settingFields = settingFields;
   }
 
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
-    position: {
-      width: 400,
-      height: 600
+  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(
+    super.DEFAULT_OPTIONS,
+    {
+      position: {
+        width: 400,
+        height: 600,
+      },
+      classes: [
+        'swade',
+        'doc-tweaks',
+        'swade-app',
+        'standard-form',
+        'theme-light',
+      ],
     },
-    classes: ['swade', 'doc-tweaks', 'swade-app', 'standard-form', 'theme-light'],
-  }, { inplace: false });
+    { inplace: false },
+  );
 
   override get id() {
     return `DocumentTweaks-${this.document.documentName}-${this.document.id}`;
@@ -59,7 +66,9 @@ export default class SwadeDocumentTweaks<
     return foundry.utils.mergeObject(await super._prepareContext(options), {
       settingFields: this.settingFields,
       hasSettingFields: !foundry.utils.isEmpty(this.settingFields),
-      buttons: [{ type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes'}]
+      buttons: [
+        { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
+      ],
     });
   }
 
@@ -139,7 +148,12 @@ export default class SwadeDocumentTweaks<
   }
 
   protected override _prepareSubmitData(event, form, formData, updateData) {
-    const submitData = super._prepareSubmitData(event, form, formData, updateData);
+    const submitData = super._prepareSubmitData(
+      event,
+      form,
+      formData,
+      updateData,
+    );
     // Prevent submitting overridden values
     const overrides = foundry.utils.flattenObject(this.document.overrides);
     for (const k of Object.keys(overrides)) {
@@ -150,13 +164,20 @@ export default class SwadeDocumentTweaks<
   }
 }
 
-export class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
+class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
   static override PARTS = {
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
-    traits: { template: 'systems/swade/templates/actors/apps/tweaks/tab-traits.hbs' },
-    additionalStats: { template: 'systems/swade/templates/actors/apps/tweaks/tab-additional-stats.hbs' },
-    auras: { template: 'systems/swade/templates/actors/apps/tweaks/tab-auras.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    traits: {
+      template: 'systems/swade/templates/actors/apps/tweaks/tab-traits.hbs',
+    },
+    additionalStats: {
+      template:
+        'systems/swade/templates/actors/apps/tweaks/tab-additional-stats.hbs',
+    },
+    auras: {
+      template: 'systems/swade/templates/actors/apps/tweaks/tab-auras.hbs',
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
   static override TABS = {
@@ -164,10 +185,10 @@ export class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject>
       tabs: [
         { id: 'traits', label: 'SWADE.Summary' },
         { id: 'additionalStats', label: 'SWADE.AddStats' },
-        { id: 'auras', label: 'SWADE.Auras.TabHeader' }
+        { id: 'auras', label: 'SWADE.Auras.TabHeader' },
       ],
-      initial: 'traits'
-    }
+      initial: 'traits',
+    },
   };
 
   protected override _configureRenderParts(options) {
@@ -183,42 +204,51 @@ export class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject>
       isVehicle: this.document.type === 'vehicle',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
       hasEnergy: game.settings.get('swade', 'vehicleEnergy'),
-      runningDieTypes: getDieSidesRange(1, 12)
+      runningDieTypes: getDieSidesRange(1, 12),
     });
   }
 
   override async _preparePartContext(partId, context, options) {
-    const partContext = await super._preparePartContext(partId, context, options);
+    const partContext = await super._preparePartContext(
+      partId,
+      context,
+      options,
+    );
     if (partId === 'tabs') {
-      if (!partContext.hasSettingFields) delete partContext.tabs.additionalStats;
+      if (!partContext.hasSettingFields)
+        delete partContext.tabs.additionalStats;
     } else if (partId === 'auras') {
-      partContext.auraFields = this.document.system.schema.fields.auras.element.fields;
+      partContext.auraFields =
+        this.document.system.schema.fields.auras.element.fields;
     }
     if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
     return partContext;
   }
 }
 
-export class SwadeItemTweaks<
+class SwadeItemTweaks<
   Document extends SwadeItem,
-  RenderContext extends AnyObject
-> extends SwadeDocumentTweaks<
-  Document,
-  RenderContext
-> {
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
-    actions: {
-      regenerateSWID: SwadeItemTweaks.#regenerateSWID
-    }
-  }, { inplace: false });
+  RenderContext extends AnyObject,
+> extends SwadeDocumentTweaks<Document, RenderContext> {
+  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(
+    super.DEFAULT_OPTIONS,
+    {
+      actions: {
+        regenerateSWID: SwadeItemTweaks.#regenerateSWID,
+      },
+    },
+    { inplace: false },
+  );
 
   static override PARTS = {
     main: { template: 'systems/swade/templates/item/apps/tweaks.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
-  
+
   static async #regenerateSWID() {
     await this.document.regenerateSWID();
     this.render({ force: true });
   }
 }
+
+export { SwadeActorTweaks, SwadeDocumentTweaks, SwadeItemTweaks };

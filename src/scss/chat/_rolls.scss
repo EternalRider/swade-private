@@ -54,6 +54,9 @@
 
   .wounds-calc {
     margin-top: 5px;
+    button {
+      width: 100%;
+    }
   }
 
   .group-roll {
@@ -69,6 +72,16 @@
       flex-grow: 1;
       font-size: var(--font-size-14);
       line-height: var(--font-size-20);
+      margin: 0 1px;
+      background: var(--button-background-color);
+      border: 1px solid var(--button-border-color);
+      border-radius: 3px;
+      &:hover,
+      &:focus {
+        background: var(--button-hover-background-color);
+        color: var(--button-hover-text-color);
+        border-color: var(--button-hover-border-color);
+      }
     }
   }
 }

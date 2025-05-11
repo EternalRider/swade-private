@@ -233,7 +233,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     });
   }
 
-  protected _getEntryContextOptions() {
+  protected override _getEntryContextOptions() {
     const entryOptions = super._getEntryContextOptions();
 
     const getCombatant = (li: HTMLLIElement) =>
@@ -269,7 +269,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     return entryOptions;
   }
 
-  protected _getCombatContextOptions() {
+  protected override _getCombatContextOptions() {
     const entryOptions = super._getCombatContextOptions();
 
     entryOptions.push({
@@ -277,14 +277,16 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         type: game.i18n.localize('DOCUMENT.CombatantGroup'),
       }),
       icon: '<i class="fa-solid fa-users-rectangle"></i>',
-      callback: () =>
-        CombatantGroup.create(
+      callback: () => {
+        const groupCls = CombatantGroup.implementation;
+        groupCls.create(
           {
-            name: CombatantGroup.defaultName({ parent: this.viewed }),
+            name: groupCls.defaultName({ parent: this.viewed }),
             img: 'icons/environment/people/charge.webp',
           },
           { parent: this.viewed },
-        ),
+        );
+      },
     });
 
     return entryOptions;

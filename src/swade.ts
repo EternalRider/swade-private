@@ -10,7 +10,11 @@ import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
-import SwadeDocumentTweaks, { SwadeActorTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
+import {
+  SwadeActorTweaks,
+  SwadeDocumentTweaks,
+  SwadeItemTweaks,
+} from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import { SWADE } from './module/config';
@@ -138,6 +142,7 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels = data.item.config;
   CONFIG.JournalEntryPage.dataModels = data.journal.config;
   CONFIG.Card.dataModels = data.card.config;
+  CONFIG.ChatMessage.dataModels = data.chat.config;
   CONFIG.ActiveEffect.dataModels = data.effect.config;
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
@@ -201,38 +206,51 @@ Hooks.once('init', () => {
     type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER,
   });
 
-  CONFIG.Canvas.visionModes.infraVision = new foundry.canvas.perception.VisionMode({
-    id: 'infraVision',
-    label: 'SWADE.Vision.Infravision',
-    canvas: {
-      shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
-      uniforms: {
-        saturation: -0.5,
-        tint: InfravisionBackgroundVisionShader.COLOR_TINT,
+  CONFIG.Canvas.visionModes.infraVision =
+    new foundry.canvas.perception.VisionMode({
+      id: 'infraVision',
+      label: 'SWADE.Vision.Infravision',
+      canvas: {
+        shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
+        uniforms: {
+          saturation: -0.5,
+          tint: InfravisionBackgroundVisionShader.COLOR_TINT,
+        },
       },
-    },
-    lighting: {
-      background: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
-      illumination: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
-      coloration: { visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED },
-    },
-    vision: {
-      darkness: { adaptive: false },
-      defaults: {
-        attenuation: 0,
-        brightness: 0.5,
-        saturation: -0.5,
-        contrast: 0,
+      lighting: {
+        background: {
+          visibility:
+            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
+        },
+        illumination: {
+          visibility:
+            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
+        },
+        coloration: {
+          visibility:
+            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
+        },
       },
-      background: { shader: InfravisionBackgroundVisionShader },
-    },
-  });
+      vision: {
+        darkness: { adaptive: false },
+        defaults: {
+          attenuation: 0,
+          brightness: 0.5,
+          saturation: -0.5,
+          contrast: 0,
+        },
+        background: { shader: InfravisionBackgroundVisionShader },
+      },
+    });
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
   CONFIG.Item.compendiumIndexFields.push('system.swid');
 
   // @ts-expect-error Yes we're calling a protected function
-  foundry.appv1.sheets.JournalTextPageSheet._converter.setOption('tables', true);
+  foundry.appv1.sheets.JournalTextPageSheet._converter.setOption(
+    'tables',
+    true,
+  );
 
   //register custom Handlebars helpers
   registerCustomHelpers();
@@ -251,8 +269,14 @@ Hooks.once('init', () => {
   registerAuraHooks();
 
   // Register sheets
-  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
-  foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
+  foundry.documents.collections.Actors.unregisterSheet(
+    'core',
+    foundry.appv1.sheets.ActorSheet,
+  );
+  foundry.documents.collections.Items.unregisterSheet(
+    'core',
+    foundry.appv1.sheets.ItemSheet,
+  );
   foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
     CONFIG.Token.documentClass,
     'core',
@@ -264,11 +288,15 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.GroupSheet',
   });
-  foundry.documents.collections.Actors.registerSheet('swade', SwadeVehicleSheetV2, {
-    types: ['vehicle'],
-    makeDefault: true,
-    label: 'SWADE.VehicleSheet',
-  });
+  foundry.documents.collections.Actors.registerSheet(
+    'swade',
+    SwadeVehicleSheetV2,
+    {
+      types: ['vehicle'],
+      makeDefault: true,
+      label: 'SWADE.VehicleSheet',
+    },
+  );
 
   foundry.documents.collections.Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
@@ -308,7 +336,11 @@ Hooks.once('init', () => {
       label: 'SWADE.HeadquartersSheet',
     },
   );
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(
+    TokenDocument,
+    'swade',
+    SwadeTokenConfig,
+  );
 
   // Register Tours
   registerSWADETours();
@@ -331,7 +363,6 @@ Hooks.once('ready', SwadeCoreHooks.onReady);
 
 Hooks.on('hotReload', SwadeCoreHooks.onHotReload);
 Hooks.on('getSceneControlButtons', SwadeCoreHooks.onGetSceneControlButtons);
-Hooks.on('dropActorSheetData', SwadeCoreHooks.onDropActorSheetData);
 Hooks.on('hotbarDrop', SwadeCoreHooks.onHotbarDrop);
 Hooks.on('createProseMirrorEditor', SwadeCoreHooks.onCreateProseMirrorEditor);
 
@@ -350,8 +381,6 @@ Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 /* ------------------------------------ */
 Hooks.on('renderActorDirectory', SwadeCoreHooks.onRenderActorDirectory);
 Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
-Hooks.on('renderChatLog', SwadeCoreHooks.onRenderChatLog);
-Hooks.on('renderChatPopout', SwadeCoreHooks.onRenderChatLog);
 Hooks.on(
   'renderCompendiumDirectory',
   SwadeCoreHooks.onRenderCompendiumDirectory,

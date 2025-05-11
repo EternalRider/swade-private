@@ -3,9 +3,8 @@ It renders everything, even sections that are not needed to be seen by a given p
 Unneeded sections are later hidden in the a renderChatMessage hook }}
 <div
   class='swade chat-card item-card'
-  data-actor-id='{{actorId}}'
   data-item-id='{{item.id}}'
-  data-token-id='{{tokenId}}'
+  data-item-uuid='{{item.uuid}}'
 >
   <header class='card-header flexrow'>
     <img src='{{item.img}}' title='{{item.name}}' width='36' height='36' />
@@ -136,7 +135,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
       {{/if}}
       {{#each data.actions}}
         {{#if (eq type 'damage')}}
-          <button data-action='{{key}}'>{{name}}</button>
+          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
         {{/if}}
       {{/each}}
     </div>
@@ -151,7 +150,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
       </h4>
       {{#each data.actions}}
         {{#if (eq type 'macro')}}
-          <button data-action='{{key}}'>{{name}}</button>
+          <button data-action='{{key}}' data-type='{{type}}'>{{name}}</button>
         {{/if}}
       {{/each}}
     </div>
@@ -245,7 +244,6 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
         {{#unless settingRules.noPowerPoints}}
           <span class='flexrow'>
             <button
-              class='card-button'
               data-action='pp-adjust'
               data-adjust='plus'
               title='{{localize "SWADE.AddPPDesc"}}'
@@ -254,7 +252,6 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
               {{localize 'SWADE.Add'}}
             </button>
             <button
-              class='card-button'
               data-action='pp-adjust'
               data-adjust='minus'
               title='{{localize "SWADE.SubtractPPDesc"}}'
@@ -262,11 +259,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
               &minus;
               {{localize 'SWADE.Subtract'}}
             </button>
-            <button
-              data-action='pp-adjust'
-              data-adjust='refresh'
-              title='{{localize "SWADE.Refresh"}}'
-            >
+            <button data-action='refresh' title='{{localize "SWADE.Refresh"}}'>
               <i class='fa-solid fa-rotate'></i>
             </button>
           </span>
@@ -277,50 +270,45 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
   {{/if}}
 
   <!-- Arcane Device Controls -->
-  {{#if item.isArcaneDevice}}
+  {{#if (and item.isArcaneDevice (not settingRules.noPowerPoints))}}
     <div class='card-buttons arcane-device-controls'>
       <span class='flexcol'>
-        <span class='flexrow' style='display: flex'>
+        <span class='flexrow'>
           <label>
             <strong>{{localize 'SWADE.PPCost'}}: </strong>
           </label>
           <input
             type='number'
-            class='arcane-device-pp-adjust'
+            class='pp-adjust'
             data-dtype='Number'
             value='1'
           />
         </span>
-
-        {{#unless settingRules.noPowerPoints}}
-          <span class='flexrow' style='display: flex'>
-            <button
-              class='card-button'
-              data-action='arcane-device-pp-adjust'
-              data-adjust='plus'
-              title='{{localize "SWADE.AddPPDesc"}}'
-            >
-              &plus;
-              {{localize 'SWADE.Add'}}
-            </button>
-            <button
-              class='card-button'
-              data-action='arcane-device-pp-adjust'
-              data-adjust='minus'
-              title='{{localize "SWADE.SubtractPPDesc"}}'
-            >
-              &minus;
-              {{localize 'SWADE.Subtract'}}
-            </button>
-            <button
-              data-action='arcane-device-pp-adjust'
-              data-adjust='refresh'
-              title='{{localize "SWADE.Refresh"}}'
-            >
-              <i class='fa-solid fa-rotate'></i>
-            </button>
-          </span>
-        {{/unless}}
+        <span class='flexrow'>
+          <button
+            data-action='pp-adjust'
+            data-adjust='plus'
+            title='{{localize "SWADE.AddPPDesc"}}'
+          >
+            &plus;
+            {{localize 'SWADE.Add'}}
+          </button>
+          <button
+            data-action='pp-adjust'
+            data-adjust='minus'
+            title='{{localize "SWADE.SubtractPPDesc"}}'
+          >
+            &minus;
+            {{localize 'SWADE.Subtract'}}
+          </button>
+          <button
+            data-action='pp-adjust'
+            data-adjust='refresh'
+            title='{{localize "SWADE.Refresh"}}'
+          >
+            <i class='fa-solid fa-rotate'></i>
+          </button>
+        </span>
       </span>
     </div>
   {{/if}}

@@ -1,5 +1,6 @@
 export * as actor from './actor';
 export * as card from './card';
+export * as chat from './chat';
 export * as combat from './combat';
 export * as effect from './effect';
 export * as fields from './fields';
