@@ -1,5 +1,4 @@
 import { constants } from '../../constants';
-import { MappingField } from '../fields/MappingField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
@@ -83,7 +82,7 @@ export const actions = () => ({
     trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
     traitMod: new fields.StringField({ initial: '', label: 'SWADE.TraitMod' }),
     dmgMod: new fields.StringField({ initial: '', label: 'SWADE.DmgMod' }),
-    additional: new MappingField(
+    additional: new fields.TypedObjectField(
       new fields.SchemaField({
         name: new fields.StringField({
           blank: false,

@@ -159,7 +159,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
-          content: (this.actor.system as NpcData).getSizeTooltip(),
+          html: (this.actor.system as NpcData).getSizeTooltip(),
         });
       });
 
@@ -169,7 +169,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
-          content: (this.actor.system as NpcData).getPaceTooltip(),
+          html: (this.actor.system as NpcData).getPaceTooltip(),
         });
       });
   }

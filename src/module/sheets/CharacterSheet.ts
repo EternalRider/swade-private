@@ -397,7 +397,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
-          content: this.actor.system.getSizeTooltip(),
+          html: this.actor.system.getSizeTooltip(),
         });
       });
 
@@ -406,7 +406,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
-          content: this.actor.system.getPaceTooltip(),
+          html: this.actor.system.getPaceTooltip(),
         });
       });
   }

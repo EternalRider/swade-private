@@ -256,7 +256,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
         const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
         game.tooltip.activate(ev.currentTarget, {
-          content: await TextEditor.enrichHTML(content, {
+          html: await TextEditor.enrichHTML(content, {
             secrets: this.item.isOwner,
           }),
         });
