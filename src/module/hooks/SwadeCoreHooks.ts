@@ -850,9 +850,15 @@ export default class SwadeCoreHooks {
         { localize: true },
         { value: effect.system.cost },
       );
-      html
-        .querySelector('section[data-tab="details"] .form-group.stacked')
-        ?.insertAdjacentElement('afterend', costGroup);
+      const limitGroup = effect.system.schema.fields.limit.toFormGroup(
+        { localize: true },
+        { value: effect.system.limit },
+      );
+      const descriptionGroup = html.querySelector(
+        'section[data-tab="details"] .form-group.stacked',
+      );
+      descriptionGroup?.insertAdjacentElement('afterend', limitGroup);
+      descriptionGroup?.insertAdjacentElement('afterend', costGroup);
       app.setPosition();
     }
   }

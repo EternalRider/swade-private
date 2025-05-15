@@ -404,6 +404,7 @@ SWADE:
   AncestralAbilities: Ancestral Abilities
   ArchetypeAbilities: Archetype Abilities
   BuildCost: Build Cost
+  BuildLimit: Build Limit
   About: About
   EdgesHindrances: Edges & Hindrances
   GrantsPowers: Grants Powers
@@ -619,7 +620,7 @@ SWADE:
       Hindrance: Decrease Hindrance
     Number: Advance number
   Scales:
-    Description: "Scale: {scale} ({name})"
+    Description: 'Scale: {scale} ({name})'
     LargerThan: Larger than {scale}
     SmallerThan: Smaller than {scale}
     Names:
@@ -648,6 +649,9 @@ SWADE:
     ModifierCost:
       Label: Modifier Cost
       Hint: The build or power point cost for this modifier
+    ModifierLimit:
+      Label: Modifier Limit
+      Hint: How many times can this modifier be chosen?
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand

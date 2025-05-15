@@ -30,7 +30,7 @@ export const itemDescription = () => ({
     label: 'SWADE.SWID.Long',
     validate: (
       value: string,
-      _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+      _options: foundry.data.fields.DataField.ValidationOptions,
     ) => {
       validateSwid(value);
     },
@@ -41,6 +41,13 @@ export const itemDescription = () => ({
 export const builder = () => ({
   build: new fields.SchemaField({
     cost: new fields.NumberField({ label: 'SWADE.BuildCost' }),
+    // Null means unlimited. Nonlinear options should be implemented as separate choices.
+    limit: new fields.NumberField({
+      label: 'SWADE.BuildLimit',
+      initial: 1,
+      integer: true,
+      min: 1,
+    }),
   }),
 });
 
