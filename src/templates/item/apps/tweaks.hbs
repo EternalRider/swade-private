@@ -7,7 +7,11 @@
       <legend>{{localize 'SWADE.SWID.Long'}}</legend>
       <div class='form-group flexrow'>
         {{formInputSimple 'system.swid' document=document}}
-        <button type='button' class='regenerate-swid' data-action='regenerateSWID'>
+        <button
+          type='button'
+          class='regenerate-swid'
+          data-action='regenerateSWID'
+        >
           <i class='fa-solid fa-arrows-rotate'></i>
         </button>
       </div>
@@ -15,6 +19,12 @@
     {{#if document.system.build}}
       {{formGroupSimple
         'system.build.cost'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.build.limit'
         classes='slim'
         document=document
         rootId=document.uuid
