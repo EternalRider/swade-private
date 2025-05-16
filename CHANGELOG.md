@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added v13 compatibility
-- Added `system.builder.limit` to relevant item types and `system.limit` to the modifier AE subtype, with a default value of 1. Null means unlimited. Nonlinear options should be implemented as separate choices. **by @jpmeehan5**
+- Added `system.build.limit` to relevant item types and `system.limit` to the modifier AE subtype, with a default value of 1. Null means unlimited. Nonlinear options should be implemented as separate choices. **by @jpmeehan5**
 
 ### Changed
 
