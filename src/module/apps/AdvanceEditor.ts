@@ -64,7 +64,7 @@ export class AdvanceEditor extends FormApplication<
       rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
       advanceTypes: this.#getAdvanceTypes(),
       owner: this.actor.isOwner,
-      notes: await TextEditor.enrichHTML(this.advance.notes, {
+      notes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.advance.notes, {
         async: true,
         secrets: this.actor.isOwner,
       }),

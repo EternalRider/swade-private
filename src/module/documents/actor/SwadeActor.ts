@@ -648,7 +648,7 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const message = await renderTemplate(SWADE.bennies.templates.spend, {
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
         speaker: speaker,
       });
@@ -694,7 +694,7 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const content = await renderTemplate(SWADE.bennies.templates.add, {
+      const content = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: speaker,
       });
@@ -748,7 +748,7 @@ class SwadeActor<
     const msgClass = getDocumentClass('ChatMessage');
     await msgClass.create({
       speaker: msgClass.getSpeaker({ actor: this }),
-      content: await renderTemplate(template, {
+      content: await foundry.applications.handlebars.renderTemplate(template, {
         icon: CONFIG.SWADE.conviction.icon,
         actor: this,
       }),

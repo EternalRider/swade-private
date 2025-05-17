@@ -461,12 +461,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         secrets: this.document.isOwner,
       };
 
-      const enrichedDescription = await TextEditor.enrichHTML(
+      const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         item.system.description,
         itemEnrichmentOptions,
       );
 
-      const enrichedNotes = await TextEditor.enrichHTML(
+      const enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         item.system.notes as string,
         itemEnrichmentOptions,
       );
@@ -667,7 +667,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           type: game.i18n.localize('DOCUMENT.Item'),
         }),
       },
-      dlg = await renderTemplate(
+      dlg = await foundry.applications.handlebars.renderTemplate(
         'templates/sidebar/document-create.html',
         templateData,
       );
@@ -1060,7 +1060,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   async #enrichText(text: string) {
-    return TextEditor.enrichHTML(text, {
+    return foundry.applications.ux.TextEditor.implementation.enrichHTML(text, {
       relativeTo: this.actor,
       rollData: this.actor.getRollData(),
       secrets: this.document.isOwner,
@@ -1315,11 +1315,11 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const selector = ' .inventory .item-controls .equip-status';
     const options = { eventName: 'click', jQuery: false, fixed: true };
-    this._equipStateMenu = new ContextMenu(html, selector, items, options);
+    this._equipStateMenu = new foundry.applications.ux.ContextMenu.implementation(html, selector, items, options);
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this._effectCreateDropDown = new ContextMenu(
+    this._effectCreateDropDown = new foundry.applications.ux.ContextMenu.implementation(
       html,
       '.effects .effect-add',
       [
@@ -1413,7 +1413,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       },
     ];
 
-    ContextMenu.create(this, html, 'li.item', items, { jQuery: false });
+    foundry.applications.ux.ContextMenu.implementation.create(this, html, 'li.item', items, { jQuery: false });
   }
 
   #setupAccordions(html: HTMLFormElement) {

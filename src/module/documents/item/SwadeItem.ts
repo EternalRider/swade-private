@@ -487,11 +487,11 @@ class SwadeItem<
     for (const effect of this.effects.filter(
       (e) => !e.transfer && e.type !== 'modifier',
     )) {
-      effects.push(await TextEditor.enrichHTML(effect.link));
+      effects.push(await foundry.applications.ux.TextEditor.implementation.enrichHTML(effect.link));
     }
 
     const data: ItemChatCardData = {
-      description: await TextEditor.enrichHTML(
+      description: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         this.system.description,
         enrichOptions,
       ),

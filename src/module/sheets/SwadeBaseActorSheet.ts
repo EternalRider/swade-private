@@ -212,11 +212,11 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
         secrets: this.document.isOwner,
       };
 
-      item.enrichedDescription = await TextEditor.enrichHTML(
+      item.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         item.system.description,
         itemEnrichmentOptions,
       );
-      item.enrichedNotes = await TextEditor.enrichHTML(
+      item.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         item.system.notes,
         itemEnrichmentOptions,
       );
@@ -340,7 +340,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           type: game.i18n.localize('DOCUMENT.Item'),
         }),
       },
-      dlg = await renderTemplate(
+      dlg = await foundry.applications.handlebars.renderTemplate(
         'templates/sidebar/document-create.html',
         templateData,
       );

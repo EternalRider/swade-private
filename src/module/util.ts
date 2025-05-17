@@ -336,7 +336,7 @@ export async function createEmbedElement(
   template: string,
   className: string[],
 ): Promise<HTMLElement | HTMLCollection | null> {
-  const content = await renderTemplate(template, objectToEmbed);
+  const content = await foundry.applications.handlebars.renderTemplate(template, objectToEmbed);
   const elem = document.createElement('div');
   elem.classList;
   elem.className = className.join(' ');

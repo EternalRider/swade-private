@@ -107,7 +107,7 @@ export default class PlayerBennyDisplay {
     }
 
     if (game.settings.get('swade', 'notifyBennies')) {
-      const message = await renderTemplate(
+      const message = await foundry.applications.handlebars.renderTemplate(
         SWADE.bennies.templates.refreshAll,
         {},
       );

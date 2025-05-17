@@ -406,7 +406,7 @@ async function soakPrompt(
       name: name,
     }),
   );
-  const content = await renderTemplate(
+  const content = await foundry.applications.handlebars.renderTemplate(
     'systems/swade/templates/apps/damage/soak.hbs',
     { damageContext, adjustDamage, prompt: new Handlebars.SafeString(prompt) },
   );
