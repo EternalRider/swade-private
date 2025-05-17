@@ -253,6 +253,7 @@ export class RollDialog extends FormApplication<
     }
 
     finalizedRoll.setRerollable(this.ctx.roll.isRerollable);
+    finalizedRoll.setRollType(this.ctx.roll.rollType);
 
     // Convert the roll to a chat message and return it
     const msg = await finalizedRoll.toMessage(

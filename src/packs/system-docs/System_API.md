@@ -45,6 +45,7 @@ In addition to the base options afforded to rolls, the options object for both T
 - modifiers (_RollModifier_): An array of roll modifier (see below for details)
 - rerollMode (_string_): Takes 'benny' or 'free', used by the roll chat card reroll buttons.
 - rerollable (_boolean_): Can this roll be rerolled
+- rollType (_string_): The type of this roll e.g. trait, damage, running
 
 ##### Roll Modifiers
 

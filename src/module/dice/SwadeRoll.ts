@@ -115,6 +115,10 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     this.options['messageId'] = messageId;
   }
 
+  setRollType(rollType: string) {
+    this.options['rollType'] = rollType;
+  }
+
   get messageId() {
     return this.options['messageId'];
   }
@@ -129,6 +133,10 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
 
   get isCritFailConfirmationRoll() {
     return this.options['critfailConfirmationRoll'];
+  }
+
+  get rollType() {
+    return this.options['rollType'];
   }
 
   async getRenderData(
