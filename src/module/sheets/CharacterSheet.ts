@@ -1328,7 +1328,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
           condition: this.object.isOwner,
           callback: (_li) => {
-            new ActiveEffectWizard(this.object).render(true);
+            new ActiveEffectWizard({ document: this.object }).render({ force: true });
           },
         },
         {
@@ -1383,8 +1383,10 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
-          if (effectId)
-            this.actor.effects.get(effectId)?.sheet?.render({ force: true });
+          if (effectId) {
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
+            allEffects.find(ef => ef.id === effectId)?.sheet?.render({ force: true });
+          }
         },
       },
       {
@@ -1408,7 +1410,10 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();
-          if (effectId) this.actor.effects.get(effectId)?.deleteDialog();
+          if (effectId) {
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
+            allEffects.find(ef => ef.id === effectId)?.deleteDialog();
+          }
         },
       },
     ];

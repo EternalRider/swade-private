@@ -77,7 +77,7 @@ export function SwadeBaseSheetMixin<
       _event: PointerEvent,
       _target: HTMLImageElement,
     ) {
-      new ActiveEffectWizard(this.document).render(true);
+      new ActiveEffectWizard({ document: this.document }).render({ force: true });
     }
 
     // This is marked as private because there's no real need

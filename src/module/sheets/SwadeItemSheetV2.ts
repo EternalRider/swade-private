@@ -783,7 +783,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           name: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
           condition: this.object.isOwner,
-          callback: () => new ActiveEffectWizard(this.document).render(true),
+          callback: () => new ActiveEffectWizard({ document: this.document }).render({ force: true }),
         },
         {
           name: 'SWADE.ActiveEffects.AddModifier',

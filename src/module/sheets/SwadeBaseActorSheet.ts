@@ -164,7 +164,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           { renderSheet: true, parent: this.actor },
         );
       } else {
-        new ActiveEffectWizard(this.actor).render(true);
+        new ActiveEffectWizard({ document: this.actor }).render({ force: true });
       }
     });
 
