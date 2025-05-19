@@ -1,4 +1,4 @@
-<form autocomplete='off' class='main-grid'>
+<section autocomplete='off' class='main-grid'>
   <header class='text-center'>
     <h2>
       <i class='fa-solid fa-shield-quartered'></i>
@@ -10,9 +10,9 @@
     </h2>
   </header>
   <section class='effect-basics'>
-    <img src='{{effect.img}}' alt='{{effect.name}}' class='icon' />
+    <img src='{{effect.img}}' alt='{{effect.name}}' class='icon' data-action='clickIcon'/>
     <div class='form-group name'>
-      <label for='aewizard-name'>{{localize 'EFFECT.Name'}}</label>
+      <label for='aewizard-name'>{{localize 'SWADE.Name'}}</label>
       <span class='form-fields'>
         <input
           id='aewizard-name'
@@ -70,7 +70,7 @@
             </select>
             <input type='text' class='value' value='{{this.value}}' />
             <span class='change-controls'>
-              <button type='button' class='delete-change'>
+              <button type='button' class='delete-change' data-action='deleteChange'>
                 <i class='fa-solid fa-trash'></i>
               </button>
             </span>
@@ -103,23 +103,19 @@
         <div class='form-group'>
           <label>{{localize 'SWADE.EffectWizard.SelectAttribute'}}</label>
           <span class='form-fields'>
-            <select class='target'>
-              <option value='agility'>{{localize 'SWADE.AttrAgi'}}</option>
-              <option value='smarts'>{{localize 'SWADE.AttrSma'}}</option>
-              <option value='spirit'>{{localize 'SWADE.AttrSpr'}}</option>
-              <option value='strength'>{{localize 'SWADE.AttrStr'}}</option>
-              <option value='vigor'>{{localize 'SWADE.AttrVig'}}</option>
+            <select name='currAttribute' class='target'>
+              {{selectOptions attributes selected=currAttribute localize=true}}
             </select>
           </span>
         </div>
         <div class='flexrow button-list'>
-          <button type='button' data-key='die.sides'>
+          <button type='button' data-key='die.sides' data-action='addChange'>
             {{localize 'SWADE.DieSides'}}
           </button>
-          <button type='button' data-key='wild-die.sides'>
+          <button type='button' data-key='wild-die.sides' data-action='addChange'>
             {{localize 'SWADE.WildDieSides'}}
           </button>
-          <button type='button' data-key='die.modifier'>
+          <button type='button' data-key='die.modifier' data-action='addChange'>
             {{localize 'SWADE.Modifier'}}
           </button>
         </div>
@@ -138,7 +134,9 @@
                 id='aewizard-skill'
                 type='text'
                 class='target'
+                name='currSkill'
                 list='{{object.id}}-skills'
+                value='{{currSkill}}'
               />
             </span>
             <p class='hint'>{{localize
@@ -146,13 +144,13 @@
               }}</p>
           </div>
           <div class='flexrow button-list'>
-            <button type='button' data-key='die.sides'>
+            <button type='button' data-key='die.sides' data-action='addChange'>
               {{localize 'SWADE.DieSides'}}
             </button>
-            <button type='button' data-key='wild-die.sides'>
+            <button type='button' data-key='wild-die.sides' data-action='addChange'>
               {{localize 'SWADE.WildDieSides'}}
             </button>
-            <button type='button' data-key='die.modifier'>
+            <button type='button' data-key='die.modifier' data-action='addChange'>
               {{localize 'SWADE.Modifier'}}
             </button>
           </div>
@@ -168,7 +166,7 @@
         <ul class='unmarked-list other-presets'>
           {{#each derivedPresets}}
             <li>
-              <button type='button' data-key='{{key}}'>
+              <button type='button' data-key='{{key}}' data-action='addChange'>
                 {{label}}
               </button>
             </li>
@@ -185,7 +183,7 @@
         <ul class='unmarked-list other-presets'>
           {{#each globalModPresets}}
             <li>
-              <button type='button' data-key='{{key}}'>
+              <button type='button' data-key='{{key}}' data-action='addChange'>
                 {{label}}
               </button>
             </li>
@@ -199,7 +197,7 @@
         <ul class='unmarked-list other-presets'>
           {{#each otherPresets}}
             <li>
-              <button type='button' data-key='{{key}}'>
+              <button type='button' data-key='{{key}}' data-action='addChange'>
                 {{label}}
               </button>
             </li>
@@ -208,15 +206,9 @@
       </span>
     </details>
   </section>
-  <footer>
-    <button type='button' class='submit'>
-      <i class='fa-solid fa-arrow-down-to-line'></i>
-      {{localize 'SWADE.ActiveEffects.Add'}}
-    </button>
-  </footer>
-</form>
-<datalist id='{{object.id}}-skills'>
-  {{#each skillSuggestions}}
-    <option value='{{this}}'></option>
-  {{/each}}
-</datalist>
+  <datalist id='{{object.id}}-skills'>
+    {{#each skillSuggestions}}
+      <option value='{{this}}'></option>
+    {{/each}}
+  </datalist>
+</section>
