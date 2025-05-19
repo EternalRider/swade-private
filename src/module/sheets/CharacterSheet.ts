@@ -122,7 +122,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     );
 
     html.querySelector('.attribute-manager')?.addEventListener('click', () => {
-      new AttributeManager(this.actor).render(true);
+      new AttributeManager({ actor: this.actor }).render({ force: true });
     });
 
     // Roll Skill
@@ -349,7 +349,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
                 strict: true,
               }),
               actor: this.actor,
-            }).render(true);
+            }).render({ force: true });
             break;
           case 'delete':
             await this.#deleteAdvance(id);
@@ -977,7 +977,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     new AdvanceEditor({
       advance: newAdvance,
       actor: this.actor,
-    }).render(true);
+    }).render({ force: true });
   }
 
   async #deleteAdvance(id: string) {

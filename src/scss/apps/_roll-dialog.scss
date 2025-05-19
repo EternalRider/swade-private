@@ -1,4 +1,9 @@
 .roll-dialog {
+  overflow: visible;
+  
+  .window-content {
+    overflow: visible;
+  }
   .modifiers {
     margin: 0;
     padding: 0;
@@ -6,7 +11,7 @@
   }
   .modifier-entry {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr;
     &:not(:first-of-type) {
       border-top: 1px solid var(--color-text-light-3);
     }
@@ -27,8 +32,9 @@
     .toggle-list {
       text-align: left;
       height: calc(var(--form-field-height) + 1px);
+      width: 100%;
       background: rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--color-border-light-tertiary);
+      border: 1px solid var(--color-border);
       border-radius: 3px;
       padding: 0 3px;
       text-overflow: ellipsis;
@@ -43,8 +49,8 @@
     .dropdown {
       position: absolute;
       padding: 0;
-      border: 1px solid var(--color-border-light-tertiary);
-      background-color: var(--color-text-light-2);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-select-option-bg);
       transition: height 200ms ease;
       height: 334.25px;
       overflow: hidden;
@@ -80,6 +86,8 @@
         background: none;
         line-height: 24px;
         text-align: left;
+        justify-content: start;
+        width: 100%;
         &:hover,
         &:focus {
           box-shadow: none;
@@ -96,10 +104,13 @@
     text-align: center;
     border-bottom: 2px groove var(--color-border-light-highlight);
   }
-  .footer {
+  .form-footer {
     padding-bottom: 0;
     margin-bottom: 0;
     border-bottom: none;
+    .close-roll {
+      margin-top: 5px;
+    }
   }
   .formula {
     .input {

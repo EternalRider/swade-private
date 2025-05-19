@@ -1,87 +1,95 @@
 import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-export default class Reloadinator extends Application {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export default class Reloadinator extends HandlebarsApplicationMixin(ApplicationV2) {
+  declare magazines: SwadeItem[];
+  declare weapon: SwadeItem;
+  
+  constructor({weapon, magazines, resolve, ...options}: MagReloadConfiguration) {
+    super(options);
+    this.#callback = resolve;
+    this.magazines = magazines;
+    this.weapon = weapon;
+  }
+  
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
   #wantsToDiscard = false;
-  magazines: SwadeItem[];
-  weapon: SwadeItem;
 
-  static asPromise(ctx: MagReloadContext): Promise<boolean> {
-    return new Promise((resolve) => new Reloadinator(ctx, resolve));
-  }
+  static asPromise(ctx: Omit<MagReloadConfiguration, 'resolve'>): Promise<boolean> {
+    return new Promise((resolve) => new Reloadinator({...ctx, resolve}).render({ force: true }));
+  }  
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      title: game.i18n.localize('SWADE.Magazine.Select'),
-      template: 'systems/swade/templates/apps/reload-manager.hbs',
-      classes: ['swade', 'magazine-manager', 'swade-app'],
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE.Magazine.Select'
+    },  
+    position: {
       width: 400,
-      height: 'auto' as const,
-      filters: [
-        {
-          inputSelector: '.searchBox',
-          contentSelector: '.selections',
-        },
-      ],
-    });
-  }
+      height: 'auto'
+    },
+    // TODO: swade-app -> swade-application
+    classes: ['swade', 'magazine-manager', 'swade-app'],
+    actions: {
+      selectMag: Reloadinator.#onSelectMag,
+      discard: Reloadinator.#onDiscard
+    }  
+  };  
+
+  static override PARTS = {
+    main: { template: 'systems/swade/templates/apps/reload-manager.hbs' }
+  };  
 
   get loadedAmmo() {
     return this.weapon.getFlag('swade', 'loadedAmmo');
-  }
+  }  
 
   get noShotsInWeapon() {
     return (
       this.weapon.type === 'weapon' && this.weapon.system.currentShots === 0
-    );
-  }
+    );  
+  }  
 
-  constructor(
-    ctx: MagReloadContext,
-    resolve: (reloaded: boolean) => void,
-    options?: Partial<FormApplicationOptions>,
+  // TODO: remove once swade-application
+  protected override _initializeApplicationOptions(options) {
+    if (!options.classes?.includes('themed')) {
+      options.classes ??= [];
+      options.classes.push('themed', 'theme-light');
+    }  
+    return super._initializeApplicationOptions(options);
+  }  
+  
+  static #onDiscard(
+    this: Reloadinator,
+    _event: PointerEvent,
+    target: HTMLInputElement
   ) {
-    super(options);
-    this.#callback = resolve;
-    this.magazines = ctx.magazines;
-    this.weapon = ctx.weapon;
-    this.render(true);
+    this.#wantsToDiscard = target.checked;
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
-    html[0]
-      .querySelectorAll<HTMLButtonElement>('button[data-item-id]')
-      .forEach((btn) =>
-        btn.addEventListener('click', this._onClickOption.bind(this)),
-      );
-    html[0]
-      .querySelector<HTMLInputElement>('.discard')
-      ?.addEventListener('click', (ev) => {
-        const target = ev.currentTarget as HTMLInputElement;
-        this.#wantsToDiscard = target.checked;
-      });
-  }
-
-  override async getData(options?: Partial<ApplicationOptions>) {
-    const renderData = {
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
       magazineGroups: this.#prepareOptionList(),
-      canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
-    };
-    return foundry.utils.mergeObject(renderData, await super.getData(options));
+      canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo
+    });
+    return context;
   }
 
-  override async close(options?: Application.CloseOptions): Promise<void> {
+  protected override _onClose(options) {
+    super._onClose(options);
     if (!this.#isResolved) this.#callback(false);
-    await super.close(options);
   }
 
-  private async _onClickOption(ev: PointerEvent) {
-    ev.preventDefault();
+  static async #onSelectMag(
+    this: Reloadinator,
+    event: PointerEvent,
+    target: HTMLButtonElement
+  ) {
+    event.preventDefault();
     if (this.weapon.type !== 'weapon') return;
-    const target = ev.currentTarget as HTMLButtonElement;
     const selected = this.#selectOption(target.dataset.itemId as string);
     if (selected?.type !== 'consumable') return;
 
@@ -249,9 +257,10 @@ export default class Reloadinator extends Application {
   }
 }
 
-interface MagReloadContext {
+interface MagReloadConfiguration {
   weapon: SwadeItem;
   magazines: SwadeItem[];
+  resolve: (reloaded: boolean) => void;
 }
 
 interface RenderedMagazine {
