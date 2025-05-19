@@ -1,4 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
+<section class="{{cssClass}}">
   {{#*inline "settingPartial"}}
   <div class="form-group">
     <label>{{this.name}}</label>
@@ -52,32 +52,38 @@
 
   <div class="form-group">
     <label>{{localize "DICESONICE.texture"}}</label>
-    <select
-      name="swade.dsnCustomWildDieOptions.texture"
-      {{disabled (or noWildDie hasCustomWildDie)}}
-    >
-      {{selectOptions textureList selected=settings.dsnCustomWildDieOptions.value.texture localize=true}}
-    </select>
+    <div class="form-fields">
+      <select
+        name="swade.dsnCustomWildDieOptions.texture"
+        {{disabled (or noWildDie hasCustomWildDie)}}
+      >
+        {{selectOptions textureList selected=settings.dsnCustomWildDieOptions.value.texture localize=true}}
+      </select>
+    </div>
   </div>
 
   <div class="form-group">
     <label>{{localize "DICESONICE.material"}}</label>
-    <select
-      name="swade.dsnCustomWildDieOptions.material"
-      {{disabled (or noWildDie hasCustomWildDie)}}
-    >
-      {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
-    </select>
+    <div class="form-fields">
+      <select
+        name="swade.dsnCustomWildDieOptions.material"
+        {{disabled (or noWildDie hasCustomWildDie)}}
+      >
+        {{selectOptions materialList selected=settings.dsnCustomWildDieOptions.value.material localize=true}}
+      </select>
+    </div>
   </div>
 
   <div class="form-group">
     <label>{{localize "DICESONICE.font"}}</label>
-    <select
-      name="swade.dsnCustomWildDieOptions.font"
-      {{disabled (or noWildDie hasCustomWildDie)}}
-    >
-      {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
-    </select>
+    <div class="form-fields">
+      <select
+        name="swade.dsnCustomWildDieOptions.font"
+        {{disabled (or noWildDie hasCustomWildDie)}}
+      >
+        {{selectOptions fontList selected=settings.dsnCustomWildDieOptions.value.font localize=false}}
+      </select>
+    </div>
   </div>
 
   <div class="form-group">
@@ -159,13 +165,4 @@
       />
     </div>
   </div>
-  <br>
-  <footer class="sheet-footer flexrow">
-    <button type="submit" name="submit" id="submit">
-      <i class="far fa-save"></i>{{localize "SETTINGS.Save"}}
-    </button>
-    <button type="reset" name="reset" id="reset">
-      <i class="fas fa-undo"></i>{{localize "SETTINGS.Reset"}}
-    </button>
-  </footer>
-</form>
+</section>
