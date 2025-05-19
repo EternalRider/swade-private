@@ -4,19 +4,21 @@ canBeResumed: false
 display: true
 steps:
   - id: gameSettings
-    selector: '#settings-game>button[data-action="configure"]'
+    selector: '#sidebar #settings button[data-app="configure"]'
     title: SWADE.TOURS.AMMUNITION.GameSettings.Title
     content: SWADE.TOURS.AMMUNITION.GameSettings.Content
     tab:
       parent: sidebar
       id: settings
+      group: primary
   - id: swadeSettings
-    selector: '#client-settings button[data-key="swade.setting-config"]'
+    selector: '#settings-config button[data-key="swade.setting-config"]'
     title: SWADE.TOURS.AMMUNITION.SwadeSettings.Title
     content: SWADE.TOURS.AMMUNITION.SwadeSettings.Content
     tab:
       parent: settings
       id: system
+      group: categories
     settings:
       ammoManagement: true
   - id: ammoSettings
@@ -25,7 +27,8 @@ steps:
     content: SWADE.TOURS.AMMUNITION.AmmoSettings.Content
     tab:
       parent: configurator
-      id: setting-rules
+      id: setting
+      group: sheet
   - id: ammoManagement
     selector: '#settingConfig #ammo>div'
     title: SWADE.TOURS.AMMUNITION.AmmoManagement.Title
@@ -41,7 +44,9 @@ steps:
     tab:
       parent: actor
       id: inventory
+      group: primary
     actor:
+      _id: swadeTourActor00
       name: SWADE.TOURS.AMMUNITION.Actor
       type: character
       img: icons/environment/people/commoner.webp
@@ -103,6 +108,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoNone
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoNone.Title
@@ -116,6 +122,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoSelf
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoSelf.Title
@@ -129,6 +136,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoSingle
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoSingle.Title
@@ -142,6 +150,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoFull
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoFull.Title
@@ -155,6 +164,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoMagazine
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoMagazine.Title
@@ -168,6 +178,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoBattery
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoBattery.Title
@@ -181,6 +192,7 @@ steps:
     tab:
       parent: item
       id: properties
+      group: main
   - id: ammoPP
     selector: '#itemSheetID input[name="system.ammo"]'
     title: SWADE.TOURS.AMMUNITION.AmmoPP.Title
