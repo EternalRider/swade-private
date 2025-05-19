@@ -9,6 +9,7 @@ export interface SwadeRollOptions
   rerollMode?: 'benny' | 'free';
   critfailConfirmationRoll?: boolean;
   rerollable?: boolean;
+  rollType?: string;
 }
 
 export interface RollRenderOptions {
