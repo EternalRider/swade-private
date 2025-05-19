@@ -11,51 +11,71 @@ import type SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeItem from '../documents/item/SwadeItem';
 import { modifierReducer, normalizeRollModifiers } from '../util';
 
-export class RollDialog extends FormApplication<
-  FormApplicationOptions,
-  RollDialogContext
-> {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor({ ctx, resolve, ...options }: RollDialogConfiguration) {
+    super(options);
+    this.#ctx = ctx;
+    this.#callback = resolve;
+  }
+  
   #callback: (roll: SwadeRoll | null) => void;
+  #filters: foundry.applications.ux.SearchFilter[] = this.#createFiltersHandlers();
   #isResolved = false;
   #extraButtonUsed = false;
   #keydownListener;
-
-  static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
-    return new Promise<SwadeRoll | null>(
-      (resolve) => new RollDialog(ctx, resolve),
-    );
-  }
-
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/roll-dialog.hbs',
-      classes: ['swade', 'roll-dialog', 'swade-app'],
+  #ctx: RollDialogContext;
+  
+    static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
+      return new Promise<SwadeRoll | null>(
+        (resolve) => new RollDialog({ctx, resolve}).render({ force: true }),
+      );
+    }
+  
+  static override DEFAULT_OPTIONS = {
+    // TODO: swade-app -> swade-application
+    classes: ['swade', 'roll-dialog', 'swade-app', 'standard-form'],
+    position: {
       width: 400,
-      filters: [
-        {
-          inputSelector: '.searchBox',
-          contentSelector: '.selections',
-        },
-      ],
-      height: 'auto' as const,
+      height: 'auto'
+    },
+    filters: [
+      { inputSelector: '.searchBox', contentSelector: '.selections' }
+    ],
+    tag: 'form',
+    form: {
+      handler: RollDialog.onSubmit,
       closeOnSubmit: true,
       submitOnClose: false,
       submitOnChange: false,
-    });
+    },
+    actions: {
+      close: RollDialog.#onClose,
+      addModifier: RollDialog.#onAddModifier,
+      addPreset: RollDialog.#onAddPreset,
+      toggleList: RollDialog.#onToggleList
+    }
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/roll-dialog.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' }
+  };
+
+  // TODO: remove once swade-application
+  protected override _initializeApplicationOptions(options) {
+    if (!options.classes?.includes('themed')) {
+      options.classes ??= [];
+      options.classes.push('themed', 'theme-light');
+    }
+    return super._initializeApplicationOptions(options);
   }
 
-  constructor(
-    ctx: RollDialogContext,
-    resolve: (roll: SwadeRoll | null) => void,
-    options?: Partial<FormApplicationOptions>,
-  ) {
-    super(ctx, options);
-    this.#callback = resolve;
-    this.render(true);
-  }
 
   get ctx() {
-    return this.object;
+    return this.#ctx;
   }
 
   get rollCls(): typeof SwadeRoll {
@@ -64,7 +84,7 @@ export class RollDialog extends FormApplication<
   }
 
   override get title(): string {
-    return this.ctx.title ?? 'SWADE Rolldialog';
+    return this.ctx.title ?? 'SWADE RollDialog';
   }
 
   get rollMode(): foundry.CONST.DICE_ROLL_MODES {
@@ -88,77 +108,64 @@ export class RollDialog extends FormApplication<
     return this.ctx.mods;
   }
 
-  override activateListeners(jquery: JQuery<HTMLElement>): void {
-    super.activateListeners(jquery);
-    const html = jquery[0];
+  #createFiltersHandlers() {
+    return this.options.filters.map((f) => {
+      f.callback = this._onSearchFilter.bind(this);
+      return new foundry.applications.ux.SearchFilter(f);
+    });
+  }
+
+  override async _onRender(context, options) {
+    await super._onRender(context, options);
+    this.#filters.forEach((f) => f.bind(this.element));
     if (!this.#keydownListener) {
       this.#keydownListener = this.#onKeyDown.bind(this);
       document.addEventListener('keydown', this.#keydownListener);
     }
-    html
-      .querySelector<HTMLButtonElement>('button#close')
-      ?.addEventListener('click', this.close.bind(this));
-    html
-      .querySelector<HTMLButtonElement>('button.add-modifier')
-      ?.addEventListener('click', () => {
-        this.#addModifier();
-        this.render();
-      });
-    html
-      .querySelectorAll<HTMLButtonElement>('.modifier .add-preset')
-      .forEach((btn) => {
-        btn.addEventListener('click', (ev) => {
-          this.#addPreset(ev);
-          this.render();
-        });
-      });
-    html
-      .querySelector<HTMLButtonElement>('button.toggle-list')
-      ?.addEventListener('click', (ev) => {
-        const target = ev.currentTarget as HTMLButtonElement;
-        const style = getComputedStyle(target);
-        const width =
-          parseFloat(style.width) -
-          parseFloat(style.paddingLeft) -
-          parseFloat(style.paddingRight) -
-          parseFloat(style.marginLeft) -
-          parseFloat(style.marginRight) -
-          parseFloat(style.borderLeftWidth) -
-          parseFloat(style.borderRightWidth);
-        html.querySelector('.fas.fa-caret-right')?.classList.toggle('rotate');
-        const searchBox = html.querySelector('.searchBox');
-        if (searchBox) searchBox.style.width = width + 'px';
-        const dropdown = html.querySelector('.dropdown');
-        if (dropdown) {
-          dropdown.style.width = style.width;
-          dropdown.classList.toggle('collapsed');
-        }
-      });
-    html
-      .querySelectorAll<HTMLButtonElement>('button.submit-roll')
-      .forEach((btn) => {
-        btn.addEventListener('click', (ev) => {
-          const target = ev.currentTarget as HTMLButtonElement;
-          this.#extraButtonUsed = target.dataset.type === 'extra';
-          this.submit();
-        });
-      });
-
-    html
-      .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
-      .forEach((el) =>
-        el.addEventListener('change', (ev) => {
-          const target = ev.currentTarget as HTMLInputElement;
-          const index = Number(target.dataset.index);
-          this.modifiers[index].ignore = !target.checked;
-          this.render();
-        }),
-      );
+    this.element.querySelector('.new-modifier-value')?.addEventListener('input', (ev) => {
+      const addModButton = this.element.querySelector('.add-modifier');
+      if (addModButton) addModButton.disabled = !ev.target?.value?.length;
+    });
   }
 
-  override async getData() {
-    const data = {
-      displayExtraButton: true,
+  static #onToggleList(
+    this: RollDialog,
+    _event: PointerEvent,
+    target: HTMLButtonElement
+  ) {
+    const style = getComputedStyle(target);
+    const width =
+      parseFloat(style.width) -
+      parseFloat(style.paddingLeft) -
+      parseFloat(style.paddingRight) -
+      parseFloat(style.marginLeft) -
+      parseFloat(style.marginRight) -
+      parseFloat(style.borderLeftWidth) -
+      parseFloat(style.borderRightWidth);
+    const html = this.element;
+    html.querySelector('.fa-solid.fa-caret-right')?.classList.toggle('rotate');
+    const searchBox = html.querySelector('.searchBox');
+    if (searchBox) searchBox.style.width = width + 'px';
+    const dropdown = html.querySelector('.dropdown');
+    if (dropdown) {
+      dropdown.style.width = style.width;
+      dropdown.classList.toggle('collapsed');
+    }
+  }
+
+  override _onChangeForm(formConfig, event) {
+    super._onChangeForm(formConfig, event);
+    const target = event.target;
+    if (!target) return;
+    if (target.type === 'checkbox') {
+      const index = Number(target.dataset.index);
+      this.modifiers[index].ignore = !target.checked;
+      this.render();
+    }
+  }
+
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
       rollModes: CONFIG.Dice.rollModes,
       modGroups: new Array<RollModifierGroup>(),
       extraButtonLabel: '',
@@ -168,29 +175,40 @@ export class RollDialog extends FormApplication<
         .map(this.#fillModifierLabels.bind(this)),
       formula: this.#buildRollForEvaluation().formula,
       isTraitRoll: this.isTraitRoll,
-    };
+      buttons: [
+        { type: 'submit', icon: 'fa-solid fa-dice', cssClass: 'submit-roll', label: 'SWADE.Roll' },
+        { type: 'button', icon: 'fa-solid fa-times', action: 'close', cssClass: 'close-roll', label: 'Close'}
+      ]
+    });
+
+    if (this.isDamageRoll || (this.isTraitRoll && !this.ctx.actor?.isWildcard)) {
+      context.buttons.splice(1, 0, {
+        type: 'submit',
+        icon: 'fa-regular fa-square-plus',
+        cssClass: 'submit-roll',
+        name: 'extra',
+        label: this.isDamageRoll ? 'SWADE.RollRaise' : 'SWADE.GroupRoll'
+      });
+    }
 
     CONFIG.SWADE.prototypeRollGroups.forEach((m) => {
       if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) return;
       if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) return;
       if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll)
         return;
-      data.modGroups.push(m);
+      context.modGroups.push(m);
     });
-
-    if (this.isDamageRoll) {
-      data.extraButtonLabel = game.i18n.localize('SWADE.RollRaise');
-    } else if (this.isTraitRoll && !this.ctx.actor?.isWildcard) {
-      data.extraButtonLabel = game.i18n.localize('SWADE.GroupRoll');
-    } else {
-      data.displayExtraButton = false;
-    }
-
-    return data;
+    return context;
   }
 
-  protected override async _updateObject(ev: Event, formData: FormData) {
-    const expanded = foundry.utils.expandObject(formData) as RollDialogFormData;
+  static async onSubmit(
+    this: RollDialog,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended
+  ) {
+    this.#extraButtonUsed = event.submitter?.name === 'extra';
+    const expanded = foundry.utils.expandObject(formData.object) as RollDialogFormData;
     Object.values(expanded.modifiers ?? []).forEach(
       (v, i) => (this.modifiers[i].ignore = !v.active),
     );
@@ -206,11 +224,19 @@ export class RollDialog extends FormApplication<
     this.#resolve(await this.#evaluateRoll());
   }
 
-  override close(options?: Application.CloseOptions): Promise<void> {
-    //fallback if the roll has not yet been resolved
+  static #onClose(
+    this: RollDialog,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
+    return this.close();
+  }
+
+  protected override _onClose(options) {
+    super._onClose(options);
+    // Fallback if the roll has not yet been resolved
     if (!this.#isResolved) this.#callback(null);
     document.removeEventListener('keydown', this.#keydownListener);
-    return super.close(options);
   }
 
   async #evaluateRoll(): Promise<SwadeRoll<any>> {
@@ -268,7 +294,7 @@ export class RollDialog extends FormApplication<
     return finalizedRoll;
   }
 
-  protected override _onSearchFilter(
+  protected _onSearchFilter(
     _event: KeyboardEvent,
     _query: string,
     rgx: RegExp,
@@ -342,6 +368,15 @@ export class RollDialog extends FormApplication<
     }
   }
 
+  static #onAddModifier(
+    this: RollDialog,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
+    this.#addModifier();
+    this.render({ force: true });
+  }
+
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
   #addModifier() {
     const label = this.form?.querySelector<HTMLInputElement>(
@@ -358,8 +393,11 @@ export class RollDialog extends FormApplication<
     }
   }
 
-  #addPreset(ev: PointerEvent): void {
-    const target = ev.currentTarget as HTMLButtonElement;
+  static #onAddPreset(
+    this: RollDialog,
+    _event: PointerEvent,
+    target: HTMLButtonElement
+  ) {
     const group = CONFIG.SWADE.prototypeRollGroups.find(
       (v) => v.name === target.dataset.group,
     );
@@ -370,6 +408,7 @@ export class RollDialog extends FormApplication<
         value: modifier.value,
       });
     }
+    this.render({ force: true });
   }
 
   #onKeyDown(event) {
@@ -407,6 +446,10 @@ export interface RollDialogContext {
   actor?: SwadeActor;
   ap?: number;
   isHeavyWeapon?: boolean;
+}
+interface RollDialogConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+  ctx: RollDialogContext;
+  resolve: (roll: SwadeRoll | null) => void;
 }
 interface RollDialogFormData {
   modifiers?: Array<RollModifier & { active: boolean }>;

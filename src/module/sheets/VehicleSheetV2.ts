@@ -283,7 +283,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    new AttributeManager(this.actor).render(true);
+    new AttributeManager({ actor: this.actor }).render({ force: true });
   }
 
   protected static async rollAttribute(

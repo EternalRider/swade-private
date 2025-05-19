@@ -1,7 +1,7 @@
-<form autocomplete='off'>
+<section>
   <header class='header'>
     <h1>{{deckName}}</h1>
-    <button type='button' class='add-card'>
+    <button type='button' class='add-card' data-action='addCard'>
       <i class='fa-solid fa-lg fa-plus'></i>
       {{localize 'DOCUMENT.Card'}}
     </button>
@@ -15,6 +15,7 @@
             src='{{card.currentFace.img}}'
             alt='{{card.name}}'
             data-id='{{card.id}}'
+            data-action='showCard'
             loading='lazy'
           />
           <span class='flexcol card-details'>
@@ -34,21 +35,11 @@
                 {{localize 'SWADE.CardFace'}}
               </label>
               <span class='form-fields'>
-                <input
-                  type='text'
+                <file-picker
                   name='card.{{card.id}}.img'
                   value='{{card.currentFace.img}}'
+                  type='image'
                 />
-                <button
-                  id='{{card.uuid}}-face'
-                  type='button'
-                  class='file-picker'
-                  data-type='image'
-                  data-target='card.{{card.id}}.img'
-                  title='{{localize 'FILES.BrowseTooltip'}}'
-                >
-                  <i class='fas fa-file-import fa-fw'></i>
-                </button>
               </span>
             </span>
             <span class='form-group'>
@@ -75,12 +66,13 @@
                 </select>
               </span>
             </span>
+            <button type='button' data-action='deleteCard' data-id='{{card.id}}'>
+              <i class='fa-solid fa-trash'></i>
+              {{localize 'Delete'}}
+            </button>
           </span>
         </li>
       {{/each}}
     </ul>
   </section>
-  <button type='submit' name='submit' id='submit'>
-    <i class='far fa-save'></i>{{localize 'SETTINGS.Save'}}
-  </button>
-</form>
+</section>

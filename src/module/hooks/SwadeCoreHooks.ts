@@ -346,7 +346,7 @@ export default class SwadeCoreHooks {
       },
       callback: async (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
-        new ActionCardEditor(deck).render(true);
+        new ActionCardEditor({ cards: deck }).render({ force: true });
       },
     };
     const chaseLayout: ContextMenu.Entry = {

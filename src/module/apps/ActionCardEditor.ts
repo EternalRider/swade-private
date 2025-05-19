@@ -1,7 +1,3 @@
-interface ScrollRenderOptions extends Application.RenderOptions {
-  scroll?: boolean;
-}
-
 interface CardData {
   name: string;
   img: string;
@@ -10,43 +6,75 @@ interface CardData {
   isJoker: boolean;
 }
 
-export default class ActionCardEditor extends FormApplication<
-  FormApplicationOptions,
-  Cards
-> {
-  constructor(cards: Cards, options: Partial<FormApplicationOptions> = {}) {
-    super(cards, options);
-  }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      title: game.i18n.localize('SWADE.ActionCardEditor'),
-      template: 'systems/swade/templates/apps/action-card-editor.hbs',
-      classes: ['swade', 'action-card-editor', 'swade-app'],
-      scrollY: ['.card-list'],
+export default class ActionCardEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor({ cards, ...options }: ActionCardEditorConfiguration) {
+    super(options);
+    this.#cards = cards;
+  }
+  
+  #cards: Cards;
+
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE.ActionCardEditor'
+    },
+    position: {
       width: 600,
-      height: 'auto' as const,
+      height: 'auto'
+    },
+    // TODO swade-app -> swade-application
+    classes: ['swade', 'action-card-editor', 'swade-app', 'standard-form'],
+    tag: 'form',
+    form: {
+      handler: ActionCardEditor.onSubmit,
       closeOnSubmit: false,
       submitOnClose: false,
-    });
+    },
+    actions: {
+      addCard: ActionCardEditor.#onAddCard,
+      showCard: ActionCardEditor.#onShowCard,
+      deleteCard: ActionCardEditor.#onDeleteCard
+    }
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/action-card-editor.hbs', scrollable: ['.card-list'] },
+    footer: { template: 'templates/generic/form-footer.hbs' }
   }
+  
+  // TODO: remove once swade-application
+  protected override _initializeApplicationOptions(options) {
+    if (!options.classes?.includes('themed')) {
+      options.classes ??= [];
+      options.classes.push('themed', 'theme-light');
+    }
+    return super._initializeApplicationOptions(options);
+  }
+
   override get id(): string {
-    return `actionCardEditor-${this.object.id}`;
+    return `actionCardEditor-${this.cards.id}`;
   }
 
   get cards() {
-    return this.object as Cards;
+    return this.#cards;
   }
 
-  override async getData() {
-    const data = {
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
       deckName: this.cards.name,
       cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
       suitOptions: this.#getSuitOptions(),
       cardValues: this.#getCardValues(),
-    };
-    return data as any;
+      buttons: [
+        { type: 'submit', icon: 'fa-regular fa-save', label: 'SETTINGS.Save' }
+      ]
+    })
+    return context;
   }
+  
   #getSuitOptions(): Record<number, string> {
     return {
       4: 'SWADE.Cards.Spades',
@@ -79,23 +107,13 @@ export default class ActionCardEditor extends FormApplication<
     };
   }
 
-  override activateListeners(jquery: JQuery) {
-    super.activateListeners(jquery);
-    const html = jquery[0];
-    html
-      .querySelectorAll('.card-face')
-      .forEach((el) =>
-        el.addEventListener('click', (ev) => this._showCard(ev)),
-      );
-    html
-      .querySelectorAll('.add-card')
-      .forEach((el) =>
-        el.addEventListener('click', async () => this._createNewCard()),
-      );
-  }
-
-  protected override async _updateObject(_event: Event, formData = {}) {
-    const data = foundry.utils.expandObject(formData);
+  static async onSubmit(
+    this: ActionCardEditor,
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended
+  ) {
+    const data = foundry.utils.expandObject(formData.object);
     const cards = Object.entries(data.card) as [string, CardData][];
     const updates = new Array<Record<string, unknown>>();
     for (const [id, value] of cards) {
@@ -123,7 +141,7 @@ export default class ActionCardEditor extends FormApplication<
       updates.push(foundry.utils.flattenObject(diff));
     }
     await this.cards.updateEmbeddedDocuments('Card', updates);
-    this.render(true);
+    this.render({ force: true });
   }
 
   private _sortCards(a: Card, b: Card) {
@@ -137,17 +155,24 @@ export default class ActionCardEditor extends FormApplication<
     return card;
   }
 
-  private _showCard(event: PointerEvent) {
-    const id = event.currentTarget?.dataset.id!;
+  static #onShowCard(
+    this: ActionCardEditor,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card) return;
-    new ImagePopout({
-      src: card.currentFace?.img!,
-      shareable: true,
-    }).render(true);
+    new foundry.applications.apps.ImagePopout({
+      src: card.currentFace?.img!
+    }).render({ force: true });
   }
 
-  private async _createNewCard() {
+  static async #onAddCard(
+    this: ActionCardEditor,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
     const newCard = await CONFIG.Card.documentClass.create(
       {
         name: game.i18n.format('DOCUMENT.New', {
@@ -166,18 +191,34 @@ export default class ActionCardEditor extends FormApplication<
       { parent: this.cards },
     );
     if (newCard) {
-      this.render(true, { scroll: true });
+      await this.render({ force: true });
+      this.element.querySelector('.card-list')?.scrollIntoView(false);
     }
   }
 
-  override render(force: boolean, options?: ScrollRenderOptions) {
-    super.render(force, options);
+  static async #onDeleteCard(
+    this: ActionCardEditor,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const card = this.cards.cards.get(target.dataset.id);
+    if (!card) return;
+    const text = game.i18n.format('SWADE.DeleteEmbeddedCardPrompt', {
+      card: card.name
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          await card.delete();
+          this.render({ force: true });
+        }
+      }
+    });
   }
+}
 
-  override async _render(force?: boolean, options: ScrollRenderOptions = {}) {
-    await super._render(force, options);
-    if (options.scroll) {
-      document.querySelector(`#${this.id} .card-list`)?.scrollIntoView(false);
-    }
-  }
+export interface ActionCardEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+  cards: Cards;
 }

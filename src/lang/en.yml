@@ -902,6 +902,7 @@ SWADE:
   AddAction: Add Action
   DialogConfirmPrompt: Are you sure?
   DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}?
+  DeleteEmbeddedCardPrompt: Are you sure you want to delete the card {card}?
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
     Label: Trademark Weapon

@@ -1,9 +1,9 @@
-<form autocomplete='off' class='{{cssClass}}'>
+<section class='{{cssClass}}'>
   <header>
     <h2 class='flexrow'>
       <span>{{localize
           'SWADE.Requirements.Editor.Header'
-          name=object.name
+          name=edge.name
         }}</span>
       <button
         type='button'
@@ -215,8 +215,4 @@
       </li>
     {{/each}}
   </ul>
-  <footer>
-    <button class='submit' type='button'><i class='fa-solid fa-save'></i>
-      {{localize 'Save Changes'}}</button>
-  </footer>
-</form>
+</section>

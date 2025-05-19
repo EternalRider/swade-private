@@ -14,7 +14,6 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
       title: 'SWADE.SettingConf',
       resizable: false
     },
-    scrollY: ['.sheet-body .tab'],
     position: {
       width: 600,
       height: 700
@@ -38,10 +37,10 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
 
   static override PARTS = {
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
-    basics: { template: 'systems/swade/templates/apps/configurator/basics.hbs' },
-    setting: { template: 'systems/swade/templates/apps/configurator/setting.hbs' },
-    bennies: { template: 'systems/swade/templates/apps/configurator/bennies.hbs' },
-    additionalStats: { template: 'systems/swade/templates/apps/configurator/additional-stats.hbs' },
+    basics: { template: 'systems/swade/templates/apps/configurator/basics.hbs', scrollable: [''] },
+    setting: { template: 'systems/swade/templates/apps/configurator/setting.hbs', scrollable: [''] },
+    bennies: { template: 'systems/swade/templates/apps/configurator/bennies.hbs', scrollable: [''] },
+    additionalStats: { template: 'systems/swade/templates/apps/configurator/additional-stats.hbs', scrollable: [''] },
     footer: { template: 'templates/generic/form-footer.hbs' }
   };
 

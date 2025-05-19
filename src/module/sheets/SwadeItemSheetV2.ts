@@ -266,7 +266,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     html
       .querySelector('button.open-requirements-editor')
       ?.addEventListener('click', () =>
-        new RequirementsEditor(this.item).render(true),
+        new RequirementsEditor({ edge: this.item }).render({ force: true }),
       );
   }
 

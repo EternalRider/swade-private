@@ -2,74 +2,95 @@ import { DieSidesOption } from '../../globals';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getDieSidesRange } from '../util';
 
-export default class AttributeManager extends FormApplication<
-  FormApplicationOptions,
-  SwadeActor
-> {
-  constructor(actor: SwadeActor, options?: FormApplicationOptions) {
-    if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
-    super(actor, options);
-  }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  static override get defaultOptions(): FormApplicationOptions {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/attribute-manager.hbs',
-      classes: ['swade', 'attribute-manager', 'swade-app'],
-      resizable: false,
+export default class AttributeManager extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor({actor, ...options}: AttributeManagerConfiguration) {
+    if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
+    super(options);
+    this.#actor = actor;
+  }
+  
+  #actor: SwadeActor;
+
+  static override DEFAULT_OPTIONS = {
+    // TODO: swade-app -> swade-application
+    classes: ['swade', 'attribute-manager', 'swade-app', 'standard-form'],
+    position: {
+      width: 600,
+      height: 'auto'
+    },
+    tag: 'form',
+    form: {
+      handler: AttributeManager.onSubmit,
       submitOnClose: false,
       submitOnChange: true,
       closeOnSubmit: false,
-      width: 600,
-      height: 'auto' as const,
-    });
-  }
+    }
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/attribute-manager.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' }
+  };
 
   override get id(): string {
-    return `${this.object.id}-attributeManager`;
+    return `${this.actor.id}-attributeManager`;
   }
 
   override get title(): string {
     return game.i18n.format('SWADE.AttributeManager.Title', {
-      name: this.object.name,
+      name: this.actor.name,
     });
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    super.activateListeners(html);
-    html[0]
-      .querySelector('footer button')
-      ?.addEventListener('click', this.close.bind(this));
+  get actor(): SwadeActor {
+    return this.#actor;
   }
 
-  override async getData(
-    options?: Partial<FormApplicationOptions>,
-  ): Promise<AttributeManagerData> {
-    const data: AttributeManagerData = {
-      isExtra: !this.object.isWildcard,
-      dieSides:
-        this.object.type === 'character'
-          ? getDieSidesRange(4, 20)
-          : getDieSidesRange(4, 24),
-      wildDieSides: getDieSidesRange(4, 12),
-      dieSidesWithMinimum:
-        this.object.type === 'character'
-          ? getDieSidesRange(1, 20)
-          : getDieSidesRange(1, 24),
-    };
-    return foundry.utils.mergeObject(await super.getData(options), data);
+  override async _prepareContext(options) {
+    const context: AttributeManagerRenderContext = 
+      foundry.utils.mergeObject(await super._prepareContext(options), {
+        isExtra: !this.actor.isWildcard,
+        dieSides:
+          this.actor.type === 'character'
+            ? getDieSidesRange(4, 20)
+            : getDieSidesRange(4, 24),
+        wildDieSides: getDieSidesRange(4, 12),
+        dieSidesWithMinimum:
+          this.actor.type === 'character'
+            ? getDieSidesRange(1, 20)
+            : getDieSidesRange(1, 24),
+        actor: this.actor,
+        buttons: [
+          { type: 'submit', icon: 'fa-solid fa-floppy-disk', label: 'Save Changes'}
+        ]
+      });
+    return context;
   }
 
-  protected override async _updateObject(_event: Event, formData?: object) {
-    await this.object.update(formData);
-    return this.render(true);
+  static async onSubmit(
+    this: AttributeManager,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended
+  ) {
+    await this.actor.update(formData.object);
+    await this.render({ force: true });
+    if (event.submitter) this.close();
   }
 }
 
-interface AttributeManagerData
-  extends Partial<FormApplication.Data<{}, FormApplicationOptions>> {
+interface AttributeManagerConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+  actor: SwadeActor;
+}
+
+interface AttributeManagerRenderContext
+  extends Partial<foundry.applications.api.ApplicationV2.RenderContext> {
   isExtra: boolean;
-  isVehicle: boolean;
   dieSides: DieSidesOption[];
   wildDieSides: DieSidesOption[];
   dieSidesWithMinimum: DieSidesOption[];
+  actor: SwadeActor
 }
