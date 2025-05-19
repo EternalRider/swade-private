@@ -4,20 +4,22 @@
     padding-top: 3px;
   }
 
-  .main-grid {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    overflow: auto;
-  }
-
   .form-group {
     --form-element-width: 270px;
+    display: grid;
+    grid-template-areas: 
+      "label fields"
+      "hint hint";
     label {
-      flex: 3;
+      grid-area: label;
     }
     .form-fields {
-      flex: 0 0 var(--form-element-width);
+      grid-area: fields;
       max-width: var(--form-element-width);
+      justify-self: end;
+    }
+    .notes {
+      grid-area: hint;
     }
     select {
       max-width: var(--form-element-width);

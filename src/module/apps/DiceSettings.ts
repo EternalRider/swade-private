@@ -1,57 +1,54 @@
 import { SWADE } from '../config';
 
+/* eslint-disable @typescript-eslint/naming-convention */
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
 /**
  * This class defines a submenu for the system settings which will handle the DSN Settings
  */
-export default class DiceSettings extends FormApplication<
-  FormApplicationOptions,
-  any
-> {
-  config: any;
-  customWildDieDefaultColors: any;
-  constructor() {
-    super();
-    this.config = SWADE.diceConfig;
-    this.customWildDieDefaultColors =
-      this.config.flags.dsnCustomWildDieColors.default;
-  }
+export default class DiceSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+  config = SWADE.diceConfig;
+  customWildDieDefaultColors = this.config.flags.dsnCustomWildDieColors.default;
 
-  static override get defaultOptions() {
-    return {
-      ...super.defaultOptions,
-      id: 'diceConfig',
-      title: 'SWADE Dice Settings',
-      template: 'systems/swade/templates/apps/dice-config.hbs',
-      classes: ['swade', 'dice-config', 'dice-so-nice', 'swade-app'],
+  static override DEFAULT_OPTIONS = {
+    id: 'diceConfig',
+    window: {
+      title: 'SWADE.DiceConf',
+      resizable: false
+    },
+    position: {
       width: 500,
-      height: 'auto' as const,
-      resizable: false,
+      height: 'auto' as const
+    },
+    // TODO: swade-app -> swade-application
+    classes: ['swade', 'setting-config', 'dice-so-nice', 'swade-app', 'standard-form'],
+    tag: 'form',
+    form: {
+      handler: DiceSettings.onSubmit,
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,
-    };
+    },
+    actions: {
+      reset: DiceSettings.#resetSettings
+    }
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/dice-config.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' }
+  };
+
+  // TODO: remove once swade-application
+  protected override _initializeApplicationOptions(options) {
+    if (!options.classes?.includes('themed')) {
+      options.classes ??= [];
+      options.classes.push('themed', 'theme-light');
+    }
+    return super._initializeApplicationOptions(options);
   }
 
-  /**
-   * @override
-   */
-  override activateListeners(jquery: JQuery) {
-    super.activateListeners(jquery);
-
-    const html = jquery[0];
-    html
-      .querySelector('#reset')
-      ?.addEventListener('click', () => this._resetSettings());
-    html.querySelector('#submit')?.addEventListener('click', async () => {
-      await this.close();
-      location.reload();
-    });
-  }
-
-  /**
-   * @override
-   */
-  override getData(): any {
+  override async _prepareContext(options) {
     const settings: Record<string, any> = {};
     for (const flag in this.config.flags) {
       const defaultValue = this.config.flags[flag].default;
@@ -78,51 +75,65 @@ export default class DiceSettings extends FormApplication<
       }
     }
 
-    const data = {
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
       settings,
       hasCustomWildDie: settings['dsnWildDie'].value !== 'customWildDie',
       noWildDie: game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none',
       textureList: game.dice3d?.exports.Utils.prepareTextureList(),
       fontList: game.dice3d?.exports.Utils.prepareFontList(),
       materialList: this._prepareMaterialList(),
-    };
-    return data;
+      buttons: [
+        { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
+        { type: 'reset', action: 'reset', icon: 'fa-solid fa-undo', cssClass: 'submit', label: 'SETTINGS.Reset'}
+      ]
+    });
+
+    return context;
   }
 
-  async _updateObject(_event, formData): Promise<void> {
-    const expandedFormdata = foundry.utils.expandObject(formData) as any;
-    //handle basic settings
-    for (const [key, value] of Object.entries(expandedFormdata.swade)) {
-      //handle custom wild die
-      if (expandedFormdata.swade.dsnWildDie === 'customWildDie') {
-        await game.user?.setFlag('swade', 'dsnCustomWildDieColors', {
-          diceColor:
-            expandedFormdata.diceColor ||
-            this.customWildDieDefaultColors.diceColor,
-          edgeColor:
-            expandedFormdata.edgeColor ||
-            this.customWildDieDefaultColors.edgeColor,
-          labelColor:
-            expandedFormdata.labelColor ||
-            this.customWildDieDefaultColors.labelColor,
-          outlineColor:
-            expandedFormdata.outlineColor ||
-            this.customWildDieDefaultColors.outlineColor,
-        });
-      }
+  static async onSubmit(
+    this: DiceSettings,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended
+  ) {
+    const expandedFormData = foundry.utils.expandObject(formData.object) as any;
+    const { diceColor, edgeColor, labelColor, outlineColor } = this.customWildDieDefaultColors;
+    
+    // Handle basic settings
+    for (const [key, value] of Object.entries(expandedFormData.swade)) {
       await game.user?.setFlag('swade', key, value);
     }
-    this.render(true);
+
+    // Handle custom Wild Die
+    if (expandedFormData.swade.dsnWildDie === 'customWildDie') {
+      await game.user?.setFlag('swade', 'dsnCustomWildDieColors', {
+        diceColor: expandedFormData.diceColor || diceColor,
+        edgeColor: expandedFormData.edgeColor || edgeColor,
+        labelColor: expandedFormData.labelColor || labelColor,
+        outlineColor: expandedFormData.outlineColor || outlineColor
+      });
+    }
+
+    this.render({ force: true });
+    if (event.submitter) {
+      this.close();
+      location.reload();
+    }
   }
 
-  async _resetSettings() {
+  static async #resetSettings(
+    this: DiceSettings,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
     for (const flag in this.config.flags) {
       const resetValue = this.config.flags[flag].default;
       if (game.user?.getFlag('swade', flag) !== resetValue) {
         await game.user?.setFlag('swade', flag, resetValue);
       }
     }
-    this.render(true);
+    this.render({ force: true });
   }
 
   private _prepareSystemList() {
