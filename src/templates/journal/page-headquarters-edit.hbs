@@ -3,7 +3,7 @@
     <header class='section-header'>
       {{localize 'SWADE.Headquarters.Advantage'}}
     </header>
-    <prose-mirror name="system.advantage" value="{{document.system.advantage}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+    <prose-mirror name="system.advantage" value="{{document.system.advantage}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
       {{{enriched.advantage}}}
     </prose-mirror>
   </section>
@@ -11,7 +11,7 @@
     <header class='section-header'>
       {{localize 'SWADE.Headquarters.Complication'}}
     </header>
-    <prose-mirror name="system.complication" value="{{document.system.complication}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+    <prose-mirror name="system.complication" value="{{document.system.complication}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
       {{{enriched.complication}}}
     </prose-mirror>
   </section>
@@ -23,7 +23,7 @@
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Description'}}
       </header>
-      <prose-mirror name="system.form.description" value="{{document.system.form.description}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      <prose-mirror name="system.form.description" value="{{document.system.form.description}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
         {{{enriched.form.description}}}
       </prose-mirror>
     </div>
@@ -31,7 +31,7 @@
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Acquisition'}}
       </header>
-      <prose-mirror name="system.form.acquisition" value="{{document.system.form.acquisition}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      <prose-mirror name="system.form.acquisition" value="{{document.system.form.acquisition}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
         {{{enriched.form.acquisition}}}
       </prose-mirror>
     </div>
@@ -39,7 +39,7 @@
       <header class='hq-form-part section-header'>
         {{localize 'SWADE.Headquarters.Maintenance'}}
       </header>
-      <prose-mirror name="system.form.maintenance" value="{{document.system.form.maintenance}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+      <prose-mirror name="system.form.maintenance" value="{{document.system.form.maintenance}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
         {{{enriched.form.maintenance}}}
       </prose-mirror>
     </div>
@@ -48,7 +48,7 @@
     <header class='hq-upgrades section-header'>
       {{localize 'SWADE.Headquarters.Upgrades'}}
     </header>
-    <prose-mirror name="system.upgrades" value="{{document.system.upgrades}}" collaborate="true" data-document-uuid="{{document.uuid}}">
+    <prose-mirror name="system.upgrades" value="{{document.system.upgrades}}" {{#unless isSynthetic}}collaborate="true" {{/unless}}data-document-uuid="{{document.uuid}}">
       {{{enriched.upgrades}}}
     </prose-mirror>
   </section>

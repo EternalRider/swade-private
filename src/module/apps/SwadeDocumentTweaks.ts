@@ -46,7 +46,7 @@ class SwadeDocumentTweaks<
   );
 
   override get id() {
-    return `DocumentTweaks-${this.document.documentName}-${this.document.id}`;
+    return `Swade${this.document.documentName}Tweaks-${this.document.documentName}-${this.document.id}`;
   }
 
   protected override _initializeApplicationOptions(options) {

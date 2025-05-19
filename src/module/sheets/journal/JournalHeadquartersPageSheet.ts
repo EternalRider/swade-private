@@ -12,17 +12,17 @@ export default class JournalHeadquartersPageSheet extends foundry.applications
   static EDIT_PARTS = {
     header: super.EDIT_PARTS.header,
     content: {
-      template: 'systems/swade/templates/journal/page-headquarters-edit.hbs',
-      classes: ['standard-form', 'scrollable'],
+      template: `systems/swade/templates/journal/page-headquarters-edit.hbs`,
+      classes: ["standard-form", 'scrollable']
     },
-    footer: super.EDIT_PARTS.footer,
+    footer: super.EDIT_PARTS.footer
   };
 
   static VIEW_PARTS = {
     content: {
-      template: 'systems/swade/templates/journal/page-headquarters-view.hbs',
-      root: true,
-    },
+      template: `systems/swade/templates/journal/page-headquarters-view.hbs`,
+      root: true
+    }
   };
 
   async _prepareContext(options) {
@@ -38,6 +38,8 @@ export default class JournalHeadquartersPageSheet extends foundry.applications
         maintenance: await this.#enrich(system.form.maintenance),
       },
     };
+    const realDocument = await fromUuid(context.document.uuid);
+    if (!realDocument) context.isSynthetic = true;
     return context;
   }
 

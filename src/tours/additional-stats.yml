@@ -8,19 +8,21 @@ suggestedNextTours:
   - swade.advances
 steps:
   - id: gameSettings
-    selector: '#settings-game>button[data-action="configure"]'
+    selector: '#sidebar #settings button[data-app="configure"]'
     title: SWADE.TOURS.ADDSTATS.GameSettings.Title
     content: SWADE.TOURS.ADDSTATS.GameSettings.Content
     tab:
       parent: sidebar
       id: settings
+      group: primary
   - id: swadeSettings
-    selector: '#client-settings button[data-key="swade.setting-config"]'
+    selector: '#settings-config button[data-key="swade.setting-config"]'
     title: SWADE.TOURS.ADDSTATS.SwadeSettings.Title
     content: SWADE.TOURS.ADDSTATS.SwadeSettings.Content
     tab:
       parent: settings
       id: system
+      group: categories
     settings:
       settingFields:
         actor:
@@ -48,7 +50,8 @@ steps:
     content: SWADE.TOURS.ADDSTATS.StatSettings.Content
     tab:
       parent: configurator
-      id: additional-stats
+      id: additionalStats
+      group: sheet
   - id: statKey
     selector: '#settingConfig section.attributes input.attribute-key'
     title: SWADE.TOURS.ADDSTATS.StatKey.Title
@@ -72,7 +75,9 @@ steps:
     tab:
       parent: actor
       id: summary
+      group: primary
     actor:
+      _id: swadeTourActor00
       name: SWADE.TOURS.ADDSTATS.Actor
       type: character
       img: icons/environment/people/commoner.webp
@@ -120,9 +125,10 @@ steps:
     title: SWADE.TOURS.ADDSTATS.AccessTweaks.Title
     content: SWADE.TOURS.ADDSTATS.AccessTweaks.Content
   - id: addStatTweaks
-    selector: '#tweaks section[data-tab="additional-stats"]'
+    selector: '#tweaks section[data-tab="additionalStats"]'
     title: SWADE.TOURS.ADDSTATS.AddStatTweaks.Title
     content: SWADE.TOURS.ADDSTATS.AddStatTweaks.Content
     tab:
       parent: tweaks
-      id: additional-stats
+      id: additionalStats
+      group: sheet
