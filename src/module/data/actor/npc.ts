@@ -95,7 +95,7 @@ export class NpcData extends CreatureData<
       for (const ability of this.parent.itemTypes.ability) {
         const enrichedHTML = await TextEditor.enrichHTML(
           ability.system.description,
-          options,
+          { ...options },
         );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
