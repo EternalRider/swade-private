@@ -4,77 +4,81 @@ import type SwadeItem from '../documents/item/SwadeItem';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class Reloadinator extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class Reloadinator extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   declare magazines: SwadeItem[];
   declare weapon: SwadeItem;
-  
-  constructor({weapon, magazines, resolve, ...options}: MagReloadConfiguration) {
+
+  constructor({
+    weapon,
+    magazines,
+    resolve,
+    ...options
+  }: MagReloadConfiguration) {
     super(options);
     this.#callback = resolve;
     this.magazines = magazines;
     this.weapon = weapon;
   }
-  
+
   #callback: (reloaded: boolean) => void;
   #isResolved = false;
   #wantsToDiscard = false;
 
-  static asPromise(ctx: Omit<MagReloadConfiguration, 'resolve'>): Promise<boolean> {
-    return new Promise((resolve) => new Reloadinator({...ctx, resolve}).render({ force: true }));
-  }  
+  static asPromise(
+    ctx: Omit<MagReloadConfiguration, 'resolve'>,
+  ): Promise<boolean> {
+    return new Promise((resolve) =>
+      new Reloadinator({ ...ctx, resolve }).render({ force: true }),
+    );
+  }
 
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'SWADE.Magazine.Select'
-    },  
+      title: 'SWADE.Magazine.Select',
+    },
     position: {
       width: 400,
-      height: 'auto'
+      height: 'auto',
     },
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'magazine-manager', 'swade-app'],
+    classes: ['swade', 'magazine-manager', 'swade-application'],
     actions: {
       selectMag: Reloadinator.#onSelectMag,
-      discard: Reloadinator.#onDiscard
-    }  
-  };  
+      discard: Reloadinator.#onDiscard,
+    },
+  };
 
   static override PARTS = {
-    main: { template: 'systems/swade/templates/apps/reload-manager.hbs' }
-  };  
+    main: { template: 'systems/swade/templates/apps/reload-manager.hbs' },
+  };
 
   get loadedAmmo() {
     return this.weapon.getFlag('swade', 'loadedAmmo');
-  }  
+  }
 
   get noShotsInWeapon() {
     return (
       this.weapon.type === 'weapon' && this.weapon.system.currentShots === 0
-    );  
-  }  
+    );
+  }
 
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }  
-    return super._initializeApplicationOptions(options);
-  }  
-  
   static #onDiscard(
     this: Reloadinator,
     _event: PointerEvent,
-    target: HTMLInputElement
+    target: HTMLInputElement,
   ) {
     this.#wantsToDiscard = target.checked;
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      magazineGroups: this.#prepareOptionList(),
-      canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        magazineGroups: this.#prepareOptionList(),
+        canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
+      },
+    );
     return context;
   }
 
@@ -86,7 +90,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(Application
   static async #onSelectMag(
     this: Reloadinator,
     event: PointerEvent,
-    target: HTMLButtonElement
+    target: HTMLButtonElement,
   ) {
     event.preventDefault();
     if (this.weapon.type !== 'weapon') return;

@@ -9,24 +9,30 @@ interface CardData {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class ActionCardEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class ActionCardEditor extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   constructor({ cards, ...options }: ActionCardEditorConfiguration) {
     super(options);
     this.#cards = cards;
   }
-  
+
   #cards: Cards;
 
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'SWADE.ActionCardEditor'
+      title: 'SWADE.ActionCardEditor',
     },
     position: {
       width: 600,
-      height: 'auto'
+      height: 'auto',
     },
-    // TODO swade-app -> swade-application
-    classes: ['swade', 'action-card-editor', 'swade-app', 'standard-form'],
+    classes: [
+      'swade',
+      'action-card-editor',
+      'swade-application',
+      'standard-form',
+    ],
     tag: 'form',
     form: {
       handler: ActionCardEditor.onSubmit,
@@ -36,23 +42,17 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
     actions: {
       addCard: ActionCardEditor.#onAddCard,
       showCard: ActionCardEditor.#onShowCard,
-      deleteCard: ActionCardEditor.#onDeleteCard
-    }
+      deleteCard: ActionCardEditor.#onDeleteCard,
+    },
   };
 
   static override PARTS = {
-    form: { template: 'systems/swade/templates/apps/action-card-editor.hbs', scrollable: ['.card-list'] },
-    footer: { template: 'templates/generic/form-footer.hbs' }
-  }
-  
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
+    form: {
+      template: 'systems/swade/templates/apps/action-card-editor.hbs',
+      scrollable: ['.card-list'],
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
   override get id(): string {
     return `actionCardEditor-${this.cards.id}`;
@@ -63,18 +63,25 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      deckName: this.cards.name,
-      cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
-      suitOptions: this.#getSuitOptions(),
-      cardValues: this.#getCardValues(),
-      buttons: [
-        { type: 'submit', icon: 'fa-regular fa-save', label: 'SETTINGS.Save' }
-      ]
-    })
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        deckName: this.cards.name,
+        cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
+        suitOptions: this.#getSuitOptions(),
+        cardValues: this.#getCardValues(),
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-regular fa-save',
+            label: 'SETTINGS.Save',
+          },
+        ],
+      },
+    );
     return context;
   }
-  
+
   #getSuitOptions(): Record<number, string> {
     return {
       4: 'SWADE.Cards.Spades',
@@ -111,7 +118,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
     this: ActionCardEditor,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     const data = foundry.utils.expandObject(formData.object);
     const cards = Object.entries(data.card) as [string, CardData][];
@@ -158,20 +165,20 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
   static #onShowCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card) return;
     new foundry.applications.apps.ImagePopout({
-      src: card.currentFace?.img!
+      src: card.currentFace?.img!,
     }).render({ force: true });
   }
 
   static async #onAddCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     const newCard = await CONFIG.Card.documentClass.create(
       {
@@ -199,12 +206,12 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
   static async #onDeleteCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     const card = this.cards.cards.get(target.dataset.id);
     if (!card) return;
     const text = game.i18n.format('SWADE.DeleteEmbeddedCardPrompt', {
-      card: card.name
+      card: card.name,
     });
     await foundry.applications.api.DialogV2.confirm({
       content: `<p class="text-center">${text}</p>`,
@@ -213,12 +220,13 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
         callback: async () => {
           await card.delete();
           this.render({ force: true });
-        }
-      }
+        },
+      },
     });
   }
 }
 
-export interface ActionCardEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+export interface ActionCardEditorConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   cards: Cards;
 }

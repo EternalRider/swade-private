@@ -2,30 +2,30 @@ import type { HeadquartersData } from '../../data/journal';
 
 export default class JournalHeadquartersPageSheet extends foundry.applications
   .sheets.journal.JournalEntryPageHandlebarsSheet {
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     classes: ['headquarters-journal'],
     form: {
       submitOnChange: true,
     },
   };
 
-  static EDIT_PARTS = {
+  static override EDIT_PARTS = {
     header: super.EDIT_PARTS.header,
     content: {
-      template: `systems/swade/templates/journal/page-headquarters-edit.hbs`,
-      classes: ["standard-form", 'scrollable']
+      template: 'systems/swade/templates/journal/page-headquarters-edit.hbs',
+      classes: ['standard-form', 'scrollable'],
     },
-    footer: super.EDIT_PARTS.footer
+    footer: super.EDIT_PARTS.footer,
   };
 
   static VIEW_PARTS = {
     content: {
-      template: `systems/swade/templates/journal/page-headquarters-view.hbs`,
-      root: true
-    }
+      template: 'systems/swade/templates/journal/page-headquarters-view.hbs',
+      root: true,
+    },
   };
 
-  async _prepareContext(options) {
+  override async _prepareContext(options) {
     const context = await super._prepareContext(options);
     const system = this.document.system as HeadquartersData;
     context.enriched = {

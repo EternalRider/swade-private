@@ -20,30 +20,28 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#ctx = ctx;
     this.#callback = resolve;
   }
-  
+
   #callback: (roll: SwadeRoll | null) => void;
-  #filters: foundry.applications.ux.SearchFilter[] = this.#createFiltersHandlers();
+  #filters: foundry.applications.ux.SearchFilter[] =
+    this.#createFiltersHandlers();
   #isResolved = false;
   #extraButtonUsed = false;
   #keydownListener;
   #ctx: RollDialogContext;
-  
-    static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
-      return new Promise<SwadeRoll | null>(
-        (resolve) => new RollDialog({ctx, resolve}).render({ force: true }),
-      );
-    }
-  
+
+  static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
+    return new Promise<SwadeRoll | null>((resolve) =>
+      new RollDialog({ ctx, resolve }).render({ force: true }),
+    );
+  }
+
   static override DEFAULT_OPTIONS = {
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'roll-dialog', 'swade-app', 'standard-form'],
+    classes: ['swade', 'roll-dialog', 'swade-application', 'standard-form'],
     position: {
       width: 400,
-      height: 'auto'
+      height: 'auto',
     },
-    filters: [
-      { inputSelector: '.searchBox', contentSelector: '.selections' }
-    ],
+    filters: [{ inputSelector: '.searchBox', contentSelector: '.selections' }],
     tag: 'form',
     form: {
       handler: RollDialog.onSubmit,
@@ -55,24 +53,14 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       close: RollDialog.#onClose,
       addModifier: RollDialog.#onAddModifier,
       addPreset: RollDialog.#onAddPreset,
-      toggleList: RollDialog.#onToggleList
-    }
+      toggleList: RollDialog.#onToggleList,
+    },
   };
 
   static override PARTS = {
     form: { template: 'systems/swade/templates/apps/roll-dialog.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
-
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
-
 
   get ctx() {
     return this.#ctx;
@@ -122,16 +110,18 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#keydownListener = this.#onKeyDown.bind(this);
       document.addEventListener('keydown', this.#keydownListener);
     }
-    this.element.querySelector('.new-modifier-value')?.addEventListener('input', (ev) => {
-      const addModButton = this.element.querySelector('.add-modifier');
-      if (addModButton) addModButton.disabled = !ev.target?.value?.length;
-    });
+    this.element
+      .querySelector('.new-modifier-value')
+      ?.addEventListener('input', (ev) => {
+        const addModButton = this.element.querySelector('.add-modifier');
+        if (addModButton) addModButton.disabled = !ev.target?.value?.length;
+      });
   }
 
   static #onToggleList(
     this: RollDialog,
     _event: PointerEvent,
-    target: HTMLButtonElement
+    target: HTMLButtonElement,
   ) {
     const style = getComputedStyle(target);
     const width =
@@ -165,29 +155,46 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      rollModes: CONFIG.Dice.rollModes,
-      modGroups: new Array<RollModifierGroup>(),
-      extraButtonLabel: '',
-      rollMode: game.settings.get('core', 'rollMode'),
-      modifiers: this.modifiers
-        .map(normalizeRollModifiers)
-        .map(this.#fillModifierLabels.bind(this)),
-      formula: this.#buildRollForEvaluation().formula,
-      isTraitRoll: this.isTraitRoll,
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-dice', cssClass: 'submit-roll', label: 'SWADE.Roll' },
-        { type: 'button', icon: 'fa-solid fa-times', action: 'close', cssClass: 'close-roll', label: 'Close'}
-      ]
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        rollModes: CONFIG.Dice.rollModes,
+        modGroups: new Array<RollModifierGroup>(),
+        extraButtonLabel: '',
+        rollMode: game.settings.get('core', 'rollMode'),
+        modifiers: this.modifiers
+          .map(normalizeRollModifiers)
+          .map(this.#fillModifierLabels.bind(this)),
+        formula: this.#buildRollForEvaluation().formula,
+        isTraitRoll: this.isTraitRoll,
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-solid fa-dice',
+            cssClass: 'submit-roll',
+            label: 'SWADE.Roll',
+          },
+          {
+            type: 'button',
+            icon: 'fa-solid fa-times',
+            action: 'close',
+            cssClass: 'close-roll',
+            label: 'Close',
+          },
+        ],
+      },
+    );
 
-    if (this.isDamageRoll || (this.isTraitRoll && !this.ctx.actor?.isWildcard)) {
+    if (
+      this.isDamageRoll ||
+      (this.isTraitRoll && !this.ctx.actor?.isWildcard)
+    ) {
       context.buttons.splice(1, 0, {
         type: 'submit',
         icon: 'fa-regular fa-square-plus',
         cssClass: 'submit-roll',
         name: 'extra',
-        label: this.isDamageRoll ? 'SWADE.RollRaise' : 'SWADE.GroupRoll'
+        label: this.isDamageRoll ? 'SWADE.RollRaise' : 'SWADE.GroupRoll',
       });
     }
 
@@ -205,10 +212,12 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this: RollDialog,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     this.#extraButtonUsed = event.submitter?.name === 'extra';
-    const expanded = foundry.utils.expandObject(formData.object) as RollDialogFormData;
+    const expanded = foundry.utils.expandObject(
+      formData.object,
+    ) as RollDialogFormData;
     Object.values(expanded.modifiers ?? []).forEach(
       (v, i) => (this.modifiers[i].ignore = !v.active),
     );
@@ -227,7 +236,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onClose(
     this: RollDialog,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     return this.close();
   }
@@ -372,7 +381,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onAddModifier(
     this: RollDialog,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     this.#addModifier();
     this.render({ force: true });
@@ -397,7 +406,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onAddPreset(
     this: RollDialog,
     _event: PointerEvent,
-    target: HTMLButtonElement
+    target: HTMLButtonElement,
   ) {
     const group = CONFIG.SWADE.prototypeRollGroups.find(
       (v) => v.name === target.dataset.group,
@@ -448,7 +457,8 @@ export interface RollDialogContext {
   ap?: number;
   isHeavyWeapon?: boolean;
 }
-interface RollDialogConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface RollDialogConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   ctx: RollDialogContext;
   resolve: (roll: SwadeRoll | null) => void;
 }

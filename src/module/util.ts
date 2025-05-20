@@ -92,20 +92,25 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
     if (mod.value[0].match(/[@+-]/)) {
       normalizedValue = mod.value;
     } else if (Number.isNumeric(mod.value)) {
-      normalizedValue = mod.value ? Number(mod.value).signedString() : '+0';
+      normalizedValue = mod.value ? signedNumberString(mod.value) : '+0';
     } else {
       normalizedValue = '+' + mod.value;
     }
   } else if (typeof mod.value === 'number') {
-    normalizedValue = mod.value.signedString();
+    normalizedValue = signedNumberString(mod.value);
   } else {
     throw new Error('Invalid modifier value ' + mod.value);
   }
   return {
-    value: normalizedValue.replaceAll('−', '-'),
+    value: normalizedValue,
     label: mod.label,
     ignore: mod.ignore,
   };
+}
+
+function signedNumberString(value: unknown): string {
+  if (typeof value === 'number') return (value < 0 ? '' : '+') + value;
+  else return '+0';
 }
 
 export function addUpModifiers(acc: number, cur: RollModifier) {
