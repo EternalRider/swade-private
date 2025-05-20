@@ -7,7 +7,9 @@ import { Accordion } from '../style/Accordion';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class ActiveEffectWizard extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   constructor(options) {
     super(options);
     this.document = options.document;
@@ -33,18 +35,22 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   currAttribute: string = 'agility';
   currSkill: string = '';
 
-  document: SwadeActor | SwadeItem
+  document: SwadeActor | SwadeItem;
 
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'A.E.G.I.S.'
+      title: 'A.E.G.I.S.',
     },
     position: {
       width: 800,
-      height: 800
+      height: 800,
     },
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'active-effect-wizard', 'swade-app', 'standard-form'],
+    classes: [
+      'swade',
+      'active-effect-wizard',
+      'swade-application',
+      'standard-form',
+    ],
     tag: 'form',
     form: {
       handler: ActiveEffectWizard.#createEffect,
@@ -55,15 +61,17 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     actions: {
       addChange: ActiveEffectWizard.#onAddChange,
       deleteChange: ActiveEffectWizard.#onDeleteChange,
-      clickIcon: ActiveEffectWizard.#onClickIcon
-    }
+      clickIcon: ActiveEffectWizard.#onClickIcon,
+    },
   };
 
   static override PARTS = {
-    form: { template: 'systems/swade/templates/apps/active-effect-wizard.hbs', scrollable: ['.presets'] },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    form: {
+      template: 'systems/swade/templates/apps/active-effect-wizard.hbs',
+      scrollable: ['.presets'],
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
-
 
   /**
    * Determine if the target of this AE is a vehicle
@@ -74,18 +82,9 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     } else return this.document.parent?.type === 'vehicle';
   }
 
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
-
   override _onChangeForm(formConfig, event) {
     super._onChangeForm(formConfig, event);
-    const target = event.target as (HTMLInputElement | HTMLSelectElement);
+    const target = event.target as HTMLInputElement | HTMLSelectElement;
     if (!target) return; // TODO: what actually do
     const index = target.closest('li')?.dataset.index;
     if (target.classList.contains('value')) {
@@ -96,7 +95,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
       this[target.name] = target.value;
     }
     const formData = new FormDataExtended(this.form);
-    foundry.utils.mergeObject(this.#effect, formData.object)
+    foundry.utils.mergeObject(this.#effect, formData.object);
     this.render();
   }
 
@@ -122,7 +121,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
         smarts: 'SWADE.AttrSma',
         spirit: 'SWADE.AttrSpr',
         strength: 'SWADE.AttrStr',
-        vigor: 'SWADE.AttrVig'
+        vigor: 'SWADE.AttrVig',
       },
       currAttribute: this.currAttribute,
       currSkill: this.currSkill,
@@ -132,8 +131,12 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
         [foundry.CONST.ACTIVE_EFFECT_MODES.UPGRADE]: 'EFFECT.MODE_UPGRADE',
       },
       buttons: [
-        { type: 'submit', icon: 'fa-solid fa-arrow-down-to-line', label: 'SWADE.ActiveEffects.Add' }
-      ]
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-arrow-down-to-line',
+          label: 'SWADE.ActiveEffects.Add',
+        },
+      ],
     });
   }
 
@@ -141,7 +144,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     this: ActiveEffectWizard,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended
+    _formData: FormDataExtended,
   ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
@@ -360,7 +363,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   static #onAddChange(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    currentTarget: HTMLElement
+    currentTarget: HTMLElement,
   ) {
     const details = currentTarget.closest('details');
     const keyPart = currentTarget.dataset.key as string;
@@ -396,7 +399,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   static #onDeleteChange(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     const index = target.closest('li')?.dataset.index;
     this.#changes.splice(Number(index), 1);
@@ -420,7 +423,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   static #onClickIcon(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     new foundry.applications.apps.FilePicker.implementation({
       current: this.#effect.img as string,

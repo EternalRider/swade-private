@@ -8,13 +8,15 @@ import { Requirement } from '../documents/item/SwadeItem.interface';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2) {
-  constructor({edge, ...options}: RequirementsEditorConfiguration) {
+export class RequirementsEditor extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
+  constructor({ edge, ...options }: RequirementsEditorConfiguration) {
     if (!(edge['system'] instanceof EdgeData)) {
       throw new TypeError('Invalid item type ' + edge['type']);
     }
     super(options);
-    
+
     this.#requirements = foundry.utils.getProperty(
       edge,
       'system.requirements',
@@ -27,14 +29,18 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
 
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'SWADE.Req'
+      title: 'SWADE.Req',
     },
     position: {
       width: 600,
-      height: 'auto'
+      height: 'auto',
     },
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'requirements-editor', 'swade-app', 'standard-form'],
+    classes: [
+      'swade',
+      'requirements-editor',
+      'swade-application',
+      'standard-form',
+    ],
     tag: 'form',
     form: {
       handler: RequirementsEditor.onSubmit,
@@ -44,27 +50,17 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
     },
     actions: {
       add: RequirementsEditor.#addRequirement,
-      delete: RequirementsEditor.#deleteRequirement
-    }
+      delete: RequirementsEditor.#deleteRequirement,
+    },
   };
 
   static override PARTS = {
     form: { template: 'systems/swade/templates/apps/requirements-editor.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
-  
 
   get edge() {
     return this.#edge;
-  }
-
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
   }
 
   override _onChangeForm(formConfig, event) {
@@ -80,11 +76,11 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
     this: RequirementsEditor,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     const requirements = Object.values<Requirement>(
       // This maps the incoming formdata to an actual array of requirements
-      foundry.utils.expandObject(formData.object).system?.requirements ?? {}
+      foundry.utils.expandObject(formData.object).system?.requirements ?? {},
     );
     const changes = { type: 'edge', system: { requirements } };
     try {
@@ -105,27 +101,30 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      requirements: this.#requirements,
-      types: constants.REQUIREMENT_TYPE,
-      typeChoices: this.#getRequirementTypeChoices(),
-      rankChoices: this.#getRankChoices(),
-      dieChoices: this.#getDieChoices(),
-      attributeChoices: this.#getAttributeChoices(),
-      combinatorChoices: this.#getCombinatorChoices(),
-      slugPattern: SLUG_REGEX.source,
-      edge: this.edge,
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes'}
-      ]
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        requirements: this.#requirements,
+        types: constants.REQUIREMENT_TYPE,
+        typeChoices: this.#getRequirementTypeChoices(),
+        rankChoices: this.#getRankChoices(),
+        dieChoices: this.#getDieChoices(),
+        attributeChoices: this.#getAttributeChoices(),
+        combinatorChoices: this.#getCombinatorChoices(),
+        slugPattern: SLUG_REGEX.source,
+        edge: this.edge,
+        buttons: [
+          { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
+        ],
+      },
+    );
     return context;
   }
 
   static async #addRequirement(
     this: RequirementsEditor,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     const newReq =
       this.#requirements.length > 0
@@ -142,7 +141,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
   static async #deleteRequirement(
     this: RequirementsEditor,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     const index = target.closest('li')?.dataset.index;
     this.#requirements.findSplice((_v, i) => i === Number(index));
@@ -205,6 +204,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
     );
   }
 }
-interface RequirementsEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface RequirementsEditorConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   edge: SwadeItem;
 }

@@ -10,54 +10,52 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   declare protected selection: ChoiceSet;
 
-  constructor({parent, choiceSet, resolve, ...options}: ChoiceDialogConfiguration) {
+  constructor({
+    parent,
+    choiceSet,
+    resolve,
+    ...options
+  }: ChoiceDialogConfiguration) {
     super(options);
     this.#callback = resolve;
     this.#parent = parent;
     this.selection = choiceSet;
   }
-  
+
   #callback: (value: ChoiceSet) => void;
   #parent: SwadeItem;
   #keyDownListener;
 
-  static asPromise(ctx: Omit<ChoiceDialogConfiguration, 'resolve'>): Promise<ChoiceSet> {
-    return new Promise<ChoiceSet>((resolve) => new ChoiceDialog({...ctx, resolve}).render({ force: true }));
+  static asPromise(
+    ctx: Omit<ChoiceDialogConfiguration, 'resolve'>,
+  ): Promise<ChoiceSet> {
+    return new Promise<ChoiceSet>((resolve) =>
+      new ChoiceDialog({ ...ctx, resolve }).render({ force: true }),
+    );
   }
 
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'SWADE ChoiceDialog'
+      title: 'SWADE ChoiceDialog',
     },
     position: {
       width: 'auto',
-      height: 'auto'
+      height: 'auto',
     },
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'choice-dialog', 'swade-app', 'standard-form'],
+    classes: ['swade', 'choice-dialog', 'swade-application', 'standard-form'],
     tag: 'form',
     form: {
-      handler: ChoiceDialog.onSubmit
+      handler: ChoiceDialog.onSubmit,
     },
     actions: {
-      close: ChoiceDialog.#onClose
-    }
+      close: ChoiceDialog.#onClose,
+    },
   };
 
   static override PARTS = {
     form: { template: 'systems/swade/templates/apps/choice-dialog.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
-
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
-  
 
   override async _onRender(_context, _options) {
     if (!this.#keyDownListener) {
@@ -70,7 +68,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this: ChoiceDialog,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended
+    _formData: FormDataExtended,
   ) {
     this.customSubmit();
   }
@@ -91,7 +89,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onClose(
     this: ChoiceDialog,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     this.close();
   }
@@ -103,18 +101,30 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      parent: this.#parent,
-      prompt: this.selection.title,
-      choices: this.selection.choices.map((choice, index) => ({
-        ...choice,
-        value: index,
-      })),
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-check-double', label: 'SWADE.ButtonSubmit' },
-        { type: 'button', icon: 'fa-solid fa-times', label: 'Close', action: 'close' }
-      ]
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        parent: this.#parent,
+        prompt: this.selection.title,
+        choices: this.selection.choices.map((choice, index) => ({
+          ...choice,
+          value: index,
+        })),
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-solid fa-check-double',
+            label: 'SWADE.ButtonSubmit',
+          },
+          {
+            type: 'button',
+            icon: 'fa-solid fa-times',
+            label: 'Close',
+            action: 'close',
+          },
+        ],
+      },
+    );
     return context;
   }
 

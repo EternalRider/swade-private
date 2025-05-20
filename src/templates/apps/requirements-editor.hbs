@@ -1,7 +1,7 @@
 <section class='{{cssClass}}'>
   <header>
     <h2 class='flexrow'>
-      <span>{{localize
+      <span class='underline-text'>{{localize
           'SWADE.Requirements.Editor.Header'
           name=edge.name
         }}</span>
@@ -197,12 +197,29 @@
             {{/if}}
           </div>
           {{#unless @last}}
-            <select
+            <label class='float-label'>
+              <select
+                name='{{concat "system.requirements." @index ".combinator"}}'
+                data-tooltip='SWADE.Requirements.Combinator'
+              >
+                {{selectOptions
+                  @root.combinatorChoices
+                  selected=combinator
+                  localize=true
+                }}
+              </select>
+              <span></span>
+            </label>
+            {{!-- <select
               name='{{concat "system.requirements." @index ".combinator"}}'
               data-tooltip='SWADE.Requirements.Combinator'
             >
-              {{selectOptions @root.combinatorChoices selected=combinator localize=true}}
-            </select>
+              {{selectOptions
+                @root.combinatorChoices
+                selected=combinator
+                localize=true
+              }}
+            </select> --}}
           {{/unless}}
         </div>
         <button

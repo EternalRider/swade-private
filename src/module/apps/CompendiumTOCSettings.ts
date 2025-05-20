@@ -3,45 +3,41 @@ import { CompendiumTOC } from './CompendiumTOC';
 /* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   #blockList: Record<string, boolean>;
-  
+
   constructor(options) {
     super(options);
     this.#blockList = game.settings.get('swade', 'tocBlockList');
   }
 
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
+  static override DEFAULT_OPTIONS = {
     id: 'compendiumTOCSettings',
     window: {
-      title: 'SWADE.TOCSettings.Name'
+      title: 'SWADE.TOCSettings.Name',
     },
     tag: 'form',
     position: {
       width: 500,
-      height: 600
+      height: 600,
     },
-    classes: ['swade-app', 'swade', 'toc-settings', 'standard-form'],
+    classes: ['swade-application', 'swade', 'toc-settings', 'standard-form'],
     form: {
       handler: CompendiumTOCSettings.onSubmit,
       closeOnSubmit: true,
       submitOnChange: false,
-      submitOnClose: false
-    }
-  }, { inplace: false });
-
-  static override PARTS = {
-    main: { template: 'systems/swade/templates/apps/compendium-toc-settings.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+      submitOnClose: false,
+    },
   };
 
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
+  static override PARTS = {
+    main: {
+      template: 'systems/swade/templates/apps/compendium-toc-settings.hbs',
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
   get blockList() {
     return this.#blockList;
@@ -50,7 +46,7 @@ export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(Ap
   override async _prepareContext(options) {
     const context = await super._prepareContext(options);
     context.buttons = [
-      { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' } // TODO: localize
+      { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' }, // TODO: localize
     ];
     const packs = game.packs.filter((p) =>
       CompendiumTOC.ALLOWED_TYPES.includes(p.metadata.type),
@@ -76,7 +72,7 @@ export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(Ap
   static async onSubmit(
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     if (!game.user?.isGM) return;
     // invert the values

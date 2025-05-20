@@ -1,6 +1,6 @@
 <section autocomplete='off' class='main-grid'>
   <header class='text-center'>
-    <h2>
+    <h2 class='underline'>
       <i class='fa-solid fa-shield-quartered'></i>
       <strong>A</strong>ctive
       <strong>E</strong>ffect
@@ -10,7 +10,12 @@
     </h2>
   </header>
   <section class='effect-basics'>
-    <img src='{{effect.img}}' alt='{{effect.name}}' class='icon' data-action='clickIcon'/>
+    <img
+      src='{{effect.img}}'
+      alt='{{effect.name}}'
+      class='icon'
+      data-action='clickIcon'
+    />
     <div class='form-group name'>
       <label for='aewizard-name'>{{localize 'SWADE.Name'}}</label>
       <span class='form-fields'>
@@ -70,7 +75,11 @@
             </select>
             <input type='text' class='value' value='{{this.value}}' />
             <span class='change-controls'>
-              <button type='button' class='delete-change' data-action='deleteChange'>
+              <button
+                type='button'
+                class='delete-change'
+                data-action='deleteChange'
+              >
                 <i class='fa-solid fa-trash'></i>
               </button>
             </span>
@@ -112,7 +121,11 @@
           <button type='button' data-key='die.sides' data-action='addChange'>
             {{localize 'SWADE.DieSides'}}
           </button>
-          <button type='button' data-key='wild-die.sides' data-action='addChange'>
+          <button
+            type='button'
+            data-key='wild-die.sides'
+            data-action='addChange'
+          >
             {{localize 'SWADE.WildDieSides'}}
           </button>
           <button type='button' data-key='die.modifier' data-action='addChange'>
@@ -147,10 +160,18 @@
             <button type='button' data-key='die.sides' data-action='addChange'>
               {{localize 'SWADE.DieSides'}}
             </button>
-            <button type='button' data-key='wild-die.sides' data-action='addChange'>
+            <button
+              type='button'
+              data-key='wild-die.sides'
+              data-action='addChange'
+            >
               {{localize 'SWADE.WildDieSides'}}
             </button>
-            <button type='button' data-key='die.modifier' data-action='addChange'>
+            <button
+              type='button'
+              data-key='die.modifier'
+              data-action='addChange'
+            >
               {{localize 'SWADE.Modifier'}}
             </button>
           </div>

@@ -16,8 +16,8 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#advance = advance;
   }
 
-  #actor: SwadeActor
-  #advance: Advance
+  #actor: SwadeActor;
+  #advance: Advance;
 
   get actor() {
     return this.#actor;
@@ -34,53 +34,54 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     ) as Collection<Advance>;
   }
 
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
-
   static override DEFAULT_OPTIONS = {
     window: {
-      title: 'SWADE.Advances.EditorTitle'
+      title: 'SWADE.Advances.EditorTitle',
     },
     position: {
       width: 420,
-      height: 'auto'
+      height: 'auto',
     },
-    // TODO: swade-app -> swade-application
-    classes: ['swade', 'advance-editor', 'swade-app', 'standard-form'],
+    classes: ['swade', 'advance-editor', 'swade-application', 'standard-form'],
     tag: 'form',
     form: {
       handler: AdvanceEditor.onSubmit,
       submitOnClose: false,
       closeOnSubmit: false,
       submitOnChange: false,
-    }
+    },
   };
 
   static override PARTS = {
     form: { template: 'systems/swade/templates/apps/advanceEditor.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      advance: this.advance,
-      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
-      advanceTypes: this.#getAdvanceTypes(),
-      owner: this.actor.isOwner,
-      notes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.advance.notes, {
-        async: true,
-        secrets: this.actor.isOwner,
-      }),
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-floppy-disk', label: 'Save Changes'}
-      ]
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        advance: this.advance,
+        rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
+        advanceTypes: this.#getAdvanceTypes(),
+        owner: this.actor.isOwner,
+        notes:
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            this.advance.notes,
+            {
+              async: true,
+              secrets: this.actor.isOwner,
+            },
+          ),
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-solid fa-floppy-disk',
+            label: 'Save Changes',
+          },
+        ],
+      },
+    );
     return context;
   }
 
@@ -88,7 +89,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this: AdvanceEditor,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     const expanded = foundry.utils.expandObject(formData.object);
     const sortHasChanged = expanded.sort !== this.advance.sort;
@@ -135,7 +136,8 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 }
 
-export interface AdvanceEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+export interface AdvanceEditorConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   advance: Advance;
   actor: SwadeActor;
 }

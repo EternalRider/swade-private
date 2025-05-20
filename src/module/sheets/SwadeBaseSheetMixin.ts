@@ -37,7 +37,7 @@ export function SwadeBaseSheetMixin<
       },
     };
 
-    static TABS: Record<string, Partial<SwadeApplicationTab>> = {};
+    static override TABS: Record<string, Partial<SwadeApplicationTab>> = {};
 
     static async _onEditImage(
       this: SwadeBaseSheet,
@@ -77,7 +77,9 @@ export function SwadeBaseSheetMixin<
       _event: PointerEvent,
       _target: HTMLImageElement,
     ) {
-      new ActiveEffectWizard({ document: this.document }).render({ force: true });
+      new ActiveEffectWizard({ document: this.document }).render({
+        force: true,
+      });
     }
 
     // This is marked as private because there's no real need

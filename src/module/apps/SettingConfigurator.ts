@@ -5,91 +5,105 @@ import SwadeCards from '../documents/card/SwadeCards';
 /* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class SettingConfigurator extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class SettingConfigurator extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
   config = SWADE.settingConfig;
 
   static override DEFAULT_OPTIONS = {
     id: 'settingConfig',
     window: {
       title: 'SWADE.SettingConf',
-      resizable: false
+      resizable: false,
     },
     position: {
       width: 600,
-      height: 700
+      height: 700,
     },
-    // TODO: swade-app -> swade-application
-    classes: ['setting-config', 'sheet', 'swade-app', 'standard-form'],
+    classes: ['setting-config', 'sheet', 'swade-application', 'standard-form'],
     tag: 'form',
     form: {
       handler: SettingConfigurator.onSubmit,
       closeOnSubmit: false,
       submitOnClose: true,
-      submitOnChange: true
+      submitOnChange: true,
     },
     actions: {
       reset: SettingConfigurator.#resetSettings,
       createChar: SettingConfigurator.#onCreateChar,
       createItem: SettingConfigurator.#onCreateItem,
-      delete: SettingConfigurator.#onDelete
-    }
+      delete: SettingConfigurator.#onDelete,
+    },
   };
 
   static override PARTS = {
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
-    basics: { template: 'systems/swade/templates/apps/configurator/basics.hbs', scrollable: [''] },
-    setting: { template: 'systems/swade/templates/apps/configurator/setting.hbs', scrollable: [''] },
-    bennies: { template: 'systems/swade/templates/apps/configurator/bennies.hbs', scrollable: [''] },
-    additionalStats: { template: 'systems/swade/templates/apps/configurator/additional-stats.hbs', scrollable: [''] },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    basics: {
+      template: 'systems/swade/templates/apps/configurator/basics.hbs',
+      scrollable: [''],
+    },
+    setting: {
+      template: 'systems/swade/templates/apps/configurator/setting.hbs',
+      scrollable: [''],
+    },
+    bennies: {
+      template: 'systems/swade/templates/apps/configurator/bennies.hbs',
+      scrollable: [''],
+    },
+    additionalStats: {
+      template:
+        'systems/swade/templates/apps/configurator/additional-stats.hbs',
+      scrollable: [''],
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
   static override TABS = {
     sheet: {
       tabs: [
-        { id: 'basics', label: 'SWADE.WorldBasics'},
+        { id: 'basics', label: 'SWADE.WorldBasics' },
         { id: 'setting', label: 'SWADE.SettingRules' },
         { id: 'bennies', label: 'SWADE.Bennies' },
-        { id: 'additionalStats', label: 'SWADE.AddStats' }
+        { id: 'additionalStats', label: 'SWADE.AddStats' },
       ],
-      initial: 'basics'
-    }
+      initial: 'basics',
+    },
   };
-
-  // TODO: remove once swade-application
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
-  }
 
   override async _prepareContext(options) {
     const settingFields = game.settings.get('swade', 'settingFields');
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      settingRules: {},
-      actorSettingStats: settingFields.actor,
-      itemSettingStats: settingFields.item,
-      dice3d: !!game.dice3d,
-      dtypes: {
-        String: 'SWADE.String',
-        Number: 'SWADE.Number',
-        Boolean: 'SWADE.Checkbox',
-        Die: 'SWADE.Die',
-        Selection: 'SWADE.Selection',
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        settingRules: {},
+        actorSettingStats: settingFields.actor,
+        itemSettingStats: settingFields.item,
+        dice3d: !!game.dice3d,
+        dtypes: {
+          String: 'SWADE.String',
+          Number: 'SWADE.Number',
+          Boolean: 'SWADE.Checkbox',
+          Die: 'SWADE.Die',
+          Selection: 'SWADE.Selection',
+        },
+        coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
+        actionDeckChoices: this.#buildActionDeckChoices(),
+        discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
+        injuryTableChoices: await this.#buildInjuryTableChoices(),
+        armorStackingChoices: this.#getArmorStackingChoices(),
+        wealthTypes: this.#getWealthTypes(),
+        buttons: [
+          { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
+          {
+            type: 'reset',
+            action: 'reset',
+            icon: 'fa-solid fa-undo',
+            cssClass: 'submit',
+            label: 'SETTINGS.Reset',
+          },
+        ],
       },
-      coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
-      actionDeckChoices: this.#buildActionDeckChoices(),
-      discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
-      injuryTableChoices: await this.#buildInjuryTableChoices(),
-      armorStackingChoices: this.#getArmorStackingChoices(),
-      wealthTypes: this.#getWealthTypes(),
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
-        { type: 'reset', action: 'reset', icon: 'fa-solid fa-undo', cssClass: 'submit', label: 'SETTINGS.Reset'}
-      ]
-    });
+    );
     for (const setting of this.config.settings) {
       context.settingRules[setting] = game.settings.get('swade', setting);
     }
@@ -97,7 +111,11 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
   }
 
   override async _preparePartContext(partId, context, options) {
-    const partContext = await super._preparePartContext(partId, context, options);
+    const partContext = await super._preparePartContext(
+      partId,
+      context,
+      options,
+    );
     if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
     return partContext;
   }
@@ -106,7 +124,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
     this: SettingConfigurator,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: FormDataExtended,
   ) {
     // Gather Data
     const expandedFormData = foundry.utils.expandObject(formData.object);
@@ -114,7 +132,9 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
     const formItemAttrs = expandedFormData.itemSettingStats || {};
 
     // Set the "easy" settings
-    for (const [key, settingValue] of Object.entries(expandedFormData.settingRules)) {
+    for (const [key, settingValue] of Object.entries(
+      expandedFormData.settingRules,
+    )) {
       if (
         this.config.settings.includes(key) &&
         settingValue !== game.settings.get('swade', key)
@@ -129,7 +149,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
     const itemStats = this.#handleKeyValidityCheck(formItemAttrs);
     const saveValue = {
       actor: this.#handleRemovableAttributes(actorStats, settingFields.actor),
-      item: this.#handleRemovableAttributes(itemStats, settingFields.item)
+      item: this.#handleRemovableAttributes(itemStats, settingFields.item),
     };
     await game.settings.set('swade', 'settingFields', saveValue);
 
@@ -141,7 +161,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
   static async #resetSettings(
     this: SettingConfigurator,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     for (const setting of this.config.settings) {
       const resetValue = game.settings.settings.get(
@@ -163,7 +183,9 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
     const newElement = document.createElement('div');
     newElement.innerHTML = `<input type="text" name="${documentType}SettingStats.attr${nk}.key" value="attr${nk}"/>`;
     const newKey = newElement.children[0];
-    form?.querySelector('[data-application-part="additionalStats"]')?.appendChild(newKey);
+    form
+      ?.querySelector('[data-application-part="additionalStats"]')
+      ?.appendChild(newKey);
     await this._onSubmitForm(this.options.form!, event);
     await this.render({ force: true });
   }
@@ -171,7 +193,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
   static async #onCreateChar(
     this: SettingConfigurator,
     event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     await this.#createHelper(event, false);
   }
@@ -179,7 +201,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
   static async #onCreateItem(
     this: SettingConfigurator,
     event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     await this.#createHelper(event, true);
   }
@@ -187,7 +209,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
   static async #onDelete(
     this: SettingConfigurator,
     event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     event.preventDefault();
     const li = target.closest('.attribute');

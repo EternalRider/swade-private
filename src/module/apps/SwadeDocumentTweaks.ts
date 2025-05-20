@@ -27,34 +27,16 @@ class SwadeDocumentTweaks<
     this.settingFields = settingFields;
   }
 
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(
-    super.DEFAULT_OPTIONS,
-    {
-      position: {
-        width: 400,
-        height: 600,
-      },
-      classes: [
-        'swade',
-        'doc-tweaks',
-        'swade-app',
-        'standard-form',
-        'theme-light',
-      ],
+  static override DEFAULT_OPTIONS = {
+    position: {
+      width: 400,
+      height: 600,
     },
-    { inplace: false },
-  );
+    classes: ['swade', 'doc-tweaks', 'swade-application', 'standard-form'],
+  };
 
   override get id() {
     return `Swade${this.document.documentName}Tweaks-${this.document.documentName}-${this.document.id}`;
-  }
-
-  protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
   }
 
   /** Add the Document name into the window title*/

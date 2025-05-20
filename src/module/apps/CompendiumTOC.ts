@@ -5,9 +5,14 @@ import { constants } from '../constants';
 import SwadeItem from '../documents/item/SwadeItem';
 
 export class CompendiumTOC<
-  DocumentClass extends Actor.ImplementationClass | Item.ImplementationClass | JournalEntry.ImplementationClass,
-  RenderContext extends CompendiumTOCData & foundry.applications.sidebar.apps.Compendium.RenderContext,
-  Configuration extends TOCApplicationOptions<CompendiumTOCMetadata> & foundry.applications.sidebar.apps.Compendium.Configuration
+  DocumentClass extends
+    | Actor.ImplementationClass
+    | Item.ImplementationClass
+    | JournalEntry.ImplementationClass,
+  RenderContext extends CompendiumTOCData &
+    foundry.applications.sidebar.apps.Compendium.RenderContext,
+  Configuration extends TOCApplicationOptions<CompendiumTOCMetadata> &
+    foundry.applications.sidebar.apps.Compendium.Configuration,
 > extends foundry.applications.sidebar.apps.Compendium<
   DocumentClass,
   RenderContext,
@@ -19,31 +24,31 @@ export class CompendiumTOC<
   #dragDrop: foundry.applications.ux.DragDrop[];
   #filters: foundry.applications.ux.SearchFilter[];
 
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(super.DEFAULT_OPTIONS, {
+  static override DEFAULT_OPTIONS = {
     window: {
-      resizable: true
+      resizable: true,
     },
     position: {
-      width: 800
+      width: 800,
     },
     dragDrop: [
       { dropSelector: null, dragSelector: '.toc-entry' },
-      { dropSelector: null, dragSelector: '.journal' }
+      { dropSelector: null, dragSelector: '.journal' },
     ],
     filters: [
       { inputSelector: '[name="search"]', contentSelector: '.content' },
-      { inputSelector: '[name="category"]', contentSelector: '.content' }
+      { inputSelector: '[name="category"]', contentSelector: '.content' },
     ],
     actions: {
       toggleSearchMode: CompendiumTOC.#onToggleSearchMode,
       createDocument: CompendiumTOC.#onCreateDocument,
-      openDocument: CompendiumTOC.#onOpenDocument
+      openDocument: CompendiumTOC.#onOpenDocument,
     },
-    classes: ['swade-app', 'compendium-toc']
-  }, { inplace: false });
+    classes: ['swade-application', 'compendium-toc'],
+  };
 
   static override PARTS = {
-    directory: { template: 'systems/swade/templates/apps/compendium-toc.hbs' }
+    directory: { template: 'systems/swade/templates/apps/compendium-toc.hbs' },
   };
 
   static ALLOWED_TYPES = ['Actor', 'Item', 'JournalEntry'];
@@ -62,11 +67,11 @@ export class CompendiumTOC<
     return this.options.dragDrop.map((d) => {
       d.permissions = {
         dragstart: this._canDragStart.bind(this),
-        drop: this._canDragDrop.bind(this)
+        drop: this._canDragDrop.bind(this),
       };
       d.callbacks = {
         dragstart: this._onDragStart.bind(this),
-        drop: this._onDrop.bind(this)
+        drop: this._onDrop.bind(this),
       };
       return new foundry.applications.ux.DragDrop.implementation(d);
     });
@@ -107,11 +112,19 @@ export class CompendiumTOC<
   }
 
   protected override _initializeApplicationOptions(options) {
-    if (!options.classes?.includes('themed')) {
-      options.classes ??= [];
-      options.classes.push('themed', 'theme-light');
-    }
-    return super._initializeApplicationOptions(options);
+    options = super._initializeApplicationOptions(options);
+    options.classes ??= [];
+    const toRemove = [
+      'tab',
+      'sidebar-tab',
+      'compendium-directory',
+      'directory',
+      'themed',
+      'theme-light',
+      'theme-dark',
+    ];
+    options.classes = options.classes.filter((c) => !toRemove.includes(c));
+    return options;
   }
 
   override async _onRender(context, options) {
@@ -123,6 +136,10 @@ export class CompendiumTOC<
       .querySelectorAll<HTMLDivElement>('.content')
       .forEach((e) => (e.style.columnWidth = this.columnWidth));
     new ResizeObserver(this._onObserveResize.bind(this)).observe(html);
+
+    const { colorScheme } = game.settings.get('core', 'uiConfig');
+    if (colorScheme.interface)
+      this.element.classList.remove('themed', `theme-${colorScheme.interface}`);
   }
 
   override async _prepareContext(options) {
@@ -138,13 +155,13 @@ export class CompendiumTOC<
         icon: 'fa-search',
         tooltip: 'SIDEBAR.SearchModeName',
       },
-    }
+    };
 
     if (this.#fullTextSearch) {
       tocContext.searchMode.icon = 'fa-file-magnifying-glass';
       tocContext.searchMode.tooltip = 'SIDEBAR.SearchModeFull';
     }
-  
+
     if (this.isJournal) {
       tocContext.entries = await this._getJournalEntries();
     } else {
@@ -152,7 +169,12 @@ export class CompendiumTOC<
     }
 
     if (this.isActor) {
-      tocContext.actorCategories = Array.from(this.collection.index.reduce((acc, actor) => acc.add(actor.system?.category ?? ''), new Set([''])));
+      tocContext.actorCategories = Array.from(
+        this.collection.index.reduce(
+          (acc, actor) => acc.add(actor.system?.category ?? ''),
+          new Set(['']),
+        ),
+      );
     }
     return foundry.utils.mergeObject(context, tocContext);
   }
@@ -172,7 +194,7 @@ export class CompendiumTOC<
   protected async _onDrop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
-    
+
     try {
       const data = JSON.parse(event.dataTransfer!.getData('text/plain')) as {
         type: string;
@@ -189,7 +211,7 @@ export class CompendiumTOC<
   static #onToggleSearchMode(
     this: CompendiumTOC,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     this.#fullTextSearch = !this.#fullTextSearch;
     this.render();
@@ -198,21 +220,21 @@ export class CompendiumTOC<
   static #onCreateDocument(
     this: CompendiumTOC,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     this.documentClass.createDialog(
       {},
       {
         renderSheet: true,
-        pack: this.collection.metadata.id
-      }
+        pack: this.collection.metadata.id,
+      },
     );
   }
 
   static async #onOpenDocument(
     this: CompendiumTOC,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
     const entryId = target?.closest('[data-entry-id]')?.dataset.entryId;
     const pageId = target?.closest('[data-page-id]')?.dataset.pageId;
@@ -221,7 +243,7 @@ export class CompendiumTOC<
     if (pageId) options.pageId = pageId;
     const doc = await this.collection.getDocument(entryId);
     if (!doc) return;
-    if (doc.sheet instanceof Application) 
+    if (doc.sheet instanceof Application)
       await doc.sheet?._render(true, options);
     else if (doc.sheet instanceof foundry.applications.api.ApplicationV2)
       await doc.sheet.render({ force: true });
@@ -233,7 +255,7 @@ export class CompendiumTOC<
     this._createContextMenu(this._getEntryContextOptions, selector, {
       fixed: true,
       hookName: `get${this.documentName}ContextOptions`,
-      parentClassHooks: false
+      parentClassHooks: false,
     });
   }
 
@@ -284,22 +306,27 @@ export class CompendiumTOC<
     }
     pack.getIndex({ fields: searchFields }).then(() => {
       const searchConfig = {
-        filters: []
+        filters: [],
       };
-      if (category?.length) searchConfig.filters.push({
-        field: 'system.category',
-        value: category
-      });
+      if (category?.length)
+        searchConfig.filters.push({
+          field: 'system.category',
+          value: category,
+        });
       if (this.#fullTextSearch) {
         searchConfig.query = query;
       }
       let searchResults = pack.search(searchConfig);
-      if (this.isJournal) searchResults = searchResults.flatMap(i => i.pages);
+      if (this.isJournal) searchResults = searchResults.flatMap((i) => i.pages);
       if (!this.#fullTextSearch) {
-        searchResults = searchResults.filter(i => rgx.test(i.name));
+        searchResults = searchResults.filter((i) => rgx.test(i.name));
       }
       for (const li of children) {
-        if (searchResults.some((e) => [li.dataset.entryId, li.dataset.pageId].includes(e._id))) {
+        if (
+          searchResults.some((e) =>
+            [li.dataset.entryId, li.dataset.pageId].includes(e._id),
+          )
+        ) {
           li.style.display = 'flex';
         } else {
           li.style.display = 'none';
@@ -591,8 +618,10 @@ export class CompendiumTOC<
     _observer: ResizeObserver,
   ) {
     for (const entry of entries) {
-      const content = entry.target.querySelector<HTMLElement>('.content')!;
-      this._fitColumns(entry.target, content);
+      const content = entry.target.querySelector<HTMLElement>('.content');
+      const parent = entry.target.querySelector<HTMLElement>('.window-content');
+      if (!content || !parent) continue;
+      this._fitColumns(parent, content);
       //move the searchbar
       const search = entry.target.querySelector<HTMLInputElement>('.search');
       if (entry.target.clientWidth < 400) {
@@ -621,9 +650,12 @@ export class CompendiumTOC<
     return a.name.localeCompare(b.name);
   }
 
-  private _requestTokenImages(actorId: string, pack: string): Promise<string[]> {
+  private _requestTokenImages(
+    actorId: string,
+    pack: string,
+  ): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      game.socket.emit('requestTokenImages', actorId, { pack }, result => {
+      game.socket.emit('requestTokenImages', actorId, { pack }, (result) => {
         if (result.error) return reject(new Error(result.error));
         resolve(result.files);
       });
@@ -642,7 +674,10 @@ export class CompendiumTOC<
     //Priority 2: random token art
     else if (prototypeToken?.randomImg) {
       try {
-        [path] = await this._requestTokenImages(actor._id, this.collection.metadata.id);
+        [path] = await this._requestTokenImages(
+          actor._id,
+          this.collection.metadata.id,
+        );
       } catch (error) {
         Logger.error(error);
       }
