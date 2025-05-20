@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 4.4.4
+
+### Fixed
+
+- Fixed an issue that could cause errors when updating skills. (#1322) **by @mhilbrunner**
+
 ## 4.4.3
 
 ### Fixed
