@@ -1,0 +1,115 @@
+<section class='tab scrollable{{#if tab.active}} active{{/if}}' data-tab='{{tab.id}}' data-group='{{tab.group}}'>
+  <!-- Initiative -->
+  <fieldset id='initiative'>
+    <legend>{{localize 'SWADE.Init'}}</legend>
+    <!-- Deck -->
+    <div class='form-group'>
+      <label>{{localize 'SWADE.Settings.InitCardDeck.Name'}}</label>
+      <div class='form-fields'>
+        <select name='settingRules.actionDeck'>
+          {{selectOptions
+            actionDeckChoices
+            selected=settingRules.actionDeck
+          }}
+        </select>
+      </div>
+    </div>
+    <!-- Discard Pile -->
+    <div class='form-group'>
+      <label>{{localize 'SWADE.Settings.InitDiscardPile.Name'}}</label>
+      <div class='form-fields'>
+        <select name='settingRules.actionDeckDiscardPile'>
+          {{selectOptions
+            discardPileChoices
+            selected=settingRules.actionDeckDiscardPile
+          }}
+        </select>
+      </div>
+    </div>
+  </fieldset>
+  <!-- Characters -->
+  <fieldset id='characters'>
+    <legend>{{localize 'SWADE.Characters'}}</legend>
+    <div class='form-group'>
+      <label for='enableWoundPace'>
+        {{localize 'SWADE.Settings.EnableWoundPace.Name'}}
+      </label>
+      <div class='form-fields'>
+        <input
+          id='enableWoundPace'
+          type='checkbox'
+          name='settingRules.enableWoundPace'
+          data-dtype='Boolean'
+          {{checked settingRules.enableWoundPace}}
+        />
+      </div>
+      <p class='notes'>
+        {{localize 'SWADE.Settings.EnableWoundPace.Hint'}}
+      </p>
+    </div>
+  </fieldset>
+  <!-- Vehicles -->
+  <fieldset id='vehicles'>
+    <legend>{{localize 'SWADE.Vehicles'}}</legend>
+    <div class='form-group'>
+      <label for='vehicleMods'>
+        {{localize 'SWADE.Settings.VehicleMods.Name'}}
+      </label>
+      <div class='form-fields'>
+        <input
+          id='vehicleMods'
+          type='checkbox'
+          name='settingRules.vehicleMods'
+          data-dtype='Boolean'
+          {{checked settingRules.vehicleMods}}
+        />
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.VehicleMods.Hint'}}</p>
+    </div>
+    <div class='form-group'>
+      <label for='vehicleEnergy'>
+        {{localize 'SWADE.Settings.VehicleEnergy.Name'}}
+      </label>
+      <div class='form-fields'>
+        <input
+          id='vehicleEnergy'
+          type='checkbox'
+          name='settingRules.vehicleEnergy'
+          data-dtype='Boolean'
+          {{checked settingRules.vehicleEnergy}}
+        />
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.VehicleEnergy.Hint'}}</p>
+    </div>
+    <div class='form-group'>
+      <label for='vehicleEdges'>
+        {{localize 'SWADE.Settings.VehicleEdges.Name'}}
+      </label>
+      <div class='form-fields'>
+        <input
+          id='vehicleEdges'
+          type='checkbox'
+          name='settingRules.vehicleEdges'
+          data-dtype='Boolean'
+          {{checked settingRules.vehicleEdges}}
+        />
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.VehicleEdges.Hint'}}</p>
+    </div>
+    <div class='form-group'>
+      <label for='vehicleSkills'>
+        {{localize 'SWADE.Settings.VehicleSkills.Name'}}
+      </label>
+      <div class='form-fields'>
+        <textarea
+          id='vehicleSkills'
+          style='resize: none;'
+          name='settingRules.vehicleSkills'
+          data-dtype='String'
+          placeholder='Example: Boating, Driving, Piloting, Riding'
+        >{{settingRules.vehicleSkills}}</textarea>
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.VehicleSkills.Hint'}}</p>
+    </div>
+  </fieldset>
+</section>

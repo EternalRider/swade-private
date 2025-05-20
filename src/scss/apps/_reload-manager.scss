@@ -12,6 +12,8 @@
     }
   }
   .magazine {
+    --button-size: calc(1.25 * var(--input-height));
+    width: 100%;
     padding: 0 0.5rem;
     line-height: unset;
     display: grid;

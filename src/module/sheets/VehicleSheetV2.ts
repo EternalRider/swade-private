@@ -18,7 +18,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   static override DEFAULT_OPTIONS: DeepPartial<
     SwadeDocumentSheetConfiguration<SwadeActor<'vehicle'>>
   > = {
-    classes: ['vehicle', 'standard-form'],
+    classes: ['vehicle', 'standard-form', 'swade-application'],
     position: { height: 700, width: 700 },
     window: { resizable: true },
     actions: {
@@ -283,7 +283,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    new AttributeManager(this.actor).render(true);
+    new AttributeManager({ actor: this.actor }).render({ force: true });
   }
 
   protected static async rollAttribute(

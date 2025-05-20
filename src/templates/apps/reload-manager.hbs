@@ -4,7 +4,7 @@
       <label for='empty-magazine-discard'>
         {{localize 'SWADE.DiscardMagazine'}}
       </label>
-      <input id='empty-magazine-discard' type='checkbox' class='discard' />
+      <input id='empty-magazine-discard' type='checkbox' class='discard' data-action='discard'/>
     </div>
   {{/if}}
   {{#each magazineGroups}}
@@ -13,7 +13,7 @@
       <ul class='unmarked-list'>
         {{#each this}}
           <li>
-            <button data-item-id='{{id}}' class='magazine'>
+            <button data-item-id='{{id}}' class='magazine' data-action='selectMag'>
               <div class='name'>
                 {{#if quantity}}x{{quantity}} {{/if}}{{name}}
               </div>

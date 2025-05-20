@@ -34,13 +34,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Update Actor embed template to include Super Powers **by @jestevens210**
 - [BREAKING] Auras are back! They have moved from `flags.auras` to `system.auras`. There is a migration in place for both `Actor`s and `ActiveEffect`s which should update this data automatically. **by @roth-michael**
 - [BREAKING] The following sheets and windows have been converted to AppV2
-  - SwadeDocumentTweaks
-  - SwadeTokenConfig
-  - JournalHeadquartersPageSheet
+  - ActionCardEditor
+  - ActiveEffectWizard
+  - AdvanceEditor
+  - AttributeManager
+  - ChoiceDialog
   - CompendiumTOC
   - CompendiumTOCSettings
+  - DiceSettings
+  - JournalHeadquartersPageSheet
+  - Reloadinator
+  - RequirementsEditor
+  - RollDialog
+  - SettingConfigurator
+  - SwadeDocumentTweaks
+  - SwadeTokenConfig
 - Add `category` key to base Actor data **by @jestevens210**
 - Add ability to filter by category in Actor TOC compendia **by @roth-michael**
+- Add ability to delete cards from Action Card Editor **by @roth-michael**
 
 ### Deprecated
 
@@ -48,6 +59,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - [BREAKING] Removed v12 compatibility
 - Finished deprecation period for Ancestry
+
+## 4.4.4
+
+### Fixed
+
+- Fixed an issue that could cause errors when updating skills. (#1322) **by @mhilbrunner**
 
 ## 4.4.3
 

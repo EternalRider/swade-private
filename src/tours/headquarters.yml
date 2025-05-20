@@ -4,23 +4,26 @@ canBeResumed: false
 display: true
 steps:
   - id: createJournal
-    selector: '#journal .create-document.create-entry'
+    selector: '#sidebar #journal [data-action="createEntry"]'
     title: SWADE.TOURS.HEADQUARTERS.CreateJournal.Title
     content: SWADE.TOURS.HEADQUARTERS.CreateJournal.Content
     tab:
       parent: sidebar
       id: journal
+      group: primary
   - id: createPage
     selector: '#journalSheetID button.create'
     title: SWADE.TOURS.HEADQUARTERS.CreatePage.Title
     content: SWADE.TOURS.HEADQUARTERS.CreatePage.Content
     journalEntry:
+      _id: swadeTourJournal
       name: SWADE.TOURS.HEADQUARTERS.JournalEntry
   - id: headquartersPage
     selector: '#journalPageSheetID'
     title: SWADE.TOURS.HEADQUARTERS.HQPage.Title
     content: SWADE.TOURS.HEADQUARTERS.HQPage.Content
     journalEntryPage:
+      _id: swadeTourJourPag
       name: SWADE.TOURS.HEADQUARTERS.HeadquartersPage
       type: headquarters
   - id: advantage

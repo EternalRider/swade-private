@@ -585,6 +585,7 @@ class SwadeActor<
     return RollDialog.asPromise({
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
+        rollType: "running",
       }),
       mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),

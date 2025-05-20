@@ -2,14 +2,14 @@ import type { HeadquartersData } from '../../data/journal';
 
 export default class JournalHeadquartersPageSheet extends foundry.applications
   .sheets.journal.JournalEntryPageHandlebarsSheet {
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     classes: ['headquarters-journal'],
     form: {
       submitOnChange: true,
     },
   };
 
-  static EDIT_PARTS = {
+  static override EDIT_PARTS = {
     header: super.EDIT_PARTS.header,
     content: {
       template: 'systems/swade/templates/journal/page-headquarters-edit.hbs',
@@ -25,7 +25,7 @@ export default class JournalHeadquartersPageSheet extends foundry.applications
     },
   };
 
-  async _prepareContext(options) {
+  override async _prepareContext(options) {
     const context = await super._prepareContext(options);
     const system = this.document.system as HeadquartersData;
     context.enriched = {
@@ -38,6 +38,8 @@ export default class JournalHeadquartersPageSheet extends foundry.applications
         maintenance: await this.#enrich(system.form.maintenance),
       },
     };
+    const realDocument = await fromUuid(context.document.uuid);
+    if (!realDocument) context.isSynthetic = true;
     return context;
   }
 

@@ -4,10 +4,21 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
-export default class ActiveEffectWizard extends FormApplication<
-  FormApplicationOptions,
-  SwadeActor | SwadeItem
-> {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
+  constructor(options) {
+    super(options);
+    this.document = options.document;
+    if (this.document instanceof SwadeItem) {
+      this.#effect.name = this.document.name;
+      this.#effect.img = this.document.img;
+    }
+  }
+
   #effect: ActiveEffect.CreateData = {
     name: SwadeActiveEffect.defaultName(),
     img: 'systems/swade/assets/icons/active-effect.svg',
@@ -21,85 +32,81 @@ export default class ActiveEffectWizard extends FormApplication<
     derived: true,
   };
 
-  static override get defaultOptions(): FormApplicationOptions {
-    return foundry.utils.mergeObject(super.defaultOptions, {
+  currAttribute: string = 'agility';
+  currSkill: string = '';
+
+  document: SwadeActor | SwadeItem;
+
+  static override DEFAULT_OPTIONS = {
+    window: {
       title: 'A.E.G.I.S.',
-      template: 'systems/swade/templates/apps/active-effect-wizard.hbs',
-      classes: ['swade', 'active-effect-wizard', 'swade-app'],
-      scrollY: ['.presets'],
+    },
+    position: {
+      width: 800,
+      height: 800,
+    },
+    classes: [
+      'swade',
+      'active-effect-wizard',
+      'swade-application',
+      'standard-form',
+    ],
+    tag: 'form',
+    form: {
+      handler: ActiveEffectWizard.#createEffect,
       submitOnClose: false,
       submitOnChange: false,
       closeOnSubmit: false,
-      width: 800,
-      height: 800,
-    });
-  }
+    },
+    actions: {
+      addChange: ActiveEffectWizard.#onAddChange,
+      deleteChange: ActiveEffectWizard.#onDeleteChange,
+      clickIcon: ActiveEffectWizard.#onClickIcon,
+    },
+  };
 
-  constructor(
-    object: SwadeActor | SwadeItem,
-    options?: Partial<FormApplicationOptions>,
-  ) {
-    super(object, options);
-    if (object instanceof SwadeItem) {
-      this.#effect.name = object.name;
-      this.#effect.img = object.img;
-    }
-  }
+  static override PARTS = {
+    form: {
+      template: 'systems/swade/templates/apps/active-effect-wizard.hbs',
+      scrollable: ['.presets'],
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
   /**
    * Determine if the target of this AE is a vehicle
    */
   get targetIsVehicle() {
-    if (this.object instanceof SwadeActor) {
-      return this.object.type === 'vehicle';
-    } else return this.object.parent?.type === 'vehicle';
+    if (this.document instanceof SwadeActor) {
+      return this.document.type === 'vehicle';
+    } else return this.document.parent?.type === 'vehicle';
   }
 
-  override activateListeners(jquery: JQuery<HTMLElement>): void {
-    super.activateListeners(jquery);
+  override _onChangeForm(formConfig, event) {
+    super._onChangeForm(formConfig, event);
+    const target = event.target as HTMLInputElement | HTMLSelectElement;
+    if (!target) return; // TODO: what actually do
+    const index = target.closest('li')?.dataset.index;
+    if (target.classList.contains('value')) {
+      this.#changes[Number(index)].value = target.value;
+    } else if (target.classList.contains('mode')) {
+      this.#changes[Number(index)].mode = Number(target.value);
+    } else if (target.classList.contains('target')) {
+      this[target.name] = target.value;
+    }
+    const formData = new FormDataExtended(this.form);
+    foundry.utils.mergeObject(this.#effect, formData.object);
+    this.render();
+  }
+
+  override async _onRender(context, options) {
+    await super._onRender(context, options);
     this.#setupAccordions();
-    const html = jquery[0];
-    html
-      .querySelectorAll<HTMLButtonElement>('button[data-key]')
-      .forEach((btn) =>
-        btn.addEventListener('click', this.#onAddChange.bind(this)),
-      );
-    html
-      .querySelectorAll<HTMLButtonElement>('.change .delete-change')
-      .forEach((btn) =>
-        btn.addEventListener('click', this.#onDeleteChange.bind(this)),
-      );
-
-    html.querySelector('button.submit')?.addEventListener('click', async () => {
-      await this.#createEffect();
-      this.close();
-    });
-
-    html
-      .querySelectorAll<HTMLSelectElement>('.change .value')
-      .forEach((select) =>
-        select.addEventListener('change', this.#onChangeValue.bind(this)),
-      );
-
-    html
-      .querySelectorAll<HTMLSelectElement>('.change .mode')
-      .forEach((select) =>
-        select.addEventListener('change', this.#onChangeMode.bind(this)),
-      );
-
-    html
-      .querySelector<HTMLImageElement>('.icon')
-      ?.addEventListener('click', this.#onClickIcon.bind(this));
-
-    html
-      .querySelectorAll<HTMLInputElement>('[name]')
-      .forEach((input) =>
-        input.addEventListener('blur', this.submit.bind(this)),
-      );
   }
 
-  override async getData(options?: Partial<ApplicationOptions>) {
-    const data = {
+  override async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    return foundry.utils.mergeObject(context, {
       isVehicle: this.targetIsVehicle,
       effect: this.#effect,
       changes: this.#changes,
@@ -109,39 +116,54 @@ export default class ActiveEffectWizard extends FormApplication<
       derivedPresets: this.#getDerivedPresets(),
       globalModPresets: this.#getGlobalModPresets(),
       otherPresets: this.#getOtherStatsPresets(),
+      attributes: {
+        agility: 'SWADE.AttrAgi',
+        smarts: 'SWADE.AttrSma',
+        spirit: 'SWADE.AttrSpr',
+        strength: 'SWADE.AttrStr',
+        vigor: 'SWADE.AttrVig',
+      },
+      currAttribute: this.currAttribute,
+      currSkill: this.currSkill,
       changeModes: {
         [foundry.CONST.ACTIVE_EFFECT_MODES.ADD]: 'EFFECT.MODE_ADD',
         [foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE]: 'EFFECT.MODE_OVERRIDE',
         [foundry.CONST.ACTIVE_EFFECT_MODES.UPGRADE]: 'EFFECT.MODE_UPGRADE',
       },
-    };
-    return foundry.utils.mergeObject(await super.getData(options), data);
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-arrow-down-to-line',
+          label: 'SWADE.ActiveEffects.Add',
+        },
+      ],
+    });
   }
 
-  protected override async _updateObject(
-    _event: Event,
-    formData?: object,
-  ): Promise<void> {
-    this.#effect = foundry.utils.mergeObject(this.#effect, formData);
-    this.render();
-  }
-
-  async #createEffect() {
+  static async #createEffect(
+    this: ActiveEffectWizard,
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    _formData: FormDataExtended,
+  ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
       transfer:
-        this.object instanceof SwadeItem && this.object.type !== 'power', // only transfer on non-power items
+        this.document instanceof SwadeItem && this.document.type !== 'power', // only transfer on non-power items
     });
 
-    getDocumentClass('ActiveEffect').create(data, {
+    await getDocumentClass('ActiveEffect').create(data, {
       renderSheet: this.#changes.length === 0,
-      parent: this.object as SwadeActor | SwadeItem,
+      parent: this.document as SwadeActor | SwadeItem,
     });
+    this.close();
   }
 
   #getSkillSuggestions(): string[] {
-    if (this.object instanceof SwadeActor) {
-      return this.object.itemTypes.skill.map((skill) => skill.name!);
+    if (this.document instanceof SwadeActor) {
+      return this.document.itemTypes.skill.map((skill) => skill.name!);
+    } else if (this.document.parent instanceof SwadeActor) {
+      return this.document.parent.itemTypes.skill.map((skill) => skill.name!);
     }
     return [];
   }
@@ -338,8 +360,11 @@ export default class ActiveEffectWizard extends FormApplication<
     });
   }
 
-  #onAddChange(ev: PointerEvent) {
-    const currentTarget = ev.currentTarget as HTMLButtonElement;
+  static #onAddChange(
+    this: ActiveEffectWizard,
+    _event: PointerEvent,
+    currentTarget: HTMLElement,
+  ) {
     const details = currentTarget.closest('details');
     const keyPart = currentTarget.dataset.key as string;
     const category = details?.dataset.category as string;
@@ -368,28 +393,17 @@ export default class ActiveEffectWizard extends FormApplication<
       key: key,
       mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
     });
-    this.render(true);
+    this.render({ force: true });
   }
 
-  #onDeleteChange(ev: PointerEvent) {
-    const index = (ev.currentTarget as HTMLButtonElement).closest('li')?.dataset
-      .index;
+  static #onDeleteChange(
+    this: ActiveEffectWizard,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    const index = target.closest('li')?.dataset.index;
     this.#changes.splice(Number(index), 1);
-    this.render(true);
-  }
-
-  #onChangeValue(ev: Event) {
-    const target = ev.currentTarget as HTMLInputElement;
-    const index = (ev.currentTarget as HTMLInputElement).closest('li')?.dataset
-      .index;
-    this.#changes[Number(index)].value = target.value;
-  }
-
-  #onChangeMode(ev: Event) {
-    const target = ev.currentTarget as HTMLSelectElement;
-    const index = (ev.currentTarget as HTMLSelectElement).closest('li')?.dataset
-      .index;
-    this.#changes[Number(index)].mode = Number(target.value);
+    this.render({ force: true });
   }
 
   #setupAccordions() {
@@ -406,17 +420,21 @@ export default class ActiveEffectWizard extends FormApplication<
       });
   }
 
-  #onClickIcon() {
-    new FilePicker({
+  static #onClickIcon(
+    this: ActiveEffectWizard,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ) {
+    new foundry.applications.apps.FilePicker.implementation({
       current: this.#effect.img as string,
       type: 'image',
       callback: this.#onChangeIcon.bind(this),
-    }).render(true);
+    }).render({ force: true });
   }
 
   #onChangeIcon(path: string, _picker: FilePicker) {
     this.#effect.img = path;
-    this.render(true);
+    this.render({ force: true });
   }
 }
 
