@@ -395,6 +395,7 @@ SWADE:
     Medium: Reichweite, Mittel
     Long: Reichweite, Weit
     Extreme: Reichweite, Extrem
+    _nameShort: RW
   ModOther: Andere Modifikatioren
   Snapfire: Schnellschuss
   UnstablePlatform: Unsicheren Grund
@@ -450,6 +451,10 @@ SWADE:
     AddUnguided: Leeren Effekt hinzufügen
     Conditional: Bedingter Effekt
     ConditionalTooltip: Würfelmodifikatoren per Default ignorieren
+    AddModifier: + Modifikator
+    ModifierCost:
+      Hint: Build- oder MP-Kosten für Modifikator
+      Label: Modifikator-Kosten
   EffectCallbacks:
     Shaken:
       RollSpirit: Willenskraft würfeln
@@ -1262,6 +1267,29 @@ SWADE:
   Vehicle:
     Cargo:
       Capacity: Frachtkapazität
+    Crew:
+      Add: Besatzung hinzufügen
+      Remove: Besatzung entfernen
+      Role: Rolle
+      Roles:
+        Gunner: Schütze
+        Other: Andere
+        Operator: Fahrer
+  AttrSmaShortPowerRange: Ver
+  Burrowing: Graben
+  PPMods: Machtmodifikatoren
+  Scales:
+    LargerThan: Größer als {scale}
+    SmallerThan: Kleiner als {scale}
+    Names:
+      Tiny: Winzig
+      VerySmall: Sehr klein
+      Small: Klein
+      Normal: Normal
+      Large: Groß
+      Huge: Riesig
+      Gargantuan: Gigantisch
+    Description: 'Größe: {scale} ({name})'
 TYPES:
   Actor:
     npc: NSC
@@ -1289,3 +1317,5 @@ TYPES:
   Combat:
     dramaticTask: Dramatische Aufgabe
     chase: Verfolgung
+  ActiveEffect:
+    modifier: Modifikator
