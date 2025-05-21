@@ -57,8 +57,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Add ability to filter by category in Actor TOC compendia **by @roth-michael**
 - Add ability to delete cards from Action Card Editor **by @roth-michael**
 
-### Deprecated
-
 ### Removed
 
 - [BREAKING] Removed v12 compatibility
