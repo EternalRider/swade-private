@@ -146,7 +146,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
       itemTypes: await this._prepareItems(),
       benny: game.settings.get('swade', 'bennyImageSheet'),
       unlocked: !this.actor.system.locked,
-      description: await TextEditor.enrichHTML(this.actor.system.description, {
+      description: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.description, {
         rollData: this.actor.getRollData(),
         secrets: this.isEditable,
       }),
@@ -229,7 +229,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
           id: item.id as string,
           img: item.img as string,
           quantity: item.system.quantity as number,
-          description: await TextEditor.enrichHTML(item.system.description, {
+          description: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description, {
             secrets: this.isEditable,
           }),
         });

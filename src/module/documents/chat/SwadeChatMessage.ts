@@ -125,7 +125,7 @@ export default class SwadeChatMessage extends ChatMessage {
     const { canDelete = this.isAuthor, canClose = false } = options;
     // Determine some metadata
     const data = this.toObject(false);
-    data.content = await TextEditor.enrichHTML(this.content, {
+    data.content = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.content, {
       rollData: this.getRollData(),
     });
 

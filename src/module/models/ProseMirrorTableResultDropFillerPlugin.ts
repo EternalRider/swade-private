@@ -18,7 +18,7 @@ export class ProseMirrorTableResultDropFillerPlugin extends ProseMirror.ProseMir
     if (moved) return;
     // Get the drag data.
     const pos = view.posAtCoords({ left: event.clientX, top: event.clientY });
-    const data = TextEditor.getDragEventData(event) as {
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as {
       type: string;
       uuid: string;
     };
@@ -45,7 +45,7 @@ export class ProseMirrorTableResultDropFillerPlugin extends ProseMirror.ProseMir
       const content = selection.content().content;
       options.label = content.textBetween(0, content.size);
     }
-    const link = await TextEditor.getContentLink(data, options);
+    const link = await foundry.applications.ux.TextEditor.implementation.getContentLink(data, options);
     if (!link) return;
     const tr = view.state.tr;
     if (selection.empty && pos) tr.insertText(link, pos.pos);

@@ -44,6 +44,6 @@ export default class JournalHeadquartersPageSheet extends foundry.applications
   }
 
   async #enrich(text: string): Promise<string> {
-    return TextEditor.enrichHTML(text, { secrets: this.document.isOwner });
+    return foundry.applications.ux.TextEditor.implementation.enrichHTML(text, { secrets: this.document.isOwner });
   }
 }
