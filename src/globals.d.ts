@@ -1,7 +1,7 @@
 import type { ValueOf } from 'fvtt-types/utils';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction } from './interfaces/additional.interface';
-// import { AuraPointSource } from './module/canvas/AuraPointSource';
+import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
 import { Dice3D } from './types/DiceSoNice';
@@ -18,18 +18,19 @@ declare global {
 
   interface CONFIG {
     SWADE: SwadeConfig;
-    // Canvas: {
-    //   auras: {
-    //     collection: foundry.utils.Collection<AuraPointSource>;
-    //     filter: VisualEffectsMaskingFilter;
-    //   };
-    // };
   }
 
   namespace CONFIG {
     interface SpecialStatusEffects extends CONFIG.DefaultSpecialStatusEffects {
       COLDBODIED: string;
       INCAPACITATED: string;
+    }
+
+    interface AuraCanvas extends CONFIG.Canvas {
+      auras: {
+        collection: foundry.utils.Collection<AuraPointSource>;
+        filter: VisualEffectsMaskingFilter;
+      };
     }
   }
 }
@@ -83,5 +84,5 @@ export interface SwadeApplicationTab
 export interface SwadeDocumentSheetConfiguration<
   Document extends foundry.abstract.Document.Any,
 > extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
-  dragDrop: DragDropConfiguration[];
+  dragDrop: DragDrop.Configuration[];
 }

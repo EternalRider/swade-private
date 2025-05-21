@@ -1,3 +1,4 @@
+import { ValueOf } from 'fvtt-types/utils';
 import { PACKAGE_ID } from './config';
 
 export class Logger {
@@ -94,7 +95,10 @@ interface LogMessage {
   level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
-interface LogMessageOptions extends Notifications.NotifyOptions {
+interface LogMessageOptions
+  extends foundry.applications.ui.Notifications.NotifyOptions {
   force?: boolean;
   toast?: boolean;
 }
+
+ui.notifications;

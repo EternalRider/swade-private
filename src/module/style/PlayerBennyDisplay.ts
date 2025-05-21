@@ -66,7 +66,7 @@ export default class PlayerBennyDisplay {
     }
   }
 
-  updateBennyCount(ev?: MouseEvent) {
+  updateBennyCount(ev?: PointerEvent) {
     ev?.preventDefault();
     this.counter.innerHTML = this.bennies.toString();
   }
@@ -79,13 +79,13 @@ export default class PlayerBennyDisplay {
     }
   }
 
-  async onGiveBenny(ev?: MouseEvent) {
+  async onGiveBenny(ev?: PointerEvent) {
     ev?.preventDefault();
     await this.player.getBenny();
     this.updateBennyCount(ev);
   }
 
-  async onSpendBenny(ev?: MouseEvent) {
+  async onSpendBenny(ev?: PointerEvent) {
     ev?.preventDefault();
     await this.player.spendBenny();
     this.updateBennyCount(ev);
@@ -107,7 +107,7 @@ export default class PlayerBennyDisplay {
     }
 
     if (game.settings.get('swade', 'notifyBennies')) {
-      const message = await renderTemplate(
+      const message = await foundry.applications.handlebars.renderTemplate(
         SWADE.bennies.templates.refreshAll,
         {},
       );

@@ -6,7 +6,8 @@ declare global {
   }
 }
 
-export default class SwadeMeasuredTemplate extends MeasuredTemplate {
+export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
+  .MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
@@ -142,9 +143,10 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
 
   override _computeShape(): MeasuredTemplateShape {
     const { angle, t } = this.document;
+    const gridWidth = this.document.width;
     const { angle: direction, distance } = this.ray;
     if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
-      return this._getConeShape(direction, angle, distance);
+      return this._getConeShape(direction, angle, distance, gridWidth);
     return super._computeShape() as MeasuredTemplateShape;
   }
 
@@ -152,11 +154,12 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
     direction: number,
     angle: number,
     distance: number,
+    gridWidth: number,
   ): PIXI.Polygon {
     // Special case to handle the base SWADE cone rather than a normal cone definition
     if (angle === 0) {
-      const coneWidth = 1.5 * (distance / 9);
-      const coneLength = distance - coneWidth;
+      const coneEndRadius = game.canvas.grid.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
+      const coneLength = distance - coneEndRadius; //Calculate where the cone ends and the circle begins
       const da = 3;
       const c = Ray.fromAngle(0, 0, direction, coneLength);
       const angles = Array.fromRange(180 / da)
@@ -164,7 +167,7 @@ export default class SwadeMeasuredTemplate extends MeasuredTemplate {
         .concat([180 / 2]);
       // Get the cone shape as a polygon
       const rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneWidth),
+        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius),
       );
       const points = rays
         .reduce(

@@ -1,32 +1,53 @@
 import { CompendiumTOC } from './CompendiumTOC';
 
-export default class CompendiumTOCSettings extends FormApplication<
-  FormApplicationOptions,
-  Record<string, boolean>
-> {
-  constructor(options?: FormApplicationOptions) {
-    super(game.settings.get('swade', 'tocBlockList'), options);
+/* eslint-disable @typescript-eslint/naming-convention */
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
+  #blockList: Record<string, boolean>;
+
+  constructor(options) {
+    super(options);
+    this.#blockList = game.settings.get('swade', 'tocBlockList');
   }
 
-  static override get defaultOptions(): FormApplicationOptions {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: 'compendiumTOCSettings',
+  static override DEFAULT_OPTIONS = {
+    id: 'compendiumTOCSettings',
+    window: {
       title: 'SWADE.TOCSettings.Name',
-      template: 'systems/swade/templates/apps/compendium-toc-settings.hbs',
+    },
+    tag: 'form',
+    position: {
+      width: 500,
+      height: 600,
+    },
+    classes: ['swade-application', 'swade', 'toc-settings', 'standard-form'],
+    form: {
+      handler: CompendiumTOCSettings.onSubmit,
       closeOnSubmit: true,
       submitOnChange: false,
       submitOnClose: false,
-      classes: ['swade-app', 'swade', 'toc-settings'],
-      width: 500,
-      height: 600,
-    });
-  }
+    },
+  };
+
+  static override PARTS = {
+    main: {
+      template: 'systems/swade/templates/apps/compendium-toc-settings.hbs',
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
   get blockList() {
-    return this.object;
+    return this.#blockList;
   }
 
-  override async getData(options?: Partial<FormApplicationOptions>) {
+  override async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.buttons = [
+      { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' }, // TODO: localize
+    ];
     const packs = game.packs.filter((p) =>
       CompendiumTOC.ALLOWED_TYPES.includes(p.metadata.type),
     );
@@ -44,21 +65,22 @@ export default class CompendiumTOCSettings extends FormApplication<
       });
     }
 
-    return foundry.utils.mergeObject(await super.getData(options), {
-      blockList: packsByType,
-    });
+    context.blockList = packsByType;
+    return context;
   }
 
-  protected override async _updateObject(
-    _event: Event,
-    formData: Record<string, boolean>,
-  ): Promise<void> {
+  static async onSubmit(
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended,
+  ) {
     if (!game.user?.isGM) return;
-    //invert the values
-    for (const pack in formData) {
-      formData[pack] = !formData[pack];
+    // invert the values
+    const dataObj = formData.object;
+    for (const pack in dataObj) {
+      dataObj[pack] = !dataObj[pack];
     }
-    await game.settings.set('swade', 'tocBlockList', formData);
+    await game.settings.set('swade', 'tocBlockList', dataObj);
     game.socket?.emit('reload');
     foundry.utils.debouncedReload();
   }

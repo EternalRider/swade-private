@@ -12,6 +12,7 @@ steps:
     title: SWADE.TOURS.TWEAKS.AccessTweaks.Title
     content: SWADE.TOURS.TWEAKS.AccessTweaks.Content
     actor:
+      _id: swadeTourActor00
       name: SWADE.TOURS.TWEAKS.Actor
       type: character
       img: icons/environment/people/commoner.webp
@@ -22,23 +23,24 @@ steps:
     tab:
       parent: tweaks
       id: traits
+      group: sheet
   - id: advances
-    selector: '#tweaks section[data-tab="traits"] section div:nth-child(2)'
+    selector: '#tweaks section[data-tab="traits"] section div:has([name="system.advances.mode"])'
     title: SWADE.TOURS.TWEAKS.Advances.Title
     content: SWADE.TOURS.TWEAKS.Advances.Content
   - id: unshake
-    selector: '#tweaks section[data-tab="traits"] section div:nth-child(10)'
+    selector: '#tweaks section[data-tab="traits"] section div:has([name="system.attributes.spirit.unShakeBonus"])'
     title: SWADE.TOURS.TWEAKS.Unshake.Title
     content: SWADE.TOURS.TWEAKS.Unshake.Content
   - id: soak
-    selector: '#tweaks section[data-tab="traits"] section div:nth-child(11)'
+    selector: '#tweaks section[data-tab="traits"] section div:has([name="system.attributes.vigor.soakBonus"])'
     title: SWADE.TOURS.TWEAKS.Soak.Title
     content: SWADE.TOURS.TWEAKS.Soak.Content
   - id: initiative
-    selector: '#tweaks section[data-tab="traits"] section:nth-child(2)'
+    selector: '#tweaks section[data-tab="traits"] fieldset:has([name="system.initiative.hasLevelHeaded"])'
     title: SWADE.TOURS.TWEAKS.Initiative.Title
     content: SWADE.TOURS.TWEAKS.Initiative.Content
   - id: autoCalc
-    selector: '#tweaks section[data-tab="traits"] section:nth-child(3)'
+    selector: '#tweaks section[data-tab="traits"] fieldset:has([name="system.details.autoCalcToughness"])'
     title: SWADE.TOURS.TWEAKS.AutoCalc.Title
     content: SWADE.TOURS.TWEAKS.AutoCalc.Content

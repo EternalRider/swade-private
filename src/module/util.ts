@@ -56,7 +56,9 @@ export function getTrait(
     trait = actor.items.find((i) => i.type === 'skill' && i.name === traitName);
   }
   if (!trait) {
-    trait = actor.items.find((i) => i.type === 'skill' && i.system.swid === slugify(traitName));
+    trait = actor.items.find(
+      (i) => i.type === 'skill' && i.system.swid === slugify(traitName),
+    );
   }
   return trait;
 }
@@ -90,12 +92,12 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
     if (mod.value[0].match(/[@+-]/)) {
       normalizedValue = mod.value;
     } else if (Number.isNumeric(mod.value)) {
-      normalizedValue = mod.value ? Number(mod.value).signedString() : '+0';
+      normalizedValue = mod.value ? signedNumberString(mod.value) : '+0';
     } else {
       normalizedValue = '+' + mod.value;
     }
   } else if (typeof mod.value === 'number') {
-    normalizedValue = mod.value.signedString();
+    normalizedValue = signedNumberString(mod.value);
   } else {
     throw new Error('Invalid modifier value ' + mod.value);
   }
@@ -104,6 +106,11 @@ export function normalizeRollModifiers(mod: RollModifier): RollModifier {
     label: mod.label,
     ignore: mod.ignore,
   };
+}
+
+function signedNumberString(value: unknown): string {
+  if (typeof value === 'number') return (value < 0 ? '' : '+') + value;
+  else return '+0';
 }
 
 export function addUpModifiers(acc: number, cur: RollModifier) {
@@ -174,15 +181,18 @@ export function getScaleName(scaleMod: number): string {
   const modMax = 6;
 
   if (scaleMod < -modMax) {
-    return game.i18n.format('SWADE.Scales.SmallerThan', {scale: getScaleName(-modMax)})
+    return game.i18n.format('SWADE.Scales.SmallerThan', {
+      scale: getScaleName(-modMax),
+    });
   }
   if (scaleMod > modMax) {
-    return game.i18n.format('SWADE.Scales.LargerThan', {scale: getScaleName(modMax)})
+    return game.i18n.format('SWADE.Scales.LargerThan', {
+      scale: getScaleName(modMax),
+    });
   }
-  const index = Math.floor((scaleMod+modMax)/2);
+  const index = Math.floor((scaleMod + modMax) / 2);
   return SWADE.scales[index];
 }
-
 
 /** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
@@ -331,7 +341,7 @@ export async function createEmbedElement(
   template: string,
   className: string[],
 ): Promise<HTMLElement | HTMLCollection | null> {
-  const content = await renderTemplate(template, objectToEmbed);
+  const content = await foundry.applications.handlebars.renderTemplate(template, objectToEmbed);
   const elem = document.createElement('div');
   elem.classList;
   elem.className = className.join(' ');

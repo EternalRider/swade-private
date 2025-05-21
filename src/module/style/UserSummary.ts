@@ -45,7 +45,7 @@ export class UserSummary {
       return;
     }
     game.tooltip.activate(event.target as HTMLElement, {
-      text,
+      html: text,
       cssClass: 'swade-user-summary',
     });
   }

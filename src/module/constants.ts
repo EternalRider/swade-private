@@ -12,6 +12,7 @@ export const constants = {
   /** @enum */
   TEMPLATE_PRESET: {
     CONE: 'swcone',
+    SCONE: 'swscone',
     STREAM: 'stream',
     SBT: 'sbt',
     MBT: 'mbt',
@@ -86,8 +87,6 @@ export const constants = {
   /** @enum */
   ABILITY_TYPE: {
     SPECIAL: 'special',
-    /** @deprecated */
-    ANCESTRY: 'ancestry',
     ARCHETYPE: 'archetype',
   } as const,
   /** @enum */

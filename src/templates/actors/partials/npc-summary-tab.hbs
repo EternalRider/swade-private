@@ -177,7 +177,12 @@
             </li>
           {{/if}}
         {{/each}}
-      </ul>
+        {{#if category}}
+          <li class='ability item'>
+            {{category}}
+          </li>
+        {{/if}}
+        </ul>
     </section>
     <section class='gear abilities'>
       <header class='header-field flexrow'>

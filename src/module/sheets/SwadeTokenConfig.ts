@@ -1,12 +1,14 @@
-export default class SwadeTokenConfig extends TokenConfig {
-  override async getData(options = {}) {
-    const data = await super.getData(options);
+export default class SwadeTokenConfig extends foundry.applications.sheets
+  .TokenConfig {
+  override async _preparePartContext(partId, context, options) {
+    await super._preparePartContext(partId, context, options);
+    if (partId !== 'resources') return context;
     const sourceSystem = this.actor?.system;
-    if (!sourceSystem) return data;
-    if (!data.barAttributes) return data;
+    if (!sourceSystem) return context;
+    if (!context.barAttributes) return context;
 
     // Localize labels for normally found trackable attributes
-    for (const currData of data.barAttributes) {
+    for (const currData of context.barAttributes) {
       const fullLabel = [];
       const splitPath = currData.label.split('.');
       for (let i = 1; i <= splitPath.length; i++) {
@@ -26,30 +28,30 @@ export default class SwadeTokenConfig extends TokenConfig {
       sourceSystem.additionalStats ?? {},
     )) {
       if (value.dtype !== 'Number') continue;
-      data.barAttributes.push({
+      context.barAttributes.push({
         group: game.i18n.localize('SWADE.AddStats'),
         value: `additionalStats.${key}`,
         label: value.label,
       });
     }
     for (const key of Object.keys(sourceSystem.powerPoints ?? {})) {
-      data.barAttributes.push({
+      context.barAttributes.push({
         group: game.i18n.localize('SWADE.PP'),
         value: `powerPoints.${key}`,
         label: key,
       });
     }
     if (sourceSystem.details?.encumbrance?.max)
-      data.barAttributes.push({
+      context.barAttributes.push({
         group: game.i18n.localize('TOKEN.BarAttributes'),
         value: 'details.encumbrance',
         label: game.i18n.localize('SWADE.CarryWeight'),
       });
 
     // Final sort
-    data.barAttributes.sort((a, b) =>
+    context.barAttributes.sort((a, b) =>
       a.group === b.group ? a.label.compare(b.label) : a.group.compare(b.group),
     );
-    return data;
+    return context;
   }
 }

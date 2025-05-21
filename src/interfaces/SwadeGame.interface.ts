@@ -4,7 +4,11 @@ import AttributeManager from '../module/apps/AttributeManager';
 import { CompendiumTOC } from '../module/apps/CompendiumTOC';
 import { RollDialog } from '../module/apps/RollDialog';
 import SettingConfigurator from '../module/apps/SettingConfigurator';
-import SwadeDocumentTweaks from '../module/apps/SwadeDocumentTweaks';
+import {
+  SwadeActorTweaks,
+  SwadeDocumentTweaks,
+  SwadeItemTweaks,
+} from '../module/apps/SwadeDocumentTweaks';
 import CharacterSummarizer from '../module/CharacterSummarizer';
 import * as data from '../module/data';
 import Benny from '../module/dice/Benny';
@@ -35,6 +39,8 @@ export interface SwadeGame {
   };
   apps: {
     SwadeDocumentTweaks: typeof SwadeDocumentTweaks;
+    SwadeActorTweaks: typeof SwadeActorTweaks;
+    SwadeItemTweaks: typeof SwadeItemTweaks;
     AdvanceEditor: typeof AdvanceEditor;
     SettingConfigurator: typeof SettingConfigurator;
     CompendiumTOC: typeof CompendiumTOC;

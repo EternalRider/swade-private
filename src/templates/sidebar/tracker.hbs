@@ -1,0 +1,39 @@
+<ol class="combat-tracker ds-default">
+  {{#each groupTurns}}
+  {{#if isGroup}}
+  <li class="combatant-group {{css}}" data-action="toggleGroupExpand" data-group-id="{{id}}">
+    <header class="group-header">
+      <img class="token-image" src="{{ img }}" alt="{{ name }}" loading="lazy">
+      <div class="token-name">
+        <strong class="name">{{ name }}</strong>
+      </div>
+      {{!-- Initiative --}}
+      <div class="token-initiative">
+        {{#if roundHeld}}
+        <span class="initiative"><i class="fa-solid fa-hand-back-fist"></i></span>
+        {{else if turnLost}}
+        <span class="initiative"><i class="fa-solid fa-ban"></i></span>
+        {{else if hasRolled}}
+            {{#if canRedraw}}
+            <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{cardString}}</a>
+            {{else}}
+            <span class="initiative">{{cardString}}</span>
+            {{/if}}
+        {{else if (and canDrawInit (not initiative))}}
+        <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
+        {{else}}
+        <span class="initiative"></span>
+        {{/if}}
+      </div>
+    </header>
+    <ol class="group-turns">
+      {{#each turns}}
+      {{> "systems/swade/templates/sidebar/turn.hbs"}}
+      {{/each}}
+    </ol>
+  </li>
+  {{else}}
+  {{> "systems/swade/templates/sidebar/turn.hbs"}}
+  {{/if}}
+  {{/each}}
+</ol>

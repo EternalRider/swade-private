@@ -24,10 +24,14 @@ class SwadeBaseActorData<
   BaseData,
   DerivedData
 > {
-  /** @inheritdoc */
   static override defineSchema(): SwadeBaseActorData.Schema {
     return {
       additionalStats: makeAdditionalStatsSchema(),
+  
+      category: new foundry.data.fields.StringField({ 
+        required: false, 
+        initial: ''
+      }),
     };
   }
 

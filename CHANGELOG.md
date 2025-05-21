@@ -22,6 +22,46 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.0
+
+### Added
+
+- Added v13 compatibility
+- Added `system.build.limit` to relevant item types and `system.limit` to the modifier AE subtype, with a default value of 1. Null means unlimited. Nonlinear options should be implemented as separate choices. **by @jpmeehan5**
+- Vehicle gunners can now shoot the weapons they are assigned to from a vehicle's item chat card. This is a first wave implementation of the feature and we will be iterating on it in the future. **by @florad92**
+- Added `swade-application` css class for AppV2, analogous to the `swade-app` class for AppV1. We're keeping `swade-application` lightweight for now, but it does support light and dark mode. **by @florad92**
+- Added a small cone template preset. (!844) **by @ddbrown30**
+
+### Changed
+
+- Refactored the way chat cards are created and rendered, allowing them to be more fluid and expandable in the future. **by @florad92**
+- Update Actor embed template to include Super Powers **by @jestevens210**
+- [BREAKING] Auras are back! They have moved from `flags.auras` to `system.auras`. There is a migration in place for both `Actor`s and `ActiveEffect`s which should update this data automatically. **by @roth-michael**
+- [BREAKING] The following sheets and windows have been converted to AppV2 **by @roth-michael**
+  - ActionCardEditor
+  - ActiveEffectWizard
+  - AdvanceEditor
+  - AttributeManager
+  - ChoiceDialog
+  - CompendiumTOC
+  - CompendiumTOCSettings
+  - DiceSettings
+  - JournalHeadquartersPageSheet
+  - Reloadinator
+  - RequirementsEditor
+  - RollDialog
+  - SettingConfigurator
+  - SwadeDocumentTweaks
+  - SwadeTokenConfig
+- Add `category` key to base Actor data **by @jestevens210**
+- Add ability to filter by category in Actor TOC compendia **by @roth-michael**
+- Add ability to delete cards from Action Card Editor **by @roth-michael**
+
+### Removed
+
+- [BREAKING] Removed v12 compatibility
+- Finished deprecation period for Ancestry
+
 ## 4.4.4
 
 ### Fixed

@@ -79,7 +79,7 @@ export class NpcData extends CreatureData<
     config.caption = false;
 
     // Enrich biography text
-    this.enrichedBiography = await TextEditor.enrichHTML(
+    this.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       this.details.biography.value,
       { ...options },
     );
@@ -93,9 +93,9 @@ export class NpcData extends CreatureData<
     // Enrich and strip ability descriptions to plain text
     if (this.parent.itemTypes.ability) {
       for (const ability of this.parent.itemTypes.ability) {
-        const enrichedHTML = await TextEditor.enrichHTML(
+        const enrichedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           ability.system.description,
-          options,
+          { ...options },
         );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }

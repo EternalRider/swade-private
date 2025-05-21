@@ -14,13 +14,15 @@
       {{/if}}
     </div>
   </header>
-  <div class='card-content collapsed' style='display: none;'>
+  <div class='card-content collapsed'>
     <div>
-      <a class='use-consumable'>
-        {{localize 'SWADE.Charges'}}:
-        {{item.system.charges.value}}/{{item.system.charges.max}}
-      </a>
+      <div>
+        <a class='use-consumable'>
+          {{localize 'SWADE.Charges'}}:
+          {{item.system.charges.value}}/{{item.system.charges.max}}
+        </a>
+      </div>
+      {{{item.enrichedDescription}}}
     </div>
-    {{{item.enrichedDescription}}}
-  </div>
+    </div>
 </li>

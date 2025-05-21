@@ -1,81 +1,74 @@
-<form autocomplete='off' class='grid'>
-  <section class='packs'>
-    <section>
-      <h2>{{localize 'DOCUMENT.Actors'}}</h2>
-      <header class='form-group'>
-        <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
-        <span class='form-fields'>
-          <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
-        </span>
-      </header>
-      <ol class='unmarked-list'>
-        {{#each blockList.Actor}}
-          <li class='form-group'>
-            <label for='{{collection}}-inUse'>{{label}}</label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                id='{{collection}}-inUse'
-                name='{{collection}}'
-                {{checked inUse}}
-              />
-            </span>
-          </li>
-        {{/each}}
-      </ol>
-    </section>
-    <section>
-      <h2>{{localize 'DOCUMENT.Items'}}</h2>
-      <header class='form-group'>
-        <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
-        <span class='form-fields'>
-          <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
-        </span>
-      </header>
-      <ol class='unmarked-list'>
-        {{#each blockList.Item}}
-          <li class='form-group'>
-            <label for='{{collection}}-inUse'>{{label}}</label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                id='{{collection}}-inUse'
-                name='{{collection}}'
-                {{checked inUse}}
-              />
-            </span>
-          </li>
-        {{/each}}
-      </ol>
-    </section>
-    <section>
-      <h2>{{localize 'DOCUMENT.JournalEntries'}}</h2>
-      <header class='form-group'>
-        <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
-        <span class='form-fields'>
-          <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
-        </span>
-      </header>
-      <ol class='unmarked-list'>
-        {{#each blockList.JournalEntry}}
-          <li class='form-group'>
-            <label for='{{collection}}-inUse'>{{label}}</label>
-            <span class='form-fields'>
-              <input
-                type='checkbox'
-                id='{{collection}}-inUse'
-                name='{{collection}}'
-                {{checked inUse}}
-              />
-            </span>
-          </li>
-        {{/each}}
-      </ol>
-    </section>
+<section class='packs'>
+  <section>
+    <h2>{{localize 'DOCUMENT.Actors'}}</h2>
+    <header class='form-group'>
+      <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
+      <span class='form-fields'>
+        <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
+      </span>
+    </header>
+    <ol class='unmarked-list'>
+      {{#each blockList.Actor}}
+        <li class='form-group'>
+          <label for='{{collection}}-inUse'>{{label}}</label>
+          <span class='form-fields'>
+            <input
+              type='checkbox'
+              id='{{collection}}-inUse'
+              name='{{collection}}'
+              {{checked inUse}}
+            />
+          </span>
+        </li>
+      {{/each}}
+    </ol>
   </section>
-  <footer>
-    <button type='submit'>
-      <i class='fa-solid fa-save'></i>{{localize 'Save Changes'}}
-    </button>
-  </footer>
-</form>
+  <section>
+    <h2>{{localize 'DOCUMENT.Items'}}</h2>
+    <header class='form-group'>
+      <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
+      <span class='form-fields'>
+        <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
+      </span>
+    </header>
+    <ol class='unmarked-list'>
+      {{#each blockList.Item}}
+        <li class='form-group'>
+          <label for='{{collection}}-inUse'>{{label}}</label>
+          <span class='form-fields'>
+            <input
+              type='checkbox'
+              id='{{collection}}-inUse'
+              name='{{collection}}'
+              {{checked inUse}}
+            />
+          </span>
+        </li>
+      {{/each}}
+    </ol>
+  </section>
+  <section>
+    <h2>{{localize 'DOCUMENT.JournalEntries'}}</h2>
+    <header class='form-group'>
+      <span class='label'>{{localize 'COMPENDIUM.Name'}}</span>
+      <span class='form-fields'>
+        <span class='inUse'>{{localize 'SWADE.UsesTOC'}}</span>
+      </span>
+    </header>
+    <ol class='unmarked-list'>
+      {{#each blockList.JournalEntry}}
+        <li class='form-group'>
+          <label for='{{collection}}-inUse'>{{label}}</label>
+          <span class='form-fields'>
+            <input
+              type='checkbox'
+              id='{{collection}}-inUse'
+              name='{{collection}}'
+              {{checked inUse}}
+            />
+          </span>
+        </li>
+      {{/each}}
+    </ol>
+  </section>
+</section>

@@ -12,6 +12,14 @@ function modifierSchema() {
       label: 'SWADE.ActiveEffects.ModifierCost.Label',
       hint: 'SWADE.ActiveEffects.ModifierCost.Hint',
     }),
+    // Null means unlimited. Nonlinear options should be implemented as separate choices.
+    limit: new foundry.data.fields.NumberField({
+      initial: 1,
+      integer: true,
+      min: 1,
+      label: 'SWADE.ActiveEffects.ModifierLimit.Label',
+      hint: 'SWADE.ActiveEffects.ModifierLimit.Hint',
+    }),
   };
 }
 

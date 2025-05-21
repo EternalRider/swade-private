@@ -1,0 +1,29 @@
+<section class='tab{{#if tab.active}} active{{/if}}' data-group='{{tab.group}}' data-tab='{{tab.id}}'>
+  <header class='form-group flexrow additionalStats-header'>
+    <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
+    <div class='centered'>
+      {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+    </div>
+    <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
+  </header>
+  {{#each settingFields as |attr key|}}
+    <div class='flexrow'>
+      <div style='text-align: left'>
+        <label
+          for='{{document.uuid}}-{{key}}-useField'
+        >{{attr.label}}</label>
+      </div>
+      <div class='centered'>
+        <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+      </div>
+      <div class='centered'>
+        <input
+          type='checkbox'
+          name='system.additionalStats.{{key}}.useField'
+          id='{{document.uuid}}-{{key}}-useField'
+          {{checked attr.useField}}
+        />
+      </div>
+    </div>
+  {{/each}}
+</section>

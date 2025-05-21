@@ -14,31 +14,33 @@
       {{/if}}
     </div>
   </header>
-  <div class='card-content collapsed' style='display: none;'>
-    {{#unless (isEmpty item.system.damage)}}
-      <div>
-        <a class='damage-roll' title='{{localize "SWADE.Roll"}}'>
-          {{localize 'SWADE.Dmg'}}:
-          {{item.system.damage}}</a>
-      </div>
-    {{/unless}}
-    {{#unless (isEmpty system.range)}}
-      <div>{{localize 'SWADE.Range._name'}}: {{item.system.range}}</div>
-    {{/unless}}
-    {{#unless (isEmpty system.shots)}}
-      <div>{{localize 'SWADE.Mag'}}: {{item.system.shots}}</div>
-    {{/unless}}
-    {{#if (gt system.rof 1)}}
-      <div>{{localize 'SWADE.RoF'}}: {{item.system.rof}}</div>
-    {{/if}}
-    {{#unless (eq system.ap 0)}}
-      <div>{{localize 'SWADE.Ap'}}: {{item.system.ap}}</div>
-    {{/unless}}
-    {{#unless (isEmpty item.system.notes)}}
-      <div class='chips'>
-        <span>{{localize 'SWADE.Notes'}}:&nbsp;</span>
-        <div>{{item.enrichedNotes}}</div>
-      </div>
-    {{/unless}}
+  <div class='card-content collapsed'>
+    <div>
+      {{#unless (isEmpty item.system.damage)}}
+        <div>
+          <a class='damage-roll' title='{{localize "SWADE.Roll"}}'>
+            {{localize 'SWADE.Dmg'}}:
+            {{item.system.damage}}</a>
+        </div>
+      {{/unless}}
+      {{#unless (isEmpty system.range)}}
+        <div>{{localize 'SWADE.Range._name'}}: {{item.system.range}}</div>
+      {{/unless}}
+      {{#unless (isEmpty system.shots)}}
+        <div>{{localize 'SWADE.Mag'}}: {{item.system.shots}}</div>
+      {{/unless}}
+      {{#if (gt system.rof 1)}}
+        <div>{{localize 'SWADE.RoF'}}: {{item.system.rof}}</div>
+      {{/if}}
+      {{#unless (eq system.ap 0)}}
+        <div>{{localize 'SWADE.Ap'}}: {{item.system.ap}}</div>
+      {{/unless}}
+      {{#unless (isEmpty item.system.notes)}}
+        <div class='chips'>
+          <span>{{localize 'SWADE.Notes'}}:&nbsp;</span>
+          <div>{{item.enrichedNotes}}</div>
+        </div>
+      {{/unless}}
+    </div>
   </div>
 </li>

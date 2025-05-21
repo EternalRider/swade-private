@@ -4,53 +4,73 @@ import {
   MutationOption,
 } from '../documents/item/SwadeItem.interface';
 
-export class ChoiceDialog extends Application<ApplicationOptions> {
-  #callback: (value: ChoiceSet) => void;
-  #parent: SwadeItem;
-  protected selection: ChoiceSet;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  static asPromise(ctx: ChoiceDialogContext): Promise<ChoiceSet> {
-    return new Promise<ChoiceSet>((resolve) => new ChoiceDialog(ctx, resolve));
-  }
+export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+  declare protected selection: ChoiceSet;
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/choice-dialog.hbs',
-      classes: ['swade', 'choice-dialog', 'swade-app'],
-      width: 'auto' as const,
-      height: 'auto' as const,
-    });
-  }
-
-  constructor(
-    data: ChoiceDialogContext,
-    resolve: (choiceSet: ChoiceSet) => void,
-    options?: Partial<FormApplicationOptions>,
-  ) {
+  constructor({
+    parent,
+    choiceSet,
+    resolve,
+    ...options
+  }: ChoiceDialogConfiguration) {
     super(options);
     this.#callback = resolve;
-    this.#parent = data.parent;
-    this.selection = data.choiceSet;
-    this.render(true);
+    this.#parent = parent;
+    this.selection = choiceSet;
   }
 
-  override get title(): string {
-    return 'SWADE Choicedialog';
+  #callback: (value: ChoiceSet) => void;
+  #parent: SwadeItem;
+  #keyDownListener;
+
+  static asPromise(
+    ctx: Omit<ChoiceDialogConfiguration, 'resolve'>,
+  ): Promise<ChoiceSet> {
+    return new Promise<ChoiceSet>((resolve) =>
+      new ChoiceDialog({ ...ctx, resolve }).render({ force: true }),
+    );
   }
 
-  override activateListeners(html: JQuery<HTMLElement>): void {
-    // override escape and enter keys for this Application
-    $(document).on('keydown.chooseDefault', this.#onKeyDown.bind(this));
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE ChoiceDialog',
+    },
+    position: {
+      width: 'auto',
+      height: 'auto',
+    },
+    classes: ['swade', 'choice-dialog', 'swade-application', 'standard-form'],
+    tag: 'form',
+    form: {
+      handler: ChoiceDialog.onSubmit,
+    },
+    actions: {
+      close: ChoiceDialog.#onClose,
+    },
+  };
 
-    html[0]
-      .querySelector<HTMLButtonElement>('button#close')
-      ?.addEventListener('click', this.close.bind(this));
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/choice-dialog.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
-    html[0]
-      .querySelector<HTMLButtonElement>('button#submit-choice')
-      ?.addEventListener('click', () => {
-        this.customSubmit();
-      });
+  override async _onRender(_context, _options) {
+    if (!this.#keyDownListener) {
+      this.#keyDownListener = this.#onKeyDown.bind(this);
+      document.addEventListener('keydown', this.#keyDownListener);
+    }
+  }
+
+  static onSubmit(
+    this: ChoiceDialog,
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    _formData: FormDataExtended,
+  ) {
+    this.customSubmit();
   }
 
   customSubmit() {
@@ -59,28 +79,53 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
   }
 
   protected getSelection(): number | null {
-    const radio = this.element[0].querySelector(
+    const radio = this.element.querySelector(
       'input[name="choiceset"]:checked',
     ) as HTMLInputElement;
     if (!radio) return null;
     return Number(radio?.value);
   }
 
-  override close(options?: Application.CloseOptions): Promise<void> {
-    this.#callback(this.selection);
-    $(document).off('keydown.chooseDefault');
-    return super.close(options);
+  static #onClose(
+    this: ChoiceDialog,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ) {
+    this.close();
   }
 
-  override async getData() {
-    return {
-      parent: this.#parent,
-      prompt: this.selection.title,
-      choices: this.selection.choices.map((choice, index) => ({
-        ...choice,
-        value: index,
-      })),
-    };
+  protected override _onClose(options) {
+    super._onClose(options);
+    this.#callback(this.selection);
+    document.removeEventListener('keydown', this.#keyDownListener);
+  }
+
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        parent: this.#parent,
+        prompt: this.selection.title,
+        choices: this.selection.choices.map((choice, index) => ({
+          ...choice,
+          value: index,
+        })),
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-solid fa-check-double',
+            label: 'SWADE.ButtonSubmit',
+          },
+          {
+            type: 'button',
+            icon: 'fa-solid fa-times',
+            label: 'Close',
+            action: 'close',
+          },
+        ],
+      },
+    );
+    return context;
   }
 
   #onKeyDown(event) {
@@ -100,9 +145,10 @@ export class ChoiceDialog extends Application<ApplicationOptions> {
   }
 }
 
-export interface ChoiceDialogContext {
+export interface ChoiceDialogConfiguration {
   parent: SwadeItem;
   choiceSet: ChoiceSet;
+  resolve: (choiceSet: ChoiceSet) => void;
 }
 export interface ChoiceDialogData {
   mutationOption: MutationOption | null;

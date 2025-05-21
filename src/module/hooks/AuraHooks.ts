@@ -6,11 +6,14 @@ export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
     CONFIG.Canvas.auras = {
       collection: new foundry.utils.Collection<AuraPointSource>(),
-      filter: VisualEffectsMaskingFilter.create({
-        filterMode: VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
-        uVisionSampler: canvas.masks.vision.renderTexture,
-      }),
+      filter:
+        foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
+          mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter
+            .FILTER_MODES.BACKGROUND,
+          visionTexture: canvas.masks.vision.renderTexture,
+        }),
     };
+    canvas.effects.auras = CONFIG.Canvas.auras.collection;
   });
 
   Hooks.on('drawGridLayer', (layer: GridLayer) => {
@@ -48,7 +51,7 @@ export function registerAuraHooks() {
 
   Hooks.on('updateActiveEffect', (effect: SwadeActiveEffect) => {
     if (!game.canvas.ready) return;
-    if (effect.changes.some((e) => e.key.startsWith('flags.swade.auras'))) {
+    if (effect.changes.some((e) => e.key.startsWith('system.auras'))) {
       effect.actor?.getActiveTokens().forEach((t) => addAuras(t));
       updateAllAuras();
     }
@@ -66,7 +69,7 @@ export function registerAuraHooks() {
 
 function addAuras(token: SwadeToken) {
   if (!token.actor) return missingActorMsg(token);
-  for (const id in token.actor.auras) {
+  for (const id in token.actor.system.auras) {
     if (token.auras.has(id)) continue;
     token.auras.set(id, new AuraPointSource({ object: token, id }));
   }
@@ -85,28 +88,29 @@ function updateAurasForToken(token: SwadeToken) {
     });
     return missingActorMsg(token);
   }
-  // const origin = token.getCenterPoint({ x: 0, y: 0 });
-  // const auraData = token.actor.auras;
-  // for (const [id, aura] of token.auras.entries()) {
-  //   const data = auraData[id];
-  //   if (!data) {
-  //     removeAura(token, aura, id);
-  //     continue;
-  //   }
-  //   const { externalRadius } = token;
-  //   aura.initialize({
-  //     x: origin.x,
-  //     y: origin.y,
-  //     disabled: !data.enabled,
-  //     radius: canvas.dimensions?.size * data.radius + externalRadius,
-  //     externalRadius: externalRadius,
-  //     rotation: token.document.rotation,
-  //     preview: token.isPreview,
-  //     walls: data.walls,
-  //   });
+  const origin = token.getCenterPoint();
+  const auraData = token.actor.system.auras;
+  for (const [id, aura] of token.auras.entries()) {
+    const data = auraData[id];
+    if (!data) {
+      removeAura(token, aura, id);
+      continue;
+    }
+    const { externalRadius } = token;
+    aura.initialize({
+      x: origin.x,
+      y: origin.y,
+      disabled: !data.enabled,
+      radius: canvas.dimensions?.size * data.radius + externalRadius,
+      externalRadius: externalRadius,
+      rotation: token.document.rotation,
+      preview: token.isPreview,
+      walls: data.walls,
+    });
+    aura.add();
 
-  //   CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
-  // }
+    CONFIG.Canvas.auras.collection.set(aura.sourceId, aura);
+  }
   refreshAuras();
 }
 

@@ -1,0 +1,388 @@
+<section class='tab scrollable{{#if tab.active}} active{{/if}}' data-tab='{{tab.id}}' data-group='{{tab.group}}'>
+  <!-- Hard Choices -->
+  <div class='form-group'>
+    <label for='hardChoices'>
+      {{localize 'SWADE.Settings.HardChoices.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='hardChoices'
+        type='checkbox'
+        name='settingRules.hardChoices'
+        {{checked settingRules.hardChoices}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.HardChoices.Hint'}}</p>
+  </div>
+  <!-- Dumb Luck -->
+  <div class='form-group'>
+    <label for='dumbLuck'>
+      {{localize 'SWADE.Settings.DumbLuck.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='dumbLuck'
+        type='checkbox'
+        name='settingRules.dumbLuck'
+        data-dtype='Boolean'
+        {{checked settingRules.dumbLuck}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.DumbLuck.Hint'}}</p>
+  </div>
+  <!-- Wound Cap -->
+  <div class='form-group'>
+    <label for='woundCap'>
+      {{localize 'SWADE.Settings.WoundCap.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='woundCap'
+        type='checkbox'
+        name='settingRules.woundCap'
+        {{checked settingRules.woundCap}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.WoundCap.Hint'}}</p>
+  </div>
+  <!-- Unarmored Hero -->
+  <div class='form-group'>
+    <label for='unarmoredHero'>
+      {{localize 'SWADE.Settings.UnarmoredHero.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='unarmoredHero'
+        type='checkbox'
+        name='settingRules.unarmoredHero'
+        {{checked settingRules.unarmoredHero}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.UnarmoredHero.Hint'}}</p>
+  </div>
+  <!-- Gritty Damage -->
+  <div class='form-group'>
+    <label for='grittyDamage'>
+      {{localize 'SWADE.Settings.GrittyDamage.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='grittyDamage'
+        type='checkbox'
+        name='settingRules.grittyDamage'
+        {{checked settingRules.grittyDamage}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.GrittyDamage.Hint'}}</p>
+  </div>
+  <!-- Injury Table -->
+  <div class='form-group'>
+    <label for='injuryTable'>
+      {{localize 'SWADE.Settings.InjuryTable.Name'}}
+    </label>
+    <div class='form-fields'>
+      <select id='injuryTable' name='settingRules.injuryTable'>
+          <option value=''></option>
+          {{#each injuryTableChoices}}
+            <optgroup label='{{group}}'>
+              {{selectOptions
+                options
+                selected=../settingRules.injuryTable
+                valueAttr='key'
+                labelAttr='label'
+                sort=true
+              }}
+            </optgroup>
+          {{/each}}
+      </select>
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.InjuryTable.Hint'}}</p>
+  </div>
+  <!-- Heroes Never Die -->
+  <div class='form-group'>
+    <label for='heroesNeverDie'>
+      {{localize 'SWADE.Settings.HeroesNeverDie.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='heroesNeverDie'
+        type='checkbox'
+        name='settingRules.heroesNeverDie'
+        {{checked settingRules.heroesNeverDie}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.HeroesNeverDie.Hint'}}</p>
+  </div>
+  <!-- Conviction -->
+  <div class='form-group'>
+    <label for='enableConviction'>
+      {{localize 'SWADE.Settings.EnableConv.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='enableConviction'
+        type='checkbox'
+        name='settingRules.enableConviction'
+        {{checked settingRules.enableConviction}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.EnableConv.Hint'}}</p>
+  </div>
+  <!-- Joker's Wild -->
+  <div class='form-group'>
+    <label for='jokersWild'>
+      {{localize 'SWADE.Settings.JokersWild.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='jokersWild'
+        type='checkbox'
+        name='settingRules.jokersWild'
+        {{checked settingRules.jokersWild}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.JokersWild.Hint'}}</p>
+  </div>
+  <!-- No Power Points -->
+  <div class='form-group'>
+    <label for='noPowerPoints'>
+      {{localize 'SWADE.Settings.NoPowerPoints.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='noPowerPoints'
+        type='checkbox'
+        name='settingRules.noPowerPoints'
+        {{checked settingRules.noPowerPoints}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.NoPowerPoints.Hint'}}</p>
+  </div>
+  <!-- Always General Power Points -->
+  <div class='form-group'>
+    <label for='alwaysGeneralPP'>
+      {{localize 'SWADE.Settings.AlwaysGeneralPP.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='alwaysGeneralPP'
+        type='checkbox'
+        name='settingRules.alwaysGeneralPP'
+        {{checked settingRules.alwaysGeneralPP}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.AlwaysGeneralPP.Hint'}}</p>
+  </div>
+  <!-- Encumbrance -->
+  <div class='form-group'>
+    <label for='applyEncumbrance'>
+      {{localize 'SWADE.Settings.ApplyEncumbrance.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='applyEncumbrance'
+        type='checkbox'
+        name='settingRules.applyEncumbrance'
+        {{checked settingRules.applyEncumbrance}}
+      />
+    </div>
+    <p class='notes'>
+      {{localize
+        'SWADE.Settings.ApplyEncumbrance.Hint'
+        vigor=(localize 'SWADE.AttrVig')
+        fatigue=(localize 'SWADE.Fatigue')
+      }}
+    </p>
+  </div>
+  <!-- Armor Stacking -->
+  <div class='form-group'>
+    <label for='armorStacking'>
+      {{localize 'SWADE.Settings.ArmorStacking.Name'}}
+    </label>
+    <div class='form-fields'>
+      <select id='armorStacking' name='settingRules.armorStacking'>
+        {{selectOptions armorStackingChoices selected=settingRules.armorStacking localize=true}}
+      </select>
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.ArmorStacking.Hint'}}</p>
+  </div>
+  <!-- Core Skills -->
+  <fieldset id='core-skills'>
+    <legend>{{localize 'SWADE.CoreSkills'}}</legend>
+    <div class='form-group'>
+      <label for='coreSkills'>
+        {{localize 'SWADE.Settings.CoreSkillsList.Name'}}
+      </label>
+      <div class='form-fields'>
+        <textarea
+          id='coreSkills'
+          style='resize: none;'
+          name='settingRules.coreSkills'
+          data-dtype='String'
+          placeholder='Example: Athletics, Common Knowledge, Notice, Persuasion, Stealth'
+        >{{settingRules.coreSkills}}</textarea>
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsList.Hint'}}</p>
+    </div>
+    <div class='form-group'>
+      <label for='coreSkillsCompendium'>
+        {{localize 'SWADE.Settings.CoreSkillsPack.Name'}}
+      </label>
+      <div class='form-fields'>
+        <select
+          id='coreSkillsCompendium'
+          name='settingRules.coreSkillsCompendium'
+        >
+          {{selectOptions coreSkillPackChoices selected=settingRules.coreSkillsCompendium localize=true}}
+        </select>
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsPack.Hint'}}</p>
+    </div>
+  </fieldset>
+  <!-- Wealth -->
+  <fieldset id='wealth'>
+    <legend>{{localize 'SWADE.Wealth'}}</legend>
+    <div class='form-group'>
+      <label for='wealthType'>
+        {{localize 'SWADE.Settings.WealthType.Name'}}
+      </label>
+      <div class='form-fields'>
+        <select id='wealthType' name='settingRules.wealthType'>
+          {{selectOptions wealthTypes selected=settingRules.wealthType localize=true}}
+        </select>
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.WealthType.Hint'}}</p>
+    </div>
+    {{#unless (eq settingRules.wealthType 'none')}}
+      <div class='form-group'>
+        <label for='npcsUseCurrency'>
+          {{localize 'SWADE.Settings.NPCCurrency.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='npcsUseCurrency'
+            type='checkbox'
+            name='settingRules.npcsUseCurrency'
+            data-dtype='Boolean'
+            {{checked settingRules.npcsUseCurrency}}
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.NPCCurrency.Hint'}}</p>
+      </div>
+    {{/unless}}
+    {{#if (eq settingRules.wealthType 'currency')}}
+      <div class='form-group'>
+        <label for='currencyName'>
+          {{localize 'SWADE.Settings.CurrencyName.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='currencyName'
+            type='text'
+            name='settingRules.currencyName'
+            value='{{settingRules.currencyName}}'
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.CurrencyName.Hint'}}</p>
+      </div>
+      <div class='form-group'>
+        <label for='pcStartingCurrency'>
+          {{localize 'SWADE.Settings.StartingCurrency.PC.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='pcStartingCurrency'
+            type='text'
+            name='settingRules.pcStartingCurrency'
+            value='{{settingRules.pcStartingCurrency}}'
+          />
+        </div>
+        <p class='notes'>
+          {{localize 'SWADE.Settings.StartingCurrency.PC.Hint'}}
+        </p>
+      </div>
+      <div class='form-group'>
+        <label for='npcStartingCurrency'>
+          {{localize 'SWADE.Settings.StartingCurrency.NPC.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='npcStartingCurrency'
+            type='text'
+            name='settingRules.npcStartingCurrency'
+            value='{{settingRules.npcStartingCurrency}}'
+          />
+        </div>
+        <p class='notes'>
+          {{localize 'SWADE.Settings.StartingCurrency.NPC.Hint'}}
+        </p>
+      </div>
+    {{/if}}
+  </fieldset>
+  <!-- Ammo Management -->
+  <fieldset id='ammo'>
+    <legend>{{localize 'SWADE.Ammo'}}</legend>
+    <div class='form-group'>
+      <label for='ammoManagement'>
+        {{localize 'SWADE.Settings.AmmoManagement.Name'}}
+      </label>
+      <div class='form-fields'>
+        <input
+          id='ammoManagement'
+          type='checkbox'
+          name='settingRules.ammoManagement'
+          data-dtype='Boolean'
+          {{checked settingRules.ammoManagement}}
+        />
+      </div>
+      <p class='notes'>{{localize 'SWADE.Settings.AmmoManagement.Hint'}}</p>
+    </div>
+    {{#if settingRules.ammoManagement}}
+      <div class='form-group'>
+        <label for='ammoFromInventory'>
+          {{localize 'SWADE.Settings.PCAmmoFromInventory.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='ammoFromInventory'
+            type='checkbox'
+            name='settingRules.ammoFromInventory'
+            data-dtype='Boolean'
+            {{checked settingRules.ammoFromInventory}}
+          />
+        </div>
+        <p class='notes'>{{localize
+            'SWADE.Settings.PCAmmoFromInventory.Hint'
+          }}</p>
+      </div>
+      <div class='form-group'>
+        <label for='npcAmmo'>
+          {{localize 'SWADE.Settings.NPCAmmoFromInventory.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='npcAmmo'
+            type='checkbox'
+            name='settingRules.npcAmmo'
+            data-dtype='Boolean'
+            {{checked settingRules.npcAmmo}}
+          />
+        </div>
+      </div>
+      <div class='form-group'>
+        <label for='vehicleAmmo'>
+          {{localize 'SWADE.Settings.VehicleAmmoFromInventory.Name'}}
+        </label>
+        <div class='form-fields'>
+          <input
+            id='vehicleAmmo'
+            type='checkbox'
+            name='settingRules.vehicleAmmo'
+            data-dtype='Boolean'
+            {{checked settingRules.vehicleAmmo}}
+          />
+        </div>
+      </div>
+    {{/if}}
+  </fieldset>
+</section>

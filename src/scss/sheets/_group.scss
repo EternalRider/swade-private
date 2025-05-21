@@ -154,4 +154,14 @@
       }
     }
   }
+
+  .description {
+    flex-grow: 1;
+    .description-container {
+      flex-grow: 1;
+    }
+    .editor {
+      height: 100%;
+    }
+  }
 }

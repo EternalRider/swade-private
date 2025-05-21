@@ -1,0 +1,305 @@
+<section class='tab{{#if tab.active}} active{{/if}}' data-group='{{tab.group}}' data-tab='{{tab.id}}'>
+  <!--Max Values-->
+  <section>
+    {{formGroupSimple
+      'system.category'
+      classes=''
+      label='SWADE.Category'
+      blank=false
+      document=doc
+      rootId=doc.uuid
+      source=true
+    }}
+  </section>
+  <div class='form-group slim'>
+    <label for='{{document.uuid}}-flags.swade.hiddenActionOverride'>
+      {{localize 'SWADE.Actions.DisplayHidden.Label'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        type='checkbox'
+        name='flags.swade.hiddenActionOverride'
+        id='{{document.uuid}}-flags.swade.hiddenActionOverride'
+        {{checked document.flags.swade.hiddenActionOverride}}
+      />
+    </div>
+  </div>
+  <section>
+    {{#if isNPC}}
+      {{formGroupSimple
+        'system.wildcard'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/if}}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.attributes.smarts.animal'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+      {{formGroupSimple
+        'system.advances.mode'
+        classes='slim'
+        label='SWADE.Adv'
+        blank=false
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
+    {{formGroupSimple
+      'system.wounds.max'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.fatigue.max'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+      {{formGroupSimple
+        'system.bennies.max'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
+    {{formGroupSimple
+      'system.wounds.ignored'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.fatigue.ignored'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+      {{formGroupSimple
+        'system.attributes.spirit.unShakeBonus'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+      {{formGroupSimple
+        'system.attributes.vigor.soakBonus'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
+    {{#if isVehicle}}
+      {{formGroupSimple
+        'system.cargo.max'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+      {{#if hasModSlots}}
+        {{formGroupSimple
+          'system.mods.max'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+      {{/if}}
+      {{#if hasEnergy}}
+        {{formGroupSimple
+          'system.energy.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+        {{formGroupSimple
+          'system.energy.max'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+      {{/if}}
+      <fieldset>
+        <legend>{{localize 'SWADE.VehicleAttributes.Label'}}</legend>
+        {{formGroupSimple
+          'system.attributes.agility.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+        {{formGroupSimple
+          'system.attributes.smarts.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+        {{formGroupSimple
+          'system.attributes.spirit.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+        {{formGroupSimple
+          'system.attributes.strength.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+        {{formGroupSimple
+          'system.attributes.vigor.enabled'
+          classes='slim'
+          document=document
+          rootId=document.uuid
+          source=true
+        }}
+      </fieldset>
+    {{/if}}
+  </section>
+  <!--Initiative-->
+  <fieldset>
+    <legend>{{localize 'SWADE.Init'}}</legend>
+    {{formGroupSimple
+      'system.initiative.hasLevelHeaded'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    {{formGroupSimple
+      'system.initiative.hasImpLevelHeaded'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    {{formGroupSimple
+      'system.initiative.hasQuick'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    <hr />
+    {{formGroupSimple
+      'system.initiative.hasHesitant'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+  </fieldset>
+
+  <!--Automatic Calculations-->
+  <fieldset>
+    <legend>{{localize 'SWADE.AutoCalc'}}</legend>
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.details.autoCalcToughness'
+        label='SWADE.Tough'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
+    {{formGroupSimple
+      'system.details.autoCalcParry'
+      label='SWADE.Parry'
+      classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+  </fieldset>
+  <!--Pace-->
+  {{#unless isVehicle}}
+    <fieldset>
+      <legend>{{localize 'SWADE.Pace'}}</legend>
+      {{formGroupSimple
+        'system.pace.base'
+        classes='slim'
+        document=document
+        source=true
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.pace.ground'
+        classes='slim'
+        document=document
+        source=true
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.pace.fly'
+        classes='slim'
+        document=document
+        source=true
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.pace.swim'
+        classes='slim'
+        document=document
+        source=true
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.pace.burrow'
+        classes='slim'
+        document=document
+        source=true
+        rootId=document.uuid
+      }}
+      <div class='form-group slim'>
+        <label for='{{document.uuid}}-system.pace.running.die'>
+          {{localize 'SWADE.RunningDie'}}
+        </label>
+        <span class='form-fields'>
+          <select
+            name='system.pace.running.die'
+            id='{{document.uuid}}-system.pace.running.die'
+            class='running-die'
+          >
+            {{selectOptions
+              runningDieTypes
+              selected=document.system._source.pace.running.die
+              localize=true
+              labelAttr='label'
+              valueAttr='key'
+            }}
+          </select>
+          <input
+            type='text'
+            id='{{document.uuid}}-system.pace.running.mod'
+            name='system.pace.running.mod'
+            value='{{signedString document.system_source.pace.running.mod}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+    </fieldset>
+  {{/unless}}
+</section>

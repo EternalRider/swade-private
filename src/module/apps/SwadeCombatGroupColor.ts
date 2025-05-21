@@ -6,9 +6,12 @@ export default class SwadeCombatGroupColor extends FormApplication<
   config: any;
   groupDefaultColors: any;
 
-  override activateListeners(html: JQuery<HTMLElement>) {
-    super.activateListeners(html);
-    html.find('.reset-color').on('click', this._onResetColor.bind(this));
+  override activateListeners(jquery: JQuery<HTMLElement>) {
+    super.activateListeners(jquery);
+    const html = jquery[0];
+    html
+      .querySelector('.reset-color')
+      ?.addEventListener('click', this._onResetColor.bind(this));
   }
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -43,7 +46,8 @@ export default class SwadeCombatGroupColor extends FormApplication<
     }
 
     await this.object.setFlag('swade', 'groupColor', null);
-    $(this.form!).find('#groupColor').val(groupColor);
+    const colorEl = this.form!.querySelector('#groupColor');
+    if (colorEl) colorEl.value = groupColor;
   }
 
   async _updateObject(_event, _formData: unknown) {}

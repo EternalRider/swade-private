@@ -2,85 +2,139 @@ import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
 import SwadeCards from '../documents/card/SwadeCards';
 
-export default class SettingConfigurator extends FormApplication {
-  config: typeof SWADE.settingConfig;
-  settingStats: any;
-  constructor(obj: any, options: ApplicationOptions) {
-    super(obj, options);
-    this.config = SWADE.settingConfig;
-  }
+/* eslint-disable @typescript-eslint/naming-convention */
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  static override get defaultOptions(): FormApplicationOptions {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: 'settingConfig',
-      title: game.i18n.localize('SWADE.SettingConf'),
-      template: 'systems/swade/templates/apps/setting-config.hbs',
-      classes: ['setting-config', 'sheet', 'swade-app'],
-      tabs: [
-        {
-          navSelector: '.tabs',
-          contentSelector: '.sheet-body',
-          initial: 'basics',
-        },
-      ],
-      scrollY: ['.sheet-body .tab'],
+export default class SettingConfigurator extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
+  config = SWADE.settingConfig;
+
+  static override DEFAULT_OPTIONS = {
+    id: 'settingConfig',
+    window: {
+      title: 'SWADE.SettingConf',
+      resizable: false,
+    },
+    position: {
       width: 600,
       height: 700,
-      resizable: false,
+    },
+    classes: ['setting-config', 'sheet', 'swade-application', 'standard-form'],
+    tag: 'form',
+    form: {
+      handler: SettingConfigurator.onSubmit,
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,
-    });
-  }
+    },
+    actions: {
+      reset: SettingConfigurator.#resetSettings,
+      createChar: SettingConfigurator.#onCreateChar,
+      createItem: SettingConfigurator.#onCreateItem,
+      delete: SettingConfigurator.#onDelete,
+    },
+  };
 
-  override async getData(): Promise<object> {
+  static override PARTS = {
+    tabs: { template: 'templates/generic/tab-navigation.hbs' },
+    basics: {
+      template: 'systems/swade/templates/apps/configurator/basics.hbs',
+      scrollable: [''],
+    },
+    setting: {
+      template: 'systems/swade/templates/apps/configurator/setting.hbs',
+      scrollable: [''],
+    },
+    bennies: {
+      template: 'systems/swade/templates/apps/configurator/bennies.hbs',
+      scrollable: [''],
+    },
+    additionalStats: {
+      template:
+        'systems/swade/templates/apps/configurator/additional-stats.hbs',
+      scrollable: [''],
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
+
+  static override TABS = {
+    sheet: {
+      tabs: [
+        { id: 'basics', label: 'SWADE.WorldBasics' },
+        { id: 'setting', label: 'SWADE.SettingRules' },
+        { id: 'bennies', label: 'SWADE.Bennies' },
+        { id: 'additionalStats', label: 'SWADE.AddStats' },
+      ],
+      initial: 'basics',
+    },
+  };
+
+  override async _prepareContext(options) {
     const settingFields = game.settings.get('swade', 'settingFields');
-    const data = {
-      settingRules: {},
-      actorSettingStats: settingFields.actor,
-      itemSettingStats: settingFields.item,
-      dice3d: !!game.dice3d,
-      dtypes: {
-        String: 'SWADE.String',
-        Number: 'SWADE.Number',
-        Boolean: 'SWADE.Checkbox',
-        Die: 'SWADE.Die',
-        Selection: 'SWADE.Selection',
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        settingRules: {},
+        actorSettingStats: settingFields.actor,
+        itemSettingStats: settingFields.item,
+        dice3d: !!game.dice3d,
+        dtypes: {
+          String: 'SWADE.String',
+          Number: 'SWADE.Number',
+          Boolean: 'SWADE.Checkbox',
+          Die: 'SWADE.Die',
+          Selection: 'SWADE.Selection',
+        },
+        coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
+        actionDeckChoices: this.#buildActionDeckChoices(),
+        discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
+        injuryTableChoices: await this.#buildInjuryTableChoices(),
+        armorStackingChoices: this.#getArmorStackingChoices(),
+        wealthTypes: this.#getWealthTypes(),
+        buttons: [
+          { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
+          {
+            type: 'reset',
+            action: 'reset',
+            icon: 'fa-solid fa-undo',
+            cssClass: 'submit',
+            label: 'SETTINGS.Reset',
+          },
+        ],
       },
-      coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
-      actionDeckChoices: this.#buildActionDeckChoices(),
-      discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
-      injuryTableChoices: await this.#buildInjuryTableChoices(),
-      armorStackingChoices: this.#getArmorStackingChoices(),
-      wealthTypes: this.#getWealthTypes(),
-    };
+    );
     for (const setting of this.config.settings) {
-      data.settingRules[setting] = game.settings.get('swade', setting);
+      context.settingRules[setting] = game.settings.get('swade', setting);
     }
-    return data;
+    return context;
   }
 
-  override activateListeners(html) {
-    super.activateListeners(html);
-
-    html.find('#reset').click(() => this._resetSettings());
-    html.find('#submit').click(() => this.close());
-    html
-      .find('.attributes')
-      .on('click', '.attribute-control', (e) =>
-        this._onClickAttributeControl(e),
-      );
+  override async _preparePartContext(partId, context, options) {
+    const partContext = await super._preparePartContext(
+      partId,
+      context,
+      options,
+    );
+    if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
+    return partContext;
   }
 
-  async _updateObject(_event, formData) {
-    //Gather Data
-    const expandedFormdata = foundry.utils.expandObject(formData);
-    const formActorAttrs = expandedFormdata.actorSettingStats || {};
-    const formItemAttrs = expandedFormdata.itemSettingStats || {};
+  static async onSubmit(
+    this: SettingConfigurator,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended,
+  ) {
+    // Gather Data
+    const expandedFormData = foundry.utils.expandObject(formData.object);
+    const formActorAttrs = expandedFormData.actorSettingStats || {};
+    const formItemAttrs = expandedFormData.itemSettingStats || {};
 
-    //Set the "easy" settings
-    for (const key in expandedFormdata.settingRules) {
-      const settingValue = expandedFormdata.settingRules[key];
+    // Set the "easy" settings
+    for (const [key, settingValue] of Object.entries(
+      expandedFormData.settingRules,
+    )) {
       if (
         this.config.settings.includes(key) &&
         settingValue !== game.settings.get('swade', key)
@@ -99,10 +153,16 @@ export default class SettingConfigurator extends FormApplication {
     };
     await game.settings.set('swade', 'settingFields', saveValue);
 
-    this.render(true);
+    await this.render({ force: true });
+
+    if (event.submitter) this.close();
   }
 
-  async _resetSettings() {
+  static async #resetSettings(
+    this: SettingConfigurator,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ) {
     for (const setting of this.config.settings) {
       const resetValue = game.settings.settings.get(
         `swade.${setting}`,
@@ -111,43 +171,51 @@ export default class SettingConfigurator extends FormApplication {
         await game.settings.set('swade', setting, resetValue);
       }
     }
-    this.render(true);
+    this.render({ force: true });
   }
 
-  async _onClickAttributeControl(event) {
+  async #createHelper(event: PointerEvent, isItem: boolean) {
+    const documentType = isItem ? 'item' : 'actor';
     event.preventDefault();
-    const a = event.currentTarget;
-    const action = a.dataset.action;
     const settingFields = game.settings.get('swade', 'settingFields') as any;
     const form = this.form;
+    const nk = Object.keys(settingFields[documentType]).length + 1;
+    const newElement = document.createElement('div');
+    newElement.innerHTML = `<input type="text" name="${documentType}SettingStats.attr${nk}.key" value="attr${nk}"/>`;
+    const newKey = newElement.children[0];
+    form
+      ?.querySelector('[data-application-part="additionalStats"]')
+      ?.appendChild(newKey);
+    await this._onSubmitForm(this.options.form!, event);
+    await this.render({ force: true });
+  }
 
-    // Add new attribute
-    if (action === 'createChar') {
-      const nk = Object.keys(settingFields.actor).length + 1;
-      const newElement = document.createElement('div');
-      newElement.innerHTML = `<input type="text" name="actorSettingStats.attr${nk}.key" value="attr${nk}"/>`;
-      const newKey = newElement.children[0];
-      form?.appendChild(newKey);
-      await this._onSubmit(event);
-      this.render(true);
-    }
+  static async #onCreateChar(
+    this: SettingConfigurator,
+    event: PointerEvent,
+    _target: HTMLElement,
+  ) {
+    await this.#createHelper(event, false);
+  }
 
-    if (action === 'createItem') {
-      const nk = Object.keys(settingFields.item).length + 1;
-      const newElement = document.createElement('div');
-      newElement.innerHTML = `<input type="text" name="itemSettingStats.attr${nk}.key" value="attr${nk}"/>`;
-      const newKey = newElement.children[0];
-      form?.appendChild(newKey);
-      await this._onSubmit(event);
-      this.render(true);
-    }
+  static async #onCreateItem(
+    this: SettingConfigurator,
+    event: PointerEvent,
+    _target: HTMLElement,
+  ) {
+    await this.#createHelper(event, true);
+  }
 
-    // Remove existing attribute
-    if (action === 'delete') {
-      const li = a.closest('.attribute');
-      li.parentElement.removeChild(li);
-      this._onSubmit(event).then(() => this.render(true));
-    }
+  static async #onDelete(
+    this: SettingConfigurator,
+    event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    event.preventDefault();
+    const li = target.closest('.attribute');
+    if (li) li.parentElement?.removeChild(li);
+    await this._onSubmitForm(this.options.form!, event);
+    this.render({ force: true });
   }
 
   #handleKeyValidityCheck(stats: AdditionalStats) {

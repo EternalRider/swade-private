@@ -6,32 +6,33 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
 ) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static sourceType = 'light';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  static effectsCollection = 'auras';
   graphics!: PIXI.Graphics;
   id: string;
+  sourceId: string;
   declare object: SwadeToken;
 
   constructor({ object, id }: { object: SwadeToken; id: string }) {
     super({ object });
     this.id = id;
+    this.sourceId = `${object.sourceId}.Aura.${id}`;
   }
 
   static get defaultData(): AuraData {
     return {
+      ...super.defaultData,
       enabled: false,
       walls: false,
-      color: game.user?.color ?? '#000000',
+      color: '#000000',
       alpha: 0.25,
       radius: 5,
       visibleTo: [],
     };
   }
 
-  get sourceId() {
-    return this.object.sourceId + `.Aura.${this.id}`;
-  }
-
   get auraData() {
-    return this.object.actor.auras[this.id] as AuraData;
+    return this.object!.actor?.system?.auras[this.id] as AuraData;
   }
 
   /** @override */
@@ -39,10 +40,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
     this.graphics ??= new PIXI.Graphics();
     this.graphics.clear();
     this.graphics
-      .beginFill(
-        this.auraData?.color ?? game.user?.color ?? '#000000',
-        this.auraData?.alpha,
-      )
+      .beginFill(this.auraData?.color ?? '#000000', this.auraData?.alpha)
       .lineStyle(2, this.auraData?.color, 1)
       .drawShape(this.shape)
       .endFill();
@@ -54,14 +52,14 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
   }
 
   /** @override */
-  protected _isActive(): boolean {
-    const isActive = super._isActive();
+  protected get active(): boolean {
+    const isActive = super.active;
     return isActive && (this._checkPermission() || this._checkDisposition());
   }
 
   protected _checkPermission(): boolean {
     return (
-      this.object.actor?.permission >=
+      (this.object!.actor?.permission ?? 0) >=
       foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
     );
   }
@@ -70,7 +68,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
     const visibleTo = Array.isArray(this.auraData.visibleTo)
       ? this.auraData.visibleTo
       : [this.auraData.visibleTo];
-    return !!canvas.tokens?.controlled.some((t) =>
+    return !!canvas?.tokens?.controlled.some((t) =>
       visibleTo.includes(t.document.disposition),
     );
   }

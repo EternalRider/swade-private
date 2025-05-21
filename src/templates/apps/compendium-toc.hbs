@@ -1,8 +1,23 @@
 <section class='toc'>
-  <h1 class='header title top-row'>{{header}}</h1>
+  <h2 class='header title top-row'>{{header}}</h2>
+  {{#if isActor}}
+    <div class='header category top-row'>
+      <label>{{localize 'SWADE.Category'}}</label>
+      <select name='category'>
+        {{selectOptions actorCategories valueAttr='label'}}
+      </select>
+    </div>
+    {{!-- <label class='header category top-row float-label'>
+      <select name='category'>
+        {{selectOptions actorCategories}}
+      </select>
+      <span>{{localize 'SWADE.Category'}}</span>
+    </label> --}}
+  {{/if}}
   <div class='header search top-row'>
     <a
       class='toggle-search-mode'
+      data-action='toggleSearchMode'
       data-tooltip='{{localize searchMode.tooltip}}'
     >
       <i class='fas {{searchMode.icon}}'></i>
@@ -17,6 +32,7 @@
       {{#if canCreateEntry}}
         <a
           class='createDocument'
+          data-action='createDocument'
           data-tooltip='{{localize "SIDEBAR.Create" type=label}}'
         ><i class='fa-solid fa-plus'></i></a>
       {{/if}}
@@ -26,14 +42,16 @@
   <section class='content'>
     {{#if isJournal}}
       {{#each entries}}
-        <section class='journal' data-document-id='{{id}}'>
-          <header data-document-id='{{id}}'>
-            <h3 class='journal-heading'><a>{{name}}</a></h3>
+        <section class='journal' data-entry-id='{{id}}'>
+          <header data-entry-id='{{id}}'>
+            <h3 class='journal-heading'>
+              <a data-action='openDocument'>{{name}}</a>
+            </h3>
           </header>
           <ol class='unmarked-list pages'>
             {{#each pages}}
               <li class='page' data-page-id='{{id}}'>
-                <a class='name'>{{name}}</a>
+                <a data-action='openDocument' class='name'>{{name}}</a>
               </li>
             {{/each}}
           </ol>
@@ -42,10 +60,10 @@
     {{else}}
       {{#each categories}}
         <section class='category'>
-          {{#if category}}<h2 class='category-header'>{{category}}</h2>{{/if}}
+          {{#if category}}<h3 class='category-header'>{{category}}</h3>{{/if}}
           <ol class='categories unmarked-list'>
             {{#each entries}}
-              <li class='toc-entry flexrow' data-document-id='{{id}}'>
+              <li class='toc-entry flexrow' data-entry-id='{{id}}'>
                 {{#if @root.isActor}}
                   <img
                     class='thumbnail'
@@ -70,7 +88,7 @@
                   />
                 {{/if}}
                 <div class='entry'>
-                  <a class='name'>{{name}}</a>
+                  <a data-action='openDocument' class='name'>{{name}}</a>
                   {{#if requirements}}
                     <span class='requirements'>{{requirements}}</span>
                   {{/if}}
@@ -82,7 +100,7 @@
             {{#if group}}<h3 class='group-header'>{{group}}</h3>{{/if}}
             <ol class='categories unmarked-list'>
               {{#each entries}}
-                <li class='toc-entry flexrow' data-document-id='{{id}}'>
+                <li class='toc-entry flexrow' data-entry-id='{{id}}'>
                   <img
                     class='thumbnail'
                     src='{{img}}'
@@ -90,7 +108,7 @@
                     loading='lazy'
                   />
                   <div class='entry'>
-                    <a class='name'>{{name}}</a>
+                    <a data-action='openDocument' class='name'>{{name}}</a>
                     {{#if requirements}}
                       <span class='requirements'>
                         {{localize 'SWADE.Req'}}:&nbsp;

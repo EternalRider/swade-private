@@ -1,5 +1,4 @@
 import { constants } from '../../constants';
-import { MappingField } from '../fields/MappingField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
@@ -31,7 +30,7 @@ export const itemDescription = () => ({
     label: 'SWADE.SWID.Long',
     validate: (
       value: string,
-      _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+      _options: foundry.data.fields.DataField.ValidationOptions,
     ) => {
       validateSwid(value);
     },
@@ -42,6 +41,13 @@ export const itemDescription = () => ({
 export const builder = () => ({
   build: new fields.SchemaField({
     cost: new fields.NumberField({ label: 'SWADE.BuildCost' }),
+    // Null means unlimited. Nonlinear options should be implemented as separate choices.
+    limit: new fields.NumberField({
+      label: 'SWADE.BuildLimit',
+      initial: 1,
+      integer: true,
+      min: 1,
+    }),
   }),
 });
 
@@ -83,7 +89,7 @@ export const actions = () => ({
     trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
     traitMod: new fields.StringField({ initial: '', label: 'SWADE.TraitMod' }),
     dmgMod: new fields.StringField({ initial: '', label: 'SWADE.DmgMod' }),
-    additional: new MappingField(
+    additional: new fields.TypedObjectField(
       new fields.SchemaField({
         name: new fields.StringField({
           blank: false,

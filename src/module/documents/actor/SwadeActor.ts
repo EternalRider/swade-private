@@ -1,6 +1,5 @@
-import { NullishProps, ValueOf } from 'fvtt-types/utils';
+import { AnyObject, NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
-import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
@@ -8,7 +7,6 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
-import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import {
@@ -50,7 +48,6 @@ declare global {
   interface FlagConfig {
     swade: {
       ambidextrous?: boolean;
-      auras?: Record<string, AuraData>;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
@@ -95,6 +92,16 @@ class SwadeActor<
     //get the value from the parameter
     const value = mapRange(current, 0, max, 0, 1);
     return Color.fromHSV([hue, value, 0.75]);
+  }
+
+  static override migrateData(data: Actor.CreateData & AnyObject) {
+    super.migrateData(data);
+    if (data.flags?.swade?.auras) {
+      data.system ??= {};
+      data.system.auras = data.flags.swade.auras;
+      delete data.flags.swade.auras;
+    }
+    return data;
   }
 
   constructor(
@@ -237,34 +244,6 @@ class SwadeActor<
     return types;
   }
 
-  get auras(): Record<string, AuraData> {
-    const auras = (this.flags?.swade?.auras ?? {}) as Record<string, AuraData>;
-    const specialAuras = ['aura1', 'aura2'];
-    let aura;
-    for (const key in auras) {
-      if (specialAuras.includes(key)) continue;
-      aura = auras[key] ?? {};
-      auras[key] = foundry.utils.mergeObject(
-        aura,
-        AuraPointSource.defaultData,
-        { overwrite: false },
-      );
-    }
-
-    //special case: the user-defined auras
-    auras.aura1 = foundry.utils.mergeObject(
-      auras.aura1 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    auras.aura2 = foundry.utils.mergeObject(
-      auras.aura2 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    return auras;
-  }
-
   /**
    * Helper property to prevent double-application of modifiers
    */
@@ -356,7 +335,7 @@ class SwadeActor<
      * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
      * @param {IRollOptions} options            The options passed into the roll function
      */
-    const permitContinue = Hooks.callAll(
+    const permitContinue = Hooks.call(
       'swadePreRollAttribute',
       this,
       attribute,
@@ -364,7 +343,7 @@ class SwadeActor<
       modifiers,
       options,
     );
-    if (!permitContinue) return null;
+    if (permitContinue === false) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
@@ -606,6 +585,7 @@ class SwadeActor<
     return RollDialog.asPromise({
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
+        rollType: "running",
       }),
       mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -669,7 +649,7 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const message = await renderTemplate(SWADE.bennies.templates.spend, {
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.spend, {
         target: this,
         speaker: speaker,
       });
@@ -715,7 +695,7 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const content = await renderTemplate(SWADE.bennies.templates.add, {
+      const content = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.add, {
         target: this,
         speaker: speaker,
       });
@@ -769,7 +749,7 @@ class SwadeActor<
     const msgClass = getDocumentClass('ChatMessage');
     await msgClass.create({
       speaker: msgClass.getSpeaker({ actor: this }),
-      content: await renderTemplate(template, {
+      content: await foundry.applications.handlebars.renderTemplate(template, {
         icon: CONFIG.SWADE.conviction.icon,
         actor: this,
       }),
@@ -991,9 +971,7 @@ class SwadeActor<
       'SwadeActor#getDriver deprecated in favor of the crew members array, which can be found at system.crew.members',
       { since: '4.4', until: '5.1' },
     );
-    this.crew.members
-      .find((m) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
-      .map((m) => m.actor) ?? null;
+    return this.system.operator;
   }
 
   getTraitRollModifiers(
