@@ -180,7 +180,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Progress attribute abbreviation toggle
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
 
-    data.enrichedBiography = await TextEditor.enrichHTML(
+    data.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       (this.actor.system as NpcData).details.biography.value,
       {
         relativeTo: this.actor,

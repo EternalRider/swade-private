@@ -256,7 +256,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
         const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
         game.tooltip.activate(ev.currentTarget, {
-          html: await TextEditor.enrichHTML(content, {
+          html: await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {
             secrets: this.item.isOwner,
           }),
         });
@@ -317,7 +317,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       foundry.utils.setProperty(
         effect,
         'enrichedDescription',
-        await TextEditor.enrichHTML(effect.description, {
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(effect.description, {
           secrets: this.item.isOwner,
         }),
       );
@@ -728,7 +728,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     };
   }
   async #enrichText(text: string): Promise<string> {
-    const enriched = await TextEditor.enrichHTML(text, {
+    const enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(text, {
       relativeTo: this.item,
       rollData: this.item.getRollData(),
       secrets: this.document.isOwner,
@@ -775,7 +775,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this.#effectCreateDropDown = new ContextMenu(
+    this.#effectCreateDropDown = new foundry.applications.ux.ContextMenu.implementation(
       html,
       '.effects .header',
       [

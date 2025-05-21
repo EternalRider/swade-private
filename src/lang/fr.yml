@@ -393,6 +393,7 @@ SWADE:
     Medium: Portée moyenne
     Long: Portée longue
     Extreme: Portée extrême
+    _nameShort: Portée
   ModOther: Autres modificateurs
   Snapfire: Tir statique
   UnstablePlatform: Plateforme instable
@@ -1606,6 +1607,18 @@ SWADE:
   PPMods: Modificateurs de pouvoir
   AttrSmaShortPowerRange: Int
   Burrowing: Enfouissement
+  Scales:
+    Description: 'Echelle : {scale} ({name})'
+    LargerThan: Plus grand que {scale}
+    SmallerThan: Plus petit que {scale}
+    Names:
+      Tiny: Minuscule
+      VerySmall: Trés petit
+      Small: Petit
+      Normal: Normal
+      Huge: Géant
+      Gargantuan: Gargantuesque
+      Large: Grand
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ

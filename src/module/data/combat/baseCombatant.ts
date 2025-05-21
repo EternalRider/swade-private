@@ -141,7 +141,7 @@ export class BaseCombatantModel<
   async #createJokersWildMessage() {
     await getDocumentClass('ChatMessage').create({
       author: game.userId,
-      content: await renderTemplate(SWADE.bennies.templates.joker, {
+      content: await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.joker, {
         speaker: game.user,
       }),
     });

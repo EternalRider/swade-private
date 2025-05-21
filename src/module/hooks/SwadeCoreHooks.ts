@@ -748,7 +748,7 @@ export default class SwadeCoreHooks {
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const elementTemplate = document.createElement('template');
-    elementTemplate.innerHTML = await renderTemplate(path, {
+    elementTemplate.innerHTML = await foundry.applications.handlebars.renderTemplate(path, {
       cardList,
       numberOfJokers,
     });

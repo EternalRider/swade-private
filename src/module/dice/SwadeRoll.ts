@@ -201,7 +201,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     displayResult = true,
   }: RollRenderOptions = {}) {
     const data = await this.getRenderData(flavor, isPrivate, displayResult);
-    return renderTemplate(template, data);
+    return foundry.applications.handlebars.renderTemplate(template, data);
   }
 
   getRerollLabel(): string | undefined {

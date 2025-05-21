@@ -314,7 +314,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       if (li.classList.contains('group-header')) continue;
       const btn = li.querySelector('.add-preset');
       const name = btn?.textContent;
-      const match = rgx.test(SearchFilter.cleanQuery(name!));
+      const match = rgx.test(foundry.applications.ux.SearchFilter.cleanQuery(name!));
       li.style.display = match ? 'block' : 'none';
     }
   }

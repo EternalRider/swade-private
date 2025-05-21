@@ -921,7 +921,7 @@ class CreatureData<
   // specifying this to resolve depth issue
   async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
-      const message = await renderTemplate(SWADE.bennies.templates.refresh, {
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refresh, {
         target: this.parent,
         speaker: getDocumentClass('ChatMessage').getSpeaker({
           actor: this.parent,

@@ -206,7 +206,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected async _onDrop(event: DragEvent) {
     // Combat Tracker contains combatant groups, which means this would fire twice
     event.stopPropagation();
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
     const combatant = await SwadeCombatant.fromDropData(data);
 
