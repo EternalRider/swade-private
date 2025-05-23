@@ -83,12 +83,11 @@
       <div class='dropdown collapsed' role='listbox'>
         <input
           class='searchBox'
-          type='text'
+          type='search'
           placeholder='{{localize "FILES.Search"}}'
-          role='searchbox'
           autocomplete='off'
         />
-        <ol class='selections'>
+        <ol class='selections unmarked-list'>
           {{#each modGroups as |group|}}
             <li class='group-header'>{{group.name}}</li>
             {{#each group.modifiers}}
@@ -111,7 +110,7 @@
   </fieldset>
   <fieldset class='formula'>
     <legend>{{localize 'SWADE.Formula'}}</legend>
-    <div class='input' role='textbox'>{{formula}}</div>
+    <textarea onclick='this.select()' readonly>{{formula}}</textarea>
   </fieldset>
   <div class='form-group'>
     <label>{{localize 'SWADE.RollMode'}}</label>

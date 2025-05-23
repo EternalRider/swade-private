@@ -32,7 +32,10 @@ class SwadeDocumentTweaks<
       width: 400,
       height: 600,
     },
-    classes: ['swade', 'doc-tweaks', 'swade-application', 'standard-form'],
+    window: {
+      contentClasses: ['standard-form'],
+    },
+    classes: ['swade', 'doc-tweaks', 'swade-application'],
   };
 
   override get id() {
@@ -151,13 +154,16 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
     traits: {
       template: 'systems/swade/templates/actors/apps/tweaks/tab-traits.hbs',
+      scrollable: [''],
     },
     additionalStats: {
       template:
         'systems/swade/templates/actors/apps/tweaks/tab-additional-stats.hbs',
+      scrollable: [''],
     },
     auras: {
       template: 'systems/swade/templates/actors/apps/tweaks/tab-auras.hbs',
+      scrollable: [''],
     },
     footer: { template: 'templates/generic/form-footer.hbs' },
   };
@@ -223,7 +229,7 @@ class SwadeItemTweaks<
   );
 
   static override PARTS = {
-    main: { template: 'systems/swade/templates/item/apps/tweaks.hbs' },
+    main: { template: 'systems/swade/templates/item/apps/tweaks.hbs', scrollable: [''] },
     footer: { template: 'templates/generic/form-footer.hbs' },
   };
 

@@ -43,38 +43,39 @@
       height: calc(var(--input-height) + 1px);
       width: 100%;
       padding: 0 3px;
-      .fas {
-        margin: 0 $medium-spacing;
-        transition: transform 200ms;
+      .fa-solid {
+        margin: 0 0.2rem;
+        transition: rotate 250ms ease;
       }
       .rotate {
-        transform: rotate(90deg);
+        rotate: 90deg;
       }
     }
     .dropdown {
       position: absolute;
-      padding: 0;
+      padding: 0.25em;
       border: 1px solid var(--color-border);
       border-radius: 4px;
       background: var(--background);
+      backdrop-filter: blur(4px);
       transition: height 200ms ease;
       overflow: hidden;
       &.collapsed {
         border: none;
         height: 0px;
+        padding: 0;
       }
     }
     .searchBox {
-      margin: 0.5em;
+      margin-bottom: 0.5em;
     }
     .selections {
       padding: 0;
       margin: 0;
-      list-style: none;
       max-height: 300px;
       overflow-y: auto;
       overflow-x: hidden;
-      scrollbar-gutter: stable both-edges;
+      scrollbar-gutter: stable;
     }
     .group-header {
       font-weight: 700;
@@ -83,12 +84,12 @@
     }
     .modifier {
       margin-left: 0.25em;
+      padding-right: 0.25em;
+      width: 95%;
       button {
-        padding: 0 0 0 0.25em;
-        cursor: pointer;
+        margin: 0 0 0 0.25em;
         border: none;
-        background: none;
-        text-align: left;
+        background: transparent;
         justify-content: start;
         width: 100%;
         &:hover,
@@ -119,13 +120,13 @@
     }
   }
   .formula {
-    .input {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--color-border);
-      padding: 1px 3px;
-      border-radius: 3px;
+    textarea {
+      field-sizing: content;
+      resize: none;
+      min-height: auto;
       user-select: text;
       word-break: break-word;
+      color: var(--input-text-color);
     }
   }
 }

@@ -17,15 +17,13 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
   #actor: SwadeActor;
 
   static override DEFAULT_OPTIONS = {
-    classes: [
-      'swade',
-      'attribute-manager',
-      'swade-application',
-      'standard-form',
-    ],
+    classes: ['swade', 'attribute-manager', 'swade-application'],
     position: {
       width: 600,
       height: 'auto',
+    },
+    window: {
+      contentClasses: ['standard-form'],
     },
     tag: 'form',
     form: {

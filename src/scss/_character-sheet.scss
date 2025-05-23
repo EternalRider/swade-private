@@ -883,7 +883,7 @@
       &:hover,
       &:focus {
         &::after {
-          font-family: 'Font Awesome 5 Free';
+          font-family: var(--font-awesome);
           content: '\f27a';
           text-align: center;
           font-size: 1.25em;
@@ -1137,7 +1137,7 @@
       &:hover,
       &:focus {
         &::after {
-          font-family: 'Font Awesome 5 Free';
+          font-family: var(--font-awesome);
           content: '\f27a';
           text-align: center;
           font-size: 1.25em;
@@ -1337,7 +1337,7 @@
       &:hover,
       &:focus {
         &::after {
-          font-family: 'Font Awesome 5 Free';
+          font-family: var(--font-awesome);
           content: '\f27a';
           text-align: center;
           font-size: 1.25em;

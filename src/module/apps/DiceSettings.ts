@@ -17,18 +17,13 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
     window: {
       title: 'SWADE.DiceConf',
       resizable: false,
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 500,
       height: 'auto' as const,
     },
-    classes: [
-      'swade',
-      'setting-config',
-      'dice-so-nice',
-      'swade-application',
-      'standard-form',
-    ],
+    classes: ['swade', 'setting-config', 'dice-so-nice', 'swade-application'],
     tag: 'form',
     form: {
       handler: DiceSettings.onSubmit,

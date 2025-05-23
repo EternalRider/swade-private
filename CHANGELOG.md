@@ -22,6 +22,28 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.1
+
+### Changed
+
+- [BREAKING] The following sheets and applications have been converted to AppV2 **by @roth-michael**
+  - CardPicker
+  - PlayerCardDrawHerder
+
+### Removed
+
+- [BREAKING] Removed the (unused) `SwadeCombatGroupColor` application and `PopUpMenu`
+
+### Fixed
+
+- Turn holding & its associated actions (losing turn, acting now/after combatant) now show up in the combat tracker again. **by @roth-michael**
+- Creating combat no longer throws an error. **by @roth-michael**
+- Wildcard icons are theme-appropriate, so they're easy to see whether in light mode or dark mode. **by @roth-michael**
+- Fixed Actor directory icons for Wild Cards. **by @florad92**
+- Improved styles for the Roll Dialog. **by @florad92**
+- Fixed an issue that would prevent weapons owned by vehicles from rolling damange. **by @florad92**
+- Fixed an issue that prevented initiative draw buttons from being visible on the combat tracker. (#1334) **by @florad92**
+
 ## 5.0.0
 
 ### Added

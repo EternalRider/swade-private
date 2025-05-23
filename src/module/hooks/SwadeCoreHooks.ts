@@ -178,7 +178,9 @@ export default class SwadeCoreHooks {
     _data: any,
   ) {
     // Mark all Wildcards in the Actors sidebars with an icon
-    const entries = html.querySelectorAll('.entry-name');
+    const entries = html.querySelectorAll<HTMLLIElement>(
+      '.directory-item.entry.actor',
+    );
     const wildcards = app.collection.filter(
       (a) => a.isWildcard && a.type === 'character',
     );
@@ -191,17 +193,14 @@ export default class SwadeCoreHooks {
       wildcards.push(...npcWildcards);
     }
 
-    for (let i = 0; i < entries.length; i++) {
-      const element = entries[i];
-      const actorID = element.parentElement?.dataset.entryId;
-      const wildcard = wildcards.find((a) => a.id === actorID);
-
-      if (wildcard) {
-        element.innerHTML = `
-					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.name}</a>
-					`;
-      }
-    }
+    entries.forEach((element) => {
+      const actorID = element.dataset.entryId;
+      if (!actorID) return;
+      const isWildcard = !!wildcards.find((a) => a.id === actorID);
+      if (!isWildcard) return;
+      const thumbnail = element.querySelector<HTMLImageElement>('.thumbnail');
+      thumbnail?.insertAdjacentHTML('afterend', '<img class="wildcard-icon">');
+    });
   }
 
   static onRenderSettings(app: Settings, html: HTMLElement) {
@@ -317,10 +316,7 @@ export default class SwadeCoreHooks {
         const id = el.dataset.entryId!;
         if (ids.includes(id)) {
           const name = el.children[1];
-          name.insertAdjacentHTML(
-            'afterbegin',
-            `<img src="${SWADE.wildCardIcons.compendium}" class="wildcard-icon">`,
-          );
+          name.insertAdjacentHTML('afterbegin', '<img class="wildcard-icon">');
         }
       });
     }
@@ -748,10 +744,11 @@ export default class SwadeCoreHooks {
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const elementTemplate = document.createElement('template');
-    elementTemplate.innerHTML = await foundry.applications.handlebars.renderTemplate(path, {
-      cardList,
-      numberOfJokers,
-    });
+    elementTemplate.innerHTML =
+      await foundry.applications.handlebars.renderTemplate(path, {
+        cardList,
+        numberOfJokers,
+      });
     html.querySelector('footer')?.before(...elementTemplate.content.children);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication

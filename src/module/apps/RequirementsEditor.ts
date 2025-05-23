@@ -30,17 +30,13 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   static override DEFAULT_OPTIONS = {
     window: {
       title: 'SWADE.Req',
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 600,
       height: 'auto',
     },
-    classes: [
-      'swade',
-      'requirements-editor',
-      'swade-application',
-      'standard-form',
-    ],
+    classes: ['swade', 'requirements-editor', 'swade-application'],
     tag: 'form',
     form: {
       handler: RequirementsEditor.onSubmit,

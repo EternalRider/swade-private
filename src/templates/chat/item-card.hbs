@@ -8,7 +8,9 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
 >
   <header class='card-header flexrow'>
     <img src='{{item.img}}' title='{{item.name}}' width='36' height='36' />
-    <h3 class='item-name'><a>{{item.name}}</a></h3>
+    <button type='button' class='item-name'>
+      <h3>{{item.name}}</h3>
+    </button>
   </header>
 
   <!-- Ammo Management -->
@@ -69,7 +71,11 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
   {{/if}}
 
   <!-- Description -->
-  <div class='card-content' style='display: none'>{{{data.description}}}</div>
+  <div class='card-content'>
+    <div class='container'>
+      {{{data.description}}}
+    </div>
+  </div>
 
   <!-- Reload Button -->
   {{#if hasReloadButton}}

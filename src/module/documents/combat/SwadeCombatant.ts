@@ -200,7 +200,7 @@ export default class SwadeCombatant<
       await this.update({
         system: {
           roundHeld: this.parent.round,
-          '-=turnLost': null,
+          turnLost: false,
         },
       });
       await this.actor?.toggleActiveEffect(data, { active: false });

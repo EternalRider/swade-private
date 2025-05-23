@@ -2,56 +2,71 @@ import { Logger } from '../Logger';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeCombatant from '../documents/combat/SwadeCombatant';
 
-export class PlayerCardDrawHerder extends Application<Application.Options> {
-  #callback: () => void;
-  #isResolved = false;
-  ctx: HerderInternalContext;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  static asPromise(ctx: HerderConstructionContext): Promise<void> {
-    return new Promise((resolve) => new PlayerCardDrawHerder(ctx, resolve));
-  }
-
+export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(ApplicationV2) {
+  declare ctx: HerderInternalContext;
+  
   constructor(
     ctx: HerderConstructionContext,
     resolve: () => void,
-    options?: Partial<Application.Options>,
+    options?: Partial<foundry.applications.api.ApplicationV2.Configuration>,
   ) {
     super(options);
     this.#callback = resolve;
     this.ctx = this.#initContext(ctx);
     this.#promptAllPlayers();
-    this.render(true);
+  }
+  
+  #isResolved = false;
+  #callback: () => void;
+
+  static asPromise(ctx: HerderConstructionContext): Promise<void> {
+    return new Promise((resolve) => new PlayerCardDrawHerder(ctx, resolve).render({ force: true }));
   }
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      title: game.i18n.localize('SWADE.PlayerCardDrawHelper.Title'),
-      template: 'systems/swade/templates/apps/player-card-draw-herder.hbs',
-      classes: ['swade-app'],
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE.PlayerCardDrawHelper.Title',
+      contentClasses: ['standard-form'],
+    },
+    classes: ['swade-application'],
+    position: {
       width: 400,
-      height: 'auto' as const,
-      id: 'foo',
+      height: 'auto'
+    },
+    actions: {
+      close: this.#onClose
+    }
+  };
+
+  static override PARTS = {
+    herder: { template: 'systems/swade/templates/apps/player-card-draw-herder.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' }
+  };
+
+  static #onClose(
+    this: PlayerCardDrawHerder,
+    _event: PointerEvent,
+    _target: HTMLElement
+  ) {
+    return this.close();
+  }
+
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      draws: this.ctx.draws.map((draw) => ({
+        user: draw.user.name,
+        combatant: draw.combatant.name,
+        icon: this.#getIconForDraw(draw)
+      })),
+      buttons: [
+        { type: 'button', action: 'close', label: 'Close' }
+      ]
     });
-  }
 
-  override activateListeners(jquery: JQuery<HTMLElement>): void {
-    const html = jquery[0];
-    html
-      .querySelector<HTMLButtonElement>('.close')
-      ?.addEventListener('click', this.close.bind(this));
-  }
-
-  override getData(options?: Partial<Application.Options>) {
-    const data = {
-      draws: this.ctx.draws.map((draw) => {
-        return {
-          user: draw.user.name,
-          combatant: draw.combatant.name,
-          icon: this.#getIconForDraw(draw),
-        };
-      }),
-    };
-    return foundry.utils.mergeObject(super.getData(options), data);
+    return context;
   }
 
   #initContext(ctx: HerderConstructionContext): HerderInternalContext {
@@ -149,9 +164,9 @@ export class PlayerCardDrawHerder extends Application<Application.Options> {
     );
   }
 
-  override close(options?: Application.CloseOptions): Promise<void> {
+  protected override _onClose(options) {
+    super._onClose(options);
     if (!this.#isResolved) this.#callback();
-    return super.close(options);
   }
 }
 

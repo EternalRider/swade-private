@@ -83,7 +83,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected override async _preparePartContext(
     partId: keyof typeof SwadeVehicleSheetV2.PARTS,
     context: SwadeVehicleSheetV2.RenderContext,
-    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
   ) {
     const itemTypes = this.actor.itemTypes;
     switch (partId) {
@@ -113,14 +113,15 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         );
         break;
       case 'description':
-        context.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.actor.system.description,
-          {
-            secrets: this.actor.isOwner,
-            rollData: this.actor.getRollData(),
-            relativeTo: this.actor,
-          },
-        );
+        context.enrichedDescription =
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            this.actor.system.description,
+            {
+              secrets: this.actor.isOwner,
+              rollData: this.actor.getRollData(),
+              relativeTo: this.actor,
+            },
+          );
         break;
     }
     return context;
