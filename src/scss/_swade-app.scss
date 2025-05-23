@@ -22,6 +22,10 @@
   //buttons
   --button-border-radius: 5px;
 
+  button:not(.fa-file-import) {
+    font-family: var(--default-font), var(--font-awesome);
+  }
+
   font-family: var(--default-font);
   &:not(.application) {
     scrollbar-gutter: stable;

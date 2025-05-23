@@ -64,12 +64,6 @@ export async function preloadHandlebarsTemplates() {
     'swade.character-setting-field':
       'systems/swade/templates/actors/character/partials/setting-fields.hbs',
 
-    //Sidebar
-    'swade.combat-tracker':
-      'systems/swade/templates/sidebar/combat-tracker.hbs', // TODO: Investigate if this is in use anywhere
-    'swade.combatant-details':
-      'systems/swade/templates/sidebar/combatant-details.hbs',
-
     //Item V2
     'swade.item-header': 'systems/swade/templates/item/partials/header.hbs',
     'swade.item-additional-stats':

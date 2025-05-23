@@ -109,7 +109,8 @@ export default class SwadeCombat<
             },
           },
           rejectClose: false,
-          render: (_event: Event, html: HTMLDialogElement) => {
+          render: (_event: Event, dialog: foundry.applications.api.DialogV2) => {
+            const html = dialog.element;
             const typeSelect = html.querySelector<HTMLSelectElement>(
               'select[name="type"]',
             );
@@ -470,7 +471,7 @@ export default class SwadeCombat<
 
   /** Ask the user to pick a card for a given combatant name */
   async pickACard(ctx: CardPickContext): Promise<CardPickResult> {
-    return CardPicker.asPromise({ ...ctx, deck: this.actionDeck });
+    return CardPicker.asPromise({ ctx: { ...ctx, deck: this.actionDeck } });
   }
 
   /**

@@ -106,8 +106,9 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     html
       .querySelector<HTMLElement>('.card-header .item-name')
       ?.addEventListener('click', () => {
-        // TODO: css wizardry to do this sans-jQuery
-        $(html.querySelectorAll('.card-content')).slideToggle();
+        html
+          .querySelector<HTMLElement>('.card-content')
+          ?.classList.toggle('expanded');
       });
   }
 

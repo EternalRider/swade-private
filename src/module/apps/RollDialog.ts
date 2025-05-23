@@ -36,7 +36,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static override DEFAULT_OPTIONS = {
-    classes: ['swade', 'roll-dialog', 'swade-application', 'standard-form'],
+    window: {
+      contentClasses: ['standard-form'],
+    },
+    classes: ['swade', 'roll-dialog', 'swade-application'],
     position: {
       width: 400,
       height: 'auto',
@@ -124,18 +127,8 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     target: HTMLButtonElement,
   ) {
     const style = getComputedStyle(target);
-    const width =
-      parseFloat(style.width) -
-      parseFloat(style.paddingLeft) -
-      parseFloat(style.paddingRight) -
-      parseFloat(style.marginLeft) -
-      parseFloat(style.marginRight) -
-      parseFloat(style.borderLeftWidth) -
-      parseFloat(style.borderRightWidth);
     const html = this.element;
     html.querySelector('.fa-solid.fa-caret-right')?.classList.toggle('rotate');
-    const searchBox = html.querySelector('.searchBox');
-    if (searchBox) searchBox.style.width = width + 'px';
     const dropdown = html.querySelector('.dropdown');
     if (dropdown) {
       dropdown.style.width = style.width;
@@ -165,7 +158,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         modifiers: this.modifiers
           .map(normalizeRollModifiers)
           .map(this.#fillModifierLabels.bind(this)),
-        formula: this.#buildRollForEvaluation().formula,
+        formula: this.#buildRollForEvaluation().formula.replace(
+          /(?<={[^}]*?),/g,
+          ', ',
+        ),
         isTraitRoll: this.isTraitRoll,
         buttons: [
           {
@@ -314,7 +310,9 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       if (li.classList.contains('group-header')) continue;
       const btn = li.querySelector('.add-preset');
       const name = btn?.textContent;
-      const match = rgx.test(foundry.applications.ux.SearchFilter.cleanQuery(name!));
+      const match = rgx.test(
+        foundry.applications.ux.SearchFilter.cleanQuery(name!),
+      );
       li.style.display = match ? 'block' : 'none';
     }
   }

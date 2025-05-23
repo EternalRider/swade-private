@@ -342,7 +342,7 @@ class SwadeItem<
       this.parent &&
       'details' in this.parent.system &&
       game.settings.get('swade', 'enableConviction') &&
-      this.parent.system.details.conviction.active
+      foundry.utils.getProperty(this.parent.system, 'details.conviction.active')
     ) {
       modifiers.push({
         label: game.i18n.localize('SWADE.Conv'),
@@ -487,14 +487,19 @@ class SwadeItem<
     for (const effect of this.effects.filter(
       (e) => !e.transfer && e.type !== 'modifier',
     )) {
-      effects.push(await foundry.applications.ux.TextEditor.implementation.enrichHTML(effect.link));
+      effects.push(
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          effect.link,
+        ),
+      );
     }
 
     const data: ItemChatCardData = {
-      description: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.system.description,
-        enrichOptions,
-      ),
+      description:
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          this.system.description,
+          enrichOptions,
+        ),
       chips: chips,
       actions: actions,
     };

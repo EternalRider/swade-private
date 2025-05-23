@@ -37,12 +37,9 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static override DEFAULT_OPTIONS = {
     window: {
       title: 'SWADE ChoiceDialog',
+      contentClasses: ['standard-form'],
     },
-    position: {
-      width: 'auto',
-      height: 'auto',
-    },
-    classes: ['swade', 'choice-dialog', 'swade-application', 'standard-form'],
+    classes: ['swade', 'choice-dialog', 'swade-application'],
     tag: 'form',
     form: {
       handler: ChoiceDialog.onSubmit,

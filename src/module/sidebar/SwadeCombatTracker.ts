@@ -1,5 +1,4 @@
 // import { Updates } from '../../globals';
-// import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
@@ -10,6 +9,10 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     classes: ['swade'],
     actions: {
       toggleGroupExpand: this.#toggleGroupExpand,
+      toggleHold: this.#onSwadeCombatantControl,
+      toggleTurnLost: this.#onSwadeCombatantControl,
+      actNow: this.#onSwadeCombatantControl,
+      actAfter: this.#onSwadeCombatantControl
     },
   };
 
@@ -369,11 +372,28 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     await ui.combat.render({ parts: ['tracker'] });
   }
 
+  static async #onSwadeCombatantControl(
+    this: SwadeCombatTracker,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const combatantId = target?.closest('[data-combatant-id]')?.dataset.combatantId;
+    const combatant: SwadeCombatant | null = this.viewed?.combatants.get(combatantId);
+    if (!combatant) return;
+
+    switch (target.dataset.action) {
+      case 'toggleHold': return await combatant.toggleHold();
+      case 'toggleTurnLost': return await combatant.toggleTurnLost();
+      case 'actNow': return await combatant.actNow();
+      case 'actAfter': return await combatant.actAfterCurrentCombatant();
+    }
+  }
+
   /**
    * Handle new Combat creation request by presenting a form asking what type
    */
   protected override async _onCombatCreate(
-    event: JQuery.ClickEvent,
+    event: PointerEvent,
   ): Promise<void> {
     event.preventDefault();
     const cls = getDocumentClass('Combat');

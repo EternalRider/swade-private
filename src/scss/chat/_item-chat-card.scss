@@ -1,0 +1,129 @@
+.swade.chat-card.item-card {
+  .item-name {
+    text-align: start;
+    border: none;
+    background: transparent;
+  }
+
+  .card-content {
+    h3 {
+      font-size: var(--font-size-12);
+      margin: 0;
+      font-weight: bold;
+    }
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 250ms ease-in-out;
+    &.expanded {
+      grid-template-rows: 1fr;
+    }
+    .container {
+      overflow: hidden;
+    }
+  }
+
+  .pp-counter,
+  .ammo-counter {
+    margin: $small-spacing 0;
+  }
+
+  .ammo-counter {
+    display: flex;
+    column-gap: $medium-spacing;
+
+    .ammo-name {
+      margin-left: auto;
+    }
+
+    .magazine {
+      text-decoration-style: dotted;
+    }
+  }
+
+  .card-header {
+    padding: 3px 0;
+    border-top: 2px groove #fff;
+    border-bottom: 2px groove #fff;
+
+    img {
+      flex: 0 0 36px;
+      margin-right: 5px;
+      border: none;
+      object-fit: cover;
+    }
+
+    h3 {
+      flex: 1;
+      margin: 0;
+      line-height: 36px;
+      color: #111;
+      overflow: hidden;
+      height: 30px;
+      word-break: break-all;
+      font-size: 1.25em;
+      border-bottom: 1px solid var(--color-scrollbar);
+
+      &:hover {
+        color: #111;
+      }
+    }
+  }
+
+  .templates:not(:has(button)) {
+    display: none;
+  }
+
+  .card-buttons {
+    margin: 5px 0;
+
+    span {
+      line-height: 28px;
+      text-align: center;
+      &.ppModifiers {
+        /** Ensures the list doesn't break the grid layout **/
+        max-width: 230px;
+      }
+    }
+
+    button {
+      font-size: var(--font-size-12);
+      height: var(--font-size-24);
+      min-height: var(--font-size-20);
+      line-height: var(--font-size-20);
+      margin: 2px 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .effects {
+      margin: 0;
+      padding: 0;
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+
+      .effect {
+        .content-link {
+          cursor: grabbing;
+        }
+      }
+    }
+  }
+
+  .card-footer {
+    padding: 3px 0 0;
+    border-top: 2px groove #fff;
+
+    span {
+      border-right: 2px groove #fff;
+      padding: 0 5px 0 0;
+      font-size: 10px;
+
+      &:last-child {
+        border-right: none;
+        padding-right: 0;
+      }
+    }
+  }
+}

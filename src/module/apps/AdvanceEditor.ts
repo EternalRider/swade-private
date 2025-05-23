@@ -37,12 +37,13 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   static override DEFAULT_OPTIONS = {
     window: {
       title: 'SWADE.Advances.EditorTitle',
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 420,
       height: 'auto',
     },
-    classes: ['swade', 'advance-editor', 'swade-application', 'standard-form'],
+    classes: ['swade', 'advance-editor', 'swade-application'],
     tag: 'form',
     form: {
       handler: AdvanceEditor.onSubmit,

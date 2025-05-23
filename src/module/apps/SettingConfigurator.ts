@@ -15,12 +15,13 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     window: {
       title: 'SWADE.SettingConf',
       resizable: false,
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 600,
       height: 700,
     },
-    classes: ['setting-config', 'sheet', 'swade-application', 'standard-form'],
+    classes: ['setting-config', 'sheet', 'swade-application'],
     tag: 'form',
     form: {
       handler: SettingConfigurator.onSubmit,
