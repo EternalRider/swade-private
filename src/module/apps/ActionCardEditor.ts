@@ -22,17 +22,13 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   static override DEFAULT_OPTIONS = {
     window: {
       title: 'SWADE.ActionCardEditor',
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 600,
       height: 'auto',
     },
-    classes: [
-      'swade',
-      'action-card-editor',
-      'swade-application',
-      'standard-form',
-    ],
+    classes: ['swade', 'action-card-editor', 'swade-application'],
     tag: 'form',
     form: {
       handler: ActionCardEditor.onSubmit,

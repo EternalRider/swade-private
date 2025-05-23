@@ -5,20 +5,24 @@
   li.combatant,
   li.combatant-group {
     .token-initiative {
-      flex: 0 0 60px;
-      .initiative {
-        font-size: var(--font-size-20);
+      flex: 0 0 var(--font-size-64);
+      .initiative,
+      .roll.initiative {
+        font-size: var(--font-size-24);
+        filter: none;
+        --initiative-icon: none;
+        --initiative-icon-hover: none;
       }
-    }
-  }
-
-  li.combatant {
-    .roll {
-      background: url(../../icons/svg/card-hand.svg) no-repeat 50% 50%;
-      background-size: 100%;
-      &:hover {
-        background: url(../../systems/swade/assets/ui/card-hand-gradient.svg)
-          no-repeat 50% 50%;
+      .roll {
+        --initiative-icon: url('/icons/svg/card-hand.svg');
+        --initiative-icon-hover: url('/systems/swade/assets/ui/card-hand-gradient.svg');
+        &:hover,
+        &:focus-visible {
+          color: var(--color-warm-2);
+          filter: drop-shadow(
+            0 0 4px color-mix(in oklab, var(--color-warm-2), transparent 45%)
+          );
+        }
       }
     }
   }

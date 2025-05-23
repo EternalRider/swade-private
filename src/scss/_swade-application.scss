@@ -2,7 +2,7 @@ body.theme-dark .swade-application {
   //Color definitions
   --swade-primary-color: var(--color-warm-2);
 
-  --background: url('assets/paperboard-texture-dark.webp') repeat left top;
+  --swade-background: url('assets/paperboard-texture-dark.webp') repeat left top;
   --color-scrollbar: var(--color-text-subtle);
 
   input[type='checkbox'],
@@ -16,7 +16,7 @@ body.theme-light .swade-application {
   //Color definitions
   --swade-primary-color: rgb(151, 40, 36);
 
-  --background: url('assets/paperboard-texture.webp') repeat left top;
+  --swade-background: url('assets/paperboard-texture.webp') repeat left top;
   --color-fieldset-border: #aaa;
 
   input[type='checkbox'],
@@ -46,8 +46,8 @@ body.theme-light .swade-application {
 
   --input-border-line: 2px solid var(--input-border-color);
 
-  font-family: var(--font-family);
-  background: var(--background);
+  font-family: var(--font-family), var(--font-awesome);
+  background: var(--swade-background);
 
   &.standard-form {
     gap: 0;
@@ -72,6 +72,10 @@ body.theme-light .swade-application {
     .form-group {
       margin: 0;
     }
+  }
+
+  button:not(.fa-file-import) {
+    font-family: var(--default-font), var(--font-awesome);
   }
 
   button,
