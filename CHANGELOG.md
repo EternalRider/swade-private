@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 
 ### Added
+- Added new Region Behavior type: "Attack Modifiers." This lets you designate a region as being an Unstable Platform and/or specify illumination/cover amounts that should come into play when attacking tokens within the region. When making a ranged attack from within an "Unstable Platform"-checked region, the appropriate modifier will pre-populate in the Roll Dialog. Similarly, when targeting a token within a region with specified illumination/cover, those modifiers will pre-populate in the attack's Roll Dialog. (#1336) **by @roth-michael**
 
 ### Changed
 
