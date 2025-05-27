@@ -418,6 +418,8 @@ class SwadeActor<
     if (isAttack && skill) {
       const currToken = this.getActiveTokens(false, true)[0];
       const additionalMods: RollModifier[] = [];
+      
+      // Unstable Platform
       if (options.item!.system.isRanged && currToken?.regions?.some(r => 
         r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
       )) {
@@ -426,11 +428,21 @@ class SwadeActor<
 
       const targetToken = game.user.targets.first()?.document;
       if (targetToken) {
+        // For use with range increments & prone
+        const distanceToTarget = canvas?.grid?.measurePath([currToken, targetToken])?.distance ?? 0;
+
+        // Illumination & Cover
         const targetBehaviors = Array.from(targetToken.regions.map(r =>
           r.behaviors.filter(b => !b.disabled && (b.type === 'attackModifiers'))
         )).deepFlatten();
         let bestIllumination: RollModifier | undefined;
         let bestCover: RollModifier | undefined;
+        if (options.item!.system.isRanged && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
+          bestCover = {
+            label: game.i18n.localize('SWADE.Cover.MediumProne'),
+            value: -4
+          };
+        }
         const modMap = {
           illuminationDim: -2,
           illuminationDark: -4,
@@ -465,6 +477,17 @@ class SwadeActor<
         }
         if (bestIllumination) additionalMods.push(bestIllumination);
         if (bestCover) additionalMods.push(bestCover);
+
+        // Range
+        const range = options.item.range;
+        if (range) {
+          if (distanceToTarget > range.long) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Extreme'), value: -8 });
+          else if (distanceToTarget > range.medium) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Long'), value: -4 });
+          else if (distanceToTarget > range.short) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Medium'), value: -2 });
+        }
+
+        // Vulnerable
+        if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: game.i18n.localize('SWADE.TargetVulnerable'), value: '+2' });
       }
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);

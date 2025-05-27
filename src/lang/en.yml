@@ -535,6 +535,7 @@ SWADE:
     Shield: Cover - Shield
     Light: Light Cover
     Medium: Medium Cover
+    MediumProne: Medium Cover (Prone)
     Heavy: Heavy Cover
     Total: Total Cover
   Range:
