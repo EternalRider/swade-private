@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added new Region Behavior type: "Attack Modifiers." This lets you designate a region as being an Unstable Platform and/or specify illumination/cover amounts that should come into play when attacking tokens within the region. When making a ranged attack from within an "Unstable Platform"-checked region, the appropriate modifier will pre-populate in the Roll Dialog. Similarly, when targeting a token within a region with specified illumination/cover, those modifiers will pre-populate in the attack's Roll Dialog. (#1336) **by @roth-michael**
-- When attacking with a ranged weapon while targeting a token, the weapon's range will be taken into account and auto-populate the Roll Dialog with the appropriate penalty (if any). Similarly, attacking a prone token from 3" or greater will ensure a minimum of Medium Cover for that token, and attacking a vulnerable token will auto-populate the "Target is Vulnerable" modifier in the Roll Dialog. **by @roth-michael**
+- When attacking with a ranged weapon while targeting a token, the weapon's range will be taken into account and auto-populate the Roll Dialog with the appropriate penalty (if any). Similarly, attacking a prone token from 3" or greater will ensure a minimum of Medium Cover for that token, and attacking a vulnerable token will auto-populate the "Target is Vulnerable" modifier in the Roll Dialog. Equipped shield cover is also taken into account. **by @roth-michael**
 
 ### Changed
 

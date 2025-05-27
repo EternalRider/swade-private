@@ -476,8 +476,22 @@ class SwadeActor<
           }
         }
         if (bestIllumination) additionalMods.push(bestIllumination);
+        
+        // Shield cover
+        const equippedShields = targetToken.actor.itemTypes.shield.filter(i => i.isReadied);
+        const shieldCoverMod = -equippedShields.reduce((bestCover, shield) => {
+          return Math.max(shield.system.cover, bestCover);
+        }, 0);
+        if (shieldCoverMod) {
+          if (!bestCover || (bestCover.value as number) > shieldCoverMod) {
+            bestCover = {
+              label: game.i18n.localize('SWADE.Cover.Shield'),
+              value: shieldCoverMod
+            };
+          }
+        }
         if (bestCover) additionalMods.push(bestCover);
-
+        
         // Range
         const range = options.item.range;
         if (range) {
