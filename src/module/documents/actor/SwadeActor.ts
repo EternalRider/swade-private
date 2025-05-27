@@ -424,48 +424,48 @@ class SwadeActor<
         additionalMods.push({ label: game.i18n.localize('SWADE.UnstablePlatform'), value: -2 });
       }
 
-      const targetBehaviors = Array.from(game.user.targets.map(t => 
-        Array.from(t.document.regions.map(r => 
+      const targetToken = game.user.targets.first()?.document;
+      if (targetToken) {
+        const targetBehaviors = Array.from(targetToken.regions.map(r =>
           r.behaviors.filter(b => !b.disabled && (b.type === 'attackModifiers'))
-        ))
-      )).deepFlatten();
-
-      let bestIllumination: RollModifier | undefined;
-      let bestCover: RollModifier | undefined;
-      const modMap = {
-        illuminationDim: -2,
-        illuminationDark: -4,
-        illuminationPitch: -6,
-        coverLight: -2,
-        coverMedium: -4,
-        coverHeavy: -6,
-        coverTotal: -8
-      };
-      for (const behavior of targetBehaviors) {
-        const { illumination, cover } = behavior.system;
-        if (illumination) {
-          const currMod = modMap[illumination];
-          const currLabel = game.i18n.localize(`SWADE.Illumination.${illumination.slice(12)}`);
-          if (!bestIllumination || currMod < bestIllumination.value) {
-            bestIllumination = {
-              label: currLabel,
-              value: currMod
-            };
+        )).deepFlatten();
+        let bestIllumination: RollModifier | undefined;
+        let bestCover: RollModifier | undefined;
+        const modMap = {
+          illuminationDim: -2,
+          illuminationDark: -4,
+          illuminationPitch: -6,
+          coverLight: -2,
+          coverMedium: -4,
+          coverHeavy: -6,
+          coverTotal: -8
+        };
+        for (const behavior of targetBehaviors) {
+          const { illumination, cover } = behavior.system;
+          if (illumination) {
+            const currMod = modMap[illumination];
+            const currLabel = game.i18n.localize(`SWADE.Illumination.${illumination.slice(12)}`);
+            if (!bestIllumination || currMod < bestIllumination.value) {
+              bestIllumination = {
+                label: currLabel,
+                value: currMod
+              };
+            }
           }
-        }
-        if (cover) {
-          const currMod = modMap[cover];
-          const currLabel = game.i18n.localize(`SWADE.Cover.${cover.slice(5)}`);
-          if (!bestCover || currMod < bestCover.value) {
-            bestCover = {
-              label: currLabel,
-              value: currMod
+          if (cover) {
+            const currMod = modMap[cover];
+            const currLabel = game.i18n.localize(`SWADE.Cover.${cover.slice(5)}`);
+            if (!bestCover || currMod < bestCover.value) {
+              bestCover = {
+                label: currLabel,
+                value: currMod
+              }
             }
           }
         }
+        if (bestIllumination) additionalMods.push(bestIllumination);
+        if (bestCover) additionalMods.push(bestCover);
       }
-      if (bestIllumination) additionalMods.push(bestIllumination);
-      if (bestCover) additionalMods.push(bestCover);
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;
