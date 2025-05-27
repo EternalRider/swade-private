@@ -1632,6 +1632,18 @@ SWADE:
         Operator: Operator
         Gunner: Gunner
         Other: Other
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          illumination:
+            label: Level of Illumination
+            hint: Will apply default illumination penalty modifiers when targeting tokens in this region.
+          cover:
+            label: Level of Cover
+            hint: Will apply default cover penalty modifiers when targeting tokens in this region.
+          unstablePlatform:
+            hint: Will apply default "Unstable Platform" modifier when shooting/throwing from within this region.
 TYPES:
   ActiveEffect:
     modifier: Modifier
@@ -1661,3 +1673,5 @@ TYPES:
     dramaticTask: Dramatic Task
   JournalEntryPage:
     headquarters: Headquarters
+  RegionBehavior:
+    attackModifiers: Attack Modifiers
