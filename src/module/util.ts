@@ -384,4 +384,19 @@ export async function getItemsBySwid<T extends Item.SubType>(
   return items;
 }
 
+/**
+ * Returns edge-to-edge distance of two `TokenDocument`s on the same scene
+ * @param tokenA one `TokenDocument`
+ * @param tokenB the other `TokenDocument`
+ * @returns the distance, in whatever units the scene grid uses
+ */
+export function getEdgeToEdgeDistance(tokenA: TokenDocument, tokenB: TokenDocument): number {
+  const scene = tokenA.parent;
+  if (!scene) return 0;
+  const conversionFactor = scene.grid.distance / scene.grid.size;
+  const combinedRadii = tokenA.object!.externalRadius + tokenB.object!.externalRadius;
+  const distance = scene.grid.measurePath([tokenA.getCenterPoint(), tokenB.getCenterPoint()]).distance;
+  return distance - (combinedRadii * conversionFactor);
+}
+
 type Ownership = Record<string, number>;

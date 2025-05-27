@@ -544,6 +544,7 @@ SWADE:
     Medium: Medium Range
     Long: Long Range
     Extreme: Extreme Range
+  GangUp: Ganging Up
   ModOther: Other Modifiers
   ModTrait: Trait Modifiers
   ModAttack: Attack Modifiers

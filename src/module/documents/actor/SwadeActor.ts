@@ -36,6 +36,7 @@ import {
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
+  getEdgeToEdgeDistance,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -429,7 +430,7 @@ class SwadeActor<
       const targetToken = game.user.targets.first()?.document;
       if (targetToken) {
         // For use with range increments & prone
-        const distanceToTarget = canvas?.grid?.measurePath([currToken, targetToken])?.distance ?? 0;
+        const distanceToTarget = targetToken.parent.grid.measurePath([currToken.getCenterPoint(), targetToken.getCenterPoint()])?.distance ?? 0;
 
         // Illumination & Cover
         const targetBehaviors = Array.from(targetToken.regions.map(r =>
@@ -493,7 +494,7 @@ class SwadeActor<
         if (bestCover) additionalMods.push(bestCover);
         
         // Range
-        const range = options.item.range;
+        const range = options.item!.range;
         if (range) {
           if (distanceToTarget > range.long) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Extreme'), value: -8 });
           else if (distanceToTarget > range.medium) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Long'), value: -4 });
@@ -502,6 +503,25 @@ class SwadeActor<
 
         // Vulnerable
         if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: game.i18n.localize('SWADE.TargetVulnerable'), value: '+2' });
+
+        // Gang-up
+        if (options.item!.isMeleeWeapon && (currToken.disposition * targetToken.disposition === -1)) {
+          const scene = targetToken.parent;
+          const numAttackerAllies = scene.tokens.filter(t => {
+            if (t.disposition !== currToken.disposition) return false;
+            return getEdgeToEdgeDistance(targetToken, t) < 1;
+          }).length;
+          const numDefenderAllies = scene.tokens.filter(t => {
+            if (t.disposition !== targetToken.disposition) return false;
+            if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
+            return getEdgeToEdgeDistance(currToken, t) < 1;
+          }).length;
+          const gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies)
+          if (gangUpBonus > 0) additionalMods.push({
+            label: game.i18n.localize('SWADE.GangUp'),
+            value: `+${gangUpBonus}`
+          });
+        }
       }
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
