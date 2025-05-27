@@ -618,7 +618,7 @@ class SwadeItem<
 
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
 
-    let updatedItems = new Array<foundry.abstract.Document.Stored<SwadeItem>>();
+    let updatedItems = new Array<Item.Stored>();
     // Persist the updates
     if (!foundry.utils.isEmpty(itemUpdates)) {
       await this.update(itemUpdates);
@@ -627,10 +627,10 @@ class SwadeItem<
       await this.actor?.update(actorUpdates);
     }
     if (resourceUpdates.length) {
-      updatedItems = (await this.actor?.updateEmbeddedDocuments(
+      updatedItems = await this.actor?.updateEmbeddedDocuments(
         'Item',
         resourceUpdates,
-      )) as Array<foundry.abstract.Document.Stored<SwadeItem>>;
+      );
     }
 
     /**
@@ -752,9 +752,7 @@ class SwadeItem<
     await this.unsetFlag('swade', 'hasGranted');
   }
 
-  async #postConsumptionCleanup(
-    updatedItems: foundry.abstract.Document.Stored<SwadeItem>[],
-  ) {
+  async #postConsumptionCleanup(updatedItems: Item.Stored[]) {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (item && item.system._shouldDelete) {

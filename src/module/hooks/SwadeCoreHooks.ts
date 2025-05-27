@@ -866,7 +866,7 @@ export default class SwadeCoreHooks {
     content,
     path,
     extension,
-  }: HotReloadData) {
+  }: Hooks.HotReloadData) {
     //return the hook early if it's not a swade system change;
     if (packageType !== 'system' && packageId !== 'swade') return;
     //stop the hook on empty changes

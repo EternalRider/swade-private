@@ -49,7 +49,7 @@ export default class ItemChatCardHelper {
     }
 
     if (actor.type === 'vehicle') {
-      actor = (await actor.getDriver()) ?? actor;
+      actor = actor.system.operator ?? actor;
     }
 
     const actionObj = foundry.utils.getProperty(

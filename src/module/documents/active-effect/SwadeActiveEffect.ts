@@ -443,7 +443,7 @@ export default class SwadeActiveEffect<
       label: this.name,
       parent: this.parent?.name,
     });
-    const buttons: Record<string, DialogButton> = {
+    const buttons: Record<string, Dialog.Button> = {
       yes: {
         label: game.i18n.localize('Yes'),
         icon: '<i class="fas fa-check"></i>',
