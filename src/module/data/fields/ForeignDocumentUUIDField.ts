@@ -52,7 +52,7 @@ export class ForeignDocumentUUIDField<
       try {
         const doc = fromUuidSync(value);
         if (doc instanceof typeClass)
-          return doc as foundry.abstract.Document.ConfiguredClassForName<
+          return doc as foundry.abstract.Document.ImplementationClassFor<
             this['type']
           >;
         return value;

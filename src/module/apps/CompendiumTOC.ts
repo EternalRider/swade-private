@@ -2,7 +2,6 @@ import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import SwadeItem from '../documents/item/SwadeItem';
 
 export class CompendiumTOC<
   DocumentClass extends
@@ -398,25 +397,25 @@ export class CompendiumTOC<
     const categories: CompendiumCategory[] = [];
 
     //always group powers by type and then rank
-    const powers: foundry.abstract.Document.Stored<SwadeItem<'power'>>[] =
-      items.filter((i) => i.type === 'power');
+    const powers: Item.Stored<'power'>[] = items.filter(
+      (i) => i.type === 'power',
+    );
     if (powers.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.power'),
         groups: this._groupPowers(powers),
       });
     }
-    const edges: foundry.abstract.Document.Stored<SwadeItem<'edge'>>[] =
-      items.filter((i) => i.type === 'edge');
+    const edges: Item.Stored<'edge'>[] = items.filter((i) => i.type === 'edge');
     if (edges.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.edge'),
         groups: this._groupEdges(edges),
       });
     }
-    const hindrances: foundry.abstract.Document.Stored<
-      SwadeItem<'hindrance'>
-    >[] = items.filter((i) => i.type === 'hindrance');
+    const hindrances: Item.Stored<'hindrance'>[] = items.filter(
+      (i) => i.type === 'hindrance',
+    );
     if (hindrances.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.hindrance'),
@@ -478,7 +477,7 @@ export class CompendiumTOC<
   }
 
   protected _groupHindrances(
-    hindrances: foundry.abstract.Document.Stored<SwadeItem<'hindrance'>>[],
+    hindrances: Item.Stored<'hindrance'>[],
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
@@ -528,13 +527,8 @@ export class CompendiumTOC<
       }) as CompendiumGroup[];
   }
 
-  protected _groupEdges(
-    edges: foundry.abstract.Document.Stored<SwadeItem<'edge'>>[],
-  ): CompendiumGroup[] {
-    const groups: Record<
-      string,
-      foundry.abstract.Document.Stored<SwadeItem<'edge'>>[]
-    > = {};
+  protected _groupEdges(edges: Item.Stored<'edge'>[]): CompendiumGroup[] {
+    const groups: Record<string, Item.Stored<'edge'>[]> = {};
     for (const edge of edges) {
       const cat: string = foundry.utils.getProperty(edge, 'system.category');
       if (!groups[cat]) groups[cat] = [];

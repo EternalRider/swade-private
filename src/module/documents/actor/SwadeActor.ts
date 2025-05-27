@@ -585,7 +585,7 @@ class SwadeActor<
     return RollDialog.asPromise({
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
-        rollType: "running",
+        rollType: 'running',
       }),
       mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -649,10 +649,13 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.spend, {
-        target: this,
-        speaker: speaker,
-      });
+      const message = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.spend,
+        {
+          target: this,
+          speaker: speaker,
+        },
+      );
       const chatData = { content: message, speaker: speaker };
       await msgClass.create(chatData);
     }
@@ -695,10 +698,13 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const content = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.add, {
-        target: this,
-        speaker: speaker,
-      });
+      const content = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.add,
+        {
+          target: this,
+          speaker: speaker,
+        },
+      );
       await msgClass.create({
         content: content,
         speaker: speaker,

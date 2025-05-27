@@ -34,7 +34,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
     data: ActorRollData = {},
     options: TraitRollOptions = {},
   ) {
-    options.rollType ??= "trait";
+    options.rollType ??= 'trait';
     super(formula, data, options);
   }
 

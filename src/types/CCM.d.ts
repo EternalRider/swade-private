@@ -1,8 +1,6 @@
-import type { CONST } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/client-esm/client.d.mts';
-
 interface CCMConfig {
-    from: Cards;
-    to: Cards;
+  from: Cards;
+  to: Cards;
 }
 
 export interface CCMGridConfig extends CCMConfig {
@@ -11,7 +9,7 @@ export interface CCMGridConfig extends CCMConfig {
 }
 
 export interface CCMTriangleConfig extends CCMConfig {
-    base: number;
+  base: number;
 }
 
 export interface CCMGridOptions {
@@ -27,14 +25,22 @@ export interface CCMGridOptions {
 }
 
 export interface CCMTriangleOptions extends CCMGridOptions {
-    direction?: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+  direction?: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 }
 
 declare global {
-    const ccm: {
+  const ccm:
+    | {
         api: {
-            grid(config: CCMGridConfig, options?: CCMGridOptions): Promise<Card.ConfiguredInstance[]>;
-            triangle(config: CCMTriangleConfig, options?: CCMTriangleOptions): Promise<Card.ConfiguredInstance[]>;
-        }
-    } | undefined;
+          grid(
+            config: CCMGridConfig,
+            options?: CCMGridOptions,
+          ): Promise<Card.Implementation[]>;
+          triangle(
+            config: CCMTriangleConfig,
+            options?: CCMTriangleOptions,
+          ): Promise<Card.Implementation[]>;
+        };
+      }
+    | undefined;
 }

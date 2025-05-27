@@ -10,7 +10,7 @@ export class AmbushAssistant extends Application {
     noTurn: new Array<SwadeCombatant>(),
   };
 
-  static override get defaultOptions(): ApplicationOptions {
+  static override get defaultOptions(): Application.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'ambush-assistant',
       title: game.i18n.localize('SWADE.AmbushAssistant.Title'),
@@ -19,10 +19,10 @@ export class AmbushAssistant extends Application {
       dragDrop: [{ dragSelector: '.combatant', dropSelector: '.column' }],
       width: 800,
       height: 500,
-    } satisfies Partial<ApplicationOptions>);
+    } satisfies Partial<Application.Options>);
   }
 
-  constructor(combat: SwadeCombat, options?: ApplicationOptions) {
+  constructor(combat: SwadeCombat, options?: Application.Options) {
     super(options);
     this.#combat = combat;
     this.#categories.unassigned = combat.combatants.contents.filter(
@@ -43,7 +43,7 @@ export class AmbushAssistant extends Application {
       ?.addEventListener('click', this.submit.bind(this));
   }
 
-  override async getData(options?: Partial<ApplicationOptions>) {
+  override async getData(options?: Partial<Application.Options>) {
     return foundry.utils.mergeObject(await super.getData(options), {
       ...this.#categories,
       submissionLocked: this.#categories.unassigned.length !== 0,

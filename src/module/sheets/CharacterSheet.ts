@@ -412,7 +412,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   override async getData(
-    options?: Partial<DocumentSheetOptions>,
+    options?: Partial<DocumentSheet.Options>,
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
@@ -461,15 +461,17 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         secrets: this.document.isOwner,
       };
 
-      const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.description,
-        itemEnrichmentOptions,
-      );
+      const enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions,
+        );
 
-      const enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.notes as string,
-        itemEnrichmentOptions,
-      );
+      const enrichedNotes =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes as string,
+          itemEnrichmentOptions,
+        );
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
@@ -1315,33 +1317,42 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const selector = ' .inventory .item-controls .equip-status';
     const options = { eventName: 'click', jQuery: false, fixed: true };
-    this._equipStateMenu = new foundry.applications.ux.ContextMenu.implementation(html, selector, items, options);
+    this._equipStateMenu =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        selector,
+        items,
+        options,
+      );
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this._effectCreateDropDown = new foundry.applications.ux.ContextMenu.implementation(
-      html,
-      '.effects .effect-add',
-      [
-        {
-          name: 'SWADE.ActiveEffects.AddGuided',
-          icon: '<i class="fa-solid fa-hat-wizard"></i>',
-          condition: this.object.isOwner,
-          callback: (_li) => {
-            new ActiveEffectWizard({ document: this.object }).render({ force: true });
+    this._effectCreateDropDown =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        '.effects .effect-add',
+        [
+          {
+            name: 'SWADE.ActiveEffects.AddGuided',
+            icon: '<i class="fa-solid fa-hat-wizard"></i>',
+            condition: this.object.isOwner,
+            callback: (_li) => {
+              new ActiveEffectWizard({ document: this.object }).render({
+                force: true,
+              });
+            },
           },
-        },
-        {
-          name: 'SWADE.ActiveEffects.AddUnguided',
-          icon: '<i class="fa-solid fa-file-plus"></i>',
-          condition: this.object.isOwner,
-          callback: (_li) => {
-            this._createActiveEffect();
+          {
+            name: 'SWADE.ActiveEffects.AddUnguided',
+            icon: '<i class="fa-solid fa-file-plus"></i>',
+            condition: this.object.isOwner,
+            callback: (_li) => {
+              this._createActiveEffect();
+            },
           },
-        },
-      ],
-      { eventName: 'click', jQuery: false },
-    );
+        ],
+        { eventName: 'click', jQuery: false },
+      );
   }
 
   #setupItemContextMenu(html: HTMLElement) {
@@ -1384,8 +1395,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
-            allEffects.find(ef => ef.id === effectId)?.sheet?.render({ force: true });
+            const allEffects: ActiveEffect[] = Array.from(
+              this.actor.allApplicableEffects(),
+            );
+            allEffects
+              .find((ef) => ef.id === effectId)
+              ?.sheet?.render({ force: true });
           }
         },
       },
@@ -1411,14 +1426,22 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
-            allEffects.find(ef => ef.id === effectId)?.deleteDialog();
+            const allEffects: ActiveEffect[] = Array.from(
+              this.actor.allApplicableEffects(),
+            );
+            allEffects.find((ef) => ef.id === effectId)?.deleteDialog();
           }
         },
       },
     ];
 
-    foundry.applications.ux.ContextMenu.implementation.create(this, html, 'li.item', items, { jQuery: false });
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      'li.item',
+      items,
+      { jQuery: false },
+    );
   }
 
   #setupAccordions(html: HTMLFormElement) {
@@ -1496,7 +1519,7 @@ interface SheetArcaneBackground {
   powers: SwadeItem[];
 }
 
-type OptionsPartial = Partial<ActorSheet<DocumentSheetOptions<SwadeActor>>>;
+type OptionsPartial = Partial<ActorSheet<DocumentSheet.Options<SwadeActor>>>;
 
 interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;
