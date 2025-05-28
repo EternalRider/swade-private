@@ -330,6 +330,7 @@ SWADE:
   IgnWounds: Ignore Wounds
   Size: Size
   Scale: Scale
+  ScaleDifference: Scale Difference
   PickACard: Pick a card for {name}
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}

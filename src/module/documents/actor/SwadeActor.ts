@@ -413,7 +413,11 @@ class SwadeActor<
     skill = this.items.find((i) => i.id == skillId);
     if (tempSkill) skill = tempSkill;
 
+    // TODO: powers?
     const isAttack = options.item?.type === 'weapon';
+    const { isRanged=null, isMelee=null } = options.item?.system ?? {};
+    const isRangedAttack = isRanged && (!isMelee || (skill?.system.swid !== 'fighting'));
+    const isMeleeAttack = isMelee && (!isRanged || (skill?.system.swid === 'fighting'));
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
@@ -421,7 +425,7 @@ class SwadeActor<
       const additionalMods: RollModifier[] = [];
       
       // Unstable Platform
-      if (options.item!.system.isRanged && currToken?.regions?.some(r => 
+      if (isRangedAttack && currToken?.regions?.some(r => 
         r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
       )) {
         additionalMods.push({ label: game.i18n.localize('SWADE.UnstablePlatform'), value: -2 });
@@ -438,7 +442,7 @@ class SwadeActor<
         )).deepFlatten();
         let bestIllumination: RollModifier | undefined;
         let bestCover: RollModifier | undefined;
-        if (options.item!.system.isRanged && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
+        if (isRangedAttack && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
           bestCover = {
             label: game.i18n.localize('SWADE.Cover.MediumProne'),
             value: -4
@@ -491,6 +495,17 @@ class SwadeActor<
             };
           }
         }
+
+        // Dodge
+        if (isRangedAttack) {
+          const dodgeItem = targetToken.actor.getSingleItemBySwid('dodge', 'edge');
+          if (dodgeItem && (!bestCover || (bestCover.value as number > -2))) {
+            bestCover = {
+              label: dodgeItem.name,
+              value: -2
+            }
+          }
+        }
         if (bestCover) additionalMods.push(bestCover);
         
         // Range
@@ -505,7 +520,7 @@ class SwadeActor<
         if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: game.i18n.localize('SWADE.TargetVulnerable'), value: '+2' });
 
         // Gang-up
-        if (options.item!.isMeleeWeapon && (currToken.disposition * targetToken.disposition === -1)) {
+        if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {
           const scene = targetToken.parent;
           const numAttackerAllies = scene.tokens.filter(t => {
             if (t.disposition !== currToken.disposition) return false;
@@ -524,7 +539,19 @@ class SwadeActor<
             value: `+${gangUpBonus}`
           });
         }
+
+        // Size
+        const attackerScale = this.system.stats.scale;
+        const defenderScale = targetToken.actor.system.stats.scale;
+        const scaleDifference = defenderScale - attackerScale;
+        if (scaleDifference !== 0) {
+          additionalMods.push({
+            label: game.i18n.localize('SWADE.ScaleDifference'),
+            value: scaleDifference < 0 ? scaleDifference : `+${scaleDifference}`
+          });
+        }
       }
+      
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;

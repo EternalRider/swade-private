@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Attacking a vulnerable token will add "Target is Vulnerable"
   - The most effective equipped shield (in terms of cover) will be added, if greater cover isn't already present
   - Melee attacks against a token of opposite disposition will calculate the gang-up bonus
+  - Difference in scale between attacker & target will be considered
+  - Ranged weapon attacks against a target with the Dodge edge (matched by swid) will receive the malus
 
 ### Changed
 
