@@ -413,7 +413,7 @@ class SwadeActor<
     skill = this.items.find((i) => i.id == skillId);
     if (tempSkill) skill = tempSkill;
 
-    // TODO: powers?
+    // TODO: (Improved) Arcane Resistance, when -> Powers
     const isAttack = options.item?.type === 'weapon';
     const { isRanged=null, isMelee=null } = options.item?.system ?? {};
     const isRangedAttack = isRanged && (!isMelee || (skill?.system.swid !== 'fighting'));
@@ -428,10 +428,13 @@ class SwadeActor<
       if (isRangedAttack && currToken?.regions?.some(r => 
         r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
       )) {
-        additionalMods.push({ label: game.i18n.localize('SWADE.UnstablePlatform'), value: -2 });
+        if (!this.getSingleItemBySwid('steady-hands', 'edge'))
+          additionalMods.push({ label: game.i18n.localize('SWADE.UnstablePlatform'), value: -2 });
       }
 
       const targetToken = game.user.targets.first()?.document;
+      let bestIllumination: RollModifier | undefined;
+      let bestCover: RollModifier | undefined;
       if (targetToken) {
         // For use with range increments & prone
         const distanceToTarget = targetToken.parent.grid.measurePath([currToken.getCenterPoint(), targetToken.getCenterPoint()])?.distance ?? 0;
@@ -440,8 +443,6 @@ class SwadeActor<
         const targetBehaviors = Array.from(targetToken.regions.map(r =>
           r.behaviors.filter(b => !b.disabled && (b.type === 'attackModifiers'))
         )).deepFlatten();
-        let bestIllumination: RollModifier | undefined;
-        let bestCover: RollModifier | undefined;
         if (isRangedAttack && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
           bestCover = {
             label: game.i18n.localize('SWADE.Cover.MediumProne'),
@@ -506,7 +507,17 @@ class SwadeActor<
             }
           }
         }
+        // Best of cover regions, shield cover, prone, dodge
         if (bestCover) additionalMods.push(bestCover);
+
+        // Combat Acrobat
+        const combatAcrobatItem = targetToken.actor.getSingleItemBySwid('combat-acrobat', 'edge');
+        if (combatAcrobatItem && !targetToken.actor.system.encumbered) {
+          additionalMods.push({
+            label: combatAcrobatItem.name,
+            value: -1
+          })
+        }
         
         // Range
         const range = options.item!.range;
@@ -519,7 +530,7 @@ class SwadeActor<
         // Vulnerable
         if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: game.i18n.localize('SWADE.TargetVulnerable'), value: '+2' });
 
-        // Gang-up
+        // Gang-up, including (Improved) Block
         if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {
           const scene = targetToken.parent;
           const numAttackerAllies = scene.tokens.filter(t => {
@@ -533,7 +544,9 @@ class SwadeActor<
             if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
             return getEdgeToEdgeDistance(currToken, t) < 1;
           }).length;
-          const gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies)
+          let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies)
+          if (targetToken.actor.getSingleItemBySwid('improved-block', 'edge')) gangUpBonus -= 2;
+          else if (targetToken.actor.getSingleItemBySwid('block', 'edge')) gangUpBonus -= 1;
           if (gangUpBonus > 0) additionalMods.push({
             label: game.i18n.localize('SWADE.GangUp'),
             value: `+${gangUpBonus}`
@@ -551,6 +564,33 @@ class SwadeActor<
           });
         }
       }
+
+      /**
+       * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
+       * modifiers to be added (or existing ones to be removed)
+       * @category Hooks
+       * @param {TokenDocument} currToken                     The attacking token
+       * @param {TokenDocument | undefined} targetToken       The first-targeted token, or `undefined` if no targets
+       * @param {SwadeItem} skill                             The skill being used for the attack
+       * @param {SwadeItem} item                              The item being used for the attack
+       * @param {boolean} isRangedAttack                      `true` if ranged weapon or mixed with non-`fighting` skill
+       * @param {boolean} isMeleeAttack                       `true` if melee weapon or mixed with `fighting` skill
+       * @param {RollModifier[]} additionalMods               The list of default-applied modifiers so far, to be modified directly
+       * @param {RollModifier | undefined} bestCover          The best "cover" modifier, provided to be able to replace/remove it in `additionalMods`
+       * @param {RollModifier | undefined} bestIllumination   The best "illumination" modifier, provided to be able to replace/remove it in `additionalMods`
+       */
+      Hooks.call(
+        'swadeCalculateDefaultAttackMods',
+        currToken,
+        targetToken,
+        skill,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack,
+        additionalMods,
+        bestCover,
+        bestIllumination
+      );
       
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);

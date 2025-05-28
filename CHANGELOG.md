@@ -10,14 +10,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added new Region Behavior type: "Attack Modifiers." This lets you designate a region as being an Unstable Platform and/or specify illumination/cover amounts that should come into play when attacking tokens within the region. When making a ranged attack from within an "Unstable Platform"-checked region, the appropriate modifier will pre-populate in the Roll Dialog. Similarly, when targeting a token within a region with specified illumination/cover, those modifiers will pre-populate in the attack's Roll Dialog. (#1336) **by @roth-michael**
+  - The "Steady Hands" edge (matched by swid) will negate the Unstable Platform malus
 - When attacking a with a token targeted, the following are now taken into account and will auto-populate in the Roll Dialog (if targeting multiple tokens, all of these will evaluate considering only the first): **by @roth-michael**
   - Ranged weapon attacks will consider distance to the target and compare against the weapon's range
   - Attacking a prone target from 3" or greater will ensure at least medium cover
   - Attacking a vulnerable token will add "Target is Vulnerable"
   - The most effective equipped shield (in terms of cover) will be added, if greater cover isn't already present
   - Melee attacks against a token of opposite disposition will calculate the gang-up bonus
+  - Block & Improved Block (matched by swid) will decrease the gang-up bonus appropriately
   - Difference in scale between attacker & target will be considered
   - Ranged weapon attacks against a target with the Dodge edge (matched by swid) will receive the malus
+  - Combat Acrobat (matched by swid) will be considered if not encumbered
+- To accommodate modules easily taking advantage of these default modifiers, introduced a new `swadeCalculateDefaultAttackMods` hook which provides, among necessary information, the `additionalModifiers` variable to be mutated in-place.
 
 ### Changed
 
