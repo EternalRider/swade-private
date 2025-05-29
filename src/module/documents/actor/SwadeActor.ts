@@ -562,7 +562,7 @@ class SwadeActor<
         }
       }
 
-      const bestNonStackingMods = {
+      const bestNonStackingMods: BestNonStackingMods = {
         bestCover,
         bestIllumination
       };
