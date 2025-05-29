@@ -481,7 +481,6 @@ class SwadeActor<
             }
           }
         }
-        if (bestIllumination) additionalMods.push(bestIllumination);
         
         // Shield cover
         const equippedShields = targetToken.actor.itemTypes.shield.filter(i => i.isReadied);
@@ -496,7 +495,7 @@ class SwadeActor<
             };
           }
         }
-
+        
         // Dodge
         if (isRangedAttack) {
           const dodgeItem = targetToken.actor.getSingleItemBySwid('dodge', 'edge');
@@ -507,8 +506,6 @@ class SwadeActor<
             }
           }
         }
-        // Best of cover regions, shield cover, prone, dodge
-        if (bestCover) additionalMods.push(bestCover);
 
         // Combat Acrobat
         const combatAcrobatItem = targetToken.actor.getSingleItemBySwid('combat-acrobat', 'edge');
@@ -565,6 +562,11 @@ class SwadeActor<
         }
       }
 
+      const bestNonStackingMods = {
+        bestCover,
+        bestIllumination
+      };
+
       /**
        * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
        * modifiers to be added (or existing ones to be removed)
@@ -576,8 +578,7 @@ class SwadeActor<
        * @param {boolean} isRangedAttack                      `true` if ranged weapon or mixed with non-`fighting` skill
        * @param {boolean} isMeleeAttack                       `true` if melee weapon or mixed with `fighting` skill
        * @param {RollModifier[]} additionalMods               The list of default-applied modifiers so far, to be modified directly
-       * @param {RollModifier | undefined} bestCover          The best "cover" modifier, provided to be able to replace/remove it in `additionalMods`
-       * @param {RollModifier | undefined} bestIllumination   The best "illumination" modifier, provided to be able to replace/remove it in `additionalMods`
+       * @param {BestNonStackingMods} bestNonStackingMods   The best non-stacking modifiers (e.g. bestCover, bestIllumination), provided to be able to replace/remove them prior to adding to `additionalMods`
        */
       Hooks.call(
         'swadeCalculateDefaultAttackMods',
@@ -588,9 +589,12 @@ class SwadeActor<
         isRangedAttack,
         isMeleeAttack,
         additionalMods,
-        bestCover,
-        bestIllumination
+        bestNonStackingMods
       );
+
+      for (const mod of Object.values(bestNonStackingMods)) {
+        if (mod) additionalMods.push(mod);
+      }
       
       if (additionalMods.length) {
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
@@ -1690,4 +1694,9 @@ interface ArmorCalcContext {
   name: string;
   armor: number;
   isNaturalArmor: boolean;
+}
+
+interface BestNonStackingMods {
+  bestCover: RollModifier | undefined;
+  bestIllumination: RollModifier | undefined;
 }
