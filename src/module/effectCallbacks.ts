@@ -107,7 +107,8 @@ async function removeShaken(effect: SwadeActiveEffect) {
           resolve(roll);
         }
       },
-      render: (_ev, html: HTMLElement) => {
+      render: (_ev, dialog: foundry.applications.api.DialogV2) => {
+        const html = dialog.element;
         const button = html.querySelector('button[data-action="benny"]');
         const gmButton = html.querySelector('button[data-action="gmBenny"]');
         const gmHasNoBennies = game.user?.isGM && game.user.bennies <= 0;

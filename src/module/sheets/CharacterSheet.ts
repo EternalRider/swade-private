@@ -257,11 +257,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize('SWADE.Ok'),
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
               const newData = {};
-              newData[armorPropertyPath] = html.querySelector(
-                'input[name="modifier"]',
-              )?.value;
+              newData[armorPropertyPath] =
+                button.form!.querySelector<HTMLInputElement>(
+                  'input[name="modifier"]',
+                )?.value;
               this.actor.update(newData);
             },
           },
@@ -298,11 +299,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize('SWADE.Ok'),
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
               const newData = {};
-              newData[parryPropertyPath] = html.querySelector(
-                'input[name="modifier"]',
-              )?.value as number;
+              newData[parryPropertyPath] =
+                button.form!.querySelector<HTMLInputElement>(
+                  'input[name="modifier"]',
+                )?.value;
               this.actor.update(newData);
             },
           },
@@ -688,10 +690,14 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             label: 'OK',
             icon: '<i class="fas fa-check"></i>',
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
+              const html = button.form!;
               resolve({
-                type: html.querySelector('select[name="type"]')?.value,
-                name: html.querySelector('input[name="name"]')?.value,
+                type: html.querySelector<HTMLSelectElement>(
+                  'select[name="type"]',
+                )?.value,
+                name: html.querySelector<HTMLInputElement>('input[name="name"]')
+                  ?.value,
               });
             },
           },

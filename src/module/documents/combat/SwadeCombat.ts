@@ -109,7 +109,10 @@ export default class SwadeCombat<
             },
           },
           rejectClose: false,
-          render: (_event: Event, dialog: foundry.applications.api.DialogV2) => {
+          render: (
+            _event: Event,
+            dialog: foundry.applications.api.DialogV2,
+          ) => {
             const html = dialog.element;
             const typeSelect = html.querySelector<HTMLSelectElement>(
               'select[name="type"]',
@@ -454,6 +457,7 @@ export default class SwadeCombat<
   }
 
   #onModifyCombatantGroups(parent: Combat.Stored, _documents, options) {
+    this.setupTurns();
     if (ui.combat.viewed === parent && options.render !== false)
       ui.combat.render();
   }
@@ -524,6 +528,12 @@ export default class SwadeCombat<
     new AmbushAssistant(this).render(true);
   }
 
+  toggleGroupExpand(groupId) {
+    const group = this.groups.get(groupId);
+    group._expanded = !group._expanded;
+    return ui.combat.render({ parts: ['tracker'] });
+  }
+
   override async nextTurn() {
     await this._handleEndOfTurnExpirations();
     const turn = this.turn ?? -1;
@@ -554,12 +564,18 @@ export default class SwadeCombat<
     Hooks.callAll('combatTurn', this, updateData, updateOptions);
     await this.update(updateData, updateOptions);
     await this._handleStartOfTurnExpirations();
+    if (this.combatant?.group && !this.combatant.group._expanded) {
+      await this.toggleGroupExpand(this.combatant.group.id);
+    }
     return this;
   }
 
   override async nextRound() {
     if (game.user.isGM) await this._nextRoundAsGM();
     else await this._nextRoundAsUser();
+    if (this.combatant?.group && !this.combatant.group._expanded) {
+      await this.toggleGroupExpand(this.combatant.group.id);
+    }
     return this;
   }
 

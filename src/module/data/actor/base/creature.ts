@@ -25,8 +25,6 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
-import { AuraPointSource } from '../../../canvas/AuraPointSource';
-import { AuraData } from '../../../../interfaces/AuraData.interface';
 
 const fields = foundry.data.fields;
 
@@ -94,7 +92,6 @@ declare namespace CreatureData {
     pace: {
       default: number;
     };
-    auras: Record<string, AuraData>;
   };
 }
 
@@ -420,64 +417,6 @@ function creatureSchema() {
       },
       { label: 'SWADE.Init' },
     ),
-    auras: new fields.TypedObjectField(
-      new fields.SchemaField({
-        enabled: new fields.BooleanField({
-          label: 'SWADE.Auras.Enabled',
-          required: true,
-        }),
-        radius: new fields.NumberField({
-          label: 'SWADE.Auras.Range',
-          min: 0,
-          step: 1,
-          required: true,
-          initial: 5,
-        }),
-        color: new fields.ColorField({
-          label: 'SWADE.Auras.Color',
-          initial: () => game.user?.color.css ?? '#000000',
-        }),
-        alpha: new fields.NumberField({
-          label: 'SWADE.Auras.Alpha',
-          min: 0,
-          max: 1,
-          step: 0.05,
-          required: true,
-          initial: 0.25,
-        }),
-        walls: new fields.BooleanField({
-          label: 'SWADE.Auras.WallConstraints.Label',
-          hint: 'SWADE.Auras.WallConstraints.Hint',
-          required: true,
-        }),
-        visibleTo: new fields.SetField(
-          new fields.NumberField({
-            choices: {
-              [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 'TOKEN.DISPOSITION.HOSTILE',
-              [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 'TOKEN.DISPOSITION.NEUTRAL',
-              [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 'TOKEN.DISPOSITION.FRIENDLY',
-            },
-            required: true,
-          }),
-          {
-            label: 'SWADE.Aura.Visibility.Label',
-            hint: 'SWADE.Aura.Visibility.Hint',
-            required: true,
-            initial: [],
-          },
-        ),
-      }),
-      {
-        initial: {
-          aura1: {
-            ...AuraPointSource.defaultData,
-          },
-          aura2: {
-            ...AuraPointSource.defaultData,
-          },
-        },
-      },
-    ),
   };
 }
 
@@ -699,18 +638,6 @@ class CreatureData<
     for (const item of this.parent.items) {
       item.system.prepareFormulaFields();
     }
-
-    // Ensure all auras have defaults if not provided
-    const userColor =
-      game.users.find((u) => u.character === this.parent)?.color?.css ??
-      '#000000';
-    for (const [auraKey, aura] of Object.entries(this.auras)) {
-      this.auras[auraKey] = {
-        ...AuraPointSource.defaultData,
-        color: userColor,
-        ...aura,
-      };
-    }
   }
 
   /**
@@ -921,12 +848,15 @@ class CreatureData<
   // specifying this to resolve depth issue
   async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
-      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refresh, {
-        target: this.parent,
-        speaker: getDocumentClass('ChatMessage').getSpeaker({
-          actor: this.parent,
-        }),
-      });
+      const message = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.refresh,
+        {
+          target: this.parent,
+          speaker: getDocumentClass('ChatMessage').getSpeaker({
+            actor: this.parent,
+          }),
+        },
+      );
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);
     }
