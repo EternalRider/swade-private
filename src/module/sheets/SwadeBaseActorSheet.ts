@@ -359,11 +359,12 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
             label: game.i18n.localize('SWADE.Ok'),
             icon: '<i class="fas fa-check"></i>',
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
+              const html = button.form!;
               resolve({
-                type: html.querySelector('select[name="type"]')
+                type: html.querySelector<HTMLSelectElement>('select[name="type"]')
                   ?.value as string,
-                name: html.querySelector('input[name="name"]')?.value as string,
+                name: html.querySelector<HTMLInputElement>('input[name="name"]')?.value as string,
               });
             },
           },
@@ -451,8 +452,8 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize('SWADE.Ok'),
           default: true,
-          callback: (html: HTMLElement) => {
-            const mod = html.querySelector('input[name="modifier"]')?.value;
+          callback: (_event, button: HTMLButtonElement) => {
+            const mod = button.form!.querySelector<HTMLInputElement>('input[name="modifier"]')?.value;
             const newData = {};
             newData[targetPropertyPath] = parseInt(mod as string);
             this.actor.update(newData);

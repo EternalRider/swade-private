@@ -178,10 +178,11 @@ async function soakPrompt(
         'SWADE.DamageApplicator.SoakDialog.AdjustDamage',
       ),
       icon: '<i class="fas fa-plus-minus"></i>',
-      callback: async (html: HTMLElement) => {
-        damageContext.damage.ap = Number(html.querySelector('#ap')?.value);
+      callback: async (_event: PointerEvent, button: HTMLButtonElement) => {
+        const html = button.form!;
+        damageContext.damage.ap = Number(html.querySelector<HTMLInputElement>('#ap')?.value);
         damageContext.damage.total = Number(
-          html.querySelector('#damage')?.value,
+          html.querySelector<HTMLInputElement>('#damage')?.value,
         );
         // Calculate the Wounds.
         await calcWounds(actor.uuid, damageContext);
@@ -239,7 +240,7 @@ async function soakPrompt(
       action: 'applyShaken',
       label: game.i18n.format('SWADE.DamageApplicator.SoakDialog.ApplyShaken'),
       icon: '<i class="fas fa-face-hushed"></i>',
-      callback: async (_html) => {
+      callback: async () => {
         message = game.i18n.format('SWADE.DamageApplicator.Result.IsShaken', {
           name: name,
         });

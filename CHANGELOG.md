@@ -22,6 +22,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.2
+
+### Fixed
+
+- Surprise Round button now appears once more. (#1339) **by @roth-michael**
+- Combatants in groups now always go in the "right" order **by @roth-michael**
+- Tweaks can now be opened on vehicle & group actor sheets again (and they can have auras now!) **by @roth-michael**
+- Quick no longer allows infinitely drawing cards. (#1338) **by @roth-michael**
+- Fixed various instances of dialogs not working properly. **by @roth-michael**
+
 ## 5.0.1
 
 ### Changed
