@@ -647,7 +647,7 @@ export default class SwadeCoreHooks {
                 action: 'submit',
                 label: game.i18n.localize('SWADE.ButtonSubmit'),
                 default: true,
-                callback: async (event, button, dialog) =>
+                callback: async (_event, button, _dialog) =>
                   await gm?.setFlag(
                     'swade',
                     'bennies',

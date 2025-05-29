@@ -551,8 +551,8 @@ class SwadeActor<
           };
         }),
         rejectClose: false,
-        render: (_event, app) =>
-          app.querySelector('footer')?.classList.add('flexcol'),
+        render: (_event, dialog: foundry.applications.api.DialogV2) =>
+          dialog.element.querySelector('footer')?.classList.add('flexcol'),
       });
     }
 

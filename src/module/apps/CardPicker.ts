@@ -59,12 +59,14 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
       cards: this.#cards,
       oldCard: this.#ctx.oldCardId,
       highestCardID: foundry.utils.deepClone(this.#cards).sort(this.#sortCards.bind(this))[0].id,
-      allowRedraw: this.#allowRedraw(),
       buttons: [
         { type: 'button', action: 'submit', icon: 'fa-solid fa-check', label: 'SWADE.Ok' },
-        { type: 'button', action: 'redraw', icon: 'fa-solid fa-plus', label: 'SWADE.Redraw' }
       ]
     });
+
+    if (this.#allowRedraw()) {
+      context.buttons.push({ type: 'button', action: 'redraw', icon: 'fa-solid fa-plus', label: 'SWADE.Redraw' });
+    }
 
     return context;
   }

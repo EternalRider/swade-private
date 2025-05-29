@@ -33,6 +33,13 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     },
   };
 
+  protected override _configureRenderParts(options) {
+    const parts = super._configureRenderParts(options);
+    if (game.user.isGM && !this.viewed?.round && this.viewed?.combatants?.size)
+      parts.footer.template = 'systems/swade/templates/sidebar/footer.hbs';
+    return parts;
+  }
+
   protected override async _preparePartContext(partId, context, options) {
     await super._preparePartContext(partId, context, options);
     switch (partId) {
@@ -364,12 +371,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (entry) return;
 
     const combat = this.viewed;
-    const group = combat.groups.get(target.dataset.groupId);
-
-    group._expanded = !group._expanded;
-
-    // Main sidebar renders are automatically propagated to popouts
-    await ui.combat.render({ parts: ['tracker'] });
+    const groupId = target.dataset.groupId;
+    await combat.toggleGroupExpand(groupId);
   }
 
   static async #onSwadeCombatantControl(

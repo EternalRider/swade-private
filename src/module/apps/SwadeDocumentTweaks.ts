@@ -183,6 +183,7 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
     const hasSettingFields = !foundry.utils.isEmpty(this.settingFields);
     const parts = super._configureRenderParts(options);
     if (!hasSettingFields) delete parts.additionalStats;
+    if (this.document.type === 'group') delete parts.traits;
     return parts;
   }
 
@@ -190,6 +191,7 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
     return foundry.utils.mergeObject(await super._prepareContext(options), {
       isNPC: this.document.type === 'npc',
       isVehicle: this.document.type === 'vehicle',
+      isGroup: this.document.type === 'group',
       hasModSlots: game.settings.get('swade', 'vehicleMods'),
       hasEnergy: game.settings.get('swade', 'vehicleEnergy'),
       runningDieTypes: getDieSidesRange(1, 12),
@@ -205,6 +207,11 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
     if (partId === 'tabs') {
       if (!partContext.hasSettingFields)
         delete partContext.tabs.additionalStats;
+      if (partContext.isGroup) {
+        delete partContext.tabs.traits;
+        if (partContext.tabs.additionalStats) partContext.tabs.additionalStats.active = true;
+        else partContext.tabs.auras.active = true;
+      }
     } else if (partId === 'auras') {
       partContext.auraFields =
         this.document.system.schema.fields.auras.element.fields;

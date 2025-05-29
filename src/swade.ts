@@ -425,3 +425,6 @@ Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);
+
+/** Item Piles */
+Hooks.once('item-piles-ready', SwadeIntegrationHooks.onItemPilesReady);
