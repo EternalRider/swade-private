@@ -527,9 +527,9 @@ SWADE:
     Active: Active
   Illumination:
     _name: Illumination
-    Dim: Dim Light
-    Dark: Darkness
-    Pitch: Pitch Black
+    Dim: Dim
+    Dark: Dark
+    Pitch: Pitch Darkness
   Cover:
     _name: Cover
     Shield: Cover - Shield
