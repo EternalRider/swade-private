@@ -37,6 +37,7 @@ import {
   modifierReducer,
   shouldShowBennyAnimation,
   getEdgeToEdgeDistance,
+  getDefaultAttackModifiers,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -422,162 +423,27 @@ class SwadeActor<
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
       const currToken = this.getActiveTokens(false, true)[0];
-      const additionalMods: RollModifier[] = [];
-      
-      // Unstable Platform
-      if (isRangedAttack && currToken?.regions?.some(r => 
-        r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
-      )) {
-        if (!this.getSingleItemBySwid('steady-hands', 'edge'))
-          additionalMods.push({ label: game.i18n.localize('SWADE.UnstablePlatform'), value: -2 });
-      }
-
       const targetToken = game.user.targets.first()?.document;
-      let bestIllumination: RollModifier | undefined;
-      let bestCover: RollModifier | undefined;
-      if (targetToken) {
-        // For use with range increments & prone
-        const distanceToTarget = targetToken.parent.grid.measurePath([currToken.getCenterPoint(), targetToken.getCenterPoint()])?.distance ?? 0;
 
-        // Illumination & Cover
-        const targetBehaviors = Array.from(targetToken.regions.map(r =>
-          r.behaviors.filter(b => !b.disabled && (b.type === 'attackModifiers'))
-        )).deepFlatten();
-        if (isRangedAttack && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
-          bestCover = {
-            label: game.i18n.localize('SWADE.Cover.MediumProne'),
-            value: -4
-          };
-        }
-        const modMap = {
-          illuminationDim: -2,
-          illuminationDark: -4,
-          illuminationPitch: -6,
-          coverLight: -2,
-          coverMedium: -4,
-          coverHeavy: -6,
-          coverTotal: -8
-        };
-        for (const behavior of targetBehaviors) {
-          const { illumination, cover } = behavior.system;
-          if (illumination) {
-            const currMod = modMap[illumination];
-            const currLabel = game.i18n.localize(`SWADE.Illumination.${illumination.slice(12)}`);
-            if (!bestIllumination || currMod < bestIllumination.value) {
-              bestIllumination = {
-                label: currLabel,
-                value: currMod
-              };
-            }
-          }
-          if (cover) {
-            const currMod = modMap[cover];
-            const currLabel = game.i18n.localize(`SWADE.Cover.${cover.slice(5)}`);
-            if (!bestCover || currMod < bestCover.value) {
-              bestCover = {
-                label: currLabel,
-                value: currMod
-              }
-            }
-          }
-        }
-        
-        // Shield cover
-        const equippedShields = targetToken.actor.itemTypes.shield.filter(i => i.isReadied);
-        const shieldCoverMod = -equippedShields.reduce((bestCover, shield) => {
-          return Math.max(shield.system.cover, bestCover);
-        }, 0);
-        if (shieldCoverMod) {
-          if (!bestCover || (bestCover.value as number) > shieldCoverMod) {
-            bestCover = {
-              label: game.i18n.localize('SWADE.Cover.Shield'),
-              value: shieldCoverMod
-            };
-          }
-        }
-        
-        // Dodge
-        if (isRangedAttack) {
-          const dodgeItem = targetToken.actor.getSingleItemBySwid('dodge', 'edge');
-          if (dodgeItem && (!bestCover || (bestCover.value as number > -2))) {
-            bestCover = {
-              label: dodgeItem.name,
-              value: -2
-            }
-          }
-        }
-
-        // Combat Acrobat
-        const combatAcrobatItem = targetToken.actor.getSingleItemBySwid('combat-acrobat', 'edge');
-        if (combatAcrobatItem && !targetToken.actor.system.encumbered) {
-          additionalMods.push({
-            label: combatAcrobatItem.name,
-            value: -1
-          })
-        }
-        
-        // Range
-        const range = options.item!.range;
-        if (range) {
-          if (distanceToTarget > range.long) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Extreme'), value: -8 });
-          else if (distanceToTarget > range.medium) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Long'), value: -4 });
-          else if (distanceToTarget > range.short) additionalMods.push({ label: game.i18n.localize('SWADE.Range.Medium'), value: -2 });
-        }
-
-        // Vulnerable
-        if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: game.i18n.localize('SWADE.TargetVulnerable'), value: '+2' });
-
-        // Gang-up, including (Improved) Block
-        if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {
-          const scene = targetToken.parent;
-          const numAttackerAllies = scene.tokens.filter(t => {
-            if (t.disposition !== currToken.disposition) return false;
-            if (t.hasStatusEffect('stunned')) return false;
-            return getEdgeToEdgeDistance(targetToken, t) < 1;
-          }).length;
-          const numDefenderAllies = scene.tokens.filter(t => {
-            if (t.disposition !== targetToken.disposition) return false;
-            if (t.hasStatusEffect('stunned')) return false;
-            if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
-            return getEdgeToEdgeDistance(currToken, t) < 1;
-          }).length;
-          let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies)
-          if (targetToken.actor.getSingleItemBySwid('improved-block', 'edge')) gangUpBonus -= 2;
-          else if (targetToken.actor.getSingleItemBySwid('block', 'edge')) gangUpBonus -= 1;
-          if (gangUpBonus > 0) additionalMods.push({
-            label: game.i18n.localize('SWADE.GangUp'),
-            value: `+${gangUpBonus}`
-          });
-        }
-
-        // Size
-        const attackerScale = this.system.stats.scale;
-        const defenderScale = targetToken.actor.system.stats.scale;
-        const scaleDifference = defenderScale - attackerScale;
-        if (scaleDifference !== 0) {
-          additionalMods.push({
-            label: game.i18n.localize('SWADE.ScaleDifference'),
-            value: scaleDifference < 0 ? scaleDifference : `+${scaleDifference}`
-          });
-        }
-      }
-
-      const bestNonStackingMods: BestNonStackingMods = {
-        bestCover,
-        bestIllumination
-      };
+      const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
+        currToken,
+        targetToken,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack
+      );
 
       /**
        * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
        * modifiers to be added (or existing ones to be removed)
        * @category Hooks
-       * @param {TokenDocument} currToken                     The attacking token
-       * @param {TokenDocument | undefined} targetToken       The first-targeted token, or `undefined` if no targets
-       * @param {SwadeItem} skill                             The skill being used for the attack
-       * @param {SwadeItem} item                              The item being used for the attack
-       * @param {boolean} isRangedAttack                      `true` if ranged weapon or mixed with non-`fighting` skill
-       * @param {boolean} isMeleeAttack                       `true` if melee weapon or mixed with `fighting` skill
-       * @param {RollModifier[]} additionalMods               The list of default-applied modifiers so far, to be modified directly
+       * @param {TokenDocument} currToken                   The attacking token
+       * @param {TokenDocument | undefined} targetToken     The first-targeted token, or `undefined` if no targets
+       * @param {SwadeItem} skill                           The skill being used for the attack
+       * @param {SwadeItem} item                            The item being used for the attack
+       * @param {boolean} isRangedAttack                    `true` if ranged weapon or mixed with non-`fighting` skill
+       * @param {boolean} isMeleeAttack                     `true` if melee weapon or mixed with `fighting` skill
+       * @param {RollModifier[]} additionalMods             The list of default-applied modifiers so far, to be modified directly
        * @param {BestNonStackingMods} bestNonStackingMods   The best non-stacking modifiers (e.g. bestCover, bestIllumination), provided to be able to replace/remove them prior to adding to `additionalMods`
        */
       Hooks.call(
@@ -600,6 +466,9 @@ class SwadeActor<
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;
       }
+
+      // TODO: Remove once prototype roll groups are refactored
+      for (const mod of additionalMods) mod.label = game.i18n.localize(mod.label);
     }
 
     if (!skill) return this.makeUnskilledAttempt(options);
@@ -1696,7 +1565,7 @@ interface ArmorCalcContext {
   isNaturalArmor: boolean;
 }
 
-interface BestNonStackingMods {
+export interface BestNonStackingMods {
   bestCover: RollModifier | undefined;
   bestIllumination: RollModifier | undefined;
 }
