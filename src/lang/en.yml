@@ -405,6 +405,7 @@ SWADE:
   ArchetypeAbilities: Archetype Abilities
   BuildCost: Build Cost
   BuildLimit: Build Limit
+  BuildLevel: Build Level
   About: About
   EdgesHindrances: Edges & Hindrances
   GrantsPowers: Grants Powers
@@ -527,9 +528,9 @@ SWADE:
     Active: Active
   Illumination:
     _name: Illumination
-    Dim: Dim Light
-    Dark: Darkness
-    Pitch: Pitch Black
+    Dim: Dim
+    Dark: Dark
+    Pitch: Pitch Darkness
   Cover:
     _name: Cover
     Shield: Cover - Shield
@@ -652,6 +653,9 @@ SWADE:
     ModifierLimit:
       Label: Modifier Limit
       Hint: How many times can this modifier be chosen?
+    ModifierLevel:
+      Label: Modifier Level
+      Hint: How many times did you pick this modifier?
   Keybindings:
     OpenFavoriteCards:
       Name: Open Favorite Card Hand

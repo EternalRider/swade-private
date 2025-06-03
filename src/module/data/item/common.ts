@@ -48,6 +48,12 @@ export const builder = () => ({
       integer: true,
       min: 1,
     }),
+    level: new fields.NumberField({
+      label: 'SWADE.BuildLevel',
+      initial: 1,
+      integer: true,
+      min: 1,
+    }),
   }),
 });
 

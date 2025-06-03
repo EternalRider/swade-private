@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 5.0.3
 
+### Added
+
+- Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
+
 ### Fixed
 
 - Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
