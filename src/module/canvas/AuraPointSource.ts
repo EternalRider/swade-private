@@ -65,9 +65,12 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
   }
 
   protected _checkDisposition(): boolean {
-    const visibleTo = Array.isArray(this.auraData.visibleTo)
-      ? this.auraData.visibleTo
-      : [this.auraData.visibleTo];
+    const isSet = foundry.utils.getType(this.auraData.visibleTo) === 'Set';
+    const visibleTo = isSet
+      ? Array.from(this.auraData.visibleTo)
+      : Array.isArray(this.auraData.visibleTo)
+        ? this.auraData.visibleTo
+        : [this.auraData.visibleTo];
     return !!canvas?.tokens?.controlled.some((t) =>
       visibleTo.includes(t.document.disposition),
     );
