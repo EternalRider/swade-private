@@ -36,7 +36,6 @@ import {
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
-  getEdgeToEdgeDistance,
   getDefaultAttackModifiers,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
