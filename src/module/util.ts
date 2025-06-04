@@ -445,20 +445,24 @@ export function getDefaultAttackModifiers(
       };
     }
     const modMap = {
-      illuminationDim: -2,
-      illuminationDark: -4,
-      illuminationPitch: -6,
-      coverLight: -2,
-      coverMedium: -4,
-      coverHeavy: -6,
-      coverTotal: -8
+      illumination: {
+        dim: -2,
+        dark: -4,
+        pitch: -6
+      },
+      cover: {
+        light: -2,
+        medium: -4,
+        heavy: -6,
+        total: -8
+      }
     };
     for (const behavior of targetBehaviors) {
       const { illumination, cover } = behavior.system;
       if (illumination) {
-        const currMod = modMap[illumination];
-        const currLabel = `SWADE.Illumination.${illumination.slice(12)}`;
-        if (!bestIllumination || currMod < bestIllumination.value) {
+        const currMod = modMap.illumination[illumination];
+        const currLabel = `SWADE.Illumination.${illumination.capitalize()}`;
+        if (!bestIllumination || currMod < (bestIllumination.value as number)) {
           bestIllumination = {
             label: currLabel,
             value: currMod
@@ -466,9 +470,9 @@ export function getDefaultAttackModifiers(
         }
       }
       if (cover) {
-        const currMod = modMap[cover];
-        const currLabel = `SWADE.Cover.${cover.slice(5)}`;
-        if (!bestCover || currMod < bestCover.value) {
+        const currMod = modMap.cover[cover];
+        const currLabel = `SWADE.Cover.${cover.capitalize()}`;
+        if (!bestCover || currMod < (bestCover.value as number)) {
           bestCover = {
             label: currLabel,
             value: currMod
