@@ -25,6 +25,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- [BREAKING] The structure of `CONFIG.SWADE.prototypeRollGroups` has changed from an array to an object, and for each of the nested `RollModifierGroup`s, their `modifiers` has also changed from an array to an object. This means any code that tries to get a modifier from `CONFIG.SWADE.prototypeRollGroups` must change, and any code that adds modifiers or modifier groups must change. **by @roth-michael**
+  - To get the modifier for dim illumination, for instance, one would use `CONFIG.SWADE.prototypeRollGroups.illumination.modifiers.dim`
+
 ### Deprecated
 
 ### Removed

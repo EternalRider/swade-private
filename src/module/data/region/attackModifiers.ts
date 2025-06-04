@@ -15,18 +15,18 @@ class AttackModifiersRegionBehaviorType
     return {
       illumination: new fields.StringField({
         choices: {
-          illuminationDim: 'SWADE.Illumination.Dim',
-          illuminationDark: 'SWADE.Illumination.Dark',
-          illuminationPitch: 'SWADE.Illumination.Pitch',
+          dim: 'SWADE.Illumination.Dim',
+          dark: 'SWADE.Illumination.Dark',
+          pitch: 'SWADE.Illumination.Pitch',
         },
         nullable: true,
       }),
       cover: new fields.StringField({
         choices: {
-          coverLight: 'SWADE.Cover.Light',
-          coverMedium: 'SWADE.Cover.Medium',
-          coverHeavy: 'SWADE.Cover.Heavy',
-          coverTotal: 'SWADE.Cover.Total',
+          light: 'SWADE.Cover.Light',
+          medium: 'SWADE.Cover.Medium',
+          heavy: 'SWADE.Cover.Heavy',
+          total: 'SWADE.Cover.Total',
         },
         nullable: true,
       }),

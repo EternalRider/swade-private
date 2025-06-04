@@ -415,6 +415,11 @@ export function getDefaultAttackModifiers(
   isRangedAttack: boolean,
   isMeleeAttack: boolean,
 ): { additionalMods: RollModifier[], bestNonStackingMods: BestNonStackingMods} {
+  const rollGroups = CONFIG.SWADE.prototypeRollGroups;
+  const rangeMods = rollGroups.range.modifiers;
+  const coverMods = rollGroups.cover.modifiers;
+  const illuminationMods = rollGroups.illumination.modifiers;
+
   const additionalMods: RollModifier[] = [];
   const currActor = currToken.actor!;
 
@@ -423,7 +428,7 @@ export function getDefaultAttackModifiers(
     r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
   )) {
     if (!currActor.getSingleItemBySwid('steady-hands', 'edge'))
-      additionalMods.push({ label: 'SWADE.UnstablePlatform', value: -2 });
+      additionalMods.push(rollGroups.attack.modifiers.unstable);
   }
 
   let bestIllumination: RollModifier | undefined;
@@ -444,35 +449,18 @@ export function getDefaultAttackModifiers(
         value: -4
       };
     }
-    const modMap = {
-      illuminationDim: -2,
-      illuminationDark: -4,
-      illuminationPitch: -6,
-      coverLight: -2,
-      coverMedium: -4,
-      coverHeavy: -6,
-      coverTotal: -8
-    };
     for (const behavior of targetBehaviors) {
       const { illumination, cover } = behavior.system;
       if (illumination) {
-        const currMod = modMap[illumination];
-        const currLabel = `SWADE.Illumination.${illumination.slice(12)}`;
-        if (!bestIllumination || currMod < bestIllumination.value) {
-          bestIllumination = {
-            label: currLabel,
-            value: currMod
-          };
+        const currModifier = illuminationMods[illumination];
+        if (!bestIllumination || currModifier.value < bestIllumination.value) {
+          bestIllumination = currModifier;
         }
       }
       if (cover) {
-        const currMod = modMap[cover];
-        const currLabel = `SWADE.Cover.${cover.slice(5)}`;
-        if (!bestCover || currMod < bestCover.value) {
-          bestCover = {
-            label: currLabel,
-            value: currMod
-          }
+        const currModifier = coverMods[cover];
+        if (!bestCover || currModifier.value < bestCover.value) {
+          bestCover = currModifier;
         }
       }
     }
@@ -514,13 +502,13 @@ export function getDefaultAttackModifiers(
     // Range
     const range = item.range;
     if (range) {
-      if (distanceToTarget > range.long) additionalMods.push({ label: 'SWADE.Range.Extreme', value: -8 });
-      else if (distanceToTarget > range.medium) additionalMods.push({ label: 'SWADE.Range.Long', value: -4 });
-      else if (distanceToTarget > range.short) additionalMods.push({ label: 'SWADE.Range.Medium', value: -2 });
+      if (distanceToTarget > range.long) additionalMods.push(rangeMods.extreme);
+      else if (distanceToTarget > range.medium) additionalMods.push(rangeMods.long);
+      else if (distanceToTarget > range.short) additionalMods.push(rangeMods.medium);
     }
 
     // Vulnerable
-    if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push({ label: 'SWADE.TargetVulnerable', value: 2 });
+    if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push(rollGroups.trait.modifiers.targetVulnerable);
 
     // Gang-up, including (Improved) Block
     if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {

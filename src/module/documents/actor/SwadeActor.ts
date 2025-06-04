@@ -465,9 +465,6 @@ class SwadeActor<
         if (options.additionalMods) options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;
       }
-
-      // TODO: Remove once prototype roll groups are refactored
-      for (const mod of additionalMods) mod.label = game.i18n.localize(mod.label);
     }
 
     if (!skill) return this.makeUnskilledAttempt(options);
