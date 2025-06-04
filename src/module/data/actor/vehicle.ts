@@ -19,7 +19,7 @@ declare namespace VehicleData {
   interface Schema
     extends SwadeBaseActorData.Schema,
       ReturnType<typeof createVehicleSchema> {}
-  interface BaseData {
+  interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
         effects: Array<RollModifier>;
@@ -66,7 +66,7 @@ declare namespace VehicleData {
     };
   }
 
-  interface DerivedData {
+  interface DerivedData extends SwadeBaseActorData.DerivedData {
     scale: number;
     cargo: {
       value: number;
@@ -637,9 +637,13 @@ class VehicleData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',

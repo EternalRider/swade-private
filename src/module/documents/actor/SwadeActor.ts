@@ -43,7 +43,7 @@ import { TraitDie } from './SwadeActor.interface';
 
 declare global {
   interface DocumentClassConfig {
-    Actor: typeof SwadeActor;
+    Actor: typeof SwadeActor<Actor.SubType>;
   }
   interface FlagConfig {
     swade: {
