@@ -281,6 +281,7 @@ Hooks.once('init', () => {
     CONFIG.Token.documentClass,
     'core',
     foundry.applications.sheets.TokenConfig,
+    {},
   );
 
   foundry.documents.collections.Actors.registerSheet('swade', GroupSheet, {

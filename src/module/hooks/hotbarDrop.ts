@@ -47,7 +47,9 @@ export function rollItemMacro(identifier: string) {
   const speaker = ChatMessage.getSpeaker();
   let actor: SwadeActor | undefined = undefined;
   if (speaker.token) actor = game.actors?.tokens[speaker.token];
-  if (!actor && speaker.actor) actor = game.actors?.get(speaker.actor);
+  if (!actor && speaker.actor) {
+    actor = game.actors?.get(speaker.actor) as SwadeActor | undefined;
+  }
   if (!actor?.isOwner) return null;
 
   if (attributes.has(identifier)) {

@@ -8,7 +8,7 @@ import SwadeItem from '../item/SwadeItem';
 
 declare global {
   interface DocumentClassConfig {
-    ActiveEffect: typeof SwadeActiveEffect;
+    ActiveEffect: typeof SwadeActiveEffect<ActiveEffect.SubType>;
   }
   interface FlagConfig {
     ActiveEffect: {

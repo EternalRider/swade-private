@@ -12,7 +12,7 @@ import SwadeCombatant from './SwadeCombatant';
 
 declare global {
   interface DocumentClassConfig {
-    Combat: typeof SwadeCombat;
+    Combat: typeof SwadeCombat<Combat.SubType>;
   }
 }
 
