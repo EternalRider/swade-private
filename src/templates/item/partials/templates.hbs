@@ -49,6 +49,18 @@
     </div>
     <div class='form-group'>
     <input
+      id='{{item.uuid}}-scone'
+      type='checkbox'
+      name='system.templates.scone'
+      {{checked item.system.templates.scone}}
+      data-dtype='Boolean'
+    />
+      <label for='{{item.uuid}}-scone'>
+        {{localize 'SWADE.Templates.SmallCone.Short'}}
+      </label>
+    </div>
+    <div class='form-group'>
+    <input
       id='{{item.uuid}}-cone'
       type='checkbox'
       name='system.templates.cone'
