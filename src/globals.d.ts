@@ -86,3 +86,23 @@ export interface SwadeDocumentSheetConfiguration<
 > extends foundry.applications.api.DocumentSheetV2.Configuration<Document> {
   dragDrop: DragDrop.Configuration[];
 }
+
+declare module 'fvtt-types/configuration' {
+  namespace Hooks {
+    interface HookConfig {
+      /**
+       * A hook for modules to adjust the display of actor embeds
+       * @param embed     The embedded content to mutate
+       * @param actor     The actor being embedded
+       * @param config    Configuration passed to the embed call
+       * @param options   Options passed to the enrichment call
+       */
+      swadeActorEmbed: (
+        embed: HTMLElement | HTMLCollection,
+        actor: Actor.Implementation,
+        config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+        options: foundry.applications.ux.TextEditor.EnrichmentOptions,
+      ) => void;
+    }
+  }
+}

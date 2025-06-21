@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
+- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement
 
 ### Fixed
 
