@@ -637,14 +637,24 @@ class VehicleData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
-    return await createEmbedElement(
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
+    const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
       ['actor-embed', 'vehicle'],
     );
+
+    if (embed) {
+      Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
+    }
+
+    return embed;
   }
 
   override getRollData(
