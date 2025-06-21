@@ -32,6 +32,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
+- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation **by @florad92**
+- Fixed a display issue with the NPC sheet attributes **by @mhilbrunner**
 
 ## 5.0.2
 
