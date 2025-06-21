@@ -29,6 +29,12 @@
         document=document
         rootId=document.uuid
       }}
+      {{formGroupSimple
+        'system.build.level'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+      }}
     {{/if}}
     {{#if hasSettingFields}}
       <h2>{{localize 'SWADE.AddStats'}}</h2>

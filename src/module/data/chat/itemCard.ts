@@ -258,7 +258,10 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
       const content = foundry.utils.parseHTML('<span>' + enriched + '</span>');
 
-      game.tooltip.activate(magazine, { html: content as HTMLElement });
+      game.tooltip.activate(magazine, {
+        html: content as HTMLElement,
+        cssClass: 'themed theme-dark',
+      });
     });
   }
 

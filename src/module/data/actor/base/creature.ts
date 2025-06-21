@@ -748,7 +748,7 @@ class CreatureData<
   getPaceTooltip(this: CreatureData): HTMLElement {
     const element = document.createElement('div');
     //current pace
-    const heading = document.createElement('h3');
+    const heading = document.createElement('h4');
     heading.innerText =
       game.i18n.localize('SWADE.Movement.Base') +
       ': ' +
@@ -762,7 +762,7 @@ class CreatureData<
       .filter((key) => !!this.pace[key])
       .filter((key) => key !== this.pace.base!);
     if (availableKeys.length) {
-      const subheading = document.createElement('h4');
+      const subheading = document.createElement('h5');
       subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
       element.appendChild(subheading);
       const paceList = document.createElement('ul');
@@ -848,12 +848,15 @@ class CreatureData<
   // specifying this to resolve depth issue
   async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
-      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refresh, {
-        target: this.parent,
-        speaker: getDocumentClass('ChatMessage').getSpeaker({
-          actor: this.parent,
-        }),
-      });
+      const message = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.refresh,
+        {
+          target: this.parent,
+          speaker: getDocumentClass('ChatMessage').getSpeaker({
+            actor: this.parent,
+          }),
+        },
+      );
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);
     }
