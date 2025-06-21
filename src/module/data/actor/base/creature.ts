@@ -748,7 +748,7 @@ class CreatureData<
   getPaceTooltip(this: CreatureData): HTMLElement {
     const element = document.createElement('div');
     //current pace
-    const heading = document.createElement('h3');
+    const heading = document.createElement('h4');
     heading.innerText =
       game.i18n.localize('SWADE.Movement.Base') +
       ': ' +
@@ -762,7 +762,7 @@ class CreatureData<
       .filter((key) => !!this.pace[key])
       .filter((key) => key !== this.pace.base!);
     if (availableKeys.length) {
-      const subheading = document.createElement('h4');
+      const subheading = document.createElement('h5');
       subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
       element.appendChild(subheading);
       const paceList = document.createElement('ul');

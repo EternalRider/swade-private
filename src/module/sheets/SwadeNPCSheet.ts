@@ -160,6 +160,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: (this.actor.system as NpcData).getSizeTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
 
@@ -170,6 +171,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: (this.actor.system as NpcData).getPaceTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
   }
@@ -180,14 +182,15 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
     // Progress attribute abbreviation toggle
     data.useAttributeShorts = game.settings.get('swade', 'useAttributeShorts');
 
-    data.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      (this.actor.system as NpcData).details.biography.value,
-      {
-        relativeTo: this.actor,
-        rollData: this.actor.getRollData(),
-        secrets: this.options.editable && this.document.isOwner,
-      },
-    );
+    data.enrichedBiography =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        (this.actor.system as NpcData).details.biography.value,
+        {
+          relativeTo: this.actor,
+          rollData: this.actor.getRollData(),
+          secrets: this.options.editable && this.document.isOwner,
+        },
+      );
     data.wealthDieTypes = getDieSidesRange(4, 12);
 
     // Everything below here is only needed if user is not limited

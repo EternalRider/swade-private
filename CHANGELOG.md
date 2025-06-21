@@ -22,6 +22,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.3
+
+### Added
+
+- Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
+- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement
+
+### Fixed
+
+- Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
+- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation **by @florad92**
+- Fixed a display issue with the NPC sheet attributes **by @mhilbrunner**
+
 ## 5.0.2
 
 ### Fixed

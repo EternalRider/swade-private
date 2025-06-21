@@ -765,10 +765,10 @@ export default class SwadeCoreHooks {
   }
 
   static onRenderActiveEffectConfig(
-    app: ActiveEffectConfig,
+    app: foundry.applications.sheets.ActiveEffectConfig,
     html: HTMLElement,
   ) {
-    const effect = app.document as ActiveEffect;
+    const effect = app.document;
     if (effect.system instanceof BaseEffectData) {
       const systemSchema = effect.system.schema;
 
@@ -851,9 +851,15 @@ export default class SwadeCoreHooks {
         { localize: true },
         { value: effect.system.limit },
       );
+      const levelGroup = effect.system.schema.fields.level.toFormGroup(
+        { localize: true },
+        { value: effect.system.level },
+      );
       const descriptionGroup = html.querySelector(
         'section[data-tab="details"] .form-group.stacked',
       );
+      // insert in reverse order because afterend usage
+      descriptionGroup?.insertAdjacentElement('afterend', levelGroup);
       descriptionGroup?.insertAdjacentElement('afterend', limitGroup);
       descriptionGroup?.insertAdjacentElement('afterend', costGroup);
       app.setPosition();

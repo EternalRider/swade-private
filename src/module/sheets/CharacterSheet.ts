@@ -400,6 +400,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: this.actor.system.getSizeTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
 
@@ -409,6 +410,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: this.actor.system.getPaceTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
   }

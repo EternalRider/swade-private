@@ -644,11 +644,17 @@ class VehicleData<
           ...options,
         },
       );
-    return await createEmbedElement(
+    const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
       ['actor-embed', 'vehicle'],
     );
+
+    if (embed) {
+      Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
+    }
+
+    return embed;
   }
 
   override getRollData(

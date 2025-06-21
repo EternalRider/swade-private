@@ -262,6 +262,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
               secrets: this.item.isOwner,
             },
           ),
+          cssClass: 'themed theme-dark',
         });
       }),
     );
