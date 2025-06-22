@@ -512,14 +512,15 @@ export function getDefaultAttackModifiers(
 
     // Gang-up, including (Improved) Block
     if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {
+      const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
       const numAttackerAllies = scene.tokens.filter(t => {
         if (t.disposition !== currToken.disposition) return false;
-        if (t.hasStatusEffect('stunned')) return false;
+        if (ignoreStatuses.some(status => t.hasStatusEffect(status))) return false;
         return getEdgeToEdgeDistance(targetToken, t) < 1;
       }).length;
       const numDefenderAllies = scene.tokens.filter(t => {
         if (t.disposition !== targetToken.disposition) return false;
-        if (t.hasStatusEffect('stunned')) return false;
+        if (ignoreStatuses.some(status => t.hasStatusEffect(status))) return false;
         if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
         return getEdgeToEdgeDistance(currToken, t) < 1;
       }).length;
