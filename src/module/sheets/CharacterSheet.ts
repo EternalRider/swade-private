@@ -77,9 +77,17 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Input focus and update
     const inputs = html.querySelectorAll('input');
-    inputs.forEach((el) =>
-      el.addEventListener('focus', (ev) => ev.currentTarget.select()),
-    );
+    inputs.forEach((el) => {
+      el.addEventListener('focus', (ev) => ev.currentTarget.select());
+      el.addEventListener('keypress', (ev: KeyboardEvent) => {
+        const targetIsButton = 'button' === ev?.target?.type;
+        if (!targetIsButton && ev.key === 'Enter') {
+          ev.preventDefault();
+          this.submit({ preventClose: true });
+          return false;
+        }
+      });
+    });
 
     html
       .querySelector('[name="system.details.currency"]')
