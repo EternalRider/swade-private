@@ -2,7 +2,7 @@ export class FormulaField<
   Options extends
     foundry.data.fields.StringField.Options = foundry.data.fields.StringField.DefaultOptions,
 > extends foundry.data.fields.StringField<Options> {
-  protected override _cast(value: any): string {
+  protected override _cast(value: any) {
     if (typeof value !== 'string') {
       value = value?.toString() ?? '';
     } else {
@@ -35,7 +35,7 @@ export class FormulaField<
 
   protected override _validateType(
     value: any,
-    _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any> = {},
+    _options: foundry.data.fields.DataField.ValidationOptions = {},
   ): boolean | void {
     if (!value) console.log(this);
     if (this.blank && Number(value) === 0) return true;

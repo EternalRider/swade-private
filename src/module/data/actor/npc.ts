@@ -111,6 +111,7 @@ export class NpcData extends CreatureData<
     );
 
     if (embed) {
+      // See src/globals.d.ts for docs
       Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
     }
 

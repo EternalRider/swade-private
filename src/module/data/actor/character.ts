@@ -1,4 +1,3 @@
-import { ItemMetadata } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
@@ -42,7 +41,7 @@ export class CharacterData extends CreatureData<
       const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
       //Set compendium source, including a fallback to the system compendium of the required one cannot be found
       const pack = (game.packs.get(coreSkillsPack) ??
-        game.packs.get('swade.skills')) as CompendiumCollection<ItemMetadata>;
+        game.packs.get('swade.skills')) as CompendiumCollection<'Item'>;
 
       if (!pack) return; //critical fallback point, simply skip core skills if neither pack can be located
 
@@ -51,7 +50,7 @@ export class CharacterData extends CreatureData<
       // extract skill data
       const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
         SkillData.Schema,
-        Item<'skill'>
+        Item.OfType<'skill'>
       >[] = skillIndex
         .filter((i) => i.type === 'skill')
         .filter((i) => coreSkills.includes(i.name!))
@@ -96,7 +95,7 @@ export class CharacterData extends CreatureData<
   protected override async _preCreate(
     createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
       CharacterData.Schema,
-      Actor<'character'>
+      Actor.OfType<'character'>
     >,
     options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
@@ -162,6 +161,7 @@ export class CharacterData extends CreatureData<
     );
 
     if (embed) {
+      // See src/globals.d.ts for docs
       Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
     }
 
