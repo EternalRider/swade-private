@@ -25,7 +25,7 @@ declare namespace EdgeData {
         initial: Requirement[];
         validate: (
           value: Requirement[],
-          _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any>,
+          _options: foundry.data.fields.DataField.ValidationOptions,
         ) => foundry.data.validation.DataModelValidationFailure | undefined;
       }
     >;
@@ -62,7 +62,7 @@ class EdgeData extends SwadeBaseItemData<
           ],
           validate: (
             value: Requirement[],
-            _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any>,
+            _options: foundry.data.fields.DataField.ValidationOptions,
           ) => {
             const failures =
               new foundry.data.validation.DataModelValidationFailure({
@@ -173,9 +173,13 @@ class EdgeData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/edge-embeds.hbs',

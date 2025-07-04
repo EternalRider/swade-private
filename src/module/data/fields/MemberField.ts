@@ -14,7 +14,7 @@ function makeBaseMemberSchema(): MemberSchema {
       nullable: false,
       validate: (
         value: any,
-        _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+        _options: foundry.data.fields.DataField.ValidationOptions,
       ) => {
         if (value.startsWith('Compendium')) {
           return new foundry.data.validation.DataModelValidationFailure({

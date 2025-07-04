@@ -52,6 +52,7 @@ declare namespace VehicleData {
       parry: {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
+        value: number;
       };
     };
     cargo: {
@@ -102,7 +103,8 @@ function validateCrewMember(
 
 function createVehicleSchema() {
   const fields = foundry.data.fields;
-  return {
+
+  const schema = {
     attributes: new fields.SchemaField(
       {
         // Found in HC Haunted Car
@@ -318,7 +320,9 @@ function createVehicleSchema() {
               }),
               sort: new fields.IntegerSortField(),
               weapons: new fields.ArrayField(
-                new LocalDocumentField(SwadeItem, { types: ['weapon'] }),
+                new LocalDocumentField(SwadeItem, {
+                  types: ['weapon'],
+                }),
               ),
             },
             { validate: validateCrewMember },
@@ -384,6 +388,8 @@ function createVehicleSchema() {
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxMods' }),
     }),
   };
+
+  return schema;
 }
 
 class VehicleData<
@@ -651,6 +657,7 @@ class VehicleData<
     );
 
     if (embed) {
+      // See src/globals.d.ts for docs
       Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
     }
 
@@ -683,7 +690,7 @@ class VehicleData<
 
   #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
     const itemTypes = this.parent.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
+    const notMod = (i: Item.OfType<'gear' | 'weapon'>) =>
       !i.system.isVehicular ||
       i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
     return [

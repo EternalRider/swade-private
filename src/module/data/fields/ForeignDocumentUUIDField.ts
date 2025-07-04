@@ -20,6 +20,7 @@ declare namespace ForeignDocumentUUIDField {
 export class ForeignDocumentUUIDField<
   const Options extends
     ForeignDocumentUUIDField.Options = ForeignDocumentUUIDField.DefaultOptions,
+  // eslint-disable-next-line deprecation/deprecation
   const AssignmentType = foundry.data.fields.StringField.AssignmentType<Options>,
   const InitializedType =
     | foundry.data.fields.StringField.InitializedType<Options>
@@ -55,7 +56,7 @@ export class ForeignDocumentUUIDField<
           return doc as foundry.abstract.Document.ImplementationClassFor<
             this['type']
           >;
-        return value;
+        return value!;
       } catch (error) {
         console.error(error);
         return value ?? null;
