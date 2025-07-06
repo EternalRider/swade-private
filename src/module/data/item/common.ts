@@ -172,6 +172,7 @@ export const favorite = () => ({
 export const templates = () => ({
   templates: new fields.SchemaField(
     {
+      scone: new fields.BooleanField({ label: 'SWADE.SmallCone.Short' }),
       cone: new fields.BooleanField({ label: 'SWADE.Cone.Short' }),
       stream: new fields.BooleanField({ label: 'SWADE.Stream.Short' }),
       small: new fields.BooleanField({ label: 'SWADE.Small.Short' }),
