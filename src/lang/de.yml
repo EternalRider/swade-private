@@ -782,7 +782,7 @@ SWADE:
   Templates:
     Cone:
       Short: Kegel
-      Long: Kebelschablone
+      Long: Kegelschablone
     Stream:
       Short: Strahl
       Long: Strahlschablone
@@ -957,6 +957,9 @@ SWADE:
       Title: Optionen
     AMMUNITION:
       Title: Munition
+      Items:
+        SELF: Wurfmesser
+        SINGLE: Revolver
     HEADQUARTERS:
       Upgrades:
         Content: Aufwertungen können hier aufgeführt werden. HTML wird vollständig
