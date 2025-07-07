@@ -18,4 +18,4 @@ export type BonusDamage = ReturnType<typeof common.bonusDamage>;
 export type Vehicular = ReturnType<typeof common.vehicular>;
 export type Activities = ReturnType<typeof common.activities>;
 
-export type ChoicesType<T> = ValueOf<T>[];
+export type ChoicesType<T extends object> = ValueOf<T>[];

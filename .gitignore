@@ -9,3 +9,5 @@ foundryconfig.json
 .idea
 docs/*
 .cache
+/src/.vscode
+pnpm-lock.yaml

@@ -1,4 +1,4 @@
-<form autocomplete='off'>
+<section autocomplete='off'>
   {{#if isTraitRoll}}
     <fieldset class='flexrow'>
       <legend>{{localize 'SWADE.MAPenalty.Label'}}</legend>
@@ -68,25 +68,26 @@
       <button
         type='button'
         class='add-modifier'
+        data-action='addModifier'
+        disabled
         title='{{localize "SWADE.Mod.Custom.Add"}}'
       >
         <i class='fa fa-plus'></i>&nbsp;{{localize 'SWADE.Add'}}
       </button>
     </div>
     <div class='presets'>
-      <button type='button' class='toggle-list'>
-        <i class='fas fa-caret-right'></i>
+      <button type='button' class='toggle-list' data-action='toggleList'>
+        <i class='fa-solid fa-caret-right'></i>
         {{localize 'SWADE.Mod.Preset.Choose'}}
       </button>
       <div class='dropdown collapsed' role='listbox'>
         <input
           class='searchBox'
-          type='text'
+          type='search'
           placeholder='{{localize "FILES.Search"}}'
-          role='searchbox'
           autocomplete='off'
         />
-        <ol class='selections'>
+        <ol class='selections unmarked-list'>
           {{#each modGroups as |group|}}
             <li class='group-header'>{{group.name}}</li>
             {{#each group.modifiers}}
@@ -94,6 +95,7 @@
                 <button
                   type='button'
                   class='add-preset'
+                  data-action='addPreset'
                   data-group='{{group.name}}'
                   data-index={{@index}}
                 >
@@ -108,7 +110,7 @@
   </fieldset>
   <fieldset class='formula'>
     <legend>{{localize 'SWADE.Formula'}}</legend>
-    <div class='input' role='textbox'>{{formula}}</div>
+    <textarea onclick='this.select()' readonly>{{formula}}</textarea>
   </fieldset>
   <div class='form-group'>
     <label>{{localize 'SWADE.RollMode'}}</label>
@@ -116,34 +118,18 @@
       {{selectOptions rollModes selected=rollMode localize=true}}
     </select>
   </div>
-  <footer class='flexrow'>
-    <button type='button' class='submit-roll'>
-      <i class='fas fa-dice'></i>
-      {{localize 'SWADE.Roll'}}
-    </button>
-    {{#if displayExtraButton}}
-      <button type='button' class='submit-roll' data-type='extra'>
-        <i class='far fa-plus-square'></i>
-        {{extraButtonLabel}}
-      </button>
-    {{/if}}
-    <button type='button' id='close'>
-      <i class='fas fa-times'></i>
-      {{localize 'Close'}}
-    </button>
-  </footer>
-</form>
-<datalist id='modifier-names'>
-  <option value='{{localize "SWADE.Mod.Support"}}'></option>
-  <option value='{{localize "SWADE.Addi"}}'></option>
-  <option value='{{localize "SWADE.Encumbered"}}'></option>
-</datalist>
-<datalist id='modifier-values'>
-  <option value='+1d6x'></option>
-  <option value='+1'></option>
-  <option value='+2'></option>
-  <option value='+4'></option>
-  <option value='-1'></option>
-  <option value='-2'></option>
-  <option value='-4'></option>
-</datalist>
+  <datalist id='modifier-names'>
+    <option value='{{localize "SWADE.Mod.Support"}}'></option>
+    <option value='{{localize "SWADE.Addi"}}'></option>
+    <option value='{{localize "SWADE.Encumbered"}}'></option>
+  </datalist>
+  <datalist id='modifier-values'>
+    <option value='+1d6x'></option>
+    <option value='+1'></option>
+    <option value='+2'></option>
+    <option value='+4'></option>
+    <option value='-1'></option>
+    <option value='-2'></option>
+    <option value='-4'></option>
+  </datalist>
+</section>

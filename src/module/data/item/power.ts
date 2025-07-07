@@ -27,7 +27,7 @@ declare namespace PowerData {
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
-    damage: FormulaField<{ label: string }>;
+    damage: FormulaField<{ initial: ''; blank: true; label: string }>;
     range: foundry.data.fields.StringField<{ initial: '@sma' }>;
     duration: foundry.data.fields.StringField<{ initial: '' }>;
     trapping: foundry.data.fields.StringField<{
@@ -106,8 +106,8 @@ class PowerData extends SwadeBaseItemData<
   override prepareFormulaFields(): void {
     const field = new FormulaDerivedValueField();
     const cleaned = field.clean(this.range);
-    if (Roll.validate(cleaned)) {
-      this.range = String(field.initialize(cleaned as string, this));
+    if (Roll.validate(cleaned!)) {
+      this.range = String(field.initialize(cleaned!, this));
     }
   }
 
@@ -128,11 +128,11 @@ class PowerData extends SwadeBaseItemData<
     const value = foundry.utils.getProperty(
       actor,
       `system.powerPoints.${arcane}.value`,
-    );
+    ) as number;
     const max = foundry.utils.getProperty(
       actor,
       `system.powerPoints.${arcane}.max`,
-    );
+    ) as number;
     return { value, max };
   }
 
@@ -188,9 +188,13 @@ class PowerData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/power-embeds.hbs',

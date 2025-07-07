@@ -1,5 +1,4 @@
 // import { Updates } from '../../globals';
-// import SwadeCombatGroupColor from '../apps/SwadeCombatGroupColor';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
@@ -10,6 +9,10 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     classes: ['swade'],
     actions: {
       toggleGroupExpand: this.#toggleGroupExpand,
+      toggleHold: this.#onSwadeCombatantControl,
+      toggleTurnLost: this.#onSwadeCombatantControl,
+      actNow: this.#onSwadeCombatantControl,
+      actAfter: this.#onSwadeCombatantControl,
     },
   };
 
@@ -29,6 +32,13 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       template: 'templates/sidebar/tabs/combat/footer.hbs',
     },
   };
+
+  protected override _configureRenderParts(options) {
+    const parts = super._configureRenderParts(options);
+    if (game.user.isGM && !this.viewed?.round && this.viewed?.combatants?.size)
+      parts.footer.template = 'systems/swade/templates/sidebar/footer.hbs';
+    return parts;
+  }
 
   protected override async _preparePartContext(partId, context, options) {
     await super._preparePartContext(partId, context, options);
@@ -206,7 +216,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected async _onDrop(event: DragEvent) {
     // Combat Tracker contains combatant groups, which means this would fire twice
     event.stopPropagation();
-    const data = TextEditor.getDragEventData(event);
+    const data =
+      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
     const combatant = await SwadeCombatant.fromDropData(data);
 
@@ -233,7 +244,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     });
   }
 
-  protected _getEntryContextOptions() {
+  protected override _getEntryContextOptions() {
     const entryOptions = super._getEntryContextOptions();
 
     const getCombatant = (li: HTMLLIElement) =>
@@ -269,7 +280,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     return entryOptions;
   }
 
-  protected _getCombatContextOptions() {
+  protected override _getCombatContextOptions() {
     const entryOptions = super._getCombatContextOptions();
 
     entryOptions.push({
@@ -277,14 +288,16 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         type: game.i18n.localize('DOCUMENT.CombatantGroup'),
       }),
       icon: '<i class="fa-solid fa-users-rectangle"></i>',
-      callback: () =>
-        CombatantGroup.create(
+      callback: () => {
+        const groupCls = CombatantGroup.implementation;
+        groupCls.create(
           {
-            name: CombatantGroup.defaultName({ parent: this.viewed }),
+            name: groupCls.defaultName({ parent: this.viewed }),
             img: 'icons/environment/people/charge.webp',
           },
           { parent: this.viewed },
-        ),
+        );
+      },
     });
 
     return entryOptions;
@@ -359,20 +372,37 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (entry) return;
 
     const combat = this.viewed;
-    const group = combat.groups.get(target.dataset.groupId);
+    const groupId = target.dataset.groupId;
+    await combat.toggleGroupExpand(groupId);
+  }
 
-    group._expanded = !group._expanded;
+  static async #onSwadeCombatantControl(
+    this: SwadeCombatTracker,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    const combatantId = target?.closest('[data-combatant-id]')?.dataset
+      .combatantId;
+    const combatant: SwadeCombatant | null =
+      this.viewed?.combatants.get(combatantId);
+    if (!combatant) return;
 
-    // Main sidebar renders are automatically propagated to popouts
-    await ui.combat.render({ parts: ['tracker'] });
+    switch (target.dataset.action) {
+      case 'toggleHold':
+        return await combatant.toggleHold();
+      case 'toggleTurnLost':
+        return await combatant.toggleTurnLost();
+      case 'actNow':
+        return await combatant.actNow();
+      case 'actAfter':
+        return await combatant.actAfterCurrentCombatant();
+    }
   }
 
   /**
    * Handle new Combat creation request by presenting a form asking what type
    */
-  protected override async _onCombatCreate(
-    event: JQuery.ClickEvent,
-  ): Promise<void> {
+  protected override async _onCombatCreate(event: PointerEvent): Promise<void> {
     event.preventDefault();
     const cls = getDocumentClass('Combat');
     await cls.createDialog({ active: true });

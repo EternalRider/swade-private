@@ -18,7 +18,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   static override DEFAULT_OPTIONS: DeepPartial<
     SwadeDocumentSheetConfiguration<SwadeActor<'vehicle'>>
   > = {
-    classes: ['vehicle', 'standard-form'],
+    classes: ['vehicle', 'standard-form', 'swade-application'],
     position: { height: 700, width: 700 },
     window: { resizable: true },
     actions: {
@@ -33,7 +33,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: {
       template: 'systems/swade/templates/actors/vehicle2/header.hbs',
     },
@@ -83,7 +83,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected override async _preparePartContext(
     partId: keyof typeof SwadeVehicleSheetV2.PARTS,
     context: SwadeVehicleSheetV2.RenderContext,
-    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.HandlebarsRenderOptions>,
+    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
   ) {
     const itemTypes = this.actor.itemTypes;
     switch (partId) {
@@ -113,14 +113,15 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         );
         break;
       case 'description':
-        context.enrichedDescription = await TextEditor.enrichHTML(
-          this.actor.system.description,
-          {
-            secrets: this.actor.isOwner,
-            rollData: this.actor.getRollData(),
-            relativeTo: this.actor,
-          },
-        );
+        context.enrichedDescription =
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            this.actor.system.description,
+            {
+              secrets: this.actor.isOwner,
+              rollData: this.actor.getRollData(),
+              relativeTo: this.actor,
+            },
+          );
         break;
     }
     return context;
@@ -283,7 +284,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     _event: PointerEvent,
     _target: HTMLElement,
   ) {
-    new AttributeManager(this.actor).render(true);
+    new AttributeManager({ actor: this.actor }).render({ force: true });
   }
 
   protected static async rollAttribute(
@@ -355,18 +356,17 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     const operator = this.actor.system.crew.members.find(
       (m) => m.uuid === uuid,
     );
-    operator?.actor?.sheet.render(true);
+    operator?.actor?.sheet?.render(true);
   }
 
   /** Drop Handling */
 
   protected override async _onDropActor(
     _event: DragEvent,
-    data: DropData<SwadeActor>,
+    data: foundry.abstract.Document.DropData<SwadeActor>,
   ) {
     if (!this.actor.isOwner) return false;
-    const actor =
-      await getDocumentClass('Actor').fromDropData<typeof SwadeActor>(data);
+    const actor = await getDocumentClass('Actor').fromDropData(data);
     if (!actor) return false;
     if (actor.type === 'group' || actor.type === 'vehicle') {
       Logger.warn(

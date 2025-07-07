@@ -1,6 +1,5 @@
-import { NullishProps, ValueOf } from 'fvtt-types/utils';
+import { AnyObject, NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
-import { AuraData } from '../../../interfaces/AuraData.interface';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   DerivedModifier,
@@ -8,7 +7,6 @@ import {
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
-import { AuraPointSource } from '../../canvas/AuraPointSource';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import {
@@ -45,12 +43,11 @@ import { TraitDie } from './SwadeActor.interface';
 
 declare global {
   interface DocumentClassConfig {
-    Actor: typeof SwadeActor;
+    Actor: typeof SwadeActor<Actor.SubType>;
   }
   interface FlagConfig {
     swade: {
       ambidextrous?: boolean;
-      auras?: Record<string, AuraData>;
       hardy?: boolean;
       ignoreBleedOut?: boolean;
       wildAttackDamage?: string | number;
@@ -95,6 +92,16 @@ class SwadeActor<
     //get the value from the parameter
     const value = mapRange(current, 0, max, 0, 1);
     return Color.fromHSV([hue, value, 0.75]);
+  }
+
+  static override migrateData(data: Actor.CreateData & AnyObject) {
+    super.migrateData(data);
+    if (data.flags?.swade?.auras) {
+      data.system ??= {};
+      data.system.auras = data.flags.swade.auras;
+      delete data.flags.swade.auras;
+    }
+    return data;
   }
 
   constructor(
@@ -237,34 +244,6 @@ class SwadeActor<
     return types;
   }
 
-  get auras(): Record<string, AuraData> {
-    const auras = (this.flags?.swade?.auras ?? {}) as Record<string, AuraData>;
-    const specialAuras = ['aura1', 'aura2'];
-    let aura;
-    for (const key in auras) {
-      if (specialAuras.includes(key)) continue;
-      aura = auras[key] ?? {};
-      auras[key] = foundry.utils.mergeObject(
-        aura,
-        AuraPointSource.defaultData,
-        { overwrite: false },
-      );
-    }
-
-    //special case: the user-defined auras
-    auras.aura1 = foundry.utils.mergeObject(
-      auras.aura1 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    auras.aura2 = foundry.utils.mergeObject(
-      auras.aura2 ?? {},
-      AuraPointSource.defaultData,
-      { overwrite: false },
-    );
-    return auras;
-  }
-
   /**
    * Helper property to prevent double-application of modifiers
    */
@@ -281,11 +260,7 @@ class SwadeActor<
   override prepareDerivedData() {
     this._filterOverrides();
 
-    /**
-     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor whose data is being prepared
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
@@ -346,16 +321,7 @@ class SwadeActor<
     roll.modifiers = modifiers;
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable!);
 
-    /**
-     * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * Returning `false` in a hook callback will cancel the roll entirely
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
-     * @param {String} attribute                The name of the attribute, in lower case
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     const permitContinue = Hooks.call(
       'swadePreRollAttribute',
       this,
@@ -394,15 +360,7 @@ class SwadeActor<
       actor: this,
     });
 
-    /**
-     * A hook event that is fired after an attribute is rolled
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
-     * @param {String} attribute                The name of the attribute, in lower case
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll(
       'swadeRollAttribute',
       this,
@@ -429,7 +387,7 @@ class SwadeActor<
       });
       return null;
     }
-    let skill: SwadeItem | undefined;
+    let skill: SwadeItem<'skill'> | undefined;
     skill = this.items.find((i) => i.id == skillId);
     if (tempSkill) skill = tempSkill;
 
@@ -445,16 +403,7 @@ class SwadeActor<
     let flavour = '';
     if (options.flavour) flavour = ` - ${options.flavour}`;
 
-    /**
-     * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * Returning `false` in a hook callback will cancel the roll entirely
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the skill
-     * @param {SwadeItem} skill                 The Skill item that is being rolled
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     const permitContinue = Hooks.call(
       'swadePreRollSkill',
       this,
@@ -494,15 +443,7 @@ class SwadeActor<
     // Roll and return
     const retVal = await RollDialog.asPromise(rollDialogContext);
 
-    /**
-     * A hook event that is fired after a skill is rolled
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the skill
-     * @param {SwadeItem} skill                 The Skill item that is being rolled
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll('swadeRollSkill', this, skill, roll, modifiers, options);
 
     return retVal as TraitRoll | null;
@@ -572,8 +513,8 @@ class SwadeActor<
           };
         }),
         rejectClose: false,
-        render: (_event, app) =>
-          app.querySelector('footer')?.classList.add('flexcol'),
+        render: (_event, dialog: foundry.applications.api.DialogV2) =>
+          dialog.element.querySelector('footer')?.classList.add('flexcol'),
       });
     }
 
@@ -606,6 +547,7 @@ class SwadeActor<
     return RollDialog.asPromise({
       roll: new SwadeRoll(runningDie, this.getRollData(false), {
         modifiers: mods,
+        rollType: 'running',
       }),
       mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -618,7 +560,7 @@ class SwadeActor<
   }
 
   async makeUnskilledAttempt(options: IRollOptions = {}) {
-    const tempSkill = new SwadeItem({
+    const tempSkill = new SwadeItem<'skill'>({
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
       system: {
@@ -648,7 +590,7 @@ class SwadeActor<
     arcaneSkillDie: TraitDie,
     options: IRollOptions = {},
   ) {
-    const tempSkill = new SwadeItem({
+    const tempSkill = new SwadeItem<'skill'>({
       name: game.i18n.localize('SWADE.ArcaneSkill'),
       type: 'skill',
       system: {
@@ -669,10 +611,13 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const message = await renderTemplate(SWADE.bennies.templates.spend, {
-        target: this,
-        speaker: speaker,
-      });
+      const message = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.spend,
+        {
+          target: this,
+          speaker: speaker,
+        },
+      );
       const chatData = { content: message, speaker: speaker };
       await msgClass.create(chatData);
     }
@@ -684,12 +629,8 @@ class SwadeActor<
       game.swade.sockets.giveBenny(gms);
     }
 
-    /**
-     * A hook event that is fired after an actor spends a Benny
-     * @category Hooks
-     * @param {SwadeActor} actor                     The actor that spent the benny
-     */
-    Hooks.call('swadeSpendBenny', this);
+    // See src/globals.d.ts for docs
+    Hooks.callAll('swadeSpendBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
@@ -715,22 +656,21 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const content = await renderTemplate(SWADE.bennies.templates.add, {
-        target: this,
-        speaker: speaker,
-      });
+      const content = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.add,
+        {
+          target: this,
+          speaker: speaker,
+        },
+      );
       await msgClass.create({
         content: content,
         speaker: speaker,
       });
     }
 
-    /**
-     * A hook event that is fired after an actor has been awarded a benny
-     * @category Hooks
-     * @param {SwadeActor} actor                     The actor that received the benny
-     */
-    Hooks.call('swadeGetBenny', this);
+    // See src/globals.d.ts for docs
+    Hooks.callAll('swadeGetBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
@@ -769,7 +709,7 @@ class SwadeActor<
     const msgClass = getDocumentClass('ChatMessage');
     await msgClass.create({
       speaker: msgClass.getSpeaker({ actor: this }),
-      content: await renderTemplate(template, {
+      content: await foundry.applications.handlebars.renderTemplate(template, {
         icon: CONFIG.SWADE.conviction.icon,
         actor: this,
       }),
@@ -991,9 +931,7 @@ class SwadeActor<
       'SwadeActor#getDriver deprecated in favor of the crew members array, which can be found at system.crew.members',
       { since: '4.4', until: '5.1' },
     );
-    this.crew.members
-      .find((m) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
-      .map((m) => m.actor) ?? null;
+    return this.system.operator;
   }
 
   getTraitRollModifiers(
@@ -1095,7 +1033,7 @@ class SwadeActor<
     if (!options.rof) options.rof = 1;
     const skillData = skill.system;
 
-    const rolls = new Array<Roll>();
+    const rolls = new Array<Roll<AnyObject>>();
 
     //Add all necessary trait die
     for (let i = 0; i < options.rof; i++) {
@@ -1139,7 +1077,7 @@ class SwadeActor<
       });
     }
 
-    return [TraitRoll.fromTerms<TraitRoll>([basePool]), rollMods];
+    return [TraitRoll.fromTerms<typeof TraitRoll>([basePool]), rollMods];
   }
 
   /**
@@ -1493,7 +1431,7 @@ class SwadeActor<
       foundry.utils.hasProperty(changed, 'system.bennies') &&
       this.hasPlayerOwner
     ) {
-      ui.players?.render(true);
+      ui.players?.render({ force: true });
     }
     if (
       foundry.utils.hasProperty(options, 'swade.wounds.value') ||

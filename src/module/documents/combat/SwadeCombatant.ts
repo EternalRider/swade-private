@@ -6,7 +6,7 @@ import { getStatusEffectDataById } from '../../util';
 
 declare global {
   interface DocumentClassConfig {
-    Combatant: typeof SwadeCombatant;
+    Combatant: typeof SwadeCombatant<Combatant.SubType>;
   }
 }
 
@@ -89,7 +89,7 @@ export default class SwadeCombatant<
     else {
       if (this.group.system?.leader)
         return this.group.system.leader === this.id;
-      else return this.group.members.first() === this;
+      else return this.group.members?.first() === this;
     }
   }
 
@@ -200,7 +200,7 @@ export default class SwadeCombatant<
       await this.update({
         system: {
           roundHeld: this.parent.round,
-          '-=turnLost': null,
+          turnLost: false,
         },
       });
       await this.actor?.toggleActiveEffect(data, { active: false });

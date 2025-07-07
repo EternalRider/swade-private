@@ -1,4 +1,9 @@
 .roll-dialog {
+  overflow: visible;
+
+  .window-content {
+    overflow: visible;
+  }
   .modifiers {
     margin: 0;
     padding: 0;
@@ -6,64 +11,71 @@
   }
   .modifier-entry {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 2fr 1fr;
     &:not(:first-of-type) {
-      border-top: 1px solid var(--color-text-light-3);
+      border-top: 1px solid var(--color-border);
     }
     input[type='checkbox'] {
       margin: auto;
     }
   }
 
+  .new-modifier-value,
+  .new-modifier-label {
+    padding-right: 0;
+  }
+
   .no-modifiers,
   .modifier-entry {
     text-align: center;
     font-weight: bold;
-    padding: 0.5em;
+    padding: 0.25em;
+    &.footer {
+      padding: 0;
+      column-gap: 0.25rem;
+    }
   }
 
   .presets {
-    padding: 0.5em 0.5em 0.25em 0.5em;
     .toggle-list {
+      display: block;
       text-align: left;
-      height: calc(var(--form-field-height) + 1px);
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--color-border-light-tertiary);
-      border-radius: 3px;
+      height: calc(var(--input-height) + 1px);
+      width: 100%;
       padding: 0 3px;
-      text-overflow: ellipsis;
-      .fas {
-        margin: 0 $medium-spacing;
-        transition: transform 200ms;
+      .fa-solid {
+        margin: 0 0.2rem;
+        transition: rotate 250ms ease;
       }
       .rotate {
-        transform: rotate(90deg);
+        rotate: 90deg;
       }
     }
     .dropdown {
       position: absolute;
-      padding: 0;
-      border: 1px solid var(--color-border-light-tertiary);
-      background-color: var(--color-text-light-2);
+      padding: 0.25em;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--background);
+      backdrop-filter: blur(4px);
       transition: height 200ms ease;
-      height: 334.25px;
       overflow: hidden;
       &.collapsed {
         border: none;
         height: 0px;
+        padding: 0;
       }
     }
     .searchBox {
-      margin: 0.5em;
+      margin-bottom: 0.5em;
     }
     .selections {
       padding: 0;
       margin: 0;
-      list-style: none;
       max-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
       overflow-x: hidden;
-      margin-left: 0.5em;
+      scrollbar-gutter: stable;
     }
     .group-header {
       font-weight: 700;
@@ -72,18 +84,21 @@
     }
     .modifier {
       margin-left: 0.25em;
+      padding-right: 0.25em;
+      width: 95%;
       button {
-        padding: 0 0 0 0.25em;
-        cursor: pointer;
+        margin: 0 0 0 0.25em;
         border: none;
-        border-radius: 0;
-        background: none;
-        line-height: 24px;
-        text-align: left;
+        background: transparent;
+        justify-content: start;
+        width: 100%;
         &:hover,
-        &:focus {
-          box-shadow: none;
-          background: rgba(0, 0, 0, 0.2);
+        &:focus-visible {
+          outline: 1px solid var(--button-focus-outline-color);
+          box-shadow: 0 0 4px var(--button-focus-outline-color);
+          background: var(--button-hover-background-color);
+          color: var(--button-hover-text-color);
+          border-color: var(--button-hover-border-color);
         }
       }
     }
@@ -94,21 +109,21 @@
   }
   .header {
     text-align: center;
-    border-bottom: 2px groove var(--color-border-light-highlight);
+    border-bottom: 2px groove var(--color-fieldset-border);
   }
-  .footer {
+  .form-footer {
     padding-bottom: 0;
     margin-bottom: 0;
     border-bottom: none;
   }
   .formula {
-    .input {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--color-border-light-tertiary);
-      padding: 1px 3px;
-      border-radius: 3px;
+    textarea {
+      field-sizing: content;
+      resize: none;
+      min-height: auto;
       user-select: text;
       word-break: break-word;
+      color: var(--input-text-color);
     }
   }
 }

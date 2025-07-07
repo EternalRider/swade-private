@@ -140,11 +140,24 @@ export const SWADE: SwadeConfig = {
 
   measuredTemplatePresets: [
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 9 },
+      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 4, width: 2 },
+      button: {
+        name: constants.TEMPLATE_PRESET.SCONE,
+        title: 'SWADE.Templates.SmallCone.Long',
+        icon: 'fa-solid fa-location-minus fa-rotate-90',
+        visible: true,
+        button: true,
+        onClick: () => {
+          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SCONE);
+        },
+      },
+    },
+    {
+      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 9, width: 3 },
       button: {
         name: constants.TEMPLATE_PRESET.CONE,
         title: 'SWADE.Templates.Cone.Long',
-        icon: 'fa-solid fa-location-pin fa-rotate-90',
+        icon: 'fa-solid fa-location-plus fa-rotate-90',
         visible: true,
         button: true,
         onClick: () => {
@@ -313,6 +326,7 @@ export const SWADE: SwadeConfig = {
 
   textSearch: {
     actor: [
+      'system.category',
       'system.details.archetype',
       'system.details.appearance',
       'system.details.notes',
@@ -332,7 +346,9 @@ export const SWADE: SwadeConfig = {
       'system.arcane',
       'system.trapping',
     ],
-    journalentry: [],
+    journalentry: [
+      'pages'
+    ],
     macro: [],
     playlist: [],
     rolltable: [],

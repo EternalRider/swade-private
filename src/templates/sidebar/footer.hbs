@@ -1,0 +1,10 @@
+<nav class="combat-controls" data-tooltip-direction="UP">
+  {{~#if hasCombat~}}
+  <button type="button" class="combat-control combat-control-lg" data-action="startCombat">
+    <span>{{localize "COMBAT.Begin"}}</span>
+  </button>
+  <button type="button" class="combat-control combat-control-lg" data-action="startSurpriseCombat">
+    <span>{{localize "SWADE.Combat.StartSurpriseRound"}}</span>
+  </button>
+  {{/if}}
+</nav>

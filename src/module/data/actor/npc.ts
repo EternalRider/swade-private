@@ -79,10 +79,11 @@ export class NpcData extends CreatureData<
     config.caption = false;
 
     // Enrich biography text
-    this.enrichedBiography = await TextEditor.enrichHTML(
-      this.details.biography.value,
-      { ...options },
-    );
+    this.enrichedBiography =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.details.biography.value,
+        { ...options },
+      );
 
     // Combine weapons and armor into a displayable gear array
     const displayableGear = this.parent.itemTypes.armor.concat(
@@ -93,19 +94,27 @@ export class NpcData extends CreatureData<
     // Enrich and strip ability descriptions to plain text
     if (this.parent.itemTypes.ability) {
       for (const ability of this.parent.itemTypes.ability) {
-        const enrichedHTML = await TextEditor.enrichHTML(
-          ability.system.description,
-          options,
-        );
+        const enrichedHTML =
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            ability.system.description,
+            { ...options },
+          );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
     }
 
     // Create the embed element
-    return await createEmbedElement(
+    const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/actor-embeds.hbs',
       ['actor-embed', 'npc'],
     );
+
+    if (embed) {
+      // See src/globals.d.ts for docs
+      Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
+    }
+
+    return embed;
   }
 }

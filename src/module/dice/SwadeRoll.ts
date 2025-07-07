@@ -115,6 +115,10 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     this.options['messageId'] = messageId;
   }
 
+  setRollType(rollType: string) {
+    this.options['rollType'] = rollType;
+  }
+
   get messageId() {
     return this.options['messageId'];
   }
@@ -129,6 +133,10 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
 
   get isCritFailConfirmationRoll() {
     return this.options['critfailConfirmationRoll'];
+  }
+
+  get rollType() {
+    return this.options['rollType'];
   }
 
   async getRenderData(
@@ -193,7 +201,7 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
     displayResult = true,
   }: RollRenderOptions = {}) {
     const data = await this.getRenderData(flavor, isPrivate, displayResult);
-    return renderTemplate(template, data);
+    return foundry.applications.handlebars.renderTemplate(template, data);
   }
 
   getRerollLabel(): string | undefined {

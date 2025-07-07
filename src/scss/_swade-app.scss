@@ -5,7 +5,7 @@
   --font-color: rgb(0, 0, 0);
   --accent-color: rgb(140, 22, 15);
   --accent-color-secondary: rgb(170, 170, 170);
-  --default-font: 'Roboto Slab', 'Signika', serif;
+  --default-font: 'Roboto Slab', 'Signika', serif, var(--font-awesome);
   --section-header-font: var(--tab-font);
 
   //tabs
@@ -22,8 +22,19 @@
   //buttons
   --button-border-radius: 5px;
 
+  button:not(.fa-file-import) {
+    font-family: var(--default-font), var(--font-awesome);
+  }
+
   font-family: var(--default-font);
-  scrollbar-gutter: stable;
+  &:not(.application) {
+    scrollbar-gutter: stable;
+  }
+
+  // Overrides for core AppV2 forms
+  &.standard-form {
+    gap: 0;
+  }
 
   .window-content,
   &.app.sidebar-popout .window-content {

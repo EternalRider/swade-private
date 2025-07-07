@@ -12,6 +12,7 @@ steps:
     title: SWADE.TOURS.AURAS.AccessAuras.Title
     content: SWADE.TOURS.AURAS.AccessAuras.Content
     actor:
+      _id: swadeTourActor00
       name: SWADE.TOURS.AURAS.Actor
       type: character
       img: icons/environment/people/commoner.webp
@@ -22,23 +23,24 @@ steps:
     tab:
       parent: tweaks
       id: auras
+      group: sheet
   - id: enable
-    selector: '#tweaks section[data-tab="auras"] div:nth-child(2)'
+    selector: '#tweaks section[data-tab="auras"] div:has([name="system.auras.aura1.enabled"])'
     title: SWADE.TOURS.AURAS.Enable.Title
     content: SWADE.TOURS.AURAS.Enable.Content
   - id: constrained
-    selector: '#tweaks section[data-tab="auras"] div:nth-child(3)'
+    selector: '#tweaks section[data-tab="auras"] div:has([name="system.auras.aura1.walls"])'
     title: SWADE.TOURS.AURAS.Constrained.Title
     content: SWADE.TOURS.AURAS.Constrained.Content
   - id: radius
-    selector: '#tweaks section[data-tab="auras"] div:nth-child(4)'
+    selector: '#tweaks section[data-tab="auras"] div:has([name="system.auras.aura1.radius"])'
     title: SWADE.TOURS.AURAS.Radius.Title
     content: SWADE.TOURS.AURAS.Radius.Content
   - id: color
-    selector: '#tweaks section[data-tab="auras"] div:nth-child(5)'
+    selector: '#tweaks section[data-tab="auras"] div:has([name="system.auras.aura1.color"])'
     title: SWADE.TOURS.AURAS.Color.Title
     content: SWADE.TOURS.AURAS.Color.Content
   - id: visibility
-    selector: '#tweaks section[data-tab="auras"] div:nth-child(7)'
+    selector: '#tweaks section[data-tab="auras"] div:has([name="system.auras.aura1.visibleTo"])'
     title: SWADE.TOURS.AURAS.Visibility.Title
     content: SWADE.TOURS.AURAS.Visibility.Content

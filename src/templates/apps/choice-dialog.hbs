@@ -1,6 +1,6 @@
-<form>
+<section>
   <h3>{{parent.name}}</h3>
-  <fieldset class='flexcol'>
+  <fieldset class='choice-list'>
     <legend>{{prompt}}</legend>
     {{#each choices as |choice|}}
       <div>
@@ -17,14 +17,4 @@
       </div>
     {{/each}}
   </fieldset>
-  <footer class='flexrow'>
-    <button type='button' id='submit-choice'>
-      <i class='fas fa-check-double'></i>
-      {{localize 'SWADE.ButtonSubmit'}}
-    </button>
-    <button type='button' id='close'>
-      <i class='fas fa-times'></i>
-      {{localize 'Close'}}
-    </button>
-  </footer>
-</form>
+</section>

@@ -22,20 +22,96 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.3
+
+### Added
+
+- Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
+- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement
+
+### Fixed
+
+- Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
+- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation **by @florad92**
+- Fixed a display issue with the NPC sheet attributes **by @mhilbrunner**
+
+## 5.0.2
+
+### Fixed
+
+- Surprise Round button now appears once more. (#1339) **by @roth-michael**
+- Combatants in groups now always go in the "right" order **by @roth-michael**
+- Tweaks can now be opened on vehicle & group actor sheets again (and they can have auras now!) **by @roth-michael**
+- Quick no longer allows infinitely drawing cards. (#1338) **by @roth-michael**
+- Fixed various instances of dialogs not working properly. **by @roth-michael**
+
+## 5.0.1
+
+### Changed
+
+- [BREAKING] The following sheets and applications have been converted to AppV2 **by @roth-michael**
+  - CardPicker
+  - PlayerCardDrawHerder
+
+### Removed
+
+- [BREAKING] Removed the (unused) `SwadeCombatGroupColor` application and `PopUpMenu`
+
+### Fixed
+
+- Turn holding & its associated actions (losing turn, acting now/after combatant) now show up in the combat tracker again. **by @roth-michael**
+- Creating combat no longer throws an error. **by @roth-michael**
+- Wildcard icons are theme-appropriate, so they're easy to see whether in light mode or dark mode. **by @roth-michael**
+- Fixed Actor directory icons for Wild Cards. **by @florad92**
+- Improved styles for the Roll Dialog. **by @florad92**
+- Fixed an issue that would prevent weapons owned by vehicles from rolling damange. **by @florad92**
+- Fixed an issue that prevented initiative draw buttons from being visible on the combat tracker. (#1334) **by @florad92**
+
 ## 5.0.0
 
 ### Added
 
 - Added v13 compatibility
+- Added `system.build.limit` to relevant item types and `system.limit` to the modifier AE subtype, with a default value of 1. Null means unlimited. Nonlinear options should be implemented as separate choices. **by @jpmeehan5**
+- Vehicle gunners can now shoot the weapons they are assigned to from a vehicle's item chat card. This is a first wave implementation of the feature and we will be iterating on it in the future. **by @florad92**
+- Added `swade-application` css class for AppV2, analogous to the `swade-app` class for AppV1. We're keeping `swade-application` lightweight for now, but it does support light and dark mode. **by @florad92**
+- Added a small cone template preset. (!844) **by @ddbrown30**
 
 ### Changed
 
-### Deprecated
+- Refactored the way chat cards are created and rendered, allowing them to be more fluid and expandable in the future. **by @florad92**
+- Update Actor embed template to include Super Powers **by @jestevens210**
+- [BREAKING] Auras are back! They have moved from `flags.auras` to `system.auras`. There is a migration in place for both `Actor`s and `ActiveEffect`s which should update this data automatically. **by @roth-michael**
+- [BREAKING] The following sheets and windows have been converted to AppV2 **by @roth-michael**
+  - ActionCardEditor
+  - ActiveEffectWizard
+  - AdvanceEditor
+  - AttributeManager
+  - ChoiceDialog
+  - CompendiumTOC
+  - CompendiumTOCSettings
+  - DiceSettings
+  - JournalHeadquartersPageSheet
+  - Reloadinator
+  - RequirementsEditor
+  - RollDialog
+  - SettingConfigurator
+  - SwadeDocumentTweaks
+  - SwadeTokenConfig
+- Add `category` key to base Actor data **by @jestevens210**
+- Add ability to filter by category in Actor TOC compendia **by @roth-michael**
+- Add ability to delete cards from Action Card Editor **by @roth-michael**
 
 ### Removed
 
 - [BREAKING] Removed v12 compatibility
 - Finished deprecation period for Ancestry
+
+## 4.4.4
+
+### Fixed
+
+- Fixed an issue that could cause errors when updating skills. (#1322) **by @mhilbrunner**
 
 ## 4.4.3
 

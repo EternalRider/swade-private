@@ -6,10 +6,12 @@ export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
     CONFIG.Canvas.auras = {
       collection: new foundry.utils.Collection<AuraPointSource>(),
-      filter: VisualEffectsMaskingFilter.create({
-        mode: VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
-        visionTexture: canvas.masks.vision.renderTexture,
-      }),
+      filter:
+        foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
+          mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter
+            .FILTER_MODES.BACKGROUND,
+          visionTexture: canvas.masks.vision.renderTexture,
+        }),
     };
     canvas.effects.auras = CONFIG.Canvas.auras.collection;
   });
@@ -49,7 +51,7 @@ export function registerAuraHooks() {
 
   Hooks.on('updateActiveEffect', (effect: SwadeActiveEffect) => {
     if (!game.canvas.ready) return;
-    if (effect.changes.some((e) => e.key.startsWith('flags.swade.auras'))) {
+    if (effect.changes.some((e) => e.key.startsWith('system.auras'))) {
       effect.actor?.getActiveTokens().forEach((t) => addAuras(t));
       updateAllAuras();
     }
@@ -67,7 +69,7 @@ export function registerAuraHooks() {
 
 function addAuras(token: SwadeToken) {
   if (!token.actor) return missingActorMsg(token);
-  for (const id in token.actor.auras) {
+  for (const id in token.actor.system.auras) {
     if (token.auras.has(id)) continue;
     token.auras.set(id, new AuraPointSource({ object: token, id }));
   }
@@ -87,7 +89,7 @@ function updateAurasForToken(token: SwadeToken) {
     return missingActorMsg(token);
   }
   const origin = token.getCenterPoint();
-  const auraData = token.actor.auras;
+  const auraData = token.actor.system.auras;
   for (const [id, aura] of token.auras.entries()) {
     const data = auraData[id];
     if (!data) {

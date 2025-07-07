@@ -5,12 +5,29 @@ import type SwadeActiveEffect from '../../documents/active-effect/SwadeActiveEff
  * @returns Schema definition for ModifierData
  */
 function modifierSchema() {
+  const fields = foundry.data.fields;
+
   return {
-    cost: new foundry.data.fields.NumberField({
+    cost: new fields.NumberField({
       initial: null,
       integer: true,
       label: 'SWADE.ActiveEffects.ModifierCost.Label',
       hint: 'SWADE.ActiveEffects.ModifierCost.Hint',
+    }),
+    // Null means unlimited. Nonlinear options should be implemented as separate choices.
+    limit: new fields.NumberField({
+      initial: 1,
+      integer: true,
+      min: 1,
+      label: 'SWADE.ActiveEffects.ModifierLimit.Label',
+      hint: 'SWADE.ActiveEffects.ModifierLimit.Hint',
+    }),
+    level: new fields.NumberField({
+      initial: 1,
+      integer: true,
+      min: 1,
+      label: 'SWADE.ActiveEffects.ModifierLevel.Label',
+      hint: 'SWADE.ActiveEffects.ModifierLevel.Hint',
     }),
   };
 }

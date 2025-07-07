@@ -1,4 +1,4 @@
-import { AnyObject } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { AnyObject } from 'fvtt-types/utils';
 
 declare namespace LocalDocumentField {
   interface Options extends foundry.data.fields.ForeignDocumentField.Options {
@@ -10,6 +10,7 @@ class LocalDocumentField<
   DocumentType extends foundry.abstract.Document.AnyConstructor,
   Options extends
     LocalDocumentField.Options = foundry.data.fields.ForeignDocumentField.DefaultOptions,
+  // eslint-disable-next-line deprecation/deprecation
   AssignmentType = foundry.data.fields.ForeignDocumentField.AssignmentType<
     DocumentType,
     Options
@@ -29,7 +30,7 @@ class LocalDocumentField<
   InitializedType,
   PersistedType
 > {
-  override _cast(value) {
+  override _cast(value: unknown) {
     if (typeof value === 'string') return value;
     if (value instanceof this.model) return value._id;
     throw new Error(
@@ -38,7 +39,7 @@ class LocalDocumentField<
   }
   override initialize(
     value: PersistedType,
-    model: DataModel.Any,
+    model: foundry.abstract.Document.Any,
     _options?: AnyObject,
   ): InitializedType | (() => InitializedType | null) {
     if (this.idOnly) return value;
@@ -54,8 +55,8 @@ class LocalDocumentField<
 
   override _toInput(
     config:
-      | DataField.ToInputConfig<InitializedType>
-      | DataField.ToInputConfigWithOptions<InitializedType> = {},
+      | foundry.data.fields.DataField.ToInputConfig<InitializedType>
+      | foundry.data.fields.DataField.ToInputConfigWithOptions<InitializedType> = {},
   ) {
     // Prepare array of visible options
     const collection =

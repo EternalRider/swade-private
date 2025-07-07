@@ -35,7 +35,7 @@ export default class SwadeUser extends User {
   async spendBenny() {
     if (this.isGM) {
       if (this.bennies <= 0) return;
-      const message = await renderTemplate(
+      const message = await foundry.applications.handlebars.renderTemplate(
         CONFIG.SWADE.bennies.templates.spend,
         {
           target: game.user,

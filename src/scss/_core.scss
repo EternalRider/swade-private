@@ -1,13 +1,21 @@
-.directory-list .directory-item {
-  .wildcard-icon {
-    width: var(--font-size-32);
-    height: var(--font-size-32);
-    object-fit: scale-down;
-    object-position: center;
-    margin: 0;
-    margin-right: 2px;
-    vertical-align: middle;
-  }
+body.theme-light .application {
+  --background: url(/ui/parchment.jpg) repeat;
+}
+
+.directory-list .directory-item .wildcard-icon {
+  flex-basis: 0;
+  height: var(--font-size-32);
+  object-fit: scale-down;
+  object-position: center;
+  vertical-align: middle;
+}
+
+.theme-dark .wildcard-icon {
+  content: url('assets/ui/wildcard.svg');
+}
+
+.theme-light .wildcard-icon {
+  content: url('assets/ui/wildcard-dark.svg');
 }
 
 #players ol li.player .bennies-count {

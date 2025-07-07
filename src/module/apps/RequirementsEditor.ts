@@ -5,87 +5,78 @@ import { EdgeData } from '../data/item/edge';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Requirement } from '../documents/item/SwadeItem.interface';
 
-export class RequirementsEditor extends FormApplication<
-  FormApplicationOptions,
-  SwadeItem
-> {
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/requirements-editor.hbs',
-      title: game.i18n.localize('SWADE.Req'),
-      classes: ['swade', 'requirements-editor', 'swade-app'],
-      width: 600,
-      height: 'auto' as const,
-      submitOnChange: true,
-      closeOnSubmit: false,
-      submitOnClose: false,
-    });
-  }
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-  #requirements: Partial<Requirement>[];
-
-  constructor(edge: SwadeItem, options: Partial<FormApplicationOptions> = {}) {
+export class RequirementsEditor extends HandlebarsApplicationMixin(
+  ApplicationV2,
+) {
+  constructor({ edge, ...options }: RequirementsEditorConfiguration) {
     if (!(edge['system'] instanceof EdgeData)) {
       throw new TypeError('Invalid item type ' + edge['type']);
     }
-    super(edge, options);
+    super(options);
+
     this.#requirements = foundry.utils.getProperty(
       edge,
       'system.requirements',
     ) as Requirement[];
+    this.#edge = edge;
   }
+
+  #requirements: Partial<Requirement>[];
+  #edge: SwadeItem;
+
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE.Req',
+      contentClasses: ['standard-form'],
+    },
+    position: {
+      width: 600,
+      height: 'auto',
+    },
+    classes: ['swade', 'requirements-editor', 'swade-application'],
+    tag: 'form',
+    form: {
+      handler: RequirementsEditor.onSubmit,
+      submitOnChange: true,
+      closeOnSubmit: false,
+      submitOnClose: false,
+    },
+    actions: {
+      add: RequirementsEditor.#addRequirement,
+      delete: RequirementsEditor.#deleteRequirement,
+    },
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/requirements-editor.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
 
   get edge() {
-    return this.object as SwadeItem;
+    return this.#edge;
   }
 
-  override activateListeners(jquery: JQuery<HTMLFormElement>): void {
-    const html = jquery[0];
-
-    html
-      .querySelectorAll('select[name$="type"]') //select all type dropdowns
-      .forEach((el) =>
-        el.addEventListener('change', this.#resetValue.bind(this)),
-      );
-    html
-      .querySelector('[data-action="add"]')
-      ?.addEventListener('click', this.#addRequirement.bind(this));
-    html
-      .querySelectorAll('[data-action="delete"]')
-      .forEach((e) =>
-        e.addEventListener('click', this.#deleteRequirement.bind(this)),
-      );
-    html
-      .querySelector('footer .submit')
-      ?.addEventListener('click', async () => {
-        const isValid = html.checkValidity();
-        if (!isValid) return;
-        await this.submit();
-        await this.#updateDocument();
-        this.close();
-      });
-    super.activateListeners(jquery);
+  override _onChangeForm(formConfig, event) {
+    super._onChangeForm(formConfig, event);
+    const target = event.target;
+    if (!target) return;
+    if (target.name.endsWith('.type')) {
+      this.#resetValue(target);
+    }
   }
 
-  override async getData(
-    options?: Partial<FormApplicationOptions>,
-  ): Promise<object> {
-    return foundry.utils.mergeObject(await super.getData(options), {
-      requirements: this.#requirements,
-      types: constants.REQUIREMENT_TYPE,
-      typeChoices: this.#getRequirementTypeChoices(),
-      rankChoices: this.#getRankChoices(),
-      dieChoices: this.#getDieChoices(),
-      attributeChoices: this.#getAttributeChoices(),
-      combinatorChoices: this.#getCombinatorChoices(),
-      slugPattern: SLUG_REGEX.source,
-    });
-  }
-
-  protected async _updateObject(_e: Event, formData: object = {}) {
+  static async onSubmit(
+    this: RequirementsEditor,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended,
+  ) {
     const requirements = Object.values<Requirement>(
-      //this maps the incoming formdata to an actual array of requirements
-      foundry.utils.expandObject(formData).system.requirements,
+      // This maps the incoming formdata to an actual array of requirements
+      foundry.utils.expandObject(formData.object).system?.requirements ?? {},
     );
     const changes = { type: 'edge', system: { requirements } };
     try {
@@ -94,11 +85,43 @@ export class RequirementsEditor extends FormApplication<
     } catch (error) {
       ui.notifications.error(error);
     } finally {
-      this.render(true);
+      this.render({ force: true });
+      if (event.submitter) {
+        const isValid = this.form?.checkValidity();
+        if (isValid) {
+          await this.#updateDocument();
+          this.close();
+        }
+      }
     }
   }
 
-  async #addRequirement() {
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        requirements: this.#requirements,
+        types: constants.REQUIREMENT_TYPE,
+        typeChoices: this.#getRequirementTypeChoices(),
+        rankChoices: this.#getRankChoices(),
+        dieChoices: this.#getDieChoices(),
+        attributeChoices: this.#getAttributeChoices(),
+        combinatorChoices: this.#getCombinatorChoices(),
+        slugPattern: SLUG_REGEX.source,
+        edge: this.edge,
+        buttons: [
+          { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
+        ],
+      },
+    );
+    return context;
+  }
+
+  static async #addRequirement(
+    this: RequirementsEditor,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ) {
     const newReq =
       this.#requirements.length > 0
         ? { type: constants.REQUIREMENT_TYPE.OTHER, label: '' }
@@ -108,19 +131,22 @@ export class RequirementsEditor extends FormApplication<
           };
 
     this.#requirements.push(newReq);
-    this.render(true);
+    this.render({ force: true });
   }
 
-  async #deleteRequirement(event: PointerEvent) {
-    const index = (event.currentTarget as HTMLElement).closest('li')?.dataset
-      .index;
+  static async #deleteRequirement(
+    this: RequirementsEditor,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ) {
+    const index = target.closest('li')?.dataset.index;
     this.#requirements.findSplice((_v, i) => i === Number(index));
-    this.render(true);
+    this.render({ force: true });
   }
 
   /** reset all selector and value inputs */
-  #resetValue(event: Event) {
-    (event.currentTarget as HTMLElement)
+  #resetValue(target: HTMLElement) {
+    target
       .closest('li')
       ?.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
         '[name$="selector"], [name$="value"]',
@@ -173,4 +199,8 @@ export class RequirementsEditor extends FormApplication<
       { diff: false },
     );
   }
+}
+interface RequirementsEditorConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+  edge: SwadeItem;
 }

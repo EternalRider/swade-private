@@ -1,0 +1,70 @@
+<main class='sheet-body'>
+  <div class='tab active' data-tab=''>
+    <fieldset class='swid'>
+      <p class='notification warning'>
+        {{localize 'SWADE.SWID.ChangeWarning1'}}
+      </p>
+      <legend>{{localize 'SWADE.SWID.Long'}}</legend>
+      <div class='form-group flexrow'>
+        {{formInputSimple 'system.swid' document=document}}
+        <button
+          type='button'
+          class='regenerate-swid'
+          data-action='regenerateSWID'
+        >
+          <i class='fa-solid fa-arrows-rotate'></i>
+        </button>
+      </div>
+    </fieldset>
+    {{#if document.system.build}}
+      {{formGroupSimple
+        'system.build.cost'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.build.limit'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+      }}
+      {{formGroupSimple
+        'system.build.level'
+        classes='slim'
+        document=document
+        rootId=document.uuid
+      }}
+    {{/if}}
+    {{#if hasSettingFields}}
+      <h2>{{localize 'SWADE.AddStats'}}</h2>
+      <header class='form-group flexrow additionalStats-header'>
+        <div>{{localize 'SWADE.AdditionalStats.Label'}}</div>
+        <div class='centered'>
+          {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+        </div>
+        <div class='centered'>{{localize 'SWADE.Enabled'}}</div>
+      </header>
+      {{#each settingFields as |attr key|}}
+        <div class='flexrow'>
+          <div style='text-align: left'>
+            <label
+              for='{{document.uuid}}-{{key}}-useField'
+            >{{attr.label}}</label>
+          </div>
+          <div class='centered'>
+            <input type='checkbox' {{checked attr.hasMaxValue}} disabled />
+          </div>
+          <div class='centered'>
+            <input
+              type='checkbox'
+              name='system.additionalStats.{{key}}.useField'
+              id='{{document.uuid}}-{{key}}-useField'
+              {{checked attr.useField}}
+            />
+          </div>
+        </div>
+      {{/each}}
+    {{/if}}
+  </div>
+</main>

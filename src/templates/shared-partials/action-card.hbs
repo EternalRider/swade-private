@@ -234,7 +234,7 @@
       {{/if}}
     {{/each}}
 
-  
+
     {{#unless powersTab}}
       {{#if hasMacros}}
         <h4 class='actions-subheading'>
@@ -260,6 +260,14 @@
         {{localize 'SWADE.Templates.Available'}}
       </h4>
       <span class='flexrow'>
+        {{#if item.system.templates.scone}}
+          <button
+            type='button'
+            class='card-button'
+            data-action='template'
+            data-template='swscone'
+          >{{localize 'SWADE.Templates.SmallCone.Short'}}</button>
+        {{/if}}
         {{#if item.system.templates.cone}}
           <button
             type='button'

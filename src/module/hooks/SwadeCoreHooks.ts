@@ -5,15 +5,13 @@ import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
-import { damageApplicator } from '../apps/DamageApplicator';
 import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { BaseEffectData } from '../data/effect/base';
-import { SwadeRoll } from '../dice/SwadeRoll';
-import { TraitRoll } from '../dice/TraitRoll';
+import { ModifierData } from '../data/effect/modifier';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeCards from '../documents/card/SwadeCards';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
@@ -22,12 +20,10 @@ import * as migrations from '../migration/migration';
 import { ProseMirrorTableResultDropFillerPlugin } from '../models/ProseMirrorTableResultDropFillerPlugin';
 import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
-import { Accordion } from '../style/Accordion';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
 import { stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
-import { ModifierData } from '../data/effect/modifier';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
 export default class SwadeCoreHooks {
@@ -182,7 +178,9 @@ export default class SwadeCoreHooks {
     _data: any,
   ) {
     // Mark all Wildcards in the Actors sidebars with an icon
-    const entries = html.querySelectorAll('.entry-name');
+    const entries = html.querySelectorAll<HTMLLIElement>(
+      '.directory-item.entry.actor',
+    );
     const wildcards = app.collection.filter(
       (a) => a.isWildcard && a.type === 'character',
     );
@@ -195,17 +193,14 @@ export default class SwadeCoreHooks {
       wildcards.push(...npcWildcards);
     }
 
-    for (let i = 0; i < entries.length; i++) {
-      const element = entries[i];
-      const actorID = element.parentElement?.dataset.entryId;
-      const wildcard = wildcards.find((a) => a.id === actorID);
-
-      if (wildcard) {
-        element.innerHTML = `
-					<a><img src="${SWADE.wildCardIcons.regular}" class="wildcard-icon">${wildcard.name}</a>
-					`;
-      }
-    }
+    entries.forEach((element) => {
+      const actorID = element.dataset.entryId;
+      if (!actorID) return;
+      const isWildcard = !!wildcards.find((a) => a.id === actorID);
+      if (!isWildcard) return;
+      const thumbnail = element.querySelector<HTMLImageElement>('.thumbnail');
+      thumbnail?.insertAdjacentHTML('afterend', '<img class="wildcard-icon">');
+    });
   }
 
   static onRenderSettings(app: Settings, html: HTMLElement) {
@@ -253,9 +248,9 @@ export default class SwadeCoreHooks {
     options: ContextMenu.Entry[],
   ) {
     const newOptions: ContextMenu.Entry[] = [];
-    
+
     // Don't want to add to context menu for compendium entries
-    if (app instanceof Compendium) return;
+    if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
     // Invoke character summarizer on selected character
     newOptions.push({
@@ -280,7 +275,7 @@ export default class SwadeCoreHooks {
     app: CompendiumDirectory,
     html: HTMLElement,
     _data: any,
-    _options: any
+    _options: any,
   ) {
     const tocBlockList = game.settings.get('swade', 'tocBlockList');
     for (const li of html.querySelectorAll('li.directory-item')) {
@@ -298,7 +293,7 @@ export default class SwadeCoreHooks {
     app: CompendiumCollection<CompendiumCollection.Metadata>,
     html: HTMLElement,
     _data: any,
-    _options: any
+    _options: any,
   ) {
     //don't mark if the user is not a GM
     if (game.settings.get('swade', 'hideNPCWildcards') && !game.user?.isGM)
@@ -311,20 +306,17 @@ export default class SwadeCoreHooks {
         .filter(
           (a: SwadeActor) =>
             (a.type === 'character' ||
-            foundry.utils.getProperty(a, 'system.wildcard')) &&
+              foundry.utils.getProperty(a, 'system.wildcard')) &&
             a.name !== '#[CF_tempEntity]',
         )
         .map((actor) => actor._id);
 
       const found = html.querySelectorAll('.directory-item');
-      found.forEach(el => {
+      found.forEach((el) => {
         const id = el.dataset.entryId!;
         if (ids.includes(id)) {
           const name = el.children[1];
-          name.insertAdjacentHTML(
-            'afterbegin',
-            `<img src="${SWADE.wildCardIcons.compendium}" class="wildcard-icon">`,
-          );
+          name.insertAdjacentHTML('afterbegin', '<img class="wildcard-icon">');
         }
       });
     }
@@ -335,7 +327,7 @@ export default class SwadeCoreHooks {
     options: ContextMenu.Entry[],
   ) {
     // Don't want to add to context menu for compendium entries
-    if (app instanceof Compendium) return;
+    if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
     const actionCardEditor: ContextMenu.Entry = {
       name: 'SWADE.OpenACEditor',
@@ -350,7 +342,7 @@ export default class SwadeCoreHooks {
       },
       callback: async (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
-        new ActionCardEditor(deck).render(true);
+        new ActionCardEditor({ cards: deck }).render({ force: true });
       },
     };
     const chaseLayout: ContextMenu.Entry = {
@@ -415,12 +407,12 @@ export default class SwadeCoreHooks {
         callback: async (li) => {
           const confirmation = await foundry.applications.api.DialogV2.confirm({
             window: {
-              title: game.i18n.localize('SWADE.CompendiumTOC.Dialog.Title')
+              title: game.i18n.localize('SWADE.CompendiumTOC.Dialog.Title'),
             },
             content: `<p>${game.i18n.localize(
               'SWADE.CompendiumTOC.Dialog.Content',
             )}</p>`,
-            defaultYes: false
+            defaultYes: false,
           });
           if (!confirmation) return;
           const tocBlockList = game.settings.get('swade', 'tocBlockList');
@@ -457,10 +449,8 @@ export default class SwadeCoreHooks {
   static onRenderChatMessageHTML(
     msg: SwadeChatMessage,
     html: HTMLElement,
-    data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
+    _data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2],
   ) {
-    chat.hideChatActionButtons(msg, html, data);
-    chat.createMagazineTooltip(msg, html);
     const makeTableResultsDraggable = () => {
       const results = html.querySelectorAll<HTMLElement>(
         '.table-draw .table-result',
@@ -482,73 +472,19 @@ export default class SwadeCoreHooks {
     if (msg.getFlag('core', 'RollTable') && msg.rolls) {
       makeTableResultsDraggable();
     }
-
-    html
-      .querySelector('.swade-roll-message button.free-reroll')
-      ?.addEventListener('click', SwadeRoll.rerollFree);
-    html
-      .querySelectorAll('.swade-roll-message button.benny-reroll')
-      .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
-    html
-      .querySelector('.swade-roll-message .confirm-critfail')
-      ?.addEventListener('click', () => TraitRoll.confirmCritfail(msg));
-
-    html
-      .querySelector('.swade-roll-message button.calculate-wounds')
-      ?.addEventListener('click', () => damageApplicator(msg));
-    html
-      .querySelectorAll<HTMLDetailsElement>('details.modifiers')
-      .forEach((detail) => new Accordion(detail));
-    html
-      .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
-      .forEach((target) => {
-        target.addEventListener('mouseenter', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
-          ) as TokenDocument | null;
-          const tokenObj = tokenDoc?.object;
-          if (tokenObj?.isVisible && !tokenObj?.controlled) {
-            tokenObj?._onHoverIn(ev);
-          }
-        });
-        target.addEventListener('mouseleave', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
-          ) as TokenDocument | null;
-          const tokenObj = tokenDoc?.object;
-          if (tokenObj?.isVisible && !tokenObj?.controlled) {
-            tokenObj?._onHoverOut(ev);
-          }
-        });
-        target.addEventListener('click', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
-          ) as TokenDocument | null;
-          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
-        });
-      });
   }
 
   static async onUpdateCombat(
-    document: SwadeCombat,
-    change: any,
-    options: any,
-    userId: string,
+    _document: SwadeCombat,
+    _change: any,
+    _options: any,
+    _userId: string,
   ) {
     ui.combat.scrollToTurn();
   }
 
   /** Change current GM Bennies count */
-  static async onUserConnected(
-    user: User.Implementation,
-    connected: boolean,
-  ) {
+  static async onUserConnected(user: User.Implementation, connected: boolean) {
     const gm = game.users.activeGM;
     const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
     if (user.isGM || hasStaticBennies || !gm?.isSelf) return false;
@@ -615,10 +551,6 @@ export default class SwadeCoreHooks {
     form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
-  static onRenderChatLog(app: ChatLog, html: HTMLElement, data: any) {
-    chat.chatListeners(html);
-  }
-
   static onHotbarDrop(
     _hotbar: Hotbar,
     data: { type: string; uuid: string },
@@ -649,7 +581,7 @@ export default class SwadeCoreHooks {
             'bennies',
             (selectedUser.getFlag('swade', 'bennies') ?? 0) + 1,
           );
-          ui.players?.render({force: true});
+          ui.players?.render({ force: true });
           if (game.settings.get('swade', 'notifyBennies')) {
             //In case one GM gives another GM a benny a different message should be displayed
             const givenEvent = selectedUser !== game.user;
@@ -661,8 +593,7 @@ export default class SwadeCoreHooks {
         name: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
         condition: () => game.user!.isGM,
-        callback: (li) =>
-          game.users?.get(li.dataset.userId!)?.refreshBennies(),
+        callback: (li) => game.users?.get(li.dataset.userId!)?.refreshBennies(),
       },
       {
         name: game.i18n.localize('SWADE.AllBenniesRefresh'),
@@ -716,7 +647,7 @@ export default class SwadeCoreHooks {
                 action: 'submit',
                 label: game.i18n.localize('SWADE.ButtonSubmit'),
                 default: true,
-                callback: async (event, button, dialog) =>
+                callback: async (_event, button, _dialog) =>
                   await gm?.setFlag(
                     'swade',
                     'bennies',
@@ -731,34 +662,22 @@ export default class SwadeCoreHooks {
   }
 
   // TODO: Properly type this
-  static onGetSceneControlButtons(sceneControlButtons: Record<string, SceneControls.Control>) {
+  static onGetSceneControlButtons(
+    sceneControlButtons: Record<string, SceneControls.Control>,
+  ) {
     //get the measured template tools
     const measure = sceneControlButtons.templates;
     //add buttons
     const numTools = Object.keys(measure.tools).length;
     const newTemplateButtons = SWADE.measuredTemplatePresets.map((t, i) => ({
       ...t.button,
-      order: numTools + i
+      order: numTools + i,
     }));
     measure.tools.clear.order = numTools + newTemplateButtons.length;
-    foundry.utils.mergeObject(measure.tools, newTemplateButtons.reduce((acc, t) => ({...acc, [t.name]: t}), {}));
-  }
-
-  static async onDropActorSheetData(
-    actor: SwadeActor,
-    sheet: ActorSheet,
-    data: { type: string; uuid: string },
-  ) {
-    if (data.type === 'Actor' && sheet instanceof SwadeVehicleSheet) {
-      const activeTab = foundry.utils.getProperty(sheet, '_tabs')[0].active;
-      if (activeTab === 'crew') {
-        const droppedActor = (await fromUuid(
-          data.uuid,
-        )) as Actor.ConfiguredInstance;
-        if (droppedActor.type === 'vehicle') return;
-        await actor.update({ 'system.driver.id': data.uuid });
-      }
-    }
+    foundry.utils.mergeObject(
+      measure.tools,
+      newTemplateButtons.reduce((acc, t) => ({ ...acc, [t.name]: t }), {}),
+    );
   }
 
   static async onRenderCombatantConfig(
@@ -770,7 +689,10 @@ export default class SwadeCoreHooks {
     html.style.height = 'auto';
 
     //remove the old initiative input
-    html.querySelector('input[name="initiative"]')?.closest('div.form-group')?.remove();
+    html
+      .querySelector('input[name="initiative"]')
+      ?.closest('div.form-group')
+      ?.remove();
 
     //grab cards and sort them
     const deck: SwadeCards = game.cards.get(
@@ -822,7 +744,11 @@ export default class SwadeCoreHooks {
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const elementTemplate = document.createElement('template');
-    elementTemplate.innerHTML = await renderTemplate(path, { cardList, numberOfJokers });
+    elementTemplate.innerHTML =
+      await foundry.applications.handlebars.renderTemplate(path, {
+        cardList,
+        numberOfJokers,
+      });
     html.querySelector('footer')?.before(...elementTemplate.content.children);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication
@@ -839,10 +765,10 @@ export default class SwadeCoreHooks {
   }
 
   static onRenderActiveEffectConfig(
-    app: ActiveEffectConfig,
+    app: foundry.applications.sheets.ActiveEffectConfig,
     html: HTMLElement,
   ) {
-    const effect = app.document as ActiveEffect;
+    const effect = app.document;
     if (effect.system instanceof BaseEffectData) {
       const systemSchema = effect.system.schema;
 
@@ -921,9 +847,21 @@ export default class SwadeCoreHooks {
         { localize: true },
         { value: effect.system.cost },
       );
-      html
-        .querySelector('section[data-tab="details"] .form-group.stacked')
-        ?.insertAdjacentElement('afterend', costGroup);
+      const limitGroup = effect.system.schema.fields.limit.toFormGroup(
+        { localize: true },
+        { value: effect.system.limit },
+      );
+      const levelGroup = effect.system.schema.fields.level.toFormGroup(
+        { localize: true },
+        { value: effect.system.level },
+      );
+      const descriptionGroup = html.querySelector(
+        'section[data-tab="details"] .form-group.stacked',
+      );
+      // insert in reverse order because afterend usage
+      descriptionGroup?.insertAdjacentElement('afterend', levelGroup);
+      descriptionGroup?.insertAdjacentElement('afterend', limitGroup);
+      descriptionGroup?.insertAdjacentElement('afterend', costGroup);
       app.setPosition();
     }
   }
@@ -934,7 +872,7 @@ export default class SwadeCoreHooks {
     content,
     path,
     extension,
-  }: HotReloadData) {
+  }: Hooks.HotReloadData) {
     //return the hook early if it's not a swade system change;
     if (packageType !== 'system' && packageId !== 'swade') return;
     //stop the hook on empty changes

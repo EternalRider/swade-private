@@ -1,0 +1,128 @@
+<section class='tab attributes scrollable{{#if tab.active}} active{{/if}}' data-tab='{{tab.id}}' data-group='{{tab.group}}'>
+  <h2>{{localize 'SWADE.Actors'}}</h2>
+  <ul class='stats-container'>
+    <li class='attribute attributes-header'>
+      <span class='attribute-key'>
+        {{localize 'SWADE.AdditionalStats.Key'}}
+      </span>
+      <span class='attribute-label'>
+        {{localize 'SWADE.AdditionalStats.Label'}}
+      </span>
+      <span class='attribute-dtype'>
+        {{localize 'SWADE.AdditionalStats.Type'}}
+      </span>
+      <span class='attribute-maxValue'>
+        {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+      </span>
+      <a class='attribute-control' data-action='createChar'>
+        <i class='fas fa-plus'></i>
+      </a>
+    </li>
+    {{#each actorSettingStats as |attr key|}}
+      <li class='attribute' data-attribute='{{key}}'>
+        <input
+          class='attribute-key'
+          type='text'
+          name='actorSettingStats.{{key}}.key'
+          value='{{key}}'
+        />
+        <input
+          class='attribute-label'
+          type='text'
+          name='actorSettingStats.{{key}}.label'
+          value='{{attr.label}}'
+        />
+        <select
+          class='attribute-dtype'
+          name='actorSettingStats.{{key}}.dtype'
+        >
+          {{selectOptions @root.dtypes selected=attr.dtype localize=true}}
+        </select>
+        {{#if (or (eq attr.dtype 'String') (eq attr.dtype 'Number'))}}
+          <input
+            class='attribute-maxValue'
+            type='checkbox'
+            name='actorSettingStats.{{key}}.hasMaxValue'
+            {{checked attr.hasMaxValue}}
+          />
+        {{/if}}
+        <a class='attribute-control' data-action='delete'>
+          <i class='fas fa-trash'></i>
+        </a>
+        {{#if (eq attr.dtype 'Selection')}}
+          <input
+            hint='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+            placeholder='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+            class='attribute-optionString'
+            type='text'
+            name='actorSettingStats.{{key}}.optionString'
+            value='{{attr.optionString}}'
+          />
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+  <h2>{{localize 'SWADE.Items'}}</h2>
+  <ul class='stats-container'>
+    <li class='attribute attributes-header'>
+      <span class='attribute-key'>
+        {{localize 'SWADE.AdditionalStats.Key'}}
+      </span>
+      <span class='attribute-label'>
+        {{localize 'SWADE.AdditionalStats.Label'}}
+      </span>
+      <span class='attribute-dtype'>
+        {{localize 'SWADE.AdditionalStats.Type'}}
+      </span>
+      <span class='attribute-maxValue'>
+        {{localize 'SWADE.AdditionalStats.HasMaxValue'}}
+      </span>
+      <a class='attribute-control' data-action='createItem'>
+        <i class='fas fa-plus'></i>
+      </a>
+    </li>
+    {{#each itemSettingStats as |attr key|}}
+      <li class='attribute' data-attribute='{{key}}'>
+        <input
+          class='attribute-key'
+          type='text'
+          name='itemSettingStats.{{key}}.key'
+          value='{{key}}'
+        />
+        <input
+          class='attribute-label'
+          type='text'
+          name='itemSettingStats.{{key}}.label'
+          value='{{attr.label}}'
+        />
+        <select
+          class='attribute-dtype'
+          name='itemSettingStats.{{key}}.dtype'
+        >
+          {{selectOptions @root.dtypes selected=attr.dtype localize=true}}
+        </select>
+        {{#if (or (eq attr.dtype 'String') (eq attr.dtype 'Number'))}}
+          <input
+            class='attribute-maxValue'
+            type='checkbox'
+            name='itemSettingStats.{{key}}.hasMaxValue'
+            {{checked attr.hasMaxValue}}
+          />
+        {{/if}}
+        <a class='attribute-control' data-action='delete'>
+          <i class='fas fa-trash'></i>
+        </a>
+        {{#if (eq attr.dtype 'Selection')}}
+          <input
+            hint='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+            placeholder='{{localize "SWADE.AdditionalStats.SelectHint"}}'
+            class='attribute-optionString'
+            type='text'
+            name='itemSettingStats.{{key}}.optionString'
+            value='{{attr.optionString}}'
+          />
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+</section>

@@ -45,8 +45,8 @@ export class UserSummary {
       return;
     }
     game.tooltip.activate(event.target as HTMLElement, {
-      text,
-      cssClass: 'swade-user-summary',
+      html: text,
+      cssClass: 'swade-user-summary themed theme-dark',
     });
   }
 
@@ -59,7 +59,7 @@ export class UserSummary {
   #getUserText(actor: SwadeActor): string {
     const html = `
     <h4 class="header">{{name}}</h4>
-    <h4>{{localize "SWADE.Hindrances"}}</h4>
+    <h5>{{localize "SWADE.Hindrances"}}</h5>
     <ul>
       {{#each hindrances}}
         <li>{{name}} {{#if system.isMajor}}{{localize "SWADE.Major"}}{{else}}{{localize "SWADE.Minor"}}{{/if}}</li>
@@ -78,10 +78,10 @@ export class UserSummary {
 
   #getGmText(): string {
     const html = `
-    <h3 class="noborder">{{localize "SWADE.NpcWildCardsOnScene"}}</h3>
+    <h4 class="noborder">{{localize "SWADE.NpcWildCardsOnScene"}}</h4>
     {{#each wildcards}}
       {{#if tokens}}
-        <h4 class="header">{{localize i18n}}</h4>
+        <h5 class="header">{{localize i18n}}</h5>
           <ul>
           {{#each tokens}}
             <li>{{name}}: {{localize "SWADE.BenniesCount" count=actor.system.bennies.value}}</li>

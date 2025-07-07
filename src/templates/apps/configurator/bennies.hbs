@@ -1,0 +1,103 @@
+<section class='tab scrollable{{#if tab.active}} active{{/if}}' data-tab='{{tab.id}}' data-group='{{tab.group}}'>
+  <div class='form-group'>
+    <label for='staticGmBennies'>
+      {{localize 'SWADE.Settings.StaticGmBennies.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input
+        id='staticGmBennies'
+        type='checkbox'
+        name='settingRules.staticGmBennies'
+        data-dtype='Boolean'
+        {{checked settingRules.staticGmBennies}}
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
+  </div>
+  {{#if settingRules.staticGmBennies}}
+  <div class='form-group'>
+    <label for='gmBennies'>
+      {{localize 'SWADE.Settings.GmBennies.Name'}}
+    </label>
+    <div class='form-fields'>
+      <input id='gmBennies' type='number' name='settingRules.gmBennies' value='{{settingRules.gmBennies}}' data-dtype='Number' />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.GmBennies.Hint'}}</p>
+  </div>
+  {{/if}}
+  <div class='form-group'>
+    <label>
+      {{localize 'SWADE.Settings.BennyImageSheet.Name'}}
+    </label>
+    <div class='form-fields'>
+      <file-picker
+        name='settingRules.bennyImageSheet'
+        type='image'
+        value='{{settingRules.bennyImageSheet}}'
+      />
+    </div>
+    <p class='notes'>{{localize 'SWADE.Settings.BennyImageSheet.Hint'}}</p>
+  </div>
+  {{#if dice3d}}
+    <h3>{{localize 'SWADE.3DBennies'}}</h3>
+    <p class='notification info' style='margin: 0 5px 10px 5px;'>
+      {{localize 'SWADE.ChangeBennyWarning'}}
+    </p>
+    <!-- Textures -->
+    <fieldset>
+      <legend>Textures</legend>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.Benny3DFront.Name'}}</label>
+        <div class='form-fields'>
+          <file-picker
+            name='settingRules.bennyImage3DFront'
+            value='{{settingRules.bennyImage3DFront}}'
+            type='image'
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.Benny3DFront.Hint'}}</p>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.Benny3DBack.Name'}}</label>
+        <div class='form-fields'>
+          <file-picker
+            type='image'
+            name='settingRules.bennyImage3DBack'
+            value='{{settingRules.bennyImage3DBack}}'
+          />
+        </div>
+        <p class='notes'>{{localize 'SWADE.Settings.Benny3DBack.Hint'}}</p>
+      </div>
+    </fieldset>
+    <!-- Bumpmaps -->
+    <fieldset>
+      <legend>{{localize 'SWADE.Settings.Bumpmaps'}}</legend>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.Benny3DFrontBump.Name'}}</label>
+        <div class='form-fields'>
+          <file-picker
+            type='image'
+            name='settingRules.3dBennyFrontBump'
+            value='{{settingRules.[3dBennyFrontBump]}}'
+          />
+        </div>
+        <p class='notes'>
+          {{localize 'SWADE.Settings.Benny3DFrontBump.Hint'}}
+        </p>
+      </div>
+      <div class='form-group'>
+        <label>{{localize 'SWADE.Settings.Benny3DBackBump.Name'}}</label>
+        <div class='form-fields'>
+          <file-picker
+            type='image'
+            name='settingRules.3dBennyBackBump'
+            value='{{settingRules.[3dBennyBackBump]}}'
+          />
+        </div>
+        <p class='notes'>
+          {{localize 'SWADE.Settings.Benny3DBackBump.Hint'}}
+        </p>
+      </div>
+    </fieldset>
+  {{/if}}
+</section>

@@ -1,14 +1,15 @@
 import { AdditionalStats, Attribute } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import AttributeManager from '../apps/AttributeManager';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Logger } from '../Logger';
 /** @noInheritDoc */
-export default class SwadeBaseActorSheet extends ActorSheet {
+export default class SwadeBaseActorSheet extends foundry.appv1.sheets
+  .ActorSheet {
   override activateListeners(jquery: JQuery) {
     super.activateListeners(jquery);
 
@@ -64,7 +65,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
     );
 
     html.querySelector('.attribute-manager')?.addEventListener('click', () => {
-      new AttributeManager(this.actor).render(true);
+      new AttributeManager({ actor: this.actor }).render({ force: true });
     });
 
     // Roll Damage
@@ -163,7 +164,9 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           { renderSheet: true, parent: this.actor },
         );
       } else {
-        new ActiveEffectWizard(this.actor).render(true);
+        new ActiveEffectWizard({ document: this.actor }).render({
+          force: true,
+        });
       }
     });
 
@@ -211,14 +214,16 @@ export default class SwadeBaseActorSheet extends ActorSheet {
         secrets: this.document.isOwner,
       };
 
-      item.enrichedDescription = await TextEditor.enrichHTML(
-        item.system.description,
-        itemEnrichmentOptions,
-      );
-      item.enrichedNotes = await TextEditor.enrichHTML(
-        item.system.notes,
-        itemEnrichmentOptions,
-      );
+      item.enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions,
+        );
+      item.enrichedNotes =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes,
+          itemEnrichmentOptions,
+        );
 
       itemsByType[type] ??= [];
       if (
@@ -317,7 +322,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
 
   protected _onConfigureEntity(event: JQuery.ClickEvent) {
     event.preventDefault();
-    new SwadeDocumentTweaks(this.actor).render(true);
+    new SwadeActorTweaks({ document: this.actor }).render({ force: true });
   }
 
   protected async _chooseItemType(
@@ -339,7 +344,7 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           type: game.i18n.localize('DOCUMENT.Item'),
         }),
       },
-      dlg = await renderTemplate(
+      dlg = await foundry.applications.handlebars.renderTemplate(
         'templates/sidebar/document-create.html',
         templateData,
       );
@@ -358,11 +363,14 @@ export default class SwadeBaseActorSheet extends ActorSheet {
             label: game.i18n.localize('SWADE.Ok'),
             icon: '<i class="fas fa-check"></i>',
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
+              const html = button.form!;
               resolve({
-                type: html.querySelector('select[name="type"]')
+                type: html.querySelector<HTMLSelectElement>(
+                  'select[name="type"]',
+                )?.value as string,
+                name: html.querySelector<HTMLInputElement>('input[name="name"]')
                   ?.value as string,
-                name: html.querySelector('input[name="name"]')?.value as string,
               });
             },
           },
@@ -450,8 +458,10 @@ export default class SwadeBaseActorSheet extends ActorSheet {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize('SWADE.Ok'),
           default: true,
-          callback: (html: HTMLElement) => {
-            const mod = html.querySelector('input[name="modifier"]')?.value;
+          callback: (_event, button: HTMLButtonElement) => {
+            const mod = button.form!.querySelector<HTMLInputElement>(
+              'input[name="modifier"]',
+            )?.value;
             const newData = {};
             newData[targetPropertyPath] = parseInt(mod as string);
             this.actor.update(newData);

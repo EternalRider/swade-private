@@ -7,7 +7,7 @@ import {
 import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
-import SwadeDocumentTweaks from '../apps/SwadeDocumentTweaks';
+import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
@@ -17,7 +17,7 @@ import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
 
-export default class SwadeItemSheetV2 extends ItemSheet {
+export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
   collapsibleStates: CollapsibleStates = {
     powers: {},
     actions: {},
@@ -256,9 +256,13 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
         const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
         game.tooltip.activate(ev.currentTarget, {
-          content: await TextEditor.enrichHTML(content, {
-            secrets: this.item.isOwner,
-          }),
+          html: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            content,
+            {
+              secrets: this.item.isOwner,
+            },
+          ),
+          cssClass: 'themed theme-dark',
         });
       }),
     );
@@ -266,7 +270,7 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     html
       .querySelector('button.open-requirements-editor')
       ?.addEventListener('click', () =>
-        new RequirementsEditor(this.item).render(true),
+        new RequirementsEditor({ edge: this.item }).render({ force: true }),
       );
   }
 
@@ -317,9 +321,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
       foundry.utils.setProperty(
         effect,
         'enrichedDescription',
-        await TextEditor.enrichHTML(effect.description, {
-          secrets: this.item.isOwner,
-        }),
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          effect.description,
+          {
+            secrets: this.item.isOwner,
+          },
+        ),
       );
     }
 
@@ -436,7 +443,8 @@ export default class SwadeItemSheetV2 extends ItemSheet {
         label: 'SWADE.DocumentTweaks',
         class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () => new SwadeDocumentTweaks(this.item).render(true),
+        onclick: () =>
+          new SwadeItemTweaks({ document: this.item }).render({ force: true }),
       });
       buttons.unshift({
         label: 'SWADE.RefreshOnly',
@@ -727,11 +735,12 @@ export default class SwadeItemSheetV2 extends ItemSheet {
     };
   }
   async #enrichText(text: string): Promise<string> {
-    const enriched = await TextEditor.enrichHTML(text, {
-      relativeTo: this.item,
-      rollData: this.item.getRollData(),
-      secrets: this.document.isOwner,
-    });
+    const enriched =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(text, {
+        relativeTo: this.item,
+        rollData: this.item.getRollData(),
+        secrets: this.document.isOwner,
+      });
     return enriched;
   }
 
@@ -774,34 +783,38 @@ export default class SwadeItemSheetV2 extends ItemSheet {
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this.#effectCreateDropDown = new ContextMenu(
-      html,
-      '.effects .header',
-      [
+    this.#effectCreateDropDown =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        '.effects .header',
+        [
+          {
+            name: 'SWADE.ActiveEffects.AddGuided',
+            icon: '<i class="fa-solid fa-hat-wizard"></i>',
+            condition: this.object.isOwner,
+            callback: () =>
+              new ActiveEffectWizard({ document: this.document }).render({
+                force: true,
+              }),
+          },
+          {
+            name: 'SWADE.ActiveEffects.AddModifier',
+            icon: '<i class="fa-solid fa-bolt"></i>',
+            condition: this.object.isOwner,
+            callback: () => this.#createActiveEffect('modifier'),
+          },
+          {
+            name: 'SWADE.ActiveEffects.AddUnguided',
+            icon: '<i class="fa-solid fa-file-plus"></i>',
+            condition: this.object.isOwner,
+            callback: () => this.#createActiveEffect('base'),
+          },
+        ],
         {
-          name: 'SWADE.ActiveEffects.AddGuided',
-          icon: '<i class="fa-solid fa-hat-wizard"></i>',
-          condition: this.object.isOwner,
-          callback: () => new ActiveEffectWizard(this.document).render(true),
+          eventName: 'click',
+          jQuery: false,
         },
-        {
-          name: 'SWADE.ActiveEffects.AddModifier',
-          icon: '<i class="fa-solid fa-bolt"></i>',
-          condition: this.object.isOwner,
-          callback: () => this.#createActiveEffect('modifier'),
-        },
-        {
-          name: 'SWADE.ActiveEffects.AddUnguided',
-          icon: '<i class="fa-solid fa-file-plus"></i>',
-          condition: this.object.isOwner,
-          callback: () => this.#createActiveEffect('base'),
-        },
-      ],
-      {
-        eventName: 'click',
-        jQuery: false,
-      },
-    );
+      );
   }
 
   async #createActiveEffect(type: ActiveEffect.SubType) {
@@ -945,7 +958,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
-type OptionsPartial = Partial<DocumentSheetOptions<Item>>;
+type OptionsPartial = Partial<DocumentSheet.Options<Item>>;
 
 interface CollapsibleStates {
   actions: Record<string, boolean>;

@@ -2,7 +2,7 @@
   "id": "swade",
   "title": "Savage Worlds Adventure Edition",
   "description": "<p>Published by <a href=\"https://peginc.com\">Pinnacle Entertainment Group, Inc.</a></p><p>A comprehensive game system for running <em>Savage Worlds Adventure Edition<em>.<br><p>Any time. Any place. <em>Savage Worlds</em>.</p>",
-  "version": "5.0-dev",
+  "version": "5.1-dev",
   "compatibility": {
     "minimum": 13.339,
     "verified": 13,
@@ -22,7 +22,7 @@
     {
       "name": "FloRad",
       "url": "https://gitlab.com/florad92",
-      "discord": "FloRadical#2142"
+      "discord": "floradical"
     },
     {
       "name": "Joseph/ChaosOS",
@@ -198,6 +198,9 @@
     "Card": {
       "poker": {},
       "adventure": {}
+    },
+    "ChatMessage": {
+      "itemCard": {}
     },
     "Combat": {
       "chase": {},

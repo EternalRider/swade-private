@@ -3,27 +3,28 @@ import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getRankFromAdvanceAsString } from '../util';
 
-export class AdvanceEditor extends FormApplication<
-  FormApplicationOptions,
-  AdvanceEditorContext
-> {
-  constructor({ advance, actor }: AdvanceEditorContext, options = {}) {
-    super({ advance, actor }, options);
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
+  constructor({ advance, actor, ...options }: AdvanceEditorConfiguration) {
+    super(options);
     if (actor.type !== 'character' && actor.type !== 'npc') {
       throw TypeError(`Actor type ${actor.type} not permissible`);
     }
+    this.#actor = actor;
+    this.#advance = advance;
   }
 
-  get ctx() {
-    return this.object;
-  }
+  #actor: SwadeActor;
+  #advance: Advance;
 
   get actor() {
-    return this.object.actor;
+    return this.#actor;
   }
 
   get advance() {
-    return this.object.advance;
+    return this.#advance;
   }
 
   get advances() {
@@ -33,51 +34,67 @@ export class AdvanceEditor extends FormApplication<
     ) as Collection<Advance>;
   }
 
-  static override get defaultOptions(): FormApplicationOptions {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: 'systems/swade/templates/apps/advanceEditor.hbs',
-      title: game.i18n.localize('SWADE.Advances.EditorTitle'),
-      classes: ['swade', 'advance-editor', 'swade-app'],
+  static override DEFAULT_OPTIONS = {
+    window: {
+      title: 'SWADE.Advances.EditorTitle',
+      contentClasses: ['standard-form'],
+    },
+    position: {
       width: 420,
-      height: 'auto' as const,
+      height: 'auto',
+    },
+    classes: ['swade', 'advance-editor', 'swade-application'],
+    tag: 'form',
+    form: {
+      handler: AdvanceEditor.onSubmit,
       submitOnClose: false,
       closeOnSubmit: false,
       submitOnChange: false,
-    });
+    },
+  };
+
+  static override PARTS = {
+    form: { template: 'systems/swade/templates/apps/advanceEditor.hbs' },
+    footer: { template: 'templates/generic/form-footer.hbs' },
+  };
+
+  override async _prepareContext(options) {
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        advance: this.advance,
+        rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
+        advanceTypes: this.#getAdvanceTypes(),
+        owner: this.actor.isOwner,
+        notes:
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            this.advance.notes,
+            {
+              async: true,
+              secrets: this.actor.isOwner,
+            },
+          ),
+        buttons: [
+          {
+            type: 'submit',
+            icon: 'fa-solid fa-floppy-disk',
+            label: 'Save Changes',
+          },
+        ],
+      },
+    );
+    return context;
   }
 
-  override activateListeners(jquery: JQuery<HTMLFormElement>): void {
-    super.activateListeners(jquery);
-    const html = jquery[0];
-
-    html.querySelector('footer .close')?.addEventListener('click', async () => {
-      await this.submit();
-      this.close();
-    });
-  }
-
-  override async getData(
-    options?: Partial<FormApplicationOptions>,
-  ): Promise<any> {
-    return foundry.utils.mergeObject(await super.getData(options), {
-      advance: this.advance,
-      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
-      advanceTypes: this.#getAdvanceTypes(),
-      owner: this.actor.isOwner,
-      notes: await TextEditor.enrichHTML(this.advance.notes, {
-        async: true,
-        secrets: this.actor.isOwner,
-      }),
-    });
-  }
-
-  protected override async _updateObject(
-    _event: Event,
-    formData: any,
-  ): Promise<unknown> {
-    const expanded = foundry.utils.expandObject(formData);
+  static async onSubmit(
+    this: AdvanceEditor,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: FormDataExtended,
+  ) {
+    const expanded = foundry.utils.expandObject(formData.object);
     const sortHasChanged = expanded.sort !== this.advance.sort;
-    //merge data to update
+    // Merge data to update
     const advance: Advance = foundry.utils.mergeObject(this.advance, {
       notes: expanded.advance.notes,
       planned: expanded.planned,
@@ -85,12 +102,14 @@ export class AdvanceEditor extends FormApplication<
       sort: Math.clamp(expanded.sort, 1, this.advances.size),
     });
     if (sortHasChanged) return this.#handleSortingChange(advance);
-    //normal update operation
+    // Normal update operation
     this.advances.set(advance.id, advance);
-    return this.ctx.actor.update(
+    await this.actor.update(
       { 'system.advances.list': this.advances.toJSON() },
       { diff: false },
     );
+    await this.render({ force: true });
+    if (event.submitter) this.close();
   }
 
   #getAdvanceTypes(): Record<number, string> {
@@ -118,9 +137,8 @@ export class AdvanceEditor extends FormApplication<
   }
 }
 
-export interface AdvanceEditorContext {
+export interface AdvanceEditorConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   advance: Advance;
   actor: SwadeActor;
 }
-
-export interface AdvanceEditorOptions extends FormApplicationOptions {}

@@ -63,6 +63,16 @@
     @include float-label-input;
     font-size: inherit;
     padding-top: 1.5em;
+    height: unset;
+    line-height: unset;
+    border: none;
+    border-bottom: 2px solid var(--input-border-color);
+    border-radius: 0;
+
+    option,
+    optgroup {
+      background-color: var(--input-background-color);
+    }
 
     @include float-label-scaled {
       top: 0.5em;

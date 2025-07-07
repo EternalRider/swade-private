@@ -19,9 +19,9 @@
     <span class='header flexrow'>
       <span class='flex0'>
         {{localize 'SWADE.Vehicle.Cargo.Capacity'}}:
-        {{actor.system.cargo.value}}
+        {{formatNumber actor.system.cargo.value}}
         /
-        {{actor.system.cargo.max}}</span>
+        {{formatNumber actor.system.cargo.max}}</span>
     </span>
   </span>
   <ul class='item-list'>
@@ -54,7 +54,7 @@
           {{item.system.quantity}}
         </span>
         <span class='weight'>
-          {{multiply item.system.weight item.system.quantity}}
+          {{formatNumber (multiply item.system.weight item.system.quantity)}}
         </span>
         <span class='controls'>
           <a role='button' data-action='openItem'>

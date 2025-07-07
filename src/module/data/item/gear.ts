@@ -107,7 +107,7 @@ class GearData extends SwadePhysicalItemData<
       GearData.Schema,
       Item
     >,
-    options: Item.Database.PreUpdateOptions,
+    options: Item.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);
@@ -124,9 +124,13 @@ class GearData extends SwadePhysicalItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/gear-embeds.hbs',

@@ -22,22 +22,22 @@
       {{#unless @root.user.isGM}}
       <button type="button" class="inline-control combatant-control icon fa-solid fa-arrows-to-eye" data-action="panToCombatant" data-tooltip="COMBAT.PanToCombatant" aria-label="{{ localize " COMBAT.PanToCombatant" }}"></button>
       {{/unless}}
-      {{#if combat.started}}
+      {{#if @root.combat.started}}
 
       {{#if active}}
-      {{#unless (or (gt combat.round roundHeld) turnLost group)}}
-      <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-control="toggleHold"><i class="fa-solid fa-hand-back-fist"></i></a>
+      {{#unless (or (gt @root.combat.round roundHeld) turnLost group)}}
+      <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-action="toggleHold"><i class="fa-solid fa-hand-back-fist"></i></a>
       {{/unless}}
       {{/if}}
 
       {{#if (or isOnHold turnLost)}}
-      <a class="combatant-control {{#if turnLost}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-control="toggleLostTurn"><i class="fa-solid fa-ban"></i></a>
+      <a class="combatant-control {{#if turnLost}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-action="toggleTurnLost"><i class="fa-solid fa-ban"></i></a>
       {{/if}}
 
       {{#if isOnHold}}
-      {{#unless (and (eq combat.round roundHeld) active)}}
-      <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-control="actNow"><i class="fa-solid fa-long-arrow-alt-right"></i></a>
-      <a class="combatant-control active" data-tooltip="SWADE.ActAfterCurrentCombatant" data-control="actAfter"><i class="fa-solid fa-level-down-alt"></i></a>
+      {{#unless (and (eq @root.combat.round roundHeld) active)}}
+      <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-action="actNow"><i class="fa-solid fa-long-arrow-alt-right"></i></a>
+      <a class="combatant-control active" data-tooltip="SWADE.ActAfterCurrentCombatant" data-action="actAfter"><i class="fa-solid fa-level-down-alt"></i></a>
       {{/unless}}
       {{/if}}
 
@@ -67,12 +67,12 @@
     <span class="initiative"><i class="fa-solid fa-ban"></i></span>
     {{else if hasRolled}}
         {{#if canRedraw}}
-        <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{cardString}}</a>
+        <button type="button" class="combatant-control roll initiative" data-action="rollInitiative" data-tooltip="SWADE.Redraw" aria-label="{{localize 'SWADE.Redraw'}}">{{cardString}}</button>
         {{else}}
         <span class="initiative">{{cardString}}</span>
         {{/if}}
     {{else if (and canDrawInit (not initiative))}}
-    <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
+    <button type="button" class="combatant-control roll" data-action="rollInitiative" data-tooltip="SWADE.DrawInit" aria-label="{{localize 'SWADE.DrawInit'}}"></button>
     {{else}}
     <span class="initiative"></span>
     {{/if}}

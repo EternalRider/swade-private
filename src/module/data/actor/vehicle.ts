@@ -19,7 +19,7 @@ declare namespace VehicleData {
   interface Schema
     extends SwadeBaseActorData.Schema,
       ReturnType<typeof createVehicleSchema> {}
-  interface BaseData {
+  interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
         effects: Array<RollModifier>;
@@ -52,6 +52,7 @@ declare namespace VehicleData {
       parry: {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
+        value: number;
       };
     };
     cargo: {
@@ -66,7 +67,7 @@ declare namespace VehicleData {
     };
   }
 
-  interface DerivedData {
+  interface DerivedData extends SwadeBaseActorData.DerivedData {
     scale: number;
     cargo: {
       value: number;
@@ -78,7 +79,7 @@ declare namespace VehicleData {
     uuid: string;
     actor: SwadeActor<VehicleData.CrewActorType> | null;
     role: ValueOf<typeof constants.CREW_ROLE>;
-    weapon?: SwadeItem<'weapon'>;
+    weapons: SwadeItem<'weapon'>[];
     sort: number;
   }
   type CrewActorType = 'character' | 'npc';
@@ -102,7 +103,8 @@ function validateCrewMember(
 
 function createVehicleSchema() {
   const fields = foundry.data.fields;
-  return {
+
+  const schema = {
     attributes: new fields.SchemaField(
       {
         // Found in HC Haunted Car
@@ -318,7 +320,9 @@ function createVehicleSchema() {
               }),
               sort: new fields.IntegerSortField(),
               weapons: new fields.ArrayField(
-                new LocalDocumentField(SwadeItem, { types: ['weapon'] }),
+                new LocalDocumentField(SwadeItem, {
+                  types: ['weapon'],
+                }),
               ),
             },
             { validate: validateCrewMember },
@@ -384,6 +388,8 @@ function createVehicleSchema() {
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxMods' }),
     }),
   };
+
+  return schema;
 }
 
 class VehicleData<
@@ -420,8 +426,21 @@ class VehicleData<
     return { width: value, height: value };
   }
 
+  get operators(): (SwadeActor<VehicleData.CrewActorType> | null)[] {
+    return this.crew.members
+      .filter(
+        (m: VehicleData.CrewMember) =>
+          !!m.actor && m.role === constants.CREW_ROLE.OPERATOR,
+      )
+      .map((m: VehicleData.CrewMember) => m.actor);
+  }
+
+  get operator(): SwadeActor<VehicleData.CrewActorType> | null {
+    return this.operators[0] ?? null;
+  }
+
   async rollManeuverCheck(
-    actor: SwadeActor<VehicleData.CrewActorType> = this.operators[0],
+    actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator,
   ) {
     //Return early if no driver was found
     if (!actor) return;
@@ -451,7 +470,8 @@ class VehicleData<
     });
   }
 
-  override prepareBaseData(this: VehicleData) {
+  override prepareBaseData(this: VehicleData<VehicleData.Schema>) {
+    super.prepareBaseData();
     //setup the global modifier container object
     this.stats.globalMods = {
       attack: new Array<DerivedModifier>(),
@@ -481,7 +501,7 @@ class VehicleData<
     this.crew.required.value = this.crew.members.length;
   }
 
-  override prepareDerivedData(this: VehicleData) {
+  override prepareDerivedData(this: VehicleData<VehicleData.Schema>) {
     super.prepareDerivedData();
     //die type bounding for attributes
     for (const key in this.attributes) {
@@ -515,10 +535,7 @@ class VehicleData<
   }
 
   override getParryBaseSkill() {
-    const operator = this.crew.members.find(
-      (m) => m.role === constants.CREW_ROLE.OPERATOR,
-    );
-    const skillCandidates = operator?.actor.itemTypes.skill ?? [];
+    const skillCandidates = this.operator?.itemTypes.skill ?? [];
     return (skillCandidates.find((s) => s.name === this.driver.skill) ||
       skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as
       | SwadeItem<'skill'>
@@ -605,23 +622,51 @@ class VehicleData<
     return parryTotal;
   }
 
+  getCrewMemberForWeapon(
+    weapon: SwadeItem<'weapon'>,
+  ): SwadeActor<VehicleData.CrewActorType> | undefined {
+    if (weapon.type !== 'weapon') return;
+    const user = this.crew.members
+      .filter((m: VehicleData.CrewMember) =>
+        m.weapons.map((i) => i.id).includes(weapon.id),
+      )
+      .find(
+        (m: VehicleData.CrewMember) =>
+          m.actor?.type === 'npc' || m.actor?.isOwner,
+      )?.actor;
+    return user;
+  }
+
   override async toEmbed(
     this: VehicleData,
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await TextEditor.enrichHTML(this.description, {
-      ...options,
-    });
-    return await createEmbedElement(
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
+    const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
       ['actor-embed', 'vehicle'],
     );
+
+    if (embed) {
+      // See src/globals.d.ts for docs
+      Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
+    }
+
+    return embed;
   }
 
-  override getRollData(this: VehicleData): Record<string, number | string> {
+  override getRollData(
+    this: VehicleData<VehicleData.Schema>,
+  ): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       topspeed: this.topspeed.value || 0,
@@ -645,7 +690,7 @@ class VehicleData<
 
   #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
     const itemTypes = this.parent.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
+    const notMod = (i: Item.OfType<'gear' | 'weapon'>) =>
       !i.system.isVehicular ||
       i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
     return [
