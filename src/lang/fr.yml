@@ -380,7 +380,7 @@ SWADE:
     _name: Illumination
     Dim: Pénombre
     Dark: Obscurité
-    Pitch: Noir
+    Pitch: Obscurité totale
   Cover:
     _name: Couvert
     Shield: Couvert - Bouclier
@@ -472,6 +472,12 @@ SWADE:
     ModifierCost:
       Label: Coût du modificateur
       Hint: Le coût en points de construction ou de pouvoir de ce modificateur
+    ModifierLimit:
+      Hint: Combien de fois ce modificateur peut-il être choisi ?
+      Label: Limite de modificateur
+    ModifierLevel:
+      Label: Niveau de modificateur
+      Hint: Combien de fois avez-vous sélectionné ce modificateur ?
   Keybindings:
     OpenFavoriteCards:
       Name: Ouvrir la main préférée
@@ -747,7 +753,7 @@ SWADE:
     Open: Gérer les attributs
     Title: Gérer les atributs pour {name}
   BaseDie: Dé de base
-  Category: Catégorie d'objet
+  Category: Catégorie
   ColdBodied: Corps froid
   CompendiumTOC:
     Dialog:
@@ -812,6 +818,9 @@ SWADE:
     Medium:
       Long: Gabarit d'explosion - Moyen
       Short: MBT
+    SmallCone:
+      Short: Petit cône
+      Long: Gabarit de petit cône
   UsesTOC: Utiliser le sommaire du compendium
   Vision:
     SenseHeat: Sentir la chaleu
@@ -1619,6 +1628,9 @@ SWADE:
       Huge: Géant
       Gargantuan: Gargantuesque
       Large: Grand
+  BuildLimit: Limite de construction
+  BuildLevel: Niveau de construction
+  DeleteEmbeddedCardPrompt: Êtes-vous sûr de vouloir supprimer la carte {card} ?
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
