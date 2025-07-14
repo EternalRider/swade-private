@@ -82,6 +82,8 @@ export async function preloadHandlebarsTemplates() {
       'systems/swade/templates/item/partials/tabs/description.hbs',
     'swade.item-tab-actions':
       'systems/swade/templates/item/partials/tabs/actions.hbs',
+    'swade.item-tab-limited-uses':
+      'systems/swade/templates/item/partials/tabs/limited-uses.hbs',
     'swade.item-tab-effects':
       'systems/swade/templates/item/partials/tabs/effects.hbs',
   };

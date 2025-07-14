@@ -245,6 +245,7 @@
   }
 
   .actions-list,
+  .limited-uses-list,
   .powers-list,
   .effect-list {
     padding: 0;
@@ -312,6 +313,42 @@
     }
     .full-width {
       grid-column: 1/-1;
+    }
+  }
+
+  .limited-uses {
+    .header-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-bottom: $medium-spacing;
+
+      >button {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  .limited-use {
+    display: flex;
+    padding-right: 0;
+
+    .content {
+      font-size: 12px;
+      margin: 0;
+
+      label {
+        flex: 3;
+      }
+
+      .recharge-amount {
+        text-align: center;
+      }
+    }
+
+    .limited-use-delete {
+      padding: 0.25em;
     }
   }
 

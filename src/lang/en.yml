@@ -906,6 +906,7 @@ SWADE:
   AddAction: Add Action
   DialogConfirmPrompt: Are you sure?
   DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}?
+  DeleteEmbeddedLimitedUsePrompt: Are you sure you want to delete the limited use {limitedUse}?
   DeleteEmbeddedCardPrompt: Are you sure you want to delete the card {card}?
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
@@ -981,6 +982,19 @@ SWADE:
     Open: Manage Attributes
   HeavyArmor: Heavy Armor
   HeavyWeapon: Heavy Weapon
+  HasLimitedUses: Has Limited Uses
+  LimitedUses: Limited Uses
+  AddLimitedUse: Add Limited Use
+  Uses: Uses
+  Recharge: Recharge
+  RechargeAmount: Recharge Amount
+  Manual: Manual
+  Encounter: Encounter
+  Day: Day
+  RechargeRollFlavor: Recharging {name}
+  RechargeManualConfirm: Recharge {name}?
+  RechargeEncounterConfirm: Recharge all encounter limited uses?
+  RechargeDayConfirm: Recharge all day limited uses?
   UsesTOC: Use Compendium TOC
   TOCBlockList: Compendium TOC Blocklist
   TOCSettings:
@@ -1657,6 +1671,7 @@ TYPES:
     ability: Ability
     consumable: Consumable
     action: Action
+    limitedUse: Limited Use
   Card:
     adventure: Adventure Card
     poker: Poker Card

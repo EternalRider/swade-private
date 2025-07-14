@@ -14,6 +14,7 @@ import {
   equippable,
   favorite,
   grantEmbedded,
+  limitedUses,
 } from './common';
 import {
   Actions,
@@ -23,6 +24,7 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
+  LimitedUses,
 } from './item-common.interface';
 
 declare namespace ArmorData {
@@ -31,6 +33,7 @@ declare namespace ArmorData {
       Equippable,
       ArcaneDevice,
       Actions,
+      LimitedUses,
       Activities,
       Favorite,
       Category,
@@ -90,6 +93,7 @@ class ArmorData extends SwadePhysicalItemData<
       ...equippable(),
       ...arcaneDevice(),
       ...actions(),
+      ...limitedUses(),
       ...activities(),
       ...favorite(),
       ...category(),

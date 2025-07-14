@@ -4,12 +4,13 @@ import {
   EquipState,
   ItemActions,
 } from '../../globals';
-import { ItemAction } from '../../interfaces/additional.interface';
+import { ItemAction, LimitedUse } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { LimitedUses } from '../data/item/item-common.interface';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -87,6 +88,14 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     };
   }
 
+  get limitedUseRechargeTypes(): Record<string, string> {
+    return {
+      manual: 'SWADE.Manual',
+      encounter: 'SWADE.Encounter',
+      day: 'SWADE.Day',
+    };
+  }
+
   get macroActorTypes(): Record<string, string> {
     return {
       default: 'SWADE.MacroActor.Default',
@@ -138,41 +147,169 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       .querySelector('.inline-delete')
       ?.addEventListener('click', () => this.item.delete());
 
-    html.querySelector('.add-action')?.addEventListener('click', () => {
-      const id = foundry.utils.randomID(8);
-      this.collapsibleStates[id] = true;
-      this.item.update({
-        ['system.actions.additional.' + id]: {
-          name: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('TYPES.Item.action'),
-          }),
-          type: constants.ACTION_TYPE.TRAIT,
-        },
-      });
-    });
-
-    html.querySelectorAll('.action-delete').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.dataset.actionId;
-        const action = foundry.utils.getProperty(
-          this.item,
-          `system.actions.additional.${id}`,
-        ) as ItemAction;
-        const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
-          action: action.name,
-        });
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () =>
-              await this.item.update({
-                [`system.actions.additional.-=${id}`]: null,
-              }),
+      html.querySelector('.add-action')?.addEventListener('click', () => {
+        const id = foundry.utils.randomID(8);
+        this.collapsibleStates[id] = true;
+        this.item.update({
+          ['system.actions.additional.' + id]: {
+            name: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('TYPES.Item.action'),
+            }),
+            type: constants.ACTION_TYPE.TRAIT,
           },
         });
-      }),
-    );
+      });
+
+      html.querySelectorAll('.action-delete').forEach((el) =>
+        el.addEventListener('click', async (ev) => {
+          const id = ev.currentTarget.dataset.actionId;
+          const action = foundry.utils.getProperty(
+            this.item,
+            `system.actions.additional.${id}`,
+          ) as ItemAction;
+          const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
+            action: action.name,
+          });
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () =>
+                await this.item.update({
+                  [`system.actions.additional.-=${id}`]: null,
+                }),
+            },
+          });
+        }),
+      );
+
+      html.querySelector('.add-limited-use')?.addEventListener('click', () => {
+        const id = foundry.utils.randomID(8);
+        this.collapsibleStates[id] = true;
+        this.item.update({
+          ['system.limitedUses.' + id]: {
+            name: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('TYPES.Item.limitedUse'),
+            }),
+            rechargeType: constants.LIMITED_USE_RECHARGE_TYPE.MANUAL,
+          },
+        });
+      });
+
+      html.querySelectorAll('.limited-use-delete').forEach((el) =>
+        el.addEventListener('click', async (ev) => {
+          const id = ev.currentTarget.dataset.limitedUseId;
+          const limitedUse = foundry.utils.getProperty(
+            this.item,
+            `system.limitedUses.${id}`,
+          ) as LimitedUse;
+          const text = game.i18n.format('SWADE.DeleteEmbeddedLimitedUsePrompt', {
+            limitedUse: limitedUse.name,
+          });
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () =>
+                await this.item.update({
+                  [`system.limitedUses.-=${id}`]: null,
+                }),
+            },
+          });
+        }),
+      );
+
+      const rechargeLimitedUse = async (id: string, limitedUse: LimitedUse) => {
+        const remaining = limitedUse.remaining || 0;
+        const max = limitedUse.max || 0;
+        if (remaining >= max) {
+          //We're already full. Nothing to recharge.
+          return;
+        }
+
+        //Calculate our recharge amount
+        let rechargeAmount = 0;
+        if (limitedUse.rechargeAmount != '') {
+          const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
+            name: limitedUse.name,
+          });
+          const roll = new Roll(limitedUse.rechargeAmount, {}, { flavor: flavor })
+          await roll.evaluate();
+          rechargeAmount = roll.total;
+
+          //If we have dice, roll them and display the message
+          if (roll.dice.length) {
+            const message = await roll.toMessage();
+            //Wait for dice3d if it's active
+            await game.dice3d?.waitFor3DAnimationByMessageID(message.id);
+          }
+        } else {
+          //If the amount field is empty, we recharge to max
+          rechargeAmount = max;
+        }
+        let newTotal = Math.min(remaining + rechargeAmount, max);
+        await this.item.update({
+          [`system.limitedUses.${id}.remaining`]: newTotal,
+        });
+      };
+
+      html.querySelectorAll('.limited-use-recharge-manual').forEach((el) =>
+        el.addEventListener('click', async (ev) => {
+          const id = ev.currentTarget.dataset.limitedUseId;
+          const limitedUse = foundry.utils.getProperty(
+            this.item,
+            `system.limitedUses.${id}`,
+          ) as LimitedUse;
+          const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+            name: limitedUse.name,
+          });
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                rechargeLimitedUse(id, limitedUse);
+              }
+            },
+          });
+        }),
+      );
+
+      html.querySelector('.limited-use-recharge-encounter')
+        ?.addEventListener('click', async (ev) => {
+          const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
+                  if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER) {
+                    rechargeLimitedUse(id, limitedUse);
+                  }
+                }
+              }
+            },
+          });
+        }),
+
+        html.querySelector('.limited-use-recharge-day')
+          ?.addEventListener('click', async (ev) => {
+            const text = game.i18n.localize('SWADE.RechargeDayConfirm');
+            await foundry.applications.api.DialogV2.confirm({
+              content: `<p class="text-center">${text}</p>`,
+              classes: ['dialog', 'swade-app'],
+              yes: {
+                callback: async () => {
+                  for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
+                    if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.DAY) {
+                      rechargeLimitedUse(id, limitedUse);
+                    }
+                  }
+                }
+              },
+            });
+          }),
 
     html.querySelectorAll('.power-delete').forEach((el) =>
       el.addEventListener('click', async (ev) => {
@@ -286,6 +423,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
+      limitedUseRechargeTypes: this.limitedUseRechargeTypes,
       macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
@@ -920,6 +1058,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
+  limitedUseRechargeTypes: Record<string, string>;
   macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;

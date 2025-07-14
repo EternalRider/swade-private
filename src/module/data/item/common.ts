@@ -1,4 +1,5 @@
 import { constants } from '../../constants';
+import { FormulaField } from '../fields';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
@@ -153,6 +154,24 @@ export const actions = () => ({
     ),
   }),
   ...bonusDamage(),
+});
+
+export const limitedUses = () => ({
+  hasLimitedUses: new fields.BooleanField({ initial: false, label: 'SWADE.HasLimitedUses' }),
+  limitedUses: new fields.TypedObjectField(
+    new fields.SchemaField({
+      name: new fields.StringField({ initial: undefined, required: false }),
+      remaining: new fields.NumberField({ initial: undefined }),
+      max: new fields.NumberField({ initial: undefined }),
+      rechargeAmount: new FormulaField({ initial: '' }),
+      rechargeType: new fields.StringField({
+        initial: constants.LIMITED_USE_RECHARGE_TYPE.MANUAL,
+        choices: Object.values(constants.LIMITED_USE_RECHARGE_TYPE),
+        label: 'Recharge Type',
+      }),
+    }),
+    { initial: {} },
+  ),
 });
 
 export const activities = () => ({

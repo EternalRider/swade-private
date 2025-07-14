@@ -1,0 +1,60 @@
+<header class='header'>
+  <div class='header-buttons'>
+    <button type='button' class='add-limited-use add-button invisible'>
+      <i class='fa fa-plus'></i>
+      {{localize 'SWADE.AddLimitedUse'}}
+    </button>
+    <button type='button' class='limited-use-recharge-encounter invisible'>
+      <i class='fa fa-rotate-right'></i>
+      {{localize 'SWADE.Encounter'}}
+    </button>
+    <button type='button' class='limited-use-recharge-day invisible'>
+      <i class='fa fa-rotate'></i>
+      {{localize 'SWADE.Day'}}
+    </button>
+  </div>
+</header>
+<ol class='limited-uses-list unmarked-list'>
+  {{#each item.system.limitedUses as |limitedUse id|}}
+    <li>
+      <fieldset class='limited-use' data-limited-use-id='{{id}}'>
+        <span class='content'>
+          <div class='form-group'>
+            <label>{{localize 'SWADE.Name'}}</label>
+            <input type='text' name='system.limitedUses.{{id}}.name' value='{{limitedUse.name}}' placeholder='{{localize "SWADE.Name"}}' />
+          </div>
+          <div class='form-group'>
+            <label>{{localize 'Recharge Type'}}</label>
+            <select name='system.limitedUses.{{id}}.rechargeType'>
+              {{selectOptions
+                  @root.limitedUseRechargeTypes
+                  selected=limitedUse.rechargeType
+                  localize=true
+                }}
+            </select>
+          </div>
+          <div class='form-group'>
+            <label>{{localize 'SWADE.Uses'}}</label>
+            <span class='form-fields text-center'>
+              <input type='number' name="system.limitedUses.{{id}}.remaining" value='{{limitedUse.remaining}}' placeholder='0'/>
+              <strong class="flex-separator">/</strong>
+              <input type='number'  name="system.limitedUses.{{id}}.max" value='{{limitedUse.max}}' placeholder='0' />
+            </span>
+          </div>
+          <div class='form-group'>
+            <label>{{localize 'SWADE.RechargeAmount'}}</label>
+            <span class='form-fields text-center'>
+              <input type='text' class='recharge-amount' name='system.limitedUses.{{id}}.rechargeAmount' value='{{limitedUse.rechargeAmount}}' placeholder='&infin;' />
+              <button type='button' class='limited-use-recharge-manual invisible' title='{{localize "Recharge"}}' data-limited-use-id='{{id}}'>
+                <i class='fas fa-rotate-right'></i>
+              </button>
+            </span>
+          </div>
+        </span>
+        <button type='button' class='limited-use-delete invisible' title='{{localize "Delete"}}' data-limited-use-id='{{id}}'>
+          <i class='fas fa-trash fa-2x'></i>
+        </button>
+      </fieldset>
+    </li>
+  {{/each}}
+</ol>

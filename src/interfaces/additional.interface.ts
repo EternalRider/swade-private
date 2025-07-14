@@ -35,6 +35,14 @@ export interface ItemAction {
   ap?: number;
 }
 
+export interface LimitedUse {
+  name: string;
+  rechargeType: LimitedUseRechargeType;
+  remaining?: number;
+  max?: number;
+  rechargeAmount?: FormulaField;
+}
+
 /** A single trait roll modifier, containing a label and a value */
 export interface RollModifier {
   /** The label of the modifier. Used in the hooks and for display */

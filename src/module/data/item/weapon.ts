@@ -29,6 +29,7 @@ import {
   equippable,
   favorite,
   grantEmbedded,
+  limitedUses,
   templates,
   vehicular,
 } from './common';
@@ -43,6 +44,7 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
+  LimitedUses,
   Templates,
   Vehicular,
 } from './item-common.interface';
@@ -54,6 +56,7 @@ declare namespace WeaponData {
       ArcaneDevice,
       Vehicular,
       Actions,
+      LimitedUses,
       Activities,
       Favorite,
       Templates,
@@ -104,6 +107,7 @@ class WeaponData extends SwadePhysicalItemData<
       ...arcaneDevice(),
       ...vehicular(),
       ...actions(),
+      ...limitedUses(),
       ...activities(),
       ...favorite(),
       ...templates(),
