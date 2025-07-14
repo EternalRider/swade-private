@@ -10,7 +10,6 @@ import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { LimitedUses } from '../data/item/item-common.interface';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -247,7 +246,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           //If the amount field is empty, we recharge to max
           rechargeAmount = max;
         }
-        let newTotal = Math.min(remaining + rechargeAmount, max);
+        const newTotal = Math.min(remaining + rechargeAmount, max);
         await this.item.update({
           [`system.limitedUses.${id}.remaining`]: newTotal,
         });
@@ -276,7 +275,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       );
 
       html.querySelector('.limited-use-recharge-encounter')
-        ?.addEventListener('click', async (ev) => {
+        ?.addEventListener('click', async () => {
           const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
@@ -294,7 +293,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         }),
 
         html.querySelector('.limited-use-recharge-day')
-          ?.addEventListener('click', async (ev) => {
+          ?.addEventListener('click', async () => {
             const text = game.i18n.localize('SWADE.RechargeDayConfirm');
             await foundry.applications.api.DialogV2.confirm({
               content: `<p class="text-center">${text}</p>`,
