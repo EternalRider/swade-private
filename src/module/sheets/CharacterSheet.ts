@@ -1402,7 +1402,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         name: game.i18n.localize('SWADE.Encounter'),
         icon: '<i class="fas fa-rotate-right"></i>',
         condition: true,
-        callback: async (i: HTMLOListElement) => {
+        callback: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
@@ -1421,7 +1421,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         name: game.i18n.localize('SWADE.Day'),
         icon: '<i class="fas fa-rotate"></i>',
         condition: true,
-        callback: async (i: HTMLOListElement) => {
+        callback: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
