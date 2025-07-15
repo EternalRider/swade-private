@@ -31,9 +31,6 @@
         <div class="trapping">
           {{localize "SWADE.Trapping"}}:&nbsp;{{system.trapping}}
         </div>
-        {{#if system.hasLimitedUses}}
-          {{> 'swade.character-limited-uses-summary'}}
-        {{/if}}
         <div class="description"><p>{{localize 'SWADE.NoDescription'}}</p></div>
         {{> "swade.npc-action-card" item=this powersTab=true}}
       </span>

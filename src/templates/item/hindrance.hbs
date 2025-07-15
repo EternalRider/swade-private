@@ -20,6 +20,11 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
+    {{#if item.system.hasLimitedUses}}
+      <a class='item' data-tab='limited-uses' data-group='main'>
+        {{localize 'SWADE.LimitedUses'}}
+      </a>
+    {{/if}}
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
@@ -43,8 +48,21 @@
           <input id="{{item.uuid}}-major" type="checkbox" name="system.major" {{checked item.system.isMajor}} />
         </div>
       {{/if}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-limited-uses">
+          {{localize "SWADE.HasLimitedUses"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-limited-uses" type="checkbox" name="system.hasLimitedUses" {{checked item.system.hasLimitedUses}}/>
+        </span>
+      </div>
       {{> 'swade.item-grants'}}
     </section>
+    {{#if item.system.hasLimitedUses}}
+      <section class='tab limited-uses' data-group='main' data-tab='limited-uses'>
+        {{> 'swade.item-tab-limited-uses'}}
+      </section>
+    {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>
       {{> 'swade.item-tab-effects'}}
     </section>

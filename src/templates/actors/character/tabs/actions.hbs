@@ -55,6 +55,9 @@
               {{/if}}
             </span>
           </summary>
+          {{#if system.hasLimitedUses}}
+            {{> 'swade.character-limited-uses-summary'}}
+          {{/if}}
           <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
         </details>
       </li>

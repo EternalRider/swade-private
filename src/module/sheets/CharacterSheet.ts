@@ -488,7 +488,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         });
       }
 
-      hasAnyLimitedUseItems ||= system.hasLimitedUses;
       const itemLimitedUses = foundry.utils.getProperty(system, 'limitedUses') ?? {};
       const limitedUses = new Array<any>();
 
@@ -499,6 +498,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           rechargeType: item.sheet.limitedUseRechargeTypes[itemLimitedUse.rechargeType],
         });
       }
+
+      hasAnyLimitedUseItems ||= (system.hasLimitedUses && limitedUses.length);
+
       const hasDamage =
         !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);

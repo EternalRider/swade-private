@@ -15,6 +15,7 @@ import {
   equippable,
   favorite,
   grantEmbedded,
+  limitedUses,
 } from './common';
 import {
   Actions,
@@ -24,6 +25,7 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
+  LimitedUses,
 } from './item-common.interface';
 
 declare namespace ConsumableData {
@@ -33,6 +35,7 @@ declare namespace ConsumableData {
       Favorite,
       Category,
       Actions,
+      LimitedUses,
       Activities,
       GrantEmbedded {
     charges: foundry.data.fields.SchemaField<{
@@ -65,6 +68,7 @@ class ConsumableData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...actions(),
+      ...limitedUses(),
       ...activities(),
       ...grantEmbedded(),
       charges: new fields.SchemaField({
