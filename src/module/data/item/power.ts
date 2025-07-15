@@ -10,12 +10,11 @@ import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
-import { actions, activities, favorite, limitedUses, templates } from './common';
+import { actions, activities, favorite, templates } from './common';
 import {
   Actions,
   Activities,
   Favorite,
-  LimitedUses,
   Templates,
 } from './item-common.interface';
 
@@ -25,7 +24,6 @@ declare namespace PowerData {
       Actions,
       Activities,
       Favorite,
-      LimitedUses,
       Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
@@ -61,7 +59,6 @@ class PowerData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...actions(),
-      ...limitedUses(),
       ...activities(),
       ...favorite(),
       ...templates(),
