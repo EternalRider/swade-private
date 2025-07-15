@@ -464,7 +464,7 @@ class SwadeItem<
     await this.update({
       [`system.limitedUses.${id}.remaining`]: newTotal,
     });
-  };
+  }
 
   override getRollData(): Record<string, unknown> {
     return super.getRollData() as Record<string, unknown>;
