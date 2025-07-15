@@ -996,6 +996,8 @@ SWADE:
   RechargeManualConfirm: Recharge {name}?
   RechargeEncounterConfirm: Recharge all encounter limited uses?
   RechargeDayConfirm: Recharge all day limited uses?
+  RechargeAllItemsEncounterConfirm: Recharge all encounter limited uses on all items?
+  RechargeAllItemsDayConfirm: Recharge all day limited uses on all items?
   UsesTOC: Use Compendium TOC
   TOCBlockList: Compendium TOC Blocklist
   TOCSettings:

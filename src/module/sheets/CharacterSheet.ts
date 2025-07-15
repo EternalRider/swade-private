@@ -29,6 +29,7 @@ import * as util from '../util';
 
 export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   _equipStateMenu: ContextMenu;
+  _limitedUseRechargeMenu: ContextMenu;
   _effectCreateDropDown: ContextMenu;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
@@ -72,6 +73,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     this.#disableOverrides(html);
     this.#setupEquipStatusMenu(html);
+    this.#setupRechargeUsesMenu(html);
     this.#setupEffectCreateMenu(html);
     this.#setupItemContextMenu(html);
     this.#setupAccordions(html);
@@ -465,6 +467,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
+    let hasAnyLimitedUseItems = false;
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.contents as SwadeItem[]).sort(
       (a, b) => a.sort - b.sort,
@@ -484,8 +487,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           name: itemActions[action].name,
         });
       }
-      const itemLimitedUses =
-        foundry.utils.getProperty(system, 'limitedUses') ?? {};
+
+      hasAnyLimitedUseItems ||= system.hasLimitedUses;
+      const itemLimitedUses = foundry.utils.getProperty(system, 'limitedUses') ?? {};
       const limitedUses = new Array<any>();
 
       for (const [id, itemLimitedUse] of Object.entries(itemLimitedUses)) {
@@ -572,6 +576,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
+      hasAnyLimitedUseItems: hasAnyLimitedUseItems,
       parryTooltip: this.actor.getPTTooltip('parry'),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       armorTooltip: this.actor.getArmorTooltip(),
@@ -1391,6 +1396,59 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       );
   }
 
+  #setupRechargeUsesMenu(html: HTMLElement) {
+    const items: ContextMenu.Entry[] = [
+      {
+        name: game.i18n.localize('SWADE.Encounter'),
+        icon: '<i class="fas fa-rotate-right"></i>',
+        condition: true,
+        callback: async (i: HTMLOListElement) => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: () => {
+                for (const item of this.actor.items) {
+                  item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER);
+                }
+              }
+            },
+          });
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.Day'),
+        icon: '<i class="fas fa-rotate"></i>',
+        condition: true,
+        callback: async (i: HTMLOListElement) => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                for (const item of this.actor.items) {
+                  item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.DAY);
+                }
+              }
+            },
+          });
+        },
+      },
+    ];
+
+    const selector = '.limited-use-recharge-menu';
+    const options = { eventName: 'click', jQuery: false, fixed: true };
+    this._limitedUseRechargeMenu =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        selector,
+        items,
+        options,
+      );
+  }
+
   #setupEffectCreateMenu(html: HTMLElement) {
     this._effectCreateDropDown =
       new foundry.applications.ux.ContextMenu.implementation(
@@ -1590,6 +1648,7 @@ interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;
   skills: SkillDisplay[];
   itemTypes: Record<string, SwadeItem[]>;
+  hasAnyLimitedUseItems: boolean;
   parryTooltip: string;
   toughnessTooltip: string;
   armorTooltip: string;

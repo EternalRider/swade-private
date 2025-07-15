@@ -248,11 +248,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: async () => {
-                for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
-                  if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER) {
-                    this.item.rechargeLimitedUse(id, limitedUse);
-                  }
-                }
+                this.item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER);
               }
             },
           });
@@ -266,11 +262,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
               classes: ['dialog', 'swade-app'],
               yes: {
                 callback: async () => {
-                  for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
-                    if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.DAY) {
-                      this.item.rechargeLimitedUse(id, limitedUse);
-                    }
-                  }
+                  this.item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.DAY);
                 }
               },
             });

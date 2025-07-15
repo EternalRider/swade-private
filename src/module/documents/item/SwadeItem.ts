@@ -421,6 +421,17 @@ class SwadeItem<
     return state;
   }
 
+
+  rechargeAllLimitedUsesOfType(rechargeType: string) {
+    if (this.system.limitedUses) {
+      for (const [id, limitedUse] of Object.entries(this.system.limitedUses)) {
+        if (limitedUse.rechargeType == rechargeType) {
+          this.rechargeLimitedUse(id, limitedUse);
+        }
+      }
+    }
+  }
+
   async rechargeLimitedUse(id: string, limitedUse: LimitedUse) {
     const remaining = limitedUse.remaining || 0;
     const max = limitedUse.max || 0;
