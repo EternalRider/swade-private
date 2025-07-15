@@ -1,5 +1,5 @@
 import { constants } from '../../constants';
-import { FormulaField } from '../fields';
+import { FormulaField } from '../fields/FormulaField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
