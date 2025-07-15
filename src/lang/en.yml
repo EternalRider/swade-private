@@ -987,6 +987,7 @@ SWADE:
   AddLimitedUse: Add Limited Use
   Uses: Uses
   Recharge: Recharge
+  RechargeType: Recharge Type
   RechargeAmount: Recharge Amount
   Manual: Manual
   Encounter: Encounter
