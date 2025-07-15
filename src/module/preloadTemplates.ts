@@ -63,6 +63,8 @@ export async function preloadHandlebarsTemplates() {
       'systems/swade/templates/actors/character/partials/skill-card.hbs',
     'swade.character-setting-field':
       'systems/swade/templates/actors/character/partials/setting-fields.hbs',
+    'swade.character-limited-uses-summary':
+      'systems/swade/templates/actors/character/partials/limited-uses-summary.hbs',
 
     //Item V2
     'swade.item-header': 'systems/swade/templates/item/partials/header.hbs',

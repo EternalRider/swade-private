@@ -218,40 +218,6 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         }),
       );
 
-      const rechargeLimitedUse = async (id: string, limitedUse: LimitedUse) => {
-        const remaining = limitedUse.remaining || 0;
-        const max = limitedUse.max || 0;
-        if (remaining >= max) {
-          //We're already full. Nothing to recharge.
-          return;
-        }
-
-        //Calculate our recharge amount
-        let rechargeAmount = 0;
-        if (limitedUse.rechargeAmount != '') {
-          const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
-            name: limitedUse.name,
-          });
-          const roll = new Roll(limitedUse.rechargeAmount, {}, { flavor: flavor })
-          await roll.evaluate();
-          rechargeAmount = roll.total;
-
-          //If we have dice, roll them and display the message
-          if (roll.dice.length) {
-            const message = await roll.toMessage();
-            //Wait for dice3d if it's active
-            await game.dice3d?.waitFor3DAnimationByMessageID(message.id);
-          }
-        } else {
-          //If the amount field is empty, we recharge to max
-          rechargeAmount = max;
-        }
-        const newTotal = Math.min(remaining + rechargeAmount, max);
-        await this.item.update({
-          [`system.limitedUses.${id}.remaining`]: newTotal,
-        });
-      };
-
       html.querySelectorAll('.limited-use-recharge-manual').forEach((el) =>
         el.addEventListener('click', async (ev) => {
           const id = ev.currentTarget.dataset.limitedUseId;
@@ -267,7 +233,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: async () => {
-                rechargeLimitedUse(id, limitedUse);
+                this.item.rechargeLimitedUse(id, limitedUse);
               }
             },
           });
@@ -284,7 +250,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
               callback: async () => {
                 for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
                   if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER) {
-                    rechargeLimitedUse(id, limitedUse);
+                    this.item.rechargeLimitedUse(id, limitedUse);
                   }
                 }
               }
@@ -302,7 +268,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
                 callback: async () => {
                   for (const [id, limitedUse] of Object.entries(this.item.system.limitedUses)) {
                     if (limitedUse.rechargeType == constants.LIMITED_USE_RECHARGE_TYPE.DAY) {
-                      rechargeLimitedUse(id, limitedUse);
+                      this.item.rechargeLimitedUse(id, limitedUse);
                     }
                   }
                 }

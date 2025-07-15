@@ -446,6 +446,40 @@
     }
   }
 
+  .limited-uses-summary {
+    ul.limited-use-list {
+      font-size: 14px;
+      font-family: "Signika", serif;
+      margin-left: 2em;
+      margin-right: 2em;
+    }
+
+    .limited-use-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      align-items: center;
+      margin-bottom: 0.25em;
+    }
+
+    li:nth-child(even) {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .flex-separator {
+      flex: 0;
+    }
+
+    .use-fields {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+    }
+  }
+
   //#######################
   // Summary Tab
   //#######################

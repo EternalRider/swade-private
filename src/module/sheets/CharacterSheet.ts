@@ -7,6 +7,7 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
+  LimitedUse,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
@@ -187,6 +188,42 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);
         item?.deleteDialog();
+      }),
+    );
+
+    // Limited use input fields
+    html.querySelectorAll('.use-fields input').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId);
+        await item.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
+
+    // Limited use recharge
+    html.querySelectorAll('.limited-use-recharge-manual').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId);
+        const limitedUseId = ev.currentTarget.dataset.limitedUseId;
+        const limitedUse = foundry.utils.getProperty(
+          item,
+          `system.limitedUses.${limitedUseId}`,
+        ) as LimitedUse;
+        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+          name: limitedUse.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              await item.rechargeLimitedUse(limitedUseId, limitedUse);
+            }
+          },
+        });
       }),
     );
 
@@ -447,6 +484,17 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           name: itemActions[action].name,
         });
       }
+      const itemLimitedUses =
+        foundry.utils.getProperty(system, 'limitedUses') ?? {};
+      const limitedUses = new Array<any>();
+
+      for (const [id, itemLimitedUse] of Object.entries(itemLimitedUses)) {
+        limitedUses.push({
+          id: id,
+          limitedUse: itemLimitedUse,
+          rechargeType: item.sheet.limitedUseRechargeTypes[itemLimitedUse.rechargeType],
+        });
+      }
       const hasDamage =
         !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
@@ -486,6 +534,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         );
 
       foundry.utils.setProperty(item, 'actions', actions);
+      foundry.utils.setProperty(item, 'limitedUses', limitedUses);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
       foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
