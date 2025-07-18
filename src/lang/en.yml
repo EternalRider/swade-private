@@ -984,7 +984,7 @@ SWADE:
   HeavyWeapon: Heavy Weapon
   HasCharges: Has Charges
   AddCharge: Add Charge
-  Uses: Uses
+  Default: Default
   Recharge: Recharge
   RechargeType: Recharge Type
   RechargeAmount: Recharge Amount

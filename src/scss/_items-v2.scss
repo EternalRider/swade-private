@@ -345,6 +345,12 @@
     padding-right: 0;
     align-items: center;
 
+    .default-charge {
+      font-size: 10px;
+      font-weight: bold;
+      float: right;
+    }
+
     .sort-handle {
       cursor: grab;
       padding: .25em;
