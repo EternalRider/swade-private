@@ -14,7 +14,6 @@ import {
   equippable,
   favorite,
   grantEmbedded,
-  limitedUses,
 } from './common';
 import {
   Actions,
@@ -24,7 +23,6 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
-  LimitedUses,
 } from './item-common.interface';
 
 declare namespace ShieldData {
@@ -33,7 +31,6 @@ declare namespace ShieldData {
       Equippable,
       ArcaneDevice,
       Actions,
-      LimitedUses,
       Activities,
       Favorite,
       Category,
@@ -59,7 +56,6 @@ class ShieldData extends SwadePhysicalItemData<
       ...equippable(),
       ...arcaneDevice(),
       ...actions(),
-      ...limitedUses(),
       ...activities(),
       ...favorite(),
       ...category(),

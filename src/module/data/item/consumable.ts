@@ -15,7 +15,7 @@ import {
   equippable,
   favorite,
   grantEmbedded,
-  limitedUses,
+  charges,
 } from './common';
 import {
   Actions,
@@ -25,7 +25,7 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
-  LimitedUses,
+  Charges,
 } from './item-common.interface';
 
 declare namespace ConsumableData {
@@ -35,7 +35,6 @@ declare namespace ConsumableData {
       Favorite,
       Category,
       Actions,
-      LimitedUses,
       Activities,
       GrantEmbedded {
     charges: foundry.data.fields.SchemaField<{
@@ -68,13 +67,9 @@ class ConsumableData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...actions(),
-      ...limitedUses(),
+      ...charges(true),
       ...activities(),
       ...grantEmbedded(),
-      charges: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 1, label: 'SWADE.Charges' }),
-        max: new fields.NumberField({ initial: 1, label: 'SWADE.ChargesMax' }),
-      }),
       messageOnUse: new fields.BooleanField({
         initial: true,
         label: 'SWADE.MessageOnUse.Label',
@@ -96,6 +91,7 @@ class ConsumableData extends SwadePhysicalItemData<
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);
+    migrations.convertCharges(source);
     return super.migrateData(source);
   }
 
@@ -126,8 +122,9 @@ class ConsumableData extends SwadePhysicalItemData<
     const resourceUpdates = new Array<Updates>();
 
     //gather variables
-    const currentCharges = Number(this.charges.value);
-    const maxCharges = Number(this.charges.max);
+    const charge = this.charges.default;
+    const currentCharges = charge.value;
+    const maxCharges = charge.max;
     const quantity = Number(this.quantity);
     const maxChargesOnStack = (quantity - 1) * maxCharges + currentCharges;
 
@@ -149,7 +146,7 @@ class ConsumableData extends SwadePhysicalItemData<
 
     //write updates
     itemUpdates['system.quantity'] = Math.max(0, newQuantity);
-    itemUpdates['system.charges.value'] = newCharges;
+    itemUpdates[`system.charges.charges.${charge.id}.value`] = newCharges;
 
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
@@ -165,15 +162,16 @@ class ConsumableData extends SwadePhysicalItemData<
     user: User.Implementation,
   ) {
     await super._preUpdate(changed, options, user);
+    const defaultCharge = this.charges.default;
     if (
       foundry.utils.hasProperty(changed, 'system.quantity') &&
       this.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
-      this.charges.value !== 0 &&
-      this.charges.value !== this.charges.max
+      defaultCharge.value !== 0 &&
+      defaultCharge.value !== defaultCharge.max
     ) {
       if (
         (changed.system?.quantity ?? 0) > 1 &&
-        this.charges.value! < this.charges.max!
+        defaultCharge.value! < defaultCharge.max!
       ) {
         delete changed.system!.quantity;
         Logger.warn(
@@ -183,16 +181,16 @@ class ConsumableData extends SwadePhysicalItemData<
       }
     }
     if (
-      foundry.utils.hasProperty(changed, 'system.charges.max') &&
+      foundry.utils.hasProperty(changed, `system.charges.charges.${defaultCharge.id}.max`) &&
       this.subtype === constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(changed, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
     }
     if (
       foundry.utils.getProperty(changed, 'system.subtype') ===
       constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(changed, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
     }
   }
 

@@ -2,11 +2,11 @@ import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
-import { favorite, grants, limitedUses } from './common';
-import { ChoicesType, Favorite, Grants, LimitedUses } from './item-common.interface';
+import { favorite, grants, charges } from './common';
+import { ChoicesType, Favorite, Grants, Charges } from './item-common.interface';
 
 declare namespace HindranceData {
-  interface Schema extends SwadeBaseItemData.Schema, Favorite, LimitedUses, Grants {
+  interface Schema extends SwadeBaseItemData.Schema, Favorite, Charges, Grants {
     severity: foundry.data.fields.StringField<{
       choices: ChoicesType<typeof constants.HINDRANCE_SEVERITY>;
       initial: typeof constants.HINDRANCE_SEVERITY.EITHER;
@@ -29,7 +29,7 @@ class HindranceData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...favorite(),
-      ...limitedUses(),
+      ...charges(),
       ...grants(),
       severity: new fields.StringField({
         choices: Object.values(constants.HINDRANCE_SEVERITY),

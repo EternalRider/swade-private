@@ -20,9 +20,9 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    {{#if item.system.hasLimitedUses}}
-      <a class='item' data-tab='limited-uses' data-group='main'>
-        {{localize 'SWADE.LimitedUses'}}
+    {{#if item.system.charges.hasCharges}}
+      <a class='item' data-tab='charges' data-group='main'>
+        {{localize 'SWADE.Charges'}}
       </a>
     {{/if}}
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
@@ -49,18 +49,18 @@
         </div>
       {{/if}}
       <div class="form-group">
-        <label for="{{item.uuid}}-has-limited-uses">
-          {{localize "SWADE.HasLimitedUses"}}
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
         </label>
         <span class="form-fields">
-          <input id="{{item.uuid}}-has-limited-uses" type="checkbox" name="system.hasLimitedUses" {{checked item.system.hasLimitedUses}}/>
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
         </span>
       </div>
       {{> 'swade.item-grants'}}
     </section>
-    {{#if item.system.hasLimitedUses}}
-      <section class='tab limited-uses' data-group='main' data-tab='limited-uses'>
-        {{> 'swade.item-tab-limited-uses'}}
+    {{#if item.system.charges.hasCharges}}
+      <section class='tab charges' data-group='main' data-tab='charges'>
+        {{> 'swade.item-tab-charges'}}
       </section>
     {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>

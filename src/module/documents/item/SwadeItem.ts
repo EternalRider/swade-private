@@ -3,7 +3,7 @@ import { EquipState, ItemActions } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
-  LimitedUse,
+  Charge,
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
@@ -23,6 +23,7 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
+import { ChargesField } from '../../data/fields';
 
 declare global {
   interface DocumentClassConfig {
@@ -63,6 +64,7 @@ class SwadeItem<
         delete (item as any).data;
       }
     }
+
     if (data?.system?.grants) {
       for (const grant of data.system.grants as ItemGrant[]) {
         const uuid = grant.uuid;
@@ -422,31 +424,31 @@ class SwadeItem<
   }
 
 
-  rechargeAllLimitedUsesOfType(rechargeType: string) {
-    if (this.system.limitedUses) {
-      for (const [id, limitedUse] of Object.entries(this.system.limitedUses)) {
-        if (limitedUse.rechargeType == rechargeType) {
-          this.rechargeLimitedUse(id, limitedUse);
+  rechargeAllChargesOfType(rechargeType: string) {
+    if (this.system.charges) {
+      for (const charge of this.system.charges.array) {
+        if (charge.rechargeType == rechargeType) {
+          this.rechargeCharge(charge);
         }
       }
     }
   }
 
-  async rechargeLimitedUse(id: string, limitedUse: LimitedUse) {
-    const remaining = limitedUse.remaining || 0;
-    const max = limitedUse.max || 0;
-    if (remaining >= max) {
+  async rechargeCharge(charge: Charge) {
+    const value = charge.value || 0;
+    const max = charge.max || 0;
+    if (value >= max) {
       //We're already full. Nothing to recharge.
       return;
     }
 
     //Calculate our recharge amount
     let rechargeAmount = 0;
-    if (limitedUse.rechargeAmount != '') {
+    if (charge.rechargeAmount != '') {
       const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
-        name: limitedUse.name,
+        name: charge.name,
       });
-      const roll = new Roll(limitedUse.rechargeAmount, {}, { flavor: flavor })
+      const roll = new Roll(charge.rechargeAmount, {}, { flavor: flavor })
       await roll.evaluate();
       rechargeAmount = roll.total;
 
@@ -460,9 +462,9 @@ class SwadeItem<
       //If the amount field is empty, we recharge to max
       rechargeAmount = max;
     }
-    const newTotal = Math.min(remaining + rechargeAmount, max);
+    const newTotal = Math.min(value + rechargeAmount, max);
     await this.update({
-      [`system.limitedUses.${id}.remaining`]: newTotal,
+      [`system.charges.charges.${charge.id}.value`]: newTotal,
     });
   }
 

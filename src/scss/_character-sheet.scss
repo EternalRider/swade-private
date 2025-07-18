@@ -453,15 +453,15 @@
     }
   }
 
-  .limited-uses-summary {
-    ul.limited-use-list {
+  .charges-summary {
+    ul.charge-list {
       font-size: 14px;
       font-family: "Signika", serif;
       margin-left: 2em;
       margin-right: 2em;
     }
 
-    .limited-use-row {
+    .charge-row {
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
       align-items: center;
@@ -476,7 +476,7 @@
       flex: 0;
     }
 
-    .use-fields {
+    .charge-fields {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;

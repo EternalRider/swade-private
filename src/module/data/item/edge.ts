@@ -9,15 +9,15 @@ import { count, createEmbedElement } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { category, favorite, grants, limitedUses } from './common';
-import { Category, Favorite, Grants, LimitedUses } from './item-common.interface';
+import { category, favorite, grants, charges } from './common';
+import { Category, Favorite, Grants, Charges } from './item-common.interface';
 
 declare namespace EdgeData {
   interface Schema
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      LimitedUses,
+      Charges,
       Grants {
     isArcaneBackground: foundry.data.fields.BooleanField<{ label: string }>;
     requirements: foundry.data.fields.ArrayField<
@@ -47,7 +47,7 @@ class EdgeData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
-      ...limitedUses(),
+      ...charges(),
       ...grants(),
       isArcaneBackground: new fields.BooleanField({ label: 'SWADE.ArcBack' }),
       requirements: new fields.ArrayField(

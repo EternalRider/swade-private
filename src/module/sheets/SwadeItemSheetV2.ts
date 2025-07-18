@@ -4,12 +4,13 @@ import {
   EquipState,
   ItemActions,
 } from '../../globals';
-import { ItemAction, LimitedUse } from '../../interfaces/additional.interface';
+import { ItemAction, Charge } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { ChargesData } from '../data/fields/ChargesField';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -37,7 +38,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           initial: 'summary',
         },
       ],
-      scrollY: ['.properties', '.actions', '.editor-container .editor-content'],
+      scrollY: ['.properties', '.actions', '.charges', '.editor-container .editor-content'],
       dragDrop: [
         { dropSelector: null, dragSelector: '.effect-list li details' },
       ],
@@ -87,7 +88,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     };
   }
 
-  get limitedUseRechargeTypes(): Record<string, string> {
+  get chargeRechargeTypes(): Record<string, string> {
     return {
       manual: 'SWADE.Manual',
       encounter: 'SWADE.Encounter',
@@ -182,65 +183,81 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         }),
       );
 
-      html.querySelector('.add-limited-use')?.addEventListener('click', () => {
-        const id = foundry.utils.randomID(8);
-        this.collapsibleStates[id] = true;
-        this.item.update({
-          ['system.limitedUses.' + id]: {
-            name: game.i18n.format('DOCUMENT.New', {
-              type: game.i18n.localize('TYPES.Item.limitedUse'),
-            }),
-            rechargeType: constants.LIMITED_USE_RECHARGE_TYPE.MANUAL,
-          },
-        });
-      });
-
-      html.querySelectorAll('.limited-use-delete').forEach((el) =>
-        el.addEventListener('click', async (ev) => {
-          const id = ev.currentTarget.dataset.limitedUseId;
-          const limitedUse = foundry.utils.getProperty(
-            this.item,
-            `system.limitedUses.${id}`,
-          ) as LimitedUse;
-          const text = game.i18n.format('SWADE.DeleteEmbeddedLimitedUsePrompt', {
-            limitedUse: limitedUse.name,
-          });
-          await foundry.applications.api.DialogV2.confirm({
-            content: `<p class="text-center">${text}</p>`,
-            classes: ['dialog', 'swade-app'],
-            yes: {
-              callback: async () =>
-                await this.item.update({
-                  [`system.limitedUses.-=${id}`]: null,
-                }),
-            },
+      // Charge input fields
+      html.querySelectorAll('.charge-field').forEach((el) =>
+        el.addEventListener('change', async (ev) => {
+          await this.item.update({
+            [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
           });
         }),
       );
 
-      html.querySelectorAll('.limited-use-recharge-manual').forEach((el) =>
+      html.querySelector('.add-charge')?.addEventListener('click', () => {
+        const id = ChargesData.randomID();
+        this.item.update({
+          ['system.charges.charges.' + id]: {
+            id: id,
+            sort: Object.keys(this.item.system.charges).length,
+            name: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('TYPES.Item.charge'),
+            }),
+            rechargeType: constants.CHARGE_RECHARGE_TYPE.MANUAL,
+          },
+        });
+      });
+
+      html.querySelectorAll('.charge-delete').forEach((el) =>
         el.addEventListener('click', async (ev) => {
-          const id = ev.currentTarget.dataset.limitedUseId;
-          const limitedUse = foundry.utils.getProperty(
+          const id = ev.currentTarget.dataset.chargeId;
+          const charge = foundry.utils.getProperty(
             this.item,
-            `system.limitedUses.${id}`,
-          ) as LimitedUse;
-          const text = game.i18n.format('SWADE.RechargeManualConfirm', {
-            name: limitedUse.name,
+            `system.charges.charges.${id}`,
+          ) as Charge;
+          const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
+            charge: charge.name,
           });
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: async () => {
-                this.item.rechargeLimitedUse(id, limitedUse);
+                let sort = 0;
+                const charges = this.item.system.charges.charges;
+                delete charges[id];
+                this.item.system.charges.sorted.forEach((l) => charges[l.id].sort = sort++);
+                await this.item.update({
+                  'system.charges.charges': charges,
+                  [`system.charges.charges.-=${id}`]: null,
+                });
+              },
+            },
+          });
+        }),
+      );
+
+      html.querySelectorAll('.charge-recharge-manual').forEach((el) =>
+        el.addEventListener('click', async (ev) => {
+          const id = ev.currentTarget.dataset.chargeId;
+          const charge = foundry.utils.getProperty(
+            this.item,
+            `system.charges.charges.${id}`,
+          ) as Charge;
+          const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+            name: charge.name,
+          });
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                this.item.rechargeCharge(charge);
               }
             },
           });
         }),
       );
 
-      html.querySelector('.limited-use-recharge-encounter')
+      html.querySelector('.charge-recharge-encounter')
         ?.addEventListener('click', async () => {
           const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
           await foundry.applications.api.DialogV2.confirm({
@@ -248,13 +265,13 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: async () => {
-                this.item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER);
+                this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
               }
             },
           });
         }),
 
-        html.querySelector('.limited-use-recharge-day')
+        html.querySelector('.charge-recharge-day')
           ?.addEventListener('click', async () => {
             const text = game.i18n.localize('SWADE.RechargeDayConfirm');
             await foundry.applications.api.DialogV2.confirm({
@@ -262,7 +279,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
               classes: ['dialog', 'swade-app'],
               yes: {
                 callback: async () => {
-                  this.item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.DAY);
+                  this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
                 }
               },
             });
@@ -380,7 +397,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
-      limitedUseRechargeTypes: this.limitedUseRechargeTypes,
+      chargeRechargeTypes: this.chargeRechargeTypes,
       macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
@@ -1015,7 +1032,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
-  limitedUseRechargeTypes: Record<string, string>;
+  chargeRechargeTypes: Record<string, string>;
   macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;

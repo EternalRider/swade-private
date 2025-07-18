@@ -7,7 +7,7 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
-  LimitedUse,
+  Charge,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
@@ -29,7 +29,7 @@ import * as util from '../util';
 
 export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   _equipStateMenu: ContextMenu;
-  _limitedUseRechargeMenu: ContextMenu;
+  _chargeRechargeMenu: ContextMenu;
   _effectCreateDropDown: ContextMenu;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
@@ -101,6 +101,18 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
+    });
+
+    html.querySelectorAll('.charges-summary').forEach((el) => {
+      el.onmousedown = function(event) {
+        el.closest("li").setAttribute("draggable", "false");
+      }
+    });
+
+    html.querySelectorAll('.charges-summary').forEach((el) => {
+      el.onmouseup = function (event) {
+        el.closest("li").setAttribute("draggable", "true");
+      }
     });
 
     html
@@ -193,8 +205,8 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       }),
     );
 
-    // Limited use input fields
-    html.querySelectorAll('.use-fields input').forEach((el) =>
+    // Charge input fields
+    html.querySelectorAll('.charge-fields input').forEach((el) =>
       el.addEventListener('change', async (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);
@@ -204,25 +216,25 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       }),
     );
 
-    // Limited use recharge
-    html.querySelectorAll('.limited-use-recharge-manual').forEach((el) =>
+    // Charge recharge
+    html.querySelectorAll('.charge-recharge-manual').forEach((el) =>
       el.addEventListener('click', async (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);
-        const limitedUseId = ev.currentTarget.dataset.limitedUseId;
-        const limitedUse = foundry.utils.getProperty(
+        const chargeId = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
           item,
-          `system.limitedUses.${limitedUseId}`,
-        ) as LimitedUse;
+          `system.charges.charges.${chargeId}`,
+        ) as Charge;
         const text = game.i18n.format('SWADE.RechargeManualConfirm', {
-          name: limitedUse.name,
+          name: charge.name,
         });
         await foundry.applications.api.DialogV2.confirm({
           content: `<p class="text-center">${text}</p>`,
           classes: ['dialog', 'swade-app'],
           yes: {
             callback: async () => {
-              await item.rechargeLimitedUse(limitedUseId, limitedUse);
+              await item.rechargeCharge(charge);
             }
           },
         });
@@ -467,7 +479,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
-    let hasAnyLimitedUseItems = false;
+    let hasAnyChargeItems = false;
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.contents as SwadeItem[]).sort(
       (a, b) => a.sort - b.sort,
@@ -488,18 +500,19 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         });
       }
 
-      const itemLimitedUses = foundry.utils.getProperty(system, 'limitedUses') ?? {};
-      const limitedUses = new Array<any>();
+      if (system.charges?.hasCharges ) {
+        const charges = new Array<any>();
 
-      for (const [id, itemLimitedUse] of Object.entries(itemLimitedUses)) {
-        limitedUses.push({
-          id: id,
-          limitedUse: itemLimitedUse,
-          rechargeType: item.sheet.limitedUseRechargeTypes[itemLimitedUse.rechargeType],
-        });
+        for (const itemCharge of system.charges.sorted) {
+          charges.push({
+            charge: itemCharge,
+            rechargeType: item.sheet.chargeRechargeTypes[itemCharge.rechargeType],
+          });
+        }
+        foundry.utils.setProperty(item, 'charges', charges);
+
+        hasAnyChargeItems ||= system.charges.hasCharges;
       }
-
-      hasAnyLimitedUseItems ||= (system.hasLimitedUses && limitedUses.length);
 
       const hasDamage =
         !!foundry.utils.getProperty(system, 'damage') ||
@@ -540,7 +553,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         );
 
       foundry.utils.setProperty(item, 'actions', actions);
-      foundry.utils.setProperty(item, 'limitedUses', limitedUses);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
       foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
@@ -578,7 +590,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
-      hasAnyLimitedUseItems: hasAnyLimitedUseItems,
+      hasAnyChargeItems: hasAnyChargeItems,
       parryTooltip: this.actor.getPTTooltip('parry'),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       armorTooltip: this.actor.getArmorTooltip(),
@@ -1412,7 +1424,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             yes: {
               callback: () => {
                 for (const item of this.actor.items) {
-                  item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.ENCOUNTER);
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
                 }
               }
             },
@@ -1431,7 +1443,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             yes: {
               callback: async () => {
                 for (const item of this.actor.items) {
-                  item.rechargeAllLimitedUsesOfType(constants.LIMITED_USE_RECHARGE_TYPE.DAY);
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
                 }
               }
             },
@@ -1440,9 +1452,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       },
     ];
 
-    const selector = '.limited-use-recharge-menu';
+    const selector = '.charge-recharge-menu';
     const options = { eventName: 'click', jQuery: false, fixed: true };
-    this._limitedUseRechargeMenu =
+    this._chargeRechargeMenu =
       new foundry.applications.ux.ContextMenu.implementation(
         html,
         selector,
@@ -1650,7 +1662,7 @@ interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;
   skills: SkillDisplay[];
   itemTypes: Record<string, SwadeItem[]>;
-  hasAnyLimitedUseItems: boolean;
+  hasAnyChargeItems: boolean;
   parryTooltip: string;
   toughnessTooltip: string;
   armorTooltip: string;

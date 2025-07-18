@@ -1,12 +1,12 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
-import { builder, physicalItem } from '../common';
-import { Builder, PhysicalItem } from '../item-common.interface';
+import { builder, charges, physicalItem } from '../common';
+import { Builder, Charges, PhysicalItem } from '../item-common.interface';
 import { SwadeBaseItemData } from './base';
 
 declare namespace SwadePhysicalItemData {
-  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {}
+  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder, Charges {}
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -24,6 +24,7 @@ class SwadePhysicalItemData<
       ...super.defineSchema(),
       ...physicalItem(),
       ...builder(),
+      ...charges(),
     };
   }
 

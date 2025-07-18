@@ -14,7 +14,6 @@ import {
   equippable,
   favorite,
   grantEmbedded,
-  limitedUses,
   vehicular,
 } from './common';
 import {
@@ -25,7 +24,6 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
-  LimitedUses,
   Vehicular,
 } from './item-common.interface';
 
@@ -36,7 +34,6 @@ declare namespace GearData {
       ArcaneDevice,
       Vehicular,
       Actions,
-      LimitedUses,
       Activities,
       Favorite,
       Category,
@@ -61,7 +58,6 @@ class GearData extends SwadePhysicalItemData<
       ...arcaneDevice(),
       ...vehicular(),
       ...actions(),
-      ...limitedUses(),
       ...activities(),
       ...favorite(),
       ...category(),

@@ -1,6 +1,8 @@
+import { ConsumableData } from '.';
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
+import { ChargesData } from '../fields/ChargesField';
 import type { AbilityData } from './ability';
 import { EdgeData } from './edge';
 
@@ -102,4 +104,21 @@ export function convertRequirementsToList(source: PotentialSource<EdgeData>) {
     });
   }
   source.requirements = mapped;
+}
+
+export function convertCharges(source: PotentialSource<ConsumableData>) {
+  source.charges ??= {};
+  source.charges.hasCharges = true;
+
+  if (source.charges.value != undefined || source.charges.max != undefined) {
+    const id = ChargesData.randomID();
+    foundry.utils.setProperty(source, 'charges.charges.' + id, {
+      id: id,
+      value: source.charges.value ?? 0,
+      max: source.charges.max ?? 0,
+    });
+
+    delete source.charges.value;
+    delete source.charges.max;
+  }
 }

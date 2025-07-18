@@ -63,8 +63,8 @@ export async function preloadHandlebarsTemplates() {
       'systems/swade/templates/actors/character/partials/skill-card.hbs',
     'swade.character-setting-field':
       'systems/swade/templates/actors/character/partials/setting-fields.hbs',
-    'swade.character-limited-uses-summary':
-      'systems/swade/templates/actors/character/partials/limited-uses-summary.hbs',
+    'swade.character-charges-summary':
+      'systems/swade/templates/actors/character/partials/charges-summary.hbs',
 
     //Item V2
     'swade.item-header': 'systems/swade/templates/item/partials/header.hbs',
@@ -84,8 +84,8 @@ export async function preloadHandlebarsTemplates() {
       'systems/swade/templates/item/partials/tabs/description.hbs',
     'swade.item-tab-actions':
       'systems/swade/templates/item/partials/tabs/actions.hbs',
-    'swade.item-tab-limited-uses':
-      'systems/swade/templates/item/partials/tabs/limited-uses.hbs',
+    'swade.item-tab-charges':
+      'systems/swade/templates/item/partials/tabs/charges.hbs',
     'swade.item-tab-effects':
       'systems/swade/templates/item/partials/tabs/effects.hbs',
   };

@@ -1,0 +1,25 @@
+{{#if charges}}
+<div class='charges-summary'>
+  <ul class='charge-list'>
+    <li class='charge-row'>
+      <span><strong>{{localize "SWADE.Name"}}</strong></span>
+      <span><strong>{{localize "SWADE.RechargeType"}}</strong></span>
+      <span><strong>{{localize "SWADE.Charges"}}</strong></span>
+    </li>
+    {{#each charges}}
+      <li class='charge-row'>
+        <span>{{charge.name}}</span>
+        <span>{{localize rechargeType}}</span>
+        <span class='charge-fields'>
+          <input type='number' name="system.charges.charges.{{charge.id}}.value" value='{{charge.value}}' placeholder='0' data-name="system.charges.charges.{{charge.id}}.value"/>
+          <strong class="flex-separator">/</strong>
+          <input type='number' name="system.charges.charges.{{charge.id}}.max" value='{{charge.max}}' placeholder='0' data-name="system.charges.charges.{{charge.id}}.max"/>
+          <button type='button' class='charge-recharge-manual invisible' title='{{localize "Recharge"}}' data-charge-id='{{charge.id}}'>
+            <i class='fas fa-rotate-right'></i>
+          </button>
+        </span>
+      </li>
+    {{/each}}
+  </ul>
+</div>
+{{/if}}

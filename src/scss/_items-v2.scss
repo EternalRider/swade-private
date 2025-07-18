@@ -245,7 +245,7 @@
   }
 
   .actions-list,
-  .limited-uses-list,
+  .charges-list,
   .powers-list,
   .effect-list {
     padding: 0;
@@ -316,7 +316,7 @@
     }
   }
 
-  .limited-uses {
+  .charges {
     .header-buttons {
       display: flex;
       flex-direction: column;
@@ -330,7 +330,7 @@
     }
   }
 
-  .limited-use {
+  .charge {
     display: flex;
     padding-right: 0;
 
@@ -348,7 +348,7 @@
       }
     }
 
-    .limited-use-delete {
+    .charge-delete {
       padding: 0.25em;
     }
   }

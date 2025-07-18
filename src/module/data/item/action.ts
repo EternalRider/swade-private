@@ -4,12 +4,12 @@ import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
-import { actions, category, favorite, limitedUses, templates } from './common';
+import { actions, category, favorite, charges, templates } from './common';
 import {
   Actions,
   Category,
   Favorite,
-  LimitedUses,
+  Charges,
   Templates,
 } from './item-common.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
@@ -20,7 +20,7 @@ declare namespace ActionData {
       Favorite,
       Category,
       Templates,
-      LimitedUses,
+      Charges,
       Actions {
     hidden: foundry.data.fields.BooleanField<{
       initial: boolean;
@@ -44,7 +44,7 @@ class ActionData extends SwadeBaseItemData<
       ...category(),
       ...templates(),
       ...actions(),
-      ...limitedUses(),
+      ...charges(),
       hidden: new foundry.data.fields.BooleanField({
         initial: false,
         label: 'SWADE.Actions.Hidden.Label',

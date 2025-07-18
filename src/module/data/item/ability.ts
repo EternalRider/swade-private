@@ -3,14 +3,14 @@ import { constants } from '../../constants';
 import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { builder, category, favorite, grants, limitedUses } from './common';
+import { builder, category, favorite, grants, charges } from './common';
 import {
   Builder,
   Category,
   ChoicesType,
   Favorite,
   Grants,
-  LimitedUses,
+  Charges,
 } from './item-common.interface';
 
 declare namespace AbilityData {
@@ -18,7 +18,7 @@ declare namespace AbilityData {
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      LimitedUses,
+      Charges,
       Grants,
       Builder {
     subtype: foundry.data.fields.StringField<{
@@ -44,7 +44,7 @@ class AbilityData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
-      ...limitedUses(),
+      ...charges(),
       ...grants(),
       ...builder(),
       subtype: new fields.StringField({

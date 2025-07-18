@@ -22,17 +22,19 @@
       <span class='form-fields text-center'>
         <input
           id='{{item.uuid}}-charges'
-          name='system.charges.value'
+          class='charge-field'
           type='number'
-          value='{{item.system.charges.value}}'
+          value='{{item.system.charges.default.value}}'
           data-dtype='Number'
+          data-name="system.charges.charges.{{item.system.charges.default.id}}.value"
         />
         <strong class='flex-separator'>/</strong>
         <input
-          name='system.charges.max'
+          class='charge-field'
           type='number'
-          value='{{item.system.charges.max}}'
+          value='{{item.system.charges.default.max}}'
           data-dtype='Number'
+          data-name="system.charges.charges.{{item.system.charges.default.id}}.max"
           {{disabled (eq item.system.subtype 'battery')}}
         />
       </span>
@@ -61,9 +63,9 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
-    {{#if item.system.hasLimitedUses}}
-      <a class='item' data-tab='limited-uses' data-group='main'>
-        {{localize 'SWADE.LimitedUses'}}
+    {{#if item.system.charges.hasCharges}}
+      <a class='item' data-tab='charges' data-group='main'>
+        {{localize 'SWADE.Charges'}}
       </a>
     {{/if}}
     <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
@@ -115,18 +117,18 @@
       {{formGroupSimple "system.activities" stacked=true}}
       {{> 'swade.item-bonus-damage'}}
       <div class="form-group">
-        <label for="{{item.uuid}}-has-limited-uses">
-          {{localize "SWADE.HasLimitedUses"}}
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
         </label>
         <span class="form-fields">
-          <input id="{{item.uuid}}-has-limited-uses" type="checkbox" name="system.hasLimitedUses" {{checked item.system.hasLimitedUses}}/>
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
         </span>
       </div>
       {{> 'swade.item-grants'}}
     </section>
-    {{#if item.system.hasLimitedUses}}
-      <section class='tab limited-uses' data-group='main' data-tab='limited-uses'>
-        {{> 'swade.item-tab-limited-uses'}}
+    {{#if item.system.charges.hasCharges}}
+      <section class='tab charges' data-group='main' data-tab='charges'>
+        {{> 'swade.item-tab-charges'}}
       </section>
     {{/if}}
     <section class='tab actions' data-group='main' data-tab='actions'>
