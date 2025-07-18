@@ -184,107 +184,109 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         }),
       );
 
-      // Charge input fields
-      html.querySelectorAll('.charge-field').forEach((el) =>
-        el.addEventListener('change', async (ev) => {
-          await this.item.update({
-            [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
-          });
-        }),
-      );
+    // Charge input fields
+    html.querySelectorAll('.charge-field').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        await this.item.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
 
-      html.querySelector('.add-charge')?.addEventListener('click', () => {
-        const id = ChargesData.randomID();
-        this.item.update({
-          ['system.charges.charges.' + id]: {
-            id: id,
-            sort: Object.keys(this.item.system.charges).length,
-            name: game.i18n.format('DOCUMENT.New', {
-              type: game.i18n.localize('TYPES.Item.charge'),
-            }),
-            rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
+    html.querySelector('.add-charge')?.addEventListener('click', () => {
+      const id = ChargesData.randomID();
+      this.item.update({
+        ['system.charges.charges.' + id]: {
+          id: id,
+          sort: Object.keys(this.item.system.charges).length,
+          name: game.i18n.format('DOCUMENT.New', {
+            type: game.i18n.localize('TYPES.Item.charge'),
+          }),
+          rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
+        },
+      });
+    });
+
+    html.querySelectorAll('.charge-delete').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
+          this.item,
+          `system.charges.charges.${id}`,
+        ) as Charge;
+        const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
+          charge: charge.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              let sort = 0;
+              const charges = this.item.system.charges.charges;
+              delete charges[id];
+              this.item.system.charges.sorted.forEach((l) => charges[l.id].sort = sort++);
+              await this.item.update({
+                'system.charges.charges': charges,
+                [`system.charges.charges.-=${id}`]: null,
+              });
+            },
+          },
+        });
+      }),
+    );
+
+    html.querySelectorAll('.charge-recharge-manual').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
+          this.item,
+          `system.charges.charges.${id}`,
+        ) as Charge;
+        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+          name: charge.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeCharge(charge);
+            }
+          },
+        });
+      }),
+    );
+
+    html.querySelector('.charge-recharge-encounter')
+      ?.addEventListener('click', async () => {
+        const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
+            }
           },
         });
       });
 
-      html.querySelectorAll('.charge-delete').forEach((el) =>
-        el.addEventListener('click', async (ev) => {
-          const id = ev.currentTarget.dataset.chargeId;
-          const charge = foundry.utils.getProperty(
-            this.item,
-            `system.charges.charges.${id}`,
-          ) as Charge;
-          const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
-            charge: charge.name,
-          });
-          await foundry.applications.api.DialogV2.confirm({
-            content: `<p class="text-center">${text}</p>`,
-            classes: ['dialog', 'swade-app'],
-            yes: {
-              callback: async () => {
-                let sort = 0;
-                const charges = this.item.system.charges.charges;
-                delete charges[id];
-                this.item.system.charges.sorted.forEach((l) => charges[l.id].sort = sort++);
-                await this.item.update({
-                  'system.charges.charges': charges,
-                  [`system.charges.charges.-=${id}`]: null,
-                });
-              },
-            },
-          });
-        }),
-      );
+    html.querySelector('.charge-recharge-day')
+      ?.addEventListener('click', async () => {
+        const text = game.i18n.localize('SWADE.RechargeDayConfirm');
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
+            }
+          },
+        });
+      });
 
-      html.querySelectorAll('.charge-recharge-manual').forEach((el) =>
-        el.addEventListener('click', async (ev) => {
-          const id = ev.currentTarget.dataset.chargeId;
-          const charge = foundry.utils.getProperty(
-            this.item,
-            `system.charges.charges.${id}`,
-          ) as Charge;
-          const text = game.i18n.format('SWADE.RechargeManualConfirm', {
-            name: charge.name,
-          });
-          await foundry.applications.api.DialogV2.confirm({
-            content: `<p class="text-center">${text}</p>`,
-            classes: ['dialog', 'swade-app'],
-            yes: {
-              callback: async () => {
-                this.item.rechargeCharge(charge);
-              }
-            },
-          });
-        }),
-      );
-
-      html.querySelector('.charge-recharge-encounter')
-        ?.addEventListener('click', async () => {
-          const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
-          await foundry.applications.api.DialogV2.confirm({
-            content: `<p class="text-center">${text}</p>`,
-            classes: ['dialog', 'swade-app'],
-            yes: {
-              callback: async () => {
-                this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
-              }
-            },
-          });
-        }),
-
-        html.querySelector('.charge-recharge-day')
-          ?.addEventListener('click', async () => {
-            const text = game.i18n.localize('SWADE.RechargeDayConfirm');
-            await foundry.applications.api.DialogV2.confirm({
-              content: `<p class="text-center">${text}</p>`,
-              classes: ['dialog', 'swade-app'],
-              yes: {
-                callback: async () => {
-                  this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
-                }
-              },
-            });
-          }),
+    new ChargeDragSort(html, this.item);
 
     html.querySelectorAll('.power-delete').forEach((el) =>
       el.addEventListener('click', async (ev) => {
@@ -1033,6 +1035,69 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       [constants.RELOAD_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
       [constants.RELOAD_TYPE.PP]: 'SWADE.ReloadType.PP',
     };
+  }
+}
+
+class ChargeDragSort {
+  dragging: any = null;
+  dropTarget: any = null;
+  chargesList: any = null;
+  item: SwadeItem;
+
+  constructor(html, item) {
+    this.item = item;
+    this.chargesList = html.querySelector('.charges-list');
+
+    this.chargesList.querySelectorAll("li").forEach((el) => {
+      el.ondragstart = this.onDragStart.bind(this);
+      el.ondragover = this.onDragOver.bind(this);
+      el.ondragend = this.onDragEnd.bind(this);
+    });
+
+    this.chargesList.querySelectorAll(".sort-handle").forEach((el) => {
+      const li = el.closest("li");
+      el.onmousedown = li.setAttribute('draggable', 'true');
+      el.onmouseup = li.setAttribute('draggable', 'false');
+    });
+  }
+
+  onDragStart(ev) {
+    ev.dataTransfer.setData('text/plain', JSON.stringify({ type: "Charge" }));
+    this.dragging = ev.currentTarget;
+    this.dragging.classList.add("dragging");
+    const liRect = this.dragging.getBoundingClientRect();
+    ev.dataTransfer.setDragImage(this.dragging, ev.x - liRect.left, ev.y - liRect.top);
+  }
+
+  onDragOver(ev) {
+    ev.preventDefault();
+    const li = ev.currentTarget.closest("li")
+    if (this.dragging && li != this.dragging) {
+      if (this.dragging.parentElement == li.parentElement) {
+        this.dropTarget = li;
+        if (this.dragging.parentNode === this.dropTarget.parentNode) {
+          this.dropTarget = this.dropTarget !== this.dragging.nextElementSibling ? this.dropTarget : this.dropTarget.nextElementSibling;
+        }
+      }
+    }
+
+    if (this.dropTarget) {
+      this.chargesList.insertBefore(this.dragging, this.dropTarget);
+    } else {
+      this.chargesList.appendChild(this.dragging);
+    }
+  }
+
+  onDragEnd() {
+    this.dragging.classList.remove('dragging');
+    this.dragging = null;
+
+    let sort = 0;
+    const updates = {};
+    for (const charge of this.chargesList.children) {
+      updates[`system.charges.charges.${charge.dataset.chargeId}.sort`] = sort++;
+    }
+    this.item.update(updates);
   }
 }
 

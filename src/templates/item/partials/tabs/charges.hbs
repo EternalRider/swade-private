@@ -20,8 +20,11 @@
 </header>
 <ol class='charges-list unmarked-list'>
   {{#each item.system.charges.sorted}}
-    <li>
-      <fieldset class='charge' data-charge-id='{{id}}'>
+    <li data-charge-id='{{id}}'>
+      <fieldset class='charge'>
+        <span class='sort-handle' draggable="true">
+          <i class='fas fa-grip-vertical fa-2x'></i>
+        </span>
         <span class='content'>
           <div class='form-group'>
             <label>{{localize 'SWADE.Name'}}</label>
@@ -42,7 +45,7 @@
             <span class='form-fields text-center'>
               <input type='number' name="system.charges.charges.{{id}}.value" value='{{value}}' placeholder='1' />
               <strong class="flex-separator">/</strong>
-              <input type='number' name="system.charges.charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery') (eq @index 0))}}/>
+              <input type='number' name="system.charges.charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery' ) (eq @index 0))}} />
             </span>
           </div>
           {{#unless (eq rechargeType "finite") }}
