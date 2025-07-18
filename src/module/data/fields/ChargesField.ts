@@ -1,5 +1,4 @@
 import { constants } from '../../constants';
-import { ConsumableData } from '../item';
 import { FormulaField } from './FormulaField';
 
 export interface ChargeData {

@@ -23,7 +23,6 @@ import {
   ItemGrant,
   ItemGrantChainLink,
 } from './SwadeItem.interface';
-import { ChargesField } from '../../data/fields';
 
 declare global {
   interface DocumentClassConfig {

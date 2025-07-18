@@ -35,6 +35,7 @@ declare namespace ConsumableData {
       Favorite,
       Category,
       Actions,
+      Charges,
       Activities,
       GrantEmbedded {
     charges: foundry.data.fields.SchemaField<{

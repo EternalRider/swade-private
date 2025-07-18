@@ -103,15 +103,16 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
+    //Disable draggable on the item if we drag inside of the charge summary
     html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.onmousedown = function(event) {
-        el.closest("li").setAttribute("draggable", "false");
+      el.onmousedown = function() {
+        el.closest('li').setAttribute('draggable', 'false');
       }
     });
 
     html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.onmouseup = function (event) {
-        el.closest("li").setAttribute("draggable", "true");
+      el.onmouseup = function () {
+        el.closest('li').setAttribute('draggable', 'true');
       }
     });
 
