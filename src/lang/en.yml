@@ -988,6 +988,7 @@ SWADE:
   Recharge: Recharge
   RechargeType: Recharge Type
   RechargeAmount: Recharge Amount
+  Finite: Finite
   Manual: Manual
   Encounter: Encounter
   Day: Day

@@ -90,6 +90,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
 
   get chargeRechargeTypes(): Record<string, string> {
     return {
+      finite: 'SWADE.Finite',
       manual: 'SWADE.Manual',
       encounter: 'SWADE.Encounter',
       day: 'SWADE.Day',
@@ -201,7 +202,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
             name: game.i18n.format('DOCUMENT.New', {
               type: game.i18n.localize('TYPES.Item.charge'),
             }),
-            rechargeType: constants.CHARGE_RECHARGE_TYPE.MANUAL,
+            rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
           },
         });
       });
@@ -540,6 +541,15 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         this.item.parent?.type === 'npc'
           ? getDieSidesRange(4, 24)
           : getDieSidesRange(4, 20);
+    }
+
+    if (this.item.system.charges?.hasCharges) {
+      data.hasEncounterCharge = false;
+      data.hasDayCharge = false;
+      for (const charge of this.item.system.charges.array) {
+        data.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
+        data.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
+      }
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
@@ -1033,6 +1043,8 @@ interface SwadeItemSheetData extends OptionsPartial {
   hasCategory: boolean;
   actionTypes: Record<string, string>;
   chargeRechargeTypes: Record<string, string>;
+  hasEncounterCharge: boolean;
+  hasDayCharge: boolean;
   macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;

@@ -54,7 +54,7 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
           max: new fields.NumberField({ initial: 1, nullable: false, positive: true, min: 1 }),
           rechargeAmount: new FormulaField(),
           rechargeType: new fields.StringField({
-            initial: constants.CHARGE_RECHARGE_TYPE.MANUAL,
+            initial: constants.CHARGE_RECHARGE_TYPE.FINITE,
             choices: Object.values(constants.CHARGE_RECHARGE_TYPE),
             label: 'SWADE.RechargeType',
           }),
@@ -69,7 +69,7 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
                 name: game.i18n.localize('SWADE.Charges'),
                 value: 1,
                 max: 1,
-                rechargeType: constants.CHARGE_RECHARGE_TYPE.MANUAL,
+                rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
               }
             };
           },

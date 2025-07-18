@@ -98,6 +98,7 @@ export const constants = {
   } as const,
   /** @enum */
   CHARGE_RECHARGE_TYPE: {
+    FINITE: 'finite',
     MANUAL: 'manual',
     ENCOUNTER: 'encounter',
     DAY: 'day',
