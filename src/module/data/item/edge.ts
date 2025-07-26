@@ -6,18 +6,18 @@ import {
   Requirement,
 } from '../../documents/item/SwadeItem.interface';
 import { count, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { category, favorite, grants, charges } from './common';
-import { Category, Favorite, Grants, Charges } from './item-common.interface';
+import { category, favorite, grants } from './common';
+import { Category, Favorite, Grants } from './item-common.interface';
 
 declare namespace EdgeData {
   interface Schema
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      Charges,
       Grants {
     isArcaneBackground: foundry.data.fields.BooleanField<{ label: string }>;
     requirements: foundry.data.fields.ArrayField<
@@ -30,6 +30,7 @@ declare namespace EdgeData {
         ) => foundry.data.validation.DataModelValidationFailure | undefined;
       }
     >;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -47,8 +48,8 @@ class EdgeData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
-      ...charges(),
       ...grants(),
+      charges: new fields.EmbeddedDataField(ChargesData),
       isArcaneBackground: new fields.BooleanField({ label: 'SWADE.ArcBack' }),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),

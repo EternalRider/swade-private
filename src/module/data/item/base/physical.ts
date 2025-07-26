@@ -1,12 +1,15 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { EquipState } from '../../../../globals';
 import { constants } from '../../../constants';
-import { builder, charges, physicalItem } from '../common';
-import { Builder, Charges, PhysicalItem } from '../item-common.interface';
+import { builder, physicalItem } from '../common';
+import { Builder, PhysicalItem } from '../item-common.interface';
 import { SwadeBaseItemData } from './base';
+import { ChargesData } from '../../fields';
 
 declare namespace SwadePhysicalItemData {
-  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder, Charges {}
+  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
+  }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -20,11 +23,12 @@ class SwadePhysicalItemData<
 > extends SwadeBaseItemData<Schema, BaseData, DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): SwadePhysicalItemData.Schema {
+    const fields = foundry.data.fields;
     return {
       ...super.defineSchema(),
       ...physicalItem(),
       ...builder(),
-      ...charges(),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 

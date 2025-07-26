@@ -15,7 +15,6 @@ import {
   equippable,
   favorite,
   grantEmbedded,
-  charges,
 } from './common';
 import {
   Actions,
@@ -25,8 +24,8 @@ import {
   Equippable,
   Favorite,
   GrantEmbedded,
-  Charges,
 } from './item-common.interface';
+import { DefaultHasChargesData } from '../fields/ChargesField';
 
 declare namespace ConsumableData {
   interface Schema
@@ -35,13 +34,8 @@ declare namespace ConsumableData {
       Favorite,
       Category,
       Actions,
-      Charges,
       Activities,
       GrantEmbedded {
-    charges: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<{ initial: 1 }>;
-      max: foundry.data.fields.NumberField<{ initial: 1 }>;
-    }>;
     messageOnUse: foundry.data.fields.BooleanField<{ initial: true }>;
     destroyOnEmpty: foundry.data.fields.BooleanField<{ label: string }>;
     subtype: foundry.data.fields.StringField<{
@@ -49,6 +43,7 @@ declare namespace ConsumableData {
       choices: ChoicesType<typeof constants.CONSUMABLE_TYPE>;
       textSearch: true;
     }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof DefaultHasChargesData>;
   }
   interface BaseData extends SwadePhysicalItemData.BaseData {}
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
@@ -68,7 +63,6 @@ class ConsumableData extends SwadePhysicalItemData<
       ...favorite(),
       ...category(),
       ...actions(),
-      ...charges(true),
       ...activities(),
       ...grantEmbedded(),
       messageOnUse: new fields.BooleanField({
@@ -84,6 +78,7 @@ class ConsumableData extends SwadePhysicalItemData<
         textSearch: true,
         label: 'SWADE.Subtype',
       }),
+      charges: new fields.EmbeddedDataField(DefaultHasChargesData),
     };
   }
 

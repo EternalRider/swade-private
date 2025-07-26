@@ -1,16 +1,16 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { builder, category, favorite, grants, charges } from './common';
+import { builder, category, favorite, grants } from './common';
 import {
   Builder,
   Category,
   ChoicesType,
   Favorite,
   Grants,
-  Charges,
 } from './item-common.interface';
 
 declare namespace AbilityData {
@@ -18,7 +18,6 @@ declare namespace AbilityData {
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
-      Charges,
       Grants,
       Builder {
     subtype: foundry.data.fields.StringField<{
@@ -27,6 +26,7 @@ declare namespace AbilityData {
       textSearch: true;
     }>;
     grantsPowers: foundry.data.fields.BooleanField<{ label: string }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -44,7 +44,6 @@ class AbilityData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
-      ...charges(),
       ...grants(),
       ...builder(),
       subtype: new fields.StringField({
@@ -56,6 +55,7 @@ class AbilityData extends SwadeBaseItemData<
       grantsPowers: new fields.BooleanField({
         label: 'SWADE.GrantsPowers',
       }),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 

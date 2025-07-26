@@ -1,5 +1,4 @@
 import { constants } from '../../constants';
-import { ChargesField } from '../fields/ChargesField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
@@ -154,10 +153,6 @@ export const actions = () => ({
     ),
   }),
   ...bonusDamage(),
-});
-
-export const charges = (hasCharges: boolean = false) => ({
-  charges: new ChargesField(hasCharges),
 });
 
 export const activities = () => ({

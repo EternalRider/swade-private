@@ -16,25 +16,9 @@ export interface ChargesSchema extends foundry.data.fields.DataSchema {
   charges: Record<string, ChargeData>;
 }
 
-class ChargesField<
-  Schema extends ChargesSchema = ChargesSchema,
-  Options extends
-  foundry.data.fields.SchemaField.Options<Schema> = foundry.data.fields.SchemaField.DefaultOptions,
-> extends foundry.data.fields.SchemaField<Schema, Options> {
-
-  constructor(hasCharges: boolean) {
-    const fields = ChargesData.defineSchema();
-    fields.hasCharges.initial = hasCharges;
-    super(fields);
-  }
-
-  /** @override */
-  initialize(value, model, options = {}) {
-    return new ChargesData(value, { parent: model, ...options });
-  }
-}
-
 export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
+
+  static get initialHasCharges() { return false; }
 
   static randomID() {
     return foundry.utils.randomID(8);
@@ -43,13 +27,13 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
   static override defineSchema() {
     const fields = foundry.data.fields;
     return {
-      hasCharges: new fields.BooleanField({ initial: false, label: 'SWADE.HasCharges' }),
+      hasCharges: new fields.BooleanField({ initial: this.initialHasCharges, label: 'SWADE.HasCharges' }),
       charges: new fields.TypedObjectField(
         new fields.SchemaField({
           id: new fields.StringField({ initial: ChargesData.randomID, required: false }),
           sort: new fields.IntegerSortField(),
           name: new fields.StringField({ initial: game.i18n.localize('SWADE.Charges'), required: true }),
-          value: new fields.NumberField({ initial: 1, nullable: false, positive: true }),
+          value: new fields.NumberField({ initial: 1, nullable: false, min: 0 }),
           max: new fields.NumberField({ initial: 1, nullable: false, positive: true, min: 1 }),
           rechargeAmount: new FormulaField(),
           rechargeType: new fields.StringField({
@@ -98,4 +82,6 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
   }
 }
 
-export { ChargesField };
+export class DefaultHasChargesData extends ChargesData {
+  static get initialHasCharges() { return true; }
+}

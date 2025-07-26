@@ -10,7 +10,6 @@ export type ChoiceSets = ReturnType<typeof common.choiceSets>;
 export type Favorite = ReturnType<typeof common.favorite>;
 export type Category = ReturnType<typeof common.category>;
 export type Actions = ReturnType<typeof common.actions>;
-export type Charges = ReturnType<typeof common.charges>;
 export type GrantEmbedded = ReturnType<typeof common.grantEmbedded>;
 export type Grants = ReturnType<typeof common.grants>;
 export type Equippable = ReturnType<typeof common.equippable>;

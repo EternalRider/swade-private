@@ -1,5 +1,5 @@
 export { AddStatsValueField } from './AddStatsValueField';
-export { ChargesField } from './ChargesField';
+export { ChargesData } from './ChargesField';
 export { ForeignDocumentUUIDField } from './ForeignDocumentUUIDField';
 export { FormulaDerivedValueField } from './FormulaDerivedValueField';
 export { FormulaField } from './FormulaField';
