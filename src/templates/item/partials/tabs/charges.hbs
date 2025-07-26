@@ -1,17 +1,17 @@
 <header class='header'>
   <div class='header-buttons'>
-    <button type='button' class='add-charge add-button invisible'>
+    <button type='button' class='add-charge add-button invisible' data-action='addCharge'>
       <i class='fa fa-plus'></i>
       {{localize 'SWADE.AddCharge'}}
     </button>
     {{#if hasEncounterCharge}}
-      <button type='button' class='charge-recharge-encounter invisible'>
+      <button type='button' class='charge-recharge-encounter invisible' data-action='rechargeEncounter'>
         <i class='fa fa-rotate-right'></i>
         {{localize 'SWADE.Encounter'}}
       </button>
     {{/if}}
     {{#if hasDayCharge}}
-      <button type='button' class='charge-recharge-day invisible'>
+      <button type='button' class='charge-recharge-day invisible' data-action='rechargeDay'>
         <i class='fa fa-rotate'></i>
         {{localize 'SWADE.Day'}}
       </button>
@@ -56,14 +56,14 @@
               <label>{{localize 'SWADE.RechargeAmount'}}</label>
               <span class='form-fields text-center'>
                 <input type='text' class='recharge-amount' name='system.charges.charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
-                <button type='button' class='charge-recharge-manual invisible' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
+                <button type='button' class='charge-recharge-manual invisible' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
                   <i class='fas fa-rotate-right'></i>
                 </button>
               </span>
             </div>
           {{/unless}}
         </span>
-        <button type='button' class='charge-delete invisible' title='{{localize "Delete"}}' data-charge-id='{{id}}' {{#if (eq ../item.system.charges.size 1)}}style='visibility: hidden;' {{/if}}>
+        <button type='button' class='charge-delete invisible' data-action='deleteCharge' title='{{localize "Delete"}}' data-charge-id='{{id}}' {{#if (eq ../item.system.charges.size 1)}}style='visibility: hidden;' {{/if}}>
           <i class='fas fa-trash fa-2x'></i>
         </button>
       </fieldset>

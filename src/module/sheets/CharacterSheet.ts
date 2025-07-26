@@ -218,7 +218,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     );
 
     // Charge recharge
-    html.querySelectorAll('.charge-recharge-manual').forEach((el) =>
+    html.querySelectorAll('data-action="rechargeManual"').forEach((el) =>
       el.addEventListener('click', async (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);

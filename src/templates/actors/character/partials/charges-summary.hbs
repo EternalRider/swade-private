@@ -25,7 +25,7 @@
               placeholder='1'
               data-name="system.charges.charges.{{charge.id}}.max"
               {{disabled (and (eq ../system.subtype 'battery') (eq @index 0))}}/>
-              <button type='button' class='charge-recharge-manual invisible{{#if (eq charge.rechargeType "finite")}} no-recharge{{/if}}' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{charge.id}}'>
+              <button type='button' class='charge-recharge-manual invisible{{#if (eq charge.rechargeType "finite")}} no-recharge{{/if}}' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{charge.id}}'>
                 <i class='fas fa-rotate-right'></i>
               </button>
           </span>
