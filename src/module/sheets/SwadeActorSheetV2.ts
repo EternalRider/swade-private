@@ -137,7 +137,7 @@ export class SwadeActorSheetV2<
   ) {
     const effect = this._getEmbeddedDocument(
       target,
-    ) as ActiveEffect.ConfiguredInstance;
+    ) as ActiveEffect.Implementation;
     effect.update({ disabled: !effect.disabled });
   }
 
@@ -187,7 +187,10 @@ export class SwadeActorSheetV2<
    * @param event The originating DragEvent
    */
   protected override async _onDrop(event: DragEvent) {
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as object;
+    const data =
+      foundry.applications.ux.TextEditor.implementation.getDragEventData(
+        event,
+      ) as object;
     const actor = this.actor;
     const allowed = Hooks.call('dropActorSheetData', actor, this, data);
     if (allowed === false) return;

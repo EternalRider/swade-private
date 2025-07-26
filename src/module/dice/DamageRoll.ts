@@ -14,7 +14,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     data: ActorRollData = {},
     options: DamageRollOptions = {},
   ) {
-    options.rollType ??= "damage";
+    options.rollType ??= 'damage';
     super(formula, data, options);
   }
 

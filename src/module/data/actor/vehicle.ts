@@ -19,7 +19,7 @@ declare namespace VehicleData {
   interface Schema
     extends SwadeBaseActorData.Schema,
       ReturnType<typeof createVehicleSchema> {}
-  interface BaseData {
+  interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
         effects: Array<RollModifier>;
@@ -66,7 +66,7 @@ declare namespace VehicleData {
     };
   }
 
-  interface DerivedData {
+  interface DerivedData extends SwadeBaseActorData.DerivedData {
     scale: number;
     cargo: {
       value: number;

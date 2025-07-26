@@ -180,7 +180,9 @@ async function soakPrompt(
       icon: '<i class="fas fa-plus-minus"></i>',
       callback: async (_event: PointerEvent, button: HTMLButtonElement) => {
         const html = button.form!;
-        damageContext.damage.ap = Number(html.querySelector<HTMLInputElement>('#ap')?.value);
+        damageContext.damage.ap = Number(
+          html.querySelector<HTMLInputElement>('#ap')?.value,
+        );
         damageContext.damage.total = Number(
           html.querySelector<HTMLInputElement>('#damage')?.value,
         );

@@ -6,7 +6,7 @@ import { getStatusEffectDataById } from '../../util';
 
 declare global {
   interface DocumentClassConfig {
-    Combatant: typeof SwadeCombatant;
+    Combatant: typeof SwadeCombatant<Combatant.SubType>;
   }
 }
 

@@ -17,7 +17,7 @@ declare namespace HeadquartersData {
 
 class HeadquartersData extends foundry.abstract.TypeDataModel<
   HeadquartersData.Schema,
-  JournalEntryPage.ConfiguredInstance,
+  JournalEntryPage.Implementation,
   HeadquartersData.BaseData,
   HeadquartersData.DerivedData
 > {

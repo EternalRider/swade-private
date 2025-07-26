@@ -209,7 +209,8 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
         delete partContext.tabs.additionalStats;
       if (partContext.isGroup) {
         delete partContext.tabs.traits;
-        if (partContext.tabs.additionalStats) partContext.tabs.additionalStats.active = true;
+        if (partContext.tabs.additionalStats)
+          partContext.tabs.additionalStats.active = true;
         else partContext.tabs.auras.active = true;
       }
     } else if (partId === 'auras') {
@@ -236,7 +237,10 @@ class SwadeItemTweaks<
   );
 
   static override PARTS = {
-    main: { template: 'systems/swade/templates/item/apps/tweaks.hbs', scrollable: [''] },
+    main: {
+      template: 'systems/swade/templates/item/apps/tweaks.hbs',
+      scrollable: [''],
+    },
     footer: { template: 'templates/generic/form-footer.hbs' },
   };
 

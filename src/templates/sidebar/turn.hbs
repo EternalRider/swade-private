@@ -20,27 +20,27 @@
       <button type="button" class="inline-control combatant-control icon fa-solid fa-bullseye-arrow" data-action="pingCombatant" data-tooltip="COMBAT.PingCombatant" aria-label="{{ localize " COMBAT.PingCombatant" }}"></button>
       {{/if}}
       {{#unless @root.user.isGM}}
-      <button type="button" class="inline-control combatant-control icon fa-solid fa-arrows-to-eye" data-action="panToCombatant" data-tooltip="COMBAT.PanToCombatant" aria-label="{{ localize " COMBAT.PanToCombatant" }}"></button>
-      {{/unless}}
+        <button type="button" class="inline-control combatant-control icon fa-solid fa-arrows-to-eye" data-action="panToCombatant" data-tooltip="COMBAT.PanToCombatant" aria-label="{{ localize " COMBAT.PanToCombatant" }}"></button>
+    {{/unless}}
       {{#if @root.combat.started}}
+        {{#if (and active isOwner)}}
+          {{#unless (or (gt @root.combat.round roundHeld) turnLost group)}}
+          <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-action="toggleHold"><i class="fa-solid fa-hand-back-fist"></i></a>
+          {{/unless}}
+        {{/if}}
 
-      {{#if active}}
-      {{#unless (or (gt @root.combat.round roundHeld) turnLost group)}}
-      <a class="combatant-control {{#if isOnHold}}active{{/if}}" data-tooltip="SWADE.Hold" data-action="toggleHold"><i class="fa-solid fa-hand-back-fist"></i></a>
-      {{/unless}}
-      {{/if}}
+        {{#if @root.user.isGM}}
+          {{#if (or isOnHold turnLost)}}
+          <a class="combatant-control {{#if turnLost}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-action="toggleTurnLost"><i class="fa-solid fa-ban"></i></a>
+          {{/if}}
 
-      {{#if (or isOnHold turnLost)}}
-      <a class="combatant-control {{#if turnLost}}active{{/if}}" data-tooltip="SWADE.LoseTurn" data-action="toggleTurnLost"><i class="fa-solid fa-ban"></i></a>
-      {{/if}}
-
-      {{#if isOnHold}}
-      {{#unless (and (eq @root.combat.round roundHeld) active)}}
-      <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-action="actNow"><i class="fa-solid fa-long-arrow-alt-right"></i></a>
-      <a class="combatant-control active" data-tooltip="SWADE.ActAfterCurrentCombatant" data-action="actAfter"><i class="fa-solid fa-level-down-alt"></i></a>
-      {{/unless}}
-      {{/if}}
-
+          {{#if isOnHold}}
+            {{#unless (and (eq @root.combat.round roundHeld) active)}}
+            <a class="combatant-control active" data-tooltip="SWADE.ActBeforeCurrentCombatant" data-action="actNow"><i class="fa-solid fa-long-arrow-alt-right"></i></a>
+            <a class="combatant-control active" data-tooltip="SWADE.ActAfterCurrentCombatant" data-action="actAfter"><i class="fa-solid fa-level-down-alt"></i></a>
+            {{/unless}}
+          {{/if}}
+        {{/if}}
       {{/if}}
       {{!-- Foundry TODO: Target Control --}}
       <div class="token-effects" data-tooltip="{{ effects.tooltip }}">

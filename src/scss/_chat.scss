@@ -1,3 +1,12 @@
+aside#tooltip {
+  .card-name {
+    text-align: center;
+  }
+  .card-face {
+    height: 30vh;
+  }
+}
+
 .swade.chat-card {
   font-style: normal;
   font-size: var(--font-size-12);
@@ -64,15 +73,6 @@
         position: relative;
         height: 75px;
         border: none;
-      }
-
-      &:hover {
-        transform: scale(4.75) rotate(0deg);
-        filter: drop-shadow(4px 6px 4px rgb(0 0 0 / 50%));
-        z-index: 2;
-        transition:
-          transform 0.2s ease-in,
-          z-index 0.2s step-start;
       }
     }
 

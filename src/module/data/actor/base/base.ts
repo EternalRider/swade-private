@@ -23,7 +23,8 @@ export type TokenSize = { width: number; height: number };
 class SwadeBaseActorData<
   Schema extends SwadeBaseActorData.Schema = SwadeBaseActorData.Schema,
   BaseData extends SwadeBaseActorData.BaseData = SwadeBaseActorData.BaseData,
-  DerivedData extends SwadeBaseActorData.DerivedData = SwadeBaseActorData.DerivedData,
+  DerivedData extends
+    SwadeBaseActorData.DerivedData = SwadeBaseActorData.DerivedData,
 > extends foundry.abstract.TypeDataModel<
   Schema,
   SwadeActor,
@@ -33,10 +34,10 @@ class SwadeBaseActorData<
   static override defineSchema(): SwadeBaseActorData.Schema {
     return {
       additionalStats: makeAdditionalStatsSchema(),
-  
-      category: new fields.StringField({ 
-        required: false, 
-        initial: ''
+
+      category: new fields.StringField({
+        required: false,
+        initial: '',
       }),
 
       auras: new fields.TypedObjectField(
@@ -74,7 +75,8 @@ class SwadeBaseActorData<
               choices: {
                 [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 'TOKEN.DISPOSITION.HOSTILE',
                 [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 'TOKEN.DISPOSITION.NEUTRAL',
-                [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 'TOKEN.DISPOSITION.FRIENDLY',
+                [CONST.TOKEN_DISPOSITIONS.FRIENDLY]:
+                  'TOKEN.DISPOSITION.FRIENDLY',
               },
               required: true,
             }),

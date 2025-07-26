@@ -164,7 +164,9 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           { renderSheet: true, parent: this.actor },
         );
       } else {
-        new ActiveEffectWizard({ document: this.actor }).render({ force: true });
+        new ActiveEffectWizard({ document: this.actor }).render({
+          force: true,
+        });
       }
     });
 
@@ -212,14 +214,16 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
         secrets: this.document.isOwner,
       };
 
-      item.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.description,
-        itemEnrichmentOptions,
-      );
-      item.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.notes,
-        itemEnrichmentOptions,
-      );
+      item.enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions,
+        );
+      item.enrichedNotes =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes,
+          itemEnrichmentOptions,
+        );
 
       itemsByType[type] ??= [];
       if (
@@ -362,9 +366,11 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
             callback: (_event, button: HTMLButtonElement) => {
               const html = button.form!;
               resolve({
-                type: html.querySelector<HTMLSelectElement>('select[name="type"]')
+                type: html.querySelector<HTMLSelectElement>(
+                  'select[name="type"]',
+                )?.value as string,
+                name: html.querySelector<HTMLInputElement>('input[name="name"]')
                   ?.value as string,
-                name: html.querySelector<HTMLInputElement>('input[name="name"]')?.value as string,
               });
             },
           },
@@ -453,7 +459,9 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           label: game.i18n.localize('SWADE.Ok'),
           default: true,
           callback: (_event, button: HTMLButtonElement) => {
-            const mod = button.form!.querySelector<HTMLInputElement>('input[name="modifier"]')?.value;
+            const mod = button.form!.querySelector<HTMLInputElement>(
+              'input[name="modifier"]',
+            )?.value;
             const newData = {};
             newData[targetPropertyPath] = parseInt(mod as string);
             this.actor.update(newData);

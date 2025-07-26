@@ -416,7 +416,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   override async getData(
-    options?: Partial<DocumentSheetOptions>,
+    options?: Partial<DocumentSheet.Options>,
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
@@ -817,7 +817,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       ) {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
-          value: modifier.signedString(),
+          value: util.signedNumberString(modifier),
         });
       }
     } else if (action === 'pp-adjust') {
@@ -1176,7 +1176,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;
@@ -1214,7 +1216,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;
@@ -1527,7 +1531,7 @@ interface SheetArcaneBackground {
   powers: SwadeItem[];
 }
 
-type OptionsPartial = Partial<ActorSheet<DocumentSheetOptions<SwadeActor>>>;
+type OptionsPartial = Partial<ActorSheet<DocumentSheet.Options<SwadeActor>>>;
 
 interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;

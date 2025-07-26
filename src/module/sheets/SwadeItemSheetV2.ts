@@ -958,7 +958,7 @@ interface SwadeItemSheetData extends OptionsPartial {
   bonusDamageDieSideOptions?: DieSidesOption[];
 }
 
-type OptionsPartial = Partial<DocumentSheetOptions<Item>>;
+type OptionsPartial = Partial<DocumentSheet.Options<Item>>;
 
 interface CollapsibleStates {
   actions: Record<string, boolean>;
