@@ -3,6 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
+import { signedNumberString } from './util';
 
 /*****************************
  * General Utility Helpers
@@ -10,7 +11,7 @@ import SwadeItem from './documents/item/SwadeItem';
 
 function add(a, b) {
   const result = parseInt(a) + parseInt(b);
-  return result.signedString();
+  return signedNumberString(result);
 }
 
 function multiply(a: number, b: number) {
@@ -28,7 +29,7 @@ function isOdd(number: number): boolean {
 function signedString(num) {
   const result = parseInt(num);
   if (isNaN(result)) return '';
-  return result.signedString();
+  return signedNumberString(result);
 }
 
 function rotate(number: number) {

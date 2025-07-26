@@ -587,6 +587,7 @@ SWADE:
   ShowInChat: Show in chat
   ExpandDescription: Expand to show description
   Favorite: Favorite
+  Unfavorite: Remove favorite
   Equip: Equip
   RollDamage: Roll Damage
   SystemLinks:
@@ -735,7 +736,7 @@ SWADE:
     CoreSkillsList:
       Name: List of Core Skills
       Hint: >-
-        Enter a comma-separated list of skill names to be defined as core skills
+        Enter a comma-separated list of skill names or their SWIDs to be defined as core skills
         for all actors
     CoreSkillsPack:
       Name: Core Skills Compendium
@@ -1550,7 +1551,8 @@ SWADE:
     LinkScene: Link Scene
     DealAll: Deal All
     DealNPC: Deal NPCs
-    StartSurpriseRound: Start Surprise Round
+    StartSurpriseRound: Begin Surprise Round
+    StartEncounter: Begin Encounter
     AdvanceRoundTitle: Advance to next round?
     AdvanceRoundContent: Do you want to advance to the next round?
     RevertRoundTitle: Revert to previous round?
