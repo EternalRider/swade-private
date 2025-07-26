@@ -22,7 +22,7 @@
           class="effect-action {{#unless effect.favorite}}item-unequipped{{/unless}}" 
           data-action="toggle"
           data-toggle="system.favorite"
-          title="{{localize "SWADE.Favorite"}}"
+          title="{{localize (ifThen effect.favorite "SWADE.Unfavorite" "SWADE.Favorite")}}"
         >
           <i class="fas fa-star"></i>
         </button>

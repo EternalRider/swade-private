@@ -1,0 +1,24 @@
+@use 'variables' as *;
+
+@mixin entity-links($color: $header-text) {
+  a.content-link,
+  a.entity-link {
+    color: $color;
+    text-decoration: underline;
+
+    background: unset;
+    border: none;
+    padding: 0;
+
+    &.broken {
+      cursor: unset;
+      color: unset;
+      text-decoration: unset;
+      text-shadow: none;
+    }
+
+    i {
+      display: none;
+    }
+  }
+}

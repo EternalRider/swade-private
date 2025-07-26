@@ -12,7 +12,7 @@ import SwadeCombatant from './SwadeCombatant';
 
 declare global {
   interface DocumentClassConfig {
-    Combat: typeof SwadeCombat;
+    Combat: typeof SwadeCombat<Combat.SubType>;
   }
 }
 
@@ -109,7 +109,10 @@ export default class SwadeCombat<
             },
           },
           rejectClose: false,
-          render: (_event: Event, dialog: foundry.applications.api.DialogV2) => {
+          render: (
+            _event: Event,
+            dialog: foundry.applications.api.DialogV2,
+          ) => {
             const html = dialog.element;
             const typeSelect = html.querySelector<HTMLSelectElement>(
               'select[name="type"]',

@@ -30,7 +30,7 @@
                   type='button'
                   class='item-toggle'
                   data-toggle='system.favorite'
-                  title='{{localize "SWADE.Favorite"}}'
+                  title='{{localize (ifThen system.favorite "SWADE.Unfavorite" "SWADE.Favorite")}}'
                 >
                   {{#if system.favorite}}
                     <i class='fas fa-star'></i>

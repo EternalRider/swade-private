@@ -23,10 +23,7 @@ export default class SwadeCards extends Cards {
     }
 
     // Draw from the sorted stack
-    const drawn = this._drawCards(
-      number,
-      how,
-    ) as foundry.abstract.Document.Stored<Card>[];
+    const drawn = this._drawCards(number, how) as Card.Stored[];
 
     // Process the card data
     const toCreate = new Array<Card.CreateData>();
@@ -46,6 +43,6 @@ export default class SwadeCards extends Cards {
       this.deleteEmbeddedDocuments('Card', toDelete),
     ]);
     const updated = await this.updateEmbeddedDocuments('Card', toUpdate);
-    return updated as foundry.abstract.Document.Stored<Card>[];
+    return updated as Card.Stored[];
   }
 }

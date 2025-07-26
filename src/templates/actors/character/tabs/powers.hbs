@@ -10,7 +10,7 @@
             type="button"
             class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}"
             data-toggle="system.favorite"
-            title="{{localize "SWADE.Favorite"}}"
+            title="{{localize (ifThen system.favorite "SWADE.Unfavorite" "SWADE.Favorite")}}"
           >
             <i class="fas fa-star"></i>
           </button>

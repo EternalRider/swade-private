@@ -273,26 +273,28 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
   }
 
   #buildCoreSkillPackChoices() {
-    return game.packs
-      ?.filter((p) => {
-        const index = Array.from(p.index.values()).filter(
-          //remove the CF entities
-          (e) => e.name !== '#[CF_tempEntity]',
-        );
-        const isItem = p.metadata.type === 'Item';
-        return isItem && index.every((v) => v['type'] === 'skill');
-      })
-      .reduce(
-        (acc, p) => {
-          let packName = 'System';
-          if (p.metadata['packageType'] !== 'system') {
-            packName = game.modules.get(p.metadata['packageName'])?.['title'];
-          }
-          acc[p.collection] = `${p.metadata.label} (${packName})`;
-          return acc;
-        },
-        {} as Record<string, string>,
+    const packChoices = Array();
+
+    const packs = game.packs?.filter((p) => {
+      const index = Array.from(p.index.values()).filter(
+        // Remove the CF entities
+        (e) => e.name !== '#[CF_tempEntity]',
       );
+      const isItem = p.metadata.type === 'Item';
+      return isItem && index.every((v) => v['type'] === 'skill');
+    });
+
+    for (const p of packs) {
+      let packName = game.i18n.localize('System');
+      if (p.metadata['packageType'] === 'world') {
+        packName = game.i18n.localize('World');
+      } else if (p.metadata['packageType'] !== 'system') {
+        packName = game.modules.get(p.metadata['packageName'])?.['title'];
+      }
+      packChoices.push({ key: p.collection, label: `${p.metadata.label} (${packName})` });
+    }
+
+    return packChoices;
   }
 
   #buildActionDeckChoices() {

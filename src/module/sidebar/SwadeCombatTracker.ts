@@ -12,7 +12,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       toggleHold: this.#onSwadeCombatantControl,
       toggleTurnLost: this.#onSwadeCombatantControl,
       actNow: this.#onSwadeCombatantControl,
-      actAfter: this.#onSwadeCombatantControl
+      actAfter: this.#onSwadeCombatantControl,
     },
   };
 
@@ -216,7 +216,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected async _onDrop(event: DragEvent) {
     // Combat Tracker contains combatant groups, which means this would fire twice
     event.stopPropagation();
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const data =
+      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
     const combatant = await SwadeCombatant.fromDropData(data);
 
@@ -378,26 +379,30 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   static async #onSwadeCombatantControl(
     this: SwadeCombatTracker,
     _event: PointerEvent,
-    target: HTMLElement
+    target: HTMLElement,
   ) {
-    const combatantId = target?.closest('[data-combatant-id]')?.dataset.combatantId;
-    const combatant: SwadeCombatant | null = this.viewed?.combatants.get(combatantId);
+    const combatantId = target?.closest('[data-combatant-id]')?.dataset
+      .combatantId;
+    const combatant: SwadeCombatant | null =
+      this.viewed?.combatants.get(combatantId);
     if (!combatant) return;
 
     switch (target.dataset.action) {
-      case 'toggleHold': return await combatant.toggleHold();
-      case 'toggleTurnLost': return await combatant.toggleTurnLost();
-      case 'actNow': return await combatant.actNow();
-      case 'actAfter': return await combatant.actAfterCurrentCombatant();
+      case 'toggleHold':
+        return await combatant.toggleHold();
+      case 'toggleTurnLost':
+        return await combatant.toggleTurnLost();
+      case 'actNow':
+        return await combatant.actNow();
+      case 'actAfter':
+        return await combatant.actAfterCurrentCombatant();
     }
   }
 
   /**
    * Handle new Combat creation request by presenting a form asking what type
    */
-  protected override async _onCombatCreate(
-    event: PointerEvent,
-  ): Promise<void> {
+  protected override async _onCombatCreate(event: PointerEvent): Promise<void> {
     event.preventDefault();
     const cls = getDocumentClass('Combat');
     await cls.createDialog({ active: true });

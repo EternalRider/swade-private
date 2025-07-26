@@ -1,3 +1,12 @@
+@use 'entity-links' as *;
+
+.swade-official,
+.swade-app {
+  // This overrides styles for embedded portions of applications, e.g.,
+  // descriptions, notes, etc.
+  @include entity-links();
+}
+
 .swade-app {
   //Custom properties
   --content-background-image: url('assets/paperboard-texture.webp');

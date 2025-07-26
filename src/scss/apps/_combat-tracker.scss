@@ -1,4 +1,13 @@
 .combat-sidebar.swade {
+  .combat-controls {
+    flex-wrap: wrap;
+
+    .combat-control[data-action='startCombat'],
+    .combat-control[data-action='startSurpriseCombat'] {
+      flex: 0 0 100%;
+    }
+  }
+
   .type-label {
     line-height: calc(var(--sidebar-header-height) / 2);
   }

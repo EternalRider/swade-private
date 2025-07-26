@@ -135,7 +135,7 @@ export default class SwadeIntegrationHooks {
         ITEM_CLASS_LOOT_TYPE: '',
 
         // The item class type is the type of item that will be used for the default weapon item
-        ITEM_CLASS_WEAPON_TYPE: 'weapon', 
+        ITEM_CLASS_WEAPON_TYPE: 'weapon',
 
         // The item class type is the type of item that will be used for the default equipment item
         ITEM_CLASS_EQUIPMENT_TYPE: 'gear',
@@ -150,8 +150,8 @@ export default class SwadeIntegrationHooks {
         ITEM_FILTERS: [
           {
             path: 'type',
-            filters: 'ancestry,edge,hindrance,skill,power,ability,action'
-          }
+            filters: 'ancestry,edge,hindrance,skill,power,ability,action',
+          },
         ],
 
         // Item similarities determines how item piles detect similarities and differences in the system
@@ -170,12 +170,12 @@ export default class SwadeIntegrationHooks {
               path: 'system.details.currency',
             },
             primary: true,
-            exchangeRate: 1
-          }
+            exchangeRate: 1,
+          },
         ],
 
-        CURRENCY_DECIMAL_DIGITS: 0.01
-      }
+        CURRENCY_DECIMAL_DIGITS: 0.01,
+      },
     };
 
     const data = Object.entries(versions).find(([version]) => {

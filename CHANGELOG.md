@@ -16,31 +16,48 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Removed
 
 ### Fixed
+- "Hold" combatant control now only visible to owner(s) of the combatant, some other combatant controls only show to the GM (as only the GM could use them anyway) (#1348) **by @roth-michael**
 
 ### Security
 
 ### Known Issues
 -->
 
+## 5.0.4
+
+### Changed
+
+- Improved the documentation of Pace (!876) **by @Nelviticus**
+- Clarified the text on the Favorite tooltip (!883) **by @mhilbrunner**
+- The controls for going on hold are now only visible to controllers of a given combatant. (#1348) **by @roth-michael**
+
+### Fixed
+
+- Fixed an issue that would prevent switching out which compendium Core Skills are drawn from. (#1346) **by @mhilbrunner**
+- Fixed the display of Initiative cards in the Chatlog. (#1350) **by @mhilbrunner**
+- Fixed an issue that caused negative numeric values to throw data validation errors (#1352) **by @florad92**
+- Fixed a layout issue in the combat tracker. (#1353) **by @mhilbrunner**
+- Fixed inconsistent styles in entity/content links in embedded descriptions. Broken links now fail silently (#1359) **by @jalensailin**
+
 ## 5.0.3
 
 ### Added
 
 - Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
-- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement
+- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement.
 
 ### Fixed
 
-- Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
-- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation **by @florad92**
-- Fixed a display issue with the NPC sheet attributes **by @mhilbrunner**
+- Auras will now be visible to the dispositions that they should be visible to. **by @roth-michael**
+- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation. **by @florad92**
+- Fixed a display issue with the NPC sheet attributes. **by @mhilbrunner**
 
 ## 5.0.2
 
 ### Fixed
 
 - Surprise Round button now appears once more. (#1339) **by @roth-michael**
-- Combatants in groups now always go in the "right" order **by @roth-michael**
+- Combatants in groups now always go in the "right" order. **by @roth-michael**
 - Tweaks can now be opened on vehicle & group actor sheets again (and they can have auras now!) **by @roth-michael**
 - Quick no longer allows infinitely drawing cards. (#1338) **by @roth-michael**
 - Fixed various instances of dialogs not working properly. **by @roth-michael**

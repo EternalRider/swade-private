@@ -21,8 +21,16 @@ declare global {
     Actor: {
       character: typeof CharacterData;
       npc: typeof NpcData;
-      vehicle: typeof VehicleData;
-      group: typeof GroupData;
+      vehicle: typeof VehicleData<
+        VehicleData.Schema,
+        VehicleData.BaseData,
+        VehicleData.DerivedData
+      >;
+      group: typeof GroupData<
+        GroupData.Schema,
+        GroupData.BaseData,
+        GroupData.DerivedData
+      >;
     };
   }
 }

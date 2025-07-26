@@ -8,7 +8,7 @@ import SwadeItem from '../item/SwadeItem';
 
 declare global {
   interface DocumentClassConfig {
-    ActiveEffect: typeof SwadeActiveEffect;
+    ActiveEffect: typeof SwadeActiveEffect<ActiveEffect.SubType>;
   }
   interface FlagConfig {
     ActiveEffect: {
@@ -443,7 +443,7 @@ export default class SwadeActiveEffect<
       label: this.name,
       parent: this.parent?.name,
     });
-    const buttons: Record<string, DialogButton> = {
+    const buttons: Record<string, Dialog.Button> = {
       yes: {
         label: game.i18n.localize('Yes'),
         icon: '<i class="fas fa-check"></i>',
