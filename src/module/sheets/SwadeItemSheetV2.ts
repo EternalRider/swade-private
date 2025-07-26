@@ -10,7 +10,7 @@ import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { ChargesData } from '../data/fields/ChargesField';
+import { ChargesData } from '../data/fields/ChargesData';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';

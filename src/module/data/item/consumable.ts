@@ -25,7 +25,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
-import { DefaultHasChargesData } from '../fields/ChargesField';
+import { DefaultHasChargesData } from '../fields/ChargesData';
 
 declare namespace ConsumableData {
   interface Schema

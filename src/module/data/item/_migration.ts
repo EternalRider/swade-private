@@ -2,7 +2,7 @@ import { ConsumableData } from '.';
 import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
-import { ChargesData } from '../fields/ChargesField';
+import { ChargesData } from '../fields/ChargesData';
 import type { AbilityData } from './ability';
 import { EdgeData } from './edge';
 
