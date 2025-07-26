@@ -507,7 +507,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         for (const itemCharge of system.charges.sorted) {
           charges.push({
             charge: itemCharge,
-            rechargeType: item.sheet.chargeRechargeTypes[itemCharge.rechargeType],
+            rechargeType: SWADE.chargeRechargeTypes[itemCharge.rechargeType],
           });
         }
         foundry.utils.setProperty(item, 'charges', charges);

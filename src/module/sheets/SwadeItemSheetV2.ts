@@ -88,15 +88,6 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     };
   }
 
-  get chargeRechargeTypes(): Record<string, string> {
-    return {
-      finite: 'SWADE.Finite',
-      manual: 'SWADE.Manual',
-      encounter: 'SWADE.Encounter',
-      day: 'SWADE.Day',
-    };
-  }
-
   get macroActorTypes(): Record<string, string> {
     return {
       default: 'SWADE.MacroActor.Default',
@@ -400,7 +391,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
-      chargeRechargeTypes: this.chargeRechargeTypes,
+      chargeRechargeTypes: SWADE.chargeRechargeTypes,
       macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
