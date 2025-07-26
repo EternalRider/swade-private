@@ -184,7 +184,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       }),
     );
 
-    html.querySelector('data-action="addCharge"')?.addEventListener('click', () => {
+    html.querySelector('[data-action="addCharge"]')?.addEventListener('click', () => {
       const id = ChargesData.randomID();
       this.item.update({
         ['system.charges.charges.' + id]: {
@@ -198,7 +198,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       });
     });
 
-    html.querySelectorAll('data-action="deleteCharge"').forEach((el) =>
+    html.querySelectorAll('[data-action="deleteCharge"]').forEach((el) =>
       el.addEventListener('click', async (ev) => {
         const id = ev.currentTarget.dataset.chargeId;
         const charge = foundry.utils.getProperty(
@@ -227,7 +227,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       }),
     );
 
-    html.querySelectorAll('data-action="rechargeManual"').forEach((el) =>
+    html.querySelectorAll('[data-action="rechargeManual"]').forEach((el) =>
       el.addEventListener('click', async (ev) => {
         const id = ev.currentTarget.dataset.chargeId;
         const charge = foundry.utils.getProperty(
@@ -249,7 +249,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       }),
     );
 
-    html.querySelector('data-action="rechargeEncounter"')
+    html.querySelector('[data-action="rechargeEncounter"]')
       ?.addEventListener('click', async () => {
         const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
         await foundry.applications.api.DialogV2.confirm({
@@ -263,7 +263,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         });
       });
 
-    html.querySelector('data-action="rechargeDay"')
+    html.querySelector('[data-action="rechargeDay"]')
       ?.addEventListener('click', async () => {
         const text = game.i18n.localize('SWADE.RechargeDayConfirm');
         await foundry.applications.api.DialogV2.confirm({
