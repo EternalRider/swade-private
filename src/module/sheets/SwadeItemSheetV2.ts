@@ -225,7 +225,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
               let sort = 0;
               const charges = this.item.system.charges.charges;
               delete charges[id];
-              this.item.system.charges.sorted.forEach((l) => charges[l.id].sort = sort++);
+              this.item.system.charges.sorted.forEach((c) => charges[c.id].sort = sort++);
               await this.item.update({
                 'system.charges.charges': charges,
                 [`system.charges.charges.-=${id}`]: null,
@@ -1047,6 +1047,9 @@ class ChargeDragSort {
   constructor(html, item) {
     this.item = item;
     this.chargesList = html.querySelector('.charges-list');
+    if (!this.chargesList) {
+      return;
+    }
 
     this.chargesList.querySelectorAll("li").forEach((el) => {
       el.ondragstart = this.onDragStart.bind(this);
