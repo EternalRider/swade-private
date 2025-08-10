@@ -1,3 +1,5 @@
+@use 'entity-links' as *;
+
 body.theme-dark .swade-application {
   //Color definitions
   --swade-primary-color: var(--color-warm-2);
@@ -48,6 +50,10 @@ body.theme-light .swade-application {
 
   font-family: var(--font-family), var(--font-awesome);
   background: var(--swade-background);
+
+  // This overrides styles for embedded portions of applications, e.g.,
+  // descriptions, notes, etc.
+  @include entity-links(var(--swade-primary-color));
 
   &.standard-form {
     gap: 0;
