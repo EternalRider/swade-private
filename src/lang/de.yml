@@ -591,9 +591,8 @@ SWADE:
     CoreSkillsList:
       Name: Liste der Grundfertigkeiten
       Hint: >-
-        Gib hier die Namen der Grundfertigkeiten deines Settings an. Zum
-        Beispiel so: Allgemeinwissen, Athletik, Heimlichkeit, Überreden,
-        Wahrnehmung
+        Gib hier die Namen der Grundfertigkeiten deines Settings an. Zum Beispiel
+        so: Allgemeinwissen, Athletik, Heimlichkeit, Überreden, Wahrnehmung
     CoreSkillsPack:
       Name: Kompendium mit Grundfertigkeiten
       Hint: Wähle aus, aus welchem Kompendium die Grundfertigkeiten bezogen werden
