@@ -538,8 +538,8 @@ SWADE:
     CoreSkillsList:
       Name: Llista d'habilitats bàsiques
       Hint: >-
-        Introduïu una llista separada per comes d'habilitats per definir com a
-        habilitats bàsiques per a tots els actors
+        Introduïu una llista separada per comes d'habilitats per definir com a habilitats
+        bàsiques per a tots els actors
     CoreSkillsPack:
       Name: Compendi d'habilitats bàsiques
       Hint: Trieu de quin compendi es trauran les habilitats bàsiques
