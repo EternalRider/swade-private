@@ -668,8 +668,8 @@ SWADE:
       Name: Przednia mapa wypukłości
     CoreSkillsList:
       Name: Lista umiejętności podstawowych
-      Hint: Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
-        jako podstawowe dla wszystkich aktorów
+      Hint: Wprowadź nazwy lub SWID umiejętności oddzielone przecinkiem aby zdefiniować
+        je jako podstawowe dla wszystkich aktorów
     CoreSkillsPack:
       Name: Kompendium umiejętności podstawowych
       Hint: Wybierz z którego kompendium zostaną zaczerpnięte umiejętności podstawowe
@@ -1412,6 +1412,7 @@ SWADE:
     RedrawDialog:
       Content: Wylosować nową kartę przy użyciu Fuksa, czy za darmo?
     LinkScene: Powiąż scenę
+    StartEncounter: Rozpocznij spotkanie
   FollowerCount: "{count} podążający"
   Benny: Fuks
   Free: Za darmo
@@ -1553,6 +1554,7 @@ SWADE:
   DeleteEmbeddedCardPrompt: Jesteś pewien, że chcesz usunąć tę kartę {card}?
   BuildLimit: Limit budowy
   BuildLevel: Poziom budowy
+  Unfavorite: Usuń z ulubionych
 TYPES:
   Actor:
     character: Postać gracza
