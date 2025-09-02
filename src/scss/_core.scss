@@ -2,7 +2,7 @@ body.theme-light .application {
   --background: url(/ui/parchment.jpg) repeat;
 }
 
-.directory-list .directory-item .wildcard-icon {
+.directory-list .directory-item img.wildcard-icon {
   flex-basis: 0;
   height: var(--font-size-32);
   object-fit: scale-down;
@@ -10,11 +10,11 @@ body.theme-light .application {
   vertical-align: middle;
 }
 
-.theme-dark .wildcard-icon {
+.theme-dark img.wildcard-icon {
   content: url('assets/ui/wildcard.svg');
 }
 
-.theme-light .wildcard-icon {
+.theme-light img.wildcard-icon {
   content: url('assets/ui/wildcard-dark.svg');
 }
 
@@ -37,7 +37,7 @@ body.theme-light .application {
 }
 
 // Settings sidebar
-#settings > .info > div.system-links {
+#settings .info .system-links {
   margin: 3px 0;
   a {
     font-size: var(--font-size-12);
@@ -72,5 +72,17 @@ body.theme-light .application {
     button {
       margin-top: $small-spacing;
     }
+  }
+}
+
+.icon-card-suit {
+  &.hearts,
+  &.diamonds {
+    color: #952728;
+  }
+
+  &.clubs,
+  &.spades {
+    color: var(--color-dark-1);
   }
 }

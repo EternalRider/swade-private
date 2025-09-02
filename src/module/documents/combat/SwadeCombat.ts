@@ -9,6 +9,9 @@ import SwadeUser from '../SwadeUser';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 import SwadeCards from '../card/SwadeCards';
 import SwadeCombatant from './SwadeCombatant';
+import SwadeActor from '../actor/SwadeActor';
+import { stringNonbreakingSpaces } from '../../util';
+import { constants } from '../../constants';
 
 declare global {
   interface DocumentClassConfig {
@@ -160,6 +163,63 @@ export default class SwadeCombat<
   #debouncedCombatSound: SwadeCombat['_playCombatSound'] =
     foundry.utils.debounce(super._playCombatSound, 200);
 
+  async rerollInitiative(id: string) {
+    if (!id?.length) return;
+    const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
+    if (!c || !c.isOwner) return;
+    const actor = c.actor;
+
+    const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
+      {
+        action: 'gmBenny',
+        label: stringNonbreakingSpaces(game.i18n.localize('SWADE.Rolls.GMBenny')),
+        icon: '<i class="fas fa-coins"></i>',
+      },
+      {
+        action: 'benny',
+        label: stringNonbreakingSpaces(game.i18n.localize('SWADE.Rolls.Benny')),
+        icon: '<i class="fas fa-coins"></i>',
+      },
+      {
+        action: 'free',
+        label: stringNonbreakingSpaces(game.i18n.localize('SWADE.Rolls.Free')),
+      },
+    ];
+
+    if (!game.user?.isGM) buttons.shift();
+
+    const gmHasNoBennies = game.user?.isGM && game.user?.bennies <= 0;
+    const characterHasNoBennies =
+      actor && actor instanceof SwadeActor && actor.bennies <= 0;
+    let content = game.i18n.localize('SWADE.Combat.RedrawDialog.Content');
+    if (characterHasNoBennies && !game.user?.isGM) {
+      content = game.i18n.localize('SWADE.Combat.RedrawDialog.ContentNoBenny');
+    }
+    const data: foundry.applications.api.DialogV2.Configuration = {
+      window: {
+        title: game.i18n.format('SWADE.Combat.RedrawFor', {name: c.actor?.name}),
+      },
+      content: `<p>${content}</p>`,
+      buttons,
+      default: 'benny',
+      render: (_ev, dialog: foundry.applications.api.DialogV2) => {
+        const html = dialog.element;
+        const button = html.querySelector('button[data-action="benny"]');
+        const gmButton = html.querySelector('button[data-action="gmBenny"]');
+        if (characterHasNoBennies && button) button.disabled = true;
+        if (gmHasNoBennies && gmButton) gmButton.disabled = true;
+      },
+      classes: ['dialog', 'swade-app'],
+    };
+
+    const choice = await foundry.applications.api.DialogV2.wait(data);
+    if (choice === 'free' ||
+        (choice === 'gmBenny' && await game.user?.spendBenny()) ||
+        (choice === 'benny' && await actor?.spendBenny())) {
+      await this.rollInitiative(id);
+    }
+  }
+
   override async rollInitiative(
     ids: string | string[],
     { messageOptions, updateTurn }: Combat.InitiativeOptions = {},
@@ -172,15 +232,20 @@ export default class SwadeCombat<
     const combatantUpdates: Combatant.UpdateData[] = [];
     const groupUpdates: Updates[] = [];
 
-    //Check if enough cards are available
-    if (ids.length > this.actionDeck.availableCards.length) {
+    // Check if enough cards are available, groups only need 1 for the leader.
+    const cardsNeeded = ids.filter((id) => {
+      const c = this.combatants.get(id, { strict: true }) as SwadeCombatant;
+      return !c.group || c.isGroupLeader;
+    }).length;
+    if (cardsNeeded > this.actionDeck.availableCards.length) {
       const message = game.i18n.format('SWADE.NoCardsLeft', {
-        needed: ids.length,
+        needed: cardsNeeded,
         current: this.actionDeck.availableCards.length,
       });
-      ui.notifications.warn(message);
-      return this;
+      ui.notifications.error(message);
+      throw new Error(message);
     }
+
     // Iterate over Combatants, performing an initiative draw for each
     for (const id of ids) {
       // Get Combatant data
@@ -305,28 +370,30 @@ export default class SwadeCombat<
         });
       }
 
-      // Construct chat message data
-      const messageData = foundry.utils.mergeObject(
-        {
-          speaker: ChatMessage.getSpeaker({
-            actor: c.actor,
-            token: c.token,
-            alias: c.name,
-          }),
-          whisper:
-            c.token?.hidden || c.hidden
-              ? game?.users?.filter((u) => u.isGM)
-              : [],
-          content: '', //keep the content empty so we don't trigger validation warnings
-          'flags.swade': {
-            isRedraw,
-            pickedCard: pickedCard.id,
-            cards: cardsToPickFrom.map((c) => c.toObject()),
+      if (game.settings.get('swade', 'initMessage') !== constants.INIT_MESSAGE_TYPE.OFF || isRedraw) {
+        // Construct chat message data
+        const messageData = foundry.utils.mergeObject(
+          {
+            speaker: ChatMessage.getSpeaker({
+              actor: c.actor,
+              token: c.token,
+              alias: c.name,
+            }),
+            whisper:
+              c.token?.hidden || c.hidden
+                ? game?.users?.filter((u) => u.isGM)
+                : [],
+            content: '', // Keep the content empty so we don't trigger validation warnings
+            'flags.swade': {
+              isRedraw,
+              pickedCard: pickedCard.id,
+              cards: cardsToPickFrom.map((c) => c.toObject()),
+            },
           },
-        },
-        messageOptions,
-      );
-      messages.push(messageData);
+          messageOptions,
+        );
+        messages.push(messageData);
+      }
     }
 
     if (!combatantUpdates.length) return this;
@@ -526,6 +593,11 @@ export default class SwadeCombat<
 
   startSurpriseCombat() {
     new AmbushAssistant(this).render(true);
+  }
+
+  getGroupLeader(groupId) {
+    const group = this.groups.get(groupId);
+    return group?.system?.leaderCombatant;
   }
 
   toggleGroupExpand(groupId) {

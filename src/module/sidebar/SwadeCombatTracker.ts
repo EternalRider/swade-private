@@ -13,6 +13,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       toggleTurnLost: this.#onSwadeCombatantControl,
       actNow: this.#onSwadeCombatantControl,
       actAfter: this.#onSwadeCombatantControl,
+      redrawInitiative: this.#redrawInitiative
     },
   };
 
@@ -161,7 +162,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   }
 
   protected _canRedrawInitiative(combatant: SwadeCombatant): boolean {
-    return combatant.isOwner && !combatant.group; // Followers can neither draw nor redraw.
+    return combatant.isOwner;
   }
 
   protected override async _onRender(context, options) {
@@ -246,6 +247,9 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
 
   protected override _getEntryContextOptions() {
     const entryOptions = super._getEntryContextOptions();
+
+    // Remove the default re-draw action.
+    entryOptions.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
 
     const getCombatant = (li: HTMLLIElement) =>
       this.viewed!.combatants.get(li.dataset.combatantId);
@@ -361,6 +365,21 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   /* -------------------------------------------------- */
   /*   Actions                                          */
   /* -------------------------------------------------- */
+
+  static async #redrawInitiative(this, event, target) {
+    let combatantId = null;
+
+    const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
+    if (groupId) {
+      combatantId = this.viewed?.getGroupLeader(groupId)?.id;
+    } else {
+      combatantId = target?.closest('[data-combatant-id]')?.dataset?.combatantId;
+    }
+
+    if (!this.viewed || !combatantId?.length) return;
+
+    this.viewed?.rerollInitiative(combatantId);
+  }
 
   static async #toggleGroupExpand(
     this: SwadeCombatTracker,

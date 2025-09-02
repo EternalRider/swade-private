@@ -23,6 +23,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.5
+
+### Changed
+
+- Vehicle operators can now roll maneuver checks even if they only have observer permission on the vehicle. (#1368) **by @florad92**
+- Decreased size on Initiative chat cards. (#1374) **by @mhilbrunner**
+
+### Fixed
+
+- The combat tracker can now properly renders symbols for cards. (#1366) **by @florad92**
+- Trait Die building should no longer remove non-english text symbols from flavor text. (#1364) **by @florad92**
+- Fixed an error that would cause an error when dealing initiative and having the corresponding chat messages disabled. (#1373) **by @mhilbrunner**
+- Restored option to redraw initiative cards. (#1361) **by @mhilbrunner**
+- Fixed an issue that would prevent player character creation when no core skills are set (#1365) **by @mhilbrunner**
+
 ## 5.0.4
 
 ### Changed

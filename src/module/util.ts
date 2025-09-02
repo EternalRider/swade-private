@@ -330,6 +330,15 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
 }
 
 /**
+ * Converts all spaces in a string to non-breaking spaces
+ * @param str The input string
+ * @returns The input string with spaces replaced with non-breaking ones
+ */
+export function stringNonbreakingSpaces(str: string) {
+  return str.replace(' ', '\u00A0');
+}
+
+/**
  * Utility function to create an HTML element for the purpose of storing embed content.
  * TODO: Evaluate if this is better somewhere else
  * @param objectToEmbed The object that the embed is for

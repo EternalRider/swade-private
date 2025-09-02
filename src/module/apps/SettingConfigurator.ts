@@ -241,7 +241,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
   }
 
   /**
-   * Remove attributes which are no longer use
+   * Remove attributes which are no longer in use.
    * @param attributes
    * @param base
    */
@@ -249,6 +249,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     attributes: AdditionalStats,
     base: AdditionalStats,
   ) {
+    if (!attributes || !base) return {};
     for (const k of Object.keys(base)) {
       if (!attributes.hasOwnProperty(k)) {
         delete attributes[k];

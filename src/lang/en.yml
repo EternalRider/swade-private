@@ -333,7 +333,7 @@ SWADE:
   PickACard: Pick a card for {name}
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}
-    needed cards are available
+    needed cards are available. Reset the deck or reduce number of combatants.
   OldCard: Old card
   ActionCard: Action Card
   ConvictionActive: Conviction Active
@@ -1559,8 +1559,10 @@ SWADE:
     RevertRoundContent: Do you want to revert to the previous round?
     DiscardedCards: Discarded Cards
     Redraw: Card Redraw
+    RedrawFor: Card Redraw ({name})
     RedrawDialog:
       Content: Draw a new Card with a Benny or for free?
+      ContentNoBenny: No bennies left. Draw a new card for free?
   FollowerCount: '{count} Followers'
   Benny: Benny
   Free: Free

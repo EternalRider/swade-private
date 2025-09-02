@@ -73,16 +73,18 @@ export default class SwadeChatMessage extends ChatMessage {
   }
 
   override async renderHTML(options = {}): Promise<HTMLElement> {
-    if (this.isCardDraw) {
-      const rendered = await this.#renderCardDraw();
-      if (rendered) this.content = rendered;
-      else return document.createElement('div');
-    } else if (this.isSwadeRoll && !this.isRollTableResult) {
+    if (this.isSwadeRoll && !this.isRollTableResult) {
       const messageData = await this.#getSwadeRollMessageData(options);
       const html = await this.#renderSwadeRollMessage(messageData);
       Hooks.callAll('renderChatMessageHTML', this, html, messageData);
       return html;
     }
+
+    if (this.isCardDraw) {
+      const rendered = await this.#renderCardDraw();
+      if (rendered) this.content = rendered;
+    }
+
     return super.renderHTML(options);
   }
 
@@ -100,25 +102,22 @@ export default class SwadeChatMessage extends ChatMessage {
         id: c._id,
         face: c.faces[c.face].img,
         name: c.faces[c.face].name || c.name,
+        suit: c.suit,
       };
     });
     const pickedCard = this.getFlag('swade', 'pickedCard');
     const isRedraw = this.getFlag('swade', 'isRedraw');
     const [[picked], discarded] = cards.partition((c) => c.id !== pickedCard);
-    if (msgType === constants.INIT_MESSAGE_TYPE.OFF && !isRedraw) {
-      return ''; //empty message
-    } else {
-      return foundry.applications.handlebars.renderTemplate(
-        'systems/swade/templates/chat/card-draw-result.hbs',
-        {
-          isRedraw,
-          picked,
-          discarded,
-          largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
-          index: this.index,
-        },
-      );
-    }
+    return foundry.applications.handlebars.renderTemplate(
+      'systems/swade/templates/chat/card-draw-result.hbs',
+      {
+        isRedraw,
+        picked,
+        discarded,
+        largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
+        index: this.index,
+      },
+    );
   }
 
   async #getSwadeRollMessageData(options): Promise<ChatMessage.MessageData> {

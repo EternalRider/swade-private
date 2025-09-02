@@ -1,10 +1,10 @@
 <ol class="combat-tracker ds-default">
   {{#each groupTurns}}
   {{#if isGroup}}
-  <li class="combatant-group {{css}}" data-action="toggleGroupExpand" data-group-id="{{id}}">
+  <li class="combatant-group {{css}}" data-group-id="{{id}}">
     <header class="group-header">
-      <img class="token-image" src="{{ img }}" alt="{{ name }}" loading="lazy">
-      <div class="token-name">
+      <img class="token-image" src="{{ img }}" alt="{{ name }}" loading="lazy" data-action="toggleGroupExpand" data-group-id="{{id}}">
+      <div class="token-name" data-action="toggleGroupExpand" data-group-id="{{id}}">
         <strong class="name">{{ name }}</strong>
       </div>
       {{!-- Initiative --}}
@@ -15,9 +15,9 @@
         <span class="initiative"><i class="fa-solid fa-ban"></i></span>
         {{else if hasRolled}}
             {{#if canRedraw}}
-            <a class="initiative dealt" data-tooltip="SWADE.Redraw">{{cardString}}</a>
+            <a class="initiative dealt" data-action="redrawInitiative" data-tooltip="SWADE.Redraw">{{cardString}}</a>
             {{else}}
-            <span class="initiative">{{cardString}}</span>
+            <span class="initiative">{{{cardString}}}</span>
             {{/if}}
         {{else if (and canDrawInit (not initiative))}}
         <a class="combatant-control roll" data-tooltip="{{localize 'SWADE.DrawInit'}}" data-control="rollInitiative"></a>
