@@ -35,7 +35,8 @@ export class CharacterData extends CreatureData<
     const coreSkills = game.settings
       .get('swade', 'coreSkills')
       .split(',')
-      .map((s) => s.trim());
+      .map((s) => s.trim())
+      .filter((s) => s !== '');
 
     // Only do this if this is a PC with no prior skills
     if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
