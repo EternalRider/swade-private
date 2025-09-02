@@ -34,7 +34,7 @@ export default class SwadeUser extends User {
 
   async spendBenny() {
     if (this.isGM) {
-      if (this.bennies <= 0) return;
+      if (this.bennies <= 0) return false;
       const message = await foundry.applications.handlebars.renderTemplate(
         CONFIG.SWADE.bennies.templates.spend,
         {
@@ -67,8 +67,10 @@ export default class SwadeUser extends User {
           false,
         );
       }
+
+      return true;
     } else if (this.character) {
-      await this.character.spendBenny();
+      return await this.character.spendBenny();
     }
   }
 

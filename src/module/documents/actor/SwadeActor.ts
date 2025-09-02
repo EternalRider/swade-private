@@ -643,7 +643,7 @@ class SwadeActor<
 
   async spendBenny() {
     //return early if there no bennies to spend
-    if (this.bennies < 1) return;
+    if (this.bennies < 1) return false;
     const msgClass = getDocumentClass('ChatMessage');
     if (game.settings.get('swade', 'notifyBennies')) {
       const speaker = msgClass.getSpeaker({
@@ -683,6 +683,8 @@ class SwadeActor<
         false,
       );
     }
+
+    return true;
   }
 
   async getBenny() {
@@ -1141,7 +1143,7 @@ class SwadeActor<
     return new foundry.dice.terms.Die({
       faces: sides,
       modifiers: modifiers,
-      options: { flavor: flavor.replace(/[^a-zA-Z\d\s:\u00C0-\u00FF]/g, '') },
+      options: { flavor },
     });
   }
 

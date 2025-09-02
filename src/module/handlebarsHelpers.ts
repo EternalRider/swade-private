@@ -88,6 +88,27 @@ function radioBoxes(
   return new Handlebars.SafeString(html);
 }
 
+function suitIcon(suit: string) {
+  let suitClass = '';
+  let suitSymbol = '';
+  if (suit?.length) {
+    suit = suit.trim().toLowerCase();
+    if (suit == 'diamonds') {
+      suitSymbol = '♦';
+    } else if (suit == 'hearts') {
+      suitSymbol = '♥';
+    } else if (suit == 'spades') {
+      suitSymbol = '♠';
+    } else if (suit == 'clubs') {
+      suitSymbol = '♣';
+    }
+    if (suitSymbol.length) {
+      suitClass = suit;
+    }
+  }
+  return new Handlebars.SafeString(`<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`);
+}
+
 /*****************************
  * Helpers for sheets
  *****************************/
@@ -382,6 +403,7 @@ export function registerCustomHelpers() {
     collapsible,
     stringify,
     radioBoxes,
+    suitIcon,
     localizeSkillAttribute,
     advanceType,
     modifier,

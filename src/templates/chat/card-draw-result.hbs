@@ -37,7 +37,7 @@
   {{/if}}
 {{else}}
   <section class='compact-draw'>
-    <h3 class='card-name'>{{picked.name}}</h3>
+    <h4 class='card-name'>{{suitIcon picked.suit}} {{picked.name}}</h4>
     {{#if discarded}}
       <details class='discarded-cards compact'>
         <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>

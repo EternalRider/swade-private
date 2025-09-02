@@ -67,9 +67,9 @@
     <span class="initiative"><i class="fa-solid fa-ban"></i></span>
     {{else if hasRolled}}
         {{#if canRedraw}}
-        <button type="button" class="combatant-control roll initiative" data-action="rollInitiative" data-tooltip="SWADE.Redraw" aria-label="{{localize 'SWADE.Redraw'}}">{{cardString}}</button>
+        <button type="button" class="combatant-control roll initiative" data-action="redrawInitiative" data-tooltip="SWADE.Redraw" aria-label="{{localize 'SWADE.Redraw'}}">{{cardString}}</button>
         {{else}}
-        <span class="initiative">{{cardString}}</span>
+        <span class="initiative">{{{cardString}}}</span>
         {{/if}}
     {{else if (and canDrawInit (not initiative))}}
     <button type="button" class="combatant-control roll" data-action="rollInitiative" data-tooltip="SWADE.DrawInit" aria-label="{{localize 'SWADE.DrawInit'}}"></button>
