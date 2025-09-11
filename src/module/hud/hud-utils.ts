@@ -1,0 +1,57 @@
+/**
+ * Debounce function to limit the rate of function execution
+ * @param func - The function to debounce
+ * @param wait - The wait time in milliseconds
+ * @returns Debounced function
+ */
+export function debounce(func: Function, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return function executedFunction(...args: any[]) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+/**
+ * Check if an element is visible in the viewport
+ */
+export function isElementVisible(element: HTMLElement): boolean {
+  const rect = element.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+}
+
+/**
+ * Get the center position of an element
+ */
+export function getElementCenter(element: HTMLElement): {
+  x: number;
+  y: number;
+} {
+  const rect = element.getBoundingClientRect();
+  return {
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2,
+  };
+}
+
+/**
+ * Calculate distance between two points
+ */
+export function getDistance(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): number {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}

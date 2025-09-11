@@ -3,7 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
-import { signedNumberString } from './util';
+import { signedNumberString, getScaleName } from './util';
 
 /*****************************
  * General Utility Helpers
@@ -421,5 +421,6 @@ export function registerCustomHelpers() {
     formatDamage,
     formatArmorLocations,
     formatHindranceSeverity,
+    getScaleName,
   });
 }
