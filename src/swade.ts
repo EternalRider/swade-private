@@ -10,6 +10,7 @@ import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
+import SwadeActorHUD from './module/apps/SwadeActorHUD';
 import {
   SwadeActorTweaks,
   SwadeDocumentTweaks,
@@ -83,6 +84,7 @@ const swadeAPI: SwadeGame = {
     CompendiumTOC,
     AttributeManager,
     ActiveEffectWizard,
+    SwadeActorHUD,
   },
   dice: {
     Benny,
@@ -357,6 +359,12 @@ Hooks.once('init', () => {
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
+
+  // Initialize SWADE HUD system
+  game.swade.hud = {
+    SwadeActorHUD,
+    ID: 'swade-hud',
+  };
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -410,10 +418,129 @@ Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
 /* ------------------------------------ */
 Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
 
+// SWADE HUD Canvas Interactions
+Hooks.once('canvasReady', () => {
+  // Listen for right-click on tokens to show HUD
+  canvas.stage.on('rightdown', (event: any) => {
+    const token = canvas.tokens.placeables.find((t: any) => {
+      const bounds = t.getBounds();
+      return bounds.contains(event.data.global.x, event.data.global.y);
+    });
+
+    if (
+      token &&
+      token.actor &&
+      token.actor.type === 'character' &&
+      token.actor.isOwner
+    ) {
+      // Prevent default context menu
+      event.data.originalEvent.preventDefault();
+
+      // Show HUD for this token
+      const hud = new SwadeActorHUD({
+        actor: token.actor,
+        token: token.document,
+      });
+      hud.render(true);
+    }
+  });
+});
+
+Hooks.on('controlToken', async (token: any, controlled: boolean) => {
+  // Handle token control changes for HUD
+  if (!controlled && token.actor && token.actor.type === 'character') {
+    // Token is being uncontrolled - hide HUD if it belongs to this token
+    const hud = foundry.applications.instances.get('swadehud') as SwadeActorHUD;
+    if (hud && hud.token?.id === token.id) {
+      await hud.close();
+    }
+  }
+});
+
 /* ------------------------------------ */
 /* System Hooks              	          */
 /* ------------------------------------ */
 // Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
+
+/* ------------------------------------ */
+/* SWADE HUD Test Functions            */
+/* ------------------------------------ */
+Hooks.once('init', () => {
+  // Add test function early in initialization
+  (window as any).testSwadeHUD = async () => {
+    // Wait for canvas to be ready
+    if (!canvas || !canvas.ready) {
+      await new Promise((resolve) => {
+        Hooks.once('canvasReady', resolve);
+      });
+    }
+
+    // Get the first owned character token
+    const ownedTokens = canvas.tokens.placeables.filter(
+      (t) => t.actor?.isOwner && t.actor?.type === 'character',
+    );
+    if (ownedTokens.length === 0) {
+      console.error(
+        'SWADE HUD: No owned character tokens found. Available tokens:',
+        canvas.tokens.placeables.map((t) => ({
+          name: t.name,
+          actorType: t.actor?.type,
+          isOwner: t.actor?.isOwner,
+        })),
+      );
+      return;
+    }
+
+    const token = ownedTokens[0];
+    console.log('SWADE HUD: Using token:', token.name);
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const HUDClass =
+        SwadeActorHUD ||
+        (window as any).SwadeActorHUD ||
+        game?.swade?.hud?.SwadeActorHUD;
+      if (!HUDClass) {
+        console.error('SWADE HUD: SwadeActorHUD class not found');
+        return;
+      }
+
+      const hud = new HUDClass({ actor: token.actor, token: token.document });
+      await hud.render(true);
+      console.log('SWADE HUD: Test HUD created successfully');
+    } catch (error) {
+      console.error('SWADE HUD: Error creating test HUD:', error);
+    }
+  };
+
+  console.log(
+    'SWADE HUD: testSwadeHUD function registered on window:',
+    typeof (window as any).testSwadeHUD,
+  );
+
+  // Also add a simple synchronous version
+  (window as any).testSwadeHUDSimple = () => {
+    console.log('SWADE HUD: Simple test - checking if HUD class exists');
+    console.log(
+      'SWADE HUD: SwadeActorHUD class available:',
+      typeof SwadeActorHUD,
+    );
+    console.log(
+      'SWADE HUD: game.swade.hud available:',
+      typeof game?.swade?.hud,
+    );
+    console.log('SWADE HUD: Canvas ready:', canvas?.ready);
+    console.log(
+      'SWADE HUD: Available tokens:',
+      canvas?.tokens?.placeables?.length || 0,
+    );
+    return 'HUD system check complete - see console for details';
+  };
+});
+
+Hooks.once('ready', () => {
+  console.info('SWADE HUD system loaded.');
+});
 
 /* ------------------------------------ */
 /* Third Party Integrations		          */
