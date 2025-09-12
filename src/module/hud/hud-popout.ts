@@ -30,7 +30,7 @@ export class SwadePopout {
     this.panelType = options.panelType;
   }
 
-  static override DEFAULT_OPTIONS = {
+  static DEFAULT_OPTIONS = {
     id: 'swadehud-popout',
     window: {
       title: 'SWADE HUD Panel',
@@ -44,11 +44,11 @@ export class SwadePopout {
     classes: ['swadehud', 'swadehud-popout'],
   };
 
-  static override PARTS = {
+  static PARTS = {
     body: { template: '' }, // Will be set dynamically
   };
 
-  override async _prepareContext(_options: any) {
+  async _prepareContext(_options: any) {
     console.log(
       'SWADE HUD: _prepareContext called with template:',
       this._template,
@@ -399,11 +399,40 @@ export class SwadePopout {
     // Use the system's built-in method to get all applicable effects
     const sheetEffects = await this.actor.allApplicableEffects();
 
+    console.log(
+      'SWADE HUD: prepareEffectsPanelData - sheetEffects:',
+      sheetEffects,
+    );
+
     // Organize effects into temporary and permanent categories
-    const temporaryEffects = [];
-    const permanentEffects = [];
+    type EffectData = {
+      id: any;
+      name: any;
+      img: any;
+      disabled: any;
+      description: any;
+      favorite: any;
+      isTemporary: any;
+      isEmbedded: boolean;
+      duration?: {
+        expiration: any;
+        rounds: any;
+        startRound: any;
+        startTurn: any;
+        remaining: any;
+        label: any;
+      };
+      origin?: any;
+      source?: { name: any; id: any };
+    };
+    const temporaryEffects: EffectData[] = [];
+    const permanentEffects: EffectData[] = [];
 
     for (const effect of sheetEffects) {
+      console.log(
+        `SWADE HUD: Processing effect ${effect.name} (ID: ${effect.id}, disabled: ${effect.disabled})`,
+      );
+
       // Enrich the effect description
       let enrichedDescription = effect.description || '';
       try {
@@ -431,7 +460,8 @@ export class SwadePopout {
         console.warn('SWADE HUD: Error enriching effect description:', error);
       }
 
-      const effectData = {
+      const isEmbedded = effect.parent === this.actor;
+      const effectData: EffectData = {
         id: effect.id,
         name: effect.name,
         img: effect.img,
@@ -439,6 +469,7 @@ export class SwadePopout {
         description: enrichedDescription,
         favorite: effect.system?.favorite ?? false,
         isTemporary: effect.isTemporary,
+        isEmbedded,
         duration: effect.isTemporary
           ? {
               expiration: effect.expirationText,
@@ -451,7 +482,7 @@ export class SwadePopout {
           : undefined,
       };
 
-      if (effect.parent !== this.actor) {
+      if (!isEmbedded && effect.parent) {
         effectData.origin = effect.sourceName;
         effectData.source = {
           name: effect.parent.name,
@@ -465,6 +496,13 @@ export class SwadePopout {
         permanentEffects.push(effectData);
       }
     }
+
+    console.log(
+      'SWADE HUD: prepareEffectsPanelData - temporaryEffects:',
+      temporaryEffects.length,
+      'permanentEffects:',
+      permanentEffects.length,
+    );
 
     return {
       sheetEffects: {
@@ -1238,6 +1276,18 @@ export class SwadePopout {
   }
 
   private setupEffectsPanelListeners(html: HTMLElement) {
+    if (!html) {
+      console.error(
+        'SWADE HUD: setupEffectsPanelListeners called with undefined html',
+      );
+      return;
+    }
+
+    console.log(
+      'SWADE HUD: setupEffectsPanelListeners called with html:',
+      html,
+    );
+
     // Handle item expand/collapse
     // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
     // itemHeaders.forEach((header) => {
@@ -1277,42 +1327,106 @@ export class SwadePopout {
 
     // Handle effect toggles
     const effectToggles = html.querySelectorAll('.swadehud-effect-toggle-icon');
+    console.log('SWADE HUD: Found effect toggles:', effectToggles.length);
+
     effectToggles.forEach((toggle) => {
       const effectId = (toggle as HTMLElement).dataset.effectId;
-      if (effectId && this.actor) {
-        // Set initial active state
-        const item = this.actor.items.get(effectId);
-        if (item && !item.system.disabled) {
-          toggle.classList.add('active');
-        } else {
-          toggle.classList.remove('active');
+      if (!(effectId && this.actor)) return;
+
+      // Try to find the effect in actor.effects
+      let effect = this.actor.effects.get(effectId);
+      // If not found, search all items' effects
+      if (!effect) {
+        for (const item of this.actor.items) {
+          effect = item.effects?.get?.(effectId);
+          if (effect) break;
+        }
+      }
+      // Fallback: try to find by name (strip duration text)
+      if (!effect) {
+        const effectName = (
+          toggle.closest('.swadehud-item')?.querySelector('.swadehud-item-name')
+            ?.textContent || ''
+        )
+          .replace(/\s*Rounds:\s*\d+$/, '')
+          .trim();
+        if (effectName) {
+          effect = Array.from(this.actor.effects).find(
+            (e: any) => e.name === effectName,
+          );
+          if (!effect) {
+            for (const item of this.actor.items) {
+              effect = Array.from(item.effects || []).find(
+                (e: any) => e.name === effectName,
+              );
+              if (effect) break;
+            }
+          }
         }
       }
 
+      // Set initial active state if found
+      if (effect) {
+        const isActive = !effect.disabled;
+        toggle.classList.toggle('active', isActive);
+        const effectName = effect.name || effect.label;
+        toggle.setAttribute(
+          'title',
+          effect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`,
+        );
+      }
+
+      // Always attach the event listener
       toggle.addEventListener('click', async (event) => {
         event.preventDefault();
-        const effectId = (toggle as HTMLElement).dataset.effectId;
-        const action = (toggle as HTMLElement).dataset.action;
-        const toggleType = (toggle as HTMLElement).dataset.toggle;
-
-        if (effectId && this.actor) {
-          try {
-            const item = this.actor.items.get(effectId);
-            if (item) {
-              if (action === 'toggle' && toggleType === 'disabled') {
-                const newDisabledState = !item.system.disabled;
-                await item.update({ 'system.disabled': newDisabledState });
-                // Update visual state
-                if (newDisabledState) {
-                  toggle.classList.remove('active');
-                } else {
-                  toggle.classList.add('active');
-                }
+        event.stopPropagation();
+        // Re-find effect on click in case of updates
+        let effect = this.actor.effects.get(effectId);
+        if (!effect) {
+          for (const item of this.actor.items) {
+            effect = item.effects?.get?.(effectId);
+            if (effect) break;
+          }
+        }
+        if (!effect) {
+          const effectName = (
+            toggle
+              .closest('.swadehud-item')
+              ?.querySelector('.swadehud-item-name')?.textContent || ''
+          )
+            .replace(/\s*Rounds:\s*\d+$/, '')
+            .trim();
+          if (effectName) {
+            effect = Array.from(this.actor.effects).find(
+              (e) => e.name === effectName,
+            );
+            if (!effect) {
+              for (const item of this.actor.items) {
+                effect = Array.from(item.effects || []).find(
+                  (e) => e.name === effectName,
+                );
+                if (effect) break;
               }
             }
-          } catch (error) {
-            console.error('SWADE HUD: Error toggling effect:', error);
           }
+        }
+        if (!effect) {
+          console.error('No effect found with ID:', effectId);
+          return;
+        }
+        try {
+          const currentlyDisabled = effect.disabled;
+          const newDisabledState = !currentlyDisabled;
+          await effect.update({ disabled: newDisabledState });
+          // Update visual state
+          toggle.classList.toggle('active', !newDisabledState);
+          const effectName = effect.name || effect.label;
+          toggle.setAttribute(
+            'title',
+            newDisabledState ? `Enable ${effectName}` : `Disable ${effectName}`,
+          );
+        } catch (error) {
+          console.error('SWADE HUD: Error toggling effect:', error);
         }
       });
     });
