@@ -1,5 +1,12 @@
 import { prepareHudContext } from '../hud/hud-context';
 import { setupHudActionButtonListeners } from '../hud/hud-actions';
+import {
+  setupTabHandlers,
+  setupRollButtonHandlers,
+  setupAbilityHandlers,
+  setupPortraitHandler,
+  setupDragHandler,
+} from '../hud/hud-interaction-handlers';
 import SwadeActor from '../documents/actor/SwadeActor';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -153,6 +160,21 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   activateListeners(html: HTMLElement) {
     // Setup action button listeners for main HUD
     setupHudActionButtonListeners(html, this.actor, this);
+
+    // Setup tab handlers for panel switching
+    setupTabHandlers(html, this);
+
+    // Setup roll button handlers for various actions
+    setupRollButtonHandlers(html, this);
+
+    // Setup ability handlers for special actions (soak, incapacitated)
+    setupAbilityHandlers(html, this);
+
+    // Setup portrait handler
+    setupPortraitHandler(html, this);
+
+    // Setup drag handler for moving the HUD
+    setupDragHandler(html);
   }
 
   /**

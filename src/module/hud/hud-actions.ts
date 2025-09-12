@@ -200,4 +200,86 @@ export function setupHudActionButtonListeners(
     (header as any)._swadeHudListener = listener;
     header.addEventListener('click', listener);
   });
+
+  // Handle all action buttons using SWADE's system
+  const actionButtons = popout.querySelectorAll('[data-action]');
+  actionButtons.forEach((btn) => {
+    btn.addEventListener(
+      'click',
+      debounce(async (event: Event) => {
+        event.preventDefault();
+        const actionId = (btn as HTMLElement).dataset.action;
+        const itemId = (btn as HTMLElement).dataset.itemId;
+        const template = (btn as HTMLElement).dataset.template;
+
+        if (!actor || !itemId || !actionId) return;
+
+        const item = actor.items.get(itemId);
+        if (!item) return;
+
+        try {
+          // Handle template placement actions directly (SWADE's ItemChatCardHelper.onChatCardAction handles this)
+          if (actionId === 'template' && template) {
+            // Use SWADE's SwadeMeasuredTemplate directly
+            const swadeMeasuredTemplate = CONFIG.MeasuredTemplate?.objectClass;
+            if (swadeMeasuredTemplate?.fromPreset) {
+              await swadeMeasuredTemplate.fromPreset(template, item);
+              return;
+            } else {
+              console.error('SwadeMeasuredTemplate not available');
+              return;
+            }
+          }
+
+          // Use SWADE's ItemChatCardHelper to handle the action
+          await ItemChatCardHelper.handleAction(item, actor, actionId, {
+            additionalMods: [],
+            event: event,
+          });
+        } catch (error) {
+          // Silent error handling for production
+          console.error('Error handling action:', error);
+        }
+      }, 50),
+    );
+  });
+
+  // Handle chat buttons for showing item cards
+  const chatButtons = popout.querySelectorAll(
+    '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat',
+  );
+  chatButtons.forEach((btn) => {
+    btn.addEventListener(
+      'click',
+      debounce(async (ev: Event) => {
+        (ev as Event).preventDefault();
+        const itemId = (btn as HTMLElement).dataset.itemId;
+        if (!actor || !itemId) return;
+
+        const item = actor.items.get(itemId);
+        if (item) {
+          if (typeof item.show === 'function') {
+            await item.show();
+          } else {
+            const chatData = await item.getChatData();
+            const content = await renderTemplate(
+              'systems/swade/templates/chat/item-card.hbs',
+              {
+                item: item,
+                data: chatData,
+                actor: actor,
+              },
+            );
+
+            await ChatMessage.create({
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker({ actor: actor }),
+              content: content,
+              type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+            });
+          }
+        }
+      }, 100),
+    );
+  });
 }

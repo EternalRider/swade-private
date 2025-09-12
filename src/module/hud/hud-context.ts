@@ -69,7 +69,7 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
   if (!actor) return {};
 
   const context = {
-    actor: actor,
+    actor: actor, // Include the full actor object for template compatibility
     actorName: actor.name,
     portrait: actor.img,
     system: actor.system,
@@ -79,7 +79,9 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
 
     // Character info
     attributes: actor.system.attributes,
-    skills: actor.system.skills,
+    skills: sortByLocalizedName(
+      actor.items.filter((i: any) => i.type === 'skill'),
+    ),
     edges: sortByLocalizedName(
       actor.items.filter((i: any) => i.type === 'edge'),
     ),
