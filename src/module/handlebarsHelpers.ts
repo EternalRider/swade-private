@@ -43,7 +43,8 @@ function formatNumber(num) {
 }
 
 function capitalize(str: string) {
-  return str.capitalize();
+  if (!str || typeof str !== 'string') return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 function isEmpty(value) {

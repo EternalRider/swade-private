@@ -1,0 +1,191 @@
+<div class="edges-panel">
+<div class="traits-edges">
+  <header class="swadehud-section-header">
+    <span class="swadehud-section-name">{{localize 'SWADE.Edges'}}</span>
+  </header>
+    <div class="swadehud-item-list">
+      {{#each actor.items as |item|}}
+        {{#if (eq item.type "edge")}}
+          <div class="swadehud-item" data-item-id="{{item.id}}">
+            <div class="swadehud-item-header" data-toggle="expand">
+              <img class="swadehud-item-icon" src="{{item.img}}" alt="{{item.name}}" />
+              <span class="swadehud-item-name">{{item.name}}</span>
+            </div>
+            <div class="swadehud-item-content">
+              <div class="swadehud-action-buttons">
+                {{#if item.system.actions.additional}}
+                  {{#each item.system.actions.additional as |action id|}}
+                    {{#if (eq action.type "trait")}}
+                      <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{action.name}}">
+                        {{action.name}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "damage")}}
+                      <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
+                        {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Dmg'}}{{/if}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "macro")}}
+                      <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                        Macro
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "reload")}}
+                      <button class="swadehud-action-reload" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Reload'}}: {{action.name}}">
+                        Reload
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "consume")}}
+                      <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="Consume: {{action.name}}">
+                        Consume
+                      </button>
+                    {{/if}}
+                  {{/each}}
+                {{/if}}
+                <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+                  {{localize 'SWADE.ShowInChat'}}
+                </button>
+              </div>
+              {{#if item.system.description}}
+                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
+              {{else}}
+                <div class="swadehud-item-description swadehud-no-description">No description available</div>
+              {{/if}}
+            </div>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="traits-hindrances">
+    <header class="swadehud-section-header">
+      <span class="swadehud-section-name">{{localize 'SWADE.Hindrances'}}</span>
+    </header>
+    <div class="swadehud-item-list">
+      {{#each actor.items as |item|}}
+        {{#if (eq item.type "hindrance")}}
+          <div class="swadehud-item" data-item-id="{{item.id}}">
+            <div class="swadehud-item-header" data-toggle="expand">
+              <img class="swadehud-item-icon" src="{{item.img}}" alt="{{item.name}}" />
+              <span class="swadehud-item-name">{{item.name}}</span>
+              <span class="swadehud-item-type">
+                {{#if item.system.isMajor}}{{localize 'SWADE.Major'}}{{else}}{{localize 'SWADE.Minor'}}{{/if}}
+              </span>
+            </div>
+            <div class="swadehud-item-content">
+              <div class="swadehud-action-buttons">
+                {{#if item.system.actions.additional}}
+                  {{#each item.system.actions.additional as |action id|}}
+                    {{#if (eq action.type "trait")}}
+                      <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{action.name}}">
+                        {{action.name}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "resist")}}
+                      <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} Resist: {{action.name}}">
+                        Resist
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "damage")}}
+                      <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
+                        {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}Damage{{/if}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "macro")}}
+                      <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                        Macro
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "reload")}}
+                      <button class="swadehud-action-reload" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Reload'}}: {{action.name}}">
+                        Reload
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "consume")}}
+                      <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="Consume: {{action.name}}">
+                        Consume
+                      </button>
+                    {{/if}}
+                  {{/each}}
+                {{/if}}
+                <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+                  {{localize 'SWADE.ShowInChat'}}
+                </button>
+              </div>
+              {{#if item.system.description}}
+                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
+              {{else}}
+                <div class="swadehud-item-description swadehud-no-description">No description available</div>
+              {{/if}}
+            </div>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="traits-abilities">
+    <header class="swadehud-section-header">
+      <span class="swadehud-section-name">{{localize 'SWADE.Special'}}</span>
+    </header>
+    <div class="swadehud-item-list">
+      {{#each actor.items as |item|}}
+        {{#if (eq item.type "ability")}}
+          <div class="swadehud-item" data-item-id="{{item.id}}">
+            <div class="swadehud-item-header" data-toggle="expand">
+              <img class="swadehud-item-icon" src="{{item.img}}" alt="{{item.name}}" />
+              <span class="swadehud-item-name">{{item.name}}</span>
+            </div>
+            <div class="swadehud-item-content">
+              <div class="swadehud-action-buttons">
+                {{#if item.system.actions.additional}}
+                  {{#each item.system.actions.additional as |action id|}}
+                    {{#if (eq action.type "trait")}}
+                      <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{action.name}}">
+                        {{action.name}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "resist")}}
+                      <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} Resist: {{action.name}}">
+                        Resist
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "damage")}}
+                      <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
+                        {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}Damage{{/if}}
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "macro")}}
+                      <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                        Macro
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "reload")}}
+                      <button class="swadehud-action-reload" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Reload'}}: {{action.name}}">
+                        Reload
+                      </button>
+                    {{/if}}
+                    {{#if (eq action.type "consume")}}
+                      <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="Consume: {{action.name}}">
+                        Consume
+                      </button>
+                    {{/if}}
+                  {{/each}}
+                {{/if}}
+                <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+                  {{localize 'SWADE.ShowInChat'}}
+                </button>
+              </div>
+              {{#if item.system.description}}
+                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
+              {{else}}
+                <div class="swadehud-item-description swadehud-no-description">No description available</div>
+              {{/if}}
+            </div>
+          </div>
+        {{/if}}
+      {{/each}}
+    </div>
+  </div>
+</div>
