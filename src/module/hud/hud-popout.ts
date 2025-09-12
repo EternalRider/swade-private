@@ -1129,7 +1129,7 @@ export class SwadePopout {
     });
   }
 
-  private setupConditionsPanelListeners(_html: HTMLElement) {
+  private setupConditionsPanelListeners(html: HTMLElement) {
     // Handle item expand/collapse
     // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
     // itemHeaders.forEach((header) => {
@@ -1237,7 +1237,7 @@ export class SwadePopout {
     }
   }
 
-  private setupEffectsPanelListeners(_html: HTMLElement) {
+  private setupEffectsPanelListeners(html: HTMLElement) {
     // Handle item expand/collapse
     // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
     // itemHeaders.forEach((header) => {
