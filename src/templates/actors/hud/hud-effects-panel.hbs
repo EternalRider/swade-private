@@ -13,10 +13,12 @@
             {{#if effect.duration}}
               <span class="effect-duration">{{effect.duration.label}}</span>
             {{/if}}
-            <i class="fa-solid fa-power-off swadehud-effect-toggle-icon{{#if effect.disabled}}{{else}} active{{/if}}"
-               data-action="toggle"
-               data-toggle="disabled"
-               title="{{#if effect.disabled}}Enable {{effect.name}}{{else}}Disable {{effect.name}}{{/if}}"></i>
+        <i class="fa-solid fa-power-off swadehud-effect-toggle-icon{{#unless effect.isEmbedded}} swadehud-effect-toggle-disabled{{/unless}}"
+          data-effect-id="{{effect.id}}"
+          data-action="toggle"
+          data-toggle="disabled"
+          title="{{#if effect.isEmbedded}}Toggle {{effect.name}}{{else}}Cannot toggle inherited effect{{/if}}"
+          {{#unless effect.isEmbedded}}style="pointer-events:none;opacity:0.5;" aria-disabled="true" tabindex="-1"{{/unless}}></i>
           </div>
           <div class="swadehud-item-content">
             {{#if effect.description}}
@@ -40,10 +42,11 @@
           <div class="swadehud-item-header" data-toggle="expand">
             <img class="swadehud-item-icon" src="{{effect.img}}" alt="{{effect.name}}" />
             <span class="swadehud-item-name" title="Click to expand">{{effect.name}}</span>
-            <i class="fa-solid fa-power-off swadehud-effect-toggle-icon{{#if effect.disabled}}{{else}} active{{/if}}"
+            <i class="fa-solid fa-power-off swadehud-effect-toggle-icon"
+               data-effect-id="{{effect.id}}"
                data-action="toggle"
                data-toggle="disabled"
-               title="{{#if effect.disabled}}Enable {{effect.name}}{{else}}Disable {{effect.name}}{{/if}}"></i>
+               title="Toggle {{effect.name}}"></i>
           </div>
           <div class="swadehud-item-content">
             {{#if effect.description}}
