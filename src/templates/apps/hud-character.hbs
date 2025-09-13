@@ -152,10 +152,11 @@
       </div>
       <div class="swadehud-bottomrow__right">
         {{#if (and system.details system.details.conviction)}}
-        <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-conviction-clickable"
-             title="Conviction (Left click: activate, Right click: +1)"
-             data-conviction-value="{{system.details.conviction.value}}"
-             data-conviction-active="{{system.details.conviction.active}}">
+     <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-conviction-clickable"
+       title="Conviction (Left click: activate, Right click: +1)"
+       data-conviction-value="{{system.details.conviction.value}}"
+       data-conviction-active="{{system.details.conviction.active}}"
+       data-stat-path="system.conviction.value">
           <span class="swadehud-bottomstat__icon">
             {{#if system.details.conviction.active}}
               <i class="fa-solid fa-star" style="color: gold;"></i>

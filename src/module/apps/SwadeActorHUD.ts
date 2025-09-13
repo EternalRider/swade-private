@@ -1,3 +1,4 @@
+import { setupAddSubtractClicks } from '../hud/hud-stat-handlers';
 import { prepareHudContext } from '../hud/hud-context';
 import { setupHudActionButtonListeners } from '../hud/hud-actions';
 import {
@@ -175,6 +176,37 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Setup drag handler for moving the HUD
     setupDragHandler(html);
+
+    // Setup benny and conviction stat click handlers (bottom row)
+    // Bennies
+    const bennyStat = html.querySelector(
+      '[data-stat-path="system.bennies.value"]',
+    );
+    if (bennyStat && this.actor) {
+      setupAddSubtractClicks(
+        bennyStat as HTMLElement,
+        this.actor,
+        'system.bennies.value',
+        0,
+        null,
+        () => this.render(),
+      );
+    }
+
+    // Conviction (now uses data-stat-path for consistency)
+    const convictionStat = html.querySelector(
+      '[data-stat-path="system.conviction.value"]',
+    );
+    if (convictionStat && this.actor) {
+      setupAddSubtractClicks(
+        convictionStat as HTMLElement,
+        this.actor,
+        'system.conviction.value',
+        0,
+        null,
+        () => this.render(),
+      );
+    }
   }
 
   /**

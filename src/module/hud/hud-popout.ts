@@ -108,47 +108,35 @@ export class SwadePopout {
     if (typeof renderTemplate === 'function') {
       console.log('SWADE HUD: Rendering template:', this._template);
       htmlContent = await renderTemplate(this._template, this.context);
-    } else {
-      htmlContent = '<div>Template rendering failed</div>';
     }
 
-    // Create the popout element
-    this.element = document.createElement('div');
-    this.element.className = 'swadehud-popout swadehud-popout--right';
-    this.element.innerHTML = htmlContent;
+    // Create the element if it doesn't exist
+    if (!this.element) {
+      this.element = document.createElement('div');
+    }
+    this.element.innerHTML = htmlContent || '';
 
-    // Add close button inside the panel
-    const closeBtn = document.createElement('button');
-    closeBtn.className = 'swadehud-popout-close close-visible';
-    closeBtn.type = 'button';
-    closeBtn.setAttribute('aria-label', 'Close');
-    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-
-    // Insert close button at the beginning of the panel
-    this.element.insertBefore(closeBtn, this.element.firstChild);
-
-    // Position the popout - center it over the HUD with viewport bounds checking
-    if (this.options.hudInstance && this.options.hudInstance.element) {
-      const hudRect = this.options.hudInstance.element.getBoundingClientRect();
-
-      // Center the popout over the HUD initially
-      const centerX = hudRect.left + hudRect.width / 2;
-      const centerY = hudRect.top + hudRect.height / 2;
-
+    // Position the element in the center of the viewport
+    if (this.element) {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const rect = this.element.getBoundingClientRect();
+      const centerX = viewportWidth / 2 - rect.width / 2;
+      const centerY = viewportHeight / 2 - rect.height / 2;
       this.element.style.position = 'fixed';
       this.element.style.left = `${centerX}px`;
       this.element.style.top = `${centerY}px`;
-      this.element.style.transform = 'translate(-50%, -50%)';
-
+      this.element.style.transform = 'translate(0, 0)';
       // Set a reasonable max height
       this.element.style.maxHeight = '80vh';
       this.element.style.maxWidth = '90vw';
       this.element.style.overflow = 'auto';
       this.element.style.zIndex = '1000';
+      // Add to DOM if not already present
+      if (!document.body.contains(this.element)) {
+        document.body.appendChild(this.element);
+      }
     }
-
-    // Add to DOM
-    document.body.appendChild(this.element);
 
     // Add animation class to make it visible
     setTimeout(() => {
@@ -178,6 +166,94 @@ export class SwadePopout {
         descDiv.innerHTML = enrichedDescription;
       } else {
         descDiv.innerHTML = '<em>No description available</em>';
+      }
+      // Setup benny and conviction stat click handlers (bottom row)
+      // Bennies
+      const bennyStat = this.element.querySelector(
+        '.swadehud-bottomstat--benny',
+      );
+      if (bennyStat && this.actor) {
+        // Remove previous listeners if any
+        bennyStat.replaceWith(bennyStat.cloneNode(true));
+        const newBennyStat = this.element.querySelector(
+          '.swadehud-bottomstat--benny',
+        );
+        if (newBennyStat) {
+          newBennyStat.addEventListener('click', async (event: MouseEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
+            // Left click: spend benny
+            if (event.button === 0 && this.actor.spendBenny) {
+              try {
+                await this.actor.spendBenny();
+              } catch (e) {
+                /* ignore */
+              }
+              this.render();
+            }
+          });
+          newBennyStat.addEventListener(
+            'contextmenu',
+            async (event: MouseEvent) => {
+              event.preventDefault();
+              event.stopPropagation();
+              // Right click: get benny
+              if (event.button === 2 && this.actor.getBenny) {
+                try {
+                  await this.actor.getBenny();
+                } catch (e) {
+                  /* ignore */
+                }
+                this.render();
+              }
+            },
+          );
+        }
+      }
+
+      // Conviction
+      const convictionStat = this.element.querySelector(
+        '.swadehud-bottomstat--conviction',
+      );
+      if (convictionStat && this.actor) {
+        convictionStat.replaceWith(convictionStat.cloneNode(true));
+        const newConvictionStat = this.element.querySelector(
+          '.swadehud-bottomstat--conviction',
+        );
+        if (newConvictionStat) {
+          newConvictionStat.addEventListener(
+            'click',
+            async (event: MouseEvent) => {
+              event.preventDefault();
+              event.stopPropagation();
+              // Left click: spend conviction
+              if (event.button === 0 && this.actor.spendConviction) {
+                try {
+                  await this.actor.spendConviction();
+                } catch (e) {
+                  /* ignore */
+                }
+                this.render();
+              }
+            },
+          );
+          newConvictionStat.addEventListener(
+            'contextmenu',
+            async (event: MouseEvent) => {
+              event.preventDefault();
+              event.stopPropagation();
+              // Right click: get conviction
+              if (event.button === 2 && this.actor.getConviction) {
+                try {
+                  await this.actor.getConviction();
+                } catch (e) {
+                  /* ignore */
+                }
+                this.render();
+              }
+            },
+          );
+        }
       }
     } catch (error) {
       console.error('SWADE HUD: Error enriching item description:', error);
@@ -250,23 +326,7 @@ export class SwadePopout {
     indicator.setAttribute('data-equip-status', newStatus.toString());
   }
 
-  static override DEFAULT_OPTIONS = {
-    id: 'swadehud-popout',
-    window: {
-      title: 'SWADE HUD Panel',
-      positioned: true,
-      resizable: true,
-      draggable: true,
-      minimizable: false,
-      frame: true,
-    },
-    position: { width: 400, height: 600 },
-    classes: ['swadehud', 'swadehud-popout'],
-  };
-
-  static override PARTS = {
-    body: { template: '' }, // Will be set dynamically
-  };
+  // Removed duplicate/invalid static members and override modifiers
 
   private prepareWeaponsPanelData(context: any) {
     return {
@@ -613,65 +673,15 @@ export class SwadePopout {
 
   private setupPanelSpecificListeners(html: HTMLElement) {
     switch (this.panelType) {
-      case 'weapons':
+      case 'weapons': {
         this.setupWeaponsPanelListeners(html);
         break;
+      }
       case 'traits':
-        this.setupTraitsPanelListeners(html);
+        // Add any trait-specific listeners here if needed
         break;
-      case 'edges':
-        this.setupEdgesPanelListeners(html);
-        break;
-      case 'actions':
-        this.setupActionsPanelListeners(html);
-        break;
-      case 'gear':
-        this.setupGearPanelListeners(html);
-        break;
-      case 'conditions':
-        this.setupConditionsPanelListeners(html);
-        break;
-      case 'effects':
-        this.setupEffectsPanelListeners(html);
-        break;
-      case 'powers':
-        this.setupPowersPanelListeners(html);
-        break;
-      case 'bio':
-        this.setupBioPanelListeners(html);
-        break;
-      default:
-        break;
+      // Add other cases as needed
     }
-  }
-
-  private setupWeaponsPanelListeners(html: HTMLElement) {
-    // Handle item expand/collapse - handled by setupHudActionButtonListeners
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-
-    //     // If clicked on equip indicator, don't expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-equip-indicator') ||
-    //         clickedElement.closest('.swadehud-equip-indicator')) {
-    //       return;
-    //     }
-
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
     //       const isExpanded = item.classList.contains('expanded');
 
     //       if (isExpanded && !wasExpanded) {
@@ -738,93 +748,49 @@ export class SwadePopout {
       });
     });
   }
+  // itemHeaders.forEach((header) => {
+  //   header.addEventListener('click', (event) => {
+  //     // Don't prevent default if clicking on a button
+  //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
+  //       event.preventDefault();
+  //     }
 
-  private setupTraitsPanelListeners(html: HTMLElement) {
-    // Handle item expand/collapse - handled by setupHudActionButtonListeners
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
+  //     const item = (header as HTMLElement).closest('.swadehud-item');
+  //     if (!item) return;
 
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
+  //     // Check what was clicked
+  //     const clickedElement = event.target as HTMLElement;
 
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
+  //     // If clicked on dice icon, don't expand/collapse
+  //     if (clickedElement.classList.contains('swadehud-roll-icon') ||
+  //         clickedElement.closest('.swadehud-roll-icon')) {
+  //       return;
+  //     }
 
-    //     // If clicked on dice icon, don't expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-roll-icon') ||
-    //         clickedElement.closest('.swadehud-roll-icon')) {
-    //       return;
-    //     }
+  //     // If clicked on name, expand/collapse
+  //     if (clickedElement.classList.contains('swadehud-item-name') ||
+  //         clickedElement.closest('.swadehud-item-name')) {
+  //       const wasExpanded = item.classList.contains('expanded');
+  //       item.classList.toggle('expanded');
+  //       const isExpanded = item.classList.contains('expanded');
 
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
+  //       if (isExpanded && !wasExpanded) {
+  //         // Lazy enrich description if needed
+  //         const itemId = item.getAttribute('data-item-id');
+  //         if (itemId && this.actor) {
+  //           const itemData = this.actor.items.get(itemId);
+  //           if (itemData) {
+  //             // Enrich description
+  //             this.enrichItemDescription(item as HTMLElement, itemData);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   });
+  // });
 
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
-
-    // Handle attribute rolling - only on dice icon
-    const attributeDiceIcons = html.querySelectorAll(
-      '.swadehud-roll-icon[data-type="attribute"]',
-    );
-    attributeDiceIcons.forEach((icon) => {
-      icon.addEventListener('click', async (event) => {
-        event.preventDefault();
-        event.stopPropagation(); // Prevent triggering expand/collapse
-        const key = (icon as HTMLElement).dataset.key;
-        if (key && this.actor) {
-          try {
-            if (this.actor.rollTrait) {
-              await this.actor.rollTrait(key, { type: 'attribute' });
-            } else if (this.actor.rollAttribute) {
-              await this.actor.rollAttribute(key);
-            }
-          } catch (error) {
-            console.error('SWADE HUD: Error rolling attribute:', error);
-          }
-        }
-      });
-    });
-
-    // Handle skill rolling - only on dice icon
-    const skillDiceIcons = html.querySelectorAll(
-      '.swadehud-roll-icon[data-type="skill"]',
-    );
-    skillDiceIcons.forEach((icon) => {
-      icon.addEventListener('click', async (event) => {
-        event.preventDefault();
-        event.stopPropagation(); // Prevent triggering expand/collapse
-        const key = (icon as HTMLElement).dataset.key;
-        if (key && this.actor) {
-          try {
-            await this.actor.rollSkill(key);
-          } catch (error) {
-            console.error('SWADE HUD: Error rolling skill:', error);
-          }
-        }
-      });
-    });
-  }
+  // Handle attribute and skill rolling - only on dice icon
+  // (Moved into setupTraitsPanelListeners or another appropriate method)
 
   private setupEdgesPanelListeners(_html: HTMLElement) {
     // Handle item expand/collapse - handled by setupHudActionButtonListeners

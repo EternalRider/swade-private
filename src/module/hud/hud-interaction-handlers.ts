@@ -309,7 +309,14 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
 
   // Handle stat circle clicks (wounds, fatigue)
   const statCircles = html.querySelectorAll('.swadehud-stat-clickable');
+  // Only attach stat circle handlers for wounds/fatigue, not for benny/conviction (handled in SwadeActorHUD)
   statCircles.forEach((circle) => {
+    const statPath = circle.getAttribute('data-stat-path');
+    if (
+      statPath === 'system.bennies.value' ||
+      statPath === 'system.conviction.value'
+    )
+      return;
     circle.addEventListener('click', (event) => {
       event.preventDefault();
       handleStatClick(event, hudInstance);
@@ -322,7 +329,13 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
 
   // Handle bottom row stat clicks
   const bottomStats = html.querySelectorAll('.swadehud-bottomstat--label');
+  // Only attach bottom stat handlers for non-benny/non-conviction stats (handled in SwadeActorHUD)
   bottomStats.forEach((stat) => {
+    const statPath = stat.getAttribute('data-stat-path');
+    const isConviction = stat.classList.contains(
+      'swadehud-conviction-clickable',
+    );
+    if (statPath === 'system.bennies.value' || isConviction) return;
     stat.addEventListener('click', (event) => {
       event.preventDefault();
       handleBottomStatClick(event, hudInstance);
@@ -399,9 +412,7 @@ function handleBottomStatClick(event: Event, hudInstance: any) {
   if (!stat || !hudInstance.actor) return;
 
   // Handle different stat types
-  if (stat.classList.contains('swadehud-conviction-clickable')) {
-    handleConvictionClick(stat, hudInstance);
-  } else if (stat.classList.contains('swadehud-combat-toggle-clickable')) {
+  if (stat.classList.contains('swadehud-combat-toggle-clickable')) {
     handleCombatToggleClick(stat, hudInstance);
   } else if (stat.dataset.statPath) {
     // Handle bennies and other stats
@@ -415,32 +426,10 @@ function handleBottomStatRightClick(event: Event, hudInstance: any) {
   if (!stat || !hudInstance.actor) return;
 
   // Handle different stat types
-  if (stat.classList.contains('swadehud-conviction-clickable')) {
-    handleConvictionRightClick(stat, hudInstance);
-  } else if (stat.dataset.statPath) {
+  if (stat.dataset.statPath) {
     // Handle bennies and other stats
     handleBennieRightClick(stat, hudInstance);
   }
-}
-
-function handleConvictionClick(stat: HTMLElement, hudInstance: any) {
-  // Toggle conviction active state
-  const isActive = stat.dataset.convictionActive === 'true';
-  const newActiveState = !isActive;
-
-  hudInstance.actor.update({
-    'system.details.conviction.active': newActiveState,
-  });
-}
-
-function handleConvictionRightClick(stat: HTMLElement, hudInstance: any) {
-  // Increment conviction value
-  const currentValue = parseInt(stat.dataset.convictionValue || '0');
-  const newValue = currentValue + 1;
-
-  hudInstance.actor.update({
-    'system.details.conviction.value': newValue,
-  });
 }
 
 function handleCombatToggleClick(stat: HTMLElement, hudInstance: any) {
