@@ -1,4 +1,4 @@
-import { setupAddSubtractClicks } from '../hud/hud-stat-handlers';
+import { setupHudStatHandlers } from '../hud/hud-stat-handlers';
 import { prepareHudContext } from '../hud/hud-context';
 import { setupHudActionButtonListeners } from '../hud/hud-actions';
 import {
@@ -14,12 +14,17 @@ import SwadeActor from '../documents/actor/SwadeActor';
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
-  setPosition(...args: any[]) {
+  override setPosition(position?: {
+    top?: number;
+    left?: number;
+    width?: number | 'auto';
+    height?: number | 'auto';
+    scale?: number;
+    zIndex?: number;
+  }): void | any {
     // Only allow positioning if this is user-initiated (has position data) or if it's the initial render
     const hasPositionData =
-      args.length > 0 &&
-      args[0] &&
-      (args[0].left !== undefined || args[0].top !== undefined);
+      position && (position.left !== undefined || position.top !== undefined);
     const isUserDrag =
       hasPositionData ||
       (this.element && this.element.classList.contains('dragging'));
@@ -27,7 +32,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Don't reposition during custom dragging - let the drag handler control position
     if (isUserInteraction && !this.element?.classList.contains('dragging')) {
-      const result = super.setPosition ? super.setPosition(...args) : undefined;
+      const result = super.setPosition(position ?? {});
       if (this.element && !this._isInitialRender) {
         this.element.dispatchEvent(
           new CustomEvent('hud-moved', { bubbles: true }),
@@ -38,8 +43,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Allow initial render positioning
     if (this._isInitialRender) {
-      const result = super.setPosition ? super.setPosition(...args) : undefined;
-      return result;
+      return super.setPosition(position ?? {});
     }
 
     // Prevent automatic repositioning on renders
@@ -49,7 +53,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   static override DEFAULT_OPTIONS = {
     id: 'swadehud',
     window: { title: '', positioned: true, resizable: false, draggable: true },
-    position: { width: 'auto', height: 'auto' },
+    position: { width: 'auto' as const, height: 'auto' as const },
     classes: ['swadehud', 'app'],
   };
   static override PARTS = {
@@ -62,7 +66,14 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   ) {
     super(options);
     this.actor = actor ?? null;
-    this.token = token ?? actor?.getActiveTokens()?.[0]?.document ?? null;
+    // Use .document if it exists, otherwise use the token itself
+    const activeToken = actor?.getActiveTokens()?.[0];
+    this.token =
+      token ??
+      (activeToken && 'document' in activeToken
+        ? activeToken.document
+        : activeToken) ??
+      null;
 
     // Track if this is the initial render to avoid repositioning on updates
     this._isInitialRender = true;
@@ -126,16 +137,33 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
-  override async render(force = false, options: any = {}) {
-    this.options.window.title = '';
+  override async render(
+    forceOrOptions?: boolean | Record<string, unknown>,
+    options?: any,
+  ): Promise<this> {
+    // Support both (force, options) and (options) signatures
+    let force: boolean;
+    let opts: any;
+    if (typeof forceOrOptions === 'boolean') {
+      force = forceOrOptions;
+      opts = options ?? {};
+    } else {
+      force = false;
+      opts = forceOrOptions ?? {};
+    }
+    if (this.options && this.options.window) this.options.window.title = '';
     console.log(
       'SWADE HUD: Starting render, actor:',
       this.actor?.name,
       'token:',
       this.token?.name,
     );
-    console.log('SWADE HUD: PARTS config:', this.constructor.PARTS);
-    const result = await super.render(force, options);
+    // Access PARTS via the class, not the constructor function
+    console.log(
+      'SWADE HUD: PARTS config:',
+      (this.constructor as typeof SwadeActorHUD).PARTS,
+    );
+    await super.render(force, opts);
     console.log('SWADE HUD: Render complete, element exists:', !!this.element);
     if (this.element) {
       console.log('SWADE HUD: Full element HTML:', this.element.innerHTML);
@@ -155,7 +183,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       }
       this.activateListeners(this.element);
     }
-    return result;
+    return this;
   }
 
   activateListeners(html: HTMLElement) {
@@ -177,35 +205,10 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     // Setup drag handler for moving the HUD
     setupDragHandler(html);
 
-    // Setup benny and conviction stat click handlers (bottom row)
-    // Bennies
-    const bennyStat = html.querySelector(
-      '[data-stat-path="system.bennies.value"]',
-    );
-    if (bennyStat && this.actor) {
-      setupAddSubtractClicks(
-        bennyStat as HTMLElement,
-        this.actor,
-        'system.bennies.value',
-        0,
-        null,
-        () => this.render(),
-      );
-    }
-
-    // Conviction (now uses data-stat-path for consistency)
-    const convictionStat = html.querySelector(
-      '[data-stat-path="system.conviction.value"]',
-    );
-    if (convictionStat && this.actor) {
-      setupAddSubtractClicks(
-        convictionStat as HTMLElement,
-        this.actor,
-        'system.conviction.value',
-        0,
-        null,
-        () => this.render(),
-      );
+    // Attach shared stat handlers (bennies, conviction, pace, power points, soak, incapacitated, etc)
+    // All stat click logic is handled centrally by setupHudStatHandlers
+    if (html && this.actor) {
+      setupHudStatHandlers(html, this.actor);
     }
   }
 

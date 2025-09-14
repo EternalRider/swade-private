@@ -1,6 +1,7 @@
 import { prepareHudContext } from './hud-context';
 import { getEnrichedDescription } from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
+import { setupHudStatHandlers } from './hud-stat-handlers';
 
 export interface SwadePopoutOptions {
   actor: any;
@@ -116,43 +117,78 @@ export class SwadePopout {
     }
     this.element.innerHTML = htmlContent || '';
 
-    // Position the element in the center of the viewport
+    // Always apply swadehud-popout class for modal look
+    this.element.classList.add('swadehud-popout');
+
+    // Always inject a close button if not present
+    if (!this.element.querySelector('.swadehud-popout-close')) {
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'swadehud-popout-close close-visible';
+      closeBtn.type = 'button';
+      closeBtn.setAttribute('aria-label', 'Close');
+      closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+      this.element.insertBefore(closeBtn, this.element.firstChild);
+    }
+
+    // Center the popout over the HUD if hudInstance is provided, else center in viewport
     if (this.element) {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const rect = this.element.getBoundingClientRect();
-      const centerX = viewportWidth / 2 - rect.width / 2;
-      const centerY = viewportHeight / 2 - rect.height / 2;
+      // Ensure only one popout is open at a time
+      const existing = document.querySelector('.swadehud-popout');
+      if (existing && existing !== this.element) {
+        existing.remove();
+      }
       this.element.style.position = 'fixed';
-      this.element.style.left = `${centerX}px`;
-      this.element.style.top = `${centerY}px`;
-      this.element.style.transform = 'translate(0, 0)';
-      // Set a reasonable max height
-      this.element.style.maxHeight = '80vh';
+      let left = '50%';
+      let top = '50%';
+      let transform = 'translate(-50%, -50%)';
+      if (this.options.hudInstance && this.options.hudInstance.element) {
+        const hudRect =
+          this.options.hudInstance.element.getBoundingClientRect();
+        // Center over HUD
+        const centerX = hudRect.left + hudRect.width / 2;
+        const centerY = hudRect.top + hudRect.height / 2;
+        left = `${centerX}px`;
+        top = `${centerY}px`;
+        transform = 'translate(-50%, -50%)';
+      }
+      this.element.style.left = left;
+      this.element.style.top = top;
+      this.element.style.transform = transform;
+      this.element.style.maxHeight = '40vh'; // Even shorter popout
       this.element.style.maxWidth = '90vw';
       this.element.style.overflow = 'auto';
       this.element.style.zIndex = '1000';
+      // Modal dark background (uses CSS var for dark theme)
+      this.element.style.background = 'var(--swadehud-gradient-popout, #222)';
       // Add to DOM if not already present
       if (!document.body.contains(this.element)) {
         document.body.appendChild(this.element);
       }
     }
 
-    // Add animation class to make it visible
+    // Add animation class to make it visible, unless options.animate === false
     setTimeout(() => {
-      if (this.element) {
+      if (this.element && options.animate !== false) {
         this.element.classList.add('popout-animate');
       }
     }, 10); // Small delay to ensure DOM is ready
 
     // Activate listeners
     this.activateListeners();
+    // Attach shared stat handlers
+    if (this.element && this.actor) {
+      // Re-render the popout after stat update to reflect live changes
+      setupHudStatHandlers(this.element, this.actor, () =>
+        this.render(false, { animate: false }),
+      );
+    }
 
     console.log('SWADE HUD: Popout rendered and added to DOM');
     return this;
   }
 
   private async enrichItemDescription(itemElement: HTMLElement, itemData: any) {
+    // ...existing code...
     const descDiv = itemElement.querySelector('.swadehud-item-description');
     if (!descDiv) return;
 
@@ -167,94 +203,7 @@ export class SwadePopout {
       } else {
         descDiv.innerHTML = '<em>No description available</em>';
       }
-      // Setup benny and conviction stat click handlers (bottom row)
-      // Bennies
-      const bennyStat = this.element.querySelector(
-        '.swadehud-bottomstat--benny',
-      );
-      if (bennyStat && this.actor) {
-        // Remove previous listeners if any
-        bennyStat.replaceWith(bennyStat.cloneNode(true));
-        const newBennyStat = this.element.querySelector(
-          '.swadehud-bottomstat--benny',
-        );
-        if (newBennyStat) {
-          newBennyStat.addEventListener('click', async (event: MouseEvent) => {
-            event.preventDefault();
-            event.stopPropagation();
-            // Left click: spend benny
-            if (event.button === 0 && this.actor.spendBenny) {
-              try {
-                await this.actor.spendBenny();
-              } catch (e) {
-                /* ignore */
-              }
-              this.render();
-            }
-          });
-          newBennyStat.addEventListener(
-            'contextmenu',
-            async (event: MouseEvent) => {
-              event.preventDefault();
-              event.stopPropagation();
-              // Right click: get benny
-              if (event.button === 2 && this.actor.getBenny) {
-                try {
-                  await this.actor.getBenny();
-                } catch (e) {
-                  /* ignore */
-                }
-                this.render();
-              }
-            },
-          );
-        }
-      }
-
-      // Conviction
-      const convictionStat = this.element.querySelector(
-        '.swadehud-bottomstat--conviction',
-      );
-      if (convictionStat && this.actor) {
-        convictionStat.replaceWith(convictionStat.cloneNode(true));
-        const newConvictionStat = this.element.querySelector(
-          '.swadehud-bottomstat--conviction',
-        );
-        if (newConvictionStat) {
-          newConvictionStat.addEventListener(
-            'click',
-            async (event: MouseEvent) => {
-              event.preventDefault();
-              event.stopPropagation();
-              // Left click: spend conviction
-              if (event.button === 0 && this.actor.spendConviction) {
-                try {
-                  await this.actor.spendConviction();
-                } catch (e) {
-                  /* ignore */
-                }
-                this.render();
-              }
-            },
-          );
-          newConvictionStat.addEventListener(
-            'contextmenu',
-            async (event: MouseEvent) => {
-              event.preventDefault();
-              event.stopPropagation();
-              // Right click: get conviction
-              if (event.button === 2 && this.actor.getConviction) {
-                try {
-                  await this.actor.getConviction();
-                } catch (e) {
-                  /* ignore */
-                }
-                this.render();
-              }
-            },
-          );
-        }
-      }
+      // ...existing code...
     } catch (error) {
       console.error('SWADE HUD: Error enriching item description:', error);
       descDiv.innerHTML = '<em>Error loading description</em>';
@@ -586,11 +535,26 @@ export class SwadePopout {
       groupedPowers[arcane].push(power);
     });
 
-    // Ensure power points exist for each arcane type
-    const powerPoints = this.actor.system.powerPoints || {};
+    // Use literal keys for powerPoints, but handle 'general' as a special case
+    const powerPointsRaw = this.actor.system.powerPoints || {};
+    const powerPoints: Record<string, { value: number; max: number }> = {};
+    for (const [k, v] of Object.entries(powerPointsRaw)) {
+      if (k.toLowerCase() === 'general') {
+        powerPoints['General'] = v as { value: number; max: number };
+      } else {
+        powerPoints[k] = v as { value: number; max: number };
+      }
+    }
+    // Ensure every arcane in groupedPowers has a powerPoints entry
     Object.keys(groupedPowers).forEach((arcane) => {
-      if (!powerPoints[arcane]) {
-        powerPoints[arcane] = { value: 0, max: 0 };
+      if (arcane === 'General') {
+        if (!powerPoints['General']) {
+          powerPoints['General'] = { value: 0, max: 0 };
+        }
+      } else {
+        if (!powerPoints[arcane]) {
+          powerPoints[arcane] = { value: 0, max: 0 };
+        }
       }
     });
 
@@ -667,20 +631,48 @@ export class SwadePopout {
       this.options.hudInstance,
     );
 
+    // All stat click logic is handled centrally by setupHudStatHandlers
+    // (bennies, conviction, pace, power points, soak, incapacitated, etc)
+    // Do not add stat click handlers here; use only the shared handler.
+
     // Add item interaction handlers based on panel type
     this.setupPanelSpecificListeners(this.element);
   }
 
   private setupPanelSpecificListeners(html: HTMLElement) {
+    // ...existing code...
     switch (this.panelType) {
       case 'weapons': {
         this.setupWeaponsPanelListeners(html);
         break;
       }
       case 'traits':
+        this.setupTraitsPanelListeners(html);
         // Add any trait-specific listeners here if needed
         break;
-      // Add other cases as needed
+      case 'edges':
+        this.setupEdgesPanelListeners(html);
+        break;
+      case 'actions':
+        this.setupActionsPanelListeners(html);
+        break;
+      case 'gear':
+        this.setupGearPanelListeners(html);
+        break;
+      case 'conditions':
+        this.setupConditionsPanelListeners(html);
+        break;
+      case 'effects':
+        this.setupEffectsPanelListeners(html);
+        break;
+      case 'powers':
+        this.setupPowersPanelListeners(html);
+        break;
+      case 'bio':
+        this.setupBioPanelListeners(html);
+        break;
+      default:
+        break;
     }
     //       const isExpanded = item.classList.contains('expanded');
 
@@ -748,228 +740,22 @@ export class SwadePopout {
       });
     });
   }
-  // itemHeaders.forEach((header) => {
-  //   header.addEventListener('click', (event) => {
-  //     // Don't prevent default if clicking on a button
-  //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-  //       event.preventDefault();
-  //     }
 
-  //     const item = (header as HTMLElement).closest('.swadehud-item');
-  //     if (!item) return;
-
-  //     // Check what was clicked
-  //     const clickedElement = event.target as HTMLElement;
-
-  //     // If clicked on dice icon, don't expand/collapse
-  //     if (clickedElement.classList.contains('swadehud-roll-icon') ||
-  //         clickedElement.closest('.swadehud-roll-icon')) {
-  //       return;
-  //     }
-
-  //     // If clicked on name, expand/collapse
-  //     if (clickedElement.classList.contains('swadehud-item-name') ||
-  //         clickedElement.closest('.swadehud-item-name')) {
-  //       const wasExpanded = item.classList.contains('expanded');
-  //       item.classList.toggle('expanded');
-  //       const isExpanded = item.classList.contains('expanded');
-
-  //       if (isExpanded && !wasExpanded) {
-  //         // Lazy enrich description if needed
-  //         const itemId = item.getAttribute('data-item-id');
-  //         if (itemId && this.actor) {
-  //           const itemData = this.actor.items.get(itemId);
-  //           if (itemData) {
-  //             // Enrich description
-  //             this.enrichItemDescription(item as HTMLElement, itemData);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   });
-  // });
-
-  // Handle attribute and skill rolling - only on dice icon
-  // (Moved into setupTraitsPanelListeners or another appropriate method)
+  // Add a no-op setupWeaponsPanelListeners to prevent errors (weapon actions handled elsewhere)
+  private setupWeaponsPanelListeners(_html: HTMLElement) {
+    // ...existing code...
+  }
 
   private setupEdgesPanelListeners(_html: HTMLElement) {
-    // Handle item expand/collapse - handled by setupHudActionButtonListeners
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
-    // Edge activation buttons - handled by setupHudActionButtonListeners
-    // const edgeButtons = html.querySelectorAll('.swadehud-edge-activate');
-    // edgeButtons.forEach(button => {
-    //   button.addEventListener('click', (event) => {
-    //     event.preventDefault();
-    //     const edgeId = (button as HTMLElement).dataset.edgeId;
-    //     if (edgeId) {
-    //       this.handleEdgeActivation(edgeId);
-    //     }
-    //   });
-    // });
+    // ...existing code...
   }
 
   private setupActionsPanelListeners(_html: HTMLElement) {
-    // Handle item expand/collapse - handled by setupHudActionButtonListeners
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
-    // Action buttons - handled by setupHudActionButtonListeners
-    // const actionButtons = html.querySelectorAll('.swadehud-action-trait, .swadehud-action-resist, .swadehud-action-damage, .swadehud-action-macro, .swadehud-action-reload, .swadehud-action-consume, .swadehud-action-template');
-    // actionButtons.forEach(button => {
-    //   button.addEventListener('click', async (event) => {
-    //     event.preventDefault();
-    //     const itemId = (button as HTMLElement).dataset.itemId;
-    //     const actionId = (button as HTMLElement).dataset.action;
-    //     const actionType = (button as HTMLElement).classList[0]?.replace('swadehud-action-', '');
-    //     if (itemId && this.actor) {
-    //       const item = this.actor.items.get(itemId);
-    //       if (!item) return;
-    //       try {
-    //         switch (actionType) {
-    //         case 'trait':
-    //         case 'resist':
-    //         case 'damage':
-    //           // These are handled by the item's roll methods
-    //           if (actionId && item.system.actions?.additional?.[actionId]) {
-    //             await item.roll(actionId);
-    //           }
-    //           break;
-    //         case 'macro':
-    //           // Run macro if available
-    //           if (actionId && item.system.actions?.additional?.[actionId]) {
-    //             // Macros would need to be handled by the game system
-    //             console.log('SWADE HUD: Macro action not implemented:', actionId);
-    //           }
-    //           break;
-    //         case 'reload':
-    //           // Handle reload action
-    //           await item.reload();
-    //           break;
-    //         case 'consume':
-    //           // Handle consume action
-    //           await item.use();
-    //           break;
-    //         case 'template':
-    //           // Handle template placement
-    //           const templateType = (button as HTMLElement).dataset.template;
-    //           if (templateType) {
-    //             await item.placeTemplate(templateType);
-    //           }
-    //           break;
-    //         default:
-    //           console.log('SWADE HUD: Unknown action type:', actionType);
-    //           break;
-    //       }
-    //       } catch (error) {
-    //         console.error('SWADE HUD: Error executing action:', error);
-    //         ui.notifications?.error('Failed to execute action');
-    //       }
-    //     }
-    //   });
-    // });
+    // ...existing code...
   }
 
   private setupGearPanelListeners(html: HTMLElement) {
-    // Handle item expand/collapse - handled by setupHudActionButtonListeners
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-
-    //     // If clicked on equip indicator, don't expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-equip-indicator') ||
-    //         clickedElement.closest('.swadehud-equip-indicator')) {
-    //       return;
-    //     }
-
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+    // ...existing code...
 
     // Handle equip status clicks
     const equipIndicators = html.querySelectorAll('.swadehud-equip-indicator');
@@ -1120,7 +906,6 @@ export class SwadePopout {
             );
 
             await ChatMessage.create({
-              user: game.user.id,
               speaker: ChatMessage.getSpeaker({ actor: this.actor }),
               content: content,
               type: (foundry as any).CONST?.CHAT_MESSAGE_TYPES?.OTHER || 1,
@@ -1134,42 +919,7 @@ export class SwadePopout {
   }
 
   private setupConditionsPanelListeners(html: HTMLElement) {
-    // Handle item expand/collapse
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+    // ...existing code...
 
     // Handle condition toggles
     const conditionToggles = html.querySelectorAll(
@@ -1212,6 +962,10 @@ export class SwadePopout {
               // Update visual state
               toggle.classList.add('active');
             }
+            // Re-render the popout to reflect status changes, skip animation
+            if (typeof this.render === 'function') {
+              await this.render(false, { animate: false });
+            }
           } catch (error) {
             console.error('SWADE HUD: Error toggling condition:', error);
           }
@@ -1232,6 +986,10 @@ export class SwadePopout {
             );
             for (const effect of effectsToDelete) {
               await effect.delete();
+            }
+            // Re-render the popout to update toggles
+            if (typeof this.render === 'function') {
+              await this.render(false, { animate: false });
             }
           } catch (error) {
             console.error('SWADE HUD: Error clearing conditions:', error);
@@ -1254,42 +1012,7 @@ export class SwadePopout {
       html,
     );
 
-    // Handle item expand/collapse
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
+    // ...existing code...
 
     // Handle effect toggles
     const effectToggles = html.querySelectorAll('.swadehud-effect-toggle-icon');
@@ -1364,12 +1087,12 @@ export class SwadePopout {
             .trim();
           if (effectName) {
             effect = Array.from(this.actor.effects).find(
-              (e) => e.name === effectName,
+              (e: any) => e.name === effectName,
             );
             if (!effect) {
               for (const item of this.actor.items) {
                 effect = Array.from(item.effects || []).find(
-                  (e) => e.name === effectName,
+                  (e: any) => e.name === effectName,
                 );
                 if (effect) break;
               }
@@ -1399,87 +1122,14 @@ export class SwadePopout {
   }
 
   private setupBioPanelListeners(_html: HTMLElement) {
-    // Handle item expand/collapse
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
-    // Bio panel doesn't need special listeners for now
-    // The description button is handled in the main HUD
+    // ...existing code...
   }
 
   private setupPowersPanelListeners(_html: HTMLElement) {
-    // Handle item expand/collapse
-    // const itemHeaders = html.querySelectorAll('[data-toggle="expand"]');
-    // itemHeaders.forEach((header) => {
-    //   header.addEventListener('click', (event) => {
-    //     // Don't prevent default if clicking on a button
-    //     if ((event.target as HTMLElement).tagName !== 'BUTTON') {
-    //       event.preventDefault();
-    //     }
-    //     const item = (header as HTMLElement).closest('.swadehud-item');
-    //     if (!item) return;
-    //     // Check what was clicked
-    //     const clickedElement = event.target as HTMLElement;
-    //     // If clicked on name, expand/collapse
-    //     if (clickedElement.classList.contains('swadehud-item-name') ||
-    //         clickedElement.closest('.swadehud-item-name')) {
-    //       const wasExpanded = item.classList.contains('expanded');
-    //       item.classList.toggle('expanded');
-    //       const isExpanded = item.classList.contains('expanded');
-    //       if (isExpanded && !wasExpanded) {
-    //         // Lazy enrich description if needed
-    //         const itemId = item.getAttribute('data-item-id');
-    //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
-    //           if (itemData) {
-    //             // Enrich description
-    //             this.enrichItemDescription(item as HTMLElement, itemData);
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // });
-    // Power activation buttons - handled by setupHudActionButtonListeners
-    // const powerButtons = html.querySelectorAll('.swadehud-power-activate');
-    // powerButtons.forEach(button => {
-    //   button.addEventListener('click', (event) => {
-    //     event.preventDefault();
-    //     const powerId = (button as HTMLElement).dataset.powerId;
-    //     if (powerId) {
-    //       this.handlePowerActivation(powerId);
-    //     }
-    //   });
-    // });
+    // ...existing code...
   }
+
+  private setupTraitsPanelListeners(_html: HTMLElement) {}
 
   // Action handlers
   private async handleWeaponAction(itemId: string, action: string) {
