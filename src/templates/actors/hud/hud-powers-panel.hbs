@@ -5,22 +5,41 @@
       <div class="swadehud-arcane-group">
         <header class="swadehud-section-header">
           <span class="swadehud-section-name">{{arcane}}</span>
-          {{#with (lookup ../system.powerPoints arcane) as |pp|}}
-            <span class="swadehud-pp-indicator swadehud-stat-clickable"
-                  title="Power Points: {{pp.value}}/{{pp.max}} (Left click: -1, Right click: +1)"
-                  data-stat-path="system.powerPoints.{{arcane}}.value"
-                  data-stat-min="0"
-                  data-stat-max="{{#if (gt pp.max 0)}}{{pp.max}}{{/if}}">
-              <i class="fa-solid fa-bolt-lightning"></i> {{pp.value}}/{{pp.max}}
-            </span>
+          {{#if (eq arcane "General")}}
+            {{#with (lookup ../powerPoints "General") as |pp|}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    title="Power Points: {{pp.value}}/{{pp.max}} (Left click: -1, Right click: +1)"
+                    data-stat-path="system.powerPoints.General.value"
+                    data-stat-min="0"
+                    data-stat-max="{{#if (gt pp.max 0)}}{{pp.max}}{{/if}}">
+                <i class="fa-solid fa-bolt-lightning"></i> {{pp.value}}/{{pp.max}}
+              </span>
+            {{else}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    title="Power Points: 0/0 (Left click: -1, Right click: +1)"
+                    data-stat-path="system.powerPoints.General.value"
+                    data-stat-min="0">
+                <i class="fa-solid fa-bolt-lightning"></i> 0/0
+              </span>
+            {{/with}}
           {{else}}
-            <span class="swadehud-pp-indicator swadehud-stat-clickable"
-                  title="Power Points: 0/0 (Left click: -1, Right click: +1)"
-                  data-stat-path="system.powerPoints.{{arcane}}.value"
-                  data-stat-min="0">
-              <i class="fa-solid fa-bolt-lightning"></i> 0/0
-            </span>
-          {{/with}}
+            {{#with (lookup ../powerPoints arcane) as |pp|}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    title="Power Points: {{pp.value}}/{{pp.max}} (Left click: -1, Right click: +1)"
+                    data-stat-path="system.powerPoints.{{arcane}}.value"
+                    data-stat-min="0"
+                    data-stat-max="{{#if (gt pp.max 0)}}{{pp.max}}{{/if}}">
+                <i class="fa-solid fa-bolt-lightning"></i> {{pp.value}}/{{pp.max}}
+              </span>
+            {{else}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    title="Power Points: 0/0 (Left click: -1, Right click: +1)"
+                    data-stat-path="system.powerPoints.{{arcane}}.value"
+                    data-stat-min="0">
+                <i class="fa-solid fa-bolt-lightning"></i> 0/0
+              </span>
+            {{/with}}
+          {{/if}}
         </header>
         {{#each powers as |item|}}
         <div class="swadehud-item" data-item-id="{{item.id}}">
