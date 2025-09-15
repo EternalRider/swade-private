@@ -16,6 +16,7 @@ export interface SwadePopoutOptions {
 }
 
 export class SwadePopout {
+  private _isInitialRender = true;
   private _template: string;
   private context: any;
   private options: any;
@@ -178,8 +179,11 @@ export class SwadePopout {
     // Attach shared stat handlers
     if (this.element && this.actor) {
       // Re-render the popout after stat update to reflect live changes
-      setupHudStatHandlers(this.element, this.actor, () =>
-        this.render(false, { animate: false }),
+      setupHudStatHandlers(
+        this.element,
+        this.actor,
+        () => this.render(false, { animate: false }),
+        this.options.token ?? null,
       );
     }
 
@@ -232,10 +236,6 @@ export class SwadePopout {
         case 2:
           statusText = 'Off Hand';
           tooltipText = 'Off Hand (Left: Store, Right: Two Hands)';
-          break;
-        case 3:
-          statusText = 'Equipped';
-          tooltipText = 'Equipped (Left: Store, Right: Carry)';
           break;
         case 4:
           statusText = 'Main Hand';

@@ -2,11 +2,67 @@
  * Shared HUD stat handler for SWADE HUD and popout.
  * Attaches all stat click/contextmenu handlers for bennies, conviction, pace, power points, etc.
  */
+import { DamageRoll } from '../dice/DamageRoll';
 export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
   onUpdate: (() => void) | null = null,
+  token: any = null,
 ) {
+  if (!element || !actor) return;
+
+  // Effect dragging support (for .swadehud-effect elements)
+  const effectElements = element.querySelectorAll('.swadehud-effect');
+  // Event delegation for dynamically added effects
+  element.addEventListener('dragstart', (event: DragEvent) => {
+    const effectEl = (event.target as HTMLElement)?.closest?.(
+      '.swadehud-effect',
+    );
+    if (!effectEl) return;
+    const effectId = (effectEl as HTMLElement).dataset.effectId;
+    const itemId = (effectEl as HTMLElement).dataset.itemId;
+    if (!effectId || !itemId || !actor) return;
+    const item = actor.items?.get?.(itemId);
+    if (!item) return;
+    const effect = item.effects?.get?.(effectId);
+    if (!effect) return;
+    // Set up the drag data for Foundry's effect transfer
+    const dragData = {
+      type: 'ActiveEffect',
+      uuid: effect.uuid,
+    };
+    event.dataTransfer?.setData('text/plain', JSON.stringify(dragData));
+    event.dataTransfer!.effectAllowed = 'copy';
+  });
+  // Attach direct listeners as backup (for static elements)
+  effectElements.forEach((effectEl) => {
+    effectEl.addEventListener('dragstart', (_event) => {
+      // No-op: main handling is through delegation above
+    });
+  });
+
+  // Combat Toggle (use the token reference passed from the HUD)
+  const combatToggleBtn = element.querySelector(
+    '.swadehud-combat-toggle-clickable',
+  );
+  if (combatToggleBtn && actor) {
+    combatToggleBtn.addEventListener('click', async (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (token && typeof token.toggleCombatant === 'function') {
+        try {
+          await token.toggleCombatant();
+          if (onUpdate) onUpdate();
+        } catch (error) {
+          ui.notifications?.error('Failed to toggle combat state');
+        }
+      } else {
+        ui.notifications?.error(
+          'No valid token reference for this HUD. Please open the HUD from a token on the canvas.',
+        );
+      }
+    });
+  }
   if (!element || !actor) return;
 
   // Soak (open dialog, roll, whisper, trigger applyDamage, clean up)
@@ -44,25 +100,31 @@ export function setupHudStatHandlers(
               const ap = Number(form.querySelector('#ap').value) || 0;
               if (damage > 0) {
                 try {
-                  // Use Roll for a simple numeric roll
-                  const damageRoll = new Roll(`${damage}`);
-                  (await (damageRoll as any).evaluate?.()) ||
-                    (damageRoll as any).evaluate();
-                  // Create a whispered chat message
-                  const chatMessage = (await ChatMessage.create({
-                    content: `Rolling damage from HUD: ${damage}${ap > 0 ? ` (AP ${ap})` : ''}`,
-                    speaker: { actor },
-                    rolls: [damageRoll],
-                    whisper: [game.user.id],
-                    type:
-                      (foundry as any).CONST?.CHAT_MESSAGE_STYLES?.ROLL || 5,
-                  })) as any;
-                  // Wait for the chat message to render, then click Apply Damage
+                  // Use DamageRoll class directly from module for type safety
+                  const roll = new DamageRoll(
+                    `${damage}`,
+                    actor.getRollData(),
+                    { ap },
+                  );
+                  const chatData = await roll.toMessage(
+                    {
+                      speaker: ChatMessage.getSpeaker({ actor }),
+                      flavor: `<strong>Soak Roll</strong> (${game.i18n.localize('SWADE.Damage')}: ${damage}, AP: ${ap})`,
+                      flags: { swade: { soak: true } },
+                    },
+                    { rollMode: CONST.DICE_ROLL_MODES.PRIVATE },
+                  );
+                  // Optionally, auto-control the actor's token for Apply Damage
                   setTimeout(async () => {
                     try {
-                      if (!chatMessage) return;
+                      // chatData may be undefined or not have id, so check type
+                      const messageId =
+                        chatData && 'id' in chatData
+                          ? (chatData as any).id
+                          : undefined;
+                      if (!messageId) return;
                       const messageElement = document.querySelector(
-                        `[data-message-id="${chatMessage.id}"]`,
+                        `[data-message-id="${messageId}"]`,
                       );
                       if (messageElement) {
                         const damageButton =
@@ -86,7 +148,7 @@ export function setupHudStatHandlers(
                           damageButton.dispatchEvent(clickEvent);
                           // Clean up the whisper message after processing
                           setTimeout(() => {
-                            chatMessage.delete();
+                            (chatData as any).delete?.();
                           }, 1000);
                         }
                       }
@@ -96,7 +158,7 @@ export function setupHudStatHandlers(
                   }, 100);
                 } catch (error) {
                   ui.notifications?.error(
-                    'Failed to apply damage. Please ensure SWADE system is active and properly loaded.',
+                    'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
                   );
                 }
               }
@@ -194,12 +256,23 @@ export function setupHudStatHandlers(
       '.swadehud-bottomstat__value',
     );
     if (valueSpan) {
+      // Left click: increment conviction
       valueSpan.addEventListener('click', async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         const statPath = 'system.details.conviction.value';
         const currentValue = getNestedProperty(actor, statPath) || 0;
         await actor.update({ [statPath]: currentValue + 1 });
+      });
+      // Right click (auxclick): increment conviction
+      valueSpan.addEventListener('auxclick', async (e: MouseEvent) => {
+        if (e.button === 2) {
+          e.preventDefault();
+          e.stopPropagation();
+          const statPath = 'system.details.conviction.value';
+          const currentValue = getNestedProperty(actor, statPath) || 0;
+          await actor.update({ [statPath]: currentValue + 1 });
+        }
       });
     }
   }
@@ -354,7 +427,19 @@ export function setupAddSubtractClicks(
     },
     50,
   );
-  element.addEventListener('click', (element as any)._swadeHudClickHandler);
+  // Only stopPropagation for stat increment/decrement, not for popout open
+  element.addEventListener('click', (event: MouseEvent) => {
+    // If this is a stat increment/decrement, handle and stop propagation
+    if (
+      element.classList.contains('swadehud-stat-clickable') ||
+      element.classList.contains('swadehud-pp-indicator')
+    ) {
+      (element as any)._swadeHudClickHandler(event);
+      // Only stop propagation if the stat was actually changed
+      event.stopPropagation();
+    }
+    // Otherwise, allow event to bubble for popout open
+  });
   (element as any)._swadeHudContextHandler = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -374,14 +459,20 @@ export function setupAddSubtractClicks(
           if (typeof actor.getBenny === 'function') await actor.getBenny();
           if (onUpdate) onUpdate();
         } else if (statPath === 'system.conviction.value') {
-          const currentValue = getNestedProperty(actor, statPath) || 0;
-          const newValue =
-            max !== null && max > 0
-              ? Math.min(max, currentValue + 1)
-              : currentValue + 1;
-          if (newValue !== currentValue) {
-            await actor.update({ [statPath]: newValue });
+          // Use system method if available, else increment
+          if (typeof actor.toggleConviction === 'function') {
+            await actor.toggleConviction();
             if (onUpdate) onUpdate();
+          } else {
+            const currentValue = getNestedProperty(actor, statPath) || 0;
+            const newValue =
+              max !== null && max > 0
+                ? Math.min(max, currentValue + 1)
+                : currentValue + 1;
+            if (newValue !== currentValue) {
+              await actor.update({ [statPath]: newValue });
+              if (onUpdate) onUpdate();
+            }
           }
         } else if (statPath.startsWith('system.powerPoints.')) {
           const parts = statPath.split('.');

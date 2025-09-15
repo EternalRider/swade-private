@@ -181,6 +181,16 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
         this._adjustInitialPosition();
         this._isInitialRender = false;
       }
+      // Inject a close button if not present
+      if (!this.element.querySelector('.swadehud-popout-close')) {
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'swadehud-popout-close close-visible';
+        closeBtn.type = 'button';
+        closeBtn.setAttribute('aria-label', 'Close');
+        closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        this.element.insertBefore(closeBtn, this.element.firstChild);
+        closeBtn.addEventListener('click', () => this.close());
+      }
       this.activateListeners(this.element);
     }
     return this;
@@ -207,8 +217,16 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Attach shared stat handlers (bennies, conviction, pace, power points, soak, incapacitated, etc)
     // All stat click logic is handled centrally by setupHudStatHandlers
-    if (html && this.actor) {
-      setupHudStatHandlers(html, this.actor);
+    if (html && this.actor && this.token) {
+      setupHudStatHandlers(
+        html,
+        this.actor,
+        () => {
+          if (this._renderDebounced) this._renderDebounced();
+          else this.render();
+        },
+        this.token,
+      );
     }
   }
 
