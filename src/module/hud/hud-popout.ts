@@ -192,7 +192,6 @@ export class SwadePopout {
   }
 
   private async enrichItemDescription(itemElement: HTMLElement, itemData: any) {
-    // ...existing code...
     const descDiv = itemElement.querySelector('.swadehud-item-description');
     if (!descDiv) return;
 
@@ -207,7 +206,6 @@ export class SwadePopout {
       } else {
         descDiv.innerHTML = '<em>No description available</em>';
       }
-      // ...existing code...
     } catch (error) {
       console.error('SWADE HUD: Error enriching item description:', error);
       descDiv.innerHTML = '<em>Error loading description</em>';
@@ -640,7 +638,6 @@ export class SwadePopout {
   }
 
   private setupPanelSpecificListeners(html: HTMLElement) {
-    // ...existing code...
     switch (this.panelType) {
       case 'weapons': {
         this.setupWeaponsPanelListeners(html);
@@ -742,21 +739,13 @@ export class SwadePopout {
   }
 
   // Add a no-op setupWeaponsPanelListeners to prevent errors (weapon actions handled elsewhere)
-  private setupWeaponsPanelListeners(_html: HTMLElement) {
-    // ...existing code...
-  }
+  private setupWeaponsPanelListeners(_html: HTMLElement) {}
 
-  private setupEdgesPanelListeners(_html: HTMLElement) {
-    // ...existing code...
-  }
+  private setupEdgesPanelListeners(_html: HTMLElement) {}
 
-  private setupActionsPanelListeners(_html: HTMLElement) {
-    // ...existing code...
-  }
+  private setupActionsPanelListeners(_html: HTMLElement) {}
 
   private setupGearPanelListeners(html: HTMLElement) {
-    // ...existing code...
-
     // Handle equip status clicks
     const equipIndicators = html.querySelectorAll('.swadehud-equip-indicator');
     equipIndicators.forEach((indicator) => {
@@ -919,8 +908,6 @@ export class SwadePopout {
   }
 
   private setupConditionsPanelListeners(html: HTMLElement) {
-    // ...existing code...
-
     // Handle condition toggles
     const conditionToggles = html.querySelectorAll(
       '.swadehud-condition-toggle-icon',
@@ -1011,8 +998,6 @@ export class SwadePopout {
       'SWADE HUD: setupEffectsPanelListeners called with html:',
       html,
     );
-
-    // ...existing code...
 
     // Handle effect toggles
     const effectToggles = html.querySelectorAll('.swadehud-effect-toggle-icon');
@@ -1121,13 +1106,9 @@ export class SwadePopout {
     });
   }
 
-  private setupBioPanelListeners(_html: HTMLElement) {
-    // ...existing code...
-  }
+  private setupBioPanelListeners(_html: HTMLElement) {}
 
-  private setupPowersPanelListeners(_html: HTMLElement) {
-    // ...existing code...
-  }
+  private setupPowersPanelListeners(_html: HTMLElement) {}
 
   private setupTraitsPanelListeners(_html: HTMLElement) {}
 
