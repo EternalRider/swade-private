@@ -51,11 +51,6 @@ export class SwadePopout {
   };
 
   async _prepareContext(_options: any) {
-    console.log(
-      'SWADE HUD: _prepareContext called with template:',
-      this._template,
-    );
-
     const context = await prepareHudContext(this.actor, this.options.token);
 
     // Add panel-specific context based on panel type
@@ -96,11 +91,6 @@ export class SwadePopout {
   }
 
   async render(_force = false, options: any = {}) {
-    console.log(
-      'SWADE HUD: SwadePopout render called for panel:',
-      this.panelType,
-    );
-
     // Prepare context first
     await this._prepareContext(options);
 
@@ -108,7 +98,6 @@ export class SwadePopout {
     let htmlContent;
     const renderTemplate = foundry?.applications?.handlebars?.renderTemplate;
     if (typeof renderTemplate === 'function') {
-      console.log('SWADE HUD: Rendering template:', this._template);
       htmlContent = await renderTemplate(this._template, this.context);
     }
 
@@ -187,7 +176,6 @@ export class SwadePopout {
       );
     }
 
-    console.log('SWADE HUD: Popout rendered and added to DOM');
     return this;
   }
 
@@ -406,11 +394,6 @@ export class SwadePopout {
     // Use the system's built-in method to get all applicable effects
     const sheetEffects = await this.actor.allApplicableEffects();
 
-    console.log(
-      'SWADE HUD: prepareEffectsPanelData - sheetEffects:',
-      sheetEffects,
-    );
-
     // Organize effects into temporary and permanent categories
     type EffectData = {
       id: any;
@@ -436,10 +419,6 @@ export class SwadePopout {
     const permanentEffects: EffectData[] = [];
 
     for (const effect of sheetEffects) {
-      console.log(
-        `SWADE HUD: Processing effect ${effect.name} (ID: ${effect.id}, disabled: ${effect.disabled})`,
-      );
-
       // Enrich the effect description
       let enrichedDescription = effect.description || '';
       try {
@@ -503,13 +482,6 @@ export class SwadePopout {
         permanentEffects.push(effectData);
       }
     }
-
-    console.log(
-      'SWADE HUD: prepareEffectsPanelData - temporaryEffects:',
-      temporaryEffects.length,
-      'permanentEffects:',
-      permanentEffects.length,
-    );
 
     return {
       sheetEffects: {
@@ -994,14 +966,8 @@ export class SwadePopout {
       return;
     }
 
-    console.log(
-      'SWADE HUD: setupEffectsPanelListeners called with html:',
-      html,
-    );
-
     // Handle effect toggles
     const effectToggles = html.querySelectorAll('.swadehud-effect-toggle-icon');
-    console.log('SWADE HUD: Found effect toggles:', effectToggles.length);
 
     effectToggles.forEach((toggle) => {
       const effectId = (toggle as HTMLElement).dataset.effectId;

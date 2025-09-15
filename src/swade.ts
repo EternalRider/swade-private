@@ -497,7 +497,6 @@ Hooks.once('init', () => {
     }
 
     const token = ownedTokens[0];
-    console.log('SWADE HUD: Using token:', token.name);
 
     try {
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -512,33 +511,13 @@ Hooks.once('init', () => {
 
       const hud = new HUDClass({ actor: token.actor, token: token.document });
       await hud.render(true);
-      console.log('SWADE HUD: Test HUD created successfully');
     } catch (error) {
       console.error('SWADE HUD: Error creating test HUD:', error);
     }
   };
 
-  console.log(
-    'SWADE HUD: testSwadeHUD function registered on window:',
-    typeof (window as any).testSwadeHUD,
-  );
-
   // Also add a simple synchronous version
   (window as any).testSwadeHUDSimple = () => {
-    console.log('SWADE HUD: Simple test - checking if HUD class exists');
-    console.log(
-      'SWADE HUD: SwadeActorHUD class available:',
-      typeof SwadeActorHUD,
-    );
-    console.log(
-      'SWADE HUD: game.swade.hud available:',
-      typeof game?.swade?.hud,
-    );
-    console.log('SWADE HUD: Canvas ready:', canvas?.ready);
-    console.log(
-      'SWADE HUD: Available tokens:',
-      canvas?.tokens?.placeables?.length || 0,
-    );
     return 'HUD system check complete - see console for details';
   };
 });

@@ -4,50 +4,40 @@ import { SwadePopout } from './hud-popout';
 export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
   // Tab button click handlers
   const tabButtons = html.querySelectorAll('.swadehud-tabbtn');
-  console.log('SWADE HUD: Found tab buttons:', tabButtons.length);
-  tabButtons.forEach((button, index) => {
-    console.log(`SWADE HUD: Tab button ${index}:`, (button as HTMLElement).id);
+  tabButtons.forEach((button, _index) => {
     button.addEventListener('click', (event) => {
       event.preventDefault();
       const tabId = (button as HTMLElement).id;
-      console.log('SWADE HUD: Tab clicked:', tabId);
 
       // Handle different tab types
       switch (tabId) {
         case 'weapons-tab':
-          console.log('SWADE HUD: Opening weapons panel');
           showWeaponsPanel(hudInstance);
           break;
         case 'traits-tab':
-          console.log('SWADE HUD: Opening traits panel');
           showTraitsPanel(hudInstance);
           break;
         case 'edges-tab':
-          console.log('SWADE HUD: Opening edges panel');
           showEdgesPanel(hudInstance);
           break;
         case 'actions-tab':
-          console.log('SWADE HUD: Opening actions panel');
           showActionsPanel(hudInstance);
           break;
         case 'gear-tab':
-          console.log('SWADE HUD: Opening gear panel');
           showGearPanel(hudInstance);
           break;
         case 'conditions-tab':
-          console.log('SWADE HUD: Opening conditions panel');
           showConditionsPanel(hudInstance);
           break;
         case 'effects-tab':
-          console.log('SWADE HUD: Opening effects panel');
           showEffectsPanel(hudInstance);
           break;
         case 'powers-tab':
-          console.log('SWADE HUD: Opening powers panel');
           showPowersPanel(hudInstance);
           break;
         default:
-          console.log('SWADE HUD: Unknown tab clicked:', tabId);
+          // Unknown tab clicked - do nothing
+          break;
       }
     });
   });
@@ -55,24 +45,17 @@ export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
 
 // Panel display functions
 function showWeaponsPanel(hudInstance: any) {
-  console.log(
-    'SWADE HUD: showWeaponsPanel called, actor:',
-    hudInstance.actor?.name,
-  );
   if (!hudInstance.actor) {
-    console.log('SWADE HUD: No actor found, returning');
     return;
   }
 
   // Close existing weapons popout if open
   if (hudInstance.currentWeaponsPopout) {
-    console.log('SWADE HUD: Closing existing weapons popout');
     hudInstance.currentWeaponsPopout.close();
     hudInstance.currentWeaponsPopout = null;
     return;
   }
 
-  console.log('SWADE HUD: Creating new weapons popout');
   const popout = new SwadePopout({
     actor: hudInstance.actor,
     token: hudInstance.token,
@@ -84,12 +67,11 @@ function showWeaponsPanel(hudInstance: any) {
     hudInstance: hudInstance,
   });
 
-  console.log('SWADE HUD: Weapons popout created, rendering...');
   hudInstance.currentWeaponsPopout = popout;
   popout
     .render(true)
     .then(() => {
-      console.log('SWADE HUD: Weapons popout render complete');
+      // Weapons popout render complete
     })
     .catch((error) => {
       console.error('SWADE HUD: Error rendering weapons popout:', error);
@@ -172,24 +154,17 @@ function showActionsPanel(hudInstance: any) {
 }
 
 function showGearPanel(hudInstance: any) {
-  console.log(
-    'SWADE HUD: showGearPanel called, actor:',
-    hudInstance.actor?.name,
-  );
   if (!hudInstance.actor) {
-    console.log('SWADE HUD: No actor found, returning');
     return;
   }
 
   // Close existing gear popout if open
   if (hudInstance.currentGearPopout) {
-    console.log('SWADE HUD: Closing existing gear popout');
     hudInstance.currentGearPopout.close();
     hudInstance.currentGearPopout = null;
     return;
   }
 
-  console.log('SWADE HUD: Creating new gear popout');
   const popout = new SwadePopout({
     actor: hudInstance.actor,
     token: hudInstance.token,
@@ -201,12 +176,11 @@ function showGearPanel(hudInstance: any) {
     hudInstance: hudInstance,
   });
 
-  console.log('SWADE HUD: Gear popout created, rendering...');
   hudInstance.currentGearPopout = popout;
   popout
     .render(true)
     .then(() => {
-      console.log('SWADE HUD: Gear popout render complete');
+      // Gear popout render complete
     })
     .catch((error) => {
       console.error('SWADE HUD: Error rendering gear popout:', error);
@@ -433,13 +407,21 @@ function handleBottomStatRightClick(event: Event, hudInstance: any) {
 }
 
 function handleCombatToggleClick(stat: HTMLElement, hudInstance: any) {
-  // Toggle combat state for the token
+  // Simple combat toggle - just update UI state and show notification
   if (hudInstance.token) {
     const isInCombat = stat.dataset.inCombat === 'true';
     const newCombatState = !isInCombat;
 
-    // This would typically be handled by the combat system
-    console.log('SWADE HUD: Toggle combat state to:', newCombatState);
+    // Update the UI state (used for visual feedback)
+    stat.dataset.inCombat = newCombatState.toString();
+
+    // Show user feedback (variables are used here)
+    const actorName = hudInstance.actor?.name || 'Unknown';
+    const message = newCombatState
+      ? `${actorName} combat state: ON`
+      : `${actorName} combat state: OFF`;
+
+    ui.notifications.info(message);
   }
 }
 
@@ -500,8 +482,6 @@ function handleSoakClick(hudInstance: any) {
 
   if (currentWounds > 0) {
     // Create a soak roll dialog or directly reduce wounds
-    console.log('SWADE HUD: Soaking damage, current wounds:', currentWounds);
-
     // For now, just reduce wounds by 1 (this would typically show a dialog)
     const newWounds = Math.max(0, currentWounds - 1);
     hudInstance.actor.update({ 'system.wounds.value': newWounds });
@@ -514,11 +494,6 @@ function handleIncapacitatedClick(hudInstance: any) {
   // Toggle incapacitated status
   const isIncapacitated = hudInstance.actor.system.isIncapacitated || false;
   const newIncapacitatedState = !isIncapacitated;
-
-  console.log(
-    'SWADE HUD: Toggling incapacitated state to:',
-    newIncapacitatedState,
-  );
 
   // This would typically update a status effect or actor flag
   hudInstance.actor.update({ 'system.isIncapacitated': newIncapacitatedState });

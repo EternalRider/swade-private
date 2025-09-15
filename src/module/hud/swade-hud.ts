@@ -21,20 +21,13 @@ export const SWADEHUD = {
 
 // Initialize HUD system
 Hooks.once('init', async function () {
-  console.log('SWADE HUD: Initializing HUD system...');
-
   try {
     registerSwadeHUDHelpers();
-    console.log('SWADE HUD: Handlebars helpers registered');
 
     await foundry.applications.handlebars.loadTemplates(SWADEHUD.templates);
-    console.log('SWADE HUD: Templates loaded successfully');
 
     // Add HUD to global game object
     game.swade.hud = SWADEHUD;
-    console.log(
-      'SWADE HUD: HUD system initialized and added to game.swade.hud',
-    );
   } catch (error) {
     console.error('SWADE HUD: Error during initialization:', error);
   }
@@ -81,8 +74,6 @@ Hooks.once('ready', () => {
     const hud = getHudApp();
     if (hud) {
       hud.close();
-    } else {
-      console.log('No active HUD to toggle');
     }
   };
 
