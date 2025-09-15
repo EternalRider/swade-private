@@ -41,7 +41,10 @@ import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import { rollItemMacro } from './module/hooks/hotbarDrop';
 import { registerKeybindings } from './module/keybindings';
 import * as migrations from './module/migration/migration';
-import { preloadHandlebarsTemplates } from './module/preloadTemplates';
+import {
+  preloadHandlebarsTemplates,
+  registerHandlebarsPartials,
+} from './module/preloadTemplates';
 import {
   register3DBennySettings,
   registerSettingRules,
@@ -258,6 +261,8 @@ Hooks.once('init', () => {
   registerCustomHelpers();
   //Preload Handlebars templates
   preloadHandlebarsTemplates();
+  //Register Handlebars partials
+  registerHandlebarsPartials();
 
   // Register custom system settings
   registerSettings();
