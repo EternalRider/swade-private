@@ -2,7 +2,6 @@
  * Shared HUD stat handler for SWADE HUD and popout.
  * Attaches all stat click/contextmenu handlers for bennies, conviction, pace, power points, etc.
  */
-import { DamageRoll } from '../dice/DamageRoll';
 export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
@@ -100,62 +99,59 @@ export function setupHudStatHandlers(
               const ap = Number(form.querySelector('#ap').value) || 0;
               if (damage > 0) {
                 try {
-                  // Use DamageRoll class directly from module for type safety
-                  const roll = new DamageRoll(
-                    `${damage}`,
-                    actor.getRollData(),
-                    { ap },
-                  );
-                  const chatData = await roll.toMessage(
-                    {
-                      speaker: ChatMessage.getSpeaker({ actor }),
-                      flavor: `<strong>Soak Roll</strong> (${game.i18n.localize('SWADE.Damage')}: ${damage}, AP: ${ap})`,
-                      flags: { swade: { soak: true } },
-                    },
-                    { rollMode: CONST.DICE_ROLL_MODES.PRIVATE },
-                  );
-                  // Optionally, auto-control the actor's token for Apply Damage
-                  setTimeout(async () => {
-                    try {
-                      // chatData may be undefined or not have id, so check type
-                      const messageId =
-                        chatData && 'id' in chatData
-                          ? (chatData as any).id
-                          : undefined;
-                      if (!messageId) return;
+                  // Use the correct SWADE method: actor.rollDamage (not dmgRoll)
+                  if (typeof actor.rollDamage === 'function') {
+                    await actor.rollDamage({
+                      damage: damage,
+                      ap: ap,
+                      whisper: [game.user.id],
+                    });
+                  } else {
+                    // Fallback to manual DamageRoll if rollDamage is unavailable
+                    const damageRoll = new CONFIG.Dice.DamageRoll(
+                      `${damage}`,
+                      {},
+                      {
+                        ap: ap,
+                        isHeavyWeapon: false,
+                      },
+                    );
+                    await damageRoll.evaluate();
+                    const chatMessage = await ChatMessage.create({
+                      content: `Rolling damage from HUD: ${damage}${ap > 0 ? ` (AP ${ap})` : ''}`,
+                      speaker: { actor: actor },
+                      rolls: [damageRoll],
+                      whisper: [game.user.id],
+                      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+                    });
+                    // Programmatically click Apply Damage button
+                    setTimeout(async () => {
                       const messageElement = document.querySelector(
-                        `[data-message-id="${messageId}"]`,
+                        `[data-message-id="${chatMessage.id}"]`,
                       );
                       if (messageElement) {
                         const damageButton =
                           messageElement.querySelector('.calculate-wounds');
                         if (damageButton) {
-                          // Ensure the actor's token is controlled for damage application
-                          const actorToken = (
-                            canvas.tokens?.placeables as any[]
-                          )?.find?.((t: any) => t.actor?.id === actor.id);
+                          const actorToken = canvas.tokens.placeables.find(
+                            (t) => t.actor?.id === actor.id,
+                          );
                           if (actorToken && !actorToken.controlled) {
-                            await actorToken.control?.({
-                              releaseOthers: false,
-                            });
+                            await actorToken.control({ releaseOthers: false });
                           }
-                          // Programmatically click the Apply Damage button
                           const clickEvent = new MouseEvent('click', {
                             bubbles: true,
                             cancelable: true,
                             view: window,
                           });
                           damageButton.dispatchEvent(clickEvent);
-                          // Clean up the whisper message after processing
                           setTimeout(() => {
-                            (chatData as any).delete?.();
+                            chatMessage.delete();
                           }, 1000);
                         }
                       }
-                    } catch (clickError) {
-                      /* silent */
-                    }
-                  }, 100);
+                    }, 100);
+                  }
                 } catch (error) {
                   ui.notifications?.error(
                     'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
