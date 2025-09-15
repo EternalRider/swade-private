@@ -1273,7 +1273,7 @@ export class SwadePopout {
   }
 
   async close() {
-    if (!this.element || !this.element.parentNode) return this;
+    if (!this.element) return this;
 
     // Add close animation class
     this.element.classList.remove('popout-animate');
