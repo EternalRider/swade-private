@@ -133,7 +133,6 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
   override async _prepareContext(_options: any) {
     const context = await prepareHudContext(this.actor, this.token);
-    console.log('HUD Context:', context);
     return context;
   }
 
@@ -152,29 +151,8 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       opts = forceOrOptions ?? {};
     }
     if (this.options && this.options.window) this.options.window.title = '';
-    console.log(
-      'SWADE HUD: Starting render, actor:',
-      this.actor?.name,
-      'token:',
-      this.token?.name,
-    );
-    // Access PARTS via the class, not the constructor function
-    console.log(
-      'SWADE HUD: PARTS config:',
-      (this.constructor as typeof SwadeActorHUD).PARTS,
-    );
     await super.render(force, opts);
-    console.log('SWADE HUD: Render complete, element exists:', !!this.element);
     if (this.element) {
-      console.log('SWADE HUD: Full element HTML:', this.element.innerHTML);
-      console.log('SWADE HUD: Element children:', this.element.children.length);
-      for (let i = 0; i < this.element.children.length; i++) {
-        console.log(
-          `SWADE HUD: Child ${i}:`,
-          this.element.children[i].tagName,
-          this.element.children[i].className,
-        );
-      }
       // Only position at bottom left on initial render, not on updates
       if (this._isInitialRender) {
         // Position immediately for faster initial appearance
