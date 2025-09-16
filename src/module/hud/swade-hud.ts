@@ -57,7 +57,7 @@ Hooks.once('init', async function () {
     // Add HUD to global game object
     game.swade.hud = swadeHud;
   } catch (error) {
-    // Error during HUD initialization
+    console.error('SWADE HUD: Error during initialization:', error);
   }
 });
 
@@ -69,17 +69,21 @@ Hooks.once('init', async function () {
 Hooks.once('canvasReady', () => {
   // Listen for right-click on tokens to show HUD
   canvas.stage.on('rightdown', (event: any) => {
-    const token = canvas.tokens.placeables.find((t: any) => {
-      const bounds = t.getBounds();
-      return bounds.contains(event.data.global.x, event.data.global.y);
-    });
+    try {
+      const token = canvas.tokens.placeables.find((t: any) => {
+        const bounds = t.getBounds();
+        return bounds.contains(event.data.global.x, event.data.global.y);
+      });
 
-    if (token && isSwadePC(token) && canPlayerAccessToken(token)) {
-      // Prevent default context menu
-      event.data.originalEvent.preventDefault();
+      if (token && isSwadePC(token) && canPlayerAccessToken(token)) {
+        // Prevent default context menu
+        event.data.originalEvent.preventDefault();
 
-      // Show HUD for this token
-      handleSwadeHUDTokenControl(token, true, SwadeActorHUD);
+        // Show HUD for this token
+        handleSwadeHUDTokenControl(token, true, SwadeActorHUD);
+      }
+    } catch (error) {
+      console.error('SWADE HUD: Error handling right-click on token:', error);
     }
   });
 });
@@ -92,12 +96,16 @@ Hooks.once('canvasReady', () => {
  * @param {boolean} controlled - Whether the token is controlled.
  */
 Hooks.on('controlToken', async (token: any, controlled: boolean) => {
-  // Only handle left-click controls (don't show HUD on left-click)
-  if (controlled && isSwadePC(token)) {
-    // Don't show HUD on left-click, let right-click handler do it
-    return;
+  try {
+    // Only handle left-click controls (don't show HUD on left-click)
+    if (controlled && isSwadePC(token)) {
+      // Don't show HUD on left-click, let right-click handler do it
+      return;
+    }
+    await handleSwadeHUDTokenControl(token, controlled, SwadeActorHUD);
+  } catch (error) {
+    console.error('SWADE HUD: Error handling token control:', error);
   }
-  await handleSwadeHUDTokenControl(token, controlled, SwadeActorHUD);
 });
 
 /**

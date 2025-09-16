@@ -132,79 +132,94 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   popouts: Record<string, SwadePopoutInstance | null> = {};
 
   override async _prepareContext(_options: Record<string, unknown>) {
-    const context = await prepareHudContext(this.actor, this.token);
-    return context;
+    try {
+      const context = await prepareHudContext(this.actor, this.token);
+      return context;
+    } catch (error) {
+      console.error('SWADE HUD: Error preparing context:', error);
+      return {};
+    }
   }
 
   override async render(
     forceOrOptions?: boolean | Record<string, unknown>,
     options?: Record<string, unknown>,
   ): Promise<this> {
-    // Support both (force, options) and (options) signatures
-    let force: boolean;
-    let opts: Record<string, unknown>;
-    if (typeof forceOrOptions === 'boolean') {
-      force = forceOrOptions;
-      opts = options ?? {};
-    } else {
-      force = false;
-      opts = forceOrOptions ?? {};
-    }
-    if (this.options && this.options.window) this.options.window.title = '';
-    await super.render(force, opts);
-    if (this.element) {
-      // Only position at bottom left on initial render, not on updates
-      if (this._isInitialRender) {
-        // Position immediately for faster initial appearance
-        this._adjustInitialPosition();
-        this._isInitialRender = false;
+    try {
+      // Support both (force, options) and (options) signatures
+      let force: boolean;
+      let opts: Record<string, unknown>;
+      if (typeof forceOrOptions === 'boolean') {
+        force = forceOrOptions;
+        opts = options ?? {};
+      } else {
+        force = false;
+        opts = forceOrOptions ?? {};
       }
-      // Inject a close button if not present
-      if (!this.element.querySelector('.swadehud-popout-close')) {
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'swadehud-popout-close close-visible';
-        closeBtn.type = 'button';
-        closeBtn.setAttribute('aria-label', 'Close');
-        closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-        this.element.insertBefore(closeBtn, this.element.firstChild);
-        closeBtn.addEventListener('click', () => this.close());
+      if (this.options && this.options.window) this.options.window.title = '';
+      await super.render(force, opts);
+      if (this.element) {
+        // Only position at bottom left on initial render, not on updates
+        if (this._isInitialRender) {
+          // Position immediately for faster initial appearance
+          this._adjustInitialPosition();
+          this._isInitialRender = false;
+        }
+        // Inject a close button if not present
+        if (!this.element.querySelector('.swadehud-popout-close')) {
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'swadehud-popout-close close-visible';
+          closeBtn.type = 'button';
+          closeBtn.setAttribute('aria-label', 'Close');
+          closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+          this.element.insertBefore(closeBtn, this.element.firstChild);
+          closeBtn.addEventListener('click', () => this.close());
+        }
+        this.activateListeners(this.element);
       }
-      this.activateListeners(this.element);
+      return this;
+    } catch (error) {
+      console.error('SWADE HUD: Error rendering HUD:', error);
+      // Optionally show a fallback UI or error message here
+      return this;
     }
-    return this;
   }
 
   activateListeners(html: HTMLElement) {
-    // Setup action button listeners for main HUD
-    setupHudActionButtonListeners(html, this.actor, this);
+    try {
+      // Setup action button listeners for main HUD
+      setupHudActionButtonListeners(html, this.actor, this);
 
-    // Setup tab handlers for panel switching
-    setupTabHandlers(html, this);
+      // Setup tab handlers for panel switching
+      setupTabHandlers(html, this);
 
-    // Setup roll button handlers for various actions
-    setupRollButtonHandlers(html, this);
+      // Setup roll button handlers for various actions
+      setupRollButtonHandlers(html, this);
 
-    // Setup ability handlers for special actions (soak, incapacitated)
-    setupAbilityHandlers(html, this);
+      // Setup ability handlers for special actions (soak, incapacitated)
+      setupAbilityHandlers(html, this);
 
-    // Setup portrait handler
-    setupPortraitHandler(html, this);
+      // Setup portrait handler
+      setupPortraitHandler(html, this);
 
-    // Setup drag handler for moving the HUD
-    setupDragHandler(html);
+      // Setup drag handler for moving the HUD
+      setupDragHandler(html);
 
-    // Attach shared stat handlers (bennies, conviction, pace, power points, soak, incapacitated, etc)
-    // All stat click logic is handled centrally by setupHudStatHandlers
-    if (html && this.actor && this.token) {
-      setupHudStatHandlers(
-        html,
-        this.actor,
-        () => {
-          if (this._renderDebounced) this._renderDebounced();
-          else this.render();
-        },
-        this.token,
-      );
+      // Attach shared stat handlers (bennies, conviction, pace, power points, soak, incapacitated, etc)
+      // All stat click logic is handled centrally by setupHudStatHandlers
+      if (html && this.actor && this.token) {
+        setupHudStatHandlers(
+          html,
+          this.actor,
+          () => {
+            if (this._renderDebounced) this._renderDebounced();
+            else this.render();
+          },
+          this.token,
+        );
+      }
+    } catch (error) {
+      console.error('SWADE HUD: Error activating listeners:', error);
     }
   }
 
@@ -225,39 +240,44 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override async close(options: any = {}) {
-    // Clean up actor update hooks
-    if (this._onActorUpdate) {
-      Hooks.off('updateActor', this._onActorUpdate);
-      this._onActorUpdate = null;
-    }
-    if (this._onActorDelete) {
-      Hooks.off('deleteActor', this._onActorDelete);
-      this._onActorDelete = null;
-    }
-
-    // Close all open popouts in the registry
-    for (const popout of Object.values(this.popouts)) {
-      if (popout && typeof popout.close === 'function') {
-        await popout.close();
+    try {
+      // Clean up actor update hooks
+      if (this._onActorUpdate) {
+        Hooks.off('updateActor', this._onActorUpdate);
+        this._onActorUpdate = null;
       }
+      if (this._onActorDelete) {
+        Hooks.off('deleteActor', this._onActorDelete);
+        this._onActorDelete = null;
+      }
+
+      // Close all open popouts in the registry
+      for (const popout of Object.values(this.popouts)) {
+        if (popout && typeof popout.close === 'function') {
+          await popout.close();
+        }
+      }
+      this.popouts = {};
+
+      // Remove positioned class to hide HUD
+      if (this.element) {
+        this.element.classList.remove('hud-positioned');
+      }
+
+      // Clear any pending positioning timeout
+      if (this._positionTimeout) {
+        clearTimeout(this._positionTimeout);
+        this._positionTimeout = null;
+      }
+
+      // Reset initial render flag for next open
+      this._isInitialRender = true;
+
+      return super.close(options);
+    } catch (error) {
+      console.error('SWADE HUD: Error closing HUD:', error);
+      return this;
     }
-    this.popouts = {};
-
-    // Remove positioned class to hide HUD
-    if (this.element) {
-      this.element.classList.remove('hud-positioned');
-    }
-
-    // Clear any pending positioning timeout
-    if (this._positionTimeout) {
-      clearTimeout(this._positionTimeout);
-      this._positionTimeout = null;
-    }
-
-    // Reset initial render flag for next open
-    this._isInitialRender = true;
-
-    return super.close(options);
   }
 }
 
