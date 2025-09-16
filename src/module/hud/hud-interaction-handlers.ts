@@ -63,7 +63,7 @@ function showWeaponsPanel(hudInstance: any) {
   if (hudInstance.currentWeaponsPopout) {
     hudInstance.currentWeaponsPopout.close();
     hudInstance.currentWeaponsPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -95,7 +95,7 @@ function showTraitsPanel(hudInstance: any) {
   if (hudInstance.currentTraitsPopout) {
     hudInstance.currentTraitsPopout.close();
     hudInstance.currentTraitsPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -120,7 +120,7 @@ function showEdgesPanel(hudInstance: any) {
   if (hudInstance.currentEdgesPopout) {
     hudInstance.currentEdgesPopout.close();
     hudInstance.currentEdgesPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -145,7 +145,7 @@ function showActionsPanel(hudInstance: any) {
   if (hudInstance.currentActionsPopout) {
     hudInstance.currentActionsPopout.close();
     hudInstance.currentActionsPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -172,7 +172,7 @@ function showGearPanel(hudInstance: any) {
   if (hudInstance.currentGearPopout) {
     hudInstance.currentGearPopout.close();
     hudInstance.currentGearPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -204,7 +204,7 @@ function showConditionsPanel(hudInstance: any) {
   if (hudInstance.currentConditionsPopout) {
     hudInstance.currentConditionsPopout.close();
     hudInstance.currentConditionsPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -229,7 +229,7 @@ function showEffectsPanel(hudInstance: any) {
   if (hudInstance.currentEffectsPopout) {
     hudInstance.currentEffectsPopout.close();
     hudInstance.currentEffectsPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -254,7 +254,7 @@ function showPowersPanel(hudInstance: any) {
   if (hudInstance.currentPowersPopout) {
     hudInstance.currentPowersPopout.close();
     hudInstance.currentPowersPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
@@ -338,7 +338,7 @@ function showBiographyPanel(hudInstance: any) {
   if (hudInstance.currentBioPopout) {
     hudInstance.currentBioPopout.close();
     hudInstance.currentBioPopout = null;
-    return;
+    // Do not return; continue to open new popout
   }
 
   const popout = new SwadePopout({
