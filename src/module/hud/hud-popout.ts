@@ -1,8 +1,13 @@
-import { prepareHudContext } from './hud-context';
-import { getEnrichedDescription } from './hud-context';
-import { renderCachedTemplate } from './hud-context';
+import {
+  prepareHudContext,
+  getEnrichedDescription,
+  renderCachedTemplate,
+  getItemsByType,
+  getAllApplicableEffects,
+} from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
+import { hudPanelConfig } from './hud-panel-constants';
 
 /**
  * Options for creating a SwadePopout HUD panel.
@@ -47,13 +52,9 @@ export class SwadePopout {
    * @param {SwadePopoutOptions} options - Options for the HUD panel.
    */
   constructor(options: SwadePopoutOptions) {
-    // Set the correct template for the powers panel
-    if (options.panelType === 'powers') {
-      this._template =
-        'systems/swade/templates/actors/hud/hud-powers-panel.hbs';
-    } else {
-      this._template = options.template;
-    }
+    // Use centralized hudPanelConfig for template paths
+    this._template =
+      hudPanelConfig[options.panelType]?.template || options.template;
     this.context = {};
     this.options = options;
     this.actor = options.actor;
@@ -450,7 +451,7 @@ export class SwadePopout {
 
   private async prepareEffectsPanelData(_context: any) {
     // Use the system's built-in method to get all applicable effects
-    const sheetEffects = await this.actor.allApplicableEffects();
+    const sheetEffects = await getAllApplicableEffects(this.actor);
 
     // Organize effects into temporary and permanent categories
     type EffectData = {
@@ -552,12 +553,7 @@ export class SwadePopout {
 
   private preparePowersPanelData(_context: any) {
     // Use the same logic as CharacterSheet.ts to source powers
-    const powers: any[] =
-      this.actor.itemTypes && this.actor.itemTypes.power
-        ? this.actor.itemTypes.power
-        : [];
-    console.log('[SWADE HUD] preparePowersPanelData: actor', this.actor);
-    console.log('[SWADE HUD] preparePowersPanelData: powers', powers);
+    const powers: any[] = getItemsByType(this.actor, 'power');
 
     // Use CharacterSheet.ts logic for powers and powerPoints
     const arcaneBackgrounds: Record<
