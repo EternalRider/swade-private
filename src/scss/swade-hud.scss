@@ -1388,14 +1388,14 @@
 
 .swadehud-item-description {
   margin-top: 0.5em;
-  color: #ccc;
+  color: var(--swadehud-grey-medium);
   font-size: 0.9em;
   line-height: 1.4;
+  font-style: normal;
 }
 
 .swadehud-no-description {
   color: var(--swadehud-grey-muted);
-  font-style: italic;
 }
 
 /* Main HUD window title styling */
