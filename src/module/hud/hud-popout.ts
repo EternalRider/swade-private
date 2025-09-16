@@ -120,10 +120,10 @@ export class SwadePopout {
   /**
    * Render the HUD panel using the cached template and prepared context.
    * @param {boolean} [_force=false] - Force re-rendering.
-   * @param {any} [options={}] - Additional rendering options.
+   * @param {Record<string, unknown>} [options={}] - Additional rendering options.
    * @returns {Promise<this>} The SwadePopout instance.
    */
-  async render(_force = false, options: any = {}) {
+  async render(_force = false, options: Record<string, unknown> = {}) {
     // Prepare context first
     await this._prepareContext(options);
 
@@ -465,7 +465,7 @@ export class SwadePopout {
         label: any;
       };
       origin?: any;
-      source?: { name: any; id: any };
+      source?: { name: string; id: string };
     };
     const temporaryEffects: EffectData[] = [];
     const permanentEffects: EffectData[] = [];
@@ -677,7 +677,7 @@ export class SwadePopout {
       }
       case 'traits':
         this.setupTraitsPanelListeners(html);
-        // Add any trait-specific listeners here if needed
+        // Add listeners for trait-specific HUD panel interactions if needed
         break;
       case 'edges':
         this.setupEdgesPanelListeners(html);

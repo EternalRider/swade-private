@@ -3,6 +3,6 @@
  * Called during system initialization to add custom helpers.
  */
 export function registerSwadeHUDHelpers() {
-  // Register any HUD-specific Handlebars helpers here
-  // These will be called during system initialization
+  // Register HUD-specific Handlebars helpers below as needed
+  // Example: Handlebars.registerHelper('helperName', fn)
 }

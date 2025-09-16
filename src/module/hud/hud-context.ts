@@ -1,3 +1,4 @@
+import { HUDContext } from '../../types/HUD';
 import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
@@ -54,10 +55,13 @@ class TemplateCache {
    * Render a template using the cached compiled version if available.
    * Falls back to standard rendering if cache is unavailable.
    * @param {string} templatePath - Path to the template file.
-   * @param {any} [data={}] - Data/context for rendering.
+   * @param {HUDContext} [data={}] - Data/context for rendering.
    * @returns {Promise<string>} Rendered HTML string.
    */
-  async render(templatePath: string, data: any = {}): Promise<string> {
+  async render(
+    templatePath: string,
+    data: HUDContext = {} as HUDContext,
+  ): Promise<string> {
     // Try cached template first
     const cachedTemplate = this.compiledTemplates.get(templatePath);
     if (cachedTemplate) {
@@ -281,7 +285,7 @@ export async function initializeTemplateCache(): Promise<void> {
  */
 export async function renderCachedTemplate(
   templatePath: string,
-  data: any = {},
+  data: HUDContext = {} as HUDContext,
 ): Promise<string> {
   return templateCache.render(templatePath, data);
 }
