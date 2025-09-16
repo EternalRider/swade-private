@@ -9,7 +9,6 @@
  */
 import { HUDToken } from '../../types/HUD';
 
-// ...existing code...
 import { DamageRoll } from '../dice/DamageRoll';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 
