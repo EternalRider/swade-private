@@ -1,18 +1,14 @@
 // Type definitions for SWADE HUD context and popout management
 
-export interface HUDActor {
-  id: string;
-  name: string;
-  system: Record<string, any>;
-  sheet?: any;
-  update: (data: Record<string, any>) => Promise<void>;
-}
+import SwadeActor from '../module/documents/actor/SwadeActor';
+import { AnyObject } from 'fvtt-types/utils';
+import SwadeToken from '../module/canvas/SwadeToken';
 
-// If Token is globally available, just alias HUDToken to Token
-export type HUDToken = Token;
+// Use SwadeToken for HUDToken to leverage SWADE-specific token logic
+export type HUDToken = SwadeToken;
 
 export interface SwadePopoutInstance {
-  actor: HUDActor;
+  actor: SwadeActor;
   token?: HUDToken;
   panelType: string;
   title: string;
@@ -25,8 +21,9 @@ export interface SwadePopoutInstance {
   close: () => void;
 }
 
-export interface HUDContext {
-  actor: HUDActor;
+export interface HUDContext extends AnyObject {
+  [key: string]: any;
+  actor: SwadeActor;
   token?: HUDToken;
   element?: HTMLElement;
   popouts: Record<string, SwadePopoutInstance>;

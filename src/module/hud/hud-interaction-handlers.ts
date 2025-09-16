@@ -415,7 +415,10 @@ function handleSoakClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
   // Get current wounds
-  const currentWounds = hudInstance.actor.system.wounds?.value || 0;
+  const currentWounds =
+    (hudInstance.actor.wounds?.value ??
+      hudInstance.actor.system.wounds?.value) ||
+    0;
 
   if (currentWounds > 0) {
     // Create a soak roll dialog or directly reduce wounds
@@ -429,7 +432,10 @@ function handleIncapacitatedClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
   // Toggle incapacitated status
-  const isIncapacitated = hudInstance.actor.system.isIncapacitated || false;
+  const isIncapacitated =
+    (hudInstance.actor.isIncapacitated ??
+      hudInstance.actor.system.isIncapacitated) ||
+    false;
   const newIncapacitatedState = !isIncapacitated;
 
   // This would typically update a status effect or actor flag

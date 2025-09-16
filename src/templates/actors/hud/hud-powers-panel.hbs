@@ -155,8 +155,8 @@
             {{!-- Alternative: {{#each item.effects as |effect|}} --}}
             {{!--   <div>Effect: {{effect.name}}</div> --}}
             {{!-- {{/each}} --}}
-            {{#if item.system.description}}
-              <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
+            {{#if item.enrichedDescription}}
+              <div class="swadehud-item-description">{{{item.enrichedDescription}}}</div>
             {{else}}
               <div class="swadehud-item-description swadehud-no-description">{{localize 'SWADE.NoDescription'}}</div>
             {{/if}}

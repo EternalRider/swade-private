@@ -32,7 +32,9 @@ export function setupHudStatHandlers(
     const effectId = (effectEl as HTMLElement).dataset.effectId;
     const itemId = (effectEl as HTMLElement).dataset.itemId;
     if (!effectId || !itemId || !actor) return;
-    const item = actor.items?.get?.(itemId);
+    const item = actor.getOwnedItem
+      ? actor.getOwnedItem(itemId)
+      : actor.items?.get?.(itemId);
     if (!item) return;
     const effect = item.effects?.get?.(effectId);
     if (!effect) return;

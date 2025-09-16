@@ -166,17 +166,6 @@ class DescriptionCache {
       return null;
     }
 
-    return cached.description;
-  }
-
-  /**
-   * Store description in cache
-   */
-  set(item: any, description: string): void {
-    const key = this.getCacheKey(item);
-    if (!key) return;
-
-    // Clean up old entries if cache is getting too large
     if (this.cache.size >= this.maxSize) {
       this.cleanup();
     }
@@ -368,49 +357,34 @@ export const sortByLocalizedName = (
  * @returns {Promise<string>} The enriched HTML description
  */
 export async function getEnrichedDescription(item: any) {
-  if (!item) {
-    return '';
+  if (!item) return '';
+  // Use SWADE's built-in description enricher if available
+  if (typeof game.swade?.enrichItemDescription === 'function') {
+    try {
+      return await game.swade.enrichItemDescription(item);
+    } catch (error) {
+      console.error(
+        'SWADE HUD: Error using SWADE enrichItemDescription:',
+        error,
+      );
+      return item.system?.description ?? '';
+    }
   }
-
-  // Check global cache first
-  const cached = descriptionCache.get(item);
-  if (cached !== null) {
-    return cached;
-  }
-
+  // Fallback to Foundry's TextEditor
   const raw = item.system?.description ?? '';
-  let enriched = raw;
-
   try {
-    if (
-      foundry.applications.ux.TextEditor.implementation &&
-      typeof foundry.applications.ux.TextEditor.implementation.enrichHTML ===
-        'function'
-    ) {
-      enriched =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          raw,
-          {},
-        );
-    } else if (
-      window.TextEditor &&
-      typeof window.TextEditor.enrichHTML === 'function'
-    ) {
-      enriched = await window.TextEditor.enrichHTML(raw, {});
-    } else {
-      console.warn('SWADE HUD: No TextEditor.enrichHTML function found');
+    if (foundry.applications.ux.TextEditor.implementation?.enrichHTML) {
+      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        raw,
+        {},
+      );
+    } else if (window.TextEditor?.enrichHTML) {
+      return await window.TextEditor.enrichHTML(raw, {});
     }
   } catch (error) {
     console.error('SWADE HUD: Error during enrichment:', error);
   }
-
-  // Store in global cache
-  descriptionCache.set(item, enriched);
-
-  // Also store on item for backward compatibility
-  item._enrichedDescription = enriched;
-
-  return enriched;
+  return raw;
 }
 
 /**
@@ -459,13 +433,13 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
       actor.items.filter((i: any) => i.type === 'action'),
     ),
     effects: actor.effects,
-    conditions: actor.statuses,
+    conditions: actor.status,
     wounds: actor.system.wounds,
     fatigue: actor.system.fatigue,
-    bennies: actor.system.bennies,
+    bennies: actor.bennies,
     pace: actor.system.pace,
     runningDie: actor.system.pace.runningDie,
-    conviction: actor.system.conviction,
+    conviction: actor.system.details?.conviction,
     powerPoints: actor.system.powerPoints,
     encumbrance: actor.system.encumbrance,
     isWildcard: actor.isWildcard,

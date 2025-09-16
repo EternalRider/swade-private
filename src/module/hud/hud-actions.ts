@@ -1,5 +1,5 @@
-import { debounce } from './hud-utils.ts';
-import { getEnrichedDescription } from './hud-context.ts';
+import { debounce } from './hud-utils';
+import { getEnrichedDescription } from './hud-context';
 import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
@@ -16,17 +16,7 @@ export function setupHudActionButtonListeners(
 ) {
   // Get SWADE's ItemChatCardHelper
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const ItemChatCardHelper =
-    game.swade?.itemChatCardHelper ||
-    game.system?.itemChatCardHelper ||
-    CONFIG.SWADE?.itemChatCardHelper;
-
-  if (!ItemChatCardHelper) {
-    console.error(
-      'SWADE ItemChatCardHelper not available - action buttons will not work',
-    );
-    return;
-  }
+  const ItemChatCardHelper = game.swade?.itemChatCardHelper;
 
   // Handle item expand/collapse and rolling
   const itemHeaders = popout.querySelectorAll('[data-toggle="expand"]');
@@ -56,53 +46,30 @@ export function setupHudActionButtonListeners(
 
       // If clicked on dice icon, roll
       if (clickedElement.classList.contains('swadehud-roll-icon')) {
-        const rollType = clickedElement.dataset.type;
-        const rollKey = clickedElement.dataset.key;
-        if (rollType === 'attribute') {
-          try {
-            // Try SWADE's ItemChatCardHelper for attributes
-            if (
-              ItemChatCardHelper &&
-              typeof ItemChatCardHelper.rollTrait === 'function'
-            ) {
-              ItemChatCardHelper.rollTrait(actor, rollKey, {
-                type: 'attribute',
-              });
-            } else if (typeof actor?.rollTrait === 'function') {
-              actor.rollTrait(rollKey, { type: 'attribute' });
-            } else if (typeof actor?.rollAttribute === 'function') {
-              actor.rollAttribute(rollKey);
-            } else if (typeof actor?.rollAbility === 'function') {
-              actor.rollAbility(rollKey);
-            } else {
-              console.error(
-                'No rolling methods found. Available actor methods:',
-                Object.getOwnPropertyNames(actor).filter((name) =>
-                  name.includes('roll'),
-                ),
-              );
-              console.error(
-                'ItemChatCardHelper available:',
-                !!ItemChatCardHelper,
-              );
-              if (ItemChatCardHelper) {
-                console.error(
-                  'ItemChatCardHelper methods:',
-                  Object.getOwnPropertyNames(ItemChatCardHelper),
-                );
-              }
-            }
-          } catch (error) {
-            console.error('Error rolling attribute:', error);
+        const rollType = (clickedElement as HTMLElement).dataset.type;
+        const rollKey = (clickedElement as HTMLElement).dataset.key;
+        if (
+          rollType === 'attribute' &&
+          typeof actor?.rollAttribute === 'function' &&
+          rollKey
+        ) {
+          // Only allow valid attribute keys
+          const validAttributes = [
+            'agility',
+            'smarts',
+            'spirit',
+            'strength',
+            'vigor',
+          ];
+          if (validAttributes.includes(rollKey)) {
+            actor.rollAttribute(rollKey as any);
           }
-        } else if (rollType === 'skill') {
-          try {
-            if (actor && typeof actor.rollSkill === 'function') {
-              actor.rollSkill(rollKey);
-            }
-          } catch (error) {
-            console.error('Error rolling skill:', error);
-          }
+        } else if (
+          rollType === 'skill' &&
+          typeof actor?.rollSkill === 'function' &&
+          rollKey
+        ) {
+          actor.rollSkill(rollKey);
         }
         return;
       }
@@ -132,18 +99,23 @@ export function setupHudActionButtonListeners(
 
         if (isExpanded) {
           // Lazy enrich description if needed
-          const itemId = item.dataset.itemId;
+          const itemId = (item as HTMLElement).dataset.itemId;
 
-          let itemData = null;
-          if (actor?.items.get && typeof actor.items.get === 'function') {
-            itemData = actor.items.get(itemId);
+          let itemData: any = null;
+          if (actor && typeof (actor as any).getOwnedItem === 'function') {
+            itemData = (actor as any).getOwnedItem(itemId);
           } else if (
-            actor?.items.find &&
+            actor?.items?.get &&
+            typeof actor.items.get === 'function'
+          ) {
+            itemData = actor.items.get(String(itemId)) ?? null;
+          } else if (
+            actor?.items?.find &&
             typeof actor.items.find === 'function'
           ) {
-            itemData = actor.items.find((i: any) => i.id === itemId);
+            itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
           } else if (Array.isArray(actor?.items)) {
-            itemData = actor.items.find((i: any) => i.id === itemId);
+            itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
           }
 
           if (itemData) {
@@ -172,18 +144,20 @@ export function setupHudActionButtonListeners(
 
       if (isExpanded && !wasExpanded) {
         // Lazy enrich description if needed
-        const itemId = item.dataset.itemId;
+        const itemId = (item as HTMLElement).dataset.itemId;
 
-        let itemData = null;
-        if (actor?.items.get && typeof actor.items.get === 'function') {
-          itemData = actor.items.get(itemId);
+        let itemData: any = null;
+        if (actor && typeof (actor as any).getOwnedItem === 'function') {
+          itemData = (actor as any).getOwnedItem(itemId);
+        } else if (actor?.items?.get && typeof actor.items.get === 'function') {
+          itemData = actor.items.get(String(itemId)) ?? null;
         } else if (
-          actor?.items.find &&
+          actor?.items?.find &&
           typeof actor.items.find === 'function'
         ) {
-          itemData = actor.items.find((i: any) => i.id === itemId);
+          itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
         } else if (Array.isArray(actor?.items)) {
-          itemData = actor.items.find((i: any) => i.id === itemId);
+          itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
         }
 
         if (itemData) {
@@ -279,10 +253,10 @@ export function setupHudActionButtonListeners(
             );
 
             await ChatMessage.create({
-              user: game.user.id,
+              // user: game.user.id, // Removed invalid property
               speaker: ChatMessage.getSpeaker({ actor: actor }),
               content: content,
-              type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+              type: (foundry as any).CONST?.CHAT_MESSAGE_TYPES?.OTHER || 1,
             });
           }
         }
