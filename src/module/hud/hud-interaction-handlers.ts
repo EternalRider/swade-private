@@ -1,3 +1,43 @@
+/**
+ * Generic function to show a HUD panel popout.
+ * Handles closing existing popout, creating, and rendering the new one.
+ * @param {any} hudInstance - The HUD instance.
+ * @param {string} panelType - The type of panel (e.g., 'weapons', 'traits').
+ * @param {string} title - The window title.
+ * @param {string} template - The Handlebars template path.
+ * @param {number} width - The panel width.
+ * @param {number} height - The panel height.
+ * @param {string} popoutKey - The key in hudInstance.popouts to store the popout.
+ */
+function showPanel(
+  hudInstance: any,
+  panelType: string,
+  title: string,
+  template: string,
+  width: number,
+  height: number,
+  popoutKey: string,
+) {
+  if (!hudInstance.actor) return;
+  if (hudInstance.popouts[popoutKey]) {
+    hudInstance.popouts[popoutKey].close();
+    hudInstance.popouts[popoutKey] = null;
+  }
+  const popout = new SwadePopout({
+    actor: hudInstance.actor,
+    token: hudInstance.token,
+    panelType,
+    title,
+    template,
+    width,
+    height,
+    hudInstance,
+  });
+  hudInstance.popouts[popoutKey] = popout;
+  popout.render(true).catch((error: any) => {
+    console.error(`SWADE HUD: Error rendering ${panelType} popout:`, error);
+  });
+}
 import { SwadePopout } from './hud-popout';
 
 /**
@@ -55,221 +95,99 @@ export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
  * @param {any} hudInstance - The HUD instance.
  */
 function showWeaponsPanel(hudInstance: any) {
-  if (!hudInstance.actor) {
-    return;
-  }
-
-  // Close existing weapons popout if open
-  if (hudInstance.popouts['weapons']) {
-    hudInstance.popouts['weapons'].close();
-    hudInstance.popouts['weapons'] = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'weapons',
-    title: `${hudInstance.actor.name} - Weapons`,
-    template: 'systems/swade/templates/actors/hud/hud-weapons-panel.hbs',
-    width: 450,
-    height: 600,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.popouts['weapons'] = popout;
-  popout
-    .render(true)
-    .then(() => {
-      // Weapons popout render complete
-    })
-    .catch((error) => {
-      console.error('SWADE HUD: Error rendering weapons popout:', error);
-    });
+  showPanel(
+    hudInstance,
+    'weapons',
+    `${hudInstance.actor.name} - Weapons`,
+    'systems/swade/templates/actors/hud/hud-weapons-panel.hbs',
+    450,
+    600,
+    'weapons',
+  );
 }
 
 function showTraitsPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing traits popout if open
-  if (hudInstance.popouts['traits']) {
-    hudInstance.popouts['traits'].close();
-    hudInstance.popouts['traits'] = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'traits',
-    title: `${hudInstance.actor.name} - Traits`,
-    template: 'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
-    width: 400,
-    height: 500,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.popouts['traits'] = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'traits',
+    `${hudInstance.actor.name} - Traits`,
+    'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
+    400,
+    500,
+    'traits',
+  );
 }
 
 function showEdgesPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing edges popout if open
-  if (hudInstance.currentEdgesPopout) {
-    hudInstance.currentEdgesPopout.close();
-    hudInstance.currentEdgesPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'edges',
-    title: `${hudInstance.actor.name} - Edges & Hindrances`,
-    template: 'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
-    width: 400,
-    height: 500,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentEdgesPopout = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'edges',
+    `${hudInstance.actor.name} - Edges & Hindrances`,
+    'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
+    400,
+    500,
+    'edges',
+  );
 }
 
 function showActionsPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing actions popout if open
-  if (hudInstance.currentActionsPopout) {
-    hudInstance.currentActionsPopout.close();
-    hudInstance.currentActionsPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'actions',
-    title: `${hudInstance.actor.name} - Actions`,
-    template: 'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
-    width: 400,
-    height: 500,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentActionsPopout = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'actions',
+    `${hudInstance.actor.name} - Actions`,
+    'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
+    400,
+    500,
+    'actions',
+  );
 }
 
 function showGearPanel(hudInstance: any) {
-  if (!hudInstance.actor) {
-    return;
-  }
-
-  // Close existing gear popout if open
-  if (hudInstance.currentGearPopout) {
-    hudInstance.currentGearPopout.close();
-    hudInstance.currentGearPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'gear',
-    title: `${hudInstance.actor.name} - Gear`,
-    template: 'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
-    width: 400,
-    height: 500,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentGearPopout = popout;
-  popout
-    .render(true)
-    .then(() => {
-      // Gear popout render complete
-    })
-    .catch((error) => {
-      console.error('SWADE HUD: Error rendering gear popout:', error);
-    });
+  showPanel(
+    hudInstance,
+    'gear',
+    `${hudInstance.actor.name} - Gear`,
+    'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
+    400,
+    500,
+    'gear',
+  );
 }
 
 function showConditionsPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing conditions popout if open
-  if (hudInstance.currentConditionsPopout) {
-    hudInstance.currentConditionsPopout.close();
-    hudInstance.currentConditionsPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'conditions',
-    title: `${hudInstance.actor.name} - Conditions`,
-    template: 'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
-    width: 350,
-    height: 400,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentConditionsPopout = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'conditions',
+    `${hudInstance.actor.name} - Conditions`,
+    'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
+    350,
+    400,
+    'conditions',
+  );
 }
 
 function showEffectsPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing effects popout if open
-  if (hudInstance.currentEffectsPopout) {
-    hudInstance.currentEffectsPopout.close();
-    hudInstance.currentEffectsPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'effects',
-    title: `${hudInstance.actor.name} - Effects`,
-    template: 'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
-    width: 350,
-    height: 400,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentEffectsPopout = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'effects',
+    `${hudInstance.actor.name} - Effects`,
+    'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
+    350,
+    400,
+    'effects',
+  );
 }
 
 function showPowersPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing powers popout if open
-  if (hudInstance.currentPowersPopout) {
-    hudInstance.currentPowersPopout.close();
-    hudInstance.currentPowersPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'powers',
-    title: `${hudInstance.actor.name} - Powers`,
-    template: 'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
-    width: 400,
-    height: 500,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentPowersPopout = popout;
-  popout.render(true);
+  showPanel(
+    hudInstance,
+    'powers',
+    `${hudInstance.actor.name} - Powers`,
+    'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
+    400,
+    500,
+    'powers',
+  );
 }
 
 export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
