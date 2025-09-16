@@ -9,6 +9,10 @@
  */
 import { HUDToken } from '../../types/HUD';
 
+// ...existing code...
+import { DamageRoll } from '../dice/DamageRoll';
+import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
+
 export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
@@ -55,9 +59,9 @@ export function setupHudStatHandlers(
     combatToggleBtn.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (token && typeof token.toggleCombatant === 'function') {
+      if (token && typeof (token as any).toggleCombatant === 'function') {
         try {
-          await token.toggleCombatant();
+          await (token as any).toggleCombatant();
           if (onUpdate) onUpdate();
         } catch (error) {
           ui.notifications?.error('Failed to toggle combat state');
@@ -77,8 +81,9 @@ export function setupHudStatHandlers(
     soakBtn.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      // Create a simple damage input dialog
-      const content = `
+      try {
+        // Create a simple damage input dialog
+        const content = `
         <form>
           <div style="margin-bottom: 10px;">
             <label for="damage" style="display: block; margin-bottom: 5px; color: #fff;">Damage:</label>
@@ -90,92 +95,112 @@ export function setupHudStatHandlers(
           </div>
         </form>
       `;
-      const dialogClass = foundry.applications?.api?.DialogV2 || window.Dialog;
-      const dialog = new dialogClass({
-        window: { title: 'Soak' },
-        content: content,
-        buttons: [
-          {
-            action: 'apply',
-            label: 'Soak',
-            icon: '<i class="fas fa-shield-halved"></i>',
-            default: true,
-            callback: async (_event: any, button: any) => {
-              const form = button.form;
-              const damage = Number(form.querySelector('#damage').value) || 0;
-              const ap = Number(form.querySelector('#ap').value) || 0;
-              if (damage > 0) {
-                try {
-                  // Use the correct SWADE method: actor.rollDamage (not dmgRoll)
-                  if (typeof actor.rollDamage === 'function') {
-                    await actor.rollDamage({
-                      damage: damage,
-                      ap: ap,
-                      whisper: [game.user.id],
-                    });
-                  } else {
-                    // Fallback to manual DamageRoll if rollDamage is unavailable
-                    const damageRoll = new CONFIG.Dice.DamageRoll(
-                      `${damage}`,
-                      {},
-                      {
+        const dialogClass =
+          foundry.applications?.api?.DialogV2 || window.Dialog;
+        const dialog = new dialogClass({
+          window: { title: 'Soak' },
+          content: content,
+          buttons: [
+            {
+              action: 'apply',
+              label: 'Soak',
+              icon: '<i class="fas fa-shield-halved"></i>',
+              default: true,
+              callback: async (_event: any, button: any) => {
+                const form = button.form;
+                const damage = Number(form.querySelector('#damage').value) || 0;
+                const ap = Number(form.querySelector('#ap').value) || 0;
+                if (damage > 0) {
+                  try {
+                    // Use the correct SWADE method: actor.rollDamage (not dmgRoll)
+                    if (typeof actor.rollDamage === 'function') {
+                      await actor.rollDamage({
+                        damage: damage,
                         ap: ap,
-                        isHeavyWeapon: false,
-                      },
-                    );
-                    await damageRoll.evaluate();
-                    const chatMessage = await ChatMessage.create({
-                      content: `Rolling damage from HUD: ${damage}${ap > 0 ? ` (AP ${ap})` : ''}`,
-                      speaker: { actor: actor },
-                      rolls: [damageRoll],
-                      whisper: [game.user.id],
-                      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
-                    });
-                    // Programmatically click Apply Damage button
-                    setTimeout(async () => {
-                      const messageElement = document.querySelector(
-                        `[data-message-id="${chatMessage.id}"]`,
+                        whisper: [game.user.id],
+                      });
+                    } else {
+                      // Fallback to manual DamageRoll if rollDamage is unavailable
+                      const damageRoll = new DamageRoll(
+                        `${damage}`,
+                        {},
+                        {
+                          ap: ap,
+                          isHeavyWeapon: false,
+                        },
                       );
-                      if (messageElement) {
-                        const damageButton =
-                          messageElement.querySelector('.calculate-wounds');
-                        if (damageButton) {
-                          const actorToken = canvas.tokens.placeables.find(
-                            (t) => t.actor?.id === actor.id,
+                      await damageRoll.evaluate();
+                      const chatMessage = await SwadeChatMessage.create({
+                        content: `Rolling damage from HUD: ${damage}${ap > 0 ? ` (AP ${ap})` : ''}`,
+                        speaker: { actor: actor },
+                        rolls: [damageRoll],
+                        whisper: [game.user.id],
+                      });
+                      // Programmatically click Apply Damage button
+                      setTimeout(async () => {
+                        if (chatMessage) {
+                          const messageElement = document.querySelector(
+                            `[data-message-id="${chatMessage.id}"]`,
                           );
-                          if (actorToken && !actorToken.controlled) {
-                            await actorToken.control({ releaseOthers: false });
+                          if (messageElement) {
+                            const damageButton =
+                              messageElement.querySelector('.calculate-wounds');
+                            if (damageButton) {
+                              // Find the token on the canvas
+                              const actorToken =
+                                canvas?.tokens?.placeables?.find(
+                                  (t: any) => t.actor?.id === actor.id,
+                                );
+                              // Foundry Token API: must be instance of Token and have control
+                              if (
+                                actorToken &&
+                                (actorToken as any).constructor?.name ===
+                                  'Token' &&
+                                typeof (actorToken as any).control ===
+                                  'function' &&
+                                !(actorToken as any).controlled
+                              ) {
+                                await (actorToken as any).control({
+                                  releaseOthers: false,
+                                });
+                              }
+                              const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window,
+                              });
+                              damageButton.dispatchEvent(clickEvent);
+                              setTimeout(() => {
+                                if (typeof chatMessage.delete === 'function')
+                                  chatMessage.delete();
+                              }, 1000);
+                            }
                           }
-                          const clickEvent = new MouseEvent('click', {
-                            bubbles: true,
-                            cancelable: true,
-                            view: window,
-                          });
-                          damageButton.dispatchEvent(clickEvent);
-                          setTimeout(() => {
-                            chatMessage.delete();
-                          }, 1000);
                         }
-                      }
-                    }, 100);
+                      }, 100);
+                    }
+                  } catch (error) {
+                    ui.notifications?.error(
+                      'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
+                    );
+                    console.error('HUD soak error:', error);
                   }
-                } catch (error) {
-                  ui.notifications?.error(
-                    'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
-                  );
                 }
-              }
+              },
             },
-          },
-          {
-            action: 'cancel',
-            label: 'Cancel',
-            callback: () => {},
-          },
-        ],
-        modal: true,
-      });
-      dialog.render(true);
+            {
+              action: 'cancel',
+              label: 'Cancel',
+              callback: () => {},
+            },
+          ],
+          modal: true,
+        });
+        dialog.render(true);
+      } catch (error) {
+        ui.notifications?.error('Failed to open soak dialog.');
+        console.error('HUD soak dialog error:', error);
+      }
     });
   }
 
@@ -185,9 +210,14 @@ export function setupHudStatHandlers(
     incapBtn.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (typeof actor.toggleStatusEffect === 'function')
-        await actor.toggleStatusEffect('incapacitated');
-      if (onUpdate) onUpdate();
+      try {
+        if (typeof actor.toggleStatusEffect === 'function')
+          await actor.toggleStatusEffect('incapacitated');
+        if (onUpdate) onUpdate();
+      } catch (error) {
+        ui.notifications?.error('Failed to toggle incapacitated status.');
+        console.error('HUD incapacitated error:', error);
+      }
     });
   }
 
@@ -251,8 +281,13 @@ export function setupHudStatHandlers(
       starIcon.addEventListener('click', async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (typeof actor.toggleConviction === 'function')
-          await actor.toggleConviction();
+        try {
+          if (typeof actor.toggleConviction === 'function')
+            await actor.toggleConviction();
+        } catch (error) {
+          ui.notifications?.error('Failed to toggle conviction.');
+          console.error('HUD conviction error:', error);
+        }
       });
     }
     const valueSpan = convictionStat.querySelector(
@@ -263,18 +298,28 @@ export function setupHudStatHandlers(
       valueSpan.addEventListener('click', async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        const statPath = 'system.details.conviction.value';
-        const currentValue = getNestedProperty(actor, statPath) || 0;
-        await actor.update({ [statPath]: currentValue + 1 });
+        try {
+          const statPath = 'system.details.conviction.value';
+          const currentValue = getNestedProperty(actor, statPath) || 0;
+          await actor.update({ [statPath]: currentValue + 1 });
+        } catch (error) {
+          ui.notifications?.error('Failed to increment conviction.');
+          console.error('HUD conviction increment error:', error);
+        }
       });
       // Right click (auxclick): increment conviction
       valueSpan.addEventListener('auxclick', async (e: MouseEvent) => {
         if (e.button === 2) {
           e.preventDefault();
           e.stopPropagation();
-          const statPath = 'system.details.conviction.value';
-          const currentValue = getNestedProperty(actor, statPath) || 0;
-          await actor.update({ [statPath]: currentValue + 1 });
+          try {
+            const statPath = 'system.details.conviction.value';
+            const currentValue = getNestedProperty(actor, statPath) || 0;
+            await actor.update({ [statPath]: currentValue + 1 });
+          } catch (error) {
+            ui.notifications?.error('Failed to increment conviction.');
+            console.error('HUD conviction increment error:', error);
+          }
         }
       });
     }
@@ -312,37 +357,47 @@ export function setupHudStatHandlers(
     newPaceStat.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (e.button === 0 && typeof actor.rollRunningDie === 'function')
-        await actor.rollRunningDie();
+      try {
+        if (e.button === 0 && typeof actor.rollRunningDie === 'function')
+          await actor.rollRunningDie();
+      } catch (error) {
+        ui.notifications?.error('Failed to roll running die.');
+        console.error('HUD pace roll error:', error);
+      }
     });
     const handlePaceCycle = async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      const paceTypes = (newPaceStat.getAttribute('data-pace-types') || '')
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const currentBase =
-        newPaceStat.getAttribute('data-current-base') || 'ground';
-      if (paceTypes.length > 1) {
-        let currentIndex = paceTypes.indexOf(currentBase);
-        if (currentIndex === -1) currentIndex = 0;
-        let nextBase: string | null = null;
-        let attempts = 0;
-        while (attempts < paceTypes.length) {
-          const nextIndex = (currentIndex + attempts + 1) % paceTypes.length;
-          const candidateBase = paceTypes[nextIndex];
-          const candidateValue = actor?.system?.pace?.[candidateBase];
-          if (candidateValue !== null && candidateValue !== undefined) {
-            nextBase = candidateBase;
-            break;
+      try {
+        const paceTypes = (newPaceStat.getAttribute('data-pace-types') || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const currentBase =
+          newPaceStat.getAttribute('data-current-base') || 'ground';
+        if (paceTypes.length > 1) {
+          let currentIndex = paceTypes.indexOf(currentBase);
+          if (currentIndex === -1) currentIndex = 0;
+          let nextBase: string | null = null;
+          let attempts = 0;
+          while (attempts < paceTypes.length) {
+            const nextIndex = (currentIndex + attempts + 1) % paceTypes.length;
+            const candidateBase = paceTypes[nextIndex];
+            const candidateValue = actor?.system?.pace?.[candidateBase];
+            if (candidateValue !== null && candidateValue !== undefined) {
+              nextBase = candidateBase;
+              break;
+            }
+            attempts++;
           }
-          attempts++;
+          if (!nextBase) nextBase = 'ground';
+          await actor.update({ 'system.pace.base': nextBase });
+          newPaceStat.setAttribute('data-current-base', nextBase);
+          updatePaceIcon(nextBase);
         }
-        if (!nextBase) nextBase = 'ground';
-        await actor.update({ 'system.pace.base': nextBase });
-        newPaceStat.setAttribute('data-current-base', nextBase);
-        updatePaceIcon(nextBase);
+      } catch (error) {
+        ui.notifications?.error('Failed to cycle pace type.');
+        console.error('HUD pace cycle error:', error);
       }
     };
     newPaceStat.addEventListener('contextmenu', handlePaceCycle);

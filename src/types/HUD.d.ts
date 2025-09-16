@@ -8,11 +8,8 @@ export interface HUDActor {
   update: (data: Record<string, any>) => Promise<void>;
 }
 
-export interface HUDToken {
-  id: string;
-  name: string;
-  actor: HUDActor;
-}
+// If Token is globally available, just alias HUDToken to Token
+export type HUDToken = Token;
 
 export interface SwadePopoutInstance {
   actor: HUDActor;
