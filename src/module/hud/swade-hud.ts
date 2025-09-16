@@ -2,8 +2,12 @@ import SwadeActorHUD from '../apps/SwadeActorHUD';
 import { registerSwadeHUDHelpers } from '../hud/hud-handlebars-helpers';
 import {
   initializeDescriptionCache,
+  initializeTemplateCache,
   clearDescriptionCache,
   getDescriptionCacheStats,
+  clearTemplateCache,
+  getTemplateCacheStats,
+  getEnrichedDescription,
 } from '../hud/hud-context';
 import {
   handleSwadeHUDTokenControl,
@@ -33,6 +37,9 @@ Hooks.once('init', async function () {
 
     // Initialize description caching system
     initializeDescriptionCache();
+
+    // Initialize template caching system for better performance
+    await initializeTemplateCache();
 
     // Add HUD to global game object
     game.swade.hud = SWADEHUD;
@@ -90,6 +97,10 @@ Hooks.once('ready', () => {
   // Add cache utility functions for debugging
   (window as any).clearDescriptionCache = clearDescriptionCache;
   (window as any).getDescriptionCacheStats = getDescriptionCacheStats;
+
+  // Add template cache utility functions for debugging
+  (window as any).clearTemplateCache = clearTemplateCache;
+  (window as any).getTemplateCacheStats = getTemplateCacheStats;
 
   // Add cache performance test function
   (window as any).testDescriptionCache = async () => {
