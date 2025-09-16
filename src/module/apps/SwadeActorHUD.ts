@@ -9,7 +9,8 @@ import {
   setupDragHandler,
 } from '../hud/hud-interaction-handlers';
 import SwadeActor from '../documents/actor/SwadeActor';
-import { HUDToken, SwadePopoutInstance } from '../types/HUD';
+import SwadeToken from '../canvas/SwadeToken';
+import { HUDToken, SwadePopoutInstance } from '../../types/HUD';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -69,12 +70,20 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     this.actor = actor ?? null;
     // Use .document if it exists, otherwise use the token itself
     const activeToken = actor?.getActiveTokens()?.[0];
-    this.token =
-      token ??
-      (activeToken && 'document' in activeToken
-        ? activeToken.document
-        : activeToken) ??
-      null;
+    // Ensure token is always SwadeToken or null
+    if (token) {
+      this.token = token as HUDToken;
+    } else if (
+      activeToken &&
+      'document' in activeToken &&
+      activeToken.document instanceof SwadeToken
+    ) {
+      this.token = activeToken.document as HUDToken;
+    } else if (activeToken instanceof SwadeToken) {
+      this.token = activeToken as HUDToken;
+    } else {
+      this.token = null;
+    }
 
     // Track if this is the initial render to avoid repositioning on updates
     this._isInitialRender = true;

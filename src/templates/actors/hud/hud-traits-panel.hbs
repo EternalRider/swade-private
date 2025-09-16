@@ -12,8 +12,8 @@
               <i class="fa-solid fa-dice swadehud-roll-icon" data-type="attribute" data-key="{{key}}" title="Click to roll {{capitalize key}}"></i>
             </div>
             <div class="swadehud-item-content">
-              {{#if attr.description}}
-                <div class="swadehud-item-description">{{{attr.description}}}</div>
+              {{#if attr.enrichedDescription}}
+                <div class="swadehud-item-description">{{{attr.enrichedDescription}}}</div>
               {{else}}
                 <div class="swadehud-item-description swadehud-no-description">{{localize 'SWADE.NoDescription'}}</div>
               {{/if}}
@@ -35,8 +35,8 @@
               <i class="fa-solid fa-dice swadehud-roll-icon" data-type="skill" data-key="{{skill.id}}" title="Click to roll {{skill.name}}"></i>
             </div>
             <div class="swadehud-item-content">
-              {{#if skill.system.description}}
-                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
+              {{#if skill.enrichedDescription}}
+                <div class="swadehud-item-description">{{{skill.enrichedDescription}}}</div>
               {{else}}
                 <div class="swadehud-item-description swadehud-no-description">{{localize 'SWADE.NoDescription'}}</div>
               {{/if}}

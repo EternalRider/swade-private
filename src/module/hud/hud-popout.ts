@@ -47,7 +47,13 @@ export class SwadePopout {
    * @param {SwadePopoutOptions} options - Options for the HUD panel.
    */
   constructor(options: SwadePopoutOptions) {
-    this._template = options.template;
+    // Set the correct template for the powers panel
+    if (options.panelType === 'powers') {
+      this._template =
+        'systems/swade/templates/actors/hud/hud-powers-panel.hbs';
+    } else {
+      this._template = options.template;
+    }
     this.context = {};
     this.options = options;
     this.actor = options.actor;
@@ -545,50 +551,62 @@ export class SwadePopout {
   }
 
   private preparePowersPanelData(_context: any) {
-    // Group powers by arcane type
-    const powers = this.actor.items.filter((i: any) => i.type === 'power');
-    const groupedPowers: { [key: string]: any[] } = {};
+    // Use the same logic as CharacterSheet.ts to source powers
+    const powers: any[] =
+      this.actor.itemTypes && this.actor.itemTypes.power
+        ? this.actor.itemTypes.power
+        : [];
+    console.log('[SWADE HUD] preparePowersPanelData: actor', this.actor);
+    console.log('[SWADE HUD] preparePowersPanelData: powers', powers);
 
-    powers.forEach((power: any) => {
-      const arcane = power.system?.arcane || 'General';
-      if (!groupedPowers[arcane]) {
-        groupedPowers[arcane] = [];
+    // Use CharacterSheet.ts logic for powers and powerPoints
+    const arcaneBackgrounds: Record<
+      string,
+      {
+        valuePath: string;
+        value: any;
+        maxPath: string;
+        max: any;
+        powers: any[];
       }
-      groupedPowers[arcane].push(power);
-    });
-
-    // Use literal keys for powerPoints, but handle 'general' as a special case
-    const powerPointsRaw = this.actor.system.powerPoints || {};
-    const powerPoints: Record<string, { value: number; max: number }> = {};
-    for (const [k, v] of Object.entries(powerPointsRaw)) {
-      if (k.toLowerCase() === 'general') {
-        powerPoints['General'] = v as { value: number; max: number };
-      } else {
-        powerPoints[k] = v as { value: number; max: number };
+    > = {};
+    for (const power of powers) {
+      const ab = power.system.arcane || 'general';
+      if (!arcaneBackgrounds[ab]) {
+        arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: foundry.utils.getProperty(
+            this.actor,
+            `system.powerPoints.${ab}.value`,
+          ),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: foundry.utils.getProperty(
+            this.actor,
+            `system.powerPoints.${ab}.max`,
+          ),
+          powers: [],
+        };
       }
+      arcaneBackgrounds[ab].powers.push(power);
     }
-    // Ensure every arcane in groupedPowers has a powerPoints entry
-    Object.keys(groupedPowers).forEach((arcane) => {
-      if (arcane === 'General') {
-        if (!powerPoints['General']) {
-          powerPoints['General'] = { value: 0, max: 0 };
-        }
-      } else {
-        if (!powerPoints[arcane]) {
-          powerPoints[arcane] = { value: 0, max: 0 };
-        }
-      }
+    // Sort powers by sort value within each arcane background
+    for (const entry of Object.values(arcaneBackgrounds)) {
+      entry.powers.sort((a, b) => a.sort - b.sort);
+    }
+    // For template compatibility, convert arcaneBackgrounds to groupedPowers and powerPoints
+    const groupedPowers: { [key: string]: any[] } = {};
+    const powerPoints: Record<string, { value: number; max: number }> = {};
+    Object.entries(arcaneBackgrounds).forEach(([ab, data]) => {
+      // Display key: capitalize first letter unless 'general'
+      const displayKey =
+        ab === 'general' ? 'General' : ab.charAt(0).toUpperCase() + ab.slice(1);
+      groupedPowers[displayKey] = data.powers;
+      powerPoints[displayKey] = { value: data.value, max: data.max };
     });
-
-    // Sort powers within each group alphabetically
-    Object.keys(groupedPowers).forEach((arcane) => {
-      groupedPowers[arcane].sort((a: any, b: any) => {
-        const nameA = game.i18n.localize(a.name || a.id);
-        const nameB = game.i18n.localize(b.name || b.id);
-        return nameA.localeCompare(nameB);
-      });
-    });
-
+    // Always provide General if needed
+    if (!powerPoints['General']) {
+      powerPoints['General'] = { value: 0, max: 0 };
+    }
     return {
       groupedPowers,
       powerPoints,
@@ -600,9 +618,11 @@ export class SwadePopout {
     const biography = context.system?.details?.biography || {};
     const notes = context.system?.details?.notes || '';
 
-    // Enrich biography content if available
+    // Use actor.enrichedBiography if available, else enrich
     let enrichedBiography = '';
-    if (biography.value) {
+    if (this.actor?.enrichedBiography) {
+      enrichedBiography = this.actor.enrichedBiography;
+    } else if (biography.value) {
       try {
         enrichedBiography = await getEnrichedDescription({
           system: { description: biography.value },
@@ -626,6 +646,13 @@ export class SwadePopout {
       }
     }
 
+    // Ensure compatibility with template expectations
+    if (!context.system) context.system = {};
+    if (!context.system.details) context.system.details = {};
+    if (!context.system.details.biography)
+      context.system.details.biography = {};
+    context.system.details.biography.enrichedValue = enrichedBiography;
+    context.system.details.enrichedNotes = enrichedNotes;
     return {
       biography: {
         enrichedValue: enrichedBiography,
@@ -709,7 +736,7 @@ export class SwadePopout {
     //         // Lazy enrich description if needed
     //         const itemId = item.getAttribute('data-item-id');
     //         if (itemId && this.actor) {
-    //           const itemData = this.actor.items.get(itemId);
+    //           const itemData = this.actor.getOwnedItem(itemId);
     //           if (itemData) {
     //             // Enrich description
     //             this.enrichItemDescription(item as HTMLElement, itemData);
@@ -1213,7 +1240,7 @@ export class SwadePopout {
   private async handleTraitRoll(traitKey: string, isSkill: boolean) {
     try {
       if (isSkill) {
-        const skill = this.actor.system.skills[traitKey];
+        const skill = this.actor.getSkill(traitKey);
         if (skill) {
           await this.actor.rollSkill(traitKey);
         }
@@ -1227,7 +1254,7 @@ export class SwadePopout {
   }
 
   private async handleEdgeActivation(edgeId: string) {
-    const edge = this.actor.items.get(edgeId);
+    const edge = this.actor.getOwnedItem(edgeId);
     if (!edge) return;
 
     try {
@@ -1248,7 +1275,7 @@ export class SwadePopout {
   }
 
   private async handleActionExecution(actionId: string) {
-    const action = this.actor.items.get(actionId);
+    const action = this.actor.getOwnedItem(actionId);
     if (!action) return;
 
     try {
@@ -1260,7 +1287,7 @@ export class SwadePopout {
   }
 
   private async handleGearAction(gearId: string, action: string) {
-    const gear = this.actor.items.get(gearId);
+    const gear = this.actor.getOwnedItem(gearId);
     if (!gear) return;
 
     try {
@@ -1284,7 +1311,7 @@ export class SwadePopout {
   }
 
   private async handlePowerActivation(powerId: string) {
-    const power = this.actor.items.get(powerId);
+    const power = this.actor.getOwnedItem(powerId);
     if (!power) return;
 
     try {

@@ -1,5 +1,4 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
-import { registerSwadeHUDHelpers } from '../hud/hud-handlebars-helpers';
 import {
   initializeDescriptionCache,
   initializeTemplateCache,
