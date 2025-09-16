@@ -1,6 +1,11 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
 import { registerSwadeHUDHelpers } from '../hud/hud-handlebars-helpers';
 import {
+  initializeDescriptionCache,
+  clearDescriptionCache,
+  getDescriptionCacheStats,
+} from '../hud/hud-context';
+import {
   handleSwadeHUDTokenControl,
   handleSwadeHUDTokenDeleted,
   getHudApp,
@@ -25,6 +30,9 @@ Hooks.once('init', async function () {
     registerSwadeHUDHelpers();
 
     await foundry.applications.handlebars.loadTemplates(SWADEHUD.templates);
+
+    // Initialize description caching system
+    initializeDescriptionCache();
 
     // Add HUD to global game object
     game.swade.hud = SWADEHUD;
@@ -78,4 +86,38 @@ Hooks.once('ready', () => {
   };
 
   (window as any).hideSwadeHUD = hideSwadeHUD;
+
+  // Add cache utility functions for debugging
+  (window as any).clearDescriptionCache = clearDescriptionCache;
+  (window as any).getDescriptionCacheStats = getDescriptionCacheStats;
+
+  // Add cache performance test function
+  (window as any).testDescriptionCache = async () => {
+    const { descriptionCache } = await import('../hud/hud-context');
+    const stats = descriptionCache.getStats();
+    console.log('Description Cache Stats:', stats);
+
+    // Test cache performance with a sample item
+    const testItem = {
+      id: 'test-item',
+      system: {
+        description:
+          '<p>This is a test description with <strong>bold</strong> text.</p>',
+        _stats: { modified: Date.now() },
+      },
+    };
+
+    console.time('First enrichment (cache miss)');
+    const desc1 = await getEnrichedDescription(testItem);
+    console.timeEnd('First enrichment (cache miss)');
+
+    console.time('Second enrichment (cache hit)');
+    const desc2 = await getEnrichedDescription(testItem);
+    console.timeEnd('Second enrichment (cache hit)');
+
+    console.log('Descriptions match:', desc1 === desc2);
+    console.log('Cache stats after test:', descriptionCache.getStats());
+
+    return 'Cache test completed - check console for results';
+  };
 });
