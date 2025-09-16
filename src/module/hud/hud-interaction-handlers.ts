@@ -60,9 +60,9 @@ function showWeaponsPanel(hudInstance: any) {
   }
 
   // Close existing weapons popout if open
-  if (hudInstance.currentWeaponsPopout) {
-    hudInstance.currentWeaponsPopout.close();
-    hudInstance.currentWeaponsPopout = null;
+  if (hudInstance.popouts['weapons']) {
+    hudInstance.popouts['weapons'].close();
+    hudInstance.popouts['weapons'] = null;
     // Do not return; continue to open new popout
   }
 
@@ -77,7 +77,7 @@ function showWeaponsPanel(hudInstance: any) {
     hudInstance: hudInstance,
   });
 
-  hudInstance.currentWeaponsPopout = popout;
+  hudInstance.popouts['weapons'] = popout;
   popout
     .render(true)
     .then(() => {
@@ -92,9 +92,9 @@ function showTraitsPanel(hudInstance: any) {
   if (!hudInstance.actor) return;
 
   // Close existing traits popout if open
-  if (hudInstance.currentTraitsPopout) {
-    hudInstance.currentTraitsPopout.close();
-    hudInstance.currentTraitsPopout = null;
+  if (hudInstance.popouts['traits']) {
+    hudInstance.popouts['traits'].close();
+    hudInstance.popouts['traits'] = null;
     // Do not return; continue to open new popout
   }
 
@@ -109,7 +109,7 @@ function showTraitsPanel(hudInstance: any) {
     hudInstance: hudInstance,
   });
 
-  hudInstance.currentTraitsPopout = popout;
+  hudInstance.popouts['traits'] = popout;
   popout.render(true);
 }
 
