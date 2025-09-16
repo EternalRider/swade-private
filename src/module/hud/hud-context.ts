@@ -1,3 +1,32 @@
+/**
+ * Utility: Get items of a specific type from an actor
+ * @param actor The actor to get items from
+ * @param type The item type (e.g., 'skill', 'edge', 'power')
+ */
+export function getItemsByType(actor: any, type: string): any[] {
+  if (actor.itemTypes && actor.itemTypes[type]) {
+    return actor.itemTypes[type];
+  }
+  return actor.items ? actor.items.filter((i: any) => i.type === type) : [];
+}
+
+/**
+ * Utility: Get all effects, including embedded item effects
+ * @param actor The actor to get effects from
+ */
+export function getAllApplicableEffects(actor: any): any[] {
+  if (typeof actor.allApplicableEffects === 'function') {
+    return actor.allApplicableEffects();
+  }
+  // Fallback: combine actor.effects and item-embedded effects
+  const effects = Array.from(actor.effects || []);
+  for (const item of actor.items || []) {
+    if (item.effects) {
+      effects.push(...Array.from(item.effects));
+    }
+  }
+  return effects;
+}
 import { HUDContext } from '../../types/HUD';
 import SwadeActor from '../documents/actor/SwadeActor';
 
@@ -408,30 +437,14 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
     isGM: game.user?.isGM,
     canEdit: actor.isOwner,
     attributes: actor.system.attributes,
-    skills: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'skill'),
-    ),
-    edges: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'edge'),
-    ),
-    hindrances: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'hindrance'),
-    ),
-    weapons: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'weapon'),
-    ),
-    armor: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'armor'),
-    ),
-    gear: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'gear'),
-    ),
-    powers: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'power'),
-    ),
-    actions: sortByLocalizedName(
-      actor.items.filter((i: any) => i.type === 'action'),
-    ),
+    skills: sortByLocalizedName(getItemsByType(actor, 'skill')),
+    edges: sortByLocalizedName(getItemsByType(actor, 'edge')),
+    hindrances: sortByLocalizedName(getItemsByType(actor, 'hindrance')),
+    weapons: sortByLocalizedName(getItemsByType(actor, 'weapon')),
+    armor: sortByLocalizedName(getItemsByType(actor, 'armor')),
+    gear: sortByLocalizedName(getItemsByType(actor, 'gear')),
+    powers: sortByLocalizedName(getItemsByType(actor, 'power')),
+    actions: sortByLocalizedName(getItemsByType(actor, 'action')),
     effects: actor.effects,
     conditions: actor.status,
     wounds: actor.system.wounds,
