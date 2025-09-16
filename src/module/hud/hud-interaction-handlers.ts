@@ -1,3 +1,4 @@
+import { hudPanelConfig, hudPanelDefaultSize } from './hud-panel-constants';
 /**
  * Generic function to show a HUD panel popout.
  * Handles closing existing popout, creating, and rendering the new one.
@@ -95,97 +96,105 @@ export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
  * @param {any} hudInstance - The HUD instance.
  */
 function showWeaponsPanel(hudInstance: any) {
+  const config = hudPanelConfig.weapons;
   showPanel(
     hudInstance,
     'weapons',
-    `${hudInstance.actor.name} - Weapons`,
-    'systems/swade/templates/actors/hud/hud-weapons-panel.hbs',
-    450,
-    600,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'weapons',
   );
 }
 
 function showTraitsPanel(hudInstance: any) {
+  const config = hudPanelConfig.traits;
   showPanel(
     hudInstance,
     'traits',
-    `${hudInstance.actor.name} - Traits`,
-    'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
-    400,
-    500,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'traits',
   );
 }
 
 function showEdgesPanel(hudInstance: any) {
+  const config = hudPanelConfig.edges;
   showPanel(
     hudInstance,
     'edges',
-    `${hudInstance.actor.name} - Edges & Hindrances`,
-    'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
-    400,
-    500,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'edges',
   );
 }
 
 function showActionsPanel(hudInstance: any) {
+  const config = hudPanelConfig.actions;
   showPanel(
     hudInstance,
     'actions',
-    `${hudInstance.actor.name} - Actions`,
-    'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
-    400,
-    500,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'actions',
   );
 }
 
 function showGearPanel(hudInstance: any) {
+  const config = hudPanelConfig.gear;
   showPanel(
     hudInstance,
     'gear',
-    `${hudInstance.actor.name} - Gear`,
-    'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
-    400,
-    500,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'gear',
   );
 }
 
 function showConditionsPanel(hudInstance: any) {
+  const config = hudPanelConfig.conditions;
   showPanel(
     hudInstance,
     'conditions',
-    `${hudInstance.actor.name} - Conditions`,
-    'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
-    350,
-    400,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'conditions',
   );
 }
 
 function showEffectsPanel(hudInstance: any) {
+  const config = hudPanelConfig.effects;
   showPanel(
     hudInstance,
     'effects',
-    `${hudInstance.actor.name} - Effects`,
-    'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
-    350,
-    400,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'effects',
   );
 }
 
 function showPowersPanel(hudInstance: any) {
+  const config = hudPanelConfig.powers;
   showPanel(
     hudInstance,
     'powers',
-    `${hudInstance.actor.name} - Powers`,
-    'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
-    400,
-    500,
+    config.title(hudInstance.actor.name),
+    config.template,
+    hudPanelDefaultSize.width,
+    hudPanelDefaultSize.height,
     'powers',
   );
 }
