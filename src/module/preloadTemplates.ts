@@ -88,23 +88,3 @@ export async function preloadHandlebarsTemplates() {
 
   return foundry.applications.handlebars.loadTemplates(templatePaths);
 }
-
-/** @internal */
-export async function registerHandlebarsPartials() {
-  // Register the action-buttons partial for use in HUD templates
-  const actionButtonsTemplate = await fetch(
-    'systems/swade/templates/shared-partials/action-buttons.hbs',
-  )
-    .then((response) => response.text())
-    .catch((error) => {
-      console.warn('SWADE: Failed to load action-buttons partial:', error);
-      return '';
-    });
-
-  if (actionButtonsTemplate) {
-    Handlebars.registerPartial(
-      'shared-partials/action-buttons',
-      actionButtonsTemplate,
-    );
-  }
-}

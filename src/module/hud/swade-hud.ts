@@ -29,7 +29,7 @@ Hooks.once('init', async function () {
     // Add HUD to global game object
     game.swade.hud = SWADEHUD;
   } catch (error) {
-    console.error('SWADE HUD: Error during initialization:', error);
+    // Error during HUD initialization
   }
 });
 
@@ -78,8 +78,4 @@ Hooks.once('ready', () => {
   };
 
   (window as any).hideSwadeHUD = hideSwadeHUD;
-
-  console.info(
-    'SWADE HUD system loaded. Use toggleSwadeHUD() or hideSwadeHUD() in console.',
-  );
 });
