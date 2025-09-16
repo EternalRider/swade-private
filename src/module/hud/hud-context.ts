@@ -424,14 +424,15 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
 
   const context = {
     actor: actor, // Include the full actor object for template compatibility
+    token: token,
+    element: undefined,
+    popouts: {},
+    // ...other context properties...
     actorName: actor.name,
     portrait: actor.img,
     system: actor.system,
-    token: token,
     isGM: game.user?.isGM,
     canEdit: actor.isOwner,
-
-    // Character info
     attributes: actor.system.attributes,
     skills: sortByLocalizedName(
       actor.items.filter((i: any) => i.type === 'skill'),
@@ -457,33 +458,17 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
     actions: sortByLocalizedName(
       actor.items.filter((i: any) => i.type === 'action'),
     ),
-
-    // Status effects
     effects: actor.effects,
     conditions: actor.statuses,
-
-    // Combat stats
     wounds: actor.system.wounds,
     fatigue: actor.system.fatigue,
     bennies: actor.system.bennies,
-
-    // Pace info
     pace: actor.system.pace,
     runningDie: actor.system.pace.runningDie,
-
-    // Conviction
     conviction: actor.system.conviction,
-
-    // Power points
     powerPoints: actor.system.powerPoints,
-
-    // Encumbrance
     encumbrance: actor.system.encumbrance,
-
-    // Wildcard status
     isWildcard: actor.isWildcard,
-
-    // Configuration
     config: CONFIG.SWADE,
   };
 

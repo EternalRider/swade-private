@@ -32,13 +32,5 @@ export interface HUDContext {
   actor: HUDActor;
   token?: HUDToken;
   element?: HTMLElement;
-  currentWeaponsPopout?: SwadePopoutInstance;
-  currentTraitsPopout?: SwadePopoutInstance;
-  currentEdgesPopout?: SwadePopoutInstance;
-  currentActionsPopout?: SwadePopoutInstance;
-  currentGearPopout?: SwadePopoutInstance;
-  currentConditionsPopout?: SwadePopoutInstance;
-  currentEffectsPopout?: SwadePopoutInstance;
-  currentPowersPopout?: SwadePopoutInstance;
-  currentBioPopout?: SwadePopoutInstance;
+  popouts: Record<string, SwadePopoutInstance>;
 }

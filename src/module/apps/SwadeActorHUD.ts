@@ -9,6 +9,7 @@ import {
   setupDragHandler,
 } from '../hud/hud-interaction-handlers';
 import SwadeActor from '../documents/actor/SwadeActor';
+import { HUDToken, SwadePopoutInstance } from '../types/HUD';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -61,8 +62,8 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   constructor(
-    { actor, token }: { actor?: SwadeActor; token?: any } = {},
-    options: any = {},
+    { actor, token }: { actor?: SwadeActor; token?: HUDToken } = {},
+    options: Record<string, unknown> = {},
   ) {
     super(options);
     this.actor = actor ?? null;
@@ -115,34 +116,33 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   actor: SwadeActor | null;
-  token: any;
+  token: HUDToken | null;
   _isInitialRender: boolean;
-  _positionTimeout: any;
-  _onActorUpdate: any;
-  _onActorDelete: any;
-  _renderDebounced: any;
-  currentTraitsPopout: any;
-  currentWeaponsPopout: any;
-  currentEdgesPopout: any;
-  currentActionsPopout: any;
-  currentConditionsPopout: any;
-  currentEffectsPopout: any;
-  currentPowersPopout: any;
-  currentGearPopout: any;
-  currentBioPopout: any;
+  _positionTimeout: number | null;
+  _onActorUpdate:
+    | ((
+        doc: SwadeActor,
+        changes: Record<string, unknown>,
+        opts: Record<string, unknown>,
+        userId: string,
+      ) => void)
+    | null;
+  _onActorDelete: ((doc: SwadeActor) => void) | null;
+  _renderDebounced: (() => void) | null;
+  popouts: Record<string, SwadePopoutInstance | null> = {};
 
-  override async _prepareContext(_options: any) {
+  override async _prepareContext(_options: Record<string, unknown>) {
     const context = await prepareHudContext(this.actor, this.token);
     return context;
   }
 
   override async render(
     forceOrOptions?: boolean | Record<string, unknown>,
-    options?: any,
+    options?: Record<string, unknown>,
   ): Promise<this> {
     // Support both (force, options) and (options) signatures
     let force: boolean;
-    let opts: any;
+    let opts: Record<string, unknown>;
     if (typeof forceOrOptions === 'boolean') {
       force = forceOrOptions;
       opts = options ?? {};
@@ -235,34 +235,13 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       this._onActorDelete = null;
     }
 
-    // Close any open popouts
-    if (this.currentTraitsPopout) {
-      await this.currentTraitsPopout.close();
+    // Close all open popouts in the registry
+    for (const popout of Object.values(this.popouts)) {
+      if (popout && typeof popout.close === 'function') {
+        await popout.close();
+      }
     }
-    if (this.currentWeaponsPopout) {
-      await this.currentWeaponsPopout.close();
-    }
-    if (this.currentEdgesPopout) {
-      await this.currentEdgesPopout.close();
-    }
-    if (this.currentActionsPopout) {
-      await this.currentActionsPopout.close();
-    }
-    if (this.currentConditionsPopout) {
-      await this.currentConditionsPopout.close();
-    }
-    if (this.currentEffectsPopout) {
-      await this.currentEffectsPopout.close();
-    }
-    if (this.currentPowersPopout) {
-      await this.currentPowersPopout.close();
-    }
-    if (this.currentGearPopout) {
-      await this.currentGearPopout.close();
-    }
-    if (this.currentBioPopout) {
-      await this.currentBioPopout.close();
-    }
+    this.popouts = {};
 
     // Remove positioned class to hide HUD
     if (this.element) {
