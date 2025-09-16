@@ -1,6 +1,126 @@
 import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
+ * Global cache for compiled Handlebars templates to improve rendering performance
+ */
+class TemplateCache {
+  private compiledTemplates = new Map<string, HandlebarsTemplateDelegate>();
+  private readonly templatePaths = [
+    'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-bio-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-character.hbs',
+    'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
+    'systems/swade/templates/actors/hud/hud-weapons-panel.hbs',
+  ];
+
+  /**
+   * Pre-compile and cache all HUD templates
+   */
+  async initialize(): Promise<void> {
+    try {
+      console.log('SWADE HUD: Pre-compiling HUD templates for performance...');
+
+      // Load all template sources
+      const templateSources =
+        await foundry.applications.handlebars.loadTemplates(this.templatePaths);
+
+      // Compile and cache each template
+      for (const [path, source] of Object.entries(templateSources)) {
+        try {
+          const compiled = Handlebars.compile(source);
+          this.compiledTemplates.set(path, compiled);
+        } catch (error) {
+          console.warn(`SWADE HUD: Failed to compile template ${path}:`, error);
+        }
+      }
+
+      console.log(
+        `SWADE HUD: Pre-compiled ${this.compiledTemplates.size} templates`,
+      );
+    } catch (error) {
+      console.error('SWADE HUD: Failed to initialize template cache:', error);
+    }
+  }
+
+  /**
+   * Render a template using the cached compiled version if available
+   */
+  async render(templatePath: string, data: any = {}): Promise<string> {
+    // Try cached template first
+    const cachedTemplate = this.compiledTemplates.get(templatePath);
+    if (cachedTemplate) {
+      try {
+        return cachedTemplate(data);
+      } catch (error) {
+        console.warn(
+          `SWADE HUD: Cached template render failed for ${templatePath}, falling back to standard render:`,
+          error,
+        );
+      }
+    }
+
+    // Fall back to standard Foundry renderTemplate
+    return foundry.applications.handlebars.renderTemplate(templatePath, data);
+  }
+
+  /**
+   * Check if a template is cached
+   */
+  has(templatePath: string): boolean {
+    return this.compiledTemplates.has(templatePath);
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getStats(): {
+    cachedCount: number;
+    totalTemplates: number;
+    cacheHitRate?: number;
+  } {
+    return {
+      cachedCount: this.compiledTemplates.size,
+      totalTemplates: this.templatePaths.length,
+    };
+  }
+
+  /**
+   * Clear the template cache
+   */
+  clear(): void {
+    this.compiledTemplates.clear();
+  }
+
+  /**
+   * Recompile a specific template (useful for development)
+   */
+  async recompile(templatePath: string): Promise<void> {
+    try {
+      const source = await foundry.applications.handlebars.loadTemplates([
+        templatePath,
+      ]);
+      if (source[templatePath]) {
+        const compiled = Handlebars.compile(source[templatePath]);
+        this.compiledTemplates.set(templatePath, compiled);
+      }
+    } catch (error) {
+      console.warn(
+        `SWADE HUD: Failed to recompile template ${templatePath}:`,
+        error,
+      );
+    }
+  }
+}
+
+// Global template cache instance
+const templateCache = new TemplateCache();
+
+/**
  * Global cache for enriched descriptions to improve performance
  */
 class DescriptionCache {
@@ -138,6 +258,46 @@ export function getDescriptionCacheStats() {
  */
 export function invalidateItemDescription(item: any) {
   descriptionCache.invalidate(item);
+}
+
+/**
+ * Initialize template caching system
+ * Should be called during system initialization
+ */
+export async function initializeTemplateCache(): Promise<void> {
+  await templateCache.initialize();
+}
+
+/**
+ * Render a template using cached compiled version if available
+ * Falls back to standard Foundry renderTemplate if not cached
+ */
+export async function renderCachedTemplate(
+  templatePath: string,
+  data: any = {},
+): Promise<string> {
+  return templateCache.render(templatePath, data);
+}
+
+/**
+ * Get template cache statistics
+ */
+export function getTemplateCacheStats() {
+  return templateCache.getStats();
+}
+
+/**
+ * Clear the template cache
+ */
+export function clearTemplateCache() {
+  templateCache.clear();
+}
+
+/**
+ * Recompile a specific template (useful for development)
+ */
+export async function recompileTemplate(templatePath: string): Promise<void> {
+  await templateCache.recompile(templatePath);
 }
 
 /**

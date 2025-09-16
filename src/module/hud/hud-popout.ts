@@ -1,5 +1,6 @@
 import { prepareHudContext } from './hud-context';
 import { getEnrichedDescription } from './hud-context';
+import { renderCachedTemplate } from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
 
@@ -94,11 +95,17 @@ export class SwadePopout {
     // Prepare context first
     await this._prepareContext(options);
 
-    // Render the template with the context
+    // Render the template with the context using cached templates for better performance
     let htmlContent;
-    const renderTemplate = foundry?.applications?.handlebars?.renderTemplate;
-    if (typeof renderTemplate === 'function') {
-      htmlContent = await renderTemplate(this._template, this.context);
+    try {
+      htmlContent = await renderCachedTemplate(this._template, this.context);
+    } catch (error) {
+      console.error('SWADE HUD: Error rendering cached template:', error);
+      // Fallback to standard rendering if cached rendering fails
+      const renderTemplate = foundry?.applications?.handlebars?.renderTemplate;
+      if (typeof renderTemplate === 'function') {
+        htmlContent = await renderTemplate(this._template, this.context);
+      }
     }
 
     // Create the element if it doesn't exist
