@@ -1,6 +1,11 @@
 import { SwadePopout } from './hud-popout';
 
-// Tab handlers for HUD panels
+/**
+ * Set up tab button click handlers for HUD panels.
+ * Handles switching between different HUD panel tabs.
+ * @param {HTMLElement} html - The HUD panel HTML element.
+ * @param {any} hudInstance - The HUD instance.
+ */
 export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
   // Tab button click handlers
   const tabButtons = html.querySelectorAll('.swadehud-tabbtn');
@@ -44,6 +49,11 @@ export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
 }
 
 // Panel display functions
+/**
+ * Show the weapons panel popout for the HUD instance.
+ * Closes existing popout if open, otherwise opens a new one.
+ * @param {any} hudInstance - The HUD instance.
+ */
 function showWeaponsPanel(hudInstance: any) {
   if (!hudInstance.actor) {
     return;

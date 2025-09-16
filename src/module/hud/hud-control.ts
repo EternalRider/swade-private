@@ -1,7 +1,8 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
 
 /**
- * Get the current HUD app instance
+ * Get the current HUD app instance.
+ * @returns {SwadeActorHUD | null} The current HUD app instance, or null if not found.
  */
 export function getHudApp(): SwadeActorHUD | null {
   return (
@@ -10,7 +11,8 @@ export function getHudApp(): SwadeActorHUD | null {
 }
 
 /**
- * Hide the SWADE HUD
+ * Hide the SWADE HUD.
+ * Closes the HUD app if it is open.
  */
 export function hideSwadeHUD() {
   const hud = getHudApp();
@@ -20,7 +22,9 @@ export function hideSwadeHUD() {
 }
 
 /**
- * Check if an actor is a SWADE PC (player character)
+ * Check if an actor is a SWADE PC (player character).
+ * @param {any} token - The token to check.
+ * @returns {boolean} True if the token is a SWADE PC, false otherwise.
  */
 export function isSwadePC(token: any): boolean {
   if (!token?.actor) return false;
@@ -39,7 +43,9 @@ export function isSwadePC(token: any): boolean {
 }
 
 /**
- * Check if the current user can access a token
+ * Check if the current user can access a token.
+ * @param {any} token - The token to check.
+ * @returns {boolean} True if the user can access the token, false otherwise.
  */
 export function canPlayerAccessToken(token: any): boolean {
   if (!token?.actor) return false;
@@ -52,7 +58,11 @@ export function canPlayerAccessToken(token: any): boolean {
 }
 
 /**
- * Handle SWADE HUD token control (show/hide)
+ * Handle SWADE HUD token control (show/hide).
+ * Shows or hides the HUD for the specified token.
+ * @param {any} token - The token to control.
+ * @param {boolean} controlled - Whether the token is controlled.
+ * @param {typeof SwadeActorHUD} hudClass - The HUD class to use.
  */
 export async function handleSwadeHUDTokenControl(
   token: any,
