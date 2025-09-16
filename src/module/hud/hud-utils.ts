@@ -1,8 +1,8 @@
 /**
- * Debounce function to limit the rate of function execution
- * @param func - The function to debounce
- * @param wait - The wait time in milliseconds
- * @returns Debounced function
+ * Debounce function to limit the rate of function execution.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The wait time in milliseconds.
+ * @returns {Function} Debounced function.
  */
 export function debounce(func: Function, wait: number) {
   let timeout: NodeJS.Timeout;
@@ -17,7 +17,9 @@ export function debounce(func: Function, wait: number) {
 }
 
 /**
- * Check if an element is visible in the viewport
+ * Check if an element is visible in the viewport.
+ * @param {HTMLElement} element - The element to check.
+ * @returns {boolean} True if the element is visible, false otherwise.
  */
 export function isElementVisible(element: HTMLElement): boolean {
   const rect = element.getBoundingClientRect();
@@ -31,7 +33,9 @@ export function isElementVisible(element: HTMLElement): boolean {
 }
 
 /**
- * Get the center position of an element
+ * Get the center position of an element.
+ * @param {HTMLElement} element - The element to get the center of.
+ * @returns {{x: number, y: number}} The center coordinates.
  */
 export function getElementCenter(element: HTMLElement): {
   x: number;
@@ -45,7 +49,12 @@ export function getElementCenter(element: HTMLElement): {
 }
 
 /**
- * Calculate distance between two points
+ * Calculate distance between two points.
+ * @param {number} x1 - X coordinate of the first point.
+ * @param {number} y1 - Y coordinate of the first point.
+ * @param {number} x2 - X coordinate of the second point.
+ * @param {number} y2 - Y coordinate of the second point.
+ * @returns {number} The distance between the two points.
  */
 export function getDistance(
   x1: number,

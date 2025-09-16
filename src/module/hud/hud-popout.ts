@@ -4,6 +4,19 @@ import { renderCachedTemplate } from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
 
+/**
+ * Options for creating a SwadePopout HUD panel.
+ * @typedef {Object} SwadePopoutOptions
+ * @property {any} actor - The actor to display in the HUD panel.
+ * @property {any} [token] - The token associated with the actor.
+ * @property {string} panelType - The type of HUD panel (e.g., 'weapons', 'traits').
+ * @property {string} title - The title of the HUD panel window.
+ * @property {string} template - The Handlebars template path for rendering.
+ * @property {number} [width] - Optional width of the panel.
+ * @property {number} [height] - Optional height of the panel.
+ * @property {{ left: number, top: number }} [position] - Optional position for the panel.
+ * @property {any} [hudInstance] - Reference to the HUD instance for positioning.
+ */
 export interface SwadePopoutOptions {
   actor: any;
   token?: any;
@@ -16,6 +29,10 @@ export interface SwadePopoutOptions {
   hudInstance?: any;
 }
 
+/**
+ * SWADE HUD popout panel for displaying actor data in various panel types.
+ * Handles rendering, context preparation, event listeners, and UI logic.
+ */
 export class SwadePopout {
   private _isInitialRender = true;
   private _template: string;
@@ -25,6 +42,10 @@ export class SwadePopout {
   private actor: any;
   private panelType: string;
 
+  /**
+   * Create a new SwadePopout HUD panel.
+   * @param {SwadePopoutOptions} options - Options for the HUD panel.
+   */
   constructor(options: SwadePopoutOptions) {
     this._template = options.template;
     this.context = {};
@@ -51,6 +72,11 @@ export class SwadePopout {
     body: { template: '' }, // Will be set dynamically
   };
 
+  /**
+   * Prepare the rendering context for the HUD panel based on actor and panel type.
+   * @param {any} _options - Options for context preparation.
+   * @returns {Promise<any>} The prepared context object.
+   */
   async _prepareContext(_options: any) {
     const context = await prepareHudContext(this.actor, this.options.token);
 
@@ -91,6 +117,12 @@ export class SwadePopout {
     return context;
   }
 
+  /**
+   * Render the HUD panel using the cached template and prepared context.
+   * @param {boolean} [_force=false] - Force re-rendering.
+   * @param {any} [options={}] - Additional rendering options.
+   * @returns {Promise<this>} The SwadePopout instance.
+   */
   async render(_force = false, options: any = {}) {
     // Prepare context first
     await this._prepareContext(options);
@@ -186,6 +218,11 @@ export class SwadePopout {
     return this;
   }
 
+  /**
+   * Enrich the item description for display in the HUD panel.
+   * @param {HTMLElement} itemElement - The item element in the DOM.
+   * @param {any} itemData - The item data object.
+   */
   private async enrichItemDescription(itemElement: HTMLElement, itemData: any) {
     // ...existing code...
     const descDiv = itemElement.querySelector('.swadehud-item-description');
@@ -209,6 +246,12 @@ export class SwadePopout {
     }
   }
 
+  /**
+   * Update the equipment status indicator display for an item.
+   * @param {HTMLElement} indicator - The indicator element.
+   * @param {number} newStatus - The new equipment status value.
+   * @param {string} itemType - The type of item (e.g., 'weapon', 'armor').
+   */
   private updateEquipStatusDisplay(
     indicator: HTMLElement,
     newStatus: number,
@@ -592,6 +635,9 @@ export class SwadePopout {
     };
   }
 
+  /**
+   * Activate event listeners for the HUD panel, including close button and item interactions.
+   */
   activateListeners() {
     if (!this.element) return;
 
@@ -618,6 +664,10 @@ export class SwadePopout {
     this.setupPanelSpecificListeners(this.element);
   }
 
+  /**
+   * Set up panel-specific event listeners based on the panel type.
+   * @param {HTMLElement} html - The HUD panel HTML element.
+   */
   private setupPanelSpecificListeners(html: HTMLElement) {
     // ...existing code...
     switch (this.panelType) {
@@ -1245,6 +1295,10 @@ export class SwadePopout {
     }
   }
 
+  /**
+   * Close the HUD popout panel with animation and remove it from the DOM.
+   * @returns {Promise<this>} The SwadePopout instance.
+   */
   async close() {
     if (!this.element) return this;
 

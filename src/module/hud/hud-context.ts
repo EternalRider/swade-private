@@ -1,7 +1,8 @@
 import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
- * Global cache for compiled Handlebars templates to improve rendering performance
+ * Global cache for compiled Handlebars templates to improve rendering performance.
+ * Handles pre-compilation, caching, and rendering of HUD templates.
  */
 class TemplateCache {
   private compiledTemplates = new Map<string, HandlebarsTemplateDelegate>();
@@ -19,7 +20,9 @@ class TemplateCache {
   ];
 
   /**
-   * Pre-compile and cache all HUD templates
+   * Pre-compile and cache all HUD templates.
+   * Loads template sources and compiles them for fast rendering.
+   * @returns {Promise<void>}
    */
   async initialize(): Promise<void> {
     try {
@@ -48,7 +51,11 @@ class TemplateCache {
   }
 
   /**
-   * Render a template using the cached compiled version if available
+   * Render a template using the cached compiled version if available.
+   * Falls back to standard rendering if cache is unavailable.
+   * @param {string} templatePath - Path to the template file.
+   * @param {any} [data={}] - Data/context for rendering.
+   * @returns {Promise<string>} Rendered HTML string.
    */
   async render(templatePath: string, data: any = {}): Promise<string> {
     // Try cached template first

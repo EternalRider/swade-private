@@ -2,6 +2,13 @@ import { debounce } from './hud-utils.ts';
 import { getEnrichedDescription } from './hud-context.ts';
 import SwadeActor from '../documents/actor/SwadeActor';
 
+/**
+ * Set up all HUD action button listeners for the SWADE HUD popout panels.
+ * Handles item expand/collapse, rolling, chat, and action buttons.
+ * @param {HTMLElement} popout - The HUD popout element.
+ * @param {SwadeActor | null} actor - The actor associated with the HUD.
+ * @param {any} _hudInstance - The HUD instance (optional, for context).
+ */
 export function setupHudActionButtonListeners(
   popout: HTMLElement,
   actor: SwadeActor | null,

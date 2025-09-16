@@ -1,6 +1,10 @@
 /**
  * Shared HUD stat handler for SWADE HUD and popout.
  * Attaches all stat click/contextmenu handlers for bennies, conviction, pace, power points, etc.
+ * @param {HTMLElement} element - The HUD element to attach handlers to.
+ * @param {any} actor - The actor associated with the HUD.
+ * @param {(() => void) | null} [onUpdate=null] - Optional callback for stat updates.
+ * @param {any} [token=null] - Optional token reference for combat toggles.
  */
 export function setupHudStatHandlers(
   element: HTMLElement,

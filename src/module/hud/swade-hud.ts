@@ -18,22 +18,35 @@ import {
   canPlayerAccessToken,
 } from '../hud/hud-control';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const TEMPLATE_PATHS = ['systems/swade/templates/apps/hud-character.hbs'];
+/**
+ * List of Handlebars template paths used by the SWADE HUD system.
+ * @type {string[]}
+ */
+const templatePaths = ['systems/swade/templates/apps/hud-character.hbs'];
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const SWADEHUD = {
+/**
+ * Main SWADE HUD configuration object.
+ * @property {string} ID - The module ID for the HUD system.
+ * @property {string[]} templates - List of template paths used by the HUD.
+ * @property {typeof SwadeActorHUD} SwadeActorHUD - The HUD application class.
+ */
+export const swadeHud = {
   ID: 'swade-hud',
-  templates: TEMPLATE_PATHS,
+  templates: templatePaths,
   SwadeActorHUD,
 };
 
-// Initialize HUD system
+/**
+ * Initializes the SWADE HUD system and its caches.
+ * Registers Handlebars helpers, loads templates, and sets up caches.
+ * Adds the HUD to the global game object.
+ * @function
+ */
 Hooks.once('init', async function () {
   try {
     registerSwadeHUDHelpers();
 
-    await foundry.applications.handlebars.loadTemplates(SWADEHUD.templates);
+    await foundry.applications.handlebars.loadTemplates(swadeHud.templates);
 
     // Initialize description caching system
     initializeDescriptionCache();
@@ -42,13 +55,17 @@ Hooks.once('init', async function () {
     await initializeTemplateCache();
 
     // Add HUD to global game object
-    game.swade.hud = SWADEHUD;
+    game.swade.hud = swadeHud;
   } catch (error) {
     // Error during HUD initialization
   }
 });
 
-// Set up canvas interaction hooks
+/**
+ * Sets up canvas interaction hooks for the SWADE HUD.
+ * Handles right-click events on tokens to show the HUD.
+ * @function
+ */
 Hooks.once('canvasReady', () => {
   // Listen for right-click on tokens to show HUD
   canvas.stage.on('rightdown', (event: any) => {
@@ -67,7 +84,13 @@ Hooks.once('canvasReady', () => {
   });
 });
 
-// Handle token control changes
+/**
+ * Handles token control changes for the SWADE HUD.
+ * Only shows HUD on right-click, not left-click.
+ * @function
+ * @param {any} token - The token being controlled.
+ * @param {boolean} controlled - Whether the token is controlled.
+ */
 Hooks.on('controlToken', async (token: any, controlled: boolean) => {
   // Only handle left-click controls (don't show HUD on left-click)
   if (controlled && isSwadePC(token)) {
@@ -77,12 +100,20 @@ Hooks.on('controlToken', async (token: any, controlled: boolean) => {
   await handleSwadeHUDTokenControl(token, controlled, SwadeActorHUD);
 });
 
-// Handle token deletion
+/**
+ * Handles token deletion events for the SWADE HUD.
+ * Cleans up HUD state when a token is deleted.
+ * @function
+ * @param {any} token - The token being deleted.
+ */
 Hooks.on('deleteToken', (token: any) => {
   handleSwadeHUDTokenDeleted(token);
 });
 
-// Add console commands for easy access
+/**
+ * Adds console commands and cache utility functions for debugging HUD and cache performance.
+ * @function
+ */
 Hooks.once('ready', () => {
   // Add console commands for easy access
   (window as any).toggleSwadeHUD = () => {
