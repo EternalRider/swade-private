@@ -58,6 +58,7 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
+import './module/hud/swade-hud';
 import {
   deepFreeze,
   getItemsBySwid,
@@ -417,45 +418,6 @@ Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
 /* Canvas Interactions  			          */
 /* ------------------------------------ */
 Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
-
-// SWADE HUD Canvas Interactions
-Hooks.once('canvasReady', () => {
-  // Listen for right-click on tokens to show HUD
-  canvas.stage.on('rightdown', (event: any) => {
-    const token = canvas.tokens.placeables.find((t: any) => {
-      const bounds = t.getBounds();
-      return bounds.contains(event.data.global.x, event.data.global.y);
-    });
-
-    if (
-      token &&
-      token.actor &&
-      token.actor.type === 'character' &&
-      token.actor.isOwner
-    ) {
-      // Prevent default context menu
-      event.data.originalEvent.preventDefault();
-
-      // Show HUD for this token
-      const hud = new SwadeActorHUD({
-        actor: token.actor,
-        token: token.document,
-      });
-      hud.render(true);
-    }
-  });
-});
-
-Hooks.on('controlToken', async (token: any, controlled: boolean) => {
-  // Handle token control changes for HUD
-  if (!controlled && token.actor && token.actor.type === 'character') {
-    // Token is being uncontrolled - hide HUD if it belongs to this token
-    const hud = foundry.applications.instances.get('swadehud') as SwadeActorHUD;
-    if (hud && hud.token?.id === token.id) {
-      await hud.close();
-    }
-  }
-});
 
 /* ------------------------------------ */
 /* System Hooks              	          */
