@@ -897,8 +897,8 @@ class SwadeItem<
     options: Item.DatabaseeOptions,
     user: User.Implementation,
   ) {
-    const canCreate = await super._preCreate(data, options, user);
-    if (canCreate === false) return false;
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
 
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {

@@ -535,7 +535,10 @@ export default class SwadeActiveEffect<
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
     if (this.parent?.type === 'group') return false;
-    super._preCreate(data, options, user);
+
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
+
     if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;

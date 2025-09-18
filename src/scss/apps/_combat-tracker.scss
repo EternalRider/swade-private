@@ -13,8 +13,15 @@
   }
   li.combatant,
   li.combatant-group {
+    &.dropTarget {
+        background-color: #666;
+    
+        .token-name h4 {
+          text-shadow: 1px 1px 3px #000;
+          font-size: 1.2em;
+        }
+      }
     .token-initiative {
-      flex: 0 0 var(--font-size-64);
       .initiative,
       .roll.initiative {
         font-size: var(--font-size-24);
@@ -53,13 +60,6 @@
     }
     &:not(.expanded) .group-turns {
       display: none;
-    }
-    &.dropTarget {
-      background-color: #666;
-      .token-name h4 {
-        text-shadow: 1px 1px 3px #000;
-        font-size: 1.2em;
-      }
     }
 
     .combatant {

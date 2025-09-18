@@ -374,6 +374,7 @@ function createVehicleSchema() {
           label: 'SWADE.ImprovedLevelHeaded',
         }),
         hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
+        follow: new fields.StringField({ label: 'SWADE.FollowLabel', initial: '' }),
       },
       { label: 'SWADE.Init' },
     ),

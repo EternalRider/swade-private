@@ -70,6 +70,16 @@ export async function reshuffleActionDeck() {
   await deck?.shuffle({ chatNotification: false });
 }
 
+/** @internal */
+export async function reshuffleActionDeckIfJokerDrawn() {
+  const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
+  if (deck?.isJokerDrawn()) {
+    await deck?.recall({ chatNotification: false });
+    await deck?.shuffle({ chatNotification: false });
+    ui.notifications.info('SWADE.DeckShuffled', { localize: true });
+  }
+}
+
 /**
  * @internal
  * A generic reducer function that can be used to reduce an array of trait roll modifiers into a string that can be parsed by the Foundry VTT Roll class

@@ -1,5 +1,5 @@
 import { Updates } from '../../../globals';
-import { reshuffleActionDeck } from '../../util';
+import { reshuffleActionDeck, reshuffleActionDeckIfJokerDrawn } from '../../util';
 
 import { DeepPartial } from 'fvtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
@@ -25,15 +25,10 @@ export default class SwadeCombat<
   /** an internal helper flag that's being checked to see if we're currently asking to advance the round */
   #roundAdvanceDialog: boolean = false;
 
-  /** Compares two combatants by name. */
-  static nameSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
-    if (a.name === b.name) return SwadeCombat.#idSortCombatants(a, b);
+  /** Sorts two objects with name and id fields alphabetically by name, using the ID as tie breaker.*/
+  static sortByNameAndID(a, b): number {
+    if (a.name === b.name) return a.id! > b.id! ? 1 : -1;
     return a.name! > b.name! ? 1 : -1;
-  }
-
-  /** Compares two combatants by ID. */
-  static #idSortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
-    return a.id! > b.id! ? 1 : -1;
   }
 
   static INITIATIVE_SOUND = 'systems/swade/assets/card-flip.wav';
@@ -363,7 +358,7 @@ export default class SwadeCombat<
 
       //Handle group leader changes
       combatantUpdates.push(update);
-      if (c.isGroupLeader) {
+      if (game.user.isGM && c.isGroupLeader) {
         groupUpdates.push({
           _id: c.group.id,
           initiative: update.initiative,
@@ -406,24 +401,81 @@ export default class SwadeCombat<
     this._playInitiativeSound();
     await getDocumentClass('ChatMessage').createDocuments(messages);
 
-    const activeCombatants = this.combatants.filter((c) => !c.isDefeated);
-    if (activeCombatants.every((c) => !!c.initiative)) {
-      await this.update({ turn: 0 });
-      this._handleStartOfTurnExpirations();
-    } else if (updateTurn && currentId) {
+    if (updateTurn && currentId) {
       // Ensure the turn order remains with the same combatant
       await this.update({
         turn: this.turns.findIndex((t) => t.id === currentId),
       });
     }
 
+    if (this.turn === 0) {
+      ui.combat.scrollToTurn();
+    }
+
     // Return the updated Combat
     return this;
+  }
+
+  static protected _hasSameOwner(a: SwadeCombatant, b: SwadeCombatant) {
+    if (a?.players && b?.players) {
+      for (const playerA of a.players) {
+        for (const playerB of b.players) {
+          if (playerA.id === playerB.id) return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  static protected _hasCommandEdge(a: SwadeCombatant) {
+    return a?.actor?.getItemsBySwid('command', 'edge')?.length ? true : false;
   }
 
   override _sortCombatants(a: SwadeCombatant, b: SwadeCombatant): number {
     const currentRound = game.combat?.round ?? 0;
 
+    // Combatant initiative, using the leader's initiative if in a group.
+    let iniA = Number.isNumeric(a.initiative) ? a.initiative : -Infinity;
+    if (a.group) iniA = Number.isNumeric(a.group.system?.leaderCombatant?.initiative) ? a.group.system?.leaderCombatant?.initiative : -Infinity;
+    let iniB = Number.isNumeric(b.initiative) ? b.initiative : -Infinity;
+    if (b.group) iniB = Number.isNumeric(b.group.system?.leaderCombatant?.initiative) ? b.group.system?.leaderCombatant?.initiative : -Infinity;
+
+    // Sort inside a group, where the order isn't based on initiative.
+    if (a.group && b.group && a.group.id == b.group.id) {
+      const leader = a.group.system?.leaderCombatant;
+
+      // Leaders always come first.
+      if (a.isGroupLeader && !b.isGroupLeader) return -1;
+      if (b.isGroupLeader && !a.isGroupLeader) return 1;
+      
+      if (a.hasPlayerOwner && b.hasPlayerOwner) {
+        // If both are owned by the same player, we need other tie breakers further down.
+        if (!SwadeCombat._hasSameOwner(a, b)) {
+          // If owned by different players...
+          if (leader) {
+            // ...if one of the players also owns the leader, their combatants go first.
+            if (SwadeCombat._hasSameOwner(a, leader)) return -1;
+            if (SwadeCombat._hasSameOwner(b, leader)) return 1;
+          }
+          // Otherwise, sort by player name and ID.
+          return SwadeCombat.sortByNameAndID(a.players?.[0], b.players?.[0]);
+        }
+      } else {
+        // Player owned combatants before GM-owned.
+        if (a.hasPlayerOwner && !b.hasPlayerOwner) return -1;
+        if (!a.hasPlayerOwner && b.hasPlayerOwner) return 1;
+      }
+
+      // Wildcards before extras.
+      if (a.actor?.isWildcard && !b.actor?.isWildcard) return -1;
+      if (!a.actor?.isWildcard && b.actor?.isWildcard) return 1;
+
+      // Combatants with Command edge before those without.
+      if (SwadeCombat._hasCommandEdge(a) && !SwadeCombat._hasCommandEdge(b)) return -1;
+      if (!SwadeCombat._hasCommandEdge(a) && SwadeCombat._hasCommandEdge(b)) return 1;
+    } // End of sort inside group.
+
+    // Combatants on hold come before those not on hold.
     if (
       (a.roundHeld && currentRound !== a.roundHeld) ||
       (b.roundHeld && currentRound !== b.roundHeld)
@@ -433,10 +485,37 @@ export default class SwadeCombat<
       if (isOnHoldA && !isOnHoldB) return -1;
       if (!isOnHoldA && isOnHoldB) return 1;
     }
-    if (b.initiative === a.initiative) {
-      return SwadeCombat.nameSortCombatants(a, b);
-    } else {
-      return super._sortCombatants(a, b);
+
+    // For identical initiative, tie break by name and ID.
+    if (iniA === iniB) {
+      return SwadeCombat.sortByNameAndID(a, b);
+    }
+
+    // Sort by initiative value.
+    return (iniB - iniA);
+  }
+
+  protected async onCreateCombatantFollow(documents, userId) {
+    if (game.userId !== userId) return;
+
+    // If CTRL is pressed, add all combatants as one group.
+    if (game.keyboard?.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)) {
+      const group = await this.createGroup();
+      if (!group) return;
+      for (const d of documents) {
+        if (!(d instanceof SwadeCombatant)) continue;
+        await d.setGroup(group.id);
+      }
+      return;
+    }
+
+    // CTRL is not pressed, see if any of the added combatants have 'Follow' set and follow respective combatants.
+    for (const d of documents) {
+      if (!(d instanceof SwadeCombatant)) continue;
+      const follow = d?.actor?.system?.initiative?.follow;
+      if (follow?.length) {
+        await d.follow(follow);
+      }
     }
   }
 
@@ -466,8 +545,11 @@ export default class SwadeCombat<
       options,
       userId,
     );
-    if (collection === 'groups')
+    if (collection === 'combatants') {
+      this.onCreateCombatantFollow(documents, userId);
+    } else if (collection === 'groups') {
       this.#onModifyCombatantGroups(parent, documents, options);
+    }
   }
 
   protected override _onUpdateDescendantDocuments<
@@ -487,6 +569,7 @@ export default class SwadeCombat<
     options: foundry.abstract.Document.Database.UpdateOptions<Operation>,
     userId: string,
   ) {
+    const oldTurn = this.turn;
     super._onUpdateDescendantDocuments(
       parent,
       collection,
@@ -495,8 +578,15 @@ export default class SwadeCombat<
       options,
       userId,
     );
-    if (collection === 'groups')
+    if (this.turn != oldTurn && game.user.isGM) {
+      // FIXME: restore old turn; somehow, super._onUpdateDescendantDocuments() sometimes mutates the turn erroneously.
+      // This especially happens on next round / when resetting initiative / rolling all NPCs.
+      this.update({turn: oldTurn});
+    }
+    if ((collection === 'combatants' && changes?.some((change) => change?.hasOwnProperty('initiative'))) ||
+        (collection === 'groups' || changes?.some((change) => change?.hasOwnProperty('group')))) {
       this.#onModifyCombatantGroups(parent, documents, options);
+    }
   }
 
   protected override _onDeleteDescendantDocuments<
@@ -519,14 +609,27 @@ export default class SwadeCombat<
       options,
       userId,
     );
-    if (collection === 'groups')
+    if (collection === 'groups' ||
+        (collection === 'combatants' && documents?.some((d) => d.isGroupLeader))) {
       this.#onModifyCombatantGroups(parent, documents, options);
+    }
   }
 
-  #onModifyCombatantGroups(parent: Combat.Stored, _documents, options) {
+  async #onModifyCombatantGroups(parent: Combat.Stored, _documents, options) {
+    if (game.user.activeGM?.isSelf) {
+      for (const group of this.groups) {
+        if (group.initiative &&
+          (!group.leaderCombatant?.initiative ||
+            !group.leaderCombatant?.system?.cardValue ||
+            !group.leaderCombatant.isGroupLeader)) {
+          await group.update({ initiative: null });
+        }
+      }
+    }
     this.setupTurns();
-    if (ui.combat.viewed === parent && options.render !== false)
-      ui.combat.render();
+    if (ui.combat?.viewed === parent && options.render !== false) {
+      ui.combat?.render();
+    }
   }
 
   /**
@@ -559,24 +662,29 @@ export default class SwadeCombat<
     );
   }
 
-  override async resetAll() {
+  override setupTurns() {
+    const ret = super.setupTurns();
+    this.expandGroupIfNeeded();
+    return ret;
+  }
+
+  override async resetAll({ updateTurn = false } = {}) {
+    const currentId = this.combatant?.id;
+
     for (const combatant of this.combatants) {
-      const update = this._getInitResetUpdate(combatant as SwadeCombatant);
-      if (update) combatant.updateSource(update);
+      await combatant.resetInitiative();
     }
-    for (const group of this.groups) {
-      group.updateSource({
-        initiative: group.system.leaderCombatant._source.initiative,
-      });
-    }
-    await this.update(
-      {
-        turn: 0,
-        combatants: this.combatants.toObject(),
-        groups: this.groups.toObject(),
-      },
-      { diff: false },
-    );
+
+    this.setupTurns();
+
+    const update = {
+      turn: 0,
+      combatants: this.combatants.toObject(),
+      groups: this.groups.toObject(),
+    };
+    if (updateTurn && currentId) update.turn = this.turns.findIndex(t => t.id === currentId);
+
+    await this.update(update, { turnEvents: false, diff: false});
     return this;
   }
 
@@ -595,6 +703,69 @@ export default class SwadeCombat<
     new AmbushAssistant(this).render(true);
   }
 
+  createGroup(name: String = '', icon: String = '') {
+    const groupCls = CombatantGroup.implementation;
+    return groupCls.create(
+      {
+        name: name ? name : groupCls.defaultName({ parent: this }),
+        img: icon ? icon : CONFIG.SWADE.combat.group.icon,
+      },
+      { parent: this },
+    );
+  }
+
+  /**
+   * Returns the group of the given combatant if existing in the combat.
+   * @param leader The combatant to look for.
+   * @returns The combatant's group, if any.
+   */
+  async getGroupForCombatant(leader: string | SwadeCombatant, options = { createIfNotInGroup: false, preferDisposition: undefined }) {
+    let leaderCombatant = undefined;
+    if (leader && leader instanceof SwadeCombatant && this.id === leader.combat?.id) {
+      leaderCombatant = leader;
+    } else if (leader?.length) {
+      const possibleLeaders = this.combatants?.filter((c) => c?.name === leader || c?.token?.name === leader || c?.actor.name === leader);
+      if (options?.hasOwnProperty('preferDisposition') && options.preferDisposition !== undefined) {
+        leaderCombatant = possibleLeaders?.find((c) => c.token?.disposition === options?.preferDisposition);
+      }
+      if (!leaderCombatant) leaderCombatant = possibleLeaders?.shift();
+    }
+    if (!leaderCombatant) return undefined;
+    if (leaderCombatant.group) return leaderCombatant.group;
+    if (options?.createIfNotInGroup) {
+      const group = this.createGroup();
+      if (!group) return undefined;
+      await leaderCombatant.setGroup(group.id);
+      await leaderCombatant.setIsGroupLeader(true);
+      return group;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Removes the combatant group with the given ID (if it exists) by removing all its members from it.
+   * @param groupId The combatant group to remove.
+   */
+  async removeGroup(groupId, options = { deleteMembers: false}) {
+    if (!groupId) return;
+    const group = this.groups?.get(groupId);
+    if (!group) return;
+
+    if (group.members?.size > 0) {
+      await Promise.all(
+        group.members?.map(async (m) => {
+          await m?.removeFromGroup()
+          if (options?.deleteMembers) {
+            await m?.delete();
+          }
+        })
+      );
+    } else {
+      await group.delete();
+    }
+  }
+
   getGroupLeader(groupId) {
     const group = this.groups.get(groupId);
     return group?.system?.leaderCombatant;
@@ -602,9 +773,16 @@ export default class SwadeCombat<
 
   toggleGroupExpand(groupId) {
     const group = this.groups.get(groupId);
+    if (!group) return;
     group._expanded = !group._expanded;
-    return ui.combat.render({ parts: ['tracker'] });
+    return ui.combat?.render(true);
   }
+
+  async expandGroupIfNeeded() {
+    if (this.combatant?.group && !this.combatant.group._expanded) {
+      return this.toggleGroupExpand(this.combatant.group.id);
+    }
+  } 
 
   override async nextTurn() {
     await this._handleEndOfTurnExpirations();
@@ -636,18 +814,20 @@ export default class SwadeCombat<
     Hooks.callAll('combatTurn', this, updateData, updateOptions);
     await this.update(updateData, updateOptions);
     await this._handleStartOfTurnExpirations();
-    if (this.combatant?.group && !this.combatant.group._expanded) {
-      await this.toggleGroupExpand(this.combatant.group.id);
-    }
+    await this.expandGroupIfNeeded();
+    return this;
+  }
+
+  override async previousTurn() {
+    await super.previousTurn();
+    await this.expandGroupIfNeeded();
     return this;
   }
 
   override async nextRound() {
     if (game.user.isGM) await this._nextRoundAsGM();
     else await this._nextRoundAsUser();
-    if (this.combatant?.group && !this.combatant.group._expanded) {
-      await this.toggleGroupExpand(this.combatant.group.id);
-    }
+    await this.expandGroupIfNeeded();
     return this;
   }
 
@@ -661,7 +841,8 @@ export default class SwadeCombat<
       options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
     });
     if (!revert) return this;
-    return super.previousRound();
+    await super.previousRound();
+    await this.expandGroupIfNeeded();
   }
 
   /**
@@ -672,48 +853,6 @@ export default class SwadeCombat<
     ui.notifications.info('SWADE.ActionDeckResetNotification', {
       localize: true,
     });
-  }
-
-  protected _getInitResetUpdate(
-    combatant: SwadeCombatant,
-  ): Record<string, unknown> | undefined {
-    const roundHeld = combatant.roundHeld;
-    const turnLost = combatant.turnLost;
-    if (roundHeld) {
-      if (turnLost) {
-        return {
-          initiative: null,
-          system: {
-            hasJoker: false,
-            '-=turnLost': null,
-          },
-        };
-      } else {
-        //keep the card
-        return;
-      }
-    } else if (!roundHeld || turnLost) {
-      return {
-        initiative: null,
-        system: {
-          suitValue: null,
-          cardValue: null,
-          hasJoker: false,
-          cardString: '',
-          turnLost: false,
-        },
-      };
-    }
-    return {
-      initiative: null,
-      system: {
-        suitValue: null,
-        cardValue: null,
-        hasJoker: false,
-        cardString: '',
-        turnLost: false,
-      },
-    };
   }
 
   protected async _handleStartOfTurnExpirations() {
@@ -762,17 +901,17 @@ export default class SwadeCombat<
     });
     this.#roundAdvanceDialog = false; //unset the flag
     if (!advance) return;
-    //reset the deck if a joker had been drawn
-    if (this.combatants.some((c: SwadeCombatant) => c.hasJoker)) {
-      await reshuffleActionDeck();
-      ui.notifications.info('SWADE.DeckShuffled', { localize: true });
-    }
+
+    await reshuffleActionDeckIfJokerDrawn();
 
     //reset the combatants
     await this.resetAll();
 
     //advance the round to the next one
     await super.nextRound();
+
+    // Reset turn and handle expirations
+    await this._handleStartOfTurnExpirations();
 
     //no auto init, we're done;
     if (!this.automaticInitiative) return;
@@ -834,15 +973,11 @@ export default class SwadeCombat<
     user: User.Implementation,
   ) {
     await super._preDelete(options, user);
-    const jokerDrawn = this.combatants.some((c: SwadeCombatant) => c.hasJoker);
 
-    //reset the deck when combat is ended
-    if (jokerDrawn) {
-      await reshuffleActionDeck();
-      ui.notifications.info('SWADE.DeckShuffled', { localize: true });
-    }
+    // Reset the deck when combat is ended.
+    await reshuffleActionDeckIfJokerDrawn();
 
-    //remove the holding status from any combatants that have it
+    // Remove the holding status from any combatants that have it.
     await Promise.allSettled(
       this.combatants
         .filter((c) => c.actor?.statuses.has('holding') ?? false)
