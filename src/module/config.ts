@@ -62,6 +62,16 @@ export const SWADE: SwadeConfig = {
     },
   },
 
+  combat: {
+    group: {
+      icon: 'icons/environment/people/charge.webp',
+    },
+  },
+
+  debug: {
+    verbose: false,
+  },
+
   vehicles: {
     maxHandlingPenalty: -4,
   },
@@ -404,6 +414,14 @@ export interface SwadeConfig {
       start: string;
       end: string;
     };
+  };
+  combat: {
+    group: {
+      icon?: string;
+    };
+  };
+  debug: {
+    verbose: boolean;
   };
   vehicles: {
     maxHandlingPenalty: number;

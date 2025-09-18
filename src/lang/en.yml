@@ -124,8 +124,10 @@ SWADE:
   Unfamiliar:
     '2': Unfamiliar (-2)
     '4': Unfamiliar (-4)
+  FollowLabel: Follow
   Follow: Follow {name}
   Unfollow: Unfollow {name}
+  DeleteGroupAndCombatants: Delete Group and Combatants
   MakeGroupLeader: Make Group Leader
   RemoveGroupLeader: Remove Group Leader
   AddTokenFollowers: Add Selected Tokens as Followers

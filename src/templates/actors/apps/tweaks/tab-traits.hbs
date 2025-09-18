@@ -6,8 +6,8 @@
       classes=''
       label='SWADE.Category'
       blank=false
-      document=doc
-      rootId=doc.uuid
+      document=document
+      rootId=document.uuid
       source=true
     }}
   </section>
@@ -206,6 +206,16 @@
     {{formGroupSimple
       'system.initiative.hasHesitant'
       classes='slim'
+      document=document
+      rootId=document.uuid
+      source=true
+    }}
+    <hr />
+    {{formGroupSimple
+      'system.initiative.follow'
+      classes=''
+      label='SWADE.FollowLabel'
+      blank=false
       document=document
       rootId=document.uuid
       source=true
