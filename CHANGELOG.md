@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fix 'Follow' setting added in 5.0.6 (#1386) **by @mhilbrunner**
 - Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
+- Fix `SwadeRoll.toMessage()` not respecting roll mode, behaviour should now match normal Foundry rolls (#1385) **by @mhilbrunner**
 
 ## 5.0.6
 
