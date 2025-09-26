@@ -23,6 +23,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.7
+
+### Fixed
+
+- Fix 'Follow' setting added in 5.0.6 (#1386) **by @mhilbrunner**
+- Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
+
 ## 5.0.6
 
 ### Added
@@ -37,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The default combat tracker group icon is now configurable at `CONFIG.SWADE.combat.group.icon` (#1376) **by @mhilbrunner**
 
 ### Changed
+
 - Removed  'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
 
 ### Fixed
