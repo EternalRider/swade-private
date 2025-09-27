@@ -109,7 +109,7 @@ export class UserSummary {
     ];
     const tokens: TokenDocument[] = game.scenes?.viewed?.tokens?.contents ?? [];
     tokens
-      .filter((t) => !t.actor.hasPlayerOwner && t.actor.isWildcard)
+      .filter((t) => !t.actor?.hasPlayerOwner && t.actor?.isWildcard)
       .forEach((t) => {
         //disposition goes from -2 (secret) to 1 (friendly) so we add 2 to line it up with the array index
         const disposition = t['disposition'] + 2;
