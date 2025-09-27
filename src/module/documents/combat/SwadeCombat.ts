@@ -733,7 +733,7 @@ export default class SwadeCombat<
     if (!leaderCombatant) return undefined;
     if (leaderCombatant.group) return leaderCombatant.group;
     if (options?.createIfNotInGroup) {
-      const group = this.createGroup();
+      const group = await this.createGroup();
       if (!group) return undefined;
       await leaderCombatant.setGroup(group.id);
       await leaderCombatant.setIsGroupLeader(true);

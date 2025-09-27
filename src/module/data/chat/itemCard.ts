@@ -118,15 +118,17 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     html: HTMLElement,
   ) {
     event.preventDefault();
-    const actor = this._getActor();
     const action = btn.dataset.action as string;
 
-    if (!this._item || !actor || !action) return;
+    if (!this._item || !action) return;
 
     const actionObj = foundry.utils.getProperty(
       this._item,
       'system.actions.additional.' + action,
     ) as ItemAction | undefined;
+
+    const actor = this._getActor(actionObj);
+    if (!actor) return;
 
     let roll: TraitRoll | DamageRoll | null = null;
     const additionalMods = this.#handler.gatherRollModifiers({

@@ -161,12 +161,17 @@ export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
   override async toMessage<const Create extends boolean | null | undefined>(
     messageData: SwadeRoll.MessageData = {},
     {
-      rollMode = 'publicroll',
+      rollMode,
       create = true,
     }: Roll.ToMessageOptions<Create> = {},
   ): Promise<Roll.ToMessageReturn<Create>> {
+    if (rollMode === "roll") rollMode = undefined;
+    rollMode ||= game.settings.get("core", "rollMode");
+
     // Perform the roll, if it has not yet been rolled
-    if (!this._evaluated) await this.evaluate();
+    if (!this._evaluated) await this.evaluate({ allowInteractive: rollMode !== CONST.DICE_ROLL_MODES.BLIND });
+
+    // Prepare chat data
     const existingRolls: SwadeRoll[] = messageData.rolls ?? [];
     messageData = foundry.utils.mergeObject(
       {
