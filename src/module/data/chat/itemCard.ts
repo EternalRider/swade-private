@@ -169,6 +169,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
           this._item,
           actor,
           additionalMods,
+          html
         );
         break;
       case 'arcane-device':
