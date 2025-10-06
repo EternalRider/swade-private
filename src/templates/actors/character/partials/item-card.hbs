@@ -1,13 +1,13 @@
-<li class="gear-card item" data-item-id="{{id}}">
+<li class="gear-card item" data-item-id="{{id}}" data-document-class="Item">
   <details data-collapsible-id='{{concat type "-card-" id}}'>
     <summary  class="card-header flexrow">
       <div class="item-image" style="background-image: url('{{img}}')"></div>
       <a class="item-name">{{name}}</a>
       <div class="item-controls">
-        <button type="button" class="item-control item-show">
+        <button type="button" data-action="showItem" class="item-control item-show">
           <i class="far fa-comment-alt"></i>
         </button>
-        <button type="button" class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}" data-toggle="system.favorite"
+        <button type="button" data-action="toggleProperty" class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}" data-toggle="system.favorite"
           title="{{localize (ifThen system.favorite "SWADE.Unfavorite" "SWADE.Favorite")}}">
           <i class="fas fa-star"></i>
         </button>

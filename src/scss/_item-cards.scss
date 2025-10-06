@@ -25,6 +25,7 @@
   .summary {
     .quick-list .gear-card .card-content .card-buttons button {
       @extend .card-button;
+      background: var(--card-button-background-color);
     }
   }
 
@@ -62,6 +63,7 @@
       .card-buttons {
         button {
           @extend .card-button;
+          background: var(--card-button-background-color);
         }
       }
     }

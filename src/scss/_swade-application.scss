@@ -1,6 +1,7 @@
 @use 'entity-links' as *;
 
-body.theme-dark .swade-application {
+body.theme-dark .swade-application,
+.swade-application.themed.theme-dark {
   //Color definitions
   --swade-primary-color: var(--color-warm-2);
 
@@ -14,7 +15,8 @@ body.theme-dark .swade-application {
   }
 }
 
-body.theme-light .swade-application {
+body.theme-light .swade-application,
+.swade-application.themed.theme-light {
   //Color definitions
   --swade-primary-color: rgb(151, 40, 36);
 
@@ -57,6 +59,10 @@ body.theme-light .swade-application {
 
   &.standard-form {
     gap: 0;
+  }
+
+  .window-header button {
+    width: auto;
   }
 
   .window-content {

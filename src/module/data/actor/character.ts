@@ -1,4 +1,4 @@
-import { createEmbedElement } from '../../util';
+import { createEmbedElement, slugify } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
