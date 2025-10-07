@@ -3,8 +3,9 @@ import { constants } from '../../constants';
 import { createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { builder, category, favorite, grants } from './common';
+import { actions, builder, category, favorite, grants } from './common';
 import {
+  Actions,
   Builder,
   Category,
   ChoicesType,
@@ -18,6 +19,7 @@ declare namespace AbilityData {
       Favorite,
       Category,
       Grants,
+      Actions,
       Builder {
     subtype: foundry.data.fields.StringField<{
       initial: typeof constants.ABILITY_TYPE.SPECIAL;
@@ -42,6 +44,7 @@ class AbilityData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
+      ...actions(),
       ...grants(),
       ...builder(),
       subtype: new fields.StringField({
@@ -59,6 +62,9 @@ class AbilityData extends SwadeBaseItemData<
   /** @inheritdoc */
   static override migrateData(source: PotentialSource<AbilityData>) {
     migrations.renameRaceToAncestry(source);
+
+    // TODO: Do we need this? Added way after the old action property names were there
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
 

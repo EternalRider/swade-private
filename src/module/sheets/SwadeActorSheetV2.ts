@@ -34,12 +34,14 @@ export class SwadeActorSheetV2<
 
   override async _renderFrame(options) {
     const frame = await super._renderFrame(options);
-    const tweaksTemplate = document.createElement('template');
-    tweaksTemplate.innerHTML = `<button type="button" class="header-control icon fa-solid fa-gears"
-      data-tooltip="SWADE.Tweaks" aria-label="SWADE.Tweaks"
-      data-action="openTweaks">${game.i18n.localize('SWADE.Tweaks')}</button>`;
-    const targetElem = frame.querySelector('[data-action="toggleControls"]');
-    targetElem?.before(tweaksTemplate.content.firstChild!);
+    if (this.isEditable) {
+      const tweaksTemplate = document.createElement('template');
+      tweaksTemplate.innerHTML = `<button type="button" class="header-control icon fa-solid fa-gears"
+        data-tooltip="SWADE.Tweaks" aria-label="SWADE.Tweaks"
+        data-action="openTweaks">${game.i18n.localize('SWADE.Tweaks')}</button>`;
+      const targetElem = frame.querySelector('[data-action="toggleControls"]');
+      targetElem?.before(tweaksTemplate.content.firstChild!);
+    }
     return frame;
   }
 
@@ -86,7 +88,7 @@ export class SwadeActorSheetV2<
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    this._getEmbeddedDocument(target)?.sheet?.render(true);
+    this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
   static async deleteItem(
@@ -102,7 +104,7 @@ export class SwadeActorSheetV2<
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    this._getEmbeddedDocument(target)?.sheet?.render(true);
+    this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
   static async deleteEffect(

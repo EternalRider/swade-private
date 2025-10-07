@@ -43,7 +43,6 @@ body.theme-dark .swade-official,
   --content-shadow: inset 0 0 2rem 1rem rgba(255, 255, 255, 0.2);
   --input-background: rgba(52, 63, 80, 1);
   --card-button-background-color: rgba(0, 0, 15, 0.8);
-  --hard-line-color: white;
   --invert-if-dark: invert(1);
 }
 
@@ -59,7 +58,6 @@ body.theme-light .swade-official,
   --content-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
   --input-background: rgba(203, 192, 175, 1);
   --card-button-background-color: rgba(255, 255, 240, 0.8);
-  --hard-line-color: black;
   --invert-if-dark: none;
 }
 
@@ -329,9 +327,6 @@ body.theme-light .swade-official,
     &:hover:not(:disabled),
     &:focus:not(:disabled) {
       text-shadow: var(--input-text-shadow);
-    }
-    &.rollable {
-      border-bottom: 1px dashed var(--hard-line-color);
     }
   }
 

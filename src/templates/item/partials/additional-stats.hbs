@@ -4,7 +4,7 @@
     <div class='form-group'>
       {{#if (eq stat.dtype 'Die')}}
         <label>
-          <button type='button' class='rollable' data-stat='{{key}}'>
+          <button type='button' class='rollable' data-action='rollAdditionalStat' data-stat='{{key}}'>
             {{stat.label}}
           </button>
         </label>

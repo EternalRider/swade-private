@@ -451,7 +451,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     const items = await super._onDropItemCreate(itemData);
     const typesToRender = ['power', 'skill'];
     for (const item of items) {
-      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+      if (typesToRender.includes(item.type)) item.sheet?.render({ force: true });
     }
     return items;
   }
@@ -503,7 +503,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
       : (this.actor.effects.get(effectId) as SwadeActiveEffect);
     if (!effect || !sourceItem) return;
-    sourceItem.sheet?.render(true);
+    sourceItem.sheet?.render({ force: true });
   }
 
   static async #openAncestryArchetype(
@@ -512,7 +512,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     target: HTMLElement
   ) {
     const id = target.dataset.itemId as string;
-    this.actor.items.get(id)?.sheet?.render(true);
+    this.actor.items.get(id)?.sheet?.render({ force: true });
   }
 
   static async #advanceAction(
@@ -1323,7 +1323,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         callback: (i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
-          if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
+          if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
           if (effectId) {
             const allEffects: ActiveEffect[] = Array.from(
               this.actor.allApplicableEffects(),
@@ -1345,7 +1345,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
             { save: true },
           );
-          cloned?.sheet?.render(true);
+          cloned?.sheet?.render({ force: true });
         },
       },
       {

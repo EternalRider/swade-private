@@ -1,4 +1,4 @@
-<form class='main-grid {{cssClass}}' autocomplete='off'>
+<section class='main-grid {{cssClass}}' autocomplete='off'>
   <figure class='grid-under gu-1'></figure>
   <figure class='grid-under gu-2'></figure>
   <figure class='grid-under gu-3'></figure>
@@ -13,22 +13,12 @@
   </section>
 
   {{! Sheet Tab Navigation }}
-  <nav class='tabs' data-group='main'>
-    <a class='item' data-tab='description' data-group='main'>
-      {{localize 'SWADE.Desc'}}
-    </a>
-    <a class='item' data-tab='properties' data-group='main'>
-      {{localize 'SWADE.Properties'}}
-    </a>
-    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
-  </nav>
+  {{> "templates/generic/tab-navigation.hbs"}}
 
   {{! Main Section }}
   <section class='sheet-body'>
-    <section class='tab description full-page' data-group='main' data-tab='description'>
-      {{> 'swade.item-tab-description'}}
-    </section>
-    <section class='tab properties' data-group='main' data-tab='properties'>
+    {{> 'swade.item-tab-description'}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
       <div class='form-group'>
         <label>{{localize 'SWADE.Subtype'}}</label>
         <span class='form-fields'>
@@ -55,13 +45,12 @@
       {{/unless}}
       {{> 'swade.item-grants'}}
     </section>
-    <section class='tab effects' data-group='main' data-tab='effects'>
-      {{> 'swade.item-tab-effects'}}
-    </section>
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
   </section>
 
   <figure class='grid-cover gc-1'></figure>
   <figure class='grid-cover gc-2'></figure>
   <figure class='grid-cover gc-3'></figure>
   <figure class='grid-cover gc-4'></figure>
-</form>
+</section>

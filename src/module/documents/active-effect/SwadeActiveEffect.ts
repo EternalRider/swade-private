@@ -241,7 +241,7 @@ export default class SwadeActiveEffect<
           foundry.utils.setProperty(item, key, source);
         }
       }
-      if (item.sheet?.rendered) item.sheet.render(true);
+      if (item.sheet?.rendered) item.sheet.render({ force: true });
     }
   }
 

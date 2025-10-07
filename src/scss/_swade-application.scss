@@ -8,6 +8,8 @@ body.theme-dark .swade-application,
   --swade-background: url('assets/paperboard-texture-dark.webp') repeat left top;
   --color-scrollbar: var(--color-text-subtle);
 
+  --color-high-contrast: white;
+
   input[type='checkbox'],
   input[type='radio'] {
     --checkbox-checked-color: var(--color-warm-2);
@@ -22,6 +24,8 @@ body.theme-light .swade-application,
 
   --swade-background: url('assets/paperboard-texture.webp') repeat left top;
   --color-fieldset-border: #aaa;
+
+  --color-high-contrast: black;
 
   input[type='checkbox'],
   input[type='radio'] {
@@ -49,6 +53,7 @@ body.theme-light .swade-application,
   --font-h6-size: var(--font-size-14);
 
   --input-border-line: 2px solid var(--input-border-color);
+  --input-box-shadow: 0 0 5px #ff0000;
 
   font-family: var(--font-family), var(--font-awesome);
   background: var(--swade-background);
@@ -86,8 +91,34 @@ body.theme-light .swade-application,
     }
   }
 
-  button:not(.fa-file-import) {
-    font-family: var(--default-font), var(--font-awesome);
+  button {
+    &:not(.fa-file-import) {
+      font-family: var(--default-font), var(--font-awesome);
+    }
+    &:focus {
+      box-shadow: var(--input-box-shadow);
+    }
+    &:hover {
+      text-shadow: var(--input-box-shadow);
+    }
+    &.invisible {
+      border: none;
+      background: transparent;
+      border-radius: 0;
+      width: auto;
+      padding: $small-spacing;
+      margin: $small-spacing;
+    }
+    &.rollable {
+      border-bottom: 1px dashed var(--color-high-contrast);
+    }
+    &:disabled {
+      &:hover,
+      &:focus {
+        text-shadow: none;
+        box-shadow: none;
+      }
+    }
   }
 
   button,

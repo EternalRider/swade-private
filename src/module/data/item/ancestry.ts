@@ -1,10 +1,12 @@
+import { PotentialSource } from '../../../globals';
 import { createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
-import { grants } from './common';
-import { Grants } from './item-common.interface';
+import { actions, grants } from './common';
+import { Actions, Grants } from './item-common.interface';
+import * as migrations from './_migration';
 
 declare namespace AncestryData {
-  interface Schema extends SwadeBaseItemData.Schema, Grants {
+  interface Schema extends SwadeBaseItemData.Schema, Actions, Grants {
     threshold: foundry.data.fields.NumberField<{
       integer: true;
       initial: 2;
@@ -23,6 +25,7 @@ class AncestryData extends SwadeBaseItemData<
   static override defineSchema(): AncestryData.Schema {
     return {
       ...super.defineSchema(),
+      ...actions(),
       ...grants(),
       threshold: new foundry.data.fields.NumberField({
         integer: true,
@@ -69,6 +72,13 @@ class AncestryData extends SwadeBaseItemData<
       'systems/swade/templates/embeds/ancestry-embeds.hbs',
       ['item-embed', 'ancestry'],
     );
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source: PotentialSource<AncestryData>) {
+    // TODO: Do we need this? Added way after the old action property names were there
+    migrations.renameActionProperties(source);
+    return super.migrateData(source);
   }
 }
 
