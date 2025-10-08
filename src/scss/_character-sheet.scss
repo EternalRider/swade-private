@@ -91,9 +91,14 @@ body.theme-light .swade-official,
       grid-template-rows: 3em 2em 2em max-content minmax(0, 1fr);
       grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 0.5em;
-      flex: 0;
-      &.header {
+      flex: 1;
+      &>.header {
         background-image: none;
+        gap: 0.25rem;
+        grid-template-rows: 3em 2em 2em max-content minmax(0, 1fr);
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        grid-column: 1/-1;
+        grid-row: 1/4;
       }
     }
   }
@@ -1138,7 +1143,7 @@ body.theme-light .swade-official,
     background-image: var(--header-background-image);
     background-position: left center;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
     display: grid;
     line-height: 24px;
     padding-left: 5px;
@@ -1465,6 +1470,9 @@ body.theme-light .swade-official,
         grid-template-columns: 1.5em 25% auto 80px;
         text-align: left;
         align-items: start;
+        p {
+          margin: 0;
+        }
       }
       .faded {
         font-style: italic;

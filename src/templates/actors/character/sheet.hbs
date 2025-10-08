@@ -1,0 +1,21 @@
+<section class='main-grid {{cssClass}}{{#if settingrules.conviction}} conviction-enabled{{/if}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+  
+  {{> 'systems/swade/templates/actors/character/header.hbs'}}
+  {{> 'templates/generic/tab-navigation.hbs'}}
+  {{> 'systems/swade/templates/actors/character/tabs/summary.hbs' tab=tabs.summary}}
+  {{> 'systems/swade/templates/actors/character/tabs/edges.hbs' tab=tabs.edges}}
+  {{> 'systems/swade/templates/actors/character/tabs/inventory.hbs' tab=tabs.inventory}}
+  {{> 'systems/swade/templates/actors/character/tabs/powers.hbs' tab=tabs.powers}}
+  {{> 'systems/swade/templates/actors/character/tabs/effects.hbs' tab=tabs.effects}}
+  {{> 'systems/swade/templates/actors/character/tabs/actions.hbs' tab=tabs.actions}}
+  {{> 'systems/swade/templates/actors/character/tabs/about.hbs' tab=tabs.about}}
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</section>

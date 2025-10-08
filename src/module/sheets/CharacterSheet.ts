@@ -64,15 +64,21 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   };
 
   static override PARTS = {
-    header: { template: 'systems/swade/templates/actors/character/header.hbs' },
-    tabs: { template: 'templates/generic/tab-navigation.hbs' },
-    summary: { template: 'systems/swade/templates/actors/character/tabs/summary.hbs', scrollable: [''] },
-    edges: { template: 'systems/swade/templates/actors/character/tabs/edges.hbs', scrollable: [''] },
-    inventory: { template: 'systems/swade/templates/actors/character/tabs/inventory.hbs', scrollable: [''] },
-    powers: { template: 'systems/swade/templates/actors/character/tabs/powers.hbs', scrollable: [''] },
-    effects: { template: 'systems/swade/templates/actors/character/tabs/effects.hbs', scrollable: [''] },
-    actions: { template: 'systems/swade/templates/actors/character/tabs/actions.hbs', scrollable: [''] },
-    about: { template: 'systems/swade/templates/actors/character/tabs/about.hbs', scrollable: [''] },
+    sheet: {
+      template: 'systems/swade/templates/actors/character/sheet.hbs',
+      scrollable: ['.tab.sheet-body'],
+      templates: [
+        'systems/swade/templates/actors/character/header.hbs',
+        'templates/generic/tab-navigation.hbs',
+        'systems/swade/templates/actors/character/tabs/summary.hbs',
+        'systems/swade/templates/actors/character/tabs/edges.hbs',
+        'systems/swade/templates/actors/character/tabs/inventory.hbs',
+        'systems/swade/templates/actors/character/tabs/powers.hbs',
+        'systems/swade/templates/actors/character/tabs/effects.hbs',
+        'systems/swade/templates/actors/character/tabs/actions.hbs',
+        'systems/swade/templates/actors/character/tabs/about.hbs',
+      ]
+    },
     limited: { template: 'systems/swade/templates/actors/character/limited.hbs' }
   };
 
@@ -368,25 +374,15 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       attributes: this.#getAttributesForDisplay(),
       wealthDieTypes: this.#getWealthDieTypes(),
     });
+
+    const tabEntries = Object.entries(context.tabs).filter(i => i[1].group === 'primary');
+    if (!this.actor.hasPowers && !this.actor.hasArcaneBackground) {
+      tabEntries.findSplice(i => i[0] === 'powers');
+    }
+    context.tabs = Object.fromEntries(tabEntries);
     
-    return context;
-  }
-
-  override async _preparePartContext(partId, context, options) {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) context.tab = context.tabs[partId];
-    // TODO: Un-grossify this
-    if (partId === 'about') {
-      context.subtabs = Object.fromEntries(Object.entries(this._getTabs()).filter(i => i[1].group === 'about'));
-    }
-    if (partId === 'tabs') {
-      const tabEntries = Object.entries(context.tabs).filter(i => i[1].group === 'primary');
-      if (!this.actor.hasPowers && !this.actor.hasArcaneBackground) {
-        tabEntries.findSplice(i => i[0] === 'powers');
-      }
-      context.tabs = Object.fromEntries(tabEntries);
-
-    }
+    context.subtabs = Object.fromEntries(Object.entries(this._getTabs()).filter(i => i[1].group === 'about'));
+    
     return context;
   }
 
@@ -1494,6 +1490,8 @@ interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
     favorite: SheetEffect[];
   };
   skills: SkillDisplay[];
+  subtabs: Record<string, SwadeApplicationTab>;
+  tabs: Record<string, SwadeApplicationTab>;
   toughnessTooltip: string;
   useAttributeShorts: boolean;
   wealthDieTypes: DieSidesOption[];
