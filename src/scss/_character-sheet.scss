@@ -40,7 +40,7 @@ body.theme-dark .swade-official,
   --tab-box-shadow-color-1: #ffffff9e;
   --tab-box-shadow-color-2: #ffffff2b;
   --tab-box-shadow-color-3: #ffffff6b;
-  --content-shadow: inset 0 0 2rem 1rem rgba(255, 255, 255, 0.2);
+  --item-unequipped-color: rgba(255, 255, 255, 0.2);
   --input-background: rgba(52, 63, 80, 1);
   --card-button-background-color: rgba(0, 0, 15, 0.8);
   --invert-if-dark: invert(1);
@@ -55,7 +55,7 @@ body.theme-light .swade-official,
   --tab-box-shadow-color-1: #0000009e;
   --tab-box-shadow-color-2: #0000002b;
   --tab-box-shadow-color-3: #0000006b;
-  --content-shadow: inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2);
+  --item-unequipped-color: rgba(0, 0, 0, 0.2);
   --input-background: rgba(203, 192, 175, 1);
   --card-button-background-color: rgba(255, 255, 240, 0.8);
   --invert-if-dark: none;
@@ -83,7 +83,7 @@ body.theme-light .swade-official,
   //sheet background
   .window-content {
     //sheet background
-    box-shadow: var(--content-shadow);
+    box-shadow: inset 0 0 2rem 1rem var(--item-unequipped-color);
 
     .main-grid {
       height: 100%;
@@ -240,6 +240,10 @@ body.theme-light .swade-official,
         0px -4px 6px -3px var(--tab-box-shadow-color-2) inset;
       white-space: nowrap;
       padding: 0px 8px;
+      span {
+        display: block;
+        margin: -0.7rem 0;
+      }
     }
     .item {
       padding: $small-spacing 1ch;
@@ -367,7 +371,7 @@ body.theme-light .swade-official,
   }
 
   .item-unequipped {
-    color: rgba(0, 0, 0, 0.2);
+    color: var(--item-unequipped-color);
   }
 
   .item-create,

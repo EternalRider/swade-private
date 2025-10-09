@@ -203,7 +203,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
   }
   protected override _configureRenderOptions(options): void {
     super._configureRenderOptions(options);
-    options.parts = [`${this.document.type}`];
+    options.parts = [this.document.type];
   }
 
   get item(): SwadeItem {
@@ -904,7 +904,8 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       .forEach((el) => {
         new Accordion(el, '.content', { duration: 200 });
         const id = el.dataset.effectId as string;
-        el.querySelector('summary')?.addEventListener('click', () => {
+        el.querySelector('summary')?.addEventListener('click', (ev) => {
+          if (ev.target.type === 'button') return;
           const states = this.collapsibleStates.effects;
           const currentState = Boolean(states[id]);
           states[id] = !currentState;
