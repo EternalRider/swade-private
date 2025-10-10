@@ -1,4 +1,5 @@
 import { constants } from '../../constants';
+import { FormulaField } from '../fields/FormulaField';
 import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 
 const fields = foundry.data.fields;
@@ -93,8 +94,8 @@ export const bonusDamage = () => ({
 export const actions = () => ({
   actions: new fields.SchemaField({
     trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
-    traitMod: new fields.StringField({ initial: '', label: 'SWADE.TraitMod' }),
-    dmgMod: new fields.StringField({ initial: '', label: 'SWADE.DmgMod' }),
+    traitMod: new FormulaField({ initial: '', label: 'SWADE.TraitMod' }),
+    dmgMod: new FormulaField({ initial: '', label: 'SWADE.DmgMod' }),
     additional: new fields.TypedObjectField(
       new fields.SchemaField({
         name: new fields.StringField({

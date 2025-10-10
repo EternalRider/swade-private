@@ -35,9 +35,8 @@ export class FormulaField<
 
   protected override _validateType(
     value: any,
-    _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any> = {},
+    _options: foundry.data.fields.DataField.ValidationOptions = {},
   ): boolean | void {
-    if (!value) console.log(this);
     if (this.blank && Number(value) === 0) return true;
     return Roll.validate(value);
   }
