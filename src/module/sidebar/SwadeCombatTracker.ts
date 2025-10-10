@@ -37,7 +37,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   };
 
   protected override scrollToTurn() {
-    this.element?.querySelector(".combatant.active")?.scrollIntoView();
+    this.element?.querySelector('.combatant.active')?.scrollIntoView();
     this.viewed?.expandGroupIfNeeded();
   }
 
