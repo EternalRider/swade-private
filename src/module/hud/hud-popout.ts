@@ -44,7 +44,7 @@ export class SwadePopout {
   private _template: string;
   private context: any;
   private options: any;
-  private element: HTMLElement | null = null;
+  public element: HTMLElement | null = null;
   private actor: any;
   private panelType: string;
 
