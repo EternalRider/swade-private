@@ -3,7 +3,6 @@ import { prepareHudContext } from '../hud/hud-context';
 import { setupHudActionButtonListeners } from '../hud/hud-actions';
 import {
   setupTabHandlers,
-  setupRollButtonHandlers,
   setupAbilityHandlers,
   setupPortraitHandler,
   setupDragHandler,
@@ -211,9 +210,6 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Setup tab handlers for panel switching
       setupTabHandlers(html, this);
-
-      // Setup roll button handlers for various actions
-      setupRollButtonHandlers(html, this);
 
       // Setup ability handlers for special actions (soak, incapacitated)
       setupAbilityHandlers(html, this);
