@@ -109,3 +109,32 @@ export function handleSwadeHUDTokenDeleted(token: any) {
     currentHud.close();
   }
 }
+
+/**
+ * Toggle the SWADE HUD for the currently controlled token or assigned character.
+ * This function mimics the behavior of the JavaScript version's toggleSwadeHud.
+ */
+export function toggleSwadeHUD() {
+  let token = null;
+
+  // First, check for controlled tokens
+  const controlledTokens = canvas.tokens?.controlled || [];
+  token = controlledTokens.find((t: any) => isSwadePC(t));
+
+  // If no controlled token, check for player's assigned actor's token
+  if (!token && game.user?.character) {
+    const assignedActor = game.user.character;
+    token = canvas.tokens?.placeables.find(
+      (t: any) => t.actor?.id === assignedActor.id && isSwadePC(t),
+    );
+  }
+
+  if (!token) return;
+
+  const existingHud = getHudApp();
+  if (existingHud) {
+    hideSwadeHUD();
+  } else {
+    handleSwadeHUDTokenControl(token, true, SwadeActorHUD);
+  }
+}
