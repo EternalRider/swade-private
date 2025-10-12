@@ -64,3 +64,20 @@ export function getDistance(
 ): number {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
+
+/**
+ * Debounced render function to prevent excessive re-renders
+ * @param {any} hudInstance - The HUD instance to render
+ * @param {number} delay - Delay in milliseconds (default: 50)
+ */
+export function debounceRender(hudInstance: any, delay: number = 50): void {
+  if (hudInstance._renderDebounced) {
+    hudInstance._renderDebounced();
+  } else if (hudInstance.render) {
+    setTimeout(() => {
+      if (hudInstance.rendered) {
+        hudInstance.render();
+      }
+    }, delay);
+  }
+}
