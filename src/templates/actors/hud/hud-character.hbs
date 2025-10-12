@@ -24,10 +24,11 @@
     </div>
 
     {{!-- =============== CORE (center ring) =============== --}}
-    <div class="swadehud-core" style="margin-top: 0;">
+    <div class="swadehud-tabwrap">
+      <div class="swadehud-core" style="margin-top: 0;">
       {{!-- Character name above info --}}
       <div class="swadehud-core__name">
-        <h2 class="swadehud-character-name">{{actorName}}</h2>
+        <h2 class="swadehud-character-name" id="bio-button" title="View Character Description">{{actorName}}</h2>
       </div>
       
       {{!-- Character info above circles --}}
@@ -42,7 +43,7 @@
       </div>
 
       <div class="swadehud-core__leftcircle">
-        <div class="swadehud-circle swadehud-stat-clickable"
+        <div class="swadehud-circle"
             title="Wounds (Left click: -1, Right click: +1)"
             data-stat-path="system.wounds.value"
             data-stat-min="0"
@@ -63,7 +64,7 @@
       </div>
 
       <div class="swadehud-core__rightcircle">
-        <div class="swadehud-circle swadehud-stat-clickable"
+        <div class="swadehud-circle"
             title="Fatigue (Left click: -1, Right click: +1)"
             data-stat-path="system.fatigue.value"
             data-stat-min="0"
@@ -77,19 +78,7 @@
         </div>
       </div>
 
-      <div class="swadehud-core__leftbutton">
-        <!-- Empty space for potential right button -->
-      </div>
-
-      <div class="swadehud-core__bottomcenter">
-          <div class="swadehud-description-container">
-            <span class="swadehud-info-rank swadehud-description-button" id="bio-button" title="View Character Description">Description</span>
-          </div>
-      </div>
-
-      <div class="swadehud-core__rightbutton">
-        <!-- Empty space for potential right button -->
-      </div>
+    </div>
     </div>
 
     {{!-- =============== RIGHT WING (statuses, counters) =============== --}}

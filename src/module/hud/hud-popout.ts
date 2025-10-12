@@ -8,6 +8,7 @@ import {
 import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
 import { hudPanelConfig } from './hud-panel-constants';
+import { debounce } from './hud-utils';
 
 /**
  * Options for creating a SwadePopout HUD panel.
@@ -147,59 +148,50 @@ export class SwadePopout {
       }
     }
 
-    // Create the element if it doesn't exist
+    // Create the popout element with note box structure
     if (!this.element) {
       this.element = document.createElement('div');
     }
-    this.element.innerHTML = htmlContent || '';
+    this.element.className = `swadehud-popout swadehud-popout--${this.options.side || 'right'}`;
 
-    // Always apply swadehud-popout class for modal look
-    this.element.classList.add('swadehud-popout');
+    // Create note box structure with HUD-specific classes
+    const noteHeader = document.createElement('div');
+    noteHeader.className = 'swadehud-note-header';
 
-    // Always inject a close button if not present
-    if (!this.element.querySelector('.swadehud-popout-close')) {
-      const closeBtn = document.createElement('button');
-      closeBtn.className = 'swadehud-popout-close close-visible';
-      closeBtn.type = 'button';
-      closeBtn.setAttribute('aria-label', 'Close');
-      closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-      this.element.insertBefore(closeBtn, this.element.firstChild);
-    }
+    const noteMain = document.createElement('div');
+    noteMain.className = 'swadehud-note-main';
+    noteMain.innerHTML = htmlContent || '';
+
+    const noteFooter = document.createElement('div');
+    noteFooter.className = 'swadehud-note-footer';
+
+    // Add close button to popout (not header)
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'swadehud-popout-close close-visible';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+    this.element.appendChild(closeBtn);
+
+    // Assemble the note box
+    this.element.appendChild(noteHeader);
+    this.element.appendChild(noteMain);
+    this.element.appendChild(noteFooter);
 
     // Center the popout over the HUD if hudInstance is provided, else center in viewport
-    if (this.element) {
-      // Ensure only one popout is open at a time
-      const existing = document.querySelector('.swadehud-popout');
-      if (existing && existing !== this.element) {
-        existing.remove();
-      }
+    if (this.options.hudInstance && this.options.hudInstance.element) {
+      const hudRect = this.options.hudInstance.element.getBoundingClientRect();
+      const centerX = hudRect.left + hudRect.width / 2;
+      const centerY = hudRect.top + hudRect.height / 2;
       this.element.style.position = 'fixed';
-      let left = '50%';
-      let top = '50%';
-      let transform = 'translate(-50%, -50%)';
-      if (this.options.hudInstance && this.options.hudInstance.element) {
-        const hudRect =
-          this.options.hudInstance.element.getBoundingClientRect();
-        // Center over HUD
-        const centerX = hudRect.left + hudRect.width / 2;
-        const centerY = hudRect.top + hudRect.height / 2;
-        left = `${centerX}px`;
-        top = `${centerY}px`;
-        transform = 'translate(-50%, -50%)';
-      }
-      this.element.style.left = left;
-      this.element.style.top = top;
-      this.element.style.transform = transform;
-      this.element.style.maxHeight = '40vh'; // Even shorter popout
+      this.element.style.left = `${centerX}px`;
+      this.element.style.top = `${centerY}px`;
+      this.element.style.transform = 'translate(-50%, -50%)';
       this.element.style.maxWidth = '90vw';
-      this.element.style.overflow = 'auto';
-      this.element.style.zIndex = '1000';
-      // Modal dark background (uses CSS var for dark theme)
-      this.element.style.background = 'var(--swadehud-gradient-popout, #222)';
-      // Add to DOM if not already present
-      if (!document.body.contains(this.element)) {
-        document.body.appendChild(this.element);
-      }
+    }
+
+    if (!document.body.contains(this.element)) {
+      document.body.appendChild(this.element);
     }
 
     // Add animation class to make it visible, unless options.animate === false
@@ -207,13 +199,12 @@ export class SwadePopout {
       if (this.element && options.animate !== false) {
         this.element.classList.add('popout-animate');
       }
-    }, 10); // Small delay to ensure DOM is ready
+    }, 10);
 
     // Activate listeners
     this.activateListeners();
     // Attach shared stat handlers
     if (this.element && this.actor) {
-      // Re-render the popout after stat update to reflect live changes
       setupHudStatHandlers(
         this.element,
         this.actor,
@@ -962,19 +953,18 @@ export class SwadePopout {
               );
               if (effect) {
                 await effect.delete();
-                // Update visual state
+                // Update visual state only
                 toggle.classList.remove('active');
+              } else {
+                console.warn('No effect found for status:', statusId);
               }
             } else {
               // Add the condition
               await this.actor.toggleStatusEffect(statusId);
-              // Update visual state
+              // Update visual state only
               toggle.classList.add('active');
             }
-            // Re-render the popout to reflect status changes, skip animation
-            if (typeof this.render === 'function') {
-              await this.render(false, { animate: false });
-            }
+            // Do NOT re-render the entire popout panel here
           } catch (error) {
             console.error('SWADE HUD: Error toggling condition:', error);
           }
@@ -994,7 +984,9 @@ export class SwadePopout {
               (e) => e.statuses?.size > 0,
             );
             for (const effect of effectsToDelete) {
-              await effect.delete();
+              if (effect) {
+                await effect.delete();
+              }
             }
             // Re-render the popout to update toggles
             if (typeof this.render === 'function') {
@@ -1009,6 +1001,12 @@ export class SwadePopout {
   }
 
   private setupEffectsPanelListeners(html: HTMLElement) {
+    // Debounced HUD re-render using shared debounce utility
+    const debouncedRender = debounce((hudInstance: any) => {
+      if (hudInstance && typeof hudInstance.render === 'function') {
+        hudInstance.render();
+      }
+    }, 100);
     if (!html) {
       console.error(
         'SWADE HUD: setupEffectsPanelListeners called with undefined html',
@@ -1025,7 +1023,6 @@ export class SwadePopout {
 
       // Try to find the effect in actor.effects
       let effect = this.actor.effects.get(effectId);
-      // If not found, search all items' effects
       if (!effect) {
         for (const item of this.actor.items) {
           effect = item.effects?.get?.(effectId);
@@ -1108,13 +1105,50 @@ export class SwadePopout {
           const currentlyDisabled = effect.disabled;
           const newDisabledState = !currentlyDisabled;
           await effect.update({ disabled: newDisabledState });
-          // Update visual state
-          toggle.classList.toggle('active', !newDisabledState);
-          const effectName = effect.name || effect.label;
-          toggle.setAttribute(
-            'title',
-            newDisabledState ? `Enable ${effectName}` : `Disable ${effectName}`,
-          );
+
+          // Re-read actor data to get updated effects
+          const updatedActor = game.actors.get(this.actor.id);
+          if (updatedActor) {
+            this.actor = updatedActor;
+          }
+
+          // Update all effect toggles visually, including related statuses
+          setTimeout(() => {
+            const currentToggleIcons = html.querySelectorAll(
+              '.swadehud-effect-toggle-icon',
+            );
+            currentToggleIcons.forEach((icon) => {
+              const itemEl = icon.closest(
+                '.swadehud-item',
+              ) as HTMLElement | null;
+              if (!itemEl || !itemEl.dataset.effectId) return;
+              const iconEffectId = itemEl.dataset.effectId;
+              // Find the current effect state
+              let currentEffect = this.actor.effects?.find(
+                (e: any) => e._id === iconEffectId,
+              );
+              if (!currentEffect) {
+                for (const item of this.actor.items) {
+                  currentEffect = item.effects?.find(
+                    (e: any) => e._id === iconEffectId,
+                  );
+                  if (currentEffect) break;
+                }
+              }
+              if (currentEffect) {
+                (icon as HTMLElement).classList.toggle(
+                  'active',
+                  !currentEffect.disabled,
+                );
+                const effectName = currentEffect.name || currentEffect.label;
+                (icon as HTMLElement).title = currentEffect.disabled
+                  ? `Enable ${effectName}`
+                  : `Disable ${effectName}`;
+              }
+            });
+            // Debounced HUD re-render to update all panels and statuses
+            debouncedRender(this.options.hudInstance);
+          }, 50);
         } catch (error) {
           console.error('SWADE HUD: Error toggling effect:', error);
         }
