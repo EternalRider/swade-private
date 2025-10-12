@@ -2,6 +2,7 @@ import { SwadePopout } from './hud-popout';
 import { debounce } from './hud-utils';
 import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
+import { debounceRender } from './hud-utils';
 
 /**
  * Toggles a popout window for a specific HUD tab
@@ -202,6 +203,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'currentConditionsPopout',
         );
         if (popout && popout.element) {
+          // Setup condition handlers for toggling status effects
+          setupConditionHandlers(popout.element, hudInstance);
+
           // Handle header clicks for expanding
           const itemHeaders = popout.element.querySelectorAll(
             '[data-toggle="expand"]',
@@ -580,6 +584,172 @@ function handleIncapacitatedClick(hudInstance: any) {
 
   // This would typically update a status effect or actor flag
   hudInstance.actor.update({ 'system.isIncapacitated': newIncapacitatedState });
+}
+
+export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
+  // Handle condition toggle icons
+  const conditionToggleIcons = element.querySelectorAll(
+    '.swadehud-condition-toggle-icon',
+  );
+  conditionToggleIcons.forEach((icon) => {
+    // Remove existing event listeners to prevent duplicates
+    const newIcon = icon.cloneNode(true) as HTMLElement;
+    icon.parentNode!.replaceChild(newIcon, icon);
+
+    newIcon.addEventListener('click', async (ev) => {
+      ev.stopPropagation(); // Prevent triggering expand/collapse
+      const statusId = newIcon.dataset.statusId;
+      if (!hudInstance.actor || !statusId) return;
+
+      try {
+        // Simple toggle: just add/remove the specific status that was clicked
+        const isCurrentlyActive =
+          hudInstance.actor.effects?.some((e: any) =>
+            e.statuses?.has(statusId),
+          ) ?? false;
+
+        if (isCurrentlyActive) {
+          // Remove the status
+          const effectsToRemove =
+            hudInstance.actor.effects?.filter((e: any) =>
+              e.statuses?.has(statusId),
+            ) ?? [];
+          for (const effect of effectsToRemove) {
+            await effect.delete();
+          }
+        } else {
+          // Add the status
+          await hudInstance.actor.toggleStatusEffect(statusId);
+        }
+
+        // Update all condition icons after a short delay to allow related effects to be applied
+        setTimeout(() => {
+          // Re-query the DOM for current elements since we cloned/replaced them
+          const currentIcons = element.querySelectorAll(
+            '.swadehud-condition-toggle-icon',
+          );
+          currentIcons.forEach((icon) => {
+            const iconElement = icon as HTMLElement;
+            const iconStatusId = iconElement.dataset.statusId;
+            const iconIsActive =
+              hudInstance.actor.effects?.some((e: any) =>
+                e.statuses?.has(iconStatusId),
+              ) ?? false;
+            iconElement.classList.toggle('active', iconIsActive);
+
+            // Update icon appearance
+            const iconI = iconElement.querySelector('i') || iconElement;
+            if (
+              iconI.classList.contains('fa-toggle-on') ||
+              iconI.classList.contains('fa-toggle-off')
+            ) {
+              iconI.classList.remove('fa-toggle-on', 'fa-toggle-off');
+              iconI.classList.add(
+                iconIsActive ? 'fa-toggle-on' : 'fa-toggle-off',
+              );
+            }
+
+            // Update tooltip
+            const effect = (CONFIG as any).statusEffects?.find(
+              (e: any) => e.id === iconStatusId,
+            );
+            if (effect) {
+              iconElement.title = iconIsActive
+                ? `Remove ${(game as any).i18n.localize(effect.name)}`
+                : `Add ${(game as any).i18n.localize(effect.name)}`;
+            }
+          });
+
+          // Force HUD re-render to ensure all updates are reflected
+          debounceRender(hudInstance);
+        }, 100); // Increased delay to allow related effects to be applied
+      } catch (error) {
+        console.error('Error toggling condition:', error);
+        (ui as any).notifications.error('Failed to toggle condition');
+      }
+    });
+  });
+
+  // Add click handler for clear all button
+  const clearButton = element.querySelector('.swadehud-clear-conditions');
+  if (clearButton) {
+    // Remove existing event listeners to prevent duplicates
+    const newClearButton = clearButton.cloneNode(true) as HTMLElement;
+    clearButton.parentNode!.replaceChild(newClearButton, clearButton);
+
+    newClearButton.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      if (!hudInstance.actor) return;
+
+      try {
+        // Get all active status effects that are in our allowed conditions
+        const allowedConditions = [
+          'bound',
+          'distracted',
+          'entangled',
+          'prone',
+          'shaken',
+          'stunned',
+          'vulnerable',
+          'wild-attack',
+          'dead',
+          'invisible', // Include core Foundry status effects
+        ];
+        const activeEffects =
+          hudInstance.actor.effects?.filter(
+            (e: any) =>
+              e.statuses &&
+              Array.from(e.statuses).some((status: string) =>
+                allowedConditions.includes(status.toLowerCase()),
+              ),
+          ) ?? [];
+
+        // Remove all active status effects
+        for (const effect of activeEffects) {
+          await effect.delete();
+        }
+
+        // Update all condition icons to inactive state
+        // Re-query the DOM for current elements since we cloned/replaced them
+        const currentIcons = element.querySelectorAll(
+          '.swadehud-condition-toggle-icon',
+        );
+        currentIcons.forEach((icon) => {
+          const iconElement = icon as HTMLElement;
+          iconElement.classList.remove('active');
+          const statusId = iconElement.dataset.statusId;
+
+          // Update icon appearance
+          const iconI = iconElement.querySelector('i') || iconElement;
+          if (iconI.classList.contains('fa-toggle-on')) {
+            iconI.classList.remove('fa-toggle-on');
+            iconI.classList.add('fa-toggle-off');
+          }
+
+          const effect = (CONFIG as any).statusEffects?.find(
+            (e: any) => e.id === statusId,
+          );
+          if (effect) {
+            iconElement.title = `Add ${(game as any).i18n.localize(effect.name)}`;
+          }
+        });
+
+        // Force HUD re-render to ensure all updates are reflected
+        debounceRender(hudInstance);
+
+        // Show notification
+        (ui as any).notifications.info('All conditions cleared');
+
+        // Force a HUD refresh to update all condition displays
+        if (hudInstance.render) {
+          debounceRender(hudInstance);
+        }
+      } catch (error) {
+        console.error('Error clearing conditions:', error);
+        (ui as any).notifications.error('Failed to clear conditions');
+      }
+    });
+  }
 }
 
 export function setupPortraitHandler(html: HTMLElement, hudInstance: any) {
