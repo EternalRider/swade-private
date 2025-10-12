@@ -138,7 +138,17 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     | null;
   _onActorDelete: ((doc: SwadeActor) => void) | null;
   _renderDebounced: (() => void) | null;
-  popouts: Record<string, SwadePopoutInstance | null> = {};
+
+  // Popout instances for each tab
+  currentTraitsPopout: SwadePopoutInstance | null = null;
+  currentWeaponsPopout: SwadePopoutInstance | null = null;
+  currentEdgesPopout: SwadePopoutInstance | null = null;
+  currentActionsPopout: SwadePopoutInstance | null = null;
+  currentConditionsPopout: SwadePopoutInstance | null = null;
+  currentEffectsPopout: SwadePopoutInstance | null = null;
+  currentPowersPopout: SwadePopoutInstance | null = null;
+  currentGearPopout: SwadePopoutInstance | null = null;
+  currentBioPopout: SwadePopoutInstance | null = null;
 
   override async _prepareContext(_options: Record<string, unknown>) {
     try {
@@ -260,13 +270,26 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
         this._onActorDelete = null;
       }
 
-      // Close all open popouts in the registry
-      for (const popout of Object.values(this.popouts)) {
-        if (popout && typeof popout.close === 'function') {
-          await popout.close();
+      // Close all open popouts
+      const popoutProperties = [
+        'currentTraitsPopout',
+        'currentWeaponsPopout',
+        'currentEdgesPopout',
+        'currentActionsPopout',
+        'currentConditionsPopout',
+        'currentEffectsPopout',
+        'currentPowersPopout',
+        'currentGearPopout',
+        'currentBioPopout',
+      ];
+
+      // Close all existing popouts
+      for (const prop of popoutProperties) {
+        if (this[prop]) {
+          await this[prop].close();
+          this[prop] = null;
         }
       }
-      this.popouts = {};
 
       // Remove positioned class to hide HUD
       if (this.element) {

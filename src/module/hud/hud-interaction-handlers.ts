@@ -1,202 +1,375 @@
-import { hudPanelConfig, hudPanelDefaultSize } from './hud-panel-constants';
+import { SwadePopout } from './hud-popout';
+import { debounce } from './hud-utils';
+import { setupHudActionButtonListeners } from './hud-actions';
+import { setupHudStatHandlers } from './hud-stat-handlers';
+
 /**
- * Generic function to show a HUD panel popout.
- * Handles closing existing popout, creating, and rendering the new one.
- * @param {any} hudInstance - The HUD instance.
- * @param {string} panelType - The type of panel (e.g., 'weapons', 'traits').
- * @param {string} title - The window title.
- * @param {string} template - The Handlebars template path.
- * @param {number} width - The panel width.
- * @param {number} height - The panel height.
- * @param {string} popoutKey - The key in hudInstance.popouts to store the popout.
+ * Toggles a popout window for a specific HUD tab
+ *
+ * If the clicked popout is already open, it closes it.
+ * If a different popout is open, it closes all popouts and opens the new one.
+ * This provides a hybrid behavior: toggle for same tab, replace for different tabs.
+ *
+ * @param {any} hudInstance - The main HUD instance that owns the popout
+ * @param {string} template - Path to the Handlebars template for this popout
+ * @param {string} side - Which side to position the popout ('left' or 'right')
+ * @param {string} popoutProperty - Property name on hudInstance to store the popout reference
+ * @param {Function} [setupCallback=null] - Optional callback function to run after popout creation
+ * @param {HTMLElement} setupCallback.element - The popout's DOM element
+ * @param {Actor} setupCallback.actor - The actor associated with the HUD
+ * @returns {Promise<SwadePopout|null>} The created popout instance, or null if closed
  */
-function showPanel(
+async function togglePopout(
   hudInstance: any,
-  panelType: string,
-  title: string,
   template: string,
-  width: number,
-  height: number,
-  popoutKey: string,
-) {
-  if (!hudInstance.actor) return;
-  if (hudInstance.popouts[popoutKey]) {
-    hudInstance.popouts[popoutKey].close();
-    hudInstance.popouts[popoutKey] = null;
+  side: string,
+  popoutProperty: string,
+  setupCallback: ((element: HTMLElement, actor: any) => void) | null = null,
+): Promise<SwadePopout | null> {
+  // Check if this specific popout is already open
+  if (hudInstance[popoutProperty]) {
+    // Close the existing popout and return null (don't open anything)
+    await hudInstance[popoutProperty].close();
+    hudInstance[popoutProperty] = null;
+    return null;
   }
+
+  // Popout is not open, so close ALL existing popouts first
+  const popoutProperties = [
+    'currentTraitsPopout',
+    'currentWeaponsPopout',
+    'currentEdgesPopout',
+    'currentActionsPopout',
+    'currentConditionsPopout',
+    'currentEffectsPopout',
+    'currentPowersPopout',
+    'currentGearPopout',
+    'currentBioPopout',
+  ];
+
+  // Close all existing popouts
+  for (const prop of popoutProperties) {
+    if (hudInstance[prop]) {
+      await hudInstance[prop].close();
+      hudInstance[prop] = null;
+    }
+  }
+
+  // Now create the new popout
   const popout = new SwadePopout({
     actor: hudInstance.actor,
     token: hudInstance.token,
-    panelType,
-    title,
+    panelType: popoutProperty
+      .replace('current', '')
+      .replace('Popout', '')
+      .toLowerCase(),
+    title: '',
     template,
-    width,
-    height,
+    width: 400,
+    height: 600,
     hudInstance,
   });
-  hudInstance.popouts[popoutKey] = popout;
-  popout.render(true).catch((error: any) => {
-    console.error(`SWADE HUD: Error rendering ${panelType} popout:`, error);
-  });
+  hudInstance[popoutProperty] = popout;
+  await popout.render(true);
+
+  // Run setup callback if provided
+  if (setupCallback && popout.element) {
+    await setupCallback(popout.element, hudInstance.actor);
+  }
+
+  return popout;
 }
-import { SwadePopout } from './hud-popout';
 
 /**
- * Set up tab button click handlers for HUD panels.
- * Handles switching between different HUD panel tabs.
- * @param {HTMLElement} html - The HUD panel HTML element.
- * @param {any} hudInstance - The HUD instance.
+ * Sets up click event handlers for all HUD tabs
+ *
+ * This function attaches event listeners to each tab element in the main HUD
+ * and handles the creation of their respective popout windows. Each tab follows
+ * the same pattern but may have different setup requirements.
+ *
+ * @param {HTMLElement} html - The root HTML element of the HUD
+ * @param {any} hudInstance - The main HUD instance
+ * @returns {Promise<void>}
  */
-export function setupTabHandlers(html: HTMLElement, hudInstance: any) {
-  // Tab button click handlers
-  const tabButtons = html.querySelectorAll('.swadehud-tabbtn');
-  tabButtons.forEach((button, _index) => {
-    button.addEventListener('click', (event) => {
-      event.preventDefault();
-      const tabId = (button as HTMLElement).id;
+export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
+  // Traits tab
+  const traitsTab = html.querySelector('#traits-tab');
+  if (traitsTab) {
+    traitsTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
+          'left',
+          'currentTraitsPopout',
+          (element) =>
+            setupHudActionButtonListeners(
+              element,
+              hudInstance.actor,
+              hudInstance,
+            ),
+        );
+      }, 50),
+    );
+  }
 
-      // Handle different tab types
-      switch (tabId) {
-        case 'weapons-tab':
-          showWeaponsPanel(hudInstance);
-          break;
-        case 'traits-tab':
-          showTraitsPanel(hudInstance);
-          break;
-        case 'edges-tab':
-          showEdgesPanel(hudInstance);
-          break;
-        case 'actions-tab':
-          showActionsPanel(hudInstance);
-          break;
-        case 'gear-tab':
-          showGearPanel(hudInstance);
-          break;
-        case 'conditions-tab':
-          showConditionsPanel(hudInstance);
-          break;
-        case 'effects-tab':
-          showEffectsPanel(hudInstance);
-          break;
-        case 'powers-tab':
-          showPowersPanel(hudInstance);
-          break;
-        default:
-          // Unknown tab clicked - do nothing
-          break;
-      }
-    });
-  });
-}
+  // Weapons tab
+  const weaponsTab = html.querySelector('#weapons-tab');
+  if (weaponsTab) {
+    weaponsTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-weapons-panel.hbs',
+          'left',
+          'currentWeaponsPopout',
+          async (element) => {
+            setupHudActionButtonListeners(
+              element,
+              hudInstance.actor,
+              hudInstance,
+            );
+            // Setup stat handlers for equip status indicators
+            setupHudStatHandlers(element, hudInstance.actor);
+          },
+        );
+      }, 50),
+    );
+  }
 
-// Panel display functions
-/**
- * Show the weapons panel popout for the HUD instance.
- * Closes existing popout if open, otherwise opens a new one.
- * @param {any} hudInstance - The HUD instance.
- */
-function showWeaponsPanel(hudInstance: any) {
-  const config = hudPanelConfig.weapons;
-  showPanel(
-    hudInstance,
-    'weapons',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'weapons',
-  );
-}
+  // Edges tab
+  const edgesTab = html.querySelector('#edges-tab');
+  if (edgesTab) {
+    edgesTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
+          'left',
+          'currentEdgesPopout',
+          (element) =>
+            setupHudActionButtonListeners(
+              element,
+              hudInstance.actor,
+              hudInstance,
+            ),
+        );
+      }, 150),
+    );
+  }
 
-function showTraitsPanel(hudInstance: any) {
-  const config = hudPanelConfig.traits;
-  showPanel(
-    hudInstance,
-    'traits',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'traits',
-  );
-}
+  // Actions tab
+  const actionsTab = html.querySelector('#actions-tab');
+  if (actionsTab) {
+    actionsTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        const popout = await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
+          'left',
+          'currentActionsPopout',
+        );
+        if (popout && popout.element) {
+          setupHudActionButtonListeners(
+            popout.element,
+            hudInstance.actor,
+            hudInstance,
+          );
+        }
+      }, 50),
+    );
+  }
 
-function showEdgesPanel(hudInstance: any) {
-  const config = hudPanelConfig.edges;
-  showPanel(
-    hudInstance,
-    'edges',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'edges',
-  );
-}
+  // Conditions tab
+  const conditionsTab = html.querySelector('#conditions-tab');
+  if (conditionsTab) {
+    conditionsTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        const popout = await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
+          'right',
+          'currentConditionsPopout',
+        );
+        if (popout && popout.element) {
+          // Handle header clicks for expanding
+          const itemHeaders = popout.element.querySelectorAll(
+            '[data-toggle="expand"]',
+          );
+          itemHeaders.forEach((header) => {
+            header.addEventListener(
+              'click',
+              debounce((event) => {
+                if (event.target.tagName !== 'BUTTON') {
+                  event.preventDefault();
+                }
 
-function showActionsPanel(hudInstance: any) {
-  const config = hudPanelConfig.actions;
-  showPanel(
-    hudInstance,
-    'actions',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'actions',
-  );
-}
+                const item = header.closest('.swadehud-item');
+                if (!item) return;
 
-function showGearPanel(hudInstance: any) {
-  const config = hudPanelConfig.gear;
-  showPanel(
-    hudInstance,
-    'gear',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'gear',
-  );
-}
+                // Check what was clicked
+                const clickedElement = event.target;
 
-function showConditionsPanel(hudInstance: any) {
-  const config = hudPanelConfig.conditions;
-  showPanel(
-    hudInstance,
-    'conditions',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'conditions',
-  );
-}
+                // If clicked on toggle icon, don't expand/collapse
+                if (clickedElement.closest('.swadehud-condition-toggle-icon')) {
+                  return;
+                }
 
-function showEffectsPanel(hudInstance: any) {
-  const config = hudPanelConfig.effects;
-  showPanel(
-    hudInstance,
-    'effects',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'effects',
-  );
-}
+                // If clicked on name, expand/collapse
+                if (
+                  clickedElement.classList.contains('swadehud-item-name') ||
+                  clickedElement.closest('.swadehud-item-name')
+                ) {
+                  item.classList.toggle('expanded');
+                  return;
+                }
 
-function showPowersPanel(hudInstance: any) {
-  const config = hudPanelConfig.powers;
-  showPanel(
-    hudInstance,
-    'powers',
-    config.title(hudInstance.actor.name),
-    config.template,
-    hudPanelDefaultSize.width,
-    hudPanelDefaultSize.height,
-    'powers',
-  );
+                // Default: expand/collapse
+                item.classList.toggle('expanded');
+              }, 100),
+            );
+          });
+        }
+      }, 150),
+    );
+  }
+
+  // Effects tab
+  const effectsTab = html.querySelector('#effects-tab');
+  if (effectsTab) {
+    effectsTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        const popout = await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
+          'right',
+          'currentEffectsPopout',
+        );
+
+        // Setup effect handlers
+        if (popout && popout.element) {
+          // Handle header clicks for expanding
+          const itemHeaders = popout.element.querySelectorAll(
+            '[data-toggle="expand"]',
+          );
+          itemHeaders.forEach((header) => {
+            header.addEventListener(
+              'click',
+              debounce((event) => {
+                if (event.target.tagName !== 'BUTTON') {
+                  event.preventDefault();
+                }
+
+                const item = header.closest('.swadehud-item');
+                if (!item) return;
+
+                // Check what was clicked
+                const clickedElement = event.target;
+
+                // If clicked on toggle icon, don't expand/collapse
+                if (clickedElement.closest('.swadehud-effect-toggle-icon')) {
+                  return;
+                }
+
+                // If clicked on name, expand/collapse
+                if (
+                  clickedElement.classList.contains('swadehud-item-name') ||
+                  clickedElement.closest('.swadehud-item-name')
+                ) {
+                  item.classList.toggle('expanded');
+                  return;
+                }
+
+                // Default: expand/collapse
+                item.classList.toggle('expanded');
+              }, 100),
+            );
+          });
+        }
+      }, 150),
+    );
+  }
+
+  // Powers tab
+  const powersTab = html.querySelector('#powers-tab');
+  if (powersTab) {
+    powersTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        const popout = await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
+          'right',
+          'currentPowersPopout',
+        );
+        if (popout && popout.element) {
+          setupHudActionButtonListeners(
+            popout.element,
+            hudInstance.actor,
+            hudInstance,
+          );
+          // Setup stat handlers for power point indicators
+          setupHudStatHandlers(popout.element, hudInstance.actor);
+        }
+      }, 150),
+    );
+  }
+
+  // Gear tab
+  const gearTab = html.querySelector('#gear-tab');
+  if (gearTab) {
+    gearTab.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
+          'right',
+          'currentGearPopout',
+          async (element) => {
+            setupHudActionButtonListeners(
+              element,
+              hudInstance.actor,
+              hudInstance,
+            );
+            // Setup stat handlers for equip status indicators
+            setupHudStatHandlers(element, hudInstance.actor);
+          },
+        );
+      }, 150),
+    );
+  }
+
+  // Biography button (in core area)
+  const bioButton = html.querySelector('#bio-button');
+  if (bioButton) {
+    bioButton.addEventListener(
+      'click',
+      debounce(async (ev) => {
+        ev.stopPropagation();
+        await togglePopout(
+          hudInstance,
+          'systems/swade/templates/actors/hud/hud-bio-panel.hbs',
+          'right',
+          'currentBioPopout',
+        );
+      }, 150),
+    );
+  }
 }
 
 export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
@@ -207,14 +380,6 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
       if (hudInstance.actor) {
         hudInstance.actor.sheet.render(true);
       }
-    });
-  }
-
-  // Handle description/bio button
-  const bioButton = html.querySelector('#bio-button');
-  if (bioButton) {
-    bioButton.addEventListener('click', () => {
-      showBiographyPanel(hudInstance);
     });
   }
 
@@ -256,31 +421,6 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
       handleBottomStatRightClick(event, hudInstance);
     });
   });
-}
-
-function showBiographyPanel(hudInstance: any) {
-  if (!hudInstance.actor) return;
-
-  // Close existing bio popout if open
-  if (hudInstance.currentBioPopout) {
-    hudInstance.currentBioPopout.close();
-    hudInstance.currentBioPopout = null;
-    // Do not return; continue to open new popout
-  }
-
-  const popout = new SwadePopout({
-    actor: hudInstance.actor,
-    token: hudInstance.token,
-    panelType: 'bio',
-    title: `${hudInstance.actor.name} - Biography`,
-    template: 'systems/swade/templates/actors/hud/hud-bio-panel.hbs',
-    width: 500,
-    height: 600,
-    hudInstance: hudInstance,
-  });
-
-  hudInstance.currentBioPopout = popout;
-  popout.render(true);
 }
 
 function handleStatClick(event: Event, hudInstance: any) {
