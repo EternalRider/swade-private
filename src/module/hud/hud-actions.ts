@@ -185,44 +185,47 @@ export function setupHudActionButtonListeners(
   // Handle all action buttons using SWADE's system
   const actionButtons = popout.querySelectorAll('[data-action]');
   actionButtons.forEach((btn) => {
-    btn.addEventListener(
-      'click',
-      debounce(async (event: Event) => {
-        event.preventDefault();
-        const actionId = (btn as HTMLElement).dataset.action;
-        const itemId = (btn as HTMLElement).dataset.itemId;
-        const template = (btn as HTMLElement).dataset.template;
+    // Check if listener is already attached
+    if ((btn as any)._swadeHudActionListener) {
+      return;
+    }
+    const listener = debounce(async (event: Event) => {
+      event.preventDefault();
+      const actionId = (btn as HTMLElement).dataset.action;
+      const itemId = (btn as HTMLElement).dataset.itemId;
+      const template = (btn as HTMLElement).dataset.template;
 
-        if (!actor || !itemId || !actionId) return;
+      if (!actor || !itemId || !actionId) return;
 
-        const item = actor.items.get(itemId);
-        if (!item) return;
+      const item = actor.items.get(itemId);
+      if (!item) return;
 
-        try {
-          // Handle template placement actions directly (SWADE's ItemChatCardHelper.onChatCardAction handles this)
-          if (actionId === 'template' && template) {
-            // Use SWADE's SwadeMeasuredTemplate directly
-            const swadeMeasuredTemplate = CONFIG.MeasuredTemplate?.objectClass;
-            if (swadeMeasuredTemplate?.fromPreset) {
-              await swadeMeasuredTemplate.fromPreset(template, item);
-              return;
-            } else {
-              console.error('SwadeMeasuredTemplate not available');
-              return;
-            }
+      try {
+        // Handle template placement actions directly (SWADE's ItemChatCardHelper.onChatCardAction handles this)
+        if (actionId === 'template' && template) {
+          // Use SWADE's SwadeMeasuredTemplate directly
+          const swadeMeasuredTemplate = CONFIG.MeasuredTemplate?.objectClass;
+          if (swadeMeasuredTemplate?.fromPreset) {
+            await swadeMeasuredTemplate.fromPreset(template, item);
+            return;
+          } else {
+            console.error('SwadeMeasuredTemplate not available');
+            return;
           }
-
-          // Use SWADE's ItemChatCardHelper to handle the action
-          await ItemChatCardHelper.handleAction(item, actor, actionId, {
-            additionalMods: [],
-            event: event,
-          });
-        } catch (error) {
-          // Silent error handling for production
-          console.error('Error handling action:', error);
         }
-      }, 50),
-    );
+
+        // Use SWADE's ItemChatCardHelper to handle the action
+        await ItemChatCardHelper.handleAction(item, actor, actionId, {
+          additionalMods: [],
+          event: undefined, // Don't pass the event to avoid interference
+        });
+      } catch (error) {
+        // Silent error handling for production
+        console.error('Error handling action:', error);
+      }
+    }, 50);
+    (btn as any)._swadeHudActionListener = listener;
+    btn.addEventListener('click', listener);
   });
 
   // Handle chat buttons for showing item cards
