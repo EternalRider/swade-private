@@ -65,8 +65,13 @@ class TemplateCache {
       // Compile and cache each template
       for (const [path, source] of Object.entries(templateSources)) {
         try {
-          const compiled = Handlebars.compile(source);
-          this.compiledTemplates.set(path, compiled);
+          // Check if source is already a compiled template function
+          if (typeof source === 'function') {
+            this.compiledTemplates.set(path, source);
+          } else {
+            const compiled = Handlebars.compile(source);
+            this.compiledTemplates.set(path, compiled);
+          }
         } catch (error) {
           console.warn(`SWADE HUD: Failed to compile template ${path}:`, error);
         }
@@ -145,8 +150,13 @@ class TemplateCache {
         templatePath,
       ]);
       if (source[templatePath]) {
-        const compiled = Handlebars.compile(source[templatePath]);
-        this.compiledTemplates.set(templatePath, compiled);
+        // Check if source is already a compiled template function
+        if (typeof source[templatePath] === 'function') {
+          this.compiledTemplates.set(templatePath, source[templatePath]);
+        } else {
+          const compiled = Handlebars.compile(source[templatePath]);
+          this.compiledTemplates.set(templatePath, compiled);
+        }
       }
     } catch (error) {
       console.warn(
