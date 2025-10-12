@@ -11,10 +11,10 @@ import {
 import {
   handleSwadeHUDTokenControl,
   handleSwadeHUDTokenDeleted,
-  getHudApp,
   hideSwadeHUD,
   isSwadePC,
   canPlayerAccessToken,
+  toggleSwadeHUD,
 } from '../hud/hud-control';
 
 /**
@@ -121,14 +121,13 @@ Hooks.on('deleteToken', (token: any) => {
  */
 Hooks.once('ready', () => {
   // Add console commands for easy access
-  (window as any).toggleSwadeHUD = () => {
-    const hud = getHudApp();
-    if (hud) {
-      hud.close();
-    }
-  };
+  (window as any).toggleSwadeHUD = toggleSwadeHUD;
+  (window as any).toggleSwadeHUDProper = toggleSwadeHUD;
 
   (window as any).hideSwadeHUD = hideSwadeHUD;
+
+  // Expose the proper toggle function for macros and keybindings
+  (window as any).toggleSwadeHUDProper = toggleSwadeHUD;
 
   // Add cache utility functions for debugging
   (window as any).clearDescriptionCache = clearDescriptionCache;

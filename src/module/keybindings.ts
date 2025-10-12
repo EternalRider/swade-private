@@ -1,4 +1,6 @@
 /** @internal */
+import { toggleSwadeHUD } from './hud/hud-control';
+
 export function registerKeybindings() {
   game.keybindings.register('swade', 'openFavoriteCardsDoc', {
     name: 'SWADE.Keybindings.OpenFavoriteCards.Name',
@@ -32,6 +34,16 @@ export function registerKeybindings() {
       } else {
         game.user?.spendBenny();
       }
+    },
+  });
+
+  game.keybindings.register('swade', 'toggleHUD', {
+    name: 'SWADE.Keybindings.ToggleHUD.Name',
+    hint: 'SWADE.Keybindings.ToggleHUD.Hint',
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+    editable: [{ key: 'KeyH', modifiers: ['Alt'] }],
+    onDown: () => {
+      toggleSwadeHUD();
     },
   });
 }
