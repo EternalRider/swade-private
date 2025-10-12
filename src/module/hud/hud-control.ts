@@ -43,18 +43,16 @@ export function isSwadePC(token: any): boolean {
 }
 
 /**
- * Check if the current user can access a token.
- * @param {any} token - The token to check.
- * @returns {boolean} True if the user can access the token, false otherwise.
+ * Switch the HUD to display a different token's data.
+ * @param token - The token document to switch to.
  */
-export function canPlayerAccessToken(token: any): boolean {
-  if (!token?.actor) return false;
+export async function switchHudToToken(token: any) {
+  const currentHud = getHudApp();
+  if (!currentHud || !token) return;
 
-  // GM can access everything
-  if (game.user?.isGM) return true;
-
-  // Players can access their own tokens
-  return token.actor.isOwner;
+  currentHud.actor = token.actor;
+  currentHud.token = token.object;
+  await currentHud.render(true);
 }
 
 /**
@@ -70,7 +68,7 @@ export async function handleSwadeHUDTokenControl(
   hudClass: typeof SwadeActorHUD,
 ) {
   // Only handle if it's a SWADE PC
-  if (!isSwadePC(token) || !canPlayerAccessToken(token)) {
+  if (!isSwadePC(token)) {
     return;
   }
 
@@ -86,7 +84,7 @@ export async function handleSwadeHUDTokenControl(
     // Create new HUD for this token
     const hud = new hudClass({
       actor: token.actor,
-      token: token.document,
+      token: token.object,
     });
 
     await hud.render(true);

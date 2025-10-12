@@ -11,9 +11,10 @@ import {
 import {
   handleSwadeHUDTokenControl,
   handleSwadeHUDTokenDeleted,
+  getHudApp,
   hideSwadeHUD,
   isSwadePC,
-  canPlayerAccessToken,
+  switchHudToToken,
   toggleSwadeHUD,
 } from '../hud/hud-control';
 
@@ -87,19 +88,36 @@ Hooks.once('canvasReady', () => {
 
 /**
  * Handles token control changes for the SWADE HUD.
- * Only shows HUD on right-click, not left-click.
+ * Implements multi-token support - keeps HUD open when switching between controlled tokens.
  * @function
  * @param {any} token - The token being controlled.
  * @param {boolean} controlled - Whether the token is controlled.
  */
 Hooks.on('controlToken', async (token: any, controlled: boolean) => {
   try {
-    // Only handle left-click controls (don't show HUD on left-click)
-    if (controlled && isSwadePC(token)) {
-      // Don't show HUD on left-click, let right-click handler do it
-      return;
+    if (!isSwadePC(token)) return;
+
+    if (controlled) {
+      // Token is being controlled - only switch if HUD is already open
+      if (getHudApp()) {
+        // HUD is already open, switch to this token
+        await switchHudToToken(token);
+      }
+      // Don't open HUD automatically on token selection
     }
-    await handleSwadeHUDTokenControl(token, controlled, SwadeActorHUD);
+
+    // After any token control change, check if HUD should be closed
+    setTimeout(() => {
+      const controlledTokens = canvas.tokens?.controlled || [];
+      const swadeControlledTokens = controlledTokens.filter((t: any) =>
+        isSwadePC(t),
+      );
+
+      if (swadeControlledTokens.length === 0 && getHudApp()) {
+        // No more controlled SWADE tokens, close HUD
+        hideSwadeHUD();
+      }
+    }, 10);
   } catch (error) {
     console.error('SWADE HUD: Error handling token control:', error);
   }
