@@ -1,4 +1,3 @@
-<div class="edges-panel">
 <div class="traits-edges">
   <header class="swadehud-section-header">
     <span class="swadehud-section-name">{{localize 'SWADE.Edges'}}</span>
@@ -46,8 +45,8 @@
                   {{localize 'SWADE.ShowInChat'}}
                 </button>
               </div>
-              {{#if item.enrichedDescription}}
-                <div class="swadehud-item-description">{{{item.enrichedDescription}}}</div>
+              {{#if item.system.description}}
+                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
               {{else}}
                 <div class="swadehud-item-description swadehud-no-description">No description available</div>
               {{/if}}
@@ -113,8 +112,8 @@
                   {{localize 'SWADE.ShowInChat'}}
                 </button>
               </div>
-              {{#if item.enrichedDescription}}
-                <div class="swadehud-item-description">{{{item.enrichedDescription}}}</div>
+              {{#if item.system.description}}
+                <div class="swadehud-item-description">{{localize 'SWADE.LoadingDescription'}}</div>
               {{else}}
                 <div class="swadehud-item-description swadehud-no-description">No description available</div>
               {{/if}}
@@ -188,4 +187,3 @@
       {{/each}}
     </div>
   </div>
-</div>

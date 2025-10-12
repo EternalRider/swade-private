@@ -59,7 +59,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ['swadehud', 'app'],
   };
   static override PARTS = {
-    body: { template: 'systems/swade/templates/apps/hud-character.hbs' },
+    body: { template: 'systems/swade/templates/actors/hud/hud-character.hbs' },
   };
 
   constructor(

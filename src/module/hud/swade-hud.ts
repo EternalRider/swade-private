@@ -43,8 +43,6 @@ export const swadeHud = {
  */
 Hooks.once('init', async function () {
   try {
-    registerSwadeHUDHelpers();
-
     await foundry.applications.handlebars.loadTemplates(swadeHud.templates);
 
     // Initialize description caching system
