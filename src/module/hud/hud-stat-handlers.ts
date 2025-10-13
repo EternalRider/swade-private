@@ -12,6 +12,16 @@ import { HUDToken } from '../../types/HUD';
 import { DamageRoll } from '../dice/DamageRoll';
 import SwadeChatMessage from '../documents/chat/SwadeChatMessage';
 
+// WeakMap to store event handlers for elements to prevent duplicates
+const elementHandlers = new WeakMap<
+  HTMLElement,
+  {
+    click?: (event: MouseEvent) => void;
+    auxclick?: (event: MouseEvent) => void;
+    contextmenu?: (event: MouseEvent) => void;
+  }
+>();
+
 export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
@@ -197,6 +207,8 @@ export function setupHudStatHandlers(
           ],
           modal: true,
         });
+        // dialog.render is intentionally used for compatibility with Foundry's Application API.
+        // eslint-disable-next-line deprecation/deprecation
         dialog.render(true);
       } catch (error) {
         ui.notifications?.error('Failed to open soak dialog.');
@@ -279,7 +291,13 @@ export function setupHudStatHandlers(
       '.swadehud-bottomstat__icon i',
     );
     if (starIcon) {
-      starIcon.addEventListener('click', async (e: MouseEvent) => {
+      // Remove existing handler if present
+      const existingHandlers = elementHandlers.get(starIcon as HTMLElement);
+      if (existingHandlers?.click) {
+        starIcon.removeEventListener('click', existingHandlers.click);
+      }
+
+      const clickHandler = async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         try {
@@ -289,14 +307,31 @@ export function setupHudStatHandlers(
           ui.notifications?.error('Failed to toggle conviction.');
           console.error('HUD conviction error:', error);
         }
+      };
+
+      starIcon.addEventListener('click', clickHandler);
+
+      // Store the handler in WeakMap
+      elementHandlers.set(starIcon as HTMLElement, {
+        ...elementHandlers.get(starIcon as HTMLElement),
+        click: clickHandler,
       });
     }
     const valueSpan = convictionStat.querySelector(
       '.swadehud-bottomstat__value',
     );
     if (valueSpan) {
+      // Remove existing handlers if present
+      const existingHandlers = elementHandlers.get(valueSpan as HTMLElement);
+      if (existingHandlers?.click) {
+        valueSpan.removeEventListener('click', existingHandlers.click);
+      }
+      if (existingHandlers?.auxclick) {
+        valueSpan.removeEventListener('auxclick', existingHandlers.auxclick);
+      }
+
       // Left click: increment conviction
-      valueSpan.addEventListener('click', async (e: MouseEvent) => {
+      const clickHandler = async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         try {
@@ -307,21 +342,31 @@ export function setupHudStatHandlers(
           ui.notifications?.error('Failed to increment conviction.');
           console.error('HUD conviction increment error:', error);
         }
-      });
-      // Right click (auxclick): increment conviction
-      valueSpan.addEventListener('auxclick', async (e: MouseEvent) => {
+      };
+
+      // Right click (auxclick): decrement conviction
+      const auxclickHandler = async (e: MouseEvent) => {
         if (e.button === 2) {
           e.preventDefault();
           e.stopPropagation();
           try {
             const statPath = 'system.details.conviction.value';
             const currentValue = getNestedProperty(actor, statPath) || 0;
-            await actor.update({ [statPath]: currentValue + 1 });
+            await actor.update({ [statPath]: Math.max(0, currentValue - 1) });
           } catch (error) {
-            ui.notifications?.error('Failed to increment conviction.');
-            console.error('HUD conviction increment error:', error);
+            ui.notifications?.error('Failed to decrement conviction.');
+            console.error('HUD conviction decrement error:', error);
           }
         }
+      };
+
+      valueSpan.addEventListener('click', clickHandler);
+      valueSpan.addEventListener('auxclick', auxclickHandler);
+
+      // Store the handlers in WeakMap
+      elementHandlers.set(valueSpan as HTMLElement, {
+        click: clickHandler,
+        auxclick: auxclickHandler,
       });
     }
   }
@@ -355,7 +400,23 @@ export function setupHudStatHandlers(
         `Pace: ${base.charAt(0).toUpperCase() + base.slice(1)} (Left click: roll running, Right click: cycle)`,
       );
     };
-    newPaceStat.addEventListener('click', async (e: MouseEvent) => {
+
+    // Remove existing handlers if present
+    const existingHandlers = elementHandlers.get(newPaceStat);
+    if (existingHandlers?.click) {
+      newPaceStat.removeEventListener('click', existingHandlers.click);
+    }
+    if (existingHandlers?.contextmenu) {
+      newPaceStat.removeEventListener(
+        'contextmenu',
+        existingHandlers.contextmenu,
+      );
+    }
+    if (existingHandlers?.auxclick) {
+      newPaceStat.removeEventListener('auxclick', existingHandlers.auxclick);
+    }
+
+    const clickHandler = async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
       try {
@@ -365,7 +426,8 @@ export function setupHudStatHandlers(
         ui.notifications?.error('Failed to roll running die.');
         console.error('HUD pace roll error:', error);
       }
-    });
+    };
+
     const handlePaceCycle = async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
@@ -401,10 +463,58 @@ export function setupHudStatHandlers(
         console.error('HUD pace cycle error:', error);
       }
     };
-    newPaceStat.addEventListener('contextmenu', handlePaceCycle);
-    newPaceStat.addEventListener('auxclick', (e: MouseEvent) => {
+
+    const contextmenuHandler = handlePaceCycle;
+    const auxclickHandler = (e: MouseEvent) => {
       if (e.button === 2) handlePaceCycle(e);
+    };
+
+    newPaceStat.addEventListener('click', clickHandler);
+    newPaceStat.addEventListener('contextmenu', contextmenuHandler);
+    newPaceStat.addEventListener('auxclick', auxclickHandler);
+
+    // Store the handlers in WeakMap
+    elementHandlers.set(newPaceStat, {
+      click: clickHandler,
+      contextmenu: contextmenuHandler,
+      auxclick: auxclickHandler,
     });
+  }
+
+  // Generic handling for any element that exposes a data-stat-path attribute
+  // (e.g. wounds, fatigue, other numeric circles). We skip items that were
+  // already wired above (powerPoints, bennies, conviction).
+  try {
+    const statElements = Array.from(
+      element.querySelectorAll('[data-stat-path]'),
+    ) as HTMLElement[];
+    for (const statEl of statElements) {
+      const statPath = statEl.getAttribute('data-stat-path');
+      if (!statPath) continue;
+      // Skip powerPoints (handled specially above)
+      if (statPath.startsWith('system.powerPoints.')) continue;
+      // Skip bennies and conviction which have their own handlers
+      if (
+        statPath === 'system.bennies.value' ||
+        statPath === 'system.conviction.value'
+      )
+        continue;
+
+      const min = Number(statEl.getAttribute('data-stat-min')) || 0;
+      const maxAttr = statEl.getAttribute('data-stat-max');
+      const max =
+        maxAttr !== null && maxAttr !== undefined ? Number(maxAttr) : null;
+
+      // Attach add/subtract clicks for generic stat paths
+      setupAddSubtractClicks(statEl, actor, statPath, min, max, onUpdate);
+    }
+  } catch (err) {
+    // Non-fatal: don't break the HUD if this fails
+    // eslint-disable-next-line no-console
+    console.warn(
+      'setupHudStatHandlers: failed to attach generic data-stat-path handlers',
+      err,
+    );
   }
 }
 
@@ -432,17 +542,24 @@ export function setupAddSubtractClicks(
   onUpdate: (() => void) | null = null,
 ) {
   if (!element || !actor) return;
-  element.removeEventListener('click', (element as any)._swadeHudClickHandler);
-  element.removeEventListener(
-    'auxclick',
-    (element as any)._swadeHudAuxClickHandler,
-  );
-  element.removeEventListener(
-    'contextmenu',
-    (element as any)._swadeHudContextHandler,
-  );
-  (element as any)._swadeHudClickHandler = debounce(
-    async (event: MouseEvent) => {
+
+  // Remove existing handlers if they exist
+  const existingHandlers = elementHandlers.get(element);
+  if (existingHandlers) {
+    if (existingHandlers.click) {
+      element.removeEventListener('click', existingHandlers.click);
+    }
+    if (existingHandlers.auxclick) {
+      element.removeEventListener('auxclick', existingHandlers.auxclick);
+    }
+    if (existingHandlers.contextmenu) {
+      element.removeEventListener('contextmenu', existingHandlers.contextmenu);
+    }
+  }
+
+  // Create new handlers
+  const newHandlers = {
+    click: debounce(async (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
       if (event.button === 2) return;
@@ -465,8 +582,18 @@ export function setupAddSubtractClicks(
         };
         const currentValue = arcaneData[property] || 0;
         let newValue;
-        if (event.button === 0) newValue = Math.max(min, currentValue - 1);
-        else return;
+        if (event.button === 0) {
+          // Left click: increment
+          newValue = Math.min(
+            arcaneData.max || max || Infinity,
+            currentValue + 1,
+          );
+        } else if (event.button === 2) {
+          // Right click: decrement
+          newValue = Math.max(min, currentValue - 1);
+        } else {
+          return;
+        }
         if (newValue !== currentValue) {
           arcaneData[property] = newValue;
           const updateData = { [`system.powerPoints.${arcane}`]: arcaneData };
@@ -476,41 +603,25 @@ export function setupAddSubtractClicks(
       } else {
         const currentValue = getNestedProperty(actor, statPath) || 0;
         let newValue;
-        if (event.button === 0) newValue = Math.max(min, currentValue - 1);
+        if (event.button === 0)
+          newValue =
+            max !== null && max > 0
+              ? Math.min(max, currentValue + 1)
+              : currentValue + 1;
         else return;
         if (newValue !== currentValue) {
           await actor.update({ [statPath]: newValue });
           if (onUpdate) onUpdate();
         }
       }
-    },
-    50,
-  );
-  // Only stopPropagation for stat increment/decrement, not for popout open
-  element.addEventListener('click', (event: MouseEvent) => {
-    // If this is a stat increment/decrement, handle and stop propagation
-    if (
-      element.classList.contains('swadehud-stat-clickable') ||
-      element.classList.contains('swadehud-pp-indicator')
-    ) {
-      (element as any)._swadeHudClickHandler(event);
-      // Only stop propagation if the stat was actually changed
+    }, 50),
+    contextmenu: (event: MouseEvent) => {
+      event.preventDefault();
       event.stopPropagation();
-    }
-    // Otherwise, allow event to bubble for popout open
-  });
-  (element as any)._swadeHudContextHandler = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    return false;
-  };
-  element.addEventListener(
-    'contextmenu',
-    (element as any)._swadeHudContextHandler,
-  );
-  (element as any)._swadeHudAuxClickHandler = debounce(
-    async (event: MouseEvent) => {
+      event.stopImmediatePropagation();
+      return false;
+    },
+    auxclick: debounce(async (event: MouseEvent) => {
       if (event.button === 2) {
         event.preventDefault();
         event.stopPropagation();
@@ -518,7 +629,7 @@ export function setupAddSubtractClicks(
           if (typeof actor.getBenny === 'function') await actor.getBenny();
           if (onUpdate) onUpdate();
         } else if (statPath === 'system.conviction.value') {
-          // Use system method if available, else increment
+          // For conviction, right click also increments (no decrement for conviction)
           if (typeof actor.toggleConviction === 'function') {
             await actor.toggleConviction();
             if (onUpdate) onUpdate();
@@ -533,43 +644,23 @@ export function setupAddSubtractClicks(
               if (onUpdate) onUpdate();
             }
           }
-        } else if (statPath.startsWith('system.powerPoints.')) {
-          const parts = statPath.split('.');
-          const arcane = parts[2];
-          const property = parts[3];
-          const currentPowerPoints =
-            foundry.utils.getProperty(actor, 'system.powerPoints') || {};
-          const arcaneData = {
-            ...(currentPowerPoints[arcane] || { value: 0, max: 0 }),
-          };
-          const currentValue = arcaneData[property] || 0;
-          const newValue =
-            max !== null && max > 0
-              ? Math.min(max, currentValue + 1)
-              : currentValue + 1;
-          if (newValue !== currentValue) {
-            arcaneData[property] = newValue;
-            const updateData = { [`system.powerPoints.${arcane}`]: arcaneData };
-            await actor.update(updateData);
-            if (onUpdate) onUpdate();
-          }
         } else {
           const currentValue = getNestedProperty(actor, statPath) || 0;
-          const newValue =
-            max !== null && max > 0
-              ? Math.min(max, currentValue + 1)
-              : currentValue + 1;
+          const newValue = Math.max(min, currentValue - 1);
           if (newValue !== currentValue) {
             await actor.update({ [statPath]: newValue });
             if (onUpdate) onUpdate();
           }
         }
       }
-    },
-    50,
-  );
-  element.addEventListener(
-    'auxclick',
-    (element as any)._swadeHudAuxClickHandler,
-  );
+    }, 50),
+  };
+
+  // Store the handlers in the WeakMap
+  elementHandlers.set(element, newHandlers);
+
+  // Add the event listeners
+  element.addEventListener('click', newHandlers.click);
+  element.addEventListener('contextmenu', newHandlers.contextmenu);
+  element.addEventListener('auxclick', newHandlers.auxclick);
 }
