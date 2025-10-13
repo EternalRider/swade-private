@@ -614,7 +614,7 @@ export function setupAddSubtractClicks(
           if (onUpdate) onUpdate();
         }
       }
-    }, 50),
+    }, 20),
     contextmenu: (event: MouseEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -653,7 +653,7 @@ export function setupAddSubtractClicks(
           }
         }
       }
-    }, 50),
+    }, 20),
   };
 
   // Store the handlers in the WeakMap

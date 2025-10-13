@@ -161,7 +161,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
               hudInstance,
             ),
         );
-      }, 150),
+      }, 80),
     );
   }
 
@@ -244,7 +244,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
             );
           });
         }
-      }, 150),
+      }, 80),
     );
   }
 
@@ -302,7 +302,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
             );
           });
         }
-      }, 150),
+      }, 80),
     );
   }
 
@@ -328,7 +328,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           // Setup stat handlers for power point indicators
           setupHudStatHandlers(popout.element, hudInstance.actor);
         }
-      }, 150),
+      }, 80),
     );
   }
 
@@ -354,7 +354,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
             setupHudStatHandlers(element, hudInstance.actor);
           },
         );
-      }, 150),
+      }, 80),
     );
   }
 
@@ -371,7 +371,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'right',
           'currentBioPopout',
         );
-      }, 150),
+      }, 80),
     );
   }
 }

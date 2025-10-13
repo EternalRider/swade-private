@@ -120,7 +120,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     // Create debounced render method to handle rapid updates
     this._renderDebounced = foundry.utils.debounce(() => {
       if (this.rendered) this.render();
-    }, 50);
+    }, 20);
   }
 
   actor: SwadeActor | null;
