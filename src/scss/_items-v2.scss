@@ -37,6 +37,19 @@ body.theme-light .swade-item-sheet,
         grid-column: 6/11;
       }
     }
+
+    &[data-application-part="armor"],
+    &[data-application-part="consumable"],
+    &[data-application-part="gear"],
+    &[data-application-part="shield"],
+    &[data-application-part="weapon"] {
+      .category {
+        grid-column: 8/-1;
+      }
+      .source {
+        grid-column: 6/-1;
+      }
+    }
   }
 
   .grid-under,
@@ -77,6 +90,7 @@ body.theme-light .swade-item-sheet,
     img {
       width: 100%;
       height: 100%;
+      margin-top: -10px;
       object-fit: contain;
       border: none;
       transition: 150ms filter linear;
@@ -415,7 +429,7 @@ body.theme-light .swade-item-sheet,
   }
 
   .granted-items {
-    padding: 0;
+    padding: 0 1rem;
     .granted-item {
       margin: $small-spacing 0;
       display: grid;
