@@ -45,6 +45,8 @@ export class SwadePopout {
   private context: any;
   private options: any;
   public element: HTMLElement | null = null;
+  // Stored hook handler so we can unregister when the popout closes
+  private _actorUpdateHandler: any = null;
   private actor: any;
   private panelType: string;
 
@@ -86,7 +88,13 @@ export class SwadePopout {
    * @returns {Promise<any>} The prepared context object.
    */
   async _prepareContext(_options: any) {
-    const context = await prepareHudContext(this.actor, this.options.token);
+    // Always get fresh actor data for context preparation
+    const freshActor = this.actor?.id
+      ? game.actors.get(this.actor.id) || this.actor
+      : this.actor;
+    // Ensure panel preparation methods use the fresh actor reference so live updates are reflected
+    this.actor = freshActor;
+    const context = await prepareHudContext(freshActor, this.options.token);
 
     // Add panel-specific context based on panel type
     switch (this.panelType) {
@@ -132,7 +140,7 @@ export class SwadePopout {
    * @returns {Promise<this>} The SwadePopout instance.
    */
   async render(_force = false, options: Record<string, unknown> = {}) {
-    // Prepare context first
+    // Prepare context with fresh actor data (handled in _prepareContext)
     await this._prepareContext(options);
 
     // Render the template with the context using cached templates for better performance
@@ -151,6 +159,9 @@ export class SwadePopout {
     // Create the popout element with note box structure
     if (!this.element) {
       this.element = document.createElement('div');
+    } else {
+      // Clear existing content for re-renders
+      this.element.innerHTML = '';
     }
     this.element.className = `swadehud-popout swadehud-popout--${this.options.side || 'right'}`;
 
@@ -205,12 +216,46 @@ export class SwadePopout {
     this.activateListeners();
     // Attach shared stat handlers
     if (this.element && this.actor) {
+      // Always get fresh actor data for stat handlers
+      const freshActor = this.actor?.id
+        ? game.actors.get(this.actor.id) || this.actor
+        : this.actor;
       setupHudStatHandlers(
         this.element,
-        this.actor,
+        freshActor,
         () => this.render(false, { animate: false }),
         this.options.token ?? null,
       );
+    }
+
+    // Register an actor update hook to selectively refresh values inside this popout
+    // Use a stored handler reference so we can remove it when closing the popout
+    if (this.actor && !this._actorUpdateHandler) {
+      this._actorUpdateHandler = (
+        updatedActor: any,
+        _diff: any,
+        _options: any,
+        _userId: string,
+      ) => {
+        try {
+          if (
+            !updatedActor ||
+            updatedActor.id !== (this.actor && this.actor.id)
+          )
+            return;
+          // Prefer the actor document from game collection if possible
+          const fresh = game.actors.get(updatedActor.id) || updatedActor;
+          this._handleActorUpdate(fresh, _diff);
+        } catch (err) {
+          // swallow - don't break the HUD for update errors
+          // eslint-disable-next-line no-console
+          console.error('SwadePopout actor update handler error', err);
+        }
+      };
+      // The Foundry Hooks API is intentionally used here; the types mark this as deprecated
+      // for the project's typings but runtime usage is correct. Suppress the deprecation linter.
+      // eslint-disable-next-line deprecation/deprecation
+      Hooks.on('updateActor', this._actorUpdateHandler);
     }
 
     return this;
@@ -581,17 +626,43 @@ export class SwadePopout {
     // For template compatibility, convert arcaneBackgrounds to groupedPowers and powerPoints
     const groupedPowers: { [key: string]: any[] } = {};
     const powerPoints: Record<string, { value: number; max: number }> = {};
+
+    // Ensure context.system.powerPoints exists and copy entries so templates that
+    // use display keys (e.g., 'General') via lookup() still work, while keeping
+    // lowercase keys for data-stat-paths used elsewhere.
+    if (!this.context.system) this.context.system = {};
+    if (!this.context.system.powerPoints) this.context.system.powerPoints = {};
+
     Object.entries(arcaneBackgrounds).forEach(([ab, data]) => {
       // Display key: capitalize first letter unless 'general'
       const displayKey =
         ab === 'general' ? 'General' : ab.charAt(0).toUpperCase() + ab.slice(1);
       groupedPowers[displayKey] = data.powers;
       powerPoints[displayKey] = { value: data.value, max: data.max };
+      // Set the lowercase key in context.system.powerPoints so data-stat-paths like
+      // 'system.powerPoints.general.value' will resolve correctly during runtime updates.
+      this.context.system.powerPoints[ab] = {
+        value: data.value ?? 0,
+        max: data.max ?? 0,
+      };
     });
+
     // Always provide General if needed
     if (!powerPoints['General']) {
       powerPoints['General'] = { value: 0, max: 0 };
     }
+
+    // Ensure context.system.powerPoints has a General fallback as well
+    if (!this.context.system.powerPoints['general']) {
+      this.context.system.powerPoints['general'] = { value: 0, max: 0 };
+    }
+    if (!this.context.system.powerPoints['General']) {
+      this.context.system.powerPoints['General'] = {
+        value: powerPoints['General'].value,
+        max: powerPoints['General'].max,
+      };
+    }
+
     return {
       groupedPowers,
       powerPoints,
@@ -1321,7 +1392,149 @@ export class SwadePopout {
       }
       this.element = null;
     }, 300); // Match CSS transition duration
-
+    // Remove actor update hook if registered
+    if (this._actorUpdateHandler) {
+      try {
+        // eslint-disable-next-line deprecation/deprecation
+        Hooks.off('updateActor', this._actorUpdateHandler);
+      } catch (err) {
+        // ignore
+      }
+      this._actorUpdateHandler = null;
+    }
     return this;
+  }
+
+  /**
+   * Handle actor updates by selectively refreshing DOM elements that have a data-stat-path
+   * attribute. This mirrors the equip-status update approach by only touching changed
+   * elements which improves performance and avoids full re-renders where unnecessary.
+   * @param {any} freshActor - The updated actor document.
+   * @param {any} diff - The diff object passed from the update hook.
+   */
+  private _handleActorUpdate(freshActor: any, _diff: any) {
+    if (!this.element) return;
+    try {
+      // For each element that exposes a data-stat-path attribute, compute its new value
+      // and update the textContent or value accordingly
+      const statEls = Array.from(
+        this.element.querySelectorAll('[data-stat-path]'),
+      ) as HTMLElement[];
+      for (const el of statEls) {
+        const path = el.getAttribute('data-stat-path');
+        if (!path) continue;
+        // Use foundry's getProperty-like access via lodash-style path
+        const baseSource = freshActor.system ?? freshActor;
+        // Try the provided path first. If it fails (e.g., template uses display key 'General'
+        // but actor stores 'general'), attempt a lowercase fallback for the powerPoints key.
+        let newVal = foundry.utils.getProperty(baseSource, path);
+        if (newVal === undefined) {
+          // PowerPoints keys sometimes use display case in templates (e.g., 'General').
+          // Detect 'system.powerPoints.<Key>...' via string parsing and try lowercase/fallback keys.
+          if (
+            typeof path === 'string' &&
+            path.startsWith('system.powerPoints.')
+          ) {
+            const after = path.slice('system.powerPoints.'.length);
+            const key = after.split('.')[0] ?? '';
+            if (key.toLowerCase() === 'general') {
+              const rest = path.slice(`system.powerPoints.${key}`.length);
+              const altPath = `system.powerPoints.${key.toLowerCase()}${rest}`;
+              newVal =
+                foundry.utils.getProperty(baseSource, altPath) ??
+                foundry.utils.getProperty(freshActor, altPath);
+              if (newVal === undefined && freshActor?.system?.powerPoints) {
+                const ppObj = freshActor.system.powerPoints;
+                const foundKey = Object.keys(ppObj).find(
+                  (k) => k.toLowerCase() === key.toLowerCase(),
+                );
+                if (foundKey) {
+                  const altPath2 = `system.powerPoints.${foundKey}${rest}`;
+                  newVal =
+                    foundry.utils.getProperty(baseSource, altPath2) ??
+                    foundry.utils.getProperty(freshActor, altPath2);
+                }
+              }
+            }
+          }
+        }
+        // As a last resort, try on the full actor object (non-system root)
+        if (newVal === undefined)
+          newVal = foundry.utils.getProperty(freshActor, path);
+
+        // If the path ends with '.value', prefer showing 'value/max' when a corresponding '.max' exists
+        let display = newVal;
+        if (typeof path === 'string' && path.endsWith('.value')) {
+          const maxPath = path.slice(0, -'.value'.length) + '.max';
+          let maxVal =
+            foundry.utils.getProperty(baseSource, maxPath) ??
+            foundry.utils.getProperty(freshActor, maxPath);
+          // If maxVal is undefined, try lowercase key fallback similar to above
+          if (
+            (maxVal === undefined || maxVal === null) &&
+            typeof path === 'string'
+          ) {
+            if (
+              path.startsWith('system.powerPoints.') &&
+              path.endsWith('.value')
+            ) {
+              const inside = path.slice(
+                'system.powerPoints.'.length,
+                -'.value'.length,
+              );
+              const key = inside.split('.')[0] ?? '';
+              const altMaxPath = `system.powerPoints.${key.toLowerCase()}.max`;
+              maxVal =
+                foundry.utils.getProperty(baseSource, altMaxPath) ??
+                foundry.utils.getProperty(freshActor, altMaxPath);
+            }
+          }
+          if (maxVal !== undefined && maxVal !== null) {
+            display = `${newVal ?? 0}/${maxVal}`;
+          }
+        }
+        // Update element depending on element type
+        if (
+          el instanceof HTMLInputElement ||
+          el instanceof HTMLTextAreaElement
+        ) {
+          (el as HTMLInputElement).value = String(display ?? '');
+        } else {
+          // If element contains a Font Awesome icon, preserve the <i> node and show numbers in a sibling span
+          // Match a broad set of Font Awesome class variants (fa-solid, fa-bolt-lightning, fas, far, fab, etc.)
+          // querySelector is marked deprecated in the project's fvtt typings but runtime usage is
+          // intentional here; suppress the deprecation rule for this DOM lookup.
+          // eslint-disable-next-line deprecation/deprecation
+          const icon = el.querySelector && el.querySelector('i[class*="fa"]');
+          if (icon) {
+            // Ensure there is a span for the numeric value
+            let valSpan = el.querySelector(
+              '.swadehud-stat-value',
+            ) as HTMLElement | null;
+            if (!valSpan) {
+              valSpan = document.createElement('span');
+              valSpan.className = 'swadehud-stat-value';
+              // Insert after the icon
+              icon.parentNode?.insertBefore(valSpan, icon.nextSibling);
+            }
+            // Remove any raw text nodes inside the element to avoid duplicated numbers
+            for (const node of Array.from(el.childNodes)) {
+              if (node.nodeType === Node.TEXT_NODE) node.remove();
+            }
+            // Put a leading space then the numeric display to separate from the icon.
+            valSpan.textContent =
+              display !== undefined && display !== null
+                ? ` ${String(display)}`
+                : '';
+          } else {
+            el.textContent =
+              display !== undefined && display !== null ? String(display) : '';
+          }
+        }
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('SwadePopout _handleActorUpdate error', err);
+    }
   }
 }
