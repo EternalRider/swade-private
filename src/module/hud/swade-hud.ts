@@ -9,7 +9,6 @@ import {
   getEnrichedDescription,
 } from '../hud/hud-context';
 import {
-  handleSwadeHUDTokenControl,
   handleSwadeHUDTokenDeleted,
   getHudApp,
   hideSwadeHUD,
@@ -65,25 +64,7 @@ Hooks.once('init', async function () {
  * @function
  */
 Hooks.once('canvasReady', () => {
-  // Listen for right-click on tokens to show HUD
-  canvas.stage.on('rightdown', (event: any) => {
-    try {
-      const token = canvas.tokens.placeables.find((t: any) => {
-        const bounds = t.getBounds();
-        return bounds.contains(event.data.global.x, event.data.global.y);
-      });
-
-      if (token && isSwadePC(token) && canPlayerAccessToken(token)) {
-        // Prevent default context menu
-        event.data.originalEvent.preventDefault();
-
-        // Show HUD for this token
-        handleSwadeHUDTokenControl(token, true, SwadeActorHUD);
-      }
-    } catch (error) {
-      console.error('SWADE HUD: Error handling right-click on token:', error);
-    }
-  });
+  // Right-click functionality removed in favor of keybinds and macros
 });
 
 /**
@@ -93,6 +74,9 @@ Hooks.once('canvasReady', () => {
  * @param {any} token - The token being controlled.
  * @param {boolean} controlled - Whether the token is controlled.
  */
+// The project's fvtt typings mark Hooks.on as deprecated; this usage is intentional and
+// compatible with the runtime Foundry API. Suppress the deprecation lint for this hook.
+// eslint-disable-next-line deprecation/deprecation
 Hooks.on('controlToken', async (token: any, controlled: boolean) => {
   try {
     if (!isSwadePC(token)) return;

@@ -374,7 +374,7 @@
 .swadehud-bottomstat--label:focus .swadehud-bottomstat__value--large,
 .swadehud-bottomstat--label:hover .swadehud-bottomstat__value,
 .swadehud-bottomstat--label:focus .swadehud-bottomstat__value {
-  color: var(--swadehud-accent, #972824);
+  color: var(--swadehud-text, #000000);
 }
 .swadehud-bottomstat__icon {
   font-size: 1.3em;
@@ -1317,7 +1317,7 @@
 .swadehud-pace-clickable:hover .swadehud-bottomstat__icon,
 .swadehud-stat-clickable:hover .swadehud-bottomstat__value--large,
 .swadehud-pace-clickable:hover .swadehud-bottomstat__value--large {
-  color: var(--swadehud-accent) !important;
+  color: var(--swadehud-text, #000000);
 }
 
 .swadehud-stat-clickable:active,
