@@ -212,43 +212,12 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           // Setup condition handlers for toggling status effects
           setupConditionHandlers(popout.element, hudInstance);
 
-          // Handle header clicks for expanding
-          const itemHeaders = popout.element.querySelectorAll(
-            '[data-toggle="expand"]',
+          // Setup action button listeners (includes expand/collapse)
+          setupHudActionButtonListeners(
+            popout.element,
+            hudInstance.actor,
+            hudInstance,
           );
-          itemHeaders.forEach((header) => {
-            header.addEventListener(
-              'click',
-              debounce((event) => {
-                if (event.target.tagName !== 'BUTTON') {
-                  event.preventDefault();
-                }
-
-                const item = header.closest('.swadehud-item');
-                if (!item) return;
-
-                // Check what was clicked
-                const clickedElement = event.target;
-
-                // If clicked on toggle icon, don't expand/collapse
-                if (clickedElement.closest('.swadehud-condition-toggle-icon')) {
-                  return;
-                }
-
-                // If clicked on name, expand/collapse
-                if (
-                  clickedElement.classList.contains('swadehud-item-name') ||
-                  clickedElement.closest('.swadehud-item-name')
-                ) {
-                  item.classList.toggle('expanded');
-                  return;
-                }
-
-                // Default: expand/collapse
-                item.classList.toggle('expanded');
-              }, 100),
-            );
-          });
         }
       }, 80),
     );
@@ -270,43 +239,12 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
 
         // Setup effect handlers
         if (popout && popout.element) {
-          // Handle header clicks for expanding
-          const itemHeaders = popout.element.querySelectorAll(
-            '[data-toggle="expand"]',
+          // Setup action button listeners (includes expand/collapse)
+          setupHudActionButtonListeners(
+            popout.element,
+            hudInstance.actor,
+            hudInstance,
           );
-          itemHeaders.forEach((header) => {
-            header.addEventListener(
-              'click',
-              debounce((event) => {
-                if (event.target.tagName !== 'BUTTON') {
-                  event.preventDefault();
-                }
-
-                const item = header.closest('.swadehud-item');
-                if (!item) return;
-
-                // Check what was clicked
-                const clickedElement = event.target;
-
-                // If clicked on toggle icon, don't expand/collapse
-                if (clickedElement.closest('.swadehud-effect-toggle-icon')) {
-                  return;
-                }
-
-                // If clicked on name, expand/collapse
-                if (
-                  clickedElement.classList.contains('swadehud-item-name') ||
-                  clickedElement.closest('.swadehud-item-name')
-                ) {
-                  item.classList.toggle('expanded');
-                  return;
-                }
-
-                // Default: expand/collapse
-                item.classList.toggle('expanded');
-              }, 100),
-            );
-          });
         }
       }, 80),
     );
