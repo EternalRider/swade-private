@@ -12,14 +12,14 @@
 }
 
 .swadehud-popout {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
   height: 400px; /* Fixed height to prevent panels from growing too tall */
   max-width: 90vw;
-  z-index: 101; /* Reduced from 100000 to avoid interfering with Foundry modals */
+  z-index: 80; /* Above HUD (--z-index-app: 30) but below dialogs (--z-index-window: 100) */
   display: grid;
   grid-template-rows: minmax(2.2em, auto) 1fr 3em;
   gap: 0;
@@ -169,35 +169,6 @@
   text-shadow: var(--input-text-shadow, 0 0 10px red);
 }
 
-.swadehud #panel-traits,
-.swadehud #panel-edges {
-  position: fixed;
-  top: 0;
-  left: 0;
-  min-width: 340px;
-  max-width: 90vw;
-  height: 100vh; /* max-height: 100vh is redundant */
-  overflow-y: auto;
-  z-index: 101;
-  background: var(--swadehud-paper-texture);
-  box-shadow: var(--content-shadow, inset 0 0 2rem 1rem rgba(0, 0, 0, 0.2));
-  border-radius: 20px;
-  border: 2px solid var(--swade-primary-color, #972824);
-  padding: 1em 1.2em;
-  color: var(--font-color, #000);
-  font-family: var(--swadehud-font-primary);
-  display: none;
-  opacity: 0;
-  transform: translateY(0);
-  transition:
-    opacity 0.25s,
-    transform 0.25s;
-}
-.swadehud #panel-traits.open,
-.swadehud #panel-edges.open {
-  display: block;
-  opacity: 0.98;
-}
 .swadehud .attribute-list {
   margin: 0;
   padding: 0;
@@ -299,6 +270,7 @@
   border-radius: 0 !important;
   box-shadow: none !important;
   border: none !important;
+  z-index: 30 !important;
 }
 .swadehud .trait-list,
 .swadehud .skill-list {
@@ -656,7 +628,7 @@
   display: none !important; /* Hide close button since click-outside works */
   align-items: center !important;
   justify-content: center !important;
-  z-index: 102 !important; /* Reduced from 100001 to be above popouts but not interfere with Foundry */
+  z-index: 81 !important; /* Above popouts (80) but below dialogs (--z-index-window: 100) */
   font-size: 14px !important;
   backdrop-filter: blur(4px) !important;
   box-shadow:
