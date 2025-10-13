@@ -70,9 +70,49 @@ export function setupHudStatHandlers(
     combatToggleBtn.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (token && typeof (token as any).toggleCombatant === 'function') {
+      // Use provided token if it has the toggle method, otherwise attempt to
+      // find a matching token on the canvas (prefer a controlled token).
+      let tokenToUse: any = token;
+
+      const hasToggle = (t: any) =>
+        t && typeof t.toggleCombatant === 'function';
+
+      if (!hasToggle(tokenToUse)) {
         try {
-          await (token as any).toggleCombatant();
+          // Prefer a controlled token for this actor
+          const controlledTokens = (canvas?.tokens?.controlled as any[]) || [];
+          const controlledMatch = controlledTokens.find(
+            (t: any) => t?.actor?.id === actor.id,
+          );
+          if (controlledMatch) tokenToUse = controlledMatch;
+
+          // If no controlled token, fall back to any placeable token for this actor
+          if (!hasToggle(tokenToUse)) {
+            const placeables = (canvas?.tokens?.placeables as any[]) || [];
+            const placeableMatch = placeables.find(
+              (t: any) => t?.actor?.id === actor.id,
+            );
+            if (placeableMatch) tokenToUse = placeableMatch;
+          }
+
+          // If the TokenDocument exposes toggleCombatant (some Foundry APIs), prefer that
+          if (
+            !hasToggle(tokenToUse) &&
+            tokenToUse?.document &&
+            typeof tokenToUse.document.toggleCombatant === 'function'
+          ) {
+            tokenToUse = tokenToUse.document;
+          }
+        } catch (err) {
+          // ignore canvas access errors
+          // eslint-disable-next-line no-console
+          console.warn('HUD combat toggle: canvas token lookup failed', err);
+        }
+      }
+
+      if (hasToggle(tokenToUse)) {
+        try {
+          await tokenToUse.toggleCombatant();
           if (onUpdate) onUpdate();
         } catch (error) {
           ui.notifications?.error('Failed to toggle combat state');

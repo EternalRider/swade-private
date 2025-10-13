@@ -83,6 +83,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     } else {
       this.token = null;
     }
+    this._onTokenControl = null; // Initialize the token control handler
 
     // Track if this is the initial render to avoid repositioning on updates
     this._isInitialRender = true;
@@ -116,6 +117,34 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       Hooks.on('updateActor', this._onActorUpdate);
       Hooks.on('deleteActor', this._onActorDelete);
     }
+
+    // Listen for token control changes so the HUD can follow a newly-controlled
+    // token for the same actor without requiring the HUD to be closed and reopened.
+    this._onTokenControl = (token: any, controlled: boolean) => {
+      try {
+        if (!controlled || !token) return;
+
+        // Prefer token.document when available for API compatibility
+        const tokenDoc = token.document ? token.document : token;
+
+        // If the token has an actor, follow it: set both actor and token on the HUD
+        const tokenActor = token?.actor ?? tokenDoc?.actor;
+        if (tokenActor) {
+          this.actor = tokenActor;
+        }
+
+        this.token = tokenDoc;
+
+        // Re-render so handlers receive the updated actor/token references
+        if (this._renderDebounced) this._renderDebounced();
+        else this.render();
+      } catch (err) {
+        // Non-fatal
+        // eslint-disable-next-line no-console
+        console.warn('SwadeActorHUD token control handler error', err);
+      }
+    };
+    Hooks.on('controlToken', this._onTokenControl);
 
     // Create debounced render method to handle rapid updates
     this._renderDebounced = foundry.utils.debounce(() => {
@@ -264,6 +293,10 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       if (this._onActorDelete) {
         Hooks.off('deleteActor', this._onActorDelete);
         this._onActorDelete = null;
+      }
+      if (this._onTokenControl) {
+        Hooks.off('controlToken', this._onTokenControl);
+        this._onTokenControl = null;
       }
 
       // Close all open popouts
