@@ -445,6 +445,12 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
   });
 }
 
+/**
+ * Handles left-click on stat circles (wounds, fatigue) to decrement the stat value
+ *
+ * @param {Event} event - The click event
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleStatClick(event: Event, hudInstance: any) {
   const target = event.target as HTMLElement;
   const circle = target.closest('.swadehud-stat-clickable') as HTMLElement;
@@ -462,6 +468,12 @@ function handleStatClick(event: Event, hudInstance: any) {
   hudInstance.actor.update({ [statPath]: newValue });
 }
 
+/**
+ * Handles right-click on stat circles (wounds, fatigue) to increment the stat value
+ *
+ * @param {Event} event - The right-click event
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleStatRightClick(event: Event, hudInstance: any) {
   const target = event.target as HTMLElement;
   const circle = target.closest('.swadehud-stat-clickable') as HTMLElement;
@@ -479,6 +491,13 @@ function handleStatRightClick(event: Event, hudInstance: any) {
   hudInstance.actor.update({ [statPath]: newValue });
 }
 
+/**
+ * Handles left-click on bottom row stat labels (bennies, combat toggle, etc.)
+ * Routes to appropriate handler based on the stat type
+ *
+ * @param {Event} event - The click event
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleBottomStatClick(event: Event, hudInstance: any) {
   const target = event.target as HTMLElement;
   const stat = target.closest('.swadehud-bottomstat--label') as HTMLElement;
@@ -493,6 +512,13 @@ function handleBottomStatClick(event: Event, hudInstance: any) {
   }
 }
 
+/**
+ * Handles right-click on bottom row stat labels (bennies, etc.)
+ * Routes to appropriate handler based on the stat type
+ *
+ * @param {Event} event - The right-click event
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleBottomStatRightClick(event: Event, hudInstance: any) {
   const target = event.target as HTMLElement;
   const stat = target.closest('.swadehud-bottomstat--label') as HTMLElement;
@@ -505,6 +531,13 @@ function handleBottomStatRightClick(event: Event, hudInstance: any) {
   }
 }
 
+/**
+ * Handles clicking on the combat toggle button to enter/exit combat
+ * Updates the token's combat state and shows appropriate notifications
+ *
+ * @param {HTMLElement} stat - The stat element that was clicked
+ * @param {any} hudInstance - The HUD instance containing the token
+ */
 function handleCombatToggleClick(stat: HTMLElement, hudInstance: any) {
   // Simple combat toggle - just update UI state and show notification
   if (hudInstance.token) {
@@ -524,6 +557,12 @@ function handleCombatToggleClick(stat: HTMLElement, hudInstance: any) {
   }
 }
 
+/**
+ * Handles left-click on benny counters to decrement the benny value
+ *
+ * @param {HTMLElement} stat - The stat element containing benny data
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleBennieClick(stat: HTMLElement, hudInstance: any) {
   // Decrement bennies (left click)
   const statPath = stat.dataset.statPath;
@@ -549,6 +588,17 @@ function handleBennieRightClick(stat: HTMLElement, hudInstance: any) {
   hudInstance.actor.update({ [statPath]: newValue });
 }
 
+/**
+ * Sets up event handlers for ability-related buttons in the HUD
+ *
+ * This function attaches click event listeners to special ability buttons
+ * such as the soak button (heart icon in wounds circle) and incapacitated
+ * button (bolt icon in fatigue circle). These buttons provide quick access
+ * to common combat-related actions.
+ *
+ * @param {HTMLElement} html - The root HTML element of the HUD
+ * @param {any} hudInstance - The main HUD instance containing the actor
+ */
 export function setupAbilityHandlers(html: HTMLElement, hudInstance: any) {
   // Handle soak button (heart icon in wounds circle)
   const soakButton = html.querySelector('.swadehud-soak-clickable');
@@ -573,6 +623,16 @@ export function setupAbilityHandlers(html: HTMLElement, hudInstance: any) {
   }
 }
 
+/**
+ * Handles clicking on the soak button to reduce wounds
+ *
+ * When the soak button (heart icon in the wounds circle) is clicked,
+ * this function reduces the actor's wounds by 1 if they have any wounds.
+ * In a full implementation, this would typically show a soak roll dialog
+ * instead of directly reducing wounds.
+ *
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleSoakClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
@@ -590,6 +650,15 @@ function handleSoakClick(hudInstance: any) {
   }
 }
 
+/**
+ * Handles clicking on the incapacitated button to toggle incapacitated status
+ *
+ * When the incapacitated button (bolt icon in the fatigue circle) is clicked,
+ * this function toggles the actor's incapacitated status. This would typically
+ * update a status effect or actor flag to reflect the incapacitated state.
+ *
+ * @param {any} hudInstance - The HUD instance containing the actor
+ */
 function handleIncapacitatedClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
@@ -770,6 +839,16 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
   }
 }
 
+/**
+ * Sets up event handlers for portrait interactions in the HUD
+ *
+ * This function attaches click event listeners to the portrait container
+ * and portrait image elements. Clicking either opens the associated
+ * actor's character sheet for detailed viewing and editing.
+ *
+ * @param {HTMLElement} html - The root HTML element of the HUD
+ * @param {any} hudInstance - The main HUD instance containing the actor
+ */
 export function setupPortraitHandler(html: HTMLElement, hudInstance: any) {
   // Handle portrait click to open character sheet
   const portrait = html.querySelector('.swadehud-portrait');
