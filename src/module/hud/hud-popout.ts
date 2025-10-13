@@ -724,6 +724,12 @@ export class SwadePopout {
   activateListeners() {
     if (!this.element) return;
 
+    // Clean up any previously-attached anonymous event listeners on elements
+    // inside this popout by replacing interactive nodes with clones. This
+    // prevents duplicate handlers when activateListeners is called multiple
+    // times for the same popout instance.
+    this.cleanupEventListeners();
+
     // Add close button handler
     const closeBtn = this.element.querySelector('.swadehud-popout-close');
     if (closeBtn) {
@@ -745,6 +751,51 @@ export class SwadePopout {
 
     // Add item interaction handlers based on panel type
     this.setupPanelSpecificListeners(this.element);
+  }
+
+  /**
+   * Remove previously-attached event listeners on interactive elements by
+   * cloning and replacing nodes that commonly gain anonymous listeners.
+   * This is a pragmatic approach which ensures anonymous handlers are
+   * removed without needing to track every listener reference.
+   */
+  private cleanupEventListeners() {
+    if (!this.element) return;
+
+    // Selector of interactive elements that commonly receive listeners.
+    const selectors = [
+      '.swadehud-popout-close',
+      '.swadehud-equip-indicator',
+      '.swadehud-effect-toggle-icon',
+      '.swadehud-condition-toggle-icon',
+      '[data-toggle]',
+      '.swadehud-item-name',
+      '[data-action]',
+      '.swadehud-chat',
+      '.swadehud-stat-clickable',
+      '.swadehud-bottomstat--label',
+      '.swadehud-roll-icon',
+    ];
+
+    const nodes = this.element.querySelectorAll(selectors.join(','));
+    nodes.forEach((node) => {
+      try {
+        const el = node as HTMLElement;
+        const clone = el.cloneNode(true) as HTMLElement;
+        // Remove any internal bookkeeping properties that might have been set
+        // on the element instance before replacing it.
+        // Note: dataset flags will be lost on clone which is desired here.
+        el.parentNode?.replaceChild(clone, el);
+      } catch (err) {
+        // Non-fatal - continue cleaning other nodes
+        // eslint-disable-next-line no-console
+        console.warn(
+          'SWADE HUD: cleanupEventListeners failed for node',
+          node,
+          err,
+        );
+      }
+    });
   }
 
   /**
@@ -949,46 +1000,9 @@ export class SwadePopout {
       });
     });
 
-    // Handle chat buttons
-    const chatButtons = html.querySelectorAll('.swadehud-chat');
-    chatButtons.forEach((button) => {
-      button.addEventListener('click', async (event) => {
-        event.preventDefault();
-
-        const itemElement = (button as HTMLElement).closest('.swadehud-item');
-        if (!itemElement || !this.actor) return;
-
-        const itemId = itemElement.getAttribute('data-item-id');
-        if (!itemId) return;
-
-        const item = this.actor.items.get(itemId);
-        if (!item) return;
-
-        try {
-          if (typeof item.show === 'function') {
-            await item.show();
-          } else {
-            const chatData = await item.getChatData();
-            const content = await renderTemplate(
-              'systems/swade/templates/chat/item-card.hbs',
-              {
-                item: item,
-                data: chatData,
-                actor: this.actor,
-              },
-            );
-
-            await ChatMessage.create({
-              speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-              content: content,
-              type: (foundry as any).CONST?.CHAT_MESSAGE_TYPES?.OTHER || 1,
-            });
-          }
-        } catch (error) {
-          console.error('SWADE HUD: Error showing item in chat:', error);
-        }
-      });
-    });
+    // Chat button handling is centralized in `setupHudActionButtonListeners`.
+    // The popout should not attach its own chat handlers to avoid duplicate
+    // message creation when the centralized action listeners are applied.
   }
 
   private setupConditionsPanelListeners(html: HTMLElement) {

@@ -233,37 +233,43 @@ export function setupHudActionButtonListeners(
     '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat',
   );
   chatButtons.forEach((btn) => {
-    btn.addEventListener(
-      'click',
-      debounce(async (ev: Event) => {
-        (ev as Event).preventDefault();
-        const itemId = (btn as HTMLElement).dataset.itemId;
-        if (!actor || !itemId) return;
+    // Avoid attaching duplicate chat listeners
+    if ((btn as any)._swadeHudChatListener) {
+      (btn as any).removeEventListener(
+        'click',
+        (btn as any)._swadeHudChatListener,
+      );
+    }
+    const chatListener = debounce(async (ev: Event) => {
+      (ev as Event).preventDefault();
+      const itemId = (btn as HTMLElement).dataset.itemId;
+      if (!actor || !itemId) return;
 
-        const item = actor.items.get(itemId);
-        if (item) {
-          if (typeof item.show === 'function') {
-            await item.show();
-          } else {
-            const chatData = await item.getChatData();
-            const content = await renderTemplate(
-              'systems/swade/templates/chat/item-card.hbs',
-              {
-                item: item,
-                data: chatData,
-                actor: actor,
-              },
-            );
+      const item = actor.items.get(itemId);
+      if (item) {
+        if (typeof item.show === 'function') {
+          await item.show();
+        } else {
+          const chatData = await item.getChatData();
+          const content = await renderTemplate(
+            'systems/swade/templates/chat/item-card.hbs',
+            {
+              item: item,
+              data: chatData,
+              actor: actor,
+            },
+          );
 
-            await ChatMessage.create({
-              // user: game.user.id, // Removed invalid property
-              speaker: ChatMessage.getSpeaker({ actor: actor }),
-              content: content,
-              type: (foundry as any).CONST?.CHAT_MESSAGE_TYPES?.OTHER || 1,
-            });
-          }
+          await ChatMessage.create({
+            // user: game.user.id, // Removed invalid property
+            speaker: ChatMessage.getSpeaker({ actor: actor }),
+            content: content,
+            type: (foundry as any).CONST?.CHAT_MESSAGE_TYPES?.OTHER || 1,
+          });
         }
-      }, 100),
-    );
+      }
+    }, 100);
+    (btn as any)._swadeHudChatListener = chatListener;
+    btn.addEventListener('click', chatListener);
   });
 }
