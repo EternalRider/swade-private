@@ -135,7 +135,13 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
               hudInstance,
             );
             // Setup stat handlers for equip status indicators
-            setupHudStatHandlers(element, hudInstance.actor);
+            // Pass the HUD token so the handlers (combat toggle) have a valid token reference
+            setupHudStatHandlers(
+              element,
+              hudInstance.actor,
+              null,
+              hudInstance.token,
+            );
           },
         );
       }, 50),
@@ -326,7 +332,13 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
             hudInstance,
           );
           // Setup stat handlers for power point indicators
-          setupHudStatHandlers(popout.element, hudInstance.actor);
+          // Ensure handlers receive the HUD token when available
+          setupHudStatHandlers(
+            popout.element,
+            hudInstance.actor,
+            null,
+            hudInstance.token,
+          );
         }
       }, 80),
     );
@@ -351,7 +363,13 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
               hudInstance,
             );
             // Setup stat handlers for equip status indicators
-            setupHudStatHandlers(element, hudInstance.actor);
+            // Pass token so combat toggle works from popouts
+            setupHudStatHandlers(
+              element,
+              hudInstance.actor,
+              null,
+              hudInstance.token,
+            );
           },
         );
       }, 80),
