@@ -435,6 +435,33 @@ export async function getEnrichedDescription(item: any) {
 export async function prepareHudContext(actor: SwadeActor | null, token: any) {
   if (!actor) return {};
 
+  // Group powers by arcane type
+  const powers = getItemsByType(actor, 'power');
+  const groupedPowers: { [key: string]: any[] } = {};
+  powers.forEach((power: any) => {
+    const arcane = power.system?.arcane || 'general';
+    if (!groupedPowers[arcane]) {
+      groupedPowers[arcane] = [];
+    }
+    groupedPowers[arcane].push(power);
+  });
+
+  // Ensure power points exist for each arcane type
+  const systemData = { ...actor.system };
+  if (!systemData.powerPoints) {
+    systemData.powerPoints = {};
+  }
+  Object.keys(groupedPowers).forEach((arcane: string) => {
+    if (!systemData.powerPoints[arcane]) {
+      systemData.powerPoints[arcane] = { value: 0, max: 0 };
+    }
+  });
+
+  // Sort powers within each group alphabetically
+  Object.keys(groupedPowers).forEach((arcane: string) => {
+    groupedPowers[arcane] = sortByLocalizedName(groupedPowers[arcane]);
+  });
+
   const context = {
     actor: actor, // Include the full actor object for template compatibility
     token: token,
@@ -443,7 +470,7 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
     // ...other context properties...
     actorName: actor.name,
     portrait: actor.img,
-    system: actor.system,
+    system: systemData,
     isGM: game.user?.isGM,
     canEdit: actor.isOwner,
     attributes: actor.system.attributes,
@@ -463,10 +490,11 @@ export async function prepareHudContext(actor: SwadeActor | null, token: any) {
     pace: actor.system.pace,
     runningDie: actor.system.pace.runningDie,
     conviction: actor.system.details?.conviction,
-    powerPoints: actor.system.powerPoints,
+    powerPoints: systemData.powerPoints,
     encumbrance: actor.system.encumbrance,
     isWildcard: actor.isWildcard,
     config: CONFIG.SWADE,
+    groupedPowers,
   };
 
   return context;
