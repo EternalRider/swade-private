@@ -277,7 +277,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element.style.position = 'fixed';
     this.element.style.left = '10px';
     this.element.style.top = `${window.innerHeight - this.element.offsetHeight - 10}px`;
-    this.element.style.zIndex = '1000';
+    this.element.style.zIndex = '30'; // Match Foundry's --z-index-app for HUD layer
 
     // Show HUD immediately
     this.element.classList.add('hud-positioned');
