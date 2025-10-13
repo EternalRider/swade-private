@@ -1,6 +1,5 @@
 import { SwadePopout } from './hud-popout';
 import { debounce } from './hud-utils';
-import { setupHudActionButtonListeners } from './hud-actions';
 import { setupHudStatHandlers } from './hud-stat-handlers';
 import { debounceRender } from './hud-utils';
 
@@ -105,12 +104,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
           'left',
           'currentTraitsPopout',
-          (element) =>
-            setupHudActionButtonListeners(
-              element,
-              hudInstance.actor,
-              hudInstance,
-            ),
+          null,
         );
       }, 50),
     );
@@ -129,13 +123,8 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'left',
           'currentWeaponsPopout',
           async (element) => {
-            setupHudActionButtonListeners(
-              element,
-              hudInstance.actor,
-              hudInstance,
-            );
-            // Setup stat handlers for equip status indicators
-            // Pass the HUD token so the handlers (combat toggle) have a valid token reference
+            // setupHudActionButtonListeners is run by the popout's activateListeners();
+            // only attach specialized stat handlers here.
             setupHudStatHandlers(
               element,
               hudInstance.actor,
@@ -160,12 +149,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
           'left',
           'currentEdgesPopout',
-          (element) =>
-            setupHudActionButtonListeners(
-              element,
-              hudInstance.actor,
-              hudInstance,
-            ),
+          null,
         );
       }, 80),
     );
@@ -178,19 +162,12 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
       'click',
       debounce(async (ev) => {
         ev.stopPropagation();
-        const popout = await togglePopout(
+        await togglePopout(
           hudInstance,
           'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
           'left',
           'currentActionsPopout',
         );
-        if (popout && popout.element) {
-          setupHudActionButtonListeners(
-            popout.element,
-            hudInstance.actor,
-            hudInstance,
-          );
-        }
       }, 50),
     );
   }
@@ -211,13 +188,6 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
         if (popout && popout.element) {
           // Setup condition handlers for toggling status effects
           setupConditionHandlers(popout.element, hudInstance);
-
-          // Setup action button listeners (includes expand/collapse)
-          setupHudActionButtonListeners(
-            popout.element,
-            hudInstance.actor,
-            hudInstance,
-          );
         }
       }, 80),
     );
@@ -239,12 +209,8 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
 
         // Setup effect handlers
         if (popout && popout.element) {
-          // Setup action button listeners (includes expand/collapse)
-          setupHudActionButtonListeners(
-            popout.element,
-            hudInstance.actor,
-            hudInstance,
-          );
+          // Panel-specific handlers are attached by the popout's activateListeners();
+          // no additional action listener attachment is required here.
         }
       }, 80),
     );
@@ -264,19 +230,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'currentPowersPopout',
         );
         if (popout && popout.element) {
-          setupHudActionButtonListeners(
-            popout.element,
-            hudInstance.actor,
-            hudInstance,
-          );
-          // Setup stat handlers for power point indicators
-          // Ensure handlers receive the HUD token when available
-          setupHudStatHandlers(
-            popout.element,
-            hudInstance.actor,
-            null,
-            hudInstance.token,
-          );
+          // Popout's activateListeners() will attach action and stat handlers.
         }
       }, 80),
     );
@@ -294,20 +248,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'systems/swade/templates/actors/hud/hud-gear-panel.hbs',
           'right',
           'currentGearPopout',
-          async (element) => {
-            setupHudActionButtonListeners(
-              element,
-              hudInstance.actor,
-              hudInstance,
-            );
-            // Setup stat handlers for equip status indicators
-            // Pass token so combat toggle works from popouts
-            setupHudStatHandlers(
-              element,
-              hudInstance.actor,
-              null,
-              hudInstance.token,
-            );
+          async (_element) => {
+            // Popout will attach action and stat handlers itself via activateListeners();
+            // Any gear-specific setup should be handled inside the popout listeners.
           },
         );
       }, 80),
