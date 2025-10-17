@@ -89,14 +89,7 @@ class SwadeItem<
   }
 
   /** An object that tracks which tracks the changes to the data model which were applied by active effects */
-  set overrides(data: DeepPartial<Item.CreateData>) {
-    this.#overrides = data;
-  }
-  get overrides() {
-    return this.#overrides;
-  }
-
-  #overrides: DeepPartial<Item.CreateData> = {};
+  overrides: DeepPartial<Item.CreateData> = {};
 
   get isMeleeWeapon(): boolean {
     return this.system['isMelee'] ?? false;
