@@ -39,7 +39,7 @@ export default class SwadeActiveEffect<
 
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
-    this.changes.forEach((c: ActiveEffect.EffectChangeData) =>
+    this.changes.forEach((c: ActiveEffect.ChangeData) =>
       affectedItems.push(...this._getAffectedItems(this.parent!, c)),
     );
     return affectedItems.length > 0;
@@ -172,10 +172,7 @@ export default class SwadeActiveEffect<
     return data;
   }
 
-  override apply(
-    doc: SwadeActor | SwadeItem,
-    change: ActiveEffect.EffectChangeData,
-  ) {
+  override apply(doc: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData) {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
@@ -199,7 +196,7 @@ export default class SwadeActiveEffect<
 
   private _getAffectedItems(
     parent: SwadeActor | SwadeItem,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
   ) {
     const items = new Array<SwadeItem>();
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
@@ -228,20 +225,20 @@ export default class SwadeActiveEffect<
       affectedItems.push(...this._getAffectedItems(parent, c)),
     );
     for (const item of affectedItems) {
-      for (const change of this.changes as ActiveEffect.EffectChangeData[]) {
+      for (const change of this.changes as ActiveEffect.ChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (!match) continue;
         const key = match[3].trim();
+        const type = match[1].trim().toLowerCase();
         if (
           key === 'system.die.modifier' &&
-          match[1].trim().toLowerCase() === 'skill' &&
+          type === 'skill' &&
           change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
         ) {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
-          const source = foundry.utils.getProperty(item._source, key);
-          foundry.utils.setProperty(item, key, source);
+          item.reset();
         }
       }
       if (item.sheet?.rendered) item.sheet.render(true);
@@ -295,7 +292,7 @@ export default class SwadeActiveEffect<
 
   private _handleItemMatch(
     match: RegExpMatchArray,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
     doc: SwadeActor | SwadeItem,
   ) {
     //get the properties from the match
@@ -330,7 +327,7 @@ export default class SwadeActiveEffect<
 
   private _handleAttributeMatch(
     match: RegExpMatchArray,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
     doc: SwadeActor,
   ) {
     const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
@@ -345,7 +342,7 @@ export default class SwadeActiveEffect<
 
   private _handleGlobalModifierMatch(
     match: RegExpMatchArray,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
     doc: SwadeActor,
   ) {
     if (doc.system instanceof GroupData) return; // Really shouldn't be a group
@@ -370,7 +367,7 @@ export default class SwadeActiveEffect<
 
   private _handlePTModifierMatch(
     match: RegExpMatchArray,
-    change: ActiveEffect.EffectChangeData,
+    change: ActiveEffect.ChangeData,
     doc: SwadeActor,
   ) {
     // Really shouldn't be a group

@@ -23,6 +23,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.7
+
+### Fixed
+
+- Actors with zero remaining power points can now correctly activate powers with a power point cost of 0 (#1388) **by @mhilbrunner**
+- When checking whether enough power points remain for activation, item card power point cost adjustments are now respected (#1388) **by @mhilbrunner**
+- Fix item chat card resist action rolls (#1384) **by @mhilbrunner**
+- Fix 'Follow' setting added in 5.0.6 (#1386) **by @mhilbrunner**
+- Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
+- Fix `SwadeRoll.toMessage()` not respecting roll mode, behaviour should now match normal Foundry rolls (#1385) **by @mhilbrunner**
+- Fix rare edge case under which actor sheets could intermittently fail to render (#1387) **by @mhilbrunner**
+- Fixed an issue that would cause bonuses applied via AE to persist when an item sheet was closed. (#1367) **by @florad92**
+- The Actor and Item Embed headings no longer appear in the table of contents when a journal page contains an embed. (#1371) **by @florad92**
+
 ## 5.0.6
 
 ### Added
@@ -37,7 +51,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - The default combat tracker group icon is now configurable at `CONFIG.SWADE.combat.group.icon` (#1376) **by @mhilbrunner**
 
 ### Changed
-- Removed  'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
+
+- Removed 'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
 
 ### Fixed
 

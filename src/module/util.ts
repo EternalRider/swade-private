@@ -96,26 +96,29 @@ export function modifierReducer(acc: string, cur: RollModifier): string {
 
 /** Normalize a given modifier value to a string for display and evaluation */
 export function normalizeRollModifiers(mod: RollModifier): RollModifier {
-  let normalizedValue: string;
-  if (typeof mod.value === 'string') {
-    //if the modifier starts with a reserved symbol take it as is
-    if (mod.value[0].match(/[@+-]/)) {
-      normalizedValue = mod.value;
-    } else if (Number.isNumeric(mod.value)) {
-      normalizedValue = mod.value ? signedNumberString(mod.value) : '+0';
-    } else {
-      normalizedValue = '+' + mod.value;
-    }
-  } else if (typeof mod.value === 'number') {
-    normalizedValue = signedNumberString(mod.value);
-  } else {
-    throw new Error('Invalid modifier value ' + mod.value);
-  }
   return {
-    value: normalizedValue,
+    value: normalizeRollValue(mod.value),
     label: mod.label,
     ignore: mod.ignore,
   };
+}
+
+export function normalizeRollValue(value: string | number): string {
+  let normalized: string;
+  if (typeof value === 'string') {
+    //if the modifier starts with a reserved symbol take it as is
+    if (value[0].match(/[@+-]/)) {
+      normalized = value;
+    } else {
+      //otherwise prepend a + and call it a day
+      normalized = '+' + value;
+    }
+  } else if (typeof value === 'number') {
+    normalized = signedNumberString(value);
+  } else {
+    throw new Error('Invalid modifier value ' + value);
+  }
+  return normalized;
 }
 
 export function signedNumberString(value: unknown): string {
