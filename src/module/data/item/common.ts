@@ -91,67 +91,69 @@ export const bonusDamage = () => ({
   }),
 });
 
+const additionalActionSchema = () =>
+  new fields.SchemaField({
+    name: new fields.StringField({
+      blank: false,
+      nullable: false,
+      label: 'SWADE.Name',
+    }),
+    type: new fields.StringField({
+      initial: constants.ACTION_TYPE.TRAIT,
+      choices: Object.values(constants.ACTION_TYPE),
+      label: 'Type',
+    }),
+    dice: new fields.NumberField({ initial: undefined, required: false }),
+    resourcesUsed: new fields.NumberField({
+      initial: undefined,
+      required: false,
+      label: 'SWADE.ResourcesUsed.Label',
+    }),
+    modifier: new fields.StringField({
+      initial: undefined,
+      required: false,
+      label: 'SWADE.Modifier',
+    }),
+    override: new fields.StringField({
+      initial: undefined,
+      required: false,
+      label: 'SWADE.ActionsOverride',
+    }),
+    ap: new fields.NumberField({
+      initial: undefined,
+      required: false,
+      nullable: true,
+      label: 'SWADE.Name',
+    }),
+    uuid: new fields.DocumentUUIDField({
+      type: 'Macro',
+      nullable: true,
+      required: true,
+      blank: false,
+      initial: null,
+      label: 'UUID',
+    }),
+    macroActor: new fields.StringField({
+      initial: constants.MACRO_ACTOR.DEFAULT,
+      required: false,
+      choices: Object.values(constants.MACRO_ACTOR),
+      label: 'DOCUMENT.Actor',
+    }),
+    isHeavyWeapon: new fields.BooleanField({
+      initial: false,
+      required: false,
+      label: 'SWADE.HeavyWeapon',
+    }),
+  });
+
 export const actions = () => ({
   actions: new fields.SchemaField({
     trait: new fields.StringField({ initial: '', label: 'SWADE.Trait' }),
     traitMod: new FormulaField({ initial: '', label: 'SWADE.TraitMod' }),
     dmgMod: new FormulaField({ initial: '', label: 'SWADE.DmgMod' }),
-    additional: new fields.TypedObjectField(
-      new fields.SchemaField({
-        name: new fields.StringField({
-          blank: false,
-          nullable: false,
-          label: 'SWADE.Name',
-        }),
-        type: new fields.StringField({
-          initial: constants.ACTION_TYPE.TRAIT,
-          choices: Object.values(constants.ACTION_TYPE),
-          label: 'Type',
-        }),
-        dice: new fields.NumberField({ initial: undefined, required: false }),
-        resourcesUsed: new fields.NumberField({
-          initial: undefined,
-          required: false,
-          label: 'SWADE.ResourcesUsed.Label',
-        }),
-        modifier: new fields.StringField({
-          initial: undefined,
-          required: false,
-          label: 'SWADE.Modifier',
-        }),
-        override: new fields.StringField({
-          initial: undefined,
-          required: false,
-          label: 'SWADE.ActionsOverride',
-        }),
-        ap: new fields.NumberField({
-          initial: undefined,
-          required: false,
-          nullable: true,
-          label: 'SWADE.Name',
-        }),
-        uuid: new fields.DocumentUUIDField({
-          type: 'Macro',
-          nullable: true,
-          required: true,
-          blank: false,
-          initial: null,
-          label: 'UUID',
-        }),
-        macroActor: new fields.StringField({
-          initial: constants.MACRO_ACTOR.DEFAULT,
-          required: false,
-          choices: Object.values(constants.MACRO_ACTOR),
-          label: 'DOCUMENT.Actor',
-        }),
-        isHeavyWeapon: new fields.BooleanField({
-          initial: false,
-          required: false,
-          label: 'SWADE.HeavyWeapon',
-        }),
-      }),
-      { initial: {} },
-    ),
+    additional: new fields.TypedObjectField(additionalActionSchema(), {
+      initial: {},
+    }),
   }),
   ...bonusDamage(),
 });
