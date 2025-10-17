@@ -25,6 +25,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 5.0.7
 
+### Changed
+
+- The Item Sheet for Consumables now displays the charge level more intuitively when the Item is set to be a _battery_.
+
 ### Fixed
 
 - Actors with zero remaining power points can now correctly activate powers with a power point cost of 0 (#1388) **by @mhilbrunner**
@@ -36,6 +40,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fix rare edge case under which actor sheets could intermittently fail to render (#1387) **by @mhilbrunner**
 - Fixed an issue that would cause bonuses applied via AE to persist when an item sheet was closed. (#1367) **by @florad92**
 - The Actor and Item Embed headings no longer appear in the table of contents when a journal page contains an embed. (#1371) **by @florad92**
+- Battery-type consumables should round correct charge-to-shots correctly now. **by @florad92**
 
 ## 5.0.6
 
