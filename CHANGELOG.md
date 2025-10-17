@@ -34,6 +34,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
 - Fix `SwadeRoll.toMessage()` not respecting roll mode, behaviour should now match normal Foundry rolls (#1385) **by @mhilbrunner**
 - Fix rare edge case under which actor sheets could intermittently fail to render (#1387) **by @mhilbrunner**
+- Fixed an issue that would cause bonuses applied via AE to persist when an item sheet was closed. (#1367) **by @florad92**
+- The Actor and Item Embed headings no longer appear in the table of contents when a journal page contains an embed. (#1371) **by @florad92**
 
 ## 5.0.6
 
@@ -50,7 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- Removed  'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
+- Removed 'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
 
 ### Fixed
 
