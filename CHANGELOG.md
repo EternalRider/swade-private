@@ -23,6 +23,60 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.7
+
+### Changed
+
+- The Item Sheet for Consumables now displays the charge level more intuitively when the Item is set to be a _battery_.
+
+### Fixed
+
+- Actors with zero remaining power points can now correctly activate powers with a power point cost of 0 (#1388) **by @mhilbrunner**
+- When checking whether enough power points remain for activation, item card power point cost adjustments are now respected (#1388) **by @mhilbrunner**
+- Fix item chat card resist action rolls (#1384) **by @mhilbrunner**
+- Fix 'Follow' setting added in 5.0.6 (#1386) **by @mhilbrunner**
+- Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
+- Fix `SwadeRoll.toMessage()` not respecting roll mode, behaviour should now match normal Foundry rolls (#1385) **by @mhilbrunner**
+- Fix rare edge case under which actor sheets could intermittently fail to render (#1387) **by @mhilbrunner**
+- Fixed an issue that would cause bonuses applied via AE to persist when an item sheet was closed. (#1367) **by @florad92**
+- The Actor and Item Embed headings no longer appear in the table of contents when a journal page contains an embed. (#1371) **by @florad92**
+- Battery-type consumables should round correct charge-to-shots correctly now. **by @florad92**
+
+## 5.0.6
+
+### Added
+
+- Re-added "Group By Name" context menu option for the v13 combat tracker (#1349) **by @mhilbrunner**
+- Re-added creating and removing groups via drag and drop in the v13 combat tracker (#1376) **by @mhilbrunner**
+- Different group context menu options to remove the group or remove the group and its combatants, similar to folders (#1376) **by @mhilbrunner**
+- Group leaders can now redraw initiative action cards like normal combatants, getting the same benny/GM benny/free option dialog (#1376) **by @mhilbrunner**
+- Holding Control (CTRL) when adding combatants puts them in a new group automatically (#1376) **by @mhilbrunner**
+- Added 'Follow' setting to the initiative section of actor tweaks; if set, actors follow and form groups with combatants with matching names automatically on joining combat (#1376) **by @mhilbrunner**
+- Groups now have more consistent ordering, with leaders always coming first, wildcards before extras, those with Command before those without, and PC-owned actors grouped together (#1376) **by @mhilbrunner**
+- The default combat tracker group icon is now configurable at `CONFIG.SWADE.combat.group.icon` (#1376) **by @mhilbrunner**
+
+### Changed
+
+- Removed 'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
+
+### Fixed
+
+- The combat tracker now properly renders symbols for cards, this time for real (hopefully). (#1366) **by @florad92**
+- Distributing bennies for a joker should no longer trigger again if the combatant with the joker acts after holding their turn (#1380) **by @mhilbrunner**
+- Holding turns, acting now and acting after the current turn should now work as expected once again, thanks to increased initiative decimal precision (#1376) **by @mhilbrunner**
+- Combatant initiative is now properly reset when joining or leaving groups, and changing to a new leader (#1376) **by @mhilbrunner**
+- Combat should now always be reliably reset to the first turn on next round and when resetting initiative (#1376) **by @mhilbrunner**
+- The combat tracker should once more scroll to the current turn on next/previous turn and round (#1376) **by @mhilbrunner**
+- Fixed 'Clear initiative' on a combatant and 'Reset initiative' for all sometimes failing to properly reset initiative (#1376) **by @mhilbrunner**
+- Fixed multiple issues that could desync the visual combat tracker and the actual turn order, which led to jumping around when switching turns (#1376) **by @mhilbrunner**
+- Fixed multiple issues where existing logic did not handle initiative groups yet (#1376) **by @mhilbrunner**
+- Fixed multiple issues that could result in the action deck not being reliably shuffled in the round after a joker was drawn (#1376) **by @mhilbrunner**
+- Fixed some actions failing when a group is missing a leader (#1376) **by @mhilbrunner**
+- Cancelling a combat tracker drag and drop event (for example by pressing ESC) or dropping out of bounds should now be handled correctly (#1376) **by @mhilbrunner**
+- Fixed various small CSS layout issues, especially around turns in the combat tracker; the Hold icon isn't always shown as active anymore (#1376) **by @mhilbrunner**
+- Groups should now be more reliably expanded automatically when the currently active combatant is inside them (#1376) **by @mhilbrunner**
+- Fixed formatting of skill descriptions on PC sheets (#1377) **by @mhilbrunner**
+
 ## 5.0.5
 
 ### Changed

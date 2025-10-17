@@ -42,13 +42,25 @@ export default class ItemCardService {
     item: SwadeItem,
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
+    html?: HTMLElement,
   ) {
     const traitName = foundry.utils.getProperty(item, 'system.actions.trait');
-    if (!item.canExpendResources()) {
-      // TODO: Refactor to be more accurate & more general (probably grab from the PP cost box?)
+
+    let costOverride = undefined;
+    if (item.type === 'power') {
+      costOverride =
+        html?.querySelector<HTMLInputElement>('input.pp-adjust')
+          ?.valueAsNumber ?? item.system.ppModifiers.cost;
+    }
+    const canExpend =
+      costOverride !== undefined
+        ? item.canExpendResources(costOverride)
+        : item.canExpendResources();
+    if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
     }
+
     additionalMods.push(...item.traitModifiers);
     const trait = getTrait(traitName, actor);
     const roll = await this.#doTraitAction(trait, actor, {

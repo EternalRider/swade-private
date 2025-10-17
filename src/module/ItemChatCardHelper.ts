@@ -153,7 +153,9 @@ export default class ItemChatCardHelper {
         roll = await this.handleDamageAction(item, actor, additionalMods);
         break;
       case 'formula':
-        roll = await this.handleFormulaAction(item, actor, additionalMods);
+        roll = await this.handleFormulaAction(item, actor, additionalMods, {
+          event,
+        });
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
@@ -184,13 +186,27 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
+    { event }: { mods: RollModifier[]; event?: Event },
   ) {
     const traitName = foundry.utils.getProperty(item, 'system.actions.trait');
-    if (!item.canExpendResources()) {
-      // TODO: Refactor to be more accurate & more general (probably grab from the PP cost box?)
+    const button = event?.target as HTMLButtonElement;
+    const card = button?.closest('.chat-card') as HTMLElement;
+
+    let costOverride = undefined;
+    if (item.type === 'power') {
+      costOverride =
+        card?.querySelector('input.pp-adjust')?.valueAsNumber ??
+        item.system.ppModifiers.cost;
+    }
+    const canExpend =
+      costOverride !== undefined
+        ? item.canExpendResources(costOverride)
+        : item.canExpendResources();
+    if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
     }
+
     additionalMods.push(...item.traitModifiers);
     const trait = getTrait(traitName, actor);
     const roll = await this.doTraitAction(trait, actor, {

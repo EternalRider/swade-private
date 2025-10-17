@@ -1215,7 +1215,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           label: game.i18n.localize('SWADE.TraitMod'),
           value: skill.system.die.modifier,
         },
-        ...skill.system.effects,
+        ...(skill.system.effects ?? []),
         ...(globals[attribute] ?? []),
         ...globals.trait,
       ].filter((m) => m.ignore !== true);

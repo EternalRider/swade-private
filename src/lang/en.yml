@@ -124,8 +124,10 @@ SWADE:
   Unfamiliar:
     '2': Unfamiliar (-2)
     '4': Unfamiliar (-4)
+  FollowLabel: Follow
   Follow: Follow {name}
   Unfollow: Unfollow {name}
+  DeleteGroupAndCombatants: Delete Group and Combatants
   MakeGroupLeader: Make Group Leader
   RemoveGroupLeader: Remove Group Leader
   AddTokenFollowers: Add Selected Tokens as Followers
@@ -736,8 +738,8 @@ SWADE:
     CoreSkillsList:
       Name: List of Core Skills
       Hint: >-
-        Enter a comma-separated list of skill names or their SWIDs to be defined as core skills
-        for all actors
+        Enter a comma-separated list of skill names or their SWIDs to be defined
+        as core skills for all actors
     CoreSkillsPack:
       Name: Core Skills Compendium
       Hint: Choose from which Compendium the core skills will be drawn
@@ -1640,6 +1642,7 @@ SWADE:
         Operator: Operator
         Gunner: Gunner
         Other: Other
+  ChargeLevel: Charge
 TYPES:
   ActiveEffect:
     modifier: Modifier

@@ -1,5 +1,5 @@
 <div>
-    <h3 class="{{#if parent.isWildcard}}wildcard-icon{{/if}}">
+    <h3 class="{{#if parent.isWildcard}}wildcard-icon{{/if}}" data-no-toc>
         {{parent.name}}
     </h3>
     <section>{{{enrichedBiography}}}</section>
@@ -89,7 +89,7 @@
     {{/if}}
     {{#if parent.itemTypes.ability.length}}
     <section class="embed-section abilities">
-        <h4>{{localize 'SWADE.SpecialAbilities'}}:</h4>
+        <h4 data-no-toc>{{localize 'SWADE.SpecialAbilities'}}:</h4>
         <ul class="items-list">
             {{#each parent.itemTypes.ability}}
             <li><strong>{{name}}:</strong> {{plainTextDescription}}</li>

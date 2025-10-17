@@ -2,12 +2,18 @@ body.theme-light .application {
   --background: url(/ui/parchment.jpg) repeat;
 }
 
-.directory-list .directory-item img.wildcard-icon {
-  flex-basis: 0;
-  height: var(--font-size-32);
-  object-fit: scale-down;
-  object-position: center;
-  vertical-align: middle;
+.directory-list .directory-item {
+  gap: 4px;
+  img.wildcard-icon {
+    flex-basis: 0;
+    height: var(--font-size-32);
+    width: var(--font-size-32);
+    object-fit: scale-down;
+    object-position: center;
+    vertical-align: middle;
+    display: inline;
+    margin-right: 4px;
+  }
 }
 
 .theme-dark img.wildcard-icon {
