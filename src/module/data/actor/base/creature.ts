@@ -624,6 +624,9 @@ class CreatureData<
       this.parent.calcMaxCarryCapacity(),
     );
 
+    // Call hook before pace calculation to allow modules to adjust encumbrance.max
+    Hooks.callAll('swadeActorPrepareDerivedData', this.parent);
+
     this.#preparePace();
 
     // Toughness calculation
