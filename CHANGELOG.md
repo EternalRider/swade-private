@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.1.0
+
+### Changed
+
+- Move swadeActorPrepareDerivedData hook call in creature.ts to execute before #preparePace() instead of after by @jestevens210
+
 ## 5.0.7
 
 ### Changed
