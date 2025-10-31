@@ -171,7 +171,6 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             type: 'button',
             icon: 'fa-solid fa-times',
             action: 'close',
-            cssClass: 'close-roll',
             label: 'Close',
           },
         ],

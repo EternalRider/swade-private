@@ -480,7 +480,7 @@ export default class SwadeCoreHooks {
     _options: any,
     _userId: string,
   ) {
-    ui.combat.scrollToTurn();
+    ui.combat?.scrollToTurn();
   }
 
   /** Change current GM Bennies count */
@@ -647,7 +647,7 @@ export default class SwadeCoreHooks {
                 action: 'submit',
                 label: game.i18n.localize('SWADE.ButtonSubmit'),
                 default: true,
-                callback: async (event, button, dialog) =>
+                callback: async (_event, button, _dialog) =>
                   await gm?.setFlag(
                     'swade',
                     'bennies',
@@ -765,10 +765,10 @@ export default class SwadeCoreHooks {
   }
 
   static onRenderActiveEffectConfig(
-    app: ActiveEffectConfig,
+    app: foundry.applications.sheets.ActiveEffectConfig,
     html: HTMLElement,
   ) {
-    const effect = app.document as ActiveEffect;
+    const effect = app.document;
     if (effect.system instanceof BaseEffectData) {
       const systemSchema = effect.system.schema;
 
@@ -851,9 +851,15 @@ export default class SwadeCoreHooks {
         { localize: true },
         { value: effect.system.limit },
       );
+      const levelGroup = effect.system.schema.fields.level.toFormGroup(
+        { localize: true },
+        { value: effect.system.level },
+      );
       const descriptionGroup = html.querySelector(
         'section[data-tab="details"] .form-group.stacked',
       );
+      // insert in reverse order because afterend usage
+      descriptionGroup?.insertAdjacentElement('afterend', levelGroup);
       descriptionGroup?.insertAdjacentElement('afterend', limitGroup);
       descriptionGroup?.insertAdjacentElement('afterend', costGroup);
       app.setPosition();
@@ -866,7 +872,7 @@ export default class SwadeCoreHooks {
     content,
     path,
     extension,
-  }: HotReloadData) {
+  }: Hooks.HotReloadData) {
     //return the hook early if it's not a swade system change;
     if (packageType !== 'system' && packageId !== 'swade') return;
     //stop the hook on empty changes

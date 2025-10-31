@@ -10,7 +10,7 @@ export class AmbushAssistant extends Application {
     noTurn: new Array<SwadeCombatant>(),
   };
 
-  static override get defaultOptions(): ApplicationOptions {
+  static override get defaultOptions(): Application.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'ambush-assistant',
       title: game.i18n.localize('SWADE.AmbushAssistant.Title'),
@@ -19,14 +19,14 @@ export class AmbushAssistant extends Application {
       dragDrop: [{ dragSelector: '.combatant', dropSelector: '.column' }],
       width: 800,
       height: 500,
-    } satisfies Partial<ApplicationOptions>);
+    } satisfies Partial<Application.Options>);
   }
 
-  constructor(combat: SwadeCombat, options?: ApplicationOptions) {
+  constructor(combat: SwadeCombat, options?: Application.Options) {
     super(options);
     this.#combat = combat;
     this.#categories.unassigned = combat.combatants.contents.filter(
-      (c) => !c.groupId,
+      (c) => !c.group || c.isGroupLeader,
     ) as SwadeCombatant[];
   }
 
@@ -43,7 +43,7 @@ export class AmbushAssistant extends Application {
       ?.addEventListener('click', this.submit.bind(this));
   }
 
-  override async getData(options?: Partial<ApplicationOptions>) {
+  override async getData(options?: Partial<Application.Options>) {
     return foundry.utils.mergeObject(await super.getData(options), {
       ...this.#categories,
       submissionLocked: this.#categories.unassigned.length !== 0,
@@ -52,26 +52,21 @@ export class AmbushAssistant extends Application {
 
   async submit() {
     for (const noTurn of this.#categories.noTurn) {
-      await Promise.all([
-        noTurn.setTurnLost(true),
-        ...noTurn.followers.map((f) => f.setTurnLost(true)),
-      ]);
+      await Promise.all(
+        (noTurn.group?.members ?? [noTurn]).map((m) => m.setTurnLost(true)),
+      );
     }
     await this.#combat.startCombat();
     let initiative = 1000;
     for (const hold of this.#categories.hold) {
-      await Promise.all([
-        hold.toggleHold(),
-        ...hold.followers.map((f) => f.toggleHold()),
-      ]);
-      await Promise.all([
-        hold.setRoundHeld(0.1),
-        ...hold.followers.map((f) => f.setRoundHeld(0.1)),
-      ]);
+      const toHold = hold.group?.members ?? [hold];
+      await Promise.all(toHold.map((c) => c.toggleHold()));
+      await Promise.all(toHold.map((c) => c.setRoundHeld(0.1)));
       await hold.update({ initiative: (initiative -= 1) });
       // Need each of them to be offset by a small decrement for properly placing interruptors.
-      for (const f of hold.followers) {
-        await f.update({ initiative: (initiative -= 0.01) });
+      for (const c of toHold) {
+        if (c.group && c.isGroupLeader) continue;
+        await c.update({ initiative: (initiative -= 0.01) });
       }
     }
     await this.close();
@@ -89,6 +84,8 @@ export class AmbushAssistant extends Application {
       .category as string;
 
     if (category === targetCategory) return;
+
+    if (!id || !category) return;
 
     const combatant = this.#categories[category].findSplice((c) => c.id === id);
     if (!combatant) throw new Error();

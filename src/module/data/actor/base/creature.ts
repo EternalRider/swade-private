@@ -12,6 +12,7 @@ import {
   addUpModifiers,
   getRankFromAdvanceAsString,
   getScaleName,
+  signedNumberString,
 } from '../../../util';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import { ShieldData, WeaponData } from '../../item';
@@ -25,8 +26,6 @@ import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
 import { SwadeBaseActorData, TokenSize } from './base';
 import { WildCardDataSchema } from './creature.schemas';
-import { AuraPointSource } from '../../../canvas/AuraPointSource';
-import { AuraData } from '../../../../interfaces/AuraData.interface';
 
 const fields = foundry.data.fields;
 
@@ -94,7 +93,6 @@ declare namespace CreatureData {
     pace: {
       default: number;
     };
-    auras: Record<string, AuraData>;
   };
 }
 
@@ -417,66 +415,12 @@ function creatureSchema() {
           label: 'SWADE.ImprovedLevelHeaded',
         }),
         hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
+        follow: new fields.StringField({
+          label: 'SWADE.FollowLabel',
+          initial: '',
+        }),
       },
       { label: 'SWADE.Init' },
-    ),
-    auras: new fields.TypedObjectField(
-      new fields.SchemaField({
-        enabled: new fields.BooleanField({
-          label: 'SWADE.Auras.Enabled',
-          required: true,
-        }),
-        radius: new fields.NumberField({
-          label: 'SWADE.Auras.Range',
-          min: 0,
-          step: 1,
-          required: true,
-          initial: 5,
-        }),
-        color: new fields.ColorField({
-          label: 'SWADE.Auras.Color',
-          initial: () => game.user?.color.css ?? '#000000',
-        }),
-        alpha: new fields.NumberField({
-          label: 'SWADE.Auras.Alpha',
-          min: 0,
-          max: 1,
-          step: 0.05,
-          required: true,
-          initial: 0.25,
-        }),
-        walls: new fields.BooleanField({
-          label: 'SWADE.Auras.WallConstraints.Label',
-          hint: 'SWADE.Auras.WallConstraints.Hint',
-          required: true,
-        }),
-        visibleTo: new fields.SetField(
-          new fields.NumberField({
-            choices: {
-              [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 'TOKEN.DISPOSITION.HOSTILE',
-              [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 'TOKEN.DISPOSITION.NEUTRAL',
-              [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 'TOKEN.DISPOSITION.FRIENDLY',
-            },
-            required: true,
-          }),
-          {
-            label: 'SWADE.Aura.Visibility.Label',
-            hint: 'SWADE.Aura.Visibility.Hint',
-            required: true,
-            initial: [],
-          },
-        ),
-      }),
-      {
-        initial: {
-          aura1: {
-            ...AuraPointSource.defaultData,
-          },
-          aura2: {
-            ...AuraPointSource.defaultData,
-          },
-        },
-      },
     ),
   };
 }
@@ -699,18 +643,6 @@ class CreatureData<
     for (const item of this.parent.items) {
       item.system.prepareFormulaFields();
     }
-
-    // Ensure all auras have defaults if not provided
-    const userColor =
-      game.users.find((u) => u.character === this.parent)?.color?.css ??
-      '#000000';
-    for (const [auraKey, aura] of Object.entries(this.auras)) {
-      this.auras[auraKey] = {
-        ...AuraPointSource.defaultData,
-        color: userColor,
-        ...aura,
-      };
-    }
   }
 
   /**
@@ -821,7 +753,7 @@ class CreatureData<
   getPaceTooltip(this: CreatureData): HTMLElement {
     const element = document.createElement('div');
     //current pace
-    const heading = document.createElement('h3');
+    const heading = document.createElement('h4');
     heading.innerText =
       game.i18n.localize('SWADE.Movement.Base') +
       ': ' +
@@ -835,7 +767,7 @@ class CreatureData<
       .filter((key) => !!this.pace[key])
       .filter((key) => key !== this.pace.base!);
     if (availableKeys.length) {
-      const subheading = document.createElement('h4');
+      const subheading = document.createElement('h5');
       subheading.innerText = game.i18n.localize('SWADE.Movement.Other');
       element.appendChild(subheading);
       const paceList = document.createElement('ul');
@@ -858,8 +790,8 @@ class CreatureData<
       const minutes = this.attributes.vigor.die.sides! / 2;
       const pace = (runningDie + this.pace.default) * 2;
       p.innerText = game.i18n.format('SWADE.Movement.Running.OutOfCombat', {
-        pace,
-        minutes,
+        pace: pace.toString(),
+        minutes: minutes.toString(),
       });
       element.appendChild(p);
     }
@@ -879,7 +811,7 @@ class CreatureData<
 
     const globalMods = this.stats.globalMods;
 
-    // Attributes
+    /** Attributes */
     const attributes = this.attributes;
     for (const [key, attribute] of Object.entries(attributes)) {
       const short = key.substring(0, 3);
@@ -898,19 +830,19 @@ class CreatureData<
           .filter((m) => m.ignore !== true)
           .reduce(addUpModifiers, 0) as number;
       }
-      let modString = mod !== 0 ? mod.signedString() : '';
+      let modString = mod !== 0 ? signedNumberString(mod) : '';
       if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
       let val = `1d${die}x[${name}]${modString}`;
       if (die! <= 1) val = `1d${die}[${name}]${modString}`;
       out[short] = val;
     }
-
+    /** Skills */
     for (const skill of this.parent.itemTypes.skill as SwadeItem<'skill'>[]) {
       const die = skill.system.die.sides;
       let mod = skill.system.die.modifier;
       if (includeModifiers) mod = skill.modifier;
       const name = skill.name!.slugify({ strict: true });
-      let modString = mod !== 0 ? mod.signedString() : '';
+      let modString = mod !== 0 ? signedNumberString(mod) : '';
       if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
       out[name] = `1d${die}[${skill.name}]${modString}`;
     }
@@ -921,12 +853,15 @@ class CreatureData<
   // specifying this to resolve depth issue
   async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
-      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refresh, {
-        target: this.parent,
-        speaker: getDocumentClass('ChatMessage').getSpeaker({
-          actor: this.parent,
-        }),
-      });
+      const message = await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.refresh,
+        {
+          target: this.parent,
+          speaker: getDocumentClass('ChatMessage').getSpeaker({
+            actor: this.parent,
+          }),
+        },
+      );
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);
     }

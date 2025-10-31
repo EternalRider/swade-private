@@ -122,4 +122,69 @@ export default class SwadeIntegrationHooks {
   static onDevModeReady({ registerPackageDebugFlag }: DevModeApi) {
     registerPackageDebugFlag(PACKAGE_ID);
   }
+
+  static onItemPilesReady() {
+    const versions = {
+      '5.0.0': {
+        VERSION: '1.1.0',
+
+        // The actor class type is the type of actor that will be used for the default item pile actor that is created on first item drop.
+        ACTOR_CLASS_TYPE: 'npc',
+
+        // The item class type is the type of item that will be used for the default loot item
+        ITEM_CLASS_LOOT_TYPE: '',
+
+        // The item class type is the type of item that will be used for the default weapon item
+        ITEM_CLASS_WEAPON_TYPE: 'weapon',
+
+        // The item class type is the type of item that will be used for the default equipment item
+        ITEM_CLASS_EQUIPMENT_TYPE: 'gear',
+
+        // The item quantity attribute is the path to the attribute on items that denote how many of that item that exists
+        ITEM_QUANTITY_ATTRIBUTE: 'system.quantity',
+
+        // The item price attribute is the path to the attribute on each item that determine how much it costs
+        ITEM_PRICE_ATTRIBUTE: 'system.price',
+
+        // Item types and the filters actively remove items from the item pile inventory UI that users cannot loot, such as spells, feats, and classes
+        ITEM_FILTERS: [
+          {
+            path: 'type',
+            filters: 'ancestry,edge,hindrance,skill,power,ability,action',
+          },
+        ],
+
+        // Item similarities determines how item piles detect similarities and differences in the system
+        ITEM_SIMILARITIES: ['name', 'type', 'system.swid'],
+
+        // Currencies in item piles is a versatile system that can accept actor attributes (a number field on the actor's sheet) or items (actual items in their inventory)
+        // In the case of attributes, the path is relative to the actor
+        // In the case of items, it is recommended you export the item with `.toObject()` and strip out any module data
+        CURRENCIES: [
+          {
+            type: 'attribute',
+            name: 'SWADE.Currency',
+            img: 'icons/svg/coins.svg',
+            abbreviation: '{#}T',
+            data: {
+              path: 'system.details.currency',
+            },
+            primary: true,
+            exchangeRate: 1,
+          },
+        ],
+
+        CURRENCY_DECIMAL_DIGITS: 0.01,
+      },
+    };
+
+    const data = Object.entries(versions).find(([version]) => {
+      return foundry.utils.isNewerVersion(game.system.version, version);
+    });
+
+    if (!data) return;
+
+    // @ts-expect-error This always exists if this function is called, bot not necessarily otherwise
+    return game.itempiles.API.addSystemIntegration(data[1]);
+  }
 }

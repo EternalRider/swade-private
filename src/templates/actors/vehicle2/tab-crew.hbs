@@ -70,7 +70,7 @@
               <button
                 type='button'
                 data-action='maneuverCheck'
-                {{disabled (not actor)}}
+                data-can-maneuver={{actor.isOwner}}
               >
                 {{localize 'SWADE.ManCheck'}}
               </button>

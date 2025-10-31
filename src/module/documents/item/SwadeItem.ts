@@ -1,4 +1,4 @@
-import { AnyObject, DeepPartial, InexactPartial } from 'fvtt-types/utils';
+import { AnyObject, DeepPartial } from 'fvtt-types/utils';
 import { EquipState, ItemActions } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
@@ -13,7 +13,6 @@ import { SwadePhysicalItemData } from '../../data/item/base';
 import { DamageRoll } from '../../dice/DamageRoll';
 import { getKeyByValue, modifierReducer, slugify } from '../../util';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
-import SwadeActor from '../actor/SwadeActor';
 import {
   ChoiceSet,
   ItemChatCardAction,
@@ -26,7 +25,7 @@ import {
 
 declare global {
   interface DocumentClassConfig {
-    Item: typeof SwadeItem;
+    Item: typeof SwadeItem<Item.SubType>;
   }
   interface FlagConfig {
     Item: {
@@ -89,9 +88,7 @@ class SwadeItem<
     return data;
   }
 
-  /**
-   * An object that tracks which tracks the changes to the data model which were applied by active effects
-   */
+  /** An object that tracks which tracks the changes to the data model which were applied by active effects */
   overrides: DeepPartial<Item.CreateData> = {};
 
   get isMeleeWeapon(): boolean {
@@ -223,13 +220,10 @@ class SwadeItem<
   }
 
   // Special implementation to help with modifiers on temp docs
-  override clone<Save extends boolean = false>(
-    data: Item.UpdateData = {},
-    options: foundry.abstract.Document.CloneContext<Save> &
-      InexactPartial<
-        foundry.abstract.Document.ConstructionContext<Item.Parent>
-      > = {},
-  ) {
+  override clone<Save extends boolean | null | undefined = false>(
+    data: Item.CreateData = {},
+    options: foundry.abstract.Document.CloneContext<Save> = {},
+  ): foundry.abstract.Document.Clone<Save> {
     if (options.save) return super.clone<true>(data, options);
     if (this.parent) this.parent._embeddedPreparation = true;
     const item = super.clone<false>(data, options);
@@ -244,14 +238,10 @@ class SwadeItem<
     if (!this.actor || this.actor._embeddedPreparation) this.applyModifiers();
   }
 
-  /**
-   * Apply modifier effects to this item.
-   */
+  /** Apply modifier effects to this item. */
   applyModifiers() {
-    const overrides: DeepPartial<Item.CreateData> = {};
-
     const changes: Array<
-      ActiveEffect.EffectChangeData & { effect: SwadeActiveEffect }
+      ActiveEffect.ChangeData & { effect: SwadeActiveEffect }
     > = [];
     // TODO: In v13 just use the getter on the embedded collection
     for (const effect of this.effects.filter((e) => e.type === 'modifier')) {
@@ -267,6 +257,7 @@ class SwadeItem<
     }
     changes.sort((a, b) => a.priority - b.priority);
     // Apply all changes
+    const overrides = this.overrides;
     for (const change of changes) {
       if (!change.key) continue;
       const changes = change.effect.apply(this, change);
@@ -618,7 +609,7 @@ class SwadeItem<
 
     const { actorUpdates, itemUpdates, resourceUpdates } = usage;
 
-    let updatedItems = new Array<foundry.abstract.Document.Stored<SwadeItem>>();
+    let updatedItems = new Array<Item.Stored>();
     // Persist the updates
     if (!foundry.utils.isEmpty(itemUpdates)) {
       await this.update(itemUpdates);
@@ -627,10 +618,10 @@ class SwadeItem<
       await this.actor?.update(actorUpdates);
     }
     if (resourceUpdates.length) {
-      updatedItems = (await this.actor?.updateEmbeddedDocuments(
+      updatedItems = await this.actor?.updateEmbeddedDocuments(
         'Item',
         resourceUpdates,
-      )) as Array<foundry.abstract.Document.Stored<SwadeItem>>;
+      );
     }
 
     /**
@@ -659,7 +650,7 @@ class SwadeItem<
     if ('removeAmmo' in this.system) this.system.removeAmmo();
   }
 
-  async grantEmbedded(target: SwadeActor = this.parent) {
+  async grantEmbedded(target: Item.Parent = this.parent) {
     if (!this.canGrantItems || !target) return;
     const grantChain = await this.getItemGrantChain();
 
@@ -752,9 +743,7 @@ class SwadeItem<
     await this.unsetFlag('swade', 'hasGranted');
   }
 
-  async #postConsumptionCleanup(
-    updatedItems: foundry.abstract.Document.Stored<SwadeItem>[],
-  ) {
+  async #postConsumptionCleanup(updatedItems: Item.Stored[]) {
     for (const update of updatedItems) {
       const item = this.parent?.items.get(update.id);
       if (item && item.system._shouldDelete) {
@@ -903,8 +892,8 @@ class SwadeItem<
     options: Item.DatabaseeOptions,
     user: User.Implementation,
   ) {
-    const canCreate = await super._preCreate(data, options, user);
-    if (canCreate === false) return false;
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
 
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {

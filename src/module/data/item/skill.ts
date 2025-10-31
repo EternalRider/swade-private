@@ -7,6 +7,7 @@ import { addUpModifiers, createEmbedElement } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
+import { constants } from '../../constants';
 
 declare namespace SkillData {
   interface Schema extends SwadeBaseItemData.Schema, DiceTrait {
@@ -85,9 +86,13 @@ class SkillData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/skill-embeds.hbs',

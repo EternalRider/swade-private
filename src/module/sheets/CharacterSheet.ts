@@ -77,9 +77,17 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Input focus and update
     const inputs = html.querySelectorAll('input');
-    inputs.forEach((el) =>
-      el.addEventListener('focus', (ev) => ev.currentTarget.select()),
-    );
+    inputs.forEach((el) => {
+      el.addEventListener('focus', (ev) => ev.currentTarget.select());
+      el.addEventListener('keypress', (ev: KeyboardEvent) => {
+        const targetIsButton = 'button' === ev?.target?.type;
+        if (!targetIsButton && ev.key === 'Enter') {
+          ev.preventDefault();
+          this.submit({ preventClose: true });
+          return false;
+        }
+      });
+    });
 
     html
       .querySelector('[name="system.details.currency"]')
@@ -257,11 +265,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize('SWADE.Ok'),
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
               const newData = {};
-              newData[armorPropertyPath] = html.querySelector(
-                'input[name="modifier"]',
-              )?.value;
+              newData[armorPropertyPath] =
+                button.form!.querySelector<HTMLInputElement>(
+                  'input[name="modifier"]',
+                )?.value;
               this.actor.update(newData);
             },
           },
@@ -298,11 +307,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize('SWADE.Ok'),
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
               const newData = {};
-              newData[parryPropertyPath] = html.querySelector(
-                'input[name="modifier"]',
-              )?.value as number;
+              newData[parryPropertyPath] =
+                button.form!.querySelector<HTMLInputElement>(
+                  'input[name="modifier"]',
+                )?.value;
               this.actor.update(newData);
             },
           },
@@ -398,6 +408,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: this.actor.system.getSizeTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
 
@@ -407,12 +418,13 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         game.tooltip.deactivate();
         game.tooltip.activate(event.target as HTMLElement, {
           html: this.actor.system.getPaceTooltip(),
+          cssClass: 'themed theme-dark',
         });
       });
   }
 
   override async getData(
-    options?: Partial<DocumentSheetOptions>,
+    options?: Partial<DocumentSheet.Options>,
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
@@ -461,15 +473,17 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         secrets: this.document.isOwner,
       };
 
-      const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.description,
-        itemEnrichmentOptions,
-      );
+      const enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions,
+        );
 
-      const enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.notes as string,
-        itemEnrichmentOptions,
-      );
+      const enrichedNotes =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes as string,
+          itemEnrichmentOptions,
+        );
 
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
@@ -686,10 +700,14 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             label: 'OK',
             icon: '<i class="fas fa-check"></i>',
             default: true,
-            callback: (html: HTMLElement) => {
+            callback: (_event, button: HTMLButtonElement) => {
+              const html = button.form!;
               resolve({
-                type: html.querySelector('select[name="type"]')?.value,
-                name: html.querySelector('input[name="name"]')?.value,
+                type: html.querySelector<HTMLSelectElement>(
+                  'select[name="type"]',
+                )?.value,
+                name: html.querySelector<HTMLInputElement>('input[name="name"]')
+                  ?.value,
               });
             },
           },
@@ -807,7 +825,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       ) {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
-          value: modifier.signedString(),
+          value: util.signedNumberString(modifier),
         });
       }
     } else if (action === 'pp-adjust') {
@@ -1166,7 +1184,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;
@@ -1195,7 +1215,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           label: game.i18n.localize('SWADE.TraitMod'),
           value: skill.system.die.modifier,
         },
-        ...skill.system.effects,
+        ...(skill.system.effects ?? []),
         ...(globals[attribute] ?? []),
         ...globals.trait,
       ].filter((m) => m.ignore !== true);
@@ -1204,7 +1224,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;
@@ -1315,33 +1337,42 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const selector = ' .inventory .item-controls .equip-status';
     const options = { eventName: 'click', jQuery: false, fixed: true };
-    this._equipStateMenu = new foundry.applications.ux.ContextMenu.implementation(html, selector, items, options);
+    this._equipStateMenu =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        selector,
+        items,
+        options,
+      );
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this._effectCreateDropDown = new foundry.applications.ux.ContextMenu.implementation(
-      html,
-      '.effects .effect-add',
-      [
-        {
-          name: 'SWADE.ActiveEffects.AddGuided',
-          icon: '<i class="fa-solid fa-hat-wizard"></i>',
-          condition: this.object.isOwner,
-          callback: (_li) => {
-            new ActiveEffectWizard({ document: this.object }).render({ force: true });
+    this._effectCreateDropDown =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        '.effects .effect-add',
+        [
+          {
+            name: 'SWADE.ActiveEffects.AddGuided',
+            icon: '<i class="fa-solid fa-hat-wizard"></i>',
+            condition: this.object.isOwner,
+            callback: (_li) => {
+              new ActiveEffectWizard({ document: this.object }).render({
+                force: true,
+              });
+            },
           },
-        },
-        {
-          name: 'SWADE.ActiveEffects.AddUnguided',
-          icon: '<i class="fa-solid fa-file-plus"></i>',
-          condition: this.object.isOwner,
-          callback: (_li) => {
-            this._createActiveEffect();
+          {
+            name: 'SWADE.ActiveEffects.AddUnguided',
+            icon: '<i class="fa-solid fa-file-plus"></i>',
+            condition: this.object.isOwner,
+            callback: (_li) => {
+              this._createActiveEffect();
+            },
           },
-        },
-      ],
-      { eventName: 'click', jQuery: false },
-    );
+        ],
+        { eventName: 'click', jQuery: false },
+      );
   }
 
   #setupItemContextMenu(html: HTMLElement) {
@@ -1384,8 +1415,12 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
-            allEffects.find(ef => ef.id === effectId)?.sheet?.render({ force: true });
+            const allEffects: ActiveEffect[] = Array.from(
+              this.actor.allApplicableEffects(),
+            );
+            allEffects
+              .find((ef) => ef.id === effectId)
+              ?.sheet?.render({ force: true });
           }
         },
       },
@@ -1411,14 +1446,22 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
-            allEffects.find(ef => ef.id === effectId)?.deleteDialog();
+            const allEffects: ActiveEffect[] = Array.from(
+              this.actor.allApplicableEffects(),
+            );
+            allEffects.find((ef) => ef.id === effectId)?.deleteDialog();
           }
         },
       },
     ];
 
-    foundry.applications.ux.ContextMenu.implementation.create(this, html, 'li.item', items, { jQuery: false });
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      'li.item',
+      items,
+      { jQuery: false },
+    );
   }
 
   #setupAccordions(html: HTMLFormElement) {
@@ -1496,7 +1539,7 @@ interface SheetArcaneBackground {
   powers: SwadeItem[];
 }
 
-type OptionsPartial = Partial<ActorSheet<DocumentSheetOptions<SwadeActor>>>;
+type OptionsPartial = Partial<ActorSheet<DocumentSheet.Options<SwadeActor>>>;
 
 interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;

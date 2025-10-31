@@ -455,6 +455,12 @@ SWADE:
     ModifierCost:
       Hint: Build- oder MP-Kosten für Modifikator
       Label: Modifikator-Kosten
+    ModifierLimit:
+      Label: Modifikator-Limit
+      Hint: Wie oft kann dieser Modifikator gewählt werden?
+    ModifierLevel:
+      Label: Modifikator-Stufe
+      Hint: Wie oft wurde dieser Modifikator gewählt?
   EffectCallbacks:
     Shaken:
       RollSpirit: Willenskraft würfeln
@@ -591,9 +597,7 @@ SWADE:
     CoreSkillsList:
       Name: Liste der Grundfertigkeiten
       Hint: >-
-        Gib hier die Namen der Grundfertigkeiten deines Settings an. Zum
-        Beispiel so: Allgemeinwissen, Athletik, Heimlichkeit, Überreden,
-        Wahrnehmung
+        Namen oder SWIDs der Grundfertigkeiten des Settings für alle Akteure
     CoreSkillsPack:
       Name: Kompendium mit Grundfertigkeiten
       Hint: Wähle aus, aus welchem Kompendium die Grundfertigkeiten bezogen werden
@@ -782,7 +786,7 @@ SWADE:
   Templates:
     Cone:
       Short: Kegel
-      Long: Kebelschablone
+      Long: Kegelschablone
     Stream:
       Short: Strahl
       Long: Strahlschablone
@@ -797,6 +801,9 @@ SWADE:
       Long: Große Flächenschablone
     Available: Verfügbare Schablonen
     Possible: Mögliche Schablonen
+    SmallCone:
+      Short: Kl. Kegel
+      Long: Kleine Kegelschablone
   CompendiumTOC:
     Dialog:
       Title: Umschalten bestätigen
@@ -805,7 +812,7 @@ SWADE:
         Clients neu geladen. Bitte bestätigen.
     Header: Inhalt
     Toggle: Compendium TOC aus-/einschalten
-  Category: Item Kategorie
+  Category: Kategorie
   ItemIsAmmo: Ist Munition
   Vision:
     SeeHeat: Wärme sehen
@@ -957,6 +964,9 @@ SWADE:
       Title: Optionen
     AMMUNITION:
       Title: Munition
+      Items:
+        SELF: Wurfmesser
+        SINGLE: Revolver
     HEADQUARTERS:
       Upgrades:
         Content: Aufwertungen können hier aufgeführt werden. HTML wird vollständig
@@ -1004,6 +1014,7 @@ SWADE:
     DealAll: Alle austeilen
     DealNPC: NSCs austeilen
     LinkScene: Szene verknüpfen
+    StartEncounter: Begegnung starten
   GlobalMod:
     Trait: Alle Eigenschaften
     Spirit: Willenskraft und Wil.-Fertigkeiten
@@ -1290,6 +1301,8 @@ SWADE:
       Huge: Riesig
       Gargantuan: Gigantisch
     Description: 'Größe: {scale} ({name})'
+  Unfavorite: Entfavorisieren
+  DeleteEmbeddedCardPrompt: Sicher, dass die Karte {card} gelöscht werden soll?
 TYPES:
   Actor:
     npc: NSC

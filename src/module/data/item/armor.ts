@@ -195,7 +195,10 @@ class ArmorData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          this.notes ?? '',
+          enrichOptions,
+        ),
         title: game.i18n.localize('SWADE.Notes'),
       },
     );
@@ -207,7 +210,7 @@ class ArmorData extends SwadePhysicalItemData<
       ArmorData.Schema,
       Item<'armor'>
     >,
-    options: Item.Database.PreUpdateOptions,
+    options: Item.Database.PreCreateOptions,
     user: User.Implementation,
   ) {
     const allowed = await super._preCreate(data, options, user);
@@ -224,9 +227,13 @@ class ArmorData extends SwadePhysicalItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/armor-embeds.hbs',

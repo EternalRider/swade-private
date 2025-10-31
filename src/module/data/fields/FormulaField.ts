@@ -1,8 +1,10 @@
+import { normalizeRollValue } from '../../util';
+
 export class FormulaField<
   Options extends
     foundry.data.fields.StringField.Options = foundry.data.fields.StringField.DefaultOptions,
 > extends foundry.data.fields.StringField<Options> {
-  protected override _cast(value: any): string {
+  protected override _cast(value: any) {
     if (typeof value !== 'string') {
       value = value?.toString() ?? '';
     } else {
@@ -29,16 +31,21 @@ export class FormulaField<
         .replace(/×/g, '*') // U+00D7 Multiplication Sign, used e.g. in Fantasy Companion power ranges
         .replace(/^Smarts/, '@sma')
         .replace(/^Sm/, '@sma');
-      return value;
     }
+    return value;
   }
 
   protected override _validateType(
     value: any,
-    _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField.Any> = {},
+    _options: foundry.data.fields.DataField.ValidationOptions = {},
   ): boolean | void {
-    if (!value) console.log(this);
     if (this.blank && Number(value) === 0) return true;
     return Roll.validate(value);
+  }
+
+  protected override _castChangeDelta(delta: string | number) {
+    return normalizeRollValue(
+      delta,
+    ) as foundry.data.fields.StringField.InitializedType<Options>;
   }
 }

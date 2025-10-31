@@ -112,7 +112,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     flex-direction: column;
-    margin: 0.5em 0em;
+    margin: 0em 0.5em 0.5em 0em;
     align-items: center;
     height: 100%;
     width: 100%;
@@ -399,11 +399,11 @@
       box-shadow: 0 0 0 0 var(--color-initial);
       transform: scale(1);
       border-radius: 5px;
-      animation: pulse 2s infinite;
+      animation: swade-conviction-pulse 2s infinite;
       white-space: nowrap;
     }
 
-    @keyframes pulse {
+    @keyframes swade-conviction-pulse {
       0% {
         transform: scale(0.95);
         background: var(--color-high);
@@ -741,6 +741,15 @@
           display: flex;
           justify-content: flex-end;
         }
+        .card-content {
+          font-size: var(--font-size-14);
+          line-height: 16px;
+          padding: 5px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+        }
       }
     }
   }
@@ -810,7 +819,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
-      .power-details, .trapping {
+      .power-details,
+      .trapping {
         font-family: var(--default-font);
         font-size: var(--font-size-12);
         font-weight: bold;
@@ -846,7 +856,7 @@
       }
     }
 
-    ul {
+    ul:not(.item .content *) {
       list-style: none;
       padding: 0;
       margin: 0;

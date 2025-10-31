@@ -4,11 +4,7 @@ import SwadeCards from '../documents/card/SwadeCards';
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
-  constructor({
-    ctx,
-    resolve,
-    ...options
-  }: CardPickConfiguration) {
+  constructor({ ctx, resolve, ...options }: CardPickConfiguration) {
     super(options);
     this.#initContext(ctx);
     this.#callback = resolve;
@@ -18,30 +14,33 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   #callback: (result: CardPickResult) => void;
   #isResolved = false;
 
-  static asPromise({ ctx, ...options }: Omit<CardPickConfiguration, 'resolve'>): Promise<CardPickResult> {
-    return new Promise<CardPickResult>(
-      (resolve) => new CardPicker({ctx, resolve, ...options}).render({ force: true }),
+  static asPromise({
+    ctx,
+    ...options
+  }: Omit<CardPickConfiguration, 'resolve'>): Promise<CardPickResult> {
+    return new Promise<CardPickResult>((resolve) =>
+      new CardPicker({ ctx, resolve, ...options }).render({ force: true }),
     );
   }
 
   static override DEFAULT_OPTIONS = {
     classes: ['card-picker', 'swade-application'],
     window: {
-      contentClasses: ['standard-form']
+      contentClasses: ['standard-form'],
     },
     position: {
       width: 400,
-      height: 'auto'
+      height: 'auto',
     },
     actions: {
       submit: this.#onSubmit,
-      redraw: this.#onRedraw
-    }
+      redraw: this.#onRedraw,
+    },
   };
 
   static override PARTS = {
     picker: { template: 'systems/swade/templates/apps/card-picker.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
   override get title() {
@@ -55,16 +54,33 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      cards: this.#cards,
-      oldCard: this.#ctx.oldCardId,
-      highestCardID: foundry.utils.deepClone(this.#cards).sort(this.#sortCards.bind(this))[0].id,
-      allowRedraw: this.#allowRedraw(),
-      buttons: [
-        { type: 'button', action: 'submit', icon: 'fa-solid fa-check', label: 'SWADE.Ok' },
-        { type: 'button', action: 'redraw', icon: 'fa-solid fa-plus', label: 'SWADE.Redraw' }
-      ]
-    });
+    const context = foundry.utils.mergeObject(
+      await super._prepareContext(options),
+      {
+        cards: this.#cards,
+        oldCard: this.#ctx.oldCardId,
+        highestCardID: foundry.utils
+          .deepClone(this.#cards)
+          .sort(this.#sortCards.bind(this))[0].id,
+        buttons: [
+          {
+            type: 'button',
+            action: 'submit',
+            icon: 'fa-solid fa-check',
+            label: 'SWADE.Ok',
+          },
+        ],
+      },
+    );
+
+    if (this.#allowRedraw()) {
+      context.buttons.push({
+        type: 'button',
+        action: 'redraw',
+        icon: 'fa-solid fa-plus',
+        label: 'SWADE.Redraw',
+      });
+    }
 
     return context;
   }
@@ -81,9 +97,10 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onSubmit(
     this: CardPicker,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
-    const cardId = this.element.querySelector('input[name=card]:checked')?.dataset.cardId as string | undefined;
+    const cardId = this.element.querySelector('input[name=card]:checked')
+      ?.dataset.cardId as string | undefined;
     const picked = this.#cards.find((c) => c.id === cardId);
     this.#resolve({
       cards: this.#cards,
@@ -100,7 +117,7 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onRedraw(
     this: CardPicker,
     _event: PointerEvent,
-    _target: HTMLElement
+    _target: HTMLElement,
   ) {
     const discardPile: Cards = game.cards!.get(
       game.settings.get('swade', 'actionDeckDiscardPile'),
@@ -154,9 +171,10 @@ export interface CardPickResult {
   cards: Card[];
 }
 
-interface CardPickConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
-  ctx: CardPickContext,
-  resolve: (result: CardPickResult) => void
+interface CardPickConfiguration
+  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+  ctx: CardPickContext;
+  resolve: (result: CardPickResult) => void;
 }
 
 export interface CardPickContext {

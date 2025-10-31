@@ -1,5 +1,5 @@
-{{! This is a basic template for the chat item cards. 
-It renders everything, even sections that are not needed to be seen by a given player. 
+{{! This is a basic template for the chat item cards.
+It renders everything, even sections that are not needed to be seen by a given player.
 Unneeded sections are later hidden in the a renderChatMessage hook }}
 <div
   class='swade chat-card item-card'
@@ -170,6 +170,13 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
         {{localize 'SWADE.Templates.Available'}}
       </h4>
       <span class='flexrow'>
+        {{#if item.system.templates.scone}}
+          <button
+            type='button'
+            data-action='template'
+            data-template='swscone'
+          >{{localize 'SWADE.Templates.SmallCone.Short'}}</button>
+        {{/if}}
         {{#if item.system.templates.cone}}
           <button
             type='button'

@@ -6,7 +6,7 @@ import { getStatusEffectDataById } from '../../util';
 
 declare global {
   interface DocumentClassConfig {
-    Combatant: typeof SwadeCombatant;
+    Combatant: typeof SwadeCombatant<Combatant.SubType>;
   }
 }
 
@@ -93,13 +93,107 @@ export default class SwadeCombatant<
     }
   }
 
+  get groupLeader() {
+    if (!this.group) return undefined;
+    return this.group.system.leaderCombatant;
+  }
+
   async setIsGroupLeader(groupLeader: boolean) {
     if (!this.group) return null;
+
+    if (!groupLeader) {
+      // No longer group leader, remove initiative.
+      await this.resetInitiative();
+    } else if (this.groupLeader?.id != this.id) {
+      // Remove initiative of previous group leader.
+      await this.groupLeader?.resetInitiative();
+    }
+
     return this.group.update({ 'system.leader': groupLeader ? this.id : null });
   }
 
-  async unsetIsGroupLeader() {
-    return this.group?.update({ 'system.leader': null });
+  async setGroup(groupId) {
+    const group = this.combat?.groups.get(groupId);
+    if (!group) return undefined;
+
+    const existingLeader = this.combat?.getGroupLeader(groupId);
+    await this.update({ group: groupId });
+
+    if (existingLeader) {
+      // If the group already has a leader, clear this combatant's initiative. No initiative for followers!
+      await this.resetInitiative();
+    } else {
+      // If the group had no leader, become the leader.
+      await this.setIsGroupLeader(true);
+    }
+  }
+
+  /**
+   * Follows the given combatant if existing in the combat, joining its group or forming one if necessary.
+   * @param leader The combatant to follow.
+   * @returns The joined group, if any.
+   */
+  async follow(leader: string | SwadeCombatant) {
+    const group = await this.combat?.getGroupForCombatant(leader, {
+      createIfNotInGroup: true,
+      preferDisposition: this.token?.disposition,
+    });
+    if (!group) return undefined;
+
+    await this.setGroup(group.id);
+    return group;
+  }
+
+  async removeFromGroup() {
+    const group = this.group;
+    if (!group) return undefined;
+    await this.resetGroupInitiativeIfLeader();
+    await this.update({ group: null });
+    if (group?.members?.size < 1) {
+      // Group is now empty, delete.
+      await group?.delete();
+    }
+  }
+
+  protected _getInitResetUpdate(): Record<string, unknown> | undefined {
+    if (this.roundHeld) {
+      if (this.turnLost) {
+        return {
+          initiative: null,
+          system: {
+            hasJoker: false,
+            '-=turnLost': null,
+          },
+        };
+      } else {
+        // Keep the card.
+        return;
+      }
+    }
+    return {
+      initiative: null,
+      system: {
+        suitValue: null,
+        cardValue: null,
+        hasJoker: false,
+        cardString: '',
+        turnLost: false,
+      },
+    };
+  }
+
+  async resetInitiative() {
+    const update = this._getInitResetUpdate();
+    if (update) {
+      await this.update(update);
+    }
+    return this.resetGroupInitiativeIfLeader();
+  }
+
+  async resetGroupInitiativeIfLeader() {
+    if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative)
+      return;
+    return this.group?.update({ initiative: null });
   }
 
   get roundHeld() {
@@ -205,6 +299,18 @@ export default class SwadeCombatant<
       });
       await this.actor?.toggleActiveEffect(data, { active: false });
     }
+  }
+
+  override async update(data, operation) {
+    const ret = await super.update(data, operation);
+    if (
+      game.users.activeGM?.isSelf &&
+      data?.hasOwnProperty('initiative') &&
+      this.isGroupLeader
+    ) {
+      await this.group?.update({ initiative: this.initiative });
+    }
+    return ret;
   }
 
   async actNow() {

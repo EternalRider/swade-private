@@ -157,6 +157,10 @@ Hooks.once('init', () => {
   CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
 
+  // Increase initiative decimal precision, as we add/subtract tiny amounts for holding, interrupting etc.
+  if (CONFIG.Combat.initiative.decimals < 7)
+    CONFIG.Combat.initiative.decimals = 7;
+
   //register custom sidebar tabs
   CONFIG.ui.combat = SwadeCombatTracker;
   CONFIG.ui.chat = SwadeChatLog;
@@ -283,6 +287,7 @@ Hooks.once('init', () => {
     CONFIG.Token.documentClass,
     'core',
     foundry.applications.sheets.TokenConfig,
+    {},
   );
 
   foundry.documents.collections.Actors.registerSheet('swade', GroupSheet, {
@@ -427,3 +432,6 @@ Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);
+
+/** Item Piles */
+Hooks.once('item-piles-ready', SwadeIntegrationHooks.onItemPilesReady);

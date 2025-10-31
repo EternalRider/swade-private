@@ -129,5 +129,6 @@ function removeAura(token: SwadeToken, aura: AuraPointSource, id: string) {
 }
 
 function missingActorMsg(token: SwadeToken) {
+  if (!CONFIG.SWADE.debug.verbose) return;
   console.warn(`Token ${token.name} (${token.document.uuid}) has no actor!`);
 }
