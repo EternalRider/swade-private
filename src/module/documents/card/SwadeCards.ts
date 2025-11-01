@@ -45,4 +45,8 @@ export default class SwadeCards extends Cards {
     const updated = await this.updateEmbeddedDocuments('Card', toUpdate);
     return updated as Card.Stored[];
   }
+
+  isJokerDrawn() {
+    return this.cards.some((c) => c.drawn && c.system?.isJoker);
+  }
 }

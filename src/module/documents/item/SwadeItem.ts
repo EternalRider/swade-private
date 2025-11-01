@@ -88,9 +88,7 @@ class SwadeItem<
     return data;
   }
 
-  /**
-   * An object that tracks which tracks the changes to the data model which were applied by active effects
-   */
+  /** An object that tracks which tracks the changes to the data model which were applied by active effects */
   overrides: DeepPartial<Item.CreateData> = {};
 
   get isMeleeWeapon(): boolean {
@@ -240,14 +238,10 @@ class SwadeItem<
     if (!this.actor || this.actor._embeddedPreparation) this.applyModifiers();
   }
 
-  /**
-   * Apply modifier effects to this item.
-   */
+  /** Apply modifier effects to this item. */
   applyModifiers() {
-    const overrides: DeepPartial<Item.CreateData> = {};
-
     const changes: Array<
-      ActiveEffect.EffectChangeData & { effect: SwadeActiveEffect }
+      ActiveEffect.ChangeData & { effect: SwadeActiveEffect }
     > = [];
     // TODO: In v13 just use the getter on the embedded collection
     for (const effect of this.effects.filter((e) => e.type === 'modifier')) {
@@ -263,6 +257,7 @@ class SwadeItem<
     }
     changes.sort((a, b) => a.priority - b.priority);
     // Apply all changes
+    const overrides = this.overrides;
     for (const change of changes) {
       if (!change.key) continue;
       const changes = change.effect.apply(this, change);
@@ -897,8 +892,8 @@ class SwadeItem<
     options: Item.DatabaseeOptions,
     user: User.Implementation,
   ) {
-    const canCreate = await super._preCreate(data, options, user);
-    if (canCreate === false) return false;
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
 
     const choiceUpdate = await this.handleChoices(data);
     if (Object.keys(choiceUpdate).length > 0) {

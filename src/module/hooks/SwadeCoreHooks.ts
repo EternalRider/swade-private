@@ -480,7 +480,7 @@ export default class SwadeCoreHooks {
     _options: any,
     _userId: string,
   ) {
-    ui.combat.scrollToTurn();
+    ui.combat?.scrollToTurn();
   }
 
   /** Change current GM Bennies count */

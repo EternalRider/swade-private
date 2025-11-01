@@ -590,6 +590,12 @@ SWADE:
     ModifierCost:
       Label: Koszt modyfikatora
       Hint: Koszt punktów budowy lub mocy dla tego modyfikatora
+    ModifierLimit:
+      Label: Limit modyfikatora
+      Hint: Ile razy ten modyfikator może zostać wybrany?
+    ModifierLevel:
+      Label: Poziom modyfikatora
+      Hint: Ile razy ten modyfikator został wybrany?
   Keybindings:
     OpenFavoriteCards:
       Name: Otwórz ulubioną rękę kart
@@ -608,8 +614,8 @@ SWADE:
       Hint: 'Szerokość karty postaci otwartej po raz pierwszy, w pikselach. Domyślnie:
         650.'
     HighlightTemplate:
-      Name: Zawsze podświetlaj Wzorniki
-      Hint: Gdy włączone, Wzorniki zawsze podświetlają siebie zamiast siatki.
+      Name: Zawsze podświetlaj wzorniki
+      Hint: Gdy włączone, wzorniki zawsze podświetlają siebie zamiast siatki.
     InitDiscardPile:
       Name: Stos odrzuconych inicjatywy
     InitCardDeck:
@@ -662,8 +668,8 @@ SWADE:
       Name: Przednia mapa wypukłości
     CoreSkillsList:
       Name: Lista umiejętności podstawowych
-      Hint: Wprowadź nazwy umiejętności oddzielone przecinkiem aby zdefiniować je
-        jako podstawowe dla wszystkich aktorów
+      Hint: Wprowadź nazwy lub SWID umiejętności oddzielone przecinkiem aby zdefiniować
+        je jako podstawowe dla wszystkich aktorów
     CoreSkillsPack:
       Name: Kompendium umiejętności podstawowych
       Hint: Wybierz z którego kompendium zostaną zaczerpnięte umiejętności podstawowe
@@ -853,21 +859,24 @@ SWADE:
   Templates:
     Cone:
       Short: Zionięcie
-      Long: Wzornik Zionięcia
+      Long: Wzornik zionięcia
     Stream:
       Short: Strumień
-      Long: Wzornik Strumienia
+      Long: Wzornik strumienia
     Small:
       Short: Mały
-      Long: Mały Wzornik Wybuchu
+      Long: Mały wzornik wybuchu
     Medium:
       Short: Średni
-      Long: Średni Wzornik Wybuchu
+      Long: Średni wzornik wybuchu
     Large:
       Short: Duży
-      Long: Duży Wzornik Wybuchu
-    Available: Dostępne Wzorniki
-    Possible: Możliwe Wzorniki
+      Long: Duży wzornik wybuchu
+    Available: Dostępne wzorniki
+    Possible: Możliwe wzorniki
+    SmallCone:
+      Long: Mały wzornik zionięcia
+      Short: Małe zionięcie
   CompendiumTOC:
     Toggle: Przełącz używanie spisu treści kompendium
     Dialog:
@@ -1403,6 +1412,7 @@ SWADE:
     RedrawDialog:
       Content: Wylosować nową kartę przy użyciu Fuksa, czy za darmo?
     LinkScene: Powiąż scenę
+    StartEncounter: Rozpocznij spotkanie
   FollowerCount: "{count} podążający"
   Benny: Fuks
   Free: Za darmo
@@ -1541,6 +1551,10 @@ SWADE:
       Huge: Wielki
       Gargantuan: Gigantyczny
       Normal: Przeciętny
+  DeleteEmbeddedCardPrompt: Jesteś pewien, że chcesz usunąć tę kartę {card}?
+  BuildLimit: Limit budowy
+  BuildLevel: Poziom budowy
+  Unfavorite: Usuń z ulubionych
 TYPES:
   Actor:
     character: Postać gracza

@@ -146,7 +146,7 @@ body.theme-light .swade-official,
     background-size: contain;
     background-repeat: no-repeat;
     flex-direction: column;
-    margin: 0.5em 0em;
+    margin: 0em 0.5em 0.5em 0em;
     align-items: center;
     height: 100%;
     width: 100%;
@@ -805,6 +805,15 @@ body.theme-light .swade-official,
           display: flex;
           justify-content: flex-end;
         }
+        .card-content {
+          font-size: var(--font-size-14);
+          line-height: 16px;
+          padding: 5px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-evenly;
+        }
       }
     }
   }
@@ -911,7 +920,7 @@ body.theme-light .swade-official,
       }
     }
 
-    ul {
+    ul:not(.item .content *) {
       list-style: none;
       padding: 0;
       margin: 0;
