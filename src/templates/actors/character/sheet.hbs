@@ -9,7 +9,9 @@
   {{> 'systems/swade/templates/actors/character/tabs/summary.hbs' tab=tabs.summary}}
   {{> 'systems/swade/templates/actors/character/tabs/edges.hbs' tab=tabs.edges}}
   {{> 'systems/swade/templates/actors/character/tabs/inventory.hbs' tab=tabs.inventory}}
+  {{#if tabs.powers}}
   {{> 'systems/swade/templates/actors/character/tabs/powers.hbs' tab=tabs.powers}}
+  {{/if}}
   {{> 'systems/swade/templates/actors/character/tabs/effects.hbs' tab=tabs.effects}}
   {{> 'systems/swade/templates/actors/character/tabs/actions.hbs' tab=tabs.actions}}
   {{> 'systems/swade/templates/actors/character/tabs/about.hbs' tab=tabs.about}}
