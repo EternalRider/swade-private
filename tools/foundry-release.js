@@ -39,5 +39,8 @@ const request = {
 };
 
 const response = await fetch(url, request);
-const responseData = await response.json();
-console.log(responseData);
+if (response.ok) {
+  console.info(JSON.stringify(await response.json(), null, 2));
+} else {
+  console.warn(await response.text());
+}

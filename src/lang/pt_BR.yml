@@ -284,8 +284,8 @@ SWADE:
     CoreSkillsList:
       Name: Lista de Perícias Básicas
       Hint: >-
-        Insira uma lista de perícias separadas por vírgula para serem definidas
-        como Perícias Básicas para todos os atores
+        Insira uma lista de perícias separadas por vírgula para serem definidas como
+        Perícias Básicas para todos os atores
     CoreSkillsPack:
       Name: Compêndio das Perícias Básicas
       Hint: Escolha de qual compêndio as perícias básicas serão selecionadas

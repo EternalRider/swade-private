@@ -12,6 +12,7 @@ import {
   addUpModifiers,
   getRankFromAdvanceAsString,
   getScaleName,
+  signedNumberString,
 } from '../../../util';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
 import { ShieldData, WeaponData } from '../../item';
@@ -414,6 +415,10 @@ function creatureSchema() {
           label: 'SWADE.ImprovedLevelHeaded',
         }),
         hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
+        follow: new fields.StringField({
+          label: 'SWADE.FollowLabel',
+          initial: '',
+        }),
       },
       { label: 'SWADE.Init' },
     ),
@@ -785,8 +790,8 @@ class CreatureData<
       const minutes = this.attributes.vigor.die.sides! / 2;
       const pace = (runningDie + this.pace.default) * 2;
       p.innerText = game.i18n.format('SWADE.Movement.Running.OutOfCombat', {
-        pace,
-        minutes,
+        pace: pace.toString(),
+        minutes: minutes.toString(),
       });
       element.appendChild(p);
     }
@@ -806,7 +811,7 @@ class CreatureData<
 
     const globalMods = this.stats.globalMods;
 
-    // Attributes
+    /** Attributes */
     const attributes = this.attributes;
     for (const [key, attribute] of Object.entries(attributes)) {
       const short = key.substring(0, 3);
@@ -825,19 +830,19 @@ class CreatureData<
           .filter((m) => m.ignore !== true)
           .reduce(addUpModifiers, 0) as number;
       }
-      let modString = mod !== 0 ? mod.signedString() : '';
+      let modString = mod !== 0 ? signedNumberString(mod) : '';
       if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
       let val = `1d${die}x[${name}]${modString}`;
       if (die! <= 1) val = `1d${die}[${name}]${modString}`;
       out[short] = val;
     }
-
+    /** Skills */
     for (const skill of this.parent.itemTypes.skill as SwadeItem<'skill'>[]) {
       const die = skill.system.die.sides;
       let mod = skill.system.die.modifier;
       if (includeModifiers) mod = skill.modifier;
       const name = skill.name!.slugify({ strict: true });
-      let modString = mod !== 0 ? mod.signedString() : '';
+      let modString = mod !== 0 ? signedNumberString(mod) : '';
       if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
       out[name] = `1d${die}[${skill.name}]${modString}`;
     }

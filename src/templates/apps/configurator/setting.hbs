@@ -233,7 +233,9 @@
           id='coreSkillsCompendium'
           name='settingRules.coreSkillsCompendium'
         >
-          {{selectOptions coreSkillPackChoices selected=settingRules.coreSkillsCompendium localize=true}}
+          {{selectOptions coreSkillPackChoices
+            selected=settingRules.coreSkillsCompendium localize=true
+            valueAttr="key" labelAttr="label"}}
         </select>
       </div>
       <p class='notes'>{{localize 'SWADE.Settings.CoreSkillsPack.Hint'}}</p>

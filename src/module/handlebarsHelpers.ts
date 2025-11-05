@@ -3,6 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
+import { signedNumberString } from './util';
 
 /*****************************
  * General Utility Helpers
@@ -10,7 +11,7 @@ import SwadeItem from './documents/item/SwadeItem';
 
 function add(a, b) {
   const result = parseInt(a) + parseInt(b);
-  return result.signedString();
+  return signedNumberString(result);
 }
 
 function multiply(a: number, b: number) {
@@ -28,7 +29,7 @@ function isOdd(number: number): boolean {
 function signedString(num) {
   const result = parseInt(num);
   if (isNaN(result)) return '';
-  return result.signedString();
+  return signedNumberString(result);
 }
 
 function rotate(number: number) {
@@ -85,6 +86,27 @@ function radioBoxes(
     } ${isNumeric ? 'data-dtype="Number"' : ''}> ${label}</label>`;
   }
   return new Handlebars.SafeString(html);
+}
+
+function suitIcon(suit: string) {
+  let suitClass = '';
+  let suitSymbol = '';
+  if (suit?.length) {
+    suit = suit.trim().toLowerCase();
+    if (suit == 'diamonds') {
+      suitSymbol = '♦';
+    } else if (suit == 'hearts') {
+      suitSymbol = '♥';
+    } else if (suit == 'spades') {
+      suitSymbol = '♠';
+    } else if (suit == 'clubs') {
+      suitSymbol = '♣';
+    }
+    if (suitSymbol.length) {
+      suitClass = suit;
+    }
+  }
+  return new Handlebars.SafeString(`<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`);
 }
 
 /*****************************
@@ -381,6 +403,7 @@ export function registerCustomHelpers() {
     collapsible,
     stringify,
     radioBoxes,
+    suitIcon,
     localizeSkillAttribute,
     advanceType,
     modifier,

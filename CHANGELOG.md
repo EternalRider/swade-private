@@ -16,31 +16,117 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Removed
 
 ### Fixed
+- "Hold" combatant control now only visible to owner(s) of the combatant, some other combatant controls only show to the GM (as only the GM could use them anyway) (#1348) **by @roth-michael**
 
 ### Security
 
 ### Known Issues
 -->
 
+## 5.0.7
+
+### Changed
+
+- The Item Sheet for Consumables now displays the charge level more intuitively when the Item is set to be a _battery_.
+
+### Fixed
+
+- Actors with zero remaining power points can now correctly activate powers with a power point cost of 0 (#1388) **by @mhilbrunner**
+- When checking whether enough power points remain for activation, item card power point cost adjustments are now respected (#1388) **by @mhilbrunner**
+- Fix item chat card resist action rolls (#1384) **by @mhilbrunner**
+- Fix 'Follow' setting added in 5.0.6 (#1386) **by @mhilbrunner**
+- Fix layout issue with wildcard icons in compendium listings (#1378) **by @mhilbrunner**
+- Fix `SwadeRoll.toMessage()` not respecting roll mode, behaviour should now match normal Foundry rolls (#1385) **by @mhilbrunner**
+- Fix rare edge case under which actor sheets could intermittently fail to render (#1387) **by @mhilbrunner**
+- Fixed an issue that would cause bonuses applied via AE to persist when an item sheet was closed. (#1367) **by @florad92**
+- The Actor and Item Embed headings no longer appear in the table of contents when a journal page contains an embed. (#1371) **by @florad92**
+- Battery-type consumables should round correct charge-to-shots correctly now. **by @florad92**
+
+## 5.0.6
+
+### Added
+
+- Re-added "Group By Name" context menu option for the v13 combat tracker (#1349) **by @mhilbrunner**
+- Re-added creating and removing groups via drag and drop in the v13 combat tracker (#1376) **by @mhilbrunner**
+- Different group context menu options to remove the group or remove the group and its combatants, similar to folders (#1376) **by @mhilbrunner**
+- Group leaders can now redraw initiative action cards like normal combatants, getting the same benny/GM benny/free option dialog (#1376) **by @mhilbrunner**
+- Holding Control (CTRL) when adding combatants puts them in a new group automatically (#1376) **by @mhilbrunner**
+- Added 'Follow' setting to the initiative section of actor tweaks; if set, actors follow and form groups with combatants with matching names automatically on joining combat (#1376) **by @mhilbrunner**
+- Groups now have more consistent ordering, with leaders always coming first, wildcards before extras, those with Command before those without, and PC-owned actors grouped together (#1376) **by @mhilbrunner**
+- The default combat tracker group icon is now configurable at `CONFIG.SWADE.combat.group.icon` (#1376) **by @mhilbrunner**
+
+### Changed
+
+- Removed 'Remove leader' context menu entry for combat tracker groups, instead move the combatant out of the group or set another leader (#1376) **by @mhilbrunner**
+
+### Fixed
+
+- The combat tracker now properly renders symbols for cards, this time for real (hopefully). (#1366) **by @florad92**
+- Distributing bennies for a joker should no longer trigger again if the combatant with the joker acts after holding their turn (#1380) **by @mhilbrunner**
+- Holding turns, acting now and acting after the current turn should now work as expected once again, thanks to increased initiative decimal precision (#1376) **by @mhilbrunner**
+- Combatant initiative is now properly reset when joining or leaving groups, and changing to a new leader (#1376) **by @mhilbrunner**
+- Combat should now always be reliably reset to the first turn on next round and when resetting initiative (#1376) **by @mhilbrunner**
+- The combat tracker should once more scroll to the current turn on next/previous turn and round (#1376) **by @mhilbrunner**
+- Fixed 'Clear initiative' on a combatant and 'Reset initiative' for all sometimes failing to properly reset initiative (#1376) **by @mhilbrunner**
+- Fixed multiple issues that could desync the visual combat tracker and the actual turn order, which led to jumping around when switching turns (#1376) **by @mhilbrunner**
+- Fixed multiple issues where existing logic did not handle initiative groups yet (#1376) **by @mhilbrunner**
+- Fixed multiple issues that could result in the action deck not being reliably shuffled in the round after a joker was drawn (#1376) **by @mhilbrunner**
+- Fixed some actions failing when a group is missing a leader (#1376) **by @mhilbrunner**
+- Cancelling a combat tracker drag and drop event (for example by pressing ESC) or dropping out of bounds should now be handled correctly (#1376) **by @mhilbrunner**
+- Fixed various small CSS layout issues, especially around turns in the combat tracker; the Hold icon isn't always shown as active anymore (#1376) **by @mhilbrunner**
+- Groups should now be more reliably expanded automatically when the currently active combatant is inside them (#1376) **by @mhilbrunner**
+- Fixed formatting of skill descriptions on PC sheets (#1377) **by @mhilbrunner**
+
+## 5.0.5
+
+### Changed
+
+- Vehicle operators can now roll maneuver checks even if they only have observer permission on the vehicle. (#1368) **by @florad92**
+- Decreased size on Initiative chat cards. (#1374) **by @mhilbrunner**
+
+### Fixed
+
+- The combat tracker can now properly renders symbols for cards. (#1366) **by @florad92**
+- Trait Die building should no longer remove non-english text symbols from flavor text. (#1364) **by @florad92**
+- Fixed an error that would cause an error when dealing initiative and having the corresponding chat messages disabled. (#1373) **by @mhilbrunner**
+- Restored option to redraw initiative cards. (#1361) **by @mhilbrunner**
+- Fixed an issue that would prevent player character creation when no core skills are set (#1365) **by @mhilbrunner**
+
+## 5.0.4
+
+### Changed
+
+- Improved the documentation of Pace (!876) **by @Nelviticus**
+- Clarified the text on the Favorite tooltip (!883) **by @mhilbrunner**
+- The controls for going on hold are now only visible to controllers of a given combatant. (#1348) **by @roth-michael**
+
+### Fixed
+
+- Fixed an issue that would prevent switching out which compendium Core Skills are drawn from. (#1346) **by @mhilbrunner**
+- Fixed the display of Initiative cards in the Chatlog. (#1350) **by @mhilbrunner**
+- Fixed an issue that caused negative numeric values to throw data validation errors (#1352) **by @florad92**
+- Fixed a layout issue in the combat tracker. (#1353) **by @mhilbrunner**
+- Fixed inconsistent styles in entity/content links in embedded descriptions. Broken links now fail silently (#1359) **by @jalensailin**
+
 ## 5.0.3
 
 ### Added
 
 - Added `system.build.level` and `system.level` for items with build costs & modifiers respectively, representing the number of times something was chosen.
-- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement
+- Added a a new hook, `swadeActorEmbed`, called whenever an actor is embedded with `@Embed` that allows you to mutate the HTMLElement.
 
 ### Fixed
 
-- Auras will now be visible to the dispositions that they should be visible to **by @roth-michael**
-- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation **by @florad92**
-- Fixed a display issue with the NPC sheet attributes **by @mhilbrunner**
+- Auras will now be visible to the dispositions that they should be visible to. **by @roth-michael**
+- Fixed a small CSS pollution that would cause the core pause animation to use the wrong animation. **by @florad92**
+- Fixed a display issue with the NPC sheet attributes. **by @mhilbrunner**
 
 ## 5.0.2
 
 ### Fixed
 
 - Surprise Round button now appears once more. (#1339) **by @roth-michael**
-- Combatants in groups now always go in the "right" order **by @roth-michael**
+- Combatants in groups now always go in the "right" order. **by @roth-michael**
 - Tweaks can now be opened on vehicle & group actor sheets again (and they can have auras now!) **by @roth-michael**
 - Quick no longer allows infinitely drawing cards. (#1338) **by @roth-michael**
 - Fixed various instances of dialogs not working properly. **by @roth-michael**

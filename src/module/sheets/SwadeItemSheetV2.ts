@@ -1,3 +1,4 @@
+import { AnyObject } from 'fvtt-types/utils';
 import {
   AdditionalStats,
   DieSidesOption,
@@ -572,7 +573,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     return buttons;
   }
 
-  protected override _getSubmitData(updateData: object | null = {}) {
+  protected override _getSubmitData(updateData: AnyObject = {}) {
     const data = super._getSubmitData(updateData);
     if (this.item.type !== 'skill') {
       // Prevent submitting overridden values

@@ -894,7 +894,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       ) {
         additionalMods.push({
           label: game.i18n.localize('TYPES.Item.power'),
-          value: modifier.signedString(),
+          value: util.signedNumberString(modifier),
         });
       }
     } else if (action === 'pp-adjust') {
@@ -1253,7 +1253,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;
@@ -1282,7 +1284,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           label: game.i18n.localize('SWADE.TraitMod'),
           value: skill.system.die.modifier,
         },
-        ...skill.system.effects,
+        ...(skill.system.effects ?? []),
         ...(globals[attribute] ?? []),
         ...globals.trait,
       ].filter((m) => m.ignore !== true);
@@ -1291,7 +1293,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         tooltip += `<ul style="text-align:start;">${mods
           .map(({ label, value }) => {
             const mapped =
-              typeof value === 'number' ? value.signedString() : value;
+              typeof value === 'number'
+                ? util.signedNumberString(value)
+                : value;
             return `<li>${label}: ${mapped}</li>`;
           })
           .join('')}</ul>`;

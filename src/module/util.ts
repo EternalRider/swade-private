@@ -70,6 +70,16 @@ export async function reshuffleActionDeck() {
   await deck?.shuffle({ chatNotification: false });
 }
 
+/** @internal */
+export async function reshuffleActionDeckIfJokerDrawn() {
+  const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
+  if (deck?.isJokerDrawn()) {
+    await deck?.recall({ chatNotification: false });
+    await deck?.shuffle({ chatNotification: false });
+    ui.notifications.info('SWADE.DeckShuffled', { localize: true });
+  }
+}
+
 /**
  * @internal
  * A generic reducer function that can be used to reduce an array of trait roll modifiers into a string that can be parsed by the Foundry VTT Roll class
@@ -86,29 +96,32 @@ export function modifierReducer(acc: string, cur: RollModifier): string {
 
 /** Normalize a given modifier value to a string for display and evaluation */
 export function normalizeRollModifiers(mod: RollModifier): RollModifier {
-  let normalizedValue: string;
-  if (typeof mod.value === 'string') {
-    //if the modifier starts with a reserved symbol take it as is
-    if (mod.value[0].match(/[@+-]/)) {
-      normalizedValue = mod.value;
-    } else if (Number.isNumeric(mod.value)) {
-      normalizedValue = mod.value ? signedNumberString(mod.value) : '+0';
-    } else {
-      normalizedValue = '+' + mod.value;
-    }
-  } else if (typeof mod.value === 'number') {
-    normalizedValue = signedNumberString(mod.value);
-  } else {
-    throw new Error('Invalid modifier value ' + mod.value);
-  }
   return {
-    value: normalizedValue,
+    value: normalizeRollValue(mod.value),
     label: mod.label,
     ignore: mod.ignore,
   };
 }
 
-function signedNumberString(value: unknown): string {
+export function normalizeRollValue(value: string | number): string {
+  let normalized: string;
+  if (typeof value === 'string') {
+    //if the modifier starts with a reserved symbol take it as is
+    if (value[0].match(/[@+-]/)) {
+      normalized = value;
+    } else {
+      //otherwise prepend a + and call it a day
+      normalized = '+' + value;
+    }
+  } else if (typeof value === 'number') {
+    normalized = signedNumberString(value);
+  } else {
+    throw new Error('Invalid modifier value ' + value);
+  }
+  return normalized;
+}
+
+export function signedNumberString(value: unknown): string {
   if (typeof value === 'number') return (value < 0 ? '' : '+') + value;
   else return '+0';
 }
@@ -330,6 +343,15 @@ export function stringToHTML<T extends Element = Element>(str: string): T {
 }
 
 /**
+ * Converts all spaces in a string to non-breaking spaces
+ * @param str The input string
+ * @returns The input string with spaces replaced with non-breaking ones
+ */
+export function stringNonbreakingSpaces(str: string) {
+  return str.replace(' ', '\u00A0');
+}
+
+/**
  * Utility function to create an HTML element for the purpose of storing embed content.
  * TODO: Evaluate if this is better somewhere else
  * @param objectToEmbed The object that the embed is for
@@ -341,7 +363,10 @@ export async function createEmbedElement(
   template: string,
   className: string[],
 ): Promise<HTMLElement | HTMLCollection | null> {
-  const content = await foundry.applications.handlebars.renderTemplate(template, objectToEmbed);
+  const content = await foundry.applications.handlebars.renderTemplate(
+    template,
+    objectToEmbed,
+  );
   const elem = document.createElement('div');
   elem.classList;
   elem.className = className.join(' ');
