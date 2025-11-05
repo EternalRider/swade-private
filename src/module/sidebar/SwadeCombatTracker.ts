@@ -13,6 +13,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       toggleTurnLost: this.#onSwadeCombatantControl,
       actNow: this.#onSwadeCombatantControl,
       actAfter: this.#onSwadeCombatantControl,
+      drawInitiative: this.#drawInitiative,
+      redrawInitiative: this.#redrawInitiative,
     },
   };
 
@@ -32,6 +34,16 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       template: 'templates/sidebar/tabs/combat/footer.hbs',
     },
   };
+
+  protected override scrollToTurn() {
+    this.element?.querySelector('.combatant.active')?.scrollIntoView();
+    this.viewed?.expandGroupIfNeeded();
+  }
+
+  protected override _onActivate() {
+    super._onActivate();
+    this.viewed?.expandGroupIfNeeded();
+  }
 
   protected override _configureRenderParts(options) {
     const parts = super._configureRenderParts(options);
@@ -152,16 +164,24 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
 
   protected _canDrawInitiative(combatant: SwadeCombatant): boolean {
     if (!combatant.isOwner) return false;
+
+    // Can't draw if defeated.
+    if (combatant.defeated || combatant.isDefeated) return false;
+
+    // Can't draw if in a group, unless this combatant is the leader.
+    if (combatant.group && !combatant.isGroupLeader) return false;
+
+    // Combatant can draw on or after their first round.
     const firstRound = combatant.system.firstRound ?? 0;
-    // The Combatant can draw on or after their first round, but not if they're in a group or defeated.
-    return (
-      firstRound <= (combatant.combat?.round ?? 0) &&
-      !(!!combatant.group || combatant.defeated)
-    );
+    if (firstRound > (combatant.combat?.round ?? 0)) {
+      return false;
+    }
+
+    return true;
   }
 
   protected _canRedrawInitiative(combatant: SwadeCombatant): boolean {
-    return combatant.isOwner && !combatant.group; // Followers can neither draw nor redraw.
+    return combatant.isOwner;
   }
 
   protected override async _onRender(context, options) {
@@ -169,7 +189,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
 
     new foundry.applications.ux.DragDrop({
       dragSelector: '.combatant',
-      dropSelector: '.combatant-group, .combat-tracker',
+      dropSelector: '.combatant-group, .combatant, .combat-tracker',
       permissions: {
         dragstart: () => game.user.isGM,
         drop: () => game.user.isGM,
@@ -177,8 +197,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       callbacks: {
         dragstart: this._onDragStart.bind(this),
         dragover: this._onDragOver.bind(this),
-        dragleave: this._onDragLeave.bind(this),
         drop: this._onDrop.bind(this),
+        dragend: this._onDragEnd.bind(this),
       },
     }).bind(this.element);
 
@@ -193,24 +213,45 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     }
   }
 
+  protected getDropTargets() {
+    return this.element.querySelectorAll('.dropTarget');
+  }
+
+  protected isDropTarget(target: HTMLElement) {
+    this.getDropTargets()?.forEach((e) => {
+      if (e === target) return true;
+    });
+    return false;
+  }
+
+  protected removeDropTargets() {
+    this.getDropTargets()?.forEach((e) => {
+      e.classList.remove('dropTarget');
+    });
+  }
+
+  protected getClosestPossibleDropTarget(target: HTMLElement) {
+    if (!target) return undefined;
+    const group = target.closest('li.combatant-group');
+    if (group) return group;
+    return target.closest('li.combatant');
+  }
+
   protected async _onDragStart(event: DragEvent) {
     const li = event.currentTarget;
-    const combatant = this.viewed.combatants.get(li.dataset.combatantId);
+    const combatant = this.viewed?.combatants?.get(li.dataset.combatantId);
     if (!combatant) return;
     const dragData = combatant.toDragData();
     event.dataTransfer!.setData('text/plain', JSON.stringify(dragData));
   }
 
   protected _onDragOver(event: DragEvent) {
-    (event.target as HTMLElement)
-      ?.closest('li.combatant-group')
-      ?.classList.add('dropTarget');
-  }
+    const target = this.getClosestPossibleDropTarget(event.target);
+    if (!target) return;
+    if (this.isDropTarget(target)) return;
 
-  protected _onDragLeave(event: DragEvent): void {
-    (event.target as HTMLElement)
-      ?.closest('li.combatant-group')
-      ?.classList.remove('dropTarget');
+    this.removeDropTargets();
+    target.classList.add('dropTarget');
   }
 
   protected async _onDrop(event: DragEvent) {
@@ -220,18 +261,41 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
     const combatant = await SwadeCombatant.fromDropData(data);
-
     if (!combatant) return;
 
     const groupLI = (event.target as HTMLElement).closest(
-      '.combatant-group',
+      'li.combatant-group',
     ) as HTMLLIElement | undefined;
+
     if (groupLI) {
-      groupLI.classList.remove('dropTarget');
-      combatant.update({ group: groupLI.dataset.groupId });
+      // Drop on group: move to group if it exists and not already in it.
+      const groupId = groupLI.dataset.groupId;
+      if (groupId != combatant.group?.id && this.viewed?.groups.get(groupId)) {
+        await combatant.setGroup(groupLI.dataset.groupId);
+      }
     } else {
-      combatant.update({ group: null });
+      // Drop elsewhere: if dropped combatant is already in group, remove from group.
+      if (combatant.group) {
+        combatant.removeFromGroup();
+      } else {
+        // Else if dropped on other combatant, create a group around and follow that combatant.
+        const targetCombatantLI = (event.target as HTMLElement).closest(
+          'li.combatant',
+        ) as HTMLLIElement | undefined;
+        const targetCombatant = this.viewed?.combatants?.get(
+          targetCombatantLI.dataset.combatantId,
+        );
+        if (!targetCombatant || targetCombatant.id == combatant.id) return;
+        const group = await this.viewed?.createGroup();
+        if (!group) return;
+        await targetCombatant.setGroup(group.id);
+        await combatant.setGroup(group.id);
+      }
     }
+  }
+
+  protected _onDragEnd(_event: DragEvent): void {
+    this.removeDropTargets();
   }
 
   protected override async _onFirstRender(context, options) {
@@ -242,15 +306,48 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       fixed: true,
       parentClassHooks: false,
     });
+
+    this.viewed?.expandGroupIfNeeded();
+  }
+
+  protected getMatchingCombatantsByName(combatant: SwadeCombatant) {
+    if (!combatant) return [];
+
+    const matching = this.viewed?.combatants?.filter(
+      (c) =>
+        (c.name === combatant.name ||
+          c.actor?.name === combatant.actor?.name) &&
+        c.id !== combatant.id &&
+        !c.group,
+    );
+
+    return matching;
+  }
+
+  async #onGroupByName(combatant: SwadeCombatant) {
+    if (!combatant || !this.viewed) return;
+    const matchingCombatants = this.getMatchingCombatantsByName(combatant);
+    if (!matchingCombatants?.length) return;
+
+    const group = await this.viewed.createGroup();
+    if (!group) return;
+
+    await combatant.setGroup(group.id);
+    await combatant.setIsGroupLeader(true);
+
+    for (const c of matchingCombatants) {
+      await c.setGroup(group.id);
+    }
   }
 
   protected override _getEntryContextOptions() {
     const entryOptions = super._getEntryContextOptions();
 
+    // Remove the default re-draw action.
+    entryOptions.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
+
     const getCombatant = (li: HTMLLIElement) =>
       this.viewed!.combatants.get(li.dataset.combatantId);
-    const getCombatantGroup = (li: HTMLLIElement) =>
-      this.viewed!.groups.get(li.closest('.combatant-group')?.dataset.groupId);
 
     entryOptions.push(
       {
@@ -258,22 +355,25 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
-          return combatant.group && !combatant.isGroupLeader;
+          return (
+            game.user.isGM && combatant?.group && !combatant?.isGroupLeader
+          );
         },
         callback: (li: HTMLLIElement) =>
           getCombatant(li).setIsGroupLeader(true),
       },
       {
-        name: 'SWADE.RemoveGroupLeader',
-        icon: '<i class="fa-solid fa-users-slash"></i>',
+        name: 'SWADE.GroupByName',
+        icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
-          if (getCombatantGroup(li)?.members.size !== 1) {
-            return getCombatant(li).isGroupLeader;
-          }
-          return false;
+          const combatant = getCombatant(li);
+          return (
+            game.user.isGM &&
+            !combatant?.group &&
+            this.getMatchingCombatantsByName(combatant)?.length
+          );
         },
-        callback: (li: HTMLLIElement) =>
-          getCombatant(li).setIsGroupLeader(false),
+        callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
       },
     );
 
@@ -288,16 +388,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         type: game.i18n.localize('DOCUMENT.CombatantGroup'),
       }),
       icon: '<i class="fa-solid fa-users-rectangle"></i>',
-      callback: () => {
-        const groupCls = CombatantGroup.implementation;
-        groupCls.create(
-          {
-            name: groupCls.defaultName({ parent: this.viewed }),
-            img: 'icons/environment/people/charge.webp',
-          },
-          { parent: this.viewed },
-        );
-      },
+      callback: () => this.viewed?.createGroup(),
     });
 
     return entryOptions;
@@ -311,13 +402,13 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected _getGroupContextOptions() {
     const getCombatantGroup = (li: HTMLLIElement) =>
       this.viewed!.groups.get(li.dataset.groupId);
-    return [
+    const entryOptions = [
       {
         name: game.i18n.format('DOCUMENT.Update', {
           type: game.i18n.localize('DOCUMENT.CombatantGroup'),
         }),
         icon: '<i class="fa-solid fa-edit"></i>',
-        condition: (li) => getCombatantGroup(li).isOwner,
+        condition: (li) => getCombatantGroup(li)?.isOwner,
         callback: (li: HTMLLIElement) =>
           getCombatantGroup(li)?.sheet.render({
             force: true,
@@ -332,7 +423,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
         condition: game.user.isGM,
         callback: (li: HTMLLIElement) =>
-          getCombatantGroup(li).clearMovementHistories(),
+          getCombatantGroup(li)?.clearMovementHistories(),
       },
       {
         name: game.i18n.format('DOCUMENT.Delete', {
@@ -340,7 +431,18 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         }),
         icon: '<i class="fa-solid fa-trash"></i>',
         condition: game.user.isGM,
-        callback: (li: HTMLLIElement) => getCombatantGroup(li).delete(),
+        callback: (li: HTMLLIElement) =>
+          this.viewed?.removeGroup(getCombatantGroup(li)?.id),
+      },
+      {
+        name: game.i18n.localize('SWADE.DeleteGroupAndCombatants'),
+        icon: '<i class="fa-solid fa-dumpster"></i>',
+        condition: (li) =>
+          game.user.isGM && getCombatantGroup(li)?.members?.size,
+        callback: (li: HTMLLIElement) =>
+          this.viewed?.removeGroup(getCombatantGroup(li)?.id, {
+            deleteMembers: true,
+          }),
       },
       {
         name: 'OWNERSHIP.Configure',
@@ -356,11 +458,44 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
           }).render({ force: true }),
       },
     ];
+    return entryOptions;
   }
 
   /* -------------------------------------------------- */
   /*   Actions                                          */
   /* -------------------------------------------------- */
+
+  static async #drawInitiative(this, event, target) {
+    let combatantId = null;
+
+    const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
+    if (groupId) {
+      combatantId = this.viewed?.getGroupLeader(groupId)?.id;
+    } else {
+      combatantId = target?.closest('[data-combatant-id]')?.dataset
+        ?.combatantId;
+    }
+
+    if (!this.viewed || !combatantId?.length) return undefined;
+
+    return this.viewed?.rollInitiative(combatantId);
+  }
+
+  static async #redrawInitiative(this, event, target) {
+    let combatantId = null;
+
+    const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
+    if (groupId) {
+      combatantId = this.viewed?.getGroupLeader(groupId)?.id;
+    } else {
+      combatantId = target?.closest('[data-combatant-id]')?.dataset
+        ?.combatantId;
+    }
+
+    if (!this.viewed || !combatantId?.length) return undefined;
+
+    return this.viewed?.rerollInitiative(combatantId);
+  }
 
   static async #toggleGroupExpand(
     this: SwadeCombatTracker,

@@ -249,7 +249,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   #getBatteryFillFromShots(currentShots: number): number {
     if (this.weapon.type !== 'weapon') return 0;
     const per = (currentShots / this.weapon.system.shots) * 100;
-    return Math.ceil(per);
+    return Math.round(per);
   }
 
   #getShotsFromBatteryFill(battery: SwadeItem): number {
@@ -257,7 +257,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       return 0;
     }
     const factor = battery.system.charges.default.value / 100;
-    return Math.ceil(this.weapon.system.shots * factor);
+    return Math.round(this.weapon.system.shots * factor);
   }
 }
 

@@ -155,6 +155,10 @@ Hooks.once('init', () => {
   CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
 
+  // Increase initiative decimal precision, as we add/subtract tiny amounts for holding, interrupting etc.
+  if (CONFIG.Combat.initiative.decimals < 7)
+    CONFIG.Combat.initiative.decimals = 7;
+
   //register custom sidebar tabs
   CONFIG.ui.combat = SwadeCombatTracker;
   CONFIG.ui.chat = SwadeChatLog;

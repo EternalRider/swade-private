@@ -229,16 +229,16 @@ export default class SwadeActiveEffect<
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (!match) continue;
         const key = match[3].trim();
+        const type = match[1].trim().toLowerCase();
         if (
           key === 'system.die.modifier' &&
-          match[1].trim().toLowerCase() === 'skill' &&
+          type === 'skill' &&
           change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
         ) {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
-          const source = foundry.utils.getProperty(item._source, key);
-          foundry.utils.setProperty(item, key, source);
+          item.reset();
         }
       }
       if (item.sheet?.rendered) item.sheet.render(true);
@@ -532,7 +532,10 @@ export default class SwadeActiveEffect<
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
     if (this.parent?.type === 'group') return false;
-    super._preCreate(data, options, user);
+
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
+
     if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;

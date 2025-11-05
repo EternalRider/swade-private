@@ -62,6 +62,16 @@ export const SWADE: SwadeConfig = {
     },
   },
 
+  combat: {
+    group: {
+      icon: 'icons/environment/people/charge.webp',
+    },
+  },
+
+  debug: {
+    verbose: false,
+  },
+
   vehicles: {
     maxHandlingPenalty: -4,
   },
@@ -353,9 +363,7 @@ export const SWADE: SwadeConfig = {
       'system.arcane',
       'system.trapping',
     ],
-    journalentry: [
-      'pages'
-    ],
+    journalentry: ['pages'],
     macro: [],
     playlist: [],
     rolltable: [],
@@ -411,6 +419,14 @@ export interface SwadeConfig {
       start: string;
       end: string;
     };
+  };
+  combat: {
+    group: {
+      icon?: string;
+    };
+  };
+  debug: {
+    verbose: boolean;
   };
   vehicles: {
     maxHandlingPenalty: number;

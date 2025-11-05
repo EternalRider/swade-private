@@ -30,35 +30,42 @@ export class CharacterData extends CreatureData<
   }
 
   async #addCoreSkills() {
-    //Get list of core skills from settings
+    // Get list of core skills from settings
     const coreSkills = game.settings
       .get('swade', 'coreSkills')
       .split(',')
-      .map((s) => s.trim());
+      .map((s) => s.trim())
+      .filter((s) => s !== '');
 
-    //only do this if this is a PC with no prior skills
+    // Only do this if this is a PC with no prior skills
     if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
       const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
-      //Set compendium source, including a fallback to the system compendium of the required one cannot be found
+      // Set compendium source, including a fallback to the system compendium of the required one cannot be found
       const pack = (game.packs.get(coreSkillsPack) ??
         game.packs.get('swade.skills')) as CompendiumCollection<'Item'>;
 
-      if (!pack) return; //critical fallback point, simply skip core skills if neither pack can be located
+      if (!pack) return; // Critical fallback point, simply skip core skills if neither pack can be located
 
       const skillIndex = await pack.getDocuments();
 
-      // extract skill data
       const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
         SkillData.Schema,
         Item.OfType<'skill'>
-      >[] = skillIndex
-        .filter((i) => i.type === 'skill')
-        .filter((i) => coreSkills.includes(i.name!))
-        .map((s) => s.toObject());
+      >[] = Array();
 
       // Create core skills not in compendium (for custom skill names entered by the user)
       for (const skillName of coreSkills) {
-        if (!skillIndex.find((skill) => skillName === skill.name)) {
+        const skill = skillIndex.find(
+          (skill) =>
+            skill.type === 'skill' &&
+            (skillName === skill.name ||
+              slugify(skillName) === skill.system.swid),
+        );
+
+        if (skill) {
+          skills.push(skill.toObject());
+        } else {
+          // Skill not found, create bare skill.
           skills.push({
             name: skillName,
             type: 'skill',
@@ -68,26 +75,37 @@ export class CharacterData extends CreatureData<
         }
       }
 
-      //set all the skills to be core skills
+      // Set all the skills to be core skills
       for (const skill of skills) {
         if (skill.type === 'skill') skill.system.isCoreSkill = true;
       }
 
-      //Add the Untrained skill
-      skills.push({
-        name: game.i18n.localize('SWADE.Unskilled'),
-        type: 'skill',
-        img: 'systems/swade/assets/icons/skill.svg',
-        system: {
-          attribute: '',
-          die: {
-            sides: 4,
-            modifier: -2,
+      // Add the Untrained skill (from the compendium if it exists there, else as a bare skill)
+      const untrained = game.i18n.localize('SWADE.Unskilled');
+      const untrainedSkill = skillIndex.find(
+        (skill) =>
+          skill.type === 'skill' &&
+          (untrained === skill.name ||
+            slugify(untrained) === skill.system.swid),
+      );
+      if (untrainedSkill) {
+        skills.push(untrainedSkill.toObject());
+      } else {
+        skills.push({
+          name: game.i18n.localize('SWADE.Unskilled'),
+          type: 'skill',
+          img: 'systems/swade/assets/icons/skill.svg',
+          system: {
+            attribute: '',
+            die: {
+              sides: 4,
+              modifier: -2,
+            },
           },
-        },
-      });
+        });
+      }
 
-      //Add the items to the creation data
+      // Add the skills to the creation data
       this.parent.updateSource({ items: skills });
     }
   }

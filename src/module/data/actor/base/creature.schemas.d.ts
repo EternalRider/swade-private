@@ -42,6 +42,7 @@ export type InitiativeSchema = foundry.data.fields.SchemaField<
     hasLevelHeaded: foundry.data.fields.BooleanField<DataFieldLabel>;
     hasImpLevelHeaded: foundry.data.fields.BooleanField<DataFieldLabel>;
     hasQuick: foundry.data.fields.BooleanField<DataFieldLabel>;
+    follow: foundry.data.fields.StringField<DataFieldLabel>;
   },
   DataFieldLabel
 >;

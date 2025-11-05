@@ -46,9 +46,12 @@ export class BaseCombatantModel<
       Schema,
       SwadeCombatant
     >,
-    _options: Combatant.Database.PreUpdateOptions,
-    _user: User,
+    options: Combatant.Database.PreUpdateOptions,
+    user: User,
   ) {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false) return false;
+
     const combatants = game?.combat?.combatants.size ?? 0;
     const tokenID =
       data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
@@ -78,7 +81,7 @@ export class BaseCombatantModel<
       foundry.utils.hasProperty(changed, 'system.cardValue') ||
       foundry.utils.hasProperty(changed, 'system.suitValue');
     const holdRemoved =
-      foundry.utils.getProperty(changed, 'system.roundHeld') === null;
+      foundry.utils.getProperty(changed, 'system.-=roundHeld') === null;
     if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
@@ -141,9 +144,12 @@ export class BaseCombatantModel<
   async #createJokersWildMessage() {
     await getDocumentClass('ChatMessage').create({
       author: game.userId,
-      content: await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.joker, {
-        speaker: game.user,
-      }),
+      content: await foundry.applications.handlebars.renderTemplate(
+        SWADE.bennies.templates.joker,
+        {
+          speaker: game.user,
+        },
+      ),
     });
   }
 }

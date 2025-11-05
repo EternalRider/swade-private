@@ -23,7 +23,7 @@ $large-spacing: 10px;
 
 //font-sizes
 $smallest-font: 0.9em;
-$small-font: 14px;
+$small-font: var(--font-size-14);
 $medium-font: 1.15em;
 $large-font: 1.75em;
 $section-header: 1.5em;

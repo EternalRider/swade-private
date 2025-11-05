@@ -127,6 +127,31 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return context;
   }
 
+  protected override async _onRender(
+    context: SwadeVehicleSheetV2.RenderContext,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
+  ) {
+    await super._onRender(context, options);
+    if (!options.parts?.includes('crew')) return;
+    const buttons = this.element.querySelectorAll<HTMLButtonElement>(
+      'button[data-action=maneuverCheck]',
+    );
+
+    buttons.forEach((btn) => {
+      const canManeuver =
+        Boolean(btn.dataset.canManeuver) &&
+        this.actor?.testUserPermission(game.user, 'OBSERVER');
+      //enable the button and the containing fieldset
+      if (canManeuver) {
+        btn.disabled = false;
+        const fieldset = btn.closest<HTMLFieldSetElement>(
+          'fieldset.crew-member',
+        );
+        if (fieldset) fieldset.disabled = false;
+      }
+    });
+  }
+
   protected _prepareEffects() {
     const effects: Record<string, SwadeActiveEffect[]> = {
       passive: [],
