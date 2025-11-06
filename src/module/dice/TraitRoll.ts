@@ -18,10 +18,10 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       roll,
       game.user!,
       true,
-      msg['whisper'] || null,
-      msg['blind'],
+      msg.whisper || null,
+      msg.blind,
       undefined,
-      msg['speaker'],
+      msg.speaker,
     );
     const previousRolls = msg['rolls'];
     previousRolls.forEach((r) =>

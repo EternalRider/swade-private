@@ -75,7 +75,9 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override get title(): string {
-    return this.ctx.title ?? 'SWADE RollDialog';
+    let title = this.ctx.title ?? 'SWADE RollDialog';
+    if (this.ctx.actor) title = this.ctx.actor.name + ': ' + title;
+    return title;
   }
 
   get rollMode(): foundry.CONST.DICE_ROLL_MODES {
