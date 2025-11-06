@@ -52,6 +52,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   _item: SwadeItem | null = null;
   #handler = new ItemCardService();
+  #hookId: number | undefined = undefined;
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
@@ -110,6 +111,15 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
           .querySelector<HTMLElement>('.card-content')
           ?.classList.toggle('expanded');
       });
+  }
+
+  protected override prepareDerivedData(this: ItemCardData) {
+    if (!this.#hookId) {
+      this.#hookId = Hooks.on('updateItem', async (item: SwadeItem) => {
+        if (item.uuid !== this.uuid) return;
+        this._refreshMessage();
+      });
+    }
   }
 
   protected async _handleButtonClick(
@@ -350,6 +360,8 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   protected async _refreshMessage() {
     await ui.chat.updateMessage(this.parent, false);
   }
+
+  async #rerenderCardWhenItemChanges();
 }
 
 export { ItemCardData };
