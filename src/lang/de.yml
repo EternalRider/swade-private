@@ -207,8 +207,8 @@ SWADE:
   Scale: Größenkategorie
   PickACard: Wähle eine Karte für {name}
   NoCardsLeft: >-
-    Es sind nicht genug Karten im Deck! Es sind nur {current] von {needed}
-    benötigten Karten verfügbar
+    Es sind nicht genug Karten im Deck! Es sind nur {current] von {needed} benötigten
+    Karten verfügbar
   OldCard: Alte Karte
   ActionCard: Aktionskarte
   ConvictionActivate: '{name} aktiviert Entschlossenheit!'
