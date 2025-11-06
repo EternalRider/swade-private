@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- Active Effects of type Modifier can now be given a cost that is not an integer number, such as 1.5 (#1293) **by florad92**
+
 ### Deprecated
 
 ### Removed
