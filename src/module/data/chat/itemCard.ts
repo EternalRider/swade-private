@@ -116,8 +116,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   protected override prepareDerivedData(this: ItemCardData) {
     if (!this.#hookId) {
       this.#hookId = Hooks.on('updateItem', async (item: SwadeItem) => {
-        if (item.uuid !== this.uuid) return;
-        this._refreshMessage();
+        if (item.uuid === this.uuid) this._refreshMessage();
       });
     }
   }
