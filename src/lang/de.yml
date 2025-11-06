@@ -493,7 +493,7 @@ SWADE:
     BeginPrompt: Am Anfang des Zuges mit Nachfrage
     Behavior: Verhalten bei Ablauf
     EndAuto: Automatisch am Ende des Zuges
-    EndPrompt: Am Anfang des Zuges, mit Nachfrage
+    EndPrompt: Am Ende des Zuges mit Nachfrage
     None: Keins
     TabLabel: Zugverhalten
     Description: >-
@@ -1303,6 +1303,8 @@ SWADE:
     Description: 'Größe: {scale} ({name})'
   Unfavorite: Entfavorisieren
   DeleteEmbeddedCardPrompt: Sicher, dass die Karte {card} gelöscht werden soll?
+  DeleteGroupAndCombatants: Gruppe und Gruppenmitglieder löschen
+  FollowLabel: Folgen
 TYPES:
   Actor:
     npc: NSC
