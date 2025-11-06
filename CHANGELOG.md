@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 
 ### Added
+  - Added roll enrichers for text and custom chat commands to quickly roll damage and trait tests. (#1284) **by florad92**
+    - You can use `/t` aor `/trait` to roll a trait test by referencing the trait you want to roll by either the swid (for skills) or the english attribute name with the proper prefix
+      - /trait @skill.notice Rolls a notice roll for the currently selected token, or character assigned to the current user if no token was selected.
+      - /damage 1d6 rolls a 1d6 damage roll. Please take not that you will need to add the explosive dice modifier (x) yourself
+    - You can also use the same formula to embed enriched one-click-rolls in text such as journal pages or chat messages, simply surround the command with double square brackets.
+      - [[/trait @skill.notice]]{Look for Clues} will create a small clickable button that triggers a Notice skill test while displaying the text "Look for Clues
 
 ### Changed
 
