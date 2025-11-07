@@ -148,6 +148,8 @@ Hooks.once('init', () => {
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
+  foundry.utils.mergeObject(CONFIG.RegionBehavior.dataModels, data.region.config);
+  CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;

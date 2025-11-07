@@ -51,8 +51,8 @@ export interface RollModifier {
 export interface RollModifierGroup {
   /** The name of the group */
   name: string;
-  /** The array of possible modifiers in the group */
-  modifiers: RollModifier[];
+  /** An object of possible modifiers in the group */
+  modifiers: Record<string, RollModifier>;
   /** Eligible roll types from constants.ts */
   rollType: ValueOf<typeof constants.ROLL_TYPE>;
 }

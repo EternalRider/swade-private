@@ -1,7 +1,4 @@
-import {
-  RollModifier,
-  RollModifierGroup,
-} from '../../interfaces/additional.interface';
+import { RollModifier } from '../../interfaces/additional.interface';
 import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
 import { SwadeRoll } from '../dice/SwadeRoll';
@@ -154,7 +151,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       await super._prepareContext(options),
       {
         rollModes: CONFIG.Dice.rollModes,
-        modGroups: new Array<RollModifierGroup>(),
+        modGroups: foundry.utils.duplicate(CONFIG.SWADE.rollModifiers),
         extraButtonLabel: '',
         rollMode: game.settings.get('core', 'rollMode'),
         modifiers: this.modifiers
@@ -195,12 +192,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    CONFIG.SWADE.prototypeRollGroups.forEach((m) => {
-      if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) return;
-      if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) return;
-      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll)
-        return;
-      context.modGroups.push(m);
+    Object.entries(context.modGroups).forEach(([id, m]) => {
+      if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) delete context.modGroups[id];
+      if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) delete context.modGroups[id];
+      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll) delete context.modGroups[id];
     });
     return context;
   }
@@ -407,10 +402,8 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _event: PointerEvent,
     target: HTMLButtonElement,
   ) {
-    const group = CONFIG.SWADE.prototypeRollGroups.find(
-      (v) => v.name === target.dataset.group,
-    );
-    const modifier = group?.modifiers[Number(target.dataset.index)];
+    const modifier = foundry.utils.getProperty(CONFIG.SWADE.rollModifiers, 
+      `${target.dataset.group}.modifiers.${target.dataset.modId}`);
     if (modifier) {
       this.modifiers.push({
         label: modifier.label,

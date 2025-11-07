@@ -4,7 +4,7 @@ import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeUser from './documents/SwadeUser';
-import SwadeActor from './documents/actor/SwadeActor';
+import SwadeActor, { BestNonStackingMods } from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 
 /**
@@ -407,6 +407,172 @@ export async function getItemsBySwid<T extends Item.SubType>(
     items.push(...documents);
   }
   return items;
+}
+
+/**
+ * Returns edge-to-edge distance of two `TokenDocument`s on the same scene
+ * @param tokenA one `TokenDocument`
+ * @param tokenB the other `TokenDocument`
+ * @returns the distance, in whatever units the scene grid uses
+ */
+export function getEdgeToEdgeDistance(tokenA: TokenDocument, tokenB: TokenDocument): number {
+  const scene = tokenA.parent;
+  if (!scene) return 0;
+  const conversionFactor = scene.grid.distance / scene.grid.size;
+  const combinedRadii = tokenA.object!.externalRadius + tokenB.object!.externalRadius;
+  const distance = scene.grid.measurePath([tokenA.getCenterPoint(), tokenB.getCenterPoint()]).distance;
+  return distance - (combinedRadii * conversionFactor);
+}
+
+/**
+ * 
+ * @param currToken       The attacking token
+ * @param targetToken     The token being targeted for the purposes of determining modifiers
+ * @param item            The item being used for the attack
+ * @param isRangedAttack  `true` if ranged weapon or mixed with non-`fighting` skill
+ * @param isMeleeAttack   `true` if melee weapon or mixed with `fighting` skill
+ * @returns A list of modifiers to be applied, and an object with the best non-stacking modifiers (e.g. illumination and darkness)
+ */
+export function getDefaultAttackModifiers(
+  currToken: TokenDocument,
+  targetToken: TokenDocument | undefined,
+  item: SwadeItem,
+  isRangedAttack: boolean,
+  isMeleeAttack: boolean,
+): { additionalMods: RollModifier[], bestNonStackingMods: BestNonStackingMods} {
+  const rollGroups = CONFIG.SWADE.rollModifiers;
+  const rangeMods = rollGroups.range.modifiers;
+  const coverMods = rollGroups.cover.modifiers;
+  const illuminationMods = rollGroups.illumination.modifiers;
+
+  const additionalMods: RollModifier[] = [];
+  const currActor = currToken.actor!;
+
+  // Unstable Platform
+  if (isRangedAttack && currToken?.regions?.some(r => 
+    r.behaviors.some(b => !b.disabled && (b.type === 'attackModifiers') && b.system.unstablePlatform)
+  )) {
+    if (!currActor.getSingleItemBySwid('steady-hands', 'edge'))
+      additionalMods.push(rollGroups.attack.modifiers.unstable);
+  }
+
+  let bestIllumination: RollModifier | undefined;
+  let bestCover: RollModifier | undefined;
+  if (targetToken) {
+    const targetActor = targetToken.actor!;
+    const scene = targetToken.parent as Scene;
+    // For use with range increments & prone
+    const distanceToTarget = scene.grid.measurePath([currToken.getCenterPoint(), targetToken.getCenterPoint()])?.distance ?? 0;
+
+    // Illumination & Cover
+    const targetBehaviors: RegionBehavior<'attackModifiers'>[] = Array.from(targetToken.regions!.map(r =>
+      r.behaviors.filter(b => !b.disabled && (b.type === 'attackModifiers')) as RegionBehavior<'attackModifiers'>[]
+    )).deepFlatten();
+    if (isRangedAttack && targetToken.hasStatusEffect('prone') && (distanceToTarget >= 3)) {
+      bestCover = {
+        label: 'SWADE.Cover.MediumProne',
+        value: -4
+      };
+    }
+    for (const behavior of targetBehaviors) {
+      const { illumination, cover } = behavior.system;
+      if (illumination) {
+        const currModifier = illuminationMods[illumination];
+        if (!bestIllumination || currModifier.value < bestIllumination.value) {
+          bestIllumination = currModifier;
+        }
+      }
+      if (cover) {
+        const currModifier = coverMods[cover];
+        if (!bestCover || currModifier.value < bestCover.value) {
+          bestCover = currModifier;
+        }
+      }
+    }
+    
+    // Shield cover
+    const equippedShields = targetActor.itemTypes.shield.filter(i => i.isReadied);
+    const shieldCoverMod = -equippedShields.reduce((bestCover, shield) => {
+      return Math.max(shield.system.cover, bestCover);
+    }, 0);
+    if (shieldCoverMod) {
+      if (!bestCover || (bestCover.value as number) > shieldCoverMod) {
+        bestCover = {
+          label: 'SWADE.Cover.Shield',
+          value: shieldCoverMod
+        };
+      }
+    }
+    
+    // Dodge
+    if (isRangedAttack) {
+      const dodgeItem = targetActor.getSingleItemBySwid('dodge', 'edge');
+      if (dodgeItem && (!bestCover || (bestCover.value as number > -2))) {
+        bestCover = {
+          label: dodgeItem.name,
+          value: -2
+        }
+      }
+    }
+
+    // Combat Acrobat
+    const combatAcrobatItem = targetActor.getSingleItemBySwid('combat-acrobat', 'edge');
+    if (combatAcrobatItem && !targetActor.system.encumbered) {
+      additionalMods.push({
+        label: combatAcrobatItem.name,
+        value: -1
+      })
+    }
+    
+    // Range
+    const range = item.range;
+    if (range) {
+      if (distanceToTarget > range.long) additionalMods.push(rangeMods.extreme);
+      else if (distanceToTarget > range.medium) additionalMods.push(rangeMods.long);
+      else if (distanceToTarget > range.short) additionalMods.push(rangeMods.medium);
+    }
+
+    // Vulnerable
+    if (targetToken.hasStatusEffect('vulnerable')) additionalMods.push(rollGroups.trait.modifiers.targetVulnerable);
+
+    // Gang-up, including (Improved) Block
+    if (isMeleeAttack && (currToken.disposition * targetToken.disposition === -1)) {
+      const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
+      const numAttackerAllies = scene.tokens.filter(t => {
+        if (t.disposition !== currToken.disposition) return false;
+        if (ignoreStatuses.some(status => t.hasStatusEffect(status))) return false;
+        return getEdgeToEdgeDistance(targetToken, t) < 1;
+      }).length;
+      const numDefenderAllies = scene.tokens.filter(t => {
+        if (t.disposition !== targetToken.disposition) return false;
+        if (ignoreStatuses.some(status => t.hasStatusEffect(status))) return false;
+        if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
+        return getEdgeToEdgeDistance(currToken, t) < 1;
+      }).length;
+      let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies)
+      if (targetActor.getSingleItemBySwid('improved-block', 'edge')) gangUpBonus -= 2;
+      else if (targetActor.getSingleItemBySwid('block', 'edge')) gangUpBonus -= 1;
+      if (gangUpBonus > 0) additionalMods.push({
+        label: 'SWADE.GangUp',
+        value: gangUpBonus
+      });
+    }
+
+    // Size
+    const attackerScale = currActor.system.stats.scale;
+    const defenderScale = targetActor.system.stats.scale;
+    const scaleDifference = defenderScale - attackerScale;
+    if (scaleDifference !== 0) {
+      additionalMods.push({
+        label: 'SWADE.ScaleDifference',
+        value: scaleDifference
+      });
+    }
+  }
+  return { 
+    additionalMods,
+    bestNonStackingMods: { bestIllumination, bestCover }
+  };
 }
 
 type Ownership = Record<string, number>;
