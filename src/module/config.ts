@@ -247,7 +247,7 @@ export const SWADE: SwadeConfig = {
     },
   },
 
-  prototypeRollGroups: {
+  rollModifiers: {
     trait: {
       name: 'SWADE.ModTrait',
       modifiers: {
@@ -442,7 +442,7 @@ export interface SwadeConfig {
   measuredTemplatePresets: Array<TemplateConfig>;
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
-  prototypeRollGroups: Record<string, RollModifierGroup>;
+  rollModifiers: Record<string, RollModifierGroup>;
   ranks: string[];
   scales: string[];
   textSearch: {

@@ -142,7 +142,7 @@ export default class SwadeCoreHooks {
     SWADE.scales = SWADE.scales.map((scale) => game.i18n.localize(scale));
 
     //localize the prototype modifiers
-    for (const group of Object.values(SWADE.prototypeRollGroups)) {
+    for (const group of Object.values(SWADE.rollModifiers)) {
       group.name = game.i18n.localize(group.name);
       for (const modifier of Object.values(group.modifiers)) {
         modifier.label = game.i18n.localize(modifier.label);

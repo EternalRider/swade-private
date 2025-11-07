@@ -72,7 +72,9 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override get title(): string {
-    return this.ctx.title ?? 'SWADE RollDialog';
+    let title = this.ctx.title ?? 'SWADE RollDialog';
+    if (this.ctx.actor) title = this.ctx.actor.name + ': ' + title;
+    return title;
   }
 
   get rollMode(): foundry.CONST.DICE_ROLL_MODES {
@@ -149,7 +151,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       await super._prepareContext(options),
       {
         rollModes: CONFIG.Dice.rollModes,
-        modGroups: foundry.utils.duplicate(CONFIG.SWADE.prototypeRollGroups),
+        modGroups: foundry.utils.duplicate(CONFIG.SWADE.rollModifiers),
         extraButtonLabel: '',
         rollMode: game.settings.get('core', 'rollMode'),
         modifiers: this.modifiers
@@ -400,7 +402,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _event: PointerEvent,
     target: HTMLButtonElement,
   ) {
-    const modifier = foundry.utils.getProperty(CONFIG.SWADE.prototypeRollGroups, 
+    const modifier = foundry.utils.getProperty(CONFIG.SWADE.rollModifiers, 
       `${target.dataset.group}.modifiers.${target.dataset.modId}`);
     if (modifier) {
       this.modifiers.push({

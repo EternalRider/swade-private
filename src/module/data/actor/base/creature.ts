@@ -847,6 +847,48 @@ class CreatureData<
       out[name] = `1d${die}[${skill.name}]${modString}`;
     }
 
+    out.attribute = Object.entries(this.attributes)
+      .map(([key, attribute]) => {
+        const name = game.i18n.localize(SWADE.attributes[key].long);
+        const die = attribute.die.sides;
+        let mod = attribute.die.modifier || 0;
+        if (includeModifiers) {
+          mod = structuredClone<RollModifier[]>([
+            {
+              label: game.i18n.localize('SWADE.TraitMod'),
+              value: attribute.die.modifier!,
+            },
+            ...globalMods[key],
+            ...globalMods.trait,
+          ])
+            .filter((m) => m.ignore !== true)
+            .reduce(addUpModifiers, 0) as number;
+        }
+        let modString = mod !== 0 ? signedNumberString(mod) : '';
+        if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
+        let val = `1d${die}x[${name}]${modString}`;
+        if (die! <= 1) val = `1d${die}[${name}]${modString}`;
+        return [key, val];
+      })
+      .reduce((acc, [k, v]) => {
+        acc[k] = v;
+        return acc;
+      }, {});
+
+    out.skill = this.parent.itemTypes.skill
+      .map((skill: SwadeItem<'skill'>) => {
+        const die = skill.system.die.sides;
+        let mod = skill.system.die.modifier;
+        if (includeModifiers) mod = skill.modifier;
+        let modString = mod !== 0 ? signedNumberString(mod) : '';
+        if (mod) modString += `[${game.i18n.localize('SWADE.TraitMod')}]`;
+        return [skill.system.swid, `1d${die}[${skill.name}]${modString}`];
+      })
+      .reduce((acc, [k, v]) => {
+        acc[k] = v;
+        return acc;
+      }, {});
+
     return { ...out, ...super.getRollData() };
   }
 

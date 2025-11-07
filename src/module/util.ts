@@ -284,7 +284,7 @@ export function isObject(value) {
 }
 
 /** Separates an array into a series of smaller arrays of a given size */
-export function chunkArray<T>(array: T[], size: number): Array<T[]> {
+export function chunkArray<T>(array: T[], size: number = 2): Array<T[]> {
   const result: Array<T[]> = [];
   for (let i = 0; i < array.length; i += size) {
     const chunk = array.slice(i, i + size);
@@ -440,7 +440,7 @@ export function getDefaultAttackModifiers(
   isRangedAttack: boolean,
   isMeleeAttack: boolean,
 ): { additionalMods: RollModifier[], bestNonStackingMods: BestNonStackingMods} {
-  const rollGroups = CONFIG.SWADE.prototypeRollGroups;
+  const rollGroups = CONFIG.SWADE.rollModifiers;
   const rangeMods = rollGroups.range.modifiers;
   const coverMods = rollGroups.cover.modifiers;
   const illuminationMods = rollGroups.illumination.modifiers;
