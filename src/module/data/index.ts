@@ -6,4 +6,5 @@ export * as effect from './effect';
 export * as fields from './fields';
 export * as item from './item';
 export * as journal from './journal';
+export * as region from './region';
 export * as shared from './shared';

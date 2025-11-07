@@ -28,14 +28,10 @@ class SwadeDocumentTweaks<
   }
 
   static override DEFAULT_OPTIONS = {
-    position: {
-      width: 400,
-      height: 600,
-    },
-    window: {
-      contentClasses: ['standard-form'],
-    },
+    position: { width: 400, height: 600 },
+    window: { contentClasses: ['standard-form'] },
     classes: ['swade', 'doc-tweaks', 'swade-application'],
+    form: { closeOnSubmit: true },
   };
 
   override get id() {
@@ -226,15 +222,11 @@ class SwadeItemTweaks<
   Document extends SwadeItem,
   RenderContext extends AnyObject,
 > extends SwadeDocumentTweaks<Document, RenderContext> {
-  static override DEFAULT_OPTIONS = foundry.utils.mergeObject(
-    super.DEFAULT_OPTIONS,
-    {
-      actions: {
-        regenerateSWID: SwadeItemTweaks.#regenerateSWID,
-      },
+  static override DEFAULT_OPTIONS = {
+    actions: {
+      regenerateSWID: SwadeItemTweaks.#regenerateSWID,
     },
-    { inplace: false },
-  );
+  };
 
   static override PARTS = {
     main: {

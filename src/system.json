@@ -217,6 +217,9 @@
           "upgrades"
         ]
       }
+    },
+    "RegionBehavior": {
+      "attackModifiers": {}
     }
   }
 }
