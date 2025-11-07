@@ -359,8 +359,6 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   protected async _refreshMessage() {
     await ui.chat.updateMessage(this.parent, false);
   }
-
-  async #rerenderCardWhenItemChanges();
 }
 
 export { ItemCardData };
