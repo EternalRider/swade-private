@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.0.8
+
+### Fixed
+
+- Active Effects can no longer reduce Armor, Touughness or Parry below 0. (#1382) **by @florad92**
+
 ## 5.0.7
 
 ### Changed
