@@ -27,7 +27,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- Active Effects can no longer reduce Armor, Touughness or Parry below 0. (#1382) **by @florad92**
+- Active Effects can no longer reduce Armor, Toughness or Parry below 0. (#1382) **by @florad92**
+- Fixed missing import in the Skill Datamodel. (#1395) **by @florad92**
 
 ## 5.0.7
 
