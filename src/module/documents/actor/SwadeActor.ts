@@ -1312,7 +1312,7 @@ class SwadeActor<
           break;
       }
     });
-    return derivedStat;
+    return Math.max(derivedStat, 0);
   }
 
   /**

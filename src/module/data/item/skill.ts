@@ -1,5 +1,6 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
@@ -85,9 +86,13 @@ class SkillData extends SwadeBaseItemData<
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/skill-embeds.hbs',
