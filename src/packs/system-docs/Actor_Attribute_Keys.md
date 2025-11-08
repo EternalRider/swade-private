@@ -2,7 +2,7 @@
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.xx4bfi2ngT6ZT68p'
   _id: xx4bfi2ngT6ZT68p
-  name: Attribute Keys
+  name: Actor Attribute Keys
   sort: 400010
   title:
     level: 2

@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Ranged weapon attacks against a target with the Dodge edge (matched by swid) will receive the malus
   - Combat Acrobat (matched by swid) will be considered if not encumbered
 - To accommodate modules easily taking advantage of these default modifiers, introduced a new `swadeCalculateDefaultAttackMods` hook which provides, among necessary information, the `additionalModifiers` variable to be mutated in-place.
+- Added a new page to the system documentation listing Item Attribute keys that can be reached via the The Item-Affecting AE key syntax. (#1356) **by @harliquinn.whiteshadow**
 
 ### Changed
 
