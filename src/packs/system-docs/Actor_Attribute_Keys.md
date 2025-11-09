@@ -21,7 +21,7 @@ Both Characters and NPCs share similar data structures; the main difference is t
 - Ignored Wounds: `system.wounds.ignored`
 - Max Fatigue: `system.fatigue.max`
 - Ignored Fatigue: `system.fatigue.ignored`
-- Numb (Ignore wounds and fatigue): `system.woundsOrFatigue.ignored`
+- Numb (Ignore Wounds and Fatigue): `system.woundsOrFatigue.ignored`
 - Enable Conviction: `system.details.conviction.active`
 - Size: `system.stats.size`
 - Wealth Die

@@ -10,7 +10,7 @@ foundry:
 
 ## Skills
 
-(\<Skill Name\> is replaced by the name of the Skill in Title Case with no quotes, e.g. Weird Science, Fighting)
+(\<Skill Name\> is replaced by the name of the Skill in Title Case with no quotes, e.g. Weird Science, Fighting), alternately use the uuid of the item.
 
 | Attribute                                       | Modes                                                           | Values                                   |
 | :---------------------------------------------- | :-------------------------------------------------------------- | :--------------------------------------- |
@@ -23,7 +23,7 @@ foundry:
 
 ## Powers
 
-(\<Power Name\> is replaced by the name of the Power in Title Case with no quotes, e.g. Bolt, Boost/Lower Trait)
+(\<Power Name\> is replaced by the name of the Power in Title Case with no quotes, e.g. Bolt, Boost/Lower Trait), alternately use the uuid of the item.
 
 ### General
 
@@ -65,7 +65,7 @@ foundry:
 
 ## Weapons
 
-(\<Weapon Name\> is replaced by the name of the Weapon in Title Case with no quotes, e.g. Dagger, Brass Knuckles)
+(\<Weapon Name\> is replaced by the name of the Weapon in Title Case with no quotes, e.g. Dagger, Brass Knuckles), alternately use the uuid of the item.
 
 ### General
 
