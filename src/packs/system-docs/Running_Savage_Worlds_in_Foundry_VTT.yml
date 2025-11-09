@@ -1,19 +1,21 @@
 _id: 8uC7RTgJOg8SW4cf
 name: Running Savage Worlds in Foundry VTT
 pages:
-  - CS16YycneYYnmWVZ
-  - xx4bfi2ngT6ZT68p
-  - IQk83Jmto9VQWXNS
-  - NcFH9QGCsLMpdkH0
-  - HzMYH8xP2XJgPJue
-  - hwX4nBBG8gzqnJE0
-  - pUgyiLLEp1WQh7Ag
-  - xXe8NXRCtmpUUigh
-  - qKSga6mGzCPciZ8v
-  - 0rHMnYSuYiVcQGxU
-  - BrbvJQ3OnkmO3cip
-  - sEULsXQtiNxTDent
-  - npC8fXZCPkW9vegg
-  - du4BEcZ8G47otEeF
+  # ID - Name - Sort Value
+  - IQk83Jmto9VQWXNS # Playing The Game - 0
+  - npC8fXZCPkW9vegg # Combat Tracker - 100000
+  - NcFH9QGCsLMpdkH0 # Items - 200000
+  - HzMYH8xP2XJgPJue # Pace - 250000
+  - hwX4nBBG8gzqnJE0 # Rolling Inline Roll Attributes - 300000
+  - CS16YycneYYnmWVZ # Active Effects - 400000
+  - xx4bfi2ngT6ZT68p # Actor Attribute Keys - 400010
+  - UGqkYwOYsfCVwbzZ # Item Attribute Keys - 400020
+  - sEULsXQtiNxTDent # Savage Worlds ID - 450000
+  - pUgyiLLEp1WQh7Ag # System Settings - 500000
+  - 0rHMnYSuYiVcQGxU # Character Sheet - 700000
+  - qKSga6mGzCPciZ8v # NPC Sheet - 800000
+  - xXe8NXRCtmpUUigh # Vehicle Sheet - 900000
+  - BrbvJQ3OnkmO3cip # System API - 1000000
+  - du4BEcZ8G47otEeF # System Hooks - 1100000
 sort: 0
 _key: '!journal!8uC7RTgJOg8SW4cf'
