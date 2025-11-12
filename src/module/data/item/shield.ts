@@ -132,7 +132,10 @@ class ShieldData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          this.notes ?? '',
+          enrichOptions,
+        ),
         title: game.i18n.localize('SWADE.Notes'),
       },
     );
@@ -160,10 +163,32 @@ class ShieldData extends SwadePhysicalItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      const description = this.description || '';
+      const enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          description,
+          options,
+        );
+
+      const elem = document.createElement('div');
+      elem.className = 'swade-embed-description';
+      if (config.classes) {
+        elem.classList.add(...config.classes.split(' '));
+      }
+      elem.innerHTML = enrichedDescription;
+      return elem;
+    }
+
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/shield-embeds.hbs',

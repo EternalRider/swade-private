@@ -76,6 +76,24 @@ export class NpcData extends CreatureData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      const description = this.details.biography.value || '';
+      const enrichedDescription =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          description,
+          options,
+        );
+
+      const elem = document.createElement('div');
+      elem.className = 'swade-embed-description';
+      if (config.classes) {
+        elem.classList.add(...config.classes.split(' '));
+      }
+      elem.innerHTML = enrichedDescription;
+      return elem;
+    }
+
     config.caption = false;
 
     // Enrich biography text
