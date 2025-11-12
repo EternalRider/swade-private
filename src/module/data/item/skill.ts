@@ -1,5 +1,6 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';

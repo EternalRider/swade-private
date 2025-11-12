@@ -88,7 +88,7 @@
           autocomplete='off'
         />
         <ol class='selections unmarked-list'>
-          {{#each modGroups as |group|}}
+          {{#each modGroups as |group id|}}
             <li class='group-header'>{{group.name}}</li>
             {{#each group.modifiers}}
               <li class='modifier'>
@@ -96,8 +96,8 @@
                   type='button'
                   class='add-preset'
                   data-action='addPreset'
-                  data-group='{{group.name}}'
-                  data-index={{@index}}
+                  data-group='{{id}}'
+                  data-mod-id={{@key}}
                 >
                   {{label}}
                 </button>
