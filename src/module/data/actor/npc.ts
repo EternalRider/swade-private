@@ -1,5 +1,5 @@
 import { DeepPartial } from 'fvtt-types/utils';
-import { createEmbedElement } from '../../util';
+import { createDescriptionEmbed, createEmbedElement } from '../../util';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
 
@@ -78,20 +78,11 @@ export class NpcData extends CreatureData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      const description = this.details.biography.value || '';
-      const enrichedDescription =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          description,
-          options,
-        );
-
-      const elem = document.createElement('div');
-      elem.className = 'swade-embed-description';
-      if (config.classes) {
-        elem.classList.add(...config.classes.split(' '));
-      }
-      elem.innerHTML = enrichedDescription;
-      return elem;
+      return createDescriptionEmbed(
+        this.details.biography.value || '',
+        config,
+        options,
+      );
     }
 
     config.caption = false;

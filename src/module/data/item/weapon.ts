@@ -15,7 +15,11 @@ import {
   ItemChatCardChip,
   UsageUpdates,
 } from '../../documents/item/SwadeItem.interface';
-import { createEmbedElement, notificationExists } from '../../util';
+import {
+  createEmbedElement,
+  createDescriptionEmbed,
+  notificationExists,
+} from '../../util';
 import { FormulaField } from '../fields';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
@@ -757,20 +761,7 @@ class WeaponData extends SwadePhysicalItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      const description = this.description || '';
-      const enrichedDescription =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          description,
-          options,
-        );
-
-      const elem = document.createElement('div');
-      elem.className = 'swade-embed-description';
-      if (config.classes) {
-        elem.classList.add(...config.classes.split(' '));
-      }
-      elem.innerHTML = enrichedDescription;
-      return elem;
+      return createDescriptionEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

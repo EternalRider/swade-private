@@ -7,7 +7,7 @@ import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createEmbedElement } from '../../util';
+import { createDescriptionEmbed, createEmbedElement } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
 import { ShieldData, WeaponData } from '../item';
@@ -648,20 +648,7 @@ class VehicleData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      const description = this.description || '';
-      const enrichedDescription =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          description,
-          options,
-        );
-
-      const elem = document.createElement('div');
-      elem.className = 'swade-embed-description';
-      if (config.classes) {
-        elem.classList.add(...config.classes.split(' '));
-      }
-      elem.innerHTML = enrichedDescription;
-      return elem;
+      return createDescriptionEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

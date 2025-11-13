@@ -1,4 +1,4 @@
-import { createEmbedElement } from '../../util';
+import { createDescriptionEmbed, createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
 import { grants } from './common';
 import { Grants } from './item-common.interface';
@@ -62,20 +62,7 @@ class AncestryData extends SwadeBaseItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      const description = this.description || '';
-      const enrichedDescription =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          description,
-          options,
-        );
-
-      const elem = document.createElement('div');
-      elem.className = 'swade-embed-description';
-      if (config.classes) {
-        elem.classList.add(...config.classes.split(' '));
-      }
-      elem.innerHTML = enrichedDescription;
-      return elem;
+      return createDescriptionEmbed(this.description || '', config, options);
     }
 
     config.caption = false;
