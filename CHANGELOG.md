@@ -48,6 +48,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.1.0
+
+- Passing `description=true` when embedding an actor or item renders only the enrichedDescription (usage: @Embed[UUID description=true]). Use within `inline=true` for seamless integration into text flow **by @jestevens210**
+
 ## 5.0.8
 
 ### Fixed
