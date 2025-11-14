@@ -17,7 +17,7 @@ import {
 } from '../../documents/item/SwadeItem.interface';
 import {
   createEmbedElement,
-  createDescriptionEmbed,
+  createEnrichedTextEmbed,
   notificationExists,
 } from '../../util';
 import { FormulaField } from '../fields';
@@ -761,7 +761,7 @@ class WeaponData extends SwadePhysicalItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

@@ -623,10 +623,10 @@ export function getDefaultAttackModifiers(
 }
 
 /**
- * Utility function to handle description-only embedding for SWADE documents.
+ * Utility function to handle enriched text embedding for SWADE documents.
  * Used by toEmbed methods to provide consistent behavior when config.description === true.
  */
-export async function createDescriptionEmbed(
+export async function createEnrichedTextEmbed(
   description: string,
   config: TextEditor.DocumentHTMLEmbedConfig,
   options: TextEditor.EnrichmentOptions,

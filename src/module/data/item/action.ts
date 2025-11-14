@@ -1,6 +1,6 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { PotentialSource } from '../../../globals';
-import { createDescriptionEmbed, createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
@@ -67,7 +67,7 @@ class ActionData extends SwadeBaseItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

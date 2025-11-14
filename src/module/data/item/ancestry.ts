@@ -1,4 +1,4 @@
-import { createDescriptionEmbed, createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { SwadeBaseItemData } from './base';
 import { grants } from './common';
 import { Grants } from './item-common.interface';
@@ -62,7 +62,7 @@ class AncestryData extends SwadeBaseItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

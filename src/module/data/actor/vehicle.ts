@@ -7,7 +7,7 @@ import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createDescriptionEmbed, createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
 import { ShieldData, WeaponData } from '../item';
@@ -648,7 +648,7 @@ class VehicleData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

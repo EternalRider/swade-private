@@ -1,4 +1,4 @@
-import { createDescriptionEmbed, createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -146,7 +146,7 @@ export class CharacterData extends CreatureData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(
+      return createEnrichedTextEmbed(
         this.details.biography.value || '',
         config,
         options,

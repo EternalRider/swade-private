@@ -6,7 +6,7 @@ import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
 import {
   addUpModifiers,
-  createDescriptionEmbed,
+  createEnrichedTextEmbed,
   createEmbedElement,
 } from '../../util';
 import { DiceTrait } from '../common.interface';
@@ -92,7 +92,7 @@ class SkillData extends SwadeBaseItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;

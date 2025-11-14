@@ -5,7 +5,7 @@ import {
   ItemChatCardChip,
   Requirement,
 } from '../../documents/item/SwadeItem.interface';
-import { count, createDescriptionEmbed, createEmbedElement } from '../../util';
+import { count, createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
@@ -174,7 +174,7 @@ class EdgeData extends SwadeBaseItemData<
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createDescriptionEmbed(this.description || '', config, options);
+      return createEnrichedTextEmbed(this.description || '', config, options);
     }
 
     config.caption = false;
