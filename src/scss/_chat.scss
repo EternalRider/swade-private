@@ -21,14 +21,15 @@ aside#tooltip {
     white-space: normal;
   }
 
-  .initiative-draw, .compact-draw {
-      .card-name {
-          grid-column: 2;
-          font-size: 1.125em;
-          font-weight: 700;
-          line-height: 1;
-          margin-bottom: 0;
-      }
+  .initiative-draw,
+  .compact-draw {
+    .card-name {
+      grid-column: 2;
+      font-size: 1.125em;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0;
+    }
   }
 
   .compact-draw {

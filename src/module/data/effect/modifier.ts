@@ -10,7 +10,7 @@ function modifierSchema() {
   return {
     cost: new fields.NumberField({
       initial: null,
-      integer: true,
+      integer: false,
       label: 'SWADE.ActiveEffects.ModifierCost.Label',
       hint: 'SWADE.ActiveEffects.ModifierCost.Hint',
     }),

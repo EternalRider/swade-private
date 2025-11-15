@@ -106,7 +106,9 @@ function suitIcon(suit: string) {
       suitClass = suit;
     }
   }
-  return new Handlebars.SafeString(`<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`);
+  return new Handlebars.SafeString(
+    `<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`,
+  );
 }
 
 /*****************************

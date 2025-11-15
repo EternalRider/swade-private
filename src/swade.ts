@@ -33,6 +33,7 @@ import SwadeCombat from './module/documents/combat/SwadeCombat';
 import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
 import { registerEffectCallbacks } from './module/effectCallbacks';
+import { registerEnrichers } from './module/enrichers';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
@@ -147,6 +148,8 @@ Hooks.once('init', () => {
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
+  foundry.utils.mergeObject(CONFIG.RegionBehavior.dataModels, data.region.config);
+  CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -272,6 +275,9 @@ Hooks.once('init', () => {
   registerEffectCallbacks();
   registerAuraHooks();
 
+  //Register custom enrichers
+  registerEnrichers();
+
   // Register sheets
   foundry.documents.collections.Actors.unregisterSheet(
     'core',
@@ -358,6 +364,7 @@ Hooks.once('init', () => {
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
+  CONFIG.Dice.terms.w = WildDie;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);

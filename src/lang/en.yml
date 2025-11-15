@@ -332,6 +332,7 @@ SWADE:
   IgnWounds: Ignore Wounds
   Size: Size
   Scale: Scale
+  ScaleDifference: Scale Difference
   PickACard: Pick a card for {name}
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}
@@ -538,6 +539,7 @@ SWADE:
     Shield: Cover - Shield
     Light: Light Cover
     Medium: Medium Cover
+    MediumProne: Medium Cover (Prone)
     Heavy: Heavy Cover
     Total: Total Cover
   Range:
@@ -546,6 +548,7 @@ SWADE:
     Medium: Medium Range
     Long: Long Range
     Extreme: Extreme Range
+  GangUp: Ganging Up
   ModOther: Other Modifiers
   ModTrait: Trait Modifiers
   ModAttack: Attack Modifiers
@@ -1660,6 +1663,18 @@ SWADE:
         Gunner: Gunner
         Other: Other
   ChargeLevel: Charge
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          illumination:
+            label: Level of Illumination
+            hint: Will apply default illumination penalty modifiers when targeting tokens in this region.
+          cover:
+            label: Level of Cover
+            hint: Will apply default cover penalty modifiers when targeting tokens in this region.
+          unstablePlatform:
+            hint: Will apply default "Unstable Platform" modifier when shooting/throwing from within this region.
 TYPES:
   ActiveEffect:
     modifier: Modifier
@@ -1690,3 +1705,5 @@ TYPES:
     dramaticTask: Dramatic Task
   JournalEntryPage:
     headquarters: Headquarters
+  RegionBehavior:
+    attackModifiers: Attack Modifiers

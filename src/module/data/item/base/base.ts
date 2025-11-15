@@ -1,3 +1,4 @@
+import { DeepPartial } from 'fvtt-types/utils';
 import {
   AdditionalStat,
   ItemAction,
@@ -145,6 +146,19 @@ class SwadeBaseItemData<
       data.system?.swid === constants.RESERVED_SWID.DEFAULT
     ) {
       this.updateSource({ swid: slugify(data.name) });
+    }
+  }
+
+  protected override async _preUpdate(
+    changes: DeepPartial<
+      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>
+    >,
+    options: Item.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ) {
+    await super._preUpdate(changes, options, user);
+    if (changes?.system?.swid === constants.RESERVED_SWID.DEFAULT) {
+      changes.system.swid = slugify(changes.name);
     }
   }
 
