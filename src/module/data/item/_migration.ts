@@ -110,7 +110,7 @@ export function convertCharges(source: PotentialSource<ConsumableData>) {
   source.charges ??= {};
   source.charges.hasCharges = true;
 
-  if (source.charges.value != undefined || source.charges.max != undefined) {
+  if (source.charges.value !== undefined || source.charges.max !== undefined) {
     const id = ChargesData.randomID();
     foundry.utils.setProperty(source, 'charges.charges.' + id, {
       id: id,

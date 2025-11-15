@@ -624,7 +624,7 @@ function _ensureBatteryMaxCharges(
 ) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
-    if (data.system.charges?.hasCharges == undefined ||
+    if (data.system.charges?.hasCharges === undefined ||
       !data.system.charges.charges ||
       !Object.keys(data.system.charges.charges).length) {
       //We don't have a charge object so create one

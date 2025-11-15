@@ -1,18 +1,18 @@
 <header class='header'>
   <div class='header-buttons'>
-    <button type='button' class='add-charge add-button invisible' data-action='addCharge'>
-      <i class='fa fa-plus'></i>
+    <button type='button' class='add-charge charge-button add-button invisible' data-action='addCharge'>
+      <i class='fa-solid fa-plus'></i>
       {{localize 'SWADE.AddCharge'}}
     </button>
     {{#if hasEncounterCharge}}
-      <button type='button' class='charge-recharge-encounter invisible' data-action='rechargeEncounter'>
-        <i class='fa fa-rotate-right'></i>
+      <button type='button' class='charge-recharge-encounter charge-button invisible' data-action='rechargeEncounter'>
+        <i class='fa-solid fa-rotate-right'></i>
         {{localize 'SWADE.Encounter'}}
       </button>
     {{/if}}
     {{#if hasDayCharge}}
-      <button type='button' class='charge-recharge-day invisible' data-action='rechargeDay'>
-        <i class='fa fa-rotate'></i>
+      <button type='button' class='charge-recharge-day charge-button invisible' data-action='rechargeDay'>
+        <i class='fa-solid fa-rotate'></i>
         {{localize 'SWADE.Day'}}
       </button>
     {{/if}}
@@ -23,7 +23,7 @@
     <li data-charge-id='{{id}}'>
       <fieldset class='charge'>
         <span class='sort-handle' draggable="true">
-          <i class='fas fa-grip-vertical fa-2x'></i>
+          <i class='fa-solid fa-grip-vertical fa-2x'></i>
         </span>
         <span class='content'>
           {{#if (eq @index 0)}}
@@ -57,15 +57,17 @@
               <span class='form-fields text-center'>
                 <input type='text' class='recharge-amount' name='system.charges.charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
                 <button type='button' class='charge-recharge-manual invisible' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
-                  <i class='fas fa-rotate-right'></i>
+                  <i class='fa-solid fa-rotate-right'></i>
                 </button>
               </span>
             </div>
           {{/unless}}
         </span>
-        <button type='button' class='charge-delete invisible' data-action='deleteCharge' title='{{localize "Delete"}}' data-charge-id='{{id}}' {{#if (eq ../item.system.charges.size 1)}}style='visibility: hidden;' {{/if}}>
-          <i class='fas fa-trash fa-2x'></i>
+        {{#unless (eq ../item.system.charges.size 1)}}
+        <button type='button' class='charge-delete invisible' data-action='deleteCharge' title='{{localize "Delete"}}' data-charge-id='{{id}}'>
+          <i class='fa-solid fa-trash fa-2x'></i>
         </button>
+        {{/unless}}
       </fieldset>
     </li>
   {{/each}}

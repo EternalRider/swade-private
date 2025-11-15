@@ -997,13 +997,13 @@ SWADE:
   Finite: Finite
   Manual: Manual
   Encounter: Encounter
-  Day: Day
+  Day: Daily
   RechargeRollFlavor: Recharging {name}
   RechargeManualConfirm: Recharge {name}?
   RechargeEncounterConfirm: Recharge all encounter charges?
-  RechargeDayConfirm: Recharge all day charges?
+  RechargeDayConfirm: Recharge all daily charges?
   RechargeAllItemsEncounterConfirm: Recharge all encounter charges on all items?
-  RechargeAllItemsDayConfirm: Recharge all day charges on all items?
+  RechargeAllItemsDayConfirm: Recharge all daily charges on all items?
   UsesTOC: Use Compendium TOC
   TOCBlockList: Compendium TOC Blocklist
   TOCSettings:
