@@ -20,6 +20,7 @@ import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { ChargeData } from '../data/fields/ChargesData';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -105,15 +106,15 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     //Disable draggable on the item if we drag inside of the charge summary
     html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.onmousedown = function() {
-        el.closest('li').setAttribute('draggable', 'false');
-      }
+      el.addEventListener('mousedown', () => {
+        el.closest('li')?.setAttribute('draggable', 'false');
+      });
     });
 
     html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.onmouseup = function () {
-        el.closest('li').setAttribute('draggable', 'true');
-      }
+      el.addEventListener('mouseup', () => {
+        el.closest('li')?.setAttribute('draggable', 'true');
+      });
     });
 
     html
@@ -502,7 +503,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       }
 
       if (system.charges?.hasCharges ) {
-        const charges = new Array<any>();
+        const charges = new Array<{charge: ChargeData; rechargeType: string}>();
 
         for (const itemCharge of system.charges.sorted) {
           charges.push({
@@ -1419,7 +1420,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     const items: ContextMenu.Entry[] = [
       {
         name: game.i18n.localize('SWADE.Encounter'),
-        icon: '<i class="fas fa-rotate-right"></i>',
+        icon: '<i class="fa-solid fa-rotate-right"></i>',
         condition: true,
         callback: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
@@ -1438,7 +1439,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       },
       {
         name: game.i18n.localize('SWADE.Day'),
-        icon: '<i class="fas fa-rotate"></i>',
+        icon: '<i class="fa-solid fa-rotate"></i>',
         condition: true,
         callback: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');

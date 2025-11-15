@@ -1,9 +1,14 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { RollModifier } from '../../../interfaces/additional.interface';
+import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
-import { addUpModifiers, createEmbedElement } from '../../util';
+import {
+  addUpModifiers,
+  createEnrichedTextEmbed,
+  createEmbedElement,
+} from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
@@ -85,6 +90,11 @@ class SkillData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

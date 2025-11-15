@@ -421,7 +421,7 @@ class SwadeItem<
   rechargeAllChargesOfType(rechargeType: string) {
     if (this.system.charges) {
       for (const charge of this.system.charges.array) {
-        if (charge.rechargeType == rechargeType) {
+        if (charge.rechargeType === rechargeType) {
           this.rechargeCharge(charge);
         }
       }
@@ -438,7 +438,7 @@ class SwadeItem<
 
     //Calculate our recharge amount
     let rechargeAmount = 0;
-    if (charge.rechargeAmount != '') {
+    if (charge.rechargeAmount !== '') {
       const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
         name: charge.name,
       });

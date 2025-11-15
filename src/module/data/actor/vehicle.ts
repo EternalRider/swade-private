@@ -7,7 +7,7 @@ import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
 import { ShieldData, WeaponData } from '../item';
@@ -646,6 +646,11 @@ class VehicleData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

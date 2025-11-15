@@ -247,72 +247,72 @@ export const SWADE: SwadeConfig = {
     },
   },
 
-  prototypeRollGroups: [
-    {
+  rollModifiers: {
+    trait: {
       name: 'SWADE.ModTrait',
-      modifiers: [
-        { label: 'SWADE.Running', value: -2 },
-        { label: 'SWADE.TargetVulnerable', value: '+2' },
-        { label: 'SWADE.Encumbered', value: -2 },
-        { label: 'SWADE.Unfamiliar.2', value: -2 },
-        { label: 'SWADE.Unfamiliar.4', value: -4 },
-      ],
+      modifiers: {
+        running: { label: 'SWADE.Running', value: -2 },
+        targetVulnerable: { label: 'SWADE.TargetVulnerable', value: '+2' },
+        encumbered: { label: 'SWADE.Encumbered', value: -2 },
+        unfamiliar2: { label: 'SWADE.Unfamiliar.2', value: -2 },
+        unfamiliar4: { label: 'SWADE.Unfamiliar.4', value: -4 },
+      },
       rollType: constants.ROLL_TYPE.TRAIT,
     },
-    {
+    attack: {
       name: 'SWADE.ModAttack',
-      modifiers: [
-        { label: 'SWADE.Aiming', value: '+2' },
-        { label: 'SWADE.Snapfire', value: -2 },
-        { label: 'SWADE.UnstablePlatform', value: -2 },
-        { label: 'SWADE.CalledShot.Hand', value: -4 },
-        { label: 'SWADE.CalledShot.HeadOrVitals', value: -4 },
-        { label: 'SWADE.CalledShot.Limbs', value: -2 },
-        { label: 'SWADE.DesperateAttack.2', value: '+2' },
-        { label: 'SWADE.DesperateAttack.4', value: '+4' },
-      ],
+      modifiers: {
+        aiming: { label: 'SWADE.Aiming', value: '+2' },
+        snapfire: { label: 'SWADE.Snapfire', value: -2 },
+        unstable: { label: 'SWADE.UnstablePlatform', value: -2 },
+        calledHand: { label: 'SWADE.CalledShot.Hand', value: -4 },
+        calledHeadVitals: { label: 'SWADE.CalledShot.HeadOrVitals', value: -4 },
+        calledLimbs: { label: 'SWADE.CalledShot.Limbs', value: -2 },
+        desperate2: { label: 'SWADE.DesperateAttack.2', value: '+2' },
+        desperate4: { label: 'SWADE.DesperateAttack.4', value: '+4' },
+      },
       rollType: constants.ROLL_TYPE.ATTACK,
     },
-    {
+    damage: {
       name: 'SWADE.ModDamage',
-      modifiers: [
-        { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4' },
-        { label: 'SWADE.Weakness', value: '+4' },
-        { label: 'SWADE.Resistance', value: -4 },
-        { label: 'SWADE.DesperateAttack.2', value: -2 },
-        { label: 'SWADE.DesperateAttack.4', value: -4 },
-      ],
+      modifiers: {
+        calledHeadVitals: { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4' },
+        weakness: { label: 'SWADE.Weakness', value: '+4' },
+        resistance: { label: 'SWADE.Resistance', value: -4 },
+        desperate2: { label: 'SWADE.DesperateAttack.2', value: -2 },
+        desperate4: { label: 'SWADE.DesperateAttack.4', value: -4 },
+      },
       rollType: constants.ROLL_TYPE.DAMAGE,
     },
-    {
+    range: {
       name: 'SWADE.Range._name',
-      modifiers: [
-        { label: 'SWADE.Range.Medium', value: -2 },
-        { label: 'SWADE.Range.Long', value: -4 },
-        { label: 'SWADE.Range.Extreme', value: -8 },
-      ],
+      modifiers: {
+        medium: { label: 'SWADE.Range.Medium', value: -2 },
+        long: { label: 'SWADE.Range.Long', value: -4 },
+        extreme: { label: 'SWADE.Range.Extreme', value: -8 },
+      },
       rollType: constants.ROLL_TYPE.TRAIT,
     },
-    {
+    cover: {
       name: 'SWADE.Cover._name',
-      modifiers: [
-        { label: 'SWADE.Cover.Light', value: -2 },
-        { label: 'SWADE.Cover.Medium', value: -4 },
-        { label: 'SWADE.Cover.Heavy', value: -6 },
-        { label: 'SWADE.Cover.Total', value: -8 },
-      ],
+      modifiers: {
+        light: { label: 'SWADE.Cover.Light', value: -2 },
+        medium: { label: 'SWADE.Cover.Medium', value: -4 },
+        heavy: { label: 'SWADE.Cover.Heavy', value: -6 },
+        total: { label: 'SWADE.Cover.Total', value: -8 },
+      },
       rollType: constants.ROLL_TYPE.TRAIT,
     },
-    {
+    illumination: {
       name: 'SWADE.Illumination._name',
-      modifiers: [
-        { label: 'SWADE.Illumination.Dim', value: -2 },
-        { label: 'SWADE.Illumination.Dark', value: -4 },
-        { label: 'SWADE.Illumination.Pitch', value: -6 },
-      ],
+      modifiers: {
+        dim: { label: 'SWADE.Illumination.Dim', value: -2 },
+        dark: { label: 'SWADE.Illumination.Dark', value: -4 },
+        pitch: { label: 'SWADE.Illumination.Pitch', value: -6 },
+      },
       rollType: constants.ROLL_TYPE.TRAIT,
     },
-  ],
+  },
 
   CONST: constants,
 
@@ -449,7 +449,7 @@ export interface SwadeConfig {
   measuredTemplatePresets: Array<TemplateConfig>;
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
-  prototypeRollGroups: RollModifierGroup[];
+  rollModifiers: Record<string, RollModifierGroup>;
   ranks: string[];
   scales: string[];
   chargeRechargeTypes: Record<string, string>;
