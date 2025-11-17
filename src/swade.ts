@@ -17,6 +17,7 @@ import {
 } from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
+import SwadeTokenRuler from './module/canvas/SwadeTokenRuler';
 import { SWADE } from './module/config';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
@@ -27,6 +28,7 @@ import WildDie from './module/dice/WildDie';
 import SwadeUser from './module/documents/SwadeUser';
 import SwadeActiveEffect from './module/documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './module/documents/actor/SwadeActor';
+import SwadeTokenDocument from './module/documents/actor/SwadeTokenDocument';
 import SwadeCards from './module/documents/card/SwadeCards';
 import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
 import SwadeCombat from './module/documents/combat/SwadeCombat';
@@ -130,6 +132,7 @@ Hooks.once('init', () => {
 
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
+  CONFIG.Token.documentClass = SwadeTokenDocument;
   CONFIG.Item.documentClass = SwadeItem;
   CONFIG.Combat.documentClass = SwadeCombat;
   CONFIG.Combatant.documentClass = SwadeCombatant;
@@ -148,7 +151,10 @@ Hooks.once('init', () => {
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
-  foundry.utils.mergeObject(CONFIG.RegionBehavior.dataModels, data.region.config);
+  foundry.utils.mergeObject(
+    CONFIG.RegionBehavior.dataModels,
+    data.region.config,
+  );
   CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
@@ -157,6 +163,8 @@ Hooks.once('init', () => {
   // This preserves access to the other types of cone definitions
   CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
+  CONFIG.Token.rulerClass = SwadeTokenRuler;
+  SwadeTokenRuler.applySWADEMovementConfig();
 
   // Increase initiative decimal precision, as we add/subtract tiny amounts for holding, interrupting etc.
   if (CONFIG.Combat.initiative.decimals < 7)
