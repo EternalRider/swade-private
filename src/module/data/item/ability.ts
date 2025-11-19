@@ -1,6 +1,6 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { builder, category, favorite, grants } from './common';
@@ -99,6 +99,11 @@ class AbilityData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

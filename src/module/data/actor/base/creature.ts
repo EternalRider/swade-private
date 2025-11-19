@@ -543,7 +543,7 @@ class CreatureData<
   }
 
   // specifying this to resolve depth issue
-  override prepareBaseData(this: CreatureData) {
+  override prepareBaseData() {
     super.prepareBaseData();
     for (const key in this.attributes) {
       const attribute = this.attributes[key];
@@ -585,7 +585,7 @@ class CreatureData<
   }
 
   // specifying this to resolve depth issue
-  override prepareDerivedData(this: CreatureData) {
+  override prepareDerivedData() {
     super.prepareDerivedData();
     //die type bounding for attributes
     for (const key in this.attributes) {

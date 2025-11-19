@@ -5,7 +5,7 @@ import {
   ItemChatCardChip,
   Requirement,
 } from '../../documents/item/SwadeItem.interface';
-import { count, createEmbedElement } from '../../util';
+import { count, createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
@@ -172,6 +172,11 @@ class EdgeData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

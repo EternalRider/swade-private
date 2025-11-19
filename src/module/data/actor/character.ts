@@ -1,4 +1,4 @@
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -144,6 +144,15 @@ export class CharacterData extends CreatureData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(
+        this.details.biography.value || '',
+        config,
+        options,
+      );
+    }
+
     config.caption = false;
 
     // Enrich biography text

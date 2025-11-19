@@ -2,7 +2,7 @@
 foundry:
   _key: '!journal.pages!8uC7RTgJOg8SW4cf.xx4bfi2ngT6ZT68p'
   _id: xx4bfi2ngT6ZT68p
-  name: Attribute Keys
+  name: Actor Attribute Keys
   sort: 400010
   title:
     level: 2
@@ -21,7 +21,7 @@ Both Characters and NPCs share similar data structures; the main difference is t
 - Ignored Wounds: `system.wounds.ignored`
 - Max Fatigue: `system.fatigue.max`
 - Ignored Fatigue: `system.fatigue.ignored`
-- Numb (Ignore wounds and fatigue): `system.woundsOrFatigue.ignored`
+- Numb (Ignore Wounds and Fatigue): `system.woundsOrFatigue.ignored`
 - Enable Conviction: `system.details.conviction.active`
 - Size: `system.stats.size`
 - Wealth Die

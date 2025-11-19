@@ -27,6 +27,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - Ranged weapon attacks against a target with the Dodge edge (matched by swid) will receive the malus
   - Combat Acrobat (matched by swid) will be considered if not encumbered
 - To accommodate modules easily taking advantage of these default modifiers, introduced a new `swadeCalculateDefaultAttackMods` hook which provides, among necessary information, the `additionalModifiers` variable to be mutated in-place.
+- Implemented a custom token ruler. Green is distances within pace, yellow for pace + min roll of running die, orange for pace + max roll of running die, and red for beyond pace + running die. (#1337)
+  - The default movement action will now try to infer from a token's selected default pace.
+- Added a new page to the system documentation listing Item Attribute keys that can be reached via the The Item-Affecting AE key syntax. (#1356) **by @harliquinn.whiteshadow**
 
 ### Changed
 
@@ -46,6 +49,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Known Issues
 -->
+
+## 5.1.0
+
+- Passing `description=true` when embedding an actor or item renders only the enrichedDescription (usage: @Embed[UUID description=true]). Use within `inline=true` for seamless integration into text flow **by @jestevens210**
+
+## 5.0.8
+
+### Fixed
+
+- Active Effects can no longer reduce Armor, Toughness or Parry below 0. (#1382) **by @florad92**
+- Fixed missing import in the Skill Datamodel. (#1395) **by @florad92**
 
 ## 5.0.7
 
