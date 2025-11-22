@@ -674,6 +674,9 @@ SWADE:
       Hint: >-
         Press to spend a Benny, hold down Alt while you press the key to receive
         a Benny instead
+    ToggleHUD:
+      Name: Toggle SWADE HUD
+      Hint: Toggle the SWADE HUD for the currently controlled token or your assigned character
   Settings:
     ArbitFields: Arbitrary Setting Fields
     CharSheetDefaultWidth:
