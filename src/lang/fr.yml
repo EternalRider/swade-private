@@ -491,6 +491,10 @@ SWADE:
       Name: Dépenser/recevoir un jeton
       Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
         recevoir un jeton
+    ToggleHUD:
+      Name: Activer/désactiver le HUD SWADE
+      Hint: Activez ou désactivez l'affichage SWADE HUD pour le jeton actuellement
+        contrôlé ou votre personnage assigné
   Settings:
     HighlightTemplate:
       Name: Toujours surligner les gabarits
