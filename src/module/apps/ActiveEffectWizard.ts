@@ -229,6 +229,18 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
         key: 'system.stats.globalMods.attack',
       },
       {
+        label: game.i18n.localize('SWADE.GlobalMod.TargetAttack'),
+        key: 'system.stats.globalMods.targetAttack',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.TargetAttackRanged'),
+        key: 'system.stats.globalMods.targetAttackRanged',
+      },
+      {
+        label: game.i18n.localize('SWADE.GlobalMod.TargetAttackMelee'),
+        key: 'system.stats.globalMods.targetAttackMelee',
+      },
+      {
         label: game.i18n.localize('SWADE.GlobalMod.Damage'),
         key: 'system.stats.globalMods.damage',
       },

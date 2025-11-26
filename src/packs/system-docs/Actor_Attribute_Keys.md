@@ -83,6 +83,9 @@ These are more generic roll bonuses that improve all rolls of a certain category
 - Armor Piercing: `system.stats.globalMods.ap`
 - Bennied Trait: `system.stats.globalMods.bennyTrait`
 - Bennied Damage: `system.stats.globalMods.bennyDamage`
+- Target Attack: `system.stats.globalMods.targetAttack`
+- Target Attack (Ranged): `system.stats.globalMods.targetAttackRanged`
+- Target Attack (Melee): `system.stats.globalMods.targetAttackMelee`
 
 #### Derived Stats
 
