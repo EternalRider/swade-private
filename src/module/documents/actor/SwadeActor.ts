@@ -401,10 +401,20 @@ class SwadeActor<
       isRanged && (!isMelee || skill?.system.swid !== 'fighting');
     const isMeleeAttack =
       isMelee && (!isRanged || skill?.system.swid === 'fighting');
+    const { isRanged = null, isMelee = null } = options.item?.system ?? {};
+    const isRangedAttack =
+      isRanged && (!isMelee || skill?.system.swid !== 'fighting');
+    const isMeleeAttack =
+      isMelee && (!isRanged || skill?.system.swid === 'fighting');
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
-      const sourceToken = this.getActiveTokens(false, true)[0];
+      let currToken = this.getActiveTokens(false, true)[0];
+      // If the item belongs to a vehicle, use the vehicle's token
+      if (options.item?.actor?.type === 'vehicle') {
+        const vehicleToken = options.item.actor.getActiveTokens(false, true)[0];
+        if (vehicleToken) currToken = vehicleToken;
+      }
       const targetToken = game.user.targets.first()?.document;
 
       const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
@@ -413,6 +423,7 @@ class SwadeActor<
         options.item!,
         isRangedAttack,
         isMeleeAttack,
+        this,
       );
 
       /**
@@ -438,13 +449,20 @@ class SwadeActor<
         isMeleeAttack,
         additionalMods,
         bestNonStackingMods,
+        bestNonStackingMods,
       );
 
       for (const mod of Object.values(bestNonStackingMods)) {
         if (mod) additionalMods.push(mod);
       }
 
+
       if (additionalMods.length) {
+        additionalMods.forEach(
+          (mod) => (mod.label = game.i18n.localize(mod.label)),
+        );
+        if (options.additionalMods)
+          options.additionalMods.push(...additionalMods);
         additionalMods.forEach(
           (mod) => (mod.label = game.i18n.localize(mod.label)),
         );
@@ -876,10 +894,10 @@ class SwadeActor<
 
   calcScale(size: number): number {
     let scale = 0;
-    if (Number.between(size, 20, 12)) scale = 6;
-    else if (Number.between(size, 11, 8)) scale = 4;
-    else if (Number.between(size, 7, 4)) scale = 2;
-    else if (Number.between(size, 3, -1)) scale = 0;
+    if (size.between(12, 20)) scale = 6;
+    else if (size.between(8, 11)) scale = 4;
+    else if (size.between(4, 7)) scale = 2;
+    else if (size.between(-1, 3)) scale = 0;
     else if (size === -2) scale = -2;
     else if (size === -3) scale = -4;
     else if (size === -4) scale = -6;
