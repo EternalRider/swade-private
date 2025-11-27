@@ -8,6 +8,7 @@ import { SwadeRoll } from './dice/SwadeRoll';
 import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
+import { VehicleData } from './data/actor';
 import { Logger } from './Logger';
 import { getTrait } from './util';
 
@@ -48,8 +49,15 @@ export default class ItemChatCardHelper {
       return null;
     }
 
-    if (actor.type === 'vehicle') {
-      actor = actor.system.operator ?? actor;
+    if (actor.system instanceof VehicleData) {
+      if (item.type === 'weapon') {
+        const gunner = actor.system.getCrewMemberForWeapon(
+          item as SwadeItem<'weapon'>,
+        );
+        actor = gunner ?? actor.system.operator ?? actor;
+      } else {
+        actor = actor.system.operator ?? actor;
+      }
     }
 
     const actionObj = foundry.utils.getProperty(

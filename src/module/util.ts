@@ -6,6 +6,7 @@ import { constants } from './constants';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor, { BestNonStackingMods } from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
+import { VehicleData } from './data/actor';
 
 /**
  * @internal
@@ -441,11 +442,12 @@ export function getEdgeToEdgeDistance(
  * @returns A list of modifiers to be applied, and an object with the best non-stacking modifiers (e.g. illumination and darkness)
  */
 export function getDefaultAttackModifiers(
-  currToken: TokenDocument,
+  currToken: TokenDocument | undefined,
   targetToken: TokenDocument | undefined,
   item: SwadeItem,
   isRangedAttack: boolean,
   isMeleeAttack: boolean,
+  actor?: SwadeActor,
 ): {
   additionalMods: RollModifier[];
   bestNonStackingMods: BestNonStackingMods;
@@ -456,7 +458,13 @@ export function getDefaultAttackModifiers(
   const illuminationMods = rollGroups.illumination.modifiers;
 
   const additionalMods: RollModifier[] = [];
-  const currActor = currToken.actor!;
+  let currActor = actor || currToken?.actor || item.actor!;
+  if (currActor.system instanceof VehicleData && item.type === 'weapon') {
+    const gunner = currActor.system.getCrewMemberForWeapon(
+      item as SwadeItem<'weapon'>,
+    );
+    currActor = gunner ?? currActor.system.operator ?? currActor;
+  }
 
   // Unstable Platform
   if (
@@ -481,10 +489,12 @@ export function getDefaultAttackModifiers(
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
     const distanceToTarget =
-      scene.grid.measurePath([
-        currToken.getCenterPoint(),
-        targetToken.getCenterPoint(),
-      ])?.distance ?? 0;
+      (currToken
+        ? scene.grid.measurePath([
+            currToken.getCenterPoint(),
+            targetToken.getCenterPoint(),
+          ])?.distance
+        : 0) ?? 0;
 
     // Illumination & Cover
     const targetBehaviors: RegionBehavior<'attackModifiers'>[] = Array.from(
@@ -577,6 +587,7 @@ export function getDefaultAttackModifiers(
     // Gang-up, including (Improved) Block
     if (
       isMeleeAttack &&
+      currToken &&
       currToken.disposition * targetToken.disposition === -1
     ) {
       const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
@@ -606,8 +617,11 @@ export function getDefaultAttackModifiers(
     }
 
     // Size
-    const attackerScale = currActor.system.stats.scale;
-    const defenderScale = targetActor.system.stats.scale;
+    const sizeActor = item.actor?.type === 'vehicle' ? item.actor : currActor;
+    const attackerScale =
+      sizeActor.system.stats?.scale ?? sizeActor.system.scale ?? 0;
+    const defenderScale =
+      targetActor.system.stats?.scale ?? targetActor.system.scale ?? 0;
     const scaleDifference = defenderScale - attackerScale;
     if (scaleDifference !== 0) {
       additionalMods.push({
