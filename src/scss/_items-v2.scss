@@ -245,6 +245,7 @@
   }
 
   .actions-list,
+  .charges-list,
   .powers-list,
   .effect-list {
     padding: 0;
@@ -252,12 +253,21 @@
 
     li {
       margin-bottom: $medium-spacing;
+      transition: .1s;
     }
 
     summary {
       font-size: 1em;
       margin-left: 1.2em;
       border-bottom: 1px solid var(--accent-color-secondary);
+    }
+
+    .dragging {
+      cursor: grabbing;
+      visibility: hidden;
+      * {
+        transition: none;
+      }
     }
   }
 
@@ -312,6 +322,61 @@
     }
     .full-width {
       grid-column: 1/-1;
+    }
+  }
+
+  .charges {
+    .header-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-bottom: $medium-spacing;
+
+      >.charge-button {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  .charge {
+    display: flex;
+    padding-left: 0;
+    padding-right: calc(2.25em + 4px);
+    align-items: center;
+
+    &:has(.charge-delete) {
+      padding-right: 0;
+    }
+
+    .default-charge {
+      font-size: 10px;
+      font-weight: bold;
+      float: right;
+    }
+
+    .sort-handle {
+      cursor: grab;
+      padding: .25em;
+      padding-right: .5em;
+    }
+
+    .content {
+      font-size: 12px;
+      margin: 0;
+      display: block;
+
+      label {
+        flex: 3;
+      }
+
+      .recharge-amount {
+        text-align: center;
+      }
+    }
+
+    .charge-delete {
+      padding: 0.25em;
     }
   }
 

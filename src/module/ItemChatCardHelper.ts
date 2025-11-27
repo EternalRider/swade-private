@@ -421,7 +421,7 @@ export default class ItemChatCardHelper {
 
     if (item?.type === 'consumable') {
       //update message content
-      const charges = item.system.charges;
+      const charges = item.system.charges.default;
       setTextIfPresent('.pp-counter .current-pp', charges.value);
       setTextIfPresent('.pp-counter .max-pp', charges.max);
     }

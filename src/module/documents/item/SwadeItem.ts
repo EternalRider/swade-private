@@ -3,6 +3,7 @@ import { EquipState, ItemActions } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
   ItemAction,
+  Charge,
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
@@ -62,6 +63,7 @@ class SwadeItem<
         delete (item as any).data;
       }
     }
+
     if (data?.system?.grants) {
       for (const grant of data.system.grants as ItemGrant[]) {
         const uuid = grant.uuid;
@@ -413,6 +415,51 @@ class SwadeItem<
     }
     await this.update({ 'system.equipStatus': state });
     return state;
+  }
+
+
+  rechargeAllChargesOfType(rechargeType: string) {
+    if (this.system.charges) {
+      for (const charge of this.system.charges.array) {
+        if (charge.rechargeType === rechargeType) {
+          this.rechargeCharge(charge);
+        }
+      }
+    }
+  }
+
+  async rechargeCharge(charge: Charge) {
+    const value = charge.value || 0;
+    const max = charge.max || 0;
+    if (value >= max) {
+      //We're already full. Nothing to recharge.
+      return;
+    }
+
+    //Calculate our recharge amount
+    let rechargeAmount = 0;
+    if (charge.rechargeAmount !== '') {
+      const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
+        name: charge.name,
+      });
+      const roll = new Roll(charge.rechargeAmount, {}, { flavor: flavor })
+      await roll.evaluate();
+      rechargeAmount = roll.total;
+
+      //If we have dice, roll them and display the message
+      if (roll.dice.length) {
+        const message = await roll.toMessage();
+        //Wait for dice3d if it's active
+        await game.dice3d?.waitFor3DAnimationByMessageID(message.id);
+      }
+    } else {
+      //If the amount field is empty, we recharge to max
+      rechargeAmount = max;
+    }
+    const newTotal = Math.min(value + rechargeAmount, max);
+    await this.update({
+      [`system.charges.charges.${charge.id}.value`]: newTotal,
+    });
   }
 
   override getRollData(): Record<string, unknown> {
