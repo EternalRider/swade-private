@@ -1,5 +1,9 @@
+import { DeepPartial } from 'fvtt-types/utils';
+
 export default class WildDie extends foundry.dice.terms.Die {
-  static get defaultTermData() {
+  static override DENOMINATION = 'w';
+
+  static get defaultTermData(): DeepPartial<foundry.dice.terms.Die.TermData> {
     return {
       number: 1,
       faces: 6,
@@ -7,10 +11,36 @@ export default class WildDie extends foundry.dice.terms.Die {
       options: { flavor: game.i18n.localize('SWADE.WildDie') },
     };
   }
-  constructor(termData: Partial<foundry.dice.terms.Die.TermData> = {}) {
-    termData = foundry.utils.mergeObject(WildDie.defaultTermData, termData);
+
+  override get denomination() {
+    return `dw${this.faces !== 6 ? this.faces : ''}`;
+  }
+
+  override get formula(): string {
+    return '1dw' + this.faces;
+  }
+
+  constructor(termData: TermData = {}) {
+    termData = { ...WildDie.defaultTermData, ...termData };
+    termData.modifiers = WildDie.defaultTermData.modifiers;
+
+    //In order to make wild dice have variable sides we need to work around the current parsing, which treats the side as a modifier
+    if (typeof termData.faces !== 'number') {
+      //first grab the modifiers from the formula
+      const modifiers: string | undefined = termData.formula?.match(
+        WildDie.REGEXP,
+      )[3];
+      //find the first number from the modifier string, that's our sides.
+      const match = modifiers?.match(/\d+/);
+
+      const potentialFaces = match?.at(0) ?? null;
+      termData.faces = Number.isNumeric(potentialFaces)
+        ? Number(potentialFaces)
+        : WildDie.defaultTermData.faces;
+    }
+
     const user = game.user;
-    if (game.dice3d) {
+    if (game.dice3d?.DiceFactory) {
       // Get the user's configured Wild Die data.
       const dieSystem = user?.getFlag('swade', 'dsnWildDiePreset') || 'none';
       const colorSet = user?.getFlag('swade', 'dsnWildDie');
@@ -27,9 +57,9 @@ export default class WildDie extends foundry.dice.terms.Die {
             dieSystem,
           );
           // Get the die model for the respective die type
-          const dicePreset = game.dice3d?.DiceFactory?.systems[
-            dieSystem
-          ]?.dice?.find((d) => d.type === `d${termData?.faces}`);
+          const dicePreset = game.dice3d.DiceFactory.systems
+            .get(dieSystem)
+            ?.dice.get(`d${termData?.faces}`);
           if (dicePreset) {
             if (dicePreset.modelFile && !dicePreset.modelLoaded) {
               // Load the modelFile
@@ -43,3 +73,5 @@ export default class WildDie extends foundry.dice.terms.Die {
     super(termData);
   }
 }
+
+type TermData = DeepPartial<foundry.dice.terms.Die.TermData>;

@@ -153,7 +153,9 @@ export default class ItemChatCardHelper {
         roll = await this.handleDamageAction(item, actor, additionalMods);
         break;
       case 'formula':
-        roll = await this.handleFormulaAction(item, actor, additionalMods, { event });
+        roll = await this.handleFormulaAction(item, actor, additionalMods, {
+          event,
+        });
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
@@ -192,9 +194,14 @@ export default class ItemChatCardHelper {
 
     let costOverride = undefined;
     if (item.type === 'power') {
-      costOverride = card?.querySelector('input.pp-adjust')?.valueAsNumber ?? item.system.ppModifiers.cost;
+      costOverride =
+        card?.querySelector('input.pp-adjust')?.valueAsNumber ??
+        item.system.ppModifiers.cost;
     }
-    const canExpend = costOverride !== undefined ? item.canExpendResources(costOverride) : item.canExpendResources();
+    const canExpend =
+      costOverride !== undefined
+        ? item.canExpendResources(costOverride)
+        : item.canExpendResources();
     if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
@@ -414,7 +421,7 @@ export default class ItemChatCardHelper {
 
     if (item?.type === 'consumable') {
       //update message content
-      const charges = item.system.charges;
+      const charges = item.system.charges.default;
       setTextIfPresent('.pp-counter .current-pp', charges.value);
       setTextIfPresent('.pp-counter .max-pp', charges.max);
     }

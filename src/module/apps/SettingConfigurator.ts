@@ -292,7 +292,10 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
       } else if (p.metadata['packageType'] !== 'system') {
         packName = game.modules.get(p.metadata['packageName'])?.['title'];
       }
-      packChoices.push({ key: p.collection, label: `${p.metadata.label} (${packName})` });
+      packChoices.push({
+        key: p.collection,
+        label: `${p.metadata.label} (${packName})`,
+      });
     }
 
     return packChoices;

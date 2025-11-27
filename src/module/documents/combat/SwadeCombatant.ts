@@ -134,7 +134,10 @@ export default class SwadeCombatant<
    * @returns The joined group, if any.
    */
   async follow(leader: string | SwadeCombatant) {
-    const group = await this.combat?.getGroupForCombatant(leader, { createIfNotInGroup: true, preferDisposition: this.token?.disposition });
+    const group = await this.combat?.getGroupForCombatant(leader, {
+      createIfNotInGroup: true,
+      preferDisposition: this.token?.disposition,
+    });
     if (!group) return undefined;
 
     await this.setGroup(group.id);
@@ -188,7 +191,8 @@ export default class SwadeCombatant<
   }
 
   async resetGroupInitiativeIfLeader() {
-    if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative) return;
+    if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative)
+      return;
     return this.group?.update({ initiative: null });
   }
 
@@ -299,8 +303,12 @@ export default class SwadeCombatant<
 
   override async update(data, operation) {
     const ret = await super.update(data, operation);
-    if (game.users.activeGM?.isSelf && data?.hasOwnProperty('initiative') && this.isGroupLeader) {
-      await this.group?.update({initiative: this.initiative});
+    if (
+      game.users.activeGM?.isSelf &&
+      data?.hasOwnProperty('initiative') &&
+      this.isGroupLeader
+    ) {
+      await this.group?.update({ initiative: this.initiative });
     }
     return ret;
   }

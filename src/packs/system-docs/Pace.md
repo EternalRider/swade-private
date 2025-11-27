@@ -9,6 +9,7 @@ foundry:
 The Pace for an actor is shown on the main tab of the character sheet, under 'Derived Stats'.
 
 The _Savage Worlds Adventure Edition_ system allows Pace to be configured for four types of movement for an actor:
+
 - **Ground** (defaults to 6 for new actors)
 - **Fly**
 - **Swim**

@@ -10,3 +10,4 @@ foundryconfig.json
 docs/*
 .cache
 /src/.vscode
+pnpm-lock.yaml

@@ -540,8 +540,8 @@ SWADE:
     CoreSkillsList:
       Name: Lista de habilidades básicas
       Hint: >-
-        Introduzca una lista separada por comas de las habilidades que se
-        definirán como competencias básicas para todos los actores
+        Introduzca una lista separada por comas de las habilidades que se definirán
+        como competencias básicas para todos los actores
     CoreSkillsPack:
       Name: Compendio de habilidades básicas
       Hint: Elige de que compendio se extraerán las habilidades básicas

@@ -1,3 +1,4 @@
+import { AnyObject } from 'fvtt-types/utils';
 import { FormulaField } from './FormulaField';
 
 export class FormulaDerivedValueField extends FormulaField {
@@ -30,8 +31,8 @@ export class FormulaDerivedValueField extends FormulaField {
       });
     }
     if (term instanceof foundry.dice.terms.ParentheticalTerm) {
-      term.roll.terms = term.roll.terms.map(this.#simplifyTerm.bind(this));
-      term.roll = new Roll(term.roll.resetFormula());
+      term.roll!.terms = term.roll!.terms.map(this.#simplifyTerm.bind(this));
+      term.roll = new Roll(term.roll!.resetFormula());
       term.term = term.roll.formula;
       return term;
     }

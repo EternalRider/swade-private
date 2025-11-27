@@ -24,8 +24,8 @@ export default class SwadeActiveEffect<
 > extends ActiveEffect<Subtype> {
   static override defaultName(
     context: foundry.abstract.Document.DefaultNameContext<
-      ActiveEffect.SubType,
-      Exclude<ActiveEffect.Parent, null>
+      'ActiveEffect',
+      NonNullable<ActiveEffect.Parent>
     > = {},
   ): string {
     // Base active effect should just be called "Active Effect"
@@ -438,7 +438,7 @@ export default class SwadeActiveEffect<
     });
     const content = game.i18n.format('SWADE.RemoveEffectBody', {
       label: this.name,
-      parent: this.parent?.name,
+      parent: this.parent?.name ?? '',
     });
     const buttons: Record<string, Dialog.Button> = {
       yes: {
@@ -485,8 +485,8 @@ export default class SwadeActiveEffect<
             this.actor.token?.id as string,
           )?.[0]
         : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
-      if (combatant?.getFlag('swade', 'roundHeld')) {
-        await combatant?.update({ 'flags.swade.turnLost': true });
+      if (combatant?.system.roundHeld) {
+        await combatant?.update({ 'system.turnLost': true });
         await combatant?.toggleHold();
       }
     }
@@ -527,7 +527,7 @@ export default class SwadeActiveEffect<
 
   protected override async _preCreate(
     data: ActiveEffect.CreateData,
-    options: ActiveEffect.Database.PreUpdateOptions,
+    options: ActiveEffect.Database.PreCreateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
@@ -573,7 +573,7 @@ export default class SwadeActiveEffect<
       if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
           await Promise.allSettled([
-            combatant.update({ 'flags.swade.turnLost': true }),
+            combatant.update({ 'system.turnLost': true }),
             combatant.toggleHold(),
           ]);
         }

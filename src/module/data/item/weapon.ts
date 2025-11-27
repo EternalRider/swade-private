@@ -15,7 +15,11 @@ import {
   ItemChatCardChip,
   UsageUpdates,
 } from '../../documents/item/SwadeItem.interface';
-import { createEmbedElement, notificationExists } from '../../util';
+import {
+  createEmbedElement,
+  createEnrichedTextEmbed,
+  notificationExists,
+} from '../../util';
 import { FormulaField } from '../fields';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
@@ -304,7 +308,10 @@ class WeaponData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          this.notes ?? '',
+          enrichOptions,
+        ),
         title: game.i18n.localize('SWADE.Notes'),
       },
     );
@@ -539,13 +546,13 @@ class WeaponData extends SwadePhysicalItemData<
     missing: number,
   ): Promise<boolean> {
     if (!(ammo.system instanceof ConsumableData)) return false;
-    if ((ammo.system.charges.value ?? 0) <= 0) {
+    if ((ammo.system.charges.default.value ?? 0) <= 0) {
       this.#postNotEnoughAmmoMessage();
       return false;
     }
 
     const allCharges =
-      (ammo.system.charges.value ?? 0) * (ammo.system.quantity ?? 0);
+      (ammo.system.charges.default.value ?? 0) * (ammo.system.quantity ?? 0);
 
     let ammoInMagazine = this.shots;
     if (allCharges < missing) {
@@ -585,7 +592,7 @@ class WeaponData extends SwadePhysicalItemData<
     }
 
     if (
-      magazines.filter((m) => (m.system.charges.value ?? 0) > 0).length === 0
+      magazines.filter((m) => (m.system.charges.default.value ?? 0) > 0).length === 0
     ) {
       if (!notificationExists('SWADE.NoMags')) {
         Logger.warn('SWADE.NoMags', {
@@ -670,7 +677,7 @@ class WeaponData extends SwadePhysicalItemData<
         item.name === loadedAmmo.name &&
         item.system.subtype === type &&
         (item.system.equipStatus ?? 0) >= constants.EQUIP_STATE.CARRIED &&
-        item.system.charges.value === (charges ?? item.system.charges.max);
+        item.system.charges.default.value === (charges ?? item.system.charges.default.max);
     };
 
     const consumables = parent.itemTypes
@@ -687,7 +694,7 @@ class WeaponData extends SwadePhysicalItemData<
         });
       } else {
         const itemData = foundry.utils.mergeObject(loadedAmmo, {
-          'system.charges.value': this.currentShots,
+          [`system.charges.charges.${loadedAmmo.system.charges.default.id}.value`]: this.currentShots,
         });
         await getDocumentClass('Item').create(itemData, { parent });
       }
@@ -704,7 +711,7 @@ class WeaponData extends SwadePhysicalItemData<
       } else {
         const factor = Number(this.currentShots) / Number(this.shots);
         const itemData = foundry.utils.mergeObject(loadedAmmo, {
-          'system.charges.value': Math.ceil(factor * 100),
+          [`system.charges.charges.${loadedAmmo.system.charges.default.id}.value`]: Math.ceil(factor * 100),
         });
         await getDocumentClass('Item').create(itemData, { parent });
       }
@@ -752,10 +759,19 @@ class WeaponData extends SwadePhysicalItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/weapon-embeds.hbs',

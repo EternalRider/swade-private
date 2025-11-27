@@ -5,12 +5,13 @@ import {
   EquipState,
   ItemActions,
 } from '../../globals';
-import { ItemAction } from '../../interfaces/additional.interface';
+import { ItemAction, Charge } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { ChargesData } from '../data/fields/ChargesData';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -38,7 +39,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           initial: 'summary',
         },
       ],
-      scrollY: ['.properties', '.actions', '.editor-container .editor-content'],
+      scrollY: ['.properties', '.actions', '.charges', '.editor-container .editor-content'],
       dragDrop: [
         { dropSelector: null, dragSelector: '.effect-list li details' },
       ],
@@ -139,41 +140,145 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       .querySelector('.inline-delete')
       ?.addEventListener('click', () => this.item.delete());
 
-    html.querySelector('.add-action')?.addEventListener('click', () => {
-      const id = foundry.utils.randomID(8);
-      this.collapsibleStates[id] = true;
+      html.querySelector('.add-action')?.addEventListener('click', () => {
+        const id = foundry.utils.randomID(8);
+        this.collapsibleStates[id] = true;
+        this.item.update({
+          ['system.actions.additional.' + id]: {
+            name: game.i18n.format('DOCUMENT.New', {
+              type: game.i18n.localize('TYPES.Item.action'),
+            }),
+            type: constants.ACTION_TYPE.TRAIT,
+          },
+        });
+      });
+
+      html.querySelectorAll('.action-delete').forEach((el) =>
+        el.addEventListener('click', async (ev) => {
+          const id = ev.currentTarget.dataset.actionId;
+          const action = foundry.utils.getProperty(
+            this.item,
+            `system.actions.additional.${id}`,
+          ) as ItemAction;
+          const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
+            action: action.name,
+          });
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () =>
+                await this.item.update({
+                  [`system.actions.additional.-=${id}`]: null,
+                }),
+            },
+          });
+        }),
+      );
+
+    // Charge input fields
+    html.querySelectorAll('.charge-field').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        await this.item.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
+
+    html.querySelector('[data-action="addCharge"]')?.addEventListener('click', () => {
+      const id = ChargesData.randomID();
       this.item.update({
-        ['system.actions.additional.' + id]: {
+        ['system.charges.charges.' + id]: {
+          id: id,
+          sort: Object.keys(this.item.system.charges).length,
           name: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('TYPES.Item.action'),
+            type: game.i18n.localize('TYPES.Item.charge'),
           }),
-          type: constants.ACTION_TYPE.TRAIT,
+          rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
         },
       });
     });
 
-    html.querySelectorAll('.action-delete').forEach((el) =>
+    html.querySelectorAll('[data-action="deleteCharge"]').forEach((el) =>
       el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.dataset.actionId;
-        const action = foundry.utils.getProperty(
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
           this.item,
-          `system.actions.additional.${id}`,
-        ) as ItemAction;
-        const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
-          action: action.name,
+          `system.charges.charges.${id}`,
+        ) as Charge;
+        const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
+          charge: charge.name,
         });
         await foundry.applications.api.DialogV2.confirm({
           content: `<p class="text-center">${text}</p>`,
           classes: ['dialog', 'swade-app'],
           yes: {
-            callback: async () =>
+            callback: async () => {
+              let sort = 0;
+              const charges = this.item.system.charges.charges;
+              delete charges[id];
+              this.item.system.charges.sorted.forEach((c) => charges[c.id].sort = sort++);
               await this.item.update({
-                [`system.actions.additional.-=${id}`]: null,
-              }),
+                'system.charges.charges': charges,
+                [`system.charges.charges.-=${id}`]: null,
+              });
+            },
           },
         });
       }),
     );
+
+    html.querySelectorAll('[data-action="rechargeManual"]').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
+          this.item,
+          `system.charges.charges.${id}`,
+        ) as Charge;
+        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+          name: charge.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeCharge(charge);
+            }
+          },
+        });
+      }),
+    );
+
+    html.querySelector('[data-action="rechargeEncounter"]')
+      ?.addEventListener('click', async () => {
+        const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
+            }
+          },
+        });
+      });
+
+    html.querySelector('[data-action="rechargeDay"]')
+      ?.addEventListener('click', async () => {
+        const text = game.i18n.localize('SWADE.RechargeDayConfirm');
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
+            }
+          },
+        });
+      });
+
+    new ChargeDragSort(html, this.item);
 
     html.querySelectorAll('.power-delete').forEach((el) =>
       el.addEventListener('click', async (ev) => {
@@ -287,6 +392,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       isPhysicalItem: this.isPhysicalItem,
       hasCategory: this.item.canHaveCategory,
       actionTypes: this.actionTypes,
+      chargeRechargeTypes: SWADE.chargeRechargeTypes,
       macroActorTypes: this.macroActorTypes,
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
@@ -429,6 +535,15 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
         this.item.parent?.type === 'npc'
           ? getDieSidesRange(4, 24)
           : getDieSidesRange(4, 20);
+    }
+
+    if (this.item.system.charges?.hasCharges) {
+      data.hasEncounterCharge = false;
+      data.hasDayCharge = false;
+      for (const charge of this.item.system.charges.array) {
+        data.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
+        data.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
+      }
     }
     const superData = (await super.getData(options)) as Record<string, unknown>;
     superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
@@ -915,12 +1030,81 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
   }
 }
 
+class ChargeDragSort {
+  dragging: any = null;
+  dropTarget: any = null;
+  chargesList: any = null;
+  item: SwadeItem;
+
+  constructor(html, item) {
+    this.item = item;
+    this.chargesList = html.querySelector('.charges-list');
+    if (!this.chargesList) {
+      return;
+    }
+
+    this.chargesList.querySelectorAll("li").forEach((el) => {
+      el.ondragstart = this.onDragStart.bind(this);
+      el.ondragover = this.onDragOver.bind(this);
+      el.ondragend = this.onDragEnd.bind(this);
+    });
+
+    this.chargesList.querySelectorAll(".sort-handle").forEach((el) => {
+      const li = el.closest("li");
+      el.onmousedown = li.setAttribute('draggable', 'true');
+      el.onmouseup = li.setAttribute('draggable', 'false');
+    });
+  }
+
+  onDragStart(ev) {
+    ev.dataTransfer.setData('text/plain', JSON.stringify({ type: "Charge" }));
+    this.dragging = ev.currentTarget;
+    this.dragging.classList.add("dragging");
+    const liRect = this.dragging.getBoundingClientRect();
+    ev.dataTransfer.setDragImage(this.dragging, ev.x - liRect.left, ev.y - liRect.top);
+  }
+
+  onDragOver(ev) {
+    ev.preventDefault();
+    const li = ev.currentTarget.closest("li")
+    if (this.dragging && li != this.dragging) {
+      if (this.dragging.parentElement == li.parentElement) {
+        this.dropTarget = li;
+        if (this.dragging.parentNode === this.dropTarget.parentNode) {
+          this.dropTarget = this.dropTarget !== this.dragging.nextElementSibling ? this.dropTarget : this.dropTarget.nextElementSibling;
+        }
+      }
+    }
+
+    if (this.dropTarget) {
+      this.chargesList.insertBefore(this.dragging, this.dropTarget);
+    } else {
+      this.chargesList.appendChild(this.dragging);
+    }
+  }
+
+  onDragEnd() {
+    this.dragging.classList.remove('dragging');
+    this.dragging = null;
+
+    let sort = 0;
+    const updates = {};
+    for (const charge of this.chargesList.children) {
+      updates[`system.charges.charges.${charge.dataset.chargeId}.sort`] = sort++;
+    }
+    this.item.update(updates);
+  }
+}
+
 interface SwadeItemSheetData extends OptionsPartial {
   itemType: string;
   hasInlineDelete: boolean;
   isPhysicalItem: boolean;
   hasCategory: boolean;
   actionTypes: Record<string, string>;
+  chargeRechargeTypes: Record<string, string>;
+  hasEncounterCharge: boolean;
+  hasDayCharge: boolean;
   macroActorTypes: Record<string, string>;
   hasAdditionalStats: boolean;
   additionalStats: AdditionalStats;

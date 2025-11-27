@@ -81,6 +81,22 @@ body.theme-light .application {
   }
 }
 
+.swade-inline-roll {
+  background: var(--content-link-background);
+  border: 1px solid var(--content-link-border-color);
+  border-radius: 2px;
+  color: var(--content-link-text-color);
+  margin: 0;
+  padding: 1px 4px 0;
+  white-space: nowrap;
+  word-break: break-all;
+  i {
+    color: var(--content-link-icon-color);
+    font-size: 0.8em;
+    margin-right: 0.25em;
+  }
+}
+
 .icon-card-suit {
   &.hearts,
   &.diamonds {

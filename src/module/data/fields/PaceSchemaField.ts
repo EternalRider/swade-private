@@ -61,7 +61,7 @@ export class PaceSchemaField<
       PaceSchema,
       SimpleMerge<Options, foundry.data.fields.SchemaField.DefaultOptions>
     >,
-    options?: foundry.data.fields.DataField.ValidationOptions,
+    options?: foundry.data.fields.DataField.ValidationOptions | undefined,
   ): boolean | void | foundry.data.validation.DataModelValidationFailure {
     let result = super._validateType(value, options);
     if (!value?.base) return result;

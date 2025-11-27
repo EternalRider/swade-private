@@ -1,4 +1,3 @@
-
 // import { Updates } from '../../globals';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
@@ -15,7 +14,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       actNow: this.#onSwadeCombatantControl,
       actAfter: this.#onSwadeCombatantControl,
       drawInitiative: this.#drawInitiative,
-      redrawInitiative: this.#redrawInitiative
+      redrawInitiative: this.#redrawInitiative,
     },
   };
 
@@ -283,7 +282,9 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         const targetCombatantLI = (event.target as HTMLElement).closest(
           'li.combatant',
         ) as HTMLLIElement | undefined;
-        const targetCombatant = this.viewed?.combatants?.get(targetCombatantLI.dataset.combatantId);
+        const targetCombatant = this.viewed?.combatants?.get(
+          targetCombatantLI.dataset.combatantId,
+        );
         if (!targetCombatant || targetCombatant.id == combatant.id) return;
         const group = await this.viewed?.createGroup();
         if (!group) return;
@@ -316,7 +317,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       (c) =>
         (c.name === combatant.name ||
           c.actor?.name === combatant.actor?.name) &&
-        c.id !== combatant.id && !c.group,
+        c.id !== combatant.id &&
+        !c.group,
     );
 
     return matching;
@@ -353,7 +355,9 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
-          return game.user.isGM && combatant?.group && !combatant?.isGroupLeader;
+          return (
+            game.user.isGM && combatant?.group && !combatant?.isGroupLeader
+          );
         },
         callback: (li: HTMLLIElement) =>
           getCombatant(li).setIsGroupLeader(true),
@@ -363,10 +367,13 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
-          return game.user.isGM && !combatant?.group && this.getMatchingCombatantsByName(combatant)?.length;
+          return (
+            game.user.isGM &&
+            !combatant?.group &&
+            this.getMatchingCombatantsByName(combatant)?.length
+          );
         },
-        callback: (li: HTMLLIElement) =>
-          this.#onGroupByName(getCombatant(li)),
+        callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
       },
     );
 
@@ -424,13 +431,18 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         }),
         icon: '<i class="fa-solid fa-trash"></i>',
         condition: game.user.isGM,
-        callback: (li: HTMLLIElement) => this.viewed?.removeGroup(getCombatantGroup(li)?.id),
+        callback: (li: HTMLLIElement) =>
+          this.viewed?.removeGroup(getCombatantGroup(li)?.id),
       },
       {
         name: game.i18n.localize('SWADE.DeleteGroupAndCombatants'),
         icon: '<i class="fa-solid fa-dumpster"></i>',
-        condition: (li) => game.user.isGM && getCombatantGroup(li)?.members?.size,
-        callback: (li: HTMLLIElement) => this.viewed?.removeGroup(getCombatantGroup(li)?.id, { deleteMembers: true }),
+        condition: (li) =>
+          game.user.isGM && getCombatantGroup(li)?.members?.size,
+        callback: (li: HTMLLIElement) =>
+          this.viewed?.removeGroup(getCombatantGroup(li)?.id, {
+            deleteMembers: true,
+          }),
       },
       {
         name: 'OWNERSHIP.Configure',
@@ -460,14 +472,15 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (groupId) {
       combatantId = this.viewed?.getGroupLeader(groupId)?.id;
     } else {
-      combatantId = target?.closest('[data-combatant-id]')?.dataset?.combatantId;
+      combatantId = target?.closest('[data-combatant-id]')?.dataset
+        ?.combatantId;
     }
 
     if (!this.viewed || !combatantId?.length) return undefined;
 
     return this.viewed?.rollInitiative(combatantId);
   }
- 
+
   static async #redrawInitiative(this, event, target) {
     let combatantId = null;
 
@@ -475,7 +488,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (groupId) {
       combatantId = this.viewed?.getGroupLeader(groupId)?.id;
     } else {
-      combatantId = target?.closest('[data-combatant-id]')?.dataset?.combatantId;
+      combatantId = target?.closest('[data-combatant-id]')?.dataset
+        ?.combatantId;
     }
 
     if (!this.viewed || !combatantId?.length) return undefined;

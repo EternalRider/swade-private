@@ -1,5 +1,4 @@
-import { ItemMetadata } from '../../../globals';
-import { createEmbedElement, slugify } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement, slugify } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -43,7 +42,7 @@ export class CharacterData extends CreatureData<
       const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
       // Set compendium source, including a fallback to the system compendium of the required one cannot be found
       const pack = (game.packs.get(coreSkillsPack) ??
-        game.packs.get('swade.skills')) as CompendiumCollection<ItemMetadata>;
+        game.packs.get('swade.skills')) as CompendiumCollection<'Item'>;
 
       if (!pack) return; // Critical fallback point, simply skip core skills if neither pack can be located
 
@@ -51,14 +50,16 @@ export class CharacterData extends CreatureData<
 
       const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
         SkillData.Schema,
-        Item<'skill'>
+        Item.OfType<'skill'>
       >[] = Array();
 
       // Create core skills not in compendium (for custom skill names entered by the user)
       for (const skillName of coreSkills) {
         const skill = skillIndex.find(
-          (skill) => skill.type === 'skill' &&
-          (skillName === skill.name || slugify(skillName) === skill.system.swid)
+          (skill) =>
+            skill.type === 'skill' &&
+            (skillName === skill.name ||
+              slugify(skillName) === skill.system.swid),
         );
 
         if (skill) {
@@ -82,8 +83,10 @@ export class CharacterData extends CreatureData<
       // Add the Untrained skill (from the compendium if it exists there, else as a bare skill)
       const untrained = game.i18n.localize('SWADE.Unskilled');
       const untrainedSkill = skillIndex.find(
-        (skill) => skill.type === 'skill' &&
-          (untrained === skill.name || slugify(untrained) === skill.system.swid)
+        (skill) =>
+          skill.type === 'skill' &&
+          (untrained === skill.name ||
+            slugify(untrained) === skill.system.swid),
       );
       if (untrainedSkill) {
         skills.push(untrainedSkill.toObject());
@@ -110,7 +113,7 @@ export class CharacterData extends CreatureData<
   protected override async _preCreate(
     createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
       CharacterData.Schema,
-      Actor<'character'>
+      Actor.OfType<'character'>
     >,
     options: Actor.Database.PreCreateOptions,
     user: User.Implementation,
@@ -141,6 +144,15 @@ export class CharacterData extends CreatureData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(
+        this.details.biography.value || '',
+        config,
+        options,
+      );
+    }
+
     config.caption = false;
 
     // Enrich biography text
@@ -176,6 +188,7 @@ export class CharacterData extends CreatureData<
     );
 
     if (embed) {
+      // See src/globals.d.ts for docs
       Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
     }
 

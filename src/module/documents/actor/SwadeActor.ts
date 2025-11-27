@@ -32,6 +32,7 @@ import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import {
+  getDefaultAttackModifiers,
   getStatusEffectDataById,
   mapRange,
   modifierReducer,
@@ -260,11 +261,7 @@ class SwadeActor<
   override prepareDerivedData() {
     this._filterOverrides();
 
-    /**
-     * A hook event that is fired after the system has completed its data preparation and allows modules to adjust the derived data afterwards
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor whose data is being prepared
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
@@ -325,16 +322,7 @@ class SwadeActor<
     roll.modifiers = modifiers;
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable!);
 
-    /**
-     * A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * Returning `false` in a hook callback will cancel the roll entirely
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
-     * @param {String} attribute                The name of the attribute, in lower case
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     const permitContinue = Hooks.call(
       'swadePreRollAttribute',
       this,
@@ -373,15 +361,7 @@ class SwadeActor<
       actor: this,
     });
 
-    /**
-     * A hook event that is fired after an attribute is rolled
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the attribute
-     * @param {String} attribute                The name of the attribute, in lower case
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll(
       'swadeRollAttribute',
       this,
@@ -397,7 +377,7 @@ class SwadeActor<
   async rollSkill(
     skillId: string | null | undefined,
     options: IRollOptions = { rof: 1 },
-    tempSkill?: SwadeItem,
+    tempSkill?: SwadeItem<'skill'>,
   ): Promise<TraitRoll | null> {
     if (
       this.system instanceof VehicleData ||
@@ -408,9 +388,71 @@ class SwadeActor<
       });
       return null;
     }
-    let skill: SwadeItem | undefined;
-    skill = this.items.find((i) => i.id == skillId);
+    let skill: SwadeItem<'skill'> | undefined;
+    skill = this.items.find((i) => i.id == skillId) as
+      | SwadeItem<'skill'>
+      | undefined;
     if (tempSkill) skill = tempSkill;
+
+    // TODO: (Improved) Arcane Resistance, when -> Powers
+    const isAttack = options.item?.type === 'weapon';
+    const { isRanged = null, isMelee = null } = options.item?.system ?? {};
+    const isRangedAttack =
+      isRanged && (!isMelee || skill?.system.swid !== 'fighting');
+    const isMeleeAttack =
+      isMelee && (!isRanged || skill?.system.swid === 'fighting');
+
+    // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
+    if (isAttack && skill) {
+      const sourceToken = this.getActiveTokens(false, true)[0];
+      const targetToken = game.user.targets.first()?.document;
+
+      const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
+        sourceToken,
+        targetToken,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack,
+      );
+
+      /**
+       * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
+       * modifiers to be added (or existing ones to be removed)
+       * @category Hooks
+       * @param {TokenDocument | undefined} sourceToken     The attacking token
+       * @param {TokenDocument | undefined} targetToken     The first-targeted token, or `undefined` if no targets
+       * @param {SwadeItem} skill                           The skill being used for the attack
+       * @param {SwadeItem} item                            The item being used for the attack
+       * @param {boolean} isRangedAttack                    `true` if ranged weapon or mixed with non-`fighting` skill
+       * @param {boolean} isMeleeAttack                     `true` if melee weapon or mixed with `fighting` skill
+       * @param {RollModifier[]} additionalMods             The list of default-applied modifiers so far, to be modified directly
+       * @param {BestNonStackingMods} bestNonStackingMods   The best non-stacking modifiers (e.g. bestCover, bestIllumination), provided to be able to replace/remove them prior to adding to `additionalMods`
+       */
+      Hooks.call(
+        'swadeCalculateDefaultAttackMods',
+        sourceToken,
+        targetToken,
+        skill,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack,
+        additionalMods,
+        bestNonStackingMods,
+      );
+
+      for (const mod of Object.values(bestNonStackingMods)) {
+        if (mod) additionalMods.push(mod);
+      }
+
+      if (additionalMods.length) {
+        additionalMods.forEach(
+          (mod) => (mod.label = game.i18n.localize(mod.label)),
+        );
+        if (options.additionalMods)
+          options.additionalMods.push(...additionalMods);
+        else options.additionalMods = additionalMods;
+      }
+    }
 
     if (!skill) return this.makeUnskilledAttempt(options);
 
@@ -424,16 +466,7 @@ class SwadeActor<
     let flavour = '';
     if (options.flavour) flavour = ` - ${options.flavour}`;
 
-    /**
-     * A hook event that is fired before a skill is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-     * Returning `false` in a hook callback will cancel the roll entirely
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the skill
-     * @param {SwadeItem} skill                 The Skill item that is being rolled
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     const permitContinue = Hooks.call(
       'swadePreRollSkill',
       this,
@@ -473,15 +506,7 @@ class SwadeActor<
     // Roll and return
     const retVal = await RollDialog.asPromise(rollDialogContext);
 
-    /**
-     * A hook event that is fired after a skill is rolled
-     * @category Hooks
-     * @param {SwadeActor} actor                The actor that rolls the skill
-     * @param {SwadeItem} skill                 The Skill item that is being rolled
-     * @param {TraitRoll} roll                  The built base roll, without any modifiers
-     * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-     * @param {IRollOptions} options            The options passed into the roll function
-     */
+    // See src/globals.d.ts for docs
     Hooks.callAll('swadeRollSkill', this, skill, roll, modifiers, options);
 
     return retVal as TraitRoll | null;
@@ -598,7 +623,7 @@ class SwadeActor<
   }
 
   async makeUnskilledAttempt(options: IRollOptions = {}) {
-    const tempSkill = new SwadeItem({
+    const tempSkill = new SwadeItem<'skill'>({
       name: game.i18n.localize('SWADE.Unskilled'),
       type: 'skill',
       system: {
@@ -628,7 +653,7 @@ class SwadeActor<
     arcaneSkillDie: TraitDie,
     options: IRollOptions = {},
   ) {
-    const tempSkill = new SwadeItem({
+    const tempSkill = new SwadeItem<'skill'>({
       name: game.i18n.localize('SWADE.ArcaneSkill'),
       type: 'skill',
       system: {
@@ -667,12 +692,8 @@ class SwadeActor<
       game.swade.sockets.giveBenny(gms);
     }
 
-    /**
-     * A hook event that is fired after an actor spends a Benny
-     * @category Hooks
-     * @param {SwadeActor} actor                     The actor that spent the benny
-     */
-    Hooks.call('swadeSpendBenny', this);
+    // See src/globals.d.ts for docs
+    Hooks.callAll('swadeSpendBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
@@ -713,12 +734,8 @@ class SwadeActor<
       });
     }
 
-    /**
-     * A hook event that is fired after an actor has been awarded a benny
-     * @category Hooks
-     * @param {SwadeActor} actor                     The actor that received the benny
-     */
-    Hooks.call('swadeGetBenny', this);
+    // See src/globals.d.ts for docs
+    Hooks.callAll('swadeGetBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
       game.dice3d.showForRoll(
@@ -1081,7 +1098,7 @@ class SwadeActor<
     if (!options.rof) options.rof = 1;
     const skillData = skill.system;
 
-    const rolls = new Array<Roll>();
+    const rolls = new Array<Roll<AnyObject>>();
 
     //Add all necessary trait die
     for (let i = 0; i < options.rof; i++) {
@@ -1125,7 +1142,7 @@ class SwadeActor<
       });
     }
 
-    return [TraitRoll.fromTerms<TraitRoll>([basePool]), rollMods];
+    return [TraitRoll.fromTerms<typeof TraitRoll>([basePool]), rollMods];
   }
 
   /**
@@ -1479,7 +1496,7 @@ class SwadeActor<
       foundry.utils.hasProperty(changed, 'system.bennies') &&
       this.hasPlayerOwner
     ) {
-      ui.players?.render(true);
+      ui.players?.render({ force: true });
     }
     if (
       foundry.utils.hasProperty(options, 'swade.wounds.value') ||
@@ -1512,4 +1529,9 @@ interface ArmorCalcContext {
   name: string;
   armor: number;
   isNaturalArmor: boolean;
+}
+
+export interface BestNonStackingMods {
+  bestCover: RollModifier | undefined;
+  bestIllumination: RollModifier | undefined;
 }

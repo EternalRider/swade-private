@@ -7,7 +7,7 @@ import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
 import { ShieldData, WeaponData } from '../item';
@@ -52,6 +52,7 @@ declare namespace VehicleData {
       parry: {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
+        value: number;
       };
     };
     cargo: {
@@ -102,7 +103,8 @@ function validateCrewMember(
 
 function createVehicleSchema() {
   const fields = foundry.data.fields;
-  return {
+
+  const schema = {
     attributes: new fields.SchemaField(
       {
         // Found in HC Haunted Car
@@ -318,7 +320,9 @@ function createVehicleSchema() {
               }),
               sort: new fields.IntegerSortField(),
               weapons: new fields.ArrayField(
-                new LocalDocumentField(SwadeItem, { types: ['weapon'] }),
+                new LocalDocumentField(SwadeItem, {
+                  types: ['weapon'],
+                }),
               ),
             },
             { validate: validateCrewMember },
@@ -374,7 +378,10 @@ function createVehicleSchema() {
           label: 'SWADE.ImprovedLevelHeaded',
         }),
         hasQuick: new fields.BooleanField({ label: 'SWADE.Quick' }),
-        follow: new fields.StringField({ label: 'SWADE.FollowLabel', initial: '' }),
+        follow: new fields.StringField({
+          label: 'SWADE.FollowLabel',
+          initial: '',
+        }),
       },
       { label: 'SWADE.Init' },
     ),
@@ -385,6 +392,8 @@ function createVehicleSchema() {
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxMods' }),
     }),
   };
+
+  return schema;
 }
 
 class VehicleData<
@@ -637,6 +646,11 @@ class VehicleData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -652,6 +666,7 @@ class VehicleData<
     );
 
     if (embed) {
+      // See src/globals.d.ts for docs
       Hooks.callAll('swadeActorEmbed', embed, this.parent, config, options);
     }
 
@@ -684,7 +699,7 @@ class VehicleData<
 
   #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
     const itemTypes = this.parent.itemTypes;
-    const notMod = (i: SwadeItem<'gear' | 'weapon'>) =>
+    const notMod = (i: Item.OfType<'gear' | 'weapon'>) =>
       !i.system.isVehicular ||
       i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
     return [

@@ -1,5 +1,8 @@
 import { Updates } from '../../../globals';
-import { reshuffleActionDeck, reshuffleActionDeckIfJokerDrawn } from '../../util';
+import {
+  reshuffleActionDeck,
+  reshuffleActionDeckIfJokerDrawn,
+} from '../../util';
 
 import { DeepPartial } from 'fvtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
@@ -167,7 +170,9 @@ export default class SwadeCombat<
     const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
       {
         action: 'gmBenny',
-        label: stringNonbreakingSpaces(game.i18n.localize('SWADE.Rolls.GMBenny')),
+        label: stringNonbreakingSpaces(
+          game.i18n.localize('SWADE.Rolls.GMBenny'),
+        ),
         icon: '<i class="fas fa-coins"></i>',
       },
       {
@@ -192,7 +197,9 @@ export default class SwadeCombat<
     }
     const data: foundry.applications.api.DialogV2.Configuration = {
       window: {
-        title: game.i18n.format('SWADE.Combat.RedrawFor', {name: c.actor?.name}),
+        title: game.i18n.format('SWADE.Combat.RedrawFor', {
+          name: c.actor?.name,
+        }),
       },
       content: `<p>${content}</p>`,
       buttons,
@@ -208,9 +215,11 @@ export default class SwadeCombat<
     };
 
     const choice = await foundry.applications.api.DialogV2.wait(data);
-    if (choice === 'free' ||
-        (choice === 'gmBenny' && await game.user?.spendBenny()) ||
-        (choice === 'benny' && await actor?.spendBenny())) {
+    if (
+      choice === 'free' ||
+      (choice === 'gmBenny' && (await game.user?.spendBenny())) ||
+      (choice === 'benny' && (await actor?.spendBenny()))
+    ) {
       await this.rollInitiative(id);
     }
   }
@@ -365,7 +374,11 @@ export default class SwadeCombat<
         });
       }
 
-      if (game.settings.get('swade', 'initMessage') !== constants.INIT_MESSAGE_TYPE.OFF || isRedraw) {
+      if (
+        game.settings.get('swade', 'initMessage') !==
+          constants.INIT_MESSAGE_TYPE.OFF ||
+        isRedraw
+      ) {
         // Construct chat message data
         const messageData = foundry.utils.mergeObject(
           {
@@ -416,7 +429,7 @@ export default class SwadeCombat<
     return this;
   }
 
-  static protected _hasSameOwner(a: SwadeCombatant, b: SwadeCombatant) {
+  protected static _hasSameOwner(a: SwadeCombatant, b: SwadeCombatant) {
     if (a?.players && b?.players) {
       for (const playerA of a.players) {
         for (const playerB of b.players) {
@@ -427,7 +440,7 @@ export default class SwadeCombat<
     return false;
   }
 
-  static protected _hasCommandEdge(a: SwadeCombatant) {
+  protected static _hasCommandEdge(a: SwadeCombatant) {
     return a?.actor?.getItemsBySwid('command', 'edge')?.length ? true : false;
   }
 
@@ -436,9 +449,15 @@ export default class SwadeCombat<
 
     // Combatant initiative, using the leader's initiative if in a group.
     let iniA = Number.isNumeric(a.initiative) ? a.initiative : -Infinity;
-    if (a.group) iniA = Number.isNumeric(a.group.system?.leaderCombatant?.initiative) ? a.group.system?.leaderCombatant?.initiative : -Infinity;
+    if (a.group)
+      iniA = Number.isNumeric(a.group.system?.leaderCombatant?.initiative)
+        ? a.group.system?.leaderCombatant?.initiative
+        : -Infinity;
     let iniB = Number.isNumeric(b.initiative) ? b.initiative : -Infinity;
-    if (b.group) iniB = Number.isNumeric(b.group.system?.leaderCombatant?.initiative) ? b.group.system?.leaderCombatant?.initiative : -Infinity;
+    if (b.group)
+      iniB = Number.isNumeric(b.group.system?.leaderCombatant?.initiative)
+        ? b.group.system?.leaderCombatant?.initiative
+        : -Infinity;
 
     // Sort inside a group, where the order isn't based on initiative.
     if (a.group && b.group && a.group.id == b.group.id) {
@@ -447,7 +466,7 @@ export default class SwadeCombat<
       // Leaders always come first.
       if (a.isGroupLeader && !b.isGroupLeader) return -1;
       if (b.isGroupLeader && !a.isGroupLeader) return 1;
-      
+
       if (a.hasPlayerOwner && b.hasPlayerOwner) {
         // If both are owned by the same player, we need other tie breakers further down.
         if (!SwadeCombat._hasSameOwner(a, b)) {
@@ -471,8 +490,10 @@ export default class SwadeCombat<
       if (!a.actor?.isWildcard && b.actor?.isWildcard) return 1;
 
       // Combatants with Command edge before those without.
-      if (SwadeCombat._hasCommandEdge(a) && !SwadeCombat._hasCommandEdge(b)) return -1;
-      if (!SwadeCombat._hasCommandEdge(a) && SwadeCombat._hasCommandEdge(b)) return 1;
+      if (SwadeCombat._hasCommandEdge(a) && !SwadeCombat._hasCommandEdge(b))
+        return -1;
+      if (!SwadeCombat._hasCommandEdge(a) && SwadeCombat._hasCommandEdge(b))
+        return 1;
     } // End of sort inside group.
 
     // Combatants on hold come before those not on hold.
@@ -492,14 +513,16 @@ export default class SwadeCombat<
     }
 
     // Sort by initiative value.
-    return (iniB - iniA);
+    return iniB - iniA;
   }
 
   protected async onCreateCombatantFollow(documents, userId) {
     if (game.userId !== userId) return;
 
     // If CTRL is pressed, add all combatants as one group.
-    if (game.keyboard?.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)) {
+    if (
+      game.keyboard?.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)
+    ) {
       const group = await this.createGroup();
       if (!group) return;
       for (const d of documents) {
@@ -581,10 +604,14 @@ export default class SwadeCombat<
     if (this.turn != oldTurn && game.user.isGM) {
       // FIXME: restore old turn; somehow, super._onUpdateDescendantDocuments() sometimes mutates the turn erroneously.
       // This especially happens on next round / when resetting initiative / rolling all NPCs.
-      this.update({turn: oldTurn});
+      this.update({ turn: oldTurn });
     }
-    if ((collection === 'combatants' && changes?.some((change) => change?.hasOwnProperty('initiative'))) ||
-        (collection === 'groups' || changes?.some((change) => change?.hasOwnProperty('group')))) {
+    if (
+      (collection === 'combatants' &&
+        changes?.some((change) => change?.hasOwnProperty('initiative'))) ||
+      collection === 'groups' ||
+      changes?.some((change) => change?.hasOwnProperty('group'))
+    ) {
       this.#onModifyCombatantGroups(parent, documents, options);
     }
   }
@@ -609,8 +636,10 @@ export default class SwadeCombat<
       options,
       userId,
     );
-    if (collection === 'groups' ||
-        (collection === 'combatants' && documents?.some((d) => d.isGroupLeader))) {
+    if (
+      collection === 'groups' ||
+      (collection === 'combatants' && documents?.some((d) => d.isGroupLeader))
+    ) {
       this.#onModifyCombatantGroups(parent, documents, options);
     }
   }
@@ -618,10 +647,12 @@ export default class SwadeCombat<
   async #onModifyCombatantGroups(parent: Combat.Stored, _documents, options) {
     if (game.user.activeGM?.isSelf) {
       for (const group of this.groups) {
-        if (group.initiative &&
+        if (
+          group.initiative &&
           (!group.leaderCombatant?.initiative ||
             !group.leaderCombatant?.system?.cardValue ||
-            !group.leaderCombatant.isGroupLeader)) {
+            !group.leaderCombatant.isGroupLeader)
+        ) {
           await group.update({ initiative: null });
         }
       }
@@ -682,9 +713,10 @@ export default class SwadeCombat<
       combatants: this.combatants.toObject(),
       groups: this.groups.toObject(),
     };
-    if (updateTurn && currentId) update.turn = this.turns.findIndex(t => t.id === currentId);
+    if (updateTurn && currentId)
+      update.turn = this.turns.findIndex((t) => t.id === currentId);
 
-    await this.update(update, { turnEvents: false, diff: false});
+    await this.update(update, { turnEvents: false, diff: false });
     return this;
   }
 
@@ -719,14 +751,31 @@ export default class SwadeCombat<
    * @param leader The combatant to look for.
    * @returns The combatant's group, if any.
    */
-  async getGroupForCombatant(leader: string | SwadeCombatant, options = { createIfNotInGroup: false, preferDisposition: undefined }) {
+  async getGroupForCombatant(
+    leader: string | SwadeCombatant,
+    options = { createIfNotInGroup: false, preferDisposition: undefined },
+  ) {
     let leaderCombatant = undefined;
-    if (leader && leader instanceof SwadeCombatant && this.id === leader.combat?.id) {
+    if (
+      leader &&
+      leader instanceof SwadeCombatant &&
+      this.id === leader.combat?.id
+    ) {
       leaderCombatant = leader;
     } else if (leader?.length) {
-      const possibleLeaders = this.combatants?.filter((c) => c?.name === leader || c?.token?.name === leader || c?.actor.name === leader);
-      if (options?.hasOwnProperty('preferDisposition') && options.preferDisposition !== undefined) {
-        leaderCombatant = possibleLeaders?.find((c) => c.token?.disposition === options?.preferDisposition);
+      const possibleLeaders = this.combatants?.filter(
+        (c) =>
+          c?.name === leader ||
+          c?.token?.name === leader ||
+          c?.actor.name === leader,
+      );
+      if (
+        options?.hasOwnProperty('preferDisposition') &&
+        options.preferDisposition !== undefined
+      ) {
+        leaderCombatant = possibleLeaders?.find(
+          (c) => c.token?.disposition === options?.preferDisposition,
+        );
       }
       if (!leaderCombatant) leaderCombatant = possibleLeaders?.shift();
     }
@@ -747,7 +796,7 @@ export default class SwadeCombat<
    * Removes the combatant group with the given ID (if it exists) by removing all its members from it.
    * @param groupId The combatant group to remove.
    */
-  async removeGroup(groupId, options = { deleteMembers: false}) {
+  async removeGroup(groupId, options = { deleteMembers: false }) {
     if (!groupId) return;
     const group = this.groups?.get(groupId);
     if (!group) return;
@@ -755,11 +804,11 @@ export default class SwadeCombat<
     if (group.members?.size > 0) {
       await Promise.all(
         group.members?.map(async (m) => {
-          await m?.removeFromGroup()
+          await m?.removeFromGroup();
           if (options?.deleteMembers) {
             await m?.delete();
           }
-        })
+        }),
       );
     } else {
       await group.delete();
@@ -782,7 +831,7 @@ export default class SwadeCombat<
     if (this.combatant?.group && !this.combatant.group._expanded) {
       return this.toggleGroupExpand(this.combatant.group.id);
     }
-  } 
+  }
 
   override async nextTurn() {
     await this._handleEndOfTurnExpirations();

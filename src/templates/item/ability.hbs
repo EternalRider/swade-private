@@ -20,6 +20,11 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
+    {{#if item.system.charges.hasCharges}}
+      <a class='item' data-tab='charges' data-group='main'>
+        {{localize 'SWADE.Charges'}}
+      </a>
+    {{/if}}
     <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
   </nav>
 
@@ -53,8 +58,21 @@
           </span>
         </div>
       {{/unless}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
       {{> 'swade.item-grants'}}
     </section>
+    {{#if item.system.charges.hasCharges}}
+      <section class='tab charges' data-group='main' data-tab='charges'>
+        {{> 'swade.item-tab-charges'}}
+      </section>
+    {{/if}}
     <section class='tab effects' data-group='main' data-tab='effects'>
       {{> 'swade.item-tab-effects'}}
     </section>

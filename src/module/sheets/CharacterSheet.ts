@@ -7,6 +7,7 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
+  Charge,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
@@ -19,6 +20,7 @@ import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { ChargeData } from '../data/fields/ChargesData';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -28,6 +30,7 @@ import * as util from '../util';
 
 export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   _equipStateMenu: ContextMenu;
+  _chargeRechargeMenu: ContextMenu;
   _effectCreateDropDown: ContextMenu;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
@@ -71,15 +74,24 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     this.#disableOverrides(html);
     this.#setupEquipStatusMenu(html);
+    this.#setupRechargeUsesMenu(html);
     this.#setupEffectCreateMenu(html);
     this.#setupItemContextMenu(html);
     this.#setupAccordions(html);
 
     // Input focus and update
     const inputs = html.querySelectorAll('input');
-    inputs.forEach((el) =>
-      el.addEventListener('focus', (ev) => ev.currentTarget.select()),
-    );
+    inputs.forEach((el) => {
+      el.addEventListener('focus', (ev) => ev.currentTarget.select());
+      el.addEventListener('keypress', (ev: KeyboardEvent) => {
+        const targetIsButton = 'button' === ev?.target?.type;
+        if (!targetIsButton && ev.key === 'Enter') {
+          ev.preventDefault();
+          this.submit({ preventClose: true });
+          return false;
+        }
+      });
+    });
 
     html
       .querySelector('[name="system.details.currency"]')
@@ -90,6 +102,19 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
+    });
+
+    //Disable draggable on the item if we drag inside of the charge summary
+    html.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mousedown', () => {
+        el.closest('li')?.setAttribute('draggable', 'false');
+      });
+    });
+
+    html.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mouseup', () => {
+        el.closest('li')?.setAttribute('draggable', 'true');
+      });
     });
 
     html
@@ -179,6 +204,42 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);
         item?.deleteDialog();
+      }),
+    );
+
+    // Charge input fields
+    html.querySelectorAll('.charge-fields input').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId);
+        await item.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
+
+    // Charge recharge
+    html.querySelectorAll('[data-action="rechargeManual"]').forEach((el) =>
+      el.addEventListener('click', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.actor.items.get(li?.dataset.itemId);
+        const chargeId = ev.currentTarget.dataset.chargeId;
+        const charge = foundry.utils.getProperty(
+          item,
+          `system.charges.charges.${chargeId}`,
+        ) as Charge;
+        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+          name: charge.name,
+        });
+        await foundry.applications.api.DialogV2.confirm({
+          content: `<p class="text-center">${text}</p>`,
+          classes: ['dialog', 'swade-app'],
+          yes: {
+            callback: async () => {
+              await item.rechargeCharge(charge);
+            }
+          },
+        });
       }),
     );
 
@@ -420,6 +481,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   ): Promise<SwadeActorSheetData> {
     if (this.actor.system instanceof VehicleData) throw new Error();
 
+    let hasAnyChargeItems = false;
     //retrieve the items and sort them by their sort value
     const items = Array.from(this.actor.items.contents as SwadeItem[]).sort(
       (a, b) => a.sort - b.sort,
@@ -439,6 +501,21 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           name: itemActions[action].name,
         });
       }
+
+      if (system.charges?.hasCharges ) {
+        const charges = new Array<{charge: ChargeData; rechargeType: string}>();
+
+        for (const itemCharge of system.charges.sorted) {
+          charges.push({
+            charge: itemCharge,
+            rechargeType: SWADE.chargeRechargeTypes[itemCharge.rechargeType],
+          });
+        }
+        foundry.utils.setProperty(item, 'charges', charges);
+
+        hasAnyChargeItems ||= system.charges.hasCharges;
+      }
+
       const hasDamage =
         !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
@@ -515,6 +592,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
 
     const data: SwadeActorSheetData = {
       itemTypes: itemTypes,
+      hasAnyChargeItems: hasAnyChargeItems,
       parryTooltip: this.actor.getPTTooltip('parry'),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       armorTooltip: this.actor.getArmorTooltip(),
@@ -1338,6 +1416,59 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       );
   }
 
+  #setupRechargeUsesMenu(html: HTMLElement) {
+    const items: ContextMenu.Entry[] = [
+      {
+        name: game.i18n.localize('SWADE.Encounter'),
+        icon: '<i class="fa-solid fa-rotate-right"></i>',
+        condition: true,
+        callback: async () => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: () => {
+                for (const item of this.actor.items) {
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
+                }
+              }
+            },
+          });
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.Day'),
+        icon: '<i class="fa-solid fa-rotate"></i>',
+        condition: true,
+        callback: async () => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                for (const item of this.actor.items) {
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
+                }
+              }
+            },
+          });
+        },
+      },
+    ];
+
+    const selector = '.charge-recharge-menu';
+    const options = { eventName: 'click', jQuery: false, fixed: true };
+    this._chargeRechargeMenu =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        selector,
+        items,
+        options,
+      );
+  }
+
   #setupEffectCreateMenu(html: HTMLElement) {
     this._effectCreateDropDown =
       new foundry.applications.ux.ContextMenu.implementation(
@@ -1537,6 +1668,7 @@ interface SwadeActorSheetData extends OptionsPartial {
   attributes: Record<string, TraitDisplay>;
   skills: SkillDisplay[];
   itemTypes: Record<string, SwadeItem[]>;
+  hasAnyChargeItems: boolean;
   parryTooltip: string;
   toughnessTooltip: string;
   armorTooltip: string;

@@ -252,7 +252,8 @@ SWADE:
   Scale: Échelle
   PickACard: Piocher une carte
   NoCardsLeft: Il n'y a plus assez de cartes dans la pioche ! Il ne reste que {current}
-    pour {needed} cartes nécessaires
+    pour {needed} cartes nécessaires. Réinitialisez le jeu ou réduisez le nombre de
+    combattants..
   OldCard: Ancienne carte
   ActionCard: Carte d'action
   ConvictionActive: Conviction active
@@ -380,7 +381,7 @@ SWADE:
     _name: Illumination
     Dim: Pénombre
     Dark: Obscurité
-    Pitch: Noir
+    Pitch: Obscurité totale
   Cover:
     _name: Couvert
     Shield: Couvert - Bouclier
@@ -388,6 +389,7 @@ SWADE:
     Medium: Couvert moyen
     Heavy: Couvert important
     Total: Couvert total
+    MediumProne: Couvert moyen (au sol)
   Range:
     _name: Portée
     Medium: Portée moyenne
@@ -472,6 +474,12 @@ SWADE:
     ModifierCost:
       Label: Coût du modificateur
       Hint: Le coût en points de construction ou de pouvoir de ce modificateur
+    ModifierLimit:
+      Hint: Combien de fois ce modificateur peut-il être choisi ?
+      Label: Limite de modificateur
+    ModifierLevel:
+      Label: Niveau de modificateur
+      Hint: Combien de fois avez-vous sélectionné ce modificateur ?
   Keybindings:
     OpenFavoriteCards:
       Name: Ouvrir la main préférée
@@ -483,6 +491,10 @@ SWADE:
       Name: Dépenser/recevoir un jeton
       Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
         recevoir un jeton
+    ToggleHUD:
+      Name: Activer/désactiver le HUD SWADE
+      Hint: Activez ou désactivez l'affichage SWADE HUD pour le jeton actuellement
+        contrôlé ou votre personnage assigné
   Settings:
     HighlightTemplate:
       Name: Toujours surligner les gabarits
@@ -548,7 +560,7 @@ SWADE:
     CoreSkillsList:
       Name: Liste des compétences de base
       Hint: Entrez la liste des compétences de base de tous les acteurs, en séparant
-        chaque nom par une virgule
+        chaque nom ou SWID par une virgule
     CoreSkillsPack:
       Name: Compendium des compétences de base
       Hint: Choisissez le compendium d’où viennent les compétences de base
@@ -747,7 +759,7 @@ SWADE:
     Open: Gérer les attributs
     Title: Gérer les atributs pour {name}
   BaseDie: Dé de base
-  Category: Catégorie d'objet
+  Category: Catégorie
   ColdBodied: Corps froid
   CompendiumTOC:
     Dialog:
@@ -812,6 +824,9 @@ SWADE:
     Medium:
       Long: Gabarit d'explosion - Moyen
       Short: MBT
+    SmallCone:
+      Short: Petit cône
+      Long: Gabarit de petit cône
   UsesTOC: Utiliser le sommaire du compendium
   Vision:
     SenseHeat: Sentir la chaleu
@@ -1404,7 +1419,8 @@ SWADE:
   Combat:
     RedrawDialog:
       Content: Piocher une carte avec un Jeton ou gratuitement ?
-    StartSurpriseRound: Démarrer le tour de surprise
+      ContentNoBenny: Plus de jeton. Piocher une nouvelle carte gratuitement ?
+    StartSurpriseRound: Démarrer le round de surprise
     AdvanceRoundTitle: Allez au prochain round ?
     AdvanceRoundContent: Voulez-vous allez au prochain round ?
     RevertRoundTitle: Revenir au round précédent ?
@@ -1414,6 +1430,8 @@ SWADE:
     DealAll: Distribuez pour tous
     DealNPC: Distribuez pour les PNJs
     LinkScene: Scène liée
+    StartEncounter: Début de la rencontre
+    RedrawFor: Repioche de carte ({name})
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
@@ -1619,6 +1637,30 @@ SWADE:
       Huge: Géant
       Gargantuan: Gargantuesque
       Large: Grand
+  BuildLimit: Limite de construction
+  BuildLevel: Niveau de construction
+  DeleteEmbeddedCardPrompt: Êtes-vous sûr de vouloir supprimer la carte {card} ?
+  Unfavorite: Suppression des favoris
+  FollowLabel: Suivre
+  DeleteGroupAndCombatants: Supprimer le groupe et les combattants
+  ScaleDifference: Différence d'échelle
+  GangUp: Attaque à plusieurs
+  ChargeLevel: Charge
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          illumination:
+            label: Niveau de luminosité
+            hint: Appliquera les modificateurs de pénalité d'éclairage par défaut
+              lors du ciblage des jetons dans cette région.
+          cover:
+            label: Degré de couverture
+            hint: Appliquera les modificateurs de pénalité de couverture par défaut
+              lors du ciblage des jetons dans cette région.
+          unstablePlatform:
+            hint: Cela appliquera le modificateur par défaut « Plateforme instable
+              » lors des tirs/lancers effectués depuis cette zone.
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1708,3 +1750,5 @@ TYPES:
     dramaticTask: Scène Dramatique
   ActiveEffect:
     modifier: Modificateur
+  RegionBehavior:
+    attackModifiers: Modificateurs d'attaque

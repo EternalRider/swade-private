@@ -1,5 +1,5 @@
 import { ACTIVE_EFFECT_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
-import { ActionType, AdditionalStatType } from '../globals';
+import { ActionType, AdditionalStatType, ChargeRechargeType } from '../globals';
 import { constants } from '../module/constants';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 
@@ -35,6 +35,16 @@ export interface ItemAction {
   ap?: number;
 }
 
+export interface Charge {
+  id: string;
+  sort: number;
+  name: string;
+  rechargeType: ChargeRechargeType;
+  value?: number;
+  max?: number;
+  rechargeAmount?: FormulaField;
+}
+
 /** A single trait roll modifier, containing a label and a value */
 export interface RollModifier {
   /** The label of the modifier. Used in the hooks and for display */
@@ -51,8 +61,8 @@ export interface RollModifier {
 export interface RollModifierGroup {
   /** The name of the group */
   name: string;
-  /** The array of possible modifiers in the group */
-  modifiers: RollModifier[];
+  /** An object of possible modifiers in the group */
+  modifiers: Record<string, RollModifier>;
   /** Eligible roll types from constants.ts */
   rollType: ValueOf<typeof constants.ROLL_TYPE>;
 }

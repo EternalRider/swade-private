@@ -3,7 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
-import { signedNumberString } from './util';
+import { signedNumberString, getScaleName } from './util';
 
 /*****************************
  * General Utility Helpers
@@ -43,7 +43,8 @@ function formatNumber(num) {
 }
 
 function capitalize(str: string) {
-  return str.capitalize();
+  if (!str || typeof str !== 'string') return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 function isEmpty(value) {
@@ -106,7 +107,9 @@ function suitIcon(suit: string) {
       suitClass = suit;
     }
   }
-  return new Handlebars.SafeString(`<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`);
+  return new Handlebars.SafeString(
+    `<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`,
+  );
 }
 
 /*****************************
@@ -419,5 +422,6 @@ export function registerCustomHelpers() {
     formatDamage,
     formatArmorLocations,
     formatHindranceSeverity,
+    getScaleName,
   });
 }

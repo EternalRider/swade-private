@@ -26,8 +26,8 @@ SWADE:
   Scale: Escala
   PickACard: Escolha uma carta para {name}
   NoCardsLeft: >-
-    Não há cartas restantes no baralho! Apenas {current} cartas de {needed}
-    necessárias estão disponíveis
+    Não há cartas restantes no baralho! Apenas {current} cartas de {needed} necessárias
+    estão disponíveis
   OldCard: Carta Anterior
   ActionCard: Carta de Ação
   ConvictionActive: Convicção Ativa
@@ -284,8 +284,8 @@ SWADE:
     CoreSkillsList:
       Name: Lista de Perícias Básicas
       Hint: >-
-        Insira uma lista de perícias separadas por vírgula para serem definidas
-        como Perícias Básicas para todos os atores
+        Insira uma lista de perícias separadas por vírgula para serem definidas como
+        Perícias Básicas para todos os atores
     CoreSkillsPack:
       Name: Compêndio das Perícias Básicas
       Hint: Escolha de qual compêndio as perícias básicas serão selecionadas

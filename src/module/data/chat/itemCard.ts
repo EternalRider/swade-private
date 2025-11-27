@@ -52,6 +52,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   _item: SwadeItem | null = null;
   #handler = new ItemCardService();
+  #hookId: number | undefined = undefined;
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
@@ -112,6 +113,14 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
       });
   }
 
+  protected override prepareDerivedData(this: ItemCardData) {
+    if (!this.#hookId) {
+      this.#hookId = Hooks.on('updateItem', async (item: SwadeItem) => {
+        if (item.uuid === this.uuid) this._refreshMessage();
+      });
+    }
+  }
+
   protected async _handleButtonClick(
     event: MouseEvent,
     btn: HTMLButtonElement,
@@ -169,7 +178,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
           this._item,
           actor,
           additionalMods,
-          html
+          html,
         );
         break;
       case 'arcane-device':

@@ -1,6 +1,7 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import { SwadeBaseItemData } from './base';
 import { favorite, grants } from './common';
 import { ChoicesType, Favorite, Grants } from './item-common.interface';
@@ -13,6 +14,7 @@ declare namespace HindranceData {
       blank: false;
     }>;
     major: foundry.data.fields.BooleanField<{ label: string }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -30,6 +32,7 @@ class HindranceData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...grants(),
+      charges: new fields.EmbeddedDataField(ChargesData),
       severity: new fields.StringField({
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,
@@ -68,10 +71,19 @@ class HindranceData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/hindrance-embeds.hbs',

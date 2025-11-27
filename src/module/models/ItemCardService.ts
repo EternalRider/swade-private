@@ -48,9 +48,14 @@ export default class ItemCardService {
 
     let costOverride = undefined;
     if (item.type === 'power') {
-      costOverride = html?.querySelector<HTMLInputElement>('input.pp-adjust')?.valueAsNumber ?? item.system.ppModifiers.cost;
+      costOverride =
+        html?.querySelector<HTMLInputElement>('input.pp-adjust')
+          ?.valueAsNumber ?? item.system.ppModifiers.cost;
     }
-    const canExpend = costOverride !== undefined ? item.canExpendResources(costOverride) : item.canExpendResources();
+    const canExpend =
+      costOverride !== undefined
+        ? item.canExpendResources(costOverride)
+        : item.canExpendResources();
     if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
