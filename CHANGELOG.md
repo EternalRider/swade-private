@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 
 ### Added
-  - Added roll enrichers for text and custom chat commands to quickly roll damage and trait tests. (#1284) **by florad92**
-    - You can use `/t` aor `/trait` to roll a trait test by referencing the trait you want to roll by either the swid (for skills) or the english attribute name with the proper prefix
+  - Added roll enrichers for text and custom chat commands to quickly roll damage and trait tests. (#1284) **by @florad92**
+    - You can use `/t` or `/trait` to roll a trait test by referencing the trait you want to roll by either the swid (for skills) or the english attribute name with the proper prefix
       - /trait @skill.notice Rolls a notice roll for the currently selected token, or character assigned to the current user if no token was selected.
       - /damage 1d6 rolls a 1d6 damage roll. Please take not that you will need to add the explosive dice modifier (x) yourself
     - You can also use the same formula to embed enriched one-click-rolls in text such as journal pages or chat messages, simply surround the command with double square brackets.
@@ -33,8 +33,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- Active Effects of type Modifier can now be given a cost that is not an integer number, such as 1.5 (#1293) **by florad92**
-- Item Chat Cards now automatically re-render when the item they represent changes. (#1293)  **by florad92**
+- Active Effects of type Modifier can now be given a cost that is not an integer number, such as 1.5 (#1293) **by @florad92**
+- Item Chat Cards now automatically re-render when the item they represent changes. (#1293)  **by @florad92**
 - [BREAKING] The structure of `CONFIG.SWADE.prototypeRollGroups` has changed from an array to an object, has been renamed `CONFIG.SWADE.rollModifiers`, and for each of the nested `RollModifierGroup`s, their `modifiers` has also changed from an array to an object. This means any code that tries to get a modifier from `CONFIG.SWADE.prototypeRollGroups` must change, and any code that adds modifiers or modifier groups must change. **by @roth-michael**
   - To get the modifier for dim illumination, for instance, one would use `CONFIG.SWADE.rollModifiers.illumination.modifiers.dim`
 
@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 - "Hold" combatant control now only visible to owner(s) of the combatant, some other combatant controls only show to the GM (as only the GM could use them anyway) (#1348) **by @roth-michael**
+- FormulaField fields should no longer turn negative numbers positive. (#1398) **by @florad92**
 
 ### Security
 

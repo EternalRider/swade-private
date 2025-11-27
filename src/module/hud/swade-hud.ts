@@ -21,7 +21,7 @@ import {
  * List of Handlebars template paths used by the SWADE HUD system.
  * @type {string[]}
  */
-const templatePaths = ['systems/swade/templates/apps/hud-character.hbs'];
+const templatePaths = ['systems/swade/templates/actors/hud/hud-character.hbs'];
 
 /**
  * Main SWADE HUD configuration object.
