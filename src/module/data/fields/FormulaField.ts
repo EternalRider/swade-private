@@ -9,20 +9,13 @@ export class FormulaField<
       value = value?.toString() ?? '';
     } else {
       if (game.settings.get('core', 'language') !== 'en') {
+        const smartsLong = game.i18n.localize('SWADE.AttrSma');
+        const smartsShort = game.i18n.localize('SWADE.AttrSmaShortPowerRange');
         value = value
-          .replace(
-            new RegExp('^' + game.i18n.localize('SWADE.AttrSma')),
-            '@sma',
-          )
-          .replace(
-            new RegExp(
-              '^' + game.i18n.localize('SWADE.AttrSmaShortPowerRange'),
-            ),
-            '@sma',
-          );
+          .replace(new RegExp('^' + smartsLong), '@sma')
+          .replace(new RegExp('^' + smartsShort), '@sma');
       }
       value = value
-        .replace(/^-/, '') // Core, HYPHEN-MINUS, only remove at beginning as minus may be used in formulas
         .replace(/–/, '') // SFC, EN DASH not minus, so safe to remove
         .replace(/—/, '') // EM DASH not minus, so safe to remove
         .replace(/―/, '') // FIGURE DASH not minus, so safe to remove
