@@ -208,7 +208,7 @@ SWADE:
   PickACard: Wähle eine Karte für {name}
   NoCardsLeft: >-
     Zu wenig Karten im Deck! Es sind nur {current] von {needed} benötigten Karten
-    verfügbar. Deck zurücksetzen oder Anzahl Kampfteilnehmer reduzieren!
+    verfügbar. Deck zurücksetzen oder Anzahl Kampfteilnehmer reduzieren.
   OldCard: Alte Karte
   ActionCard: Aktionskarte
   ConvictionActivate: '{name} aktiviert Entschlossenheit!'
@@ -530,6 +530,10 @@ SWADE:
       NoCardsWarning: Es wurde keine favorisierte Kartenhand gesetzt!
       UserConfigLabel: Favorisierte Kartenhand
       HandNone: Kein(e)
+    ToggleHUD:
+      Name: SWADE HUD umschalten
+      Hint: Schaltet das SWADE HUD für die aktuell gewählte Spielfigur oder den zugewiesenen
+        Charakter an oder aus
   Settings:
     HighlightTemplate:
       Name: Schablonen immer ausmalen
