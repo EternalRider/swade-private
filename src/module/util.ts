@@ -632,6 +632,36 @@ export function getDefaultAttackModifiers(
       });
     }
 
+    // Attacker Attack Modifiers (Active Effects)
+    const attackerGlobalMods = foundry.utils.getProperty(
+      currActor,
+      'system.stats.globalMods',
+    );
+    if (
+      isRangedAttack &&
+      attackerGlobalMods?.attackRanged &&
+      Array.isArray(attackerGlobalMods.attackRanged)
+    ) {
+      additionalMods.push(
+        ...attackerGlobalMods.attackRanged.map((m: any) => ({
+          label: m.label,
+          value: m.value,
+        })),
+      );
+    }
+    if (
+      isMeleeAttack &&
+      attackerGlobalMods?.attackMelee &&
+      Array.isArray(attackerGlobalMods.attackMelee)
+    ) {
+      additionalMods.push(
+        ...attackerGlobalMods.attackMelee.map((m: any) => ({
+          label: m.label,
+          value: m.value,
+        })),
+      );
+    }
+
     // Target Attack Modifiers (Active Effects)
     const globalMods = foundry.utils.getProperty(
       targetActor,
