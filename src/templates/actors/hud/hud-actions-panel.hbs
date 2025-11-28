@@ -15,22 +15,22 @@
               {{#if item.system.actions.additional}}
                 {{#each item.system.actions.additional as |action id|}}
                   {{#if (eq action.type "trait")}}
-                    <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{action.name}}">
+                    <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.RollName' name=action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{action.name}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "resist")}}
-                    <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Resist'}}: {{action.name}}">
+                    <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.ResistRollName' name=action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Resist'}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "damage")}}
-                    <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
+                    <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.RollDamageName' name=action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Dmg'}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "macro")}}
-                    <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' macro=action.name}}">
+                    <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
                       {{action.name}}
                     </button>
                   {{/if}}
