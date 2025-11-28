@@ -469,7 +469,7 @@ export function getDefaultAttackModifiers(
   // Unstable Platform
   if (
     isRangedAttack &&
-    sourceToken?.regions?.some((r) =>
+    currToken?.regions?.some((r) =>
       r.behaviors.some(
         (b) =>
           !b.disabled &&
@@ -478,14 +478,14 @@ export function getDefaultAttackModifiers(
       ),
     )
   ) {
-    if (sourceActor && !sourceActor.getSingleItemBySwid('steady-hands', 'edge'))
+    if (currActor && !currActor.getSingleItemBySwid('steady-hands', 'edge'))
       additionalMods.push(rollGroups.attack.modifiers.unstable);
   }
 
   let bestIllumination: RollModifier | undefined;
   let bestCover: RollModifier | undefined;
 
-  if (sourceToken && targetToken) {
+  if (currToken && targetToken) {
     const targetActor = targetToken.actor;
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
@@ -594,7 +594,7 @@ export function getDefaultAttackModifiers(
     ) {
       const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
       const numAttackerAllies = scene.tokens.filter((t) => {
-        if (t.disposition !== sourceToken.disposition) return false;
+        if (t.disposition !== currToken.disposition) return false;
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         return getEdgeToEdgeDistance(targetToken, t) < 1;
@@ -604,7 +604,7 @@ export function getDefaultAttackModifiers(
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
-        return getEdgeToEdgeDistance(sourceToken, t) < 1;
+        return getEdgeToEdgeDistance(currToken, t) < 1;
       }).length;
       let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
       if (targetActor?.getSingleItemBySwid('improved-block', 'edge'))
