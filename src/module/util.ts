@@ -442,7 +442,7 @@ export function getEdgeToEdgeDistance(
  * @returns A list of modifiers to be applied, and an object with the best non-stacking modifiers (e.g. illumination and darkness)
  */
 export function getDefaultAttackModifiers(
-  currToken: TokenDocument | undefined,
+  sourceToken: TokenDocument | undefined,
   targetToken: TokenDocument | undefined,
   item: SwadeItem,
   isRangedAttack: boolean,
@@ -458,7 +458,7 @@ export function getDefaultAttackModifiers(
   const illuminationMods = rollGroups.illumination.modifiers;
 
   const additionalMods: RollModifier[] = [];
-  let currActor = actor || currToken?.actor || item.actor!;
+  let currActor = actor || sourceToken?.actor || item.actor!;
   if (currActor.system instanceof VehicleData && item.type === 'weapon') {
     const gunner = currActor.system.getCrewMemberForWeapon(
       item as SwadeItem<'weapon'>,
@@ -469,7 +469,7 @@ export function getDefaultAttackModifiers(
   // Unstable Platform
   if (
     isRangedAttack &&
-    currToken?.regions?.some((r) =>
+    sourceToken?.regions?.some((r) =>
       r.behaviors.some(
         (b) =>
           !b.disabled &&
@@ -485,14 +485,14 @@ export function getDefaultAttackModifiers(
   let bestIllumination: RollModifier | undefined;
   let bestCover: RollModifier | undefined;
 
-  if (currToken && targetToken) {
+  if (sourceToken && targetToken) {
     const targetActor = targetToken.actor;
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
     const distanceToTarget =
-      (currToken
+      (sourceToken
         ? scene.grid.measurePath([
-            currToken.getCenterPoint(),
+            sourceToken.getCenterPoint(),
             targetToken.getCenterPoint(),
           ])?.distance
         : 0) ?? 0;
@@ -589,12 +589,12 @@ export function getDefaultAttackModifiers(
     // Gang-up, including (Improved) Block
     if (
       isMeleeAttack &&
-      currToken &&
-      currToken.disposition * targetToken.disposition === -1
+      sourceToken &&
+      sourceToken.disposition * targetToken.disposition === -1
     ) {
       const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
       const numAttackerAllies = scene.tokens.filter((t) => {
-        if (t.disposition !== currToken.disposition) return false;
+        if (t.disposition !== sourceToken.disposition) return false;
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         return getEdgeToEdgeDistance(targetToken, t) < 1;
@@ -604,7 +604,7 @@ export function getDefaultAttackModifiers(
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
-        return getEdgeToEdgeDistance(currToken, t) < 1;
+        return getEdgeToEdgeDistance(sourceToken, t) < 1;
       }).length;
       let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
       if (targetActor?.getSingleItemBySwid('improved-block', 'edge'))
