@@ -20,6 +20,11 @@
     <a class='item' data-tab='properties' data-group='main'>
       {{localize 'SWADE.Properties'}}
     </a>
+    {{#if item.system.charges.hasCharges}}
+      <a class='item' data-tab='charges' data-group='main'>
+        {{localize 'SWADE.Charges'}}
+      </a>
+    {{/if}}
     <a class='item' data-tab='actions' data-group='main'>{{localize 'SWADE.Actions.Name'}}</a>
     <a class='item' data-tab='effects' data-group='main'>{{localize 'SWADE.Effects'}}</a>
   </nav>
@@ -33,8 +38,21 @@
       {{formGroupSimple "system.hidden"}}
       {{> 'swade.item-action-properties'}}
       {{> 'swade.item-bonus-damage'}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
       {{> 'swade.item-templates'}}
     </section>
+    {{#if item.system.charges.hasCharges}}
+      <section class='tab charges' data-group='main' data-tab='charges'>
+        {{> 'swade.item-tab-charges'}}
+      </section>
+    {{/if}}
     <section class='tab actions' data-group='main' data-tab='actions'>
       {{> 'swade.item-tab-actions'}}
     </section>

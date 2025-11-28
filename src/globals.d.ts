@@ -63,6 +63,7 @@ export type EquipState = ValueOf<typeof constants.EQUIP_STATE>;
 export type ReloadType = ValueOf<typeof constants.RELOAD_TYPE>;
 export type ConsumableType = ValueOf<typeof constants.CONSUMABLE_TYPE>;
 export type ActionType = ValueOf<typeof constants.ACTION_TYPE>;
+export type ChargeRechargeType = ValueOf<typeof constants.CHARGE_RECHARGE_TYPE>;
 export type AbilitySubType = ValueOf<typeof constants.ABILITY_TYPE>;
 export type AdditionalStatType = ValueOf<
   typeof constants.ADDITIONAL_STATS_TYPE

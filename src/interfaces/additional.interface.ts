@@ -1,5 +1,5 @@
 import { ACTIVE_EFFECT_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
-import { ActionType, AdditionalStatType } from '../globals';
+import { ActionType, AdditionalStatType, ChargeRechargeType } from '../globals';
 import { constants } from '../module/constants';
 import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
 
@@ -33,6 +33,16 @@ export interface ItemAction {
   macroActor?: string;
   /** Armor Piercing */
   ap?: number;
+}
+
+export interface Charge {
+  id: string;
+  sort: number;
+  name: string;
+  rechargeType: ChargeRechargeType;
+  value?: number;
+  max?: number;
+  rechargeAmount?: FormulaField;
 }
 
 /** A single trait roll modifier, containing a label and a value */

@@ -1,6 +1,7 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { builder, category, favorite, grants } from './common';
@@ -25,6 +26,7 @@ declare namespace AbilityData {
       textSearch: true;
     }>;
     grantsPowers: foundry.data.fields.BooleanField<{ label: string }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -53,6 +55,7 @@ class AbilityData extends SwadeBaseItemData<
       grantsPowers: new fields.BooleanField({
         label: 'SWADE.GrantsPowers',
       }),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 

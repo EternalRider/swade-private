@@ -334,6 +334,13 @@ export const SWADE: SwadeConfig = {
     'SWADE.Scales.Names.Gargantuan',
   ],
 
+  chargeRechargeTypes: {
+    finite: 'SWADE.Finite',
+    manual: 'SWADE.Manual',
+    encounter: 'SWADE.Encounter',
+    day: 'SWADE.Day',
+  },
+
   textSearch: {
     actor: [
       'system.category',
@@ -445,6 +452,7 @@ export interface SwadeConfig {
   rollModifiers: Record<string, RollModifierGroup>;
   ranks: string[];
   scales: string[];
+  chargeRechargeTypes: Record<string, string>;
   textSearch: {
     scene: Array<string>;
     rolltable: Array<string>;

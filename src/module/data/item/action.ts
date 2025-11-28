@@ -12,6 +12,7 @@ import {
   Templates,
 } from './item-common.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
+import { ChargesData } from '../fields';
 
 declare namespace ActionData {
   interface Schema
@@ -19,12 +20,14 @@ declare namespace ActionData {
       Favorite,
       Category,
       Templates,
+      Charges,
       Actions {
     hidden: foundry.data.fields.BooleanField<{
       initial: boolean;
       label: string;
       hint: string;
-    }>;
+    }>,
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -36,17 +39,19 @@ class ActionData extends SwadeBaseItemData<
   ActionData.DerivedData
 > {
   static override defineSchema(): ActionData.Schema {
+    const fields = foundry.data.fields;
     return {
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
       ...templates(),
       ...actions(),
-      hidden: new foundry.data.fields.BooleanField({
+      hidden: new fields.BooleanField({
         initial: false,
         label: 'SWADE.Actions.Hidden.Label',
         hint: 'SWADE.Actions.Hidden.Hint',
       }),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 

@@ -8,12 +8,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [Unreleased]
 
 ### Added
-  - Added roll enrichers for text and custom chat commands to quickly roll damage and trait tests. (#1284) **by florad92**
-    - You can use `/t` aor `/trait` to roll a trait test by referencing the trait you want to roll by either the swid (for skills) or the english attribute name with the proper prefix
-      - /trait @skill.notice Rolls a notice roll for the currently selected token, or character assigned to the current user if no token was selected.
-      - /damage 1d6 rolls a 1d6 damage roll. Please take not that you will need to add the explosive dice modifier (x) yourself
-    - You can also use the same formula to embed enriched one-click-rolls in text such as journal pages or chat messages, simply surround the command with double square brackets.
-      - [[/trait @skill.notice]]{Look for Clues} will create a small clickable button that triggers a Notice skill test while displaying the text "Look for Clues
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+### Known Issues
+-->
+
+## 5.1.0
+
+### Added
+
+- Added roll enrichers for text and custom chat commands to quickly roll damage and trait tests. (#1284) **by @florad92**
+  - You can use `/t` or `/trait` to roll a trait test by referencing the trait you want to roll by either the swid (for skills) or the english attribute name with the proper prefix
+    - /trait `@skill.notice` Rolls a notice roll for the currently selected token, or character assigned to the current user if no token was selected.
+    - /damage 1d6 rolls a 1d6 damage roll. Please take not that you will need to add the explosive dice modifier (x) yourself
+  - You can also use the same formula to embed enriched one-click-rolls in text such as journal pages or chat messages, simply surround the command with double square brackets.
+    - `[[/trait @skill.notice]]{Look for Clues}` will create a small clickable button that triggers a Notice skill test while displaying the text "Look for Clues"
 - Added new Region Behavior type: "Attack Modifiers." This lets you designate a region as being an Unstable Platform and/or specify illumination/cover amounts that should come into play when attacking tokens within the region. When making a ranged attack from within an "Unstable Platform"-checked region, the appropriate modifier will pre-populate in the Roll Dialog. Similarly, when targeting a token within a region with specified illumination/cover, those modifiers will pre-populate in the attack's Roll Dialog. (#1336) **by @roth-michael**
   - The "Steady Hands" edge (matched by swid) will negate the Unstable Platform malus
 - When attacking a with a token targeted, the following are now taken into account and will auto-populate in the Roll Dialog (if targeting multiple tokens, all of these will evaluate considering only the first): **by @roth-michael**
@@ -30,29 +48,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Implemented a custom token ruler. Green is distances within pace, yellow for pace + min roll of running die, orange for pace + max roll of running die, and red for beyond pace + running die. (#1337)
   - The default movement action will now try to infer from a token's selected default pace.
 - Added a new page to the system documentation listing Item Attribute keys that can be reached via the The Item-Affecting AE key syntax. (#1356) **by @harliquinn.whiteshadow**
+- Items can now be set up to contain charges, with a recharge time. (!891) **by @ddbrown30**
 
 ### Changed
 
-- Active Effects of type Modifier can now be given a cost that is not an integer number, such as 1.5 (#1293) **by florad92**
-- Item Chat Cards now automatically re-render when the item they represent changes. (#1293)  **by florad92**
+- Active Effects of type Modifier can now be given a cost that is not an integer number, such as 1.5 (#1293) **by @florad92**
+- Item Chat Cards now automatically re-render when the item they represent changes. (#1293) **by @florad92**
 - [BREAKING] The structure of `CONFIG.SWADE.prototypeRollGroups` has changed from an array to an object, has been renamed `CONFIG.SWADE.rollModifiers`, and for each of the nested `RollModifierGroup`s, their `modifiers` has also changed from an array to an object. This means any code that tries to get a modifier from `CONFIG.SWADE.prototypeRollGroups` must change, and any code that adds modifiers or modifier groups must change. **by @roth-michael**
   - To get the modifier for dim illumination, for instance, one would use `CONFIG.SWADE.rollModifiers.illumination.modifiers.dim`
-
-### Deprecated
-
-### Removed
+- Passing `description=true` when embedding an actor or item renders only the enrichedDescription (usage: @Embed[UUID description=true]). Use within `inline=true` for seamless integration into text flow **by @jestevens210**
 
 ### Fixed
+
 - "Hold" combatant control now only visible to owner(s) of the combatant, some other combatant controls only show to the GM (as only the GM could use them anyway) (#1348) **by @roth-michael**
-
-### Security
-
-### Known Issues
--->
-
-## 5.1.0
-
-- Passing `description=true` when embedding an actor or item renders only the enrichedDescription (usage: @Embed[UUID description=true]). Use within `inline=true` for seamless integration into text flow **by @jestevens210**
+- FormulaField fields should no longer turn negative numbers positive. (#1398) **by @florad92**
 
 ## 5.0.8
 

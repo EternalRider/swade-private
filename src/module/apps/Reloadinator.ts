@@ -98,7 +98,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     if (selected?.type !== 'consumable') return;
 
     const currentShots = this.weapon.system.currentShots;
-    const magContent = selected.system.charges.value;
+    const magContent = selected.system.charges.default.value;
     //return early if the new and old mag have the same content as there's nothing to do
     if (currentShots === magContent) return;
 
@@ -136,18 +136,18 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       this.magazines.map((m) => [m.name!, []]),
     );
     const filteredMags = this.magazines.filter(
-      (m) => m.system.charges.value > 0,
+      (m) => m.system.charges.default.value > 0,
     );
 
     for (const mag of filteredMags) {
       if (mag.type !== 'consumable') continue;
       const charges = foundry.utils.getProperty(
         mag,
-        'system.charges.value',
+        'system.charges.default.value',
       ) as number;
       const capacity = foundry.utils.getProperty(
         mag,
-        'system.charges.max',
+        'system.charges.default.max',
       ) as number;
       const isBattery =
         mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
@@ -177,7 +177,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     });
     let shots = 0;
     if (selected.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE) {
-      shots = selected.system.charges.value;
+      shots = selected.system.charges.default.value;
     } else if (selected.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
       shots = this.#getShotsFromBatteryFill(selected);
     }
@@ -201,7 +201,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
 
     //find an existing magazine stack we can add to
     const emptyMagStack = this.magazines.find(
-      (m) => m.type === 'consumable' && m.system.charges.value === 0,
+      (m) => m.type === 'consumable' && m.system.charges.default.value === 0,
     );
     //if there's no existing stack or we're doing a partial reload.
     if (!emptyMagStack || (!this.noShotsInWeapon && this.loadedAmmo)) {
@@ -216,7 +216,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       }
       //copy the selected consumable and set the new charges on the clone.
       await selected.clone(
-        { 'system.quantity': 1, 'system.charges.value': newCharges },
+        { 'system.quantity': 1, [`system.charges.charges.${selected.system.charges.default.id}.value`]: newCharges },
         { save: true },
       );
     } else {
@@ -243,7 +243,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     } else if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
       shots = this.#getBatteryFillFromShots(currentShots);
     }
-    await selected.update({ 'system.charges.value': shots });
+    await selected.update({ [`system.charges.charges.${selected.system.charges.default.id}.value`]: shots });
   }
 
   #getBatteryFillFromShots(currentShots: number): number {
@@ -256,7 +256,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     if (this.weapon.type !== 'weapon' || battery.type !== 'consumable') {
       return 0;
     }
-    const factor = battery.system.charges.value / 100;
+    const factor = battery.system.charges.default.value / 100;
     return Math.round(this.weapon.system.shots * factor);
   }
 }
