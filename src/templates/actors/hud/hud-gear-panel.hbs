@@ -20,18 +20,18 @@
             {{#if item.system.actions.additional}}
               {{#each item.system.actions.additional as |action id|}}
                 {{#if (eq action.type "macro")}}
-                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Run'}} {{localize 'TYPES.Item.action'}}: {{action.name}}">
+                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
                     {{action.name}}
                   </button>
                 {{/if}}
                 {{#if (eq action.type "consume")}}
-                  <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Consumable.Use'}}: {{action.name}}">
+                  <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.UseConsumableTooltip' name=action.name}}">
                     {{localize 'SWADE.Consumable.Use'}}
                   </button>
                 {{/if}}
               {{/each}}
             {{/if}}
-            <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+            <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
               {{localize 'SWADE.ShowInChat'}}
             </button>
           </div>
@@ -65,18 +65,18 @@
             {{#if item.system.actions.additional}}
               {{#each item.system.actions.additional as |action id|}}
                 {{#if (eq action.type "consume")}}
-                  <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Consumable.Use'}}: {{action.name}}">
+                  <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.UseConsumableTooltip' name=action.name}}">
                     {{localize 'SWADE.Consumable.Use'}}
                   </button>
                 {{/if}}
                 {{#if (eq action.type "macro")}}
-                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Run'}} {{localize 'TYPES.Item.action'}}: {{action.name}}">
+                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
                     {{action.name}}
                   </button>
                 {{/if}}
               {{/each}}
             {{/if}}
-            <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+            <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
               {{localize 'SWADE.ShowInChat'}}
             </button>
           </div>
@@ -106,7 +106,7 @@
                   data-item-id="{{item.id}}"
                   data-equip-status="{{item.system.equipStatus}}">
               <i class="fa-solid fa-hand"></i>
-              {{#if (eq item.system.equipStatus 0)}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{else if (eq item.system.equipStatus 1)}}{{localize 'SWADE.ItemEquipStatus.Carried'}}{{else if (eq item.system.equipStatus 3)}}{{localize 'SWADE.ItemEquipStatus.Equipped'}}{{else if (eq item.system.equipStatus 4)}}{{localize 'SWADE.ItemEquipStatus.MainHand'}}{{else if (eq item.system.equipStatus 5)}}{{localize 'SWADE.ItemEquipStatus.TwoHands'}}{{else if (eq item.system.equipStatus 2)}}{{localize 'SWADE.ItemEquipStatus.OffHand'}}{{else}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{/if}}
+              {{localize (equipStatus item.system.equipStatus)}}
             </span>
         </div>
         <div class="swadehud-item-content">
@@ -114,13 +114,13 @@
             {{#if item.system.actions.additional}}
               {{#each item.system.actions.additional as |action id|}}
                 {{#if (eq action.type "macro")}}
-                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
                     {{action.name}}
                   </button>
                 {{/if}}
               {{/each}}
             {{/if}}
-            <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+            <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
               {{localize 'SWADE.ShowInChat'}}
             </button>
           </div>
@@ -154,7 +154,7 @@
             {{#if item.system.actions.additional}}
               {{#each item.system.actions.additional as |action id|}}
                 {{#if (eq action.type "macro")}}
-                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                  <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
                     {{action.name}}
                   </button>
                 {{/if}}
@@ -163,7 +163,7 @@
             <button class="swadehud-equip" data-item-id="{{item.id}}" title="{{#if (eq item.system.equipStatus 0)}}{{localize 'SWADE.ItemEquipStatus.Carried'}}{{else if (eq item.system.equipStatus 1)}}{{localize 'SWADE.ItemEquipStatus.Equipped'}}{{else if (eq item.system.equipStatus 3)}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{else}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{/if}} {{localize 'SWADE.Shields'}}">
               {{#if (eq item.system.equipStatus 0)}}{{localize 'SWADE.ItemEquipStatus.Carried'}}{{else if (eq item.system.equipStatus 1)}}{{localize 'SWADE.ItemEquipStatus.Equipped'}}{{else if (eq item.system.equipStatus 3)}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{else}}{{localize 'SWADE.ItemEquipStatus.Stored'}}{{/if}}
             </button>
-            <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+            <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
               {{localize 'SWADE.ShowInChat'}}
             </button>
           </div>

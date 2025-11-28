@@ -15,32 +15,32 @@
               {{#if item.system.actions.additional}}
                 {{#each item.system.actions.additional as |action id|}}
                   {{#if (eq action.type "trait")}}
-                    <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{action.name}}">
+                    <button class="swadehud-action-trait" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{action.name}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "resist")}}
-                    <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Resist'}}: {{action.name}}">
+                    <button class="swadehud-action-resist" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Resist'}}: {{action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Resist'}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "damage")}}
-                    <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
+                    <button class="swadehud-action-damage" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.Roll'}} {{localize 'SWADE.Damage'}}: {{action.name}}">
                       {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Dmg'}}{{/if}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "macro")}}
-                    <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" title="Run Macro: {{action.name}}">
+                    <button class="swadehud-action-macro" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' macro=action.name}}">
                       {{action.name}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "reload")}}
-                    <button class="swadehud-action-reload" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Reload'}}: {{action.name}}">
+                    <button class="swadehud-action-reload" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.ReloadTooltip' name=action.name}}">
                       {{localize 'SWADE.Reload'}}
                     </button>
                   {{/if}}
                   {{#if (eq action.type "consume")}}
-                    <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" title="{{localize 'SWADE.Consumable.Use'}}: {{action.name}}">
+                    <button class="swadehud-action-consume" data-action="{{id}}" data-item-id="{{item.id}}" data-tooltip="{{localize 'SWADE.HUD.UseConsumableTooltip' name=action.name}}">
                       {{localize 'SWADE.Consumable.Use'}}
                     </button>
                   {{/if}}
@@ -48,37 +48,37 @@
               {{/if}}
               {{#if item.system.templates}}
                 {{#if item.system.templates.scone}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swscone" title="Place Small Cone Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swscone" data-tooltip="SWADE.Templates.SmallCone.Place">
                     {{localize 'SWADE.Templates.SmallCone.Short'}}
                   </button>
                 {{/if}}
                 {{#if item.system.templates.cone}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swcone" title="Place Cone Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swcone" data-tooltip="SWADE.Templates.Cone.Place">
                     {{localize 'SWADE.Templates.Cone.Short'}}
                   </button>
                 {{/if}}
                 {{#if item.system.templates.stream}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="stream" title="Place Stream Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="stream" data-tooltip="SWADE.Templates.Stream.Place">
                     {{localize 'SWADE.Templates.Stream.Short'}}
                   </button>
                 {{/if}}
                 {{#if item.system.templates.small}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="sbt" title="Place Small Burst Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="sbt" data-tooltip="SWADE.Templates.Small.Place">
                     {{localize 'SWADE.Templates.Small.Short'}}
                   </button>
                 {{/if}}
                 {{#if item.system.templates.medium}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="mbt" title="Place Medium Burst Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="mbt" data-tooltip="SWADE.Templates.Medium.Place">
                     {{localize 'SWADE.Templates.Medium.Short'}}
                   </button>
                 {{/if}}
                 {{#if item.system.templates.large}}
-                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="lbt" title="Place Large Burst Template">
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="lbt" data-tooltip="SWADE.Templates.Large.Place">
                     {{localize 'SWADE.Templates.Large.Short'}}
                   </button>
                 {{/if}}
               {{/if}}
-              <button class="swadehud-chat" data-item-id="{{item.id}}" title="{{localize 'SWADE.ShowInChat'}}">
+              <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
                 {{localize 'SWADE.ShowInChat'}}
               </button>
             </div>

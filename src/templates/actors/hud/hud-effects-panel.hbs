@@ -9,7 +9,7 @@
         <div class="swadehud-item" data-effect-id="{{effect.id}}">
           <div class="swadehud-item-header" data-toggle="expand">
             <img class="swadehud-item-icon" src="{{effect.img}}" alt="{{effect.name}}" />
-            <span class="swadehud-item-name" title="Click to expand">{{effect.name}} {{#if effect.duration.rounds}}Rounds: {{effect.duration.rounds}}{{/if}}</span>
+            <span class="swadehud-item-name" data-tooltip="SWADE.HUD.ExpandTooltip">{{effect.name}} {{#if effect.duration.rounds}}{{localize 'SWADE.HUD.AERounds' rounds=effect.duration.rounds}}{{/if}}</span>
             {{#if effect.duration}}
               <span class="effect-duration">{{effect.duration.label}}</span>
             {{/if}}
@@ -17,7 +17,7 @@
           data-effect-id="{{effect.id}}"
           data-action="toggle"
           data-toggle="disabled"
-          title="{{#if effect.isEmbedded}}Toggle {{effect.name}}{{else}}Cannot toggle inherited effect{{/if}}"
+          data-tooltip="{{#if effect.isEmbedded}}{{localize 'SWADE.HUD.AEToggle' name=effect.name}}{{else}}{{localize 'SWADE.HUD.AEToggleInherited'}}{{/if}}"
           {{#unless effect.isEmbedded}}style="pointer-events:none;opacity:0.5;" aria-disabled="true" tabindex="-1"{{/unless}}></i>
           </div>
           <div class="swadehud-item-content">
@@ -41,12 +41,12 @@
         <div class="swadehud-item" data-effect-id="{{effect.id}}">
           <div class="swadehud-item-header" data-toggle="expand">
             <img class="swadehud-item-icon" src="{{effect.img}}" alt="{{effect.name}}" />
-            <span class="swadehud-item-name" title="Click to expand">{{effect.name}}</span>
+            <span class="swadehud-item-name" data-tooltip="SWADE.HUD.ExpandTooltip">{{effect.name}}</span>
             <i class="fa-solid fa-power-off swadehud-effect-toggle-icon"
                data-effect-id="{{effect.id}}"
                data-action="toggle"
                data-toggle="disabled"
-               title="Toggle {{effect.name}}"></i>
+               data-tooltip="{{localize 'SWADE.HUD.AEToggleTooltip' name=effect.name}}"></i>
           </div>
           <div class="swadehud-item-content">
             {{#if effect.description}}
@@ -63,7 +63,7 @@
       {{#if (and (not sheetEffects.temporary.length) (not sheetEffects.permanent.length))}}
         <div class="swadehud-item no-effects">
           <div class="swadehud-item-header">
-            <span class="swadehud-item-name">No effects found</span>
+            <span class="swadehud-item-name">{{localize 'SWADe.HUD.AENoEffects'}}</span>
           </div>
         </div>
       {{/if}}
