@@ -1332,6 +1332,24 @@ SWADE:
           unstablePlatform:
             hint: Wendet per Default "Unsicherer Grund"-Modifikator an, wenn aus dieser
               Region geschossen/geworfen wird.
+  HasCharges: Hat Ladungen
+  AddCharge: Neue Ladung
+  Default: Default
+  Recharge: Aufladen
+  RechargeAmount: Auflademenge
+  Finite: Endlich
+  Manual: Manuell
+  Encounter: Begegnung
+  Day: Täglich
+  RechargeRollFlavor: 'Aufladen: {name}'
+  RechargeManualConfirm: '{name} aufladen?'
+  RechargeDayConfirm: Alle "pro Tag" Ladungen aufladen?
+  RechargeAllItemsEncounterConfirm: Alle "pro Begegnung" Ladungen auf allen Gegenständen
+    aufladen?
+  RechargeAllItemsDayConfirm: Alle "pro Tag" Ladungen auf allen Gegenständen aufladen?
+  DeleteEmbeddedChargePrompt: Sicher, dass Ladung {charge} gelöscht werden soll?
+  RechargeType: Aufladetyp
+  RechargeEncounterConfirm: Alle "pro Begegnung" Ladungen aufladen?
 TYPES:
   Actor:
     npc: NSC
@@ -1351,6 +1369,7 @@ TYPES:
     weapon: Waffe
     skill: Fertigkeit
     ancestry: Volk
+    charge: Ladung
   Card:
     poker: Pokerkarte
     adventure: Abenteuerkarte
