@@ -4,9 +4,12 @@ import { constants } from '../../../constants';
 import { builder, physicalItem } from '../common';
 import { Builder, PhysicalItem } from '../item-common.interface';
 import { SwadeBaseItemData } from './base';
+import { ChargesData } from '../../fields';
 
 declare namespace SwadePhysicalItemData {
-  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {}
+  interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
+  }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
@@ -20,10 +23,12 @@ class SwadePhysicalItemData<
 > extends SwadeBaseItemData<Schema, BaseData, DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): SwadePhysicalItemData.Schema {
+    const fields = foundry.data.fields;
     return {
       ...super.defineSchema(),
       ...physicalItem(),
       ...builder(),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 

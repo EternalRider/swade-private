@@ -1,6 +1,7 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import { SwadeBaseItemData } from './base';
 import { favorite, grants } from './common';
 import { ChoicesType, Favorite, Grants } from './item-common.interface';
@@ -13,6 +14,7 @@ declare namespace HindranceData {
       blank: false;
     }>;
     major: foundry.data.fields.BooleanField<{ label: string }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -30,6 +32,7 @@ class HindranceData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...grants(),
+      charges: new fields.EmbeddedDataField(ChargesData),
       severity: new fields.StringField({
         choices: Object.values(constants.HINDRANCE_SEVERITY),
         initial: constants.HINDRANCE_SEVERITY.EITHER,

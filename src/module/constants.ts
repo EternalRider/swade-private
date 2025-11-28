@@ -97,6 +97,13 @@ export const constants = {
     MACRO: 'macro',
   } as const,
   /** @enum */
+  CHARGE_RECHARGE_TYPE: {
+    FINITE: 'finite',
+    MANUAL: 'manual',
+    ENCOUNTER: 'encounter',
+    DAY: 'day',
+  } as const,
+  /** @enum */
   MACRO_ACTOR: {
     DEFAULT: 'default',
     SELF: 'self',

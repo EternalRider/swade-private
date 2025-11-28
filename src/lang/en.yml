@@ -918,6 +918,7 @@ SWADE:
   AddAction: Add Action
   DialogConfirmPrompt: Are you sure?
   DeleteEmbeddedActionPrompt: Are you sure you want to delete the action {action}?
+  DeleteEmbeddedChargePrompt: Are you sure you want to delete the charge {charge}?
   DeleteEmbeddedCardPrompt: Are you sure you want to delete the card {card}?
   DeleteEmbeddedPowerPrompt: Are you sure you want to delete the power {power}?
   TrademarkWeapon:
@@ -993,6 +994,22 @@ SWADE:
     Open: Manage Attributes
   HeavyArmor: Heavy Armor
   HeavyWeapon: Heavy Weapon
+  HasCharges: Has Charges
+  AddCharge: Add Charge
+  Default: Default
+  Recharge: Recharge
+  RechargeType: Recharge Type
+  RechargeAmount: Recharge Amount
+  Finite: Finite
+  Manual: Manual
+  Encounter: Encounter
+  Day: Daily
+  RechargeRollFlavor: Recharging {name}
+  RechargeManualConfirm: Recharge {name}?
+  RechargeEncounterConfirm: Recharge all encounter charges?
+  RechargeDayConfirm: Recharge all daily charges?
+  RechargeAllItemsEncounterConfirm: Recharge all encounter charges on all items?
+  RechargeAllItemsDayConfirm: Recharge all daily charges on all items?
   UsesTOC: Use Compendium TOC
   TOCBlockList: Compendium TOC Blocklist
   TOCSettings:
@@ -1685,6 +1702,7 @@ TYPES:
     ability: Ability
     consumable: Consumable
     action: Action
+    charge: Charge
   Card:
     adventure: Adventure Card
     poker: Poker Card

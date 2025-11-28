@@ -434,7 +434,7 @@ export function getEdgeToEdgeDistance(
 
 /**
  *
- * @param currToken       The attacking token
+ * @param sourceToken     The attacking token
  * @param targetToken     The token being targeted for the purposes of determining modifiers
  * @param item            The item being used for the attack
  * @param isRangedAttack  `true` if ranged weapon or mixed with non-`fighting` skill
@@ -469,7 +469,7 @@ export function getDefaultAttackModifiers(
   // Unstable Platform
   if (
     isRangedAttack &&
-    currToken?.regions?.some((r) =>
+    sourceToken?.regions?.some((r) =>
       r.behaviors.some(
         (b) =>
           !b.disabled &&
@@ -478,14 +478,15 @@ export function getDefaultAttackModifiers(
       ),
     )
   ) {
-    if (!currActor.getSingleItemBySwid('steady-hands', 'edge'))
+    if (sourceActor && !sourceActor.getSingleItemBySwid('steady-hands', 'edge'))
       additionalMods.push(rollGroups.attack.modifiers.unstable);
   }
 
   let bestIllumination: RollModifier | undefined;
   let bestCover: RollModifier | undefined;
-  if (targetToken) {
-    const targetActor = targetToken.actor!;
+
+  if (sourceToken && targetToken) {
+    const targetActor = targetToken.actor;
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
     const distanceToTarget =
@@ -505,6 +506,7 @@ export function getDefaultAttackModifiers(
           ) as RegionBehavior<'attackModifiers'>[],
       ),
     ).deepFlatten();
+
     if (
       isRangedAttack &&
       targetToken.hasStatusEffect('prone') &&
@@ -532,9 +534,9 @@ export function getDefaultAttackModifiers(
     }
 
     // Shield cover
-    const equippedShields = targetActor.itemTypes.shield.filter(
-      (i) => i.isReadied,
-    );
+    const equippedShields = (targetActor?.itemTypes.shield.filter(
+      (i: SwadeItem<'shield'>) => i.isReadied,
+    ) ?? []) as SwadeItem<'shield'>[];
     const shieldCoverMod = -equippedShields.reduce((bestCover, shield) => {
       return Math.max(shield.system.cover, bestCover);
     }, 0);
@@ -549,7 +551,7 @@ export function getDefaultAttackModifiers(
 
     // Dodge
     if (isRangedAttack) {
-      const dodgeItem = targetActor.getSingleItemBySwid('dodge', 'edge');
+      const dodgeItem = targetActor?.getSingleItemBySwid('dodge', 'edge');
       if (dodgeItem && (!bestCover || (bestCover.value as number) > -2)) {
         bestCover = {
           label: dodgeItem.name,
@@ -559,11 +561,11 @@ export function getDefaultAttackModifiers(
     }
 
     // Combat Acrobat
-    const combatAcrobatItem = targetActor.getSingleItemBySwid(
+    const combatAcrobatItem = targetActor?.getSingleItemBySwid(
       'combat-acrobat',
       'edge',
     );
-    if (combatAcrobatItem && !targetActor.system.encumbered) {
+    if (combatAcrobatItem && !targetActor?.system.encumbered) {
       additionalMods.push({
         label: combatAcrobatItem.name,
         value: -1,
@@ -592,7 +594,7 @@ export function getDefaultAttackModifiers(
     ) {
       const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
       const numAttackerAllies = scene.tokens.filter((t) => {
-        if (t.disposition !== currToken.disposition) return false;
+        if (t.disposition !== sourceToken.disposition) return false;
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         return getEdgeToEdgeDistance(targetToken, t) < 1;
@@ -602,12 +604,12 @@ export function getDefaultAttackModifiers(
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
-        return getEdgeToEdgeDistance(currToken, t) < 1;
+        return getEdgeToEdgeDistance(sourceToken, t) < 1;
       }).length;
       let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
-      if (targetActor.getSingleItemBySwid('improved-block', 'edge'))
+      if (targetActor?.getSingleItemBySwid('improved-block', 'edge'))
         gangUpBonus -= 2;
-      else if (targetActor.getSingleItemBySwid('block', 'edge'))
+      else if (targetActor?.getSingleItemBySwid('block', 'edge'))
         gangUpBonus -= 1;
       if (gangUpBonus > 0)
         additionalMods.push({

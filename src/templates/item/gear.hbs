@@ -20,7 +20,7 @@
           name="system.equippable"
           {{checked item.system.equippable}}
           data-dtype="Boolean"
-        />    
+        />
       </span>
     </div>
     {{> 'swade.item-equipped'}}
@@ -54,6 +54,11 @@
     {{#if item.isArcaneDevice}}
       <a class='item' data-tab='powers' data-group='main'>
         {{localize 'SWADE.Pow'}}
+      </a>
+    {{/if}}
+    {{#if item.system.charges.hasCharges}}
+      <a class='item' data-tab='charges' data-group='main'>
+        {{localize 'SWADE.Charges'}}
       </a>
     {{/if}}
     <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
@@ -96,7 +101,7 @@
           />
         </span>
       </div>
-      {{#if (and item.system.isVehicular settingRules.modSlots)}} 
+      {{#if (and item.system.isVehicular settingRules.modSlots)}}
         <div class="form-group">
           <label for="{{item.uuid}}-mods">
             {{localize "SWADE.ModSlots"}}
@@ -116,11 +121,24 @@
       {{> 'swade.item-action-properties'}}
       {{formGroupSimple "system.activities" stacked=true}}
       {{> 'swade.item-bonus-damage'}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
       {{> 'swade.item-grants'}}
     </section>
     {{#if item.isArcaneDevice}}
       <section class='tab powers' data-group='main' data-tab='powers'>
         {{> 'swade.item-tab-powers'}}
+      </section>
+    {{/if}}
+    {{#if item.system.charges.hasCharges}}
+      <section class='tab charges' data-group='main' data-tab='charges'>
+        {{> 'swade.item-tab-charges'}}
       </section>
     {{/if}}
     <section class='tab actions' data-group='main' data-tab='actions'>

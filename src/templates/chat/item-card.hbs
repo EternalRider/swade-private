@@ -64,9 +64,9 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
   {{#if (eq item.type 'consumable')}}
     <div class='pp-counter'>
       {{localize 'SWADE.Charges'}}:
-      <span class='current-pp'>{{item.system.charges.value}}</span>
+      <span class='current-pp'>{{item.system.charges.default.value}}</span>
       &nbsp;/&nbsp;
-      <span class='max-pp'>{{item.system.charges.max}}</span>
+      <span class='max-pp'>{{item.system.charges.default.max}}</span>
     </div>
   {{/if}}
 

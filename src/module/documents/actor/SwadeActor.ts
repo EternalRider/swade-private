@@ -32,11 +32,11 @@ import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import {
+  getDefaultAttackModifiers,
   getStatusEffectDataById,
   mapRange,
   modifierReducer,
   shouldShowBennyAnimation,
-  getDefaultAttackModifiers,
 } from '../../util';
 import SwadeCombatant from '../combat/SwadeCombatant';
 import SwadeItem from '../item/SwadeItem';
@@ -377,7 +377,7 @@ class SwadeActor<
   async rollSkill(
     skillId: string | null | undefined,
     options: IRollOptions = { rof: 1 },
-    tempSkill?: SwadeItem,
+    tempSkill?: SwadeItem<'skill'>,
   ): Promise<TraitRoll | null> {
     if (
       this.system instanceof VehicleData ||
@@ -389,7 +389,9 @@ class SwadeActor<
       return null;
     }
     let skill: SwadeItem<'skill'> | undefined;
-    skill = this.items.find((i) => i.id == skillId);
+    skill = this.items.find((i) => i.id == skillId) as
+      | SwadeItem<'skill'>
+      | undefined;
     if (tempSkill) skill = tempSkill;
 
     // TODO: (Improved) Arcane Resistance, when -> Powers
@@ -402,16 +404,16 @@ class SwadeActor<
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
-      let currToken = this.getActiveTokens(false, true)[0];
+      let sourceToken = this.getActiveTokens(false, true)[0];
       // If the item belongs to a vehicle, use the vehicle's token
       if (options.item?.actor?.type === 'vehicle') {
         const vehicleToken = options.item.actor.getActiveTokens(false, true)[0];
-        if (vehicleToken) currToken = vehicleToken;
+        if (vehicleToken) sourceToken = vehicleToken;
       }
       const targetToken = game.user.targets.first()?.document;
 
       const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
-        currToken,
+        sourceToken,
         targetToken,
         options.item!,
         isRangedAttack,
@@ -423,7 +425,7 @@ class SwadeActor<
        * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
        * modifiers to be added (or existing ones to be removed)
        * @category Hooks
-       * @param {TokenDocument} currToken                   The attacking token
+       * @param {TokenDocument | undefined} sourceToken     The attacking token
        * @param {TokenDocument | undefined} targetToken     The first-targeted token, or `undefined` if no targets
        * @param {SwadeItem} skill                           The skill being used for the attack
        * @param {SwadeItem} item                            The item being used for the attack
@@ -434,7 +436,7 @@ class SwadeActor<
        */
       Hooks.call(
         'swadeCalculateDefaultAttackMods',
-        currToken,
+        sourceToken,
         targetToken,
         skill,
         options.item!,
