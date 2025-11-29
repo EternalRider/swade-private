@@ -459,11 +459,75 @@ export function getDefaultAttackModifiers(
 
   const additionalMods: RollModifier[] = [];
   let currActor = actor || sourceToken?.actor || item.actor!;
+  let vehicleActor: SwadeActor | undefined;
   if (currActor.system instanceof VehicleData && item.type === 'weapon') {
+    vehicleActor = currActor;
     const gunner = currActor.system.getCrewMemberForWeapon(
       item as SwadeItem<'weapon'>,
     );
     currActor = gunner ?? currActor.system.operator ?? currActor;
+  }
+
+  // Attacker Attack Modifiers (Active Effects)
+  const attackerGlobalMods = foundry.utils.getProperty(
+    currActor,
+    'system.stats.globalMods',
+  ) as any;
+
+  if (
+    isRangedAttack &&
+    attackerGlobalMods?.attackRanged &&
+    Array.isArray(attackerGlobalMods.attackRanged)
+  ) {
+    additionalMods.push(
+      ...attackerGlobalMods.attackRanged.map((m: any) => ({
+        label: m.label,
+        value: m.value,
+      })),
+    );
+  }
+  if (
+    isMeleeAttack &&
+    attackerGlobalMods?.attackMelee &&
+    Array.isArray(attackerGlobalMods.attackMelee)
+  ) {
+    additionalMods.push(
+      ...attackerGlobalMods.attackMelee.map((m: any) => ({
+        label: m.label,
+        value: m.value,
+      })),
+    );
+  }
+
+  if (vehicleActor) {
+    const vehicleGlobalMods = foundry.utils.getProperty(
+      vehicleActor,
+      'system.stats.globalMods',
+    ) as any;
+    if (
+      isRangedAttack &&
+      vehicleGlobalMods?.attackRanged &&
+      Array.isArray(vehicleGlobalMods.attackRanged)
+    ) {
+      additionalMods.push(
+        ...vehicleGlobalMods.attackRanged.map((m: any) => ({
+          label: m.label,
+          value: m.value,
+        })),
+      );
+    }
+    if (
+      isMeleeAttack &&
+      vehicleGlobalMods?.attackMelee &&
+      Array.isArray(vehicleGlobalMods.attackMelee)
+    ) {
+      additionalMods.push(
+        ...vehicleGlobalMods.attackMelee.map((m: any) => ({
+          label: m.label,
+          value: m.value,
+        })),
+      );
+    }
   }
 
   // Unstable Platform
@@ -607,6 +671,31 @@ export function getDefaultAttackModifiers(
         return getEdgeToEdgeDistance(sourceToken, t) < 1;
       }).length;
       let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
+
+      if (
+        attackerGlobalMods?.gangUp &&
+        Array.isArray(attackerGlobalMods.gangUp)
+      ) {
+        attackerGlobalMods.gangUp.forEach((m: any) => {
+          gangUpBonus += Number(m.value);
+        });
+      }
+
+      if (vehicleActor) {
+        const vehicleGlobalMods = foundry.utils.getProperty(
+          vehicleActor,
+          'system.stats.globalMods',
+        ) as any;
+        if (
+          vehicleGlobalMods?.gangUp &&
+          Array.isArray(vehicleGlobalMods.gangUp)
+        ) {
+          vehicleGlobalMods.gangUp.forEach((m: any) => {
+            gangUpBonus += Number(m.value);
+          });
+        }
+      }
+
       if (targetActor?.getSingleItemBySwid('improved-block', 'edge'))
         gangUpBonus -= 2;
       else if (targetActor?.getSingleItemBySwid('block', 'edge'))
@@ -632,41 +721,11 @@ export function getDefaultAttackModifiers(
       });
     }
 
-    // Attacker Attack Modifiers (Active Effects)
-    const attackerGlobalMods = foundry.utils.getProperty(
-      currActor,
-      'system.stats.globalMods',
-    );
-    if (
-      isRangedAttack &&
-      attackerGlobalMods?.attackRanged &&
-      Array.isArray(attackerGlobalMods.attackRanged)
-    ) {
-      additionalMods.push(
-        ...attackerGlobalMods.attackRanged.map((m: any) => ({
-          label: m.label,
-          value: m.value,
-        })),
-      );
-    }
-    if (
-      isMeleeAttack &&
-      attackerGlobalMods?.attackMelee &&
-      Array.isArray(attackerGlobalMods.attackMelee)
-    ) {
-      additionalMods.push(
-        ...attackerGlobalMods.attackMelee.map((m: any) => ({
-          label: m.label,
-          value: m.value,
-        })),
-      );
-    }
-
     // Target Attack Modifiers (Active Effects)
     const globalMods = foundry.utils.getProperty(
       targetActor,
       'system.stats.globalMods',
-    );
+    ) as any;
     if (globalMods?.targetAttack && Array.isArray(globalMods.targetAttack)) {
       additionalMods.push(
         ...globalMods.targetAttack.map((m: any) => ({

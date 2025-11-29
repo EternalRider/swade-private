@@ -86,6 +86,7 @@ These are more generic roll bonuses that improve all rolls of a certain category
 - Target Attack: `system.stats.globalMods.targetAttack`
 - Target Attack (Ranged): `system.stats.globalMods.targetAttackRanged`
 - Target Attack (Melee): `system.stats.globalMods.targetAttackMelee`
+- Gang Up: `system.stats.globalMods.gangUp`
 
 #### Derived Stats
 
