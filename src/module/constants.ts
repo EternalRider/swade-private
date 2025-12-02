@@ -97,6 +97,13 @@ export const constants = {
     MACRO: 'macro',
   } as const,
   /** @enum */
+  CHARGE_RECHARGE_TYPE: {
+    FINITE: 'finite',
+    MANUAL: 'manual',
+    ENCOUNTER: 'encounter',
+    DAY: 'day',
+  } as const,
+  /** @enum */
   MACRO_ACTOR: {
     DEFAULT: 'default',
     SELF: 'self',
@@ -192,4 +199,10 @@ export const constants = {
     GUNNER: 'gunner',
     OTHER: 'other',
   },
+  RULER_COLORS: {
+    GREEN: 0x33bc4e,
+    YELLOW: 0xf1d836,
+    ORANGE: 0xffa500,
+    RED: 0xe72124,
+  } as const,
 };

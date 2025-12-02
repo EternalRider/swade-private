@@ -3,6 +3,7 @@ import { ReloadType } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
+import { ChargeData, ChargesData } from '../data/fields/ChargesData';
 import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -623,7 +624,23 @@ function _ensureBatteryMaxCharges(
 ) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
-    updateData['system.charges.max'] = 100;
+    if (data.system.charges?.hasCharges === undefined ||
+      !data.system.charges.charges ||
+      !Object.keys(data.system.charges.charges).length) {
+      //We don't have a charge object so create one
+      updateData.system.charges ??= {};
+      updateData.system.charges.hasCharges = true;
+
+      const id = ChargesData.randomID();
+      foundry.utils.setProperty(updateData, 'system.charges.charges.' + id, {
+        id: id,
+        value: data.system.charges?.value ?? 100,
+        max: data.system.charges?.max ?? 100,
+      });
+    } else {
+      const sorted = (Object.values(data.system.charges.charges) as Array<ChargeData>).sort(ChargesData.sortFunction);
+      updateData[`system.charges.charges.${sorted[0].id}.max`] = 100;
+    }
   }
 }
 

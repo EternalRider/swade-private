@@ -252,7 +252,8 @@ SWADE:
   Scale: Échelle
   PickACard: Piocher une carte
   NoCardsLeft: Il n'y a plus assez de cartes dans la pioche ! Il ne reste que {current}
-    pour {needed} cartes nécessaires
+    pour {needed} cartes nécessaires. Réinitialisez le jeu ou réduisez le nombre de
+    combattants..
   OldCard: Ancienne carte
   ActionCard: Carte d'action
   ConvictionActive: Conviction active
@@ -388,6 +389,7 @@ SWADE:
     Medium: Couvert moyen
     Heavy: Couvert important
     Total: Couvert total
+    MediumProne: Couvert moyen (au sol)
   Range:
     _name: Portée
     Medium: Portée moyenne
@@ -489,6 +491,10 @@ SWADE:
       Name: Dépenser/recevoir un jeton
       Hint: Appuyer pour dépenser un jeton, gardez ALT appuyé tout en cliquant pour
         recevoir un jeton
+    ToggleHUD:
+      Name: Activer/désactiver le HUD SWADE
+      Hint: Activez ou désactivez l'affichage SWADE HUD pour le jeton actuellement
+        contrôlé ou votre personnage assigné
   Settings:
     HighlightTemplate:
       Name: Toujours surligner les gabarits
@@ -1413,6 +1419,7 @@ SWADE:
   Combat:
     RedrawDialog:
       Content: Piocher une carte avec un Jeton ou gratuitement ?
+      ContentNoBenny: Plus de jeton. Piocher une nouvelle carte gratuitement ?
     StartSurpriseRound: Démarrer le round de surprise
     AdvanceRoundTitle: Allez au prochain round ?
     AdvanceRoundContent: Voulez-vous allez au prochain round ?
@@ -1424,6 +1431,7 @@ SWADE:
     DealNPC: Distribuez pour les PNJs
     LinkScene: Scène liée
     StartEncounter: Début de la rencontre
+    RedrawFor: Repioche de carte ({name})
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
@@ -1633,6 +1641,26 @@ SWADE:
   BuildLevel: Niveau de construction
   DeleteEmbeddedCardPrompt: Êtes-vous sûr de vouloir supprimer la carte {card} ?
   Unfavorite: Suppression des favoris
+  FollowLabel: Suivre
+  DeleteGroupAndCombatants: Supprimer le groupe et les combattants
+  ScaleDifference: Différence d'échelle
+  GangUp: Attaque à plusieurs
+  ChargeLevel: Charge
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          illumination:
+            label: Niveau de luminosité
+            hint: Appliquera les modificateurs de pénalité d'éclairage par défaut
+              lors du ciblage des jetons dans cette région.
+          cover:
+            label: Degré de couverture
+            hint: Appliquera les modificateurs de pénalité de couverture par défaut
+              lors du ciblage des jetons dans cette région.
+          unstablePlatform:
+            hint: Cela appliquera le modificateur par défaut « Plateforme instable
+              » lors des tirs/lancers effectués depuis cette zone.
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1722,3 +1750,5 @@ TYPES:
     dramaticTask: Scène Dramatique
   ActiveEffect:
     modifier: Modificateur
+  RegionBehavior:
+    attackModifiers: Modificateurs d'attaque

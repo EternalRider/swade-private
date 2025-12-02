@@ -10,6 +10,7 @@ import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
+import SwadeActorHUD from './module/apps/SwadeActorHUD';
 import {
   SwadeActorTweaks,
   SwadeDocumentTweaks,
@@ -17,6 +18,7 @@ import {
 } from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
+import SwadeTokenRuler from './module/canvas/SwadeTokenRuler';
 import { SWADE } from './module/config';
 import * as data from './module/data';
 import Benny from './module/dice/Benny';
@@ -27,12 +29,14 @@ import WildDie from './module/dice/WildDie';
 import SwadeUser from './module/documents/SwadeUser';
 import SwadeActiveEffect from './module/documents/active-effect/SwadeActiveEffect';
 import SwadeActor from './module/documents/actor/SwadeActor';
+import SwadeTokenDocument from './module/documents/actor/SwadeTokenDocument';
 import SwadeCards from './module/documents/card/SwadeCards';
 import SwadeChatMessage from './module/documents/chat/SwadeChatMessage';
 import SwadeCombat from './module/documents/combat/SwadeCombat';
 import SwadeCombatant from './module/documents/combat/SwadeCombatant';
 import SwadeItem from './module/documents/item/SwadeItem';
 import { registerEffectCallbacks } from './module/effectCallbacks';
+import { registerEnrichers } from './module/enrichers';
 import { registerCustomHelpers } from './module/handlebarsHelpers';
 import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
@@ -57,6 +61,7 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
+import './module/hud/swade-hud';
 import {
   deepFreeze,
   getItemsBySwid,
@@ -83,6 +88,7 @@ const swadeAPI: SwadeGame = {
     CompendiumTOC,
     AttributeManager,
     ActiveEffectWizard,
+    SwadeActorHUD,
   },
   dice: {
     Benny,
@@ -129,6 +135,7 @@ Hooks.once('init', () => {
 
   //register document classes
   CONFIG.Actor.documentClass = SwadeActor;
+  CONFIG.Token.documentClass = SwadeTokenDocument;
   CONFIG.Item.documentClass = SwadeItem;
   CONFIG.Combat.documentClass = SwadeCombat;
   CONFIG.Combatant.documentClass = SwadeCombatant;
@@ -147,6 +154,11 @@ Hooks.once('init', () => {
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
+  foundry.utils.mergeObject(
+    CONFIG.RegionBehavior.dataModels,
+    data.region.config,
+  );
+  CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
   CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
@@ -154,6 +166,8 @@ Hooks.once('init', () => {
   // This preserves access to the other types of cone definitions
   CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
+  CONFIG.Token.rulerClass = SwadeTokenRuler;
+  SwadeTokenRuler.applySWADEMovementConfig();
 
   // Increase initiative decimal precision, as we add/subtract tiny amounts for holding, interrupting etc.
   if (CONFIG.Combat.initiative.decimals < 7)
@@ -272,6 +286,9 @@ Hooks.once('init', () => {
   registerEffectCallbacks();
   registerAuraHooks();
 
+  //Register custom enrichers
+  registerEnrichers();
+
   // Register sheets
   foundry.documents.collections.Actors.unregisterSheet(
     'core',
@@ -358,9 +375,16 @@ Hooks.once('init', () => {
   CONFIG.Dice.DamageRoll = DamageRoll;
 
   CONFIG.Dice.terms.b = Benny;
+  CONFIG.Dice.terms.w = WildDie;
   CONFIG.Dice.rolls.unshift(SwadeRoll);
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
+
+  // Initialize SWADE HUD system
+  game.swade.hud = {
+    SwadeActorHUD,
+    ID: 'swade-hud',
+  };
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -418,6 +442,65 @@ Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
 /* System Hooks              	          */
 /* ------------------------------------ */
 // Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
+
+/* ------------------------------------ */
+/* SWADE HUD Test Functions            */
+/* ------------------------------------ */
+Hooks.once('init', () => {
+  // Add test function early in initialization
+  (window as any).testSwadeHUD = async () => {
+    // Wait for canvas to be ready
+    if (!canvas || !canvas.ready) {
+      await new Promise((resolve) => {
+        Hooks.once('canvasReady', resolve);
+      });
+    }
+
+    // Get the first owned character token
+    const ownedTokens = canvas.tokens.placeables.filter(
+      (t) => t.actor?.isOwner && t.actor?.type === 'character',
+    );
+    if (ownedTokens.length === 0) {
+      console.error(
+        'SWADE HUD: No owned character tokens found. Available tokens:',
+        canvas.tokens.placeables.map((t) => ({
+          name: t.name,
+          actorType: t.actor?.type,
+          isOwner: t.actor?.isOwner,
+        })),
+      );
+      return;
+    }
+
+    const token = ownedTokens[0];
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const HUDClass =
+        SwadeActorHUD ||
+        (window as any).SwadeActorHUD ||
+        game?.swade?.hud?.SwadeActorHUD;
+      if (!HUDClass) {
+        console.error('SWADE HUD: SwadeActorHUD class not found');
+        return;
+      }
+
+      const hud = new HUDClass({ actor: token.actor, token: token.document });
+      await hud.render(true);
+    } catch (error) {
+      console.error('SWADE HUD: Error creating test HUD:', error);
+    }
+  };
+
+  // Also add a simple synchronous version
+  (window as any).testSwadeHUDSimple = () => {
+    return 'HUD system check complete - see console for details';
+  };
+});
+
+Hooks.once('ready', () => {
+  // SWADE HUD system loaded
+});
 
 /* ------------------------------------ */
 /* Third Party Integrations		          */

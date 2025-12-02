@@ -9,6 +9,7 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
+  Charge,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
@@ -19,6 +20,7 @@ import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { ChargeData } from '../data/fields/ChargesData';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
@@ -28,6 +30,7 @@ import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
 export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRenderContext> {
   _equipStateMenu: ContextMenu<false>;
+  _chargeRechargeMenu: ContextMenu<false>;
   _effectCreateDropDown: ContextMenu<false>;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
@@ -46,6 +49,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       displayAdvances: CharacterSheet.#displayAdvances,
       rollAttribute: CharacterSheet.#rollAttribute,
       displayAttributeManager: CharacterSheet.#displayAttributeManager,
+      rechargeManual: CharacterSheet.#rechargeCharges,
       rollSkill: CharacterSheet.#rollSkill,
       rollRunningDie: CharacterSheet.#rollRunningDie,
       rollDamage: CharacterSheet.#rollDamage,
@@ -182,6 +186,8 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     // TODO: Can this be done cleaner?
     this.#disableOverrides(this.form!);
 
+    this.#setupRechargeUsesMenu(this.element);
+
     this.element
       .querySelector('[name="system.details.currency"]')
       ?.addEventListener('change', this._onChangeInputDelta.bind(this));
@@ -192,6 +198,19 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
+    //Disable draggable on the item if we drag inside of the charge summary
+    this.element.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mousedown', () => {
+        el.closest('li')?.setAttribute('draggable', 'false');
+      });
+    });
+
+    this.element.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mouseup', () => {
+        el.closest('li')?.setAttribute('draggable', 'true');
+      });
+    });
+
     // Item Action Buttons
     // TODO: This one's tough since we intentionally support arbitrary `data-action` values
     this.element
@@ -199,6 +218,18 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       .forEach((el) =>
         el.addEventListener('click', this._handleItemActions.bind(this)),
       );
+
+    // Charge input fields
+    // TODO: Necessary?
+    this.element.querySelectorAll('.charge-fields input').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.document.items.get(li?.dataset.itemId);
+        await item?.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
 
     this.element.querySelectorAll('input').forEach((el) => {
       el.addEventListener('focus', (ev) => ev.currentTarget.select());
@@ -257,6 +288,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   override async _prepareContext(options): Promise<CharacterSheetRenderContext> {
     const origContext = await super._prepareContext(options);
 
+    let hasAnyChargeItems = false;
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     const hiddenActionOverride = this.actor.getFlag(
       'swade',
@@ -286,6 +318,21 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
           name: itemActions[action].name,
         });
       }
+
+      if (system.charges?.hasCharges ) {
+        const charges = new Array<{charge: ChargeData; rechargeType: string}>();
+
+        for (const itemCharge of system.charges.sorted) {
+          charges.push({
+            charge: itemCharge,
+            rechargeType: SWADE.chargeRechargeTypes[itemCharge.rechargeType],
+          });
+        }
+        foundry.utils.setProperty(item, 'charges', charges);
+
+        hasAnyChargeItems ||= system.charges.hasCharges;
+      }
+
       const hasDamage =
         !!foundry.utils.getProperty(system, 'damage') ||
         actions.some((a) => a.type === constants.ACTION_TYPE.DAMAGE);
@@ -353,6 +400,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       currentBennies: Array.fromRange(this.actor.bennies, 1),
       enrichedText: await this._getEnrichedText(),
       hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
+      hasAnyChargeItems,
       itemTypes: itemTypes,
       parryTooltip: this.actor.getPTTooltip('parry'),
       powers: this.#getPowers(),
@@ -728,6 +776,28 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
 
   static #displayAttributeManager(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
     new AttributeManager({ actor: this.actor }).render({ force: true });
+  }
+
+  static async #rechargeCharges(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const li = target.closest('.item');
+    const item = this.document.items.get(li?.dataset.itemId);
+    const chargeId = target.dataset.chargeId;
+    const charge = foundry.utils.getProperty(
+      item,
+      `system.charges.charges.${chargeId}`,
+    ) as Charge;
+    const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+      name: charge.name,
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          await item.rechargeCharge(charge);
+        }
+      },
+    });
   }
 
   static #displayModifierDialog(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
@@ -1252,6 +1322,59 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       );
   }
 
+  #setupRechargeUsesMenu(html: HTMLElement) {
+    const items: ContextMenu.Entry[] = [
+      {
+        name: game.i18n.localize('SWADE.Encounter'),
+        icon: '<i class="fa-solid fa-rotate-right"></i>',
+        condition: true,
+        callback: async () => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: () => {
+                for (const item of this.document.items) {
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
+                }
+              }
+            },
+          });
+        },
+      },
+      {
+        name: game.i18n.localize('SWADE.Day'),
+        icon: '<i class="fa-solid fa-rotate"></i>',
+        condition: true,
+        callback: async () => {
+          const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');
+          await foundry.applications.api.DialogV2.confirm({
+            content: `<p class="text-center">${text}</p>`,
+            classes: ['dialog', 'swade-app'],
+            yes: {
+              callback: async () => {
+                for (const item of this.document.items) {
+                  item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
+                }
+              }
+            },
+          });
+        },
+      },
+    ];
+
+    const selector = '.charge-recharge-menu';
+    const options = { eventName: 'click', jQuery: false, fixed: true };
+    this._chargeRechargeMenu =
+      new foundry.applications.ux.ContextMenu.implementation(
+        html,
+        selector,
+        items,
+        options,
+      );
+  }
+
   #setupEffectCreateMenu(html: HTMLElement) {
     this._effectCreateDropDown =
       new foundry.applications.ux.ContextMenu.implementation(
@@ -1480,6 +1603,7 @@ interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
     advances?: string;
   };
   hasAdditionalStats: boolean;
+  hasAnyChargeItems: boolean;
   itemTypes: Record<string, SwadeItem[]>;
   parryTooltip: string;
   powers: SheetPowers;

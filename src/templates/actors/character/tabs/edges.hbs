@@ -34,6 +34,9 @@
               {{/if}}
               </div>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
           </details>
         </li>
@@ -71,6 +74,9 @@
             {{/if}}
             </div>
           </summary>
+          {{#if system.charges.hasCharges}}
+            {{> 'swade.character-charges-summary'}}
+          {{/if}}
           <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
         </details>
       </li>
@@ -107,6 +113,9 @@
                 {{/if}}
                 </div>
               </summary>
+              {{#if system.charges.hasCharges}}
+                {{> 'swade.character-charges-summary'}}
+              {{/if}}
               <div class='content description'><p>{{localize 'SWADE.NoDescription'}}</p></div>
             </details>
           </li>

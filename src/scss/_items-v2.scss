@@ -320,6 +320,7 @@ body.theme-light .swade-item-sheet,
   }
 
   .actions-list,
+  .charges-list,
   .powers-list,
   .effect-list {
     padding: 0;
@@ -328,6 +329,7 @@ body.theme-light .swade-item-sheet,
     li {
       margin-bottom: $medium-spacing;
       padding-left: 1rem;
+      transition: .1s;
     }
 
     summary {
@@ -335,6 +337,19 @@ body.theme-light .swade-item-sheet,
       margin-left: 1.2em;
       border-bottom: 1px solid var(--accent-color-secondary);
     }
+
+    .dragging {
+      cursor: grabbing;
+      visibility: hidden;
+      * {
+        transition: none;
+      }
+    }
+  }
+
+  .powers .header {
+    padding-left: 0;
+    margin-top: 0.25rem;
   }
 
   .powers .header {
@@ -393,6 +408,61 @@ body.theme-light .swade-item-sheet,
     }
     .full-width {
       grid-column: 1/-1;
+    }
+  }
+
+  .charges {
+    .header-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      margin-bottom: $medium-spacing;
+
+      >.charge-button {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  .charge {
+    display: flex;
+    padding-left: 0;
+    padding-right: calc(2.25em + 4px);
+    align-items: center;
+
+    &:has(.charge-delete) {
+      padding-right: 0;
+    }
+
+    .default-charge {
+      font-size: 10px;
+      font-weight: bold;
+      float: right;
+    }
+
+    .sort-handle {
+      cursor: grab;
+      padding: .25em;
+      padding-right: .5em;
+    }
+
+    .content {
+      font-size: 12px;
+      margin: 0;
+      display: block;
+
+      label {
+        flex: 3;
+      }
+
+      .recharge-amount {
+        text-align: center;
+      }
+    }
+
+    .charge-delete {
+      padding: 0.25em;
     }
   }
 

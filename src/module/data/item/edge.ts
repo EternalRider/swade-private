@@ -5,7 +5,8 @@ import {
   ItemChatCardChip,
   Requirement,
 } from '../../documents/item/SwadeItem.interface';
-import { count, createEmbedElement } from '../../util';
+import { count, createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
@@ -30,6 +31,7 @@ declare namespace EdgeData {
         ) => foundry.data.validation.DataModelValidationFailure | undefined;
       }
     >;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -49,6 +51,7 @@ class EdgeData extends SwadeBaseItemData<
       ...category(),
       ...actions(),
       ...grants(),
+      charges: new fields.EmbeddedDataField(ChargesData),
       isArcaneBackground: new fields.BooleanField({ label: 'SWADE.ArcBack' }),
       requirements: new fields.ArrayField(
         new fields.EmbeddedDataField(RequirementsField),
@@ -176,6 +179,11 @@ class EdgeData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

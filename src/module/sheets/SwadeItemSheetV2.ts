@@ -5,12 +5,13 @@ import {
   ItemActions,
   SwadeApplicationTab,
 } from '../../globals';
-import { ItemAction } from '../../interfaces/additional.interface';
+import { ItemAction, Charge } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
 import { SWADE } from '../config';
 import { constants } from '../constants';
+import { ChargesData } from '../data/fields/ChargesData';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
@@ -48,13 +49,18 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     actions: {
       inlineDelete: SwadeItemSheetV2.#inlineDelete,
       addAction: SwadeItemSheetV2.#addAction,
+      addCharge: SwadeItemSheetV2.#addCharge,
       deleteAction: SwadeItemSheetV2.#deleteAction,
+      deleteCharge: SwadeItemSheetV2.#deleteCharge,
       deletePower: SwadeItemSheetV2.#deletePower,
       deleteGrant: SwadeItemSheetV2.#deleteGrant,
       openItem: SwadeItemSheetV2.#openItem,
       editEffect: SwadeItemSheetV2.#effectAction,
       deleteEffect: SwadeItemSheetV2.#effectAction,
       toggleEffect: SwadeItemSheetV2.#effectAction,
+      rechargeManual: SwadeItemSheetV2.#rechargeAction,
+      rechargeEncounter: SwadeItemSheetV2.#rechargeAction,
+      rechargeDay: SwadeItemSheetV2.#rechargeAction,
       rollDamage: SwadeItemSheetV2.#rollDamage,
       rollAdditionalStat: SwadeItemSheetV2.#rollAdditionalStat,
       useConsumable: SwadeItemSheetV2.#useConsumable,
@@ -69,70 +75,70 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     action: {
       template: 'systems/swade/templates/item/action.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     ancestry: {
       template: 'systems/swade/templates/item/ancestry.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     armor: {
       template: 'systems/swade/templates/item/armor.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     consumable: {
       template: 'systems/swade/templates/item/consumable.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     edge: {
       template: 'systems/swade/templates/item/edge.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     gear: {
       template: 'systems/swade/templates/item/gear.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     hindrance: {
       template: 'systems/swade/templates/item/hindrance.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     power: {
       template: 'systems/swade/templates/item/power.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
     },
     shield: {
       template: 'systems/swade/templates/item/shield.hbs',
       templates: [
         'templates/generic/tab-navigation.hbs',
       ],
-      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+      scrollable: ['.properties', '.actions', '.charges','.editor-container .editor-content']
     },
     skill: {
       template: 'systems/swade/templates/item/skill.hbs',
@@ -161,6 +167,13 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       label: 'SWADE.Properties',
       cssClass: 'item',
       tabCssClass: 'properties'
+    },
+    charges: {
+      id: 'charges',
+      group: 'main',
+      label: 'SWADE.Charges',
+      cssClass: 'item',
+      tabCssClass: 'charges'
     },
     powers: {
       id: 'powers',
@@ -300,6 +313,18 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       }),
     );
 
+    // Charge input fields
+    // TODO: This needed?
+    this.element.querySelectorAll('.charge-field').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        await this.item.update({
+          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
+        });
+      }),
+    );
+
+    new ChargeDragSort(this.element, this.item);
+
     // TODO: This without accordions, maybe
     this.#setupAccordions();
   }
@@ -331,6 +356,20 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     });
   }
 
+  static async #addCharge(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    const id = ChargesData.randomID();
+    await this.item.update({
+      ['system.charges.charges.' + id]: {
+        id: id,
+        sort: Object.keys(this.item.system.charges).length,
+        name: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('TYPES.Item.charge'),
+        }),
+        rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
+      },
+    });
+  }
+
   static async #deleteAction(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
     const id = target.dataset.actionId;
     const action = foundry.utils.getProperty(
@@ -349,6 +388,33 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
           await this.item.update({
             [`system.actions.additional.-=${id}`]: null,
           }),
+      },
+    });
+  }
+
+  static async #deleteCharge(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const id = target.dataset.chargeId;
+    const charge = foundry.utils.getProperty(
+      this.item,
+      `system.charges.charges.${id}`,
+    ) as Charge;
+    const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
+      charge: charge.name,
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          let sort = 0;
+          const charges = this.item.system.charges.charges;
+          delete charges[id];
+          this.item.system.charges.sorted.forEach((c) => charges[c.id].sort = sort++);
+          await this.item.update({
+            'system.charges.charges': charges,
+            [`system.charges.charges.-=${id}`]: null,
+          });
+        },
       },
     });
   }
@@ -400,6 +466,40 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     }
   }
 
+  static async #rechargeAction(this: SwadeItemSheetV2, event: PointerEvent, target: HTMLElement) {
+    const action = target.dataset.action;
+    if (action === 'rechargeManual') {
+      const id = target.dataset.chargeId;
+      const charge = foundry.utils.getProperty(
+        this.item,
+        `system.charges.charges.${id}`,
+      ) as Charge;
+      const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+        name: charge.name,
+      });
+      return await foundry.applications.api.DialogV2.confirm({
+        content: `<p class="text-center">${text}</p>`,
+        classes: ['dialog', 'swade-app'],
+        yes: {
+          callback: async () => {
+            this.item.rechargeCharge(charge);
+          }
+        },
+      });
+    }
+    const rechargeType = constants.CHARGE_RECHARGE_TYPE[action === 'rechargeEncounter' ? 'ENCOUNTER' : 'DAY'];
+    const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          this.item.rechargeAllChargesOfType(rechargeType);
+        }
+      },
+    });
+  }
+
   static async #rollDamage(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
     const id = target.closest('details')?.dataset.powerId;
     if (!id) return;
@@ -431,6 +531,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
 
     const context: ItemSheetRenderContext = foundry.utils.mergeObject(origContext, {
       actionTypes: this.actionTypes,
+      chargeRechargeTypes: SWADE.chargeRechargeTypes,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
       enrichedDescription: await this.#enrichText(this.item.system.description),
@@ -576,6 +677,17 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
           : getDieSidesRange(4, 20);
     } else {
       delete context.tabs.powers;
+    }
+
+    if (this.item.system.charges?.hasCharges) {
+      context.hasEncounterCharge = false;
+      context.hasDayCharge = false;
+      for (const charge of this.item.system.charges.array) {
+        context.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
+        context.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
+      }
+    } else {
+      delete context.tabs.charges;
     }
 
     return context;
@@ -1046,6 +1158,72 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
   }
 }
 
+class ChargeDragSort {
+  dragging: any = null;
+  dropTarget: any = null;
+  chargesList: any = null;
+  item: SwadeItem;
+
+  constructor(html, item) {
+    this.item = item;
+    this.chargesList = html.querySelector('.charges-list');
+    if (!this.chargesList) {
+      return;
+    }
+
+    this.chargesList.querySelectorAll("li").forEach((el) => {
+      el.ondragstart = this.onDragStart.bind(this);
+      el.ondragover = this.onDragOver.bind(this);
+      el.ondragend = this.onDragEnd.bind(this);
+    });
+
+    this.chargesList.querySelectorAll(".sort-handle").forEach((el) => {
+      const li = el.closest("li");
+      el.onmousedown = li.setAttribute('draggable', 'true');
+      el.onmouseup = li.setAttribute('draggable', 'false');
+    });
+  }
+
+  onDragStart(ev) {
+    ev.dataTransfer.setData('text/plain', JSON.stringify({ type: "Charge" }));
+    this.dragging = ev.currentTarget;
+    this.dragging.classList.add("dragging");
+    const liRect = this.dragging.getBoundingClientRect();
+    ev.dataTransfer.setDragImage(this.dragging, ev.x - liRect.left, ev.y - liRect.top);
+  }
+
+  onDragOver(ev) {
+    ev.preventDefault();
+    const li = ev.currentTarget.closest("li")
+    if (this.dragging && li != this.dragging) {
+      if (this.dragging.parentElement == li.parentElement) {
+        this.dropTarget = li;
+        if (this.dragging.parentNode === this.dropTarget.parentNode) {
+          this.dropTarget = this.dropTarget !== this.dragging.nextElementSibling ? this.dropTarget : this.dropTarget.nextElementSibling;
+        }
+      }
+    }
+
+    if (this.dropTarget) {
+      this.chargesList.insertBefore(this.dragging, this.dropTarget);
+    } else {
+      this.chargesList.appendChild(this.dragging);
+    }
+  }
+
+  onDragEnd() {
+    this.dragging.classList.remove('dragging');
+    this.dragging = null;
+
+    let sort = 0;
+    const updates = {};
+    for (const charge of this.chargesList.children) {
+      updates[`system.charges.charges.${charge.dataset.chargeId}.sort`] = sort++;
+    }
+    this.item.update(updates);
+  }
+}
+
 interface ItemSheetRenderContext extends DocumentSheet.RenderContext<SwadeItem> {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
@@ -1059,6 +1237,7 @@ interface ItemSheetRenderContext extends DocumentSheet.RenderContext<SwadeItem> 
   ammoLoaded?: string;
   attributeOptions?: Record<string, string>;
   bonusDamageDieSideOptions?: DieSidesOption[];
+  chargeRechargeTypes: Record<string, string>;
   collapsibleStates: CollapsibleStates;
   dieSideOptions?: DieSidesOption[];
   dieSides?: DieSidesOption[];
@@ -1069,6 +1248,8 @@ interface ItemSheetRenderContext extends DocumentSheet.RenderContext<SwadeItem> 
   grantOnTriggers?: Record<number, string>[];
   hasAdditionalStats: boolean;
   hasCategory: boolean;
+  hasDayCharge: boolean;
+  hasEncounterCharge: boolean;
   hasInlineDelete: boolean;
   isArcaneDevice: boolean;
   isPhysicalItem: boolean;

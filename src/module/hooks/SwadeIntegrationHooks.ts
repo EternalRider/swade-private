@@ -74,7 +74,8 @@ export default class SwadeIntegrationHooks {
     const user = context.user as SwadeUser;
     if (user.id === game.userId) return;
     const wildDie = context.roll.terms.find(
-      (d) => d.options.flavor === game.i18n.localize('SWADE.WildDie'),
+      (d: foundry.dice.terms.RollTerm) =>
+        d.options.flavor === game.i18n.localize('SWADE.WildDie'),
     );
 
     const dieSystem = wildDie?.options?.appearance?.system;
@@ -107,9 +108,9 @@ export default class SwadeIntegrationHooks {
       foundry.utils.setProperty(wildDie, 'options.colorset', colorSet);
     }
     // Get the dicePreset for the given die type
-    const dicePreset = game.dice3d?.DiceFactory.systems[dieSystem].dice.find(
-      (d) => d.type === 'd' + wildDie.faces,
-    );
+    const dicePreset = game.dice3d?.DiceFactory.systems
+      .get(dieSystem)
+      ?.dice.get('d' + wildDie.faces);
     if (!dicePreset) return;
     if (dicePreset?.modelFile && !dicePreset.modelLoaded) {
       // Load the modelFile

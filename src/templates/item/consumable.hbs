@@ -23,11 +23,11 @@
       <span class='form-fields'>
         <input
           id='{{item.uuid}}-charges'
-          name='system.charges.value'
+          data-name='system.charges.charges.{{item.system.charges.default.id}}.value'
           type='number'
-          value='{{item.system.charges.value}}'
+          value='{{item.system.charges.default.value}}'
           data-dtype='Number'
-          class="text-center"
+          class="text-center charge-field"
         />
         <strong>&percnt;</strong>
       </span>
@@ -36,17 +36,19 @@
       <span class='form-fields text-center'>
         <input
           id='{{item.uuid}}-charges'
-          name='system.charges.value'
+          class='charge-field'
           type='number'
-          value='{{item.system.charges.value}}'
+          value='{{item.system.charges.default.value}}'
           data-dtype='Number'
+          data-name="system.charges.charges.{{item.system.charges.default.id}}.value"
         />
         <strong class='flex-separator'>/</strong>
         <input
-          name='system.charges.max'
+          class='charge-field'
           type='number'
-          value='{{item.system.charges.max}}'
+          value='{{item.system.charges.default.max}}'
           data-dtype='Number'
+          data-name="system.charges.charges.{{item.system.charges.default.id}}.max"
         />
       </span>
     {{/if}}
@@ -112,9 +114,10 @@
       </div>
       {{> 'swade.item-action-properties'}}
       {{formGroupSimple "system.activities" stacked=true}}
-      {{> 'swade.item-bonus-damage'}}      
+      {{> 'swade.item-bonus-damage'}}
       {{> 'swade.item-grants'}}
     </section>
+    {{> 'swade.item-tab-charges'}}
     {{> 'swade.item-tab-actions'}}
     {{> 'swade.item-tab-effects'}}
   </section>

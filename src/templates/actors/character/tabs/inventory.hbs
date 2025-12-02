@@ -143,6 +143,9 @@
                 {{/if}}
               </span>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'><p>{{localize
                   'SWADE.NoDescription'
                 }}</p></div>
@@ -232,6 +235,9 @@
                 {{/if}}
               </span>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'><p>{{localize
                   'SWADE.NoDescription'
                 }}</p></div>
@@ -321,6 +327,9 @@
                 {{/if}}
               </span>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'><p>{{localize
                   'SWADE.NoDescription'
                 }}</p></div>
@@ -361,7 +370,7 @@
               </a>
               <span class='charges'>
                 {{#unless (eq system.subtype 'regular')}}
-                  {{system.charges.value}}/{{system.charges.max}}
+                  {{system.charges.default.value}}/{{system.charges.default.max}}
                 {{else}}
                   <button
                     type='button'
@@ -369,7 +378,7 @@
                     data-action='useConsumable'
                     title='{{localize "SWADE.Consumable.Use"}}'
                   >
-                    {{system.charges.value}}/{{system.charges.max}}
+                    {{system.charges.default.value}}/{{system.charges.default.max}}
                   </button>
                 {{/unless}}
               </span>
@@ -417,6 +426,9 @@
                 {{/if}}
               </span>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'><p>{{localize
                   'SWADE.NoDescription'
                 }}</p></div>
@@ -498,6 +510,9 @@
                 {{/if}}
               </span>
             </summary>
+            {{#if system.charges.hasCharges}}
+              {{> 'swade.character-charges-summary'}}
+            {{/if}}
             <div class='content description'>
               <p>{{localize 'SWADE.NoDescription'}}</p>
             </div>

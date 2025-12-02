@@ -1,6 +1,6 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { PotentialSource } from '../../../globals';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
@@ -12,6 +12,7 @@ import {
   Templates,
 } from './item-common.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
+import { ChargesData } from '../fields';
 
 declare namespace ActionData {
   interface Schema
@@ -19,12 +20,14 @@ declare namespace ActionData {
       Favorite,
       Category,
       Templates,
+      Charges,
       Actions {
     hidden: foundry.data.fields.BooleanField<{
       initial: boolean;
       label: string;
       hint: string;
-    }>;
+    }>,
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -36,17 +39,19 @@ class ActionData extends SwadeBaseItemData<
   ActionData.DerivedData
 > {
   static override defineSchema(): ActionData.Schema {
+    const fields = foundry.data.fields;
     return {
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
       ...templates(),
       ...actions(),
-      hidden: new foundry.data.fields.BooleanField({
+      hidden: new fields.BooleanField({
         initial: false,
         label: 'SWADE.Actions.Hidden.Label',
         hint: 'SWADE.Actions.Hidden.Hint',
       }),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 
@@ -65,10 +70,19 @@ class ActionData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/action-embeds.hbs',

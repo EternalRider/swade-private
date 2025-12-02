@@ -22,8 +22,19 @@
       {{formGroupSimple "system.hidden"}}
       {{> 'swade.item-action-properties'}}
       {{> 'swade.item-bonus-damage'}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
       {{> 'swade.item-templates'}}
     </section>
+    {{#if item.system.charges.hasCharges}}
+      {{> 'swade.item-tab-charges'}}
+    {{/if}}
     {{> 'swade.item-tab-actions'}}
     {{> 'swade.item-tab-effects'}}
   </section>

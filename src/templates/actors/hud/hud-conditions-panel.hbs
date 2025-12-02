@@ -1,0 +1,28 @@
+<div class="conditions-list">
+  <header class="swadehud-section-header">
+    <span class="swadehud-section-name">{{localize 'SWADE.Status'}}</span>
+    <span class="swadehud-action-buttons">
+      <button class="swadehud-clear-conditions" title="Remove all active conditions">Clear All</button>
+    </span>
+  </header>
+    <div class="swadehud-item-list">
+      {{#each statusEffects as |effect|}}
+        <div class="swadehud-item" data-status-id="{{effect.id}}">
+          <div class="swadehud-item-header" data-toggle="expand">
+            <img class="swadehud-item-icon" src="{{effect.img}}" alt="{{localize effect.name}}" />
+            <span class="swadehud-item-name" title="Click to expand">{{localize effect.name}}</span>
+            <i class="fa-solid fa-power-off swadehud-condition-toggle-icon{{#if effect.isActive}} active{{/if}}"
+               data-status-id="{{effect.id}}"
+               title="{{#if effect.isActive}}Remove {{localize effect.name}}{{else}}Add {{localize effect.name}}{{/if}}"></i>
+          </div>
+          <div class="swadehud-item-content">
+            {{#if effect.description}}
+              <div class="swadehud-item-description">{{{effect.description}}}</div>
+            {{else}}
+              <div class="swadehud-item-description swadehud-no-description">{{localize 'SWADE.NoDescription'}}</div>
+            {{/if}}
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </div>

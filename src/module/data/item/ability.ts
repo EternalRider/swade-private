@@ -1,6 +1,7 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ChargesData } from '../fields';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { actions, builder, category, favorite, grants } from './common';
@@ -27,6 +28,7 @@ declare namespace AbilityData {
       textSearch: true;
     }>;
     grantsPowers: foundry.data.fields.BooleanField<{ label: string }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
@@ -56,6 +58,7 @@ class AbilityData extends SwadeBaseItemData<
       grantsPowers: new fields.BooleanField({
         label: 'SWADE.GrantsPowers',
       }),
+      charges: new fields.EmbeddedDataField(ChargesData),
     };
   }
 
@@ -105,6 +108,11 @@ class AbilityData extends SwadeBaseItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
     this.enrichedDescription =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(

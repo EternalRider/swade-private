@@ -207,8 +207,8 @@ SWADE:
   Scale: Größenkategorie
   PickACard: Wähle eine Karte für {name}
   NoCardsLeft: >-
-    Es sind nicht genug Karten im Deck! Es sind nur {current] von {needed}
-    benötigten Karten verfügbar
+    Zu wenig Karten im Deck! Es sind nur {current] von {needed} benötigten Karten
+    verfügbar. Deck zurücksetzen oder Anzahl Kampfteilnehmer reduzieren!
   OldCard: Alte Karte
   ActionCard: Aktionskarte
   ConvictionActivate: '{name} aktiviert Entschlossenheit!'
@@ -390,6 +390,7 @@ SWADE:
     Medium: Mittlere Deckung
     Heavy: Schwere Deckung
     Total: Vollständige Deckung
+    MediumProne: Mittlere Deckung (Auf Boden)
   Range:
     _name: Reichweite
     Medium: Reichweite, Mittel
@@ -493,7 +494,7 @@ SWADE:
     BeginPrompt: Am Anfang des Zuges mit Nachfrage
     Behavior: Verhalten bei Ablauf
     EndAuto: Automatisch am Ende des Zuges
-    EndPrompt: Am Anfang des Zuges, mit Nachfrage
+    EndPrompt: Am Ende des Zuges mit Nachfrage
     None: Keins
     TabLabel: Zugverhalten
     Description: >-
@@ -1011,10 +1012,12 @@ SWADE:
     RevertRoundContent: Zur letzten Runde zurückkehren?
     RedrawDialog:
       Content: Frei oder für Benny neue Karte ziehen?
+      ContentNoBenny: Keine Bennys. Neue Karte frei ziehen?
     DealAll: Alle austeilen
     DealNPC: NSCs austeilen
     LinkScene: Szene verknüpfen
     StartEncounter: Begegnung starten
+    RedrawFor: Neue Karte ({name})
   GlobalMod:
     Trait: Alle Eigenschaften
     Spirit: Willenskraft und Wil.-Fertigkeiten
@@ -1303,6 +1306,28 @@ SWADE:
     Description: 'Größe: {scale} ({name})'
   Unfavorite: Entfavorisieren
   DeleteEmbeddedCardPrompt: Sicher, dass die Karte {card} gelöscht werden soll?
+  DeleteGroupAndCombatants: Gruppe und Gruppenmitglieder löschen
+  FollowLabel: Folgen
+  BuildLimit: Build-Limit
+  BuildLevel: Build-Stufe
+  ScaleDifference: Größenkat.-Differenz
+  GangUp: Überzahlbonus
+  ChargeLevel: Ladung
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          illumination:
+            label: Beleuchtung
+            hint: Wendet per Default Beleuchtungsmodifikatoren für Ziel-Spielfiguren
+              in dieser Region an.
+          cover:
+            label: Deckung
+            hint: Wendet per Default Deckungsmodifikatoren für Ziel-Spielfiguren in
+              dieser Region an.
+          unstablePlatform:
+            hint: Wendet per Default "Unsicherer Grund"-Modifikator an, wenn aus dieser
+              Region geschossen/geworfen wird.
 TYPES:
   Actor:
     npc: NSC
@@ -1332,3 +1357,5 @@ TYPES:
     chase: Verfolgung
   ActiveEffect:
     modifier: Modifikator
+  RegionBehavior:
+    attackModifiers: Angriffsmodifikatoren

@@ -3,7 +3,7 @@ import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
-import { createEmbedElement } from '../../util';
+import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -25,6 +25,7 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
+import { DefaultHasChargesData } from '../fields/ChargesData';
 
 declare namespace ConsumableData {
   interface Schema
@@ -35,10 +36,6 @@ declare namespace ConsumableData {
       Actions,
       Activities,
       GrantEmbedded {
-    charges: foundry.data.fields.SchemaField<{
-      value: foundry.data.fields.NumberField<{ initial: 1 }>;
-      max: foundry.data.fields.NumberField<{ initial: 1 }>;
-    }>;
     messageOnUse: foundry.data.fields.BooleanField<{ initial: true }>;
     destroyOnEmpty: foundry.data.fields.BooleanField<{ label: string }>;
     subtype: foundry.data.fields.StringField<{
@@ -46,6 +43,7 @@ declare namespace ConsumableData {
       choices: ChoicesType<typeof constants.CONSUMABLE_TYPE>;
       textSearch: true;
     }>;
+    charges: foundry.data.fields.EmbeddedDataField<typeof DefaultHasChargesData>;
   }
   interface BaseData extends SwadePhysicalItemData.BaseData {}
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
@@ -67,10 +65,6 @@ class ConsumableData extends SwadePhysicalItemData<
       ...actions(),
       ...activities(),
       ...grantEmbedded(),
-      charges: new fields.SchemaField({
-        value: new fields.NumberField({ initial: 1, label: 'SWADE.Charges' }),
-        max: new fields.NumberField({ initial: 1, label: 'SWADE.ChargesMax' }),
-      }),
       messageOnUse: new fields.BooleanField({
         initial: true,
         label: 'SWADE.MessageOnUse.Label',
@@ -84,6 +78,7 @@ class ConsumableData extends SwadePhysicalItemData<
         textSearch: true,
         label: 'SWADE.Subtype',
       }),
+      charges: new fields.EmbeddedDataField(DefaultHasChargesData),
     };
   }
 
@@ -92,6 +87,7 @@ class ConsumableData extends SwadePhysicalItemData<
     quarantine.ensurePricesAreNumeric(source);
     quarantine.ensureWeightsAreNumeric(source);
     migrations.renameActionProperties(source);
+    migrations.convertCharges(source);
     return super.migrateData(source);
   }
 
@@ -122,8 +118,9 @@ class ConsumableData extends SwadePhysicalItemData<
     const resourceUpdates = new Array<Updates>();
 
     //gather variables
-    const currentCharges = Number(this.charges.value);
-    const maxCharges = Number(this.charges.max);
+    const charge = this.charges.default;
+    const currentCharges = charge.value;
+    const maxCharges = charge.max;
     const quantity = Number(this.quantity);
     const maxChargesOnStack = (quantity - 1) * maxCharges + currentCharges;
 
@@ -145,7 +142,7 @@ class ConsumableData extends SwadePhysicalItemData<
 
     //write updates
     itemUpdates['system.quantity'] = Math.max(0, newQuantity);
-    itemUpdates['system.charges.value'] = newCharges;
+    itemUpdates[`system.charges.charges.${charge.id}.value`] = newCharges;
 
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
@@ -161,15 +158,16 @@ class ConsumableData extends SwadePhysicalItemData<
     user: User.Implementation,
   ) {
     await super._preUpdate(changed, options, user);
+    const defaultCharge = this.charges.default;
     if (
       foundry.utils.hasProperty(changed, 'system.quantity') &&
       this.subtype !== constants.CONSUMABLE_TYPE.REGULAR &&
-      this.charges.value !== 0 &&
-      this.charges.value !== this.charges.max
+      defaultCharge.value !== 0 &&
+      defaultCharge.value !== defaultCharge.max
     ) {
       if (
         (changed.system?.quantity ?? 0) > 1 &&
-        this.charges.value! < this.charges.max!
+        defaultCharge.value! < defaultCharge.max!
       ) {
         delete changed.system!.quantity;
         Logger.warn(
@@ -179,16 +177,16 @@ class ConsumableData extends SwadePhysicalItemData<
       }
     }
     if (
-      foundry.utils.hasProperty(changed, 'system.charges.max') &&
+      foundry.utils.hasProperty(changed, `system.charges.charges.${defaultCharge.id}.max`) &&
       this.subtype === constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(changed, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
     }
     if (
       foundry.utils.getProperty(changed, 'system.subtype') ===
       constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(changed, 'system.charges.max', 100);
+      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
     }
   }
 
@@ -198,10 +196,19 @@ class ConsumableData extends SwadePhysicalItemData<
     config: TextEditor.DocumentHTMLEmbedConfig,
     options: TextEditor.EnrichmentOptions,
   ): Promise<HTMLElement | HTMLCollection | null> {
+    // If description=true, render only the description
+    if (config.description === true) {
+      return createEnrichedTextEmbed(this.description || '', config, options);
+    }
+
     config.caption = false;
-    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
-      ...options,
-    });
+    this.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        this.description,
+        {
+          ...options,
+        },
+      );
     return await createEmbedElement(
       this,
       'systems/swade/templates/embeds/consumable-embeds.hbs',

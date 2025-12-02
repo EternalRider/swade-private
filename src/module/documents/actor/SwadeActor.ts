@@ -32,6 +32,7 @@ import { SwadeRoll } from '../../dice/SwadeRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
 import WildDie from '../../dice/WildDie';
 import {
+  getDefaultAttackModifiers,
   getStatusEffectDataById,
   mapRange,
   modifierReducer,
@@ -376,7 +377,7 @@ class SwadeActor<
   async rollSkill(
     skillId: string | null | undefined,
     options: IRollOptions = { rof: 1 },
-    tempSkill?: SwadeItem,
+    tempSkill?: SwadeItem<'skill'>,
   ): Promise<TraitRoll | null> {
     if (
       this.system instanceof VehicleData ||
@@ -388,8 +389,70 @@ class SwadeActor<
       return null;
     }
     let skill: SwadeItem<'skill'> | undefined;
-    skill = this.items.find((i) => i.id == skillId);
+    skill = this.items.find((i) => i.id == skillId) as
+      | SwadeItem<'skill'>
+      | undefined;
     if (tempSkill) skill = tempSkill;
+
+    // TODO: (Improved) Arcane Resistance, when -> Powers
+    const isAttack = options.item?.type === 'weapon';
+    const { isRanged = null, isMelee = null } = options.item?.system ?? {};
+    const isRangedAttack =
+      isRanged && (!isMelee || skill?.system.swid !== 'fighting');
+    const isMeleeAttack =
+      isMelee && (!isRanged || skill?.system.swid === 'fighting');
+
+    // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
+    if (isAttack && skill) {
+      const sourceToken = this.getActiveTokens(false, true)[0];
+      const targetToken = game.user.targets.first()?.document;
+
+      const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
+        sourceToken,
+        targetToken,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack,
+      );
+
+      /**
+       * A hook event that is fired immediately before adding `additionalMods` to the Roll Dialog options, allowing additional default
+       * modifiers to be added (or existing ones to be removed)
+       * @category Hooks
+       * @param {TokenDocument | undefined} sourceToken     The attacking token
+       * @param {TokenDocument | undefined} targetToken     The first-targeted token, or `undefined` if no targets
+       * @param {SwadeItem} skill                           The skill being used for the attack
+       * @param {SwadeItem} item                            The item being used for the attack
+       * @param {boolean} isRangedAttack                    `true` if ranged weapon or mixed with non-`fighting` skill
+       * @param {boolean} isMeleeAttack                     `true` if melee weapon or mixed with `fighting` skill
+       * @param {RollModifier[]} additionalMods             The list of default-applied modifiers so far, to be modified directly
+       * @param {BestNonStackingMods} bestNonStackingMods   The best non-stacking modifiers (e.g. bestCover, bestIllumination), provided to be able to replace/remove them prior to adding to `additionalMods`
+       */
+      Hooks.call(
+        'swadeCalculateDefaultAttackMods',
+        sourceToken,
+        targetToken,
+        skill,
+        options.item!,
+        isRangedAttack,
+        isMeleeAttack,
+        additionalMods,
+        bestNonStackingMods,
+      );
+
+      for (const mod of Object.values(bestNonStackingMods)) {
+        if (mod) additionalMods.push(mod);
+      }
+
+      if (additionalMods.length) {
+        additionalMods.forEach(
+          (mod) => (mod.label = game.i18n.localize(mod.label)),
+        );
+        if (options.additionalMods)
+          options.additionalMods.push(...additionalMods);
+        else options.additionalMods = additionalMods;
+      }
+    }
 
     if (!skill) return this.makeUnskilledAttempt(options);
 
@@ -1266,7 +1329,7 @@ class SwadeActor<
           break;
       }
     });
-    return derivedStat;
+    return Math.max(derivedStat, 0);
   }
 
   /**
@@ -1466,4 +1529,9 @@ interface ArmorCalcContext {
   name: string;
   armor: number;
   isNaturalArmor: boolean;
+}
+
+export interface BestNonStackingMods {
+  bestCover: RollModifier | undefined;
+  bestIllumination: RollModifier | undefined;
 }

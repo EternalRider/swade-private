@@ -26,8 +26,8 @@ SWADE:
   Scale: Escala
   PickACard: Escolha uma carta para {name}
   NoCardsLeft: >-
-    Não há cartas restantes no baralho! Apenas {current} cartas de {needed}
-    necessárias estão disponíveis
+    Não há cartas restantes no baralho! Apenas {current} cartas de {needed} necessárias
+    estão disponíveis
   OldCard: Carta Anterior
   ActionCard: Carta de Ação
   ConvictionActive: Convicção Ativa
