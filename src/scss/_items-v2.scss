@@ -427,6 +427,7 @@ body.theme-light .swade-item-sheet,
 
   .charge {
     display: flex;
+    flex-direction: row;
     padding-left: 0;
     padding-right: calc(2.25em + 4px);
     align-items: center;
@@ -445,12 +446,15 @@ body.theme-light .swade-item-sheet,
       cursor: grab;
       padding: .25em;
       padding-right: .5em;
+      flex: 0;
     }
 
     .content {
       font-size: 12px;
       margin: 0;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
 
       label {
         flex: 3;
@@ -463,6 +467,7 @@ body.theme-light .swade-item-sheet,
 
     .charge-delete {
       padding: 0.25em;
+      flex: 0;
     }
   }
 
