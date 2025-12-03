@@ -423,7 +423,6 @@ class SwadeActor<
         options.item!,
         isRangedAttack,
         isMeleeAttack,
-        this,
       );
 
       /**
@@ -894,10 +893,10 @@ class SwadeActor<
 
   calcScale(size: number): number {
     let scale = 0;
-    if (size.between(12, 20)) scale = 6;
-    else if (size.between(8, 11)) scale = 4;
-    else if (size.between(4, 7)) scale = 2;
-    else if (size.between(-1, 3)) scale = 0;
+    if (Number.between(size, 12, 20)) scale = 6;
+    else if (Number.between(size, 8, 11)) scale = 4;
+    else if (Number.between(size, 4, 7)) scale = 2;
+    else if (Number.between(size, -1, 3)) scale = 0;
     else if (size === -2) scale = -2;
     else if (size === -3) scale = -4;
     else if (size === -4) scale = -6;

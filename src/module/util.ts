@@ -447,7 +447,6 @@ export function getDefaultAttackModifiers(
   item: SwadeItem,
   isRangedAttack: boolean,
   isMeleeAttack: boolean,
-  actor?: SwadeActor,
 ): {
   additionalMods: RollModifier[];
   bestNonStackingMods: BestNonStackingMods;
@@ -458,7 +457,7 @@ export function getDefaultAttackModifiers(
   const illuminationMods = rollGroups.illumination.modifiers;
 
   const additionalMods: RollModifier[] = [];
-  let currActor = actor || sourceToken?.actor || item.actor!;
+  let currActor = sourceToken?.actor || item.actor!;
   let vehicleActor: SwadeActor | undefined;
   if (currActor.system instanceof VehicleData && item.type === 'weapon') {
     vehicleActor = currActor;
@@ -554,12 +553,10 @@ export function getDefaultAttackModifiers(
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
     const distanceToTarget =
-      (sourceToken
-        ? scene.grid.measurePath([
-            sourceToken.getCenterPoint(),
-            targetToken.getCenterPoint(),
-          ])?.distance
-        : 0) ?? 0;
+      scene.grid.measurePath([
+        sourceToken.getCenterPoint(),
+        targetToken.getCenterPoint(),
+      ])?.distance ?? 0;
 
     // Illumination & Cover
     const targetBehaviors: RegionBehavior<'attackModifiers'>[] = Array.from(
