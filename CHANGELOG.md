@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 5.1.1
 
 - Added Active Effects to target Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens**
+- Added support for Gang Up bonus on damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens**
 
 ## 5.1.1
 
