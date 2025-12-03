@@ -88,6 +88,8 @@ These are more generic roll bonuses that improve all rolls of a certain category
 - Target Attack (Melee): `system.stats.globalMods.targetAttackMelee`
 - Gang Up: `system.stats.globalMods.gangUp`
 
+Note: Gang Up modifies the Gang Up bonus. Positive values increase the bonus for the attacker, negative values decrease it.
+
 #### Derived Stats
 
 - Parry: `system.stats.parry.value`
