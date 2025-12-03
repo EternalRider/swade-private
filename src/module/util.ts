@@ -16,7 +16,7 @@ import { VehicleData } from './data/actor';
 export function notificationExists(string: string, localize = true): boolean {
   let stringToFind = string;
   if (localize) stringToFind = game.i18n.localize(string);
-  const active = ui.notifications.active || [];
+  const active = (ui.notifications as any).active || [];
   return active.some((n) => n.text() === stringToFind);
 }
 
@@ -54,11 +54,11 @@ export function getTrait(
     }
   }
   if (!trait) {
-    trait = actor.items.find((i) => i.type === 'skill' && i.name === traitName);
+    trait = actor.items?.find((i) => i.type === 'skill' && i.name === traitName);
   }
   if (!trait) {
-    trait = actor.items.find(
-      (i) => i.type === 'skill' && i.system.swid === slugify(traitName),
+    trait = actor.items?.find(
+      (i) => i.type === 'skill' && (i as any).system.swid === slugify(traitName),
     );
   }
   return trait;
@@ -66,14 +66,14 @@ export function getTrait(
 
 /** @internal */
 export async function reshuffleActionDeck() {
-  const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
+  const deck = (game.cards as any)?.get(game.settings.get('swade', 'actionDeck'));
   await deck?.recall({ chatNotification: false });
   await deck?.shuffle({ chatNotification: false });
 }
 
 /** @internal */
 export async function reshuffleActionDeckIfJokerDrawn() {
-  const deck = game.cards?.get(game.settings.get('swade', 'actionDeck'));
+  const deck = (game.cards as any)?.get(game.settings.get('swade', 'actionDeck'));
   if (deck?.isJokerDrawn()) {
     await deck?.recall({ chatNotification: false });
     await deck?.shuffle({ chatNotification: false });
@@ -140,7 +140,7 @@ export function firstOwner(doc) {
     (doc instanceof TokenDocument ? doc.actor?.ownership : doc.ownership) ?? {};
   const playerOwners = Object.entries(ownership)
     .filter(([id, level]) => {
-      const user = game.users?.get(id);
+      const user = (game.users as any)?.get(id);
       return (
         user?.active &&
         !user.isGM &&
@@ -150,7 +150,7 @@ export function firstOwner(doc) {
     .map(([id, _level]) => id);
 
   if (playerOwners.length > 0) {
-    return game.users?.get(playerOwners[0]);
+    return (game.users as any)?.get(playerOwners[0]);
   }
 
   /* if no online player owns this actor, fall back to first GM */
@@ -386,7 +386,9 @@ export async function getItemsBySwid<T extends Item.SubType>(
   type?: T,
 ): Promise<SwadeItem<T>[]> {
   //get world items first
-  let items: SwadeItem[] = game.items.filter((i) => i.system.swid === swid);
+  let items: SwadeItem<T>[] = (game.items as any).filter(
+    (i) => i.system.swid === swid,
+  ) as SwadeItem<T>[];
   //filter by type if necessary
   if (type) items = items.filter((i) => i.type === type);
 
@@ -398,13 +400,13 @@ export async function getItemsBySwid<T extends Item.SubType>(
   }
   for (const pack of itemPacks) {
     await pack.getIndex();
-    const index = pack.index.filter((i) => i.system?.swid === swid);
+    const index = pack.index.filter((i: any) => i.system?.swid === swid);
     const ids = index.map((e) => e._id);
     if (ids.length < 1) continue;
     const query: Record<string, unknown> = { _id__in: ids };
     //filter by type if necessary
     if (type) query.type = type;
-    const documents = await pack.getDocuments(query);
+    const documents = (await pack.getDocuments(query)) as SwadeItem<T>[];
     items.push(...documents);
   }
   return items;
@@ -425,10 +427,10 @@ export function getEdgeToEdgeDistance(
   const conversionFactor = scene.grid.distance / scene.grid.size;
   const combinedRadii =
     tokenA.object!.externalRadius + tokenB.object!.externalRadius;
-  const distance = scene.grid.measurePath([
-    tokenA.getCenterPoint(),
-    tokenB.getCenterPoint(),
-  ]).distance;
+  const distance = scene.grid.measurePath(
+    [tokenA.getCenterPoint(), tokenB.getCenterPoint()],
+    {},
+  ).distance;
   return distance - combinedRadii * conversionFactor;
 }
 
@@ -533,7 +535,7 @@ export function getDefaultAttackModifiers(
   if (
     isRangedAttack &&
     sourceToken?.regions?.some((r) =>
-      r.behaviors.some(
+      r.behaviors?.some(
         (b) =>
           !b.disabled &&
           b.type === 'attackModifiers' &&
@@ -553,20 +555,20 @@ export function getDefaultAttackModifiers(
     const scene = targetToken.parent as Scene;
     // For use with range increments & prone
     const distanceToTarget =
-      scene.grid.measurePath([
-        sourceToken.getCenterPoint(),
-        targetToken.getCenterPoint(),
-      ])?.distance ?? 0;
+      scene.grid.measurePath(
+        [sourceToken.getCenterPoint(), targetToken.getCenterPoint()],
+        {},
+      )?.distance ?? 0;
 
     // Illumination & Cover
-    const targetBehaviors: RegionBehavior<'attackModifiers'>[] = Array.from(
+    const targetBehaviors: RegionBehavior<'attackModifiers'>[] = (Array.from(
       targetToken.regions!.map(
         (r) =>
-          r.behaviors.filter(
+          r.behaviors?.filter(
             (b) => !b.disabled && b.type === 'attackModifiers',
-          ) as RegionBehavior<'attackModifiers'>[],
+          ) as RegionBehavior<'attackModifiers'>[] ?? [],
       ),
-    ).deepFlatten();
+    ).deepFlatten() as RegionBehavior<'attackModifiers'>[]);
 
     if (
       isRangedAttack &&
@@ -596,10 +598,10 @@ export function getDefaultAttackModifiers(
 
     // Shield cover
     const equippedShields = (targetActor?.itemTypes.shield.filter(
-      (i: SwadeItem<'shield'>) => i.isReadied,
+      (i: any) => i.isReadied,
     ) ?? []) as SwadeItem<'shield'>[];
     const shieldCoverMod = -equippedShields.reduce((bestCover, shield) => {
-      return Math.max(shield.system.cover, bestCover);
+      return Math.max(shield.system.cover ?? 0, bestCover);
     }, 0);
     if (shieldCoverMod) {
       if (!bestCover || (bestCover.value as number) > shieldCoverMod) {
@@ -654,19 +656,18 @@ export function getDefaultAttackModifiers(
       sourceToken.disposition * targetToken.disposition === -1
     ) {
       const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
-      const numAttackerAllies = scene.tokens.filter((t) => {
+      const numAttackerAllies = scene.tokens?.filter((t) => {
         if (t.disposition !== sourceToken.disposition) return false;
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
         return getEdgeToEdgeDistance(targetToken, t) < 1;
-      }).length;
-      const numDefenderAllies = scene.tokens.filter((t) => {
+      }).length ?? 0;
+      const numDefenderAllies = scene.tokens?.filter((t) => {
         if (t.disposition !== targetToken.disposition) return false;
         if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
           return false;
-        if (getEdgeToEdgeDistance(targetToken, t) >= 1) return false;
-        return getEdgeToEdgeDistance(sourceToken, t) < 1;
-      }).length;
+        return getEdgeToEdgeDistance(targetToken, t) < 1;
+      }).length ?? 0;
       let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
 
       if (
@@ -693,23 +694,60 @@ export function getDefaultAttackModifiers(
         }
       }
 
-      if (targetActor?.getSingleItemBySwid('improved-block', 'edge'))
-        gangUpBonus -= 2;
-      else if (targetActor?.getSingleItemBySwid('block', 'edge'))
-        gangUpBonus -= 1;
-      if (gangUpBonus > 0)
+      let targetGangUpMod = 0;
+      const targetGangUpLabels: string[] = [];
+      // Target Gang Up Modifiers (Active Effects)
+      const targetGlobalMods = targetActor
+        ? (foundry.utils.getProperty(
+            targetActor,
+            'system.stats.globalMods',
+          ) as any)
+        : {};
+
+      if (targetGlobalMods?.gangUp && Array.isArray(targetGlobalMods.gangUp)) {
+        targetGlobalMods.gangUp.forEach((m: any) => {
+          targetGangUpMod += Number(m.value);
+          targetGangUpLabels.push(m.label);
+        });
+      }
+
+      const improvedBlock = targetActor?.getSingleItemBySwid(
+        'improved-block',
+        'edge',
+      );
+      if (improvedBlock) {
+        targetGangUpMod -= 2;
+        targetGangUpLabels.push(improvedBlock.name);
+      } else {
+        const block = targetActor?.getSingleItemBySwid('block', 'edge');
+        if (block) {
+          targetGangUpMod -= 1;
+          targetGangUpLabels.push(block.name);
+        }
+      }
+
+      if (gangUpBonus > 0) {
         additionalMods.push({
           label: 'SWADE.GangUp',
           value: gangUpBonus,
         });
+        if (targetGangUpMod !== 0) {
+          const value = Math.max(targetGangUpMod, -gangUpBonus);
+          additionalMods.push({
+            label:
+              targetGangUpLabels.join(' + ') || 'SWADE.GlobalMod.TargetGangUp',
+            value,
+          });
+        }
+      }
     }
 
     // Size
     const sizeActor = item.actor?.type === 'vehicle' ? item.actor : currActor;
     const attackerScale =
-      sizeActor.system.stats?.scale ?? sizeActor.system.scale ?? 0;
+      (sizeActor.system as any).stats?.scale ?? (sizeActor.system as any).scale ?? 0;
     const defenderScale =
-      targetActor.system.stats?.scale ?? targetActor.system.scale ?? 0;
+      (targetActor?.system as any).stats?.scale ?? (targetActor?.system as any).scale ?? 0;
     const scaleDifference = defenderScale - attackerScale;
     if (scaleDifference !== 0) {
       additionalMods.push({
@@ -719,10 +757,12 @@ export function getDefaultAttackModifiers(
     }
 
     // Target Attack Modifiers (Active Effects)
-    const globalMods = foundry.utils.getProperty(
-      targetActor,
-      'system.stats.globalMods',
-    ) as any;
+    const globalMods = targetActor
+      ? (foundry.utils.getProperty(
+          targetActor,
+          'system.stats.globalMods',
+        ) as any)
+      : {};
     if (globalMods?.targetAttack && Array.isArray(globalMods.targetAttack)) {
       additionalMods.push(
         ...globalMods.targetAttack.map((m: any) => ({

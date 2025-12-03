@@ -24,6 +24,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 5.1.1
 
+- Added Active Effects to target Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens**
+
+## 5.1.1
+
 ### Added
 
 - Added @size as a possible roll key. (!931) **by @ddbrown30**

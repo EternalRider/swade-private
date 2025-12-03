@@ -73,6 +73,7 @@ SWADE:
     TargetAttackRanged: Target Attack (Ranged)
     TargetAttackMelee: Target Attack (Melee)
     GangUp: Gang Up
+    TargetGangUp: Target Gang Up Modifier
     Damage: All Damage
     AP: All Armor Piercing
   ArcaneSkill: Arcane Skill
