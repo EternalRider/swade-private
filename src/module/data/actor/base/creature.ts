@@ -63,6 +63,7 @@ declare namespace CreatureData {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
       };
+      gangUpDamage: boolean;
       globalMods: {
         trait: Array<DerivedModifier>;
         agility: Array<DerivedModifier>;
@@ -218,6 +219,11 @@ function creatureSchema() {
           initial: 0,
           integer: true,
           label: 'SWADE.Size',
+        }),
+        gangUpDamage: new fields.BooleanField({
+          initial: false,
+          label: 'SWADE.GangUpDamage',
+          hint: 'SWADE.GangUpHint',
         }),
       },
       { label: 'SWADE.Stats' },

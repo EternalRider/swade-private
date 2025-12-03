@@ -554,6 +554,8 @@ SWADE:
     Long: Long Range
     Extreme: Extreme Range
   GangUp: Ganging Up
+  GangUpDamage: Gang Up
+  GangUpHint: Automatically applies Gang Up bonus to damage
   ModOther: Other Modifiers
   ModTrait: Trait Modifiers
   ModAttack: Attack Modifiers
