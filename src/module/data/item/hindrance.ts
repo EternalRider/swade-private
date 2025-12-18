@@ -1,6 +1,7 @@
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import * as migrations from './_migration';
 import { ChargesData } from '../fields';
 import { SwadeBaseItemData } from './base';
 import { favorite, grants } from './common';
@@ -41,6 +42,11 @@ class HindranceData extends SwadeBaseItemData<
       }),
       major: new fields.BooleanField({ label: 'SWADE.MajHind' }),
     };
+  }
+
+  static override migrateData(source: PotentialSource<HindranceData>) {
+    migrations.migrateChargesToArray(source);
+    return super.migrateData(source);
   }
 
   get isMajor(): boolean {

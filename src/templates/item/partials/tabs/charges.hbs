@@ -19,7 +19,7 @@
   </div>
 </header>
 <ol class='charges-list unmarked-list'>
-  {{#each item.system.charges.sorted}}
+  {{#each item.system.charges.charges}}
     <li data-charge-id='{{id}}'>
       <fieldset class='charge'>
         <span class='sort-handle' draggable="true">
@@ -31,11 +31,11 @@
           {{/if}}
           <div class='form-group'>
             <label>{{localize 'SWADE.Name'}}</label>
-            <input type='text' name='system.charges.charges.{{id}}.name' value='{{name}}' placeholder='{{localize "SWADE.Name"}}' />
+            <input type='text' name='charges.{{id}}.name' value='{{name}}' placeholder='{{localize "SWADE.Name"}}' />
           </div>
           <div class='form-group'>
             <label>{{localize 'SWADE.RechargeType'}}</label>
-            <select name='system.charges.charges.{{id}}.rechargeType'>
+            <select name='charges.{{id}}.rechargeType'>
               {{selectOptions
                   @root.chargeRechargeTypes
                   selected=rechargeType
@@ -46,16 +46,16 @@
           <div class='form-group'>
             <label>{{localize 'SWADE.Charges'}}</label>
             <span class='form-fields text-center'>
-              <input type='number' name="system.charges.charges.{{id}}.value" value='{{value}}' placeholder='1' />
+              <input type='number' name="charges.{{id}}.value" value='{{value}}' placeholder='1' />
               <strong class="flex-separator">/</strong>
-              <input type='number' name="system.charges.charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery' ) (eq @index 0))}} />
+              <input type='number' name="charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery' ) (eq @index 0))}} />
             </span>
           </div>
           {{#unless (eq rechargeType "finite") }}
             <div class='form-group'>
               <label>{{localize 'SWADE.RechargeAmount'}}</label>
               <span class='form-fields text-center'>
-                <input type='text' class='recharge-amount' name='system.charges.charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
+                <input type='text' class='recharge-amount' name='charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
                 <button type='button' class='charge-recharge-manual invisible' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
                   <i class='fa-solid fa-rotate-right'></i>
                 </button>

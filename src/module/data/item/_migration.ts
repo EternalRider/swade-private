@@ -111,9 +111,9 @@ export function convertCharges(source: PotentialSource<ConsumableData>) {
   source.charges.hasCharges = true;
 
   if (source.charges.value !== undefined || source.charges.max !== undefined) {
-    const id = ChargesData.randomID();
-    foundry.utils.setProperty(source, 'charges.charges.' + id, {
-      id: id,
+    source.charges.charges = [];
+    source.charges.charges.push({
+      id: ChargesData.randomID(),
       value: source.charges.value ?? 0,
       max: source.charges.max ?? 0,
     });
@@ -121,4 +121,20 @@ export function convertCharges(source: PotentialSource<ConsumableData>) {
     delete source.charges.value;
     delete source.charges.max;
   }
+}
+
+export function migrateChargesToArray(source) {
+  //If we don't have charges or they're already in an array, we have nothing to do
+  if (!source.charges?.charges || Array.isArray(source.charges.charges)) return;
+
+  //Push all of the object entries into an array
+  const charges : ChargeData[] = [];
+  for (const charge of Object.values(source.charges.charges)) {
+    charges.push(charge as ChargeData);
+  }
+
+  //Sort the array since the object wouldn't have been sorted
+  charges.sort(ChargesData.sortFunction);
+
+  source.charges.charges = charges;
 }

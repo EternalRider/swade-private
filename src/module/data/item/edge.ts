@@ -122,6 +122,7 @@ class EdgeData extends SwadeBaseItemData<
 
   static override migrateData(source: PotentialSource<EdgeData>) {
     migrations.convertRequirementsToList(source);
+    migrations.migrateChargesToArray(source);
     return super.migrateData(source);
   }
 
