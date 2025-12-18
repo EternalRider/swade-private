@@ -693,10 +693,8 @@ class WeaponData extends SwadePhysicalItemData<
           'system.quantity': (existingStack.system.quantity ?? 0) + 1,
         });
       } else {
-        const itemData = foundry.utils.mergeObject(loadedAmmo, {
-          [`system.charges.charges.${loadedAmmo.system.charges.default.id}.value`]: this.currentShots,
-        });
-        await getDocumentClass('Item').create(itemData, { parent });
+        loadedAmmo.system.charges.charges[0].value = this.currentShots;
+        await getDocumentClass('Item').create(loadedAmmo, { parent });
       }
     } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
       const existingStack = consumables.find(
@@ -710,10 +708,8 @@ class WeaponData extends SwadePhysicalItemData<
         });
       } else {
         const factor = Number(this.currentShots) / Number(this.shots);
-        const itemData = foundry.utils.mergeObject(loadedAmmo, {
-          [`system.charges.charges.${loadedAmmo.system.charges.default.id}.value`]: Math.ceil(factor * 100),
-        });
-        await getDocumentClass('Item').create(itemData, { parent });
+        loadedAmmo.system.charges.charges[0].value = Math.ceil(factor * 100);
+        await getDocumentClass('Item').create(loadedAmmo, { parent });
       }
     }
 

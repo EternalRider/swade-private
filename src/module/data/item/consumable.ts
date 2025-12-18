@@ -140,9 +140,11 @@ class ConsumableData extends SwadePhysicalItemData<
       newCharges = maxCharges;
     }
 
+    charge.value = newCharges;
+
     //write updates
     itemUpdates['system.quantity'] = Math.max(0, newQuantity);
-    itemUpdates[`system.charges.charges.${charge.id}.value`] = newCharges;
+    itemUpdates[`system.charges.charges`] = this.charges.charges;
 
     return { actorUpdates, itemUpdates, resourceUpdates };
   }
@@ -177,16 +179,21 @@ class ConsumableData extends SwadePhysicalItemData<
       }
     }
     if (
-      foundry.utils.hasProperty(changed, `system.charges.charges.${defaultCharge.id}.max`) &&
-      this.subtype === constants.CONSUMABLE_TYPE.BATTERY
-    ) {
-      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
-    }
-    if (
       foundry.utils.getProperty(changed, 'system.subtype') ===
       constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      foundry.utils.setProperty(changed, `system.charges.charges.${defaultCharge.id}.max`, 100);
+      //When we change the subtype to battery, we also need to update the max charges to 100
+      //Since the charges array likely didn't change at the same time, we need to create it from our current value
+      changed.system ??= {};
+      changed.system.charges ??= {};
+      changed.system.charges.charges = this.charges.charges;
+      changed.system.charges.charges[0].max = 100;
+    }
+    if (
+      foundry.utils.hasProperty(changed, `system.charges.charges`) &&
+      this.subtype === constants.CONSUMABLE_TYPE.BATTERY
+    ) {
+      changed.system.charges.charges[0].max = 100;
     }
   }
 

@@ -62,6 +62,7 @@ class AbilityData extends SwadeBaseItemData<
   /** @inheritdoc */
   static override migrateData(source: PotentialSource<AbilityData>) {
     migrations.renameRaceToAncestry(source);
+    migrations.migrateChargesToArray(source);
     return super.migrateData(source);
   }
 

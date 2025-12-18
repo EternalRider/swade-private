@@ -1,8 +1,9 @@
 import { DeepPartial } from 'fvtt-types/utils';
-import { EquipState } from '../../../../globals';
+import { EquipState, PotentialSource } from '../../../../globals';
 import { constants } from '../../../constants';
 import { builder, physicalItem } from '../common';
 import { Builder, PhysicalItem } from '../item-common.interface';
+import * as migrations from '../_migration';
 import { SwadeBaseItemData } from './base';
 import { ChargesData } from '../../fields';
 
@@ -30,6 +31,12 @@ class SwadePhysicalItemData<
       ...builder(),
       charges: new fields.EmbeddedDataField(ChargesData),
     };
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source: PotentialSource<SwadePhysicalItemData>) {
+    migrations.migrateChargesToArray(source);
+    return super.migrateData(source);
   }
 
   override get isPhysicalItem(): boolean {
