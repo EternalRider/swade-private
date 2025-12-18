@@ -3,7 +3,7 @@ import { ReloadType } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { VehicleData } from '../data/actor';
-import { ChargeData, ChargesData } from '../data/fields/ChargesData';
+import { ChargesData } from '../data/fields/ChargesData';
 import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';

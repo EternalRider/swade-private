@@ -5,7 +5,7 @@ import {
   EquipState,
   ItemActions,
 } from '../../globals';
-import { ItemAction, Charge } from '../../interfaces/additional.interface';
+import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
