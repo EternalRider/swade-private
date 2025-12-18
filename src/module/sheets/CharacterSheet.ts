@@ -7,7 +7,6 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
-  Charge,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
