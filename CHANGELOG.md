@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.1.1
+
+### Fixed
+
+- Refactored the charges system to use an array. This should fix the duplicating charges bug. **by @ddbrown30**
+
 ## 5.1.0
 
 ### Added
