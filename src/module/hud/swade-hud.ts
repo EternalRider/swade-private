@@ -16,6 +16,7 @@ import {
   switchHudToToken,
   toggleSwadeHUD,
 } from '../hud/hud-control';
+import SwadeToken from '../canvas/SwadeToken';
 
 /**
  * List of Handlebars template paths used by the SWADE HUD system.
@@ -71,13 +72,13 @@ Hooks.once('canvasReady', () => {
  * Handles token control changes for the SWADE HUD.
  * Implements multi-token support - keeps HUD open when switching between controlled tokens.
  * @function
- * @param {any} token - The token being controlled.
+ * @param {SwadeToken} token - The token being controlled.
  * @param {boolean} controlled - Whether the token is controlled.
  */
 // The project's fvtt typings mark Hooks.on as deprecated; this usage is intentional and
 // compatible with the runtime Foundry API. Suppress the deprecation lint for this hook.
 // eslint-disable-next-line deprecation/deprecation
-Hooks.on('controlToken', async (token: any, controlled: boolean) => {
+Hooks.on('controlToken', async (token: SwadeToken, controlled: boolean) => {
   try {
     if (!isSwadePC(token)) return;
 
@@ -97,7 +98,7 @@ Hooks.on('controlToken', async (token: any, controlled: boolean) => {
         isSwadePC(t),
       );
 
-      if (swadeControlledTokens.length === 0 && getHudApp()) {
+      if (swadeControlledTokens.length === 0 && getHudApp()?.closeOnTokenUnselected) {
         // No more controlled SWADE tokens, close HUD
         hideSwadeHUD();
       }
@@ -125,7 +126,7 @@ Hooks.once('ready', () => {
   // Add console commands for easy access
   (window as any).toggleSwadeHUD = toggleSwadeHUD;
   (window as any).toggleSwadeHUDProper = toggleSwadeHUD;
-
+  (window as any).getSwadeHUD = getHudApp;
   (window as any).hideSwadeHUD = hideSwadeHUD;
 
   // Expose the proper toggle function for macros and keybindings

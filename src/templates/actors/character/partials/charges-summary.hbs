@@ -13,17 +13,17 @@
           <span class='charge-fields'>
             <input
               type='number'
-              name="system.charges.charges.{{charge.id}}.value"
+              name="value"
               value='{{charge.value}}'
               placeholder='1'
-              data-name="system.charges.charges.{{charge.id}}.value" />
+              data-charge-id='{{charge.id}}' />
             <strong class="flex-separator">/</strong>
             <input
               type='number'
-              name="system.charges.charges.{{charge.id}}.max"
+              name="max"
               value='{{charge.max}}'
               placeholder='1'
-              data-name="system.charges.charges.{{charge.id}}.max"
+              data-charge-id='{{charge.id}}'
               {{disabled (and (eq ../system.subtype 'battery') (eq @index 0))}}/>
               <button type='button' class='charge-recharge-manual invisible{{#if (eq charge.rechargeType "finite")}} no-recharge{{/if}}' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{charge.id}}'>
                 <i class='fas fa-rotate-right'></i>

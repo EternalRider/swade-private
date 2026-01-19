@@ -420,7 +420,7 @@ class SwadeItem<
 
   rechargeAllChargesOfType(rechargeType: string) {
     if (this.system.charges) {
-      for (const charge of this.system.charges.array) {
+      for (const charge of this.system.charges.charges) {
         if (charge.rechargeType === rechargeType) {
           this.rechargeCharge(charge);
         }
@@ -456,9 +456,9 @@ class SwadeItem<
       //If the amount field is empty, we recharge to max
       rechargeAmount = max;
     }
-    const newTotal = Math.min(value + rechargeAmount, max);
+    charge.value = Math.min(value + rechargeAmount, max);
     await this.update({
-      [`system.charges.charges.${charge.id}.value`]: newTotal,
+      [`system.charges.charges`]: this.system.charges.charges,
     });
   }
 
