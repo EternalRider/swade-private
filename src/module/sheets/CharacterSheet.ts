@@ -211,9 +211,10 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       el.addEventListener('change', async (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li?.dataset.itemId);
-        await item.update({
-          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
-        });
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = item.system.charges.find(id);
+        charge[ev.currentTarget.name] = Number(ev.currentTarget.value);
+        await item.update({ 'system.charges.charges': item.system.charges.charges });
       }),
     );
 
@@ -498,7 +499,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         });
       }
 
-      if (system.charges?.hasCharges ) {
+      if (system.charges?.hasCharges) {
         const charges = new Array<{charge: ChargeData; rechargeType: string}>();
 
         for (const itemCharge of system.charges.charges) {
