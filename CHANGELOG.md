@@ -24,9 +24,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 5.1.1
 
+### Added
+
+- Added @size as a possible roll key. (!931) **by @ddbrown30**
+
+### Changed
+
+- Several HUD and localization improvements (!927) **by @mhilbrunner**
+
 ### Fixed
 
-- Refactored the charges system to use an array. This should fix the duplicating charges bug. **by @ddbrown30**
+- Refactored the charges system to use an array. This should fix the duplicating charges bug. (!929) **by @ddbrown30**
 
 ## 5.1.0
 
