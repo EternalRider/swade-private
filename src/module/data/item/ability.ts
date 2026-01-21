@@ -65,6 +65,7 @@ class AbilityData extends SwadeBaseItemData<
   /** @inheritdoc */
   static override migrateData(source: PotentialSource<AbilityData>) {
     migrations.renameRaceToAncestry(source);
+    migrations.migrateChargesToArray(source);
 
     // TODO: Do we need this? Added way after the old action property names were there
     migrations.renameActionProperties(source);

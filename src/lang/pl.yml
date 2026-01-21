@@ -302,8 +302,8 @@ SWADE:
   Size: Rozmiar
   Scale: Skala
   PickACard: Wybierz kartę dla {name}
-  NoCardsLeft: Jest za mało kart w talii! Tylko {current} z {needed} wymaganych kart
-    jest dostępne
+  NoCardsLeft: Za mało kart w talii! Tylko {current} z {needed} jest dostępnych. Zresetuj
+    talię lub zmniejsz liczbę uczestników starcia.
   OldCard: Stara karta
   ActionCard: Karta Akcji
   ConvictionActive: Determinacja aktywna
@@ -500,6 +500,7 @@ SWADE:
     Medium: Średnia Osłona
     Heavy: Pełna Osłona
     Total: Zupełna Osłona
+    MediumProne: Średnia osłona (na ziemi)
   Range:
     _name: Zasięg
     Medium: Średni Zasięg
@@ -607,6 +608,10 @@ SWADE:
       Name: Wydaj/otrzymaj a Fuksa
       Hint: Naciśnij aby wydać Fuksa, przytrzymaj dodatkowo Alt aby zamiast tego otrzymać
         Fuksa
+    ToggleHUD:
+      Name: Przełącz HUD SWADE
+      Hint: Włącz lub wyłącz HUD SWADE dla aktualnie kontrolowanego tokena lub przypisanej
+        postaci
   Settings:
     ArbitFields: Dowolne ustawianie pól
     CharSheetDefaultWidth:
@@ -1411,8 +1416,10 @@ SWADE:
     Redraw: Karta przelosowana
     RedrawDialog:
       Content: Wylosować nową kartę przy użyciu Fuksa, czy za darmo?
+      ContentNoBenny: Brak fuksów. Dobrać nową kartę za darmo?
     LinkScene: Powiąż scenę
     StartEncounter: Rozpocznij spotkanie
+    RedrawFor: Dobranie karty ({name})
   FollowerCount: "{count} podążający"
   Benny: Fuks
   Free: Za darmo
@@ -1555,6 +1562,44 @@ SWADE:
   BuildLimit: Limit budowy
   BuildLevel: Poziom budowy
   Unfavorite: Usuń z ulubionych
+  FollowLabel: Podążaj
+  DeleteGroupAndCombatants: Usuń grupę i walczących
+  ScaleDifference: Różnica skali
+  GangUp: Wielu na jednego
+  BEHAVIOR:
+    TYPES:
+      attackModifiers:
+        FIELDS:
+          cover:
+            hint: Zastosuje domyślne kary za osłonę przy namierzaniu tokenów w tym
+              regionie.
+            label: Poziom osłony
+          unstablePlatform:
+            hint: Zastosuje domyślny modyfikator „Niestabilne podłoże” przy strzelaniu
+              lub rzucaniu z tego regionu.
+          illumination:
+            label: Poziom oświetlenia
+            hint: Zastosuje domyślne kary za oświetlenie przy namierzaniu tokenów
+              w tym regionie.
+  HasCharges: Ma ładunki
+  AddCharge: Dodaj ładunek
+  Default: Domyślne
+  RechargeType: Typ odnowienia
+  RechargeAmount: Ilość odnowienia
+  Finite: Skończone
+  Manual: Ręczne
+  Encounter: Starcie
+  Day: Dziennie
+  RechargeRollFlavor: 'Odnawianie: {name}'
+  RechargeEncounterConfirm: Odnawiać wszystkie ładunki na starcie?
+  RechargeDayConfirm: Odnawiać wszystkie dzienne ładunki?
+  RechargeAllItemsDayConfirm: Odnawiać wszystkie dzienne ładunki we wszystkich przedmiotach?
+  ChargeLevel: Ładunek
+  RechargeManualConfirm: Odnawiać {name}?
+  DeleteEmbeddedChargePrompt: Na pewno chcesz usunąć ładunek {charge}?
+  Recharge: Odnawianie
+  RechargeAllItemsEncounterConfirm: Odnawiać wszystkie ładunki na starcie we wszystkich
+    przedmiotach?
 TYPES:
   Actor:
     character: Postać gracza
@@ -1574,6 +1619,7 @@ TYPES:
     consumable: Przedmiot zużywalny
     action: Akcja
     ancestry: Pochodzenie
+    charge: Ładunek
   Card:
     adventure: Karta Przygody
     poker: Karta Pokerowa
@@ -1584,3 +1630,5 @@ TYPES:
     dramaticTask: Wyścig z czasem
   ActiveEffect:
     modifier: Modyfikator
+  RegionBehavior:
+    attackModifiers: Modyfikatory ataku

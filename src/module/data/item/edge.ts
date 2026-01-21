@@ -124,6 +124,7 @@ class EdgeData extends SwadeBaseItemData<
 
   static override migrateData(source: PotentialSource<EdgeData>) {
     migrations.convertRequirementsToList(source);
+    migrations.migrateChargesToArray(source);
 
     // TODO: Do we need this? Added way after the old action property names were there
     migrations.renameActionProperties(source);

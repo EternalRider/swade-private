@@ -5,7 +5,7 @@ import {
   ItemActions,
   SwadeApplicationTab,
 } from '../../globals';
-import { ItemAction, Charge } from '../../interfaces/additional.interface';
+import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
@@ -317,9 +317,9 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     // TODO: This needed?
     this.element.querySelectorAll('.charge-field').forEach((el) =>
       el.addEventListener('change', async (ev) => {
-        await this.item.update({
-          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
-        });
+        const charges = this.item.system.charges;
+        charges.default[ev.currentTarget.dataset.name] = Number(ev.currentTarget.value);
+        this.item.update({ 'system.charges.charges': charges.charges });
       }),
     );
 
@@ -358,16 +358,16 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
 
   static async #addCharge(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
     const id = ChargesData.randomID();
-    await this.item.update({
-      ['system.charges.charges.' + id]: {
+    const charges = this.item.system.charges.charges;
+      charges.push({
         id: id,
-        sort: Object.keys(this.item.system.charges).length,
+        sort: charges.length,
         name: game.i18n.format('DOCUMENT.New', {
           type: game.i18n.localize('TYPES.Item.charge'),
         }),
         rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
-      },
-    });
+      });
+      this.item.update({ 'system.charges.charges': charges });
   }
 
   static async #deleteAction(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
@@ -394,10 +394,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
 
   static async #deleteCharge(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
     const id = target.dataset.chargeId;
-    const charge = foundry.utils.getProperty(
-      this.item,
-      `system.charges.charges.${id}`,
-    ) as Charge;
+    const charge = this.item.system.charges.find(id);
     const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
       charge: charge.name,
     });
@@ -408,12 +405,9 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
         callback: async () => {
           let sort = 0;
           const charges = this.item.system.charges.charges;
-          delete charges[id];
-          this.item.system.charges.sorted.forEach((c) => charges[c.id].sort = sort++);
-          await this.item.update({
-            'system.charges.charges': charges,
-            [`system.charges.charges.-=${id}`]: null,
-          });
+          charges.findSplice((c) => c.id === id);
+          charges.forEach((c) => c.sort = sort++);
+          await this.item.update({ 'system.charges.charges': charges });
         },
       },
     });
@@ -470,10 +464,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     const action = target.dataset.action;
     if (action === 'rechargeManual') {
       const id = target.dataset.chargeId;
-      const charge = foundry.utils.getProperty(
-        this.item,
-        `system.charges.charges.${id}`,
-      ) as Charge;
+      const charge = this.item.system.charges.find(id);
       const text = game.i18n.format('SWADE.RechargeManualConfirm', {
         name: charge.name,
       });
@@ -682,7 +673,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     if (this.item.system.charges?.hasCharges) {
       context.hasEncounterCharge = false;
       context.hasDayCharge = false;
-      for (const charge of this.item.system.charges.array) {
+      for (const charge of this.item.system.charges.charges) {
         context.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
         context.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
       }
@@ -713,6 +704,27 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       // Prevent submitting overridden values
       const overrides = foundry.utils.flattenObject(this.item.overrides);
       Object.keys(overrides).forEach((v) => delete submitData[v]);
+    }
+    const chargesData = foundry.utils.expandObject(formData.object)?.charges;
+    if (chargesData) {
+      let changed = false;
+      for (const chargeId of Object.keys(chargesData)) {
+        //Combine the data from the form with the full data to get complete reference point
+        const chargeData = chargesData[chargeId];
+        const charge = this.item.system.charges.find(chargeId);
+        foundry.utils.mergeObject(chargeData, charge, { overwrite: false });
+
+        //Compare the new data with the existing data to see if the user has made any changes
+        if (JSON.stringify(chargeData, Object.keys(chargeData).sort()) !==
+            JSON.stringify(charge, Object.keys(charge).sort()) ) {
+          foundry.utils.mergeObject(charge, chargeData);
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        foundry.utils.setProperty(submitData, 'system.charges.charges', this.item.system.charges.charges)
+      }
     }
     return submitData;
   }
@@ -1216,11 +1228,12 @@ class ChargeDragSort {
     this.dragging = null;
 
     let sort = 0;
-    const updates = {};
+    const charges = this.item.system.charges.charges;
     for (const charge of this.chargesList.children) {
-      updates[`system.charges.charges.${charge.dataset.chargeId}.sort`] = sort++;
+      charges.find(c => c.id == charge.dataset.chargeId).sort = sort++;
     }
-    this.item.update(updates);
+    charges.sort(ChargesData.sortFunction);
+    this.item.update({ 'system.charges.charges': charges });
   }
 }
 

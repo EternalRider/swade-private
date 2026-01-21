@@ -23,7 +23,7 @@
       <span class='form-fields'>
         <input
           id='{{item.uuid}}-charges'
-          data-name='system.charges.charges.{{item.system.charges.default.id}}.value'
+          data-name='value'
           type='number'
           value='{{item.system.charges.default.value}}'
           data-dtype='Number'
@@ -40,7 +40,7 @@
           type='number'
           value='{{item.system.charges.default.value}}'
           data-dtype='Number'
-          data-name="system.charges.charges.{{item.system.charges.default.id}}.value"
+          data-name="value"
         />
         <strong class='flex-separator'>/</strong>
         <input
@@ -48,7 +48,7 @@
           type='number'
           value='{{item.system.charges.default.max}}'
           data-dtype='Number'
-          data-name="system.charges.charges.{{item.system.charges.default.id}}.max"
+          data-name="max"
         />
       </span>
     {{/if}}

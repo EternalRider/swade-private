@@ -7,9 +7,9 @@
       <div class="swadehud-item-list">
         {{#each attributes as |attr key|}}
           <div class="swadehud-item" data-item-id="attr-{{key}}">
-            <div class="swadehud-item-header" data-toggle="expand" data-type="attribute" data-key="{{key}}" title="Click to roll {{capitalize key}}">
+            <div class="swadehud-item-header" data-toggle="expand" data-type="attribute" data-key="{{key}}" data-tooltip="{{localize 'SWADE.HUD.RollTooltip' name=(capitalize key)}}">
               <span class="swadehud-item-name">{{capitalize key}} d{{attr.die.sides}}{{#if attr.die.modifier}}{{signedString attr.die.modifier}}{{/if}}</span>
-              <i class="fa-solid fa-dice swadehud-roll-icon" data-type="attribute" data-key="{{key}}" title="Click to roll {{capitalize key}}"></i>
+              <i class="fa-solid fa-dice swadehud-roll-icon" data-type="attribute" data-key="{{key}}" data-tooltip="{{localize 'SWADE.HUD.RollTooltip' name=(capitalize key)}}"></i>
             </div>
             <div class="swadehud-item-content">
               {{#if attr.enrichedDescription}}
@@ -31,8 +31,8 @@
           <div class="swadehud-item" data-item-id="{{skill.id}}">
             <div class="swadehud-item-header" data-toggle="expand">
               <img class="swadehud-item-icon" src="{{skill.img}}" alt="{{skill.name}}" />
-              <span class="swadehud-item-name" data-type="skill" data-key="{{skill.id}}" title="Click to expand">{{skill.name}} d{{skill.system.die.sides}}{{#if skill.system.die.modifier}}{{signedString skill.system.die.modifier}}{{/if}}</span>
-              <i class="fa-solid fa-dice swadehud-roll-icon" data-type="skill" data-key="{{skill.id}}" title="Click to roll {{skill.name}}"></i>
+              <span class="swadehud-item-name" data-type="skill" data-key="{{skill.id}}" data-tooltip="SWADE.HUD.ExpandTooltip">{{skill.name}} d{{skill.system.die.sides}}{{#if skill.system.die.modifier}}{{signedString skill.system.die.modifier}}{{/if}}</span>
+              <i class="fa-solid fa-dice swadehud-roll-icon" data-type="skill" data-key="{{skill.id}}" data-tooltip="{{localize 'SWADE.HUD.RollTooltip' name=skill.name}}"></i>
             </div>
             <div class="swadehud-item-content">
               {{#if skill.enrichedDescription}}

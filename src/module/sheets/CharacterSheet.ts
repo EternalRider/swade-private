@@ -9,7 +9,6 @@ import {
 import { Advance } from '../../interfaces/Advance.interface';
 import {
   ItemAction,
-  Charge,
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
@@ -225,9 +224,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       el.addEventListener('change', async (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.document.items.get(li?.dataset.itemId);
-        await item?.update({
-          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
-        });
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = item.system.charges.find(id);
+        charge[ev.currentTarget.name] = Number(ev.currentTarget.value);
+        await item.update({ 'system.charges.charges': item.system.charges.charges });
       }),
     );
 
@@ -319,10 +319,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         });
       }
 
-      if (system.charges?.hasCharges ) {
+      if (system.charges?.hasCharges) {
         const charges = new Array<{charge: ChargeData; rechargeType: string}>();
 
-        for (const itemCharge of system.charges.sorted) {
+        for (const itemCharge of system.charges.charges) {
           charges.push({
             charge: itemCharge,
             rechargeType: SWADE.chargeRechargeTypes[itemCharge.rechargeType],
@@ -782,10 +782,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     const li = target.closest('.item');
     const item = this.document.items.get(li?.dataset.itemId);
     const chargeId = target.dataset.chargeId;
-    const charge = foundry.utils.getProperty(
-      item,
-      `system.charges.charges.${chargeId}`,
-    ) as Charge;
+    const charge = item.system.charges.find(chargeId);
     const text = game.i18n.format('SWADE.RechargeManualConfirm', {
       name: charge.name,
     });
