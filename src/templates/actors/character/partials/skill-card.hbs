@@ -1,4 +1,4 @@
-<li class='item skill skill-card' data-item-id='{{id}}'>
+<li class='item skill skill-card' data-item-id='{{id}}' data-document-class='Item'>
   <details data-collapsible-id='{{concat "skill-card-" id}}'>
     <summary class='card-header flexrow' data-item-id='{{id}}'>
       <img class='skill-icon' src='{{img}}' />
@@ -11,6 +11,7 @@
       <button
         type='button'
         class='skill-die rollable'
+        data-action='rollSkill'
         data-tooltip='{{tooltip}}'
       >
         <img
@@ -25,6 +26,7 @@
           <button
             type='button'
             class='item-control item-edit'
+            data-action='openItem'
             title='{{localize "SWADE.EdF" item=label}}'
           >
             <i class='fas fa-edit'></i>

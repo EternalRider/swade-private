@@ -381,7 +381,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     const operator = this.actor.system.crew.members.find(
       (m) => m.uuid === uuid,
     );
-    operator?.actor?.sheet?.render(true);
+    operator?.actor?.sheet?.render({ force: true });
   }
 
   /** Drop Handling */

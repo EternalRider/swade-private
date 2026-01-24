@@ -1,74 +1,80 @@
-<header class='header'>
-  <div class='header-buttons'>
-    <button type='button' class='add-charge charge-button add-button invisible' data-action='addCharge'>
-      <i class='fa-solid fa-plus'></i>
-      {{localize 'SWADE.AddCharge'}}
-    </button>
-    {{#if hasEncounterCharge}}
-      <button type='button' class='charge-recharge-encounter charge-button invisible' data-action='rechargeEncounter'>
-        <i class='fa-solid fa-rotate-right'></i>
-        {{localize 'SWADE.Encounter'}}
+<section
+  class='{{tabs.charges.tabCssClass}}'
+  data-group='{{tabs.charges.group}}'
+  data-tab='{{tabs.charges.id}}'
+>
+  <header class='header'>
+    <div class='header-buttons'>
+      <button type='button' class='add-charge charge-button add-button invisible' data-action='addCharge'>
+        <i class='fa-solid fa-plus'></i>
+        {{localize 'SWADE.AddCharge'}}
       </button>
-    {{/if}}
-    {{#if hasDayCharge}}
-      <button type='button' class='charge-recharge-day charge-button invisible' data-action='rechargeDay'>
-        <i class='fa-solid fa-rotate'></i>
-        {{localize 'SWADE.Day'}}
-      </button>
-    {{/if}}
-  </div>
-</header>
-<ol class='charges-list unmarked-list'>
-  {{#each item.system.charges.charges}}
-    <li data-charge-id='{{id}}'>
-      <fieldset class='charge'>
-        <span class='sort-handle' draggable="true">
-          <i class='fa-solid fa-grip-vertical fa-2x'></i>
-        </span>
-        <span class='content'>
-          {{#if (eq @index 0)}}
-            <span class="default-charge">{{localize 'SWADE.Default'}}</span>
-          {{/if}}
-          <div class='form-group'>
-            <label>{{localize 'SWADE.Name'}}</label>
-            <input type='text' name='charges.{{id}}.name' value='{{name}}' placeholder='{{localize "SWADE.Name"}}' />
-          </div>
-          <div class='form-group'>
-            <label>{{localize 'SWADE.RechargeType'}}</label>
-            <select name='charges.{{id}}.rechargeType'>
-              {{selectOptions
-                  @root.chargeRechargeTypes
-                  selected=rechargeType
-                  localize=true
-                }}
-            </select>
-          </div>
-          <div class='form-group'>
-            <label>{{localize 'SWADE.Charges'}}</label>
-            <span class='form-fields text-center'>
-              <input type='number' name="charges.{{id}}.value" value='{{value}}' placeholder='1' />
-              <strong class="flex-separator">/</strong>
-              <input type='number' name="charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery' ) (eq @index 0))}} />
-            </span>
-          </div>
-          {{#unless (eq rechargeType "finite") }}
+      {{#if hasEncounterCharge}}
+        <button type='button' class='charge-recharge-encounter charge-button invisible' data-action='rechargeEncounter'>
+          <i class='fa-solid fa-rotate-right'></i>
+          {{localize 'SWADE.Encounter'}}
+        </button>
+      {{/if}}
+      {{#if hasDayCharge}}
+        <button type='button' class='charge-recharge-day charge-button invisible' data-action='rechargeDay'>
+          <i class='fa-solid fa-rotate'></i>
+          {{localize 'SWADE.Day'}}
+        </button>
+      {{/if}}
+    </div>
+  </header>
+  <ol class='charges-list unmarked-list'>
+    {{#each item.system.charges.charges}}
+      <li data-charge-id='{{id}}'>
+        <fieldset class='charge'>
+          <span class='sort-handle' draggable="true">
+            <i class='fa-solid fa-grip-vertical fa-2x'></i>
+          </span>
+          <span class='content'>
+            {{#if (eq @index 0)}}
+              <span class="default-charge">{{localize 'SWADE.Default'}}</span>
+            {{/if}}
             <div class='form-group'>
-              <label>{{localize 'SWADE.RechargeAmount'}}</label>
+              <label>{{localize 'SWADE.Name'}}</label>
+              <input type='text' name='charges.{{id}}.name' value='{{name}}' placeholder='{{localize "SWADE.Name"}}' />
+            </div>
+            <div class='form-group'>
+              <label>{{localize 'SWADE.RechargeType'}}</label>
+              <select name='charges.{{id}}.rechargeType'>
+                {{selectOptions
+                    @root.chargeRechargeTypes
+                    selected=rechargeType
+                    localize=true
+                  }}
+              </select>
+            </div>
+            <div class='form-group'>
+              <label>{{localize 'SWADE.Charges'}}</label>
               <span class='form-fields text-center'>
-                <input type='text' class='recharge-amount' name='charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
-                <button type='button' class='charge-recharge-manual invisible' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
-                  <i class='fa-solid fa-rotate-right'></i>
-                </button>
+                <input type='number' name="charges.{{id}}.value" value='{{value}}' placeholder='1' />
+                <strong class="flex-separator">/</strong>
+                <input type='number' name="charges.{{id}}.max" value='{{max}}' placeholder='1' {{disabled (and (eq ../item.system.subtype 'battery' ) (eq @index 0))}} />
               </span>
             </div>
+            {{#unless (eq rechargeType "finite") }}
+              <div class='form-group'>
+                <label>{{localize 'SWADE.RechargeAmount'}}</label>
+                <span class='form-fields text-center'>
+                  <input type='text' class='recharge-amount' name='charges.{{id}}.rechargeAmount' value='{{rechargeAmount}}' placeholder='{{localize "SWADE.Max"}}' />
+                  <button type='button' class='charge-recharge-manual invisible' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{id}}'>
+                    <i class='fa-solid fa-rotate-right'></i>
+                  </button>
+                </span>
+              </div>
+            {{/unless}}
+          </span>
+          {{#unless (eq ../item.system.charges.size 1)}}
+          <button type='button' class='charge-delete invisible' data-action='deleteCharge' title='{{localize "Delete"}}' data-charge-id='{{id}}'>
+            <i class='fa-solid fa-trash fa-2x'></i>
+          </button>
           {{/unless}}
-        </span>
-        {{#unless (eq ../item.system.charges.size 1)}}
-        <button type='button' class='charge-delete invisible' data-action='deleteCharge' title='{{localize "Delete"}}' data-charge-id='{{id}}'>
-          <i class='fa-solid fa-trash fa-2x'></i>
-        </button>
-        {{/unless}}
-      </fieldset>
-    </li>
-  {{/each}}
-</ol>
+        </fieldset>
+      </li>
+    {{/each}}
+  </ol>
+</section>
