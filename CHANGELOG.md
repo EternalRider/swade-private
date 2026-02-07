@@ -22,6 +22,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.1.2
+
+- Allow editing a skill when Active Effect is modifying it. **by @jestevens210**
+
 ## 5.1.1
 
 ### Added
