@@ -268,7 +268,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
         name: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
         callback: (i) =>
-          this.actor.items.get(i.dataset.itemId)?.sheet?.render(true),
+          this.actor.items.get(i.dataset.itemId)?.sheet?.render({ force: true }),
       },
       {
         name: 'SWADE.Duplicate',
@@ -281,7 +281,7 @@ export default class SwadeNPCSheet extends SwadeBaseActorSheet {
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
             { save: true },
           );
-          cloned?.sheet?.render(true);
+          cloned?.sheet?.render({ force: true });
         },
       },
       {

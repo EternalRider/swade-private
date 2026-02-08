@@ -1,11 +1,11 @@
-import { AnyObject } from 'fvtt-types/utils';
 import {
   AdditionalStats,
   DieSidesOption,
   EquipState,
   ItemActions,
+  SwadeApplicationTab,
 } from '../../globals';
-import { ItemAction, Charge } from '../../interfaces/additional.interface';
+import { ItemAction } from '../../interfaces/additional.interface';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { RequirementsEditor } from '../apps/RequirementsEditor';
 import { SwadeItemTweaks } from '../apps/SwadeDocumentTweaks';
@@ -18,37 +18,213 @@ import { ItemGrant } from '../documents/item/SwadeItem.interface';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
+import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
+import { PowerData } from '../data/item';
 
-export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+import DocumentSheet = foundry.applications.api.DocumentSheet;
+import { DeepPartial } from 'fvtt-types/utils';
+import SwadeActor from '../documents/actor/SwadeActor';
+
+export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, ItemSheetRenderContext>(DocumentSheet) {
   collapsibleStates: CollapsibleStates = {
     powers: {},
     actions: {},
     effects: {},
   };
-  #effectCreateDropDown: ContextMenu;
+  #effectCreateDropDown: ContextMenu<false>;
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
+  static override DEFAULT_OPTIONS = {
+    classes: ['swade-item-sheet', 'swade', 'swade-application', 'standard-form'],
+    position: {
       width: 600,
-      height: 560,
-      classes: ['swade-item-sheet', 'swade', 'swade-app'],
-      tabs: [
-        {
-          navSelector: '.tabs',
-          contentSelector: '.sheet-body',
-          initial: 'summary',
-        },
+      height: 560
+    },
+    window: {
+      resizable: true
+    },
+    dragDrop: [
+      { dropSelector: null, dragSelector: '.effect-list li details' },
+    ],
+    actions: {
+      inlineDelete: SwadeItemSheetV2.#inlineDelete,
+      addAction: SwadeItemSheetV2.#addAction,
+      addCharge: SwadeItemSheetV2.#addCharge,
+      deleteAction: SwadeItemSheetV2.#deleteAction,
+      deleteCharge: SwadeItemSheetV2.#deleteCharge,
+      deletePower: SwadeItemSheetV2.#deletePower,
+      deleteGrant: SwadeItemSheetV2.#deleteGrant,
+      openItem: SwadeItemSheetV2.#openItem,
+      editEffect: SwadeItemSheetV2.#effectAction,
+      deleteEffect: SwadeItemSheetV2.#effectAction,
+      toggleEffect: SwadeItemSheetV2.#effectAction,
+      rechargeManual: SwadeItemSheetV2.#rechargeAction,
+      rechargeEncounter: SwadeItemSheetV2.#rechargeAction,
+      rechargeDay: SwadeItemSheetV2.#rechargeAction,
+      rollDamage: SwadeItemSheetV2.#rollDamage,
+      rollAdditionalStat: SwadeItemSheetV2.#rollAdditionalStat,
+      useConsumable: SwadeItemSheetV2.#useConsumable,
+      openRequirementsEditor: SwadeItemSheetV2.#openRequirementsEditor,
+      openTweaks: SwadeItemSheetV2.#openTweaks
+    }
+  };
+
+  static override PARTS = {
+    ability: {
+      template: 'systems/swade/templates/item/ability.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
       ],
-      scrollY: ['.properties', '.actions', '.charges', '.editor-container .editor-content'],
-      dragDrop: [
-        { dropSelector: null, dragSelector: '.effect-list li details' },
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    action: {
+      template: 'systems/swade/templates/item/action.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
       ],
-      resizable: true,
-    });
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    ancestry: {
+      template: 'systems/swade/templates/item/ancestry.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    armor: {
+      template: 'systems/swade/templates/item/armor.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    consumable: {
+      template: 'systems/swade/templates/item/consumable.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    edge: {
+      template: 'systems/swade/templates/item/edge.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    gear: {
+      template: 'systems/swade/templates/item/gear.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    hindrance: {
+      template: 'systems/swade/templates/item/hindrance.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    power: {
+      template: 'systems/swade/templates/item/power.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges', '.editor-container .editor-content']
+    },
+    shield: {
+      template: 'systems/swade/templates/item/shield.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.charges','.editor-container .editor-content']
+    },
+    skill: {
+      template: 'systems/swade/templates/item/skill.hbs',
+      scrollable: ['']
+    },
+    weapon: {
+      template: 'systems/swade/templates/item/weapon.hbs',
+      templates: [
+        'templates/generic/tab-navigation.hbs',
+      ],
+      scrollable: ['.properties', '.actions', '.editor-container .editor-content']
+    },
   }
 
-  override get template(): string {
-    return `systems/swade/templates/item/${this.type}.hbs`;
+  static override TABS: Record<string, Partial<SwadeApplicationTab>> = {
+    description: {
+      id: 'description',
+      group: 'main',
+      label: 'SWADE.Desc',
+      cssClass: 'item',
+      tabCssClass: 'description'
+    },
+    properties: {
+      id: 'properties',
+      group: 'main',
+      label: 'SWADE.Properties',
+      cssClass: 'item',
+      tabCssClass: 'properties'
+    },
+    charges: {
+      id: 'charges',
+      group: 'main',
+      label: 'SWADE.Charges',
+      cssClass: 'item',
+      tabCssClass: 'charges'
+    },
+    powers: {
+      id: 'powers',
+      group: 'main',
+      label: 'SWADE.Pow',
+      cssClass: 'item',
+      tabCssClass: 'powers'
+    },
+    actions: {
+      id: 'actions',
+      group: 'main',
+      label: 'SWADE.Actions.Name',
+      cssClass: 'item',
+      tabCssClass: 'actions'
+    },
+    effects: {
+      id: 'effects',
+      group: 'main',
+      label: 'SWADE.Effects',
+      cssClass: 'item',
+      tabCssClass: 'effects'
+    }
+  }
+
+  override tabGroups = {
+    main: 'description'
+  };
+
+  override async _renderFrame(options) {
+    const frame = await super._renderFrame(options);
+    if (this.isEditable) {
+      const tweaksTemplate = document.createElement('template');
+      tweaksTemplate.innerHTML = `<button type="button" class="header-control icon fa-solid fa-gears"
+        data-tooltip="SWADE.Tweaks" aria-label="SWADE.Tweaks"
+        data-action="openTweaks">${game.i18n.localize('SWADE.Tweaks')}</button>`;
+      const targetElem = frame.querySelector('[data-action="toggleControls"]');
+      targetElem?.before(tweaksTemplate.content.firstChild!);
+    }
+    return frame;
+  }
+  protected override _configureRenderOptions(options): void {
+    super._configureRenderOptions(options);
+    options.parts = [this.document.type];
+  }
+
+  get item(): SwadeItem {
+    return this.document;
+  }
+
+  get actor(): SwadeActor | null {
+    return this.item.actor;
   }
 
   get type(): this['item']['type'] {
@@ -97,30 +273,16 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     };
   }
 
-  override activateListeners(jquery: JQuery<HTMLElement>): void {
-    super.activateListeners(jquery);
-    this.#setupAccordions();
-
-    const html = jquery[0];
-
-    this.#setupEffectCreateMenu(html);
-
-    html.querySelector('.profile-img')?.addEventListener('contextmenu', () => {
-      if (!this.item.img) return;
-      new ImagePopout({
-        src: this.item.img,
-        title: this.item.name!,
-        shareable: this.item?.isOwner ?? game.user?.isGM,
-        uuid: this.item.uuid,
-      }).render({ force: true });
-    });
-
-    if (!this.isEditable) return;
+  override async _onRender(
+    context: ItemSheetRenderContext,
+    options: DeepPartial<DocumentSheet.RenderOptions>
+  ) {
+    await super._onRender(context, options);
 
     // Disable overridden inputs
     const overrides = foundry.utils.flattenObject(this.item.overrides);
     for (const key of Object.keys(overrides)) {
-      html
+      this.element
         .querySelectorAll(`[name="${key}"]`)
         .forEach((el) => el.setAttribute('disabled', 'override'));
     }
@@ -135,229 +297,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       }
     });
 
-    // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
-    html
-      .querySelector('.inline-delete')
-      ?.addEventListener('click', () => this.item.delete());
-
-      html.querySelector('.add-action')?.addEventListener('click', () => {
-        const id = foundry.utils.randomID(8);
-        this.collapsibleStates[id] = true;
-        this.item.update({
-          ['system.actions.additional.' + id]: {
-            name: game.i18n.format('DOCUMENT.New', {
-              type: game.i18n.localize('TYPES.Item.action'),
-            }),
-            type: constants.ACTION_TYPE.TRAIT,
-          },
-        });
-      });
-
-      html.querySelectorAll('.action-delete').forEach((el) =>
-        el.addEventListener('click', async (ev) => {
-          const id = ev.currentTarget.dataset.actionId;
-          const action = foundry.utils.getProperty(
-            this.item,
-            `system.actions.additional.${id}`,
-          ) as ItemAction;
-          const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
-            action: action.name,
-          });
-          await foundry.applications.api.DialogV2.confirm({
-            content: `<p class="text-center">${text}</p>`,
-            classes: ['dialog', 'swade-app'],
-            yes: {
-              callback: async () =>
-                await this.item.update({
-                  [`system.actions.additional.-=${id}`]: null,
-                }),
-            },
-          });
-        }),
-      );
-
-    // Charge input fields
-    html.querySelectorAll('.charge-field').forEach((el) =>
-      el.addEventListener('change', async (ev) => {
-        await this.item.update({
-          [ev.currentTarget.dataset.name]: Number(ev.currentTarget.value),
-        });
-      }),
-    );
-
-    html.querySelector('[data-action="addCharge"]')?.addEventListener('click', () => {
-      const id = ChargesData.randomID();
-      this.item.update({
-        ['system.charges.charges.' + id]: {
-          id: id,
-          sort: Object.keys(this.item.system.charges).length,
-          name: game.i18n.format('DOCUMENT.New', {
-            type: game.i18n.localize('TYPES.Item.charge'),
-          }),
-          rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
-        },
-      });
-    });
-
-    html.querySelectorAll('[data-action="deleteCharge"]').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.dataset.chargeId;
-        const charge = foundry.utils.getProperty(
-          this.item,
-          `system.charges.charges.${id}`,
-        ) as Charge;
-        const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
-          charge: charge.name,
-        });
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => {
-              let sort = 0;
-              const charges = this.item.system.charges.charges;
-              delete charges[id];
-              this.item.system.charges.sorted.forEach((c) => charges[c.id].sort = sort++);
-              await this.item.update({
-                'system.charges.charges': charges,
-                [`system.charges.charges.-=${id}`]: null,
-              });
-            },
-          },
-        });
-      }),
-    );
-
-    html.querySelectorAll('[data-action="rechargeManual"]').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.dataset.chargeId;
-        const charge = foundry.utils.getProperty(
-          this.item,
-          `system.charges.charges.${id}`,
-        ) as Charge;
-        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
-          name: charge.name,
-        });
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => {
-              this.item.rechargeCharge(charge);
-            }
-          },
-        });
-      }),
-    );
-
-    html.querySelector('[data-action="rechargeEncounter"]')
-      ?.addEventListener('click', async () => {
-        const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => {
-              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
-            }
-          },
-        });
-      });
-
-    html.querySelector('[data-action="rechargeDay"]')
-      ?.addEventListener('click', async () => {
-        const text = game.i18n.localize('SWADE.RechargeDayConfirm');
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => {
-              this.item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
-            }
-          },
-        });
-      });
-
-    new ChargeDragSort(html, this.item);
-
-    html.querySelectorAll('.power-delete').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget?.closest('details')?.dataset.powerId;
-        const power = this.item.embeddedPowers.get(id);
-        const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
-          power: power?.name,
-        });
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => await this.#deleteEmbeddedDocument(id),
-          },
-        });
-      }),
-    );
-
-    html.querySelectorAll('.grant-delete').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const uuid = ev.currentTarget?.closest('.granted-item')?.dataset.uuid;
-        const grants = this.item.grantsItems;
-        grants.findSplice((v) => v.uuid === uuid);
-        await this.item.update({ 'system.grants': grants });
-      }),
-    );
-
-    html.querySelectorAll('.grant-name').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const uuid = ev.currentTarget?.closest('.granted-item')?.dataset.uuid;
-        const doc = (await fromUuid(uuid)) as SwadeItem | null;
-        // TODO: change args once this sheet is AppV2
-        doc?.sheet?.render(true);
-      }),
-    );
-
-    html.querySelectorAll('.effect-action').forEach((el) =>
-      el.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        const a = ev.currentTarget;
-        const effectId = a.closest('details')!.dataset.effectId! as string;
-        const effect = this.item.effects.get(effectId, { strict: true });
-        const action = a.dataset.action as string;
-        const toggle = a.dataset.toggle as string;
-
-        switch (action) {
-          case 'edit':
-            return effect.sheet?.render({ force: true });
-          case 'delete':
-            return effect.delete();
-          case 'toggle':
-            return effect.update(this.#toggleEffect(effect, toggle));
-        }
-      }),
-    );
-
-    html.querySelectorAll('.power .damage').forEach((el) =>
-      el.addEventListener('click', (ev) => {
-        const id = ev.currentTarget?.closest('details')?.dataset.powerId;
-        const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
-        tempPower.rollDamage();
-      }),
-    );
-
-    html.querySelectorAll('.additional-stats .rollable').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const stat = ev.currentTarget.dataset.stat!;
-        await this.item.system.rollAdditionalStat(stat);
-      }),
-    );
-
-    html
-      .querySelectorAll('.use-consumable')
-      .forEach((el) =>
-        el.addEventListener('click', async () => await this.item.consume()),
-      );
-
-    html.querySelectorAll('.loaded-ammo-name').forEach((el) =>
+    this.element.querySelectorAll('.loaded-ammo-name').forEach((el) =>
       el.addEventListener('mouseenter', async (ev) => {
         const loadedAmmo = this.item.getFlag('swade', 'loadedAmmo');
         const content = `<h3>${loadedAmmo?.name}</h3>${loadedAmmo?.system.description}`;
@@ -373,57 +313,243 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       }),
     );
 
-    html
-      .querySelector('button.open-requirements-editor')
-      ?.addEventListener('click', () =>
-        new RequirementsEditor({ edge: this.item }).render({ force: true }),
-      );
+    // Charge input fields
+    // TODO: This needed?
+    this.element.querySelectorAll('.charge-field').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        const charges = this.item.system.charges;
+        charges.default[ev.currentTarget.dataset.name] = Number(ev.currentTarget.value);
+        this.item.update({ 'system.charges.charges': charges.charges });
+      }),
+    );
+
+    new ChargeDragSort(this.element, this.item);
+
+    // TODO: This without accordions, maybe
+    this.#setupAccordions();
   }
 
-  override async getData(
-    options: OptionsPartial = {},
-  ): Promise<SwadeItemSheetData> {
+  override async _onFirstRender(
+    context: ItemSheetRenderContext,
+    options: DeepPartial<DocumentSheet.RenderOptions>
+  ) {
+    await super._onFirstRender(context, options);
+
+    this.#setupEffectCreateMenu(this.element);
+  }
+  
+  // Delete Item from within Sheet. Only really used for Skills, Edges, Hindrances and Powers
+  static async #inlineDelete(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    await this.item.delete();
+  }
+
+  static async #addAction(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    const id = foundry.utils.randomID(8);
+    this.collapsibleStates[id] = true;
+    await this.item.update({
+      ['system.actions.additional.' + id]: {
+        name: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('TYPES.Item.action'),
+        }),
+        type: constants.ACTION_TYPE.TRAIT,
+      },
+    });
+  }
+
+  static async #addCharge(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    const id = ChargesData.randomID();
+    const charges = this.item.system.charges.charges;
+      charges.push({
+        id: id,
+        sort: charges.length,
+        name: game.i18n.format('DOCUMENT.New', {
+          type: game.i18n.localize('TYPES.Item.charge'),
+        }),
+        rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
+      });
+      this.item.update({ 'system.charges.charges': charges });
+  }
+
+  static async #deleteAction(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const id = target.dataset.actionId;
+    const action = foundry.utils.getProperty(
+      this.item,
+      `system.actions.additional.${id}`,
+    ) as ItemAction;
+    if (!action) return;
+    const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
+      action: action.name,
+    });
+    await foundry.applications.api.Dialog.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () =>
+          await this.item.update({
+            [`system.actions.additional.-=${id}`]: null,
+          }),
+      },
+    });
+  }
+
+  static async #deleteCharge(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const id = target.dataset.chargeId;
+    const charge = this.item.system.charges.find(id);
+    const text = game.i18n.format('SWADE.DeleteEmbeddedChargePrompt', {
+      charge: charge.name,
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          let sort = 0;
+          const charges = this.item.system.charges.charges;
+          charges.findSplice((c) => c.id === id);
+          charges.forEach((c) => c.sort = sort++);
+          await this.item.update({ 'system.charges.charges': charges });
+        },
+      },
+    });
+  }
+
+  static async #deletePower(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest('details')?.dataset.powerId;
+    if (!id) return;
+    const power = this.item.embeddedPowers.get(id);
+    if (!power) return;
+    const text = game.i18n.format('SWADE.DeleteEmbeddedPowerPrompt', {
+      power: power.name,
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => await this.#deleteEmbeddedDocument(id),
+      },
+    });
+  }
+
+  static async #deleteGrant(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const uuid = target.closest<HTMLLIElement>('.granted-item')?.dataset.uuid;
+    const grants = this.item.grantsItems;
+    grants.findSplice((v) => v.uuid === uuid);
+    await this.item.update({ 'system.grants': grants });
+  }
+
+  static async #openItem(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const uuid = target.closest<HTMLLIElement>('.granted-item')?.dataset.uuid;
+    const doc = (await fromUuid(uuid)) as SwadeItem | null;
+    doc?.sheet?.render({ force: true });
+  }
+
+  static async #effectAction(this: SwadeItemSheetV2, event: PointerEvent, target: HTMLElement) {
+    event.preventDefault();
+    event.stopPropagation();
+    const effectId = target.closest('details')!.dataset.effectId as string;
+    const effect = this.item.effects.get(effectId, { strict: true });
+    const action = target.dataset.action as string;
+    const toggle = target.dataset.toggle as string;
+    switch (action) {
+      case 'editEffect':
+        return effect.sheet?.render({ force: true });
+      case 'deleteEffect': 
+        return effect.delete();
+      case 'toggleEffect':
+        return effect.update(this.#toggleEffect(effect, toggle))
+    }
+  }
+
+  static async #rechargeAction(this: SwadeItemSheetV2, event: PointerEvent, target: HTMLElement) {
+    const action = target.dataset.action;
+    if (action === 'rechargeManual') {
+      const id = target.dataset.chargeId;
+      const charge = this.item.system.charges.find(id);
+      const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+        name: charge.name,
+      });
+      return await foundry.applications.api.DialogV2.confirm({
+        content: `<p class="text-center">${text}</p>`,
+        classes: ['dialog', 'swade-app'],
+        yes: {
+          callback: async () => {
+            this.item.rechargeCharge(charge);
+          }
+        },
+      });
+    }
+    const rechargeType = constants.CHARGE_RECHARGE_TYPE[action === 'rechargeEncounter' ? 'ENCOUNTER' : 'DAY'];
+    const text = game.i18n.localize('SWADE.RechargeEncounterConfirm');
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          this.item.rechargeAllChargesOfType(rechargeType);
+        }
+      },
+    });
+  }
+
+  static async #rollDamage(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest('details')?.dataset.powerId;
+    if (!id) return;
+    const tempPower = new SwadeItem(this.item.embeddedPowers.get(id));
+    tempPower.rollDamage();
+  }
+
+  static async #rollAdditionalStat(this: SwadeItemSheetV2, _event: PointerEvent, target: HTMLElement) {
+    const stat = target.dataset.stat;
+    await this.item.system.rollAdditionalStat(stat);
+  }
+
+  static async #useConsumable(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    await this.item.consume();
+  }
+
+  static async #openRequirementsEditor(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    new RequirementsEditor({ edge: this.item }).render({ force: true });
+  }
+
+  static async #openTweaks(this: SwadeItemSheetV2, _event: PointerEvent, _target: HTMLElement) {
+    new SwadeItemTweaks({ document: this.document }).render({ force: true });
+  }
+
+  override async _prepareContext(options): Promise<ItemSheetRenderContext> {
+    const origContext = await super._prepareContext(options);
+
     const additionalStats = this.#getAdditionalStats();
 
-    const data: SwadeItemSheetData = {
-      itemType: this.#getItemType(),
-      enrichedDescription: await this.#enrichText(this.item.system.description),
-      hasInlineDelete: this.hasInlineDelete,
-      isPhysicalItem: this.isPhysicalItem,
-      hasCategory: this.item.canHaveCategory,
+    const context: ItemSheetRenderContext = foundry.utils.mergeObject(origContext, {
       actionTypes: this.actionTypes,
       chargeRechargeTypes: SWADE.chargeRechargeTypes,
-      macroActorTypes: this.macroActorTypes,
-      hasAdditionalStats: Object.keys(additionalStats).length > 0,
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
-      showMods: game.settings.get('swade', 'vehicleMods'),
-      showEnergy: game.settings.get('swade', 'vehicleEnergy'),
-      isArcaneDevice: this.item.isArcaneDevice,
-      ranges: this.#rangeSuggestions(),
+      enrichedDescription: await this.#enrichText(this.item.system.description),
       equipStatusOptions: this.#equipStatusOptions(),
+      grantOnTriggers: this.#getGrantOnTriggers(),
+      hasAdditionalStats: Object.keys(additionalStats).length > 0,
+      hasCategory: this.item.canHaveCategory,
+      hasInlineDelete: this.hasInlineDelete,
+      isArcaneDevice: this.item.isArcaneDevice,
+      isPhysicalItem: this.isPhysicalItem,
+      item: this.item,
+      itemType: this.#getItemType(),
+      macroActorTypes: this.macroActorTypes,
+      ranges: this.#rangeSuggestions(),
       settingRules: {
         modSlots: game.settings.get('swade', 'vehicleMods'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
       },
-    };
-
-    if (this.item.type === 'ability') {
-      const subtype = this.item.system.subtype;
-      data.abilityConfig = {
-        localization: SWADE.abilitySheet,
-        abilityHeader: SWADE.abilitySheet[subtype].abilities,
-        isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
-      };
-      data.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
-        SWADE.abilitySheet,
-      );
-    }
-
+      showEnergy: !!game.settings.get('swade', 'vehicleEnergy'),
+      showMods: game.settings.get('swade', 'vehicleMods'),
+    });
+    
     if (this.item.canGrantItems) {
-      data.grantedItems = await this.#getGrantedItems();
+      context.grantedItems = this.#getGrantedItems();
     }
-    data.grantOnTriggers = this.#getGrantOnTriggers();
+
+    // TODO: Can't say I love this, context prep shouldn't be setting properties outside the context
     for (const effect of this.item.effects) {
       foundry.utils.setProperty(
         effect,
@@ -437,158 +563,170 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       );
     }
 
-    if (this.type === 'weapon') {
-      data.ppReload = false;
-      data.trademarkWeaponOptions = this.#trademarkWeaponOptions();
-      switch (this.item.system.reloadType) {
-        case constants.RELOAD_TYPE.NONE:
-        case constants.RELOAD_TYPE.SINGLE:
-        case constants.RELOAD_TYPE.FULL:
-          data.ammoList = this.actor?.itemTypes.gear
-            .filter((i) => i.system.isAmmo)
-            .map((i) => i.name) as string[];
-          break;
-        case constants.RELOAD_TYPE.MAGAZINE:
-          data.ammoList = this.actor?.itemTypes.consumable
-            .filter(
-              (i) =>
-                i.type === 'consumable' &&
-                i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE,
-            )
-            .map((i) => i.name) as string[];
-          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
-          break;
-        case constants.RELOAD_TYPE.PP:
-          data.ammoList = Object.keys(this.actor?.system?.powerPoints ?? {});
-          data.ppReload = true;
-          break;
-        case constants.RELOAD_TYPE.BATTERY:
-          data.ammoList = this.actor?.itemTypes.consumable
-            .filter(
-              (i) =>
-                i.type === 'consumable' &&
-                i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY,
-            )
-            .map((i) => i.name) as string[];
-          data.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
-          break;
-        case constants.RELOAD_TYPE.SELF:
-          // Doesn't use external ammo
-          break;
-      }
-      data.reloadTypeOptions = this.#reloadTypeOptions();
-      data.rangeTypeOptions = {
-        [constants.WEAPON_RANGE_TYPE.MELEE]: 'SWADE.Weapon.RangeType.Melee',
-        [constants.WEAPON_RANGE_TYPE.RANGED]: 'SWADE.Weapon.RangeType.Ranged',
-        [constants.WEAPON_RANGE_TYPE.MIXED]: 'SWADE.Weapon.RangeType.Mixed',
-      };
-    }
-
-    if (this.type === 'consumable') {
-      data.subtypes = {
-        [constants.CONSUMABLE_TYPE.REGULAR]: 'SWADE.ConsumableType.Regular',
-        [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
-        [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery',
-      };
-    }
-
-    if (
-      [
-        'consumable',
-        'gear',
-        'shield',
-        'armor',
-        'action',
-        'power',
-        'weapon',
-      ].includes(this.type)
-    ) {
-      data.bonusDamageDieSideOptions = getDieSidesRange(4, 12);
-    }
-
-    if (this.item.type === 'hindrance') {
-      data.severityOptions = {
-        major: 'SWADE.HindranceSeverity.Major',
-        minor: 'SWADE.HindranceSeverity.Minor',
-        either: 'SWADE.HindranceSeverity.Either',
-      };
-    }
-
-    if (this.item.type === 'skill') {
-      data.dieSideOptions =
-        this.item.parent?.type === 'npc'
+    switch (this.type) {
+      case 'ability':
+        const subtype = (this.item as SwadeItem<'ability'>).system.subtype;
+        context.abilityConfig = {
+          localization: SWADE.abilitySheet,
+          abilityHeader: SWADE.abilitySheet[subtype].abilities,
+          isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE
+        };
+        context.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(SWADE.abilitySheet);
+        break;
+      case 'weapon':
+        context.ppReload = false;
+        context.trademarkWeaponOptions = this.#trademarkWeaponOptions();
+        switch ((this.item as SwadeItem<'weapon'>).system.reloadType) {
+          case constants.RELOAD_TYPE.NONE:
+          case constants.RELOAD_TYPE.SINGLE:
+          case constants.RELOAD_TYPE.FULL:
+            context.ammoList = this.actor?.itemTypes.gear
+              .filter((i) => i.system.isAmmo)
+              .map((i) => i.name) as string[];
+            break;
+          case constants.RELOAD_TYPE.MAGAZINE:
+            context.ammoList = this.actor?.itemTypes.consumable
+              .filter(
+                (i) =>
+                  i.type === 'consumable' &&
+                  i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE,
+              )
+              .map((i) => i.name) as string[];
+            context.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
+            break;
+          case constants.RELOAD_TYPE.PP:
+            context.ammoList = Object.keys(this.actor?.system?.powerPoints ?? {});
+            context.ppReload = true;
+            break;
+          case constants.RELOAD_TYPE.BATTERY:
+            context.ammoList = this.actor?.itemTypes.consumable
+              .filter(
+                (i) =>
+                  i.type === 'consumable' &&
+                  i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY,
+              )
+              .map((i) => i.name) as string[];
+            context.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
+            break;
+          case constants.RELOAD_TYPE.SELF:
+            // Doesn't use external ammo
+            break;
+        }
+        context.reloadTypeOptions = this.#reloadTypeOptions();
+        context.rangeTypeOptions = {
+          [constants.WEAPON_RANGE_TYPE.MELEE]: 'SWADE.Weapon.RangeType.Melee',
+          [constants.WEAPON_RANGE_TYPE.RANGED]: 'SWADE.Weapon.RangeType.Ranged',
+          [constants.WEAPON_RANGE_TYPE.MIXED]: 'SWADE.Weapon.RangeType.Mixed',
+        };
+        break;
+      case 'consumable':
+        context.subtypes = {
+          [constants.CONSUMABLE_TYPE.REGULAR]: 'SWADE.ConsumableType.Regular',
+          [constants.CONSUMABLE_TYPE.MAGAZINE]: 'SWADE.ReloadType.Magazine',
+          [constants.CONSUMABLE_TYPE.BATTERY]: 'SWADE.ReloadType.Battery'
+        };
+        break;
+      case 'hindrance':
+        context.severityOptions = {
+          major: 'SWADE.HindranceSeverity.Major',
+          minor: 'SWADE.HindranceSeverity.Minor',
+          either: 'SWADE.HindranceSeverity.Either',
+        };
+        break;
+      case 'skill':
+        context.dieSideOptions =
+        this.actor?.type === 'npc'
           ? getDieSidesRange(4, 24)
           : getDieSidesRange(4, 20);
-      data.wildDieSideOptions = getDieSidesRange(4, 12);
-      data.attributeOptions = this.#getAttributeOptions();
+        context.wildDieSideOptions = getDieSidesRange(4, 12);
+        context.attributeOptions = this.#getAttributeOptions();
+        break;
     }
 
+    if ([
+      'action',
+      'armor',
+      'consumable',
+      'gear',
+      'power',
+      'shield',
+      'weapon',
+    ].includes(this.type)) {
+      context.bonusDamageDieSideOptions = getDieSidesRange(4, 12);
+    }
+    
     if (this.item.isArcaneDevice) {
-      data.embeddedPowers = this.item.embeddedPowers;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      for (const [key, power] of data.embeddedPowers!) {
+      context.embeddedPowers = this.item.embeddedPowers;
+      for (const [key, power] of context.embeddedPowers!) {
         power.enrichedDescription = await this.#enrichText(
           power.system.description,
         );
       }
-      data.dieSideOptions =
+      context.dieSideOptions =
         this.item.parent?.type === 'npc'
           ? getDieSidesRange(4, 24)
           : getDieSidesRange(4, 20);
+    } else {
+      delete context.tabs.powers;
     }
 
     if (this.item.system.charges?.hasCharges) {
-      data.hasEncounterCharge = false;
-      data.hasDayCharge = false;
-      for (const charge of this.item.system.charges.array) {
-        data.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
-        data.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
+      context.hasEncounterCharge = false;
+      context.hasDayCharge = false;
+      for (const charge of this.item.system.charges.charges) {
+        context.hasEncounterCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.ENCOUNTER;
+        context.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
       }
+    } else {
+      delete context.tabs.charges;
     }
-    const superData = (await super.getData(options)) as Record<string, unknown>;
-    superData.cssClass += ' ' + this.type; // add the item type for easier CSS selection
 
-    return foundry.utils.mergeObject(superData, data);
+    return context;
   }
 
-  protected override _getHeaderButtons() {
-    const buttons = super._getHeaderButtons();
+  protected override _getHeaderControls() {
+    const controls = super._getHeaderControls();
 
     if (this.isEditable) {
-      buttons.unshift({
-        label: 'SWADE.DocumentTweaks',
-        class: 'configure-actor',
-        icon: 'fa-solid fa-gears',
-        onclick: () =>
-          new SwadeItemTweaks({ document: this.item }).render({ force: true }),
-      });
-      buttons.unshift({
+      controls.unshift({
         label: 'SWADE.RefreshOnly',
-        class: 'refresh-item',
         icon: 'fa-solid fa-arrows-rotate',
-        onclick: () => this.item.refreshFromCompendium(),
-      });
+        onClick: () => this.item.refreshFromCompendium()
+      })
     }
 
-    return buttons;
+    return controls;
   }
 
-  protected override _getSubmitData(updateData: AnyObject = {}) {
-    const data = super._getSubmitData(updateData);
-    if (this.item.type !== 'skill') {
+  protected override _prepareSubmitData(event: SubmitEvent, form: HTMLFormElement, formData: FormDataExtended, updateData?: unknown) {
+    const submitData = super._prepareSubmitData(event, form, formData, updateData);
+    if (this.type !== 'skill') {
       // Prevent submitting overridden values
       const overrides = foundry.utils.flattenObject(this.item.overrides);
-      Object.keys(overrides).forEach((v) => delete data[v]);
+      Object.keys(overrides).forEach((v) => delete submitData[v]);
     }
-    return data;
-  }
+    const chargesData = foundry.utils.expandObject(formData.object)?.charges;
+    if (chargesData) {
+      let changed = false;
+      for (const chargeId of Object.keys(chargesData)) {
+        //Combine the data from the form with the full data to get complete reference point
+        const chargeData = chargesData[chargeId];
+        const charge = this.item.system.charges.find(chargeId);
+        foundry.utils.mergeObject(chargeData, charge, { overwrite: false });
 
-  protected override _canDragStart(_selector: string): boolean {
-    return this.isEditable;
-  }
+        //Compare the new data with the existing data to see if the user has made any changes
+        if (JSON.stringify(chargeData, Object.keys(chargeData).sort()) !==
+            JSON.stringify(charge, Object.keys(charge).sort()) ) {
+          foundry.utils.mergeObject(charge, chargeData);
+          changed = true;
+        }
+      }
 
-  protected override _canDragDrop(_selector: string): boolean {
-    return this.isEditable;
+      if (changed) {
+        foundry.utils.setProperty(submitData, 'system.charges.charges', this.item.system.charges.charges)
+      }
+    }
+    return submitData;
   }
 
   protected override async _onDragStart(event: DragEvent) {
@@ -768,7 +906,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
     this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
-  async #saveEmbeddedPowers(map: Map<string, ItemData<'power'>>) {
+  async #saveEmbeddedPowers(map: Map<string, PowerData>) {
     return this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
 
@@ -890,7 +1028,8 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
       .forEach((el) => {
         new Accordion(el, '.content', { duration: 200 });
         const id = el.dataset.effectId as string;
-        el.querySelector('summary')?.addEventListener('click', () => {
+        el.querySelector('summary')?.addEventListener('click', (ev) => {
+          if (ev.target.type === 'button') return;
           const states = this.collapsibleStates.effects;
           const currentState = Boolean(states[id]);
           states[id] = !currentState;
@@ -907,7 +1046,7 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           {
             name: 'SWADE.ActiveEffects.AddGuided',
             icon: '<i class="fa-solid fa-hat-wizard"></i>',
-            condition: this.object.isOwner,
+            condition: this.item.isOwner,
             callback: () =>
               new ActiveEffectWizard({ document: this.document }).render({
                 force: true,
@@ -916,19 +1055,20 @@ export default class SwadeItemSheetV2 extends foundry.appv1.sheets.ItemSheet {
           {
             name: 'SWADE.ActiveEffects.AddModifier',
             icon: '<i class="fa-solid fa-bolt"></i>',
-            condition: this.object.isOwner,
+            condition: this.item.isOwner,
             callback: () => this.#createActiveEffect('modifier'),
           },
           {
             name: 'SWADE.ActiveEffects.AddUnguided',
             icon: '<i class="fa-solid fa-file-plus"></i>',
-            condition: this.object.isOwner,
+            condition: this.item.isOwner,
             callback: () => this.#createActiveEffect('base'),
           },
         ],
         {
           eventName: 'click',
           jQuery: false,
+          fixed: true
         },
       );
   }
@@ -1088,62 +1228,62 @@ class ChargeDragSort {
     this.dragging = null;
 
     let sort = 0;
-    const updates = {};
+    const charges = this.item.system.charges.charges;
     for (const charge of this.chargesList.children) {
-      updates[`system.charges.charges.${charge.dataset.chargeId}.sort`] = sort++;
+      charges.find(c => c.id == charge.dataset.chargeId).sort = sort++;
     }
-    this.item.update(updates);
+    charges.sort(ChargesData.sortFunction);
+    this.item.update({ 'system.charges.charges': charges });
   }
 }
 
-interface SwadeItemSheetData extends OptionsPartial {
-  itemType: string;
-  hasInlineDelete: boolean;
-  isPhysicalItem: boolean;
-  hasCategory: boolean;
-  actionTypes: Record<string, string>;
-  chargeRechargeTypes: Record<string, string>;
-  hasEncounterCharge: boolean;
-  hasDayCharge: boolean;
-  macroActorTypes: Record<string, string>;
-  hasAdditionalStats: boolean;
-  additionalStats: AdditionalStats;
-  collapsibleStates: CollapsibleStates;
-  showMods: boolean;
-  showEnergy: boolean;
-  isArcaneDevice: boolean;
-  enrichedDescription: string;
-  settingRules: {
-    modSlots: boolean;
-    noPowerPoints: boolean;
-  };
-  equipStatusOptions: Record<EquipState, string>;
-  ranges: string[];
-  trademarkWeaponOptions?: Record<number, string>;
-  reloadTypeOptions?: Record<number, string>;
-  embeddedPowers?: Map<string, ItemData<'power'>>;
-  ammoList?: string[];
-  ammoLoaded?: string;
-  ppReload?: boolean;
+interface ItemSheetRenderContext extends DocumentSheet.RenderContext<SwadeItem> {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;
     isArchetype: boolean;
   };
   abilitySubtypeOptions: Record<string, string>;
-  dieSides;
-  subtypes?: Record<string, string>;
-  grantedItems?: ItemGrant[];
-  severityOptions?: Record<string, string>;
-  rangeTypeOptions?: Record<number, string>;
-  grantOnTriggers?: Record<number, string>[];
+  actionTypes: Record<string, string>;
+  additionalStats: AdditionalStats;
+  ammoList?: string[];
+  ammoLoaded?: string;
   attributeOptions?: Record<string, string>;
-  dieSideOptions?: DieSidesOption[];
-  wildDieSideOptions?: DieSidesOption[];
   bonusDamageDieSideOptions?: DieSidesOption[];
+  chargeRechargeTypes: Record<string, string>;
+  collapsibleStates: CollapsibleStates;
+  dieSideOptions?: DieSidesOption[];
+  dieSides?: DieSidesOption[];
+  embeddedPowers?: Map<string, Item.CreateData>;
+  enrichedDescription: string;
+  equipStatusOptions: Record<EquipState, string>;
+  grantedItems?: ItemGrant[];
+  grantOnTriggers?: Record<number, string>[];
+  hasAdditionalStats: boolean;
+  hasCategory: boolean;
+  hasDayCharge: boolean;
+  hasEncounterCharge: boolean;
+  hasInlineDelete: boolean;
+  isArcaneDevice: boolean;
+  isPhysicalItem: boolean;
+  item: SwadeItem;
+  itemType: string;
+  macroActorTypes: Record<string, string>;
+  ppReload?: boolean;
+  ranges: string[];
+  rangeTypeOptions?: Record<number, string>;
+  reloadTypeOptions?: Record<number, string>;
+  settingRules: {
+    modSlots: boolean;
+    noPowerPoints: boolean;
+  };
+  severityOptions?: Record<string, string>;
+  showEnergy: boolean;
+  showMods: boolean;
+  subtypes?: Record<string, string>;
+  trademarkWeaponOptions?: Record<number, string>;
+  wildDieSideOptions?: DieSidesOption[];
 }
-
-type OptionsPartial = Partial<DocumentSheet.Options<Item>>;
 
 interface CollapsibleStates {
   actions: Record<string, boolean>;

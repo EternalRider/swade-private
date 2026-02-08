@@ -164,6 +164,8 @@ SWADE:
   ApOver: Action AP
   Resist: Resist
   ResistRolls: Resistance Rolls
+  ResistRoll: Roll Resist
+  ResistRollName: "Roll Resist: {name}"
   MacroActor:
     Default: Default
     Self: Self
@@ -325,6 +327,7 @@ SWADE:
   RollMode: Roll Mode
   RollExample: eg. +1d6x or -2
   Roll: Roll
+  RollName: "Roll {name}"
   RollNoun: Roll
   RollRaise: Roll Raise
   GroupRoll: Group Roll
@@ -602,6 +605,7 @@ SWADE:
   Unfavorite: Remove favorite
   Equip: Equip
   RollDamage: Roll Damage
+  RollDamageName: "Roll Damage: {name}"
   SystemLinks:
     Changelog: Changelog
     Wiki: Wiki
@@ -651,6 +655,36 @@ SWADE:
   Background: Background
   ID: ID
   SortNum: Sorting Number
+  HUD:
+    RollTooltip: Click to roll {name}
+    ExpandTooltip: Click to expand
+    ViewCharacterTooltip: View Character Description
+    WoundsTooltip: "Wounds (Left click: -1, Right click: +1)"
+    SoakTooltip: Click to Soak Damage
+    OpenSheetTooltip: Left click to open full character sheet
+    FatigueTooltip: "Fatigue (Left click: -1, Right click: +1)"
+    IncapacitatedTooltip: Click to Toggle Incapacitated
+    PaceTooltip: "Pace: {pace} (Left click: roll running, Right click: cycle)"
+    ParryTooltip: "Parry (Modifier: {mod}, Shield: {shield})"
+    SizeTooltip: "Size: {size} ({scale})"
+    ToughTooltip: "Toughness (Modifier: {mod}, Armor: {armor})"
+    ConvictionTooltip: "Conviction (Left click: activate, Right click: +1)"
+    BenniesTooltip: "Bennies (Left click: -1, Right click: +1)"
+    CombatStateTooltip: Toggle Combat State (Click to toggle)
+    RunMacroTooltip: "Run Macro: {name}"
+    ReloadTooltip: "Reload: {name}"
+    UseConsumableTooltip: "Use: {name}"
+    RemoveTooltip: Remove {name}
+    AddTooltip: Add {name}
+    RemoveAllConditionsTooltip: Remove all active conditions
+    RemoveAllConditionsLabel: Clear All
+    AENoEffects: No effects found
+    AEToggleTooltip: Toggle {name}
+    AERounds: "Rounds: {rounds}"
+    AEToggle: Toggle {name}
+    AEToggleInherited: Cannot toggle inherited effect
+    AEDragToApplyName: Drag to apply {name}
+    PowerPPTooltip: "Power Points: {pp}/{ppmax} (Left click: -1, Right click: +1)"
   ActiveEffects:
     Add: Add Active Effect
     Source: Source
@@ -960,21 +994,27 @@ SWADE:
     Cone:
       Short: Cone
       Long: Cone Template
+      Place: Place Cone Template
     SmallCone:
       Short: Sm Cone
       Long: Small Cone Template
+      Place: Place Small Cone Template
     Stream:
       Short: Stream
       Long: Stream Template
+      Place: Place Stream Template
     Small:
       Short: SBT
       Long: Small Blast Template
+      Place: Place Small Blast Template
     Medium:
       Short: MBT
       Long: Medium Blast Template
+      Place: Place Medium Blast Template
     Large:
       Short: LBT
       Long: Large Blast Template
+      Place: Place Large Blast Template
     Available: Available Templates
     Possible: Possible Templates
   CompendiumTOC:

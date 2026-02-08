@@ -100,7 +100,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     const id =
       target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     if (!id) return;
-    this.actor.system.members.get(id)?.actor?.sheet?.render(true);
+    this.actor.system.members.get(id)?.actor?.sheet?.render({ force: true });
   }
 
   static showMemberImage(

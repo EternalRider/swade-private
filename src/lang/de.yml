@@ -208,7 +208,7 @@ SWADE:
   PickACard: Wähle eine Karte für {name}
   NoCardsLeft: >-
     Zu wenig Karten im Deck! Es sind nur {current] von {needed} benötigten Karten
-    verfügbar. Deck zurücksetzen oder Anzahl Kampfteilnehmer reduzieren!
+    verfügbar. Deck zurücksetzen oder Anzahl Kampfteilnehmer reduzieren.
   OldCard: Alte Karte
   ActionCard: Aktionskarte
   ConvictionActivate: '{name} aktiviert Entschlossenheit!'
@@ -530,6 +530,10 @@ SWADE:
       NoCardsWarning: Es wurde keine favorisierte Kartenhand gesetzt!
       UserConfigLabel: Favorisierte Kartenhand
       HandNone: Kein(e)
+    ToggleHUD:
+      Name: SWADE HUD umschalten
+      Hint: Schaltet das SWADE HUD für die aktuell gewählte Spielfigur oder den zugewiesenen
+        Charakter an oder aus
   Settings:
     HighlightTemplate:
       Name: Schablonen immer ausmalen
@@ -1328,6 +1332,24 @@ SWADE:
           unstablePlatform:
             hint: Wendet per Default "Unsicherer Grund"-Modifikator an, wenn aus dieser
               Region geschossen/geworfen wird.
+  HasCharges: Hat Ladungen
+  AddCharge: Neue Ladung
+  Default: Default
+  Recharge: Aufladen
+  RechargeAmount: Auflademenge
+  Finite: Endlich
+  Manual: Manuell
+  Encounter: Begegnung
+  Day: Täglich
+  RechargeRollFlavor: 'Aufladen: {name}'
+  RechargeManualConfirm: '{name} aufladen?'
+  RechargeDayConfirm: Alle "pro Tag" Ladungen aufladen?
+  RechargeAllItemsEncounterConfirm: Alle "pro Begegnung" Ladungen auf allen Gegenständen
+    aufladen?
+  RechargeAllItemsDayConfirm: Alle "pro Tag" Ladungen auf allen Gegenständen aufladen?
+  DeleteEmbeddedChargePrompt: Sicher, dass Ladung {charge} gelöscht werden soll?
+  RechargeType: Aufladetyp
+  RechargeEncounterConfirm: Alle "pro Begegnung" Ladungen aufladen?
 TYPES:
   Actor:
     npc: NSC
@@ -1347,6 +1369,7 @@ TYPES:
     weapon: Waffe
     skill: Fertigkeit
     ancestry: Volk
+    charge: Ladung
   Card:
     poker: Pokerkarte
     adventure: Abenteuerkarte

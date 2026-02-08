@@ -1661,6 +1661,26 @@ SWADE:
           unstablePlatform:
             hint: Cela appliquera le modificateur par défaut « Plateforme instable
               » lors des tirs/lancers effectués depuis cette zone.
+  HasCharges: A des charges
+  AddCharge: Ajouter une charge
+  Default: Défaut
+  Recharge: Recharge
+  RechargeType: Type de recharge
+  RechargeAmount: Quantité de recharge
+  Finite: Fin
+  Manual: Manuel
+  Encounter: Rencontre
+  Day: Quotidien
+  RechargeRollFlavor: Rechargement de {name}
+  RechargeManualConfirm: Rechargement de {name} ?
+  RechargeEncounterConfirm: Rechargement de toutes les charges de la rencontre ?
+  RechargeDayConfirm: Rechargement de toutes les charges quotidienne ?
+  RechargeAllItemsEncounterConfirm: Rechargement de tout les charges de la recontre
+    sur tous les objets ?
+  RechargeAllItemsDayConfirm: Rechargement de toutes les charges quotidienne sur tous
+    les objets ?
+  DeleteEmbeddedChargePrompt: Êtes-vous sûr de vouloir supprimer la charge {charge}
+    ?
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
@@ -1739,6 +1759,7 @@ TYPES:
     action: Action
     skill: Compétence
     ancestry: Ascendance
+    charge: Charge
   Card:
     adventure: Cartes d'aventure
     poker: Cartes de poker

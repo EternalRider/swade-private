@@ -10,14 +10,15 @@ import { ChargesData } from '../fields';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
-import { category, favorite, grants } from './common';
-import { Category, Favorite, Grants } from './item-common.interface';
+import { actions, category, favorite, grants } from './common';
+import { Actions, Category, Favorite, Grants } from './item-common.interface';
 
 declare namespace EdgeData {
   interface Schema
     extends SwadeBaseItemData.Schema,
       Favorite,
       Category,
+      Actions,
       Grants {
     isArcaneBackground: foundry.data.fields.BooleanField<{ label: string }>;
     requirements: foundry.data.fields.ArrayField<
@@ -48,6 +49,7 @@ class EdgeData extends SwadeBaseItemData<
       ...super.defineSchema(),
       ...favorite(),
       ...category(),
+      ...actions(),
       ...grants(),
       charges: new fields.EmbeddedDataField(ChargesData),
       isArcaneBackground: new fields.BooleanField({ label: 'SWADE.ArcBack' }),
@@ -122,9 +124,12 @@ class EdgeData extends SwadeBaseItemData<
 
   static override migrateData(source: PotentialSource<EdgeData>) {
     migrations.convertRequirementsToList(source);
+    migrations.migrateChargesToArray(source);
+
+    // TODO: Do we need this? Added way after the old action property names were there
+    migrations.renameActionProperties(source);
     return super.migrateData(source);
   }
-
   static #checkRankRequirements(value: Requirement[]) {
     const rankRequirements = count(
       value,

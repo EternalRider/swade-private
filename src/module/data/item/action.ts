@@ -57,6 +57,7 @@ class ActionData extends SwadeBaseItemData<
 
   static override migrateData(source: PotentialSource<ActionData>) {
     migrations.renameActionProperties(source);
+    migrations.migrateChargesToArray(source);
     return super.migrateData(source);
   }
 

@@ -1,3 +1,5 @@
+import SwadeToken from '../canvas/SwadeToken';
+
 /**
  * Utility: Get items of a specific type from an actor
  * @param actor The actor to get items from
@@ -429,10 +431,10 @@ export async function getEnrichedDescription(item: any) {
 /**
  * Prepares context for SWADE HUD templates.
  * @param {SwadeActor} actor
- * @param {TokenDocument} token
+ * @param {SwadeToken} token
  * @returns {Promise<object>}
  */
-export async function prepareHudContext(actor: SwadeActor | null, token: any) {
+export async function prepareHudContext(actor: SwadeActor | null, token: SwadeToken | null) {
   if (!actor) return {};
 
   // Group powers by arcane type

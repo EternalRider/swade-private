@@ -4,6 +4,7 @@
     class='profile-img'
     src='{{item.img}}'
     data-edit='img'
+    data-action='editImg'
     alt='{{item.name}}'
     title='{{localize "SWADE.RightClickZoom"}}'
   />
@@ -22,6 +23,7 @@
   <button
     type='button'
     class='inline-delete invisible'
+    data-action='inlineDelete'
     title='{{localize "SWADE.Del"}}'
   >
     <i class='fas fa-trash fa-3x'></i>

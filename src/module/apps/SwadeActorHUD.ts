@@ -83,6 +83,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     } else {
       this.token = null;
     }
+    this.closeOnTokenUnselected = true;
     this._onTokenControl = null; // Initialize the token control handler
 
     // Track if this is the initial render to avoid repositioning on updates

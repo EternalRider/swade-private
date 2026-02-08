@@ -1,13 +1,16 @@
+import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
 import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import * as migrations from './_migration';
 import { ChargesData } from '../fields';
 import { SwadeBaseItemData } from './base';
-import { favorite, grants } from './common';
-import { ChoicesType, Favorite, Grants } from './item-common.interface';
+import { actions, favorite, grants } from './common';
+import { Actions, ChoicesType, Favorite, Grants } from './item-common.interface';
+import * as migrations from './_migration';
 
 declare namespace HindranceData {
-  interface Schema extends SwadeBaseItemData.Schema, Favorite, Grants {
+  interface Schema extends SwadeBaseItemData.Schema, Favorite, Actions, Grants {
     severity: foundry.data.fields.StringField<{
       choices: ChoicesType<typeof constants.HINDRANCE_SEVERITY>;
       initial: typeof constants.HINDRANCE_SEVERITY.EITHER;
@@ -31,6 +34,7 @@ class HindranceData extends SwadeBaseItemData<
     return {
       ...super.defineSchema(),
       ...favorite(),
+      ...actions(),
       ...grants(),
       charges: new fields.EmbeddedDataField(ChargesData),
       severity: new fields.StringField({
@@ -41,6 +45,11 @@ class HindranceData extends SwadeBaseItemData<
       }),
       major: new fields.BooleanField({ label: 'SWADE.MajHind' }),
     };
+  }
+
+  static override migrateData(source: PotentialSource<HindranceData>) {
+    migrations.migrateChargesToArray(source);
+    return super.migrateData(source);
   }
 
   get isMajor(): boolean {
@@ -89,6 +98,13 @@ class HindranceData extends SwadeBaseItemData<
       'systems/swade/templates/embeds/hindrance-embeds.hbs',
       ['item-embed', 'hindrance'],
     );
+  }
+
+  /** @inheritdoc */
+  static override migrateData(source: PotentialSource<HindranceData>) {
+    // TODO: Do we need this? Added way after the old action property names were there
+    migrations.renameActionProperties(source);
+    return super.migrateData(source);
   }
 }
 

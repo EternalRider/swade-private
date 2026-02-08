@@ -825,6 +825,7 @@ class CreatureData<
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
       pace: this.pace.default || 0,
+      size: this.stats.size || 0,
     };
 
     const globalMods = this.stats.globalMods;

@@ -215,8 +215,10 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
         newCharges = this.#getBatteryFillFromShots(currentShots);
       }
       //copy the selected consumable and set the new charges on the clone.
+      const charges = selected.system.charges.charges;
+      charges[0].value = newCharges;
       await selected.clone(
-        { 'system.quantity': 1, [`system.charges.charges.${selected.system.charges.default.id}.value`]: newCharges },
+        { 'system.quantity': 1, [`system.charges.charges`]: charges },
         { save: true },
       );
     } else {
@@ -243,7 +245,9 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     } else if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
       shots = this.#getBatteryFillFromShots(currentShots);
     }
-    await selected.update({ [`system.charges.charges.${selected.system.charges.default.id}.value`]: shots });
+
+    selected.system.charges.default.value = shots;
+    await selected.update({ [`system.charges.charges`]: selected.system.charges.charges });
   }
 
   #getBatteryFillFromShots(currentShots: number): number {
