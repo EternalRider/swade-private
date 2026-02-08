@@ -4,7 +4,6 @@ import type {
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
-import { Accordion } from '../style/Accordion';
 
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
