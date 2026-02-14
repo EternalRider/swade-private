@@ -337,6 +337,7 @@ SWADE:
   Scale: Scale
   ScaleDifference: Scale Difference
   PickACard: Pick a card for {name}
+  GMOverride: GM Override
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}
     needed cards are available. Reset the deck or reduce number of combatants.

@@ -37,7 +37,8 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
       height: 'auto'
     },
     actions: {
-      close: this.#onClose
+      close: this.#onClose,
+      override: this.#onOverride
     }
   };
 
@@ -54,13 +55,39 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
     return this.close();
   }
 
+  static async #onOverride(
+    this: PlayerCardDrawHerder,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const userId = target.dataset.userId;
+    if (!userId) return;
+    const draw = this.ctx.draws.find(d => d.user.id === userId);
+    if (!draw) return;
+    const combat = game.combats?.get(this.ctx.combatId);
+    if (!combat) return;
+    await combat.rollInitiative(draw.combatant.id as string, { autoPick: true });
+  }
+
   override async _prepareContext(options) {
     const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      draws: this.ctx.draws.map((draw) => ({
-        user: draw.user.name,
-        combatant: draw.combatant.name,
-        icon: this.#getIconForDraw(draw)
-      })),
+      draws: this.ctx.draws.map((draw) => {
+        const base = {
+          user: draw.user.name,
+          combatant: draw.combatant.name,
+          icon: this.#getIconForDraw(draw),
+          userId: draw.user.id,
+        };
+        if (draw.state === PlayerDrawState.DRAWING) {
+          (base as any).overrideButton = {
+            type: 'button',
+            action: 'override',
+            icon: 'fa-solid fa-gavel',
+            dataset: { userId: draw.user.id }
+          };
+        }
+        return base;
+      }),
       buttons: [
         { type: 'button', action: 'close', label: 'Close' }
       ]
