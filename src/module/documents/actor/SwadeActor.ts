@@ -401,19 +401,14 @@ class SwadeActor<
       isRanged && (!isMelee || skill?.system.swid !== 'fighting');
     const isMeleeAttack =
       isMelee && (!isRanged || skill?.system.swid === 'fighting');
-    const { isRanged = null, isMelee = null } = options.item?.system ?? {};
-    const isRangedAttack =
-      isRanged && (!isMelee || skill?.system.swid !== 'fighting');
-    const isMeleeAttack =
-      isMelee && (!isRanged || skill?.system.swid === 'fighting');
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
-      let currToken = this.getActiveTokens(false, true)[0];
+      let sourceToken = this.getActiveTokens(false, true)[0];
       // If the item belongs to a vehicle, use the vehicle's token
       if (options.item?.actor?.type === 'vehicle') {
         const vehicleToken = options.item.actor.getActiveTokens(false, true)[0];
-        if (vehicleToken) currToken = vehicleToken;
+        if (vehicleToken) sourceToken = vehicleToken;
       }
       const targetToken = game.user.targets.first()?.document;
 
