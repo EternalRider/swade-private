@@ -29,10 +29,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 5.1.1
 
+
+=======
 ### Added
 
 - Added @size as a possible roll key. (!931) **by @ddbrown30**
 - Fixed an issue where Innate Powers would fail the resource check when rolling a trait from the item card or quick access. (!1406) **by @jestevens210**
+<<<<<<< CHANGELOG.md
+- Added Active Effects to target Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens**
+- Added support for Gang Up bonus on damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens**
 
 ### Changed
 
@@ -41,6 +46,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Refactored the charges system to use an array. This should fix the duplicating charges bug. (!929) **by @ddbrown30**
+>>>>>>> CHANGELOG.md
 
 ## 5.1.0
 
