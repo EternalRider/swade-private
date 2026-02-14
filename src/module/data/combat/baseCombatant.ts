@@ -17,6 +17,7 @@ function baseCombatantSchema() {
     roundHeld: new fields.NumberField(),
     turnLost: new fields.BooleanField(),
     firstRound: new fields.NumberField(),
+    jokerBenniesGiven: new fields.BooleanField(),
   };
 }
 
@@ -93,6 +94,7 @@ export class BaseCombatantModel<
       !game.settings.get('swade', 'jokersWild') ||
       this.parent.groupId ||
       !this.parent.hasJoker ||
+      this.parent.system.jokerBenniesGiven ||
       !this.parent
     )
       return;
@@ -107,6 +109,8 @@ export class BaseCombatantModel<
     } else if (this.parent.actor?.type === 'npc' && isTokenHostile) {
       await this.#adversaryBennies(combatants);
     }
+    // Mark that bennies have been given for this Joker
+    await this.parent.update({ 'system.jokerBenniesGiven': true });
   }
 
   async #friendlyBennies(combatants: foundry.utils.Collection<SwadeCombatant>) {

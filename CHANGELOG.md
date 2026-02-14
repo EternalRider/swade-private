@@ -22,6 +22,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.0
+
+- Fixed an issue where everyone received a benny twice when an actor with a Joker went on hold and then came off hold in the turn tracker. Added a `jokerBenniesGiven` flag to combatants to ensure bennies are only distributed once per Joker draw. **by @jestevens210**
+- Improved the Spirit roll dialog for unshaking by making it loop and remain available after failed rolls, allowing players to retry the roll or spend a benny without losing access to the options. The dialog now closes only on successful unshaking or when a benny is spent. **by @jestevens210**
+
 ## 5.1.1
 
 ### Added
