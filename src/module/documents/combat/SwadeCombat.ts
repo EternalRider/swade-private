@@ -226,7 +226,7 @@ export default class SwadeCombat<
 
   override async rollInitiative(
     ids: string | string[],
-    { messageOptions, updateTurn }: Combat.InitiativeOptions = {},
+    { messageOptions, updateTurn, autoPick }: Combat.InitiativeOptions & { autoPick?: boolean } = {},
   ) {
     // Structure input data
     ids = Array.isArray(ids) ? ids : [ids];
@@ -292,6 +292,8 @@ export default class SwadeCombat<
             cards: cardsToPickFrom,
             combatantName: c.name!,
             oldCardId: oldCard?.id!,
+            combatantId: c.id,
+            autoPick,
           });
           pickedCard = result.picked;
           cardsToPickFrom = result.cards;
@@ -327,6 +329,8 @@ export default class SwadeCombat<
           combatantName: c.name!,
           enableRedraw: hasQuick,
           isQuickDraw: hasQuick,
+          combatantId: c.id,
+          autoPick,
         });
         pickedCard = result.picked;
         cardsToPickFrom = result.cards;
@@ -340,6 +344,8 @@ export default class SwadeCombat<
             combatantName: c.name!,
             enableRedraw: true,
             isQuickDraw: true,
+            combatantId: c.id,
+            autoPick,
           });
           pickedCard = result.picked;
           cardsToPickFrom = result.cards;
