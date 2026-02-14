@@ -564,15 +564,17 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     }
 
     switch (this.type) {
-      case 'ability':
+      case 'ability': {
         const subtype = (this.item as SwadeItem<'ability'>).system.subtype;
         context.abilityConfig = {
           localization: SWADE.abilitySheet,
           abilityHeader: SWADE.abilitySheet[subtype].abilities,
-          isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE
+          isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
         };
-        context.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(SWADE.abilitySheet);
+        context.abilitySubtypeOptions =
+          this.#getAbilitySubtypeOptions(SWADE.abilitySheet);
         break;
+      }
       case 'weapon':
         context.ppReload = false;
         context.trademarkWeaponOptions = this.#trademarkWeaponOptions();
@@ -657,7 +659,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     
     if (this.item.isArcaneDevice) {
       context.embeddedPowers = this.item.embeddedPowers;
-      for (const [key, power] of context.embeddedPowers!) {
+      for (const [, power] of context.embeddedPowers!) {
         power.enrichedDescription = await this.#enrichText(
           power.system.description,
         );
@@ -1183,30 +1185,30 @@ class ChargeDragSort {
       return;
     }
 
-    this.chargesList.querySelectorAll("li").forEach((el) => {
+    this.chargesList.querySelectorAll('li').forEach((el) => {
       el.ondragstart = this.onDragStart.bind(this);
       el.ondragover = this.onDragOver.bind(this);
       el.ondragend = this.onDragEnd.bind(this);
     });
 
-    this.chargesList.querySelectorAll(".sort-handle").forEach((el) => {
-      const li = el.closest("li");
+    this.chargesList.querySelectorAll('.sort-handle').forEach((el) => {
+      const li = el.closest('li');
       el.onmousedown = li.setAttribute('draggable', 'true');
       el.onmouseup = li.setAttribute('draggable', 'false');
     });
   }
 
   onDragStart(ev) {
-    ev.dataTransfer.setData('text/plain', JSON.stringify({ type: "Charge" }));
+    ev.dataTransfer.setData('text/plain', JSON.stringify({ type: 'Charge' }));
     this.dragging = ev.currentTarget;
-    this.dragging.classList.add("dragging");
+    this.dragging.classList.add('dragging');
     const liRect = this.dragging.getBoundingClientRect();
     ev.dataTransfer.setDragImage(this.dragging, ev.x - liRect.left, ev.y - liRect.top);
   }
 
   onDragOver(ev) {
     ev.preventDefault();
-    const li = ev.currentTarget.closest("li")
+    const li = ev.currentTarget.closest('li')
     if (this.dragging && li != this.dragging) {
       if (this.dragging.parentElement == li.parentElement) {
         this.dropTarget = li;
