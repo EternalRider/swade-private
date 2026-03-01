@@ -97,6 +97,14 @@ declare namespace CreatureData {
 }
 
 function creatureSchema() {
+  const toughnessTraitChoices = Object.entries(SWADE.attributes).reduce(
+    (choices, [key, value]) => {
+      choices[key] = value.long;
+      return choices;
+    },
+    {} as Record<string, string>,
+  );
+
   return {
     attributes: new fields.SchemaField(
       {
@@ -221,6 +229,13 @@ function creatureSchema() {
         autoCalcToughness: new fields.BooleanField({
           initial: true,
           hint: 'SWADE.InclArmor',
+        }),
+        toughnessTrait: new fields.StringField({
+          initial: 'vigor',
+          blank: false,
+          nullable: false,
+          choices: toughnessTraitChoices,
+          label: 'SWADE.Attribute',
         }),
         autoCalcParry: new fields.BooleanField({
           initial: true,
