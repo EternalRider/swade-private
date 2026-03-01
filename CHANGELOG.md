@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Added @size as a possible roll key. (!931) **by @ddbrown30**
+- Fixed an issue where Innate Powers would fail the resource check when rolling a trait from the item card or quick access. (!1406) **by @jestevens210**
 
 ### Changed
 

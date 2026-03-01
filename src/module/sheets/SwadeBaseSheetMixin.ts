@@ -4,7 +4,6 @@ import type {
   SwadeDocumentSheetConfiguration,
 } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
-import { Accordion } from '../style/Accordion';
 
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
@@ -26,7 +25,7 @@ export function SwadeBaseSheetMixin<
     static override DEFAULT_OPTIONS: DeepPartial<
       SwadeDocumentSheetConfiguration<Document>
     > = {
-      classes: ['swade'],
+      classes: ['swade', 'swade-application'],
       form: {
         submitOnChange: true,
         closeOnSubmit: false,
@@ -142,11 +141,11 @@ export function SwadeBaseSheetMixin<
       }
     }
 
-    protected override _onFirstRender(
+    protected override async _onFirstRender(
       context: unknown,
       options: unknown,
-    ): void {
-      super._onFirstRender(context, options);
+    ): Promise<void> {
+      await super._onFirstRender(context, options);
 
       const collapsibles = this.element.querySelectorAll('details');
       for (const details of collapsibles) {
@@ -160,16 +159,17 @@ export function SwadeBaseSheetMixin<
      * @param context Prepared context data
      * @param options Provided render options
      */
-    protected override _onRender(
+    protected override async _onRender(
       context: DeepPartial<RenderContext>,
       options: DeepPartial<DocumentSheetRenderOptions>,
     ) {
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
       this.#disableOverrides();
-      this.element.querySelectorAll('details').forEach((el) => {
-        new Accordion(el, '.content', { duration: 200 });
-      });
+      // TODO: Is this necessary for Group & Vehicle?
+      // this.element.querySelectorAll('details').forEach((el) => {
+      //   new Accordion(el, '.content', { duration: 200 });
+      // });
     }
 
     /**
@@ -231,10 +231,11 @@ export function SwadeBaseSheetMixin<
       if (docRow.dataset.documentClass === 'Item') {
         return this.document.items.get(docRow.dataset.itemId);
       } else if (docRow.dataset.documentClass === 'ActiveEffect') {
+        const parentId = docRow.dataset.parentId;
         const parent =
-          docRow.dataset.parentId === this.document.id
-            ? this.document
-            : this.document.items.get(docRow?.dataset.parentId);
+          parentId && (parentId !== this.document.id)
+            ? this.document.items.get(parentId)
+            : this.document;
         return parent.effects.get(docRow?.dataset.effectId);
       } else return console.warn('Could not find document class');
     }
@@ -248,11 +249,22 @@ export function SwadeBaseSheetMixin<
       ).reduce(
         (acc: Record<string, SwadeApplicationTab>, v: SwadeApplicationTab) => {
           const isActive = this.tabGroups[v.group] === v.id;
+          const cssClasses = new Set(v.cssClass?.split(' ') ?? []);
+          const tabCssClasses = new Set(v.tabCssClass?.split(' ') ?? []);
+          tabCssClasses.add('tab');
+          tabCssClasses.add('scrollable');
+          if (isActive) {
+            cssClasses.add('active');
+            tabCssClasses.add('active');
+          } else {
+            cssClasses.delete('active');
+            tabCssClasses.delete('active');
+          }
           acc[v.id] = {
             ...v,
             active: isActive,
-            cssClass: isActive ? 'active' : '',
-            tabCssClass: isActive ? 'tab scrollable active' : 'tab scrollable',
+            cssClass: Array.from(cssClasses).join(' '),
+            tabCssClass: Array.from(tabCssClasses).join(' '),
           };
           return acc;
         },
@@ -275,7 +287,7 @@ export function SwadeBaseSheetMixin<
           dragover: this._onDragOver.bind(this),
           drop: this._onDrop.bind(this),
         };
-        return new DragDrop(d);
+        return new foundry.applications.ux.DragDrop.implementation(d);
       });
     }
 

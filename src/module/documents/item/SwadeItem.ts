@@ -438,7 +438,7 @@ class SwadeItem<
 
     //Calculate our recharge amount
     let rechargeAmount = 0;
-    if (charge.rechargeAmount !== '') {
+    if (charge.rechargeAmount) {
       const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
         name: charge.name,
       });

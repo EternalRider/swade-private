@@ -19,34 +19,6 @@ export class SwadeActorSheetV2<
   > = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
-    window: {
-      controls: [
-        // v12 bug requires redefining existing window controls due to the array overwriting instead of merging
-        {
-          icon: 'fa-solid fa-gears',
-          label: 'SWADE.Tweaks',
-          action: 'openTweaks',
-        },
-        {
-          action: 'configurePrototypeToken',
-          icon: 'fa-solid fa-user-circle',
-          label: 'TOKEN.TitlePrototype',
-          ownership: 'OWNER',
-        },
-        {
-          action: 'showPortraitArtwork',
-          icon: 'fa-solid fa-image',
-          label: 'SIDEBAR.CharArt',
-          ownership: 'OWNER',
-        },
-        {
-          action: 'showTokenArtwork',
-          icon: 'fa-solid fa-image',
-          label: 'SIDEBAR.TokenArt',
-          ownership: 'OWNER',
-        },
-      ],
-    },
     actions: {
       createDocument: SwadeActorSheetV2.createEmbeddedDocument,
       showItem: SwadeActorSheetV2.showItem,
@@ -54,11 +26,24 @@ export class SwadeActorSheetV2<
       deleteItem: SwadeActorSheetV2.deleteItem,
       openEffect: SwadeActorSheetV2.openItem,
       deleteEffect: SwadeActorSheetV2.deleteItem,
-      toggleEffect: SwadeActorSheetV2.toggleEffect,
+      toggleProperty: SwadeActorSheetV2.toggleProperty,
       openTweaks: SwadeActorSheetV2.openTweaks,
       rollAdditionalStat: SwadeActorSheetV2.rollAdditionalStat,
     },
   };
+
+  override async _renderFrame(options) {
+    const frame = await super._renderFrame(options);
+    if (this.isEditable) {
+      const tweaksTemplate = document.createElement('template');
+      tweaksTemplate.innerHTML = `<button type="button" class="header-control icon fa-solid fa-gears"
+        data-tooltip="SWADE.Tweaks" aria-label="SWADE.Tweaks"
+        data-action="openTweaks">${game.i18n.localize('SWADE.Tweaks')}</button>`;
+      const targetElem = frame.querySelector('[data-action="toggleControls"]');
+      targetElem?.before(tweaksTemplate.content.firstChild!);
+    }
+    return frame;
+  }
 
   static async createEmbeddedDocument(
     this: SwadeActorSheetV2,
@@ -103,7 +88,7 @@ export class SwadeActorSheetV2<
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    this._getEmbeddedDocument(target)?.sheet?.render(true);
+    this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
   static async deleteItem(
@@ -119,7 +104,7 @@ export class SwadeActorSheetV2<
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    this._getEmbeddedDocument(target)?.sheet?.render(true);
+    this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
   static async deleteEffect(
@@ -130,15 +115,16 @@ export class SwadeActorSheetV2<
     this._getEmbeddedDocument(target)?.deleteDialog();
   }
 
-  static async toggleEffect(
+  static async toggleProperty(
     this: SwadeActorSheetV2,
     _event: PointerEvent,
     target: HTMLElement,
   ) {
-    const effect = this._getEmbeddedDocument(
-      target,
-    ) as ActiveEffect.Implementation;
-    effect.update({ disabled: !effect.disabled });
+    const document = this._getEmbeddedDocument(target);
+    if (!document) return;
+    const toggle = target.dataset.toggle as string;
+    const oldVal = !!foundry.utils.getProperty(document, toggle);
+    await document.update({ [toggle]: !oldVal });
   }
 
   static async openTweaks(

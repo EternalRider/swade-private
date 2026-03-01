@@ -1,85 +1,91 @@
-<header class='header'>
-  <label class='arcane-skill-label'>{{localize 'SWADE.ArcaneSkill'}}</label>
-  <span class='arcane-skill-inputs form-group'>
-    <span class='form-fields text-center'>
-      <select
-        name='system.arcaneSkillDie.sides'
-        data-dtype='Number'
-        class='text-center'
-      >
-        {{selectOptions
-          dieSideOptions
-          selected=item.system.arcaneSkillDie.sides
-          valueAttr='key'
-          labelAttr='label'
-        }}
-      </select>
-      <input
-        name='system.arcaneSkillDie.modifier'
-        type='text'
-        value='{{signedString item.system.arcaneSkillDie.modifier}}'
-        placeholder='{{localize "SWADE.Modifier"}}'
-        data-dtype='Number'
-      />
-    </span>
-  </span>
-  {{#unless @root.settingRules.noPowerPoints}}
-    <label class='power-points-label'>{{localize 'SWADE.PP'}}</label>
-    <span class='power-points-inputs form-group'>
+<section
+  class='{{tabs.powers.tabCssClass}}'
+  data-group='{{tabs.powers.group}}'
+  data-tab='{{tabs.powers.id}}'
+>
+  <header class='header'>
+    <label class='arcane-skill-label'>{{localize 'SWADE.ArcaneSkill'}}</label>
+    <span class='arcane-skill-inputs form-group'>
       <span class='form-fields text-center'>
-        <input
-          name='system.powerPoints.value'
-          type='number'
-          value='{{item.system.powerPoints.value}}'
-          title='{{localize "SWADE.CurPP"}}'
+        <select
+          name='system.arcaneSkillDie.sides'
           data-dtype='Number'
-        />
-        <strong class='flex-separator'>/</strong>
+          class='text-center'
+        >
+          {{selectOptions
+            dieSideOptions
+            selected=item.system.arcaneSkillDie.sides
+            valueAttr='key'
+            labelAttr='label'
+          }}
+        </select>
         <input
-          name='system.powerPoints.max'
-          type='number'
-          value='{{item.system.powerPoints.max}}'
-          title='{{localize "SWADE.MaxPP"}}'
+          name='system.arcaneSkillDie.modifier'
+          type='text'
+          value='{{signedString item.system.arcaneSkillDie.modifier}}'
+          placeholder='{{localize "SWADE.Modifier"}}'
           data-dtype='Number'
         />
       </span>
     </span>
-  {{/unless}}
-</header>
-<hr />
-<ol class='powers-list unmarked-list collapsibles'>
-  {{#eachInMap embeddedPowers}}
-    <li>
-      <details
-        class='power'
-        data-power-id='{{key}}'
-        {{collapsible @root.collapsibleStates.powers key}}
-      >
-        <summary>{{value.name}}</summary>
-        <span class='content'>
-          <div class='power-rank'>{{localize 'SWADE.Rank'}}:
-            {{value.system.rank}}</div>
-          <div class='power-pp'>{{value.system.pp}}
-            {{localize 'SWADE.PP'}}</div>
-          <button type='button' class='power-delete invisible'><i
-              class='fas fa-trash fa-2x'
-            ></i></button>
-          <div class='left'>{{localize 'SWADE.Range._name'}}:
-            {{value.system.range}}</div>
-          <div class='right'>{{localize 'SWADE.Dur'}}:
-            {{value.system.duration}}</div>
-          <div class='left'>{{localize 'SWADE.Ap'}}: {{value.system.ap}}</div>
-          <div class='right'>
-            {{#if value.system.damage}}
-              <button type='button' class='damage invisible rollable'>
-                {{localize 'SWADE.Dmg'}}:
-                {{value.system.damage}}
-              </button>
-            {{/if}}
-          </div>
-          <div class='full-width'>{{{value.enrichedDescription}}}</div>
+    {{#unless @root.settingRules.noPowerPoints}}
+      <label class='power-points-label'>{{localize 'SWADE.PP'}}</label>
+      <span class='power-points-inputs form-group'>
+        <span class='form-fields text-center'>
+          <input
+            name='system.powerPoints.value'
+            type='number'
+            value='{{item.system.powerPoints.value}}'
+            title='{{localize "SWADE.CurPP"}}'
+            data-dtype='Number'
+          />
+          <strong class='flex-separator'>/</strong>
+          <input
+            name='system.powerPoints.max'
+            type='number'
+            value='{{item.system.powerPoints.max}}'
+            title='{{localize "SWADE.MaxPP"}}'
+            data-dtype='Number'
+          />
         </span>
-      </details>
-    </li>
-  {{/eachInMap}}
-</ol>
+      </span>
+    {{/unless}}
+  </header>
+  <hr />
+  <ol class='powers-list unmarked-list collapsibles'>
+    {{#eachInMap embeddedPowers}}
+      <li>
+        <details
+          class='power'
+          data-power-id='{{key}}'
+          {{collapsible @root.collapsibleStates.powers key}}
+        >
+          <summary>{{value.name}}</summary>
+          <span class='content'>
+            <div class='power-rank'>{{localize 'SWADE.Rank'}}:
+              {{value.system.rank}}</div>
+            <div class='power-pp'>{{value.system.pp}}
+              {{localize 'SWADE.PP'}}</div>
+            <button type='button' data-action='deletePower' class='power-delete invisible'><i
+                class='fas fa-trash fa-2x'
+              ></i></button>
+            <div class='left'>{{localize 'SWADE.Range._name'}}:
+              {{value.system.range}}</div>
+            <div class='right'>{{localize 'SWADE.Dur'}}:
+              {{value.system.duration}}</div>
+            <div class='left'>{{localize 'SWADE.Ap'}}: {{value.system.ap}}</div>
+            <div class='right'>
+              {{#if value.system.damage}}
+                <button type='button' data-action='rollDamage' class='damage invisible rollable'>
+                  {{localize 'SWADE.Dmg'}}:
+                  {{value.system.damage}}
+                </button>
+              {{/if}}
+            </div>
+            <div class='full-width'>{{{value.enrichedDescription}}}</div>
+          </span>
+        </details>
+      </li>
+    {{/eachInMap}}
+  </ol>
+</section>
