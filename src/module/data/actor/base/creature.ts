@@ -63,6 +63,7 @@ declare namespace CreatureData {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
       };
+      gangUpDamage: boolean;
       globalMods: {
         trait: Array<DerivedModifier>;
         agility: Array<DerivedModifier>;
@@ -75,6 +76,12 @@ declare namespace CreatureData {
         ap: Array<DerivedModifier>;
         bennyTrait: Array<DerivedModifier>;
         bennyDamage: Array<DerivedModifier>;
+        attackRanged: Array<DerivedModifier>;
+        attackMelee: Array<DerivedModifier>;
+        targetAttack: Array<DerivedModifier>;
+        targetAttackRanged: Array<DerivedModifier>;
+        targetAttackMelee: Array<DerivedModifier>;
+        gangUp: Array<DerivedModifier>;
       };
     };
   };
@@ -220,6 +227,11 @@ function creatureSchema() {
           initial: 0,
           integer: true,
           label: 'SWADE.Size',
+        }),
+        gangUpDamage: new fields.BooleanField({
+          initial: false,
+          label: 'SWADE.GangUpDamage',
+          hint: 'SWADE.GangUpHint',
         }),
       },
       { label: 'SWADE.Stats' },
@@ -601,6 +613,12 @@ class CreatureData<
       ap: new Array<DerivedModifier>(),
       bennyTrait: new Array<DerivedModifier>(),
       bennyDamage: new Array<DerivedModifier>(),
+      attackRanged: new Array<DerivedModifier>(),
+      attackMelee: new Array<DerivedModifier>(),
+      targetAttack: new Array<DerivedModifier>(),
+      targetAttackRanged: new Array<DerivedModifier>(),
+      targetAttackMelee: new Array<DerivedModifier>(),
+      gangUp: new Array<DerivedModifier>(),
     };
   }
 

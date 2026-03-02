@@ -12,7 +12,12 @@ import { RollDialog } from '../../apps/RollDialog';
 import { constants } from '../../constants';
 import { SwadePhysicalItemData } from '../../data/item/base';
 import { DamageRoll } from '../../dice/DamageRoll';
-import { getKeyByValue, modifierReducer, slugify } from '../../util';
+import {
+  getGangUpModifiers,
+  getKeyByValue,
+  modifierReducer,
+  slugify,
+} from '../../util';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
 import {
   ChoiceSet,
@@ -303,6 +308,29 @@ class SwadeItem<
     if (this.actor && 'stats' in this.actor.system) {
       modifiers.push(...this.actor.system.stats.globalMods.damage);
     }
+
+    // Gang Up on Damage
+    if (
+      this.isMeleeWeapon &&
+      this.actor &&
+      'stats' in this.actor.system &&
+      this.actor.system.stats.gangUpDamage
+    ) {
+      const target = game.user.targets.first()?.document;
+      const sourceToken =
+        this.actor.token ?? this.actor.getActiveTokens()[0]?.document;
+      if (target && sourceToken) {
+        const effect = this.actor.effects.find(
+          (e) =>
+            !e.disabled &&
+            e.changes.some((c) => c.key === 'system.stats.gangUpDamage'),
+        );
+        modifiers.push(
+          ...getGangUpModifiers(sourceToken, target, this, effect?.name),
+        );
+      }
+    }
+
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
