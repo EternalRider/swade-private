@@ -14,7 +14,7 @@ import { ShieldData } from '../item/shield';
 import { WeaponData } from '../item/weapon';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
-import { SwadeBaseActorData, TokenSize } from './base/base';
+import { SwadeBaseActorData, type TokenSize } from './base/base';
 
 declare namespace VehicleData {
   interface Schema
@@ -97,13 +97,13 @@ function validateCrewMember(
   value: any,
   _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
 ) {
-  const actor = fromUuidSync(value.uuid);
+  const actor = fromUuidSync(value.uuid) as SwadeActor | null;
   // Optional chaining `actor.type` so that on game load, when `fromUuidSync` can only return null, this doesn't throw.
   if (['vehicle', 'group'].includes(actor?.type)) {
     return new foundry.data.validation.DataModelValidationFailure({
       unresolved: true,
       invalidValue: value,
-      message: `Cannot contain an actor of type ${actor.type}!`,
+      message: `Cannot contain an actor of type ${actor?.type}!`,
     });
   }
 }

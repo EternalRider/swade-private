@@ -3,7 +3,6 @@ import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
-import { VehicleData } from './data/actor/vehicle';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor, { BestNonStackingMods } from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
@@ -462,11 +461,7 @@ export function getGangUpModifiers(
   if (!currActor) return mods;
 
   let vehicleActor: SwadeActor | undefined;
-  if (
-    item &&
-    currActor.system instanceof VehicleData &&
-    item.type === 'weapon'
-  ) {
+  if (item && currActor.type === 'vehicle' && item.type === 'weapon') {
     vehicleActor = currActor;
     const gunner = currActor.system.getCrewMemberForWeapon(
       item as SwadeItem<'weapon'>,
@@ -589,7 +584,7 @@ export function getDefaultAttackModifiers(
   const additionalMods: RollModifier[] = [];
   let currActor = sourceToken?.actor || item.actor!;
   let vehicleActor: SwadeActor | undefined;
-  if (currActor.system instanceof VehicleData && item.type === 'weapon') {
+  if (currActor.type === 'vehicle' && item.type === 'weapon') {
     vehicleActor = currActor;
     const gunner = currActor.system.getCrewMemberForWeapon(
       item as SwadeItem<'weapon'>,

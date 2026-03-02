@@ -1,11 +1,11 @@
 import { PotentialSource, Updates } from '../../../globals';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
-import { SwadePhysicalItemData } from './base';
+import { SwadePhysicalItemData } from './base/physical';
 import {
   actions,
   activities,
