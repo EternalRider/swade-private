@@ -261,6 +261,20 @@
         source=true
       }}
     {{/unless}}
+    {{#unless isVehicle}}
+      'system.stats.gangUpDamage'
+      {{formGroupSimple
+      classes='slim'
+        'system.details.parryBaseSwid'
+      label='SWADE.GangUpDamage'
+        classes=''
+      document=document
+        document=document
+      rootId=document.uuid
+        rootId=document.uuid
+      source=true
+        source=true
+    }}
   </fieldset>
   <!--Pace-->
   {{#unless isVehicle}}
