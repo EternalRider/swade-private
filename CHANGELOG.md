@@ -22,6 +22,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.0
+
+- Improved the Spirit roll dialog for unshaking by making it loop and remain available after failed rolls, allowing players to retry the roll or spend a benny without losing access to the options. The dialog now closes only on successful unshaking or when a benny is spent. **by @jestevens210**
+- Added GM Override for Quick/Level HeaderCard picker. Automatically just takes highest result if player is unresponsive **by @jestevens210**
+
 ## 5.1.1
 
 ### Added
