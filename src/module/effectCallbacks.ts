@@ -20,107 +20,112 @@ async function wildAttack(effect: SwadeActiveEffect) {
 }
 
 async function removeShaken(effect: SwadeActiveEffect) {
-  await new Promise((resolve) => {
-    let roll: TraitRoll | null = null;
-    let processed = false;
-    const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
-      {
-        action: 'roll',
-        label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.RollSpirit'),
-        icon: '<i class="fas fa-dice"></i>',
-        callback: async () => {
-          processed = true;
-          const parent = effect.parent;
-          if (!(parent instanceof SwadeActor) || parent?.type === 'vehicle') {
-            return;
-          }
-          const flavor = game.i18n.localize(
-            'SWADE.EffectCallbacks.Shaken.Flavor',
-          );
-          roll = await parent.rollAttribute('spirit', {
-            title: flavor,
-            flavour: flavor,
-            additionalMods: [
-              {
-                label: game.i18n.localize(
-                  'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
-                ),
-                value: parent.system.attributes.spirit.unShakeBonus,
-              },
-            ],
-          });
-          if (
-            (roll?.successes ?? constants.ROLL_RESULT.FAIL) >=
-            constants.ROLL_RESULT.SUCCESS
-          ) {
-            await effect.delete();
-            ui.notifications.info('SWADE.EffectCallbacks.Shaken.Success', {
-              localize: true,
+  while (effect.parent?.effects.has(effect.id)) {
+    await new Promise<void>((resolve) => {
+      let roll: TraitRoll | null = null;
+      let processed = false;
+      const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
+        {
+          action: 'roll',
+          label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.RollSpirit'),
+          icon: '<i class="fas fa-dice"></i>',
+          callback: async () => {
+            processed = true;
+            const parent = effect.parent;
+            if (!(parent instanceof SwadeActor) || parent?.type === 'vehicle') {
+              return;
+            }
+            const flavor = game.i18n.localize(
+              'SWADE.EffectCallbacks.Shaken.Flavor',
+            );
+            roll = await parent.rollAttribute('spirit', {
+              title: flavor,
+              flavour: flavor,
+              additionalMods: [
+                {
+                  label: game.i18n.localize(
+                    'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
+                  ),
+                  value: parent.system.attributes.spirit.unShakeBonus,
+                },
+              ],
             });
+            if (
+              (roll?.successes ?? constants.ROLL_RESULT.FAIL) >=
+              constants.ROLL_RESULT.SUCCESS
+            ) {
+              await effect.delete();
+              ui.notifications.info('SWADE.EffectCallbacks.Shaken.Success', {
+                localize: true,
+              });
+              resolve();
+            } else {
+              // Failed, resolve to show dialog again
+              resolve();
+            }
+          },
+        },
+        {
+          action: 'benny',
+          label: game.i18n.localize('SWADE.BenniesSpend'),
+          icon: '<i class="fas fa-coins"></i>',
+          callback: async () => {
+            processed = true;
+            const parent = effect.parent;
+            if (!(parent instanceof SwadeActor)) return;
+            await parent?.spendBenny();
+            await effect.delete();
+            resolve();
+          },
+        },
+        {
+          action: 'gmBenny',
+          label: game.i18n.localize('SWADE.BenniesSpendGM'),
+          icon: '<i class="fas fa-coins"></i>',
+          callback: async () => {
+            processed = true;
+            const parent = effect.parent;
+            if (!(parent instanceof SwadeActor)) return;
+            await game.user?.spendBenny();
+            await effect.delete();
+            resolve();
+          },
+        },
+      ];
+
+      if (!game.user?.isGM) buttons.pop();
+
+      const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
+      const data: foundry.applications.api.DialogV2.Configuration = {
+        window: {
+          title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
+            name: effect.parent?.name,
+          }),
+        },
+        content: `<p>${content}</p>`,
+        buttons,
+        default: 'roll',
+        close: async () => {
+          if (!processed) {
+            await effect.resetDuration();
+            resolve();
           }
-          resolve(roll);
         },
-      },
-      {
-        action: 'benny',
-        label: game.i18n.localize('SWADE.BenniesSpend'),
-        icon: '<i class="fas fa-coins"></i>',
-        callback: async () => {
-          processed = true;
-          const parent = effect.parent;
-          if (!(parent instanceof SwadeActor)) return;
-          await parent?.spendBenny();
-          await effect.delete();
-          resolve(roll);
+        render: (_ev, dialog: foundry.applications.api.DialogV2) => {
+          const html = dialog.element;
+          const button = html.querySelector('button[data-action="benny"]');
+          const gmButton = html.querySelector('button[data-action="gmBenny"]');
+          const gmHasNoBennies = game.user?.isGM && game.user.bennies <= 0;
+          const characterHasNoBennies =
+            effect.parent instanceof SwadeActor && effect.parent.bennies <= 0;
+          if (characterHasNoBennies && button) button.disabled = true;
+          if (gmHasNoBennies && gmButton) gmButton.disabled = true;
         },
-      },
-      {
-        action: 'gmBenny',
-        label: game.i18n.localize('SWADE.BenniesSpendGM'),
-        icon: '<i class="fas fa-coins"></i>',
-        callback: async () => {
-          processed = true;
-          const parent = effect.parent;
-          if (!(parent instanceof SwadeActor)) return;
-          await game.user?.spendBenny();
-          await effect.delete();
-          resolve(roll);
-        },
-      },
-    ];
-
-    if (!game.user?.isGM) buttons.pop();
-
-    const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
-    const data: foundry.applications.api.DialogV2.Configuration = {
-      window: {
-        title: game.i18n.format('SWADE.EffectCallbacks.Shaken.Title', {
-          name: effect.parent?.name,
-        }),
-      },
-      content: `<p>${content}</p>`,
-      buttons,
-      default: 'roll',
-      close: async () => {
-        if (!processed) {
-          await effect.resetDuration();
-          resolve(roll);
-        }
-      },
-      render: (_ev, dialog: foundry.applications.api.DialogV2) => {
-        const html = dialog.element;
-        const button = html.querySelector('button[data-action="benny"]');
-        const gmButton = html.querySelector('button[data-action="gmBenny"]');
-        const gmHasNoBennies = game.user?.isGM && game.user.bennies <= 0;
-        const characterHasNoBennies =
-          effect.parent instanceof SwadeActor && effect.parent.bennies <= 0;
-        if (characterHasNoBennies && button) button.disabled = true;
-        if (gmHasNoBennies && gmButton) gmButton.disabled = true;
-      },
-      classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
-    };
-    foundry.applications.api.DialogV2.wait(data);
-  });
+        classes: ['dialog', 'dialog-buttons-column', 'swade-app'],
+      };
+      foundry.applications.api.DialogV2.wait(data);
+    });
+  }
 }
 
 async function removeStunned(effect: SwadeActiveEffect) {
