@@ -1166,6 +1166,9 @@ SWADE:
       ShortInjury: >-
         <p><strong>{name}</strong> suffers an injury that will go away in 24
         hours, or when all Wounds are healed (whichever is sooner).</p>
+      DefeatTitle: Mark Defeated
+      MarkedDefeated: >-
+        <p><strong>{name}</strong> has been marked defeated without bleeding out.</p>
       TakeFail: Suffer a permanent injury
       TakeSuccess: Suffer an injury that goes away when all wounds are healed
       Title: Reroll injury severity for {name}?
