@@ -3,10 +3,10 @@ import { RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
+import { VehicleData } from './data/actor/vehicle';
 import SwadeUser from './documents/SwadeUser';
 import SwadeActor, { BestNonStackingMods } from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-import { VehicleData } from './data/actor';
 
 /**
  * @internal
@@ -54,11 +54,14 @@ export function getTrait(
     }
   }
   if (!trait) {
-    trait = actor.items?.find((i) => i.type === 'skill' && i.name === traitName);
+    trait = actor.items?.find(
+      (i) => i.type === 'skill' && i.name === traitName,
+    );
   }
   if (!trait) {
     trait = actor.items?.find(
-      (i) => i.type === 'skill' && (i as any).system.swid === slugify(traitName),
+      (i) =>
+        i.type === 'skill' && (i as any).system.swid === slugify(traitName),
     );
   }
   return trait;
@@ -66,14 +69,18 @@ export function getTrait(
 
 /** @internal */
 export async function reshuffleActionDeck() {
-  const deck = (game.cards as any)?.get(game.settings.get('swade', 'actionDeck'));
+  const deck = (game.cards as any)?.get(
+    game.settings.get('swade', 'actionDeck'),
+  );
   await deck?.recall({ chatNotification: false });
   await deck?.shuffle({ chatNotification: false });
 }
 
 /** @internal */
 export async function reshuffleActionDeckIfJokerDrawn() {
-  const deck = (game.cards as any)?.get(game.settings.get('swade', 'actionDeck'));
+  const deck = (game.cards as any)?.get(
+    game.settings.get('swade', 'actionDeck'),
+  );
   if (deck?.isJokerDrawn()) {
     await deck?.recall({ chatNotification: false });
     await deck?.shuffle({ chatNotification: false });
@@ -682,14 +689,14 @@ export function getDefaultAttackModifiers(
       )?.distance ?? 0;
 
     // Illumination & Cover
-    const targetBehaviors: RegionBehavior<'attackModifiers'>[] = (Array.from(
+    const targetBehaviors: RegionBehavior<'attackModifiers'>[] = Array.from(
       targetToken.regions!.map(
         (r) =>
-          r.behaviors?.filter(
+          (r.behaviors?.filter(
             (b) => !b.disabled && b.type === 'attackModifiers',
-          ) as RegionBehavior<'attackModifiers'>[] ?? [],
+          ) as RegionBehavior<'attackModifiers'>[]) ?? [],
       ),
-    ).deepFlatten() as RegionBehavior<'attackModifiers'>[]);
+    ).deepFlatten() as RegionBehavior<'attackModifiers'>[];
 
     if (
       isRangedAttack &&
@@ -784,9 +791,13 @@ export function getDefaultAttackModifiers(
     // Size
     const sizeActor = item.actor?.type === 'vehicle' ? item.actor : currActor;
     const attackerScale =
-      (sizeActor.system as any).stats?.scale ?? (sizeActor.system as any).scale ?? 0;
+      (sizeActor.system as any).stats?.scale ??
+      (sizeActor.system as any).scale ??
+      0;
     const defenderScale =
-      (targetActor?.system as any).stats?.scale ?? (targetActor?.system as any).scale ?? 0;
+      (targetActor?.system as any).stats?.scale ??
+      (targetActor?.system as any).scale ??
+      0;
     const scaleDifference = defenderScale - attackerScale;
     if (scaleDifference !== 0) {
       additionalMods.push({

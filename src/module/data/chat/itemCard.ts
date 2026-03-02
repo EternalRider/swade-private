@@ -8,9 +8,8 @@ import SwadeItem from '../../documents/item/SwadeItem';
 
 import { DamageRoll } from '../../dice/DamageRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
-// import { Logger } from '../../Logger';
 import ItemCardService from '../../models/ItemCardService';
-import { VehicleData } from '../actor';
+import { VehicleData } from '../actor/vehicle';
 
 declare namespace ItemCardData {
   interface Schema extends foundry.data.fields.DataSchema {

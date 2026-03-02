@@ -15,7 +15,8 @@ import {
   signedNumberString,
 } from '../../../util';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
-import { ShieldData, WeaponData } from '../../item';
+import { ShieldData } from '../../item/shield';
+import { WeaponData } from '../../item/weapon';
 import {
   boundTraitDie,
   makeDiceField,
@@ -709,10 +710,7 @@ class CreatureData<
       .toLowerCase();
     const parryBaseSwid = actorParryBaseSwid || defaultParryBaseSwid;
 
-    return this.parent.getSingleItemBySwid(
-      parryBaseSwid,
-      'skill',
-    );
+    return this.parent.getSingleItemBySwid(parryBaseSwid, 'skill');
   }
 
   calcParry(): number {

@@ -4,11 +4,11 @@ import IRollOptions from '../interfaces/RollOptions.interface';
 import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { SWADE } from './config';
 import { constants } from './constants';
+import { VehicleData } from './data/actor/vehicle';
 import { SwadeRoll } from './dice/SwadeRoll';
 import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
-import { VehicleData } from './data/actor';
 import { Logger } from './Logger';
 import { getTrait } from './util';
 
