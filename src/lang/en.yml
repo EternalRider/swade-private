@@ -342,6 +342,7 @@ SWADE:
   Scale: Scale
   ScaleDifference: Scale Difference
   PickACard: Pick a card for {name}
+  GMOverride: GM Override
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}
     needed cards are available. Reset the deck or reduce number of combatants.
@@ -1173,6 +1174,9 @@ SWADE:
       ShortInjury: >-
         <p><strong>{name}</strong> suffers an injury that will go away in 24
         hours, or when all Wounds are healed (whichever is sooner).</p>
+      DefeatTitle: Mark Defeated
+      MarkedDefeated: >-
+        <p><strong>{name}</strong> has been marked defeated without bleeding out.</p>
       TakeFail: Suffer a permanent injury
       TakeSuccess: Suffer an injury that goes away when all wounds are healed
       Title: Reroll injury severity for {name}?

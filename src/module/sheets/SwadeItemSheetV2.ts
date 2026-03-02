@@ -279,10 +279,13 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
   ) {
     await super._onRender(context, options);
 
-    // Disable overridden inputs
+    // Disable overridden inputs, but keep skill die fields editable
     const overrides = foundry.utils.flattenObject(this.item.overrides);
+    const allowSkillKey = (key: string) =>
+      key.startsWith('system.die.') || key.startsWith('system.wild-die.');
     for (const key of Object.keys(overrides)) {
-      this.element
+      if (this.item.type === 'skill' && allowSkillKey(key)) continue;
+      html
         .querySelectorAll(`[name="${key}"]`)
         .forEach((el) => el.setAttribute('disabled', 'override'));
     }
