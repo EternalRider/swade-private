@@ -1210,18 +1210,23 @@ class SwadeActor<
     const toughnessBaseValue = 2;
 
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
+    const toughnessTrait = (
+      Object.keys(SWADE.attributes) as Attribute[]
+    ).includes(this.system.details.toughnessTrait as Attribute)
+      ? (this.system.details.toughnessTrait as Attribute)
+      : 'vigor';
 
     //get the base values we need
-    const vigor = this.system.attributes.vigor.die.sides!;
-    const vigMod = this.system.attributes.vigor.die.modifier!;
+    const traitDie = this.system.attributes[toughnessTrait].die.sides!;
+    const traitMod = this.system.attributes[toughnessTrait].die.modifier!;
     // const toughMod = this.system.stats.toughness.modifier;
 
-    let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
-    if (vigMod > 0) {
-      finalToughness += Math.floor(vigMod / 2);
+    let finalToughness = Math.round(traitDie / 2) + toughnessBaseValue;
+    if (traitMod > 0) {
+      finalToughness += Math.floor(traitMod / 2);
     }
     sources.push({
-      label: game.i18n.localize('SWADE.AttrVig'),
+      label: game.i18n.localize(SWADE.attributes[toughnessTrait].long),
       value: finalToughness,
     });
 
