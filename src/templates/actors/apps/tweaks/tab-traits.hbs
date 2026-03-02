@@ -252,6 +252,15 @@
       rootId=document.uuid
       source=true
     }}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.details.parryBaseSwid'
+        classes=''
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
   </fieldset>
   <!--Pace-->
   {{#unless isVehicle}}

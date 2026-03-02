@@ -241,6 +241,11 @@ function creatureSchema() {
           initial: true,
           hint: 'SWADE.AutoCalcParry',
         }),
+        parryBaseSwid: new fields.StringField({
+          initial: '',
+          label: 'SWADE.Settings.ParryBase.Name',
+          hint: 'SWADE.Settings.ParryBase.Hint',
+        }),
         archetype: new fields.StringField({
           initial: '',
           textSearch: true,
@@ -676,8 +681,18 @@ class CreatureData<
   }
 
   override getParryBaseSkill() {
+    const actorParryBaseSwid = (this.details.parryBaseSwid ?? '')
+      .trim()
+      .toLowerCase();
+    const defaultParryBaseSwid = String(
+      game.settings.get('swade', 'parryBaseSwid') ?? '',
+    )
+      .trim()
+      .toLowerCase();
+    const parryBaseSwid = actorParryBaseSwid || defaultParryBaseSwid;
+
     return this.parent.getSingleItemBySwid(
-      game.settings.get('swade', 'parryBaseSwid'),
+      parryBaseSwid,
       'skill',
     );
   }
