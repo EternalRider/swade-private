@@ -26,12 +26,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Added GM Override for Quick/Level HeaderCard picker. Automatically just takes highest result if player is unresponsive **by @jestevens210**
-- Added Active Effects support to target Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens**
-- Added support for Gang Up bonus on damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens**
+- Added GM Override for Quick/Level Headeed Card picker. GM can trigger to auto select highest result if player is unresponsive **by @jestevens210**
+- Added Active Effects support for Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens**
+- Added support to add Gang Up bonus to damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens**
 - Added `Defeated` button to damage applicator workflow to skip injury/bleeding out when not needed
-- Added Actor Tweak to allow selecting which attribute is used for auto-calculated Toughness (default: `vigor`) by **@jestevens210**
-- Added Actor Tweak allow overriding the Parry base skill by SWID per-actor (falls back to the global `parryBaseSwid` setting when blank) by **@jestevens210**
+- Added Actor Tweak to allow selecting attribute to use for auto-calculating Toughness (default: `vigor`) by **@jestevens210**
+- Added Actor Tweak to overriding the Parry base skill by SWID per-actor (falls back to the global `parryBaseSwid` setting when blank) by **@jestevens210**
 
 ### Changed
 
