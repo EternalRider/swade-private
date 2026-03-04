@@ -454,11 +454,6 @@ class SwadeActor<
         );
         if (options.additionalMods)
           options.additionalMods.push(...additionalMods);
-        additionalMods.forEach(
-          (mod) => (mod.label = game.i18n.localize(mod.label)),
-        );
-        if (options.additionalMods)
-          options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;
       }
     }
