@@ -260,9 +260,6 @@ class SwadeActor<
 
   override prepareDerivedData() {
     this._filterOverrides();
-
-    // See src/globals.d.ts for docs
-    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
   async rollAttribute(
