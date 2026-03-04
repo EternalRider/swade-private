@@ -317,17 +317,6 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   ) {
     await super._onRender(context, options);
 
-    // Disable overridden inputs, but keep skill die fields editable
-    const overrides = foundry.utils.flattenObject(this.item.overrides);
-    const allowSkillKey = (key: string) =>
-      key.startsWith('system.die.') || key.startsWith('system.wild-die.');
-    for (const key of Object.keys(overrides)) {
-      if (this.item.type === 'skill' && allowSkillKey(key)) continue;
-      this.element
-        .querySelectorAll<HTMLElement>(`[name="${key}"]`)
-        .forEach((el) => (el.disabled = false));
-    }
-
     this.form?.addEventListener('keypress', (ev: KeyboardEvent) => {
       const target = ev.target as HTMLButtonElement;
       const targetIsButton = 'button' === target?.type;
@@ -619,6 +608,22 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     _target: HTMLElement,
   ) {
     new SwadeItemTweaks({ document: this.document }).render({ force: true });
+  }
+
+  protected override disableOverrides() {
+    super.disableOverrides();
+    if (this.item.type === 'skill') {
+      // Disable overridden inputs, but keep skill die fields editable
+      const overrides = foundry.utils.flattenObject(this.item.overrides);
+      const allowSkillKey = (key: string) =>
+        key.startsWith('system.die.') || key.startsWith('system.wild-die.');
+      for (const key of Object.keys(overrides)) {
+        if (!allowSkillKey(key)) continue;
+        this.element
+          .querySelectorAll<HTMLInputElement>(`[name="${key}"]`)
+          .forEach((el) => (el.disabled = false));
+      }
+    }
   }
 
   override async _prepareContext(options): Promise<ItemSheetRenderContext> {

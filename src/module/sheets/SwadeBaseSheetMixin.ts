@@ -165,7 +165,7 @@ export function SwadeBaseSheetMixin<
     ) {
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
-      this.#disableOverrides();
+      this.disableOverrides();
       // TODO: Is this necessary for Group & Vehicle?
       // this.element.querySelectorAll('details').forEach((el) => {
       //   new Accordion(el, '.content', { duration: 200 });
@@ -233,7 +233,7 @@ export function SwadeBaseSheetMixin<
       } else if (docRow.dataset.documentClass === 'ActiveEffect') {
         const parentId = docRow.dataset.parentId;
         const parent =
-          parentId && (parentId !== this.document.id)
+          parentId && parentId !== this.document.id
             ? this.document.items.get(parentId)
             : this.document;
         return parent.effects.get(docRow?.dataset.effectId);
@@ -292,7 +292,7 @@ export function SwadeBaseSheetMixin<
     }
 
     /*Disables inputs subject to active effects*/
-    #disableOverrides() {
+    protected disableOverrides() {
       const flatOverrides = foundry.utils.flattenObject(
         this.document.overrides ?? {},
       );

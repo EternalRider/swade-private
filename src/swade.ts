@@ -42,6 +42,7 @@ import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import { rollItemMacro } from './module/hooks/hotbarDrop';
+import './module/hud/swade-hud';
 import { registerKeybindings } from './module/keybindings';
 import * as migrations from './module/migration/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
@@ -61,7 +62,6 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
-import './module/hud/swade-hud';
 import {
   deepFreeze,
   getItemsBySwid,
@@ -507,12 +507,17 @@ Hooks.once('ready', () => {
 /* ------------------------------------ */
 
 /** Dice So Nice*/
+//@ts-expect-error Hook name
 Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
+//@ts-expect-error Hook name
 Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
+//@ts-expect-error Hook name
 Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
+//@ts-expect-error Hook name
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);
 
 /** Item Piles */
+//@ts-expect-error Hook name
 Hooks.once('item-piles-ready', SwadeIntegrationHooks.onItemPilesReady);
