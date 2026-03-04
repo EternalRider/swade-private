@@ -36,7 +36,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   static override DEFAULT_OPTIONS = {
     classes: ['swade-application', 'swade-official'],
     position: {
-      width: 650,
+      width: 760,
       height: 700,
     },
     window: {
@@ -162,8 +162,14 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
 
   override _initializeApplicationOptions(options) {
     options = super._initializeApplicationOptions(options);
-    const defaultWidth = game.settings.get('swade', 'charSheetDefaultWidth');
-    if (defaultWidth) foundry.utils.setProperty(options, 'position.width', defaultWidth);
+    const minWidth = 760;
+    const configuredWidth = Number(
+      game.settings.get('swade', 'charSheetDefaultWidth'),
+    );
+    const width = configuredWidth
+      ? Math.max(configuredWidth, minWidth)
+      : minWidth;
+    foundry.utils.setProperty(options, 'position.width', width);
     return options;
   }
 

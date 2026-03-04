@@ -44,6 +44,14 @@ body.theme-dark .swade-official,
   --input-background: rgba(52, 63, 80, 1);
   --card-button-background-color: rgba(0, 0, 15, 0.8);
   --invert-if-dark: invert(1);
+
+  .summary {
+    gap: 0.75em;
+  }
+
+  .tab {
+    padding: 10px;
+  }
 }
 
 body.theme-light .swade-official,
@@ -689,7 +697,7 @@ body.theme-light .swade-official,
     .attribute-list {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: space-evenly;
       column-gap: $medium-spacing;
     }
