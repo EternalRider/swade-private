@@ -39,7 +39,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
       el.addEventListener('click', (ev) => {
         const li = ev.currentTarget.closest('.item');
         const item = this.actor.items.get(li.dataset.itemId);
-        item?.sheet?.render(true);
+        item?.sheet?.render({ force: true });
       }),
     );
 
@@ -141,7 +141,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
           case 'toggle':
             return effect.update({ disabled: !effect?.disabled });
           case 'open-origin':
-            (effect.parent as SwadeItem).sheet.render(true);
+            (effect.parent as SwadeItem).sheet.render({ force: true });
             break;
           default:
             Logger.warn(`The action ${action} is not currently supported`);
@@ -533,7 +533,7 @@ export default class SwadeBaseActorSheet extends foundry.appv1.sheets
     const items = await super._onDropItemCreate(itemData);
     const typesToRender = ['power', 'skill'];
     for (const item of items) {
-      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+      if (typesToRender.includes(item.type)) item.sheet?.render({ force: true });
     }
     return items;
   }

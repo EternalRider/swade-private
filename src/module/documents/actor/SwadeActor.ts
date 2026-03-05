@@ -260,9 +260,6 @@ class SwadeActor<
 
   override prepareDerivedData() {
     this._filterOverrides();
-
-    // See src/globals.d.ts for docs
-    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
   async rollAttribute(
@@ -404,7 +401,12 @@ class SwadeActor<
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
-      const sourceToken = this.getActiveTokens(false, true)[0];
+      let sourceToken = this.getActiveTokens(false, true)[0];
+      // If the item belongs to a vehicle, use the vehicle's token
+      if (options.item?.actor?.type === 'vehicle') {
+        const vehicleToken = options.item.actor.getActiveTokens(false, true)[0];
+        if (vehicleToken) sourceToken = vehicleToken;
+      }
       const targetToken = game.user.targets.first()?.document;
 
       const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
@@ -438,11 +440,13 @@ class SwadeActor<
         isMeleeAttack,
         additionalMods,
         bestNonStackingMods,
+        bestNonStackingMods,
       );
 
       for (const mod of Object.values(bestNonStackingMods)) {
         if (mod) additionalMods.push(mod);
       }
+
 
       if (additionalMods.length) {
         additionalMods.forEach(
@@ -876,10 +880,10 @@ class SwadeActor<
 
   calcScale(size: number): number {
     let scale = 0;
-    if (Number.between(size, 20, 12)) scale = 6;
-    else if (Number.between(size, 11, 8)) scale = 4;
-    else if (Number.between(size, 7, 4)) scale = 2;
-    else if (Number.between(size, 3, -1)) scale = 0;
+    if (Number.between(size, 12, 20)) scale = 6;
+    else if (Number.between(size, 8, 11)) scale = 4;
+    else if (Number.between(size, 4, 7)) scale = 2;
+    else if (Number.between(size, -1, 3)) scale = 0;
     else if (size === -2) scale = -2;
     else if (size === -3) scale = -4;
     else if (size === -4) scale = -6;
@@ -1210,18 +1214,23 @@ class SwadeActor<
     const toughnessBaseValue = 2;
 
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
+    const toughnessTrait = (
+      Object.keys(SWADE.attributes) as Attribute[]
+    ).includes(this.system.details.toughnessTrait as Attribute)
+      ? (this.system.details.toughnessTrait as Attribute)
+      : 'vigor';
 
     //get the base values we need
-    const vigor = this.system.attributes.vigor.die.sides!;
-    const vigMod = this.system.attributes.vigor.die.modifier!;
+    const traitDie = this.system.attributes[toughnessTrait].die.sides!;
+    const traitMod = this.system.attributes[toughnessTrait].die.modifier!;
     // const toughMod = this.system.stats.toughness.modifier;
 
-    let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
-    if (vigMod > 0) {
-      finalToughness += Math.floor(vigMod / 2);
+    let finalToughness = Math.round(traitDie / 2) + toughnessBaseValue;
+    if (traitMod > 0) {
+      finalToughness += Math.floor(traitMod / 2);
     }
     sources.push({
-      label: game.i18n.localize('SWADE.AttrVig'),
+      label: game.i18n.localize(SWADE.attributes[toughnessTrait].long),
       value: finalToughness,
     });
 

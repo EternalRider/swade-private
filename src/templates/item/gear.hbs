@@ -1,4 +1,4 @@
-<form class='main-grid {{cssClass}}' autocomplete='off'>
+<section class='main-grid {{cssClass}}' autocomplete='off'>
   <figure class='grid-under gu-1'></figure>
   <figure class='grid-under gu-2'></figure>
   <figure class='grid-under gu-3'></figure>
@@ -44,33 +44,12 @@
   </section>
 
   {{!-- Sheet Tab Navigation --}}
-  <nav class='tabs' data-group='main'>
-    <a class='item' data-tab='description' data-group='main'>
-      {{localize 'SWADE.Desc'}}
-    </a>
-    <a class='item' data-tab='properties' data-group='main'>
-      {{localize 'SWADE.Properties'}}
-    </a>
-    {{#if item.isArcaneDevice}}
-      <a class='item' data-tab='powers' data-group='main'>
-        {{localize 'SWADE.Pow'}}
-      </a>
-    {{/if}}
-    {{#if item.system.charges.hasCharges}}
-      <a class='item' data-tab='charges' data-group='main'>
-        {{localize 'SWADE.Charges'}}
-      </a>
-    {{/if}}
-    <a class='item' data-tab='actions'>{{localize 'SWADE.Actions.Name'}}</a>
-    <a class='item' data-tab='effects'>{{localize 'SWADE.Effects'}}</a>
-  </nav>
+  {{> "templates/generic/tab-navigation.hbs"}}
 
   {{!-- Main Section --}}
   <section class='sheet-body'>
-    <section class='tab description full-page' data-group='main' data-tab='description'>
-      {{> 'swade.item-tab-description'}}
-    </section>
-    <section class='tab properties' data-group='main' data-tab='properties'>
+    {{> 'swade.item-tab-description'}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
       <div class='form-group'>
         <label for="{{item.uuid}}-arcane-device">
           {{localize 'SWADE.ArcaneDevice'}}
@@ -132,25 +111,17 @@
       {{> 'swade.item-grants'}}
     </section>
     {{#if item.isArcaneDevice}}
-      <section class='tab powers' data-group='main' data-tab='powers'>
-        {{> 'swade.item-tab-powers'}}
-      </section>
+      {{> 'swade.item-tab-powers'}}
     {{/if}}
     {{#if item.system.charges.hasCharges}}
-      <section class='tab charges' data-group='main' data-tab='charges'>
-        {{> 'swade.item-tab-charges'}}
-      </section>
+      {{> 'swade.item-tab-charges'}}
     {{/if}}
-    <section class='tab actions' data-group='main' data-tab='actions'>
-      {{> 'swade.item-tab-actions'}}
-    </section>
-    <section class='tab effects' data-group='main' data-tab='effects'>
-      {{> 'swade.item-tab-effects'}}
-    </section>
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
   </section>
 
   <figure class='grid-cover gc-1'></figure>
   <figure class='grid-cover gc-2'></figure>
   <figure class='grid-cover gc-3'></figure>
   <figure class='grid-cover gc-4'></figure>
-</form>
+</section>

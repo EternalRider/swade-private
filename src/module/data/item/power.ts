@@ -174,6 +174,7 @@ class PowerData extends SwadeBaseItemData<
   }
 
   _canExpendResources(resourcesUsed = 1): boolean {
+    if (this.innate) return true;
     if (!this.parent.actor) return false;
     if (game.settings.get('swade', 'noPowerPoints')) return true;
     const arcane = this.arcane || 'general';

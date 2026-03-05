@@ -15,7 +15,8 @@ import {
   signedNumberString,
 } from '../../../util';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
-import { ShieldData, WeaponData } from '../../item';
+import { ShieldData } from '../../item/shield';
+import { WeaponData } from '../../item/weapon';
 import {
   boundTraitDie,
   makeDiceField,
@@ -63,6 +64,7 @@ declare namespace CreatureData {
         sources: Array<DerivedModifier>;
         effects: Array<DerivedModifier>;
       };
+      gangUpDamage: boolean;
       globalMods: {
         trait: Array<DerivedModifier>;
         agility: Array<DerivedModifier>;
@@ -75,6 +77,12 @@ declare namespace CreatureData {
         ap: Array<DerivedModifier>;
         bennyTrait: Array<DerivedModifier>;
         bennyDamage: Array<DerivedModifier>;
+        attackRanged: Array<DerivedModifier>;
+        attackMelee: Array<DerivedModifier>;
+        targetAttack: Array<DerivedModifier>;
+        targetAttackRanged: Array<DerivedModifier>;
+        targetAttackMelee: Array<DerivedModifier>;
+        gangUp: Array<DerivedModifier>;
       };
     };
   };
@@ -97,6 +105,14 @@ declare namespace CreatureData {
 }
 
 function creatureSchema() {
+  const toughnessTraitChoices = Object.entries(SWADE.attributes).reduce(
+    (choices, [key, value]) => {
+      choices[key] = value.long;
+      return choices;
+    },
+    {} as Record<string, string>,
+  );
+
   return {
     attributes: new fields.SchemaField(
       {
@@ -213,6 +229,11 @@ function creatureSchema() {
           integer: true,
           label: 'SWADE.Size',
         }),
+        gangUpDamage: new fields.BooleanField({
+          initial: false,
+          label: 'SWADE.GangUpDamage',
+          hint: 'SWADE.GangUpHint',
+        }),
       },
       { label: 'SWADE.Stats' },
     ),
@@ -222,9 +243,21 @@ function creatureSchema() {
           initial: true,
           hint: 'SWADE.InclArmor',
         }),
+        toughnessTrait: new fields.StringField({
+          initial: 'vigor',
+          blank: false,
+          nullable: false,
+          choices: toughnessTraitChoices,
+          label: 'SWADE.Attribute',
+        }),
         autoCalcParry: new fields.BooleanField({
           initial: true,
           hint: 'SWADE.AutoCalcParry',
+        }),
+        parryBaseSwid: new fields.StringField({
+          initial: '',
+          label: 'SWADE.Settings.ParryBase.Name',
+          hint: 'SWADE.Settings.ParryBase.Hint',
         }),
         archetype: new fields.StringField({
           initial: '',
@@ -581,6 +614,12 @@ class CreatureData<
       ap: new Array<DerivedModifier>(),
       bennyTrait: new Array<DerivedModifier>(),
       bennyDamage: new Array<DerivedModifier>(),
+      attackRanged: new Array<DerivedModifier>(),
+      attackMelee: new Array<DerivedModifier>(),
+      targetAttack: new Array<DerivedModifier>(),
+      targetAttackRanged: new Array<DerivedModifier>(),
+      targetAttackMelee: new Array<DerivedModifier>(),
+      gangUp: new Array<DerivedModifier>(),
     };
   }
 
@@ -624,6 +663,9 @@ class CreatureData<
       this.parent.calcMaxCarryCapacity(),
     );
 
+    // Call hook before pace calculation to allow modules to adjust encumbrance.max
+    Hooks.callAll('swadeActorPrepareDerivedData', this.parent);
+
     this.#preparePace();
 
     // Toughness calculation
@@ -661,10 +703,17 @@ class CreatureData<
   }
 
   override getParryBaseSkill() {
-    return this.parent.getSingleItemBySwid(
-      game.settings.get('swade', 'parryBaseSwid'),
-      'skill',
-    );
+    const actorParryBaseSwid = (this.details.parryBaseSwid ?? '')
+      .trim()
+      .toLowerCase();
+    const defaultParryBaseSwid = String(
+      game.settings.get('swade', 'parryBaseSwid') ?? '',
+    )
+      .trim()
+      .toLowerCase();
+    const parryBaseSwid = actorParryBaseSwid || defaultParryBaseSwid;
+
+    return this.parent.getSingleItemBySwid(parryBaseSwid, 'skill');
   }
 
   calcParry(): number {

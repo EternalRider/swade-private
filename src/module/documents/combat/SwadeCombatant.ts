@@ -25,6 +25,7 @@ export default class SwadeCombatant<
         'roundHeld',
         'turnLost',
         'firstRound',
+        // jokerBenniesGiven removed from keys
       ];
       data.system ??= {};
 
@@ -163,6 +164,7 @@ export default class SwadeCombatant<
           system: {
             hasJoker: false,
             '-=turnLost': null,
+            // jokerBenniesGiven removed from reset
           },
         };
       } else {
@@ -178,6 +180,7 @@ export default class SwadeCombatant<
         hasJoker: false,
         cardString: '',
         turnLost: false,
+        // jokerBenniesGiven removed from reset
       },
     };
   }

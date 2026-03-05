@@ -1,8 +1,10 @@
+import { DeepPartial } from 'fvtt-types/utils';
 import {
   AdditionalStats,
   Attribute,
   DieSidesOption,
   LinkedAttribute,
+  SwadeApplicationTab,
 } from '../../globals';
 import { Advance } from '../../interfaces/Advance.interface';
 import {
@@ -10,7 +12,6 @@ import {
   RollModifier,
 } from '../../interfaces/additional.interface';
 import ItemChatCardHelper from '../ItemChatCardHelper';
-import { Logger } from '../Logger';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import AttributeManager from '../apps/AttributeManager';
@@ -18,69 +19,225 @@ import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
-import { VehicleData } from '../data/actor';
 import { ChargeData } from '../data/fields/ChargesData';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
-import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 import * as util from '../util';
+import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
-export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
-  _equipStateMenu: ContextMenu;
-  _chargeRechargeMenu: ContextMenu;
-  _effectCreateDropDown: ContextMenu;
+export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRenderContext> {
+  _equipStateMenu: ContextMenu<false>;
+  _chargeRechargeMenu: ContextMenu<false>;
+  _effectCreateDropDown: ContextMenu<false>;
   _accordions: Record<string, { object: Accordion; open: boolean }> = {};
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['swade-official', 'sheet', 'actor'],
-      width: game.settings.get('swade', 'charSheetDefaultWidth'),
+  static override DEFAULT_OPTIONS = {
+    classes: ['swade-application', 'swade-official'],
+    position: {
+      width: 760,
       height: 700,
-      resizable: true,
-      scrollY: ['section.tab'],
-      tabs: [
-        {
-          group: 'primary',
-          navSelector: '.tabs',
-          contentSelector: '.sheet-body',
-          initial: 'summary',
-        },
-        {
-          group: 'about',
-          navSelector: '.about-tabs',
-          contentSelector: '.about-body',
-          initial: 'advances',
-        },
-      ],
+    },
+    window: {
+      resizable: true
+    },
+    actions: {
+      toggleStatusEffect: CharacterSheet._toggleStatusEffect,
+      toggleConviction: CharacterSheet.#toggleConviction,
+      displayAdvances: CharacterSheet.#displayAdvances,
+      rollAttribute: CharacterSheet.#rollAttribute,
+      displayAttributeManager: CharacterSheet.#displayAttributeManager,
+      rechargeManual: CharacterSheet.#rechargeCharges,
+      rollSkill: CharacterSheet.#rollSkill,
+      rollRunningDie: CharacterSheet.#rollRunningDie,
+      rollDamage: CharacterSheet.#rollDamage,
+      rollWealthDie: CharacterSheet.#rollWealthDie,
+      useConsumable: CharacterSheet.#useConsumable,
+      openEffectOrigin: CharacterSheet.#openEffectOrigin,
+      displayModifierDialog: CharacterSheet.#displayModifierDialog,
+      editAdvance: CharacterSheet.#advanceAction,
+      deleteAdvance: CharacterSheet.#advanceAction,
+      togglePlannedAdvance: CharacterSheet.#advanceAction,
+      adjustCounter: CharacterSheet._handleCounterAdjust,
+      openAncestryArchetype: CharacterSheet.#openAncestryArchetype,
+      addAdvance: CharacterSheet.#addAdvance,
+      createFavorite: CharacterSheet.#createFavorite
+    }
+  };
+
+  static override PARTS = {
+    sheet: {
+      template: 'systems/swade/templates/actors/character/sheet.hbs',
+      scrollable: ['.tab.sheet-body'],
+      templates: [
+        'systems/swade/templates/actors/character/header.hbs',
+        'templates/generic/tab-navigation.hbs',
+        'systems/swade/templates/actors/character/tabs/summary.hbs',
+        'systems/swade/templates/actors/character/tabs/edges.hbs',
+        'systems/swade/templates/actors/character/tabs/inventory.hbs',
+        'systems/swade/templates/actors/character/tabs/powers.hbs',
+        'systems/swade/templates/actors/character/tabs/effects.hbs',
+        'systems/swade/templates/actors/character/tabs/actions.hbs',
+        'systems/swade/templates/actors/character/tabs/about.hbs',
+      ]
+    },
+    limited: { template: 'systems/swade/templates/actors/character/limited.hbs' }
+  };
+
+  static override TABS: Record<string, Partial<SwadeApplicationTab>> = {
+    summary: {
+      id: 'summary',
+      group: 'primary',
+      label: 'SWADE.Summary',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    edges: {
+      id: 'edges',
+      group: 'primary',
+      label: 'SWADE.EdgesHindrances',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    inventory: {
+      id: 'inventory',
+      group: 'primary',
+      label: 'SWADE.Inv',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    powers: {
+      id: 'powers',
+      group: 'primary',
+      label: 'SWADE.Pow',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    effects: {
+      id: 'effects',
+      group: 'primary',
+      label: 'SWADE.Effects',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    actions: {
+      id: 'actions',
+      group: 'primary',
+      label: 'SWADE.Actions.Name',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    about: {
+      id: 'about',
+      group: 'primary',
+      label: 'SWADE.About',
+      cssClass: 'item',
+      tabCssClass: 'gridcell sheet-body'
+    },
+    advances: {
+      id: 'advances',
+      group: 'about',
+      label: 'SWADE.Adv',
+      cssClass: 'item'
+    },
+    background: {
+      id: 'background',
+      group: 'about',
+      label: 'SWADE.Background',
+      cssClass: 'item'
+    },
+    notes: {
+      id: 'notes',
+      group: 'about',
+      label: 'SWADE.Notes',
+      cssClass: 'item'
+    }
+  };
+
+  override tabGroups = {
+    primary: 'summary',
+    about: 'advances'
+  };
+
+  override _initializeApplicationOptions(options) {
+    options = super._initializeApplicationOptions(options);
+    const minWidth = 760;
+    const configuredWidth = Number(
+      game.settings.get('swade', 'charSheetDefaultWidth'),
+    );
+    const width = configuredWidth
+      ? Math.max(configuredWidth, minWidth)
+      : minWidth;
+    foundry.utils.setProperty(options, 'position.width', width);
+    return options;
+  }
+
+  protected override _configureRenderOptions(options): void {
+    super._configureRenderOptions(options);
+    if (this.document.limited) {
+      options.parts = ['limited'];
+    } else {
+      options.parts.findSplice(i => i === 'limited');
+    }
+  }
+
+  override async _onRender(
+    context: CharacterSheetRenderContext,
+    options: DeepPartial<foundry.applications.api.DocumentSheet.RenderOptions>
+  ) {
+    await super._onRender(context, options);
+
+    // TODO: Can this be done cleaner?
+    this.#disableOverrides(this.form!);
+
+    this.#setupRechargeUsesMenu(this.element);
+
+    this.element
+      .querySelector('[name="system.details.currency"]')
+      ?.addEventListener('change', this._onChangeInputDelta.bind(this));
+
+    this.element.querySelectorAll('li.item, .attribute').forEach((el) => {
+      // Add draggable attribute and dragstart listener.
+      el.draggable = true;
+      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
-  }
 
-  override get template(): string {
-    const base = 'systems/swade/templates/actors/character/';
-    if (this.actor.limited) return base + 'limited.hbs';
-    return base + 'sheet.hbs';
-  }
+    //Disable draggable on the item if we drag inside of the charge summary
+    this.element.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mousedown', () => {
+        el.closest('li')?.setAttribute('draggable', 'false');
+      });
+    });
 
-  override activateListeners(jquery: JQuery<HTMLFormElement>): void {
-    super.activateListeners(jquery);
+    this.element.querySelectorAll('.charges-summary').forEach((el) => {
+      el.addEventListener('mouseup', () => {
+        el.closest('li')?.setAttribute('draggable', 'true');
+      });
+    });
 
-    // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    // Item Action Buttons
+    // TODO: This one's tough since we intentionally support arbitrary `data-action` values
+    this.element
+      .querySelectorAll('.card-buttons button')
+      .forEach((el) =>
+        el.addEventListener('click', this._handleItemActions.bind(this)),
+      );
 
-    const html = jquery[0];
+    // Charge input fields
+    // TODO: Necessary?
+    this.element.querySelectorAll('.charge-fields input').forEach((el) =>
+      el.addEventListener('change', async (ev) => {
+        const li = ev.currentTarget.closest('.item');
+        const item = this.document.items.get(li?.dataset.itemId);
+        const id = ev.currentTarget.dataset.chargeId;
+        const charge = item.system.charges.find(id);
+        charge[ev.currentTarget.name] = Number(ev.currentTarget.value);
+        await item.update({ 'system.charges.charges': item.system.charges.charges });
+      }),
+    );
 
-    this.#disableOverrides(html);
-    this.#setupEquipStatusMenu(html);
-    this.#setupRechargeUsesMenu(html);
-    this.#setupEffectCreateMenu(html);
-    this.#setupItemContextMenu(html);
-    this.#setupAccordions(html);
-
-    // Input focus and update
-    const inputs = html.querySelectorAll('input');
-    inputs.forEach((el) => {
+    this.element.querySelectorAll('input').forEach((el) => {
       el.addEventListener('focus', (ev) => ev.currentTarget.select());
       el.addEventListener('keypress', (ev: KeyboardEvent) => {
         const targetIsButton = 'button' === ev?.target?.type;
@@ -92,367 +249,8 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       });
     });
 
-    html
-      .querySelector('[name="system.details.currency"]')
-      ?.addEventListener('change', this._onChangeInputDelta.bind(this));
-
-    // Drag events for macros.
-    html.querySelectorAll('li.item, .attribute').forEach((el) => {
-      // Add draggable attribute and dragstart listener.
-      el.draggable = true;
-      el.addEventListener('dragstart', this._onDragStart.bind(this), false);
-    });
-
-    //Disable draggable on the item if we drag inside of the charge summary
-    html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.addEventListener('mousedown', () => {
-        el.closest('li')?.setAttribute('draggable', 'false');
-      });
-    });
-
-    html.querySelectorAll('.charges-summary').forEach((el) => {
-      el.addEventListener('mouseup', () => {
-        el.closest('li')?.setAttribute('draggable', 'true');
-      });
-    });
-
-    html
-      .querySelectorAll('.status input[type="checkbox"]')
-      .forEach((el) =>
-        el.addEventListener('change', this._toggleStatusEffect.bind(this)),
-      );
-
-    //Display Advances on About tab
-    html
-      .querySelector('.character-detail.advances a')
-      ?.addEventListener('click', async () => {
-        this.activateTab('about', { group: 'primary' });
-        this.activateTab('advances', { group: 'about' });
-      });
-
-    //Toggle Conviction
-    html
-      .querySelector('.conviction-toggle')
-      ?.addEventListener('click', async () => {
-        await this.actor.toggleConviction();
-      });
-
-    //Roll Attribute
-    html.querySelectorAll('.attribute button').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const attribute = ev.currentTarget.dataset.attribute as Attribute;
-        await this.actor.rollAttribute(attribute);
-      }),
-    );
-
-    html.querySelector('.attribute-manager')?.addEventListener('click', () => {
-      new AttributeManager({ actor: this.actor }).render({ force: true });
-    });
-
-    // Roll Skill
-    html.querySelectorAll('.skill-card .skill-die').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const element = ev.currentTarget as HTMLElement;
-        const item = element.parentElement!.dataset.itemId!;
-        await this.actor.rollSkill(item);
-      }),
-    );
-
-    //Running Die
-    html.querySelector('.running-die')?.addEventListener('click', async () => {
-      await this.actor.rollRunningDie();
-    });
-
-    // Roll Damage
-    html.querySelectorAll('.damage-roll').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.closest('.item')?.dataset.itemId;
-        await this.actor.items.get(id)?.rollDamage();
-      }),
-    );
-
-    // Use Consumable
-    html.querySelectorAll('.use-consumable').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const id = ev.currentTarget.closest('.item')?.dataset.itemId;
-        await this.actor.items.get(id)?.consume();
-      }),
-    );
-
-    //Edit Item
-    html.querySelectorAll('.item-edit').forEach((el) =>
-      el.addEventListener('click', (ev) => {
-        const li = ev.currentTarget.closest('.item');
-        const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
-        item.sheet?.render(true);
-      }),
-    );
-
-    //Show Item
-    html.querySelectorAll('.item-show').forEach((el) =>
-      el.addEventListener('click', (ev) => {
-        const li = ev.currentTarget.closest('.item');
-        const item = this.actor.items.get(li?.dataset.itemId, { strict: true });
-        item.show();
-      }),
-    );
-
-    // Delete Item
-    html.querySelectorAll('.item-delete').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const li = ev.currentTarget.closest('.item');
-        const item = this.actor.items.get(li?.dataset.itemId);
-        item?.deleteDialog();
-      }),
-    );
-
-    // Charge input fields
-    html.querySelectorAll('.charge-fields input').forEach((el) =>
-      el.addEventListener('change', async (ev) => {
-        const li = ev.currentTarget.closest('.item');
-        const item = this.actor.items.get(li?.dataset.itemId);
-        const id = ev.currentTarget.dataset.chargeId;
-        const charge = item.system.charges.find(id);
-        charge[ev.currentTarget.name] = Number(ev.currentTarget.value);
-        await item.update({ 'system.charges.charges': item.system.charges.charges });
-      }),
-    );
-
-    // Charge recharge
-    html.querySelectorAll('[data-action="rechargeManual"]').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const li = ev.currentTarget.closest('.item');
-        const item = this.actor.items.get(li?.dataset.itemId);
-        const chargeId = ev.currentTarget.dataset.chargeId;
-        const charge = item.system.charges.find(chargeId);
-        const text = game.i18n.format('SWADE.RechargeManualConfirm', {
-          name: charge.name,
-        });
-        await foundry.applications.api.DialogV2.confirm({
-          content: `<p class="text-center">${text}</p>`,
-          classes: ['dialog', 'swade-app'],
-          yes: {
-            callback: async () => {
-              await item.rechargeCharge(charge);
-            }
-          },
-        });
-      }),
-    );
-
-    html.querySelectorAll('.item-create').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        this._inlineItemCreate(ev.currentTarget as HTMLButtonElement);
-      }),
-    );
-
-    //Item toggles
-    html.querySelectorAll('.item-toggle').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const target = ev.currentTarget;
-        const li = target.closest('.item');
-        const itemID = li?.dataset.itemId;
-        const item = this.actor.items.get(itemID, { strict: true });
-        const toggle = target.dataset.toggle as string;
-        await item.update(this._toggleItem(item, toggle));
-      }),
-    );
-
-    html.querySelectorAll('.effect-action').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const a = ev.currentTarget;
-        const effectId = a.closest('.effect')!.dataset.effectId as string;
-        const sourceId = a.closest('.effect')!.dataset.sourceId as string;
-        const sourceItem = this.actor.items.get(sourceId)!;
-        const effect = sourceId
-          ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
-          : (this.actor.effects.get(effectId) as SwadeActiveEffect);
-        if (!effect) return;
-        const action = a.dataset.action as string;
-        const toggle = a.dataset.toggle as string;
-        if (!effect) return;
-
-        switch (action) {
-          case 'edit':
-            return effect.sheet?.render({ force: true });
-          case 'delete':
-            return effect.deleteDialog();
-          case 'toggle':
-            return effect.update(this._toggleItem(effect, toggle));
-          case 'open-origin':
-            if (sourceItem) {
-              sourceItem.sheet?.render(true);
-            }
-            return;
-          default:
-            Logger.warn(`The action ${action} is not currently supported`);
-            break;
-        }
-      }),
-    );
-
-    html.querySelector('.armor-display')?.addEventListener('click', () => {
-      const armorPropertyPath = 'system.stats.toughness.armor';
-      const armorValue = foundry.utils.getProperty(
-        this.actor,
-        armorPropertyPath,
-      );
-      const label = game.i18n.localize('SWADE.Armor');
-      const template = `
-      <form><div class="form-group">
-        <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
-        <input name="modifier" value="${armorValue}" type="number"/>
-      </div></form>`;
-
-      foundry.applications.api.DialogV2.wait({
-        window: {
-          title: `${game.i18n.format('SWADE.EdF', { item: this.actor.name + ' ' + label })}`,
-        },
-        content: template,
-        buttons: [
-          {
-            action: 'ok',
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize('SWADE.Ok'),
-            default: true,
-            callback: (_event, button: HTMLButtonElement) => {
-              const newData = {};
-              newData[armorPropertyPath] =
-                button.form!.querySelector<HTMLInputElement>(
-                  'input[name="modifier"]',
-                )?.value;
-              this.actor.update(newData);
-            },
-          },
-          {
-            action: 'cancel',
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize('Cancel'),
-          },
-        ],
-      });
-    });
-
-    html.querySelector('.parry-display')?.addEventListener('click', () => {
-      const parryPropertyPath = 'system.stats.parry.shield';
-      const parryMod = foundry.utils.getProperty(
-        this.actor,
-        parryPropertyPath,
-      ) as number;
-      const label = game.i18n.localize('SWADE.ShieldBonus');
-      const template = `
-      <form><div class="form-group">
-        <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
-        <input name="modifier" value="${parryMod}" type="number"/>
-      </div></form>`;
-
-      foundry.applications.api.DialogV2.wait({
-        window: {
-          title: `${game.i18n.format('SWADE.EdF', { item: this.actor.name + ' ' + label })}`,
-        },
-        content: template,
-        buttons: [
-          {
-            action: 'ok',
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize('SWADE.Ok'),
-            default: true,
-            callback: (_event, button: HTMLButtonElement) => {
-              const newData = {};
-              newData[parryPropertyPath] =
-                button.form!.querySelector<HTMLInputElement>(
-                  'input[name="modifier"]',
-                )?.value;
-              this.actor.update(newData);
-            },
-          },
-          {
-            action: 'cancel',
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize('Cancel'),
-          },
-        ],
-      });
-    });
-
-    //Item Action Buttons
-    html
-      .querySelectorAll('.card-buttons button')
-      .forEach((el) =>
-        el.addEventListener('click', this._handleItemActions.bind(this)),
-      );
-
-    //Additional Stats roll
-    html.querySelectorAll('.additional-stats .roll').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        const button = ev.currentTarget;
-        const stat = button.dataset.stat!;
-        await this.actor.system.rollAdditionalStat(stat);
-      }),
-    );
-
-    //Wealth Die Roll
-    html
-      .querySelector('.currency .roll')
-      ?.addEventListener('click', () => this.actor.rollWealthDie());
-
-    //Advances
-    html.querySelectorAll('.advance-action').forEach((el) =>
-      el.addEventListener('click', async (ev) => {
-        if (this.actor.type === 'vehicle') return;
-        const button = ev.currentTarget;
-        const id = button.closest('li.advance')?.dataset.advanceId;
-        switch (button.dataset.action) {
-          case 'edit':
-            new AdvanceEditor({
-              advance: this.actor.system.advances.list.get(id, {
-                strict: true,
-              }),
-              actor: this.actor,
-            }).render({ force: true });
-            break;
-          case 'delete':
-            await this.#deleteAdvance(id);
-            break;
-          case 'toggle-planned':
-            await this.#toggleAdvancePlanned(id);
-            break;
-          default:
-            throw new Error(`Action ${button.dataset.action} not supported`);
-        }
-      }),
-    );
-
-    html
-      .querySelector<HTMLImageElement>('.profile-img')
-      ?.addEventListener('contextmenu', () => {
-        if (!this.actor.img) return;
-        new ImagePopout({
-          src: this.actor.img,
-          title: this.actor.name!,
-          shareable: this.actor.isOwner ?? game.user?.isGM,
-          uuid: this.actor.uuid,
-        }).render(true);
-      });
-
-    html
-      .querySelectorAll<HTMLButtonElement>('.adjust-counter')
-      .forEach((el) =>
-        el.addEventListener('click', this._handleCounterAdjust.bind(this)),
-      );
-
-    html
-      .querySelectorAll<HTMLButtonElement>(
-        '.character-detail.ancestry button, .character-detail.archetype button',
-      )
-      .forEach((btn) => {
-        btn.addEventListener('click', (ev) => {
-          const id = ev.currentTarget.dataset.itemId as string;
-          this.actor.items.get(id)?.sheet?.render(true);
-        });
-      });
-
-    html
+    // TODO: Could just make these normal tooltips, though they'd not be instant
+    this.element
       .querySelector('.stat.size input')
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
@@ -462,7 +260,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         });
       });
 
-    html
+    this.element
       .querySelector('.stat.pace input')
       ?.addEventListener('mouseenter', (event) => {
         game.tooltip.deactivate();
@@ -471,22 +269,50 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           cssClass: 'themed theme-dark',
         });
       });
+
+    // TODO: This without accordions, maybe
+    this.#setupAccordions(this.form!);
   }
 
-  override async getData(
-    options?: Partial<DocumentSheet.Options>,
-  ): Promise<SwadeActorSheetData> {
-    if (this.actor.system instanceof VehicleData) throw new Error();
+  override async _onFirstRender(
+    context: CharacterSheetRenderContext,
+    options: DeepPartial<foundry.applications.api.DocumentSheet.RenderOptions>
+  ) {
+    await super._onFirstRender(context, options);
+
+    // TODO: This is just undoing the direct parent _onFirstRender
+    const collapsibles = this.element.querySelectorAll('details');
+    for (const details of collapsibles) {
+      details.open = false;
+    }
+
+    this.#setupEquipStatusMenu(this.element);
+    this.#setupEffectCreateMenu(this.element);
+    this.#setupItemContextMenu(this.element);
+  }
+
+  override async _prepareContext(options): Promise<CharacterSheetRenderContext> {
+    const origContext = await super._prepareContext(options);
 
     let hasAnyChargeItems = false;
-    //retrieve the items and sort them by their sort value
-    const items = Array.from(this.actor.items.contents as SwadeItem[]).sort(
-      (a, b) => a.sort - b.sort,
-    );
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
-    for (const item of items) {
+    const hiddenActionOverride = this.actor.getFlag(
+      'swade',
+      'hiddenActionOverride',
+    );
+    const itemTypes: Record<string, SwadeItem[]> = {};
+    for (const item of origContext.items) {
       // Basic template rendering data
       const system = item.system;
+      const type = item.type;
+      itemTypes[type] ??= [];
+      if (
+        !(system instanceof ActionData) ||
+        !item.system.hidden ||
+        hiddenActionOverride
+      ) {
+        itemTypes[type].push(item);
+      }
       const itemActions =
         foundry.utils.getProperty(system, 'actions.additional') ?? {};
       const actions = new Array<any>();
@@ -524,7 +350,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       );
       const hasAmmoManagement =
         ammoManagement &&
-        item.type === 'weapon' &&
+        type === 'weapon' &&
         !item.isMeleeWeapon &&
         system.reloadType !== constants.RELOAD_TYPE.NONE;
       const hasReloadButton =
@@ -563,45 +389,27 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         enrichedDescription,
       );
       foundry.utils.setProperty(item, 'enrichedNotes', enrichedNotes);
-      if (item.type === 'power')
+      if (type === 'power')
         foundry.utils.setProperty(item, 'powerPoints', item.powerPointObject);
-    }
-
-    const itemTypes: Record<string, SwadeItem[]> = {};
-    const hiddenActionOverride = this.actor.getFlag(
-      'swade',
-      'hiddenActionOverride',
-    );
-    for (const item of items) {
-      const type = item.type;
-      itemTypes[type] ??= [];
-      if (
-        item.system instanceof ActionData &&
-        item.system.hidden &&
-        !hiddenActionOverride
-      ) {
-        continue; //do not display hidden actions
-      }
-      itemTypes[type].push(item);
     }
 
     const additionalStats = this.#getAdditionalStats();
 
-    const data: SwadeActorSheetData = {
-      itemTypes: itemTypes,
-      hasAnyChargeItems: hasAnyChargeItems,
-      parryTooltip: this.actor.getPTTooltip('parry'),
-      toughnessTooltip: this.actor.getPTTooltip('toughness'),
-      armorTooltip: this.actor.getArmorTooltip(),
-      skills: await this.#getSkillsForDisplay(),
-      powers: this.#getPowers(),
+    const context: CharacterSheetRenderContext = foundry.utils.mergeObject(origContext, {
       additionalStats: additionalStats,
-      hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
-      currentBennies: Array.fromRange(this.actor.bennies, 1),
+      advances: {
+        expanded: this.actor.system.advances.mode === 'expanded',
+        list: await this.#getAdvances(),
+      },
+      armorTooltip: this.actor.getArmorTooltip(),
       bennyImageURL: game.settings.get('swade', 'bennyImageSheet'),
-      useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
-      sheetEffects: await this._getEffects(),
+      currentBennies: Array.fromRange(this.actor.bennies, 1),
       enrichedText: await this._getEnrichedText(),
+      hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
+      hasAnyChargeItems,
+      itemTypes: itemTypes,
+      parryTooltip: this.actor.getPTTooltip('parry'),
+      powers: this.#getPowers(),
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -612,25 +420,36 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             ? 'lbs'
             : 'kg',
       },
-      advances: {
-        expanded: this.actor.system.advances.mode === 'expanded',
-        list: await this.#getAdvances(),
-      },
+      sheetEffects: await this._getEffects(),
+      skills: await this.#getSkillsForDisplay(),
+      toughnessTooltip: this.actor.getPTTooltip('toughness'),
+      useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       // Putting this at the end because of race condition for grandchild updates
       attributes: this.#getAttributesForDisplay(),
       wealthDieTypes: this.#getWealthDieTypes(),
-    };
-    return { ...(await super.getData(options)), ...data };
+    });
+
+    const tabEntries = Object.entries(context.tabs).filter(i => i[1].group === 'primary');
+    if (!this.actor.hasPowers && !this.actor.hasArcaneBackground) {
+      tabEntries.findSplice(i => i[0] === 'powers');
+    }
+    context.tabs = Object.fromEntries(tabEntries);
+    
+    context.subtabs = Object.fromEntries(Object.entries(this._getTabs()).filter(i => i[1].group === 'about'));
+    
+    return context;
   }
 
-  protected override async _render(...args): Promise<void> {
-    await super._render(...args);
+  // TODO: Nuke accordions?
+  override async render(...args): Promise<this> {
+    await super.render(...args);
     for (const accordion of Object.values(this._accordions)) {
       if (accordion.open && accordion.object.el) {
         await this.#onOpenAccordion(accordion.object.el);
         accordion.object.el.open = true;
       }
     }
+    return this;
   }
 
   protected override _onDragStart(event: DragEvent): void {
@@ -682,7 +501,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     const items = await super._onDropItemCreate(itemData);
     const typesToRender = ['power', 'skill'];
     for (const item of items) {
-      if (typesToRender.includes(item.type)) item.sheet?.render(true);
+      if (typesToRender.includes(item.type)) item.sheet?.render({ force: true });
     }
     return items;
   }
@@ -703,99 +522,82 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   /** Extend and override the sheet header buttons */
-  protected override _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
+  protected override _getHeaderControls() {
+    let controls = super._getHeaderControls();
 
     // Document Tweaks
     if (this.options.editable && this.actor.isOwner) {
-      const tweaks: Application.HeaderButton = {
+      const tweaks: foundry.applications.api.Application.HeaderControlsEntry = {
         label: game.i18n.localize('SWADE.Tweaks'),
-        class: 'configure-actor',
         icon: 'fa-solid fa-gears',
-        onclick: () =>
+        onClick: () =>
           new SwadeActorTweaks({ document: this.actor }).render({
             force: true,
           }),
       };
 
-      buttons = [tweaks, ...buttons];
+      controls = [tweaks, ...controls];
     }
-    return buttons;
+    return controls;
   }
 
-  protected _toggleItem(
-    doc: SwadeItem | SwadeActiveEffect,
-    toggle: string,
-  ): Record<string, boolean> {
-    const oldVal = !!foundry.utils.getProperty(doc, toggle);
-    return { [toggle]: !oldVal };
+  static async #openEffectOrigin(
+    this: CharacterSheet,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const effectId = target.closest('.effect')!.dataset.effectId as string;
+    const sourceId = target.closest('.effect')!.dataset.parentId as string;
+    const sourceItem = this.actor.items.get(sourceId)!;
+    const effect = sourceId
+      ? (sourceItem.effects.get(effectId) as SwadeActiveEffect)
+      : (this.actor.effects.get(effectId) as SwadeActiveEffect);
+    if (!effect || !sourceItem) return;
+    sourceItem.sheet?.render({ force: true });
   }
 
-  protected async _chooseItemType(choices?: any) {
-    if (!choices) {
-      choices = {
-        weapon: game.i18n.localize('TYPES.Item.weapon'),
-        armor: game.i18n.localize('TYPES.Item.armor'),
-        shield: game.i18n.localize('TYPES.Item.shield'),
-        gear: game.i18n.localize('TYPES.Item.gear'),
-        effect: 'Active Effect',
-      };
-    }
-    const templateData = {
-        types: choices,
-        hasTypes: true,
-        name: game.i18n.format('DOCUMENT.New', {
-          type: game.i18n.localize('DOCUMENT.Item'),
-        }),
-      },
-      dlg = await foundry.applications.handlebars.renderTemplate(
-        'templates/sidebar/document-create.html',
-        templateData,
-      );
-    //Create Dialog window
-    return new Promise((resolve) => {
-      foundry.applications.api.DialogV2.wait({
-        window: {
-          title: game.i18n.format('DOCUMENT.Create', {
-            type: game.i18n.localize('DOCUMENT.Item'),
+  static async #openAncestryArchetype(
+    this: CharacterSheet,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const id = target.dataset.itemId as string;
+    this.actor.items.get(id)?.sheet?.render({ force: true });
+  }
+
+  static async #advanceAction(
+    this: CharacterSheet,
+    _event: PointerEvent,
+    target: HTMLElement
+  ) {
+    const id = target.closest('li.advance')?.dataset.advanceId;
+    switch (target.dataset.action) {
+      case 'editAdvance':
+        new AdvanceEditor({
+          advance: this.actor.system.advances.list.get(id, {
+            strict: true,
           }),
-        },
-        content: dlg,
-        buttons: [
-          {
-            action: 'ok',
-            label: 'OK',
-            icon: '<i class="fas fa-check"></i>',
-            default: true,
-            callback: (_event, button: HTMLButtonElement) => {
-              const html = button.form!;
-              resolve({
-                type: html.querySelector<HTMLSelectElement>(
-                  'select[name="type"]',
-                )?.value,
-                name: html.querySelector<HTMLInputElement>('input[name="name"]')
-                  ?.value,
-              });
-            },
-          },
-          {
-            action: 'cancel',
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize('Cancel'),
-          },
-        ],
-      });
-    });
+          actor: this.actor,
+        }).render({ force: true });
+        break;
+      case 'deleteAdvance':
+        await this.#deleteAdvance(id);
+        break;
+      case 'togglePlannedAdvance':
+        await this.#toggleAdvancePlanned(id);
+        break;
+      default:
+        throw new Error(`Action ${target.dataset.action} not supported`);
+    }
   }
 
   protected async _createActiveEffect(
-    data: ActiveEffect.CreateData = {
-      name: game.i18n.format('DOCUMENT.New', {
-        type: game.i18n.localize('DOCUMENT.ActiveEffect'),
-      }),
-    },
+    data: ActiveEffect.CreateData = {},
     renderSheet = true,
   ) {
+    if (!data.name?.length) data.name = game.i18n.format('DOCUMENT.New', {
+      type: game.i18n.localize('DOCUMENT.ActiveEffect'),
+    });
     return getDocumentClass('ActiveEffect').create(data, {
       renderSheet: renderSheet,
       parent: this.actor,
@@ -803,7 +605,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   protected async _getEnrichedText(): Promise<
-    SwadeActorSheetData['enrichedText']
+    CharacterSheetRenderContext['enrichedText']
   > {
     return {
       appearance: await this.#enrichText(this.actor.system.details.appearance),
@@ -933,44 +735,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  protected async _inlineItemCreate(button: HTMLButtonElement) {
-    const type = button.dataset.type as Item.SubType | 'choice' | 'advance';
-    // item creation helper func
-    const createItem = (type: Item.SubType, name?: string) => {
-      const itemData = {
-        name: name ?? SwadeItem.defaultName({ type, parent: this.actor }),
-        type: type,
-        system: Object.assign({}, button.dataset),
-      };
-      delete itemData.system.type;
-      return itemData;
-    };
-    switch (type) {
-      case 'choice':
-        this._chooseItemType().then(async (dialogInput: any) => {
-          if (dialogInput.type === 'effect') {
-            this._createActiveEffect({ name: dialogInput.name });
-          } else {
-            const itemData = createItem(dialogInput.type, dialogInput.name);
-            await CONFIG.Item.documentClass.create(itemData, {
-              renderSheet: true,
-              parent: this.actor,
-            });
-          }
-        });
-        break;
-      case 'advance':
-        this.#addAdvance();
-        break;
-      default:
-        await CONFIG.Item.documentClass.create(createItem(type), {
-          renderSheet: true,
-          parent: this.actor,
-        });
-        break;
-    }
-  }
-
   /**
    * Handle input changes to numeric form fields, allowing them to accept delta-typed inputs
    * @param {Event} event  Triggering event.
@@ -986,16 +750,128 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  protected async _toggleStatusEffect(ev: JQuery.ChangeEvent) {
-    const key = ev.target.dataset.key as string;
+  protected static async _toggleStatusEffect(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const key = target.dataset.key as string;
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
-    await this.actor.toggleActiveEffect(ev.target.dataset.id as string);
+    await this.actor.toggleActiveEffect(target.dataset.id as string);
   }
 
-  protected async _handleCounterAdjust(ev: PointerEvent) {
-    const target = ev.currentTarget as HTMLElement;
-    const action = target.dataset.action;
+  static async #toggleConviction(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
+    await this.actor.toggleConviction();
+  }
+
+  static #displayAdvances(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
+    this.changeTab('about', 'primary');
+    this.changeTab('advances', 'about');
+  }
+
+  static async #rollAttribute(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const attribute = target.dataset.attribute as Attribute;
+    await this.actor.rollAttribute(attribute);
+  }
+
+  static async #rollSkill(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const item = target.parentElement!.dataset.itemId!;
+    await this.actor.rollSkill(item);
+  }
+
+  static async #rollRunningDie(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
+    await this.actor.rollRunningDie();
+  }
+
+  static #displayAttributeManager(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
+    new AttributeManager({ actor: this.actor }).render({ force: true });
+  }
+
+  static async #rechargeCharges(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const li = target.closest('.item');
+    const item = this.document.items.get(li?.dataset.itemId);
+    const chargeId = target.dataset.chargeId;
+    const charge = item.system.charges.find(chargeId);
+    const text = game.i18n.format('SWADE.RechargeManualConfirm', {
+      name: charge.name,
+    });
+    await foundry.applications.api.DialogV2.confirm({
+      content: `<p class="text-center">${text}</p>`,
+      classes: ['dialog', 'swade-app'],
+      yes: {
+        callback: async () => {
+          await item.rechargeCharge(charge);
+        }
+      },
+    });
+  }
+
+  static #displayModifierDialog(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const displayProperty = target.dataset.displayProperty;
+    let propertyPath;
+    let propertyLabel;
+    if (displayProperty === 'armor') {
+      propertyPath = 'system.stats.toughness.armor';
+      propertyLabel = game.i18n.localize('SWADE.Armor')
+    } else if (displayProperty === 'parry') {
+      propertyPath = 'system.stats.parry.shield';
+      propertyLabel = game.i18n.localize('SWADE.ShieldBonus');
+    } else {
+      return;
+    }
+    const propertyValue = foundry.utils.getProperty(
+      this.actor,
+      propertyPath,
+    );
+    const label = propertyLabel;
+    const template = `
+    <form><div class="form-group">
+      <label>${game.i18n.format('SWADE.EdF', { item: label })}</label>
+      <input name="modifier" value="${propertyValue}" type="number"/>
+    </div></form>`;
+
+    foundry.applications.api.Dialog.wait({
+      window: {
+        title: `${game.i18n.format('SWADE.EdF', { item: this.actor.name + ' ' + label })}`,
+      },
+      content: template,
+      buttons: [
+        {
+          action: 'ok',
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize('SWADE.Ok'),
+          default: true,
+          callback: (_event, button: HTMLButtonElement) => {
+            const newData = {};
+            newData[propertyPath] =
+              button.form!.querySelector<HTMLInputElement>(
+                'input[name="modifier"]',
+              )?.value;
+            this.actor.update(newData);
+          },
+        },
+        {
+          action: 'cancel',
+          icon: '<i class="fas fa-times"></i>',
+          label: game.i18n.localize('Cancel'),
+        },
+      ],
+    });
+  }
+
+  static async #rollDamage(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest('.item')?.dataset.itemId;
+    await this.actor.items.get(id)?.rollDamage();
+  }
+
+  static async #rollWealthDie(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
+    await this.actor.rollWealthDie();
+  }
+
+  static async #useConsumable(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest('.item')?.dataset.itemId;
+    await this.actor.items.get(id)?.consume();
+  }
+
+  protected static async _handleCounterAdjust(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const action = target.dataset.subAction;
 
     switch (action) {
       case 'fatigue-plus':
@@ -1047,8 +923,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     }
   }
 
-  async #addAdvance() {
-    if (this.actor.type === 'vehicle') return;
+  static async #addAdvance(this: CharacterSheet, _event: PointerEvent, _target: HTMLElement) {
     const advances = this.actor.system.advances.list;
     const newAdvance: Advance = {
       id: foundry.utils.randomID(8),
@@ -1065,9 +940,50 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
     }).render({ force: true });
   }
 
+  static async #createFavorite(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
+    const typeLabels = { ...CONFIG.Item.typeLabels, effect: 'DOCUMENT.ActiveEffect' };
+    const choices = target.dataset.choices?.split(',') ?? ['weapon', 'power', 'armor', 'shield', 'consumable', 'effect', 'action', 'gear'];
+    const templateData = {
+      types: Object.fromEntries(choices.map(i => [i, game.i18n.localize(typeLabels[i])])),
+      hasTypes: true,
+      name: ''
+    };
+    const dlg = await foundry.applications.handlebars.renderTemplate(
+      'templates/sidebar/document-create.html',
+      templateData
+    );
+    const response = await foundry.applications.api.Dialog.input({
+      window: {
+        title: game.i18n.format('DOCUMENT.Create', {
+          type: game.i18n.localize('DOCUMENT.Item')
+        })
+      },
+      content: dlg
+    }) as {type: Item.SubType | 'effect', name: string | undefined} | null;
+    const createItem = (type: Item.SubType, name?: string) => {
+      const itemData = {
+        name: name?.length ? name : SwadeItem.defaultName({ type, parent: this.actor }),
+        type,
+        system: Object.assign({favorite: true}, target.dataset)
+      };
+      delete itemData.system.type;
+      delete itemData.system.choices;
+      delete itemData.system.action;
+      return itemData;
+    }
+    if (response?.type === 'effect') {
+      this._createActiveEffect({ name: response.name, 'system.favorite': true });
+    } else if (response?.type) {
+      const itemData = createItem(response.type, response.name);
+      await CONFIG.Item.documentClass.create(itemData, {
+        renderSheet: true,
+        parent: this.actor
+      });
+    }
+  }
+
   async #deleteAdvance(id: string) {
-    if (this.actor.type === 'vehicle') return;
-    foundry.applications.api.DialogV2.confirm({
+    foundry.applications.api.Dialog.confirm({
       window: {
         title: game.i18n.localize('SWADE.Advances.Delete'),
       },
@@ -1079,7 +995,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       yes: {
         default: true,
         callback: () => {
-          if (this.actor.type === 'vehicle') return;
           const advances = this.actor.system.advances.list;
           advances.delete(id);
           const arr = advances.toJSON();
@@ -1094,8 +1009,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   async #toggleAdvancePlanned(id: string) {
-    if (this.actor.type === 'vehicle') return;
-    foundry.applications.api.DialogV2.confirm({
+    foundry.applications.api.Dialog.confirm({
       window: {
         title: game.i18n.localize('SWADE.Advances.Toggle'),
       },
@@ -1107,7 +1021,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       yes: {
         default: true,
         callback: async () => {
-          if (this.actor.type === 'vehicle') return;
           const advances = this.actor.system.advances.list;
           const advance = advances.get(id, { strict: true });
           advance.planned = !advance.planned;
@@ -1125,7 +1038,6 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   async #getAdvances() {
-    if (this.actor.type === 'vehicle') return [];
     const retVal = new Array<{ rank: string; list: Advance[] }>();
     const advances = this.actor.system.advances.list;
     for (const advance of advances) {
@@ -1322,7 +1234,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   #setupEquipStatusMenu(html: HTMLElement) {
-    const items: ContextMenu.Entry[] = [
+    const items: ContextMenu.Entry<HTMLElement>[] = [
       {
         name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
         icon: '<i class="fas fa-archive"></i>',
@@ -1426,7 +1338,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: () => {
-                for (const item of this.actor.items) {
+                for (const item of this.document.items) {
                   item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.ENCOUNTER);
                 }
               }
@@ -1445,7 +1357,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             classes: ['dialog', 'swade-app'],
             yes: {
               callback: async () => {
-                for (const item of this.actor.items) {
+                for (const item of this.document.items) {
                   item.rechargeAllChargesOfType(constants.CHARGE_RECHARGE_TYPE.DAY);
                 }
               }
@@ -1475,9 +1387,9 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           {
             name: 'SWADE.ActiveEffects.AddGuided',
             icon: '<i class="fa-solid fa-hat-wizard"></i>',
-            condition: this.object.isOwner,
+            condition: this.document.isOwner,
             callback: (_li) => {
-              new ActiveEffectWizard({ document: this.object }).render({
+              new ActiveEffectWizard({ document: this.document }).render({
                 force: true,
               });
             },
@@ -1485,18 +1397,18 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
           {
             name: 'SWADE.ActiveEffects.AddUnguided',
             icon: '<i class="fa-solid fa-file-plus"></i>',
-            condition: this.object.isOwner,
+            condition: this.document.isOwner,
             callback: (_li) => {
               this._createActiveEffect();
             },
           },
         ],
-        { eventName: 'click', jQuery: false },
+        { eventName: 'click', jQuery: false, fixed: true },
       );
   }
 
   #setupItemContextMenu(html: HTMLElement) {
-    const items: ContextMenu.Entry[] = [
+    const items: ContextMenu.Entry<HTMLElement>[] = [
       {
         name: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
@@ -1533,7 +1445,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
         callback: (i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
-          if (itemId) this.actor.items.get(itemId)?.sheet?.render(true);
+          if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
           if (effectId) {
             const allEffects: ActiveEffect[] = Array.from(
               this.actor.allApplicableEffects(),
@@ -1555,7 +1467,7 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
             { save: true },
           );
-          cloned?.sheet?.render(true);
+          cloned?.sheet?.render({ force: true });
         },
       },
       {
@@ -1575,12 +1487,11 @@ export default class CharacterSheet extends foundry.appv1.sheets.ActorSheet {
       },
     ];
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+    new foundry.applications.ux.ContextMenu.implementation(
       html,
-      'li.item',
+      'li.item, li.effect',
       items,
-      { jQuery: false },
+      {jQuery: false, fixed: true},
     );
   }
 
@@ -1659,45 +1570,6 @@ interface SheetArcaneBackground {
   powers: SwadeItem[];
 }
 
-type OptionsPartial = Partial<ActorSheet<DocumentSheet.Options<SwadeActor>>>;
-
-interface SwadeActorSheetData extends OptionsPartial {
-  attributes: Record<string, TraitDisplay>;
-  skills: SkillDisplay[];
-  itemTypes: Record<string, SwadeItem[]>;
-  hasAnyChargeItems: boolean;
-  parryTooltip: string;
-  toughnessTooltip: string;
-  armorTooltip: string;
-  settingrules: Record<string, unknown>;
-  currentBennies: number[];
-  powers: SheetPowers;
-  hasAdditionalStats: boolean;
-  additionalStats: AdditionalStats;
-  bennyImageURL: string;
-  useAttributeShorts: boolean;
-  enrichedText: {
-    appearance: string;
-    goals: string;
-    notes: string;
-    biography: string;
-    advances?: string;
-  };
-  advances: {
-    expanded: boolean;
-    list: Array<{
-      rank: string;
-      list: Advance[];
-    }>;
-  };
-  sheetEffects: {
-    temporary: SheetEffect[];
-    permanent: SheetEffect[];
-    favorite: SheetEffect[];
-  };
-  wealthDieTypes: DieSidesOption[];
-}
-
 interface TraitDisplay {
   die: number;
   modifier: number;
@@ -1711,4 +1583,43 @@ interface SkillDisplay extends TraitDisplay {
   isCoreSkill: boolean;
   isOwner: boolean;
   id: string;
+}
+
+interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
+  additionalStats: AdditionalStats;
+  advances: {
+    expanded: boolean;
+    list: Array<{
+      rank: string;
+      list: Advance[]
+    }>;
+  };
+  attributes: Record<string, TraitDisplay>;
+  armorTooltip: string;
+  bennyImageURL: string;
+  currentBennies: number[];
+  enrichedText: {
+    appearance: string;
+    goals: string;
+    notes: string;
+    biography: string;
+    advances?: string;
+  };
+  hasAdditionalStats: boolean;
+  hasAnyChargeItems: boolean;
+  itemTypes: Record<string, SwadeItem[]>;
+  parryTooltip: string;
+  powers: SheetPowers;
+  settingrules: Record<string, unknown>;
+  sheetEffects: {
+    temporary: SheetEffect[];
+    permanent: SheetEffect[];
+    favorite: SheetEffect[];
+  };
+  skills: SkillDisplay[];
+  subtabs: Record<string, SwadeApplicationTab>;
+  tabs: Record<string, SwadeApplicationTab>;
+  toughnessTooltip: string;
+  useAttributeShorts: boolean;
+  wealthDieTypes: DieSidesOption[];
 }

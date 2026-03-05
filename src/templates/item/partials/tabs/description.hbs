@@ -1,7 +1,33 @@
-{{editor
-  enrichedDescription
-  target='system.description'
-  button=true
-  editable=editable
-  engine='prosemirror'
-}}
+<section
+  class='{{tabs.description.tabCssClass}}'
+  data-group='{{tabs.description.group}}'
+  data-tab='{{tabs.description.id}}'
+>
+  {{#if (eq item.type 'edge')}}
+    <div class="requirements">
+      {{#if editable}}
+      <button type="button" class="invisible open-requirements-editor" data-action="openRequirementsEditor">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+      {{/if}}
+      <span><strong>{{localize 'SWADE.Req'}}:</strong>&nbsp;{{{item.system.requirementString}}}</span>
+    </div>
+  {{/if}}
+  {{#if (eq item.type 'power')}}
+    <div class="form-group trapping">
+      <input
+        name="system.trapping"
+        type="text"
+        value="{{item.system.trapping}}"
+        placeholder="{{localize 'SWADE.Trap'}}"
+        title="{{localize 'SWADE.Trap'}}"
+        data-dtype="String"
+      />
+    </div>
+  {{/if}}
+  <div class='editor-container'>
+    <prose-mirror toggled name='system.description' value='{{enrichedDescription}}'>
+      {{{enrichedDescription}}}
+    </prose-mirror>
+  </div>
+</section>

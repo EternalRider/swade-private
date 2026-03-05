@@ -8,9 +8,8 @@ import SwadeItem from '../../documents/item/SwadeItem';
 
 import { DamageRoll } from '../../dice/DamageRoll';
 import { TraitRoll } from '../../dice/TraitRoll';
-import { Logger } from '../../Logger';
 import ItemCardService from '../../models/ItemCardService';
-import { VehicleData } from '../actor';
+import { VehicleData } from '../actor/vehicle';
 
 declare namespace ItemCardData {
   interface Schema extends foundry.data.fields.DataSchema {
@@ -209,14 +208,10 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     //If the item's parent is a vehicle swap in the operator
     if (actor?.system instanceof VehicleData) {
       if (this._item.type === 'weapon') {
-        actor = actor.system.getCrewMemberForWeapon(this._item) ?? null;
-        if (!actor) {
-          Logger.warn('Could not retrieve an assigned user for this weapon.', {
-            toast: true,
-          });
-        }
+        const gunner = actor.system.getCrewMemberForWeapon(this._item);
+        actor = gunner ?? actor.system.operator ?? actor;
       } else {
-        actor = actor.system.operator;
+        actor = actor.system.operator ?? actor;
       }
     }
 

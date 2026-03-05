@@ -22,8 +22,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.0
+
+### Added
+
+- Added GM Override for Quick/Level Headeed Card picker. GM can trigger to auto select highest result if player is unresponsive **by @jestevens210**
+- Added Active Effects support for Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens210**
+- Added support to add Gang Up bonus to damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens210**
+- Added `Defeated` button to damage applicator workflow to skip injury/bleeding out when not needed
+- Added Actor Tweak to allow selecting attribute to use for auto-calculating Toughness (default: `vigor`) by **@jestevens210**
+- Added Actor Tweak to overriding the Parry base skill by SWID per-actor (falls back to the global `parryBaseSwid` setting when blank) by **@jestevens210**
+
+### Changed
+
+- **Breaking** Updated actor sheet and item sheets to use application v2 framework. Modules that use application v1 character sheet styling will lose their custom styles and core sheet will render instead **by @roth-michael**
+- Improved the Spirit roll dialog for Unshaking by making it loop and remain available after failed rolls, allowing players to retry the roll or spend a benny without losing access to the options. The dialog now closes only on successful Unshake roll or when a benny is spent. **by @jestevens210**
+
+### Fixed
+
+- Fixed an issue where Innate Powers would fail the resource check when rolling a trait from the item card or quick access. (!1406) **by @jestevens210**
+- Allow editing a skill when Active Effect is modifying it. **by @florad**
+- Moved call `swadeActorPrepareDerivedData` hook before pace calculation to allow modules to adjust `encumbrance.max` by **@jestevens210**
+
+### Known Issues
+
+- Using charges on consumables and quantity drops to 0 quantity, charges don't fresh as item is considered expended. Reset quantity and charges will replish as usual.
+
 ## 5.1.1
 
+=======
 ### Added
 
 - Added @size as a possible roll key. (!931) **by @ddbrown30**

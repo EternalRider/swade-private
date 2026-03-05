@@ -2,7 +2,7 @@
 import { ReloadType } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
-import { VehicleData } from '../data/actor';
+import { VehicleData } from '../data/actor/vehicle';
 import { ChargesData } from '../data/fields/ChargesData';
 import type SwadeUser from '../documents/SwadeUser';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
@@ -624,9 +624,11 @@ function _ensureBatteryMaxCharges(
 ) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
-    if (data.system.charges?.hasCharges === undefined ||
+    if (
+      data.system.charges?.hasCharges === undefined ||
       !data.system.charges.charges ||
-      !data.system.charges.charges.length) {
+      !data.system.charges.charges.length
+    ) {
       //We don't have a charge object so create one
       updateData.system.charges ??= {};
       updateData.system.charges.hasCharges = true;
@@ -638,8 +640,9 @@ function _ensureBatteryMaxCharges(
         max: data.system.charges?.max ?? 100,
       });
     } else {
+      ('');
       data.system.charges.charges[0].max = 100;
-      updateData[`system.charges.charges`] = data.system.charges.charges;
+      updateData['system.charges.charges'] = data.system.charges.charges;
     }
   }
 }

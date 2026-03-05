@@ -234,6 +234,15 @@
         rootId=document.uuid
         source=true
       }}
+      {{formGroupSimple
+        'system.details.toughnessTrait'
+        label='SWADE.Attribute'
+        blank=false
+        classes='slim'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
     {{/unless}}
     {{formGroupSimple
       'system.details.autoCalcParry'
@@ -243,6 +252,25 @@
       rootId=document.uuid
       source=true
     }}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.details.parryBaseSwid'
+        classes=''
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
+    {{#unless isVehicle}}
+      {{formGroupSimple
+        'system.stats.gangUpDamage'
+        classes='slim'
+        label='SWADE.GangUpDamage'
+        document=document
+        rootId=document.uuid
+        source=true
+      }}
+    {{/unless}}
   </fieldset>
   <!--Pace-->
   {{#unless isVehicle}}

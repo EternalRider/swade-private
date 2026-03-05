@@ -20,7 +20,7 @@ declare global {
 }
 
 export default class SwadeActiveEffect<
-  Subtype extends ActiveEffect.SubType = ActiveEffect.SubType,
+  Subtype extends ActiveEffect.Sub.Type = ActiveEffect.Sub.Type,
 > extends ActiveEffect<Subtype> {
   static override defaultName(
     context: foundry.abstract.Document.DefaultNameContext<
@@ -241,7 +241,7 @@ export default class SwadeActiveEffect<
           item.reset();
         }
       }
-      if (item.sheet?.rendered) item.sheet.render(true);
+      if (item.sheet?.rendered) item.sheet.render({ force: true });
     }
   }
 
@@ -348,7 +348,7 @@ export default class SwadeActiveEffect<
     if (doc.system instanceof GroupData) return; // Really shouldn't be a group
     if (
       change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-      doc.system.stats.globalMods.hasOwnProperty(match[1])
+      doc.system.stats.globalMods[match[1]] !== undefined
     ) {
       const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
       const effectKey = 'system.stats.globalMods.' + match[1];

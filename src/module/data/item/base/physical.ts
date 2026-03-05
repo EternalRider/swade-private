@@ -1,11 +1,11 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { EquipState, PotentialSource } from '../../../../globals';
 import { constants } from '../../../constants';
+import { ChargesData } from '../../fields/ChargesData';
+import * as migrations from '../_migration';
 import { builder, physicalItem } from '../common';
 import { Builder, PhysicalItem } from '../item-common.interface';
-import * as migrations from '../_migration';
 import { SwadeBaseItemData } from './base';
-import { ChargesData } from '../../fields';
 
 declare namespace SwadePhysicalItemData {
   interface Schema extends SwadeBaseItemData.Schema, PhysicalItem, Builder {

@@ -7,13 +7,14 @@ import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
-import { ShieldData, WeaponData } from '../item';
+import { ShieldData } from '../item/shield';
+import { WeaponData } from '../item/weapon';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
-import { SwadeBaseActorData, TokenSize } from './base/base';
+import { SwadeBaseActorData, type TokenSize } from './base/base';
 
 declare namespace VehicleData {
   interface Schema
@@ -48,6 +49,12 @@ declare namespace VehicleData {
         strength: Array<DerivedModifier>;
         vigor: Array<DerivedModifier>;
         trait: Array<DerivedModifier>;
+        attackRanged: Array<DerivedModifier>;
+        attackMelee: Array<DerivedModifier>;
+        gangUp: Array<DerivedModifier>;
+        targetAttack: Array<DerivedModifier>;
+        targetAttackRanged: Array<DerivedModifier>;
+        targetAttackMelee: Array<DerivedModifier>;
       };
       parry: {
         sources: Array<DerivedModifier>;
@@ -90,13 +97,13 @@ function validateCrewMember(
   value: any,
   _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
 ) {
-  const actor = fromUuidSync(value.uuid);
+  const actor = fromUuidSync(value.uuid) as SwadeActor | null;
   // Optional chaining `actor.type` so that on game load, when `fromUuidSync` can only return null, this doesn't throw.
   if (['vehicle', 'group'].includes(actor?.type)) {
     return new foundry.data.validation.DataModelValidationFailure({
       unresolved: true,
       invalidValue: value,
-      message: `Cannot contain an actor of type ${actor.type}!`,
+      message: `Cannot contain an actor of type ${actor?.type}!`,
     });
   }
 }
@@ -487,6 +494,12 @@ class VehicleData<
       strength: new Array<DerivedModifier>(),
       vigor: new Array<DerivedModifier>(),
       trait: new Array<DerivedModifier>(),
+      attackRanged: new Array<DerivedModifier>(),
+      attackMelee: new Array<DerivedModifier>(),
+      gangUp: new Array<DerivedModifier>(),
+      targetAttack: new Array<DerivedModifier>(),
+      targetAttackRanged: new Array<DerivedModifier>(),
+      targetAttackMelee: new Array<DerivedModifier>(),
     };
     this.stats.parry.sources = new Array<DerivedModifier>();
     this.stats.parry.effects = new Array<DerivedModifier>();
