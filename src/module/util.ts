@@ -469,19 +469,32 @@ export function getGangUpModifiers(
     currActor = gunner ?? currActor.system.operator ?? currActor;
   }
 
-  const ignoreStatuses = ['defeated', 'incapacitated', 'stunned'];
+  const ignoreStatuses = ['defeated', 'dead', 'incapacitated', 'stunned'];
+  const isIgnoredForGangUp = (token: TokenDocument): boolean => {
+    if (ignoreStatuses.some((status) => token.hasStatusEffect(status))) {
+      return true;
+    }
+
+    if (token.combatant?.defeated || token.combatant?.isDefeated) {
+      return true;
+    }
+
+    const actorIncapacitated =
+      foundry.utils.getProperty(token.actor, 'system.isIncapacitated') ||
+      foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
+    return !!actorIncapacitated;
+  };
+
   const numAttackerAllies =
     scene.tokens?.filter((t) => {
       if (t.disposition !== sourceToken.disposition) return false;
-      if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
-        return false;
+      if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
     }).length ?? 0;
   const numDefenderAllies =
     scene.tokens?.filter((t) => {
       if (t.disposition !== targetToken.disposition) return false;
-      if (ignoreStatuses.some((status) => t.hasStatusEffect(status)))
-        return false;
+      if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
     }).length ?? 0;
   let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
