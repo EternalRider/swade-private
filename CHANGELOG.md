@@ -22,6 +22,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.1 (hotifx)
+
+### Added
+
+- Add missing target damage modifier (`system.stats.globalMods.targetDamage`) to compliment targetAttack modifiers by **@jestevens210**
+
+### Fixed
+
+- Move recharge button back to header by **@ddbrown30**
+- Fix issues where certain powers could not be sent to chat by **@jestevens210***
+
 ## 5.2.0
 
 ### Added
