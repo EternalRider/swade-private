@@ -345,21 +345,17 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     canClose: boolean,
   ): Promise<HTMLElement> {
     const messageData = this._getBaseMessageData(canDelete, canClose);
-    // Render shell with empty content to prevent bare <li> elements in item
-    // descriptions from auto-closing the root <li> during HTML parsing
+    // Render with empty content to prevent bare <li> in descriptions from
+    // breaking the root <li> during HTML parsing, then inject via innerHTML
     messageData.message.content = '';
     const template = await foundry.applications.handlebars.renderTemplate(
       CONFIG.ChatMessage.template,
       messageData,
     );
-    const parsed = foundry.utils.parseHTML(template);
-    const shell = (
-      parsed instanceof HTMLElement ? parsed : parsed[0]
-    ) as HTMLElement;
-    // Inject real content via innerHTML so it parses in <div> context
-    const contentEl = shell.querySelector('.message-content');
+    const html = foundry.utils.parseHTML(template) as HTMLElement;
+    const contentEl = html.querySelector('.message-content');
     if (contentEl) contentEl.innerHTML = content;
-    return shell;
+    return html;
   }
 
   protected async _refreshMessage() {
