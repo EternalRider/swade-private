@@ -160,12 +160,21 @@ export default class SwadeChatMessage extends ChatMessage {
   ): Promise<HTMLElement> {
     await this.#renderSwadeRollContent(messageData);
 
-    // Render the chat message
-    let html = await foundry.applications.handlebars.renderTemplate(
+    // Render shell with empty content to prevent bare <li> elements in
+    // message content from auto-closing the root <li> during HTML parsing
+    const content = messageData.message.content;
+    messageData.message.content = '';
+    const templateStr = await foundry.applications.handlebars.renderTemplate(
       CONFIG.ChatMessage.template,
       messageData,
     );
-    html = foundry.utils.parseHTML(html) as HTMLElement;
+    messageData.message.content = content;
+    const parsed = foundry.utils.parseHTML(templateStr);
+    const html: HTMLElement = (
+      parsed instanceof HTMLElement ? parsed : parsed[0]
+    ) as HTMLElement;
+    const contentEl = html.querySelector('.message-content');
+    if (contentEl) contentEl.innerHTML = content;
     this.#attachRollMessageListeners(html);
 
     return html;
