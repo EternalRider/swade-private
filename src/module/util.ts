@@ -181,7 +181,6 @@ export function isFirstGM() {
   return firstGM()?.isSelf ?? false;
 }
 
-/** @internal */
 export function getRankFromAdvance(advance: number): number {
   if (advance <= 3) {
     return constants.RANK.NOVICE;
@@ -196,7 +195,6 @@ export function getRankFromAdvance(advance: number): number {
   }
 }
 
-/** @internal */
 export function getScaleName(scaleMod: number): string {
   const modMax = 6;
 
@@ -214,7 +212,6 @@ export function getScaleName(scaleMod: number): string {
   return SWADE.scales[index];
 }
 
-/** @internal */
 export function getRankFromAdvanceAsString(advance: number): string {
   return SWADE.ranks[getRankFromAdvance(advance)];
 }

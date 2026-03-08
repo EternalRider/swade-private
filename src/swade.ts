@@ -67,6 +67,10 @@ import {
   getItemsBySwid,
   getStatusEffectDataById,
   slugify,
+  getRankFromAdvance,
+  getScaleName,
+  getRankFromAdvanceAsString,
+  getDefaultAttackModifiers,
 } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
@@ -98,6 +102,10 @@ const swadeAPI: SwadeGame = {
     getStatusEffectDataById,
     slugify,
     getItemsBySwid,
+    getRankFromAdvance,
+    getScaleName,
+    getRankFromAdvanceAsString,
+    getDefaultAttackModifiers,
   },
   compendiumArt: {
     map: new Map<string, ArtworkMapping>(),
