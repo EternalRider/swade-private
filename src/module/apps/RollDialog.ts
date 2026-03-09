@@ -23,6 +23,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#createFiltersHandlers();
   #isResolved = false;
   #extraButtonUsed = false;
+  #noAcing = false;
   #keydownListener;
   #ctx: RollDialogContext;
 
@@ -139,9 +140,14 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     super._onChangeForm(formConfig, event);
     const target = event.target;
     if (!target) return;
-    if (target.type === 'checkbox') {
+    if (target.type === 'checkbox' && target.dataset.index !== undefined) {
       const index = Number(target.dataset.index);
       this.modifiers[index].ignore = !target.checked;
+      this.render();
+      return;
+    }
+    if (target.name === 'noAcing') {
+      this.#noAcing = target.checked;
       this.render();
     }
   }
@@ -162,6 +168,8 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
           ', ',
         ),
         isTraitRoll: this.isTraitRoll,
+        isDamageRoll: this.isDamageRoll,
+        noAcing: this.#noAcing,
         buttons: [
           {
             type: 'submit',
@@ -210,6 +218,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const expanded = foundry.utils.expandObject(
       formData.object,
     ) as RollDialogFormData;
+    this.#noAcing = !!expanded.noAcing;
     Object.values(expanded.modifiers ?? []).forEach(
       (v, i) => (this.modifiers[i].ignore = !v.active),
     );
@@ -314,21 +323,67 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   #buildRollForEvaluation(): SwadeRoll {
-    const formula =
-      this.ctx.roll.formula +
-      this.modifiers
-        .filter((v) => !v.ignore) //remove the disabled modifiers
-        .map(normalizeRollModifiers)
-        .reduce(modifierReducer, '');
+    const modFormula = this.modifiers
+      .filter((v) => !v.ignore) //remove the disabled modifiers
+      .map(normalizeRollModifiers)
+      .reduce(modifierReducer, '');
+    const formula = this.ctx.roll.formula + modFormula;
     // Create new roll from pure formula text
-    const intermediateRoll = new this.rollCls(formula, this.#getRollData());
-    const oldTerms = this.ctx.roll.terms;
+    const intermediateRoll = new this.rollCls(
+      formula,
+      this.#getRollData(),
+    );
+    const oldTerms = this.#cloneTermsDeep(this.ctx.roll.terms);
     const newTerms = intermediateRoll.terms;
     // Replace "duplicate" terms with the originals to retain any extra data set on them
     newTerms.splice(0, oldTerms.length, ...oldTerms);
     const roll = this.rollCls.fromTerms(newTerms) as SwadeRoll;
     roll.modifiers = this.modifiers;
+    if (this.isDamageRoll && this.#noAcing) {
+      this.#removeAcingFromTerms(roll.terms);
+      roll.resetFormula();
+    }
     return roll;
+  }
+
+  #cloneTermsDeep(terms: foundry.dice.terms.RollTerm[]) {
+    return terms.map((term) => this.#cloneTermDeep(term));
+  }
+
+  #cloneTermDeep(term: foundry.dice.terms.RollTerm) {
+    const cloned =
+      typeof term.clone === 'function' ? term.clone() : term;
+    if ('terms' in cloned && Array.isArray(cloned.terms)) {
+      cloned.terms = this.#cloneTermsDeep(cloned.terms);
+    }
+    if ('rolls' in cloned && Array.isArray(cloned.rolls)) {
+      cloned.rolls = cloned.rolls.map((roll) => {
+        const rollClone =
+          typeof roll?.clone === 'function' ? roll.clone() : roll;
+        if (rollClone?.terms) {
+          rollClone.terms = this.#cloneTermsDeep(rollClone.terms);
+        }
+        return rollClone;
+      });
+    }
+    return cloned;
+  }
+
+  #removeAcingFromTerms(terms: foundry.dice.terms.RollTerm[]) {
+    for (const term of terms) {
+      if (term instanceof foundry.dice.terms.Die) {
+        term.modifiers = term.modifiers.filter((mod) => !mod.startsWith('x'));
+        continue;
+      }
+      if ('terms' in term && Array.isArray(term.terms)) {
+        this.#removeAcingFromTerms(term.terms);
+      }
+      if ('rolls' in term && Array.isArray(term.rolls)) {
+        for (const roll of term.rolls) {
+          if (roll?.terms) this.#removeAcingFromTerms(roll.terms);
+        }
+      }
+    }
   }
 
   #fillModifierLabels(mod: RollModifier): RollModifier {
@@ -457,5 +512,6 @@ interface RollDialogConfiguration
 interface RollDialogFormData {
   modifiers?: Array<RollModifier & { active: boolean }>;
   map?: number;
+  noAcing?: boolean;
   rollMode: foundry.CONST.DICE_ROLL_MODES;
 }
