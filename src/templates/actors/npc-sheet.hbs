@@ -1,4 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
+<section class="{{cssClass}}" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <div class="profile-img-container">
@@ -47,6 +47,7 @@
         <div class="conviction">
           <a
             class="conviction-toggle {{#if actor.system.details.conviction.active}}pulse{{/if}}"
+            data-action="toggleConviction"
           >
             <strong
               >{{localize "SWADE.Conv"}}{{#if
@@ -109,19 +110,19 @@
         <div class="status-container">
           <div class="status-item">
               <label class="check-container">{{localize "SWADE.Shaken"}}
-                <input type="checkbox" data-id="shaken" data-key="isShaken" {{checked actor.system.status.isShaken}} />
+                <input type="checkbox" data-action="toggleStatusEffect" data-id="shaken" data-key="isShaken" {{checked actor.system.status.isShaken}} />
                 <span class="checkmark"></span>
               </label>
           </div>
           <div class="status-item">
             <label class="check-container">{{localize "SWADE.Distr"}}
-              <input type="checkbox" data-id="distracted" data-key="isDistracted" {{checked actor.system.status.isDistracted}} />
+              <input type="checkbox" data-action="toggleStatusEffect" data-id="distracted" data-key="isDistracted" {{checked actor.system.status.isDistracted}} />
               <span class="checkmark"></span>
             </label>
           </div>
           <div class="status-item">
             <label class="check-container">{{localize "SWADE.Vuln"}}
-              <input type="checkbox" data-id="vulnerable" data-key="isVulnerable" {{checked actor.system.status.isVulnerable}} />
+              <input type="checkbox" data-action="toggleStatusEffect" data-id="vulnerable" data-key="isVulnerable" {{checked actor.system.status.isVulnerable}} />
               <span class="checkmark"></span>
             </label>
             </label>
@@ -130,19 +131,19 @@
         <div class="status-container">
           <div class="status-item">
             <label class="check-container">{{localize "SWADE.Stunned"}}
-              <input type="checkbox" data-id="stunned" data-key="isStunned" {{checked actor.system.status.isStunned}} />
+              <input type="checkbox" data-action="toggleStatusEffect" data-id="stunned" data-key="isStunned" {{checked actor.system.status.isStunned}} />
               <span class="checkmark"></span>
             </label>
           </div>
           <div class="status-item">
             <label class="check-container">{{localize "SWADE.Entangled"}}
-              <input type="checkbox" data-id="entangled" data-key="isEntangled" {{checked actor.system.status.isEntangled}} />
+              <input type="checkbox" data-action="toggleStatusEffect" data-id="entangled" data-key="isEntangled" {{checked actor.system.status.isEntangled}} />
               <span class="checkmark"></span>
             </label>
           </div>
           <div class="status-item">
             <label class="check-container">{{localize "SWADE.Bound"}}
-              <input type="checkbox" data-id="bound" data-key="isBound" {{checked actor.system.status.isBound}} />
+              <input type="checkbox" data-action="toggleStatusEffect" data-id="bound" data-key="isBound" {{checked actor.system.status.isBound}} />
               <span class="checkmark"></span>
             </label>
           </div>
@@ -152,22 +153,13 @@
   </header>
 
   {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
-  <nav class="flexrow tabs" data-group="primary">
-    <a class="item" data-tab="summary">{{localize "SWADE.Summary"}}</a>
-    <a class="item" data-tab="powers">{{localize "SWADE.Pow"}}</a>
-  </nav>
+  {{> 'templates/generic/tab-navigation.hbs'}}
   {{/if}}
 
-  <main class="sheet-body">
-    {{!-- Summary Tab --}}
-    <section class="tab active" data-group="primary" data-tab="summary">
-      {{> "swade.npc-summary"}}
-    </section>
-    {{!-- Powers Tab --}} 
-    {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
-      <section class="tab powers" data-group="primary" data-tab="powers">
-        {{> "swade.npc-powers"}}
-      </section>
-    {{/if}}
-  </main>
-</form>
+  {{!-- Summary Tab --}}
+  {{> "swade.npc-summary" tab=tabs.summary}}
+  {{!-- Powers Tab --}} 
+  {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
+    {{> "swade.npc-powers" tab=tabs.powers}}
+  {{/if}}
+</section>

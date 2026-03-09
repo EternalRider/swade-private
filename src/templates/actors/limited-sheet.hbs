@@ -1,4 +1,4 @@
-<form class='{{cssClass}}' autocomplete='off'>
+<section class='{{cssClass}}' autocomplete='off'>
   {{! Sheet Header }}
   <header class='sheet-header'>
     <div class='profile-img-container'>
@@ -24,14 +24,10 @@
     </div>
   </header>
   <section class='sheet-body'>
-    <div style='height: 600px'>
-      {{editor 
-        enrichedBiography
-        target="system.details.biography.value" 
-        button=true 
-        editable=editable
-        engine="prosemirror"
-      }}
+    <div class='editor-container'>
+      <prose-mirror toggled style='border-top:1px groove #293133;'>
+        {{{enrichedBiography}}}
+      </prose-mirror>
     </div>
   </section>
-</form>
+</section>
