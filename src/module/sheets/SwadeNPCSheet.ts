@@ -138,6 +138,9 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   override async _prepareContext(options): Promise<NpcSheetRenderContext> {
+    if ((this.tabGroups.primary === 'powers') && !this.actor.hasPowers && !this.actor.hasArcaneBackground) {
+      this.tabGroups.primary = 'summary';
+    }
     const context = await super._prepareContext(options);
     const enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       this.actor.system.details.biography.value,
