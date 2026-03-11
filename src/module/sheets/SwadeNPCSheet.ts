@@ -97,10 +97,10 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
-    //Toggle Equipment Card collapsible
-    this.element.querySelectorAll('.gear-card .card-header .item-name').forEach((el) =>
+    //Toggle Equipment Card & Power Card collapsible
+    this.element.querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name').forEach((el) =>
       el.addEventListener('click', (ev) => {
-        const card = ev.currentTarget.closest('.gear-card');
+        const card = ev.currentTarget.closest('.gear-card,.power-card');
         const content = card.querySelector('.card-content');
         content.classList.toggle('collapsed');
       }),

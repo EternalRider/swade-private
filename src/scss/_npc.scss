@@ -185,8 +185,8 @@ body.theme-light .swade.sheet.actor.npc,
           flex-basis: 20px;
         }
       }
-      .gear-list {
-        .gear-card {
+      .gear-list, .powers-list {
+        .gear-card, .power-card {
           border: $decorative-line;
           .card-header {
             background: rgba(0, 0, 0, 0.2);
@@ -339,38 +339,14 @@ body.theme-light .swade.sheet.actor.npc,
       }
     }
     .powers-list {
-      display: flex;
-      flex-direction: row;
-      align-content: flex-start;
-      flex-wrap: wrap;
-      overflow: auto;
+      display: block;
+      list-style: none;
       .power {
         display: none;
-        margin: 2px;
-        flex-grow: 0;
-        flex-basis: calc(50% - 4px);
-        height: 250px;
-        border: $decorative-line;
-        border-top-left-radius: 4px;
-        border-radius: 2px;
         &.active {
-          display: block;
+          display: list-item;
         }
-        .power-header {
-          background: rgba(0, 0, 0, 0.05);
-          border-bottom: $decorative-line;
-          h4 {
-            margin: 0;
-            padding: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-          }
-          .item-image {
-            height: 25px;
-            flex-grow: 0;
-            flex-basis: 25px;
-            @extend %item-background-image;
-          }
+        .card-header {
           .item-controls {
             padding: 5px;
             flex-grow: 0;
@@ -383,12 +359,7 @@ body.theme-light .swade.sheet.actor.npc,
             }
           }
         }
-        .power-content {
-          margin: 0 3px;
-          line-height: 24px;
-          padding: 5px;
-          height: calc(100% - 30px);
-          overflow-y: auto;
+        .card-content {
           .power-details,
           .trapping {
             font-size: 12px;
