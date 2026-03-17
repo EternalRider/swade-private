@@ -651,6 +651,32 @@ body.theme-light .swade-official,
     select {
       max-width: 270px;
     }
+    .form-group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 0.5em;
+      label {
+        flex: 1;
+        white-space: nowrap;
+        text-align: left;
+      }
+      .form-fields {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        flex: 0 1 auto;
+        gap: 0.25em;
+        input {
+          width: 4em;
+        }
+        .flex-separator {
+          flex: 0 0 auto !important;
+        }
+      }
+    }
   }
 
   .armor-display, .parry-display {
