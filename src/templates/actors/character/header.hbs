@@ -81,6 +81,13 @@
       {{disabled advances.expanded}}
     />
   </span>
+  {{#if hasAnyRechargeableItems}}
+  <span class="gridcell character-detail recharge" data-tooltip="SWADE.Recharge">
+    <button type='menu' class='charge-recharge-menu'>
+      <i class='fas fa-rotate'></i>
+    </button>
+  </span>
+  {{/if}}
   <span class="gridcell character-detail advances" data-tooltip="SWADE.Adv">
     <a data-action="displayAdvances">{{localize 'SWADE.Adv'}}</a>
     <input
