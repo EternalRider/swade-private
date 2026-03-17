@@ -331,6 +331,18 @@ class SwadeItem<
       }
     }
 
+    // Target Damage Modifiers (Active Effects on the target)
+    if (this.actor && 'stats' in this.actor.system) {
+      const target = game.user.targets.first()?.document;
+      const targetActor = target?.actor;
+      if (targetActor && 'stats' in targetActor.system) {
+        const targetDamage = targetActor.system.stats.globalMods.targetDamage;
+        if (Array.isArray(targetDamage)) {
+          modifiers.push(...targetDamage);
+        }
+      }
+    }
+
     if (options.additionalMods) {
       modifiers.push(...options.additionalMods);
     }
