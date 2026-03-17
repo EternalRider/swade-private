@@ -70,7 +70,7 @@ body.theme-light .swade-official,
 }
 
 .swade-official {
-  //Custom properties  
+  //Custom properties
   --section-header-color: #{$header-text};
   --section-header-size: #{$section-header};
   --section-header-font: 'Anton', 'Signika', sans-serif;
@@ -206,28 +206,28 @@ body.theme-light .swade-official,
       grid-row: 3;
       grid-column: 3/6;
     }
-  
+
     &.archetype {
       grid-row: 2;
       grid-column: 3/6;
     }
-  
+
     &.rank {
       grid-row: 2;
       grid-column: 6/9;
     }
-  
+
     &.advances {
       grid-row: 3;
       grid-column: 6/9;
-  
+
       input {
         text-align: center;
         flex: 50%;
       }
     }
 
-    .recharge {
+    &.recharge {
       grid-row: 2;
       grid-column: 9;
       border: none;
@@ -650,6 +650,32 @@ body.theme-light .swade-official,
     max-width: 95%;
     select {
       max-width: 270px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 0.5em;
+      label {
+        flex: 1;
+        white-space: nowrap;
+        text-align: left;
+      }
+      .form-fields {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: nowrap;
+        flex: 0 1 auto;
+        gap: 0.25em;
+        input {
+          width: 4em;
+        }
+        .flex-separator {
+          flex: 0 0 auto !important;
+        }
+      }
     }
   }
 

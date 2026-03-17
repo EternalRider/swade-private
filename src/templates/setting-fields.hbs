@@ -7,7 +7,7 @@
       <div class='form-group'>
         {{#if (eq attr.dtype 'Die')}}
           <label>
-            <button type='button' class='roll' data-stat='{{key}}'>
+            <button type='button' class='roll' data-stat='{{key}}' data-action='rollAdditionalStat'>
               {{attr.label}}
             </button>
           </label>
@@ -57,6 +57,7 @@
               }}'
             />
             {{#if attr.hasMaxValue}}
+              <strong class='flex-separator'>/</strong>
               <input
                 type='text'
                 name='system.additionalStats.{{key}}.max'

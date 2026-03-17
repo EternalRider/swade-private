@@ -3,7 +3,7 @@
   <figure class='grid-under gu-2'></figure>
   <figure class='grid-under gu-3'></figure>
   <figure class='grid-under gu-4'></figure>
-  
+
   {{> 'systems/swade/templates/actors/character/header.hbs'}}
   {{> 'templates/generic/tab-navigation.hbs'}}
   {{> 'systems/swade/templates/actors/character/tabs/summary.hbs' tab=tabs.summary}}
@@ -15,13 +15,6 @@
   {{> 'systems/swade/templates/actors/character/tabs/effects.hbs' tab=tabs.effects}}
   {{> 'systems/swade/templates/actors/character/tabs/actions.hbs' tab=tabs.actions}}
   {{> 'systems/swade/templates/actors/character/tabs/about.hbs' tab=tabs.about}}
-  {{#if hasAnyChargeItems}}
-  <span class="gridcell character-detail recharge">
-    <button type='menu' class='charge-recharge-menu' title='{{localize "SWADE.Recharge"}}'>
-      <i class='fas fa-rotate'></i>
-    </button>
-  </span>
-  {{/if}}
 
   <figure class='grid-cover gc-1'></figure>
   <figure class='grid-cover gc-2'></figure>
