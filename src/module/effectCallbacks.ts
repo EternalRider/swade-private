@@ -20,6 +20,8 @@ async function wildAttack(effect: SwadeActiveEffect) {
 }
 
 async function removeShaken(effect: SwadeActiveEffect) {
+  let failedRoll = false;
+  let acceptedResult = false;
   while (effect.parent?.effects.has(effect.id)) {
     await new Promise<void>((resolve) => {
       let roll: TraitRoll | null = null;
@@ -60,40 +62,64 @@ async function removeShaken(effect: SwadeActiveEffect) {
               });
               resolve();
             } else {
-              // Failed, resolve to show dialog again
+              failedRoll = true;
               resolve();
             }
           },
         },
-        {
-          action: 'benny',
-          label: game.i18n.localize('SWADE.BenniesSpend'),
-          icon: '<i class="fas fa-coins"></i>',
-          callback: async () => {
-            processed = true;
-            const parent = effect.parent;
-            if (!(parent instanceof SwadeActor)) return;
-            await parent?.spendBenny();
-            await effect.delete();
-            resolve();
-          },
-        },
-        {
-          action: 'gmBenny',
-          label: game.i18n.localize('SWADE.BenniesSpendGM'),
-          icon: '<i class="fas fa-coins"></i>',
-          callback: async () => {
-            processed = true;
-            const parent = effect.parent;
-            if (!(parent instanceof SwadeActor)) return;
-            await game.user?.spendBenny();
-            await effect.delete();
-            resolve();
-          },
-        },
       ];
 
-      if (!game.user?.isGM) buttons.pop();
+      if (failedRoll) {
+        buttons.push(
+          {
+            action: 'accept',
+            label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Accept'),
+            icon: '<i class="fas fa-check"></i>',
+            callback: async () => {
+              processed = true;
+              failedRoll = false;
+              acceptedResult = true;
+              await effect.resetDuration();
+              resolve();
+            },
+          },
+          {
+            action: 'benny',
+            label: game.i18n.localize('SWADE.BenniesSpend'),
+            icon: '<i class="fas fa-coins"></i>',
+            callback: async () => {
+              processed = true;
+              const parent = effect.parent;
+              if (!(parent instanceof SwadeActor)) return;
+              failedRoll = false;
+              await parent?.spendBenny();
+              await effect.delete();
+              resolve();
+            },
+          },
+          {
+            action: 'gmBenny',
+            label: game.i18n.localize('SWADE.BenniesSpendGM'),
+            icon: '<i class="fas fa-coins"></i>',
+            callback: async () => {
+              processed = true;
+              const parent = effect.parent;
+              if (!(parent instanceof SwadeActor)) return;
+              failedRoll = false;
+              await game.user?.spendBenny();
+              await effect.delete();
+              resolve();
+            },
+          },
+        );
+      }
+
+      if (!game.user?.isGM) {
+        foundry.utils.findSplice(
+          buttons,
+          (button) => button.action === 'gmBenny',
+        );
+      }
 
       const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
       const data: foundry.applications.api.DialogV2.Configuration = {
@@ -125,6 +151,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
       };
       foundry.applications.api.DialogV2.wait(data);
     });
+    if (acceptedResult) return;
   }
 }
 
