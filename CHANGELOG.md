@@ -37,6 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed issues where certain powers could not be sent to chat. **by @jestevens210**
 - Fixed situation where Shaken dialog could not be closed if user wished to accept the Shaken result. **by @jestevens210**
 - Fixed an issue that would cause the card selection in the Update Combatant window to be rendered incorrectly. (#1409) **by @florad92**
+- Derived Stat inputs should once again be center-aligned. (#1418) **by @florad92**
 
 ## 5.2.0
 

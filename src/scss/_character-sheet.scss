@@ -100,7 +100,7 @@ body.theme-light .swade-official,
       grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 0.5em;
       flex: 1;
-      &>.header {
+      & > .header {
         background-image: none;
         gap: 0.25rem;
         grid-template-rows: 3em 2em 2em max-content minmax(0, 1fr);
@@ -235,7 +235,6 @@ body.theme-light .swade-official,
     }
   }
 
-
   .tabs {
     grid-row: 4;
     grid-column: 1 / -1;
@@ -244,7 +243,8 @@ body.theme-light .swade-official,
     border-top: none;
     gap: 0;
 
-    .item, [data-action="tab"] {
+    .item,
+    [data-action='tab'] {
       flex: 1;
       font-family: 'Anton', 'Signika', sans-serif;
       text-align: center;
@@ -502,7 +502,7 @@ body.theme-light .swade-official,
   .charges-summary {
     ul.charge-list {
       font-size: var(--font-size-14);
-      font-family: "Signika", serif;
+      font-family: 'Signika', serif;
       margin-left: 2em;
       margin-right: 2em;
     }
@@ -679,7 +679,8 @@ body.theme-light .swade-official,
     }
   }
 
-  .armor-display, .parry-display {
+  .armor-display,
+  .parry-display {
     position: relative;
     top: -2px;
   }
@@ -781,6 +782,7 @@ body.theme-light .swade-official,
       margin: 0;
       width: 100%;
       height: 28px;
+      text-align: center;
     }
     .running-die {
       max-height: 28px;
