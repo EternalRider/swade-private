@@ -227,13 +227,15 @@ export default class SwadeCombatant<
     return cardsToDraw;
   }
 
-  async assignNewActionCard(cardId: string) {
+  async assignNewActionCard(cardId: string | null) {
     const combat = this.combat;
     if (!combat) return;
     //grab the action deck;
     const deck = game.cards!.get(game.settings.get('swade', 'actionDeck'), {
       strict: true,
     });
+    if (!cardId) return this.resetInitiative();
+
     const card = deck.cards.get(cardId, { strict: true });
 
     const cardValue = card.value as number;

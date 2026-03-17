@@ -22,6 +22,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.1
+
+### Added
+
+- Add missing target damage modifier (`system.stats.globalMods.targetDamage`) to compliment targetAttack modifiers.**by @jestevens210**
+- Add "No Acing" checkbox toggle to the damage roll dialog to update roll formula. Unchecking the box restores the original roll formula. **by @jestevens210**
+- Expose additional utilities `getRankFromAdvance`, `getRankFromAdvanceAsString`, `getScaleName`, `getDefaultAttackModifiers`. **by @mhilbrunner**
+
+### Fixed
+
+- Fixed display of Additional Stats and added seperator for stats with a Max Value. **by @jestevens210**
+- Move recharge button back to header. **by @ddbrown30**
+- Fixed issues where certain powers could not be sent to chat. **by @jestevens210**
+- Fixed situation where Shaken dialog could not be closed if user wished to accept the Shaken result. **by @jestevens210**
+- Fixed an issue that would cause the card selection in the Update Combatant window to be rendered incorrectly. (#1409) **by @florad92**
+
 ## 5.2.0
 
 ### Added
@@ -51,6 +67,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 5.1.1
 
 =======
+
 ### Added
 
 - Added @size as a possible roll key. (!931) **by @ddbrown30**
