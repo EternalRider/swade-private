@@ -55,6 +55,7 @@ declare namespace VehicleData {
         targetAttack: Array<DerivedModifier>;
         targetAttackRanged: Array<DerivedModifier>;
         targetAttackMelee: Array<DerivedModifier>;
+        targetDamage: Array<DerivedModifier>;
       };
       parry: {
         sources: Array<DerivedModifier>;
@@ -500,6 +501,7 @@ class VehicleData<
       targetAttack: new Array<DerivedModifier>(),
       targetAttackRanged: new Array<DerivedModifier>(),
       targetAttackMelee: new Array<DerivedModifier>(),
+      targetDamage: new Array<DerivedModifier>(),
     };
     this.stats.parry.sources = new Array<DerivedModifier>();
     this.stats.parry.effects = new Array<DerivedModifier>();

@@ -82,6 +82,7 @@ declare namespace CreatureData {
         targetAttack: Array<DerivedModifier>;
         targetAttackRanged: Array<DerivedModifier>;
         targetAttackMelee: Array<DerivedModifier>;
+        targetDamage: Array<DerivedModifier>;
         gangUp: Array<DerivedModifier>;
       };
     };
@@ -619,6 +620,7 @@ class CreatureData<
       targetAttack: new Array<DerivedModifier>(),
       targetAttackRanged: new Array<DerivedModifier>(),
       targetAttackMelee: new Array<DerivedModifier>(),
+      targetDamage: new Array<DerivedModifier>(),
       gangUp: new Array<DerivedModifier>(),
     };
   }

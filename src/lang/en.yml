@@ -72,6 +72,7 @@ SWADE:
     TargetAttack: Target Attack
     TargetAttackRanged: Target Attack (Ranged)
     TargetAttackMelee: Target Attack (Melee)
+    TargetDamage: Target Damage
     GangUp: Gang Up
     TargetGangUp: Target Gang Up Modifier
     Damage: All Damage
@@ -446,6 +447,7 @@ SWADE:
   CustomWildDie: '- Custom Wild Die -'
   Subtract: Subtract
   DmgRolls: Damage Rolls
+  NoAcing: No Acing
   SubtractPPDesc: Subtract PP Cost from the available PP
   AddPPDesc: Add PP Cost to the available PP
   RightClickZoom: '[Right-Click] to Zoom'

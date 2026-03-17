@@ -260,6 +260,10 @@ body.theme-light .swade-item-sheet,
     }
   }
 
+  .properties.active .form-group.range-type > label  {
+    flex: 1;
+  }
+
   .header {
     display: block;
     width: fit-content;

@@ -111,6 +111,17 @@
   <fieldset class='formula'>
     <legend>{{localize 'SWADE.Formula'}}</legend>
     <textarea onclick='this.select()' readonly>{{formula}}</textarea>
+    {{#if isDamageRoll}}
+      <div class='form-group'>
+        <label for='no-acing'>{{localize 'SWADE.NoAcing'}}</label>
+        <input
+          type='checkbox'
+          id='no-acing'
+          name='noAcing'
+          {{checked noAcing}}
+        />
+      </div>
+    {{/if}}
   </fieldset>
   <div class='form-group'>
     <label>{{localize 'SWADE.RollMode'}}</label>

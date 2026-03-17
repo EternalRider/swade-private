@@ -27,6 +27,10 @@ import {
   getItemsBySwid,
   getStatusEffectDataById,
   slugify,
+  getRankFromAdvance,
+  getRankFromAdvanceAsString,
+  getScaleName,
+  getDefaultAttackModifiers,
 } from '../module/util';
 import { ArtworkMapping } from './ArtworkMapping.interface';
 
@@ -55,6 +59,10 @@ export interface SwadeGame {
     getStatusEffectDataById: typeof getStatusEffectDataById;
     slugify: typeof slugify;
     getItemsBySwid: typeof getItemsBySwid;
+    getRankFromAdvance: typeof getRankFromAdvance;
+    getScaleName: typeof getScaleName;
+    getRankFromAdvanceAsString: typeof getRankFromAdvanceAsString;
+    getDefaultAttackModifiers: typeof getDefaultAttackModifiers;
   };
   compendiumArt: {
     map: Map<string, ArtworkMapping>;

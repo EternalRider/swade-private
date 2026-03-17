@@ -149,7 +149,7 @@ export class SwadeActorSheetV2<
       user: game.user,
       // Validates both permissions and compendium status
       editable: this.isEditable,
-      owner: this.isOwner,
+      owner: this.document.isOwner,
       limited: this.document.limited,
       // Add the actor document.
       actor: this.actor,

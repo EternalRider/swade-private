@@ -1,40 +1,49 @@
 <p>{{localize 'SWADE.ActionCard'}}</p>
 <fieldset style='margin-bottom: 3px;'>
+  <div style='grid-column 1/-1;'>
+    <input
+      type='radio'
+      name='action-card'
+      value='none'
+      {{checked noneSelected}}
+    />
+    <label>No Card</label>
+  </div>
   <div style='display: grid; grid-template-columns: repeat(4, 1fr);'>
-    {{#each cardList as |card|}}
-      {{#unless card.isJoker}}
-        <label title='{{card.name}}'>
+    {{#each cardList}}
+      {{#unless isJoker}}
+        <span data-tooltip='{{name}}' class='selectable-card'>
           <input
             type='radio'
             name='action-card'
-            value='{{card.cardString}}'
-            data-card-id='{{card.id}}'
-            data-is-joker='{{card.isJoker}}'
-            {{checked card.isDealt}}
+            value='{{id}}'
+            data-is-joker='{{isJoker}}'
+            {{checked isDealt}}
           />
-          <span
-            style='{{card.color}} {{card.isAvailable}}'
-          >{{{card.cardString}}}</span>
-        </label>
+          <label style='{{color}} {{isAvailable}}'>
+            {{{cardString}}}
+          </label>
+        </span>
       {{/unless}}
     {{/each}}
   </div>
   <div
     style='display: grid; grid-template-columns: repeat({{numberOfJokers}}, 1fr); justify-items: center;'
   >
-    {{#each cardList as |card|}}
-      {{#if card.isJoker}}
-        <label title='{{card.name}}'>
+    {{#each cardList}}
+      {{#if isJoker}}
+        <span data-tooltip='{{name}}' class='selectable-card'>
           <input
             type='radio'
             name='action-card'
-            value='{{card.cardString}}'
-            data-card-id='{{card.id}}'
-            data-is-joker='{{card.isJoker}}'
-            {{checked card.isDealt}}
+            value='{{id}}'
+            data-is-joker='{{isJoker}}'
+            {{checked isDealt}}
           />
-          {{{card.cardString}}}
-        </label>
+          <label for=''>
+            {{{cardString}}}
+          </label>
+        </span>
       {{/if}}
     {{/each}}
   </div>

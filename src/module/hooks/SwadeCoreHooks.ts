@@ -799,15 +799,16 @@ export default class SwadeCoreHooks {
     const numberOfJokers = cards.filter(
       (card) => card.system['isJoker'],
     ).length;
+    const noneSelected = !cardList.some((c) => c.isDealt);
 
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const elementTemplate = document.createElement('template');
-    elementTemplate.innerHTML =
-      await foundry.applications.handlebars.renderTemplate(path, {
-        cardList,
-        numberOfJokers,
-      });
+    const rendered = await foundry.applications.handlebars.renderTemplate(
+      path,
+      { cardList, numberOfJokers, noneSelected },
+    );
+    elementTemplate.innerHTML = rendered;
     html.querySelector('footer')?.before(...elementTemplate.content.children);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication
@@ -818,8 +819,10 @@ export default class SwadeCoreHooks {
           .closest('.combatant-config')
           ?.querySelector<HTMLInputElement>('input[name=action-card]:checked');
         if (!selectedCard) return;
-        const cardId = selectedCard.dataset.cardId as string;
-        await app.document.assignNewActionCard(cardId);
+        const cardId = selectedCard.value;
+        await app.document.assignNewActionCard(
+          cardId === 'none' ? null : cardId,
+        );
       });
   }
 

@@ -263,7 +263,9 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
           )
         : game.i18n.localize('SWADE.Magazine.NoneLoaded');
 
-      const content = foundry.utils.parseHTML('<span>' + enriched + '</span>');
+      const content = foundry.utils.parseHTML(
+        '<span>' + enriched + '</span>',
+      );
 
       game.tooltip.activate(magazine, {
         html: content as HTMLElement,
@@ -343,12 +345,17 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     canClose: boolean,
   ): Promise<HTMLElement> {
     const messageData = this._getBaseMessageData(canDelete, canClose);
-    messageData.message.content = content;
+    // Render with empty content to prevent bare <li> in descriptions from
+    // breaking the root <li> during HTML parsing, then inject via innerHTML
+    messageData.message.content = '';
     const template = await foundry.applications.handlebars.renderTemplate(
       CONFIG.ChatMessage.template,
       messageData,
     );
-    return foundry.utils.parseHTML(template) as HTMLElement;
+    const html = foundry.utils.parseHTML(template) as HTMLElement;
+    const contentEl = html.querySelector('.message-content');
+    if (contentEl) contentEl.innerHTML = content;
+    return html;
   }
 
   protected async _refreshMessage() {

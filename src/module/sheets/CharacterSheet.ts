@@ -294,7 +294,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   override async _prepareContext(options): Promise<CharacterSheetRenderContext> {
     const origContext = await super._prepareContext(options);
 
-    let hasAnyChargeItems = false;
+    let hasAnyRechargeableItems = false;
     const ammoManagement = game.settings.get('swade', 'ammoManagement');
     const hiddenActionOverride = this.actor.getFlag(
       'swade',
@@ -333,10 +333,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
             charge: itemCharge,
             rechargeType: SWADE.chargeRechargeTypes[itemCharge.rechargeType],
           });
+
+          hasAnyRechargeableItems ||= itemCharge.rechargeType != constants.CHARGE_RECHARGE_TYPE.FINITE;
         }
         foundry.utils.setProperty(item, 'charges', charges);
-
-        hasAnyChargeItems ||= system.charges.hasCharges;
       }
 
       const hasDamage =
@@ -406,7 +406,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       currentBennies: Array.fromRange(this.actor.bennies, 1),
       enrichedText: await this._getEnrichedText(),
       hasAdditionalStats: !foundry.utils.isEmpty(additionalStats),
-      hasAnyChargeItems,
+      hasAnyRechargeableItems,
       itemTypes: itemTypes,
       parryTooltip: this.actor.getPTTooltip('parry'),
       powers: this.#getPowers(),
@@ -434,9 +434,9 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       tabEntries.findSplice(i => i[0] === 'powers');
     }
     context.tabs = Object.fromEntries(tabEntries);
-    
+
     context.subtabs = Object.fromEntries(Object.entries(this._getTabs()).filter(i => i[1].group === 'about'));
-    
+
     return context;
   }
 
@@ -1606,7 +1606,7 @@ interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
     advances?: string;
   };
   hasAdditionalStats: boolean;
-  hasAnyChargeItems: boolean;
+  hasAnyRechargeableItems: boolean;
   itemTypes: Record<string, SwadeItem[]>;
   parryTooltip: string;
   powers: SheetPowers;
