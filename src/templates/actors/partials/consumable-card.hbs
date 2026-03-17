@@ -1,14 +1,14 @@
-<li class='gear-card item misc' data-item-id='{{item.id}}'>
+<li class='gear-card item misc' data-item-id='{{item.id}}' data-document-class='Item'>
   <header class='flexrow card-header'>
     <div class='item-image' style="background-image: url('{{item.img}}')"></div>
     <h4 class='item-name'>{{item.name}}</h4>
     <div class='item-controls'>
-      <a class='item-control item-show'><i class='fas fa-eye'></i></a>
+      <a class='item-control item-show' data-action='showItem'><i class='fas fa-eye'></i></a>
       {{#if item.isOwner}}
-        <a class='item-control item-edit' title='{{localize "SWADE.Ed"}}'>
+        <a class='item-control item-edit' data-action='openItem' title='{{localize "SWADE.Ed"}}'>
           <i class='fas fa-edit'></i>
         </a>
-        <a class='item-control item-delete' title='{{localize "SWADE.Del"}}'>
+        <a class='item-control item-delete' data-action='deleteItem' title='{{localize "SWADE.Del"}}'>
           <i class='fas fa-trash'></i>
         </a>
       {{/if}}
@@ -17,7 +17,7 @@
   <div class='card-content collapsed'>
     <div>
       <div>
-        <a class='use-consumable'>
+        <a class='use-consumable' data-action='useConsumable'>
           {{localize 'SWADE.Charges'}}:
           {{item.system.charges.value}}/{{item.system.charges.max}}
         </a>

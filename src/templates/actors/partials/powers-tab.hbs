@@ -1,9 +1,60 @@
-<div class="flexrow">
-  <div class="form-group header-field">
+<section
+  class='{{tab.tabCssClass}} {{tab.id}}'
+  data-group='{{tab.group}}'
+  data-tab='{{tab.id}}'
+>
+  {{#*inline "powerEntry"}}
+    <li class="power-card power item" data-item-id="{{id}}" data-document-class="Item">
+      <header class="card-header flexrow">
+        <div class="item-image" style="background-image: url('{{img}}')"></div>
+        <h4 class="item-name">{{name}}</h4>
+        {{#if isOwner}}
+          <div class="item-controls flexrow">
+            <a class="item-show" data-action="showItem"><i class="fas fa-eye"></i></a>
+            <a class="item-edit" data-action='openItem'><i class="fas fa-edit"></i></a>
+          </div>
+        {{/if}}
+      </header>
+      <div class="card-content collapsed">
+        <div class="power-content">
+          <div>
+            <div class="power-details">
+              <div class="flexrow">
+                {{#if system.rank}}
+                <div>{{localize 'SWADE.Rank'}}:&nbsp;{{system.rank}}</div>
+                {{/if}} {{#if system.pp}}
+                <div>{{localize 'SWADE.PPAbbreviation'}}:&nbsp;{{system.pp}}</div>
+                {{/if}}
+              </div>
+              <div class="flexrow">
+                {{#if system.range}}
+                <div>{{localize 'SWADE.Range._name'}}:&nbsp;{{system.range}}</div>
+                {{/if}} {{#if system.duration}}
+                <div>{{localize 'SWADE.Dur'}}:&nbsp;{{system.duration}}</div>
+                {{/if}}
+              </div>
+              <div class="flexrow">
+                {{#if system.damage}}
+                <div>{{localize 'SWADE.Dmg'}}:&nbsp;<a class="damage-roll">{{system.damage}}</a></div>
+                {{/if}} {{#if system.ap}}
+                <span>{{localize "SWADE.Ap"}}:&nbsp;{{system.ap}}</span>
+                {{/if}}
+              </div>
+            </div>
+            {{#if system.trapping}}
+              <div class="trapping">{{localize "SWADE.Trapping"}}:&nbsp;{{system.trapping}}</div>
+            {{/if}}
+            <div class="power-description">{{{enrichedDescription}}}</div>
+          </div>
+        </div>
+      </div>
+    </li>
+  {{/inline}}
+  <div class="flexrow form-group header-field">
     <div class="arcane-tabs">
-      <div class="arcane" data-arcane="All">{{localize "SWADE.All"}}</div>
+      <div class="arcane" data-arcane="All" data-action="filterPowers">{{localize "SWADE.All"}}</div>
       {{#each arcanes as |arcane id|}}
-        <div class="arcane" data-arcane="{{arcane}}">{{arcane}}</div>
+        <div class="arcane" data-arcane="{{arcane}}" data-action="filterPowers">{{arcane}}</div>
       {{/each}}
     </div>
     <!-- Global counter -->
@@ -31,7 +82,7 @@
       </div>
       <!-- Individual counters -->
       {{#each arcanes as |arcane|}}
-        <div class="power-counter" data-arcane="{{arcane}}">
+        <div class="power-counter" data-arcane="{{arcane}}" data-action="filterPowers">
           {{#with (lookup @root.actor.system.powerPoints arcane)}}
             <label>{{localize "SWADE.PP"}}</label>
             <input
@@ -57,56 +108,14 @@
       {{/each}}
     {{/unless}}
     <div class="header-field-add">
-      <a class="item-create" data-type="power"><i class="fa fa-plus"></i></a>
+      <a class="item-create" data-action='createDocument' data-render-sheet='true' data-document-class='Item' data-type="power"><i class="fa fa-plus"></i></a>
     </div>
   </div>
-</div>
-<powers {{{powersOptions}}}>
-  {{#each actor.itemTypes.power}}
-  <div
-    class="power item"
-    data-item-id="{{id}}"
-    data-arcane="{{system.arcane}}"
-  >
-    <div class="power-header flexrow">
-      <div class="item-image" style="background-image: url('{{img}}')"></div>
-      <h4 class="item-name">{{name}}</h4>
-      {{#if ../owner}}
-      <div class="item-controls flexrow">
-        <a class="item-show"><i class="fas fa-eye"></i></a>
-        <a class="item-edit"><i class="fas fa-edit"></i></a>
-      </div>
-      {{/if}}
-    </div>
-    <div class="power-content">
-      <div class="power-details">
-        <div class="flexrow">
-          {{#if system.rank}}
-          <div>{{localize 'SWADE.Rank'}}:&nbsp;{{system.rank}}</div>
-          {{/if}} {{#if system.pp}}
-          <div>{{localize 'SWADE.PPAbbreviation'}}:&nbsp;{{system.pp}}</div>
-          {{/if}}
-        </div>
-        <div class="flexrow">
-          {{#if system.range}}
-          <div>{{localize 'SWADE.Range._name'}}:&nbsp;{{system.range}}</div>
-          {{/if}} {{#if system.duration}}
-          <div>{{localize 'SWADE.Dur'}}:&nbsp;{{system.duration}}</div>
-          {{/if}}
-        </div>
-        <div class="flexrow">
-          {{#if system.damage}}
-          <div>{{localize 'SWADE.Dmg'}}:&nbsp;<a class="damage-roll">{{system.damage}}</a></div>
-          {{/if}} {{#if system.ap}}
-          <span>{{localize "SWADE.Ap"}}:&nbsp;{{system.ap}}</span>
-          {{/if}}
-        </div>
-      </div>
-      {{#if system.trapping}}
-        <div class="trapping">{{localize "SWADE.Trapping"}}:&nbsp;{{system.trapping}}</div>
-      {{/if}}
-      <div class="power-description">{{{enrichedDescription}}}</div>
-    </div>
+  <div class="quickaccess-list">
+    <powers class="powers-list">
+      {{#each actor.itemTypes.power}}
+      {{> "powerEntry"}}
+      {{/each}}
+    </powers>
   </div>
-  {{/each}}
-</powers>
+</section>
