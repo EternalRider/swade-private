@@ -201,9 +201,12 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     Object.entries(context.modGroups).forEach(([id, m]) => {
-      if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll) delete context.modGroups[id];
-      if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack) delete context.modGroups[id];
-      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll) delete context.modGroups[id];
+      if (m.rollType === constants.ROLL_TYPE.TRAIT && !this.isTraitRoll)
+        delete context.modGroups[id];
+      if (m.rollType === constants.ROLL_TYPE.ATTACK && !this.isAttack)
+        delete context.modGroups[id];
+      if (m.rollType === constants.ROLL_TYPE.DAMAGE && !this.isDamageRoll)
+        delete context.modGroups[id];
     });
     return context;
   }
@@ -231,7 +234,8 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
     //add any unsubmitted modifiers, evaluate and resolve the promise
     this.#addModifier();
-    this.#resolve(await this.#evaluateRoll());
+    const evaluated = await this.#evaluateRoll();
+    this.#resolve(evaluated);
   }
 
   static #onClose(
@@ -263,18 +267,15 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     ) {
       const traitPool = terms[0];
       if (traitPool instanceof foundry.dice.terms.PoolTerm) {
-        const wildDie = new WildDie();
-        const wildRoll = this.rollCls.fromTerms([wildDie]);
+        const wildRoll = this.rollCls.fromTerms([new WildDie()]);
         traitPool.rolls.push(wildRoll);
         traitPool.terms.push(wildRoll.formula);
       }
     }
 
     //recreate the roll
-    const finalizedRoll = this.rollCls.fromTerms(
-      terms,
-      roll.options,
-    ) as SwadeRoll;
+    const finalizedRoll = this.rollCls.fromTerms(terms, roll.options);
+
     if (finalizedRoll instanceof TraitRoll) {
       finalizedRoll.groupRoll =
         this.#extraButtonUsed && !this.ctx.actor?.isWildcard;
@@ -329,61 +330,17 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       .reduce(modifierReducer, '');
     const formula = this.ctx.roll.formula + modFormula;
     // Create new roll from pure formula text
-    const intermediateRoll = new this.rollCls(
-      formula,
-      this.#getRollData(),
-    );
-    const oldTerms = this.#cloneTermsDeep(this.ctx.roll.terms);
+    const intermediateRoll = new this.rollCls(formula, this.#getRollData());
+    const oldTerms = this.ctx.roll.terms;
     const newTerms = intermediateRoll.terms;
     // Replace "duplicate" terms with the originals to retain any extra data set on them
     newTerms.splice(0, oldTerms.length, ...oldTerms);
     const roll = this.rollCls.fromTerms(newTerms) as SwadeRoll;
     roll.modifiers = this.modifiers;
-    if (this.isDamageRoll && this.#noAcing) {
-      this.#removeAcingFromTerms(roll.terms);
-      roll.resetFormula();
-    }
+
+    if (roll instanceof DamageRoll) roll.acing = !this.#noAcing;
+
     return roll;
-  }
-
-  #cloneTermsDeep(terms: foundry.dice.terms.RollTerm[]) {
-    return terms.map((term) => this.#cloneTermDeep(term));
-  }
-
-  #cloneTermDeep(term: foundry.dice.terms.RollTerm) {
-    const cloned =
-      typeof term.clone === 'function' ? term.clone() : term;
-    if ('terms' in cloned && Array.isArray(cloned.terms)) {
-      cloned.terms = this.#cloneTermsDeep(cloned.terms);
-    }
-    if ('rolls' in cloned && Array.isArray(cloned.rolls)) {
-      cloned.rolls = cloned.rolls.map((roll) => {
-        const rollClone =
-          typeof roll?.clone === 'function' ? roll.clone() : roll;
-        if (rollClone?.terms) {
-          rollClone.terms = this.#cloneTermsDeep(rollClone.terms);
-        }
-        return rollClone;
-      });
-    }
-    return cloned;
-  }
-
-  #removeAcingFromTerms(terms: foundry.dice.terms.RollTerm[]) {
-    for (const term of terms) {
-      if (term instanceof foundry.dice.terms.Die) {
-        term.modifiers = term.modifiers.filter((mod) => !mod.startsWith('x'));
-        continue;
-      }
-      if ('terms' in term && Array.isArray(term.terms)) {
-        this.#removeAcingFromTerms(term.terms);
-      }
-      if ('rolls' in term && Array.isArray(term.rolls)) {
-        for (const roll of term.rolls) {
-          if (roll?.terms) this.#removeAcingFromTerms(roll.terms);
-        }
-      }
-    }
   }
 
   #fillModifierLabels(mod: RollModifier): RollModifier {
@@ -457,8 +414,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _event: PointerEvent,
     target: HTMLButtonElement,
   ) {
-    const modifier = foundry.utils.getProperty(CONFIG.SWADE.rollModifiers, 
-      `${target.dataset.group}.modifiers.${target.dataset.modId}`);
+    const modifier = foundry.utils.getProperty(
+      CONFIG.SWADE.rollModifiers,
+      `${target.dataset.group}.modifiers.${target.dataset.modId}`,
+    );
     if (modifier) {
       this.modifiers.push({
         label: modifier.label,
@@ -504,11 +463,13 @@ export interface RollDialogContext {
   ap?: number;
   isHeavyWeapon?: boolean;
 }
+
 interface RollDialogConfiguration
   extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   ctx: RollDialogContext;
   resolve: (roll: SwadeRoll | null) => void;
 }
+
 interface RollDialogFormData {
   modifiers?: Array<RollModifier & { active: boolean }>;
   map?: number;

@@ -2,8 +2,8 @@ import { AnyObject, DeepPartial } from 'fvtt-types/utils';
 import { EquipState, ItemActions } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
 import {
-  ItemAction,
   Charge,
+  ItemAction,
   RollModifier,
 } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
@@ -347,29 +347,6 @@ class SwadeItem<
       modifiers.push(...options.additionalMods);
     }
 
-    const terms = DamageRoll.parse(
-      rollParts.join(''),
-      this.actor?.getRollData() ?? {},
-    );
-    const baseRoll = new Array<string>();
-    for (const term of terms) {
-      if (term instanceof foundry.dice.terms.Die) {
-        if (!term.modifiers.includes('x') && Number(term.faces) > 1) {
-          term.modifiers.push('x');
-        }
-        if (!term.flavor) {
-          term.options.flavor = game.i18n.localize('SWADE.BaseDamage');
-        }
-        baseRoll.push(term.formula);
-      } else if (term instanceof foundry.dice.terms.StringTerm) {
-        baseRoll.push(this._makeExplodable(term.term));
-      } else if (term instanceof foundry.dice.terms.NumericTerm) {
-        baseRoll.push(term.formula);
-      } else {
-        baseRoll.push(term.expression);
-      }
-    }
-
     //Conviction Modifier
     if (
       this.parent &&
@@ -396,7 +373,11 @@ class SwadeItem<
       });
     }
 
-    const roll = new DamageRoll(baseRoll.join(''), {}, { modifiers });
+    const roll = new DamageRoll(
+      rollParts.join(''),
+      {},
+      { modifiers, acing: true },
+    );
     if ('isRerollable' in options) roll.setRerollable(!!options.isRerollable);
     /**
      * A hook event that is fired before damage is rolled, giving the opportunity to programatically adjust a roll and its modifiers
@@ -457,7 +438,6 @@ class SwadeItem<
     return state;
   }
 
-
   rechargeAllChargesOfType(rechargeType: string) {
     if (this.system.charges) {
       for (const charge of this.system.charges.charges) {
@@ -482,15 +462,15 @@ class SwadeItem<
       const flavor = game.i18n.format('SWADE.RechargeRollFlavor', {
         name: charge.name,
       });
-      const roll = new Roll(charge.rechargeAmount, {}, { flavor: flavor })
+      const roll = new Roll(charge.rechargeAmount, {}, { flavor: flavor });
       await roll.evaluate();
-      rechargeAmount = roll.total;
+      rechargeAmount = roll.total ?? 0;
 
       //If we have dice, roll them and display the message
       if (roll.dice.length) {
         const message = await roll.toMessage();
         //Wait for dice3d if it's active
-        await game.dice3d?.waitFor3DAnimationByMessageID(message.id);
+        await game.dice3d?.waitFor3DAnimationByMessageID(message!.id!);
       }
     } else {
       //If the amount field is empty, we recharge to max
@@ -498,7 +478,7 @@ class SwadeItem<
     }
     charge.value = Math.min(value + rechargeAmount, max);
     await this.update({
-      [`system.charges.charges`]: this.system.charges.charges,
+      ['system.charges.charges']: this.system.charges.charges,
     });
   }
 
@@ -840,24 +820,6 @@ class SwadeItem<
     if ('_shouldDelete' in this.system && this.system._shouldDelete) {
       await this.delete();
     }
-  }
-
-  private _makeExplodable(expression: string): string {
-    // Make all dice of a roll able to explode
-    const diceRegExp = /\d*d\d+[^kdrxc]/g;
-    expression = expression + ' '; // Just because of my poor reg_exp foo
-    const diceStrings: string[] = expression.match(diceRegExp) || [];
-    const used = new Array<string>();
-    for (const match of diceStrings) {
-      if (used.indexOf(match) === -1) {
-        expression = expression.replace(
-          new RegExp(match.slice(0, -1), 'g'),
-          match.slice(0, -1) + 'x',
-        );
-        used.push(match);
-      }
-    }
-    return expression;
   }
 
   async #createChargeUsageMessage(charges: number) {

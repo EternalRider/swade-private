@@ -16,6 +16,10 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   ) {
     options.rollType ??= 'damage';
     super(formula, data, options);
+    if (typeof options.acing === 'boolean') {
+      //@ts-expect-error Types don't properly match due to the Roll class
+      options.acing ? this._enableAcing(this) : this._disableAcing(this);
+    }
   }
 
   override get isRerollable() {
@@ -27,7 +31,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   }
 
   // Damage is almost never going to have a targetNumber of 4, arguably should just return an error
-  // TOFIX: targetNumber is not currently a valid option in the interface, either remove these paths or fix the interface setup and possibly bump these functions to SwadeRoll
+  // TODO: targetNumber is not currently a valid option in the interface, either remove these paths or fix the interface setup and possibly bump these functions to SwadeRoll
   get targetNumber(): number | undefined {
     return this.options['targetNumber'];
   }
@@ -72,6 +76,17 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     this.options['isHeavyWeapon'] = isHeavyWeapon;
   }
 
+  get acing(): boolean {
+    return this.options['acing'];
+  }
+
+  set acing(val: boolean) {
+    this.options['acing'] = val;
+    //TODO Fix types
+    //@ts-expect-error Types don't properly match due to the Roll class
+    val ? this._enableAcing(this) : this._disableAcing(this);
+  }
+
   override applyReroll(actor: Actor.Implementation | null): boolean {
     if (
       !actor ||
@@ -103,9 +118,47 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
     }
     return false;
   }
+
+  /** Recursively deactivate acing on this roll */
+  protected _disableAcing(roll: Roll) {
+    for (const term of roll.terms) {
+      if (term instanceof foundry.dice.terms.Die) {
+        term.modifiers = term.modifiers.filter((m) => !m.startsWith('x'));
+      }
+      if (term instanceof foundry.dice.terms.ParentheticalTerm && term.roll) {
+        this._disableAcing(term.roll);
+      }
+      if (term instanceof foundry.dice.terms.PoolTerm) {
+        for (const poolRoll of term.rolls) this._disableAcing(poolRoll);
+      }
+    }
+    roll.resetFormula();
+  }
+
+  /** Recursively activate acing on this roll */
+  protected _enableAcing(roll: Roll) {
+    for (const term of roll.terms) {
+      if (term instanceof foundry.dice.terms.Die) {
+        if (!term.modifiers.includes('x') && Number(term.faces) > 1) {
+          term.modifiers.push('x');
+        }
+        if (!term.flavor) {
+          term.options.flavor = game.i18n.localize('SWADE.BaseDamage');
+        }
+      }
+      if (term instanceof foundry.dice.terms.ParentheticalTerm && term.roll) {
+        this._enableAcing(term.roll);
+      }
+      if (term instanceof foundry.dice.terms.PoolTerm) {
+        for (const poolRoll of term.rolls) this._enableAcing(poolRoll);
+      }
+    }
+    roll.resetFormula();
+  }
 }
 
 interface DamageRollOptions extends SwadeRollOptions {
   ap?: number;
   isHeavyWeapon?: boolean;
+  acing?: boolean;
 }
