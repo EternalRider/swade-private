@@ -172,19 +172,6 @@ body.theme-light .swade.sheet.actor.npc,
     }
 
     .quickaccess-list {
-      .quickaccess-header {
-        line-height: 24px;
-        h4 {
-          font-weight: 600;
-          text-indent: 10px;
-          margin: 0 0 0.2rem;
-          border-bottom: 1px solid grey;
-        }
-        .header-field-add {
-          flex-grow: 0;
-          flex-basis: 20px;
-        }
-      }
       .gear-list, .powers-list {
         .gear-card, .power-card {
           border: $decorative-line;
@@ -195,9 +182,10 @@ body.theme-light .swade.sheet.actor.npc,
             padding: 0;
             line-height: 25px;
             .item-name {
-              margin: 0;
-              text-indent: 20px;
+              margin: 2px 5px;
+              text-indent: 0;
               font-weight: 600;
+              line-height: normal;
             }
             .item-image {
               height: 25px;
