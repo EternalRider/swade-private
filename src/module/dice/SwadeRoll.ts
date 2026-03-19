@@ -1,4 +1,3 @@
-import { EmptyObject } from 'fvtt-types/utils';
 import { RollModifier } from '../../interfaces/additional.interface';
 import {
   RollPart,
@@ -11,7 +10,7 @@ import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { normalizeRollModifiers } from '../util';
 
-export class SwadeRoll<D extends SwadeRollData = EmptyObject> extends Roll<D> {
+export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
   constructor(formula: string, data?: D, options: SwadeRollOptions = {}) {
     super(formula, data, options);
   }

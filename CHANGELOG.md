@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.2
+
+### Fixed
+
+- Fixed an issue that would cause the Roll Dialog from rendering. (#1422) **by @florad92**
+- Fixed several styling issues in the NPC Sheet (!958) **by @roth-michael**
+
 ## 5.2.1
 
 ### Added
