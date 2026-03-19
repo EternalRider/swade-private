@@ -375,7 +375,7 @@ class SwadeItem<
 
     const roll = new DamageRoll(
       rollParts.join(''),
-      {},
+      this.actor?.getRollData() ?? {},
       { modifiers, acing: true },
     );
     if ('isRerollable' in options) roll.setRerollable(!!options.isRerollable);
