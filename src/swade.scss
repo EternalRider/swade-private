@@ -1,52 +1,52 @@
-@import 'scss/variables';
-@import 'scss/checkmark';
-@import 'scss/details-summary';
-@import 'scss/float-label';
-@import 'scss/fonts';
-@import 'scss/base';
-@import 'scss/npc';
-@import 'scss/items-v2';
-@import 'scss/character-sheet';
-@import 'scss/dialogs';
-@import 'scss/headquarters';
+@use 'scss/variables';
+@use 'scss/checkmark';
+@use 'scss/details-summary';
+@use 'scss/float-label';
+@use 'scss/fonts';
+@use 'scss/base';
+@use 'scss/npc';
+@use 'scss/items-v2';
+@use 'scss/character-sheet';
+@use 'scss/dialogs';
+@use 'scss/headquarters';
 // @import 'scss/actor-embeds';
 // @import 'scss/item-embeds';
 
 //chat
-@import 'scss/chat';
-@import 'scss/item-cards';
-@import 'scss/chat/rolls';
-@import 'scss/chat//item-chat-card';
+@use 'scss/chat';
+@use 'scss/item-cards';
+@use 'scss/chat/rolls';
+@use 'scss/chat//item-chat-card';
 
-@import 'scss/core';
-@import 'scss/swade-app';
-@import 'scss/_swade-application';
+@use 'scss/core';
+@use 'scss/swade-app';
+@use 'scss/_swade-application';
 
 //applications
-@import 'scss/apps/tweaks';
-@import 'scss/apps/setting-config';
-@import 'scss/apps/combat-tracker';
-@import 'scss/apps/action-cards';
-@import 'scss/apps/roll-dialog';
-@import 'scss/apps/choice-dialog';
-@import 'scss/apps/advance-editor';
-@import 'scss/apps/compendium-toc';
-@import 'scss/apps/attribute-manager';
-@import 'scss/apps/compendium-toc-settings';
-@import 'scss/apps/active-effect-wizard';
-@import 'scss/apps/reload-manager';
-@import 'scss/apps/requirements-editor';
-@import 'scss/apps/card-picker';
-@import 'scss/apps/ambush-assistant';
-@import 'scss/swade-hud';
-@import 'scss/update-combatant';
+@use 'scss/apps/tweaks';
+@use 'scss/apps/setting-config';
+@use 'scss/apps/combat-tracker';
+@use 'scss/apps/action-cards';
+@use 'scss/apps/roll-dialog';
+@use 'scss/apps/choice-dialog';
+@use 'scss/apps/advance-editor';
+@use 'scss/apps/compendium-toc';
+@use 'scss/apps/attribute-manager';
+@use 'scss/apps/compendium-toc-settings';
+@use 'scss/apps/active-effect-wizard';
+@use 'scss/apps/reload-manager';
+@use 'scss/apps/requirements-editor';
+@use 'scss/apps/card-picker';
+@use 'scss/apps/ambush-assistant';
+@use 'scss/swade-hud';
+@use 'scss/update-combatant';
 
 //sheets
-@import 'scss/sheets/group';
-@import 'scss/sheets//vehicle2';
+@use 'scss/sheets/group';
+@use 'scss/sheets//vehicle2';
 
 // Highlight code in journals
-@import '../node_modules/highlight.js/scss/a11y-dark.scss';
+@use '../node_modules/highlight.js/scss/a11y-dark.scss';
 
 .debug * {
   outline: 1px solid limegreen !important;

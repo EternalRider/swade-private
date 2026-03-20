@@ -1,5 +1,7 @@
+@use 'variables';
+
 @mixin vital {
-  margin: $small-spacing 0px;
+  margin: variables.$small-spacing 0px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -71,8 +73,8 @@ body.theme-light .swade-official,
 
 .swade-official {
   //Custom properties
-  --section-header-color: #{$header-text};
-  --section-header-size: #{$section-header};
+  --section-header-color: #{variables.$header-text};
+  --section-header-size: #{variables.$section-header};
   --section-header-font: 'Anton', 'Signika', sans-serif;
 
   --default-font: 'Roboto Slab', 'Signika', serif;
@@ -81,7 +83,7 @@ body.theme-light .swade-official,
   --input-box-shadow: 0 0 5px red;
   --input-text-shadow: 0 0 10px red;
 
-  --add-button-color: #{$input-bg-dark};
+  --add-button-color: #{variables.$input-bg-dark};
 
   //default font of the sheet
   font-family: var(--default-font);
@@ -191,7 +193,7 @@ body.theme-light .swade-official,
     background: none;
     border-radius: 0;
     margin: 0;
-    border-bottom: $solid-line;
+    border-bottom: variables.$solid-line;
     button {
       white-space: nowrap;
       overflow-x: clip;
@@ -261,10 +263,10 @@ body.theme-light .swade-official,
       }
     }
     .item {
-      padding: $small-spacing 1ch;
+      padding: variables.$small-spacing 1ch;
     }
     .active {
-      color: $header-text;
+      color: variables.$header-text;
       text-shadow: none;
       box-shadow: 0px -6px 6px -1px var(--tab-box-shadow-color-3);
     }
@@ -277,12 +279,12 @@ body.theme-light .swade-official,
     justify-content: space-around;
     border-top: 1px solid var(--color-border-light-primary);
     border-bottom: 1px solid var(--color-border-light-primary);
-    padding: $medium-spacing 0px;
-    margin: $medium-spacing 0px;
+    padding: variables.$medium-spacing 0px;
+    margin: variables.$medium-spacing 0px;
     .item {
       flex-grow: 1;
       text-align: center;
-      font-size: $medium-font;
+      font-size: variables.$medium-font;
       &:hover {
         text-shadow: 0 0 20px var(--color-shadow-primary);
       }
@@ -336,8 +338,8 @@ body.theme-light .swade-official,
     line-height: 16px;
     font-family: var(--default-font), var(--font-awesome);
     width: auto;
-    padding: $small-spacing;
-    margin: $small-spacing;
+    padding: variables.$small-spacing;
+    margin: variables.$small-spacing;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -394,7 +396,7 @@ body.theme-light .swade-official,
     color: var(--add-button-color);
     &:hover,
     :focus {
-      color: $dark-grey;
+      color: variables.$dark-grey;
     }
   }
 
@@ -408,7 +410,7 @@ body.theme-light .swade-official,
   }
 
   .charname {
-    margin: $small-spacing;
+    margin: variables.$small-spacing;
     font-size: 30px;
     height: 48px;
     border: none;
@@ -482,7 +484,7 @@ body.theme-light .swade-official,
     select {
       background-color: transparent;
       border: none;
-      border-bottom: $solid-line;
+      border-bottom: variables.$solid-line;
       border-radius: 0;
       option {
         color: black;
@@ -646,7 +648,7 @@ body.theme-light .swade-official,
   }
 
   .additional-stats {
-    padding-left: $large-spacing;
+    padding-left: variables.$large-spacing;
     max-width: 95%;
     select {
       max-width: 270px;
@@ -719,14 +721,14 @@ body.theme-light .swade-official,
 
   .primary {
     text-align: center;
-    margin-bottom: $medium-spacing;
+    margin-bottom: variables.$medium-spacing;
 
     .attribute-list {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
       justify-content: space-evenly;
-      column-gap: $medium-spacing;
+      column-gap: variables.$medium-spacing;
     }
 
     .attribute-manager {
@@ -745,10 +747,10 @@ body.theme-light .swade-official,
       flex-wrap: nowrap;
       justify-content: center;
       align-items: center;
-      column-gap: $medium-spacing;
+      column-gap: variables.$medium-spacing;
     }
     .attribute {
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
       display: flex;
       flex-direction: column;
       .die {
@@ -763,19 +765,19 @@ body.theme-light .swade-official,
 
   .derived {
     text-align: center;
-    margin-bottom: $medium-spacing;
+    margin-bottom: variables.$medium-spacing;
     justify-content: start;
     .derived-list {
-      column-gap: $small-spacing;
+      column-gap: variables.$small-spacing;
     }
     .stat {
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
     }
     .stat-label {
       font-weight: 700;
     }
     .stat-value {
-      margin-top: $medium-spacing;
+      margin-top: variables.$medium-spacing;
       flex-wrap: nowrap;
     }
     input {
@@ -786,8 +788,8 @@ body.theme-light .swade-official,
     }
     .running-die {
       max-height: 28px;
-      margin: 0 $small-spacing;
-      padding: 0 $small-spacing;
+      margin: 0 variables.$small-spacing;
+      padding: 0 variables.$small-spacing;
       background-position: center;
       background-repeat: no-repeat;
       background-size: contain;
@@ -796,7 +798,7 @@ body.theme-light .swade-official,
   }
 
   .primary + .derived {
-    margin-left: $large-spacing;
+    margin-left: variables.$large-spacing;
   }
 
   .note-box {
@@ -841,9 +843,9 @@ body.theme-light .swade-official,
     .skill-list {
       margin: 0;
       list-style: none;
-      padding-left: $large-spacing;
+      padding-left: variables.$large-spacing;
       width: 95%;
-      font-size: $medium-font;
+      font-size: variables.$medium-font;
     }
     .skill-name {
       font-size: var(--font-size-14);
@@ -867,7 +869,7 @@ body.theme-light .swade-official,
       }
     }
     li {
-      border-bottom: $solid-line;
+      border-bottom: variables.$solid-line;
       &.item.skill {
         padding-bottom: 2px;
         margin-bottom: 2px;
@@ -905,20 +907,20 @@ body.theme-light .swade-official,
       list-style: none;
       padding: 0;
       margin: 0;
-      padding-left: $large-spacing;
+      padding-left: variables.$large-spacing;
       width: 95%;
     }
   }
 
   .gear-card {
-    border-bottom: $solid-line;
-    padding-bottom: $small-spacing;
-    margin-bottom: $small-spacing;
+    border-bottom: variables.$solid-line;
+    padding-bottom: variables.$small-spacing;
+    margin-bottom: variables.$small-spacing;
 
     .item-name {
       font-size: var(--font-size-14);
       text-align: left;
-      padding-left: $medium-spacing;
+      padding-left: variables.$medium-spacing;
     }
     .chips {
       &:not(:has(.chip)) {
@@ -935,7 +937,7 @@ body.theme-light .swade-official,
     &.disabled-effect {
       .item-name {
         text-decoration: line-through;
-        text-decoration-thickness: $small-spacing;
+        text-decoration-thickness: variables.$small-spacing;
       }
     }
     .card-header {
@@ -1008,7 +1010,7 @@ body.theme-light .swade-official,
     }
 
     li.item {
-      padding: 0 $small-spacing;
+      padding: 0 variables.$small-spacing;
       &:nth-child(even) {
         background: rgba(0, 0, 0, 0.1);
       }
@@ -1016,7 +1018,7 @@ body.theme-light .swade-official,
 
     .item-wrapper {
       display: grid;
-      column-gap: $small-spacing;
+      column-gap: variables.$small-spacing;
       align-items: center;
       line-height: 30px;
       font-size: var(--font-size-14);
@@ -1048,9 +1050,9 @@ body.theme-light .swade-official,
     }
 
     .description {
-      margin: $small-spacing;
-      padding: $small-spacing;
-      font-size: $small-font;
+      margin: variables.$small-spacing;
+      padding: variables.$small-spacing;
+      font-size: variables.$small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
       overflow-y: auto;
@@ -1233,7 +1235,7 @@ body.theme-light .swade-official,
   }
 
   .header {
-    border-radius: $medium-spacing;
+    border-radius: variables.$medium-spacing;
     background-image: var(--header-background-image);
     background-position: left center;
     background-repeat: no-repeat;
@@ -1241,7 +1243,7 @@ body.theme-light .swade-official,
     display: grid;
     line-height: 24px;
     padding-left: 5px;
-    margin-top: $small-spacing;
+    margin-top: variables.$small-spacing;
     .item-controls {
       justify-content: space-around !important;
     }
@@ -1256,16 +1258,16 @@ body.theme-light .swade-official,
   //#######################
   .edges {
     .section-header {
-      font-size: $large-font;
+      font-size: variables.$large-font;
     }
     .edge-hindrance {
-      margin-bottom: $small-spacing;
-      padding-bottom: $small-spacing;
-      border-bottom: $solid-line;
+      margin-bottom: variables.$small-spacing;
+      padding-bottom: variables.$small-spacing;
+      border-bottom: variables.$solid-line;
       .feature-header {
         display: grid;
         grid-template-columns: 32px 1fr 80px;
-        column-gap: $small-spacing;
+        column-gap: variables.$small-spacing;
         align-items: center;
       }
     }
@@ -1276,10 +1278,10 @@ body.theme-light .swade-official,
 
     .item-name {
       text-align: left;
-      padding-left: $medium-spacing;
+      padding-left: variables.$medium-spacing;
       justify-self: flex-start;
       button {
-        font-size: $small-font;
+        font-size: variables.$small-font;
       }
     }
 
@@ -1313,9 +1315,9 @@ body.theme-light .swade-official,
       }
     }
     .description {
-      margin: $small-spacing;
-      padding: $small-spacing;
-      font-size: $small-font;
+      margin: variables.$small-spacing;
+      padding: variables.$small-spacing;
+      font-size: variables.$small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
       overflow-y: auto;
@@ -1349,14 +1351,14 @@ body.theme-light .swade-official,
       padding: 2px 5px;
     }
     .effect-header {
-      border-radius: $medium-spacing;
+      border-radius: variables.$medium-spacing;
       background-image: var(--header-background-image);
       background-position: left center;
       background-repeat: no-repeat;
       background-size: 100%;
       line-height: 24px;
       text-align: center;
-      margin-bottom: $large-spacing;
+      margin-bottom: variables.$large-spacing;
       & .effect-label {
         padding-left: 5px;
         text-align: left;
@@ -1384,9 +1386,9 @@ body.theme-light .swade-official,
       }
     }
     .description {
-      margin: $small-spacing;
-      padding: $small-spacing;
-      font-size: $small-font;
+      margin: variables.$small-spacing;
+      padding: variables.$small-spacing;
+      font-size: variables.$small-font;
       font-family: 'Signika', serif;
       max-height: 300px;
       overflow-y: auto;
@@ -1402,7 +1404,7 @@ body.theme-light .swade-official,
   //#######################
   .powers {
     .section-header {
-      font-size: $large-font;
+      font-size: variables.$large-font;
       button.adjust-counter {
         font-size: 0.9em;
       }
@@ -1414,14 +1416,14 @@ body.theme-light .swade-official,
     }
 
     .power {
-      margin-bottom: $small-spacing;
-      padding-bottom: $small-spacing;
-      border-bottom: $solid-line;
+      margin-bottom: variables.$small-spacing;
+      padding-bottom: variables.$small-spacing;
+      border-bottom: variables.$solid-line;
       .power-header {
         display: grid;
         align-items: center;
         grid-template-columns: 32px 1fr 80px;
-        column-gap: $small-spacing;
+        column-gap: variables.$small-spacing;
       }
       .content {
         display: grid;
@@ -1437,11 +1439,11 @@ body.theme-light .swade-official,
         grid-area: details;
         font-family: var(--default-font);
         display: flex;
-        font-size: $small-font;
+        font-size: variables.$small-font;
         font-weight: 900;
         span {
-          margin: $small-spacing;
-          padding: $small-spacing;
+          margin: variables.$small-spacing;
+          padding: variables.$small-spacing;
         }
         button {
           font-weight: 900;
@@ -1449,17 +1451,17 @@ body.theme-light .swade-official,
       }
       .trapping {
         grid-area: trappings;
-        margin: 0 $small-spacing;
-        padding: 0 $small-spacing $medium-spacing;
+        margin: 0 variables.$small-spacing;
+        padding: 0 variables.$small-spacing variables.$medium-spacing;
         font-family: var(--default-font);
-        font-size: $small-font;
+        font-size: variables.$small-font;
         font-weight: 900;
       }
       .description {
         grid-area: description;
-        margin: $small-spacing;
-        padding: $small-spacing;
-        font-size: $small-font;
+        margin: variables.$small-spacing;
+        padding: variables.$small-spacing;
+        font-size: variables.$small-font;
         font-family: 'Signika', serif;
         max-height: 300px;
         overflow-y: auto;
@@ -1477,10 +1479,10 @@ body.theme-light .swade-official,
 
     .item-name {
       text-align: left;
-      padding-left: $medium-spacing;
+      padding-left: variables.$medium-spacing;
       justify-self: flex-start;
       button {
-        font-size: $small-font;
+        font-size: variables.$small-font;
       }
     }
 
@@ -1535,10 +1537,10 @@ body.theme-light .swade-official,
       grid-row: 1;
     }
     .editor {
-      border: $solid-line;
+      border: variables.$solid-line;
       height: 100%;
       .editor-content {
-        padding: 0 $medium-spacing;
+        padding: 0 variables.$medium-spacing;
       }
     }
     .about-body {
@@ -1570,7 +1572,7 @@ body.theme-light .swade-official,
       }
       .faded {
         font-style: italic;
-        color: $input-bg-dark;
+        color: variables.$input-bg-dark;
       }
       .item-controls {
         display: flex;
@@ -1585,7 +1587,7 @@ body.theme-light .swade-official,
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: 1fr 1fr;
-      gap: $large-spacing;
+      gap: variables.$large-spacing;
       margin: 0;
       > .editor-container {
         display: grid;
@@ -1597,8 +1599,8 @@ body.theme-light .swade-official,
         }
       }
       .section-header {
-        margin-bottom: $medium-spacing;
-        font-size: $medium-font;
+        margin-bottom: variables.$medium-spacing;
+        font-size: variables.$medium-font;
       }
     }
   }
@@ -1608,7 +1610,7 @@ body.theme-light .swade-official,
   //#######################
   .limited {
     .sheet-body {
-      padding: 0 $large-spacing 0 $large-spacing;
+      padding: 0 variables.$large-spacing 0 variables.$large-spacing;
       overflow-x: hidden;
       overflow-y: auto;
       height: 100%;
