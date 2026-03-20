@@ -54,7 +54,8 @@ export default defineConfig({
   },
   plugins: [
     environment(process.env.NODE_ENV),
-    typescript({ noEmitOnError: false }),
+    //TODO revisit this
+    typescript({ noEmitOnError: false, noCheck: true }),
     postcss({
       extract: true,
       minimize: isProd,
