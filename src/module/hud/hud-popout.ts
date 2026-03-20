@@ -1,13 +1,13 @@
-import {
-  prepareHudContext,
-  getEnrichedDescription,
-  renderCachedTemplate,
-  getItemsByType,
-  getAllApplicableEffects,
-} from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
-import { setupHudStatHandlers } from './hud-stat-handlers';
+import {
+  getAllApplicableEffects,
+  getEnrichedDescription,
+  getItemsByType,
+  prepareHudContext,
+  renderCachedTemplate,
+} from './hud-context';
 import { hudPanelConfig } from './hud-panel-constants';
+import { setupHudStatHandlers } from './hud-stat-handlers';
 import { debounce } from './hud-utils';
 
 /**
@@ -1411,6 +1411,7 @@ export class SwadePopout {
       try {
         // eslint-disable-next-line deprecation/deprecation
         Hooks.off('updateActor', this._actorUpdateHandler);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         // ignore
       }
