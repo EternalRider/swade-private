@@ -11,7 +11,6 @@ import {
 } from '../hud/hud-interaction-handlers';
 import { setupHudStatHandlers } from '../hud/hud-stat-handlers';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {

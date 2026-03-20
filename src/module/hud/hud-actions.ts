@@ -12,10 +12,10 @@ import SwadeActor from '../documents/actor/SwadeActor';
 export function setupHudActionButtonListeners(
   popout: HTMLElement,
   actor: SwadeActor | null,
-  _hudInstance: any,
+  _hudInstance: any
 ) {
   // Get SWADE's ItemChatCardHelper
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   const ItemChatCardHelper = game.swade?.itemChatCardHelper;
 
   // Handle item expand/collapse and rolling
@@ -36,7 +36,7 @@ export function setupHudActionButtonListeners(
       if (!item) {
         console.error(
           'SWADE HUD: Could not find item element for header',
-          index,
+          index
         );
         return;
       }
@@ -123,7 +123,7 @@ export function setupHudActionButtonListeners(
             getEnrichedDescription(itemData)
               .then((enrichedDesc) => {
                 const descElement = item.querySelector(
-                  '.swadehud-item-description',
+                  '.swadehud-item-description'
                 );
                 if (descElement) {
                   descElement.innerHTML = enrichedDesc;
@@ -165,7 +165,7 @@ export function setupHudActionButtonListeners(
           getEnrichedDescription(itemData)
             .then((enrichedDesc) => {
               const descElement = item.querySelector(
-                '.swadehud-item-description',
+                '.swadehud-item-description'
               );
               if (descElement) {
                 descElement.innerHTML = enrichedDesc;
@@ -230,14 +230,14 @@ export function setupHudActionButtonListeners(
 
   // Handle chat buttons for showing item cards
   const chatButtons = popout.querySelectorAll(
-    '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat',
+    '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat'
   );
   chatButtons.forEach((btn) => {
     // Avoid attaching duplicate chat listeners
     if ((btn as any)._swadeHudChatListener) {
       (btn as any).removeEventListener(
         'click',
-        (btn as any)._swadeHudChatListener,
+        (btn as any)._swadeHudChatListener
       );
     }
     const chatListener = debounce(async (ev: Event) => {
@@ -257,7 +257,7 @@ export function setupHudActionButtonListeners(
               item: item,
               data: chatData,
               actor: actor,
-            },
+            }
           );
 
           await ChatMessage.create({

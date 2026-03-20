@@ -261,7 +261,7 @@ async function refreshCompendium(
 ) {
   if (!pack?.documentName) return;
   // swade.moduleArt.suppressArt = true;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   const DocumentClass = getDocumentClass(pack.documentName);
   const wasLocked = pack.locked;
   await pack.configure({ locked: false });

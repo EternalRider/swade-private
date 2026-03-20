@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { AbilitySubType } from '../globals';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { RollModifierGroup } from '../interfaces/additional.interface';
@@ -276,7 +274,10 @@ export const SWADE: SwadeConfig = {
     damage: {
       name: 'SWADE.ModDamage',
       modifiers: {
-        calledHeadVitals: { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4' },
+        calledHeadVitals: {
+          label: 'SWADE.CalledShot.HeadOrVitals',
+          value: '+4',
+        },
         weakness: { label: 'SWADE.Weakness', value: '+4' },
         resistance: { label: 'SWADE.Resistance', value: -4 },
         desperate2: { label: 'SWADE.DesperateAttack.2', value: -2 },

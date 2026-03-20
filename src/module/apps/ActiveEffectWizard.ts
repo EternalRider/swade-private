@@ -4,11 +4,10 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   constructor(options) {
     super(options);
@@ -144,7 +143,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     this: ActiveEffectWizard,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended,
+    _formData: FormDataExtended
   ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
@@ -315,7 +314,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
         },
         {
           label: game.i18n.localize(
-            'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
+            'SWADE.EffectCallbacks.Shaken.UnshakeModifier'
           ),
           key: 'system.attributes.spirit.unShakeBonus',
         },
@@ -325,19 +324,19 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
         },
         {
           label: game.i18n.localize(
-            'SWADE.EffectCallbacks.Stunned.UnStunModifier',
+            'SWADE.EffectCallbacks.Stunned.UnStunModifier'
           ),
           key: 'system.attributes.vigor.unStunBonus',
         },
         {
           label: game.i18n.localize(
-            'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
+            'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'
           ),
           key: 'system.attributes.vigor.bleedOut.modifier',
         },
         {
           label: game.i18n.localize(
-            'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds',
+            'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds'
           ),
           key: 'system.attributes.vigor.bleedOut.ignoreWounds',
         },
@@ -383,7 +382,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
   static #onAddChange(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    currentTarget: HTMLElement,
+    currentTarget: HTMLElement
   ) {
     const details = currentTarget.closest('details');
     const keyPart = currentTarget.dataset.key as string;
@@ -419,7 +418,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
   static #onDeleteChange(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const index = target.closest('li')?.dataset.index;
     this.#changes.splice(Number(index), 1);
@@ -443,7 +442,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
   static #onClickIcon(
     this: ActiveEffectWizard,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     new foundry.applications.apps.FilePicker.implementation({
       current: this.#effect.img as string,

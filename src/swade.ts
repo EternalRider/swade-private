@@ -164,7 +164,7 @@ Hooks.once('init', () => {
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
   foundry.utils.mergeObject(
     CONFIG.RegionBehavior.dataModels,
-    data.region.config,
+    data.region.config
   );
   CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
@@ -275,7 +275,7 @@ Hooks.once('init', () => {
   // @ts-expect-error Yes we're calling a protected function
   foundry.appv1.sheets.JournalTextPageSheet._converter.setOption(
     'tables',
-    true,
+    true
   );
 
   //register custom Handlebars helpers
@@ -300,17 +300,17 @@ Hooks.once('init', () => {
   // Register sheets
   foundry.documents.collections.Actors.unregisterSheet(
     'core',
-    foundry.appv1.sheets.ActorSheet,
+    foundry.appv1.sheets.ActorSheet
   );
   foundry.documents.collections.Items.unregisterSheet(
     'core',
-    foundry.appv1.sheets.ItemSheet,
+    foundry.appv1.sheets.ItemSheet
   );
   foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
     CONFIG.Token.documentClass,
     'core',
     foundry.applications.sheets.TokenConfig,
-    {},
+    {}
   );
 
   foundry.documents.collections.Actors.registerSheet('swade', GroupSheet, {
@@ -325,7 +325,7 @@ Hooks.once('init', () => {
       types: ['vehicle'],
       makeDefault: true,
       label: 'SWADE.VehicleSheet',
-    },
+    }
   );
 
   foundry.documents.collections.Actors.registerSheet('swade', CharacterSheet, {
@@ -364,12 +364,12 @@ Hooks.once('init', () => {
       types: ['headquarters'],
       makeDefault: true,
       label: 'SWADE.HeadquartersSheet',
-    },
+    }
   );
   foundry.applications.apps.DocumentSheetConfig.registerSheet(
     TokenDocument,
     'swade',
-    SwadeTokenConfig,
+    SwadeTokenConfig
   );
 
   // Register Tours
@@ -420,7 +420,7 @@ Hooks.on('renderActorDirectory', SwadeCoreHooks.onRenderActorDirectory);
 Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
 Hooks.on(
   'renderCompendiumDirectory',
-  SwadeCoreHooks.onRenderCompendiumDirectory,
+  SwadeCoreHooks.onRenderCompendiumDirectory
 );
 
 /* ------------------------------------ */
@@ -431,7 +431,7 @@ Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
 Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
 Hooks.on(
   'getCompendiumContextOptions',
-  SwadeCoreHooks.onGetCompendiumContextOptions,
+  SwadeCoreHooks.onGetCompendiumContextOptions
 );
 
 /* ------------------------------------ */
@@ -466,7 +466,7 @@ Hooks.once('init', () => {
 
     // Get the first owned character token
     const ownedTokens = canvas.tokens.placeables.filter(
-      (t) => t.actor?.isOwner && t.actor?.type === 'character',
+      (t) => t.actor?.isOwner && t.actor?.type === 'character'
     );
     if (ownedTokens.length === 0) {
       console.error(
@@ -475,7 +475,7 @@ Hooks.once('init', () => {
           name: t.name,
           actorType: t.actor?.type,
           isOwner: t.actor?.isOwner,
-        })),
+        }))
       );
       return;
     }
@@ -483,7 +483,6 @@ Hooks.once('init', () => {
     const token = ownedTokens[0];
 
     try {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       const HUDClass =
         SwadeActorHUD ||
         (window as any).SwadeActorHUD ||

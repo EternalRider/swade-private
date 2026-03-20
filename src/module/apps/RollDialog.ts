@@ -8,7 +8,6 @@ import type SwadeActor from '../documents/actor/SwadeActor';
 import type SwadeItem from '../documents/item/SwadeItem';
 import { modifierReducer, normalizeRollModifiers } from '../util';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -29,7 +28,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static asPromise(ctx: RollDialogContext): Promise<SwadeRoll | null> {
     return new Promise<SwadeRoll | null>((resolve) =>
-      new RollDialog({ ctx, resolve }).render({ force: true }),
+      new RollDialog({ ctx, resolve }).render({ force: true })
     );
   }
 
@@ -40,7 +39,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     classes: ['swade', 'roll-dialog', 'swade-application'],
     position: {
       width: 400,
-      height: 'auto',
+      height: 'auto' as const,
     },
     filters: [{ inputSelector: '.searchBox', contentSelector: '.selections' }],
     tag: 'form',
@@ -124,7 +123,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onToggleList(
     this: RollDialog,
     _event: PointerEvent,
-    target: HTMLButtonElement,
+    target: HTMLButtonElement
   ) {
     const style = getComputedStyle(target);
     const html = this.element;
@@ -165,7 +164,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
           .map(this.#fillModifierLabels.bind(this)),
         formula: this.#buildRollForEvaluation().formula.replace(
           /(?<={[^}]*?),/g,
-          ', ',
+          ', '
         ),
         isTraitRoll: this.isTraitRoll,
         isDamageRoll: this.isDamageRoll,
@@ -184,7 +183,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             label: 'Close',
           },
         ],
-      },
+      }
     );
 
     if (
@@ -215,15 +214,15 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this: RollDialog,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: FormDataExtended
   ) {
     this.#extraButtonUsed = event.submitter?.name === 'extra';
     const expanded = foundry.utils.expandObject(
-      formData.object,
+      formData.object
     ) as RollDialogFormData;
     this.#noAcing = !!expanded.noAcing;
     Object.values(expanded.modifiers ?? []).forEach(
-      (v, i) => (this.modifiers[i].ignore = !v.active),
+      (v, i) => (this.modifiers[i].ignore = !v.active)
     );
     if (expanded.map && expanded.map !== 0) {
       this.modifiers.push({
@@ -241,7 +240,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onClose(
     this: RollDialog,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     return this.close();
   }
@@ -298,7 +297,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
       },
-      { rollMode: this.rollMode },
+      { rollMode: this.rollMode }
     );
     // TODO: Remove type annotation after toMessage gets fixed upstream in types
     finalizedRoll.setMessageId(msg?.id as string);
@@ -310,14 +309,14 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     _event: KeyboardEvent,
     _query: string,
     rgx: RegExp,
-    html: HTMLElement,
+    html: HTMLElement
   ) {
     for (const li of Array.from(html.children) as HTMLLIElement[]) {
       if (li.classList.contains('group-header')) continue;
       const btn = li.querySelector('.add-preset');
       const name = btn?.textContent;
       const match = rgx.test(
-        foundry.applications.ux.SearchFilter.cleanQuery(name!),
+        foundry.applications.ux.SearchFilter.cleanQuery(name!)
       );
       li.style.display = match ? 'block' : 'none';
     }
@@ -387,7 +386,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onAddModifier(
     this: RollDialog,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     this.#addModifier();
     this.render({ force: true });
@@ -396,10 +395,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Reads the modifier inputs, sanitizes them and adds the values to the mod array */
   #addModifier() {
     const label = this.form?.querySelector<HTMLInputElement>(
-      '.new-modifier-label',
+      '.new-modifier-label'
     )?.value;
     const value = this.form?.querySelector<HTMLInputElement>(
-      '.new-modifier-value',
+      '.new-modifier-value'
     )?.value;
     if (value) {
       this.modifiers.push({
@@ -412,11 +411,11 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onAddPreset(
     this: RollDialog,
     _event: PointerEvent,
-    target: HTMLButtonElement,
+    target: HTMLButtonElement
   ) {
     const modifier = foundry.utils.getProperty(
       CONFIG.SWADE.rollModifiers,
-      `${target.dataset.group}.modifiers.${target.dataset.modId}`,
+      `${target.dataset.group}.modifiers.${target.dataset.modId}`
     );
     if (modifier) {
       this.modifiers.push({
@@ -440,7 +439,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       event.preventDefault();
       event.stopPropagation();
       const modValue = this.form?.querySelector<HTMLInputElement>(
-        '.new-modifier-value',
+        '.new-modifier-value'
       )?.value;
       if (modValue) {
         this.#addModifier();
@@ -464,8 +463,7 @@ export interface RollDialogContext {
   isHeavyWeapon?: boolean;
 }
 
-interface RollDialogConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface RollDialogConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   ctx: RollDialogContext;
   resolve: (roll: SwadeRoll | null) => void;
 }

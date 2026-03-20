@@ -1,6 +1,5 @@
 import { PhysicalItem } from '../globals';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 export const constants = {
   /** @enum */
   ARMOR_LOCATIONS: {

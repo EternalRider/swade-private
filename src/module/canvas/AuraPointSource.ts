@@ -2,11 +2,10 @@ import { AuraData } from '../../interfaces/AuraData.interface';
 import SwadeToken from './SwadeToken';
 
 export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMixin(
-  foundry.canvas.sources.BaseEffectSource,
+  foundry.canvas.sources.BaseEffectSource
 ) {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   static sourceType = 'light';
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   static effectsCollection = 'auras';
   graphics!: PIXI.Graphics;
   id: string;
@@ -72,7 +71,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
         ? this.auraData.visibleTo
         : [this.auraData.visibleTo];
     return !!canvas?.tokens?.controlled.some((t) =>
-      visibleTo.includes(t.document.disposition),
+      visibleTo.includes(t.document.disposition)
     );
   }
 }

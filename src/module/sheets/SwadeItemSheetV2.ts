@@ -23,7 +23,6 @@ import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import DocumentSheet = foundry.applications.api.DocumentSheet;
 
 export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<

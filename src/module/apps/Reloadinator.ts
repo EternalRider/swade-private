@@ -1,11 +1,10 @@
 import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class Reloadinator extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   declare magazines: SwadeItem[];
   declare weapon: SwadeItem;
@@ -27,10 +26,10 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   #wantsToDiscard = false;
 
   static asPromise(
-    ctx: Omit<MagReloadConfiguration, 'resolve'>,
+    ctx: Omit<MagReloadConfiguration, 'resolve'>
   ): Promise<boolean> {
     return new Promise((resolve) =>
-      new Reloadinator({ ...ctx, resolve }).render({ force: true }),
+      new Reloadinator({ ...ctx, resolve }).render({ force: true })
     );
   }
 
@@ -40,7 +39,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     },
     position: {
       width: 400,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'magazine-manager', 'swade-application'],
     actions: {
@@ -66,7 +65,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   static #onDiscard(
     this: Reloadinator,
     _event: PointerEvent,
-    target: HTMLInputElement,
+    target: HTMLInputElement
   ) {
     this.#wantsToDiscard = target.checked;
   }
@@ -77,7 +76,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       {
         magazineGroups: this.#prepareOptionList(),
         canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
-      },
+      }
     );
     return context;
   }
@@ -90,7 +89,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   static async #onSelectMag(
     this: Reloadinator,
     event: PointerEvent,
-    target: HTMLButtonElement,
+    target: HTMLButtonElement
   ) {
     event.preventDefault();
     if (this.weapon.type !== 'weapon') return;
@@ -133,21 +132,21 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
 
   #prepareOptionList(): MagazineGroups {
     const groups: MagazineGroups = Object.fromEntries(
-      this.magazines.map((m) => [m.name!, []]),
+      this.magazines.map((m) => [m.name!, []])
     );
     const filteredMags = this.magazines.filter(
-      (m) => m.system.charges.default.value > 0,
+      (m) => m.system.charges.default.value > 0
     );
 
     for (const mag of filteredMags) {
       if (mag.type !== 'consumable') continue;
       const charges = foundry.utils.getProperty(
         mag,
-        'system.charges.default.value',
+        'system.charges.default.value'
       ) as number;
       const capacity = foundry.utils.getProperty(
         mag,
-        'system.charges.default.max',
+        'system.charges.default.max'
       ) as number;
       const isBattery =
         mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
@@ -164,7 +163,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     }
 
     Object.values(groups).forEach((v) =>
-      v.sort((a, b) => b.percentage - a.percentage),
+      v.sort((a, b) => b.percentage - a.percentage)
     );
     return groups;
   }
@@ -201,7 +200,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
 
     //find an existing magazine stack we can add to
     const emptyMagStack = this.magazines.find(
-      (m) => m.type === 'consumable' && m.system.charges.default.value === 0,
+      (m) => m.type === 'consumable' && m.system.charges.default.value === 0
     );
     //if there's no existing stack or we're doing a partial reload.
     if (!emptyMagStack || (!this.noShotsInWeapon && this.loadedAmmo)) {
@@ -219,7 +218,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       charges[0].value = newCharges;
       await selected.clone(
         { 'system.quantity': 1, [`system.charges.charges`]: charges },
-        { save: true },
+        { save: true }
       );
     } else {
       //else increase the stack by 1
@@ -247,7 +246,9 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     }
 
     selected.system.charges.default.value = shots;
-    await selected.update({ [`system.charges.charges`]: selected.system.charges.charges });
+    await selected.update({
+      [`system.charges.charges`]: selected.system.charges.charges,
+    });
   }
 
   #getBatteryFillFromShots(currentShots: number): number {

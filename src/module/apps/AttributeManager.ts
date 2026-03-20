@@ -2,11 +2,10 @@ import { DieSidesOption } from '../../globals';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getDieSidesRange } from '../util';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class AttributeManager extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   constructor({ actor, ...options }: AttributeManagerConfiguration) {
     if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
@@ -20,7 +19,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
     classes: ['swade', 'attribute-manager', 'swade-application'],
     position: {
       width: 600,
-      height: 'auto',
+      height: 'auto' as const,
     },
     window: {
       contentClasses: ['standard-form'],
@@ -75,7 +74,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
             label: 'Save Changes',
           },
         ],
-      },
+      }
     );
     return context;
   }
@@ -84,7 +83,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
     this: AttributeManager,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: FormDataExtended
   ) {
     await this.actor.update(formData.object);
     await this.render({ force: true });
@@ -92,13 +91,11 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
   }
 }
 
-interface AttributeManagerConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface AttributeManagerConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   actor: SwadeActor;
 }
 
-interface AttributeManagerRenderContext
-  extends Partial<foundry.applications.api.ApplicationV2.RenderContext> {
+interface AttributeManagerRenderContext extends Partial<foundry.applications.api.ApplicationV2.RenderContext> {
   isExtra: boolean;
   dieSides: DieSidesOption[];
   wildDieSides: DieSidesOption[];

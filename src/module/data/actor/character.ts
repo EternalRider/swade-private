@@ -1,4 +1,8 @@
-import { createEnrichedTextEmbed, createEmbedElement, slugify } from '../../util';
+import {
+  createEnrichedTextEmbed,
+  createEmbedElement,
+  slugify,
+} from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -51,7 +55,7 @@ export class CharacterData extends CreatureData<
       const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
         SkillData.Schema,
         Item.OfType<'skill'>
-      >[] = Array();
+      >[] = [];
 
       // Create core skills not in compendium (for custom skill names entered by the user)
       for (const skillName of coreSkills) {
@@ -59,7 +63,7 @@ export class CharacterData extends CreatureData<
           (skill) =>
             skill.type === 'skill' &&
             (skillName === skill.name ||
-              slugify(skillName) === skill.system.swid),
+              slugify(skillName) === skill.system.swid)
         );
 
         if (skill) {
@@ -85,8 +89,7 @@ export class CharacterData extends CreatureData<
       const untrainedSkill = skillIndex.find(
         (skill) =>
           skill.type === 'skill' &&
-          (untrained === skill.name ||
-            slugify(untrained) === skill.system.swid),
+          (untrained === skill.name || slugify(untrained) === skill.system.swid)
       );
       if (untrainedSkill) {
         skills.push(untrainedSkill.toObject());
@@ -116,7 +119,7 @@ export class CharacterData extends CreatureData<
       Actor.OfType<'character'>
     >,
     options: Actor.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(createData, options, user);
     if (allowed === false) return false;
@@ -142,14 +145,14 @@ export class CharacterData extends CreatureData<
 
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    options: TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
       return createEnrichedTextEmbed(
         this.details.biography.value || '',
         config,
-        options,
+        options
       );
     }
 
@@ -159,12 +162,12 @@ export class CharacterData extends CreatureData<
     this.enrichedBiography =
       await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         this.details.biography.value,
-        { ...options },
+        { ...options }
       );
 
     // Combine weapons and armor into a displayable gear array
     const displayableGear = this.parent.itemTypes.armor.concat(
-      this.parent.itemTypes.weapon,
+      this.parent.itemTypes.weapon
     );
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
 
@@ -174,7 +177,7 @@ export class CharacterData extends CreatureData<
         const enrichedHTML =
           await foundry.applications.ux.TextEditor.implementation.enrichHTML(
             ability.system.description,
-            { ...options },
+            { ...options }
           );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
@@ -184,7 +187,7 @@ export class CharacterData extends CreatureData<
     const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/actor-embeds.hbs',
-      ['actor-embed', 'character'],
+      ['actor-embed', 'character']
     );
 
     if (embed) {

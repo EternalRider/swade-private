@@ -4,7 +4,6 @@ import {
   MutationOption,
 } from '../documents/item/SwadeItem.interface';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -27,10 +26,10 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   #keyDownListener;
 
   static asPromise(
-    ctx: Omit<ChoiceDialogConfiguration, 'resolve'>,
+    ctx: Omit<ChoiceDialogConfiguration, 'resolve'>
   ): Promise<ChoiceSet> {
     return new Promise<ChoiceSet>((resolve) =>
-      new ChoiceDialog({ ...ctx, resolve }).render({ force: true }),
+      new ChoiceDialog({ ...ctx, resolve }).render({ force: true })
     );
   }
 
@@ -65,7 +64,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this: ChoiceDialog,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended,
+    _formData: FormDataExtended
   ) {
     this.customSubmit();
   }
@@ -77,7 +76,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   protected getSelection(): number | null {
     const radio = this.element.querySelector(
-      'input[name="choiceset"]:checked',
+      'input[name="choiceset"]:checked'
     ) as HTMLInputElement;
     if (!radio) return null;
     return Number(radio?.value);
@@ -86,7 +85,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onClose(
     this: ChoiceDialog,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     this.close();
   }
@@ -120,7 +119,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
             action: 'close',
           },
         ],
-      },
+      }
     );
     return context;
   }

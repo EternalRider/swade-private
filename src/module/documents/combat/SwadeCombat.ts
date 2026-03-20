@@ -42,10 +42,10 @@ export default class SwadeCombat<
   static override async createDialog(
     data = {},
     createOptions = {},
-    dialogOptions: DeepPartial<foundry.applications.api.DialogV2.WaitOptions> = {},
+    dialogOptions: DeepPartial<foundry.applications.api.DialogV2.WaitOptions> = {}
   ): Promise<SwadeCombat | null | undefined> {
     const typeOptions = Object.entries(CONFIG.Combat.typeLabels).map(
-      ([value, label]) => ({ value, label }),
+      ([value, label]) => ({ value, label })
     );
     const typeSelect = foundry.applications.fields.createSelectInput({
       options: typeOptions,
@@ -112,11 +112,11 @@ export default class SwadeCombat<
           rejectClose: false,
           render: (
             _event: Event,
-            dialog: foundry.applications.api.DialogV2,
+            dialog: foundry.applications.api.DialogV2
           ) => {
             const html = dialog.element;
             const typeSelect = html.querySelector<HTMLSelectElement>(
-              'select[name="type"]',
+              'select[name="type"]'
             );
             const roundsInput = html
               .querySelector<HTMLDivElement>('input[name="system.maxRounds"]')
@@ -136,8 +136,8 @@ export default class SwadeCombat<
             });
           },
         },
-        dialogOptions,
-      ),
+        dialogOptions
+      )
     );
   }
 
@@ -171,7 +171,7 @@ export default class SwadeCombat<
       {
         action: 'gmBenny',
         label: stringNonbreakingSpaces(
-          game.i18n.localize('SWADE.Rolls.GMBenny'),
+          game.i18n.localize('SWADE.Rolls.GMBenny')
         ),
         icon: '<i class="fas fa-coins"></i>',
       },
@@ -226,7 +226,11 @@ export default class SwadeCombat<
 
   override async rollInitiative(
     ids: string | string[],
-    { messageOptions, updateTurn, autoPick }: Combat.InitiativeOptions & { autoPick?: boolean } = {},
+    {
+      messageOptions,
+      updateTurn,
+      autoPick,
+    }: Combat.InitiativeOptions & { autoPick?: boolean } = {}
   ) {
     // Structure input data
     ids = Array.isArray(ids) ? ids : [ids];
@@ -404,7 +408,7 @@ export default class SwadeCombat<
               cards: cardsToPickFrom.map((c) => c.toObject()),
             },
           },
-          messageOptions,
+          messageOptions
         );
         messages.push(messageData);
       }
@@ -564,7 +568,7 @@ export default class SwadeCombat<
     documents: InstanceType<DescendantDocumentType>,
     data: CreateData[],
     options: foundry.abstract.Document.Database.CreateOptions<Operation>,
-    userId: string,
+    userId: string
   ) {
     super._onCreateDescendantDocuments(
       parent,
@@ -572,7 +576,7 @@ export default class SwadeCombat<
       documents,
       data,
       options,
-      userId,
+      userId
     );
     if (collection === 'combatants') {
       this.onCreateCombatantFollow(documents, userId);
@@ -596,7 +600,7 @@ export default class SwadeCombat<
     documents: InstanceType<DescendantDocumentType>,
     changes: UpdateData[],
     options: foundry.abstract.Document.Database.UpdateOptions<Operation>,
-    userId: string,
+    userId: string
   ) {
     const oldTurn = this.turn;
     super._onUpdateDescendantDocuments(
@@ -605,7 +609,7 @@ export default class SwadeCombat<
       documents,
       changes,
       options,
-      userId,
+      userId
     );
     if (this.turn != oldTurn && game.user.isGM) {
       // FIXME: restore old turn; somehow, super._onUpdateDescendantDocuments() sometimes mutates the turn erroneously.
@@ -632,7 +636,7 @@ export default class SwadeCombat<
     documents: InstanceType<DescendantDocumentType>,
     ids: string[],
     options: foundry.abstract.Document.Database.DeleteOptions<Operation>,
-    userId: string,
+    userId: string
   ) {
     super._onDeleteDescendantDocuments(
       parent,
@@ -640,7 +644,7 @@ export default class SwadeCombat<
       documents,
       ids,
       options,
-      userId,
+      userId
     );
     if (
       collection === 'groups' ||
@@ -695,7 +699,7 @@ export default class SwadeCombat<
       (c) =>
         c.type === 'poker' &&
         c.value === cardValue &&
-        c.system['suit'] === cardSuit,
+        c.system['suit'] === cardSuit
     );
   }
 
@@ -741,14 +745,14 @@ export default class SwadeCombat<
     new AmbushAssistant(this).render(true);
   }
 
-  createGroup(name: String = '', icon: String = '') {
+  createGroup(name: string = '', icon: string = '') {
     const groupCls = CombatantGroup.implementation;
     return groupCls.create(
       {
         name: name ? name : groupCls.defaultName({ parent: this }),
         img: icon ? icon : CONFIG.SWADE.combat.group.icon,
       },
-      { parent: this },
+      { parent: this }
     );
   }
 
@@ -759,7 +763,7 @@ export default class SwadeCombat<
    */
   async getGroupForCombatant(
     leader: string | SwadeCombatant,
-    options = { createIfNotInGroup: false, preferDisposition: undefined },
+    options = { createIfNotInGroup: false, preferDisposition: undefined }
   ) {
     let leaderCombatant = undefined;
     if (
@@ -773,14 +777,14 @@ export default class SwadeCombat<
         (c) =>
           c?.name === leader ||
           c?.token?.name === leader ||
-          c?.actor.name === leader,
+          c?.actor.name === leader
       );
       if (
         options?.hasOwnProperty('preferDisposition') &&
         options.preferDisposition !== undefined
       ) {
         leaderCombatant = possibleLeaders?.find(
-          (c) => c.token?.disposition === options?.preferDisposition,
+          (c) => c.token?.disposition === options?.preferDisposition
         );
       }
       if (!leaderCombatant) leaderCombatant = possibleLeaders?.shift();
@@ -814,7 +818,7 @@ export default class SwadeCombat<
           if (options?.deleteMembers) {
             await m?.delete();
           }
-        }),
+        })
       );
     } else {
       await group.delete();
@@ -915,7 +919,7 @@ export default class SwadeCombat<
     const expirations =
       this.combatant?.actor?.effects.filter(
         (effect: SwadeActiveEffect) =>
-          effect.isTemporary && effect.isExpired('start'),
+          effect.isTemporary && effect.isExpired('start')
       ) ?? [];
     for (const effect of expirations) {
       await effect.expire();
@@ -926,7 +930,7 @@ export default class SwadeCombat<
     if (!this.combatant || this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
-        (effect) => effect.isTemporary && effect.isExpired('end'),
+        (effect) => effect.isTemporary && effect.isExpired('end')
       ) ?? [];
     for (const effect of expirations) {
       await effect.expire();
@@ -989,7 +993,7 @@ export default class SwadeCombat<
           c.hasPlayerOwner &&
           !c.isNPC &&
           c.initiative === null &&
-          (!c.group || c.isGroupLeader),
+          (!c.group || c.isGroupLeader)
       )
       .map((c: SwadeCombatant) => {
         return { combatant: c, user: c.players[0]! };
@@ -1010,7 +1014,7 @@ export default class SwadeCombat<
 
   protected _determineIfRemoteDraw(
     user: SwadeUser,
-    combatant: SwadeCombatant,
+    combatant: SwadeCombatant
   ): boolean {
     if (!combatant.actor || !('initiative' in combatant.actor.system))
       return false;
@@ -1025,7 +1029,7 @@ export default class SwadeCombat<
 
   override async _preDelete(
     options: Combat.Database.PreDeleteOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     await super._preDelete(options, user);
 
@@ -1037,9 +1041,9 @@ export default class SwadeCombat<
       this.combatants
         .filter((c) => c.actor?.statuses.has('holding') ?? false)
         .flatMap((c) =>
-          c.actor?.effects.filter((e) => e.statuses.has('holding')),
+          c.actor?.effects.filter((e) => e.statuses.has('holding'))
         )
-        .map((e) => e.delete()),
+        .map((e) => e.delete())
     );
   }
 }

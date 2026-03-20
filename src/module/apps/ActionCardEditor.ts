@@ -6,11 +6,10 @@ interface CardData {
   isJoker: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class ActionCardEditor extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   constructor({ cards, ...options }: ActionCardEditorConfiguration) {
     super(options);
@@ -26,7 +25,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     },
     position: {
       width: 600,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'action-card-editor', 'swade-application'],
     tag: 'form',
@@ -73,7 +72,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
             label: 'SETTINGS.Save',
           },
         ],
-      },
+      }
     );
     return context;
   }
@@ -114,7 +113,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     this: ActionCardEditor,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: FormDataExtended
   ) {
     const data = foundry.utils.expandObject(formData.object);
     const cards = Object.entries(data.card) as [string, CardData][];
@@ -161,7 +160,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   static #onShowCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
@@ -174,7 +173,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   static async #onAddCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     const newCard = await CONFIG.Card.documentClass.create(
       {
@@ -191,7 +190,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
         face: 0,
         origin: this.cards.id,
       },
-      { parent: this.cards },
+      { parent: this.cards }
     );
     if (newCard) {
       await this.render({ force: true });
@@ -202,7 +201,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   static async #onDeleteCard(
     this: ActionCardEditor,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const card = this.cards.cards.get(target.dataset.id);
     if (!card) return;
@@ -222,7 +221,6 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 }
 
-export interface ActionCardEditorConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+export interface ActionCardEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   cards: Cards;
 }
