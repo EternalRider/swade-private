@@ -8,6 +8,15 @@ export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ["eslint.config.mjs"]
+        },
+      },
+    },
+  },
+  {
     ignores: ["**/*.js"],
   },
   {
@@ -17,6 +26,7 @@ export default defineConfig(
       "@typescript-eslint/no-namespace": "off", //Required for some fvtt-types
       "@typescript-eslint/no-empty-object-type": "off", //False-flags some of the fvtt-type
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-deprecated": "warn",
       "@typescript-eslint/no-inferrable-types": "warn",
       "@typescript-eslint/array-type": "warn",
       "@typescript-eslint/consistent-indexed-object-style": "warn",
