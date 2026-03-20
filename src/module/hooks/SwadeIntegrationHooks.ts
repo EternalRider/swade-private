@@ -1,7 +1,7 @@
 import {
   DsnCustomWildDieColors,
   DsnCustomWildDieOptions,
-} from '../../interfaces/DiceIntegration interface';
+} from '../../interfaces/DiceIntegration.interface';
 import { Dice3D } from '../../types/DiceSoNice';
 import DiceSettings from '../apps/DiceSettings';
 import { PACKAGE_ID, SWADE } from '../config';
@@ -33,7 +33,7 @@ export default class SwadeIntegrationHooks {
 
     dice3d.addSystem(
       { id: 'swade', name: 'Savage Worlds Adventure Edition' },
-      'preferred',
+      'preferred'
     );
 
     dice3d.addColorset(
@@ -49,7 +49,7 @@ export default class SwadeIntegrationHooks {
         material: customWilDieOptions.material,
         font: customWilDieOptions.font,
       },
-      'no',
+      'no'
     );
 
     dice3d.addDicePreset(
@@ -66,7 +66,7 @@ export default class SwadeIntegrationHooks {
           game.settings.get('swade', '3dBennyBackBump'),
         ].filter(Boolean),
       },
-      'd2',
+      'd2'
     );
   }
 
@@ -75,7 +75,7 @@ export default class SwadeIntegrationHooks {
     if (user.id === game.userId) return;
     const wildDie = context.roll.terms.find(
       (d: foundry.dice.terms.RollTerm) =>
-        d.options.flavor === game.i18n.localize('SWADE.WildDie'),
+        d.options.flavor === game.i18n.localize('SWADE.WildDie')
     );
 
     const dieSystem = wildDie?.options?.appearance?.system;
@@ -101,7 +101,7 @@ export default class SwadeIntegrationHooks {
       foundry.utils.setProperty(
         wildDie,
         'options.appearance',
-        customAppearance,
+        customAppearance
       );
     } else {
       // Set the preset
