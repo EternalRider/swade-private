@@ -287,8 +287,8 @@ export function isObject(value) {
 }
 
 /** Separates an array into a series of smaller arrays of a given size */
-export function chunkArray<T>(array: T[], size: number = 2): Array<T[]> {
-  const result: Array<T[]> = [];
+export function chunkArray<T>(array: T[], size = 2): T[][] {
+  const result: T[][] = [];
   for (let i = 0; i < array.length; i += size) {
     const chunk = array.slice(i, i + size);
     result.push(chunk);
@@ -314,7 +314,7 @@ export function mapRange(
  * @param condition A function that represents a condition and returns a boolean
  * @returns the number of items in the array that fulfill the condition
  */
-export function count<T>(arr: Array<T>, condition: (e: T) => boolean): number {
+export function count<T>(arr: T[], condition: (e: T) => boolean): number {
   return arr.filter(condition).length;
 }
 

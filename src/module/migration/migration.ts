@@ -648,7 +648,7 @@ function _ensureBatteryMaxCharges(
 function _fixWorldItemGrants(data: Item.CreateData, updateData: UpdateData) {
   if (!data.system.grants) return;
   updateData['system.grants'] = structuredClone(data.system.grants);
-  for (const grant of updateData['system.grants'] as Array<ItemGrant>) {
+  for (const grant of updateData['system.grants'] as ItemGrant[]) {
     if (grant.uuid.startsWith('Item.Item.')) {
       const newUUID = grant.uuid.split('.');
       newUUID.shift(); //discard the first part

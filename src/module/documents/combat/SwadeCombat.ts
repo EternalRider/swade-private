@@ -30,7 +30,7 @@ export default class SwadeCombat<
   out SubType extends Combat.SubType = Combat.SubType,
 > extends Combat<SubType> {
   /** an internal helper flag that's being checked to see if we're currently asking to advance the round */
-  #roundAdvanceDialog: boolean = false;
+  #roundAdvanceDialog = false;
 
   /** Sorts two objects with name and id fields alphabetically by name, using the ID as tie breaker.*/
   static sortByNameAndID(a, b): number {
@@ -751,7 +751,7 @@ export default class SwadeCombat<
     new AmbushAssistant(this).render(true);
   }
 
-  createGroup(name: string = '', icon: string = '') {
+  createGroup(name = '', icon = '') {
     const groupCls = CombatantGroup.implementation;
     return groupCls.create(
       {

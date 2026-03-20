@@ -5,7 +5,7 @@ export interface DsnCustomWildDieColors {
   edgeColor: string;
 }
 export interface DsnCustomWildDieOptions {
-  texture: Array<string>;
+  texture: string[];
   material: 'plastic' | 'metal' | 'glass' | 'wood' | 'chrome';
   font: string;
 }

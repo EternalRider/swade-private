@@ -42,7 +42,8 @@ declare global {
 }
 
 export interface CanvasDropData
-  extends foundry.abstract.Document.DropData<foundry.abstract.Document.Any>,
+  extends
+    foundry.abstract.Document.DropData<foundry.abstract.Document.Any>,
     foundry.abstract.Document.DropData.UUID,
     Canvas.DropPosition {}
 
@@ -69,7 +70,7 @@ export type AdditionalStatType = ValueOf<
   typeof constants.ADDITIONAL_STATS_TYPE
 >;
 
-export type PotentialSource<T extends {}> = T & { [key: string | number]: any };
+export type PotentialSource<T extends {}> = T & Record<string | number, any>;
 
 export type PhysicalItem =
   | 'weapon'
@@ -108,7 +109,7 @@ declare module 'fvtt-types/configuration' {
         embed: HTMLElement | HTMLCollection,
         actor: Actor.Implementation,
         config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
-        options: foundry.applications.ux.TextEditor.EnrichmentOptions,
+        options: foundry.applications.ux.TextEditor.EnrichmentOptions
       ): void;
 
       /**
@@ -137,7 +138,7 @@ declare module 'fvtt-types/configuration' {
         attribute: string,
         roll: TraitRoll,
         modifiers: RollModifier[],
-        options: IRollOptions,
+        options: IRollOptions
       ): boolean | void;
 
       /**
@@ -153,7 +154,7 @@ declare module 'fvtt-types/configuration' {
         attribute: string,
         roll: TraitRoll,
         modifiers: RollModifier[],
-        options: IRollOptions,
+        options: IRollOptions
       ): void;
 
       /**
@@ -170,7 +171,7 @@ declare module 'fvtt-types/configuration' {
         skill: Item.OfType<'skill'>,
         roll: TraitRoll,
         modifiers: RollModifier[],
-        options: IRollOptions,
+        options: IRollOptions
       ): boolean | void;
 
       /**
@@ -186,7 +187,7 @@ declare module 'fvtt-types/configuration' {
         skill: Item.OfType<'skill'>,
         roll: TraitRoll,
         modifiers: RollModifier[],
-        options: IRollOptions,
+        options: IRollOptions
       ): void;
 
       /**

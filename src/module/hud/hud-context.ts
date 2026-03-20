@@ -442,7 +442,7 @@ export async function prepareHudContext(
 
   // Group powers by arcane type
   const powers = getItemsByType(actor, 'power');
-  const groupedPowers: { [key: string]: any[] } = {};
+  const groupedPowers: Record<string, any[]> = {};
   powers.forEach((power: any) => {
     const arcane = power.system?.arcane || 'general';
     if (!groupedPowers[arcane]) {

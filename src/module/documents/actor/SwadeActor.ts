@@ -831,7 +831,7 @@ class SwadeActor<
 
   /** Calculates the total Wound Penalties
    * and returns them as a negative number */
-  calcWoundPenalties(ignoreAll: boolean = false): number {
+  calcWoundPenalties(ignoreAll = false): number {
     if (ignoreAll) return 0;
     let total = 0;
     const wounds = foundry.utils.getProperty(

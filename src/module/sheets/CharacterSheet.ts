@@ -1691,10 +1691,10 @@ interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   additionalStats: AdditionalStats;
   advances: {
     expanded: boolean;
-    list: Array<{
+    list: {
       rank: string;
       list: Advance[];
-    }>;
+    }[];
   };
   attributes: Record<string, TraitDisplay>;
   armorTooltip: string;

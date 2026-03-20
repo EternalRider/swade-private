@@ -31,8 +31,8 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     derived: true,
   };
 
-  currAttribute: string = 'agility';
-  currSkill: string = '';
+  currAttribute = 'agility';
+  currSkill = '';
 
   document: SwadeActor | SwadeItem;
 

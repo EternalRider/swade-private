@@ -1041,7 +1041,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   async #deleteEmbeddedDocument(id: string) {
     const flagContent = this.item.getFlag('swade', 'embeddedPowers') ?? [];
-    const map = new Map(flagContent as Array<[string, ItemData]>);
+    const map = new Map(flagContent as [string, ItemData][]);
     map.delete(id);
     this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }

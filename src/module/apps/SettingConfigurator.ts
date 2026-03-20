@@ -376,4 +376,4 @@ interface OptionGroup {
   group: string;
   options: GroupOptions;
 }
-type GroupOptions = Array<{ key: string; label: string }>;
+type GroupOptions = { key: string; label: string }[];

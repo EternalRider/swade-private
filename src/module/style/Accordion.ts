@@ -18,8 +18,8 @@ export class Accordion {
 
   constructor(
     el: HTMLDetailsElement,
-    contentSelector: string = '.content',
-    options?: AccordionOptions,
+    contentSelector = '.content',
+    options?: AccordionOptions
   ) {
     this.options = { ...this.#defaultOptions, ...options };
     // Store the <details> element
@@ -86,7 +86,7 @@ export class Accordion {
       {
         duration: this.options.duration,
         easing: this.options.easing,
-      },
+      }
     );
 
     // When the animation is complete, call onAnimationFinish()
@@ -129,7 +129,7 @@ export class Accordion {
       {
         duration: this.options.duration,
         easing: this.options.easing,
-      },
+      }
     );
     // When the animation is complete, call onAnimationFinish()
     this.animation.onfinish = () => this.onAnimationFinish(true);

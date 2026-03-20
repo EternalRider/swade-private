@@ -246,9 +246,8 @@ class SwadeItem<
 
   /** Apply modifier effects to this item. */
   applyModifiers() {
-    const changes: Array<
-      ActiveEffect.ChangeData & { effect: SwadeActiveEffect }
-    > = [];
+    const changes: (ActiveEffect.ChangeData & { effect: SwadeActiveEffect })[] =
+      [];
     // TODO: In v13 just use the getter on the embedded collection
     for (const effect of this.effects.filter((e) => e.type === 'modifier')) {
       if (!effect.active) continue;
@@ -911,7 +910,7 @@ class SwadeItem<
   async handleChoices(data: Item.CreateData) {
     const choiceUpdate = {};
     if (data.system?.choiceSets?.length > 0) {
-      for (const choiceSet of data.system.choiceSets as Array<ChoiceSet>) {
+      for (const choiceSet of data.system.choiceSets as ChoiceSet[]) {
         if (choiceSet.choice !== null) continue;
 
         Object.assign(

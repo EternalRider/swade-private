@@ -622,7 +622,7 @@ export class SwadePopout {
       entry.powers.sort((a, b) => a.sort - b.sort);
     }
     // For template compatibility, convert arcaneBackgrounds to groupedPowers and powerPoints
-    const groupedPowers: { [key: string]: any[] } = {};
+    const groupedPowers: Record<string, any[]> = {};
     const powerPoints: Record<string, { value: number; max: number }> = {};
 
     // Ensure context.system.powerPoints exists and copy entries so templates that

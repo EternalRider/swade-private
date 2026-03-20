@@ -469,7 +469,7 @@ interface RollDialogConfiguration extends Partial<foundry.applications.api.Appli
 }
 
 interface RollDialogFormData {
-  modifiers?: Array<RollModifier & { active: boolean }>;
+  modifiers?: (RollModifier & { active: boolean })[];
   map?: number;
   noAcing?: boolean;
   rollMode: foundry.CONST.DICE_ROLL_MODES;

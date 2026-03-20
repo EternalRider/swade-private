@@ -429,7 +429,7 @@ async function attemptSoak(
   statusToApply: Status,
   woundsText: string,
   damageContext: DamageContext,
-  bestSoakAttempt: number = 0,
+  bestSoakAttempt = 0,
   options?: {
     reroll?: boolean;
   }

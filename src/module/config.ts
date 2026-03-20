@@ -433,7 +433,7 @@ export interface SwadeConfig {
     maxHandlingPenalty: number;
   };
   settingConfig: {
-    settings: Array<string>;
+    settings: string[];
   };
   diceConfig: {
     flags: Record<string, any>;
@@ -447,7 +447,7 @@ export interface SwadeConfig {
     regular: string;
     compendium: string;
   };
-  measuredTemplatePresets: Array<TemplateConfig>;
+  measuredTemplatePresets: TemplateConfig[];
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   rollModifiers: Record<string, RollModifierGroup>;
@@ -455,14 +455,14 @@ export interface SwadeConfig {
   scales: string[];
   chargeRechargeTypes: Record<string, string>;
   textSearch: {
-    scene: Array<string>;
-    rolltable: Array<string>;
-    playlist: Array<string>;
-    macro: Array<string>;
-    journalentry: Array<string>;
-    item: Array<string>;
-    cards: Array<string>;
-    adventure: Array<string>;
-    actor: Array<string>;
+    scene: string[];
+    rolltable: string[];
+    playlist: string[];
+    macro: string[];
+    journalentry: string[];
+    item: string[];
+    cards: string[];
+    adventure: string[];
+    actor: string[];
   };
 }

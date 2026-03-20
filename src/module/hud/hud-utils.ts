@@ -70,7 +70,7 @@ export function getDistance(
  * @param {any} hudInstance - The HUD instance to render
  * @param {number} delay - Delay in milliseconds (default: 50)
  */
-export function debounceRender(hudInstance: any, delay: number = 20): void {
+export function debounceRender(hudInstance: any, delay = 20): void {
   if (hudInstance._renderDebounced) {
     hudInstance._renderDebounced();
   } else if (hudInstance.render) {

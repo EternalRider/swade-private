@@ -269,21 +269,20 @@ export default class SwadeCoreHooks {
     //create system links
     const systemLinks = document.createElement('div');
     systemLinks.classList.add('system-links');
-    const links: Array<{ label: string; url?: string; click?: EventListener }> =
-      [
-        {
-          label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
-          url: 'https://gitlab.com/peginc/swade/-/issues/new',
-        },
-        {
-          label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
-          url: game.system.changelog as string,
-        },
-        {
-          label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
-          click: (_ev) => game.packs.get('swade.system-docs')?.render(true),
-        },
-      ];
+    const links: { label: string; url?: string; click?: EventListener }[] = [
+      {
+        label: game.i18n.localize('SWADE.SystemLinks.ReportAnIssue'),
+        url: 'https://gitlab.com/peginc/swade/-/issues/new',
+      },
+      {
+        label: game.i18n.localize('SWADE.SystemLinks.Changelog'),
+        url: game.system.changelog as string,
+      },
+      {
+        label: game.i18n.localize('SWADE.SystemLinks.Wiki'),
+        click: (_ev) => game.packs.get('swade.system-docs')?.render(true),
+      },
+    ];
 
     //insert links links
     links.forEach((link) => {

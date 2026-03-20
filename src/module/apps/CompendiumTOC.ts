@@ -271,7 +271,7 @@ export class CompendiumTOC<
     const queryRaw = this.element.querySelector('[name="search"]')?.value ?? '';
     const query = foundry.applications.ux.SearchFilter.cleanQuery(queryRaw);
     const rgx = new RegExp(RegExp.escape(query), 'i');
-    let searchFields: Array<string> = [];
+    let searchFields: string[] = [];
     switch (this.collection.metadata.type) {
       case 'Actor':
         searchFields = CONFIG.SWADE.textSearch.actor;
