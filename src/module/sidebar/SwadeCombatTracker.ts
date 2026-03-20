@@ -3,8 +3,9 @@ import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
 /** This class defines a a new Combat Tracker specifically designed for SWADE */
-export default class SwadeCombatTracker extends foundry.applications.sidebar
-  .tabs.CombatTracker {
+export default class SwadeCombatTracker
+  extends foundry.applications.sidebar.tabs.CombatTracker
+{
   static override DEFAULT_OPTIONS = {
     classes: ['swade'],
     actions: {
@@ -72,7 +73,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     const combat = this.viewed as SwadeCombat | null;
 
     const [noGroup, grouped] = (context.turns ?? []).partition(
-      (c) => !!c?.group,
+      (c) => !!c?.group
     );
 
     const groups = Object.groupBy(grouped, (c) => c.group.id);
@@ -140,7 +141,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected async _prepareTurnContext(
     combat: Combat.Stored,
     combatant: Combatant.Stored,
-    index,
+    index
   ) {
     const turn = await super._prepareTurnContext(combat, combatant, index);
 
@@ -204,11 +205,11 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
 
     if (options.parts && options.parts.includes('dramaticTask')) {
       const tokenInput = this.element.querySelector<HTMLInputElement>(
-        'input[name="system.tokens.value"]',
+        'input[name="system.tokens.value"]'
       );
 
       tokenInput?.addEventListener('change', () =>
-        this.viewed?.update({ 'system.tokens.value': tokenInput.value }),
+        this.viewed?.update({ 'system.tokens.value': tokenInput.value })
       );
     }
   }
@@ -264,7 +265,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (!combatant) return;
 
     const groupLI = (event.target as HTMLElement).closest(
-      'li.combatant-group',
+      'li.combatant-group'
     ) as HTMLLIElement | undefined;
 
     if (groupLI) {
@@ -280,10 +281,10 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       } else {
         // Else if dropped on other combatant, create a group around and follow that combatant.
         const targetCombatantLI = (event.target as HTMLElement).closest(
-          'li.combatant',
+          'li.combatant'
         ) as HTMLLIElement | undefined;
         const targetCombatant = this.viewed?.combatants?.get(
-          targetCombatantLI.dataset.combatantId,
+          targetCombatantLI.dataset.combatantId
         );
         if (!targetCombatant || targetCombatant.id == combatant.id) return;
         const group = await this.viewed?.createGroup();
@@ -318,7 +319,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         (c.name === combatant.name ||
           c.actor?.name === combatant.actor?.name) &&
         c.id !== combatant.id &&
-        !c.group,
+        !c.group
     );
 
     return matching;
@@ -374,7 +375,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
           );
         },
         callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
-      },
+      }
     );
 
     return entryOptions;
@@ -465,7 +466,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   /*   Actions                                          */
   /* -------------------------------------------------- */
 
-  static async #drawInitiative(this, event, target) {
+  static async #drawInitiative(this, _event, target) {
     let combatantId = null;
 
     const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
@@ -500,10 +501,10 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   static async #toggleGroupExpand(
     this: SwadeCombatTracker,
     event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     // Don't proceed if the click event was actually on one of the combatants
-    const entry = event.target.closest('[data-combatant-id]');
+    const entry = event.target?.closest('[data-combatant-id]');
     if (entry) return;
 
     const combat = this.viewed;
@@ -514,7 +515,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   static async #onSwadeCombatantControl(
     this: SwadeCombatTracker,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const combatantId = target?.closest('[data-combatant-id]')?.dataset
       .combatantId;

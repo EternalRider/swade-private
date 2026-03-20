@@ -26,7 +26,7 @@ export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
   onUpdate: (() => void) | null = null,
-  token: HUDToken | null = null,
+  token: HUDToken | null = null
 ) {
   if (!element || !actor) return;
 
@@ -35,7 +35,7 @@ export function setupHudStatHandlers(
   // Event delegation for dynamically added effects
   element.addEventListener('dragstart', (event: DragEvent) => {
     const effectEl = (event.target as HTMLElement)?.closest?.(
-      '.swadehud-effect',
+      '.swadehud-effect'
     );
     if (!effectEl) return;
     const effectId = (effectEl as HTMLElement).dataset.effectId;
@@ -64,7 +64,7 @@ export function setupHudStatHandlers(
 
   // Combat Toggle (use the token reference passed from the HUD)
   const combatToggleBtn = element.querySelector(
-    '.swadehud-combat-toggle-clickable',
+    '.swadehud-combat-toggle-clickable'
   );
   if (combatToggleBtn && actor) {
     combatToggleBtn.addEventListener('click', async (e: MouseEvent) => {
@@ -82,7 +82,7 @@ export function setupHudStatHandlers(
           // Prefer a controlled token for this actor
           const controlledTokens = (canvas?.tokens?.controlled as any[]) || [];
           const controlledMatch = controlledTokens.find(
-            (t: any) => t?.actor?.id === actor.id,
+            (t: any) => t?.actor?.id === actor.id
           );
           if (controlledMatch) tokenToUse = controlledMatch;
 
@@ -90,7 +90,7 @@ export function setupHudStatHandlers(
           if (!hasToggle(tokenToUse)) {
             const placeables = (canvas?.tokens?.placeables as any[]) || [];
             const placeableMatch = placeables.find(
-              (t: any) => t?.actor?.id === actor.id,
+              (t: any) => t?.actor?.id === actor.id
             );
             if (placeableMatch) tokenToUse = placeableMatch;
           }
@@ -105,7 +105,6 @@ export function setupHudStatHandlers(
           }
         } catch (err) {
           // ignore canvas access errors
-          // eslint-disable-next-line no-console
           console.warn('HUD combat toggle: canvas token lookup failed', err);
         }
       }
@@ -120,7 +119,7 @@ export function setupHudStatHandlers(
         }
       } else {
         ui.notifications?.error(
-          'No valid token reference for this HUD. Please open the HUD from a token on the canvas.',
+          'No valid token reference for this HUD. Please open the HUD from a token on the canvas.'
         );
       }
     });
@@ -179,7 +178,7 @@ export function setupHudStatHandlers(
                         {
                           ap: ap,
                           isHeavyWeapon: false,
-                        },
+                        }
                       );
                       await damageRoll.evaluate();
                       const chatMessage = await SwadeChatMessage.create({
@@ -192,7 +191,7 @@ export function setupHudStatHandlers(
                       setTimeout(async () => {
                         if (chatMessage) {
                           const messageElement = document.querySelector(
-                            `[data-message-id="${chatMessage.id}"]`,
+                            `[data-message-id="${chatMessage.id}"]`
                           );
                           if (messageElement) {
                             const damageButton =
@@ -201,7 +200,7 @@ export function setupHudStatHandlers(
                               // Find the token on the canvas
                               const actorToken =
                                 canvas?.tokens?.placeables?.find(
-                                  (t: any) => t.actor?.id === actor.id,
+                                  (t: any) => t.actor?.id === actor.id
                                 );
                               // Foundry Token API: must be instance of Token and have control
                               if (
@@ -233,7 +232,7 @@ export function setupHudStatHandlers(
                     }
                   } catch (error) {
                     ui.notifications?.error(
-                      'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
+                      'Failed to roll damage. Please ensure SWADE system is active and properly loaded.'
                     );
                     console.error('HUD soak error:', error);
                   }
@@ -249,7 +248,6 @@ export function setupHudStatHandlers(
           modal: true,
         });
         // dialog.render is intentionally used for compatibility with Foundry's Application API.
-        // eslint-disable-next-line deprecation/deprecation
         dialog.render(true);
       } catch (error) {
         ui.notifications?.error('Failed to open soak dialog.');
@@ -277,7 +275,7 @@ export function setupHudStatHandlers(
 
   // Power Points (all arcane types)
   const ppIndicators = element.querySelectorAll(
-    '.swadehud-pp-indicator.swadehud-stat-clickable',
+    '.swadehud-pp-indicator.swadehud-stat-clickable'
   );
   const powerPointsRaw = actor?.system?.powerPoints || {};
   ppIndicators.forEach((el) => {
@@ -292,7 +290,7 @@ export function setupHudStatHandlers(
         // Find the real key in actor data (case-insensitive)
         const realArcaneKey =
           Object.keys(powerPointsRaw).find(
-            (k) => k.toLowerCase() === arcaneFromTemplate.toLowerCase(),
+            (k) => k.toLowerCase() === arcaneFromTemplate.toLowerCase()
           ) || arcaneFromTemplate;
         parts[2] = realArcaneKey;
         statPath = parts.join('.');
@@ -305,13 +303,13 @@ export function setupHudStatHandlers(
         statPath,
         min,
         max,
-        onUpdate,
+        onUpdate
       );
   });
 
   // Bennies
   const bennyStat = element.querySelector(
-    '[data-stat-path="system.bennies.value"]',
+    '[data-stat-path="system.bennies.value"]'
   );
   if (bennyStat)
     setupAddSubtractClicks(
@@ -320,16 +318,16 @@ export function setupHudStatHandlers(
       'system.bennies.value',
       0,
       null,
-      onUpdate,
+      onUpdate
     );
 
   // Conviction
   const convictionStat = element.querySelector(
-    '.swadehud-conviction-clickable',
+    '.swadehud-conviction-clickable'
   );
   if (convictionStat) {
     const starIcon = convictionStat.querySelector(
-      '.swadehud-bottomstat__icon i',
+      '.swadehud-bottomstat__icon i'
     );
     if (starIcon) {
       // Remove existing handler if present
@@ -359,7 +357,7 @@ export function setupHudStatHandlers(
       });
     }
     const valueSpan = convictionStat.querySelector(
-      '.swadehud-bottomstat__value',
+      '.swadehud-bottomstat__value'
     );
     if (valueSpan) {
       // Remove existing handlers if present
@@ -438,7 +436,7 @@ export function setupHudStatHandlers(
       }
       newPaceStat.setAttribute(
         'title',
-        `Pace: ${base.charAt(0).toUpperCase() + base.slice(1)} (Left click: roll running, Right click: cycle)`,
+        `Pace: ${base.charAt(0).toUpperCase() + base.slice(1)} (Left click: roll running, Right click: cycle)`
       );
     };
 
@@ -450,7 +448,7 @@ export function setupHudStatHandlers(
     if (existingHandlers?.contextmenu) {
       newPaceStat.removeEventListener(
         'contextmenu',
-        existingHandlers.contextmenu,
+        existingHandlers.contextmenu
       );
     }
     if (existingHandlers?.auxclick) {
@@ -527,7 +525,7 @@ export function setupHudStatHandlers(
   // already wired above (powerPoints, bennies, conviction).
   try {
     const statElements = Array.from(
-      element.querySelectorAll('[data-stat-path]'),
+      element.querySelectorAll('[data-stat-path]')
     ) as HTMLElement[];
     for (const statEl of statElements) {
       const statPath = statEl.getAttribute('data-stat-path');
@@ -551,10 +549,9 @@ export function setupHudStatHandlers(
     }
   } catch (err) {
     // Non-fatal: don't break the HUD if this fails
-    // eslint-disable-next-line no-console
     console.warn(
       'setupHudStatHandlers: failed to attach generic data-stat-path handlers',
-      err,
+      err
     );
   }
 }
@@ -565,7 +562,7 @@ function getNestedProperty(obj: any, path: string) {
 
 export function debounce<T extends (...args: any[]) => void>(
   func: T,
-  wait: number,
+  wait: number
 ): T {
   let timeout: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
@@ -580,7 +577,7 @@ export function setupAddSubtractClicks(
   statPath: string,
   min = 0,
   max: number | null = null,
-  onUpdate: (() => void) | null = null,
+  onUpdate: (() => void) | null = null
 ) {
   if (!element || !actor) return;
 
@@ -627,7 +624,7 @@ export function setupAddSubtractClicks(
           // Left click: increment
           newValue = Math.min(
             arcaneData.max || max || Infinity,
-            currentValue + 1,
+            currentValue + 1
           );
         } else if (event.button === 2) {
           // Right click: decrement

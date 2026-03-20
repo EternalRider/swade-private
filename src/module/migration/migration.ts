@@ -1,4 +1,3 @@
-/* eslint-disable deprecation/deprecation */
 import { ReloadType } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
@@ -18,7 +17,7 @@ export async function migrateWorld() {
 
   Logger.info(
     `Applying SWADE System Migration for version ${version}. Please be patient and do not close your game or shut down your server.`,
-    { permanent: true, toast: true },
+    { permanent: true, toast: true }
   );
 
   // Gather the World Actors/Items to migrate
@@ -28,7 +27,7 @@ export async function migrateWorld() {
       Array.from(game.actors.invalidDocumentIds).map((id) => [
         game.actors!.getInvalid(id),
         false,
-      ]),
+      ])
     );
 
   const items = game
@@ -37,11 +36,11 @@ export async function migrateWorld() {
       Array.from(game.items.invalidDocumentIds).map((id) => [
         game.items!.getInvalid(id),
         false,
-      ]),
+      ])
     );
 
   const packs = game.packs.filter((p) =>
-    ['Actor', 'Item', 'Scene'].includes(p.documentName),
+    ['Actor', 'Item', 'Scene'].includes(p.documentName)
   );
 
   const counter = new MigrationCounter(
@@ -49,7 +48,7 @@ export async function migrateWorld() {
       actors.length +
       packs.length +
       game.scenes!.size +
-      game.users!.size,
+      game.users!.size
   );
 
   // Migrate World Actors
@@ -160,7 +159,7 @@ export async function migrateWorld() {
  * @param pack The compendium to migrate. Only Actor, Item or Scene compendiums are processed
  */
 export async function migrateCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  pack: CompendiumCollection<CompendiumCollection.Metadata>
 ) {
   const documentName = pack.documentName;
   if (!['Actor', 'Item', 'Scene'].includes(documentName)) return;
@@ -195,7 +194,7 @@ export async function migrateCompendium(
       if (foundry.utils.isEmpty(updateData)) continue;
       await doc.update(updateData);
       Logger.debug(
-        `Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`,
+        `Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`
       );
     } catch (err) {
       // Handle migration failures
@@ -207,7 +206,7 @@ export async function migrateCompendium(
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
   Logger.debug(
-    `Migrated all ${documentName} documents from Compendium ${pack.collection}`,
+    `Migrated all ${documentName} documents from Compendium ${pack.collection}`
   );
 }
 
@@ -258,7 +257,7 @@ async function refreshAllCompendiums() {
  * @param pack  Pack to refresh.
  */
 async function refreshCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  pack: CompendiumCollection<CompendiumCollection.Metadata>
 ) {
   if (!pack?.documentName) return;
   // swade.moduleArt.suppressArt = true;
@@ -282,7 +281,7 @@ async function refreshCompendium(
   await pack.configure({ locked: wasLocked });
   // swade.moduleArt.suppressArt = false;
   ui.notifications.info(
-    `Refreshed all documents from Compendium ${pack.collection}`,
+    `Refreshed all documents from Compendium ${pack.collection}`
   );
 }
 
@@ -413,7 +412,7 @@ export function removeDeprecatedObjects(data: Item.CreateData | ActorData) {
 export async function dedupeActorActiveEffects(actor: SwadeActor) {
   const toDelete = new Array<string>();
   const filteredEffects: SwadeActiveEffect[] = actor.appliedEffects.filter(
-    (e) => e.parent instanceof SwadeItem,
+    (e) => e.parent instanceof SwadeItem
   );
 
   for (const effect of filteredEffects) {
@@ -477,7 +476,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
 
 function _migrateVehicleOperator(
   data: Actor.UpdateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.system.driver?.id;
@@ -490,7 +489,7 @@ function _migrateVehicleOperator(
 
 function _migrateGeneralPowerPoints(
   data: Actor.UpdateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type === 'vehicle') return updateData;
 
@@ -541,7 +540,7 @@ function _migrateGeneralPowerPoints(
 
 function _migrateWeaponAPToNumber(
   data: Item.CreateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type !== 'weapon') return updateData;
 
@@ -552,14 +551,14 @@ function _migrateWeaponAPToNumber(
 
 function _migratePowerEquipToFavorite(
   data: Item.CreateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
     updateData['system.favorite'] = foundry.utils.getProperty(
       data,
-      'system.equipped',
+      'system.equipped'
     );
     updateData['system.-=equipped'] = null;
     updateData['system.-=equippable'] = null;
@@ -605,7 +604,7 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
 
 function _migrateWeaponAutoReload(
   data: Item.CreateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type !== 'weapon') return;
   const hasOld = foundry.utils.hasProperty(data, 'system.autoReload');
@@ -620,7 +619,7 @@ function _migrateWeaponAutoReload(
 
 function _ensureBatteryMaxCharges(
   data: Item.CreateData,
-  updateData: UpdateData,
+  updateData: UpdateData
 ) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
