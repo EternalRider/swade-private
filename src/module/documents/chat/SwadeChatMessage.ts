@@ -116,7 +116,7 @@ export default class SwadeChatMessage extends ChatMessage {
         discarded,
         largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
         index: this.index,
-      },
+      }
     );
   }
 
@@ -129,7 +129,7 @@ export default class SwadeChatMessage extends ChatMessage {
         this.content,
         {
           rollData: this.getRollData(),
-        },
+        }
       );
 
     // Construct message data
@@ -156,7 +156,7 @@ export default class SwadeChatMessage extends ChatMessage {
   }
 
   async #renderSwadeRollMessage(
-    messageData: ChatMessage.MessageData,
+    messageData: ChatMessage.MessageData
   ): Promise<HTMLElement> {
     await this.#renderSwadeRollContent(messageData);
 
@@ -166,7 +166,7 @@ export default class SwadeChatMessage extends ChatMessage {
     messageData.message.content = '';
     const templateStr = await foundry.applications.handlebars.renderTemplate(
       CONFIG.ChatMessage.template,
-      messageData,
+      messageData
     );
     messageData.message.content = content;
     const html = foundry.utils.parseHTML(templateStr) as HTMLElement;
@@ -198,7 +198,7 @@ export default class SwadeChatMessage extends ChatMessage {
     html
       .querySelectorAll('.dice-roll')
       .forEach((el) =>
-        el.addEventListener('click', this._onClickDiceRoll.bind(this)),
+        el.addEventListener('click', this._onClickDiceRoll.bind(this))
       );
 
     html
@@ -224,7 +224,7 @@ export default class SwadeChatMessage extends ChatMessage {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
+            target.dataset.tokenUuid ?? ''
           ) as TokenDocument | null;
           const tokenObj = tokenDoc?.object;
           if (tokenObj?.isVisible && !tokenObj?.controlled) {
@@ -235,7 +235,7 @@ export default class SwadeChatMessage extends ChatMessage {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
+            target.dataset.tokenUuid ?? ''
           ) as TokenDocument | null;
           const tokenObj = tokenDoc?.object;
           if (tokenObj?.isVisible && !tokenObj?.controlled) {
@@ -246,7 +246,7 @@ export default class SwadeChatMessage extends ChatMessage {
           if (!canvas.ready) return;
           const target = ev.currentTarget as HTMLLIElement;
           const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? '',
+            target.dataset.tokenUuid ?? ''
           ) as TokenDocument | null;
           if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
         });
@@ -256,8 +256,7 @@ export default class SwadeChatMessage extends ChatMessage {
   async #renderRolls(isPrivate: boolean): Promise<string> {
     if (isPrivate) return this.significantRoll!.render({ isPrivate });
     let html = '';
-    for (let i = 0; i < this['rolls'].length; i++) {
-      const roll = this['rolls'][i] as Roll;
+    for (const roll of this.rolls) {
       const displayResult = roll === this.significantRoll;
       if (roll instanceof SwadeRoll) {
         let flavor = game.i18n.localize(`SWADE.Rolls.${roll.constructor.name}`);
@@ -301,7 +300,7 @@ export default class SwadeChatMessage extends ChatMessage {
         rolls: await this.#renderRolls(isPrivate),
         targets: targets,
         content: content,
-      },
+      }
     );
   }
 
@@ -313,7 +312,7 @@ export default class SwadeChatMessage extends ChatMessage {
     const pool = roll.terms[0] as foundry.dice.terms.PoolTerm;
     const hasMultipleTraitDice = pool.dice.length > 1;
     const hasConfirmedCritfail = this['rolls'].find(
-      (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1,
+      (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1
     );
     if (hasMultipleTraitDice) {
       return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;
