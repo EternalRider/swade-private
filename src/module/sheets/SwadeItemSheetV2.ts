@@ -529,7 +529,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   static async #rechargeAction(
     this: SwadeItemSheetV2,
-    event: PointerEvent,
+    _event: PointerEvent,
     target: HTMLElement
   ) {
     const action = target.dataset.action;

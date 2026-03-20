@@ -196,7 +196,7 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override close(
-    options?: foundry.applications.api.ApplicationV2.CloseOptions
+    options?: foundry.applications.api.ApplicationV2.ClosingOptions
   ): Promise<this> {
     Hooks.off('updateCombatant', this.#hookId);
     return super.close(options);
@@ -224,16 +224,16 @@ interface CardPickConfiguration extends Partial<foundry.applications.api.Applica
 }
 
 export interface CardPickContext {
-  /** a deck from which to draw cards, should the need arise */
-  deck: SwadeCards;
   /** an array of cards */
   cards: Card[];
   /** name of the combatant */
   combatantName: string;
+  /** a deck from which to draw cards, should the need arise */
+  deck?: SwadeCards;
   /** id of the combatant */
-  combatantId?: string;
+  combatantId?: string | null;
   /** id of the old card, if you're picking cards for a redraw */
-  oldCardId?: string;
+  oldCardId?: string | null;
   /** determines whether a redraw is allowed */
   enableRedraw?: boolean;
   /** determines whether this draw includes the Quick edge */

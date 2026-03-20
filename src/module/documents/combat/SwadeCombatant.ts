@@ -247,7 +247,7 @@ export default class SwadeCombatant<
     if (!card.drawn) {
       const discardPile = game.cards!.get(
         game.settings.get('swade', 'actionDeckDiscardPile'),
-        { strict: true },
+        { strict: true }
       );
       await card.discard(discardPile, { chatNotification: false });
     }
@@ -310,7 +310,7 @@ export default class SwadeCombatant<
     const ret = await super.update(data, operation);
     if (
       game.users.activeGM?.isSelf &&
-      data?.hasOwnProperty('initiative') &&
+      Object.hasOwn(data, 'initiative') &&
       this.isGroupLeader
     ) {
       await this.group?.update({ initiative: this.initiative });
@@ -332,7 +332,7 @@ export default class SwadeCombatant<
     const otherInterruptors = this.parent.turns.filter(
       (t) =>
         (t.initiative ?? 0) < targetInitiative + 1 &&
-        (t.initiative ?? 0) > targetInitiative,
+        (t.initiative ?? 0) > targetInitiative
     );
     for (const t of otherInterruptors) {
       // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
@@ -379,7 +379,7 @@ export default class SwadeCombatant<
   override async _preCreate(
     data: Combatant.CreateData,
     options: Combatant.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     if (this.actor?.type === 'group') {
       Logger.warn('SWADE.Validation.NoGroupCombatants', {

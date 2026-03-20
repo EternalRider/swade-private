@@ -1,4 +1,3 @@
-// import { Updates } from '../../globals';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
@@ -36,7 +35,7 @@ export default class SwadeCombatTracker
     },
   };
 
-  protected override scrollToTurn() {
+  override scrollToTurn() {
     this.element?.querySelector('.combatant.active')?.scrollIntoView();
     this.viewed?.expandGroupIfNeeded();
   }
@@ -402,7 +401,7 @@ export default class SwadeCombatTracker
    */
   protected _getGroupContextOptions() {
     const getCombatantGroup = (li: HTMLLIElement) =>
-      this.viewed!.groups.get(li.dataset.groupId);
+      this.viewed!.groups.get(li.dataset.groupId!);
     const entryOptions = [
       {
         name: game.i18n.format('DOCUMENT.Update', {
@@ -482,7 +481,7 @@ export default class SwadeCombatTracker
     return this.viewed?.rollInitiative(combatantId);
   }
 
-  static async #redrawInitiative(this, event, target) {
+  static async #redrawInitiative(this, _event, target) {
     let combatantId = null;
 
     const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
@@ -504,34 +503,35 @@ export default class SwadeCombatTracker
     target: HTMLElement
   ) {
     // Don't proceed if the click event was actually on one of the combatants
-    const entry = event.target?.closest('[data-combatant-id]');
+    const entry = event.target?.closest<HTMLElement>('[data-combatant-id]');
     if (entry) return;
 
     const combat = this.viewed;
     const groupId = target.dataset.groupId;
-    await combat.toggleGroupExpand(groupId);
+    await combat?.toggleGroupExpand(groupId);
   }
 
   static async #onSwadeCombatantControl(
     this: SwadeCombatTracker,
     _event: PointerEvent,
     target: HTMLElement
-  ) {
-    const combatantId = target?.closest('[data-combatant-id]')?.dataset
-      .combatantId;
-    const combatant: SwadeCombatant | null =
+  ): Promise<void> {
+    const combatantId = target?.closest<HTMLElement>('[data-combatant-id]')
+      ?.dataset.combatantId;
+    if (!combatantId) return;
+    const combatant: SwadeCombatant | undefined =
       this.viewed?.combatants.get(combatantId);
     if (!combatant) return;
 
     switch (target.dataset.action) {
       case 'toggleHold':
-        return await combatant.toggleHold();
+        return combatant.toggleHold();
       case 'toggleTurnLost':
-        return await combatant.toggleTurnLost();
+        return combatant.toggleTurnLost();
       case 'actNow':
-        return await combatant.actNow();
+        return combatant.actNow();
       case 'actAfter':
-        return await combatant.actAfterCurrentCombatant();
+        return combatant.actAfterCurrentCombatant();
     }
   }
 

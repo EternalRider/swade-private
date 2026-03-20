@@ -147,8 +147,8 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 
   private _sortCards(a: Card, b: Card) {
-    const suitA = a.system['suit'];
-    const suitB = b.system['suit'];
+    const suitA = a.system['suit'] ?? 0;
+    const suitB = b.system['suit'] ?? 0;
     const suit = suitB - suitA;
     if (suit !== 0) return suit;
     const cardA = a.value ?? 0;
@@ -164,9 +164,9 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   ) {
     const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
-    if (!card) return;
+    if (!card.currentFace?.img) return;
     new foundry.applications.apps.ImagePopout({
-      src: card.currentFace?.img!,
+      src: card.currentFace.img,
     }).render({ force: true });
   }
 

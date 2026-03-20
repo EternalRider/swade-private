@@ -250,7 +250,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
   ) {
     if (!attributes || !base) return {};
     for (const k of Object.keys(base)) {
-      if (!attributes.hasOwnProperty(k)) {
+      if (!Object.hasOwn(attributes, k)) {
         delete attributes[k];
       }
     }

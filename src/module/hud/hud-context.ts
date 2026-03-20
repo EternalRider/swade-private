@@ -1,4 +1,6 @@
+import { HUDContext } from '../../types/HUD';
 import SwadeToken from '../canvas/SwadeToken';
+import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
  * Utility: Get items of a specific type from an actor
@@ -29,8 +31,6 @@ export function getAllApplicableEffects(actor: any): any[] {
   }
   return effects;
 }
-import { HUDContext } from '../../types/HUD';
-import SwadeActor from '../documents/actor/SwadeActor';
 
 /**
  * Global cache for compiled Handlebars templates to improve rendering performance.
@@ -80,7 +80,7 @@ class TemplateCache {
       }
 
       console.log(
-        `SWADE HUD: Pre-compiled ${this.compiledTemplates.size} templates`,
+        `SWADE HUD: Pre-compiled ${this.compiledTemplates.size} templates`
       );
     } catch (error) {
       console.error('SWADE HUD: Failed to initialize template cache:', error);
@@ -96,7 +96,7 @@ class TemplateCache {
    */
   async render(
     templatePath: string,
-    data: HUDContext = {} as HUDContext,
+    data: HUDContext = {} as HUDContext
   ): Promise<string> {
     // Try cached template first
     const cachedTemplate = this.compiledTemplates.get(templatePath);
@@ -106,7 +106,7 @@ class TemplateCache {
       } catch (error) {
         console.warn(
           `SWADE HUD: Cached template render failed for ${templatePath}, falling back to standard render:`,
-          error,
+          error
         );
       }
     }
@@ -163,7 +163,7 @@ class TemplateCache {
     } catch (error) {
       console.warn(
         `SWADE HUD: Failed to recompile template ${templatePath}:`,
-        error,
+        error
       );
     }
   }
@@ -315,7 +315,7 @@ export async function initializeTemplateCache(): Promise<void> {
  */
 export async function renderCachedTemplate(
   templatePath: string,
-  data: HUDContext = {} as HUDContext,
+  data: HUDContext = {} as HUDContext
 ): Promise<string> {
   return templateCache.render(templatePath, data);
 }
@@ -358,7 +358,7 @@ export function initializeDescriptionCache() {
   });
 
   // Listen for actor updates that might affect items
-  Hooks.on('updateActor', (actor: any, changes: any) => {
+  Hooks.on('updateActor', (_actor: any, changes: any) => {
     // If actor items were updated, clear cache for all items
     if (changes.items) {
       // Clear entire cache as we can't easily track which specific items changed
@@ -381,7 +381,7 @@ export function initializeDescriptionCache() {
  */
 export const sortByLocalizedName = (
   items: any[],
-  nameGetter = (item: any) => item.name || item.id,
+  nameGetter = (item: any) => item.name || item.id
 ) => {
   return items.sort((a: any, b: any) => {
     const nameA = game.i18n.localize(nameGetter(a));
@@ -406,7 +406,7 @@ export async function getEnrichedDescription(item: any) {
     } catch (error) {
       console.error(
         'SWADE HUD: Error using SWADE enrichItemDescription:',
-        error,
+        error
       );
       return item.system?.description ?? '';
     }
@@ -417,7 +417,7 @@ export async function getEnrichedDescription(item: any) {
     if (foundry.applications.ux.TextEditor.implementation?.enrichHTML) {
       return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         raw,
-        {},
+        {}
       );
     } else if (window.TextEditor?.enrichHTML) {
       return await window.TextEditor.enrichHTML(raw, {});
@@ -434,7 +434,10 @@ export async function getEnrichedDescription(item: any) {
  * @param {SwadeToken} token
  * @returns {Promise<object>}
  */
-export async function prepareHudContext(actor: SwadeActor | null, token: SwadeToken | null) {
+export async function prepareHudContext(
+  actor: SwadeActor | null,
+  token: SwadeToken | null
+) {
   if (!actor) return {};
 
   // Group powers by arcane type

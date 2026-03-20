@@ -12,13 +12,15 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   constructor(
     formula: string,
     data: ActorRollData = {},
-    options: DamageRollOptions = {},
+    options: DamageRollOptions = {}
   ) {
     options.rollType ??= 'damage';
     super(formula, data, options);
     if (typeof options.acing === 'boolean') {
       //@ts-expect-error Types don't properly match due to the Roll class
-      options.acing ? this._enableAcing(this) : this._disableAcing(this);
+      if (options.acing) this._enableAcing(this);
+      //@ts-expect-error Types don't properly match due to the Roll class
+      else this._disableAcing(this);
     }
   }
 
@@ -48,7 +50,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
       return constants.ROLL_RESULT.SUCCESS;
     return Math.max(
       Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1,
-      0,
+      0
     ); // raises get to be 2+
   }
 
@@ -82,9 +84,10 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
 
   set acing(val: boolean) {
     this.options['acing'] = val;
-    //TODO Fix types
     //@ts-expect-error Types don't properly match due to the Roll class
-    val ? this._enableAcing(this) : this._disableAcing(this);
+    if (val) this._enableAcing(this);
+    //@ts-expect-error Types don't properly match due to the Roll class
+    else this._disableAcing(this);
   }
 
   override applyReroll(actor: Actor.Implementation | null): boolean {
@@ -107,7 +110,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
             new foundry.dice.terms.StringTerm({
               term: String(mod.value),
               options: { flavor: mod.label },
-            }),
+            })
           );
         }
       }

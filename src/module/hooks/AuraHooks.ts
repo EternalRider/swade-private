@@ -24,7 +24,7 @@ export function registerAuraHooks() {
 
   Hooks.on('tearDownGridLayer', (_layer: GridLayer) => {
     canvas.effects.visualEffectsMaskingFilters.delete(
-      CONFIG.Canvas.auras.filter,
+      CONFIG.Canvas.auras.filter
     );
   });
 
@@ -61,9 +61,11 @@ export function registerAuraHooks() {
   Hooks.on('controlToken', () => updateAllAuras());
   Hooks.on('hoverToken', () => updateAllAuras());
   Hooks.on('refreshToken', (token: SwadeToken) => {
-    game.settings.get('core', 'visionAnimation')
-      ? updateAurasForToken(token)
-      : refreshAuras();
+    if (game.settings.get('core', 'visionAnimation')) {
+      updateAurasForToken(token);
+    } else {
+      refreshAuras();
+    }
   });
 }
 

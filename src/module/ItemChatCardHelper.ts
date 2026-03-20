@@ -17,18 +17,20 @@ import { getTrait } from './util';
  */
 export default class ItemChatCardHelper {
   static async onChatCardAction(
-    event: PointerEvent,
+    event: PointerEvent
   ): Promise<SwadeRoll | null> {
     event.preventDefault();
 
     // Extract card data
     const button = event.target as HTMLButtonElement;
     button.disabled = true;
-    const card = button.closest('.chat-card') as HTMLElement;
-    const messageId = card.closest('.message').dataset.messageId;
-    const message = game.messages?.get(messageId)!;
+    const card = button.closest<HTMLElement>('.chat-card');
+    const messageId = card?.closest<HTMLElement>('.message')?.dataset.messageId;
+    const message = game.messages?.get(messageId);
     const action = button.dataset.action;
     const additionalMods = new Array<RollModifier>();
+
+    if (!card || !action) return null;
 
     //save the message ID if we're doing automated ammo management
     SWADE['itemCardMessageId'] = messageId;
@@ -40,11 +42,11 @@ export default class ItemChatCardHelper {
     if (!actor) return null;
 
     // Get the Item
-    const item = actor.items.get(card.dataset.itemId);
+    const item = actor.items.get(card.dataset.itemId!);
     if (!item) {
       Logger.error(
         `The requested item ${card.dataset.itemId} does not exist on Actor ${actor.name}`,
-        { toast: true },
+        { toast: true }
       );
       return null;
     }
@@ -52,7 +54,7 @@ export default class ItemChatCardHelper {
     if (actor.system instanceof VehicleData) {
       if (item.type === 'weapon') {
         const gunner = actor.system.getCrewMemberForWeapon(
-          item as SwadeItem<'weapon'>,
+          item as SwadeItem<'weapon'>
         );
         actor = gunner ?? actor.system.operator ?? actor;
       } else {
@@ -62,7 +64,7 @@ export default class ItemChatCardHelper {
 
     const actionObj = foundry.utils.getProperty(
       item,
-      'system.actions.additional.' + action,
+      'system.actions.additional.' + action
     ) as ItemAction | undefined;
 
     // "Resist" types target the actor with a currently selected token, not the
@@ -89,7 +91,8 @@ export default class ItemChatCardHelper {
 
     //if it's a power and the No Power Points rule is in effect
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
-      const ppCost = card.querySelector('input.pp-adjust').value as number;
+      const ppCost = card.querySelector<HTMLInputElement>('input.pp-adjust')
+        .value as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
       if (action === 'formula' || actionObj?.type === 'trait') {
@@ -111,7 +114,7 @@ export default class ItemChatCardHelper {
 
     const roll = await this.handleAction(item, actor, action, {
       additionalMods,
-      event: event?.originalEvent,
+      event,
     });
 
     //Only refresh the card if there is a roll and the item isn't a power
@@ -152,7 +155,7 @@ export default class ItemChatCardHelper {
     {
       additionalMods = [],
       event,
-    }: { additionalMods: RollModifier[]; event?: Event },
+    }: { additionalMods: RollModifier[]; event?: Event }
   ): Promise<SwadeRoll<any> | null> {
     let roll: SwadeRoll<any> | null = null;
 
@@ -167,7 +170,7 @@ export default class ItemChatCardHelper {
         break;
       case 'arcane-device':
         roll = await actor.makeArcaneDeviceSkillRoll(
-          foundry.utils.getProperty(item, 'system.arcaneSkillDie'),
+          foundry.utils.getProperty(item, 'system.arcaneSkillDie')
         );
         break;
       case 'reload':
@@ -194,7 +197,7 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
-    { event }: { mods: RollModifier[]; event?: Event },
+    { event }: { mods: RollModifier[]; event?: Event }
   ) {
     const traitName = foundry.utils.getProperty(item, 'system.actions.trait');
     const button = event?.target as HTMLButtonElement;
@@ -229,7 +232,7 @@ export default class ItemChatCardHelper {
   static async handleDamageAction(
     item: SwadeItem,
     actor: SwadeActor,
-    additionalMods: RollModifier[] = [],
+    additionalMods: RollModifier[] = []
   ) {
     const dmgMod = ItemChatCardHelper.getDamageMod(item);
     if (dmgMod) additionalMods.push(dmgMod);
@@ -249,11 +252,11 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     key: string,
-    { mods = [], event }: { mods: RollModifier[]; event?: Event },
+    { mods = [], event }: { mods: RollModifier[]; event?: Event }
   ): Promise<SwadeRoll<any> | null> {
     const action = foundry.utils.getProperty(
       item,
-      `system.actions.additional.${key}`,
+      `system.actions.additional.${key}`
     ) as ItemAction;
 
     // if there isn't actually any action then return early
@@ -325,7 +328,7 @@ export default class ItemChatCardHelper {
       if (!macro) {
         Logger.warn(
           game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }),
-          { toast: true },
+          { toast: true }
         );
       }
       let targetActor;
@@ -358,7 +361,7 @@ export default class ItemChatCardHelper {
   static async doTraitAction(
     trait: string | SwadeItem | null | undefined,
     actor: SwadeActor,
-    options: IRollOptions,
+    options: IRollOptions
   ): Promise<TraitRoll | null> {
     const rollSkill = trait instanceof SwadeItem || !trait;
     const rollAttribute = typeof trait === 'string';
@@ -393,7 +396,7 @@ export default class ItemChatCardHelper {
 
     const content = new DOMParser().parseFromString(
       message.content,
-      'text/html',
+      'text/html'
     );
 
     const messageData = content.querySelector('.chat-card.item-card').dataset;
@@ -416,11 +419,11 @@ export default class ItemChatCardHelper {
       const arcane = item.system.arcane || 'general';
       const curPP = foundry.utils.getProperty(
         actor,
-        `system.powerPoints.${arcane}.value`,
+        `system.powerPoints.${arcane}.value`
       );
       const maxPP = foundry.utils.getProperty(
         actor,
-        `system.powerPoints.${arcane}.max`,
+        `system.powerPoints.${arcane}.max`
       );
       //update message content
       setTextIfPresent('.pp-counter .current-pp', curPP);
@@ -437,7 +440,7 @@ export default class ItemChatCardHelper {
     if (item?.isArcaneDevice) {
       const currentPP = foundry.utils.getProperty(
         item,
-        'system.powerPoints.value',
+        'system.powerPoints.value'
       );
       const maxPP = foundry.utils.getProperty(item, 'system.powerPoints.max');
       //update message content
@@ -461,7 +464,7 @@ export default class ItemChatCardHelper {
     actor: SwadeActor,
     item: SwadeItem,
     action: string,
-    roll: SwadeRoll<any> | null,
+    roll: SwadeRoll<any> | null
   ) {
     if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
@@ -471,7 +474,7 @@ export default class ItemChatCardHelper {
   private static getDamageMod(item: SwadeItem): RollModifier | null {
     const value = foundry.utils.getProperty(
       item,
-      'system.actions.dmgMod',
+      'system.actions.dmgMod'
     ) as string;
     if (!value) return null;
 

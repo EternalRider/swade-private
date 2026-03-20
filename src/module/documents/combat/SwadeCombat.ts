@@ -6,15 +6,19 @@ import {
 
 import { DeepPartial } from 'fvtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
-import { CardPickResult, CardPicker } from '../../apps/CardPicker';
+import {
+  CardPickContext,
+  CardPickResult,
+  CardPicker,
+} from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
+import { constants } from '../../constants';
+import { stringNonbreakingSpaces } from '../../util';
 import SwadeUser from '../SwadeUser';
 import type SwadeActiveEffect from '../active-effect/SwadeActiveEffect';
+import SwadeActor from '../actor/SwadeActor';
 import SwadeCards from '../card/SwadeCards';
 import SwadeCombatant from './SwadeCombatant';
-import SwadeActor from '../actor/SwadeActor';
-import { stringNonbreakingSpaces } from '../../util';
-import { constants } from '../../constants';
 
 declare global {
   interface DocumentClassConfig {
@@ -154,7 +158,6 @@ export default class SwadeCombat<
   #initSoundData: foundry.audio.AudioHelper.PlayData = {
     src: SwadeCombat.INITIATIVE_SOUND,
     volume: 0.8,
-    autoplay: true,
     loop: false,
   };
 
@@ -167,7 +170,7 @@ export default class SwadeCombat<
     if (!c || !c.isOwner) return;
     const actor = c.actor;
 
-    const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
+    const buttons: foundry.applications.api.DialogV2.Button[] = [
       {
         action: 'gmBenny',
         label: stringNonbreakingSpaces(
@@ -289,13 +292,16 @@ export default class SwadeCombat<
 
       if (isRedraw) {
         // handle redraws
-        const oldCard = this.findCard(c?.cardValue!, c?.suitValue!);
+        const oldCard = this.findCard(
+          c.cardValue as number,
+          c.suitValue as number
+        );
         if (oldCard) {
           cardsToPickFrom.push(oldCard);
           const result = await this.pickACard({
             cards: cardsToPickFrom,
-            combatantName: c.name!,
-            oldCardId: oldCard?.id!,
+            combatantName: c.name as string,
+            oldCardId: oldCard?.id,
             combatantId: c.id,
             autoPick,
           });
@@ -618,9 +624,9 @@ export default class SwadeCombat<
     }
     if (
       (collection === 'combatants' &&
-        changes?.some((change) => change?.hasOwnProperty('initiative'))) ||
+        changes?.some((change) => Object.hasOwn(change, 'initiative'))) ||
       collection === 'groups' ||
-      changes?.some((change) => change?.hasOwnProperty('group'))
+      changes?.some((change) => Object.hasOwn(change, 'initiative'))
     ) {
       this.#onModifyCombatantGroups(parent, documents, options);
     }
@@ -765,7 +771,7 @@ export default class SwadeCombat<
     leader: string | SwadeCombatant,
     options = { createIfNotInGroup: false, preferDisposition: undefined }
   ) {
-    let leaderCombatant = undefined;
+    let leaderCombatant: SwadeCombatant | undefined = undefined;
     if (
       leader &&
       leader instanceof SwadeCombatant &&
@@ -779,10 +785,7 @@ export default class SwadeCombat<
           c?.token?.name === leader ||
           c?.actor.name === leader
       );
-      if (
-        options?.hasOwnProperty('preferDisposition') &&
-        options.preferDisposition !== undefined
-      ) {
+      if (typeof options.preferDisposition !== 'undefined') {
         leaderCombatant = possibleLeaders?.find(
           (c) => c.token?.disposition === options?.preferDisposition
         );
@@ -1046,17 +1049,4 @@ export default class SwadeCombat<
         .map((e) => e.delete())
     );
   }
-}
-
-interface CardPickContext {
-  /** an array of cards */
-  cards: Card[];
-  /** name of the combatant */
-  combatantName: string;
-  /** id of the old card, if you're picking cards for a redraw */
-  oldCardId?: string;
-  /** determines whether a redraw is allowed */
-  enableRedraw?: boolean;
-  /** determines whether this draw includes the Quick edge */
-  isQuickDraw?: boolean;
 }

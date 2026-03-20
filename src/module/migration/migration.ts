@@ -639,7 +639,6 @@ function _ensureBatteryMaxCharges(
         max: data.system.charges?.max ?? 100,
       });
     } else {
-      ('');
       data.system.charges.charges[0].max = 100;
       updateData['system.charges.charges'] = data.system.charges.charges;
     }
