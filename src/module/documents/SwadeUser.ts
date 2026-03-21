@@ -99,7 +99,7 @@ export default class SwadeUser extends User {
     } else if (this.character) {
       await this.character.refreshBennies(notify);
     }
-    ui.players?.render(true);
+    ui.players?.render({ force: true });
   }
 
   protected override async _onUpdate(
@@ -110,7 +110,8 @@ export default class SwadeUser extends User {
     await super._onUpdate(changed, options, userId);
 
     // If the user is a gm and their bennies were changed, re-render the players display
-    if (this.isGM && foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined) ui.players.render(true);
+    if (this.isGM && foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined)
+      ui.players.render({ force: true });
   }
 }
 

@@ -108,7 +108,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
     this: ActionCardEditor,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     const data = foundry.utils.expandObject(formData.object);
     const cards = Object.entries(data.card) as [string, CardData][];
@@ -186,7 +186,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(Applica
   }
 
   static async #onDeleteCard(this: ActionCardEditor, _event: PointerEvent, target: HTMLElement) {
-    const card = this.cards.cards.get(target.dataset.id);
+    const card = this.cards.cards.get(target.dataset.id!);
     if (!card) return;
     const text = game.i18n.format('SWADE.DeleteEmbeddedCardPrompt', {
       card: card.name,

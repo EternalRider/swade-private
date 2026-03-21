@@ -1,5 +1,5 @@
 import { DieSidesOption } from '../globals';
-import { RollModifier } from '../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../interfaces/additional.interface';
 import { Logger } from './Logger';
 import { SWADE } from './config';
 import { constants } from './constants';
@@ -391,6 +391,26 @@ export function getEdgeToEdgeDistance(tokenA: TokenDocument, tokenB: TokenDocume
   return distance - combinedRadii * conversionFactor;
 }
 
+function isIgnoredForGangUp(token: TokenDocument): boolean {
+  const ignoreStatuses = ['defeated', 'dead', 'incapacitated', 'stunned'];
+  if (ignoreStatuses.some((status) => token.hasStatusEffect(status))) {
+    return true;
+  }
+
+  if (token.combatant?.defeated || token.combatant?.isDefeated) {
+    return true;
+  }
+  if (!token.actor) {
+    //skip if the token has no actor
+    Logger.warn(`Token ${token.uuid} has no actor!`);
+    return true;
+  }
+  const actorIncapacitated =
+    foundry.utils.getProperty(token.actor, 'system.isIncapacitated') ||
+    foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
+  return !!actorIncapacitated;
+}
+
 /**
  * Calculates the Gang Up bonus and any target modifiers (like Block)
  * @param sourceToken The attacking token
@@ -408,47 +428,36 @@ export function getGangUpModifiers(
   const scene = targetToken.parent as Scene;
   if (!scene) return mods;
 
-  let currActor = sourceToken?.actor || item?.actor;
-  if (!currActor) return mods;
+  let sourceActor = sourceToken?.actor || item?.actor;
+  if (!sourceActor) return mods;
 
   let vehicleActor: SwadeActor | undefined;
-  if (item && currActor.type === 'vehicle' && item.type === 'weapon') {
-    vehicleActor = currActor;
-    const gunner = currActor.system.getCrewMemberForWeapon(item as SwadeItem<'weapon'>);
-    currActor = gunner ?? currActor.system.operator ?? currActor;
+  if (item && sourceActor.type === 'vehicle' && item.type === 'weapon') {
+    vehicleActor = sourceActor;
+    const gunner = sourceActor.system.getCrewMemberForWeapon(item as SwadeItem<'weapon'>);
+    sourceActor = gunner ?? sourceActor.system.operator ?? sourceActor;
   }
 
-  const ignoreStatuses = ['defeated', 'dead', 'incapacitated', 'stunned'];
-  const isIgnoredForGangUp = (token: TokenDocument): boolean => {
-    if (ignoreStatuses.some((status) => token.hasStatusEffect(status))) {
-      return true;
-    }
-
-    if (token.combatant?.defeated || token.combatant?.isDefeated) {
-      return true;
-    }
-
-    const actorIncapacitated =
-      foundry.utils.getProperty(token.actor, 'system.isIncapacitated') ||
-      foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
-    return !!actorIncapacitated;
-  };
-
   const numAttackerAllies =
-    scene.tokens?.filter((t) => {
+    scene.tokens?.filter((t: TokenDocument) => {
       if (t.disposition !== sourceToken.disposition) return false;
       if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
     }).length ?? 0;
+
   const numDefenderAllies =
-    scene.tokens?.filter((t) => {
+    scene.tokens?.filter((t: TokenDocument) => {
       if (t.disposition !== targetToken.disposition) return false;
       if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
     }).length ?? 0;
+
   let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
 
-  const attackerGlobalMods = foundry.utils.getProperty(currActor, 'system.stats.globalMods') as any;
+  const attackerGlobalMods = foundry.utils.getProperty(sourceActor!, 'system.stats.globalMods') as Record<
+    string,
+    DerivedModifier[]
+  >;
 
   if (attackerGlobalMods?.gangUp && Array.isArray(attackerGlobalMods.gangUp)) {
     attackerGlobalMods.gangUp.forEach((m: any) => {
@@ -736,8 +745,8 @@ export function getDefaultAttackModifiers(
  */
 export async function createEnrichedTextEmbed(
   description: string,
-  config: TextEditor.DocumentHTMLEmbedConfig,
-  options: TextEditor.EnrichmentOptions
+  config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+  options: foundry.applications.ux.TextEditor.EnrichmentOptions
 ): Promise<HTMLElement> {
   const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(description, options);
 

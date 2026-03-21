@@ -90,11 +90,12 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     if (!id) return;
     const actor = this.actor.system.members.get(id)?.actor;
     if (!actor) return;
-    new ImagePopout(actor.img as string, {
-      title: actor.name!,
+    new foundry.applications.apps.ImagePopout({
+      src: actor.img,
       shareable: actor.isOwner ?? game.user?.isGM,
       uuid: actor.uuid,
-    }).render(true);
+      window: { title: actor.name },
+    }).render({ force: true });
   }
 
   static toggleLock(this: GroupSheet, _event: PointerEvent, _target: HTMLElement) {
@@ -127,22 +128,22 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     });
   }
 
-  protected override _onFirstRender(
+  protected override async _onFirstRender(
     context: GroupSheetRenderContext,
     options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>
   ) {
-    super._onFirstRender(context, options);
+    await super._onFirstRender(context, options);
     for (const member of this.actor.system.members.values()) {
       if (!member.actor) continue;
       member.actor.apps[this.id] = this;
     }
   }
 
-  protected override _onRender(
+  protected override async _onRender(
     context: GroupSheetRenderContext,
     options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>
   ) {
-    super._onRender(context, options);
+    await super._onRender(context, options);
     if (this.actor.system.locked) this.element.classList.add('locked');
     else this.element.classList.remove('locked');
   }

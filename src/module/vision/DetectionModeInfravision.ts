@@ -5,7 +5,10 @@ export default class DetectionModeInfravision extends foundry.canvas.perception.
     return (this._detectionFilter ??= InfraVisionFilter.create());
   }
 
-  override _canDetect(visionSource: foundry.canvas.sources.PointVisionSource, target: PlaceableObject): boolean {
+  override _canDetect(
+    visionSource: foundry.canvas.sources.PointVisionSource,
+    target: foundry.canvas.placeables.PlaceableObject
+  ): boolean {
     // See/Sense Heat can ONLY detect warm tokens, ignoring those that are cold-bodied
     const tgt = target?.document;
     const coldBodied = tgt instanceof TokenDocument && tgt.hasStatusEffect(CONFIG.specialStatusEffects.COLDBODIED);

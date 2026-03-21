@@ -232,7 +232,9 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
     return state === constants.EQUIP_STATE.EQUIPPED;
   }
 
-  async getChatChips(enrichOptions: Partial<TextEditor.EnrichmentOptions>): Promise<ItemChatCardChip[]> {
+  async getChatChips(
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions>
+  ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     if (this.isReadied) {
       chips.push({
@@ -675,8 +677,8 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

@@ -14,14 +14,14 @@ export function registerAuraHooks() {
     canvas.effects.auras = CONFIG.Canvas.auras.collection;
   });
 
-  Hooks.on('drawGridLayer', (layer: GridLayer) => {
+  Hooks.on('drawGridLayer', (layer: foundry.canvas.layers.GridLayer) => {
     layer.auras = layer.addChild(new PIXI.Container());
     layer.auras.filters = [CONFIG.Canvas.auras.filter];
-    canvas.effects.visualEffectsMaskingFilters.add(CONFIG.Canvas.auras.filter);
+    canvas.effects?.visualEffectsMaskingFilters.add(CONFIG.Canvas.auras.filter);
   });
 
-  Hooks.on('tearDownGridLayer', (_layer: GridLayer) => {
-    canvas.effects.visualEffectsMaskingFilters.delete(CONFIG.Canvas.auras.filter);
+  Hooks.on('tearDownGridLayer', (_layer: foundry.canvas.layers.GridLayer) => {
+    canvas.effects?.visualEffectsMaskingFilters.delete(CONFIG.Canvas.auras.filter);
   });
 
   Hooks.on('drawToken', (token: SwadeToken) => {

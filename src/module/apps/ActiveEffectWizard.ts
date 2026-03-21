@@ -78,7 +78,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     super._onChangeForm(formConfig, event);
     const target = event.target as HTMLInputElement | HTMLSelectElement;
     if (!target) return; // TODO: what actually do
-    const index = target.closest('li')?.dataset.index;
+    const index = target.closest<HTMLLIElement>('li')?.dataset.index;
     if (target.classList.contains('value')) {
       this.#changes[Number(index)].value = target.value;
     } else if (target.classList.contains('mode')) {
@@ -86,7 +86,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     } else if (target.classList.contains('target')) {
       this[target.name] = target.value;
     }
-    const formData = new FormDataExtended(this.form);
+    const formData = new foundry.applications.ux.FormDataExtende(this.form);
     foundry.utils.mergeObject(this.#effect, formData.object);
     this.render();
   }
@@ -136,7 +136,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     this: ActiveEffectWizard,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended
+    _formData: foundry.applications.ux.FormDataExtende
   ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
@@ -417,7 +417,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     }).render({ force: true });
   }
 
-  #onChangeIcon(path: string, _picker: FilePicker) {
+  #onChangeIcon(path: string, _picker: foundry.applications.apps.FilePicker) {
     this.#effect.img = path;
     this.render({ force: true });
   }
@@ -429,6 +429,6 @@ interface ActiveEffectPreset {
   group?: string;
 }
 
-interface ChangePreview extends Partial<ActiveEffect.EffectChangeData> {
+interface ChangePreview extends Partial<ActiveEffect.ChangeData> {
   label: string;
 }

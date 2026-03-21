@@ -1,4 +1,3 @@
-import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
 import { constants } from '../constants';
@@ -212,7 +211,7 @@ export class CompendiumTOC<
     if (pageId) options.pageId = pageId;
     const doc = await this.collection.getDocument(entryId);
     if (!doc) return;
-    if (doc.sheet instanceof Application) await doc.sheet?._render(true, options);
+    if (doc.sheet instanceof foundry.appv1.api.Application) await doc.sheet?._render(true, options);
     else if (doc.sheet instanceof foundry.applications.api.ApplicationV2) await doc.sheet.render({ force: true });
     if (pageId) doc.sheet.goToPage(pageId);
   }
@@ -301,7 +300,7 @@ export class CompendiumTOC<
   }
 
   protected async _groupActors(): Promise<CompendiumCategory[]> {
-    const collection = this.collection as CompendiumCollection<ActorMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'Actor'>;
     const documents = (await collection.getIndex({
       fields: [
         /** legacy data start */
@@ -342,7 +341,7 @@ export class CompendiumTOC<
   }
 
   protected async _groupItems(): Promise<CompendiumCategory[]> {
-    const collection = this.collection as CompendiumCollection<ItemMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'Item'>;
     const documents = await collection.getDocuments();
     const items = documents.filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY);
 
@@ -519,7 +518,7 @@ export class CompendiumTOC<
   }
 
   protected async _getJournalEntries(): Promise<CompendiumEntry[]> {
-    const collection = this.collection as CompendiumCollection<JournalMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'JournalEntry'>;
     const journals = await collection.getDocuments();
     const entries: CompendiumEntry[] = journals
       .filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY)

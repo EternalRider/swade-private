@@ -4,11 +4,10 @@ import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
-import { addUpModifiers, createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { addUpModifiers, createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
-import { constants } from '../../constants';
 
 declare namespace SkillData {
   interface Schema extends SwadeBaseItemData.Schema, DiceTrait {
@@ -73,8 +72,8 @@ class SkillData extends SwadeBaseItemData<SkillData.Schema, SkillData.BaseData, 
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

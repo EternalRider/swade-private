@@ -407,23 +407,10 @@ export class SwadePopout {
           const isActive = this.actor?.effects?.some((e) => e.statuses?.has(effect.id)) ?? false;
 
           // Enrich the description
-          let enrichedDescription = effect.description || '';
-          try {
-            if (
-              foundry?.applications?.ux?.TextEditor?.implementation &&
-              typeof foundry.applications.ux.TextEditor.implementation.enrichHTML === 'function'
-            ) {
-              enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-                enrichedDescription,
-                {}
-              );
-            } else if (window.TextEditor && typeof window.TextEditor.enrichHTML === 'function') {
-              // Fallback for older versions
-              enrichedDescription = await window.TextEditor.enrichHTML(enrichedDescription, {});
-            }
-          } catch (error) {
-            console.warn('SWADE HUD: Error enriching status effect description:', error);
-          }
+          const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            effect.description || '',
+            {}
+          );
 
           return {
             ...effect,
@@ -478,24 +465,10 @@ export class SwadePopout {
 
     for (const effect of sheetEffects) {
       // Enrich the effect description
-      let enrichedDescription = effect.description || '';
-      try {
-        if (
-          foundry?.applications?.ux?.TextEditor?.implementation &&
-          typeof foundry.applications.ux.TextEditor.implementation.enrichHTML === 'function'
-        ) {
-          enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            enrichedDescription,
-            {}
-          );
-        } else if (window.TextEditor && typeof window.TextEditor.enrichHTML === 'function') {
-          // Fallback for older versions
-          enrichedDescription = await window.TextEditor.enrichHTML(enrichedDescription, {});
-        }
-      } catch (error) {
-        console.warn('SWADE HUD: Error enriching effect description:', error);
-      }
 
+      const enrichedDescription = foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        effect.description || ''
+      );
       const isEmbedded = effect.parent === this.actor;
       const effectData: EffectData = {
         id: effect.id,

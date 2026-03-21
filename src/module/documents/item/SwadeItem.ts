@@ -427,7 +427,9 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
     return super.getRollData() as Record<string, unknown>;
   }
 
-  async getChatData(enrichOptions: Partial<TextEditor.EnrichmentOptions> = {}): Promise<ItemChatCardData> {
+  async getChatData(
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions> = {}
+  ): Promise<ItemChatCardData> {
     // Item properties
     const chips =
       'getChatChips' in this.system ? await this.system.getChatChips(enrichOptions) : new Array<ItemChatCardChip>();
@@ -505,7 +507,9 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
     return this.parent!.rollSkill(this.id, options);
   }
 
-  override async deleteDialog(options?: Partial<Dialog.Options> | undefined): Promise<false | this | null | undefined> {
+  override async deleteDialog(
+    options?: Partial<foundry.applications.api.DialogV2.ConfirmConfig['Configuration']> | undefined
+  ): Promise<false | this | null | undefined> {
     if (!this.parent) return super.deleteDialog(options);
     const type = game.i18n.localize(`TYPES.Item.${this.type}`);
     const proceed = await foundry.applications.api.DialogV2.confirm({
@@ -653,12 +657,12 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
       <p>${game.i18n.localize('SWADE.SWID.ChangeWarning3')}</p>
     </div>
     `;
-    const confirmation = await Dialog.confirm({
+    const confirmation = await foundry.applications.api.DialogV2.confirm({
       title: game.i18n.localize('SWADE.SWID.Regenerate'),
       content: html,
       defaultYes: false,
       options: {
-        classes: [...Dialog.defaultOptions.classes, 'swade-app'],
+        classes: ['swade-app'],
       },
     });
     if (!confirmation) return;

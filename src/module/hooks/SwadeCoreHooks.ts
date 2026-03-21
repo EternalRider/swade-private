@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Plugin } from 'prosemirror-state';
-import { CanvasDropData } from '../../globals';
 import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
@@ -206,7 +205,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static onRenderActorDirectory(app: ActorDirectory, html: HTMLElement, _data: any) {
+  static onRenderActorDirectory(app: foundry.applications.sidebar.tabs.ActorDirectory, html: HTMLElement, _data: any) {
     // Mark all Wildcards in the Actors sidebars with an icon
     const entries = html.querySelectorAll<HTMLLIElement>('.directory-item.entry.actor');
     const wildcards = app.collection.filter((a) => a.isWildcard && a.type === 'character');
@@ -227,7 +226,7 @@ export default class SwadeCoreHooks {
     });
   }
 
-  static onRenderSettings(app: Settings, html: HTMLElement) {
+  static onRenderSettings(_app: foundry.applications.sidebar.tabs.Settings, html: HTMLElement) {
     //get system info
     const systemInfo = html.querySelector('.info div.system');
 
@@ -266,8 +265,11 @@ export default class SwadeCoreHooks {
     systemInfo!.after(systemLinks);
   }
 
-  static async onGetActorContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
-    const newOptions: ContextMenu.Entry[] = [];
+  static async onGetActorContextOptions(
+    app: foundry.applications.api.ApplicationV2,
+    options: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]
+  ) {
+    const newOptions: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [];
 
     // Don't want to add to context menu for compendium entries
     if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
@@ -290,7 +292,12 @@ export default class SwadeCoreHooks {
     options.splice(0, 0, ...newOptions);
   }
 
-  static onRenderCompendiumDirectory(app: CompendiumDirectory, html: HTMLElement, _data: any, _options: any) {
+  static onRenderCompendiumDirectory(
+    _app: foundry.applications.sidebar.tabs.CompendiumDirectory,
+    html: HTMLElement,
+    _data: any,
+    _options: any
+  ) {
     const tocBlockList = game.settings.get('swade', 'tocBlockList');
     for (const li of html.querySelectorAll('li.directory-item')) {
       const pack = li.dataset.pack as string;
@@ -304,10 +311,10 @@ export default class SwadeCoreHooks {
   }
 
   static async onRenderCompendium(
-    app: CompendiumCollection<CompendiumCollection.Metadata>,
+    app: foundry.documents.collections.CompendiumCollection<'Actor'>,
     html: HTMLElement,
-    _data: any,
-    _options: any
+    _data: unknown,
+    _options: unknown
   ) {
     //don't mark if the user is not a GM
     if (game.settings.get('swade', 'hideNPCWildcards') && !game.user?.isGM) return;
@@ -322,7 +329,7 @@ export default class SwadeCoreHooks {
         )
         .map((actor) => actor._id);
 
-      const found = html.querySelectorAll('.directory-item');
+      const found = html.querySelectorAll<HTMLElement>('.directory-item');
       found.forEach((el) => {
         const id = el.dataset.entryId!;
         if (ids.includes(id)) {
@@ -333,11 +340,14 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static onGetCardsContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
+  static onGetCardsContextOptions(
+    app: foundry.applications.api.ApplicationV2,
+    options: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]
+  ) {
     // Don't want to add to context menu for compendium entries
     if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
-    const actionCardEditor: ContextMenu.Entry = {
+    const actionCardEditor: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
       name: 'SWADE.OpenACEditor',
       icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
@@ -349,7 +359,7 @@ export default class SwadeCoreHooks {
         new ActionCardEditor({ cards: deck }).render({ force: true });
       },
     };
-    const chaseLayout: ContextMenu.Entry = {
+    const chaseLayout: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
       name: 'SWADE.LayOutChaseWithDeck',
       icon: '<i class="fa-solid fa-shipping-fast"></i>',
       condition: (li) => {
@@ -365,11 +375,11 @@ export default class SwadeCoreHooks {
         chaseUtils.layoutChase(deck);
       },
     };
-    const setActionDeck: ContextMenu.Entry = {
+    const setActionDeck: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
       name: 'SWADE.SetActionDeck',
       icon: '<i class="fas fa-swords"></i>',
       condition: (li) => {
-        const cardsID = li.dataset.entryId;
+        const cardsID = li.dataset.entryId!;
         const deck = game.cards!.get(cardsID, { strict: true });
         const isActionDeck = game.settings.get('swade', 'actionDeck') === cardsID;
         return deck.type === 'deck' && !isActionDeck && deck.cards.contents.every((c) => c.type === 'poker');
@@ -383,13 +393,16 @@ export default class SwadeCoreHooks {
     options.push(actionCardEditor, chaseLayout, setActionDeck);
   }
 
-  static onGetCompendiumContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
+  static onGetCompendiumContextOptions(
+    app: foundry.applications.api.ApplicationV2,
+    options: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]
+  ) {
     options.push(
       {
         name: 'SWADE.CompendiumTOC.Toggle',
         icon: '<i class="fa-solid fa-book"></i>',
         condition: (li) => {
-          const pack = game.packs.get(li.dataset.pack, { strict: true });
+          const pack = game.packs.get(li.dataset.pack!, { strict: true });
           const rightType = CompendiumTOC.ALLOWED_TYPES.includes(pack.metadata.type);
           return !!game.user?.isGM && rightType;
         },
@@ -428,11 +441,7 @@ export default class SwadeCoreHooks {
   }
 
   /** Add roll data to the message for formatting of dice pools*/
-  static onRenderChatMessageHTML(
-    msg: SwadeChatMessage,
-    html: HTMLElement,
-    _data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2]
-  ) {
+  static onRenderChatMessageHTML(msg: SwadeChatMessage, html: HTMLElement, _data: unknown) {
     const makeTableResultsDraggable = () => {
       const results = html.querySelectorAll<HTMLElement>('.table-draw .table-result');
       if (!results.length) return;
@@ -476,7 +485,7 @@ export default class SwadeCoreHooks {
     users.forEach((el) => new UserSummary(el));
   }
 
-  static onRenderUserConfig(app: UserConfig, html: HTMLElement, data: Record<string, unknown>) {
+  static onRenderUserConfig(_app: UserConfig, html: HTMLElement, data: Record<string, unknown>) {
     // resize the element so it'll fit the new stuff
     html.style.height = 'auto';
 
@@ -514,7 +523,7 @@ export default class SwadeCoreHooks {
     form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
-  static onHotbarDrop(_hotbar: Hotbar, data: { type: string; uuid: string }, slot: number) {
+  static onHotbarDrop(_hotbar: foundry.applications.ui.Hotbar, data: { type: string; uuid: string }, slot: number) {
     if (data.type === 'Item' || data.type === 'Attribute') {
       onHotbarDrop(_hotbar, data, slot);
       return false;
@@ -523,7 +532,7 @@ export default class SwadeCoreHooks {
 
   static onGetUserContextOptions(
     app: foundry.applications.api.ApplicationV2,
-    context: ContextMenu.Entry<HTMLElement>[]
+    context: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[]
   ) {
     const players = app.element;
     if (!players) return;
@@ -607,8 +616,7 @@ export default class SwadeCoreHooks {
     );
   }
 
-  // TODO: Properly type this
-  static onGetSceneControlButtons(sceneControlButtons: Record<string, SceneControls.Control>) {
+  static onGetSceneControlButtons(sceneControlButtons: Record<string, foundry.applications.ui.SceneControls.Control>) {
     //get the measured template tools
     const measure = sceneControlButtons.templates;
     //add buttons
@@ -624,7 +632,11 @@ export default class SwadeCoreHooks {
     );
   }
 
-  static async onRenderCombatantConfig(app: CombatantConfig, html: HTMLFormElement, options: any) {
+  static async onRenderCombatantConfig(
+    app: foundry.applications.sheets.CombatantConfig,
+    html: HTMLFormElement,
+    options: any
+  ) {
     // resize the element so it'll fit the new stuff
     html.style.height = 'auto';
 
@@ -796,7 +808,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static async onTargetToken(user: User, token: Token, targeted: boolean) {
+  static async onTargetToken(user: User, token: foundry.canvas.placeables.Token, targeted: boolean) {
     if (!targeted) return;
     token.ring?.flashColor(user.color, {
       duration: 1000,
@@ -806,18 +818,18 @@ export default class SwadeCoreHooks {
     });
   }
 
-  static async onDropCanvasData(canvas: Canvas, data: CanvasDropData) {
+  static async onDropCanvasData(canvas: foundry.canvas.Canvas, data: Hooks.DropData, _event: DragEvent) {
     const { uuid, x, y, type } = data;
     if (type !== 'ActiveEffect' || !canvas.tokens?.active) return;
     //grab the tokens at the drop position
     const tokensAtDropPosition = [...canvas.tokens.placeables]
       .sort((a, b) => b.document.sort - a.document.sort)
       .sort((a, b) => b.document.elevation - a.document.elevation)
-      .filter((t) => t.localShape.contains(x, y));
+      .filter((t) => t.localShape?.contains(x, y));
     const targets = new Set<SwadeToken>(tokensAtDropPosition);
     if (!targets?.size) return;
     const controlled = new Set<SwadeToken>(canvas.tokens?.controlled);
-    if (controlled.size && targets.isSubset(controlled)) {
+    if (controlled.size && targets.isSubsetOf(controlled)) {
       //add the controlled to the target if the set of targeted tokens is a subset of the controlled tokens
       controlled.forEach((t) => targets.add(t));
     }
@@ -827,6 +839,8 @@ export default class SwadeCoreHooks {
       system: { favorite: true },
       origin: effect.parent.uuid,
     });
-    await Promise.allSettled(targets.map((token) => token.actor.createEmbeddedDocuments('ActiveEffect', [effectData])));
+    await Promise.allSettled(
+      targets.map((token) => token.actor?.createEmbeddedDocuments('ActiveEffect', [effectData]))
+    );
   }
 }

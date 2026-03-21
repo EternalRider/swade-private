@@ -1,12 +1,12 @@
 import type { ValueOf } from 'fvtt-types/utils';
+import IRollOptions from './interfaces/RollOptions.interface';
 import { SwadeGame } from './interfaces/SwadeGame.interface';
 import { AdditionalStat, ItemAction, RollModifier } from './interfaces/additional.interface';
 import { AuraPointSource } from './module/canvas/AuraPointSource';
 import { SWADE, SwadeConfig } from './module/config';
 import { constants } from './module/constants';
-import { Dice3D } from './types/DiceSoNice';
 import { TraitRoll } from './module/dice/TraitRoll';
-import IRollOptions from './interfaces/RollOptions.interface';
+import { Dice3D } from './types/DiceSoNice';
 
 declare global {
   interface Game {
@@ -31,24 +31,11 @@ declare global {
     interface AuraCanvas extends CONFIG.Canvas {
       auras: {
         collection: foundry.utils.Collection<AuraPointSource>;
-        filter: VisualEffectsMaskingFilter;
+        filter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter;
       };
     }
   }
 }
-
-export interface CanvasDropData
-  extends
-    foundry.abstract.Document.DropData<foundry.abstract.Document.Any>,
-    foundry.abstract.Document.DropData.UUID,
-    Canvas.DropPosition {}
-
-export type ActorMetadata = CompendiumCollection.Metadata & { type: 'Actor' };
-export type ItemMetadata = CompendiumCollection.Metadata & { type: 'Item' };
-export type CardMetadata = CompendiumCollection.Metadata & { type: 'Card' };
-export type JournalMetadata = CompendiumCollection.Metadata & {
-  type: 'JournalEntry';
-};
 
 export type Attribute = keyof typeof SWADE.attributes;
 export type LinkedAttribute = Attribute | '';

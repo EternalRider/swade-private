@@ -56,13 +56,13 @@ import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
 import {
   deepFreeze,
+  getDefaultAttackModifiers,
   getItemsBySwid,
+  getRankFromAdvance,
+  getRankFromAdvanceAsString,
+  getScaleName,
   getStatusEffectDataById,
   slugify,
-  getRankFromAdvance,
-  getScaleName,
-  getRankFromAdvanceAsString,
-  getDefaultAttackModifiers,
 } from './module/util';
 import DetectionModeInfravision from './module/vision/DetectionModeInfravision';
 import { InfravisionBackgroundVisionShader } from './module/vision/InfravisionBackgroundVisionShader';
@@ -421,11 +421,11 @@ Hooks.once('init', () => {
     }
 
     // Get the first owned character token
-    const ownedTokens = canvas.tokens.placeables.filter((t) => t.actor?.isOwner && t.actor?.type === 'character');
-    if (ownedTokens.length === 0) {
+    const ownedTokens = canvas.tokens?.placeables.filter((t) => t.actor?.isOwner && t.actor?.type === 'character');
+    if (ownedTokens?.length === 0) {
       console.error(
         'SWADE HUD: No owned character tokens found. Available tokens:',
-        canvas.tokens.placeables.map((t) => ({
+        canvas.tokens?.placeables.map((t) => ({
           name: t.name,
           actorType: t.actor?.type,
           isOwner: t.actor?.isOwner,

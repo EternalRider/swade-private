@@ -66,7 +66,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2
     this: RequirementsEditor,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     const requirements = Object.values<Requirement>(
       // This maps the incoming formdata to an actual array of requirements

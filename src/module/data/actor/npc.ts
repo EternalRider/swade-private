@@ -1,5 +1,5 @@
 import { DeepPartial } from 'fvtt-types/utils';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
 
@@ -58,8 +58,8 @@ export class NpcData extends CreatureData<NpcData.Schema & WildCardDataSchema, N
   declare enrichedBiography?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

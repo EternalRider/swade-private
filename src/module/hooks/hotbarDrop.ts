@@ -5,7 +5,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 
 const attributes = new Set(Object.keys(SWADE.attributes));
 
-export async function onHotbarDrop(_hotbar: Hotbar, data: DropData, slot: number) {
+export async function onHotbarDrop(_hotbar: foundry.applications.ui.Hotbar, data: DropData, slot: number) {
   if (data.type === 'Item') return onDropItem(data, slot);
   if (data.type === 'Attribute') return onDropAttribute(data, slot);
 }

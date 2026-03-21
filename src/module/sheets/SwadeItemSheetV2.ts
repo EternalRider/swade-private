@@ -25,7 +25,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     actions: {},
     effects: {},
   };
-  private _effectCreateDropDown: ContextMenu<false>;
+  private _effectCreateDropDown: foundry.applications.ux.ContextMenu<false>;
 
   static override DEFAULT_OPTIONS = {
     classes: ['swade-item-sheet', 'swade', 'swade-application', 'standard-form'],
@@ -582,11 +582,11 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
     if (this.item.isArcaneDevice) {
       context.embeddedPowers = this.item.embeddedPowers;
       for (const [, power] of context.embeddedPowers!) {
-        power.enrichedDescription = await this.#enrichText(power.system.description);
+        power.enrichedDescription = await this.#enrichText(power.system!.description);
       }
       context.dieSideOptions = this.item.parent?.type === 'npc' ? getDieSidesRange(4, 24) : getDieSidesRange(4, 20);
     } else {
-      delete context.tabs.powers;
+      if (context.tabs) delete context.tabs.powers;
     }
 
     if (this.item.system.charges?.hasCharges) {
@@ -597,30 +597,27 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
         context.hasDayCharge ||= charge.rechargeType == constants.CHARGE_RECHARGE_TYPE.DAY;
       }
     } else {
-      delete context.tabs.charges;
+      if (context.tabs) delete context.tabs.charges;
     }
 
     return context;
   }
 
   protected override _getHeaderControls() {
+    if (!this.isEditable) return;
     const controls = super._getHeaderControls();
-
-    if (this.isEditable) {
-      controls.unshift({
-        label: 'SWADE.RefreshOnly',
-        icon: 'fa-solid fa-arrows-rotate',
-        onClick: () => this.item.refreshFromCompendium(),
-      });
-    }
-
+    controls.unshift({
+      label: 'SWADE.RefreshOnly',
+      icon: 'fa-solid fa-arrows-rotate',
+      onClick: () => this.item.refreshFromCompendium(),
+    });
     return controls;
   }
 
   protected override _prepareSubmitData(
     event: SubmitEvent,
     form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended,
     updateData?: unknown
   ) {
     const submitData = super._prepareSubmitData(event, form, formData, updateData);

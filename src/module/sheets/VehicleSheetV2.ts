@@ -311,7 +311,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   /** Drop Handling */
 
-  protected override async _onDropActor(_event: DragEvent, data: foundry.abstract.Document.DropData<SwadeActor>) {
+  protected override async _onDropActor(_event: DragEvent, data: Actor.DropData) {
     if (!this.actor.isOwner) return false;
     const actor = await getDocumentClass('Actor').fromDropData(data);
     if (!actor) return false;

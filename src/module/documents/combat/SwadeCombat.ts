@@ -92,7 +92,7 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
           ok: {
             label: title,
             callback: (_event: PointerEvent, button: HTMLButtonElement) => {
-              const fd = new FormDataExtended(button.form as HTMLFormElement);
+              const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
               foundry.utils.mergeObject(data, fd.object);
               return this.create(data, {
                 renderSheet: false,
@@ -806,6 +806,7 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     if (!revert) return this;
     await super.previousRound();
     await this.expandGroupIfNeeded();
+    return this;
   }
 
   /**
