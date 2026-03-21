@@ -1,4 +1,4 @@
-import { createEnrichedTextEmbed, createEmbedElement, slugify } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed, slugify } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -41,7 +41,8 @@ export class CharacterData extends CreatureData<
     if (coreSkills.length > 0 && this.parent.itemTypes.skill.length === 0) {
       const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
       // Set compendium source, including a fallback to the system compendium of the required one cannot be found
-      const pack = (game.packs.get(coreSkillsPack) ?? game.packs.get('swade.skills')) as CompendiumCollection<'Item'>;
+      const pack = (game.packs.get(coreSkillsPack) ??
+        game.packs.get('swade.skills')) as foundry.documents.collections.CompendiumCollection<'Item'>;
 
       if (!pack) return; // Critical fallback point, simply skip core skills if neither pack can be located
 
@@ -125,8 +126,8 @@ export class CharacterData extends CreatureData<
   declare enrichedBiography?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

@@ -1,6 +1,6 @@
 import { PotentialSource } from '../../../globals';
 import { ItemChatCardChip, ItemDisplayPowerPoints } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { FormulaField } from '../fields';
 import { FormulaDerivedValueField } from '../fields/FormulaDerivedValueField';
 import * as migrations from './_migration';
@@ -157,8 +157,8 @@ class PowerData extends SwadeBaseItemData<PowerData.Schema, PowerData.BaseData, 
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

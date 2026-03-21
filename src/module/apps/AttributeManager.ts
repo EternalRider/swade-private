@@ -72,7 +72,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(Applica
     this: AttributeManager,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     await this.actor.update(formData.object);
     await this.render({ force: true });

@@ -52,7 +52,7 @@ export function processFormula(formula: string, type: 'damage' | 'trait', actor?
 const diceIcon = '<i class="fa-solid fa-image-portrait" inert></i>';
 const damageIcon = '<i class="fa-solid fa-house-flood-water" inert></i>';
 
-const enricher: TextEditor.Enricher = async function (match) {
+const enricher: foundry.applications.ux.TextEditor.Enricher = async function (match) {
   if (!match.groups) return null;
   const { type, config, label } = match.groups;
 

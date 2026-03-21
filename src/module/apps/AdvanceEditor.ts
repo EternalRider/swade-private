@@ -75,7 +75,12 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
-  static async onSubmit(this: AdvanceEditor, event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
+  static async onSubmit(
+    this: AdvanceEditor,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended
+  ) {
     const expanded = foundry.utils.expandObject(formData.object);
     const sortHasChanged = expanded.sort !== this.advance.sort;
     // Merge data to update

@@ -2,7 +2,7 @@ import { PotentialSource } from '../../../globals';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import { ItemChatCardChip, Requirement } from '../../documents/item/SwadeItem.interface';
-import { count, createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { count, createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { ChargesData } from '../fields';
 import { RequirementsField } from '../fields/RequirementsField';
 import * as migrations from './_migration';
@@ -146,8 +146,8 @@ class EdgeData extends SwadeBaseItemData<EdgeData.Schema, EdgeData.BaseData, Edg
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

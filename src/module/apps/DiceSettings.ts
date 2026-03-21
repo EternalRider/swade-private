@@ -86,7 +86,12 @@ export default class DiceSettings extends HandlebarsApplicationMixin(Application
     return context;
   }
 
-  static async onSubmit(this: DiceSettings, event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
+  static async onSubmit(
+    this: DiceSettings,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended
+  ) {
     const expandedFormData = foundry.utils.expandObject(formData.object) as any;
     const { diceColor, edgeColor, labelColor, outlineColor } = this.customWildDieDefaultColors;
 

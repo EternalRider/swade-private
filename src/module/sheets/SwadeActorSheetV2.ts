@@ -11,7 +11,7 @@ const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 export class SwadeActorSheetV2<
   RenderContext extends SwadeActorSheetV2.RenderContext = SwadeActorSheetV2.RenderContext,
 > extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
-  // declare element: HTMLFormElement;
+  declare actor: SwadeActor; //TODO Fix?
   static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor>> = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
@@ -158,7 +158,7 @@ export class SwadeActorSheetV2<
     const effect = await aeCls.fromDropData(data);
     if (!this.actor.isOwner || !effect) return false;
     if (effect.target === this.actor) return this._onSortActiveEffect(event, effect);
-    return aeCls.create(effect, { parent: this.actor });
+    return aeCls.create(effect, { parent: this.actor })!;
   }
 
   /**
@@ -185,7 +185,7 @@ export class SwadeActorSheetV2<
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort(effect, {
+    const sortUpdates = foundry.utils.performIntegerSort(effect, {
       target,
       siblings,
     });
@@ -292,7 +292,7 @@ export class SwadeActorSheetV2<
     }
 
     // Perform the sort
-    const sortUpdates = SortingHelpers.performIntegerSort<Item>(item, {
+    const sortUpdates = foundry.utils.performIntegerSort<Item>(item, {
       target,
       siblings,
     });

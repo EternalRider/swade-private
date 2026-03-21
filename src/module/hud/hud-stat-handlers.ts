@@ -135,7 +135,7 @@ export function setupHudStatHandlers(
           </div>
         </form>
       `;
-        const dialogClass = foundry.applications?.api?.DialogV2 || window.Dialog;
+        const dialogClass = foundry.applications?.api?.DialogV2 || Dialog;
         const dialog = new dialogClass({
           window: { title: 'Soak' },
           content: content,

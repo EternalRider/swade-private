@@ -138,7 +138,9 @@ export async function migrateWorld() {
  * Apply migration rules to all Entities within a single Compendium pack
  * @param pack The compendium to migrate. Only Actor, Item or Scene compendiums are processed
  */
-export async function migrateCompendium(pack: CompendiumCollection<CompendiumCollection.Metadata>) {
+export async function migrateCompendium(
+  pack: foundry.documents.collections.CompendiumCollection<'Actor' | 'Item' | 'Scene'>
+) {
   const documentName = pack.documentName;
   if (!['Actor', 'Item', 'Scene'].includes(documentName)) return;
 
@@ -229,7 +231,7 @@ async function refreshAllCompendiums() {
  * Update all Documents in a compendium using the new system data model.
  * @param pack  Pack to refresh.
  */
-async function refreshCompendium(pack: CompendiumCollection<CompendiumCollection.Metadata>) {
+async function refreshCompendium(pack: foundry.documents.collections.CompendiumCollection<'Actor' | 'Item' | 'Scene'>) {
   if (!pack?.documentName) return;
   // swade.moduleArt.suppressArt = true;
 
@@ -366,7 +368,7 @@ export function migrateEffectData(_effect: ActiveEffectData) {
  */
 export function removeDeprecatedObjects(data: Item.CreateData | ActorData) {
   for (const [k, v] of Object.entries(data)) {
-    if (getType(v) === 'Object') {
+    if (foundry.utils.getType(v) === 'Object') {
       if (v['_deprecated'] === true) {
         Logger.info(`Deleting deprecated object key ${k}`);
         delete data[k];

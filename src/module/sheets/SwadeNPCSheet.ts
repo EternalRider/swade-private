@@ -147,7 +147,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       const { system, type } = item;
       itemTypes[type] ??= [];
       if (!(system instanceof ActionData) || !item.system.hidden || hiddenActionOverride) {
-        const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
+        const itemEnrichmentOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions> = {
           relativeTo: item,
           rollData: item.getRollData(),
           secrets: this.document.isOwner,
@@ -378,7 +378,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   #setupItemContextMenu(html: HTMLElement) {
-    const items: ContextMenu.Entry<HTMLElement>[] = [
+    const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
         name: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',

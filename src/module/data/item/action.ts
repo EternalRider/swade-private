@@ -1,16 +1,16 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { PotentialSource } from '../../../globals';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import type SwadeItem from '../../documents/item/SwadeItem';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
+import { ChargesData } from '../fields';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
 import { actions, category, favorite, templates } from './common';
 import { Actions, Category, Favorite, Templates } from './item-common.interface';
-import type SwadeItem from '../../documents/item/SwadeItem';
-import { ChargesData } from '../fields';
 
 declare namespace ActionData {
-  interface Schema extends SwadeBaseItemData.Schema, Favorite, Category, Templates, Charges, Actions {
+  interface Schema extends SwadeBaseItemData.Schema, Favorite, Category, Templates, Actions {
     hidden: foundry.data.fields.BooleanField<{
       initial: boolean;
       label: string;
@@ -53,8 +53,8 @@ class ActionData extends SwadeBaseItemData<ActionData.Schema, ActionData.BaseDat
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -82,7 +82,7 @@ class ActionData extends SwadeBaseItemData<ActionData.Schema, ActionData.BaseDat
       this.parent.actor?.items.filter((i) => 'activities' in i.system && i.system.activities.has(this.swid)) ?? [];
     for (const item of items) {
       item._safePrepareData();
-      item.sheet.render();
+      item.sheet?.render();
     }
   }
 

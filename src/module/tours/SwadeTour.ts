@@ -15,7 +15,7 @@ export default class SwadeTour extends foundry.nue.Tour {
   advanceEditor?: AdvanceEditor;
   journalEntry?: JournalEntry;
   journalEntryPage?: JournalEntryPage;
-  activeWindows: (Application.Any | foundry.applications.api.ApplicationV2.Any)[] = [];
+  activeWindows: (foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any)[] = [];
 
   override async start() {
     delete this.configurator;
@@ -74,7 +74,7 @@ export default class SwadeTour extends foundry.nue.Tour {
     // Ensure relevant window is on top
     for (const sheet of [this.actor?.sheet, this.tweaks, this.journalEntry?.sheet, this.journalEntryPage?.sheet]) {
       if (currentStep.selector?.includes(sheet?.id)) {
-        await sheet.render(true);
+        await sheet?.render({ force: true });
       }
     }
     if (currentStep.selector?.includes('div.advance-editor')) {
@@ -178,10 +178,7 @@ export default class SwadeTour extends foundry.nue.Tour {
     }
     this.actor = new actCls(actor) as SwadeActor;
     if (this.actor.sheet) this.actor.sheet.options.submitOnClose = false;
-    // TODO: simplify once definitely AppV2
-    // @ts-expect-error _render
-    const renderFunc = this.actor.sheet?._render ?? this.actor.sheet?.render;
-    await renderFunc.call(this.actor.sheet, true);
+    await this.actor.sheet?.render({ force: true });
 
     if (this.actor.sheet) this.activeWindows.push(this.actor.sheet);
   }
@@ -199,9 +196,7 @@ export default class SwadeTour extends foundry.nue.Tour {
     const localizedName = game.i18n.localize(itemName);
     this.item = this.actor?.items.getName(localizedName) as SwadeItem;
     const app = this.item!.sheet;
-    // TODO: simplify once definitely AppV2
-    const renderFunc = app._render ?? app.render;
-    if (!app.rendered) await renderFunc.call(app, true);
+    if (!app.rendered) await app?.render({ force: true });
     this.activeWindows.push(app);
     // Assumption: Any given tour user might need to move back and forth between items
     // but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet
@@ -222,13 +217,13 @@ export default class SwadeTour extends foundry.nue.Tour {
     }
   }
 
-  async makeJournalEntry(journalEntry: Partial<JournalEntry>) {
+  async makeJournalEntry(journalEntry: Partial<JournalEntry> | JournalEntry.CreateData) {
     const journalCls = getDocumentClass('JournalEntry');
 
-    journalEntry = foundry.utils.duplicate(journalEntry);
+    journalEntry = foundry.utils.duplicate(journalEntry) as JournalEntry.CreateData;
     journalEntry.name = game.i18n.localize(journalEntry.name!);
     this.journalEntry = new journalCls(journalEntry);
-    await this.journalEntry?.sheet?.render(true);
+    await this.journalEntry?.sheet?.render({ force: true });
     if (this.journalEntry?.sheet) this.activeWindows.push(this.journalEntry.sheet);
   }
 
@@ -242,7 +237,7 @@ export default class SwadeTour extends foundry.nue.Tour {
       pages: [this.journalEntryPage?.toObject()],
     });
     this.journalEntry?.sheet?.render();
-    await this.journalEntryPage?.sheet?.render(true);
+    await this.journalEntryPage?.sheet?.render({ force: true });
     if (this.journalEntryPage?.sheet) this.activeWindows.push(this.journalEntryPage.sheet);
   }
 
@@ -256,19 +251,19 @@ export default class SwadeTour extends foundry.nue.Tour {
         ui.sidebar.changeTab(tab.id, tab.group);
         break;
       case constants.TOUR_TAB_PARENTS.GAMESETTINGS: {
-        const app = game.settings.sheet as SettingsConfig;
-        await app.render(true);
+        const app = game.settings.sheet as foundry.applications.settings.SettingsConfig;
+        await app.render({ force: true });
         this.activeWindows.push(app);
         app.changeTab(tab.id, tab.group);
         break;
       }
       case constants.TOUR_TAB_PARENTS.CONFIGURATOR: {
         if (!this.configurator) {
-          const configurator: ClientSettings.PartialSettingSubmenuConfig =
+          const configurator: foundry.helpers.ClientSettings.SettingSubmenuConfig =
             game.settings.menus.get('swade.setting-config')!;
           this.configurator = new configurator.type();
         }
-        await this.configurator.render({ force: true });
+        await this.configurator?.render({ force: true });
         this.activeWindows.push(this.configurator!);
         this.configurator!.changeTab(tab.id, tab.group);
         break;

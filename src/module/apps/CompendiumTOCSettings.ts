@@ -64,7 +64,11 @@ export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(Ap
     return context;
   }
 
-  static async onSubmit(_event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
+  static async onSubmit(
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended
+  ) {
     if (!game.user?.isGM) return;
     // invert the values
     const dataObj = formData.object;

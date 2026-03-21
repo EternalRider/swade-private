@@ -114,7 +114,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(Appl
     this: SettingConfigurator,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     // Gather Data
     const expandedFormData = foundry.utils.expandObject(formData.object);

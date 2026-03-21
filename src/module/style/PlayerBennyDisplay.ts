@@ -107,6 +107,6 @@ export default class PlayerBennyDisplay {
         content: message,
       });
     }
-    ui.players?.render(true);
+    ui.players?.render({ force: true });
   }
 }

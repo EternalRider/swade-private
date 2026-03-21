@@ -396,7 +396,7 @@ export default class ItemChatCardHelper {
     await message.update({ content: content.body.innerHTML });
     // ui.chat?.render(true);
     for (const appId in message.apps) {
-      const app = message.apps[appId] as FormApplication;
+      const app = message.apps[appId] as foundry.appv1.api.FormApplication;
       if (app.rendered) {
         app.render(true);
       }

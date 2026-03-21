@@ -34,24 +34,22 @@ export function SwadeBaseSheetMixin<
       if (!this.document.img) return;
       if (event.button === 2) {
         //ContextMenu event
-        if (!this.document.img) return;
-        new ImagePopout(this.document.img, {
-          title: this.document.name!,
-          shareable: this.document.isOwner ?? game.user?.isGM,
+        new foundry.applications.apps.ImagePopout({
+          src: this.document.img,
           uuid: this.document.uuid,
-        }).render(true);
+          window: { title: this.document.name },
+          shareable: this.document.isOwner,
+        }).render({ force: true });
       } else {
         const { img } =
           (this.document.constructor as Actor.ImplementationClass | Item.ImplementationClass).getDefaultArtwork?.(
             this.document.toObject()
           ) ?? {};
-        const fp = new FilePicker({
+        const fp = new foundry.applications.apps.FilePicker({
           current: this.document.img,
           type: 'image',
           redirectToRoot: img ? [img] : [],
           callback: (path) => this.document.update({ img: path }),
-          top: this.position.top + 40,
-          left: this.position.left + 10,
         });
         await fp.browse();
       }
@@ -65,7 +63,7 @@ export function SwadeBaseSheetMixin<
 
     // This is marked as private because there's no real need
     // for subclasses or external hooks to mess with it directly
-    #dragDrop: DragDrop[];
+    #dragDrop: foundry.applications.ux.DragDrop[];
 
     /** Returns an array of DragDrop instances */
     get dragDrop() {
@@ -246,7 +244,7 @@ export function SwadeBaseSheetMixin<
      * Create drag-and-drop workflow handlers for this Application
      * @returns An array of DragDrop handlers
      */
-    #createDragDropHandlers(): DragDrop[] {
+    #createDragDropHandlers(): foundry.applications.ux.DragDrop[] {
       return (this.options.dragDrop ?? []).map((d) => {
         d.permissions = {
           dragstart: this._canDragStart.bind(this),

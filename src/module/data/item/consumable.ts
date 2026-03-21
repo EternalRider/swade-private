@@ -3,7 +3,8 @@ import { EquipState, PotentialSource, Updates } from '../../../globals';
 import { Logger } from '../../Logger';
 import { constants } from '../../constants';
 import { UsageUpdates } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
+import { DefaultHasChargesData } from '../fields/ChargesData';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -18,7 +19,6 @@ import {
   Favorite,
   GrantEmbedded,
 } from './item-common.interface';
-import { DefaultHasChargesData } from '../fields/ChargesData';
 
 declare namespace ConsumableData {
   interface Schema
@@ -168,15 +168,15 @@ class ConsumableData extends SwadePhysicalItemData<
       foundry.utils.hasProperty(changed, `system.charges.charges`) &&
       this.subtype === constants.CONSUMABLE_TYPE.BATTERY
     ) {
-      changed.system.charges.charges[0].max = 100;
+      changed.system.charges.charges![0].max = 100;
     }
   }
 
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

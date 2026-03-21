@@ -26,7 +26,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.Mea
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: MeasuredTemplate.CreateData = {
+    const templateBaseData: foundry.canvas.placeables.MeasuredTemplate.CreateData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,
@@ -63,7 +63,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.Mea
   }
 
   /** Activate listeners for the template preview */
-  activatePreviewListeners(initialLayer: CanvasLayer) {
+  activatePreviewListeners(initialLayer: foundry.canvas.layers.CanvasLayer) {
     let moveTime = 0;
 
     // Update placement (mouse-move)
@@ -146,12 +146,14 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.Mea
       const coneEndRadius = game.canvas.grid?.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
       const coneLength = distance - coneEndRadius; //Calculate where the cone ends and the circle begins
       const da = 3;
-      const c = Ray.fromAngle(0, 0, direction, coneLength);
+      const c = foundry.canvas.geometry.Ray.fromAngle(0, 0, direction, coneLength);
       const angles = Array.fromRange(180 / da)
         .map((a) => 180 / -2 + a * da)
         .concat([180 / 2]);
       // Get the cone shape as a polygon
-      const rays = angles.map((a) => Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius));
+      const rays = angles.map((a) =>
+        foundry.canvas.geometry.Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius)
+      );
       const points = rays
         .reduce(
           (arr, r) => {
@@ -163,7 +165,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.Mea
       return new PIXI.Polygon(points);
     } else {
       // honestly don't know why super.getConeShape() isn't working but it's not
-      return MeasuredTemplate.getConeShape(direction, angle, distance);
+      return foundry.canvas.placeables.MeasuredTemplate.getConeShape(direction, angle, distance);
     }
   }
 
@@ -200,7 +202,10 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.Mea
   }
 
   /** A re-implementation of `BaseGrid#highlightGridPosition()` to force gridless behavior */
-  private _highlightGridArea(layer: GridHighlight, { color, border, alpha = 0.25, shape }: IGridHighLightOptions) {
+  private _highlightGridArea(
+    layer: foundry.canvas.containers.GridHighlight,
+    { color, border, alpha = 0.25, shape }: IGridHighLightOptions
+  ) {
     layer.beginFill(color, alpha);
     if (border) layer.lineStyle(2, border, Math.min(alpha * 1.5, 1.0));
     layer.drawShape(shape).endFill();

@@ -186,7 +186,12 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
-  static async onSubmit(this: RollDialog, event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
+  static async onSubmit(
+    this: RollDialog,
+    event: SubmitEvent,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended
+  ) {
     this.#extraButtonUsed = event.submitter?.name === 'extra';
     const expanded = foundry.utils.expandObject(formData.object) as RollDialogFormData;
     this.#noAcing = !!expanded.noAcing;

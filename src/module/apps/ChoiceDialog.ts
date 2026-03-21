@@ -48,7 +48,12 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  static onSubmit(this: ChoiceDialog, _event: SubmitEvent, _form: HTMLFormElement, _formData: FormDataExtended) {
+  static onSubmit(
+    this: ChoiceDialog,
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    _formData: foundry.applications.ux.FormDataExtended
+  ) {
     this.customSubmit();
   }
 

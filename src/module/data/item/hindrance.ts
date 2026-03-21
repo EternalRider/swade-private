@@ -1,13 +1,12 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
-import * as migrations from './_migration';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { ChargesData } from '../fields';
+import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { actions, favorite, grants } from './common';
 import { Actions, ChoicesType, Favorite, Grants } from './item-common.interface';
-import * as migrations from './_migration';
 
 declare namespace HindranceData {
   interface Schema extends SwadeBaseItemData.Schema, Favorite, Actions, Grants {
@@ -70,8 +69,8 @@ class HindranceData extends SwadeBaseItemData<HindranceData.Schema, HindranceDat
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {

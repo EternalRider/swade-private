@@ -1,7 +1,7 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
@@ -149,7 +149,9 @@ class ArmorData extends SwadePhysicalItemData<ArmorData.Schema, ArmorData.BaseDa
     return Number(this.equipStatus) > constants.EQUIP_STATE.CARRIED;
   }
 
-  async getChatChips(enrichOptions: Partial<TextEditor.EnrichmentOptions>): Promise<ItemChatCardChip[]> {
+  async getChatChips(
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions>
+  ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     for (const [location, covered] of Object.entries(this.locations)) {
       if (!covered) continue;
@@ -202,8 +204,8 @@ class ArmorData extends SwadePhysicalItemData<ArmorData.Schema, ArmorData.BaseDa
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
