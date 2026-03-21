@@ -6,12 +6,10 @@ export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
     CONFIG.Canvas.auras = {
       collection: new foundry.utils.Collection<AuraPointSource>(),
-      filter:
-        foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
-          mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter
-            .FILTER_MODES.BACKGROUND,
-          visionTexture: canvas.masks.vision.renderTexture,
-        }),
+      filter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
+        mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
+        visionTexture: canvas.masks.vision.renderTexture,
+      }),
     };
     canvas.effects.auras = CONFIG.Canvas.auras.collection;
   });
@@ -23,9 +21,7 @@ export function registerAuraHooks() {
   });
 
   Hooks.on('tearDownGridLayer', (_layer: GridLayer) => {
-    canvas.effects.visualEffectsMaskingFilters.delete(
-      CONFIG.Canvas.auras.filter
-    );
+    canvas.effects.visualEffectsMaskingFilters.delete(CONFIG.Canvas.auras.filter);
   });
 
   Hooks.on('drawToken', (token: SwadeToken) => {

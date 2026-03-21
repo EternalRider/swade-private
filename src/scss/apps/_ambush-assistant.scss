@@ -51,10 +51,6 @@
     }
   }
   .drag-highlight {
-    background-color: color-mix(
-      in srgb,
-      var(--accent-color-secondary),
-      transparent 50%
-    );
+    background-color: color-mix(in srgb, var(--accent-color-secondary), transparent 50%);
   }
 }

@@ -16,9 +16,7 @@ import { getTrait } from './util';
  * A helper class for Item chat card logic
  */
 export default class ItemChatCardHelper {
-  static async onChatCardAction(
-    event: PointerEvent
-  ): Promise<SwadeRoll | null> {
+  static async onChatCardAction(event: PointerEvent): Promise<SwadeRoll | null> {
     event.preventDefault();
 
     // Extract card data
@@ -44,28 +42,20 @@ export default class ItemChatCardHelper {
     // Get the Item
     const item = actor.items.get(card.dataset.itemId!);
     if (!item) {
-      Logger.error(
-        `The requested item ${card.dataset.itemId} does not exist on Actor ${actor.name}`,
-        { toast: true }
-      );
+      Logger.error(`The requested item ${card.dataset.itemId} does not exist on Actor ${actor.name}`, { toast: true });
       return null;
     }
 
     if (actor.system instanceof VehicleData) {
       if (item.type === 'weapon') {
-        const gunner = actor.system.getCrewMemberForWeapon(
-          item as SwadeItem<'weapon'>
-        );
+        const gunner = actor.system.getCrewMemberForWeapon(item as SwadeItem<'weapon'>);
         actor = gunner ?? actor.system.operator ?? actor;
       } else {
         actor = actor.system.operator ?? actor;
       }
     }
 
-    const actionObj = foundry.utils.getProperty(
-      item,
-      'system.actions.additional.' + action
-    ) as ItemAction | undefined;
+    const actionObj = foundry.utils.getProperty(item, 'system.actions.additional.' + action) as ItemAction | undefined;
 
     // "Resist" types target the actor with a currently selected token, not the
     // one that spawned the chat card. So swap that actor in.
@@ -79,11 +69,7 @@ export default class ItemChatCardHelper {
         return null;
       }
       actor = canvas.tokens.controlled[0].actor ?? actor;
-    } else if (
-      !actor.isOwner &&
-      !message.isAuthor &&
-      actionObj?.type !== constants.ACTION_TYPE.MACRO
-    ) {
+    } else if (!actor.isOwner && !message.isAuthor && actionObj?.type !== constants.ACTION_TYPE.MACRO) {
       // For non-resist types, don't allow a roll unless the message author is the user clicking the button or it's a macro action
       button.disabled = false;
       return null;
@@ -91,8 +77,7 @@ export default class ItemChatCardHelper {
 
     //if it's a power and the No Power Points rule is in effect
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
-      const ppCost = card.querySelector<HTMLInputElement>('input.pp-adjust')
-        .value as number;
+      const ppCost = card.querySelector<HTMLInputElement>('input.pp-adjust').value as number;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
       if (action === 'formula' || actionObj?.type === 'trait') {
@@ -152,10 +137,7 @@ export default class ItemChatCardHelper {
     item: SwadeItem,
     actor: SwadeActor,
     action: string,
-    {
-      additionalMods = [],
-      event,
-    }: { additionalMods: RollModifier[]; event?: Event }
+    { additionalMods = [], event }: { additionalMods: RollModifier[]; event?: Event }
   ): Promise<SwadeRoll<any> | null> {
     let roll: SwadeRoll<any> | null = null;
 
@@ -169,9 +151,7 @@ export default class ItemChatCardHelper {
         });
         break;
       case 'arcane-device':
-        roll = await actor.makeArcaneDeviceSkillRoll(
-          foundry.utils.getProperty(item, 'system.arcaneSkillDie')
-        );
+        roll = await actor.makeArcaneDeviceSkillRoll(foundry.utils.getProperty(item, 'system.arcaneSkillDie'));
         break;
       case 'reload':
         await item.reload();
@@ -205,14 +185,9 @@ export default class ItemChatCardHelper {
 
     let costOverride = undefined;
     if (item.type === 'power') {
-      costOverride =
-        card?.querySelector('input.pp-adjust')?.valueAsNumber ??
-        item.system.ppModifiers.cost;
+      costOverride = card?.querySelector('input.pp-adjust')?.valueAsNumber ?? item.system.ppModifiers.cost;
     }
-    const canExpend =
-      costOverride !== undefined
-        ? item.canExpendResources(costOverride)
-        : item.canExpendResources();
+    const canExpend = costOverride !== undefined ? item.canExpendResources(costOverride) : item.canExpendResources();
     if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
@@ -229,11 +204,7 @@ export default class ItemChatCardHelper {
     return roll;
   }
 
-  static async handleDamageAction(
-    item: SwadeItem,
-    actor: SwadeActor,
-    additionalMods: RollModifier[] = []
-  ) {
+  static async handleDamageAction(item: SwadeItem, actor: SwadeActor, additionalMods: RollModifier[] = []) {
     const dmgMod = ItemChatCardHelper.getDamageMod(item);
     if (dmgMod) additionalMods.push(dmgMod);
     const roll = await item.rollDamage({ additionalMods });
@@ -254,24 +225,16 @@ export default class ItemChatCardHelper {
     key: string,
     { mods = [], event }: { mods: RollModifier[]; event?: Event }
   ): Promise<SwadeRoll<any> | null> {
-    const action = foundry.utils.getProperty(
-      item,
-      `system.actions.additional.${key}`
-    ) as ItemAction;
+    const action = foundry.utils.getProperty(item, `system.actions.additional.${key}`) as ItemAction;
 
     // if there isn't actually any action then return early
     if (!action) return null;
 
     let roll: SwadeRoll<any> | null = null;
 
-    if (
-      action.type === constants.ACTION_TYPE.TRAIT ||
-      action.type === constants.ACTION_TYPE.RESIST
-    ) {
+    if (action.type === constants.ACTION_TYPE.TRAIT || action.type === constants.ACTION_TYPE.RESIST) {
       //set the trait name and potentially override it via the action
-      const traitName =
-        action.override ||
-        foundry.utils.getProperty(item, 'system.actions.trait');
+      const traitName = action.override || foundry.utils.getProperty(item, 'system.actions.trait');
 
       //find the trait and either get the skill item or the key of the attribute
       const trait = getTrait(traitName, actor);
@@ -298,11 +261,7 @@ export default class ItemChatCardHelper {
         additionalMods: mods,
         item: item,
       });
-      if (
-        roll &&
-        item.type === 'weapon' &&
-        action.type === constants.ACTION_TYPE.TRAIT
-      ) {
+      if (roll && item.type === 'weapon' && action.type === constants.ACTION_TYPE.TRAIT) {
         await item.consume(action.resourcesUsed ?? 1);
       }
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
@@ -326,10 +285,7 @@ export default class ItemChatCardHelper {
       if (!action.uuid) return null;
       const macro = (await fromUuid(action.uuid)) as Macro | null;
       if (!macro) {
-        Logger.warn(
-          game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }),
-          { toast: true }
-        );
+        Logger.warn(game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }), { toast: true });
       }
       let targetActor;
       let targetToken;
@@ -394,10 +350,7 @@ export default class ItemChatCardHelper {
     // when they're being done by the actor that owns the card.
     if (!message.isAuthor) return;
 
-    const content = new DOMParser().parseFromString(
-      message.content,
-      'text/html'
-    );
+    const content = new DOMParser().parseFromString(message.content, 'text/html');
 
     const messageData = content.querySelector('.chat-card.item-card').dataset;
 
@@ -417,14 +370,8 @@ export default class ItemChatCardHelper {
 
     if (item?.type === 'power') {
       const arcane = item.system.arcane || 'general';
-      const curPP = foundry.utils.getProperty(
-        actor,
-        `system.powerPoints.${arcane}.value`
-      );
-      const maxPP = foundry.utils.getProperty(
-        actor,
-        `system.powerPoints.${arcane}.max`
-      );
+      const curPP = foundry.utils.getProperty(actor, `system.powerPoints.${arcane}.value`);
+      const maxPP = foundry.utils.getProperty(actor, `system.powerPoints.${arcane}.max`);
       //update message content
       setTextIfPresent('.pp-counter .current-pp', curPP);
       setTextIfPresent('.pp-counter .max-pp', maxPP);
@@ -438,10 +385,7 @@ export default class ItemChatCardHelper {
     }
 
     if (item?.isArcaneDevice) {
-      const currentPP = foundry.utils.getProperty(
-        item,
-        'system.powerPoints.value'
-      );
+      const currentPP = foundry.utils.getProperty(item, 'system.powerPoints.value');
       const maxPP = foundry.utils.getProperty(item, 'system.powerPoints.max');
       //update message content
       setTextIfPresent('.pp-counter .current-pp', currentPP);
@@ -460,22 +404,14 @@ export default class ItemChatCardHelper {
   }
 
   /** @internal */
-  private static callActionHook(
-    actor: SwadeActor,
-    item: SwadeItem,
-    action: string,
-    roll: SwadeRoll<any> | null
-  ) {
+  private static callActionHook(actor: SwadeActor, item: SwadeItem, action: string, roll: SwadeRoll<any> | null) {
     if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);
   }
 
   private static getDamageMod(item: SwadeItem): RollModifier | null {
-    const value = foundry.utils.getProperty(
-      item,
-      'system.actions.dmgMod'
-    ) as string;
+    const value = foundry.utils.getProperty(item, 'system.actions.dmgMod') as string;
     if (!value) return null;
 
     // Ensure `item.name` exists to avoid errors

@@ -1,39 +1,39 @@
 <div>
+  <section>
+    <table>
+      <thead>
+        <tr>
+          <th colspan='6'>
+            {{parent.name}}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{localize 'SWADE.HitLocations'}}</td>
+          <td>{{localize 'SWADE.Armor'}}</td>
+          {{#if toughness}}<td>{{localize 'SWADE.Tough'}}</td>{{/if}}
+          <td>{{localize 'SWADE.MinStrShort'}}</td>
+          <td>{{localize 'SWADE.Weight'}}</td>
+          <td>{{localize 'SWADE.Price'}}</td>
+        </tr>
+        <tr>
+          <td>{{formatArmorLocations locations}}</td>
+          <td>{{armor}}</td>
+          {{#if toughness}}<td>{{toughness}}</td>{{/if}}
+          <td>{{minStr}}</td>
+          <td>{{weight}}</td>
+          <td>{{price}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  {{#if notes}}
     <section>
-        <table>
-            <thead>
-                <tr>
-                    <th colspan="6">
-                        {{parent.name}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{localize 'SWADE.HitLocations'}}</td>
-                    <td>{{localize 'SWADE.Armor'}}</td>
-                    {{#if toughness}}<td>{{localize 'SWADE.Tough'}}</td>{{/if}}
-                    <td>{{localize 'SWADE.MinStrShort'}}</td>
-                    <td>{{localize 'SWADE.Weight'}}</td>
-                    <td>{{localize 'SWADE.Price'}}</td>
-                </tr>            
-                <tr>
-                    <td>{{formatArmorLocations locations}}</td>
-                    <td>{{armor}}</td>
-                    {{#if toughness}}<td>{{toughness}}</td>{{/if}}
-                    <td>{{minStr}}</td>
-                    <td>{{weight}}</td>
-                    <td>{{price}}</td>
-                </tr>
-            </tbody>
-        </table>
+      <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
     </section>
-    {{#if notes}}
-    <section>
-        <div><span>{{localize 'SWADE.Notes'}}:&nbsp;</span>{{notes}}</div>
-    </section>
-    {{/if}}
-    <section>
-        {{{enrichedDescription}}}
-    </section>
+  {{/if}}
+  <section>
+    {{{enrichedDescription}}}
+  </section>
 </div>

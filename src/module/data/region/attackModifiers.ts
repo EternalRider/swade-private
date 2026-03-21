@@ -1,13 +1,11 @@
 const fields = foundry.data.fields;
 
 declare namespace AttackModifiersRegionBehaviorType {
-  interface Schema 
-    extends foundry.data.fields.DataSchema,
-    ReturnType<typeof attackModifierSchema> {}
+  interface Schema extends foundry.data.fields.DataSchema, ReturnType<typeof attackModifierSchema> {}
 }
 
-class AttackModifiersRegionBehaviorType 
-  extends foundry.data.regionBehaviors.RegionBehaviorType<AttackModifiersRegionBehaviorType.Schema> {
+class AttackModifiersRegionBehaviorType extends foundry.data.regionBehaviors
+  .RegionBehaviorType<AttackModifiersRegionBehaviorType.Schema> {
   static override LOCALIZATION_PREFIXES = ['BEHAVIOR.TYPES.base', 'SWADE.BEHAVIOR.TYPES.attackModifiers'];
   static override defineSchema(): AttackModifiersRegionBehaviorType.Schema {
     return attackModifierSchema();

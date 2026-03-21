@@ -2,12 +2,7 @@ import { DeepPartial } from 'fvtt-types/utils';
 import { constants } from '../constants';
 import { getDieSidesRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
-import {
-  AdditionalStats,
-  Attribute,
-  DieSidesOption,
-  SwadeApplicationTab,
-} from '../../globals';
+import { AdditionalStats, Attribute, DieSidesOption, SwadeApplicationTab } from '../../globals';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ActionData } from '../data/item';
@@ -97,9 +92,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
 
     //Toggle Equipment Card & Power Card collapsible
     this.element
-      .querySelectorAll(
-        '.gear-card .card-header .item-name,.power-card .card-header .item-name'
-      )
+      .querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name')
       .forEach((el) =>
         el.addEventListener('click', (ev) => {
           const card = ev.currentTarget.closest('.gear-card,.power-card');
@@ -109,25 +102,21 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       );
 
     // TODO: Could just make these normal tooltips, though they'd not be instant
-    this.element
-      .querySelector('.attribute.size input')
-      ?.addEventListener('mouseenter', (event) => {
-        game.tooltip.deactivate();
-        game.tooltip.activate(event.target as HTMLElement, {
-          html: this.actor.system.getSizeTooltip(),
-          cssClass: 'themed theme-dark',
-        });
+    this.element.querySelector('.attribute.size input')?.addEventListener('mouseenter', (event) => {
+      game.tooltip.deactivate();
+      game.tooltip.activate(event.target as HTMLElement, {
+        html: this.actor.system.getSizeTooltip(),
+        cssClass: 'themed theme-dark',
       });
+    });
 
-    this.element
-      .querySelector('.attribute.pace input')
-      ?.addEventListener('mouseenter', (event) => {
-        game.tooltip.deactivate();
-        game.tooltip.activate(event.target as HTMLElement, {
-          html: this.actor.system.getPaceTooltip(),
-          cssClass: 'themed theme-dark',
-        });
+    this.element.querySelector('.attribute.pace input')?.addEventListener('mouseenter', (event) => {
+      game.tooltip.deactivate();
+      game.tooltip.activate(event.target as HTMLElement, {
+        html: this.actor.system.getPaceTooltip(),
+        cssClass: 'themed theme-dark',
       });
+    });
     this._filterPowers();
   }
 
@@ -140,57 +129,41 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   override async _prepareContext(options): Promise<NpcSheetRenderContext> {
-    if (
-      this.tabGroups.primary === 'powers' &&
-      !this.actor.hasPowers &&
-      !this.actor.hasArcaneBackground
-    ) {
+    if (this.tabGroups.primary === 'powers' && !this.actor.hasPowers && !this.actor.hasArcaneBackground) {
       this.tabGroups.primary = 'summary';
     }
     const context = await super._prepareContext(options);
-    const enrichedBiography =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.actor.system.details.biography.value,
-        {
-          relativeTo: this.actor,
-          rollData: this.actor.getRollData(),
-          secrets: this.options.editable && this.document.isOwner,
-        }
-      );
-    const hiddenActionOverride = this.actor.getFlag(
-      'swade',
-      'hiddenActionOverride'
+    const enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      this.actor.system.details.biography.value,
+      {
+        relativeTo: this.actor,
+        rollData: this.actor.getRollData(),
+        secrets: this.options.editable && this.document.isOwner,
+      }
     );
+    const hiddenActionOverride = this.actor.getFlag('swade', 'hiddenActionOverride');
     const itemTypes = {};
     for (const item of context.items) {
       const { system, type } = item;
       itemTypes[type] ??= [];
-      if (
-        !(system instanceof ActionData) ||
-        !item.system.hidden ||
-        hiddenActionOverride
-      ) {
+      if (!(system instanceof ActionData) || !item.system.hidden || hiddenActionOverride) {
         const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
           relativeTo: item,
           rollData: item.getRollData(),
           secrets: this.document.isOwner,
         };
-        item.enrichedDescription =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            item.system.description,
-            itemEnrichmentOptions
-          );
-        item.enrichedNotes =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            item.system.notes,
-            itemEnrichmentOptions
-          );
+        item.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions
+        );
+        item.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes,
+          itemEnrichmentOptions
+        );
         itemTypes[type].push(item);
       }
     }
-    const arcanesSet = new Set(
-      (itemTypes.power ?? []).map((p) => p.system.arcane)
-    );
+    const arcanesSet = new Set((itemTypes.power ?? []).map((p) => p.system.arcane));
     const additionalStats = this.#getAdditionalStats();
     return {
       ...context,
@@ -210,9 +183,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         currencyName: game.settings.get('swade', 'currencyName'),
         npcsUseCurrency: game.settings.get('swade', 'npcsUseCurrency'),
       },
-      sortedSkills: this.actor.itemTypes.skill.toSorted((a, b) =>
-        a.name.localeCompare(b.name)
-      ),
+      sortedSkills: this.actor.itemTypes.skill.toSorted((a, b) => a.name.localeCompare(b.name)),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       wealthDieTypes: getDieSidesRange(4, 12),
@@ -239,11 +210,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     );
   }
 
-  static async #openEffectOrigin(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #openEffectOrigin(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const effectId = target.closest('.effect')!.dataset.effectId as string;
     const sourceId = target.closest('.effect')!.dataset.parentId as string;
     const sourceItem = this.actor.items.get(sourceId)!;
@@ -255,9 +222,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   #getAdditionalStats(): AdditionalStats {
-    const stats = structuredClone<AdditionalStats>(
-      this.actor.system.additionalStats
-    );
+    const stats = structuredClone<AdditionalStats>(this.actor.system.additionalStats);
     const options = game.settings.get('swade', 'settingFields').actor;
     for (const [key, attr] of Object.entries(stats)) {
       if (!options[key] || !attr.dtype) {
@@ -266,90 +231,52 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       }
       if (attr.dtype === 'Selection') {
         const optionString = options[key]?.optionString ?? '';
-        attr.options = optionString
-          .split(';')
-          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+        attr.options = optionString.split(';').reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
       }
     }
     return stats;
   }
 
-  protected static async _toggleStatusEffect(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  protected static async _toggleStatusEffect(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const key = target.dataset.key as string;
     // this is just to make sure the status is false in the source data
     await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(target.dataset.id as string);
   }
 
-  static async #toggleConviction(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #toggleConviction(this: SwadeNPCSheet, _event: PointerEvent, _target: HTMLElement) {
     await this.actor.toggleConviction();
   }
 
-  static async #useConsumable(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #useConsumable(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const id = target.closest('.item')?.dataset.itemId;
     await this.actor.items.get(id)?.consume();
   }
 
-  static async #rollAttribute(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #rollAttribute(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const attribute = target.dataset.attribute as Attribute;
     await this.actor.rollAttribute(attribute);
   }
 
-  static async #rollDamage(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #rollDamage(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const id = target.closest('.item')?.dataset.itemId;
     await this.actor.items.get(id)?.rollDamage();
   }
 
-  static async #rollSkill(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #rollSkill(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const item = target.parentElement!.dataset.itemId!;
     await this.actor.rollSkill(item);
   }
 
-  static async #rollRunningDie(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #rollRunningDie(this: SwadeNPCSheet, _event: PointerEvent, _target: HTMLElement) {
     await this.actor.rollRunningDie();
   }
 
-  static #displayAttributeManager(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static #displayAttributeManager(this: SwadeNPCSheet, _event: PointerEvent, _target: HTMLElement) {
     new AttributeManager({ actor: this.actor }).render({ force: true });
   }
 
-  static #displayModifierDialog(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static #displayModifierDialog(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const displayProperty = target.dataset.displayProperty;
     let propertyPath;
     let propertyLabel;
@@ -383,10 +310,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
           default: true,
           callback: (_event, button: HTMLButtonElement) => {
             const newData = {};
-            newData[propertyPath] =
-              button.form!.querySelector<HTMLInputElement>(
-                'input[name="modifier"]'
-              )?.value;
+            newData[propertyPath] = button.form!.querySelector<HTMLInputElement>('input[name="modifier"]')?.value;
             this.actor.update(newData);
           },
         },
@@ -400,37 +324,21 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   _filterPowers() {
-    this.element
-      .querySelectorAll('.arcane, .power, .power-counter')
-      .forEach((el) => {
-        if (
-          el.dataset.arcane === this.#activeArcane ||
-          this.#activeArcane === 'All'
-        )
-          el.classList.add('active');
-        else el.classList.remove('active');
-      });
+    this.element.querySelectorAll('.arcane, .power, .power-counter').forEach((el) => {
+      if (el.dataset.arcane === this.#activeArcane || this.#activeArcane === 'All') el.classList.add('active');
+      else el.classList.remove('active');
+    });
   }
 
-  static #filterPowers(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static #filterPowers(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     this.#activeArcane = target.dataset.arcane ?? 'All';
     this._filterPowers();
   }
 
-  static async #createGear(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #createGear(this: SwadeNPCSheet, _event: PointerEvent, _target: HTMLElement) {
     const choices = ['weapon', 'armor', 'shield', 'gear', 'consumable'];
     const templateData = {
-      types: Object.fromEntries(
-        choices.map((i) => [i, game.i18n.localize(CONFIG.Item.typeLabels[i])])
-      ),
+      types: Object.fromEntries(choices.map((i) => [i, game.i18n.localize(CONFIG.Item.typeLabels[i])])),
       hasTypes: true,
       name: '',
     };
@@ -448,8 +356,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     })) as { type: Item.SubType; name: string | undefined } | null;
     if (!response?.type) return;
     const itemData = {
-      name:
-        response.name || SwadeItem.defaultName({ type, parent: this.actor }),
+      name: response.name || SwadeItem.defaultName({ type, parent: this.actor }),
       type: response.type,
     };
     await CONFIG.Item.documentClass.create(itemData, {
@@ -458,11 +365,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     });
   }
 
-  protected static async _handleCounterAdjust(
-    this: SwadeNPCSheet,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  protected static async _handleCounterAdjust(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
     const arcane = target.dataset.arcane;
     const valueKey = 'system.powerPoints.' + arcane + '.value';
     const maxKey = 'system.powerPoints.' + arcane + '.max';
@@ -481,11 +384,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
         condition: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
-          return (
-            item?.type === 'weapon' &&
-            !!item.system.shots &&
-            game.settings.get('swade', 'ammoManagement')
-          );
+          return item?.type === 'weapon' && !!item.system.shots && game.settings.get('swade', 'ammoManagement');
         },
         callback: (i) => this.actor.items.get(i.dataset.itemId)?.reload(),
       },
@@ -512,23 +411,17 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         callback: (i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectid;
-          if (itemId)
-            this.actor.items.get(itemId)?.sheet?.render({ force: true });
+          if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(
-              this.actor.allApplicableEffects()
-            );
-            allEffects
-              .find((ef) => ef.id === effectId)
-              ?.sheet?.render({ force: true });
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
+            allEffects.find((ef) => ef.id === effectId)?.sheet?.render({ force: true });
           }
         },
       },
       {
         name: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
-        condition: (i) =>
-          !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
+        condition: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
         callback: async (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const cloned = await item?.clone(
@@ -546,21 +439,17 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(
-              this.actor.allApplicableEffects()
-            );
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
             allEffects.find((ef) => ef.id === effectId)?.deleteDialog();
           }
         },
       },
     ];
 
-    new foundry.applications.ux.ContextMenu.implementation(
-      html,
-      'li.item, li.effect',
-      items,
-      { jQuery: false, fixed: true }
-    );
+    new foundry.applications.ux.ContextMenu.implementation(html, 'li.item, li.effect', items, {
+      jQuery: false,
+      fixed: true,
+    });
   }
 }
 

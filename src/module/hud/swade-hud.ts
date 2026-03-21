@@ -93,14 +93,9 @@ Hooks.on('controlToken', async (token: SwadeToken, controlled: boolean) => {
     // After any token control change, check if HUD should be closed
     setTimeout(() => {
       const controlledTokens = canvas.tokens?.controlled || [];
-      const swadeControlledTokens = controlledTokens.filter((t: any) =>
-        isSwadePC(t)
-      );
+      const swadeControlledTokens = controlledTokens.filter((t: any) => isSwadePC(t));
 
-      if (
-        swadeControlledTokens.length === 0 &&
-        getHudApp()?.closeOnTokenUnselected
-      ) {
+      if (swadeControlledTokens.length === 0 && getHudApp()?.closeOnTokenUnselected) {
         // No more controlled SWADE tokens, close HUD
         hideSwadeHUD();
       }
@@ -152,8 +147,7 @@ Hooks.once('ready', () => {
     const testItem = {
       id: 'test-item',
       system: {
-        description:
-          '<p>This is a test description with <strong>bold</strong> text.</p>',
+        description: '<p>This is a test description with <strong>bold</strong> text.</p>',
         _stats: { modified: Date.now() },
       },
     };

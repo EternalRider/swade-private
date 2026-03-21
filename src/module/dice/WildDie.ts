@@ -27,16 +27,12 @@ export default class WildDie extends foundry.dice.terms.Die {
     //In order to make wild dice have variable sides we need to work around the current parsing, which treats the side as a modifier
     if (typeof termData.faces !== 'number') {
       //first grab the modifiers from the formula
-      const modifiers: string | undefined = termData.formula?.match(
-        WildDie.REGEXP,
-      )[3];
+      const modifiers: string | undefined = termData.formula?.match(WildDie.REGEXP)[3];
       //find the first number from the modifier string, that's our sides.
       const match = modifiers?.match(/\d+/);
 
       const potentialFaces = match?.at(0) ?? null;
-      termData.faces = Number.isNumeric(potentialFaces)
-        ? Number(potentialFaces)
-        : WildDie.defaultTermData.faces;
+      termData.faces = Number.isNumeric(potentialFaces) ? Number(potentialFaces) : WildDie.defaultTermData.faces;
     }
 
     const user = game.user;
@@ -51,15 +47,9 @@ export default class WildDie extends foundry.dice.terms.Die {
           // Set the color preset.
           foundry.utils.setProperty(termData, 'options.colorset', colorSet);
           // Set the system value.
-          foundry.utils.setProperty(
-            termData,
-            'options.appearance.system',
-            dieSystem,
-          );
+          foundry.utils.setProperty(termData, 'options.appearance.system', dieSystem);
           // Get the die model for the respective die type
-          const dicePreset = game.dice3d.DiceFactory.systems
-            .get(dieSystem)
-            ?.dice.get(`d${termData?.faces}`);
+          const dicePreset = game.dice3d.DiceFactory.systems.get(dieSystem)?.dice.get(`d${termData?.faces}`);
           if (dicePreset) {
             if (dicePreset.modelFile && !dicePreset.modelLoaded) {
               // Load the modelFile

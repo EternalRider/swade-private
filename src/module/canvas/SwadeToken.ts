@@ -22,9 +22,7 @@ export default class SwadeToken extends foundry.canvas.placeables.Token {
       case PIXI.SHAPES.POLY: {
         const shape = this.shape.clone();
         const bounds = this.bounds;
-        shape.points = shape.points.map((c, i) =>
-          i % 2 === 0 ? c + bounds.x : c + bounds.y
-        );
+        shape.points = shape.points.map((c, i) => (i % 2 === 0 ? c + bounds.x : c + bounds.y));
         return shape;
       }
       // case PIXI.SHAPES.CIRC: {
@@ -43,27 +41,15 @@ export default class SwadeToken extends foundry.canvas.placeables.Token {
     data: NonNullable<TokenDocument.GetBarAttributeReturn>
   ): boolean {
     if (data?.attribute === 'wounds') {
-      return this._drawWoundsBar(
-        number,
-        bar,
-        data as TokenDocument.ObjectAttributeBar
-      );
+      return this._drawWoundsBar(number, bar, data as TokenDocument.ObjectAttributeBar);
     }
     if (data?.attribute === 'fatigue') {
-      return this._drawWoundsBar(
-        number,
-        bar,
-        data as TokenDocument.ObjectAttributeBar
-      );
+      return this._drawWoundsBar(number, bar, data as TokenDocument.ObjectAttributeBar);
     }
     return super._drawBar(number, bar, data);
   }
 
-  protected _drawWoundsBar(
-    number: number,
-    bar: PIXI.Graphics,
-    data: TokenDocument.ObjectAttributeBar
-  ): boolean {
+  protected _drawWoundsBar(number: number, bar: PIXI.Graphics, data: TokenDocument.ObjectAttributeBar): boolean {
     const { value, max } = data;
     const colorPct = Math.clamp(value, 0, max) / max;
     const woundColor = SwadeActor.getWoundsColor(value, max);
@@ -88,11 +74,7 @@ export default class SwadeToken extends foundry.canvas.placeables.Token {
     return true;
   }
 
-  protected _drawFatigueBar(
-    number: number,
-    bar: PIXI.Graphics,
-    data: TokenDocument.ObjectAttributeBar
-  ): boolean {
+  protected _drawFatigueBar(number: number, bar: PIXI.Graphics, data: TokenDocument.ObjectAttributeBar): boolean {
     const { value, max } = data;
 
     const colorPct = Math.clamp(value, 0, max) / max;
@@ -118,24 +100,11 @@ export default class SwadeToken extends foundry.canvas.placeables.Token {
     return true;
   }
 
-  protected _resetVitalsBar(
-    bar: PIXI.Graphics,
-    width: number,
-    height: number,
-    stroke: number
-  ): void {
-    bar
-      .clear()
-      .beginFill(this.#blk, 0.5)
-      .lineStyle(stroke, this.#blk, 1.0)
-      .drawRoundedRect(0, 0, width, height, 3);
+  protected _resetVitalsBar(bar: PIXI.Graphics, width: number, height: number, stroke: number): void {
+    bar.clear().beginFill(this.#blk, 0.5).lineStyle(stroke, this.#blk, 1.0).drawRoundedRect(0, 0, width, height, 3);
   }
 
-  protected _setVitalsBarPosition(
-    bar: PIXI.Graphics,
-    order: number,
-    height: number
-  ): void {
+  protected _setVitalsBarPosition(bar: PIXI.Graphics, order: number, height: number): void {
     // Set position
     const posY = order === 0 ? this.h - height : 0;
     bar.position.set(0, posY);

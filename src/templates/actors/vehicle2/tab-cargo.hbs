@@ -1,8 +1,4 @@
-<section
-  class='{{tabs.cargo.tabCssClass}}'
-  data-tab='cargo'
-  data-group='primary'
->
+<section class='{{tabs.cargo.tabCssClass}}' data-tab='cargo' data-group='primary'>
   <span>
     <meter
       class='capacity-meter'
@@ -40,12 +36,7 @@
       </span>
     </li>
     {{#each actor.system.cargo.items as |item|}}
-      <li
-        data-item-id='{{item.id}}'
-        data-document-class='Item'
-        data-drag='true'
-        class='item'
-      >
+      <li data-item-id='{{item.id}}' data-document-class='Item' data-drag='true' class='item'>
         <img class='img' alt='{{item.name}}' src='{{item.img}}' />
         <a class='name' data-action='showItem'>
           {{item.name}}

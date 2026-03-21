@@ -1,9 +1,5 @@
 import { DeepPartial } from 'fvtt-types/utils';
-import {
-  PhysicalItem,
-  SwadeApplicationTab,
-  SwadeDocumentSheetConfiguration,
-} from '../../globals';
+import { PhysicalItem, SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
 import { Logger } from '../Logger';
 import { constants } from '../constants';
 import { GroupMember } from '../data/actor/group';
@@ -15,9 +11,7 @@ import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 
 export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
   declare actor: SwadeActor<'group'>;
-  static override DEFAULT_OPTIONS: DeepPartial<
-    SwadeDocumentSheetConfiguration<SwadeActor<'group'>>
-  > = {
+  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor<'group'>>> = {
     classes: ['group', 'standard-form'],
     position: { height: 700, width: 700 },
     window: { resizable: true },
@@ -63,18 +57,11 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     description: { id: 'description', group: 'primary', label: 'SWADE.Desc' },
   };
 
-  static async deleteMember(
-    this: GroupSheet,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
-    const id =
-      target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
+  static async deleteMember(this: GroupSheet, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     if (!id) return;
     if (!this.actor.system.members.has(id)) return;
-    const existing = Array.from(this.actor.system.members.keys()).map((v) =>
-      v.toString(),
-    );
+    const existing = Array.from(this.actor.system.members.keys()).map((v) => v.toString());
     const index = existing.indexOf(id);
     if (index < 0) return;
     const member = this.actor.system.members.get(id)?.actor;
@@ -92,24 +79,14 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     await this.actor.update({ 'system.members': existing });
   }
 
-  static openMember(
-    this: GroupSheet,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
-    const id =
-      target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
+  static openMember(this: GroupSheet, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     if (!id) return;
     this.actor.system.members.get(id)?.actor?.sheet?.render({ force: true });
   }
 
-  static showMemberImage(
-    this: GroupSheet,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
-    const id =
-      target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
+  static showMemberImage(this: GroupSheet, _event: PointerEvent, target: HTMLElement) {
+    const id = target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     if (!id) return;
     const actor = this.actor.system.members.get(id)?.actor;
     if (!actor) return;
@@ -120,11 +97,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     }).render(true);
   }
 
-  static toggleLock(
-    this: GroupSheet,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static toggleLock(this: GroupSheet, _event: PointerEvent, _target: HTMLElement) {
     if (!game.user!.isGM) return;
     this.actor.update({ 'system.locked': !this.actor.system.locked });
   }
@@ -156,7 +129,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
 
   protected override _onFirstRender(
     context: GroupSheetRenderContext,
-    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>
   ) {
     super._onFirstRender(context, options);
     for (const member of this.actor.system.members.values()) {
@@ -167,7 +140,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
 
   protected override _onRender(
     context: GroupSheetRenderContext,
-    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>
   ) {
     super._onRender(context, options);
     if (this.actor.system.locked) this.element.classList.add('locked');
@@ -178,7 +151,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     partId: string,
     newElement: HTMLElement,
     priorElement: HTMLElement,
-    state: GroupSheet.PartState,
+    state: GroupSheet.PartState
   ) {
     super._syncPartState(partId, newElement, priorElement, state);
     switch (partId) {
@@ -191,8 +164,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
           const newBar = member.querySelector<HTMLElement>('.wounds');
 
           const oldBackground = oldBar?.style.getPropertyValue('--_background');
-          const newBackground =
-            newBar?.style?.getPropertyValue('--_background');
+          const newBackground = newBar?.style?.getPropertyValue('--_background');
 
           const oldColor = oldBar?.style?.getPropertyValue('--_wounds-color');
           const newColor = newBar?.style?.getPropertyValue('--_wounds-color');
@@ -217,13 +189,11 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
 
   protected async _prepareItems(): Promise<ItemTypes> {
     const items = Object.fromEntries<RenderedItem[]>(
-      constants.PHYSICAL_ITEMS.map((t: PhysicalItem) => [t, []]),
+      constants.PHYSICAL_ITEMS.map((t: PhysicalItem) => [t, []])
     ) as ItemTypes;
 
     for (const type of constants.PHYSICAL_ITEMS) {
-      for (const item of this.actor.itemTypes[
-        type
-      ] as SwadeItem<PhysicalItem>[]) {
+      for (const item of this.actor.itemTypes[type] as SwadeItem<PhysicalItem>[]) {
         items[type].push({
           name: item.name as string,
           id: item.id as string,
@@ -245,10 +215,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     const redHueThreshold = 20;
     for (const [uuid, member] of systemMembers.entries()) {
       const wounds = member.actor?.system?.wounds;
-      const background = SwadeActor.getWoundsColor(
-        wounds?.value ?? 1,
-        wounds?.max ?? 1,
-      );
+      const background = SwadeActor.getWoundsColor(wounds?.value ?? 1, wounds?.max ?? 1);
       const actor = member.actor;
       members.push({
         uuid,
@@ -283,17 +250,14 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
     return members;
   }
 
-  protected override async _onDropActor(
-    _event: DragEvent,
-    data: object,
-  ): Promise<object | boolean> {
+  protected override async _onDropActor(_event: DragEvent, data: object): Promise<object | boolean> {
     if (!this.actor.isOwner || this.actor.system.locked) return false;
     const actor = await getDocumentClass('Actor').fromDropData(data);
     if (actor.type === 'group' || actor.type === 'vehicle') {
-      Logger.warn(
-        `You cannot add ${game.i18n.localize('TYPES.Actor.' + actor.type)} Actors to a group!`,
-        { toast: true, localize: true },
-      );
+      Logger.warn(`You cannot add ${game.i18n.localize('TYPES.Actor.' + actor.type)} Actors to a group!`, {
+        toast: true,
+        localize: true,
+      });
       return false;
     }
     await this.actor.update({

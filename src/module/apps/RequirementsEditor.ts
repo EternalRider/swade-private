@@ -7,19 +7,14 @@ import { Requirement } from '../documents/item/SwadeItem.interface';
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class RequirementsEditor extends HandlebarsApplicationMixin(
-  ApplicationV2
-) {
+export class RequirementsEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor({ edge, ...options }: RequirementsEditorConfiguration) {
     if (!(edge['system'] instanceof EdgeData)) {
       throw new TypeError('Invalid item type ' + edge['type']);
     }
     super(options);
 
-    this.#requirements = foundry.utils.getProperty(
-      edge,
-      'system.requirements'
-    ) as Requirement[];
+    this.#requirements = foundry.utils.getProperty(edge, 'system.requirements') as Requirement[];
     this.#edge = edge;
   }
 
@@ -96,31 +91,22 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        requirements: this.#requirements,
-        types: constants.REQUIREMENT_TYPE,
-        typeChoices: this.#getRequirementTypeChoices(),
-        rankChoices: this.#getRankChoices(),
-        dieChoices: this.#getDieChoices(),
-        attributeChoices: this.#getAttributeChoices(),
-        combinatorChoices: this.#getCombinatorChoices(),
-        slugPattern: SLUG_REGEX.source,
-        edge: this.edge,
-        buttons: [
-          { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
-        ],
-      }
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      requirements: this.#requirements,
+      types: constants.REQUIREMENT_TYPE,
+      typeChoices: this.#getRequirementTypeChoices(),
+      rankChoices: this.#getRankChoices(),
+      dieChoices: this.#getDieChoices(),
+      attributeChoices: this.#getAttributeChoices(),
+      combinatorChoices: this.#getCombinatorChoices(),
+      slugPattern: SLUG_REGEX.source,
+      edge: this.edge,
+      buttons: [{ type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' }],
+    });
     return context;
   }
 
-  static async #addRequirement(
-    this: RequirementsEditor,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #addRequirement(this: RequirementsEditor, _event: PointerEvent, _target: HTMLElement) {
     const newReq =
       this.#requirements.length > 0
         ? { type: constants.REQUIREMENT_TYPE.OTHER, label: '' }
@@ -133,11 +119,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
     this.render({ force: true });
   }
 
-  static async #deleteRequirement(
-    this: RequirementsEditor,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #deleteRequirement(this: RequirementsEditor, _event: PointerEvent, target: HTMLElement) {
     const index = target.closest('li')?.dataset.index;
     this.#requirements.findSplice((_v, i) => i === Number(index));
     this.render({ force: true });
@@ -147,9 +129,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   #resetValue(target: HTMLElement) {
     target
       .closest('li')
-      ?.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-        '[name$="selector"], [name$="value"]'
-      )
+      ?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[name$="selector"], [name$="value"]')
       .forEach((el) => (el.value = ''));
   }
 
@@ -193,10 +173,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   }
 
   async #updateDocument() {
-    await this.edge.update(
-      { 'system.requirements': this.#requirements },
-      { diff: false }
-    );
+    await this.edge.update({ 'system.requirements': this.#requirements }, { diff: false });
   }
 }
 interface RequirementsEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {

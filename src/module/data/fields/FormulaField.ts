@@ -1,8 +1,7 @@
 import { normalizeRollValue } from '../../util';
 
 export class FormulaField<
-  Options extends
-    foundry.data.fields.StringField.Options = foundry.data.fields.StringField.DefaultOptions,
+  Options extends foundry.data.fields.StringField.Options = foundry.data.fields.StringField.DefaultOptions,
 > extends foundry.data.fields.StringField<Options> {
   protected override _cast(value: any) {
     if (typeof value !== 'string') {
@@ -11,9 +10,7 @@ export class FormulaField<
       if (game.settings.get('core', 'language') !== 'en') {
         const smartsLong = game.i18n.localize('SWADE.AttrSma');
         const smartsShort = game.i18n.localize('SWADE.AttrSmaShortPowerRange');
-        value = value
-          .replace(new RegExp('^' + smartsLong), '@sma')
-          .replace(new RegExp('^' + smartsShort), '@sma');
+        value = value.replace(new RegExp('^' + smartsLong), '@sma').replace(new RegExp('^' + smartsShort), '@sma');
       }
       value = value
         .replaceAll(/–/g, '') // SFC, EN DASH not minus, so safe to remove
@@ -30,15 +27,13 @@ export class FormulaField<
 
   protected override _validateType(
     value: any,
-    _options: foundry.data.fields.DataField.ValidationOptions = {},
+    _options: foundry.data.fields.DataField.ValidationOptions = {}
   ): boolean | void {
     if (this.blank && Number(value) === 0) return true;
     return Roll.validate(value);
   }
 
   protected override _castChangeDelta(delta: string | number) {
-    return normalizeRollValue(
-      delta,
-    ) as foundry.data.fields.StringField.InitializedType<Options>;
+    return normalizeRollValue(delta) as foundry.data.fields.StringField.InitializedType<Options>;
   }
 }

@@ -4,9 +4,7 @@ import { getDieSidesRange } from '../util';
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class AttributeManager extends HandlebarsApplicationMixin(
-  ApplicationV2
-) {
+export default class AttributeManager extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor({ actor, ...options }: AttributeManagerConfiguration) {
     if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
     super(options);
@@ -53,29 +51,20 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context: AttributeManagerRenderContext = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        isExtra: !this.actor.isWildcard,
-        dieSides:
-          this.actor.type === 'character'
-            ? getDieSidesRange(4, 20)
-            : getDieSidesRange(4, 24),
-        wildDieSides: getDieSidesRange(4, 12),
-        dieSidesWithMinimum:
-          this.actor.type === 'character'
-            ? getDieSidesRange(1, 20)
-            : getDieSidesRange(1, 24),
-        actor: this.actor,
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-solid fa-floppy-disk',
-            label: 'Save Changes',
-          },
-        ],
-      }
-    );
+    const context: AttributeManagerRenderContext = foundry.utils.mergeObject(await super._prepareContext(options), {
+      isExtra: !this.actor.isWildcard,
+      dieSides: this.actor.type === 'character' ? getDieSidesRange(4, 20) : getDieSidesRange(4, 24),
+      wildDieSides: getDieSidesRange(4, 12),
+      dieSidesWithMinimum: this.actor.type === 'character' ? getDieSidesRange(1, 20) : getDieSidesRange(1, 24),
+      actor: this.actor,
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-floppy-disk',
+          label: 'Save Changes',
+        },
+      ],
+    });
     return context;
   }
 

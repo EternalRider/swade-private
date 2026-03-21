@@ -1,9 +1,7 @@
 import { SimpleMerge } from 'fvtt-types/utils';
 
 /** A function that resolves into the fetched document or the source UUID as a string */
-export type DocumentFn<
-  T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any,
-> = () => T | string;
+export type DocumentFn<T extends foundry.abstract.Document.Any = foundry.abstract.Document.Any> = () => T | string;
 
 declare namespace ForeignDocumentUUIDField {
   type Options = foundry.data.fields.DocumentUUIDField.Options;
@@ -18,21 +16,11 @@ declare namespace ForeignDocumentUUIDField {
 }
 
 export class ForeignDocumentUUIDField<
-  const Options extends ForeignDocumentUUIDField.Options =
-    ForeignDocumentUUIDField.DefaultOptions,
-  const AssignmentType =
-    foundry.data.fields.StringField.AssignmentType<Options>,
-  const InitializedType =
-    | foundry.data.fields.StringField.InitializedType<Options>
-    | foundry.abstract.Document.Any,
-  const PersistedType extends string | null | undefined =
-    foundry.data.fields.StringField.InitializedType<Options>,
-> extends foundry.data.fields.DocumentUUIDField<
-  Options,
-  AssignmentType,
-  InitializedType,
-  PersistedType
-> {
+  const Options extends ForeignDocumentUUIDField.Options = ForeignDocumentUUIDField.DefaultOptions,
+  const AssignmentType = foundry.data.fields.StringField.AssignmentType<Options>,
+  const InitializedType = foundry.data.fields.StringField.InitializedType<Options> | foundry.abstract.Document.Any,
+  const PersistedType extends string | null | undefined = foundry.data.fields.StringField.InitializedType<Options>,
+> extends foundry.data.fields.DocumentUUIDField<Options, AssignmentType, InitializedType, PersistedType> {
   declare type: foundry.abstract.Document.Type;
   declare idOnly: boolean;
 
@@ -50,10 +38,7 @@ export class ForeignDocumentUUIDField<
     return () => {
       try {
         const doc = fromUuidSync(value);
-        if (doc instanceof typeClass)
-          return doc as foundry.abstract.Document.ImplementationClassFor<
-            this['type']
-          >;
+        if (doc instanceof typeClass) return doc as foundry.abstract.Document.ImplementationClassFor<this['type']>;
         return value!;
       } catch (error) {
         console.error(error);
@@ -70,13 +55,14 @@ export class ForeignDocumentUUIDField<
     if (!config.options) {
       // Prepare array of visible options
       const collection = game.scenes.viewed?.tokens;
-      const options: foundry.applications.fields.FormSelectOption[] = (
-        collection ?? []
-      ).reduce((arr, doc: TokenDocument.Implementation) => {
-        if (!doc.visible || !doc.actor) return arr;
-        arr.push({ value: doc.actor.uuid, label: doc.name });
-        return arr;
-      }, []);
+      const options: foundry.applications.fields.FormSelectOption[] = (collection ?? []).reduce(
+        (arr, doc: TokenDocument.Implementation) => {
+          if (!doc.visible || !doc.actor) return arr;
+          arr.push({ value: doc.actor.uuid, label: doc.name });
+          return arr;
+        },
+        []
+      );
       Object.assign(config, { options });
     }
 

@@ -15,12 +15,7 @@
     {{readonly actor.system.locked}}
   />
   {{#if user.isGM}}
-    <button
-      type='button'
-      data-action='toggleLock'
-      class='icon'
-      data-tooltip='SWADE.Group.Sheet.Lock.Label'
-    >
+    <button type='button' data-action='toggleLock' class='icon' data-tooltip='SWADE.Group.Sheet.Lock.Label'>
       {{#if actor.system.locked}}
         <i class='fa-solid fa-lock'></i>
       {{else}}

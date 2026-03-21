@@ -23,32 +23,16 @@ export async function migrateWorld() {
   // Gather the World Actors/Items to migrate
   const actors = game
     .actors!.map((a) => [a, true])
-    .concat(
-      Array.from(game.actors.invalidDocumentIds).map((id) => [
-        game.actors!.getInvalid(id),
-        false,
-      ])
-    );
+    .concat(Array.from(game.actors.invalidDocumentIds).map((id) => [game.actors!.getInvalid(id), false]));
 
   const items = game
     .items!.map((i) => [i, true])
-    .concat(
-      Array.from(game.items.invalidDocumentIds).map((id) => [
-        game.items!.getInvalid(id),
-        false,
-      ])
-    );
+    .concat(Array.from(game.items.invalidDocumentIds).map((id) => [game.items!.getInvalid(id), false]));
 
-  const packs = game.packs.filter((p) =>
-    ['Actor', 'Item', 'Scene'].includes(p.documentName)
-  );
+  const packs = game.packs.filter((p) => ['Actor', 'Item', 'Scene'].includes(p.documentName));
 
   const counter = new MigrationCounter(
-    items.length +
-      actors.length +
-      packs.length +
-      game.scenes!.size +
-      game.users!.size
+    items.length + actors.length + packs.length + game.scenes!.size + game.users!.size
   );
 
   // Migrate World Actors
@@ -56,9 +40,7 @@ export async function migrateWorld() {
     try {
       await dedupeActorActiveEffects(actor);
       await _migratePTModifiers(actor);
-      const source = valid
-        ? actor.toObject()
-        : game.data.actors?.find((a) => a._id === actor.id);
+      const source = valid ? actor.toObject() : game.data.actors?.find((a) => a._id === actor.id);
       const updateData = migrateActorData(source);
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`Migrating Actor document ${actor.name}`);
@@ -75,9 +57,7 @@ export async function migrateWorld() {
   // Migrate World Items
   for (const [item, valid] of items) {
     try {
-      const source = valid
-        ? item.toObject()
-        : game.data.items?.find((i) => i._id === item.id);
+      const source = valid ? item.toObject() : game.data.items?.find((i) => i._id === item.id);
       const updateData = migrateItemData(source);
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`Migrating Item document ${item.name}`);
@@ -158,9 +138,7 @@ export async function migrateWorld() {
  * Apply migration rules to all Entities within a single Compendium pack
  * @param pack The compendium to migrate. Only Actor, Item or Scene compendiums are processed
  */
-export async function migrateCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>
-) {
+export async function migrateCompendium(pack: CompendiumCollection<CompendiumCollection.Metadata>) {
   const documentName = pack.documentName;
   if (!['Actor', 'Item', 'Scene'].includes(documentName)) return;
 
@@ -193,9 +171,7 @@ export async function migrateCompendium(
       // Save the entry, if data was changed
       if (foundry.utils.isEmpty(updateData)) continue;
       await doc.update(updateData);
-      Logger.debug(
-        `Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`
-      );
+      Logger.debug(`Migrated ${documentName} document ${doc.name} in Compendium ${pack.collection}`);
     } catch (err) {
       // Handle migration failures
       err.message = `Failed swade system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
@@ -205,9 +181,7 @@ export async function migrateCompendium(
 
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  Logger.debug(
-    `Migrated all ${documentName} documents from Compendium ${pack.collection}`
-  );
+  Logger.debug(`Migrated all ${documentName} documents from Compendium ${pack.collection}`);
 }
 
 /* -------------------------------------------- */
@@ -228,8 +202,7 @@ export function migrateUser(user: SwadeUser) {
 export function migrateEffects(parent) {
   if (!parent.effects) return {};
   return parent.effects.reduce((arr, e) => {
-    const effectData =
-      e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
+    const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
     const effectUpdate = migrateEffectData(effectData);
     if (!foundry.utils.isEmpty(effectUpdate)) {
       effectUpdate._id = effectData._id;
@@ -256,9 +229,7 @@ async function refreshAllCompendiums() {
  * Update all Documents in a compendium using the new system data model.
  * @param pack  Pack to refresh.
  */
-async function refreshCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>
-) {
+async function refreshCompendium(pack: CompendiumCollection<CompendiumCollection.Metadata>) {
   if (!pack?.documentName) return;
   // swade.moduleArt.suppressArt = true;
 
@@ -280,9 +251,7 @@ async function refreshCompendium(
   }
   await pack.configure({ locked: wasLocked });
   // swade.moduleArt.suppressArt = false;
-  ui.notifications.info(
-    `Refreshed all documents from Compendium ${pack.collection}`
-  );
+  ui.notifications.info(`Refreshed all documents from Compendium ${pack.collection}`);
 }
 
 /* -------------------------------------------- */
@@ -381,10 +350,8 @@ export function migrateSceneData(_scene: Scene | SceneData) {
 export function migrateEffectData(_effect: ActiveEffectData) {
   const updateData: UpdateData = {};
   _effect.changes.forEach((c) => {
-    if (c.key === 'system.stats.parry.modifier')
-      c.key = 'system.stats.parry.value';
-    if (c.key === 'system.stats.toughness.modifier')
-      c.key = 'system.stats.toughness.value';
+    if (c.key === 'system.stats.parry.modifier') c.key = 'system.stats.parry.value';
+    if (c.key === 'system.stats.toughness.modifier') c.key = 'system.stats.toughness.value';
   });
   updateData.changes = _effect.changes;
   return updateData;
@@ -411,9 +378,7 @@ export function removeDeprecatedObjects(data: Item.CreateData | ActorData) {
 
 export async function dedupeActorActiveEffects(actor: SwadeActor) {
   const toDelete = new Array<string>();
-  const filteredEffects: SwadeActiveEffect[] = actor.appliedEffects.filter(
-    (e) => e.parent instanceof SwadeItem
-  );
+  const filteredEffects: SwadeActiveEffect[] = actor.appliedEffects.filter((e) => e.parent instanceof SwadeItem);
 
   for (const effect of filteredEffects) {
     actor.effects
@@ -435,10 +400,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
   if (parryModifier) {
     updateData['system.stats.parry.modifier'] = 0;
     effects.push({
-      name:
-        game.i18n.localize('SWADE.Addi') +
-        ' ' +
-        game.i18n.localize('SWADE.Parry'),
+      name: game.i18n.localize('SWADE.Addi') + ' ' + game.i18n.localize('SWADE.Parry'),
       changes: [
         {
           key: 'system.stats.parry.value',
@@ -453,10 +415,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
   if (toughModifier) {
     updateData['system.stats.toughness.modifier'] = 0;
     effects.push({
-      name:
-        game.i18n.localize('SWADE.Addi') +
-        ' ' +
-        game.i18n.localize('SWADE.Tough'),
+      name: game.i18n.localize('SWADE.Addi') + ' ' + game.i18n.localize('SWADE.Tough'),
       changes: [
         {
           key: 'system.stats.toughness.value',
@@ -474,10 +433,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
   }
 }
 
-function _migrateVehicleOperator(
-  data: Actor.UpdateData,
-  updateData: UpdateData
-) {
+function _migrateVehicleOperator(data: Actor.UpdateData, updateData: UpdateData) {
   if (data.type !== 'vehicle') return updateData;
   const driverId = data.system.driver?.id;
   const hasOldID = !!driverId && driverId.split('.').length === 1;
@@ -487,10 +443,7 @@ function _migrateVehicleOperator(
   return updateData;
 }
 
-function _migrateGeneralPowerPoints(
-  data: Actor.UpdateData,
-  updateData: UpdateData
-) {
+function _migrateGeneralPowerPoints(data: Actor.UpdateData, updateData: UpdateData) {
   if (data.type === 'vehicle') return updateData;
 
   const isOld =
@@ -538,10 +491,7 @@ function _migrateGeneralPowerPoints(
   if (effects.length > 0) updateData.effects = effects;
 }
 
-function _migrateWeaponAPToNumber(
-  data: Item.CreateData,
-  updateData: UpdateData
-) {
+function _migrateWeaponAPToNumber(data: Item.CreateData, updateData: UpdateData) {
   if (data.type !== 'weapon') return updateData;
 
   if (data.system.ap && typeof data.system.ap === 'string') {
@@ -549,29 +499,18 @@ function _migrateWeaponAPToNumber(
   }
 }
 
-function _migratePowerEquipToFavorite(
-  data: Item.CreateData,
-  updateData: UpdateData
-) {
+function _migratePowerEquipToFavorite(data: Item.CreateData, updateData: UpdateData) {
   if (data.type !== 'power') return updateData;
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
   if (isOld) {
-    updateData['system.favorite'] = foundry.utils.getProperty(
-      data,
-      'system.equipped'
-    );
+    updateData['system.favorite'] = foundry.utils.getProperty(data, 'system.equipped');
     updateData['system.-=equipped'] = null;
     updateData['system.-=equippable'] = null;
   }
 }
 
 function _migrateItemEquipState(data: Item.CreateData, updateData: UpdateData) {
-  if (
-    data.type !== 'armor' &&
-    data.type !== 'weapon' &&
-    data.type !== 'shield' &&
-    data.type !== 'gear'
-  ) {
+  if (data.type !== 'armor' && data.type !== 'weapon' && data.type !== 'shield' && data.type !== 'gear') {
     return;
   }
   const isOld = foundry.utils.hasProperty(data, 'system.equipped');
@@ -602,25 +541,17 @@ function _migrateWildDieFlag(user: SwadeUser, updateData: UpdateData) {
   return updateData;
 }
 
-function _migrateWeaponAutoReload(
-  data: Item.CreateData,
-  updateData: UpdateData
-) {
+function _migrateWeaponAutoReload(data: Item.CreateData, updateData: UpdateData) {
   if (data.type !== 'weapon') return;
   const hasOld = foundry.utils.hasProperty(data, 'system.autoReload');
   if (!hasOld) return;
   const autoReload = data.system.autoReload;
-  updateData['system.reloadType'] = autoReload
-    ? constants.RELOAD_TYPE.NONE
-    : constants.RELOAD_TYPE.FULL;
+  updateData['system.reloadType'] = autoReload ? constants.RELOAD_TYPE.NONE : constants.RELOAD_TYPE.FULL;
   //remove the old property
   updateData['system.-=autoReload'] = null;
 }
 
-function _ensureBatteryMaxCharges(
-  data: Item.CreateData,
-  updateData: UpdateData
-) {
+function _ensureBatteryMaxCharges(data: Item.CreateData, updateData: UpdateData) {
   if (data.type !== 'consumable') return;
   if (data.system.subtype === constants.CONSUMABLE_TYPE.BATTERY) {
     if (

@@ -23,14 +23,8 @@ export type TokenSize = { width: number; height: number };
 class SwadeBaseActorData<
   Schema extends SwadeBaseActorData.Schema = SwadeBaseActorData.Schema,
   BaseData extends SwadeBaseActorData.BaseData = SwadeBaseActorData.BaseData,
-  DerivedData extends
-    SwadeBaseActorData.DerivedData = SwadeBaseActorData.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  SwadeActor,
-  BaseData,
-  DerivedData
-> {
+  DerivedData extends SwadeBaseActorData.DerivedData = SwadeBaseActorData.DerivedData,
+> extends foundry.abstract.TypeDataModel<Schema, SwadeActor, BaseData, DerivedData> {
   static override defineSchema(): SwadeBaseActorData.Schema {
     return {
       additionalStats: makeAdditionalStatsSchema(),
@@ -75,8 +69,7 @@ class SwadeBaseActorData<
               choices: {
                 [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 'TOKEN.DISPOSITION.HOSTILE',
                 [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 'TOKEN.DISPOSITION.NEUTRAL',
-                [CONST.TOKEN_DISPOSITIONS.FRIENDLY]:
-                  'TOKEN.DISPOSITION.FRIENDLY',
+                [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 'TOKEN.DISPOSITION.FRIENDLY',
               },
               required: true,
             }),
@@ -85,7 +78,7 @@ class SwadeBaseActorData<
               hint: 'SWADE.Aura.Visibility.Hint',
               required: true,
               initial: [],
-            },
+            }
           ),
         }),
         {
@@ -97,7 +90,7 @@ class SwadeBaseActorData<
               ...AuraPointSource.defaultData,
             },
           },
-        },
+        }
       ),
     };
   }
@@ -105,9 +98,7 @@ class SwadeBaseActorData<
   override prepareDerivedData(this: SwadeBaseActorData) {
     super.prepareDerivedData();
     // Ensure all auras have defaults if not provided
-    const userColor =
-      game.users.find((u) => u.character === this.parent)?.color?.css ??
-      '#000000';
+    const userColor = game.users.find((u) => u.character === this.parent)?.color?.css ?? '#000000';
     for (const [auraKey, aura] of Object.entries(this.auras)) {
       this.auras[auraKey] = {
         ...AuraPointSource.defaultData,
@@ -134,10 +125,7 @@ class SwadeBaseActorData<
     }
     //return early if there's no data to roll
     if (!statData.value) return;
-    const roll = new SwadeRoll(
-      `${statData.value}${modifier}`,
-      this.getRollData(),
-    );
+    const roll = new SwadeRoll(`${statData.value}${modifier}`, this.getRollData());
     await roll.evaluate();
     const message = await roll.toMessage({
       speaker: ChatMessage.getSpeaker({ actor: this.parent }),

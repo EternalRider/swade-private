@@ -1,5 +1,3 @@
-import { TOKEN_DISPOSITIONS } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
-
 export interface AuraData {
   /** Is the aura enabled? */
   enabled: boolean;
@@ -12,5 +10,5 @@ export interface AuraData {
   /** Is the aura constrained by walls? */
   walls: boolean;
   /** what kind of Tokens is this aura visible to */
-  visibleTo: TOKEN_DISPOSITIONS[];
+  visibleTo: CONST.TOKEN_DISPOSITIONS[];
 }

@@ -11,14 +11,14 @@ export function _shimPace(source) {
       get: () => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.value property has been moved to the new system.pace object',
-          options,
+          options
         );
         return source.pace[source.pace.base];
       },
       set: (pace: number) => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.value property has been moved to the new system.pace object',
-          options,
+          options
         );
         source.pace[source.pace.base] = pace;
       },
@@ -28,14 +28,14 @@ export function _shimPace(source) {
       get: () => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.adjusted property has been moved to the new system.pace object',
-          options,
+          options
         );
         return source.pace[source.pace.base];
       },
       set: (pace: number) => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.adjusted property has been moved to the new system.pace object',
-          options,
+          options
         );
         source.pace[source.pace.base] = pace;
       },
@@ -45,14 +45,14 @@ export function _shimPace(source) {
       get: () => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.runningDie property has been moved to the new system.pace.running object',
-          options,
+          options
         );
         return source.pace.running.die;
       },
       set: (sides: number) => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.runningDie property has been moved to the new system.pace.running object',
-          options,
+          options
         );
         source.pace.running.die = sides;
       },
@@ -62,14 +62,14 @@ export function _shimPace(source) {
       get: () => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.runningMod property has been moved to the new system.pace.running object',
-          options,
+          options
         );
         return source.pace.running.mod;
       },
       set: (modifier: number) => {
         foundry.utils.logCompatibilityWarning(
           'The system.stats.speed.runningMod property has been moved to the new system.pace.running object',
-          options,
+          options
         );
         source.pace.running.mod = modifier;
       },

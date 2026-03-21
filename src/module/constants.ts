@@ -186,13 +186,7 @@ export const constants = {
     LOW: 1,
     OUT: 0,
   } as const,
-  PHYSICAL_ITEMS: [
-    'weapon',
-    'armor',
-    'shield',
-    'consumable',
-    'gear',
-  ] as PhysicalItem[],
+  PHYSICAL_ITEMS: ['weapon', 'armor', 'shield', 'consumable', 'gear'] as PhysicalItem[],
   CREW_ROLE: {
     OPERATOR: 'operator',
     GUNNER: 'gunner',

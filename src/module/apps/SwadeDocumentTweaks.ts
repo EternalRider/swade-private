@@ -8,19 +8,17 @@ import { getDieSidesRange } from '../util';
 class SwadeDocumentTweaks<
   Document extends SwadeActor | SwadeItem,
   RenderContext extends AnyObject,
-> extends foundry.applications.api.HandlebarsApplicationMixin(
-  foundry.applications.api.DocumentSheetV2,
-)<Document, RenderContext> {
+> extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.api.DocumentSheetV2)<
+  Document,
+  RenderContext
+> {
   settingFields: AdditionalStats;
 
   constructor(options) {
     super(options);
     const settingFields = this.#getPrototypeSettingFields();
     for (const key in settingFields) {
-      if (
-        this.document.system.additionalStats[key] &&
-        this.document.system.additionalStats[key]?.dtype
-      ) {
+      if (this.document.system.additionalStats[key] && this.document.system.additionalStats[key]?.dtype) {
         settingFields[key].useField = true;
       }
     }
@@ -47,9 +45,7 @@ class SwadeDocumentTweaks<
     return foundry.utils.mergeObject(await super._prepareContext(options), {
       settingFields: this.settingFields,
       hasSettingFields: !foundry.utils.isEmpty(this.settingFields),
-      buttons: [
-        { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
-      ],
+      buttons: [{ type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' }],
     });
   }
 
@@ -60,7 +56,7 @@ class SwadeDocumentTweaks<
     foundry.utils.setProperty(
       expandedFormData,
       'system.additionalStats',
-      this.#handleAdditionalStats(expandedFormData),
+      this.#handleAdditionalStats(expandedFormData)
     );
 
     return expandedFormData;
@@ -80,16 +76,13 @@ class SwadeDocumentTweaks<
   #handleAdditionalStats(expandedFormData) {
     const formFields = expandedFormData.system.additionalStats ?? {};
     const prototypeFields = this.#getPrototypeSettingFields();
-    const newFields = structuredClone<AdditionalStats>(
-      this.document.system.additionalStats,
-    );
+    const newFields = structuredClone<AdditionalStats>(this.document.system.additionalStats);
     //handle setting specific fields
     for (const [key, field] of Object.entries<AdditionalStat>(formFields)) {
       const fieldExistsOnDoc = this.document.system.additionalStats[key];
       if (field.useField && fieldExistsOnDoc) {
         // Fixes blank label when toggling Additional Stat while there's an active effect
-        if (newFields[key].label === undefined)
-          newFields[key].label = prototypeFields[key].label;
+        if (newFields[key].label === undefined) newFields[key].label = prototypeFields[key].label;
         //update existing field
         newFields[key].hasMaxValue = prototypeFields[key].hasMaxValue;
         newFields[key].dtype = prototypeFields[key].dtype;
@@ -129,12 +122,7 @@ class SwadeDocumentTweaks<
   }
 
   protected override _prepareSubmitData(event, form, formData, updateData) {
-    const submitData = super._prepareSubmitData(
-      event,
-      form,
-      formData,
-      updateData,
-    );
+    const submitData = super._prepareSubmitData(event, form, formData, updateData);
     // Prevent submitting overridden values
     const overrides = foundry.utils.flattenObject(this.document.overrides);
     for (const k of Object.keys(overrides)) {
@@ -153,8 +141,7 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
       scrollable: [''],
     },
     additionalStats: {
-      template:
-        'systems/swade/templates/actors/apps/tweaks/tab-additional-stats.hbs',
+      template: 'systems/swade/templates/actors/apps/tweaks/tab-additional-stats.hbs',
       scrollable: [''],
     },
     auras: {
@@ -195,33 +182,26 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
   }
 
   override async _preparePartContext(partId, context, options) {
-    const partContext = await super._preparePartContext(
-      partId,
-      context,
-      options,
-    );
+    const partContext = await super._preparePartContext(partId, context, options);
     if (partId === 'tabs') {
-      if (!partContext.hasSettingFields)
-        delete partContext.tabs.additionalStats;
+      if (!partContext.hasSettingFields) delete partContext.tabs.additionalStats;
       if (partContext.isGroup) {
         delete partContext.tabs.traits;
-        if (partContext.tabs.additionalStats)
-          partContext.tabs.additionalStats.active = true;
+        if (partContext.tabs.additionalStats) partContext.tabs.additionalStats.active = true;
         else partContext.tabs.auras.active = true;
       }
     } else if (partId === 'auras') {
-      partContext.auraFields =
-        this.document.system.schema.fields.auras.element.fields;
+      partContext.auraFields = this.document.system.schema.fields.auras.element.fields;
     }
     if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
     return partContext;
   }
 }
 
-class SwadeItemTweaks<
-  Document extends SwadeItem,
-  RenderContext extends AnyObject,
-> extends SwadeDocumentTweaks<Document, RenderContext> {
+class SwadeItemTweaks<Document extends SwadeItem, RenderContext extends AnyObject> extends SwadeDocumentTweaks<
+  Document,
+  RenderContext
+> {
   static override DEFAULT_OPTIONS = {
     actions: {
       regenerateSWID: SwadeItemTweaks.#regenerateSWID,

@@ -46,17 +46,13 @@ export default class SwadeChatMessage extends ChatMessage {
     if (actor.isWildcard || isGroupRoll) return rollIsCritFail;
     return (
       rollIsCritFail &&
-      this.rolls
-        .filter((r: SwadeRoll) => r.isCritFailConfirmationRoll)
-        .every((r: SwadeRoll) => r.total === 1)
+      this.rolls.filter((r: SwadeRoll) => r.isCritFailConfirmationRoll).every((r: SwadeRoll) => r.total === 1)
     );
   }
 
   /** returns whether the message depicts a card draw result */
   get isCardDraw(): boolean {
-    return (
-      !!this.getFlag('swade', 'pickedCard') && !!this.getFlag('swade', 'cards')
-    );
+    return !!this.getFlag('swade', 'pickedCard') && !!this.getFlag('swade', 'cards');
   }
 
   get isRollTableResult(): boolean {
@@ -108,29 +104,22 @@ export default class SwadeChatMessage extends ChatMessage {
     const pickedCard = this.getFlag('swade', 'pickedCard');
     const isRedraw = this.getFlag('swade', 'isRedraw');
     const [[picked], discarded] = cards.partition((c) => c.id !== pickedCard);
-    return foundry.applications.handlebars.renderTemplate(
-      'systems/swade/templates/chat/card-draw-result.hbs',
-      {
-        isRedraw,
-        picked,
-        discarded,
-        largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
-        index: this.index,
-      }
-    );
+    return foundry.applications.handlebars.renderTemplate('systems/swade/templates/chat/card-draw-result.hbs', {
+      isRedraw,
+      picked,
+      discarded,
+      largeMsg: msgType === constants.INIT_MESSAGE_TYPE.LARGE,
+      index: this.index,
+    });
   }
 
   async #getSwadeRollMessageData(options): Promise<ChatMessage.MessageData> {
     const { canDelete = this.isAuthor, canClose = false } = options;
     // Determine some metadata
     const data = this.toObject(false);
-    data.content =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.content,
-        {
-          rollData: this.getRollData(),
-        }
-      );
+    data.content = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.content, {
+      rollData: this.getRollData(),
+    });
 
     // Construct message data
     const isWhisper = !!this.whisper.length;
@@ -148,26 +137,19 @@ export default class SwadeChatMessage extends ChatMessage {
         isWhisper ? 'whisper' : null,
       ].filterJoin(' '),
       isWhisper,
-      whisperTo: this.whisper
-        .map((u) => game.users.get(u)?.name)
-        .filterJoin(', '),
+      whisperTo: this.whisper.map((u) => game.users.get(u)?.name).filterJoin(', '),
     };
     return messageData;
   }
 
-  async #renderSwadeRollMessage(
-    messageData: ChatMessage.MessageData
-  ): Promise<HTMLElement> {
+  async #renderSwadeRollMessage(messageData: ChatMessage.MessageData): Promise<HTMLElement> {
     await this.#renderSwadeRollContent(messageData);
 
     // Render with empty content to prevent bare <li> in descriptions from
     // breaking the root <li> during HTML parsing, then inject via innerHTML
     const content = messageData.message.content;
     messageData.message.content = '';
-    const templateStr = await foundry.applications.handlebars.renderTemplate(
-      CONFIG.ChatMessage.template,
-      messageData
-    );
+    const templateStr = await foundry.applications.handlebars.renderTemplate(CONFIG.ChatMessage.template, messageData);
     messageData.message.content = content;
     const html = foundry.utils.parseHTML(templateStr) as HTMLElement;
     const contentEl = html.querySelector('.message-content');
@@ -195,15 +177,9 @@ export default class SwadeChatMessage extends ChatMessage {
   }
 
   #attachRollMessageListeners(html: HTMLElement) {
-    html
-      .querySelectorAll('.dice-roll')
-      .forEach((el) =>
-        el.addEventListener('click', this._onClickDiceRoll.bind(this))
-      );
+    html.querySelectorAll('.dice-roll').forEach((el) => el.addEventListener('click', this._onClickDiceRoll.bind(this)));
 
-    html
-      .querySelector('.swade-roll-message button.free-reroll')
-      ?.addEventListener('click', SwadeRoll.rerollFree);
+    html.querySelector('.swade-roll-message button.free-reroll')?.addEventListener('click', SwadeRoll.rerollFree);
     html
       .querySelectorAll('.swade-roll-message button.benny-reroll')
       .forEach((btn) => btn.addEventListener('click', SwadeRoll.rerollBenny));
@@ -214,43 +190,33 @@ export default class SwadeChatMessage extends ChatMessage {
     html
       .querySelector('.swade-roll-message button.calculate-wounds')
       ?.addEventListener('click', () => damageApplicator(this));
-    html
-      .querySelectorAll<HTMLDetailsElement>('details.modifiers')
-      .forEach((detail) => new Accordion(detail));
-    html
-      .querySelectorAll<HTMLLIElement>('.swade-roll-message .target')
-      .forEach((target) => {
-        target.addEventListener('mouseenter', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? ''
-          ) as TokenDocument | null;
-          const tokenObj = tokenDoc?.object;
-          if (tokenObj?.isVisible && !tokenObj?.controlled) {
-            tokenObj?._onHoverIn(ev);
-          }
-        });
-        target.addEventListener('mouseleave', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? ''
-          ) as TokenDocument | null;
-          const tokenObj = tokenDoc?.object;
-          if (tokenObj?.isVisible && !tokenObj?.controlled) {
-            tokenObj?._onHoverOut(ev);
-          }
-        });
-        target.addEventListener('click', (ev) => {
-          if (!canvas.ready) return;
-          const target = ev.currentTarget as HTMLLIElement;
-          const tokenDoc = fromUuidSync(
-            target.dataset.tokenUuid ?? ''
-          ) as TokenDocument | null;
-          if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
-        });
+    html.querySelectorAll<HTMLDetailsElement>('details.modifiers').forEach((detail) => new Accordion(detail));
+    html.querySelectorAll<HTMLLIElement>('.swade-roll-message .target').forEach((target) => {
+      target.addEventListener('mouseenter', (ev) => {
+        if (!canvas.ready) return;
+        const target = ev.currentTarget as HTMLLIElement;
+        const tokenDoc = fromUuidSync(target.dataset.tokenUuid ?? '') as TokenDocument | null;
+        const tokenObj = tokenDoc?.object;
+        if (tokenObj?.isVisible && !tokenObj?.controlled) {
+          tokenObj?._onHoverIn(ev);
+        }
       });
+      target.addEventListener('mouseleave', (ev) => {
+        if (!canvas.ready) return;
+        const target = ev.currentTarget as HTMLLIElement;
+        const tokenDoc = fromUuidSync(target.dataset.tokenUuid ?? '') as TokenDocument | null;
+        const tokenObj = tokenDoc?.object;
+        if (tokenObj?.isVisible && !tokenObj?.controlled) {
+          tokenObj?._onHoverOut(ev);
+        }
+      });
+      target.addEventListener('click', (ev) => {
+        if (!canvas.ready) return;
+        const target = ev.currentTarget as HTMLLIElement;
+        const tokenDoc = fromUuidSync(target.dataset.tokenUuid ?? '') as TokenDocument | null;
+        if (tokenDoc?.object?.isVisible) tokenDoc?.object?.control();
+      });
+    });
   }
 
   async #renderRolls(isPrivate: boolean): Promise<string> {
@@ -282,26 +248,23 @@ export default class SwadeChatMessage extends ChatMessage {
     const roll = this.significantRoll;
     const isTraitRoll = roll instanceof TraitRoll;
     const targets = this.getFlag('swade', 'targets') ?? [];
-    return foundry.applications.handlebars.renderTemplate(
-      'systems/swade/templates/chat/dice/roll-message.hbs',
-      {
-        lockReroll: this.isCritfail && !game.settings.get('swade', 'dumbLuck'),
-        modifiers: this.#formatModifiers(),
-        rerolled: roll?.getRerollLabel(),
-        groupRoll: isTraitRoll && roll.groupRoll,
-        isCritfail: this.isCritfail && !isPrivate,
-        hasConfirmedCritfail: this.hasConfirmedCritfail(),
-        isWildCard: this.speakerActor?.isWildcard,
-        isDamageRoll: roll instanceof DamageRoll && !isPrivate,
-        isPrivate: isPrivate,
-        notRerollable: !roll?.isRerollable,
-        isGM: game.user?.isGM,
-        isAuthor: this.isAuthor || game.user?.isGM,
-        rolls: await this.#renderRolls(isPrivate),
-        targets: targets,
-        content: content,
-      }
-    );
+    return foundry.applications.handlebars.renderTemplate('systems/swade/templates/chat/dice/roll-message.hbs', {
+      lockReroll: this.isCritfail && !game.settings.get('swade', 'dumbLuck'),
+      modifiers: this.#formatModifiers(),
+      rerolled: roll?.getRerollLabel(),
+      groupRoll: isTraitRoll && roll.groupRoll,
+      isCritfail: this.isCritfail && !isPrivate,
+      hasConfirmedCritfail: this.hasConfirmedCritfail(),
+      isWildCard: this.speakerActor?.isWildcard,
+      isDamageRoll: roll instanceof DamageRoll && !isPrivate,
+      isPrivate: isPrivate,
+      notRerollable: !roll?.isRerollable,
+      isGM: game.user?.isGM,
+      isAuthor: this.isAuthor || game.user?.isGM,
+      rolls: await this.#renderRolls(isPrivate),
+      targets: targets,
+      content: content,
+    });
   }
 
   hasConfirmedCritfail(): boolean {
@@ -311,9 +274,7 @@ export default class SwadeChatMessage extends ChatMessage {
     if (this.speakerActor?.isWildcard) return !!roll.isCritfail;
     const pool = roll.terms[0] as foundry.dice.terms.PoolTerm;
     const hasMultipleTraitDice = pool.dice.length > 1;
-    const hasConfirmedCritfail = this['rolls'].find(
-      (r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1
-    );
+    const hasConfirmedCritfail = this['rolls'].find((r: SwadeRoll) => r.isCritFailConfirmationRoll && r.total === 1);
     if (hasMultipleTraitDice) {
       return count(pool.dice, (d) => d.total === 1) > pool.dice.length / 2;
     }

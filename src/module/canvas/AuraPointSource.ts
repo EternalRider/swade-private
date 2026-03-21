@@ -57,10 +57,7 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
   }
 
   protected _checkPermission(): boolean {
-    return (
-      (this.object!.actor?.permission ?? 0) >=
-      foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER
-    );
+    return (this.object!.actor?.permission ?? 0) >= foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER;
   }
 
   protected _checkDisposition(): boolean {
@@ -70,8 +67,6 @@ export class AuraPointSource extends foundry.canvas.sources.PointEffectSourceMix
       : Array.isArray(this.auraData.visibleTo)
         ? this.auraData.visibleTo
         : [this.auraData.visibleTo];
-    return !!canvas?.tokens?.controlled.some((t) =>
-      visibleTo.includes(t.document.disposition)
-    );
+    return !!canvas?.tokens?.controlled.some((t) => visibleTo.includes(t.document.disposition));
   }
 }

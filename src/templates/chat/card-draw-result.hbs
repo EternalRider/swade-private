@@ -5,14 +5,12 @@
 {{/if}}
 {{#if largeMsg}}
   <section class='initiative-draw'>
-    <div
-      class='action-card picked-card rotate-deg-{{ifThen
-          (isOdd index)
-          "negative-"
-          ""
-        }}{{rotate index}}'
-    >
-      <img class='card-face' src='{{picked.face}}' data-tooltip='<img class="card-face" src="{{picked.face}}" /><h4 class="card-name">{{picked.name}}</h4>' />
+    <div class='action-card picked-card rotate-deg-{{ifThen (isOdd index) "negative-" ""}}{{rotate index}}'>
+      <img
+        class='card-face'
+        src='{{picked.face}}'
+        data-tooltip='<img class="card-face" src="{{picked.face}}" /><h4 class="card-name">{{picked.name}}</h4>'
+      />
     </div>
     <h4 class='card-name'>{{picked.name}}</h4>
   </section>
@@ -21,13 +19,7 @@
       <summary>{{localize 'SWADE.Combat.DiscardedCards'}}</summary>
       <div class='initiative-draw'>
         {{#each discarded}}
-          <div
-            class='action-card rotate-deg-{{ifThen
-                (isOdd @index)
-                "negative-"
-                ""
-              }}{{rotate @index}}'
-          >
+          <div class='action-card rotate-deg-{{ifThen (isOdd @index) "negative-" ""}}{{rotate @index}}'>
             <img class='card-face' src='{{face}}' />
           </div>
           <h4 class='card-name'>{{name}}</h4>

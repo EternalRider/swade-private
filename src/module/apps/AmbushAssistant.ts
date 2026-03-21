@@ -26,7 +26,7 @@ export class AmbushAssistant extends Application {
     super(options);
     this.#combat = combat;
     this.#categories.unassigned = combat.combatants.contents.filter(
-      (c) => !c.group || c.isGroupLeader,
+      (c) => !c.group || c.isGroupLeader
     ) as SwadeCombatant[];
   }
 
@@ -38,9 +38,7 @@ export class AmbushAssistant extends Application {
       e.addEventListener('dragleave', this._onDragLeave.bind(this));
     });
 
-    html
-      .querySelector('button[type="submit"]')
-      ?.addEventListener('click', this.submit.bind(this));
+    html.querySelector('button[type="submit"]')?.addEventListener('click', this.submit.bind(this));
   }
 
   override async getData(options?: Partial<Application.Options>) {
@@ -52,9 +50,7 @@ export class AmbushAssistant extends Application {
 
   async submit() {
     for (const noTurn of this.#categories.noTurn) {
-      await Promise.all(
-        (noTurn.group?.members ?? [noTurn]).map((m) => m.setTurnLost(true)),
-      );
+      await Promise.all((noTurn.group?.members ?? [noTurn]).map((m) => m.setTurnLost(true)));
     }
     await this.#combat.startCombat();
     let initiative = 1000;
@@ -77,11 +73,8 @@ export class AmbushAssistant extends Application {
 
     target.classList.remove('drag-highlight');
 
-    const { id, category } = JSON.parse(
-      event.dataTransfer!.getData('text/plain'),
-    ) as AmbushDropData;
-    const targetCategory = target.closest<HTMLElement>('.column')?.dataset
-      .category as string;
+    const { id, category } = JSON.parse(event.dataTransfer!.getData('text/plain')) as AmbushDropData;
+    const targetCategory = target.closest<HTMLElement>('.column')?.dataset.category as string;
 
     if (category === targetCategory) return;
 

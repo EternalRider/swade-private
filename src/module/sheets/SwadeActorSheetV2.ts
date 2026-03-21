@@ -9,13 +9,10 @@ import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
 export class SwadeActorSheetV2<
-  RenderContext extends SwadeActorSheetV2.RenderContext =
-    SwadeActorSheetV2.RenderContext,
+  RenderContext extends SwadeActorSheetV2.RenderContext = SwadeActorSheetV2.RenderContext,
 > extends SwadeBaseSheetMixin<SwadeActor, RenderContext>(ActorSheetV2) {
   // declare element: HTMLFormElement;
-  static override DEFAULT_OPTIONS: DeepPartial<
-    SwadeDocumentSheetConfiguration<SwadeActor>
-  > = {
+  static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<SwadeActor>> = {
     classes: ['actor'],
     dragDrop: [{ dragSelector: '[data-drag]', dropSelector: null }],
     actions: {
@@ -44,15 +41,9 @@ export class SwadeActorSheetV2<
     return frame;
   }
 
-  static async createEmbeddedDocument(
-    this: SwadeActorSheetV2,
-    event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async createEmbeddedDocument(this: SwadeActorSheetV2, event: PointerEvent, target: HTMLElement) {
     event.preventDefault(); // helps buttons in the headers of <details> elements
-    const documentClass = getDocumentClass(
-      target.dataset.documentClass as 'Item' | 'ActiveEffect'
-    );
+    const documentClass = getDocumentClass(target.dataset.documentClass as 'Item' | 'ActiveEffect');
     const docData = {
       name: documentClass.defaultName({
         type: target.dataset.type,
@@ -62,8 +53,7 @@ export class SwadeActorSheetV2<
     // Loop through the dataset and add it to our docData
     for (const [dataKey, value] of Object.entries(target.dataset)) {
       // These data attributes are reserved for the action handling
-      if (['action', 'documentClass', 'renderSheet'].includes(dataKey))
-        continue;
+      if (['action', 'documentClass', 'renderSheet'].includes(dataKey)) continue;
       // Nested properties use dot notation like `data-system.prop`
       foundry.utils.setProperty(docData, dataKey, value);
     }
@@ -74,51 +64,27 @@ export class SwadeActorSheetV2<
     });
   }
 
-  static showItem(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static showItem(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     (this._getEmbeddedDocument(target) as SwadeItem)?.show();
   }
 
-  static openItem(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static openItem(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
-  static async deleteItem(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async deleteItem(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     this._getEmbeddedDocument(target)?.deleteDialog();
   }
 
-  static openEffect(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static openEffect(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     this._getEmbeddedDocument(target)?.sheet?.render({ force: true });
   }
 
-  static async deleteEffect(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async deleteEffect(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     this._getEmbeddedDocument(target)?.deleteDialog();
   }
 
-  static async toggleProperty(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async toggleProperty(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     const document = this._getEmbeddedDocument(target);
     if (!document) return;
     const toggle = target.dataset.toggle as string;
@@ -126,19 +92,11 @@ export class SwadeActorSheetV2<
     await document.update({ [toggle]: !oldVal });
   }
 
-  static async openTweaks(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async openTweaks(this: SwadeActorSheetV2, _event: PointerEvent, _target: HTMLElement) {
     new SwadeActorTweaks({ document: this.document }).render({ force: true });
   }
 
-  static async rollAdditionalStat(
-    this: SwadeActorSheetV2,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async rollAdditionalStat(this: SwadeActorSheetV2, _event: PointerEvent, target: HTMLElement) {
     await this.actor.system.rollAdditionalStat(target.dataset.stat);
   }
 
@@ -152,19 +110,14 @@ export class SwadeActorSheetV2<
       limited: this.document.limited,
       // Add the actor document.
       actor: this.actor,
-      items: Array.from(this.actor.items.values()).sort(
-        (a, b) => a.sort - b.sort
-      ),
+      items: Array.from(this.actor.items.values()).sort((a, b) => a.sort - b.sort),
       // Add the actor's data to context.data for easier access, as well as flags.
       system: this.actor.system,
       flags: this.actor.flags,
       // Adding a pointer to CONFIG.SWADE
       config: CONFIG.SWADE,
     };
-    return foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      context
-    );
+    return foundry.utils.mergeObject(await super._prepareContext(options), context);
   }
 
   /**
@@ -172,10 +125,7 @@ export class SwadeActorSheetV2<
    * @param event The originating DragEvent
    */
   protected override async _onDrop(event: DragEvent) {
-    const data =
-      foundry.applications.ux.TextEditor.implementation.getDragEventData(
-        event
-      ) as object;
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as object;
     const actor = this.actor;
     const allowed = Hooks.call('dropActorSheetData', actor, this, data);
     if (allowed === false) return;
@@ -203,15 +153,11 @@ export class SwadeActorSheetV2<
    * @param data  The data transfer extracted from the event
    * @returns The created ActiveEffect object or false if it couldn't be created.
    */
-  protected async _onDropActiveEffect(
-    event: DragEvent,
-    data: object
-  ): Promise<ActiveEffect | boolean> {
+  protected async _onDropActiveEffect(event: DragEvent, data: object): Promise<ActiveEffect | boolean> {
     const aeCls = getDocumentClass('ActiveEffect');
     const effect = await aeCls.fromDropData(data);
     if (!this.actor.isOwner || !effect) return false;
-    if (effect.target === this.actor)
-      return this._onSortActiveEffect(event, effect);
+    if (effect.target === this.actor) return this._onSortActiveEffect(event, effect);
     return aeCls.create(effect, { parent: this.actor });
   }
 
@@ -219,9 +165,7 @@ export class SwadeActorSheetV2<
    * Handle a drop event for an existing embedded Active Effect to sort that Active Effect relative to its siblings
    */
   protected async _onSortActiveEffect(event: DragEvent, effect: ActiveEffect) {
-    const dropTarget = (event.target as HTMLElement)?.closest<HTMLElement>(
-      '[data-effect-id]'
-    );
+    const dropTarget = (event.target as HTMLElement)?.closest<HTMLElement>('[data-effect-id]');
     if (!dropTarget) return;
     const target = this._getEmbeddedDocument(dropTarget);
     if (!target) return;
@@ -234,11 +178,7 @@ export class SwadeActorSheetV2<
     for (const el of dropTarget.parentElement!.children) {
       const siblingId = (el as HTMLElement).dataset.effectId;
       const parentId = (el as HTMLElement).dataset.parentId;
-      if (
-        siblingId &&
-        parentId &&
-        (siblingId !== effect.id || parentId !== effect.parent?.id)
-      ) {
+      if (siblingId && parentId && (siblingId !== effect.id || parentId !== effect.parent?.id)) {
         const sibling = this._getEmbeddedDocument(el as HTMLElement);
         if (sibling) siblings.push(sibling as ActiveEffect);
       }
@@ -267,9 +207,7 @@ export class SwadeActorSheetV2<
 
     // Effects-on-items updates
     for (const [itemId, updates] of Object.entries(grandchildUpdateData)) {
-      await this.actor.items
-        .get(itemId)
-        .updateEmbeddedDocuments('ActiveEffect', updates);
+      await this.actor.items.get(itemId).updateEmbeddedDocuments('ActiveEffect', updates);
     }
 
     // Update on the main actor
@@ -282,10 +220,7 @@ export class SwadeActorSheetV2<
    * @param data  The data transfer extracted from the event
    * @returns A data object which describes the result of the drop, or false if the drop was not permitted.
    */
-  protected async _onDropActor(
-    _event: DragEvent,
-    _data: object
-  ): Promise<object | boolean> {
+  protected async _onDropActor(_event: DragEvent, _data: object): Promise<object | boolean> {
     return false;
   }
 
@@ -295,16 +230,12 @@ export class SwadeActorSheetV2<
    * @param data  The data transfer extracted from the event
    * @returns The created or updated Item instances, or false if the drop was not permitted.
    */
-  protected async _onDropItem(
-    event: DragEvent,
-    data: object
-  ): Promise<Item[] | boolean> {
+  protected async _onDropItem(event: DragEvent, data: object): Promise<Item[] | boolean> {
     if (!this.actor.isOwner) return false;
     const item = await Item.implementation.fromDropData(data);
 
     // Handle item sorting within the same Actor
-    if (this.actor.uuid === item.parent?.uuid)
-      return this._onSortItem(event, item);
+    if (this.actor.uuid === item.parent?.uuid) return this._onSortItem(event, item);
 
     // Create the owned item
     return this._onDropItemCreate(item, event);
@@ -316,10 +247,7 @@ export class SwadeActorSheetV2<
    * @param event The concluding DragEvent which contains drop data
    * @param data  The data transfer extracted from the event
    */
-  protected async _onDropFolder(
-    event: DragEvent,
-    data: object
-  ): Promise<Item[]> {
+  protected async _onDropFolder(event: DragEvent, data: object): Promise<Item[]> {
     if (!this.actor.isOwner) return [];
     const folder = await getDocumentClass('Folder').fromDropData(data);
     if (folder.type !== 'Item') return [];
@@ -338,10 +266,7 @@ export class SwadeActorSheetV2<
    * @param itemData  The item data requested for creation
    * @param event The concluding DragEvent which provided the drop data
    */
-  protected async _onDropItemCreate(
-    itemData: object[] | object,
-    _event: DragEvent
-  ): Promise<Item[]> {
+  protected async _onDropItemCreate(itemData: object[] | object, _event: DragEvent): Promise<Item[]> {
     itemData = itemData instanceof Array ? itemData : [itemData];
     return this.actor.createEmbeddedDocuments('Item', itemData);
   }
@@ -363,8 +288,7 @@ export class SwadeActorSheetV2<
     const siblings: Item[] = [];
     for (const el of dropTarget.parentElement.children) {
       const siblingId = el.dataset.itemId;
-      if (siblingId && siblingId !== item.id)
-        siblings.push(items.get(el.dataset.itemId));
+      if (siblingId && siblingId !== item.id) siblings.push(items.get(el.dataset.itemId));
     }
 
     // Perform the sort

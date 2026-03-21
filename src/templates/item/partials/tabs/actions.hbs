@@ -1,8 +1,4 @@
-<section
-  class='{{tabs.actions.tabCssClass}}'
-  data-group='{{tabs.actions.group}}'
-  data-tab='{{tabs.actions.id}}'
->
+<section class='{{tabs.actions.tabCssClass}}' data-group='{{tabs.actions.group}}' data-tab='{{tabs.actions.id}}'>
   <header class='header'>
     <button type='button' data-action='addAction' class='add-action add-button invisible'>
       <i class='fa fa-plus'></i>
@@ -12,11 +8,7 @@
   <ol class='actions-list unmarked-list collapsibles'>
     {{#each item.system.actions.additional as |action id|}}
       <li>
-        <details
-          class='action'
-          data-action-id='{{id}}'
-          {{collapsible @root.collapsibleStates.actions id}}
-        >
+        <details class='action' data-action-id='{{id}}' {{collapsible @root.collapsibleStates.actions id}}>
           <summary>{{action.name}}</summary>
           <span class='content'>
             <div class='left'>
@@ -33,15 +25,8 @@
             </div>
             <div class='right'>
               <label class='float-label'>
-                <select
-                  name='system.actions.additional.{{id}}.type'
-                  {{disabled action.resolved}}
-                >
-                  {{selectOptions
-                    @root.actionTypes
-                    selected=action.type
-                    localize=true
-                  }}
+                <select name='system.actions.additional.{{id}}.type' {{disabled action.resolved}}>
+                  {{selectOptions @root.actionTypes selected=action.type localize=true}}
                 </select>
                 <span>{{localize 'Type'}}</span>
               </label>
@@ -132,10 +117,7 @@
                 </label>
               </div>
               <div class='right'>
-                <label
-                  class='float-label right'
-                  title='{{localize "SWADE.ModHint"}}'
-                >
+                <label class='float-label right' title='{{localize "SWADE.ModHint"}}'>
                   <input
                     type='text'
                     name='system.actions.additional.{{id}}.modifier'
@@ -210,15 +192,8 @@
               </div>
               <div class='full-width'>
                 <label class='float-label'>
-                  <select
-                    name='system.actions.additional.{{id}}.macroActor'
-                    {{disabled action.resolved}}
-                  >
-                    {{selectOptions
-                      @root.macroActorTypes
-                      selected=action.macroActor
-                      localize=true
-                    }}
+                  <select name='system.actions.additional.{{id}}.macroActor' {{disabled action.resolved}}>
+                    {{selectOptions @root.macroActorTypes selected=action.macroActor localize=true}}
                   </select>
                   <span>{{localize 'DOCUMENT.Actor'}}</span>
                 </label>

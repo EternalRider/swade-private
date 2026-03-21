@@ -1,12 +1,8 @@
 import type { AnyObject, DeepPartial } from 'fvtt-types/utils';
-import type {
-  SwadeApplicationTab,
-  SwadeDocumentSheetConfiguration,
-} from '../../globals';
+import type { SwadeApplicationTab, SwadeDocumentSheetConfiguration } from '../../globals';
 import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 
-type DocumentSheetRenderOptions =
-  foundry.applications.api.DocumentSheetV2.RenderOptions;
+type DocumentSheetRenderOptions = foundry.applications.api.DocumentSheetV2.RenderOptions;
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -20,9 +16,7 @@ export function SwadeBaseSheetMixin<
     SwadeDocumentSheetConfiguration<Document>,
     DocumentSheetRenderOptions
   > {
-    static override DEFAULT_OPTIONS: DeepPartial<
-      SwadeDocumentSheetConfiguration<Document>
-    > = {
+    static override DEFAULT_OPTIONS: DeepPartial<SwadeDocumentSheetConfiguration<Document>> = {
       classes: ['swade', 'swade-application'],
       form: {
         submitOnChange: true,
@@ -36,11 +30,7 @@ export function SwadeBaseSheetMixin<
 
     static override TABS: Record<string, Partial<SwadeApplicationTab>> = {};
 
-    static async _onEditImage(
-      this: SwadeBaseSheet,
-      event: PointerEvent,
-      _target: HTMLImageElement
-    ) {
+    static async _onEditImage(this: SwadeBaseSheet, event: PointerEvent, _target: HTMLImageElement) {
       if (!this.document.img) return;
       if (event.button === 2) {
         //ContextMenu event
@@ -52,11 +42,9 @@ export function SwadeBaseSheetMixin<
         }).render(true);
       } else {
         const { img } =
-          (
-            this.document.constructor as
-              | Actor.ImplementationClass
-              | Item.ImplementationClass
-          ).getDefaultArtwork?.(this.document.toObject()) ?? {};
+          (this.document.constructor as Actor.ImplementationClass | Item.ImplementationClass).getDefaultArtwork?.(
+            this.document.toObject()
+          ) ?? {};
         const fp = new FilePicker({
           current: this.document.img,
           type: 'image',
@@ -69,11 +57,7 @@ export function SwadeBaseSheetMixin<
       }
     }
 
-    static async _openAegis(
-      this: SwadeBaseSheet,
-      _event: PointerEvent,
-      _target: HTMLImageElement
-    ) {
+    static async _openAegis(this: SwadeBaseSheet, _event: PointerEvent, _target: HTMLImageElement) {
       new ActiveEffectWizard({ document: this.document }).render({
         force: true,
       });
@@ -95,9 +79,7 @@ export function SwadeBaseSheetMixin<
       this.#dragDrop = this.#createDragDropHandlers();
     }
 
-    protected override async _prepareContext(
-      options: DocumentSheetRenderOptions
-    ) {
+    protected override async _prepareContext(options: DocumentSheetRenderOptions) {
       const context = await super._prepareContext(options);
       return foundry.utils.mergeObject(context, {
         tabs: this._getTabs(),
@@ -139,10 +121,7 @@ export function SwadeBaseSheetMixin<
       }
     }
 
-    protected override async _onFirstRender(
-      context: unknown,
-      options: unknown
-    ): Promise<void> {
+    protected override async _onFirstRender(context: unknown, options: unknown): Promise<void> {
       await super._onFirstRender(context, options);
 
       const collapsibles = this.element.querySelectorAll('details');
@@ -220,9 +199,7 @@ export function SwadeBaseSheetMixin<
      * @param target  The element subject to search
      * @returns The embedded Item or ActiveEffect
      */
-    protected _getEmbeddedDocument(
-      target: HTMLElement
-    ): Item | ActiveEffect | void {
+    protected _getEmbeddedDocument(target: HTMLElement): Item | ActiveEffect | void {
       const docRow = target.closest<HTMLLIElement>('li[data-document-class]');
       if (!docRow) return;
       // TODO: Once `this.document` correctly resolves this will throw more type errors
@@ -230,10 +207,7 @@ export function SwadeBaseSheetMixin<
         return this.document.items.get(docRow.dataset.itemId);
       } else if (docRow.dataset.documentClass === 'ActiveEffect') {
         const parentId = docRow.dataset.parentId;
-        const parent =
-          parentId && parentId !== this.document.id
-            ? this.document.items.get(parentId)
-            : this.document;
+        const parent = parentId && parentId !== this.document.id ? this.document.items.get(parentId) : this.document;
         return parent.effects.get(docRow?.dataset.effectId);
       } else return console.warn('Could not find document class');
     }
@@ -242,9 +216,7 @@ export function SwadeBaseSheetMixin<
      * Utility method for _prepareContext to create the tab navigation.
      */
     protected _getTabs() {
-      return Object.values(
-        (this.constructor as typeof SwadeBaseSheet).TABS
-      ).reduce(
+      return Object.values((this.constructor as typeof SwadeBaseSheet).TABS).reduce(
         (acc: Record<string, SwadeApplicationTab>, v: SwadeApplicationTab) => {
           const isActive = this.tabGroups[v.group] === v.id;
           const cssClasses = new Set(v.cssClass?.split(' ') ?? []);
@@ -291,13 +263,9 @@ export function SwadeBaseSheetMixin<
 
     /*Disables inputs subject to active effects*/
     protected disableOverrides() {
-      const flatOverrides = foundry.utils.flattenObject(
-        this.document.overrides ?? {}
-      );
+      const flatOverrides = foundry.utils.flattenObject(this.document.overrides ?? {});
       for (const override of Object.keys(flatOverrides)) {
-        const input: HTMLInputElement | null = this.element.querySelector(
-          `[name="${override}"]`
-        );
+        const input: HTMLInputElement | null = this.element.querySelector(`[name="${override}"]`);
         if (input) input.disabled = true;
       }
     }
@@ -305,8 +273,7 @@ export function SwadeBaseSheetMixin<
 }
 
 export declare namespace SwadeBaseSheetMixin {
-  interface PartState
-    extends foundry.applications.api.HandlebarsApplicationMixin.PartState {
+  interface PartState extends foundry.applications.api.HandlebarsApplicationMixin.PartState {
     collapsibles: Record<string, boolean>;
   }
 }

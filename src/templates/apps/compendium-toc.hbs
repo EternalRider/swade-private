@@ -15,19 +15,10 @@
     </label> --}}
   {{/if}}
   <div class='header search top-row'>
-    <a
-      class='toggle-search-mode'
-      data-action='toggleSearchMode'
-      data-tooltip='{{localize searchMode.tooltip}}'
-    >
+    <a class='toggle-search-mode' data-action='toggleSearchMode' data-tooltip='{{localize searchMode.tooltip}}'>
       <i class='fas {{searchMode.icon}}'></i>
     </a>
-    <input
-      type='search'
-      name='search'
-      placeholder='{{localize "Search"}}'
-      autocomplete='off'
-    />
+    <input type='search' name='search' placeholder='{{localize "Search"}}' autocomplete='off' />
     {{#unless isJournal}}
       {{#if canCreateEntry}}
         <a
@@ -73,19 +64,10 @@
                     loading='lazy'
                   />
                 {{else}}
-                  <img
-                    class='thumbnail'
-                    src='{{img}}'
-                    alt='{{name}}'
-                    loading='lazy'
-                  />
+                  <img class='thumbnail' src='{{img}}' alt='{{name}}' loading='lazy' />
                 {{/if}}
                 {{#if isWildcard}}
-                  <img
-                    class='wildcard'
-                    src='{{@root.wildCardMarker}}'
-                    alt='{{localize "SWADE.WildCard"}}'
-                  />
+                  <img class='wildcard' src='{{@root.wildCardMarker}}' alt='{{localize "SWADE.WildCard"}}' />
                 {{/if}}
                 <div class='entry'>
                   <a data-action='openDocument' class='name'>{{name}}</a>
@@ -101,12 +83,7 @@
             <ol class='categories unmarked-list'>
               {{#each entries}}
                 <li class='toc-entry flexrow' data-entry-id='{{id}}'>
-                  <img
-                    class='thumbnail'
-                    src='{{img}}'
-                    alt='{{name}}'
-                    loading='lazy'
-                  />
+                  <img class='thumbnail' src='{{img}}' alt='{{name}}' loading='lazy' />
                   <div class='entry'>
                     <a data-action='openDocument' class='name'>{{name}}</a>
                     {{#if requirements}}

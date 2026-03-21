@@ -1,8 +1,5 @@
 import type { AnyObject, ValueOf } from 'fvtt-types/utils';
-import {
-  DerivedModifier,
-  RollModifier,
-} from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
@@ -17,8 +14,7 @@ import * as migrations from './_migration';
 import { SwadeBaseActorData, type TokenSize } from './base/base';
 
 declare namespace VehicleData {
-  interface Schema
-    extends SwadeBaseActorData.Schema, ReturnType<typeof createVehicleSchema> {}
+  interface Schema extends SwadeBaseActorData.Schema, ReturnType<typeof createVehicleSchema> {}
   interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
@@ -317,10 +313,8 @@ function createVehicleSchema() {
               role: new fields.StringField({
                 initial: constants.CREW_ROLE.GUNNER,
                 choices: {
-                  [constants.CREW_ROLE.OPERATOR]:
-                    'SWADE.Vehicle.Crew.Roles.Operator',
-                  [constants.CREW_ROLE.GUNNER]:
-                    'SWADE.Vehicle.Crew.Roles.Gunner',
+                  [constants.CREW_ROLE.OPERATOR]: 'SWADE.Vehicle.Crew.Roles.Operator',
+                  [constants.CREW_ROLE.GUNNER]: 'SWADE.Vehicle.Crew.Roles.Gunner',
                   [constants.CREW_ROLE.OTHER]: 'SWADE.Vehicle.Crew.Roles.Other',
                 },
                 label: 'SWADE.Vehicle.Crew.Role',
@@ -439,10 +433,7 @@ class VehicleData<
 
   get operators(): (SwadeActor<VehicleData.CrewActorType> | null)[] {
     return this.crew.members
-      .filter(
-        (m: VehicleData.CrewMember) =>
-          !!m.actor && m.role === constants.CREW_ROLE.OPERATOR
-      )
+      .filter((m: VehicleData.CrewMember) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
       .map((m: VehicleData.CrewMember) => m.actor);
   }
 
@@ -450,9 +441,7 @@ class VehicleData<
     return this.operators[0] ?? null;
   }
 
-  async rollManeuverCheck(
-    actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator
-  ) {
+  async rollManeuverCheck(actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator) {
     //Return early if no driver was found
     if (!actor) return;
 
@@ -464,10 +453,7 @@ class VehicleData<
     const wounds = this.parent.calcWoundPenalties();
 
     //Handling is capped at a certain penalty
-    const totalHandling = Math.max(
-      handling + wounds,
-      SWADE.vehicles.maxHandlingPenalty
-    );
+    const totalHandling = Math.max(handling + wounds, SWADE.vehicles.maxHandlingPenalty);
 
     //Find the operating skill
     const skill = actor.itemTypes.skill.find((i) => i.name === skillName);
@@ -513,9 +499,7 @@ class VehicleData<
     }
     this.mods.value = 0;
     this.cargo.value = 0;
-    this.crew.members = this.crew.members
-      .sort((a, b) => a.sort - b.sort)
-      .map(this._mapCrewMember.bind(this));
+    this.crew.members = this.crew.members.sort((a, b) => a.sort - b.sort).map(this._mapCrewMember.bind(this));
     this.crew.required.value = this.crew.members.length;
   }
 
@@ -531,33 +515,23 @@ class VehicleData<
     this.scale = this.parent.calcScale(this.size!);
     this.mods.value += this.parent.items.reduce((total: number, i) => {
       // probably need to check for equip status too
-      if (
-        'mods' in i.system &&
-        i.system.isVehicular &&
-        i.system.equipStatus > constants.EQUIP_STATE.CARRIED
-      ) {
+      if ('mods' in i.system && i.system.isVehicular && i.system.equipStatus > constants.EQUIP_STATE.CARRIED) {
         return total + (i.system.mods ?? 0);
       }
       return total;
     }, 0);
     this.cargo.items = this.#prepareCargo();
-    this.cargo.value = this.cargo.items.reduce(
-      (acc, item: SwadeItem<VehicleData.CargoItemType>) => {
-        return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
-      },
-      0
-    );
+    this.cargo.value = this.cargo.items.reduce((acc, item: SwadeItem<VehicleData.CargoItemType>) => {
+      return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
+    }, 0);
 
-    if (this.details.autoCalcParry)
-      this.stats.parry.value = this.parent.calcParry();
+    if (this.details.autoCalcParry) this.stats.parry.value = this.parent.calcParry();
   }
 
   override getParryBaseSkill() {
     const skillCandidates = this.operator?.itemTypes.skill ?? [];
     return (skillCandidates.find((s) => s.name === this.driver.skill) ||
-      skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as
-      | SwadeItem<'skill'>
-      | undefined;
+      skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as SwadeItem<'skill'> | undefined;
   }
 
   calcParry(): number {
@@ -610,19 +584,14 @@ class VehicleData<
     }
 
     //add equipped weapons
-    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as
-      | undefined
-      | boolean;
+    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as undefined | boolean;
     for (const weapon of itemTypes.weapon) {
       if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;
 
       if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
         // only add parry bonus if it's in the main hand or actor is ambidextrous
-        if (
-          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
-          ambidextrous
-        )
+        if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED || ambidextrous)
           parryBonus += weapon.system.parry ?? 0;
 
         //add trademark weapon bonus
@@ -640,18 +609,11 @@ class VehicleData<
     return parryTotal;
   }
 
-  getCrewMemberForWeapon(
-    weapon: SwadeItem<'weapon'>
-  ): SwadeActor<VehicleData.CrewActorType> | undefined {
+  getCrewMemberForWeapon(weapon: SwadeItem<'weapon'>): SwadeActor<VehicleData.CrewActorType> | undefined {
     if (weapon.type !== 'weapon') return;
     const user = this.crew.members
-      .filter((m: VehicleData.CrewMember) =>
-        m.weapons.map((i) => i.id).includes(weapon.id)
-      )
-      .find(
-        (m: VehicleData.CrewMember) =>
-          m.actor?.type === 'npc' || m.actor?.isOwner
-      )?.actor;
+      .filter((m: VehicleData.CrewMember) => m.weapons.map((i) => i.id).includes(weapon.id))
+      .find((m: VehicleData.CrewMember) => m.actor?.type === 'npc' || m.actor?.isOwner)?.actor;
     return user;
   }
 
@@ -666,18 +628,13 @@ class VehicleData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        }
-      );
-    const embed = await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/vehicle-embeds.hbs',
-      ['actor-embed', 'vehicle']
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    const embed = await createEmbedElement(this, 'systems/swade/templates/embeds/vehicle-embeds.hbs', [
+      'actor-embed',
+      'vehicle',
+    ]);
 
     if (embed) {
       // See src/globals.d.ts for docs
@@ -687,9 +644,7 @@ class VehicleData<
     return embed;
   }
 
-  override getRollData(
-    this: VehicleData<VehicleData.Schema>
-  ): Record<string, number | string> {
+  override getRollData(this: VehicleData<VehicleData.Schema>): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       topspeed: this.topspeed.value || 0,
@@ -714,8 +669,7 @@ class VehicleData<
   #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
     const itemTypes = this.parent.itemTypes;
     const notMod = (i: Item.OfType<'gear' | 'weapon'>) =>
-      !i.system.isVehicular ||
-      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
+      !i.system.isVehicular || i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
     return [
       ...itemTypes.gear.filter(notMod),
       ...itemTypes.weapon.filter(notMod),

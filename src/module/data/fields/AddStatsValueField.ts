@@ -12,7 +12,7 @@ export class AddStatsValueField extends foundry.data.fields.DataField {
 
   protected override _validateType(
     value: any,
-    _options: foundry.data.fields.DataField.ValidationOptions = {},
+    _options: foundry.data.fields.DataField.ValidationOptions = {}
   ): boolean | void {
     const validTypes = ['string', 'number', 'boolean'];
     if (!!value && !validTypes.includes(foundry.utils.getType(value))) {

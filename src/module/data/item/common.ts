@@ -29,10 +29,7 @@ export const itemDescription = () => ({
     blank: false,
     required: true,
     label: 'SWADE.SWID.Long',
-    validate: (
-      value: string,
-      _options: foundry.data.fields.DataField.ValidationOptions
-    ) => {
+    validate: (value: string, _options: foundry.data.fields.DataField.ValidationOptions) => {
       validateSwid(value);
     },
   }),
@@ -159,13 +156,10 @@ export const actions = () => ({
 });
 
 export const activities = () => ({
-  activities: new fields.SetField(
-    new fields.StringField({ blank: false, nullable: false }),
-    {
-      label: 'SWADE.Actions.Activities.Label',
-      hint: 'SWADE.Actions.Activities.Hint',
-    }
-  ),
+  activities: new fields.SetField(new fields.StringField({ blank: false, nullable: false }), {
+    label: 'SWADE.Actions.Activities.Label',
+    hint: 'SWADE.Actions.Activities.Hint',
+  }),
 });
 
 export const favorite = () => ({

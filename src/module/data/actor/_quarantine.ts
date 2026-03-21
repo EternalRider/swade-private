@@ -12,16 +12,10 @@ export function ensureStrengthDie(source: any) {
 
 export function ensureCurrencyIsNumeric(source: any) {
   if (!source.details || !Object.hasOwn(source.details, 'currency')) return; // return early in case of update
-  if (
-    source.details.currency === null ||
-    typeof source.details.currency === 'number'
-  )
-    return;
+  if (source.details.currency === null || typeof source.details.currency === 'number') return;
   if (typeof source.details.currency === 'string') {
     // remove all symbols that aren't numeric or a decimal point
-    source.details.currency = Number(
-      source.details.currency.replaceAll(/[^0-9.]/g, ''),
-    );
+    source.details.currency = Number(source.details.currency.replaceAll(/[^0-9.]/g, ''));
   }
 }
 
@@ -31,9 +25,7 @@ export function ensureGeneralPowerPoints(source: any) {
 
   if (Object.hasOwn(source.powerPoints, 'value')) {
     const value = source.powerPoints.value;
-    source.powerPoints.general.value = Number.isNumeric(value)
-      ? Number(value)
-      : 0;
+    source.powerPoints.general.value = Number.isNumeric(value) ? Number(value) : 0;
     delete source.powerPoints.value;
   }
 

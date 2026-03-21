@@ -23,11 +23,7 @@ export const combatantGroupConfig = {
 declare global {
   interface DataModelConfig {
     Combat: {
-      base: typeof BaseCombat<
-        BaseCombat.Schema,
-        BaseCombat.BaseData,
-        BaseCombat.DerivedData
-      >;
+      base: typeof BaseCombat<BaseCombat.Schema, BaseCombat.BaseData, BaseCombat.DerivedData>;
       chase: typeof Chase;
       dramaticTask: typeof DramaticTask;
     };
