@@ -171,8 +171,8 @@ export class CompendiumTOC<
       tocContext.actorCategories = Array.from(
         this.collection.index.reduce(
           (acc, actor) => acc.add(actor.system?.category ?? ''),
-          new Set(['']),
-        ),
+          new Set([''])
+        )
       );
     }
     return foundry.utils.mergeObject(context, tocContext);
@@ -210,7 +210,7 @@ export class CompendiumTOC<
   static #onToggleSearchMode(
     this: CompendiumTOC,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     this.#fullTextSearch = !this.#fullTextSearch;
     this.render();
@@ -219,21 +219,21 @@ export class CompendiumTOC<
   static #onCreateDocument(
     this: CompendiumTOC,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     this.documentClass.createDialog(
       {},
       {
         renderSheet: true,
         pack: this.collection.metadata.id,
-      },
+      }
     );
   }
 
   static async #onOpenDocument(
     this: CompendiumTOC,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const entryId = target?.closest('[data-entry-id]')?.dataset.entryId;
     const pageId = target?.closest('[data-page-id]')?.dataset.pageId;
@@ -262,7 +262,7 @@ export class CompendiumTOC<
     _event: KeyboardEvent,
     _query: string,
     _rgx: RegExp,
-    html: HTMLElement,
+    html: HTMLElement
   ) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
@@ -271,7 +271,7 @@ export class CompendiumTOC<
     const queryRaw = this.element.querySelector('[name="search"]')?.value ?? '';
     const query = foundry.applications.ux.SearchFilter.cleanQuery(queryRaw);
     const rgx = new RegExp(RegExp.escape(query), 'i');
-    let searchFields: Array<string> = [];
+    let searchFields: string[] = [];
     switch (this.collection.metadata.type) {
       case 'Actor':
         searchFields = CONFIG.SWADE.textSearch.actor;
@@ -287,7 +287,7 @@ export class CompendiumTOC<
         break;
       case 'JournalEntry':
         searchFields = CONFIG.SWADE.textSearch.journalentry.concat(
-          CONFIG.JournalEntry.compendiumIndexFields,
+          CONFIG.JournalEntry.compendiumIndexFields
         );
         break;
       // case 'Macro':
@@ -323,7 +323,7 @@ export class CompendiumTOC<
       for (const li of children) {
         if (
           searchResults.some((e) =>
-            [li.dataset.entryId, li.dataset.pageId].includes(e._id),
+            [li.dataset.entryId, li.dataset.pageId].includes(e._id)
           )
         ) {
           li.style.display = 'flex';
@@ -361,7 +361,7 @@ export class CompendiumTOC<
       ],
     })) as Collection<ActorIndexEntry>;
     const actors = documents.filter(
-      (doc) => doc.name !== CompendiumTOC.CF_ENTITY,
+      (doc) => doc.name !== CompendiumTOC.CF_ENTITY
     );
 
     const actorsByType: Record<string, ActorIndexEntry[]> = {};
@@ -390,7 +390,7 @@ export class CompendiumTOC<
     const collection = this.collection as CompendiumCollection<ItemMetadata>;
     const documents = await collection.getDocuments();
     const items = documents.filter(
-      (doc) => doc.name !== CompendiumTOC.CF_ENTITY,
+      (doc) => doc.name !== CompendiumTOC.CF_ENTITY
     );
 
     //set up category groups
@@ -398,7 +398,7 @@ export class CompendiumTOC<
 
     //always group powers by type and then rank
     const powers: Item.Stored<'power'>[] = items.filter(
-      (i) => i.type === 'power',
+      (i) => i.type === 'power'
     );
     if (powers.length) {
       categories.push({
@@ -414,7 +414,7 @@ export class CompendiumTOC<
       });
     }
     const hindrances: Item.Stored<'hindrance'>[] = items.filter(
-      (i) => i.type === 'hindrance',
+      (i) => i.type === 'hindrance'
     );
     if (hindrances.length) {
       categories.push({
@@ -426,7 +426,7 @@ export class CompendiumTOC<
     //sort all items by type
     const itemsByType: Record<string, Item.Stored[]> = {};
     const leftovers = items.filter(
-      (i) => !['edge', 'power', 'hindrance'].includes(i.type),
+      (i) => !['edge', 'power', 'hindrance'].includes(i.type)
     );
     for (const item of leftovers) {
       const type = item.type;
@@ -443,8 +443,7 @@ export class CompendiumTOC<
 
       const [unCategorized, categorized] = items.partition(
         (i) =>
-          i.canHaveCategory &&
-          !!foundry.utils.getProperty(i, 'system.category'),
+          i.canHaveCategory && !!foundry.utils.getProperty(i, 'system.category')
       );
 
       //handle the un-categorized things first, which are sorted by type
@@ -477,7 +476,7 @@ export class CompendiumTOC<
   }
 
   protected _groupHindrances(
-    hindrances: Item.Stored<'hindrance'>[],
+    hindrances: Item.Stored<'hindrance'>[]
   ): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
@@ -555,7 +554,7 @@ export class CompendiumTOC<
   }
 
   protected async _groupUnCategorized(
-    docs: Item.Stored[] | ActorIndexEntry[],
+    docs: Item.Stored[] | ActorIndexEntry[]
   ): Promise<CompendiumEntry[]> {
     const mapped = docs.map(async (doc) => {
       const isItem = doc?.documentName === 'Item';
@@ -609,7 +608,7 @@ export class CompendiumTOC<
 
   private _onObserveResize(
     entries: ResizeObserverEntry[],
-    _observer: ResizeObserver,
+    _observer: ResizeObserver
   ) {
     for (const entry of entries) {
       const content = entry.target.querySelector<HTMLElement>('.content');
@@ -646,7 +645,7 @@ export class CompendiumTOC<
 
   private _requestTokenImages(
     actorId: string,
-    pack: string,
+    pack: string
   ): Promise<string[]> {
     return new Promise((resolve, reject) => {
       game.socket.emit('requestTokenImages', actorId, { pack }, (result) => {
@@ -670,7 +669,7 @@ export class CompendiumTOC<
       try {
         [path] = await this._requestTokenImages(
           actor._id,
-          this.collection.metadata.id,
+          this.collection.metadata.id
         );
       } catch (error) {
         Logger.error(error);
@@ -693,14 +692,13 @@ export class CompendiumTOC<
   }
 
   private _actorIsWildcard(actor: ActorIndexEntry): boolean {
-    // eslint-disable-next-line deprecation/deprecation
     return actor.system?.wildcard || actor.data?.wildcard;
   }
 
   private _getCompendiumArt(actor: ActorIndexEntry): TokenArt {
     const pack = this.collection.metadata.id;
     const art = game.swade.compendiumArt.map.get(
-      `Compendium.${pack}.${actor._id}`,
+      `Compendium.${pack}.${actor._id}`
     );
     let path = '';
     let scale = 1;
@@ -718,8 +716,9 @@ export class CompendiumTOC<
 }
 
 // TODO: Evaluate how much we care about keeping this
-interface CompendiumTOCData
-  extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
+interface CompendiumTOCData extends Partial<
+  Compendium.Data<CompendiumTOCMetadata>
+> {
   isJournal: boolean;
   isActor: boolean;
   header: string;

@@ -224,7 +224,7 @@ export class SwadePopout {
         this.element,
         freshActor,
         () => this.render(false, { animate: false }),
-        this.options.token ?? null,
+        this.options.token ?? null
       );
     }
 
@@ -235,7 +235,7 @@ export class SwadePopout {
         updatedActor: any,
         _diff: any,
         _options: any,
-        _userId: string,
+        _userId: string
       ) => {
         try {
           if (
@@ -248,13 +248,11 @@ export class SwadePopout {
           this._handleActorUpdate(fresh, _diff);
         } catch (err) {
           // swallow - don't break the HUD for update errors
-          // eslint-disable-next-line no-console
           console.error('SwadePopout actor update handler error', err);
         }
       };
       // The Foundry Hooks API is intentionally used here; the types mark this as deprecated
       // for the project's typings but runtime usage is correct. Suppress the deprecation linter.
-      // eslint-disable-next-line deprecation/deprecation
       Hooks.on('updateActor', this._actorUpdateHandler);
     }
 
@@ -296,7 +294,7 @@ export class SwadePopout {
   private updateEquipStatusDisplay(
     indicator: HTMLElement,
     newStatus: number,
-    itemType: string,
+    itemType: string
   ) {
     // Update the indicator text and tooltip based on new status
     let statusText = '';
@@ -422,7 +420,7 @@ export class SwadePopout {
     const statusEffects =
       CONFIG.statusEffects
         ?.filter((effect) =>
-          allowedConditions.includes(effect.id.toLowerCase()),
+          allowedConditions.includes(effect.id.toLowerCase())
         )
         .map(async (effect) => {
           // Check if this specific condition is active
@@ -441,7 +439,7 @@ export class SwadePopout {
               enrichedDescription =
                 await foundry.applications.ux.TextEditor.implementation.enrichHTML(
                   enrichedDescription,
-                  {},
+                  {}
                 );
             } else if (
               window.TextEditor &&
@@ -450,13 +448,13 @@ export class SwadePopout {
               // Fallback for older versions
               enrichedDescription = await window.TextEditor.enrichHTML(
                 enrichedDescription,
-                {},
+                {}
               );
             }
           } catch (error) {
             console.warn(
               'SWADE HUD: Error enriching status effect description:',
-              error,
+              error
             );
           }
 
@@ -523,7 +521,7 @@ export class SwadePopout {
           enrichedDescription =
             await foundry.applications.ux.TextEditor.implementation.enrichHTML(
               enrichedDescription,
-              {},
+              {}
             );
         } else if (
           window.TextEditor &&
@@ -532,7 +530,7 @@ export class SwadePopout {
           // Fallback for older versions
           enrichedDescription = await window.TextEditor.enrichHTML(
             enrichedDescription,
-            {},
+            {}
           );
         }
       } catch (error) {
@@ -607,12 +605,12 @@ export class SwadePopout {
           valuePath: `system.powerPoints.${ab}.value`,
           value: foundry.utils.getProperty(
             this.actor,
-            `system.powerPoints.${ab}.value`,
+            `system.powerPoints.${ab}.value`
           ),
           maxPath: `system.powerPoints.${ab}.max`,
           max: foundry.utils.getProperty(
             this.actor,
-            `system.powerPoints.${ab}.max`,
+            `system.powerPoints.${ab}.max`
           ),
           powers: [],
         };
@@ -624,7 +622,7 @@ export class SwadePopout {
       entry.powers.sort((a, b) => a.sort - b.sort);
     }
     // For template compatibility, convert arcaneBackgrounds to groupedPowers and powerPoints
-    const groupedPowers: { [key: string]: any[] } = {};
+    const groupedPowers: Record<string, any[]> = {};
     const powerPoints: Record<string, { value: number; max: number }> = {};
 
     // Ensure context.system.powerPoints exists and copy entries so templates that
@@ -742,7 +740,7 @@ export class SwadePopout {
     setupHudActionButtonListeners(
       this.element,
       this.actor,
-      this.options.hudInstance,
+      this.options.hudInstance
     );
 
     // All stat click logic is handled centrally by setupHudStatHandlers
@@ -788,11 +786,10 @@ export class SwadePopout {
         el.parentNode?.replaceChild(clone, el);
       } catch (err) {
         // Non-fatal - continue cleaning other nodes
-        // eslint-disable-next-line no-console
         console.warn(
           'SWADE HUD: cleanupEventListeners failed for node',
           node,
-          err,
+          err
         );
       }
     });
@@ -848,7 +845,7 @@ export class SwadePopout {
           this.updateEquipStatusDisplay(
             indicator as HTMLElement,
             item.system.equipStatus || 0,
-            item.type,
+            item.type
           );
         }
       }
@@ -889,7 +886,7 @@ export class SwadePopout {
         event.stopPropagation();
 
         const itemElement = (indicator as HTMLElement).closest(
-          '.swadehud-item',
+          '.swadehud-item'
         );
         if (!itemElement || !this.actor) return;
 
@@ -985,7 +982,7 @@ export class SwadePopout {
             this.updateEquipStatusDisplay(
               indicator as HTMLElement,
               newStatus,
-              item.type,
+              item.type
             );
           } catch (error) {
             console.error('SWADE HUD: Error updating equip status:', error);
@@ -1008,7 +1005,7 @@ export class SwadePopout {
   private setupConditionsPanelListeners(html: HTMLElement) {
     // Handle condition toggles
     const conditionToggles = html.querySelectorAll(
-      '.swadehud-condition-toggle-icon',
+      '.swadehud-condition-toggle-icon'
     );
     conditionToggles.forEach((toggle) => {
       const statusId = (toggle as HTMLElement).dataset.statusId;
@@ -1034,7 +1031,7 @@ export class SwadePopout {
             if (isActive) {
               // Remove the condition
               const effect = this.actor.effects.find((e) =>
-                e.statuses?.has(statusId),
+                e.statuses?.has(statusId)
               );
               if (effect) {
                 await effect.delete();
@@ -1066,7 +1063,7 @@ export class SwadePopout {
           try {
             // Remove all status effects
             const effectsToDelete = this.actor.effects.filter(
-              (e) => e.statuses?.size > 0,
+              (e) => e.statuses?.size > 0
             );
             for (const effect of effectsToDelete) {
               if (effect) {
@@ -1094,7 +1091,7 @@ export class SwadePopout {
     }, 100);
     if (!html) {
       console.error(
-        'SWADE HUD: setupEffectsPanelListeners called with undefined html',
+        'SWADE HUD: setupEffectsPanelListeners called with undefined html'
       );
       return;
     }
@@ -1124,12 +1121,12 @@ export class SwadePopout {
           .trim();
         if (effectName) {
           effect = Array.from(this.actor.effects).find(
-            (e: any) => e.name === effectName,
+            (e: any) => e.name === effectName
           );
           if (!effect) {
             for (const item of this.actor.items) {
               effect = Array.from(item.effects || []).find(
-                (e: any) => e.name === effectName,
+                (e: any) => e.name === effectName
               );
               if (effect) break;
             }
@@ -1144,7 +1141,7 @@ export class SwadePopout {
         const effectName = effect.name || effect.label;
         toggle.setAttribute(
           'title',
-          effect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`,
+          effect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`
         );
       }
 
@@ -1170,12 +1167,12 @@ export class SwadePopout {
             .trim();
           if (effectName) {
             effect = Array.from(this.actor.effects).find(
-              (e: any) => e.name === effectName,
+              (e: any) => e.name === effectName
             );
             if (!effect) {
               for (const item of this.actor.items) {
                 effect = Array.from(item.effects || []).find(
-                  (e: any) => e.name === effectName,
+                  (e: any) => e.name === effectName
                 );
                 if (effect) break;
               }
@@ -1200,22 +1197,22 @@ export class SwadePopout {
           // Update all effect toggles visually, including related statuses
           setTimeout(() => {
             const currentToggleIcons = html.querySelectorAll(
-              '.swadehud-effect-toggle-icon',
+              '.swadehud-effect-toggle-icon'
             );
             currentToggleIcons.forEach((icon) => {
               const itemEl = icon.closest(
-                '.swadehud-item',
+                '.swadehud-item'
               ) as HTMLElement | null;
               if (!itemEl || !itemEl.dataset.effectId) return;
               const iconEffectId = itemEl.dataset.effectId;
               // Find the current effect state
               let currentEffect = this.actor.effects?.find(
-                (e: any) => e._id === iconEffectId,
+                (e: any) => e._id === iconEffectId
               );
               if (!currentEffect) {
                 for (const item of this.actor.items) {
                   currentEffect = item.effects?.find(
-                    (e: any) => e._id === iconEffectId,
+                    (e: any) => e._id === iconEffectId
                   );
                   if (currentEffect) break;
                 }
@@ -1223,7 +1220,7 @@ export class SwadePopout {
               if (currentEffect) {
                 (icon as HTMLElement).classList.toggle(
                   'active',
-                  !currentEffect.disabled,
+                  !currentEffect.disabled
                 );
                 const effectName = currentEffect.name || currentEffect.label;
                 (icon as HTMLElement).title = currentEffect.disabled
@@ -1292,7 +1289,7 @@ export class SwadePopout {
       // Update the visual indicator
       const target = event.target as HTMLElement;
       const indicator = target.closest(
-        '.swadehud-equip-indicator',
+        '.swadehud-equip-indicator'
       ) as HTMLElement;
       if (indicator) {
         this.updateEquipStatusDisplay(indicator, newStatus, item.type);
@@ -1409,7 +1406,6 @@ export class SwadePopout {
     // Remove actor update hook if registered
     if (this._actorUpdateHandler) {
       try {
-        // eslint-disable-next-line deprecation/deprecation
         Hooks.off('updateActor', this._actorUpdateHandler);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
@@ -1433,7 +1429,7 @@ export class SwadePopout {
       // For each element that exposes a data-stat-path attribute, compute its new value
       // and update the textContent or value accordingly
       const statEls = Array.from(
-        this.element.querySelectorAll('[data-stat-path]'),
+        this.element.querySelectorAll('[data-stat-path]')
       ) as HTMLElement[];
       for (const el of statEls) {
         const path = el.getAttribute('data-stat-path');
@@ -1461,7 +1457,7 @@ export class SwadePopout {
               if (newVal === undefined && freshActor?.system?.powerPoints) {
                 const ppObj = freshActor.system.powerPoints;
                 const foundKey = Object.keys(ppObj).find(
-                  (k) => k.toLowerCase() === key.toLowerCase(),
+                  (k) => k.toLowerCase() === key.toLowerCase()
                 );
                 if (foundKey) {
                   const altPath2 = `system.powerPoints.${foundKey}${rest}`;
@@ -1495,7 +1491,7 @@ export class SwadePopout {
             ) {
               const inside = path.slice(
                 'system.powerPoints.'.length,
-                -'.value'.length,
+                -'.value'.length
               );
               const key = inside.split('.')[0] ?? '';
               const altMaxPath = `system.powerPoints.${key.toLowerCase()}.max`;
@@ -1519,12 +1515,11 @@ export class SwadePopout {
           // Match a broad set of Font Awesome class variants (fa-solid, fa-bolt-lightning, fas, far, fab, etc.)
           // querySelector is marked deprecated in the project's fvtt typings but runtime usage is
           // intentional here; suppress the deprecation rule for this DOM lookup.
-          // eslint-disable-next-line deprecation/deprecation
           const icon = el.querySelector && el.querySelector('i[class*="fa"]');
           if (icon) {
             // Ensure there is a span for the numeric value
             let valSpan = el.querySelector(
-              '.swadehud-stat-value',
+              '.swadehud-stat-value'
             ) as HTMLElement | null;
             if (!valSpan) {
               valSpan = document.createElement('span');
@@ -1548,7 +1543,6 @@ export class SwadePopout {
         }
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error('SwadePopout _handleActorUpdate error', err);
     }
   }

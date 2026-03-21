@@ -25,21 +25,19 @@
     "clean": "rimraf dist .cache",
     "clean:link": "node ./tools/link-project.js --clean",
     "check:types": "tsc --noEmit",
-    "check:lint": "eslint --ext .ts .",
-    "lint:fix": "eslint --ext .ts . --fix"
+    "check:lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@guanghechen/rollup-plugin-copy": "^6.0.9",
     "@rollup/plugin-typescript": "^12.3.0",
-    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
-    "@typescript-eslint/eslint-plugin": "^8.57.1",
-    "@typescript-eslint/parser": "^8.57.1",
     "autoprefixer": "^10.4.27",
     "chalk": "^5.6.2",
     "classic-level": "^2.0.0",
-    "eslint": "^8.57.1",
-    "eslint-plugin-deprecation": "^3.0.0",
+    "eslint": "^10.0.3",
     "front-matter": "^4.0.2",
+    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
     "lint-staged": "^16.4.0",
@@ -51,6 +49,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.98.0",
     "typescript": "~5.9",
+    "typescript-eslint": "^8.57.1",
     "yargs": "^18.0.0"
   },
   "dependencies": {

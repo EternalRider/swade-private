@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 export class MigrationCounter {
   #current = 0;
   #max = 0;

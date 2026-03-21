@@ -1,17 +1,16 @@
-import { setupHudStatHandlers } from '../hud/hud-stat-handlers';
-import { prepareHudContext } from '../hud/hud-context';
-import { setupHudActionButtonListeners } from '../hud/hud-actions';
-import {
-  setupTabHandlers,
-  setupAbilityHandlers,
-  setupPortraitHandler,
-  setupDragHandler,
-} from '../hud/hud-interaction-handlers';
-import SwadeActor from '../documents/actor/SwadeActor';
-import SwadeToken from '../canvas/SwadeToken';
 import { HUDToken, SwadePopoutInstance } from '../../types/HUD';
+import SwadeToken from '../canvas/SwadeToken';
+import SwadeActor from '../documents/actor/SwadeActor';
+import { setupHudActionButtonListeners } from '../hud/hud-actions';
+import { prepareHudContext } from '../hud/hud-context';
+import {
+  setupAbilityHandlers,
+  setupDragHandler,
+  setupPortraitHandler,
+  setupTabHandlers,
+} from '../hud/hud-interaction-handlers';
+import { setupHudStatHandlers } from '../hud/hud-stat-handlers';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -36,7 +35,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       const result = super.setPosition(position ?? {});
       if (this.element && !this._isInitialRender) {
         this.element.dispatchEvent(
-          new CustomEvent('hud-moved', { bubbles: true }),
+          new CustomEvent('hud-moved', { bubbles: true })
         );
       }
       return result;
@@ -63,7 +62,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
   constructor(
     { actor, token }: { actor?: SwadeActor; token?: HUDToken } = {},
-    options: Record<string, unknown> = {},
+    options: Record<string, unknown> = {}
   ) {
     super(options);
     this.actor = actor ?? null;
@@ -95,7 +94,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
       doc: any,
       _changes: any,
       _opts: any,
-      _userId: string,
+      _userId: string
     ) => {
       if (doc.id === this.actor?.id) {
         // Debounce rapid updates to prevent excessive re-renders
@@ -141,7 +140,6 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
         else this.render();
       } catch (err) {
         // Non-fatal
-        // eslint-disable-next-line no-console
         console.warn('SwadeActorHUD token control handler error', err);
       }
     };
@@ -162,7 +160,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
         doc: SwadeActor,
         changes: Record<string, unknown>,
         opts: Record<string, unknown>,
-        userId: string,
+        userId: string
       ) => void)
     | null;
   _onActorDelete: ((doc: SwadeActor) => void) | null;
@@ -191,7 +189,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
 
   override async render(
     forceOrOptions?: boolean | Record<string, unknown>,
-    options?: Record<string, unknown>,
+    options?: Record<string, unknown>
   ): Promise<this> {
     try {
       // Support both (force, options) and (options) signatures
@@ -260,7 +258,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
             if (this._renderDebounced) this._renderDebounced();
             else this.render();
           },
-          this.token,
+          this.token
         );
       }
     } catch (error) {

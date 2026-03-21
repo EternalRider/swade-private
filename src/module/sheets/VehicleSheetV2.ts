@@ -83,7 +83,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected override async _preparePartContext(
     partId: keyof typeof SwadeVehicleSheetV2.PARTS,
     context: SwadeVehicleSheetV2.RenderContext,
-    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
+    _options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>
   ) {
     const itemTypes = this.actor.itemTypes;
     switch (partId) {
@@ -109,7 +109,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
         context.hindrances = itemTypes.hindrance;
         context.tokenOptions = this._prepareTokenOptions();
         context.weaponsPerMember = this.actor.system._source.crew.members.map(
-          (m) => m.weapons ?? [],
+          (m) => m.weapons ?? []
         );
         break;
       case 'description':
@@ -120,7 +120,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
               secrets: this.actor.isOwner,
               rollData: this.actor.getRollData(),
               relativeTo: this.actor,
-            },
+            }
           );
         break;
     }
@@ -129,12 +129,12 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   protected override async _onRender(
     context: SwadeVehicleSheetV2.RenderContext,
-    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>,
+    options: DeepPartial<foundry.applications.api.DocumentSheetV2.RenderOptions>
   ) {
     await super._onRender(context, options);
     if (!options.parts?.includes('crew')) return;
     const buttons = this.element.querySelectorAll<HTMLButtonElement>(
-      'button[data-action=maneuverCheck]',
+      'button[data-action=maneuverCheck]'
     );
 
     buttons.forEach((btn) => {
@@ -145,7 +145,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
       if (canManeuver) {
         btn.disabled = false;
         const fieldset = btn.closest<HTMLFieldSetElement>(
-          'fieldset.crew-member',
+          'fieldset.crew-member'
         );
         if (fieldset) fieldset.disabled = false;
       }
@@ -176,7 +176,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
       (i) =>
         i.type === type &&
         i.system.isVehicular &&
-        i.system.equipStatus > constants.EQUIP_STATE.CARRIED,
+        i.system.equipStatus > constants.EQUIP_STATE.CARRIED
     );
     return mods;
   }
@@ -228,7 +228,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   protected _prepareAttributes(): SwadeVehicleSheetV2.AttributeContext {
     const enabled = Object.values(this.actor.system.attributes).some(
-      (a) => a.enabled,
+      (a) => a.enabled
     );
     const globals = this.actor?.system.stats.globalMods as Record<
       string,
@@ -248,7 +248,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
           ...globals.trait,
         ].filter((m) => m.ignore !== true);
         let tooltip = `<strong>${game.i18n.localize(
-          CONFIG.SWADE.attributes[key].long,
+          CONFIG.SWADE.attributes[key].long
         )}</strong>`;
         if (mods.length) {
           tooltip += `<ul style="text-align:start;">${mods
@@ -270,10 +270,10 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   }
 
   protected _prepareAdditionalStats(
-    context: SwadeVehicleSheetV2.RenderContext,
+    context: SwadeVehicleSheetV2.RenderContext
   ) {
     const additionalStats = structuredClone<AdditionalStats>(
-      this.actor.system.additionalStats,
+      this.actor.system.additionalStats
     );
     for (const [key, attr] of Object.entries(additionalStats)) {
       if (!attr.dtype) delete additionalStats[key];
@@ -293,12 +293,12 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async maneuverCheck(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const uuid =
       target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     const operator = this.actor.system.crew.members.find(
-      (m) => m.uuid === uuid,
+      (m) => m.uuid === uuid
     );
     if (!operator.actor) return;
     await this.actor.system.rollManeuverCheck(operator.actor);
@@ -307,7 +307,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async manageAttributes(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     new AttributeManager({ actor: this.actor }).render({ force: true });
   }
@@ -315,7 +315,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async rollAttribute(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const attribute = target.dataset.attribute as
       | 'agility'
@@ -328,7 +328,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async changeEquip(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     // TODO: Use v13 ContextMenu
     console.log(this, _event, target);
@@ -339,21 +339,21 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async createCargo(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     await SwadeItem.createDialog(
       {},
       {
         parent: this.actor,
         types: ['gear', 'armor', 'weapon', 'shield', 'consumable'],
-      },
+      }
     );
   }
 
   protected static async addCrewMember(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLButtonElement,
+    target: HTMLButtonElement
   ) {
     const uuid = (target.previousElementSibling as HTMLInputElement).value;
     if (uuid) await this._addCrewMember(uuid);
@@ -362,7 +362,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async deleteCrewMember(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLButtonElement,
+    target: HTMLButtonElement
   ) {
     const index = Number(target.dataset.index);
     const members = this.actor.system._source.crew.members;
@@ -374,12 +374,12 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
   protected static async openCrewMember(
     this: SwadeVehicleSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const uuid =
       target.closest<HTMLElement>('[data-member-uuid]')?.dataset.memberUuid;
     const operator = this.actor.system.crew.members.find(
-      (m) => m.uuid === uuid,
+      (m) => m.uuid === uuid
     );
     operator?.actor?.sheet?.render({ force: true });
   }
@@ -388,7 +388,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 
   protected override async _onDropActor(
     _event: DragEvent,
-    data: foundry.abstract.Document.DropData<SwadeActor>,
+    data: foundry.abstract.Document.DropData<SwadeActor>
   ) {
     if (!this.actor.isOwner) return false;
     const actor = await getDocumentClass('Actor').fromDropData(data);
@@ -396,7 +396,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     if (actor.type === 'group' || actor.type === 'vehicle') {
       Logger.warn(
         `You cannot set ${game.i18n.localize('TYPES.Actor.' + actor.type)} Actors as the operator of a vehicle!`,
-        { toast: true, localize: true },
+        { toast: true, localize: true }
       );
       return false;
     }
@@ -418,11 +418,11 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
 declare namespace SwadeVehicleSheetV2 {
   interface AttributeContext {
     enabled: boolean;
-    list: Array<{
+    list: {
       value: unknown;
       field: foundry.data.fields.SchemaField.Any;
       tooltip: string;
-    }>;
+    }[];
   }
 
   interface RenderContext extends SwadeActorSheetV2.RenderContext {

@@ -1,7 +1,6 @@
 import SwadeCards from '../documents/card/SwadeCards';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -9,7 +8,10 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
     super(options);
     this.#initContext(ctx);
     this.#callback = resolve;
-    this.#hookId = Hooks.on('updateCombatant', this.#onCombatantUpdate.bind(this));
+    this.#hookId = Hooks.on(
+      'updateCombatant',
+      this.#onCombatantUpdate.bind(this)
+    );
   }
 
   #ctx: CardPickContext;
@@ -22,22 +24,24 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
     ...options
   }: Omit<CardPickConfiguration, 'resolve'>): Promise<CardPickResult> {
     if (ctx.autoPick) {
-      const sortedCards = foundry.utils.deepClone(ctx.cards).sort((a: Card, b: Card) => {
-        const cardA = a.value ?? 0;
-        const cardB = b.value ?? 0;
-        const card = cardA - cardB;
-        if (card !== 0) return card;
-        const suitA = a.system['suit'] as number;
-        const suitB = b.system['suit'] as number;
-        return suitA - suitB;
-      });
+      const sortedCards = foundry.utils
+        .deepClone(ctx.cards)
+        .sort((a: Card, b: Card) => {
+          const cardA = a.value ?? 0;
+          const cardB = b.value ?? 0;
+          const card = cardA - cardB;
+          if (card !== 0) return card;
+          const suitA = a.system['suit'] as number;
+          const suitB = b.system['suit'] as number;
+          return suitA - suitB;
+        });
       return Promise.resolve({
         picked: sortedCards[0],
         cards: ctx.cards,
       });
     }
     return new Promise<CardPickResult>((resolve) =>
-      new CardPicker({ ctx, resolve, ...options }).render({ force: true }),
+      new CardPicker({ ctx, resolve, ...options }).render({ force: true })
     );
   }
 
@@ -48,7 +52,7 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     position: {
       width: 400,
-      height: "auto" as const,
+      height: 'auto' as const,
     },
     actions: {
       submit: this.#onSubmit,
@@ -99,7 +103,7 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
           .deepClone(this.#cards)
           .sort(this.#sortCards.bind(this))[0].id,
         buttons,
-      },
+      }
     );
 
     return context;
@@ -117,10 +121,11 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   static #onSubmit(
     this: CardPicker,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
-    const cardId = (this.element.querySelector('input[name=card]:checked') as HTMLInputElement)
-      ?.dataset.cardId as string | undefined;
+    const cardId = (
+      this.element.querySelector('input[name=card]:checked') as HTMLInputElement
+    )?.dataset.cardId as string | undefined;
     const picked = this.#cards.find((c) => c.id === cardId);
     this.#resolve({
       cards: this.#cards,
@@ -137,11 +142,11 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onRedraw(
     this: CardPicker,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     const discardPile = (game.cards as any).get(
       game.settings.get('swade', 'actionDeckDiscardPile'),
-      { strict: true },
+      { strict: true }
     ) as Cards;
     const cards = await this.#ctx.deck.dealForInitiative(discardPile);
     this.#cards.push(...cards);
@@ -176,8 +181,13 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   #onCombatantUpdate(combatant: SwadeCombatant, changes: any) {
-    if (combatant.id === this.#ctx.combatantId && changes.initiative !== undefined) {
-      const sortedCards = foundry.utils.deepClone(this.#cards).sort(this.#sortCards.bind(this));
+    if (
+      combatant.id === this.#ctx.combatantId &&
+      changes.initiative !== undefined
+    ) {
+      const sortedCards = foundry.utils
+        .deepClone(this.#cards)
+        .sort(this.#sortCards.bind(this));
       this.#resolve({
         picked: sortedCards[0],
         cards: this.#cards,
@@ -185,7 +195,9 @@ export class CardPicker extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  override close(options?: foundry.applications.api.ApplicationV2.CloseOptions): Promise<this> {
+  override close(
+    options?: foundry.applications.api.ApplicationV2.ClosingOptions
+  ): Promise<this> {
     Hooks.off('updateCombatant', this.#hookId);
     return super.close(options);
   }
@@ -206,23 +218,22 @@ export interface CardPickResult {
   cards: Card[];
 }
 
-interface CardPickConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface CardPickConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   ctx: CardPickContext;
   resolve: (result: CardPickResult) => void;
 }
 
 export interface CardPickContext {
-  /** a deck from which to draw cards, should the need arise */
-  deck: SwadeCards;
   /** an array of cards */
   cards: Card[];
   /** name of the combatant */
   combatantName: string;
+  /** a deck from which to draw cards, should the need arise */
+  deck?: SwadeCards;
   /** id of the combatant */
-  combatantId?: string;
+  combatantId?: string | null;
   /** id of the old card, if you're picking cards for a redraw */
-  oldCardId?: string;
+  oldCardId?: string | null;
   /** determines whether a redraw is allowed */
   enableRedraw?: boolean;
   /** determines whether this draw includes the Quick edge */

@@ -63,7 +63,7 @@ export interface ItemGrant {
 export interface ChoiceSet {
   title: string;
   choice: number | null;
-  choices: Array<MutationOption>;
+  choices: MutationOption[];
 }
 
 export interface MutationOption {
@@ -80,5 +80,5 @@ export interface ItemGrantChainLink {
 export type SwadeConsumeItemHook = (
   item: SwadeItem,
   charges: number,
-  updates: UsageUpdates,
+  updates: UsageUpdates
 ) => void | boolean;

@@ -1,10 +1,10 @@
-// import { Updates } from '../../globals';
 import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
 /** This class defines a a new Combat Tracker specifically designed for SWADE */
-export default class SwadeCombatTracker extends foundry.applications.sidebar
-  .tabs.CombatTracker {
+export default class SwadeCombatTracker
+  extends foundry.applications.sidebar.tabs.CombatTracker
+{
   static override DEFAULT_OPTIONS = {
     classes: ['swade'],
     actions: {
@@ -35,7 +35,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     },
   };
 
-  protected override scrollToTurn() {
+  override scrollToTurn() {
     this.element?.querySelector('.combatant.active')?.scrollIntoView();
     this.viewed?.expandGroupIfNeeded();
   }
@@ -72,7 +72,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     const combat = this.viewed as SwadeCombat | null;
 
     const [noGroup, grouped] = (context.turns ?? []).partition(
-      (c) => !!c?.group,
+      (c) => !!c?.group
     );
 
     const groups = Object.groupBy(grouped, (c) => c.group.id);
@@ -140,7 +140,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   protected async _prepareTurnContext(
     combat: Combat.Stored,
     combatant: Combatant.Stored,
-    index,
+    index
   ) {
     const turn = await super._prepareTurnContext(combat, combatant, index);
 
@@ -204,11 +204,11 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
 
     if (options.parts && options.parts.includes('dramaticTask')) {
       const tokenInput = this.element.querySelector<HTMLInputElement>(
-        'input[name="system.tokens.value"]',
+        'input[name="system.tokens.value"]'
       );
 
       tokenInput?.addEventListener('change', () =>
-        this.viewed?.update({ 'system.tokens.value': tokenInput.value }),
+        this.viewed?.update({ 'system.tokens.value': tokenInput.value })
       );
     }
   }
@@ -264,7 +264,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     if (!combatant) return;
 
     const groupLI = (event.target as HTMLElement).closest(
-      'li.combatant-group',
+      'li.combatant-group'
     ) as HTMLLIElement | undefined;
 
     if (groupLI) {
@@ -280,10 +280,10 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
       } else {
         // Else if dropped on other combatant, create a group around and follow that combatant.
         const targetCombatantLI = (event.target as HTMLElement).closest(
-          'li.combatant',
+          'li.combatant'
         ) as HTMLLIElement | undefined;
         const targetCombatant = this.viewed?.combatants?.get(
-          targetCombatantLI.dataset.combatantId,
+          targetCombatantLI.dataset.combatantId
         );
         if (!targetCombatant || targetCombatant.id == combatant.id) return;
         const group = await this.viewed?.createGroup();
@@ -318,7 +318,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
         (c.name === combatant.name ||
           c.actor?.name === combatant.actor?.name) &&
         c.id !== combatant.id &&
-        !c.group,
+        !c.group
     );
 
     return matching;
@@ -374,7 +374,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
           );
         },
         callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
-      },
+      }
     );
 
     return entryOptions;
@@ -401,7 +401,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
    */
   protected _getGroupContextOptions() {
     const getCombatantGroup = (li: HTMLLIElement) =>
-      this.viewed!.groups.get(li.dataset.groupId);
+      this.viewed!.groups.get(li.dataset.groupId!);
     const entryOptions = [
       {
         name: game.i18n.format('DOCUMENT.Update', {
@@ -465,7 +465,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   /*   Actions                                          */
   /* -------------------------------------------------- */
 
-  static async #drawInitiative(this, event, target) {
+  static async #drawInitiative(this, _event, target) {
     let combatantId = null;
 
     const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
@@ -481,7 +481,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
     return this.viewed?.rollInitiative(combatantId);
   }
 
-  static async #redrawInitiative(this, event, target) {
+  static async #redrawInitiative(this, _event, target) {
     let combatantId = null;
 
     const groupId = target?.closest('.combatant-group')?.dataset?.groupId;
@@ -500,37 +500,38 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar
   static async #toggleGroupExpand(
     this: SwadeCombatTracker,
     event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     // Don't proceed if the click event was actually on one of the combatants
-    const entry = event.target.closest('[data-combatant-id]');
+    const entry = event.target?.closest<HTMLElement>('[data-combatant-id]');
     if (entry) return;
 
     const combat = this.viewed;
     const groupId = target.dataset.groupId;
-    await combat.toggleGroupExpand(groupId);
+    await combat?.toggleGroupExpand(groupId);
   }
 
   static async #onSwadeCombatantControl(
     this: SwadeCombatTracker,
     _event: PointerEvent,
-    target: HTMLElement,
-  ) {
-    const combatantId = target?.closest('[data-combatant-id]')?.dataset
-      .combatantId;
-    const combatant: SwadeCombatant | null =
+    target: HTMLElement
+  ): Promise<void> {
+    const combatantId = target?.closest<HTMLElement>('[data-combatant-id]')
+      ?.dataset.combatantId;
+    if (!combatantId) return;
+    const combatant: SwadeCombatant | undefined =
       this.viewed?.combatants.get(combatantId);
     if (!combatant) return;
 
     switch (target.dataset.action) {
       case 'toggleHold':
-        return await combatant.toggleHold();
+        return combatant.toggleHold();
       case 'toggleTurnLost':
-        return await combatant.toggleTurnLost();
+        return combatant.toggleTurnLost();
       case 'actNow':
-        return await combatant.actNow();
+        return combatant.actNow();
       case 'actAfter':
-        return await combatant.actAfterCurrentCombatant();
+        return combatant.actAfterCurrentCombatant();
     }
   }
 

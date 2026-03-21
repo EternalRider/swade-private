@@ -18,48 +18,47 @@ import { SwadeBaseActorData, type TokenSize } from './base/base';
 
 declare namespace VehicleData {
   interface Schema
-    extends SwadeBaseActorData.Schema,
-      ReturnType<typeof createVehicleSchema> {}
+    extends SwadeBaseActorData.Schema, ReturnType<typeof createVehicleSchema> {}
   interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       smarts: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       spirit: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       strength: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       vigor: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
     };
     stats: {
       globalMods: {
-        attack: Array<DerivedModifier>;
-        damage: Array<DerivedModifier>;
-        ap: Array<DerivedModifier>;
-        agility: Array<DerivedModifier>;
-        smarts: Array<DerivedModifier>;
-        spirit: Array<DerivedModifier>;
-        strength: Array<DerivedModifier>;
-        vigor: Array<DerivedModifier>;
-        trait: Array<DerivedModifier>;
-        attackRanged: Array<DerivedModifier>;
-        attackMelee: Array<DerivedModifier>;
-        gangUp: Array<DerivedModifier>;
-        targetAttack: Array<DerivedModifier>;
-        targetAttackRanged: Array<DerivedModifier>;
-        targetAttackMelee: Array<DerivedModifier>;
-        targetDamage: Array<DerivedModifier>;
+        attack: DerivedModifier[];
+        damage: DerivedModifier[];
+        ap: DerivedModifier[];
+        agility: DerivedModifier[];
+        smarts: DerivedModifier[];
+        spirit: DerivedModifier[];
+        strength: DerivedModifier[];
+        vigor: DerivedModifier[];
+        trait: DerivedModifier[];
+        attackRanged: DerivedModifier[];
+        attackMelee: DerivedModifier[];
+        gangUp: DerivedModifier[];
+        targetAttack: DerivedModifier[];
+        targetAttackRanged: DerivedModifier[];
+        targetAttackMelee: DerivedModifier[];
+        targetDamage: DerivedModifier[];
       };
       parry: {
-        sources: Array<DerivedModifier>;
-        effects: Array<DerivedModifier>;
+        sources: DerivedModifier[];
+        effects: DerivedModifier[];
         value: number;
       };
     };
@@ -71,7 +70,7 @@ declare namespace VehicleData {
     };
     crew: {
       required: number;
-      members: Array<CrewMember>;
+      members: CrewMember[];
     };
   }
 
@@ -96,7 +95,7 @@ declare namespace VehicleData {
 
 function validateCrewMember(
   value: any,
-  _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+  _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>
 ) {
   const actor = fromUuidSync(value.uuid) as SwadeActor | null;
   // Optional chaining `actor.type` so that on game load, when `fromUuidSync` can only return null, this doesn't throw.
@@ -125,7 +124,7 @@ function createVehicleSchema() {
           },
           {
             label: 'SWADE.AttrAgi',
-          },
+          }
         ),
         // HC Haunted Car & Sentient Vehicles
         smarts: new fields.SchemaField(
@@ -135,7 +134,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Smarts',
             }),
           },
-          { label: 'SWADE.AttrSma' },
+          { label: 'SWADE.AttrSma' }
         ),
         // HC Haunted Car & Sentient Vehicles
         spirit: new fields.SchemaField(
@@ -145,7 +144,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Spirit',
             }),
           },
-          { label: 'SWADE.AttrSpr' },
+          { label: 'SWADE.AttrSpr' }
         ),
         strength: new fields.SchemaField(
           {
@@ -159,7 +158,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Strength',
             }),
           },
-          { label: 'SWADE.AttrStr' },
+          { label: 'SWADE.AttrStr' }
         ),
         vigor: new fields.SchemaField(
           {
@@ -168,10 +167,10 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Vigor',
             }),
           },
-          { label: 'SWADE.AttrVig' },
+          { label: 'SWADE.AttrVig' }
         ),
       },
-      { label: 'SWADE.Attributes' },
+      { label: 'SWADE.Attributes' }
     ),
     size: new fields.NumberField({
       initial: 0,
@@ -205,7 +204,7 @@ function createVehicleSchema() {
         }),
         unit: new fields.StringField({ label: 'SWADE.SpeedUnit' }),
       },
-      { label: 'SWADE.Topspeed' },
+      { label: 'SWADE.Topspeed' }
     ),
     description: new fields.HTMLField({
       initial: '',
@@ -217,7 +216,7 @@ function createVehicleSchema() {
         total: new fields.NumberField({ initial: 0, label: 'SWADE.Tough' }),
         armor: new fields.NumberField({ initial: 0, label: 'SWADE.Armor' }),
       },
-      { label: 'SWADE.Tough' },
+      { label: 'SWADE.Tough' }
     ),
     wounds: new fields.SchemaField(
       {
@@ -239,7 +238,7 @@ function createVehicleSchema() {
           label: 'SWADE.IgnWounds',
         }),
       },
-      { label: 'SWADE.Wounds' },
+      { label: 'SWADE.Wounds' }
     ),
     stats: new fields.SchemaField({
       parry: new fields.SchemaField(
@@ -261,7 +260,7 @@ function createVehicleSchema() {
             label: 'SWADE.Modifier',
           }),
         },
-        { label: 'SWADE.Parry' },
+        { label: 'SWADE.Parry' }
       ),
     }),
     energy: new fields.SchemaField(
@@ -280,7 +279,7 @@ function createVehicleSchema() {
         }),
         enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
       },
-      { label: 'SWADE.Energy.Label' },
+      { label: 'SWADE.Energy.Label' }
     ),
     crew: new fields.SchemaField(
       {
@@ -293,7 +292,7 @@ function createVehicleSchema() {
               label: 'SWADE.MaxLabel',
             }),
           },
-          { label: 'SWADE.RequiredCrew' },
+          { label: 'SWADE.RequiredCrew' }
         ),
         optional: new fields.SchemaField(
           {
@@ -310,7 +309,7 @@ function createVehicleSchema() {
               label: 'SWADE.MaxLabel',
             }),
           },
-          { label: 'SWADE.Passengers' },
+          { label: 'SWADE.Passengers' }
         ),
         members: new fields.ArrayField(
           new MemberField(
@@ -330,14 +329,14 @@ function createVehicleSchema() {
               weapons: new fields.ArrayField(
                 new LocalDocumentField(SwadeItem, {
                   types: ['weapon'],
-                }),
+                })
               ),
             },
-            { validate: validateCrewMember },
-          ),
+            { validate: validateCrewMember }
+          )
         ),
       },
-      { label: 'SWADE.Crew' },
+      { label: 'SWADE.Crew' }
     ),
     driver: new fields.SchemaField(
       {
@@ -350,7 +349,7 @@ function createVehicleSchema() {
           label: 'SWADE.AltSkill',
         }),
       },
-      { label: 'SWADE.Operator' },
+      { label: 'SWADE.Operator' }
     ),
     status: new fields.SchemaField(
       {
@@ -365,7 +364,7 @@ function createVehicleSchema() {
           label: 'SWADE.Vuln',
         }),
       },
-      { label: 'SWADE.Status' },
+      { label: 'SWADE.Status' }
     ),
     details: new fields.SchemaField(
       {
@@ -374,7 +373,7 @@ function createVehicleSchema() {
           hint: 'SWADE.AutoCalcParry',
         }),
       },
-      { label: 'SWADE.Details' },
+      { label: 'SWADE.Details' }
     ),
     initiative: new fields.SchemaField(
       {
@@ -391,7 +390,7 @@ function createVehicleSchema() {
           initial: '',
         }),
       },
-      { label: 'SWADE.Init' },
+      { label: 'SWADE.Init' }
     ),
     cargo: new fields.SchemaField({
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
@@ -442,7 +441,7 @@ class VehicleData<
     return this.crew.members
       .filter(
         (m: VehicleData.CrewMember) =>
-          !!m.actor && m.role === constants.CREW_ROLE.OPERATOR,
+          !!m.actor && m.role === constants.CREW_ROLE.OPERATOR
       )
       .map((m: VehicleData.CrewMember) => m.actor);
   }
@@ -452,7 +451,7 @@ class VehicleData<
   }
 
   async rollManeuverCheck(
-    actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator,
+    actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator
   ) {
     //Return early if no driver was found
     if (!actor) return;
@@ -467,7 +466,7 @@ class VehicleData<
     //Handling is capped at a certain penalty
     const totalHandling = Math.max(
       handling + wounds,
-      SWADE.vehicles.maxHandlingPenalty,
+      SWADE.vehicles.maxHandlingPenalty
     );
 
     //Find the operating skill
@@ -546,7 +545,7 @@ class VehicleData<
       (acc, item: SwadeItem<VehicleData.CargoItemType>) => {
         return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
       },
-      0,
+      0
     );
 
     if (this.details.autoCalcParry)
@@ -642,16 +641,16 @@ class VehicleData<
   }
 
   getCrewMemberForWeapon(
-    weapon: SwadeItem<'weapon'>,
+    weapon: SwadeItem<'weapon'>
   ): SwadeActor<VehicleData.CrewActorType> | undefined {
     if (weapon.type !== 'weapon') return;
     const user = this.crew.members
       .filter((m: VehicleData.CrewMember) =>
-        m.weapons.map((i) => i.id).includes(weapon.id),
+        m.weapons.map((i) => i.id).includes(weapon.id)
       )
       .find(
         (m: VehicleData.CrewMember) =>
-          m.actor?.type === 'npc' || m.actor?.isOwner,
+          m.actor?.type === 'npc' || m.actor?.isOwner
       )?.actor;
     return user;
   }
@@ -659,7 +658,7 @@ class VehicleData<
   override async toEmbed(
     this: VehicleData,
     config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    options: TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -672,12 +671,12 @@ class VehicleData<
         this.description,
         {
           ...options,
-        },
+        }
       );
     const embed = await createEmbedElement(
       this,
       'systems/swade/templates/embeds/vehicle-embeds.hbs',
-      ['actor-embed', 'vehicle'],
+      ['actor-embed', 'vehicle']
     );
 
     if (embed) {
@@ -689,7 +688,7 @@ class VehicleData<
   }
 
   override getRollData(
-    this: VehicleData<VehicleData.Schema>,
+    this: VehicleData<VehicleData.Schema>
   ): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,

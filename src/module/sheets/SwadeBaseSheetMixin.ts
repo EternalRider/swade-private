@@ -8,8 +8,6 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 type DocumentSheetRenderOptions =
   foundry.applications.api.DocumentSheetV2.RenderOptions;
 
-/* eslint-disable @typescript-eslint/naming-convention */
-
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 export function SwadeBaseSheetMixin<
@@ -41,7 +39,7 @@ export function SwadeBaseSheetMixin<
     static async _onEditImage(
       this: SwadeBaseSheet,
       event: PointerEvent,
-      _target: HTMLImageElement,
+      _target: HTMLImageElement
     ) {
       if (!this.document.img) return;
       if (event.button === 2) {
@@ -74,7 +72,7 @@ export function SwadeBaseSheetMixin<
     static async _openAegis(
       this: SwadeBaseSheet,
       _event: PointerEvent,
-      _target: HTMLImageElement,
+      _target: HTMLImageElement
     ) {
       new ActiveEffectWizard({ document: this.document }).render({
         force: true,
@@ -98,7 +96,7 @@ export function SwadeBaseSheetMixin<
     }
 
     protected override async _prepareContext(
-      options: DocumentSheetRenderOptions,
+      options: DocumentSheetRenderOptions
     ) {
       const context = await super._prepareContext(options);
       return foundry.utils.mergeObject(context, {
@@ -111,7 +109,7 @@ export function SwadeBaseSheetMixin<
       partId: string,
       newElement: HTMLElement,
       priorElement: HTMLElement,
-      state: SwadeBaseSheetMixin.PartState,
+      state: SwadeBaseSheetMixin.PartState
     ) {
       super._preSyncPartState(partId, newElement, priorElement, state);
 
@@ -128,7 +126,7 @@ export function SwadeBaseSheetMixin<
       partId: string,
       newElement: HTMLElement,
       priorElement: HTMLElement,
-      state: SwadeBaseSheetMixin.PartState,
+      state: SwadeBaseSheetMixin.PartState
     ) {
       super._syncPartState(partId, newElement, priorElement, state);
 
@@ -143,7 +141,7 @@ export function SwadeBaseSheetMixin<
 
     protected override async _onFirstRender(
       context: unknown,
-      options: unknown,
+      options: unknown
     ): Promise<void> {
       await super._onFirstRender(context, options);
 
@@ -161,7 +159,7 @@ export function SwadeBaseSheetMixin<
      */
     protected override async _onRender(
       context: DeepPartial<RenderContext>,
-      options: DeepPartial<DocumentSheetRenderOptions>,
+      options: DeepPartial<DocumentSheetRenderOptions>
     ) {
       super._onRender(context, options);
       this.#dragDrop.forEach((d) => d.bind(this.element));
@@ -223,7 +221,7 @@ export function SwadeBaseSheetMixin<
      * @returns The embedded Item or ActiveEffect
      */
     protected _getEmbeddedDocument(
-      target: HTMLElement,
+      target: HTMLElement
     ): Item | ActiveEffect | void {
       const docRow = target.closest<HTMLLIElement>('li[data-document-class]');
       if (!docRow) return;
@@ -245,7 +243,7 @@ export function SwadeBaseSheetMixin<
      */
     protected _getTabs() {
       return Object.values(
-        (this.constructor as typeof SwadeBaseSheet).TABS,
+        (this.constructor as typeof SwadeBaseSheet).TABS
       ).reduce(
         (acc: Record<string, SwadeApplicationTab>, v: SwadeApplicationTab) => {
           const isActive = this.tabGroups[v.group] === v.id;
@@ -268,7 +266,7 @@ export function SwadeBaseSheetMixin<
           };
           return acc;
         },
-        {},
+        {}
       );
     }
 
@@ -294,11 +292,11 @@ export function SwadeBaseSheetMixin<
     /*Disables inputs subject to active effects*/
     protected disableOverrides() {
       const flatOverrides = foundry.utils.flattenObject(
-        this.document.overrides ?? {},
+        this.document.overrides ?? {}
       );
       for (const override of Object.keys(flatOverrides)) {
         const input: HTMLInputElement | null = this.element.querySelector(
-          `[name="${override}"]`,
+          `[name="${override}"]`
         );
         if (input) input.disabled = true;
       }

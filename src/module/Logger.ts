@@ -100,5 +100,3 @@ interface LogMessageOptions
   force?: boolean;
   toast?: boolean;
 }
-
-ui.notifications;

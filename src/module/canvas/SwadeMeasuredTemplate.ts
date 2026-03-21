@@ -6,8 +6,9 @@ declare global {
   }
 }
 
-export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
-  .MeasuredTemplate {
+export default class SwadeMeasuredTemplate
+  extends foundry.canvas.placeables.MeasuredTemplate
+{
   handlers: Record<string, (...args) => void> = {};
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
@@ -23,7 +24,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
 
     CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(
       preset,
-      item,
+      item
     );
     if (CONFIG.SWADE.activeMeasuredTemplatePreview)
       CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
@@ -42,7 +43,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     };
 
     const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find(
-      (c) => c.button.name === preset,
+      (c) => c.button.name === preset
     );
     if (!presetPrototype) return null;
 
@@ -51,7 +52,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       foundry.utils.mergeObject(templateBaseData, presetPrototype.data),
       {
         parent: canvas.scene ?? undefined,
-      },
+      }
     );
 
     //Return the template constructed from the item data
@@ -79,7 +80,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       const now = Date.now(); // Apply a 20ms throttle
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
-      const snapped = canvas.grid.getSnappedPoint(center, {
+      const snapped = canvas.grid!.getSnappedPoint(center, {
         mode: CONST.GRID_SNAPPING_MODES.CENTER,
         resolution: 2,
       });
@@ -98,7 +99,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     // Confirm the workflow (left-click)
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
-      const dest = canvas.grid.getSnappedPoint(this.document, {
+      const dest = canvas.grid!.getSnappedPoint(this.document, {
         mode: CONST.GRID_SNAPPING_MODES.CENTER,
         resolution: 2,
       });
@@ -154,11 +155,11 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     direction: number,
     angle: number,
     distance: number,
-    gridWidth: number,
+    gridWidth: number
   ): PIXI.Polygon {
     // Special case to handle the base SWADE cone rather than a normal cone definition
     if (angle === 0) {
-      const coneEndRadius = game.canvas.grid.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
+      const coneEndRadius = game.canvas.grid?.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
       const coneLength = distance - coneEndRadius; //Calculate where the cone ends and the circle begins
       const da = 3;
       const c = Ray.fromAngle(0, 0, direction, coneLength);
@@ -167,14 +168,14 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
         .concat([180 / 2]);
       // Get the cone shape as a polygon
       const rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius),
+        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius)
       );
       const points = rays
         .reduce(
           (arr, r) => {
             return arr.concat([c.B.x + r.B.x, c.B.y + r.B.y]);
           },
-          [0, 0],
+          [0, 0]
         )
         .concat([0, 0]);
       return new PIXI.Polygon(points);
@@ -196,7 +197,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     const border = Number(this.document.borderColor);
 
     //get the highlight layer and prep it
-    const layer = canvas.interface.grid.getHighlightLayer(this.highlightId);
+    const layer = canvas.interface?.grid.getHighlightLayer(this.highlightId);
     if (!layer) return;
     layer.clear();
 
@@ -219,7 +220,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
   /** A re-implementation of `BaseGrid#highlightGridPosition()` to force gridless behavior */
   private _highlightGridArea(
     layer: GridHighlight,
-    { color, border, alpha = 0.25, shape }: IGridHighLightOptions,
+    { color, border, alpha = 0.25, shape }: IGridHighLightOptions
   ) {
     layer.beginFill(color, alpha);
     if (border) layer.lineStyle(2, border, Math.min(alpha * 1.5, 1.0));

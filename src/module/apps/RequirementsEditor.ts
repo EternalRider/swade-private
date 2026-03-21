@@ -5,11 +5,10 @@ import { EdgeData } from '../data/item/edge';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Requirement } from '../documents/item/SwadeItem.interface';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class RequirementsEditor extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   constructor({ edge, ...options }: RequirementsEditorConfiguration) {
     if (!(edge['system'] instanceof EdgeData)) {
@@ -19,7 +18,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
 
     this.#requirements = foundry.utils.getProperty(
       edge,
-      'system.requirements',
+      'system.requirements'
     ) as Requirement[];
     this.#edge = edge;
   }
@@ -34,7 +33,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
     },
     position: {
       width: 600,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'requirements-editor', 'swade-application'],
     tag: 'form',
@@ -72,11 +71,11 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
     this: RequirementsEditor,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: FormDataExtended
   ) {
     const requirements = Object.values<Requirement>(
       // This maps the incoming formdata to an actual array of requirements
-      foundry.utils.expandObject(formData.object).system?.requirements ?? {},
+      foundry.utils.expandObject(formData.object).system?.requirements ?? {}
     );
     const changes = { type: 'edge', system: { requirements } };
     try {
@@ -112,7 +111,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
         buttons: [
           { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' },
         ],
-      },
+      }
     );
     return context;
   }
@@ -120,7 +119,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   static async #addRequirement(
     this: RequirementsEditor,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     const newReq =
       this.#requirements.length > 0
@@ -137,7 +136,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   static async #deleteRequirement(
     this: RequirementsEditor,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const index = target.closest('li')?.dataset.index;
     this.#requirements.findSplice((_v, i) => i === Number(index));
@@ -149,7 +148,7 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
     target
       .closest('li')
       ?.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-        '[name$="selector"], [name$="value"]',
+        '[name$="selector"], [name$="value"]'
       )
       .forEach((el) => (el.value = ''));
   }
@@ -196,11 +195,10 @@ export class RequirementsEditor extends HandlebarsApplicationMixin(
   async #updateDocument() {
     await this.edge.update(
       { 'system.requirements': this.#requirements },
-      { diff: false },
+      { diff: false }
     );
   }
 }
-interface RequirementsEditorConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface RequirementsEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   edge: SwadeItem;
 }

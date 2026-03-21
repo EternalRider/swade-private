@@ -40,7 +40,7 @@ export default class SwadeUser extends User {
         {
           target: game.user,
           speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
-        },
+        }
       );
       const chatData = {
         content: message,
@@ -64,7 +64,7 @@ export default class SwadeUser extends User {
           game.user!,
           true,
           null,
-          false,
+          false
         );
       }
 
@@ -114,7 +114,7 @@ export default class SwadeUser extends User {
   protected override async _onUpdate(
     changed: foundry.documents.BaseUser.UpdateData,
     options: User.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     await super._onUpdate(changed, options, userId);
 
@@ -134,7 +134,7 @@ export interface DsnCustomWildDieColors {
   edgeColor: string;
 }
 export interface DsnCustomWildDieOptions {
-  texture: Array<string>;
+  texture: string[];
   material: 'plastic' | 'metal' | 'glass' | 'wood' | 'chrome';
   font: string;
 }

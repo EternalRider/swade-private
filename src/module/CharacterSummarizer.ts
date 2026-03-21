@@ -16,7 +16,7 @@ export default class CharacterSummarizer {
 
     if (!CharacterSummarizer.isSupportedActorType(actor)) {
       ui.notifications.error(
-        game.i18n.format('SWADE.CharacterSummaryTypeErr', { type: actor.type }),
+        game.i18n.format('SWADE.CharacterSummaryTypeErr', { type: actor.type })
       );
       this.summary = '';
       return;
@@ -107,35 +107,35 @@ export default class CharacterSummarizer {
       foundry.utils.getProperty(this.actor.system, 'bennies.max') + '</p>';
 
     // Attributes
-    const attributes = new Array();
+    const attributes: string[] = [];
     attributes.push(
       game.i18n.localize('SWADE.AttrAgiShort') +
         ' ' +
-        this._formatDieStat(this.actor, 'attributes.agility.die'),
+        this._formatDieStat(this.actor, 'attributes.agility.die')
     );
     attributes.push(
       game.i18n.localize('SWADE.AttrSmaShort') +
         ' ' +
-        this._formatDieStat(this.actor, 'attributes.smarts.die'),
+        this._formatDieStat(this.actor, 'attributes.smarts.die')
     );
     attributes.push(
       game.i18n.localize('SWADE.AttrSprShort') +
         ' ' +
-        this._formatDieStat(this.actor, 'attributes.spirit.die'),
+        this._formatDieStat(this.actor, 'attributes.spirit.die')
     );
     attributes.push(
       game.i18n.localize('SWADE.AttrStrShort') +
         ' ' +
-        this._formatDieStat(this.actor, 'attributes.strength.die'),
+        this._formatDieStat(this.actor, 'attributes.strength.die')
     );
     attributes.push(
       game.i18n.localize('SWADE.AttrVigShort') +
         ' ' +
-        this._formatDieStat(this.actor, 'attributes.vigor.die'),
+        this._formatDieStat(this.actor, 'attributes.vigor.die')
     );
     summary += this._formatList(
       attributes,
-      game.i18n.localize('SWADE.Attributes'),
+      game.i18n.localize('SWADE.Attributes')
     );
 
     // Speed, pace, toughness
@@ -174,7 +174,11 @@ export default class CharacterSummarizer {
     for (const item of this.actor.items) {
       switch (item.type) {
         case 'skill':
-          skills.push(item.name + ' ' + this._formatDieStat(item, 'die'));
+          skills.push(
+            item.name +
+              ' ' +
+              this._formatDieStat(item as SwadeItem<'skill'>, 'die')
+          );
           break;
         case 'edge':
           edges.push(item.name as string);
@@ -186,7 +190,7 @@ export default class CharacterSummarizer {
           weaponsAndArmour.push(
             `${item.name} (${item.system.damage}, ${item.system.range}, ` +
               `${game.i18n.localize('SWADE.Ap')}${item.system.ap}, ` +
-              `${game.i18n.localize('SWADE.RoF')}${item.system.rof})`,
+              `${game.i18n.localize('SWADE.RoF')}${item.system.rof})`
           );
           break;
         case 'armor':
@@ -194,7 +198,7 @@ export default class CharacterSummarizer {
           break;
         case 'shield':
           weaponsAndArmour.push(
-            `${item.name} (+${item.system.parry} / ${item.system.cover})`,
+            `${item.name} (+${item.system.parry} / ${item.system.cover})`
           );
           break;
         case 'gear':
@@ -222,22 +226,22 @@ export default class CharacterSummarizer {
     summary += this._formatList(edges, game.i18n.localize('SWADE.Edges'));
     summary += this._formatList(
       hindrances,
-      game.i18n.localize('SWADE.Hindrances'),
+      game.i18n.localize('SWADE.Hindrances')
     );
 
     summary += this._formatList(
       weaponsAndArmour,
-      game.i18n.localize('SWADE.WeaponsAndArmor'),
+      game.i18n.localize('SWADE.WeaponsAndArmor')
     );
     summary += this._formatList(
       consumables,
-      game.i18n.localize('SWADE.Consumable.Consumables'),
+      game.i18n.localize('SWADE.Consumable.Consumables')
     );
     summary += this._formatList(gear, game.i18n.localize('SWADE.Inv'));
     summary += this._formatList(powers, game.i18n.localize('SWADE.Pow'));
     summary += this._formatList(
       abilities,
-      game.i18n.localize('SWADE.SpecialAbilities'),
+      game.i18n.localize('SWADE.SpecialAbilities')
     );
 
     // Additional stats
@@ -258,32 +262,31 @@ export default class CharacterSummarizer {
           break;
         case 'Die':
           additionalStats.push(
-            `${stat.label}: ${stat.value}` +
-              this._formatModifier(stat.modifier),
+            `${stat.label}: ${stat.value}` + this._formatModifier(stat.modifier)
           );
           break;
         case 'Boolean':
           if (stat.value) {
             additionalStats.push(
-              `${stat.label}: ${game.i18n.localize('SWADE.Yes')}`,
+              `${stat.label}: ${game.i18n.localize('SWADE.Yes')}`
             );
           } else {
             additionalStats.push(
-              `${stat.label}: ${game.i18n.localize('SWADE.No')}`,
+              `${stat.label}: ${game.i18n.localize('SWADE.No')}`
             );
           }
           break;
         default:
           Logger.error(
             `For ${key}, cannot process additionalStat of type ${stat.dtype}`,
-            { toast: true },
+            { toast: true }
           );
       }
     }
 
     summary += this._formatList(
       additionalStats,
-      game.i18n.localize('SWADE.AddStats'),
+      game.i18n.localize('SWADE.AddStats')
     );
 
     return summary;
@@ -300,14 +303,14 @@ export default class CharacterSummarizer {
     return val;
   }
 
-  private _formatDieStat(document: SwadeItem | SwadeActor, dataKey: String) {
+  private _formatDieStat(document: SwadeItem | SwadeActor, dataKey: string) {
     const sides = foundry.utils.getProperty(
       document.system,
-      dataKey + '.sides',
+      dataKey + '.sides'
     );
     const modifier = foundry.utils.getProperty(
       document.system,
-      dataKey + '.modifier',
+      dataKey + '.modifier'
     );
     const val = `d${sides}` + this._formatModifier(modifier);
     return val;

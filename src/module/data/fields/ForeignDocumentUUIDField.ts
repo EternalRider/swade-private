@@ -18,17 +18,15 @@ declare namespace ForeignDocumentUUIDField {
 }
 
 export class ForeignDocumentUUIDField<
-  const Options extends
-    ForeignDocumentUUIDField.Options = ForeignDocumentUUIDField.DefaultOptions,
-  // eslint-disable-next-line deprecation/deprecation
-  const AssignmentType = foundry.data.fields.StringField.AssignmentType<Options>,
+  const Options extends ForeignDocumentUUIDField.Options =
+    ForeignDocumentUUIDField.DefaultOptions,
+  const AssignmentType =
+    foundry.data.fields.StringField.AssignmentType<Options>,
   const InitializedType =
     | foundry.data.fields.StringField.InitializedType<Options>
     | foundry.abstract.Document.Any,
-  const PersistedType extends
-    | string
-    | null
-    | undefined = foundry.data.fields.StringField.InitializedType<Options>,
+  const PersistedType extends string | null | undefined =
+    foundry.data.fields.StringField.InitializedType<Options>,
 > extends foundry.data.fields.DocumentUUIDField<
   Options,
   AssignmentType,

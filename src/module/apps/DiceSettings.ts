@@ -1,13 +1,12 @@
 import { SWADE } from '../config';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
  * This class defines a submenu for the system settings which will handle the DSN Settings
  */
 export default class DiceSettings extends HandlebarsApplicationMixin(
-  ApplicationV2,
+  ApplicationV2
 ) {
   config = SWADE.diceConfig;
   customWildDieDefaultColors = this.config.flags.dsnCustomWildDieColors.default;
@@ -87,7 +86,7 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
             label: 'SETTINGS.Reset',
           },
         ],
-      },
+      }
     );
 
     return context;
@@ -97,7 +96,7 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
     this: DiceSettings,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: FormDataExtended
   ) {
     const expandedFormData = foundry.utils.expandObject(formData.object) as any;
     const { diceColor, edgeColor, labelColor, outlineColor } =
@@ -128,7 +127,7 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
   static async #resetSettings(
     this: DiceSettings,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     for (const flag in this.config.flags) {
       const resetValue = this.config.flags[flag].default;

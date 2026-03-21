@@ -23,7 +23,6 @@ import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import DocumentSheet = foundry.applications.api.DocumentSheet;
 
 export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
@@ -35,7 +34,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     actions: {},
     effects: {},
   };
-  #effectCreateDropDown: ContextMenu<false>;
+  private _effectCreateDropDown: ContextMenu<false>;
 
   static override DEFAULT_OPTIONS = {
     classes: [
@@ -313,7 +312,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   override async _onRender(
     context: ItemSheetRenderContext,
-    options: DeepPartial<DocumentSheet.RenderOptions>,
+    options: DeepPartial<DocumentSheet.RenderOptions>
   ) {
     await super._onRender(context, options);
 
@@ -336,11 +335,11 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
             content,
             {
               secrets: this.item.isOwner,
-            },
+            }
           ),
           cssClass: 'themed theme-dark',
         });
-      }),
+      })
     );
 
     // Charge input fields
@@ -349,10 +348,10 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
       el.addEventListener('change', async (ev) => {
         const charges = this.item.system.charges;
         charges.default[ev.currentTarget.dataset.name] = Number(
-          ev.currentTarget.value,
+          ev.currentTarget.value
         );
         this.item.update({ 'system.charges.charges': charges.charges });
-      }),
+      })
     );
 
     new ChargeDragSort(this.element, this.item);
@@ -363,7 +362,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   override async _onFirstRender(
     context: ItemSheetRenderContext,
-    options: DeepPartial<DocumentSheet.RenderOptions>,
+    options: DeepPartial<DocumentSheet.RenderOptions>
   ) {
     await super._onFirstRender(context, options);
 
@@ -374,7 +373,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #inlineDelete(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     await this.item.delete();
   }
@@ -382,7 +381,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #addAction(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     const id = foundry.utils.randomID(8);
     this.collapsibleStates[id] = true;
@@ -399,7 +398,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #addCharge(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     const id = ChargesData.randomID();
     const charges = this.item.system.charges.charges;
@@ -417,12 +416,12 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #deleteAction(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const id = target.dataset.actionId;
     const action = foundry.utils.getProperty(
       this.item,
-      `system.actions.additional.${id}`,
+      `system.actions.additional.${id}`
     ) as ItemAction;
     if (!action) return;
     const text = game.i18n.format('SWADE.DeleteEmbeddedActionPrompt', {
@@ -443,7 +442,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #deleteCharge(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const id = target.dataset.chargeId;
     const charge = this.item.system.charges.find(id);
@@ -468,7 +467,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #deletePower(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const id = target.closest('details')?.dataset.powerId;
     if (!id) return;
@@ -489,7 +488,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #deleteGrant(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const uuid = target.closest<HTMLLIElement>('.granted-item')?.dataset.uuid;
     const grants = this.item.grantsItems;
@@ -500,7 +499,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #openItem(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const uuid = target.closest<HTMLLIElement>('.granted-item')?.dataset.uuid;
     const doc = (await fromUuid(uuid)) as SwadeItem | null;
@@ -510,7 +509,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #effectAction(
     this: SwadeItemSheetV2,
     event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     event.preventDefault();
     event.stopPropagation();
@@ -530,8 +529,8 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   static async #rechargeAction(
     this: SwadeItemSheetV2,
-    event: PointerEvent,
-    target: HTMLElement,
+    _event: PointerEvent,
+    target: HTMLElement
   ) {
     const action = target.dataset.action;
     if (action === 'rechargeManual') {
@@ -569,7 +568,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #rollDamage(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const id = target.closest('details')?.dataset.powerId;
     if (!id) return;
@@ -580,7 +579,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #rollAdditionalStat(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    target: HTMLElement,
+    target: HTMLElement
   ) {
     const stat = target.dataset.stat;
     await this.item.system.rollAdditionalStat(stat);
@@ -589,7 +588,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #useConsumable(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     await this.item.consume();
   }
@@ -597,7 +596,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #openRequirementsEditor(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     new RequirementsEditor({ edge: this.item }).render({ force: true });
   }
@@ -605,7 +604,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   static async #openTweaks(
     this: SwadeItemSheetV2,
     _event: PointerEvent,
-    _target: HTMLElement,
+    _target: HTMLElement
   ) {
     new SwadeItemTweaks({ document: this.document }).render({ force: true });
   }
@@ -639,7 +638,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
         additionalStats: additionalStats,
         collapsibleStates: this.collapsibleStates,
         enrichedDescription: await this.#enrichText(
-          this.item.system.description,
+          this.item.system.description
         ),
         equipStatusOptions: this.#equipStatusOptions(),
         grantOnTriggers: this.#getGrantOnTriggers(),
@@ -658,7 +657,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
         },
         showEnergy: !!game.settings.get('swade', 'vehicleEnergy'),
         showMods: game.settings.get('swade', 'vehicleMods'),
-      },
+      }
     );
 
     if (this.item.canGrantItems) {
@@ -674,8 +673,8 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
           effect.description,
           {
             secrets: this.item.isOwner,
-          },
-        ),
+          }
+        )
       );
     }
 
@@ -688,7 +687,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
           isArchetype: subtype === constants.ABILITY_TYPE.ARCHETYPE,
         };
         context.abilitySubtypeOptions = this.#getAbilitySubtypeOptions(
-          SWADE.abilitySheet,
+          SWADE.abilitySheet
         );
         break;
       }
@@ -708,14 +707,14 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
               .filter(
                 (i) =>
                   i.type === 'consumable' &&
-                  i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE,
+                  i.system.subtype === constants.CONSUMABLE_TYPE.MAGAZINE
               )
               .map((i) => i.name) as string[];
             context.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
             break;
           case constants.RELOAD_TYPE.PP:
             context.ammoList = Object.keys(
-              this.actor?.system?.powerPoints ?? {},
+              this.actor?.system?.powerPoints ?? {}
             );
             context.ppReload = true;
             break;
@@ -724,7 +723,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
               .filter(
                 (i) =>
                   i.type === 'consumable' &&
-                  i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY,
+                  i.system.subtype === constants.CONSUMABLE_TYPE.BATTERY
               )
               .map((i) => i.name) as string[];
             context.ammoLoaded = this.item.getFlag('swade', 'loadedAmmo')?.name;
@@ -782,7 +781,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
       context.embeddedPowers = this.item.embeddedPowers;
       for (const [, power] of context.embeddedPowers!) {
         power.enrichedDescription = await this.#enrichText(
-          power.system.description,
+          power.system.description
         );
       }
       context.dieSideOptions =
@@ -827,13 +826,13 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     event: SubmitEvent,
     form: HTMLFormElement,
     formData: FormDataExtended,
-    updateData?: unknown,
+    updateData?: unknown
   ) {
     const submitData = super._prepareSubmitData(
       event,
       form,
       formData,
-      updateData,
+      updateData
     );
     if (this.type !== 'skill') {
       // Prevent submitting overridden values
@@ -863,7 +862,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
         foundry.utils.setProperty(
           submitData,
           'system.charges.charges',
-          this.item.system.charges.charges,
+          this.item.system.charges.charges
         );
       }
     }
@@ -928,7 +927,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   async #onDropItem(event: DragEvent, data) {
     const item = await CONFIG.Item.documentClass.fromDropData(data);
     Logger.debug(
-      `Trying to add ${data.type} ${item.uuid} to ${this.item.type}/${this.item.name}`,
+      `Trying to add ${data.type} ${item.uuid} to ${this.item.type}/${this.item.name}`
     );
 
     if (item.type === 'ability' && item.system.subtype !== 'special') {
@@ -1000,7 +999,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     //otherwise we ask to copy or replace the current actions
     const existingActions = foundry.utils.getProperty(
       item,
-      actionKey,
+      actionKey
     ) as ItemActions;
     foundry.applications.api.DialogV2.wait({
       window: {
@@ -1033,7 +1032,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
           callback: () =>
             this.item.update(
               { [actionKey]: existingActions },
-              { recursive: false, diff: false },
+              { recursive: false, diff: false }
             ),
         },
       ],
@@ -1042,7 +1041,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   async #deleteEmbeddedDocument(id: string) {
     const flagContent = this.item.getFlag('swade', 'embeddedPowers') ?? [];
-    const map = new Map(flagContent as Array<[string, ItemData]>);
+    const map = new Map(flagContent as [string, ItemData][]);
     map.delete(id);
     this.item.setFlag('swade', 'embeddedPowers', Array.from(map));
   }
@@ -1053,7 +1052,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
 
   #getAdditionalStats(): AdditionalStats {
     const stats = foundry.utils.deepClone(
-      this.item.system.additionalStats,
+      this.item.system.additionalStats
     ) as AdditionalStats;
     const options = game.settings.get('swade', 'settingFields').item;
     for (const [key, attr] of Object.entries(stats)) {
@@ -1099,7 +1098,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     return this.item.type === 'consumable' ? options.slice(0, 2) : options;
   }
   #getAbilitySubtypeOptions(
-    abilityLocalization: typeof SWADE.abilitySheet,
+    abilityLocalization: typeof SWADE.abilitySheet
   ): Record<string, string> {
     return {
       special: abilityLocalization.special.dropdown,
@@ -1179,7 +1178,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
   }
 
   #setupEffectCreateMenu(html: HTMLElement) {
-    this.#effectCreateDropDown =
+    this._effectCreateDropDown =
       new foundry.applications.ux.ContextMenu.implementation(
         html,
         '.effects .header',
@@ -1210,7 +1209,7 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
           eventName: 'click',
           jQuery: false,
           fixed: true,
-        },
+        }
       );
   }
 
@@ -1218,13 +1217,13 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<
     const name = SwadeActiveEffect.defaultName({ type, parent: this.item });
     return ActiveEffect.create(
       { name, type },
-      { parent: this.item, renderSheet: true },
+      { parent: this.item, renderSheet: true }
     );
   }
 
   #toggleEffect(
     doc: SwadeActiveEffect,
-    toggle: string,
+    toggle: string
   ): Record<string, unknown> {
     const oldVal = !!foundry.utils.getProperty(doc, toggle);
     return { [toggle]: !oldVal };
@@ -1345,7 +1344,7 @@ class ChargeDragSort {
     ev.dataTransfer.setDragImage(
       this.dragging,
       ev.x - liRect.left,
-      ev.y - liRect.top,
+      ev.y - liRect.top
     );
   }
 
@@ -1385,8 +1384,7 @@ class ChargeDragSort {
   }
 }
 
-interface ItemSheetRenderContext
-  extends DocumentSheet.RenderContext<SwadeItem> {
+interface ItemSheetRenderContext extends DocumentSheet.RenderContext<SwadeItem> {
   abilityConfig?: {
     localization: typeof SWADE.abilitySheet;
     abilityHeader: string;

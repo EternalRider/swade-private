@@ -1,22 +1,22 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
+import SwadeToken from '../canvas/SwadeToken';
 import {
+  clearDescriptionCache,
+  clearTemplateCache,
+  getDescriptionCacheStats,
+  getEnrichedDescription,
+  getTemplateCacheStats,
   initializeDescriptionCache,
   initializeTemplateCache,
-  clearDescriptionCache,
-  getDescriptionCacheStats,
-  clearTemplateCache,
-  getTemplateCacheStats,
-  getEnrichedDescription,
 } from '../hud/hud-context';
 import {
-  handleSwadeHUDTokenDeleted,
   getHudApp,
+  handleSwadeHUDTokenDeleted,
   hideSwadeHUD,
   isSwadePC,
   switchHudToToken,
   toggleSwadeHUD,
 } from '../hud/hud-control';
-import SwadeToken from '../canvas/SwadeToken';
 
 /**
  * List of Handlebars template paths used by the SWADE HUD system.
@@ -77,7 +77,6 @@ Hooks.once('canvasReady', () => {
  */
 // The project's fvtt typings mark Hooks.on as deprecated; this usage is intentional and
 // compatible with the runtime Foundry API. Suppress the deprecation lint for this hook.
-// eslint-disable-next-line deprecation/deprecation
 Hooks.on('controlToken', async (token: SwadeToken, controlled: boolean) => {
   try {
     if (!isSwadePC(token)) return;
@@ -95,10 +94,13 @@ Hooks.on('controlToken', async (token: SwadeToken, controlled: boolean) => {
     setTimeout(() => {
       const controlledTokens = canvas.tokens?.controlled || [];
       const swadeControlledTokens = controlledTokens.filter((t: any) =>
-        isSwadePC(t),
+        isSwadePC(t)
       );
 
-      if (swadeControlledTokens.length === 0 && getHudApp()?.closeOnTokenUnselected) {
+      if (
+        swadeControlledTokens.length === 0 &&
+        getHudApp()?.closeOnTokenUnselected
+      ) {
         // No more controlled SWADE tokens, close HUD
         hideSwadeHUD();
       }

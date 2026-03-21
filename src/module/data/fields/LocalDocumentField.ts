@@ -8,9 +8,8 @@ declare namespace LocalDocumentField {
 
 class LocalDocumentField<
   DocumentType extends foundry.abstract.Document.AnyConstructor,
-  Options extends
-    LocalDocumentField.Options = foundry.data.fields.ForeignDocumentField.DefaultOptions,
-  // eslint-disable-next-line deprecation/deprecation
+  Options extends LocalDocumentField.Options =
+    foundry.data.fields.ForeignDocumentField.DefaultOptions,
   AssignmentType = foundry.data.fields.ForeignDocumentField.AssignmentType<
     DocumentType,
     Options
@@ -19,10 +18,8 @@ class LocalDocumentField<
     DocumentType,
     Options
   >,
-  PersistedType extends
-    | string
-    | null
-    | undefined = foundry.data.fields.ForeignDocumentField.PersistedType<Options>,
+  PersistedType extends string | null | undefined =
+    foundry.data.fields.ForeignDocumentField.PersistedType<Options>,
 > extends foundry.data.fields.ForeignDocumentField<
   DocumentType,
   Options,
@@ -34,13 +31,13 @@ class LocalDocumentField<
     if (typeof value === 'string') return value;
     if (value instanceof this.model) return value._id;
     throw new Error(
-      `The value provided to a ${this.constructor.name} must be a ${this.model.name} instance.`,
+      `The value provided to a ${this.constructor.name} must be a ${this.model.name} instance.`
     );
   }
   override initialize(
     value: PersistedType,
     model: foundry.abstract.Document.Any,
-    _options?: AnyObject,
+    _options?: AnyObject
   ): InitializedType | (() => InitializedType | null) {
     if (this.idOnly) return value;
     if (
@@ -56,7 +53,7 @@ class LocalDocumentField<
   override _toInput(
     config:
       | foundry.data.fields.DataField.ToInputConfig<InitializedType>
-      | foundry.data.fields.DataField.ToInputConfigWithOptions<InitializedType> = {},
+      | foundry.data.fields.DataField.ToInputConfigWithOptions<InitializedType> = {}
   ) {
     // Prepare array of visible options
     const collection =
