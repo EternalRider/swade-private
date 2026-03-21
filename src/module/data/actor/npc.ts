@@ -16,11 +16,7 @@ declare namespace NpcData {
   interface DerivedData extends CreatureData.DerivedData {}
 }
 
-export class NpcData extends CreatureData<
-  NpcData.Schema & WildCardDataSchema,
-  NpcData.BaseData,
-  NpcData.DerivedData
-> {
+export class NpcData extends CreatureData<NpcData.Schema & WildCardDataSchema, NpcData.BaseData, NpcData.DerivedData> {
   static override defineSchema(): NpcData.Schema {
     return {
       ...super.defineSchema(),
@@ -37,34 +33,23 @@ export class NpcData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      NpcData.Schema,
-      Actor<'npc'>
-    >,
+    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<NpcData.Schema, Actor<'npc'>>,
     options: Actor.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(createData, options, user);
     if (allowed === false) return false;
 
     //Handle starting currency
-    if (
-      !this.parent._stats.compendiumSource &&
-      !this.parent._stats.duplicateSource
-    ) {
+    if (!this.parent._stats.compendiumSource && !this.parent._stats.duplicateSource) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
 
   protected override _onUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        NpcData.Schema,
-        Actor<'npc'>
-      >
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<NpcData.Schema, Actor<'npc'>>>,
     options: Actor.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     super._onUpdate(changed, options, userId);
     ui.actors?.render(true);
@@ -74,50 +59,41 @@ export class NpcData extends CreatureData<
 
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    options: TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createEnrichedTextEmbed(
-        this.details.biography.value || '',
-        config,
-        options,
-      );
+      return createEnrichedTextEmbed(this.details.biography.value || '', config, options);
     }
 
     config.caption = false;
 
     // Enrich biography text
-    this.enrichedBiography =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.details.biography.value,
-        { ...options },
-      );
+    this.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      this.details.biography.value,
+      { ...options }
+    );
 
     // Combine weapons and armor into a displayable gear array
-    const displayableGear = this.parent.itemTypes.armor.concat(
-      this.parent.itemTypes.weapon,
-    );
+    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
 
     // Enrich and strip ability descriptions to plain text
     if (this.parent.itemTypes.ability) {
       for (const ability of this.parent.itemTypes.ability) {
-        const enrichedHTML =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            ability.system.description,
-            { ...options },
-          );
+        const enrichedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          ability.system.description,
+          { ...options }
+        );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
     }
 
     // Create the embed element
-    const embed = await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/actor-embeds.hbs',
-      ['actor-embed', 'npc'],
-    );
+    const embed = await createEmbedElement(this, 'systems/swade/templates/embeds/actor-embeds.hbs', [
+      'actor-embed',
+      'npc',
+    ]);
 
     if (embed) {
       // See src/globals.d.ts for docs

@@ -32,9 +32,5 @@ async function setupDiscardPile() {
     name: 'Action Cards Discard Pile',
     type: 'pile',
   });
-  await game.settings.set(
-    'swade',
-    'actionDeckDiscardPile',
-    newDiscardPile?.id ?? ''
-  );
+  await game.settings.set('swade', 'actionDeckDiscardPile', newDiscardPile?.id ?? '');
 }

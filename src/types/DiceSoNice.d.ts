@@ -73,10 +73,7 @@ export declare class Dice3D {
    * @param data The informations on the new dice preset (see below)
    * @param shape should be explicit when using a custom die term. Supported shapes are d2,d4,d6,d8,d10,d12,d20
    */
-  addDicePreset(
-    data: DicePresetData,
-    shape?: 'd2' | 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20'
-  ): void;
+  addDicePreset(data: DicePresetData, shape?: 'd2' | 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20'): void;
 }
 
 interface Dice3DExports {

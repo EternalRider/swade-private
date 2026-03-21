@@ -2,30 +2,11 @@
   {{#if isTraitRoll}}
     <fieldset class='flexrow'>
       <legend>{{localize 'SWADE.MAPenalty.Label'}}</legend>
-      <input
-        type='radio'
-        id='map-none'
-        name='map'
-        value='0'
-        data-dtype='Number'
-        checked
-      />
+      <input type='radio' id='map-none' name='map' value='0' data-dtype='Number' checked />
       <label for='map-none'>{{localize 'SWADE.MAPenalty.None'}}</label>
-      <input
-        type='radio'
-        id='map-2'
-        name='map'
-        value='-2'
-        data-dtype='Number'
-      />
+      <input type='radio' id='map-2' name='map' value='-2' data-dtype='Number' />
       <label for='map-2'>-2</label>
-      <input
-        type='radio'
-        id='map-4'
-        name='map'
-        value='-4'
-        data-dtype='Number'
-      />
+      <input type='radio' id='map-4' name='map' value='-4' data-dtype='Number' />
       <label for='map-4'>-4</label>
     </fieldset>
   {{/if}}
@@ -41,24 +22,14 @@
         <li class='modifier-entry'>
           <div>{{label}}</div>
           <div>{{value}}</div>
-          <input
-            type='checkbox'
-            data-index={{@index}}
-            name='modifiers.{{@index}}.active'
-            {{checked (not ignore)}}
-          />
+          <input type='checkbox' data-index={{@index}} name='modifiers.{{@index}}.active' {{checked (not ignore)}} />
         </li>
       {{else}}
         <li class='empty-hint no-modifiers'>{{localize 'SWADE.Mod.None'}}</li>
       {{/each}}
     </ul>
     <div class='modifier-entry footer'>
-      <input
-        type='text'
-        class='new-modifier-label'
-        placeholder='{{localize "SWADE.Name"}}'
-        list='modifier-names'
-      />
+      <input type='text' class='new-modifier-label' placeholder='{{localize "SWADE.Name"}}' list='modifier-names' />
       <input
         type='text'
         class='new-modifier-value'
@@ -81,12 +52,7 @@
         {{localize 'SWADE.Mod.Preset.Choose'}}
       </button>
       <div class='dropdown collapsed' role='listbox'>
-        <input
-          class='searchBox'
-          type='search'
-          placeholder='{{localize "FILES.Search"}}'
-          autocomplete='off'
-        />
+        <input class='searchBox' type='search' placeholder='{{localize "FILES.Search"}}' autocomplete='off' />
         <ol class='selections unmarked-list'>
           {{#each modGroups as |group id|}}
             <li class='group-header'>{{group.name}}</li>
@@ -114,12 +80,7 @@
     {{#if isDamageRoll}}
       <div class='form-group'>
         <label for='no-acing'>{{localize 'SWADE.NoAcing'}}</label>
-        <input
-          type='checkbox'
-          id='no-acing'
-          name='noAcing'
-          {{checked noAcing}}
-        />
+        <input type='checkbox' id='no-acing' name='noAcing' {{checked noAcing}} />
       </div>
     {{/if}}
   </fieldset>

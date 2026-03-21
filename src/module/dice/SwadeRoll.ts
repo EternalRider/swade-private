@@ -1,10 +1,5 @@
 import { RollModifier } from '../../interfaces/additional.interface';
-import {
-  RollPart,
-  RollRenderOptions,
-  SwadeRollData,
-  SwadeRollOptions,
-} from '../../interfaces/roll.interface';
+import { RollPart, RollRenderOptions, SwadeRollData, SwadeRollOptions } from '../../interfaces/roll.interface';
 import { Logger } from '../Logger';
 import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -15,8 +10,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
     super(formula, data, options);
   }
 
-  static override CHAT_TEMPLATE =
-    'systems/swade/templates/chat/dice/swade-roll.hbs';
+  static override CHAT_TEMPLATE = 'systems/swade/templates/chat/dice/swade-roll.hbs';
 
   static fromRoll(roll: Roll) {
     const newRoll = new this(roll.formula, roll.data, roll.options);
@@ -43,10 +37,8 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
         blind: msg.blind,
       },
       {
-        rollMode:
-          msg.getFlag('swade', 'rollMode') ??
-          game.settings.get('core', 'rollMode'),
-      },
+        rollMode: msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'rollMode'),
+      }
     );
   }
 
@@ -60,8 +52,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
     const actor = ChatMessage.getSpeakerActor(speaker);
 
     const isGmBenny = !!target.dataset.gmBenny;
-    const spender: SwadeUser | SwadeActor | null =
-      isGmBenny && game.user?.isGM ? game.user : actor;
+    const spender: SwadeUser | SwadeActor | null = isGmBenny && game.user?.isGM ? game.user : actor;
 
     if (!spender?.bennies) {
       return ui.notifications.warn('SWADE.NoBennies', { localize: true });
@@ -82,10 +73,8 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
         blind: msg.blind,
       },
       {
-        rollMode:
-          msg.getFlag('swade', 'rollMode') ??
-          game.settings.get('core', 'rollMode'),
-      },
+        rollMode: msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'rollMode'),
+      }
     );
   }
 
@@ -138,11 +127,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
     return this.options['rollType'];
   }
 
-  async getRenderData(
-    flavor?: string,
-    isPrivate = false,
-    displayResult = true,
-  ): Promise<Record<string, unknown>> {
+  async getRenderData(flavor?: string, isPrivate = false, displayResult = true): Promise<Record<string, unknown>> {
     if (!this._evaluated) await this.evaluate();
     const chatData = {
       isPrivate: isPrivate,
@@ -159,7 +144,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
 
   override async toMessage<const Create extends boolean | null | undefined>(
     messageData: SwadeRoll.MessageData = {},
-    { rollMode, create = true }: Roll.ToMessageOptions<Create> = {},
+    { rollMode, create = true }: Roll.ToMessageOptions<Create> = {}
   ): Promise<Roll.ToMessageReturn<Create>> {
     if (rollMode === 'roll') rollMode = undefined;
     rollMode ||= game.settings.get('core', 'rollMode');
@@ -178,7 +163,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
         sound: CONFIG.sounds.dice,
         'flags.swade.rollMode': rollMode,
       },
-      messageData,
+      messageData
     );
 
     messageData.rolls = [...existingRolls, this];
@@ -192,9 +177,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
     return msg.toObject();
   }
 
-  protected async _getToMessageContent(
-    messageData: ChatMessage.CreateData,
-  ): Promise<string> {
+  protected async _getToMessageContent(messageData: ChatMessage.CreateData): Promise<string> {
     return messageData.content ?? '';
   }
 

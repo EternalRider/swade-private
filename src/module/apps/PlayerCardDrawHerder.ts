@@ -4,9 +4,7 @@ import type SwadeCombatant from '../documents/combat/SwadeCombatant';
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
-  ApplicationV2
-) {
+export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(ApplicationV2) {
   declare ctx: HerderInternalContext;
 
   constructor(
@@ -24,9 +22,7 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
   #callback: () => void;
 
   static asPromise(ctx: HerderConstructionContext): Promise<void> {
-    return new Promise((resolve) =>
-      new PlayerCardDrawHerder(ctx, resolve).render({ force: true })
-    );
+    return new Promise((resolve) => new PlayerCardDrawHerder(ctx, resolve).render({ force: true }));
   }
 
   static override DEFAULT_OPTIONS = {
@@ -52,19 +48,11 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
     footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
-  static #onClose(
-    this: PlayerCardDrawHerder,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static #onClose(this: PlayerCardDrawHerder, _event: PointerEvent, _target: HTMLElement) {
     return this.close();
   }
 
-  static async #onOverride(
-    this: PlayerCardDrawHerder,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #onOverride(this: PlayerCardDrawHerder, _event: PointerEvent, target: HTMLElement) {
     const userId = target.dataset.userId;
     if (!userId) return;
     const draw = this.ctx.draws.find((d) => d.user.id === userId);
@@ -77,29 +65,26 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        draws: this.ctx.draws.map((draw) => {
-          const base = {
-            user: draw.user.name,
-            combatant: draw.combatant.name,
-            icon: this.#getIconForDraw(draw),
-            userId: draw.user.id,
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      draws: this.ctx.draws.map((draw) => {
+        const base = {
+          user: draw.user.name,
+          combatant: draw.combatant.name,
+          icon: this.#getIconForDraw(draw),
+          userId: draw.user.id,
+        };
+        if (draw.state === PlayerDrawState.DRAWING) {
+          (base as any).overrideButton = {
+            type: 'button',
+            action: 'override',
+            icon: 'fa-solid fa-gavel',
+            dataset: { userId: draw.user.id },
           };
-          if (draw.state === PlayerDrawState.DRAWING) {
-            (base as any).overrideButton = {
-              type: 'button',
-              action: 'override',
-              icon: 'fa-solid fa-gavel',
-              dataset: { userId: draw.user.id },
-            };
-          }
-          return base;
-        }),
-        buttons: [{ type: 'button', action: 'close', label: 'Close' }],
-      }
-    );
+        }
+        return base;
+      }),
+      buttons: [{ type: 'button', action: 'close', label: 'Close' }],
+    });
 
     return context;
   }
@@ -120,10 +105,7 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
       Logger.debug('Waiting for user' + draw.user.name);
       //mark the user as drawing
       this.#markPlayer(draw.user.id as string, PlayerDrawState.DRAWING);
-      await this.#promptPlayerForInitiative(
-        draw.user.id as string,
-        draw.combatant.id as string
-      );
+      await this.#promptPlayerForInitiative(draw.user.id as string, draw.combatant.id as string);
     }
     this.#resolve();
   }
@@ -151,11 +133,7 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
         }
       );
       //poke the player client
-      game.swade.sockets.promptInitiative(
-        this.ctx.combatId,
-        userId,
-        combatantId
-      );
+      game.swade.sockets.promptInitiative(this.ctx.combatId, userId, combatantId);
     });
   }
 
@@ -184,19 +162,14 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(
         break;
       case PlayerDrawState.DRAWING:
         classes.push('fa-cards', 'fa-fade');
-        style.push(
-          'color: var(--color-level-info)',
-          '--fa-animation-duration: 2s'
-        );
+        style.push('color: var(--color-level-info)', '--fa-animation-duration: 2s');
         break;
       case PlayerDrawState.DONE:
         classes.push('fa-check');
         style.push('color: var(--color-level-success)');
         break;
     }
-    return new Handlebars.SafeString(
-      `<i class='${classes.join(' ')}' style='${style.join(';')}'></i>`
-    );
+    return new Handlebars.SafeString(`<i class='${classes.join(' ')}' style='${style.join(';')}'></i>`);
   }
 
   protected override _onClose(options) {

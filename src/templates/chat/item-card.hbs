@@ -1,11 +1,7 @@
 {{! This is a basic template for the chat item cards.
 It renders everything, even sections that are not needed to be seen by a given player.
 Unneeded sections are later hidden in the a renderChatMessage hook }}
-<div
-  class='swade chat-card item-card'
-  data-item-id='{{item.id}}'
-  data-item-uuid='{{item.uuid}}'
->
+<div class='swade chat-card item-card' data-item-id='{{item.id}}' data-item-uuid='{{item.uuid}}'>
   <header class='card-header flexrow'>
     <img src='{{item.img}}' title='{{item.name}}' width='36' height='36' />
     <button type='button' class='item-name'>
@@ -171,46 +167,34 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
       </h4>
       <span class='flexrow'>
         {{#if item.system.templates.scone}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='swscone'
-          >{{localize 'SWADE.Templates.SmallCone.Short'}}</button>
+          <button type='button' data-action='template' data-template='swscone'>{{localize
+              'SWADE.Templates.SmallCone.Short'
+            }}</button>
         {{/if}}
         {{#if item.system.templates.cone}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='swcone'
-          >{{localize 'SWADE.Templates.Cone.Short'}}</button>
+          <button type='button' data-action='template' data-template='swcone'>{{localize
+              'SWADE.Templates.Cone.Short'
+            }}</button>
         {{/if}}
         {{#if item.system.templates.stream}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='stream'
-          >{{localize 'SWADE.Templates.Stream.Short'}}</button>
+          <button type='button' data-action='template' data-template='stream'>{{localize
+              'SWADE.Templates.Stream.Short'
+            }}</button>
         {{/if}}
         {{#if item.system.templates.small}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='sbt'
-          >{{localize 'SWADE.Templates.Small.Short'}}</button>
+          <button type='button' data-action='template' data-template='sbt'>{{localize
+              'SWADE.Templates.Small.Short'
+            }}</button>
         {{/if}}
         {{#if item.system.templates.medium}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='mbt'
-          >{{localize 'SWADE.Templates.Medium.Short'}}</button>
+          <button type='button' data-action='template' data-template='mbt'>{{localize
+              'SWADE.Templates.Medium.Short'
+            }}</button>
         {{/if}}
         {{#if item.system.templates.large}}
-          <button
-            type='button'
-            data-action='template'
-            data-template='lbt'
-          >{{localize 'SWADE.Templates.Large.Short'}}</button>
+          <button type='button' data-action='template' data-template='lbt'>{{localize
+              'SWADE.Templates.Large.Short'
+            }}</button>
         {{/if}}
       </span>
     </div>
@@ -239,12 +223,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
           <label>
             <strong>{{localize 'SWADE.PPCost'}}: </strong>
           </label>
-          <input
-            type='number'
-            class='pp-adjust'
-            data-dtype='Number'
-            value='{{item.system.ppModifiers.cost}}'
-          />
+          <input type='number' class='pp-adjust' data-dtype='Number' value='{{item.system.ppModifiers.cost}}' />
         </span>
         {{#if item.system.ppModifiers.modifierList}}
           <span class='flexrow'>
@@ -256,19 +235,11 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
         {{/if}}
         {{#unless settingRules.noPowerPoints}}
           <span class='flexrow'>
-            <button
-              data-action='pp-adjust'
-              data-adjust='plus'
-              title='{{localize "SWADE.AddPPDesc"}}'
-            >
+            <button data-action='pp-adjust' data-adjust='plus' title='{{localize "SWADE.AddPPDesc"}}'>
               &plus;
               {{localize 'SWADE.Add'}}
             </button>
-            <button
-              data-action='pp-adjust'
-              data-adjust='minus'
-              title='{{localize "SWADE.SubtractPPDesc"}}'
-            >
+            <button data-action='pp-adjust' data-adjust='minus' title='{{localize "SWADE.SubtractPPDesc"}}'>
               &minus;
               {{localize 'SWADE.Subtract'}}
             </button>
@@ -290,35 +261,18 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
           <label>
             <strong>{{localize 'SWADE.PPCost'}}: </strong>
           </label>
-          <input
-            type='number'
-            class='pp-adjust'
-            data-dtype='Number'
-            value='1'
-          />
+          <input type='number' class='pp-adjust' data-dtype='Number' value='1' />
         </span>
         <span class='flexrow'>
-          <button
-            data-action='pp-adjust'
-            data-adjust='plus'
-            title='{{localize "SWADE.AddPPDesc"}}'
-          >
+          <button data-action='pp-adjust' data-adjust='plus' title='{{localize "SWADE.AddPPDesc"}}'>
             &plus;
             {{localize 'SWADE.Add'}}
           </button>
-          <button
-            data-action='pp-adjust'
-            data-adjust='minus'
-            title='{{localize "SWADE.SubtractPPDesc"}}'
-          >
+          <button data-action='pp-adjust' data-adjust='minus' title='{{localize "SWADE.SubtractPPDesc"}}'>
             &minus;
             {{localize 'SWADE.Subtract'}}
           </button>
-          <button
-            data-action='pp-adjust'
-            data-adjust='refresh'
-            title='{{localize "SWADE.Refresh"}}'
-          >
+          <button data-action='pp-adjust' data-adjust='refresh' title='{{localize "SWADE.Refresh"}}'>
             <i class='fa-solid fa-rotate'></i>
           </button>
         </span>
@@ -332,11 +286,7 @@ Unneeded sections are later hidden in the a renderChatMessage hook }}
         <button data-action='consume'>
           {{localize 'SWADE.Consumable.Use'}}
         </button>
-        <button
-          data-action='pp-adjust'
-          data-adjust='refresh'
-          title='{{localize "SWADE.Refresh"}}'
-        >
+        <button data-action='pp-adjust' data-adjust='refresh' title='{{localize "SWADE.Refresh"}}'>
           <i class='fa-solid fa-rotate'></i>
         </button>
       </span>

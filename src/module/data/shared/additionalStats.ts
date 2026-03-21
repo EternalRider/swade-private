@@ -31,6 +31,6 @@ export function makeAdditionalStatsSchema() {
         label: 'SWADE.Modifier',
       }),
     }),
-    { initial: {}, label: 'SWADE.AddStats' },
+    { initial: {}, label: 'SWADE.AddStats' }
   );
 }

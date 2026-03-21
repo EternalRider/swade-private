@@ -1,7 +1,6 @@
 import type { CCMGridConfig } from '../types/CCM';
 
-const { createFormGroup, createNumberInput, createSelectInput } =
-  foundry.applications.fields;
+const { createFormGroup, createNumberInput, createSelectInput } = foundry.applications.fields;
 
 export async function layoutChase(deck: Cards) {
   // Now requires CCM
@@ -48,8 +47,7 @@ export async function layoutChase(deck: Cards) {
     label: game.i18n.localize('SWADE.ChaseColumns'),
   });
   const discardOptions = game.cards.reduce((acc, stack: Cards) => {
-    if (stack.type === 'pile')
-      acc.push({ value: stack.id!, label: stack.name });
+    if (stack.type === 'pile') acc.push({ value: stack.id!, label: stack.name });
     return acc;
   }, [] as foundry.applications.fields.FormSelectOption[]);
   const discardInput = createSelectInput({

@@ -41,9 +41,7 @@ export default class SwadeCombatant<
   }
 
   get isIncapacitated(): boolean {
-    return (this.actor &&
-      'isIncapacitated' in this.actor.system &&
-      this.actor.system.isIncapacitated) as boolean;
+    return (this.actor && 'isIncapacitated' in this.actor.system && this.actor.system.isIncapacitated) as boolean;
   }
 
   override get isDefeated(): boolean {
@@ -88,8 +86,7 @@ export default class SwadeCombatant<
   get isGroupLeader() {
     if (!this.group) return false;
     else {
-      if (this.group.system?.leader)
-        return this.group.system.leader === this.id;
+      if (this.group.system?.leader) return this.group.system.leader === this.id;
       else return this.group.members?.first() === this;
     }
   }
@@ -194,8 +191,7 @@ export default class SwadeCombatant<
   }
 
   async resetGroupInitiativeIfLeader() {
-    if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative)
-      return;
+    if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative) return;
     return this.group?.update({ initiative: null });
   }
 
@@ -245,10 +241,7 @@ export default class SwadeCombatant<
 
     //move the card to the discard pile, if its not drawn
     if (!card.drawn) {
-      const discardPile = game.cards!.get(
-        game.settings.get('swade', 'actionDeckDiscardPile'),
-        { strict: true }
-      );
+      const discardPile = game.cards!.get(game.settings.get('swade', 'actionDeckDiscardPile'), { strict: true });
       await card.discard(discardPile, { chatNotification: false });
     }
 
@@ -270,10 +263,7 @@ export default class SwadeCombatant<
     if (!data) throw new Error('Could not find an effect with ID of "holding"');
     if (!this.roundHeld) {
       const round = Math.max(this.parent.round, 1);
-      await Promise.all([
-        this.setRoundHeld(round),
-        this.actor?.toggleActiveEffect(data, { active: true }),
-      ]);
+      await Promise.all([this.setRoundHeld(round), this.actor?.toggleActiveEffect(data, { active: true })]);
     } else {
       await Promise.all([
         this.update({ 'system.-=roundHeld': null }),
@@ -308,11 +298,7 @@ export default class SwadeCombatant<
 
   override async update(data, operation) {
     const ret = await super.update(data, operation);
-    if (
-      game.users.activeGM?.isSelf &&
-      Object.hasOwn(data, 'initiative') &&
-      this.isGroupLeader
-    ) {
+    if (game.users.activeGM?.isSelf && Object.hasOwn(data, 'initiative') && this.isGroupLeader) {
       await this.group?.update({ initiative: this.initiative });
     }
     return ret;
@@ -330,14 +316,11 @@ export default class SwadeCombatant<
     let initiative = targetInitiative + 0.0001;
     // Get the other turns that interrupted this target combatant
     const otherInterruptors = this.parent.turns.filter(
-      (t) =>
-        (t.initiative ?? 0) < targetInitiative + 1 &&
-        (t.initiative ?? 0) > targetInitiative
+      (t) => (t.initiative ?? 0) < targetInitiative + 1 && (t.initiative ?? 0) > targetInitiative
     );
     for (const t of otherInterruptors) {
       // Decrement the initiative to be assigned by a tiny decimal value per other interruptor.
-      if (Math.abs((t.initiative ?? 0) - initiative) < Number.EPSILON)
-        initiative = (t.initiative ?? 0) - 0.000001;
+      if (Math.abs((t.initiative ?? 0) - initiative) < Number.EPSILON) initiative = (t.initiative ?? 0) - 0.000001;
     }
     await this.update({
       initiative,

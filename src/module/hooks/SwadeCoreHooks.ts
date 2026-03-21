@@ -38,9 +38,7 @@ export default class SwadeCoreHooks {
   static async onReady() {
     //set up the compendium tables of content
     for (const pack of game.packs) {
-      const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(
-        pack.metadata.type
-      );
+      const isRightType = ['Actor', 'Item', 'JournalEntry'].includes(pack.metadata.type);
       const tocBlockList = game.settings.get('swade', 'tocBlockList');
       const isBlocked = tocBlockList[pack.collection];
       if (isRightType && !isBlocked) {
@@ -93,28 +91,16 @@ export default class SwadeCoreHooks {
       await setup.setupWorld();
 
       // Determine whether a system migration is required and feasible
-      const currentVersion = game.settings.get(
-        'swade',
-        'systemMigrationVersion'
-      );
+      const currentVersion = game.settings.get('swade', 'systemMigrationVersion');
       //TODO Adjust this version every time a migration needs to be triggered
       const needsMigrationVersion = '3.2.3';
       //Minimal compatible version needed for the migration
       const compatibleMigrationVersion = '3.0.0';
       //If the needed migration version is newer than the old migration version then migrate the world
-      const needsMigration = foundry.utils.isNewerVersion(
-        needsMigrationVersion,
-        currentVersion
-      );
+      const needsMigration = foundry.utils.isNewerVersion(needsMigrationVersion, currentVersion);
       if (needsMigration) {
         // Perform the migration
-        if (
-          currentVersion !== '0.0.0' &&
-          !foundry.utils.isNewerVersion(
-            currentVersion,
-            compatibleMigrationVersion
-          )
-        ) {
+        if (currentVersion !== '0.0.0' && !foundry.utils.isNewerVersion(currentVersion, compatibleMigrationVersion)) {
           Logger.warn('SWADE.SysMigrationWarning', {
             toast: true,
             permanent: true,
@@ -152,14 +138,9 @@ export default class SwadeCoreHooks {
 
     //set the localized parry skill
     [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
-      const proneParryModifier = arr
-        .find((e) => e.id === 'prone')
-        ?.changes?.find((c) => c.key?.startsWith('@Skill'));
+      const proneParryModifier = arr.find((e) => e.id === 'prone')?.changes?.find((c) => c.key?.startsWith('@Skill'));
       if (proneParryModifier) {
-        proneParryModifier.key = `@Skill{${game.settings.get(
-          'swade',
-          'parryBaseSkill'
-        )}}[system.die.modifier]`;
+        proneParryModifier.key = `@Skill{${game.settings.get('swade', 'parryBaseSkill')}}[system.die.modifier]`;
       }
     });
 
@@ -205,11 +186,7 @@ export default class SwadeCoreHooks {
         if (existingHUDs.length > 0) {
           // Close all existing HUDs
           existingHUDs.forEach((hud) => hud.close());
-          console.log(
-            'SWADE HUD: Closed',
-            existingHUDs.length,
-            'HUD instances'
-          );
+          console.log('SWADE HUD: Closed', existingHUDs.length, 'HUD instances');
         } else {
           // Create new HUD
           const actor = game.actors?.find((a) => a.isOwner);
@@ -224,31 +201,19 @@ export default class SwadeCoreHooks {
       };
 
       console.log('SWADE HUD: Test functions available:');
-      console.log(
-        '  - testSwadeHUD() - Create and show HUD for first owned actor'
-      );
+      console.log('  - testSwadeHUD() - Create and show HUD for first owned actor');
       console.log('  - toggleSwadeHUD() - Toggle HUD visibility');
     }
   }
 
-  static onRenderActorDirectory(
-    app: ActorDirectory,
-    html: HTMLElement,
-    _data: any
-  ) {
+  static onRenderActorDirectory(app: ActorDirectory, html: HTMLElement, _data: any) {
     // Mark all Wildcards in the Actors sidebars with an icon
-    const entries = html.querySelectorAll<HTMLLIElement>(
-      '.directory-item.entry.actor'
-    );
-    const wildcards = app.collection.filter(
-      (a) => a.isWildcard && a.type === 'character'
-    );
+    const entries = html.querySelectorAll<HTMLLIElement>('.directory-item.entry.actor');
+    const wildcards = app.collection.filter((a) => a.isWildcard && a.type === 'character');
 
     //if the player is not a GM, then don't mark the NPC wildcards
     if (!game.settings.get('swade', 'hideNPCWildcards') || game.user?.isGM) {
-      const npcWildcards = app.collection.filter(
-        (a) => a.isWildcard && a.type === 'npc'
-      );
+      const npcWildcards = app.collection.filter((a) => a.isWildcard && a.type === 'npc');
       wildcards.push(...npcWildcards);
     }
 
@@ -301,10 +266,7 @@ export default class SwadeCoreHooks {
     systemInfo!.after(systemLinks);
   }
 
-  static async onGetActorContextOptions(
-    app: foundry.applications.api.ApplicationV2,
-    options: ContextMenu.Entry[]
-  ) {
+  static async onGetActorContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
     const newOptions: ContextMenu.Entry[] = [];
 
     // Don't want to add to context menu for compendium entries
@@ -321,20 +283,14 @@ export default class SwadeCoreHooks {
       condition: (li) => {
         const actor = game.actors!.get(li.dataset.entryId, { strict: true });
         return (
-          actor.permission > CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED &&
-          CharacterSummarizer.isSupportedActorType(actor)
+          actor.permission > CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED && CharacterSummarizer.isSupportedActorType(actor)
         );
       },
     });
     options.splice(0, 0, ...newOptions);
   }
 
-  static onRenderCompendiumDirectory(
-    app: CompendiumDirectory,
-    html: HTMLElement,
-    _data: any,
-    _options: any
-  ) {
+  static onRenderCompendiumDirectory(app: CompendiumDirectory, html: HTMLElement, _data: any, _options: any) {
     const tocBlockList = game.settings.get('swade', 'tocBlockList');
     for (const li of html.querySelectorAll('li.directory-item')) {
       const pack = li.dataset.pack as string;
@@ -354,8 +310,7 @@ export default class SwadeCoreHooks {
     _options: any
   ) {
     //don't mark if the user is not a GM
-    if (game.settings.get('swade', 'hideNPCWildcards') && !game.user?.isGM)
-      return;
+    if (game.settings.get('swade', 'hideNPCWildcards') && !game.user?.isGM) return;
     //Mark Wildcards in the compendium
     if (app.documentName === 'Actor') {
       //@ts-expect-error collection is now a CompendiumCollection
@@ -363,9 +318,7 @@ export default class SwadeCoreHooks {
       const ids: string[] = content
         .filter(
           (a: SwadeActor) =>
-            (a.type === 'character' ||
-              foundry.utils.getProperty(a, 'system.wildcard')) &&
-            a.name !== '#[CF_tempEntity]'
+            (a.type === 'character' || foundry.utils.getProperty(a, 'system.wildcard')) && a.name !== '#[CF_tempEntity]'
         )
         .map((actor) => actor._id);
 
@@ -380,10 +333,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static onGetCardsContextOptions(
-    app: foundry.applications.api.ApplicationV2,
-    options: ContextMenu.Entry[]
-  ) {
+  static onGetCardsContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
     // Don't want to add to context menu for compendium entries
     if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
@@ -392,11 +342,7 @@ export default class SwadeCoreHooks {
       icon: '<i class="fa-solid fa-edit"></i>',
       condition: (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
-        return (
-          deck.type === 'deck' &&
-          deck.isOwner &&
-          deck.cards.contents.every((c) => c.type === 'poker')
-        );
+        return deck.type === 'deck' && deck.isOwner && deck.cards.contents.every((c) => c.type === 'poker');
       },
       callback: async (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
@@ -411,13 +357,8 @@ export default class SwadeCoreHooks {
         if (!canvas || !canvas.ready || !canvas.scene) return false;
         const cardsID = li.dataset.entryId;
         const deck = game.cards!.get(cardsID, { strict: true });
-        const isActionDeck =
-          game.settings.get('swade', 'actionDeck') === cardsID;
-        return (
-          deck.type === 'deck' &&
-          !isActionDeck &&
-          deck.cards.contents.every((c) => c.type === 'poker')
-        );
+        const isActionDeck = game.settings.get('swade', 'actionDeck') === cardsID;
+        return deck.type === 'deck' && !isActionDeck && deck.cards.contents.every((c) => c.type === 'poker');
       },
       callback: (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
@@ -430,13 +371,8 @@ export default class SwadeCoreHooks {
       condition: (li) => {
         const cardsID = li.dataset.entryId;
         const deck = game.cards!.get(cardsID, { strict: true });
-        const isActionDeck =
-          game.settings.get('swade', 'actionDeck') === cardsID;
-        return (
-          deck.type === 'deck' &&
-          !isActionDeck &&
-          deck.cards.contents.every((c) => c.type === 'poker')
-        );
+        const isActionDeck = game.settings.get('swade', 'actionDeck') === cardsID;
+        return deck.type === 'deck' && !isActionDeck && deck.cards.contents.every((c) => c.type === 'poker');
       },
       callback: async (li) => {
         const deckId = li.dataset.entryId;
@@ -447,19 +383,14 @@ export default class SwadeCoreHooks {
     options.push(actionCardEditor, chaseLayout, setActionDeck);
   }
 
-  static onGetCompendiumContextOptions(
-    app: foundry.applications.api.ApplicationV2,
-    options: ContextMenu.Entry[]
-  ) {
+  static onGetCompendiumContextOptions(app: foundry.applications.api.ApplicationV2, options: ContextMenu.Entry[]) {
     options.push(
       {
         name: 'SWADE.CompendiumTOC.Toggle',
         icon: '<i class="fa-solid fa-book"></i>',
         condition: (li) => {
           const pack = game.packs.get(li.dataset.pack, { strict: true });
-          const rightType = CompendiumTOC.ALLOWED_TYPES.includes(
-            pack.metadata.type
-          );
+          const rightType = CompendiumTOC.ALLOWED_TYPES.includes(pack.metadata.type);
           return !!game.user?.isGM && rightType;
         },
         callback: async (li) => {
@@ -467,9 +398,7 @@ export default class SwadeCoreHooks {
             window: {
               title: game.i18n.localize('SWADE.CompendiumTOC.Dialog.Title'),
             },
-            content: `<p>${game.i18n.localize(
-              'SWADE.CompendiumTOC.Dialog.Content'
-            )}</p>`,
+            content: `<p>${game.i18n.localize('SWADE.CompendiumTOC.Dialog.Content')}</p>`,
             defaultYes: false,
           });
           if (!confirmation) return;
@@ -490,15 +419,10 @@ export default class SwadeCoreHooks {
         icon: '<i class="fa-solid fa-right-left"></i>',
         condition: (li) => {
           const pack = game.packs.get(li.dataset.pack, { strict: true });
-          const isRightPackType = ['Actor', 'Item', 'Scene'].includes(
-            pack.metadata.type
-          );
+          const isRightPackType = ['Actor', 'Item', 'Scene'].includes(pack.metadata.type);
           return !!game.user?.isGM && isRightPackType;
         },
-        callback: async (li) =>
-          await migrations.migrateCompendium(
-            game.packs.get(li.dataset.pack, { strict: true })
-          ),
+        callback: async (li) => await migrations.migrateCompendium(game.packs.get(li.dataset.pack, { strict: true })),
       }
     );
   }
@@ -510,9 +434,7 @@ export default class SwadeCoreHooks {
     _data: Parameters<Hooks.StaticCallbacks['renderChatMessage']>[2]
   ) {
     const makeTableResultsDraggable = () => {
-      const results = html.querySelectorAll<HTMLElement>(
-        '.table-draw .table-result'
-      );
+      const results = html.querySelectorAll<HTMLElement>('.table-draw .table-result');
       if (!results.length) return;
       results.forEach((e) => {
         e.draggable = true;
@@ -532,12 +454,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static async onUpdateCombat(
-    _document: SwadeCombat,
-    _change: any,
-    _options: any,
-    _userId: string
-  ) {
+  static async onUpdateCombat(_document: SwadeCombat, _change: any, _options: any, _userId: string) {
     ui.combat?.scrollToTurn();
   }
 
@@ -552,30 +469,20 @@ export default class SwadeCoreHooks {
   }
 
   /** Add benny management to the player list */
-  static async onRenderPlayers(
-    _list: PlayerList,
-    html: HTMLElement,
-    _options: any
-  ) {
+  static async onRenderPlayers(_list: PlayerList, html: HTMLElement, _options: any) {
     const users = html.querySelectorAll<HTMLLIElement>('.player');
     //add the Benny Display;
     users.forEach((el) => new PlayerBennyDisplay(el));
     users.forEach((el) => new UserSummary(el));
   }
 
-  static onRenderUserConfig(
-    app: UserConfig,
-    html: HTMLElement,
-    data: Record<string, unknown>
-  ) {
+  static onRenderUserConfig(app: UserConfig, html: HTMLElement, data: Record<string, unknown>) {
     // resize the element so it'll fit the new stuff
     html.style.height = 'auto';
 
     //get possible
     const possibleCardsDocs = game.cards!.filter(
-      (c) =>
-        c.type === 'hand' &&
-        c.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
+      (c) => c.type === 'hand' && c.permission === CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
     );
 
     const form = html.querySelector<HTMLDivElement>('.standard-form');
@@ -585,9 +492,7 @@ export default class SwadeCoreHooks {
     //return early to avoid double rendering
     if (html.querySelector('div.swade-favorite-cards')) return;
 
-    const userConfigLabel = game.i18n.localize(
-      'SWADE.Keybindings.OpenFavoriteCards.UserConfigLabel'
-    );
+    const userConfigLabel = game.i18n.localize('SWADE.Keybindings.OpenFavoriteCards.UserConfigLabel');
     const options = possibleCardsDocs.map((c) => {
       const favoriteCards = game.user?.getFlag('swade', 'favoriteCardsDoc');
       const sel = c.id === favoriteCards ? 'selected' : '';
@@ -609,11 +514,7 @@ export default class SwadeCoreHooks {
     form.insertBefore(stringToHTML<HTMLFieldSetElement>(template), footer);
   }
 
-  static onHotbarDrop(
-    _hotbar: Hotbar,
-    data: { type: string; uuid: string },
-    slot: number
-  ) {
+  static onHotbarDrop(_hotbar: Hotbar, data: { type: string; uuid: string }, slot: number) {
     if (data.type === 'Item' || data.type === 'Attribute') {
       onHotbarDrop(_hotbar, data, slot);
       return false;
@@ -630,15 +531,10 @@ export default class SwadeCoreHooks {
       {
         name: game.i18n.localize('SWADE.BenniesGive'),
         icon: '<i class="fa-solid fa-plus"></i>',
-        condition: (li) =>
-          game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
+        condition: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
         callback: async (li) => {
           const selectedUser = game.users?.get(li.dataset.userId!);
-          await selectedUser?.setFlag(
-            'swade',
-            'bennies',
-            (selectedUser?.getFlag('swade', 'bennies') ?? 0) + 1
-          );
+          await selectedUser?.setFlag('swade', 'bennies', (selectedUser?.getFlag('swade', 'bennies') ?? 0) + 1);
           ui.players?.render({ force: true });
           if (game.settings.get('swade', 'notifyBennies')) {
             //In case one GM gives another GM a benny a different message should be displayed
@@ -662,14 +558,10 @@ export default class SwadeCoreHooks {
       {
         name: game.i18n.localize('SWADE.BenniesAdjustGM'),
         icon: '<i class="fa-solid fa-coins"></i>',
-        condition: (li) =>
-          game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
+        condition: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
         callback: async (li) => {
           const gm = game.users?.get(li.dataset.userId!);
-          const hasStaticBennies = game.settings.get(
-            'swade',
-            'staticGmBennies'
-          );
+          const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
           const gmBennies = hasStaticBennies
             ? game.settings.get('swade', 'gmBennies')
             : game.users.filter((u) => u.active && !u.isGM).length;
@@ -706,11 +598,7 @@ export default class SwadeCoreHooks {
                 label: game.i18n.localize('SWADE.ButtonSubmit'),
                 default: true,
                 callback: async (_event, button, _dialog) =>
-                  await gm?.setFlag(
-                    'swade',
-                    'bennies',
-                    Number(button.form!.elements['gm-bennies'].value)
-                  ),
+                  await gm?.setFlag('swade', 'bennies', Number(button.form!.elements['gm-bennies'].value)),
               },
             ],
           });
@@ -720,9 +608,7 @@ export default class SwadeCoreHooks {
   }
 
   // TODO: Properly type this
-  static onGetSceneControlButtons(
-    sceneControlButtons: Record<string, SceneControls.Control>
-  ) {
+  static onGetSceneControlButtons(sceneControlButtons: Record<string, SceneControls.Control>) {
     //get the measured template tools
     const measure = sceneControlButtons.templates;
     //add buttons
@@ -738,27 +624,17 @@ export default class SwadeCoreHooks {
     );
   }
 
-  static async onRenderCombatantConfig(
-    app: CombatantConfig,
-    html: HTMLFormElement,
-    options: any
-  ) {
+  static async onRenderCombatantConfig(app: CombatantConfig, html: HTMLFormElement, options: any) {
     // resize the element so it'll fit the new stuff
     html.style.height = 'auto';
 
     //remove the old initiative input
-    html
-      .querySelector('input[name="initiative"]')
-      ?.closest('div.form-group')
-      ?.remove();
+    html.querySelector('input[name="initiative"]')?.closest('div.form-group')?.remove();
 
     //grab cards and sort them
-    const deck: SwadeCards = game.cards.get(
-      game.settings.get('swade', 'actionDeck'),
-      {
-        strict: true,
-      }
-    );
+    const deck: SwadeCards = game.cards.get(game.settings.get('swade', 'actionDeck'), {
+      strict: true,
+    });
 
     const cards = Array.from(deck.cards.values() as Card[]).sort((a, b) => {
       const cardA = a.value!;
@@ -777,11 +653,8 @@ export default class SwadeCoreHooks {
     for (const card of cards) {
       const cardValue = card.value!;
       const suitValue = card.system['suit'];
-      const color =
-        suitValue === 2 || suitValue === 3 ? 'color: red;' : 'color: black;';
-      const isDealt =
-        options.document.cardValue === cardValue &&
-        options.document.suitValue === suitValue;
+      const color = suitValue === 2 || suitValue === 3 ? 'color: red;' : 'color: black;';
+      const isDealt = options.document.cardValue === cardValue && options.document.suitValue === suitValue;
 
       const isAvailable = card?.drawn ? 'text-decoration: line-through;' : '';
 
@@ -795,69 +668,59 @@ export default class SwadeCoreHooks {
         isJoker: card.system['isJoker'],
       });
     }
-    const numberOfJokers = cards.filter(
-      (card) => card.system['isJoker']
-    ).length;
+    const numberOfJokers = cards.filter((card) => card.system['isJoker']).length;
     const noneSelected = !cardList.some((c) => c.isDealt);
 
     //render and inject new HTML
     const path = 'systems/swade/templates/combatant-config-cardlist.hbs';
     const elementTemplate = document.createElement('template');
-    const rendered = await foundry.applications.handlebars.renderTemplate(
-      path,
-      { cardList, numberOfJokers, noneSelected }
-    );
+    const rendered = await foundry.applications.handlebars.renderTemplate(path, {
+      cardList,
+      numberOfJokers,
+      noneSelected,
+    });
     elementTemplate.innerHTML = rendered;
     html.querySelector('footer')?.before(...elementTemplate.content.children);
 
     //Attach click event to button which will call the combatant update as we can't easily modify the submit function of the FormApplication
-    html
-      .querySelector('footer button')
-      ?.addEventListener('click', async (ev: PointerEvent) => {
-        const selectedCard = (ev.currentTarget as HTMLButtonElement)
-          .closest('.combatant-config')
-          ?.querySelector<HTMLInputElement>('input[name=action-card]:checked');
-        if (!selectedCard) return;
-        const cardId = selectedCard.value;
-        await app.document.assignNewActionCard(
-          cardId === 'none' ? null : cardId
-        );
-      });
+    html.querySelector('footer button')?.addEventListener('click', async (ev: PointerEvent) => {
+      const selectedCard = (ev.currentTarget as HTMLButtonElement)
+        .closest('.combatant-config')
+        ?.querySelector<HTMLInputElement>('input[name=action-card]:checked');
+      if (!selectedCard) return;
+      const cardId = selectedCard.value;
+      await app.document.assignNewActionCard(cardId === 'none' ? null : cardId);
+    });
   }
 
-  static onRenderActiveEffectConfig(
-    app: foundry.applications.sheets.ActiveEffectConfig,
-    html: HTMLElement
-  ) {
+  static onRenderActiveEffectConfig(app: foundry.applications.sheets.ActiveEffectConfig, html: HTMLElement) {
     const effect = app.document;
     if (effect.system instanceof BaseEffectData) {
       const systemSchema = effect.system.schema;
 
-      const conditionalGroup =
-        systemSchema.fields.conditionalEffect.toFormGroup(
-          { localize: true },
-          { value: effect.system.conditionalEffect, disabled: !app.isEditable }
-        );
+      const conditionalGroup = systemSchema.fields.conditionalEffect.toFormGroup(
+        { localize: true },
+        { value: effect.system.conditionalEffect, disabled: !app.isEditable }
+      );
 
-      const expirationOptions: foundry.applications.fields.FormSelectOption[] =
-        [
-          {
-            label: 'SWADE.Expiration.BeginAuto',
-            value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
-          },
-          {
-            label: 'SWADE.Expiration.BeginPrompt',
-            value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
-          },
-          {
-            label: 'SWADE.Expiration.EndAuto',
-            value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
-          },
-          {
-            label: 'SWADE.Expiration.EndPrompt',
-            value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
-          },
-        ];
+      const expirationOptions: foundry.applications.fields.FormSelectOption[] = [
+        {
+          label: 'SWADE.Expiration.BeginAuto',
+          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
+        },
+        {
+          label: 'SWADE.Expiration.BeginPrompt',
+          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
+        },
+        {
+          label: 'SWADE.Expiration.EndAuto',
+          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
+        },
+        {
+          label: 'SWADE.Expiration.EndPrompt',
+          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
+        },
+      ];
       const expirationGroup = systemSchema.fields.expiration.toFormGroup(
         { localize: true },
         {
@@ -869,19 +732,16 @@ export default class SwadeCoreHooks {
           dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
         }
       );
-      const loseTurnOnHoldGroup =
-        systemSchema.fields.loseTurnOnHold.toFormGroup(
-          { localize: true },
-          { value: effect.system.loseTurnOnHold, disabled: !app.isEditable }
-        );
+      const loseTurnOnHoldGroup = systemSchema.fields.loseTurnOnHold.toFormGroup(
+        { localize: true },
+        { value: effect.system.loseTurnOnHold, disabled: !app.isEditable }
+      );
 
       const noneActive = !html.querySelector('section.active');
 
       const tab = `
         <a ${noneActive ? 'class="active"' : ''}data-action="tab" data-group="sheet" data-tab="expiration">
-          <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize(
-            'SWADE.Expiration.TabLabel'
-          )}
+          <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize('SWADE.Expiration.TabLabel')}
         </a>
       `;
       const durationSection = `
@@ -895,19 +755,12 @@ export default class SwadeCoreHooks {
       html
         .querySelector('section[data-tab="details"] .form-group.stacked')
         ?.insertAdjacentElement('afterend', conditionalGroup);
-      html
-        .querySelector('nav.sheet-tabs a[data-tab="duration"]')
-        ?.insertAdjacentHTML('afterend', tab);
+      html.querySelector('nav.sheet-tabs a[data-tab="duration"]')?.insertAdjacentHTML('afterend', tab);
       if (!html.querySelector('section.tab[data-tab="expiration"]')) {
-        html
-          .querySelector('section[data-tab="duration"]')
-          ?.insertAdjacentHTML('afterend', durationSection);
+        html.querySelector('section[data-tab="duration"]')?.insertAdjacentHTML('afterend', durationSection);
       }
     } else if (effect.system instanceof ModifierData) {
-      const costGroup = effect.system.schema.fields.cost.toFormGroup(
-        { localize: true },
-        { value: effect.system.cost }
-      );
+      const costGroup = effect.system.schema.fields.cost.toFormGroup({ localize: true }, { value: effect.system.cost });
       const limitGroup = effect.system.schema.fields.limit.toFormGroup(
         { localize: true },
         { value: effect.system.limit }
@@ -916,9 +769,7 @@ export default class SwadeCoreHooks {
         { localize: true },
         { value: effect.system.level }
       );
-      const descriptionGroup = html.querySelector(
-        'section[data-tab="details"] .form-group.stacked'
-      );
+      const descriptionGroup = html.querySelector('section[data-tab="details"] .form-group.stacked');
       // insert in reverse order because afterend usage
       descriptionGroup?.insertAdjacentElement('afterend', levelGroup);
       descriptionGroup?.insertAdjacentElement('afterend', limitGroup);
@@ -927,13 +778,7 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static onHotReload({
-    packageType,
-    packageId,
-    content,
-    path,
-    extension,
-  }: Hooks.HotReloadData) {
+  static onHotReload({ packageType, packageId, content, path, extension }: Hooks.HotReloadData) {
     //return the hook early if it's not a swade system change;
     if (packageType !== 'system' && packageId !== 'swade') return;
     //stop the hook on empty changes
@@ -941,19 +786,13 @@ export default class SwadeCoreHooks {
     if (extension === 'js') location.reload();
   }
 
-  static onCreateProseMirrorEditor(
-    uuid: string,
-    plugins: Record<string, Plugin>,
-    _options: unknown
-  ) {
+  static onCreateProseMirrorEditor(uuid: string, plugins: Record<string, Plugin>, _options: unknown) {
     const [prefix] = uuid.split('#');
     const doc = fromUuidSync(prefix, { strict: false });
     if (doc instanceof JournalEntryPage && doc.type === 'headquarters') {
       // Delete the default content link plugin.
       delete plugins.contentLinks;
-      plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(
-        ProseMirror.defaultSchema
-      );
+      plugins.headquarterFiller = ProseMirrorTableResultDropFillerPlugin.build(ProseMirror.defaultSchema);
     }
   }
 
@@ -988,10 +827,6 @@ export default class SwadeCoreHooks {
       system: { favorite: true },
       origin: effect.parent.uuid,
     });
-    await Promise.allSettled(
-      targets.map((token) =>
-        token.actor.createEmbeddedDocuments('ActiveEffect', [effectData])
-      )
-    );
+    await Promise.allSettled(targets.map((token) => token.actor.createEmbeddedDocuments('ActiveEffect', [effectData])));
   }
 }

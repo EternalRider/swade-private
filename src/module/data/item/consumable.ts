@@ -8,14 +8,7 @@ import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
-import {
-  actions,
-  activities,
-  category,
-  equippable,
-  favorite,
-  grantEmbedded,
-} from './common';
+import { actions, activities, category, equippable, favorite, grantEmbedded } from './common';
 import {
   Actions,
   Activities,
@@ -29,13 +22,7 @@ import { DefaultHasChargesData } from '../fields/ChargesData';
 
 declare namespace ConsumableData {
   interface Schema
-    extends SwadePhysicalItemData.Schema,
-      Equippable,
-      Favorite,
-      Category,
-      Actions,
-      Activities,
-      GrantEmbedded {
+    extends SwadePhysicalItemData.Schema, Equippable, Favorite, Category, Actions, Activities, GrantEmbedded {
     messageOnUse: foundry.data.fields.BooleanField<{ initial: true }>;
     destroyOnEmpty: foundry.data.fields.BooleanField<{ label: string }>;
     subtype: foundry.data.fields.StringField<{
@@ -151,13 +138,10 @@ class ConsumableData extends SwadePhysicalItemData<
 
   protected override async _preUpdate(
     changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        ConsumableData.Schema,
-        Item<'consumable'>
-      >
+      foundry.abstract.TypeDataModel.ParentAssignmentType<ConsumableData.Schema, Item<'consumable'>>
     >,
     options: Item.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     await super._preUpdate(changed, options, user);
     const defaultCharge = this.charges.default;
@@ -167,21 +151,12 @@ class ConsumableData extends SwadePhysicalItemData<
       defaultCharge.value !== 0 &&
       defaultCharge.value !== defaultCharge.max
     ) {
-      if (
-        (changed.system?.quantity ?? 0) > 1 &&
-        defaultCharge.value! < defaultCharge.max!
-      ) {
+      if ((changed.system?.quantity ?? 0) > 1 && defaultCharge.value! < defaultCharge.max!) {
         delete changed.system!.quantity;
-        Logger.warn(
-          'Partially filled magazines can only have a quantity of 1',
-          { toast: true },
-        );
+        Logger.warn('Partially filled magazines can only have a quantity of 1', { toast: true });
       }
     }
-    if (
-      foundry.utils.getProperty(changed, 'system.subtype') ===
-      constants.CONSUMABLE_TYPE.BATTERY
-    ) {
+    if (foundry.utils.getProperty(changed, 'system.subtype') === constants.CONSUMABLE_TYPE.BATTERY) {
       //When we change the subtype to battery, we also need to update the max charges to 100
       //Since the charges array likely didn't change at the same time, we need to create it from our current value
       changed.system ??= {};
@@ -201,7 +176,7 @@ class ConsumableData extends SwadePhysicalItemData<
 
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    options: TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -209,18 +184,13 @@ class ConsumableData extends SwadePhysicalItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/consumable-embeds.hbs',
-      ['item-embed', 'consumable'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/consumable-embeds.hbs', [
+      'item-embed',
+      'consumable',
+    ]);
   }
 }
 

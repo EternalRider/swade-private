@@ -6,16 +6,7 @@ import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base/physical';
-import {
-  actions,
-  activities,
-  arcaneDevice,
-  category,
-  equippable,
-  favorite,
-  grantEmbedded,
-  vehicular,
-} from './common';
+import { actions, activities, arcaneDevice, category, equippable, favorite, grantEmbedded, vehicular } from './common';
 import {
   Actions,
   Activities,
@@ -29,7 +20,8 @@ import {
 
 declare namespace GearData {
   interface Schema
-    extends SwadePhysicalItemData.Schema,
+    extends
+      SwadePhysicalItemData.Schema,
       Equippable,
       ArcaneDevice,
       Vehicular,
@@ -44,11 +36,7 @@ declare namespace GearData {
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
 }
 
-class GearData extends SwadePhysicalItemData<
-  GearData.Schema,
-  GearData.BaseData,
-  GearData.DerivedData
-> {
+class GearData extends SwadePhysicalItemData<GearData.Schema, GearData.BaseData, GearData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): GearData.Schema {
     const fields = foundry.data.fields;
@@ -103,12 +91,9 @@ class GearData extends SwadePhysicalItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      GearData.Schema,
-      Item
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<GearData.Schema, Item>,
     options: Item.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -121,7 +106,7 @@ class GearData extends SwadePhysicalItemData<
 
   override async toEmbed(
     config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    options: TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -129,18 +114,10 @@ class GearData extends SwadePhysicalItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/gear-embeds.hbs',
-      ['item-embed', 'gear'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/gear-embeds.hbs', ['item-embed', 'gear']);
   }
 }
 

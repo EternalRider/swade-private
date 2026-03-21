@@ -27,10 +27,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   get advances() {
-    return foundry.utils.getProperty(
-      this.actor,
-      'system.advances.list'
-    ) as Collection<Advance>;
+    return foundry.utils.getProperty(this.actor, 'system.advances.list') as Collection<Advance>;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -58,39 +55,27 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        advance: this.advance,
-        rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
-        advanceTypes: this.#getAdvanceTypes(),
-        owner: this.actor.isOwner,
-        notes:
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            this.advance.notes,
-            {
-              async: true,
-              secrets: this.actor.isOwner,
-            }
-          ),
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-solid fa-floppy-disk',
-            label: 'Save Changes',
-          },
-        ],
-      }
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      advance: this.advance,
+      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
+      advanceTypes: this.#getAdvanceTypes(),
+      owner: this.actor.isOwner,
+      notes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.advance.notes, {
+        async: true,
+        secrets: this.actor.isOwner,
+      }),
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-floppy-disk',
+          label: 'Save Changes',
+        },
+      ],
+    });
     return context;
   }
 
-  static async onSubmit(
-    this: AdvanceEditor,
-    event: SubmitEvent,
-    _form: HTMLFormElement,
-    formData: FormDataExtended
-  ) {
+  static async onSubmit(this: AdvanceEditor, event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
     const expanded = foundry.utils.expandObject(formData.object);
     const sortHasChanged = expanded.sort !== this.advance.sort;
     // Merge data to update
@@ -103,10 +88,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     if (sortHasChanged) return this.#handleSortingChange(advance);
     // Normal update operation
     this.advances.set(advance.id, advance);
-    await this.actor.update(
-      { 'system.advances.list': this.advances.toJSON() },
-      { diff: false }
-    );
+    await this.actor.update({ 'system.advances.list': this.advances.toJSON() }, { diff: false });
     await this.render({ force: true });
     if (event.submitter) this.close();
   }

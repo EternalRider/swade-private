@@ -22,12 +22,7 @@
             <span class='form-group'>
               <label for='{{card.uuid}}-name'>{{localize 'Name'}}</label>
               <span class='form-fields'>
-                <input
-                  id='{{card.uuid}}-name'
-                  type='text'
-                  name='card.{{card.id}}.name'
-                  value='{{card.name}}'
-                />
+                <input id='{{card.uuid}}-name' type='text' name='card.{{card.id}}.name' value='{{card.name}}' />
               </span>
             </span>
             <span class='form-group'>
@@ -35,22 +30,14 @@
                 {{localize 'SWADE.CardFace'}}
               </label>
               <span class='form-fields'>
-                <file-picker
-                  name='card.{{card.id}}.img'
-                  value='{{card.currentFace.img}}'
-                  type='image'
-                />
+                <file-picker name='card.{{card.id}}.img' value='{{card.currentFace.img}}' type='image' />
               </span>
             </span>
             <span class='form-group'>
               <label>{{localize 'SWADE.CardSuit'}}</label>
               <span class='form-fields'>
                 <select data-dtype='Number' name='card.{{card.id}}.suitValue'>
-                  {{selectOptions
-                    @root.suitOptions
-                    selected=card.system.suit
-                    localize=true
-                  }}
+                  {{selectOptions @root.suitOptions selected=card.system.suit localize=true}}
                 </select>
               </span>
             </span>
@@ -58,11 +45,7 @@
               <label>{{localize 'SWADE.CardValue'}}</label>
               <span class='form-fields'>
                 <select data-dtype='Number' name='card.{{card.id}}.cardValue'>
-                  {{selectOptions
-                    @root.cardValues
-                    selected=card.value
-                    localize=true
-                  }}
+                  {{selectOptions @root.cardValues selected=card.value localize=true}}
                 </select>
               </span>
             </span>

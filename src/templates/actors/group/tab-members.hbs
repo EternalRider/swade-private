@@ -1,8 +1,4 @@
-<section
-  class='{{tabs.members.tabCssClass}}'
-  data-group='primary'
-  data-tab='members'
->
+<section class='{{tabs.members.tabCssClass}}' data-group='primary' data-tab='members'>
   <fieldset>
     <legend>{{localize tabs.members.label}}</legend>
     <ol class='fieldset-list'>
@@ -15,10 +11,7 @@
             data-tooltip='SIDEBAR.CharArt'
             style='background-image:url("{{img}}");'
           >
-            <div
-              class='wounds'
-              style='--_background:{{wounds.background}}; --_wounds-color:{{wounds.color}};'
-            >
+            <div class='wounds' style='--_background:{{wounds.background}}; --_wounds-color:{{wounds.color}};'>
 
               {{wounds.value}}/{{wounds.max}}
             </div>
@@ -28,11 +21,7 @@
           </div>
           <div class='bennies flexrow' data-tooltip='SWADE.Bennies'>
             {{bennies}}
-            <img
-              class='benny-image'
-              src='{{@root.benny}}'
-              alt='{{localize "SWADE.Benny"}}'
-            /></div>
+            <img class='benny-image' src='{{@root.benny}}' alt='{{localize "SWADE.Benny"}}' /></div>
           <div class='identity'>{{profile}}</div>
           <ol class='stats'>
             <li><span class='bold'>{{localize 'SWADE.Tough'}}:</span>

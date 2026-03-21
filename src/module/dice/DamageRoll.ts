@@ -1,19 +1,11 @@
-import {
-  ActorRollData,
-  SwadeRollOptions,
-} from '../../interfaces/roll.interface';
+import { ActorRollData, SwadeRollOptions } from '../../interfaces/roll.interface';
 import { constants } from '../constants';
 import { SwadeRoll } from './SwadeRoll';
 
 export class DamageRoll extends SwadeRoll<ActorRollData> {
-  static override CHAT_TEMPLATE =
-    'systems/swade/templates/chat/dice/damage-roll.hbs';
+  static override CHAT_TEMPLATE = 'systems/swade/templates/chat/dice/damage-roll.hbs';
 
-  constructor(
-    formula: string,
-    data: ActorRollData = {},
-    options: DamageRollOptions = {}
-  ) {
+  constructor(formula: string, data: ActorRollData = {}, options: DamageRollOptions = {}) {
     options.rollType ??= 'damage';
     super(formula, data, options);
     if (typeof options.acing === 'boolean') {
@@ -44,14 +36,9 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
       console.warn('No target number set for damage roll');
       return constants.ROLL_RESULT.CRITFAIL;
     }
-    if ((this.total ?? 0) < this.targetNumber)
-      return constants.ROLL_RESULT.FAIL;
-    if ((this.total ?? 0) < this.targetNumber + 4)
-      return constants.ROLL_RESULT.SUCCESS;
-    return Math.max(
-      Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1,
-      0
-    ); // raises get to be 2+
+    if ((this.total ?? 0) < this.targetNumber) return constants.ROLL_RESULT.FAIL;
+    if ((this.total ?? 0) < this.targetNumber + 4) return constants.ROLL_RESULT.SUCCESS;
+    return Math.max(Math.floor(((this.total ?? 0) - this.targetNumber) / 4) + 1, 0); // raises get to be 2+
   }
 
   override get isCritfail() {
@@ -91,11 +78,7 @@ export class DamageRoll extends SwadeRoll<ActorRollData> {
   }
 
   override applyReroll(actor: Actor.Implementation | null): boolean {
-    if (
-      !actor ||
-      !('stats' in actor.system) ||
-      !('bennyDamage' in actor.system.stats.globalMods)
-    ) {
+    if (!actor || !('stats' in actor.system) || !('bennyDamage' in actor.system.stats.globalMods)) {
       return false;
     }
     if (actor.system.stats.globalMods.bennyDamage?.length > 0) {

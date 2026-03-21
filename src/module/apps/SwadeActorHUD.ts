@@ -23,20 +23,15 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     zIndex?: number;
   }): void | any {
     // Only allow positioning if this is user-initiated (has position data) or if it's the initial render
-    const hasPositionData =
-      position && (position.left !== undefined || position.top !== undefined);
-    const isUserDrag =
-      hasPositionData ||
-      (this.element && this.element.classList.contains('dragging'));
+    const hasPositionData = position && (position.left !== undefined || position.top !== undefined);
+    const isUserDrag = hasPositionData || (this.element && this.element.classList.contains('dragging'));
     const isUserInteraction = hasPositionData || isUserDrag;
 
     // Don't reposition during custom dragging - let the drag handler control position
     if (isUserInteraction && !this.element?.classList.contains('dragging')) {
       const result = super.setPosition(position ?? {});
       if (this.element && !this._isInitialRender) {
-        this.element.dispatchEvent(
-          new CustomEvent('hud-moved', { bubbles: true })
-        );
+        this.element.dispatchEvent(new CustomEvent('hud-moved', { bubbles: true }));
       }
       return result;
     }
@@ -60,10 +55,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     body: { template: 'systems/swade/templates/actors/hud/hud-character.hbs' },
   };
 
-  constructor(
-    { actor, token }: { actor?: SwadeActor; token?: HUDToken } = {},
-    options: Record<string, unknown> = {}
-  ) {
+  constructor({ actor, token }: { actor?: SwadeActor; token?: HUDToken } = {}, options: Record<string, unknown> = {}) {
     super(options);
     this.actor = actor ?? null;
     // Use .document if it exists, otherwise use the token itself
@@ -71,11 +63,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     // Ensure token is always SwadeToken or null
     if (token) {
       this.token = token as HUDToken;
-    } else if (
-      activeToken &&
-      'document' in activeToken &&
-      activeToken.document instanceof SwadeToken
-    ) {
+    } else if (activeToken && 'document' in activeToken && activeToken.document instanceof SwadeToken) {
       this.token = activeToken.document as HUDToken;
     } else if (activeToken instanceof SwadeToken) {
       this.token = activeToken as HUDToken;
@@ -90,12 +78,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
     this._positionTimeout = null;
 
     // Set up actor update hooks for real-time synchronization
-    this._onActorUpdate = (
-      doc: any,
-      _changes: any,
-      _opts: any,
-      _userId: string
-    ) => {
+    this._onActorUpdate = (doc: any, _changes: any, _opts: any, _userId: string) => {
       if (doc.id === this.actor?.id) {
         // Debounce rapid updates to prevent excessive re-renders
         if (this._renderDebounced) {
@@ -156,12 +139,7 @@ export class SwadeActorHUD extends HandlebarsApplicationMixin(ApplicationV2) {
   _isInitialRender: boolean;
   _positionTimeout: number | null;
   _onActorUpdate:
-    | ((
-        doc: SwadeActor,
-        changes: Record<string, unknown>,
-        opts: Record<string, unknown>,
-        userId: string
-      ) => void)
+    | ((doc: SwadeActor, changes: Record<string, unknown>, opts: Record<string, unknown>, userId: string) => void)
     | null;
   _onActorDelete: ((doc: SwadeActor) => void) | null;
   _renderDebounced: (() => void) | null;

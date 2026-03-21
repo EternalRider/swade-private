@@ -2,9 +2,7 @@ import SwadeCombat from '../documents/combat/SwadeCombat';
 import SwadeCombatant from '../documents/combat/SwadeCombatant';
 
 /** This class defines a a new Combat Tracker specifically designed for SWADE */
-export default class SwadeCombatTracker
-  extends foundry.applications.sidebar.tabs.CombatTracker
-{
+export default class SwadeCombatTracker extends foundry.applications.sidebar.tabs.CombatTracker {
   static override DEFAULT_OPTIONS = {
     classes: ['swade'],
     actions: {
@@ -71,9 +69,7 @@ export default class SwadeCombatTracker
 
     const combat = this.viewed as SwadeCombat | null;
 
-    const [noGroup, grouped] = (context.turns ?? []).partition(
-      (c) => !!c?.group
-    );
+    const [noGroup, grouped] = (context.turns ?? []).partition((c) => !!c?.group);
 
     const groups = Object.groupBy(grouped, (c) => c.group.id);
 
@@ -137,11 +133,7 @@ export default class SwadeCombatTracker
     context.groupTurns?.sort(combat._sortCombatants);
   }
 
-  protected async _prepareTurnContext(
-    combat: Combat.Stored,
-    combatant: Combatant.Stored,
-    index
-  ) {
+  protected async _prepareTurnContext(combat: Combat.Stored, combatant: Combatant.Stored, index) {
     const turn = await super._prepareTurnContext(combat, combatant, index);
 
     Object.assign(turn, {
@@ -203,13 +195,9 @@ export default class SwadeCombatTracker
     }).bind(this.element);
 
     if (options.parts && options.parts.includes('dramaticTask')) {
-      const tokenInput = this.element.querySelector<HTMLInputElement>(
-        'input[name="system.tokens.value"]'
-      );
+      const tokenInput = this.element.querySelector<HTMLInputElement>('input[name="system.tokens.value"]');
 
-      tokenInput?.addEventListener('change', () =>
-        this.viewed?.update({ 'system.tokens.value': tokenInput.value })
-      );
+      tokenInput?.addEventListener('change', () => this.viewed?.update({ 'system.tokens.value': tokenInput.value }));
     }
   }
 
@@ -257,15 +245,12 @@ export default class SwadeCombatTracker
   protected async _onDrop(event: DragEvent) {
     // Combat Tracker contains combatant groups, which means this would fire twice
     event.stopPropagation();
-    const data =
-      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 
     const combatant = await SwadeCombatant.fromDropData(data);
     if (!combatant) return;
 
-    const groupLI = (event.target as HTMLElement).closest(
-      'li.combatant-group'
-    ) as HTMLLIElement | undefined;
+    const groupLI = (event.target as HTMLElement).closest('li.combatant-group') as HTMLLIElement | undefined;
 
     if (groupLI) {
       // Drop on group: move to group if it exists and not already in it.
@@ -279,12 +264,8 @@ export default class SwadeCombatTracker
         combatant.removeFromGroup();
       } else {
         // Else if dropped on other combatant, create a group around and follow that combatant.
-        const targetCombatantLI = (event.target as HTMLElement).closest(
-          'li.combatant'
-        ) as HTMLLIElement | undefined;
-        const targetCombatant = this.viewed?.combatants?.get(
-          targetCombatantLI.dataset.combatantId
-        );
+        const targetCombatantLI = (event.target as HTMLElement).closest('li.combatant') as HTMLLIElement | undefined;
+        const targetCombatant = this.viewed?.combatants?.get(targetCombatantLI.dataset.combatantId);
         if (!targetCombatant || targetCombatant.id == combatant.id) return;
         const group = await this.viewed?.createGroup();
         if (!group) return;
@@ -314,11 +295,7 @@ export default class SwadeCombatTracker
     if (!combatant) return [];
 
     const matching = this.viewed?.combatants?.filter(
-      (c) =>
-        (c.name === combatant.name ||
-          c.actor?.name === combatant.actor?.name) &&
-        c.id !== combatant.id &&
-        !c.group
+      (c) => (c.name === combatant.name || c.actor?.name === combatant.actor?.name) && c.id !== combatant.id && !c.group
     );
 
     return matching;
@@ -346,8 +323,7 @@ export default class SwadeCombatTracker
     // Remove the default re-draw action.
     entryOptions.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
 
-    const getCombatant = (li: HTMLLIElement) =>
-      this.viewed!.combatants.get(li.dataset.combatantId);
+    const getCombatant = (li: HTMLLIElement) => this.viewed!.combatants.get(li.dataset.combatantId);
 
     entryOptions.push(
       {
@@ -355,23 +331,16 @@ export default class SwadeCombatTracker
         icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
-          return (
-            game.user.isGM && combatant?.group && !combatant?.isGroupLeader
-          );
+          return game.user.isGM && combatant?.group && !combatant?.isGroupLeader;
         },
-        callback: (li: HTMLLIElement) =>
-          getCombatant(li).setIsGroupLeader(true),
+        callback: (li: HTMLLIElement) => getCombatant(li).setIsGroupLeader(true),
       },
       {
         name: 'SWADE.GroupByName',
         icon: '<i class="fa-solid fa-users"></i>',
         condition: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
-          return (
-            game.user.isGM &&
-            !combatant?.group &&
-            this.getMatchingCombatantsByName(combatant)?.length
-          );
+          return game.user.isGM && !combatant?.group && this.getMatchingCombatantsByName(combatant)?.length;
         },
         callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
       }
@@ -400,8 +369,7 @@ export default class SwadeCombatTracker
    * @returns {ContextMenu.Entry[]}
    */
   protected _getGroupContextOptions() {
-    const getCombatantGroup = (li: HTMLLIElement) =>
-      this.viewed!.groups.get(li.dataset.groupId!);
+    const getCombatantGroup = (li: HTMLLIElement) => this.viewed!.groups.get(li.dataset.groupId!);
     const entryOptions = [
       {
         name: game.i18n.format('DOCUMENT.Update', {
@@ -422,8 +390,7 @@ export default class SwadeCombatTracker
         name: 'COMBAT.ClearMovementHistories',
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
         condition: game.user.isGM,
-        callback: (li: HTMLLIElement) =>
-          getCombatantGroup(li)?.clearMovementHistories(),
+        callback: (li: HTMLLIElement) => getCombatantGroup(li)?.clearMovementHistories(),
       },
       {
         name: game.i18n.format('DOCUMENT.Delete', {
@@ -431,14 +398,12 @@ export default class SwadeCombatTracker
         }),
         icon: '<i class="fa-solid fa-trash"></i>',
         condition: game.user.isGM,
-        callback: (li: HTMLLIElement) =>
-          this.viewed?.removeGroup(getCombatantGroup(li)?.id),
+        callback: (li: HTMLLIElement) => this.viewed?.removeGroup(getCombatantGroup(li)?.id),
       },
       {
         name: game.i18n.localize('SWADE.DeleteGroupAndCombatants'),
         icon: '<i class="fa-solid fa-dumpster"></i>',
-        condition: (li) =>
-          game.user.isGM && getCombatantGroup(li)?.members?.size,
+        condition: (li) => game.user.isGM && getCombatantGroup(li)?.members?.size,
         callback: (li: HTMLLIElement) =>
           this.viewed?.removeGroup(getCombatantGroup(li)?.id, {
             deleteMembers: true,
@@ -472,8 +437,7 @@ export default class SwadeCombatTracker
     if (groupId) {
       combatantId = this.viewed?.getGroupLeader(groupId)?.id;
     } else {
-      combatantId = target?.closest('[data-combatant-id]')?.dataset
-        ?.combatantId;
+      combatantId = target?.closest('[data-combatant-id]')?.dataset?.combatantId;
     }
 
     if (!this.viewed || !combatantId?.length) return undefined;
@@ -488,8 +452,7 @@ export default class SwadeCombatTracker
     if (groupId) {
       combatantId = this.viewed?.getGroupLeader(groupId)?.id;
     } else {
-      combatantId = target?.closest('[data-combatant-id]')?.dataset
-        ?.combatantId;
+      combatantId = target?.closest('[data-combatant-id]')?.dataset?.combatantId;
     }
 
     if (!this.viewed || !combatantId?.length) return undefined;
@@ -497,11 +460,7 @@ export default class SwadeCombatTracker
     return this.viewed?.rerollInitiative(combatantId);
   }
 
-  static async #toggleGroupExpand(
-    this: SwadeCombatTracker,
-    event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #toggleGroupExpand(this: SwadeCombatTracker, event: PointerEvent, target: HTMLElement) {
     // Don't proceed if the click event was actually on one of the combatants
     const entry = event.target?.closest<HTMLElement>('[data-combatant-id]');
     if (entry) return;
@@ -516,11 +475,9 @@ export default class SwadeCombatTracker
     _event: PointerEvent,
     target: HTMLElement
   ): Promise<void> {
-    const combatantId = target?.closest<HTMLElement>('[data-combatant-id]')
-      ?.dataset.combatantId;
+    const combatantId = target?.closest<HTMLElement>('[data-combatant-id]')?.dataset.combatantId;
     if (!combatantId) return;
-    const combatant: SwadeCombatant | undefined =
-      this.viewed?.combatants.get(combatantId);
+    const combatant: SwadeCombatant | undefined = this.viewed?.combatants.get(combatantId);
     if (!combatant) return;
 
     switch (target.dataset.action) {

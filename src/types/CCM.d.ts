@@ -32,14 +32,8 @@ declare global {
   const ccm:
     | {
         api: {
-          grid(
-            config: CCMGridConfig,
-            options?: CCMGridOptions,
-          ): Promise<Card.Implementation[]>;
-          triangle(
-            config: CCMTriangleConfig,
-            options?: CCMTriangleOptions,
-          ): Promise<Card.Implementation[]>;
+          grid(config: CCMGridConfig, options?: CCMGridOptions): Promise<Card.Implementation[]>;
+          triangle(config: CCMTriangleConfig, options?: CCMTriangleOptions): Promise<Card.Implementation[]>;
         };
       }
     | undefined;

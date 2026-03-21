@@ -24,8 +24,7 @@ declare namespace RequirementsField {
   }
 }
 
-class RequirementsField extends foundry.abstract
-  .DataModel<RequirementsField.Schema> {
+class RequirementsField extends foundry.abstract.DataModel<RequirementsField.Schema> {
   static get sortOrder() {
     return [
       constants.REQUIREMENT_TYPE.WILDCARD,
@@ -41,9 +40,7 @@ class RequirementsField extends foundry.abstract
   }
 
   /** Returns a sorting function to sort requirements */
-  static sortFunction(
-    order: string[] = this.sortOrder,
-  ): (a: RequirementsField, b: RequirementsField) => number {
+  static sortFunction(order: string[] = this.sortOrder): (a: RequirementsField, b: RequirementsField) => number {
     return (a, b) => order.indexOf(a.type) - order.indexOf(b.type);
   }
 
@@ -83,9 +80,7 @@ class RequirementsField extends foundry.abstract
   override toString(): string {
     switch (this.type) {
       case constants.REQUIREMENT_TYPE.WILDCARD:
-        return this.value
-          ? game.i18n.localize('SWADE.WildCard')
-          : game.i18n.localize('SWADE.Extra');
+        return this.value ? game.i18n.localize('SWADE.WildCard') : game.i18n.localize('SWADE.Extra');
       case constants.REQUIREMENT_TYPE.RANK:
         return SWADE.ranks[this.value];
       case constants.REQUIREMENT_TYPE.ATTRIBUTE:

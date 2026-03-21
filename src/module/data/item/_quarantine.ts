@@ -37,11 +37,7 @@ export function ensureRoFisNumeric(source: any) {
 }
 
 export function ensureShotsAreNumeric(source: any) {
-  if (
-    Object.hasOwn(source, 'shots') &&
-    source.shots !== null &&
-    typeof source.shots !== 'number'
-  ) {
+  if (Object.hasOwn(source, 'shots') && source.shots !== null && typeof source.shots !== 'number') {
     source.shots = null;
   }
   if (

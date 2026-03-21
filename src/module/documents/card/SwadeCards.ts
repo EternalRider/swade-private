@@ -15,7 +15,7 @@ export default class SwadeCards extends Cards {
   async dealForInitiative(
     to: Cards,
     number = 1,
-    how: foundry.CONST.CARD_DRAW_MODES = foundry.CONST.CARD_DRAW_MODES.TOP,
+    how: foundry.CONST.CARD_DRAW_MODES = foundry.CONST.CARD_DRAW_MODES.TOP
   ): Promise<Card[]> {
     // validate
     if (this.type !== 'deck') {

@@ -1,16 +1,9 @@
 import { Updates } from '../../../globals';
-import {
-  reshuffleActionDeck,
-  reshuffleActionDeckIfJokerDrawn,
-} from '../../util';
+import { reshuffleActionDeck, reshuffleActionDeckIfJokerDrawn } from '../../util';
 
 import { DeepPartial } from 'fvtt-types/utils';
 import { AmbushAssistant } from '../../apps/AmbushAssistant';
-import {
-  CardPickContext,
-  CardPickResult,
-  CardPicker,
-} from '../../apps/CardPicker';
+import { CardPickContext, CardPickResult, CardPicker } from '../../apps/CardPicker';
 import { PlayerCardDrawHerder } from '../../apps/PlayerCardDrawHerder';
 import { constants } from '../../constants';
 import { stringNonbreakingSpaces } from '../../util';
@@ -26,9 +19,7 @@ declare global {
   }
 }
 
-export default class SwadeCombat<
-  out SubType extends Combat.SubType = Combat.SubType,
-> extends Combat<SubType> {
+export default class SwadeCombat<out SubType extends Combat.SubType = Combat.SubType> extends Combat<SubType> {
   /** an internal helper flag that's being checked to see if we're currently asking to advance the round */
   #roundAdvanceDialog = false;
 
@@ -48,9 +39,7 @@ export default class SwadeCombat<
     createOptions = {},
     dialogOptions: DeepPartial<foundry.applications.api.DialogV2.WaitOptions> = {}
   ): Promise<SwadeCombat | null | undefined> {
-    const typeOptions = Object.entries(CONFIG.Combat.typeLabels).map(
-      ([value, label]) => ({ value, label })
-    );
+    const typeOptions = Object.entries(CONFIG.Combat.typeLabels).map(([value, label]) => ({ value, label }));
     const typeSelect = foundry.applications.fields.createSelectInput({
       options: typeOptions,
       value: 'base',
@@ -82,14 +71,12 @@ export default class SwadeCombat<
       .getField('maxRounds')
       ?.toFormGroup({ classes: ['slim', 'hidden'], localize: true })?.outerHTML;
 
-    html += CONFIG.Combat.dataModels.dramaticTask.schema
-      .getField('tokens.max')
-      ?.toFormGroup({
-        label: 'SWADE.DramaticTask.MaxTokens.Label',
-        hint: 'SWADE.DramaticTask.MaxTokens.Hint',
-        classes: ['slim', 'hidden'],
-        localize: true,
-      })?.outerHTML;
+    html += CONFIG.Combat.dataModels.dramaticTask.schema.getField('tokens.max')?.toFormGroup({
+      label: 'SWADE.DramaticTask.MaxTokens.Label',
+      hint: 'SWADE.DramaticTask.MaxTokens.Hint',
+      classes: ['slim', 'hidden'],
+      localize: true,
+    })?.outerHTML;
 
     // Collect data
     const label = game.i18n.localize(this.metadata.label);
@@ -114,14 +101,9 @@ export default class SwadeCombat<
             },
           },
           rejectClose: false,
-          render: (
-            _event: Event,
-            dialog: foundry.applications.api.DialogV2
-          ) => {
+          render: (_event: Event, dialog: foundry.applications.api.DialogV2) => {
             const html = dialog.element;
-            const typeSelect = html.querySelector<HTMLSelectElement>(
-              'select[name="type"]'
-            );
+            const typeSelect = html.querySelector<HTMLSelectElement>('select[name="type"]');
             const roundsInput = html
               .querySelector<HTMLDivElement>('input[name="system.maxRounds"]')
               ?.closest('.form-group');
@@ -161,8 +143,7 @@ export default class SwadeCombat<
     loop: false,
   };
 
-  #debouncedCombatSound: SwadeCombat['_playCombatSound'] =
-    foundry.utils.debounce(super._playCombatSound, 200);
+  #debouncedCombatSound: SwadeCombat['_playCombatSound'] = foundry.utils.debounce(super._playCombatSound, 200);
 
   async rerollInitiative(id: string) {
     if (!id?.length) return;
@@ -173,9 +154,7 @@ export default class SwadeCombat<
     const buttons: foundry.applications.api.DialogV2.Button[] = [
       {
         action: 'gmBenny',
-        label: stringNonbreakingSpaces(
-          game.i18n.localize('SWADE.Rolls.GMBenny')
-        ),
+        label: stringNonbreakingSpaces(game.i18n.localize('SWADE.Rolls.GMBenny')),
         icon: '<i class="fas fa-coins"></i>',
       },
       {
@@ -192,8 +171,7 @@ export default class SwadeCombat<
     if (!game.user?.isGM) buttons.shift();
 
     const gmHasNoBennies = game.user?.isGM && game.user?.bennies <= 0;
-    const characterHasNoBennies =
-      actor && actor instanceof SwadeActor && actor.bennies <= 0;
+    const characterHasNoBennies = actor && actor instanceof SwadeActor && actor.bennies <= 0;
     let content = game.i18n.localize('SWADE.Combat.RedrawDialog.Content');
     if (characterHasNoBennies && !game.user?.isGM) {
       content = game.i18n.localize('SWADE.Combat.RedrawDialog.ContentNoBenny');
@@ -229,11 +207,7 @@ export default class SwadeCombat<
 
   override async rollInitiative(
     ids: string | string[],
-    {
-      messageOptions,
-      updateTurn,
-      autoPick,
-    }: Combat.InitiativeOptions & { autoPick?: boolean } = {}
+    { messageOptions, updateTurn, autoPick }: Combat.InitiativeOptions & { autoPick?: boolean } = {}
   ) {
     // Structure input data
     ids = Array.isArray(ids) ? ids : [ids];
@@ -264,13 +238,7 @@ export default class SwadeCombat<
       if (!c.isOwner) continue;
       const roundHeld = !!c.roundHeld;
       //Do not draw cards for defeated, holding or non-leader grouped combatants
-      if (
-        c.isDefeated ||
-        roundHeld ||
-        (c.group && !c.isGroupLeader) ||
-        c.turnLost
-      )
-        continue;
+      if (c.isDefeated || roundHeld || (c.group && !c.isGroupLeader) || c.turnLost) continue;
 
       // Set up edges
       let hasHesitant = false;
@@ -292,10 +260,7 @@ export default class SwadeCombat<
 
       if (isRedraw) {
         // handle redraws
-        const oldCard = this.findCard(
-          c.cardValue as number,
-          c.suitValue as number
-        );
+        const oldCard = this.findCard(c.cardValue as number, c.suitValue as number);
         if (oldCard) {
           cardsToPickFrom.push(oldCard);
           const result = await this.pickACard({
@@ -371,9 +336,7 @@ export default class SwadeCombat<
         cardString: pickedCard.description,
       };
 
-      const initiative =
-        (pickedCard.value as number) +
-        (pickedCard?.system['suit'] as number) / 10;
+      const initiative = (pickedCard.value as number) + (pickedCard?.system['suit'] as number) / 10;
 
       const update = {
         _id: id,
@@ -390,11 +353,7 @@ export default class SwadeCombat<
         });
       }
 
-      if (
-        game.settings.get('swade', 'initMessage') !==
-          constants.INIT_MESSAGE_TYPE.OFF ||
-        isRedraw
-      ) {
+      if (game.settings.get('swade', 'initMessage') !== constants.INIT_MESSAGE_TYPE.OFF || isRedraw) {
         // Construct chat message data
         const messageData = foundry.utils.mergeObject(
           {
@@ -403,10 +362,7 @@ export default class SwadeCombat<
               token: c.token,
               alias: c.name,
             }),
-            whisper:
-              c.token?.hidden || c.hidden
-                ? game?.users?.filter((u) => u.isGM)
-                : [],
+            whisper: c.token?.hidden || c.hidden ? game?.users?.filter((u) => u.isGM) : [],
             content: '', // Keep the content empty so we don't trigger validation warnings
             'flags.swade': {
               isRedraw,
@@ -506,17 +462,12 @@ export default class SwadeCombat<
       if (!a.actor?.isWildcard && b.actor?.isWildcard) return 1;
 
       // Combatants with Command edge before those without.
-      if (SwadeCombat._hasCommandEdge(a) && !SwadeCombat._hasCommandEdge(b))
-        return -1;
-      if (!SwadeCombat._hasCommandEdge(a) && SwadeCombat._hasCommandEdge(b))
-        return 1;
+      if (SwadeCombat._hasCommandEdge(a) && !SwadeCombat._hasCommandEdge(b)) return -1;
+      if (!SwadeCombat._hasCommandEdge(a) && SwadeCombat._hasCommandEdge(b)) return 1;
     } // End of sort inside group.
 
     // Combatants on hold come before those not on hold.
-    if (
-      (a.roundHeld && currentRound !== a.roundHeld) ||
-      (b.roundHeld && currentRound !== b.roundHeld)
-    ) {
+    if ((a.roundHeld && currentRound !== a.roundHeld) || (b.roundHeld && currentRound !== b.roundHeld)) {
       const isOnHoldA = a.roundHeld && (a.roundHeld ?? 0 < currentRound);
       const isOnHoldB = b.roundHeld && (b.roundHeld ?? 0 < currentRound);
       if (isOnHoldA && !isOnHoldB) return -1;
@@ -536,9 +487,7 @@ export default class SwadeCombat<
     if (game.userId !== userId) return;
 
     // If CTRL is pressed, add all combatants as one group.
-    if (
-      game.keyboard?.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)
-    ) {
+    if (game.keyboard?.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)) {
       const group = await this.createGroup();
       if (!group) return;
       for (const d of documents) {
@@ -561,13 +510,8 @@ export default class SwadeCombat<
   protected override _onCreateDescendantDocuments<
     DescendantDocumentType extends Combat.DescendantClass,
     Parent extends Combat.Stored,
-    CreateData extends
-      foundry.abstract.Document.CreateDataFor<DescendantDocumentType>,
-    Operation extends foundry.abstract.types.DatabaseCreateOperation<
-      CreateData,
-      Parent,
-      false
-    >,
+    CreateData extends foundry.abstract.Document.CreateDataFor<DescendantDocumentType>,
+    Operation extends foundry.abstract.types.DatabaseCreateOperation<CreateData, Parent, false>,
   >(
     parent: Parent,
     collection: DescendantDocumentType['metadata']['collection'],
@@ -576,14 +520,7 @@ export default class SwadeCombat<
     options: foundry.abstract.Document.Database.CreateOptions<Operation>,
     userId: string
   ) {
-    super._onCreateDescendantDocuments(
-      parent,
-      collection,
-      documents,
-      data,
-      options,
-      userId
-    );
+    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
     if (collection === 'combatants') {
       this.onCreateCombatantFollow(documents, userId);
     } else if (collection === 'groups') {
@@ -594,12 +531,8 @@ export default class SwadeCombat<
   protected override _onUpdateDescendantDocuments<
     DescendantDocumentType extends Combat.DescendantClass,
     Parent extends Combat.Stored,
-    UpdateData extends
-      foundry.abstract.Document.UpdateDataFor<DescendantDocumentType>,
-    Operation extends foundry.abstract.types.DatabaseUpdateOperation<
-      UpdateData,
-      Parent
-    >,
+    UpdateData extends foundry.abstract.Document.UpdateDataFor<DescendantDocumentType>,
+    Operation extends foundry.abstract.types.DatabaseUpdateOperation<UpdateData, Parent>,
   >(
     parent: Parent,
     collection: DescendantDocumentType['metadata']['collection'],
@@ -609,22 +542,14 @@ export default class SwadeCombat<
     userId: string
   ) {
     const oldTurn = this.turn;
-    super._onUpdateDescendantDocuments(
-      parent,
-      collection,
-      documents,
-      changes,
-      options,
-      userId
-    );
+    super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
     if (this.turn != oldTurn && game.user.isGM) {
       // FIXME: restore old turn; somehow, super._onUpdateDescendantDocuments() sometimes mutates the turn erroneously.
       // This especially happens on next round / when resetting initiative / rolling all NPCs.
       this.update({ turn: oldTurn });
     }
     if (
-      (collection === 'combatants' &&
-        changes?.some((change) => Object.hasOwn(change, 'initiative'))) ||
+      (collection === 'combatants' && changes?.some((change) => Object.hasOwn(change, 'initiative'))) ||
       collection === 'groups' ||
       changes?.some((change) => Object.hasOwn(change, 'initiative'))
     ) {
@@ -644,18 +569,8 @@ export default class SwadeCombat<
     options: foundry.abstract.Document.Database.DeleteOptions<Operation>,
     userId: string
   ) {
-    super._onDeleteDescendantDocuments(
-      parent,
-      collection,
-      documents,
-      ids,
-      options,
-      userId
-    );
-    if (
-      collection === 'groups' ||
-      (collection === 'combatants' && documents?.some((d) => d.isGroupLeader))
-    ) {
+    super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
+    if (collection === 'groups' || (collection === 'combatants' && documents?.some((d) => d.isGroupLeader))) {
       this.#onModifyCombatantGroups(parent, documents, options);
     }
   }
@@ -702,10 +617,7 @@ export default class SwadeCombat<
    */
   findCard(cardValue: number, cardSuit: number): Card | undefined {
     return this.actionDeck.cards.find(
-      (c) =>
-        c.type === 'poker' &&
-        c.value === cardValue &&
-        c.system['suit'] === cardSuit
+      (c) => c.type === 'poker' && c.value === cardValue && c.system['suit'] === cardSuit
     );
   }
 
@@ -729,8 +641,7 @@ export default class SwadeCombat<
       combatants: this.combatants.toObject(),
       groups: this.groups.toObject(),
     };
-    if (updateTurn && currentId)
-      update.turn = this.turns.findIndex((t) => t.id === currentId);
+    if (updateTurn && currentId) update.turn = this.turns.findIndex((t) => t.id === currentId);
 
     await this.update(update, { turnEvents: false, diff: false });
     return this;
@@ -772,23 +683,14 @@ export default class SwadeCombat<
     options = { createIfNotInGroup: false, preferDisposition: undefined }
   ) {
     let leaderCombatant: SwadeCombatant | undefined = undefined;
-    if (
-      leader &&
-      leader instanceof SwadeCombatant &&
-      this.id === leader.combat?.id
-    ) {
+    if (leader && leader instanceof SwadeCombatant && this.id === leader.combat?.id) {
       leaderCombatant = leader;
     } else if (leader?.length) {
       const possibleLeaders = this.combatants?.filter(
-        (c) =>
-          c?.name === leader ||
-          c?.token?.name === leader ||
-          c?.actor.name === leader
+        (c) => c?.name === leader || c?.token?.name === leader || c?.actor.name === leader
       );
       if (typeof options.preferDisposition !== 'undefined') {
-        leaderCombatant = possibleLeaders?.find(
-          (c) => c.token?.disposition === options?.preferDisposition
-        );
+        leaderCombatant = possibleLeaders?.find((c) => c.token?.disposition === options?.preferDisposition);
       }
       if (!leaderCombatant) leaderCombatant = possibleLeaders?.shift();
     }
@@ -896,8 +798,7 @@ export default class SwadeCombat<
   override async previousRound() {
     const revert = await Dialog.confirm({
       title: game.i18n.localize('SWADE.Combat.RevertRoundTitle'),
-      content:
-        '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
+      content: '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
       defaultYes: true,
       rejectClose: false,
       options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
@@ -921,8 +822,7 @@ export default class SwadeCombat<
     if (!this.combatant || this.combatant.isDefeated) return;
     const expirations =
       this.combatant?.actor?.effects.filter(
-        (effect: SwadeActiveEffect) =>
-          effect.isTemporary && effect.isExpired('start')
+        (effect: SwadeActiveEffect) => effect.isTemporary && effect.isExpired('start')
       ) ?? [];
     for (const effect of expirations) {
       await effect.expire();
@@ -932,9 +832,7 @@ export default class SwadeCombat<
   protected async _handleEndOfTurnExpirations() {
     if (!this.combatant || this.combatant.isDefeated) return;
     const expirations =
-      this.combatant?.actor?.effects.filter(
-        (effect) => effect.isTemporary && effect.isExpired('end')
-      ) ?? [];
+      this.combatant?.actor?.effects.filter((effect) => effect.isTemporary && effect.isExpired('end')) ?? [];
     for (const effect of expirations) {
       await effect.expire();
     }
@@ -956,8 +854,7 @@ export default class SwadeCombat<
     //run the dialog
     const advance = await foundry.applications.api.DialogV2.confirm({
       window: { title: game.i18n.localize('SWADE.Combat.AdvanceRoundTitle') },
-      content:
-        '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
+      content: '<p>' + game.i18n.localize('SWADE.Combat.AdvanceRoundContent') + '</p>',
       rejectClose: false,
       classes: ['swade-app'],
     });
@@ -992,11 +889,7 @@ export default class SwadeCombat<
   protected async _promptAllPlayersForInitiative() {
     const [localDraws, remoteDraws] = this.combatants
       .filter(
-        (c: SwadeCombatant) =>
-          c.hasPlayerOwner &&
-          !c.isNPC &&
-          c.initiative === null &&
-          (!c.group || c.isGroupLeader)
+        (c: SwadeCombatant) => c.hasPlayerOwner && !c.isNPC && c.initiative === null && (!c.group || c.isGroupLeader)
       )
       .map((c: SwadeCombatant) => {
         return { combatant: c, user: c.players[0]! };
@@ -1015,25 +908,15 @@ export default class SwadeCombat<
     }
   }
 
-  protected _determineIfRemoteDraw(
-    user: SwadeUser,
-    combatant: SwadeCombatant
-  ): boolean {
-    if (!combatant.actor || !('initiative' in combatant.actor.system))
-      return false;
+  protected _determineIfRemoteDraw(user: SwadeUser, combatant: SwadeCombatant): boolean {
+    if (!combatant.actor || !('initiative' in combatant.actor.system)) return false;
     const initiative = combatant.actor.system.initiative;
-    const edges =
-      initiative.hasLevelHeaded ||
-      initiative.hasImpLevelHeaded ||
-      initiative.hasQuick;
+    const edges = initiative.hasLevelHeaded || initiative.hasImpLevelHeaded || initiative.hasQuick;
     const groupOwner = !combatant.group || combatant.group.isOwner;
     return user.active && edges && groupOwner;
   }
 
-  override async _preDelete(
-    options: Combat.Database.PreDeleteOptions,
-    user: User.Implementation
-  ) {
+  override async _preDelete(options: Combat.Database.PreDeleteOptions, user: User.Implementation) {
     await super._preDelete(options, user);
 
     // Reset the deck when combat is ended.
@@ -1043,9 +926,7 @@ export default class SwadeCombat<
     await Promise.allSettled(
       this.combatants
         .filter((c) => c.actor?.statuses.has('holding') ?? false)
-        .flatMap((c) =>
-          c.actor?.effects.filter((e) => e.statuses.has('holding'))
-        )
+        .flatMap((c) => c.actor?.effects.filter((e) => e.statuses.has('holding')))
         .map((e) => e.delete())
     );
   }

@@ -10,21 +10,11 @@
     </h2>
   </header>
   <section class='effect-basics'>
-    <img
-      src='{{effect.img}}'
-      alt='{{effect.name}}'
-      class='icon'
-      data-action='clickIcon'
-    />
+    <img src='{{effect.img}}' alt='{{effect.name}}' class='icon' data-action='clickIcon' />
     <div class='form-group name'>
       <label for='aewizard-name'>{{localize 'SWADE.Name'}}</label>
       <span class='form-fields'>
-        <input
-          id='aewizard-name'
-          type='text'
-          name='name'
-          value='{{effect.name}}'
-        />
+        <input id='aewizard-name' type='text' name='name' value='{{effect.name}}' />
       </span>
     </div>
     <div class='form-group turns'>
@@ -67,19 +57,11 @@
           <li data-index='{{@index}}' class='change'>
             <span class='label'>{{label}}</span>
             <select class='mode'>
-              {{selectOptions
-                @root.changeModes
-                selected=this.mode
-                localize=true
-              }}
+              {{selectOptions @root.changeModes selected=this.mode localize=true}}
             </select>
             <input type='text' class='value' value='{{this.value}}' />
             <span class='change-controls'>
-              <button
-                type='button'
-                class='delete-change'
-                data-action='deleteChange'
-              >
+              <button type='button' class='delete-change' data-action='deleteChange'>
                 <i class='fa-solid fa-trash'></i>
               </button>
             </span>
@@ -90,23 +72,13 @@
   </section>
   <section class='presets'>
     <h2>{{localize 'SWADE.EffectWizard.Changes'}}</h2>
-    <div
-      class='form-group conditional'
-      data-tooltip='{{localize "SWADE.ActiveEffects.ConditionalTooltip"}}'
-    >
+    <div class='form-group conditional' data-tooltip='{{localize "SWADE.ActiveEffects.ConditionalTooltip"}}'>
       <label>{{localize 'SWADE.ActiveEffects.Conditional'}}</label>
       <span class='form-fields'>
-        <input
-          type='checkbox'
-          name='system.conditionalEffect'
-          {{checked effect.system.conditionalEffect}}
-        />
+        <input type='checkbox' name='system.conditionalEffect' {{checked effect.system.conditionalEffect}} />
       </span>
     </div>
-    <details
-      data-category='attribute'
-      {{collapsible collapsibleStates 'attribute'}}
-    >
+    <details data-category='attribute' {{collapsible collapsibleStates 'attribute'}}>
       <summary>{{localize 'SWADE.Attributes'}}</summary>
       <span class='content'>
         <div class='form-group'>
@@ -121,11 +93,7 @@
           <button type='button' data-key='die.sides' data-action='addChange'>
             {{localize 'SWADE.DieSides'}}
           </button>
-          <button
-            type='button'
-            data-key='wild-die.sides'
-            data-action='addChange'
-          >
+          <button type='button' data-key='wild-die.sides' data-action='addChange'>
             {{localize 'SWADE.WildDieSides'}}
           </button>
           <button type='button' data-key='die.modifier' data-action='addChange'>
@@ -152,36 +120,23 @@
                 value='{{currSkill}}'
               />
             </span>
-            <p class='hint'>{{localize
-                'SWADE.EffectWizard.EnterSkill.Hint'
-              }}</p>
+            <p class='hint'>{{localize 'SWADE.EffectWizard.EnterSkill.Hint'}}</p>
           </div>
           <div class='flexrow button-list'>
             <button type='button' data-key='die.sides' data-action='addChange'>
               {{localize 'SWADE.DieSides'}}
             </button>
-            <button
-              type='button'
-              data-key='wild-die.sides'
-              data-action='addChange'
-            >
+            <button type='button' data-key='wild-die.sides' data-action='addChange'>
               {{localize 'SWADE.WildDieSides'}}
             </button>
-            <button
-              type='button'
-              data-key='die.modifier'
-              data-action='addChange'
-            >
+            <button type='button' data-key='die.modifier' data-action='addChange'>
               {{localize 'SWADE.Modifier'}}
             </button>
           </div>
         </span>
       </details>
     {{/unless}}
-    <details
-      data-category='derived'
-      {{collapsible collapsibleStates 'derived'}}
-    >
+    <details data-category='derived' {{collapsible collapsibleStates 'derived'}}>
       <summary>{{localize 'SWADE.Derived'}}</summary>
       <span class='content'>
         <ul class='unmarked-list other-presets'>
@@ -195,10 +150,7 @@
         </ul>
       </span>
     </details>
-    <details
-      data-category='globalMod'
-      {{collapsible collapsibleStates 'globalMod'}}
-    >
+    <details data-category='globalMod' {{collapsible collapsibleStates 'globalMod'}}>
       <summary>{{localize 'SWADE.GlobalMod.Label'}}</summary>
       <span class='content'>
         <ul class='unmarked-list other-presets'>

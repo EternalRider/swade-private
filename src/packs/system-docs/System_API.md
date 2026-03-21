@@ -129,7 +129,4 @@ The IDs of actors and items created for a SwadeTour are not static. To help targ
 
 #### Hooks
 
-
 swade(Action|PreCalcWounds|TakeDamage|Incapacitation|RefreshBennies|PreReloadWeapon|ReloadWeapon|SpendGameMasterBenny|GetGameMasterBenny|RefreshGmBennies|ActorPrepareDerivedData|PreRollAttribute|RollAttribute|PreRollSkill|RollSkill|SpendBenny|GetBenny|RollDamage|ChatCard|PreConsumeItem|ConsumeItem|Ready)
-
-

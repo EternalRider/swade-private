@@ -17,10 +17,8 @@ declare namespace SwadePhysicalItemData {
 
 class SwadePhysicalItemData<
   Schema extends SwadePhysicalItemData.Schema = SwadePhysicalItemData.Schema,
-  BaseData extends
-    SwadePhysicalItemData.BaseData = SwadePhysicalItemData.BaseData,
-  DerivedData extends
-    SwadePhysicalItemData.DerivedData = SwadePhysicalItemData.DerivedData,
+  BaseData extends SwadePhysicalItemData.BaseData = SwadePhysicalItemData.BaseData,
+  DerivedData extends SwadePhysicalItemData.DerivedData = SwadePhysicalItemData.DerivedData,
 > extends SwadeBaseItemData<Schema, BaseData, DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): SwadePhysicalItemData.Schema {
@@ -44,24 +42,16 @@ class SwadePhysicalItemData<
   }
 
   protected override async _preUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, Item>>,
     options: Item.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     await super._preUpdate(changed, options, user);
     const diff = foundry.utils.diffObject(this.toObject(), changed);
 
-    if (
-      !!this.parent?.actor &&
-      foundry.utils.hasProperty(diff, 'system.equipStatus')
-    ) {
+    if (!!this.parent?.actor && foundry.utils.hasProperty(diff, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
-      const newState = foundry.utils.getProperty(
-        diff,
-        'system.equipStatus',
-      ) as EquipState;
+      const newState = foundry.utils.getProperty(diff, 'system.equipStatus') as EquipState;
       const updates = this.parent.effects.map((ae) => {
         return {
           _id: ae.id,

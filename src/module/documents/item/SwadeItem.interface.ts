@@ -77,8 +77,4 @@ export interface ItemGrantChainLink {
   grant: ItemGrant;
 }
 
-export type SwadeConsumeItemHook = (
-  item: SwadeItem,
-  charges: number,
-  updates: UsageUpdates
-) => void | boolean;
+export type SwadeConsumeItemHook = (item: SwadeItem, charges: number, updates: UsageUpdates) => void | boolean;

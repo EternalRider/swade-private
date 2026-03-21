@@ -6,9 +6,7 @@ declare global {
   }
 }
 
-export default class SwadeMeasuredTemplate
-  extends foundry.canvas.placeables.MeasuredTemplate
-{
+export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
@@ -22,12 +20,8 @@ export default class SwadeMeasuredTemplate
       existingPreview.destroy({ children: true });
     }
 
-    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(
-      preset,
-      item
-    );
-    if (CONFIG.SWADE.activeMeasuredTemplatePreview)
-      CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
+    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(preset, item);
+    if (CONFIG.SWADE.activeMeasuredTemplatePreview) CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
   }
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
@@ -42,9 +36,7 @@ export default class SwadeMeasuredTemplate
       flags: item ? { swade: { origin: item.uuid } } : {},
     };
 
-    const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find(
-      (c) => c.button.name === preset
-    );
+    const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find((c) => c.button.name === preset);
     if (!presetPrototype) return null;
 
     //Set template data based on preset option
@@ -104,9 +96,7 @@ export default class SwadeMeasuredTemplate
         resolution: 2,
       });
       this.document.updateSource(dest);
-      canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
-        this.document.toObject(),
-      ]);
+      canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [this.document.toObject()]);
     };
 
     // Rotate the template by 3 degree increments (mouse-wheel)
@@ -146,17 +136,11 @@ export default class SwadeMeasuredTemplate
     const { angle, t } = this.document;
     const gridWidth = this.document.width;
     const { angle: direction, distance } = this.ray;
-    if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
-      return this._getConeShape(direction, angle, distance, gridWidth);
+    if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE) return this._getConeShape(direction, angle, distance, gridWidth);
     return super._computeShape() as MeasuredTemplateShape;
   }
 
-  protected _getConeShape(
-    direction: number,
-    angle: number,
-    distance: number,
-    gridWidth: number
-  ): PIXI.Polygon {
+  protected _getConeShape(direction: number, angle: number, distance: number, gridWidth: number): PIXI.Polygon {
     // Special case to handle the base SWADE cone rather than a normal cone definition
     if (angle === 0) {
       const coneEndRadius = game.canvas.grid?.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
@@ -167,9 +151,7 @@ export default class SwadeMeasuredTemplate
         .map((a) => 180 / -2 + a * da)
         .concat([180 / 2]);
       // Get the cone shape as a polygon
-      const rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius)
-      );
+      const rays = angles.map((a) => Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius));
       const points = rays
         .reduce(
           (arr, r) => {
@@ -218,10 +200,7 @@ export default class SwadeMeasuredTemplate
   }
 
   /** A re-implementation of `BaseGrid#highlightGridPosition()` to force gridless behavior */
-  private _highlightGridArea(
-    layer: GridHighlight,
-    { color, border, alpha = 0.25, shape }: IGridHighLightOptions
-  ) {
+  private _highlightGridArea(layer: GridHighlight, { color, border, alpha = 0.25, shape }: IGridHighLightOptions) {
     layer.beginFill(color, alpha);
     if (border) layer.lineStyle(2, border, Math.min(alpha * 1.5, 1.0));
     layer.drawShape(shape).endFill();
@@ -232,12 +211,7 @@ interface IGridHighLightOptions {
   color: number;
   border?: number;
   alpha?: number;
-  shape:
-    | PIXI.Circle
-    | PIXI.Ellipse
-    | PIXI.Polygon
-    | PIXI.Rectangle
-    | PIXI.RoundedRectangle;
+  shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle;
 }
 
 type MeasuredTemplateShape = PIXI.Circle | PIXI.Rectangle | PIXI.Polygon;

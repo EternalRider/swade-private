@@ -8,9 +8,7 @@ interface CardData {
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class ActionCardEditor extends HandlebarsApplicationMixin(
-  ApplicationV2
-) {
+export default class ActionCardEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor({ cards, ...options }: ActionCardEditorConfiguration) {
     super(options);
     this.#cards = cards;
@@ -58,22 +56,19 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        deckName: this.cards.name,
-        cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
-        suitOptions: this.#getSuitOptions(),
-        cardValues: this.#getCardValues(),
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-regular fa-save',
-            label: 'SETTINGS.Save',
-          },
-        ],
-      }
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      deckName: this.cards.name,
+      cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
+      suitOptions: this.#getSuitOptions(),
+      cardValues: this.#getCardValues(),
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-regular fa-save',
+          label: 'SETTINGS.Save',
+        },
+      ],
+    });
     return context;
   }
 
@@ -157,11 +152,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     return card;
   }
 
-  static #onShowCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static #onShowCard(this: ActionCardEditor, _event: PointerEvent, target: HTMLElement) {
     const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
     if (!card.currentFace?.img) return;
@@ -170,11 +161,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     }).render({ force: true });
   }
 
-  static async #onAddCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #onAddCard(this: ActionCardEditor, _event: PointerEvent, _target: HTMLElement) {
     const newCard = await CONFIG.Card.documentClass.create(
       {
         name: game.i18n.format('DOCUMENT.New', {
@@ -198,11 +185,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     }
   }
 
-  static async #onDeleteCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    target: HTMLElement
-  ) {
+  static async #onDeleteCard(this: ActionCardEditor, _event: PointerEvent, target: HTMLElement) {
     const card = this.cards.cards.get(target.dataset.id);
     if (!card) return;
     const text = game.i18n.format('SWADE.DeleteEmbeddedCardPrompt', {

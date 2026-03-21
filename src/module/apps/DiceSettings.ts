@@ -5,9 +5,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 /**
  * This class defines a submenu for the system settings which will handle the DSN Settings
  */
-export default class DiceSettings extends HandlebarsApplicationMixin(
-  ApplicationV2
-) {
+export default class DiceSettings extends HandlebarsApplicationMixin(ApplicationV2) {
   config = SWADE.diceConfig;
   customWildDieDefaultColors = this.config.flags.dsnCustomWildDieColors.default;
 
@@ -62,45 +60,35 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
       if (flag === 'dsnWildDie') {
         settings[flag].isSelect = true;
         settings[flag].choices = this._prepareColorsetList();
-        settings[flag].disabled =
-          game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none';
+        settings[flag].disabled = game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none';
       }
     }
 
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        settings,
-        hasCustomWildDie: settings['dsnWildDie'].value !== 'customWildDie',
-        noWildDie: game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none',
-        textureList: game.dice3d?.exports.Utils.prepareTextureList(),
-        fontList: game.dice3d?.exports.Utils.prepareFontList(),
-        materialList: this._prepareMaterialList(),
-        buttons: [
-          { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
-          {
-            type: 'reset',
-            action: 'reset',
-            icon: 'fa-solid fa-undo',
-            cssClass: 'submit',
-            label: 'SETTINGS.Reset',
-          },
-        ],
-      }
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      settings,
+      hasCustomWildDie: settings['dsnWildDie'].value !== 'customWildDie',
+      noWildDie: game.user?.getFlag('swade', 'dsnWildDiePreset') === 'none',
+      textureList: game.dice3d?.exports.Utils.prepareTextureList(),
+      fontList: game.dice3d?.exports.Utils.prepareFontList(),
+      materialList: this._prepareMaterialList(),
+      buttons: [
+        { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
+        {
+          type: 'reset',
+          action: 'reset',
+          icon: 'fa-solid fa-undo',
+          cssClass: 'submit',
+          label: 'SETTINGS.Reset',
+        },
+      ],
+    });
 
     return context;
   }
 
-  static async onSubmit(
-    this: DiceSettings,
-    event: SubmitEvent,
-    _form: HTMLFormElement,
-    formData: FormDataExtended
-  ) {
+  static async onSubmit(this: DiceSettings, event: SubmitEvent, _form: HTMLFormElement, formData: FormDataExtended) {
     const expandedFormData = foundry.utils.expandObject(formData.object) as any;
-    const { diceColor, edgeColor, labelColor, outlineColor } =
-      this.customWildDieDefaultColors;
+    const { diceColor, edgeColor, labelColor, outlineColor } = this.customWildDieDefaultColors;
 
     // Handle basic settings
     for (const [key, value] of Object.entries(expandedFormData.swade)) {
@@ -124,11 +112,7 @@ export default class DiceSettings extends HandlebarsApplicationMixin(
     }
   }
 
-  static async #resetSettings(
-    this: DiceSettings,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static async #resetSettings(this: DiceSettings, _event: PointerEvent, _target: HTMLElement) {
     for (const flag in this.config.flags) {
       const resetValue = this.config.flags[flag].default;
       if (game.user?.getFlag('swade', flag) !== resetValue) {

@@ -26,8 +26,7 @@ export function isElementVisible(element: HTMLElement): boolean {
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -56,12 +55,7 @@ export function getElementCenter(element: HTMLElement): {
  * @param {number} y2 - Y coordinate of the second point.
  * @returns {number} The distance between the two points.
  */
-export function getDistance(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number
-): number {
+export function getDistance(x1: number, y1: number, x2: number, y2: number): number {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 

@@ -1,23 +1,10 @@
-<section
-  class='{{tabs.powers.tabCssClass}}'
-  data-group='{{tabs.powers.group}}'
-  data-tab='{{tabs.powers.id}}'
->
+<section class='{{tabs.powers.tabCssClass}}' data-group='{{tabs.powers.group}}' data-tab='{{tabs.powers.id}}'>
   <header class='header'>
     <label class='arcane-skill-label'>{{localize 'SWADE.ArcaneSkill'}}</label>
     <span class='arcane-skill-inputs form-group'>
       <span class='form-fields text-center'>
-        <select
-          name='system.arcaneSkillDie.sides'
-          data-dtype='Number'
-          class='text-center'
-        >
-          {{selectOptions
-            dieSideOptions
-            selected=item.system.arcaneSkillDie.sides
-            valueAttr='key'
-            labelAttr='label'
-          }}
+        <select name='system.arcaneSkillDie.sides' data-dtype='Number' class='text-center'>
+          {{selectOptions dieSideOptions selected=item.system.arcaneSkillDie.sides valueAttr='key' labelAttr='label'}}
         </select>
         <input
           name='system.arcaneSkillDie.modifier'
@@ -55,11 +42,7 @@
   <ol class='powers-list unmarked-list collapsibles'>
     {{#eachInMap embeddedPowers}}
       <li>
-        <details
-          class='power'
-          data-power-id='{{key}}'
-          {{collapsible @root.collapsibleStates.powers key}}
-        >
+        <details class='power' data-power-id='{{key}}' {{collapsible @root.collapsibleStates.powers key}}>
           <summary>{{value.name}}</summary>
           <span class='content'>
             <div class='power-rank'>{{localize 'SWADE.Rank'}}:

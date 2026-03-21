@@ -125,9 +125,7 @@ export function registerSettings() {
     },
     config: true,
     onChange: () =>
-      game.messages
-        ?.filter((m) => m.isContentVisible && m.isCardDraw)
-        .forEach((msg) => ui.chat.updateMessage(msg)),
+      game.messages?.filter((m) => m.isContentVisible && m.isCardDraw).forEach((msg) => ui.chat.updateMessage(msg)),
   });
 
   game.settings.register('swade', 'hideNPCWildcards', {

@@ -66,9 +66,9 @@ SWADE.AllBenniesRefresh: Hasieratu Benni Guztiak
 SWADE.BenniesRefreshMessage: Beniak hasieratu egin dira!
 SWADE.BenniesRefreshAllMessage: Beni guztiak hasieratu dira!
 SWADE.BenniesGMRefreshMessage: JMaren Beniak hasieratu dira!
-SWADE.BenniesAddMessage: "(e)k Beni bat jaso du!"
-SWADE.BenniesGMAddMessage: "(e)k Beni bat hartu du!"
-SWADE.BenniesSpendMessage: "(e)k Beni bat erabili du!"
+SWADE.BenniesAddMessage: '(e)k Beni bat jaso du!'
+SWADE.BenniesGMAddMessage: '(e)k Beni bat hartu du!'
+SWADE.BenniesSpendMessage: '(e)k Beni bat erabili du!'
 SWADE.BenniesMax: Beniak Berrezarri
 SWADE.EditSkill: Trebezia Editatu
 SWADE.EdEdge: Abantaila Editatu
@@ -146,8 +146,8 @@ SWADE.PP: Botere Puntuak
 SWADE.CurPP: Uneko Botere Puntuak
 SWADE.MaxPP: Gehienezko Botere Puntuak
 SWADE.Dur: Iraupena
-SWADE.Major: "(Nagusia)"
-SWADE.Minor: "(Txikia)"
+SWADE.Major: '(Nagusia)'
+SWADE.Minor: '(Txikia)'
 SWADE.Edges: Abantailak
 SWADE.ArcBack: Aurrekari Arkanoak
 SWADE.Req: Betebeharrak
@@ -192,8 +192,7 @@ SWADE.HideWC: Ezkutatu PEJ komodinak
 SWADE.EnableConv: Gaitu Ziurtasuna
 SWADE.EnableConvDesc: Gaitu Konbentzimendu ezarpen araua
 SWADE.EnableWoundPace: Egokitu Erritmoa zaurien arabera
-SWADE.EnableWoundPaceDesc:
-  Gaitua dagoenean Zauriek Pausuan automatikoki eragiten
+SWADE.EnableWoundPaceDesc: Gaitua dagoenean Zauriek Pausuan automatikoki eragiten
   dute
 SWADE.GmBenniesDesc: Berrezartzean JMak jasoko duen Beni kopurua
 SWADE.EnableBennyNotify: Beni jakinarazpenak

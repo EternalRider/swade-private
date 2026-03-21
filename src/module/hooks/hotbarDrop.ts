@@ -5,11 +5,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 
 const attributes = new Set(Object.keys(SWADE.attributes));
 
-export async function onHotbarDrop(
-  _hotbar: Hotbar,
-  data: DropData,
-  slot: number,
-) {
+export async function onHotbarDrop(_hotbar: Hotbar, data: DropData, slot: number) {
   if (data.type === 'Item') return onDropItem(data, slot);
   if (data.type === 'Attribute') return onDropAttribute(data, slot);
 }
@@ -61,9 +57,7 @@ export function rollItemMacro(identifier: string) {
 async function onRollItem(actor: SwadeActor, identifier: string) {
   const item = actor.items.getName(identifier) as SwadeItem;
   if (!item) {
-    return ui.notifications.warn(
-      `Your controlled Actor does not have an item named ${identifier}`,
-    );
+    return ui.notifications.warn(`Your controlled Actor does not have an item named ${identifier}`);
   }
   //Roll the skill
   if (item.type === 'skill') {

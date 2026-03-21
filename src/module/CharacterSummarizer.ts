@@ -15,9 +15,7 @@ export default class CharacterSummarizer {
     this.actor = actor;
 
     if (!CharacterSummarizer.isSupportedActorType(actor)) {
-      ui.notifications.error(
-        game.i18n.format('SWADE.CharacterSummaryTypeErr', { type: actor.type })
-      );
+      ui.notifications.error(game.i18n.format('SWADE.CharacterSummaryTypeErr', { type: actor.type }));
       this.summary = '';
       return;
     }
@@ -90,53 +88,33 @@ export default class CharacterSummarizer {
     let summary = `<h1>${this.actor.name}</h1>`;
 
     // Basic character information block
-    summary +=
-      '<p><strong>' + game.i18n.localize('SWADE.Ancestry') + '</strong>: ';
-    summary +=
-      this.actor.ancestry?.name ??
-      foundry.utils.getProperty(this.actor.system, 'details.species.name');
-    summary +=
-      '<br/><strong>' + game.i18n.localize('SWADE.Rank') + '</strong>: ';
+    summary += '<p><strong>' + game.i18n.localize('SWADE.Ancestry') + '</strong>: ';
+    summary += this.actor.ancestry?.name ?? foundry.utils.getProperty(this.actor.system, 'details.species.name');
+    summary += '<br/><strong>' + game.i18n.localize('SWADE.Rank') + '</strong>: ';
     summary += foundry.utils.getProperty(this.actor.system, 'advances.rank');
-    summary +=
-      ' (' + foundry.utils.getProperty(this.actor.system, 'advances.value');
+    summary += ' (' + foundry.utils.getProperty(this.actor.system, 'advances.value');
     summary += ' ' + game.i18n.localize('SWADE.Adv');
-    summary +=
-      ')<br/><strong>' + game.i18n.localize('SWADE.Bennies') + '</strong>: ';
-    summary +=
-      foundry.utils.getProperty(this.actor.system, 'bennies.max') + '</p>';
+    summary += ')<br/><strong>' + game.i18n.localize('SWADE.Bennies') + '</strong>: ';
+    summary += foundry.utils.getProperty(this.actor.system, 'bennies.max') + '</p>';
 
     // Attributes
     const attributes: string[] = [];
     attributes.push(
-      game.i18n.localize('SWADE.AttrAgiShort') +
-        ' ' +
-        this._formatDieStat(this.actor, 'attributes.agility.die')
+      game.i18n.localize('SWADE.AttrAgiShort') + ' ' + this._formatDieStat(this.actor, 'attributes.agility.die')
     );
     attributes.push(
-      game.i18n.localize('SWADE.AttrSmaShort') +
-        ' ' +
-        this._formatDieStat(this.actor, 'attributes.smarts.die')
+      game.i18n.localize('SWADE.AttrSmaShort') + ' ' + this._formatDieStat(this.actor, 'attributes.smarts.die')
     );
     attributes.push(
-      game.i18n.localize('SWADE.AttrSprShort') +
-        ' ' +
-        this._formatDieStat(this.actor, 'attributes.spirit.die')
+      game.i18n.localize('SWADE.AttrSprShort') + ' ' + this._formatDieStat(this.actor, 'attributes.spirit.die')
     );
     attributes.push(
-      game.i18n.localize('SWADE.AttrStrShort') +
-        ' ' +
-        this._formatDieStat(this.actor, 'attributes.strength.die')
+      game.i18n.localize('SWADE.AttrStrShort') + ' ' + this._formatDieStat(this.actor, 'attributes.strength.die')
     );
     attributes.push(
-      game.i18n.localize('SWADE.AttrVigShort') +
-        ' ' +
-        this._formatDieStat(this.actor, 'attributes.vigor.die')
+      game.i18n.localize('SWADE.AttrVigShort') + ' ' + this._formatDieStat(this.actor, 'attributes.vigor.die')
     );
-    summary += this._formatList(
-      attributes,
-      game.i18n.localize('SWADE.Attributes')
-    );
+    summary += this._formatList(attributes, game.i18n.localize('SWADE.Attributes'));
 
     // Speed, pace, toughness
     summary +=
@@ -156,10 +134,7 @@ export default class CharacterSummarizer {
       game.i18n.localize('SWADE.Tough') +
       '</strong>: ' +
       foundry.utils.getProperty(this.actor.system, 'stats.toughness.value');
-    summary +=
-      ' (' +
-      foundry.utils.getProperty(this.actor.system, 'stats.toughness.armor') +
-      ')</p>';
+    summary += ' (' + foundry.utils.getProperty(this.actor.system, 'stats.toughness.armor') + ')</p>';
 
     // Items - skills, powers, gear, etc
     const skills = new Array<string>();
@@ -174,11 +149,7 @@ export default class CharacterSummarizer {
     for (const item of this.actor.items) {
       switch (item.type) {
         case 'skill':
-          skills.push(
-            item.name +
-              ' ' +
-              this._formatDieStat(item as SwadeItem<'skill'>, 'die')
-          );
+          skills.push(item.name + ' ' + this._formatDieStat(item as SwadeItem<'skill'>, 'die'));
           break;
         case 'edge':
           edges.push(item.name as string);
@@ -197,9 +168,7 @@ export default class CharacterSummarizer {
           weaponsAndArmour.push(`${item.name} (${item.system.armor})`);
           break;
         case 'shield':
-          weaponsAndArmour.push(
-            `${item.name} (+${item.system.parry} / ${item.system.cover})`
-          );
+          weaponsAndArmour.push(`${item.name} (+${item.system.parry} / ${item.system.cover})`);
           break;
         case 'gear':
           gear.push(item.name as string);
@@ -224,25 +193,13 @@ export default class CharacterSummarizer {
 
     summary += this._formatList(skills, game.i18n.localize('SWADE.Skills'));
     summary += this._formatList(edges, game.i18n.localize('SWADE.Edges'));
-    summary += this._formatList(
-      hindrances,
-      game.i18n.localize('SWADE.Hindrances')
-    );
+    summary += this._formatList(hindrances, game.i18n.localize('SWADE.Hindrances'));
 
-    summary += this._formatList(
-      weaponsAndArmour,
-      game.i18n.localize('SWADE.WeaponsAndArmor')
-    );
-    summary += this._formatList(
-      consumables,
-      game.i18n.localize('SWADE.Consumable.Consumables')
-    );
+    summary += this._formatList(weaponsAndArmour, game.i18n.localize('SWADE.WeaponsAndArmor'));
+    summary += this._formatList(consumables, game.i18n.localize('SWADE.Consumable.Consumables'));
     summary += this._formatList(gear, game.i18n.localize('SWADE.Inv'));
     summary += this._formatList(powers, game.i18n.localize('SWADE.Pow'));
-    summary += this._formatList(
-      abilities,
-      game.i18n.localize('SWADE.SpecialAbilities')
-    );
+    summary += this._formatList(abilities, game.i18n.localize('SWADE.SpecialAbilities'));
 
     // Additional stats
     const additionalStats = new Array<string>();
@@ -261,33 +218,21 @@ export default class CharacterSummarizer {
           }
           break;
         case 'Die':
-          additionalStats.push(
-            `${stat.label}: ${stat.value}` + this._formatModifier(stat.modifier)
-          );
+          additionalStats.push(`${stat.label}: ${stat.value}` + this._formatModifier(stat.modifier));
           break;
         case 'Boolean':
           if (stat.value) {
-            additionalStats.push(
-              `${stat.label}: ${game.i18n.localize('SWADE.Yes')}`
-            );
+            additionalStats.push(`${stat.label}: ${game.i18n.localize('SWADE.Yes')}`);
           } else {
-            additionalStats.push(
-              `${stat.label}: ${game.i18n.localize('SWADE.No')}`
-            );
+            additionalStats.push(`${stat.label}: ${game.i18n.localize('SWADE.No')}`);
           }
           break;
         default:
-          Logger.error(
-            `For ${key}, cannot process additionalStat of type ${stat.dtype}`,
-            { toast: true }
-          );
+          Logger.error(`For ${key}, cannot process additionalStat of type ${stat.dtype}`, { toast: true });
       }
     }
 
-    summary += this._formatList(
-      additionalStats,
-      game.i18n.localize('SWADE.AddStats')
-    );
+    summary += this._formatList(additionalStats, game.i18n.localize('SWADE.AddStats'));
 
     return summary;
   }
@@ -304,14 +249,8 @@ export default class CharacterSummarizer {
   }
 
   private _formatDieStat(document: SwadeItem | SwadeActor, dataKey: string) {
-    const sides = foundry.utils.getProperty(
-      document.system,
-      dataKey + '.sides'
-    );
-    const modifier = foundry.utils.getProperty(
-      document.system,
-      dataKey + '.modifier'
-    );
+    const sides = foundry.utils.getProperty(document.system, dataKey + '.sides');
+    const modifier = foundry.utils.getProperty(document.system, dataKey + '.modifier');
     const val = `d${sides}` + this._formatModifier(modifier);
     return val;
   }

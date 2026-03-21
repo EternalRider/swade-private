@@ -17,8 +17,9 @@ export interface ChargesSchema extends foundry.data.fields.DataSchema {
 }
 
 export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
-
-  static get initialHasCharges() { return false; }
+  static get initialHasCharges() {
+    return false;
+  }
 
   static randomID() {
     return foundry.utils.randomID(8);
@@ -44,16 +45,18 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
         }),
         {
           initial: () => {
-            return [{
+            return [
+              {
                 id: ChargesData.randomID(),
                 sort: 0,
                 name: game.i18n.localize('SWADE.Charges'),
                 value: 1,
                 max: 1,
                 rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
-              }];
+              },
+            ];
           },
-        },
+        }
       ),
     };
   }
@@ -71,10 +74,12 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
   }
 
   find(id: string): ChargeData {
-    return this.charges.find(c => c.id === id);
+    return this.charges.find((c) => c.id === id);
   }
 }
 
 export class DefaultHasChargesData extends ChargesData {
-  static get initialHasCharges() { return true; }
+  static get initialHasCharges() {
+    return true;
+  }
 }
