@@ -1,3 +1,5 @@
+@use '../variables';
+
 .card-picker {
   .card-list {
     display: flex;
@@ -13,7 +15,7 @@
     max-width: 125px;
     flex-basis: auto;
     flex-grow: 1;
-    padding: $medium-spacing;
+    padding: variables.$medium-spacing;
     margin-bottom: 5px;
     text-align: center;
     figure {
@@ -22,7 +24,7 @@
     img {
       height: 100px;
       display: block;
-      margin: $medium-spacing auto;
+      margin: variables.$medium-spacing auto;
       filter: drop-shadow(2px 3px 3px rgb(0 0 0 / 50%));
       transition: all 0.2s ease-out;
       border: none;
@@ -38,15 +40,13 @@
     [type='radio'] + figure img {
       cursor: pointer;
       &:hover {
-        transform: translateY(-$medium-spacing) scale(1.2);
+        transform: translateY(-(variables.$medium-spacing)) scale(1.2);
       }
     }
     /* CHECKED STYLES */
     [type='radio']:checked ~ figure img {
-      transform: translateY(-$medium-spacing) scale(1.2);
-      filter:
-        drop-shadow(2px 3px 3px rgb(0 0 0 / 50%))
-        drop-shadow(0 0 5px red);
+      transform: translateY(-(variables.$medium-spacing)) scale(1.2);
+      filter: drop-shadow(2px 3px 3px rgb(0 0 0 / 50%)) drop-shadow(0 0 5px red);
     }
     [type='radio']:checked ~ figure figcaption {
       font-weight: bold;

@@ -86,6 +86,7 @@ export async function layoutChase(deck: Cards) {
 
   try {
     await ccm!.api.grid(gridConfig);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     ui.notifications.warn('SWADE.ChaseLayoutError', { localize: true });
   }

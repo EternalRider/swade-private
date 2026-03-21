@@ -6,8 +6,9 @@ import { processFormula } from '../enrichers';
 
 const dice = '([^#]+)(?:#(.*))?'; // Dice expression with appended flavor text
 
-export default class SwadeChatLog extends foundry.applications.sidebar.tabs
-  .ChatLog {
+export default class SwadeChatLog
+  extends foundry.applications.sidebar.tabs.ChatLog
+{
   static DAMAGE_ROLL_REGEXP = new RegExp(`^(\\/d(?:amage)? )${dice}$`, 'i');
   static TRAIT_ROLL_REGEXP = new RegExp(`^(\\/t(?:rait)? )${dice}$`, 'i');
 
@@ -62,8 +63,9 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
     chatData: ChatMessage.CreateData,
     createOptions: ChatMessage.Database.CreateOperation<false>,
   ) {
+    const speaker = chatData.speaker as ChatMessage.SpeakerData | undefined;
     const actor =
-      ChatMessage.implementation.getSpeakerActor(chatData.speaker) ||
+      ChatMessage.implementation.getSpeakerActor(speaker) ||
       game.user.character;
     const rollData = actor ? actor.getRollData() : {};
     const rollMode = game.settings.get('core', 'rollMode');
@@ -114,7 +116,7 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
         rollData,
         rollMode,
       });
-    } catch (error) {
+    } catch {
       throw new Error(`${formula} is not a valid trait roll`);
     }
   }

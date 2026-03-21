@@ -1,3 +1,5 @@
+@use 'variables';
+
 .swade,
 .swade-official {
   // Generic checkbox styling
@@ -6,7 +8,7 @@
     position: relative;
     padding-left: 30px;
     cursor: pointer;
-    font-size: $medium-font;
+    font-size: variables.$medium-font;
     line-height: 20px;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -37,20 +39,20 @@
     left: 0;
     height: 20px;
     width: 20px;
-    background-color: $input-bg-dark;
-    border-radius: $small-spacing;
+    background-color: variables.$input-bg-dark;
+    border-radius: variables.$small-spacing;
   }
 
   .check-container {
     &:hover input ~ .checkmark {
-      background-color: $input-bg-dark;
+      background-color: variables.$input-bg-dark;
       box-shadow: 0 0 5px red;
     }
     &:focus input ~ .checkmark {
       box-shadow: 0 0 5px red;
     }
     input:checked ~ .checkmark {
-      background-color: $input-bg-dark;
+      background-color: variables.$input-bg-dark;
     }
   }
 
@@ -70,7 +72,7 @@
       top: 2px;
       width: 5px;
       height: 10px;
-      border: solid $header-text;
+      border: solid variables.$header-text;
       border-width: 0 3px 3px 0;
       -webkit-transform: rotate(45deg);
       -ms-transform: rotate(45deg);

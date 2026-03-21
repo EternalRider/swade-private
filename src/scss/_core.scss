@@ -1,3 +1,5 @@
+@use 'variables';
+
 body.theme-light .application {
   --background: url(/ui/parchment.jpg) repeat;
 }
@@ -76,7 +78,7 @@ body.theme-light .application {
     flex: none;
     & + .dialog-button,
     button {
-      margin-top: $small-spacing;
+      margin-top: variables.$small-spacing;
     }
   }
 }

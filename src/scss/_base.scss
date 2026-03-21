@@ -1,3 +1,5 @@
+@use 'variables';
+
 .swade.sheet:not(.application) {
   .window-content {
     background-image: url('./assets/main_bg.webp');
@@ -11,24 +13,24 @@
     flex-grow: 0;
 
     .item {
-      border: 1px solid $charcoal;
-      background: $input-bg-dark;
+      border: 1px solid variables.$charcoal;
+      background: variables.$input-bg-dark;
       border-radius: 4px 4px 0 0;
       margin: 0 5px -1px;
       padding: 4px;
-      color: $anthracite;
+      color: variables.$anthracite;
       flex: 1;
       &:hover,
       &:focus {
-        background: $header-text;
+        background: variables.$header-text;
         text-shadow: none;
-        color: $light-pastel-blue;
+        color: variables.$light-pastel-blue;
       }
       &.active {
-        background: $header-text;
+        background: variables.$header-text;
         border-bottom: 0;
         text-shadow: none;
-        color: $light-pastel-blue;
+        color: variables.$light-pastel-blue;
       }
       &:first-of-type {
         margin-left: 0;
@@ -58,17 +60,17 @@
   padding: 0;
   margin: 0;
   > li {
-    border-bottom: $decorative-line;
-    padding-bottom: $small-spacing;
-    margin-bottom: $small-spacing;
+    border-bottom: variables.$decorative-line;
+    padding-bottom: variables.$small-spacing;
+    margin-bottom: variables.$small-spacing;
   }
   > li:first-child {
-    margin-top: $small-spacing;
+    margin-top: variables.$small-spacing;
   }
   .effect-icon {
     flex: 0 0 24px;
     height: 24px;
-    margin-right: $small-spacing;
+    margin-right: variables.$small-spacing;
     border: none;
   }
   .effect-label {
@@ -92,7 +94,7 @@
   .disabled-effect {
     .effect-label {
       text-decoration: line-through;
-      text-decoration-thickness: $small-spacing;
+      text-decoration-thickness: variables.$small-spacing;
     }
   }
 

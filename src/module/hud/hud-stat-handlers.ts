@@ -114,6 +114,7 @@ export function setupHudStatHandlers(
         try {
           await tokenToUse.toggleCombatant();
           if (onUpdate) onUpdate();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           ui.notifications?.error('Failed to toggle combat state');
         }
