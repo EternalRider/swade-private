@@ -7,11 +7,7 @@
           <ol class='formula-list'>
             {{#each formulaParts}}
               {{#if die}}
-                <li
-                  class='die'
-                  style='background-image: url({{img}});'
-                  data-tooltip='{{hint}}'
-                >
+                <li class='die' style='background-image: url({{img}});' data-tooltip='{{hint}}'>
                   <span class='{{class}}'>{{this.result}}</span>
                 </li>
               {{else}}
@@ -30,11 +26,7 @@
           <div class='dice-total'>
             <ol class='result-list'>
               {{#each resultParts}}
-                <li
-                  class='die'
-                  style='background-image: url({{img}});'
-                  data-tooltip='{{hint}}'
-                >
+                <li class='die' style='background-image: url({{img}});' data-tooltip='{{hint}}'>
                   <span class='label {{class}}'>{{this.result}}</span>
                 </li>
               {{/each}}

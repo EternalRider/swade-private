@@ -1,3 +1,5 @@
+@use 'variables';
+
 @use 'entity-links' as *;
 
 body.theme-dark .swade-application,
@@ -106,8 +108,8 @@ body.theme-light .swade-application,
       background: transparent;
       border-radius: 0;
       width: auto;
-      padding: $small-spacing;
-      margin: $small-spacing;
+      padding: variables.$small-spacing;
+      margin: variables.$small-spacing;
     }
     &.rollable {
       border-bottom: 1px dashed var(--color-high-contrast);
@@ -138,7 +140,7 @@ body.theme-light .swade-application,
   .flex-separator {
     flex: 0 !important;
     text-align: center;
-    margin: 0 $small-spacing !important;
+    margin: 0 variables.$small-spacing !important;
   }
 
   .text-center {

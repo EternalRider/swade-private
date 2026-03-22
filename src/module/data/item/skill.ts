@@ -4,15 +4,10 @@ import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import type SwadeItem from '../../documents/item/SwadeItem';
-import {
-  addUpModifiers,
-  createEnrichedTextEmbed,
-  createEmbedElement,
-} from '../../util';
+import { addUpModifiers, createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { DiceTrait } from '../common.interface';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import { SwadeBaseItemData } from './base/base';
-import { constants } from '../../constants';
 
 declare namespace SkillData {
   interface Schema extends SwadeBaseItemData.Schema, DiceTrait {
@@ -26,11 +21,7 @@ declare namespace SkillData {
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
 
-class SkillData extends SwadeBaseItemData<
-  SkillData.Schema,
-  SkillData.BaseData,
-  SkillData.DerivedData
-> {
+class SkillData extends SwadeBaseItemData<SkillData.Schema, SkillData.BaseData, SkillData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): SkillData.Schema {
     return {
@@ -58,10 +49,7 @@ class SkillData extends SwadeBaseItemData<
   get modifier(): number {
     let mod = this.die.modifier;
     const attribute = this.attribute;
-    const globals = this.parent.actor?.system.stats.globalMods as Record<
-      string,
-      RollModifier[]
-    >;
+    const globals = this.parent.actor?.system.stats.globalMods as Record<string, RollModifier[]>;
     mod += this.effects?.reduce(addUpModifiers, 0);
     mod += globals?.trait.reduce(addUpModifiers, 0) ?? 0;
     if (attribute) mod += globals?.[attribute]?.reduce(addUpModifiers, 0);
@@ -73,12 +61,9 @@ class SkillData extends SwadeBaseItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      SkillData.Schema,
-      Item<'skill'>
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<SkillData.Schema, Item<'skill'>>,
     options: Item.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -87,8 +72,8 @@ class SkillData extends SwadeBaseItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -96,29 +81,16 @@ class SkillData extends SwadeBaseItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/skill-embeds.hbs',
-      ['item-embed', 'skill'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/skill-embeds.hbs', ['item-embed', 'skill']);
   }
 
   protected override _onUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        SkillData.Schema,
-        SwadeItem
-      >
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<SkillData.Schema, SwadeItem>>,
     options: Item.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     super._onUpdate(changed, options, userId);
 
@@ -131,24 +103,15 @@ class SkillData extends SwadeBaseItemData<
           .flatMap((scene) => scene.tokens.contents)
           .filter((token) => !token.actorLink)
           .map((token) => token.actor)
-          .filter((doc) => doc?.type === 'vehicle'),
+          .filter((doc) => doc?.type === 'vehicle')
       );
     //filter down to only the vehicles this skill's actor is an operator of
     const filtered = allVehicles.filter((vehicle) =>
-      vehicle.system.crew.members.find(
-        (m) =>
-          m.uuid === this.actor?.uuid &&
-          m.role === constants.CREW_ROLE.OPERATOR,
-      ),
+      vehicle.system.crew.members.find((m) => m.uuid === this.actor?.uuid && m.role === constants.CREW_ROLE.OPERATOR)
     );
     for (const vehicle of filtered) {
       //possibly trigger dataprep again
-      if (
-        [
-          vehicle.system.driver.skill,
-          vehicle.system.driver.skillAlternative,
-        ].includes(this.parent.name)
-      ) {
+      if ([vehicle.system.driver.skill, vehicle.system.driver.skillAlternative].includes(this.parent.name)) {
         vehicle.reset();
         vehicle.sheet?.render();
       }

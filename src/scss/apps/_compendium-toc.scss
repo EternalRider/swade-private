@@ -1,3 +1,5 @@
+@use '../variables';
+
 .game.theme-dark .compendium-toc .wildcard {
   filter: invert(1);
 }
@@ -115,7 +117,7 @@
         .name {
           overflow: hidden;
           text-decoration: underline;
-          text-decoration-color: $header-text;
+          text-decoration-color: variables.$header-text;
           &:only-child {
             line-height: var(--sidebar-item-height);
           }

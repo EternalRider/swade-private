@@ -11,21 +11,10 @@
 </div>
 <label class='item-name-container'>
   <span class='sr-only'>{{localize 'Name'}}</span>
-  <input
-    type='text'
-    name='name'
-    class='item-name'
-    value='{{item.name}}'
-    placeholder='{{localize "Name"}}'
-  />
+  <input type='text' name='name' class='item-name' value='{{item.name}}' placeholder='{{localize "Name"}}' />
 </label>
 {{#if hasInlineDelete}}
-  <button
-    type='button'
-    class='inline-delete invisible'
-    data-action='inlineDelete'
-    title='{{localize "SWADE.Del"}}'
-  >
+  <button type='button' class='inline-delete invisible' data-action='inlineDelete' title='{{localize "SWADE.Del"}}'>
     <i class='fas fa-trash fa-3x'></i>
   </button>
 {{/if}}
@@ -33,12 +22,12 @@
   {{localize itemType}}
   {{#if item.system.severity}}
     (
-    {{#if (eq item.system.severity "either")}}
-      {{localize "SWADE.HindranceSeverity.Either"}}
-    {{else if (eq item.system.severity "major")}}
-      {{localize "SWADE.HindranceSeverity.Major"}}
-    {{else if (eq item.system.severity "minor")}}
-      {{localize "SWADE.HindranceSeverity.Minor"}}
+    {{#if (eq item.system.severity 'either')}}
+      {{localize 'SWADE.HindranceSeverity.Either'}}
+    {{else if (eq item.system.severity 'major')}}
+      {{localize 'SWADE.HindranceSeverity.Major'}}
+    {{else if (eq item.system.severity 'minor')}}
+      {{localize 'SWADE.HindranceSeverity.Minor'}}
     {{else}}
       {{formatHindranceSeverity item.system.severity}}
     {{/if}}
@@ -47,12 +36,7 @@
 </span>
 <div class='item-detail source form-group' title='{{localize "SWADE.Source"}}'>
   <span class='form-fields'>
-    <input
-      name='system.source'
-      type='text'
-      value='{{item.system.source}}'
-      placeholder='{{localize "SWADE.Source"}}'
-    />
+    <input name='system.source' type='text' value='{{item.system.source}}' placeholder='{{localize "SWADE.Source"}}' />
   </span>
 </div>
 {{#if isPhysicalItem}}
@@ -82,10 +66,7 @@
   </div>
 {{/if}}
 {{#if hasCategory}}
-  <div
-    class='item-detail category form-group'
-    title='{{localize "SWADE.Category"}}'
-  >
+  <div class='item-detail category form-group' title='{{localize "SWADE.Category"}}'>
     <span class='form-fields'>
       <input
         name='system.category'

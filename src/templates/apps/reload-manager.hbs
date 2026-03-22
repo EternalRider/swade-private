@@ -4,7 +4,7 @@
       <label for='empty-magazine-discard'>
         {{localize 'SWADE.DiscardMagazine'}}
       </label>
-      <input id='empty-magazine-discard' type='checkbox' class='discard' data-action='discard'/>
+      <input id='empty-magazine-discard' type='checkbox' class='discard' data-action='discard' />
     </div>
   {{/if}}
   {{#each magazineGroups}}
@@ -22,15 +22,7 @@
               {{else}}
                 <span class='counter'>{{charges}}/{{capacity}}</span>
               {{/if}}
-              <meter
-                class='meter'
-                min='0'
-                low='25'
-                high='75'
-                optimum='100'
-                max='100'
-                value='{{percentage}}'
-              >
+              <meter class='meter' min='0' low='25' high='75' optimum='100' max='100' value='{{percentage}}'>
                 {{charges}}/{{capacity}}
               </meter>
             </button>

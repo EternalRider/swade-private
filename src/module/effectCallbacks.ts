@@ -37,25 +37,18 @@ async function removeShaken(effect: SwadeActiveEffect) {
             if (!(parent instanceof SwadeActor) || parent?.type === 'vehicle') {
               return;
             }
-            const flavor = game.i18n.localize(
-              'SWADE.EffectCallbacks.Shaken.Flavor',
-            );
+            const flavor = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Flavor');
             roll = await parent.rollAttribute('spirit', {
               title: flavor,
               flavour: flavor,
               additionalMods: [
                 {
-                  label: game.i18n.localize(
-                    'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
-                  ),
+                  label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.UnshakeModifier'),
                   value: parent.system.attributes.spirit.unShakeBonus,
                 },
               ],
             });
-            if (
-              (roll?.successes ?? constants.ROLL_RESULT.FAIL) >=
-              constants.ROLL_RESULT.SUCCESS
-            ) {
+            if ((roll?.successes ?? constants.ROLL_RESULT.FAIL) >= constants.ROLL_RESULT.SUCCESS) {
               await effect.delete();
               ui.notifications.info('SWADE.EffectCallbacks.Shaken.Success', {
                 localize: true,
@@ -110,15 +103,12 @@ async function removeShaken(effect: SwadeActiveEffect) {
               await effect.delete();
               resolve();
             },
-          },
+          }
         );
       }
 
       if (!game.user?.isGM) {
-        foundry.utils.findSplice(
-          buttons,
-          (button) => button.action === 'gmBenny',
-        );
+        foundry.utils.findSplice(buttons, (button) => button.action === 'gmBenny');
       }
 
       const content = game.i18n.localize('SWADE.EffectCallbacks.Shaken.Question');
@@ -142,8 +132,7 @@ async function removeShaken(effect: SwadeActiveEffect) {
           const button = html.querySelector('button[data-action="benny"]');
           const gmButton = html.querySelector('button[data-action="gmBenny"]');
           const gmHasNoBennies = game.user?.isGM && game.user.bennies <= 0;
-          const characterHasNoBennies =
-            effect.parent instanceof SwadeActor && effect.parent.bennies <= 0;
+          const characterHasNoBennies = effect.parent instanceof SwadeActor && effect.parent.bennies <= 0;
           if (characterHasNoBennies && button) button.disabled = true;
           if (gmHasNoBennies && gmButton) gmButton.disabled = true;
         },
@@ -164,9 +153,7 @@ async function removeStunned(effect: SwadeActiveEffect) {
     flavour,
     additionalMods: [
       {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.Stunned.UnStunModifier',
-        ),
+        label: game.i18n.localize('SWADE.EffectCallbacks.Stunned.UnStunModifier'),
         value: parent.system.attributes.vigor.unStunBonus,
       },
     ],
@@ -207,9 +194,7 @@ async function bleedOut(effect: SwadeActiveEffect) {
     flavour: flavor,
     additionalMods: [
       {
-        label: game.i18n.localize(
-          'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
-        ),
+        label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
         value: parent.system.attributes.vigor.bleedOut.modifier,
       },
     ],
@@ -219,9 +204,7 @@ async function bleedOut(effect: SwadeActiveEffect) {
   //death
   if (result < constants.ROLL_RESULT.SUCCESS) {
     //delete existing temporary effects so that they don't interfere
-    const toDelete = parent.effects
-      .filter((e) => e.isTemporary)
-      .map((e) => e.id!);
+    const toDelete = parent.effects.filter((e) => e.isTemporary).map((e) => e.id!);
     await parent.deleteEmbeddedDocuments('ActiveEffect', toDelete);
 
     //set overlay

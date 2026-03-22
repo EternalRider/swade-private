@@ -2,12 +2,9 @@ import { DieSidesOption } from '../../globals';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getDieSidesRange } from '../util';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class AttributeManager extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class AttributeManager extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor({ actor, ...options }: AttributeManagerConfiguration) {
     if (!(actor instanceof Actor)) throw new Error('Not an Actor!');
     super(options);
@@ -20,7 +17,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
     classes: ['swade', 'attribute-manager', 'swade-application'],
     position: {
       width: 600,
-      height: 'auto',
+      height: 'auto' as const,
     },
     window: {
       contentClasses: ['standard-form'],
@@ -54,29 +51,20 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context: AttributeManagerRenderContext = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        isExtra: !this.actor.isWildcard,
-        dieSides:
-          this.actor.type === 'character'
-            ? getDieSidesRange(4, 20)
-            : getDieSidesRange(4, 24),
-        wildDieSides: getDieSidesRange(4, 12),
-        dieSidesWithMinimum:
-          this.actor.type === 'character'
-            ? getDieSidesRange(1, 20)
-            : getDieSidesRange(1, 24),
-        actor: this.actor,
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-solid fa-floppy-disk',
-            label: 'Save Changes',
-          },
-        ],
-      },
-    );
+    const context: AttributeManagerRenderContext = foundry.utils.mergeObject(await super._prepareContext(options), {
+      isExtra: !this.actor.isWildcard,
+      dieSides: this.actor.type === 'character' ? getDieSidesRange(4, 20) : getDieSidesRange(4, 24),
+      wildDieSides: getDieSidesRange(4, 12),
+      dieSidesWithMinimum: this.actor.type === 'character' ? getDieSidesRange(1, 20) : getDieSidesRange(1, 24),
+      actor: this.actor,
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-floppy-disk',
+          label: 'Save Changes',
+        },
+      ],
+    });
     return context;
   }
 
@@ -84,7 +72,7 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
     this: AttributeManager,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     await this.actor.update(formData.object);
     await this.render({ force: true });
@@ -92,13 +80,11 @@ export default class AttributeManager extends HandlebarsApplicationMixin(
   }
 }
 
-interface AttributeManagerConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+interface AttributeManagerConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   actor: SwadeActor;
 }
 
-interface AttributeManagerRenderContext
-  extends Partial<foundry.applications.api.ApplicationV2.RenderContext> {
+interface AttributeManagerRenderContext extends Partial<foundry.applications.api.ApplicationV2.RenderContext> {
   isExtra: boolean;
   dieSides: DieSidesOption[];
   wildDieSides: DieSidesOption[];

@@ -6,8 +6,7 @@ declare global {
   }
 }
 
-export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
-  .MeasuredTemplate {
+export default class SwadeMeasuredTemplate extends foundry.canvas.placeables.MeasuredTemplate {
   handlers: Record<string, (...args) => void> = {};
   /**
    * A factory method to create a SwadeMeasuredTemplate instance using provided preset
@@ -21,17 +20,13 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       existingPreview.destroy({ children: true });
     }
 
-    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(
-      preset,
-      item,
-    );
-    if (CONFIG.SWADE.activeMeasuredTemplatePreview)
-      CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
+    CONFIG.SWADE.activeMeasuredTemplatePreview = this._constructPreset(preset, item);
+    if (CONFIG.SWADE.activeMeasuredTemplatePreview) CONFIG.SWADE.activeMeasuredTemplatePreview.drawPreview();
   }
 
   protected static _constructPreset(preset: string, item?: SwadeItem) {
     // Prepare template data
-    const templateBaseData: MeasuredTemplate.CreateData = {
+    const templateBaseData: foundry.canvas.placeables.MeasuredTemplate.CreateData = {
       user: game.user?.id,
       distance: 0,
       direction: 0,
@@ -41,9 +36,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       flags: item ? { swade: { origin: item.uuid } } : {},
     };
 
-    const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find(
-      (c) => c.button.name === preset,
-    );
+    const presetPrototype = CONFIG.SWADE.measuredTemplatePresets.find((c) => c.button.name === preset);
     if (!presetPrototype) return null;
 
     //Set template data based on preset option
@@ -51,7 +44,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       foundry.utils.mergeObject(templateBaseData, presetPrototype.data),
       {
         parent: canvas.scene ?? undefined,
-      },
+      }
     );
 
     //Return the template constructed from the item data
@@ -70,7 +63,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
   }
 
   /** Activate listeners for the template preview */
-  activatePreviewListeners(initialLayer: CanvasLayer) {
+  activatePreviewListeners(initialLayer: foundry.canvas.layers.CanvasLayer) {
     let moveTime = 0;
 
     // Update placement (mouse-move)
@@ -79,7 +72,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
       const now = Date.now(); // Apply a 20ms throttle
       if (now - moveTime <= 20) return;
       const center = event.data.getLocalPosition(this.layer);
-      const snapped = canvas.grid.getSnappedPoint(center, {
+      const snapped = canvas.grid!.getSnappedPoint(center, {
         mode: CONST.GRID_SNAPPING_MODES.CENTER,
         resolution: 2,
       });
@@ -98,14 +91,12 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     // Confirm the workflow (left-click)
     this.handlers.lc = (event) => {
       this.handlers.rc(event);
-      const dest = canvas.grid.getSnappedPoint(this.document, {
+      const dest = canvas.grid!.getSnappedPoint(this.document, {
         mode: CONST.GRID_SNAPPING_MODES.CENTER,
         resolution: 2,
       });
       this.document.updateSource(dest);
-      canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [
-        this.document.toObject(),
-      ]);
+      canvas.scene?.createEmbeddedDocuments('MeasuredTemplate', [this.document.toObject()]);
     };
 
     // Rotate the template by 3 degree increments (mouse-wheel)
@@ -145,42 +136,36 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     const { angle, t } = this.document;
     const gridWidth = this.document.width;
     const { angle: direction, distance } = this.ray;
-    if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE)
-      return this._getConeShape(direction, angle, distance, gridWidth);
+    if (t === CONST.MEASURED_TEMPLATE_TYPES.CONE) return this._getConeShape(direction, angle, distance, gridWidth);
     return super._computeShape() as MeasuredTemplateShape;
   }
 
-  protected _getConeShape(
-    direction: number,
-    angle: number,
-    distance: number,
-    gridWidth: number,
-  ): PIXI.Polygon {
+  protected _getConeShape(direction: number, angle: number, distance: number, gridWidth: number): PIXI.Polygon {
     // Special case to handle the base SWADE cone rather than a normal cone definition
     if (angle === 0) {
-      const coneEndRadius = game.canvas.grid.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
+      const coneEndRadius = game.canvas.grid?.size * gridWidth * 0.5; //Halved because gridWidth is the diameter
       const coneLength = distance - coneEndRadius; //Calculate where the cone ends and the circle begins
       const da = 3;
-      const c = Ray.fromAngle(0, 0, direction, coneLength);
+      const c = foundry.canvas.geometry.Ray.fromAngle(0, 0, direction, coneLength);
       const angles = Array.fromRange(180 / da)
         .map((a) => 180 / -2 + a * da)
         .concat([180 / 2]);
       // Get the cone shape as a polygon
       const rays = angles.map((a) =>
-        Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius),
+        foundry.canvas.geometry.Ray.fromAngle(0, 0, direction + Math.toRadians(a), coneEndRadius)
       );
       const points = rays
         .reduce(
           (arr, r) => {
             return arr.concat([c.B.x + r.B.x, c.B.y + r.B.y]);
           },
-          [0, 0],
+          [0, 0]
         )
         .concat([0, 0]);
       return new PIXI.Polygon(points);
     } else {
       // honestly don't know why super.getConeShape() isn't working but it's not
-      return MeasuredTemplate.getConeShape(direction, angle, distance);
+      return foundry.canvas.placeables.MeasuredTemplate.getConeShape(direction, angle, distance);
     }
   }
 
@@ -196,7 +181,7 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
     const border = Number(this.document.borderColor);
 
     //get the highlight layer and prep it
-    const layer = canvas.interface.grid.getHighlightLayer(this.highlightId);
+    const layer = canvas.interface?.grid.getHighlightLayer(this.highlightId);
     if (!layer) return;
     layer.clear();
 
@@ -218,8 +203,8 @@ export default class SwadeMeasuredTemplate extends foundry.canvas.placeables
 
   /** A re-implementation of `BaseGrid#highlightGridPosition()` to force gridless behavior */
   private _highlightGridArea(
-    layer: GridHighlight,
-    { color, border, alpha = 0.25, shape }: IGridHighLightOptions,
+    layer: foundry.canvas.containers.GridHighlight,
+    { color, border, alpha = 0.25, shape }: IGridHighLightOptions
   ) {
     layer.beginFill(color, alpha);
     if (border) layer.lineStyle(2, border, Math.min(alpha * 1.5, 1.0));
@@ -231,12 +216,7 @@ interface IGridHighLightOptions {
   color: number;
   border?: number;
   alpha?: number;
-  shape:
-    | PIXI.Circle
-    | PIXI.Ellipse
-    | PIXI.Polygon
-    | PIXI.Rectangle
-    | PIXI.RoundedRectangle;
+  shape: PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.Rectangle | PIXI.RoundedRectangle;
 }
 
 type MeasuredTemplateShape = PIXI.Circle | PIXI.Rectangle | PIXI.Polygon;

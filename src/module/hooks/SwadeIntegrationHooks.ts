@@ -1,7 +1,4 @@
-import {
-  DsnCustomWildDieColors,
-  DsnCustomWildDieOptions,
-} from '../../interfaces/DiceIntegration interface';
+import { DsnCustomWildDieColors, DsnCustomWildDieOptions } from '../../interfaces/DiceIntegration.interface';
 import { Dice3D } from '../../types/DiceSoNice';
 import DiceSettings from '../apps/DiceSettings';
 import { PACKAGE_ID, SWADE } from '../config';
@@ -23,18 +20,13 @@ export default class SwadeIntegrationHooks {
   static onDiceSoNiceReady(dice3d: Dice3D) {
     const customWilDieColors =
       game.user!.getFlag('swade', 'dsnCustomWildDieColors') ||
-      (SWADE.diceConfig.flags.dsnCustomWildDieColors
-        .default as DsnCustomWildDieColors);
+      (SWADE.diceConfig.flags.dsnCustomWildDieColors.default as DsnCustomWildDieColors);
 
     const customWilDieOptions =
       game.user!.getFlag('swade', 'dsnCustomWildDieOptions') ||
-      (SWADE.diceConfig.flags.dsnCustomWildDieOptions
-        .default as DsnCustomWildDieOptions);
+      (SWADE.diceConfig.flags.dsnCustomWildDieOptions.default as DsnCustomWildDieOptions);
 
-    dice3d.addSystem(
-      { id: 'swade', name: 'Savage Worlds Adventure Edition' },
-      'preferred',
-    );
+    dice3d.addSystem({ id: 'swade', name: 'Savage Worlds Adventure Edition' }, 'preferred');
 
     dice3d.addColorset(
       {
@@ -49,7 +41,7 @@ export default class SwadeIntegrationHooks {
         material: customWilDieOptions.material,
         font: customWilDieOptions.font,
       },
-      'no',
+      'no'
     );
 
     dice3d.addDicePreset(
@@ -66,7 +58,7 @@ export default class SwadeIntegrationHooks {
           game.settings.get('swade', '3dBennyBackBump'),
         ].filter(Boolean),
       },
-      'd2',
+      'd2'
     );
   }
 
@@ -74,8 +66,7 @@ export default class SwadeIntegrationHooks {
     const user = context.user as SwadeUser;
     if (user.id === game.userId) return;
     const wildDie = context.roll.terms.find(
-      (d: foundry.dice.terms.RollTerm) =>
-        d.options.flavor === game.i18n.localize('SWADE.WildDie'),
+      (d: foundry.dice.terms.RollTerm) => d.options.flavor === game.i18n.localize('SWADE.WildDie')
     );
 
     const dieSystem = wildDie?.options?.appearance?.system;
@@ -98,19 +89,13 @@ export default class SwadeIntegrationHooks {
         texture: customOptions?.texture,
         system: dieSystem,
       };
-      foundry.utils.setProperty(
-        wildDie,
-        'options.appearance',
-        customAppearance,
-      );
+      foundry.utils.setProperty(wildDie, 'options.appearance', customAppearance);
     } else {
       // Set the preset
       foundry.utils.setProperty(wildDie, 'options.colorset', colorSet);
     }
     // Get the dicePreset for the given die type
-    const dicePreset = game.dice3d?.DiceFactory.systems
-      .get(dieSystem)
-      ?.dice.get('d' + wildDie.faces);
+    const dicePreset = game.dice3d?.DiceFactory.systems.get(dieSystem)?.dice.get('d' + wildDie.faces);
     if (!dicePreset) return;
     if (dicePreset?.modelFile && !dicePreset.modelLoaded) {
       // Load the modelFile

@@ -1,25 +1,13 @@
 import { ValueOf } from 'fvtt-types/utils';
-import {
-  EquipState,
-  PotentialSource,
-  ReloadType,
-  Updates,
-} from '../../../globals';
+import { EquipState, PotentialSource, ReloadType, Updates } from '../../../globals';
 import { RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import Reloadinator from '../../apps/Reloadinator';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import type SwadeItem from '../../documents/item/SwadeItem';
-import {
-  ItemChatCardChip,
-  UsageUpdates,
-} from '../../documents/item/SwadeItem.interface';
-import {
-  createEmbedElement,
-  createEnrichedTextEmbed,
-  notificationExists,
-} from '../../util';
+import { ItemChatCardChip, UsageUpdates } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement, createEnrichedTextEmbed, notificationExists } from '../../util';
 import { FormulaField } from '../fields';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
@@ -53,7 +41,8 @@ import {
 
 declare namespace WeaponData {
   interface Schema
-    extends SwadePhysicalItemData.Schema,
+    extends
+      SwadePhysicalItemData.Schema,
       Equippable,
       ArcaneDevice,
       Vehicular,
@@ -94,11 +83,7 @@ declare namespace WeaponData {
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
 }
 
-class WeaponData extends SwadePhysicalItemData<
-  WeaponData.Schema,
-  WeaponData.BaseData,
-  WeaponData.DerivedData
-> {
+class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.BaseData, WeaponData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): WeaponData.Schema {
     const fields = foundry.data.fields;
@@ -181,16 +166,12 @@ class WeaponData extends SwadePhysicalItemData<
   }
 
   get isMelee(): boolean {
-    return (
-      this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED ||
-      this.rangeType === constants.WEAPON_RANGE_TYPE.MELEE
-    );
+    return this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED || this.rangeType === constants.WEAPON_RANGE_TYPE.MELEE;
   }
 
   get isRanged(): boolean {
     return (
-      this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED ||
-      this.rangeType === constants.WEAPON_RANGE_TYPE.RANGED
+      this.rangeType === constants.WEAPON_RANGE_TYPE.MIXED || this.rangeType === constants.WEAPON_RANGE_TYPE.RANGED
     );
   }
 
@@ -204,13 +185,8 @@ class WeaponData extends SwadePhysicalItemData<
 
   get traitModifiers(): RollModifier[] {
     const modifiers = new Array<RollModifier>();
-    modifiers.push(
-      ...(this.parent.actor?.system.stats.globalMods.attack ?? []),
-    );
-    if (
-      this.equipStatus === constants.EQUIP_STATE.OFF_HAND &&
-      !this.parent.actor?.getFlag('swade', 'ambidextrous')
-    ) {
+    modifiers.push(...(this.parent.actor?.system.stats.globalMods.attack ?? []));
+    if (this.equipStatus === constants.EQUIP_STATE.OFF_HAND && !this.parent.actor?.getFlag('swade', 'ambidextrous')) {
       modifiers.push({
         label: game.i18n.localize('SWADE.OffHandPenalty'),
         value: -2,
@@ -232,22 +208,13 @@ class WeaponData extends SwadePhysicalItemData<
     const isVehicle = this.parent.actor?.type === 'vehicle';
     const npcAmmoFromInventory = game.settings.get('swade', 'npcAmmo');
     const vehicleAmmoFromInventory = game.settings.get('swade', 'vehicleAmmo');
-    const useAmmoFromInventory = game.settings.get(
-      'swade',
-      'ammoFromInventory',
-    );
-    return (
-      (isVehicle && vehicleAmmoFromInventory) ||
-      (isNPC && npcAmmoFromInventory) ||
-      (isPC && useAmmoFromInventory)
-    );
+    const useAmmoFromInventory = game.settings.get('swade', 'ammoFromInventory');
+    return (isVehicle && vehicleAmmoFromInventory) || (isNPC && npcAmmoFromInventory) || (isPC && useAmmoFromInventory);
   }
 
   get hasAmmoManagement(): boolean {
     return (
-      !this.isMelee &&
-      game.settings.get('swade', 'ammoManagement') &&
-      this.reloadType !== constants.RELOAD_TYPE.NONE
+      !this.isMelee && game.settings.get('swade', 'ammoManagement') && this.reloadType !== constants.RELOAD_TYPE.NONE
     );
   }
 
@@ -266,7 +233,7 @@ class WeaponData extends SwadePhysicalItemData<
   }
 
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions>
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     if (this.isReadied) {
@@ -308,34 +275,25 @@ class WeaponData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.notes ?? '',
-          enrichOptions,
-        ),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
         title: game.i18n.localize('SWADE.Notes'),
-      },
+      }
     );
     return chips;
   }
 
   /** Used by SwadeItem.canExpendResources */
   _canExpendResources(resourcesUsed = 1): boolean {
-    if (!game.settings.get('swade', 'ammoManagement') || this.isMelee)
-      return true;
+    if (!game.settings.get('swade', 'ammoManagement') || this.isMelee) return true;
 
     if (this.reloadType === constants.RELOAD_TYPE.NONE) {
       if (!this.usesAmmoFromInventory) return true;
       const ammo = this.actor?.items.getName(this.ammo as string);
       if (!ammo) return false;
-      const ammoCount =
-        ammo?.type === 'consumable'
-          ? ammo?.system['charges']['value']
-          : ammo?.system['quantity'];
+      const ammoCount = ammo?.type === 'consumable' ? ammo?.system['charges']['value'] : ammo?.system['quantity'];
       return resourcesUsed <= ammoCount;
     } else if (this.reloadType === constants.RELOAD_TYPE.SELF) {
-      const usesRemaining =
-        Number(this.shots) * (Number(this.quantity) - 1) +
-        Number(this.currentShots);
+      const usesRemaining = Number(this.shots) * (Number(this.quantity) - 1) + Number(this.currentShots);
       return resourcesUsed <= usesRemaining;
     } else {
       return resourcesUsed <= Number(this.currentShots);
@@ -390,8 +348,7 @@ class WeaponData extends SwadePhysicalItemData<
           newShots = 0;
           newQuantity = 0;
         } else {
-          const remainder =
-            chargesToUse - (currentShots + (quantityUsed - 1) * maxShots);
+          const remainder = chargesToUse - (currentShots + (quantityUsed - 1) * maxShots);
           newShots = maxShots - remainder;
           newQuantity = remainingQty;
         }
@@ -432,9 +389,7 @@ class WeaponData extends SwadePhysicalItemData<
       return false;
     }
 
-    const ammoItem = parent.items.getName(this.ammo) as
-      | SwadeItem<'gear' | 'consumable'>
-      | undefined;
+    const ammoItem = parent.items.getName(this.ammo) as SwadeItem<'gear' | 'consumable'> | undefined;
     const currentShots = this.currentShots || 0;
     const maxShots = this.shots || 0;
     const missingShots = maxShots - currentShots;
@@ -472,7 +427,7 @@ class WeaponData extends SwadePhysicalItemData<
       case constants.RELOAD_TYPE.FULL:
         reloaded = await this.#handleFullReload(
           ammoItem, //FIXME technically the item can be undefined here still
-          missingShots,
+          missingShots
         );
         break;
       case constants.RELOAD_TYPE.MAGAZINE:
@@ -513,10 +468,7 @@ class WeaponData extends SwadePhysicalItemData<
     return true;
   }
 
-  async #handleFullReload(
-    ammo: SwadeItem<'gear' | 'consumable'>,
-    missing: number,
-  ): Promise<boolean> {
+  async #handleFullReload(ammo: SwadeItem<'gear' | 'consumable'>, missing: number): Promise<boolean> {
     if (!this.usesAmmoFromInventory) {
       return this.#handleSimpleReload();
     }
@@ -541,18 +493,14 @@ class WeaponData extends SwadePhysicalItemData<
     return true;
   }
 
-  async #handleConsumableReload(
-    ammo: SwadeItem,
-    missing: number,
-  ): Promise<boolean> {
+  async #handleConsumableReload(ammo: SwadeItem, missing: number): Promise<boolean> {
     if (!(ammo.system instanceof ConsumableData)) return false;
     if ((ammo.system.charges.default.value ?? 0) <= 0) {
       this.#postNotEnoughAmmoMessage();
       return false;
     }
 
-    const allCharges =
-      (ammo.system.charges.default.value ?? 0) * (ammo.system.quantity ?? 0);
+    const allCharges = (ammo.system.charges.default.value ?? 0) * (ammo.system.quantity ?? 0);
 
     let ammoInMagazine = this.shots;
     if (allCharges < missing) {
@@ -582,18 +530,12 @@ class WeaponData extends SwadePhysicalItemData<
     };
 
     if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
-      magazines = consumables.filter(
-        predicate(constants.CONSUMABLE_TYPE.MAGAZINE),
-      );
+      magazines = consumables.filter(predicate(constants.CONSUMABLE_TYPE.MAGAZINE));
     } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
-      magazines = consumables.filter(
-        predicate(constants.CONSUMABLE_TYPE.BATTERY),
-      );
+      magazines = consumables.filter(predicate(constants.CONSUMABLE_TYPE.BATTERY));
     }
 
-    if (
-      magazines.filter((m) => (m.system.charges.default.value ?? 0) > 0).length === 0
-    ) {
+    if (magazines.filter((m) => (m.system.charges.default.value ?? 0) > 0).length === 0) {
       if (!notificationExists('SWADE.NoMags')) {
         Logger.warn('SWADE.NoMags', {
           toast: true,
@@ -607,8 +549,7 @@ class WeaponData extends SwadePhysicalItemData<
       magazines,
     });
 
-    if (reloaded)
-      Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
+    if (reloaded) Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
     return reloaded;
   }
 
@@ -629,8 +570,7 @@ class WeaponData extends SwadePhysicalItemData<
       return false;
     }
     await this.parent.actor?.update({
-      ['system.powerPoints.' + this.ammo + '.value']:
-        powerPoints.value - ppReloadCost,
+      ['system.powerPoints.' + this.ammo + '.value']: powerPoints.value - ppReloadCost,
     });
     await this.parent.update({ 'system.currentShots': this.shots });
     Logger.info('SWADE.ReloadSuccess', { toast: true, localize: true });
@@ -649,11 +589,7 @@ class WeaponData extends SwadePhysicalItemData<
     const parent = this.parent.actor as SwadeActor | null;
     if (!parent || !loadedAmmo) return;
     const reloadType = this.reloadType;
-    if (
-      reloadType !== constants.RELOAD_TYPE.MAGAZINE &&
-      reloadType !== constants.RELOAD_TYPE.BATTERY
-    )
-      return;
+    if (reloadType !== constants.RELOAD_TYPE.MAGAZINE && reloadType !== constants.RELOAD_TYPE.BATTERY) return;
 
     const updates: Updates[] = [
       {
@@ -668,10 +604,7 @@ class WeaponData extends SwadePhysicalItemData<
       return;
     }
     const isFull = this.currentShots === this.shots;
-    const predicate = (
-      type: ValueOf<typeof constants.CONSUMABLE_TYPE>,
-      charges?: number,
-    ) => {
+    const predicate = (type: ValueOf<typeof constants.CONSUMABLE_TYPE>, charges?: number) => {
       return (item: SwadeItem<'consumable'>) =>
         item.type === 'consumable' &&
         item.name === loadedAmmo.name &&
@@ -680,13 +613,10 @@ class WeaponData extends SwadePhysicalItemData<
         item.system.charges.default.value === (charges ?? item.system.charges.default.max);
     };
 
-    const consumables = parent.itemTypes
-      .consumable as SwadeItem<'consumable'>[];
+    const consumables = parent.itemTypes.consumable as SwadeItem<'consumable'>[];
 
     if (reloadType === constants.RELOAD_TYPE.MAGAZINE) {
-      const existingStack = consumables.find(
-        predicate(constants.CONSUMABLE_TYPE.MAGAZINE),
-      );
+      const existingStack = consumables.find(predicate(constants.CONSUMABLE_TYPE.MAGAZINE));
       if (existingStack && isFull) {
         updates.push({
           _id: existingStack.id,
@@ -697,9 +627,7 @@ class WeaponData extends SwadePhysicalItemData<
         await getDocumentClass('Item').create(loadedAmmo, { parent });
       }
     } else if (reloadType === constants.RELOAD_TYPE.BATTERY) {
-      const existingStack = consumables.find(
-        predicate(constants.CONSUMABLE_TYPE.BATTERY, 100),
-      );
+      const existingStack = consumables.find(predicate(constants.CONSUMABLE_TYPE.BATTERY, 100));
 
       if (existingStack && isFull) {
         updates.push({
@@ -735,12 +663,9 @@ class WeaponData extends SwadePhysicalItemData<
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      WeaponData.Schema,
-      Item<'weapon'>
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<WeaponData.Schema, Item<'weapon'>>,
     options: Item.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ): Promise<boolean | void> {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -752,8 +677,8 @@ class WeaponData extends SwadePhysicalItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -761,18 +686,10 @@ class WeaponData extends SwadePhysicalItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/weapon-embeds.hbs',
-      ['item-embed', 'weapon'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/weapon-embeds.hbs', ['item-embed', 'weapon']);
   }
 }
 

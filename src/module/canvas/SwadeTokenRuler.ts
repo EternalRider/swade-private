@@ -1,7 +1,6 @@
 import { constants } from '../constants';
 
-export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens
-  .TokenRuler {
+export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   /**
    * Helper function run during `init`
    */
@@ -10,10 +9,9 @@ export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens
       swim: {
         getCostFunction: (
           token: TokenDocument.Implementation,
-          _options: foundry.canvas.placeables.Token.MeasureMovementPathOptions,
+          _options: foundry.canvas.placeables.Token.MeasureMovementPathOptions
         ) => {
-          if (Number.isNumeric(token?.actor?.system?.pace?.swim))
-            return (cost) => cost;
+          if (Number.isNumeric(token?.actor?.system?.pace?.swim)) return (cost) => cost;
           else return (cost) => cost * 2;
         },
       },
@@ -21,7 +19,7 @@ export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens
   }
 
   protected override _getSegmentStyle(
-    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint,
+    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint
   ): foundry.canvas.interaction.Ruler.SegmentStyle {
     const style = super._getSegmentStyle(waypoint);
     this.#speedValueStyle(style, waypoint);
@@ -32,7 +30,7 @@ export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens
 
   protected override _getGridHighlightStyle(
     waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint,
-    offset: foundry.grid.BaseGrid.Offset3D,
+    offset: foundry.grid.BaseGrid.Offset3D
   ): foundry.canvas.placeables.tokens.TokenRuler.GridHighlightStyle {
     const style = super._getGridHighlightStyle(waypoint, offset);
     this.#speedValueStyle(style, waypoint);
@@ -49,26 +47,18 @@ export default class SwadeTokenRuler extends foundry.canvas.placeables.tokens
    */
   #speedValueStyle(
     style: { color?: PIXI.ColorSource },
-    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint,
+    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint
   ) {
-    const pace = foundry.utils.getProperty(
-      this,
-      'token.document.actor.system.pace',
-    ) as
+    const pace = foundry.utils.getProperty(this, 'token.document.actor.system.pace') as
       | (Record<string, number | undefined> & {
           running: { die: number; mod: number };
         })
       | undefined;
     if (pace) {
       const value = pace[waypoint.action] ?? pace.ground ?? Infinity;
-      if (waypoint.measurement.cost <= value)
-        style.color = constants.RULER_COLORS.GREEN;
-      else if (waypoint.measurement.cost <= value + pace.running.mod + 1)
-        style.color = constants.RULER_COLORS.YELLOW;
-      else if (
-        waypoint.measurement.cost <=
-        value + pace.running.die + pace.running.mod
-      )
+      if (waypoint.measurement.cost <= value) style.color = constants.RULER_COLORS.GREEN;
+      else if (waypoint.measurement.cost <= value + pace.running.mod + 1) style.color = constants.RULER_COLORS.YELLOW;
+      else if (waypoint.measurement.cost <= value + pace.running.die + pace.running.mod)
         style.color = constants.RULER_COLORS.ORANGE;
       else style.color = constants.RULER_COLORS.RED;
     }

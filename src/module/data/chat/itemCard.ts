@@ -55,8 +55,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
-    const additionalActions: ItemActions =
-      foundry.utils.getProperty(this._item, 'system.actions.additional') || {};
+    const additionalActions: ItemActions = foundry.utils.getProperty(this._item, 'system.actions.additional') || {};
     return Object.entries(additionalActions)
       .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
       .map(([k, v]) => {
@@ -68,11 +67,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     return this._item?.parent ?? null;
   }
 
-  async renderHTML({
-    canDelete = false,
-    canClose = false,
-    ..._rest
-  } = {}): Promise<HTMLElement> {
+  async renderHTML({ canDelete = false, canClose = false, ..._rest } = {}): Promise<HTMLElement> {
     this._item = fromUuidSync(this.uuid) as SwadeItem | null;
 
     let content: string;
@@ -97,19 +92,11 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   protected _attachButtonListeners(html: HTMLElement) {
     html
       .querySelectorAll<HTMLButtonElement>('button[data-action]')
-      .forEach((btn) =>
-        btn.addEventListener('click', (ev) =>
-          this._handleButtonClick(ev, btn, html),
-        ),
-      );
+      .forEach((btn) => btn.addEventListener('click', (ev) => this._handleButtonClick(ev, btn, html)));
 
-    html
-      .querySelector<HTMLElement>('.card-header .item-name')
-      ?.addEventListener('click', () => {
-        html
-          .querySelector<HTMLElement>('.card-content')
-          ?.classList.toggle('expanded');
-      });
+    html.querySelector<HTMLElement>('.card-header .item-name')?.addEventListener('click', () => {
+      html.querySelector<HTMLElement>('.card-content')?.classList.toggle('expanded');
+    });
   }
 
   protected override prepareDerivedData(this: ItemCardData) {
@@ -120,20 +107,15 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     }
   }
 
-  protected async _handleButtonClick(
-    event: MouseEvent,
-    btn: HTMLButtonElement,
-    html: HTMLElement,
-  ) {
+  protected async _handleButtonClick(event: MouseEvent, btn: HTMLButtonElement, html: HTMLElement) {
     event.preventDefault();
     const action = btn.dataset.action as string;
 
     if (!this._item || !action) return;
 
-    const actionObj = foundry.utils.getProperty(
-      this._item,
-      'system.actions.additional.' + action,
-    ) as ItemAction | undefined;
+    const actionObj = foundry.utils.getProperty(this._item, 'system.actions.additional.' + action) as
+      | ItemAction
+      | undefined;
 
     const actor = this._getActor(actionObj);
     if (!actor) return;
@@ -166,35 +148,18 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         await this._refreshMessage();
         break;
       case 'damage':
-        roll = await this.#handler.handleDamageAction(
-          this._item,
-          actor,
-          additionalMods,
-        );
+        roll = await this.#handler.handleDamageAction(this._item, actor, additionalMods);
         break;
       case 'formula':
-        roll = await this.#handler.handleFormulaAction(
-          this._item,
-          actor,
-          additionalMods,
-          html,
-        );
+        roll = await this.#handler.handleFormulaAction(this._item, actor, additionalMods, html);
         break;
       case 'arcane-device':
-        roll = await actor.makeArcaneDeviceSkillRoll(
-          foundry.utils.getProperty(this._item, 'system.arcaneSkillDie'),
-        );
+        roll = await actor.makeArcaneDeviceSkillRoll(foundry.utils.getProperty(this._item, 'system.arcaneSkillDie'));
         break;
       default:
         // No need to call the hook here, as handleAdditionalActions already calls the hook
         // This is so an external API can directly use handleAdditionalActions to use an action and still fire the hook
-        roll = await this.#handler.handleAdditionalAction(
-          this._item,
-          actor,
-          actionObj,
-          action,
-          additionalMods,
-        );
+        roll = await this.#handler.handleAdditionalAction(this._item, actor, actionObj, action, additionalMods);
         break;
     }
 
@@ -245,9 +210,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   }
 
   protected _magazineTooltip(html: HTMLElement) {
-    const magazine = html.querySelector<HTMLElement>(
-      '.swade.chat-card .magazine',
-    );
+    const magazine = html.querySelector<HTMLElement>('.swade.chat-card .magazine');
 
     magazine?.addEventListener('mouseenter', async () => {
       const loadedAmmo = this._item?.getFlag('swade', 'loadedAmmo');
@@ -259,13 +222,11 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
               relativeTo: this._item,
               rollData: this._item?.getRollData() ?? {},
               secrets: this._item?.isOwner,
-            },
+            }
           )
         : game.i18n.localize('SWADE.Magazine.NoneLoaded');
 
-      const content = foundry.utils.parseHTML(
-        '<span>' + enriched + '</span>',
-      );
+      const content = foundry.utils.parseHTML('<span>' + enriched + '</span>');
 
       game.tooltip.activate(magazine, {
         html: content as HTMLElement,
@@ -280,18 +241,12 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     for (const macro of this.macros) {
       const doc = (await fromUuid(macro.uuid)) as Macro | null;
       if (doc?.canExecute) continue;
-      html
-        .querySelectorAll<HTMLButtonElement>(
-          `button[data-action="${macro.id}"]`,
-        )
-        .forEach((btn) => {
-          btn.remove();
-          hiddenCounter++;
-        });
+      html.querySelectorAll<HTMLButtonElement>(`button[data-action="${macro.id}"]`).forEach((btn) => {
+        btn.remove();
+        hiddenCounter++;
+      });
     }
-    const macroButtonsTotal = html.querySelectorAll<HTMLButtonElement>(
-      '.card-buttons.macros button',
-    ).length;
+    const macroButtonsTotal = html.querySelectorAll<HTMLButtonElement>('.card-buttons.macros button').length;
     //if all macros have been hidden, then also hide the header
     if (macroButtonsTotal <= hiddenCounter) {
       html.querySelector<HTMLElement>('.card-buttons.macros')?.remove();
@@ -302,7 +257,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     const data = await this._item!.getChatData();
     return foundry.applications.handlebars.renderTemplate(
       'systems/swade/templates/chat/item-card.hbs',
-      data,
+      data
     ) as Promise<string>;
   }
 
@@ -310,10 +265,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     return `<p>Item with UUID <code>${this.uuid}</code> could not be found</p>`;
   }
 
-  protected _getBaseMessageData(
-    canDelete: boolean,
-    canClose: boolean,
-  ): ChatMessage.MessageData {
+  protected _getBaseMessageData(canDelete: boolean, canClose: boolean): ChatMessage.MessageData {
     const isWhisper = !!this.parent.whisper.length;
 
     // Construct message data
@@ -331,27 +283,18 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         isWhisper ? 'whisper' : null,
       ].filterJoin(' '),
       isWhisper,
-      whisperTo: this.parent.whisper
-        .map((u) => game.users.get(u)?.name)
-        .filterJoin(', '),
+      whisperTo: this.parent.whisper.map((u) => game.users.get(u)?.name).filterJoin(', '),
     };
     return messageData;
   }
 
   /** Create a standard foundry message shell */
-  protected async _renderMessageShell(
-    content: string,
-    canDelete: boolean,
-    canClose: boolean,
-  ): Promise<HTMLElement> {
+  protected async _renderMessageShell(content: string, canDelete: boolean, canClose: boolean): Promise<HTMLElement> {
     const messageData = this._getBaseMessageData(canDelete, canClose);
     // Render with empty content to prevent bare <li> in descriptions from
     // breaking the root <li> during HTML parsing, then inject via innerHTML
     messageData.message.content = '';
-    const template = await foundry.applications.handlebars.renderTemplate(
-      CONFIG.ChatMessage.template,
-      messageData,
-    );
+    const template = await foundry.applications.handlebars.renderTemplate(CONFIG.ChatMessage.template, messageData);
     const html = foundry.utils.parseHTML(template) as HTMLElement;
     const contentEl = html.querySelector('.message-content');
     if (contentEl) contentEl.innerHTML = content;

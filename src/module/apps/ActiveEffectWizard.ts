@@ -4,12 +4,9 @@ import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { Accordion } from '../style/Accordion';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class ActiveEffectWizard extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(options) {
     super(options);
     this.document = options.document;
@@ -32,8 +29,8 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     derived: true,
   };
 
-  currAttribute: string = 'agility';
-  currSkill: string = '';
+  currAttribute = 'agility';
+  currSkill = '';
 
   document: SwadeActor | SwadeItem;
 
@@ -45,12 +42,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
       width: 800,
       height: 800,
     },
-    classes: [
-      'swade',
-      'active-effect-wizard',
-      'swade-application',
-      'standard-form',
-    ],
+    classes: ['swade', 'active-effect-wizard', 'swade-application', 'standard-form'],
     tag: 'form',
     form: {
       handler: ActiveEffectWizard.#createEffect,
@@ -86,7 +78,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     super._onChangeForm(formConfig, event);
     const target = event.target as HTMLInputElement | HTMLSelectElement;
     if (!target) return; // TODO: what actually do
-    const index = target.closest('li')?.dataset.index;
+    const index = target.closest<HTMLLIElement>('li')?.dataset.index;
     if (target.classList.contains('value')) {
       this.#changes[Number(index)].value = target.value;
     } else if (target.classList.contains('mode')) {
@@ -94,7 +86,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     } else if (target.classList.contains('target')) {
       this[target.name] = target.value;
     }
-    const formData = new FormDataExtended(this.form);
+    const formData = new foundry.applications.ux.FormDataExtende(this.form);
     foundry.utils.mergeObject(this.#effect, formData.object);
     this.render();
   }
@@ -144,12 +136,11 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     this: ActiveEffectWizard,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended,
+    _formData: foundry.applications.ux.FormDataExtende
   ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
-      transfer:
-        this.document instanceof SwadeItem && this.document.type !== 'power', // only transfer on non-power items
+      transfer: this.document instanceof SwadeItem && this.document.type !== 'power', // only transfer on non-power items
     });
 
     await getDocumentClass('ActiveEffect').create(data, {
@@ -314,9 +305,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
           key: 'system.fatigue.max',
         },
         {
-          label: game.i18n.localize(
-            'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
-          ),
+          label: game.i18n.localize('SWADE.EffectCallbacks.Shaken.UnshakeModifier'),
           key: 'system.attributes.spirit.unShakeBonus',
         },
         {
@@ -324,21 +313,15 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
           key: 'system.attributes.vigor.soakBonus',
         },
         {
-          label: game.i18n.localize(
-            'SWADE.EffectCallbacks.Stunned.UnStunModifier',
-          ),
+          label: game.i18n.localize('SWADE.EffectCallbacks.Stunned.UnStunModifier'),
           key: 'system.attributes.vigor.unStunBonus',
         },
         {
-          label: game.i18n.localize(
-            'SWADE.EffectCallbacks.BleedingOut.BleedOutModifier',
-          ),
+          label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.BleedOutModifier'),
           key: 'system.attributes.vigor.bleedOut.modifier',
         },
         {
-          label: game.i18n.localize(
-            'SWADE.EffectCallbacks.BleedingOut.IgnoreWounds',
-          ),
+          label: game.i18n.localize('SWADE.EffectCallbacks.BleedingOut.IgnoreWounds'),
           key: 'system.attributes.vigor.bleedOut.ignoreWounds',
         },
         {
@@ -359,14 +342,10 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
 
   #getExpirationOptions(): Record<number, string> {
     return {
-      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto]:
-        'SWADE.Expiration.BeginAuto',
-      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt]:
-        'SWADE.Expiration.BeginPrompt',
-      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto]:
-        'SWADE.Expiration.EndAuto',
-      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt]:
-        'SWADE.Expiration.EndPrompt',
+      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto]: 'SWADE.Expiration.BeginAuto',
+      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt]: 'SWADE.Expiration.BeginPrompt',
+      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto]: 'SWADE.Expiration.EndAuto',
+      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt]: 'SWADE.Expiration.EndPrompt',
     };
   }
 
@@ -380,17 +359,13 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     });
   }
 
-  static #onAddChange(
-    this: ActiveEffectWizard,
-    _event: PointerEvent,
-    currentTarget: HTMLElement,
-  ) {
+  static #onAddChange(this: ActiveEffectWizard, _event: PointerEvent, currentTarget: HTMLElement) {
     const details = currentTarget.closest('details');
     const keyPart = currentTarget.dataset.key as string;
     const category = details?.dataset.category as string;
     const target =
-      (details?.querySelector<HTMLInputElement | HTMLSelectElement>('.target')
-        ?.value as string) ?? currentTarget.innerText;
+      (details?.querySelector<HTMLInputElement | HTMLSelectElement>('.target')?.value as string) ??
+      currentTarget.innerText;
 
     let label = '';
     let key = '';
@@ -416,35 +391,25 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     this.render({ force: true });
   }
 
-  static #onDeleteChange(
-    this: ActiveEffectWizard,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
+  static #onDeleteChange(this: ActiveEffectWizard, _event: PointerEvent, target: HTMLElement) {
     const index = target.closest('li')?.dataset.index;
     this.#changes.splice(Number(index), 1);
     this.render({ force: true });
   }
 
   #setupAccordions() {
-    this.form
-      ?.querySelectorAll<HTMLDetailsElement>('.presets details')
-      .forEach((el) => {
-        this.#accordions.push(new Accordion(el, '.content', { duration: 200 }));
-        const id = el.dataset.category as string;
-        el.querySelector('summary')?.addEventListener('click', () => {
-          const states = this.#collapsibleStates;
-          const currentState = Boolean(states[id]);
-          states[id] = !currentState;
-        });
+    this.form?.querySelectorAll<HTMLDetailsElement>('.presets details').forEach((el) => {
+      this.#accordions.push(new Accordion(el, '.content', { duration: 200 }));
+      const id = el.dataset.category as string;
+      el.querySelector('summary')?.addEventListener('click', () => {
+        const states = this.#collapsibleStates;
+        const currentState = Boolean(states[id]);
+        states[id] = !currentState;
       });
+    });
   }
 
-  static #onClickIcon(
-    this: ActiveEffectWizard,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static #onClickIcon(this: ActiveEffectWizard, _event: PointerEvent, _target: HTMLElement) {
     new foundry.applications.apps.FilePicker.implementation({
       current: this.#effect.img as string,
       type: 'image',
@@ -452,7 +417,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(
     }).render({ force: true });
   }
 
-  #onChangeIcon(path: string, _picker: FilePicker) {
+  #onChangeIcon(path: string, _picker: foundry.applications.apps.FilePicker) {
     this.#effect.img = path;
     this.render({ force: true });
   }
@@ -464,6 +429,6 @@ interface ActiveEffectPreset {
   group?: string;
 }
 
-interface ChangePreview extends Partial<ActiveEffect.EffectChangeData> {
+interface ChangePreview extends Partial<ActiveEffect.ChangeData> {
   label: string;
 }

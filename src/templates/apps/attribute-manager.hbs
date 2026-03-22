@@ -20,16 +20,10 @@
       <input
         type='text'
         name='system.attributes.agility.die.modifier'
-        value='{{signedString
-          actor._source.system.attributes.agility.die.modifier
-        }}'
+        value='{{signedString actor._source.system.attributes.agility.die.modifier}}'
         data-dtype='Number'
       />
-      <select
-        name='system.attributes.agility.wild-die.sides'
-        data-dtype='Number'
-        {{disabled isExtra}}
-      >
+      <select name='system.attributes.agility.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
         {{selectOptions
           wildDieSides
           selected=actor._source.system.attributes.agility.wild-die.sides
@@ -51,16 +45,10 @@
       <input
         type='text'
         name='system.attributes.smarts.die.modifier'
-        value='{{signedString
-          actor._source.system.attributes.smarts.die.modifier
-        }}'
+        value='{{signedString actor._source.system.attributes.smarts.die.modifier}}'
         data-dtype='Number'
       />
-      <select
-        name='system.attributes.smarts.wild-die.sides'
-        data-dtype='Number'
-        {{disabled isExtra}}
-      >
+      <select name='system.attributes.smarts.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
         {{selectOptions
           wildDieSides
           selected=actor._source.system.attributes.smarts.wild-die.sides
@@ -82,16 +70,10 @@
       <input
         type='text'
         name='system.attributes.spirit.die.modifier'
-        value='{{signedString
-          actor._source.system.attributes.spirit.die.modifier
-        }}'
+        value='{{signedString actor._source.system.attributes.spirit.die.modifier}}'
         data-dtype='Number'
       />
-      <select
-        name='system.attributes.spirit.wild-die.sides'
-        data-dtype='Number'
-        {{disabled isExtra}}
-      >
+      <select name='system.attributes.spirit.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
         {{selectOptions
           wildDieSides
           selected=actor._source.system.attributes.spirit.wild-die.sides
@@ -113,16 +95,10 @@
       <input
         type='text'
         name='system.attributes.strength.die.modifier'
-        value='{{signedString
-          actor._source.system.attributes.strength.die.modifier
-        }}'
+        value='{{signedString actor._source.system.attributes.strength.die.modifier}}'
         data-dtype='Number'
       />
-      <select
-        name='system.attributes.strength.wild-die.sides'
-        data-dtype='Number'
-        {{disabled isExtra}}
-      >
+      <select name='system.attributes.strength.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
         {{selectOptions
           wildDieSides
           selected=actor._source.system.attributes.strength.wild-die.sides
@@ -144,16 +120,10 @@
       <input
         type='text'
         name='system.attributes.vigor.die.modifier'
-        value='{{signedString
-          actor._source.system.attributes.vigor.die.modifier
-        }}'
+        value='{{signedString actor._source.system.attributes.vigor.die.modifier}}'
         data-dtype='Number'
       />
-      <select
-        name='system.attributes.vigor.wild-die.sides'
-        data-dtype='Number'
-        {{disabled isExtra}}
-      >
+      <select name='system.attributes.vigor.wild-die.sides' data-dtype='Number' {{disabled isExtra}}>
         {{selectOptions
           wildDieSides
           selected=actor._source.system.attributes.vigor.wild-die.sides

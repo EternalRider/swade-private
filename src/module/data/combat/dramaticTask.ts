@@ -30,9 +30,7 @@ function dramaticTaskSchema() {
   };
 }
 
-export class DramaticTask extends BaseCombat<
-  ReturnType<typeof dramaticTaskSchema>
-> {
+export class DramaticTask extends BaseCombat<ReturnType<typeof dramaticTaskSchema>> {
   static override defineSchema(): {} {
     return dramaticTaskSchema();
   }

@@ -5,7 +5,7 @@ import { makeAdditionalStatsSchema, makeDiceField } from '../shared';
 const fields = foundry.data.fields;
 
 /** source for regex: https://ihateregex.io/expr/url-slug/ */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
 
 export const itemDescription = () => ({
@@ -29,10 +29,7 @@ export const itemDescription = () => ({
     blank: false,
     required: true,
     label: 'SWADE.SWID.Long',
-    validate: (
-      value: string,
-      _options: foundry.data.fields.DataField.ValidationOptions,
-    ) => {
+    validate: (value: string, _options: foundry.data.fields.DataField.ValidationOptions) => {
       validateSwid(value);
     },
   }),
@@ -159,13 +156,10 @@ export const actions = () => ({
 });
 
 export const activities = () => ({
-  activities: new fields.SetField(
-    new fields.StringField({ blank: false, nullable: false }),
-    {
-      label: 'SWADE.Actions.Activities.Label',
-      hint: 'SWADE.Actions.Activities.Hint',
-    },
-  ),
+  activities: new fields.SetField(new fields.StringField({ blank: false, nullable: false }), {
+    label: 'SWADE.Actions.Activities.Label',
+    hint: 'SWADE.Actions.Activities.Hint',
+  }),
 });
 
 export const favorite = () => ({
@@ -182,7 +176,7 @@ export const templates = () => ({
       medium: new fields.BooleanField({ label: 'SWADE.Medium.Short' }),
       large: new fields.BooleanField({ label: 'SWADE.Large.Short' }),
     },
-    { label: 'SWADE.Templates.Possible' },
+    { label: 'SWADE.Templates.Possible' }
   ),
 });
 
@@ -226,7 +220,7 @@ export const grants = () => ({
         required: false,
         label: 'SWADE.ItemGrants.Mutation',
       }),
-    }),
+    })
   ),
 });
 
@@ -246,9 +240,9 @@ export const choiceSets = () => ({
             required: false,
             label: 'SWADE.ItemGrants.Mutation',
           }),
-        }),
+        })
       ),
-    }),
+    })
   ),
 });
 

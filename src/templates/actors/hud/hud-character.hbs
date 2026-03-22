@@ -1,179 +1,224 @@
-<div class="swadehud-container">
-  {{!-- =============== LEFT WING =============== --}}
-  <section class="swadehud swadehud--layout" data-open="">
-    <div class="swadehud-wing swadehud-wing--left" style="flex-direction: column; align-items: flex-start;">
-      <div class="swadehud-tabwrap" style="position: relative;">
-        <div class="swadehud-tabbtn" id="weapons-tab" data-tooltip="{{localize 'SWADE.Weapons'}}">
-          <span class="swadehud-bottomstat__label">{{localize 'SWADE.Weapons'}}</span>
+<div class='swadehud-container'>
+  {{! =============== LEFT WING =============== }}
+  <section class='swadehud swadehud--layout' data-open=''>
+    <div class='swadehud-wing swadehud-wing--left' style='flex-direction: column; align-items: flex-start;'>
+      <div class='swadehud-tabwrap' style='position: relative;'>
+        <div class='swadehud-tabbtn' id='weapons-tab' data-tooltip='{{localize "SWADE.Weapons"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Weapons'}}</span>
         </div>
       </div>
-        <div class="swadehud-tabwrap" style="position: relative;">
-          <div class="swadehud-tabbtn" id="traits-tab" data-tooltip="{{localize 'SWADE.Attributes'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Summary'}}</span>
-          </div>
+      <div class='swadehud-tabwrap' style='position: relative;'>
+        <div class='swadehud-tabbtn' id='traits-tab' data-tooltip='{{localize "SWADE.Attributes"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Summary'}}</span>
         </div>
-        <div class="swadehud-tabwrap" style="position: relative;">
-          <div class="swadehud-tabbtn" id="edges-tab" data-tooltip="{{localize 'SWADE.Edges'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.EdgesHindrances'}}</span>
-          </div>
+      </div>
+      <div class='swadehud-tabwrap' style='position: relative;'>
+        <div class='swadehud-tabbtn' id='edges-tab' data-tooltip='{{localize "SWADE.Edges"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.EdgesHindrances'}}</span>
         </div>
-        <div class="swadehud-tabwrap">
-          <div class="swadehud-tabbtn" id="actions-tab" data-tooltip="{{localize 'SWADE.Actions.Name'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Actions.Name'}}</span>
-          </div>
+      </div>
+      <div class='swadehud-tabwrap'>
+        <div class='swadehud-tabbtn' id='actions-tab' data-tooltip='{{localize "SWADE.Actions.Name"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Actions.Name'}}</span>
         </div>
+      </div>
     </div>
 
-    {{!-- =============== CORE (center ring) =============== --}}
-    <div class="swadehud-tabwrap">
-      <div class="swadehud-core" style="margin-top: 0;">
-      {{!-- Character name above info --}}
-      <div class="swadehud-core__name">
-        <h2 class="swadehud-character-name" id="bio-button" data-tooltip="SWADE.HUD.ViewCharacterTooltip">{{actorName}}</h2>
-      </div>
-      
-      {{!-- Character info above circles --}}
-      <div class="swadehud-core__info">
-        <div class="swadehud-info-row">
-          <span class="swadehud-info-rank">{{system.advances.rank}}</span>
-          <span class="swadehud-info-species">{{system.details.species.name}}</span>
-          {{#if system.details.archetype}}
-            <span class="swadehud-info-archetype">{{system.details.archetype}}</span>
-          {{/if}}
+    {{! =============== CORE (center ring) =============== }}
+    <div class='swadehud-tabwrap'>
+      <div class='swadehud-core' style='margin-top: 0;'>
+        {{! Character name above info }}
+        <div class='swadehud-core__name'>
+          <h2
+            class='swadehud-character-name'
+            id='bio-button'
+            data-tooltip='SWADE.HUD.ViewCharacterTooltip'
+          >{{actorName}}</h2>
         </div>
-      </div>
 
-      <div class="swadehud-core__leftcircle">
-        <div class="swadehud-circle"
-            data-tooltip="SWADE.HUD.WoundsTooltip"
-            data-stat-path="system.wounds.value"
-            data-stat-min="0"
-            data-stat-max="{{system.wounds.max}}">
-          <div class="swadehud-circle-content">
-            <i class="fa-solid fa-heart swadehud-circle-icon swadehud-soak-clickable"
-               data-tooltip="SWADE.HUD.SoakTooltip"></i>
-            <span class="swadehud-circle-value">{{system.wounds.value}}</span>
-            <span class="swadehud-circle-max">{{system.wounds.max}}</span>
+        {{! Character info above circles }}
+        <div class='swadehud-core__info'>
+          <div class='swadehud-info-row'>
+            <span class='swadehud-info-rank'>{{system.advances.rank}}</span>
+            <span class='swadehud-info-species'>{{system.details.species.name}}</span>
+            {{#if system.details.archetype}}
+              <span class='swadehud-info-archetype'>{{system.details.archetype}}</span>
+            {{/if}}
           </div>
         </div>
-      </div>
 
-      <div class="swadehud-core__center">
-        <div class="swadehud-portrait" data-tooltip="SWADE.HUD.OpenSheetTooltip">
-          <img class="swadehud-portrait-img" src="{{portrait}}" alt="{{actorName}}">
-        </div>
-      </div>
-
-      <div class="swadehud-core__rightcircle">
-        <div class="swadehud-circle"
-            data-tooltip="SWADE.HUD.FatigueTooltip"
-            data-stat-path="system.fatigue.value"
-            data-stat-min="0"
-            data-stat-max="{{system.fatigue.max}}">
-          <div class="swadehud-circle-content">
-            <i class="fa-solid fa-bolt swadehud-circle-icon swadehud-incapacitated-clickable"
-               data-tooltip="SWADE.HUD.IncapacitatedTooltip"></i>
-            <span class="swadehud-circle-value">{{system.fatigue.value}}</span>
-            <span class="swadehud-circle-max">{{system.fatigue.max}}</span>
+        <div class='swadehud-core__leftcircle'>
+          <div
+            class='swadehud-circle'
+            data-tooltip='SWADE.HUD.WoundsTooltip'
+            data-stat-path='system.wounds.value'
+            data-stat-min='0'
+            data-stat-max='{{system.wounds.max}}'
+          >
+            <div class='swadehud-circle-content'>
+              <i
+                class='fa-solid fa-heart swadehud-circle-icon swadehud-soak-clickable'
+                data-tooltip='SWADE.HUD.SoakTooltip'
+              ></i>
+              <span class='swadehud-circle-value'>{{system.wounds.value}}</span>
+              <span class='swadehud-circle-max'>{{system.wounds.max}}</span>
+            </div>
           </div>
         </div>
-      </div>
 
+        <div class='swadehud-core__center'>
+          <div class='swadehud-portrait' data-tooltip='SWADE.HUD.OpenSheetTooltip'>
+            <img class='swadehud-portrait-img' src='{{portrait}}' alt='{{actorName}}' />
+          </div>
+        </div>
+
+        <div class='swadehud-core__rightcircle'>
+          <div
+            class='swadehud-circle'
+            data-tooltip='SWADE.HUD.FatigueTooltip'
+            data-stat-path='system.fatigue.value'
+            data-stat-min='0'
+            data-stat-max='{{system.fatigue.max}}'
+          >
+            <div class='swadehud-circle-content'>
+              <i
+                class='fa-solid fa-bolt swadehud-circle-icon swadehud-incapacitated-clickable'
+                data-tooltip='SWADE.HUD.IncapacitatedTooltip'
+              ></i>
+              <span class='swadehud-circle-value'>{{system.fatigue.value}}</span>
+              <span class='swadehud-circle-max'>{{system.fatigue.max}}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
-    </div>
 
-    {{!-- =============== RIGHT WING (statuses, counters) =============== --}}
+    {{! =============== RIGHT WING (statuses, counters) =============== }}
 
-      <div class="swadehud-wing swadehud-wing--right" style="flex-direction: column; align-items: flex-end;">
-        <div class="swadehud-tabwrap">
-          <div class="swadehud-tabbtn" id="gear-tab" data-tooltip="{{localize 'SWADE.Inv'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Inv'}}</span>
-          </div>
-        </div>
-        <div class="swadehud-tabwrap">
-          <div class="swadehud-tabbtn" id="conditions-tab" data-tooltip="{{localize 'SWADE.Status'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Status'}}</span>
-          </div>
-        </div>
-        <div class="swadehud-tabwrap">
-          <div class="swadehud-tabbtn" id="effects-tab" data-tooltip="{{localize 'SWADE.Effects'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Effects'}}</span>
-          </div>
-        </div>
-        <div class="swadehud-tabwrap">
-          <div class="swadehud-tabbtn" id="powers-tab" data-tooltip="{{localize 'SWADE.Pow'}}">
-            <span class="swadehud-bottomstat__label">{{localize 'SWADE.Pow'}}</span>
-          </div>
+    <div class='swadehud-wing swadehud-wing--right' style='flex-direction: column; align-items: flex-end;'>
+      <div class='swadehud-tabwrap'>
+        <div class='swadehud-tabbtn' id='gear-tab' data-tooltip='{{localize "SWADE.Inv"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Inv'}}</span>
         </div>
       </div>
+      <div class='swadehud-tabwrap'>
+        <div class='swadehud-tabbtn' id='conditions-tab' data-tooltip='{{localize "SWADE.Status"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Status'}}</span>
+        </div>
+      </div>
+      <div class='swadehud-tabwrap'>
+        <div class='swadehud-tabbtn' id='effects-tab' data-tooltip='{{localize "SWADE.Effects"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Effects'}}</span>
+        </div>
+      </div>
+      <div class='swadehud-tabwrap'>
+        <div class='swadehud-tabbtn' id='powers-tab' data-tooltip='{{localize "SWADE.Pow"}}'>
+          <span class='swadehud-bottomstat__label'>{{localize 'SWADE.Pow'}}</span>
+        </div>
+      </div>
+    </div>
     <!-- Bottom row for Pace, Parry, Toughness -->
 
-        <div class="swadehud-bottomrow">
-      <div class="swadehud-bottomrow__left">
-        <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-pace-clickable" 
-             data-tooltip="{{localize 'SWADE.HUD.PaceTooltip' pace=(capitalize system.pace.base)}}"
-             data-pace-types="ground,fly,burrow,swim"
-             data-current-base="{{system.pace.base}}">
-          <span class="swadehud-bottomstat__icon">
-            {{#if (eq system.pace.base "fly")}}
-              <i class="fa-solid fa-dove"></i>
-            {{else if (eq system.pace.base "swim")}}
-              <i class="fa-solid fa-water"></i>
-            {{else if (eq system.pace.base "burrow")}}
-              <i class="fa-solid fa-mountain"></i>
+    <div class='swadehud-bottomrow'>
+      <div class='swadehud-bottomrow__left'>
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label swadehud-pace-clickable'
+          data-tooltip='{{localize "SWADE.HUD.PaceTooltip" pace=(capitalize system.pace.base)}}'
+          data-pace-types='ground,fly,burrow,swim'
+          data-current-base='{{system.pace.base}}'
+        >
+          <span class='swadehud-bottomstat__icon'>
+            {{#if (eq system.pace.base 'fly')}}
+              <i class='fa-solid fa-dove'></i>
+            {{else if (eq system.pace.base 'swim')}}
+              <i class='fa-solid fa-water'></i>
+            {{else if (eq system.pace.base 'burrow')}}
+              <i class='fa-solid fa-mountain'></i>
             {{else}}
-              <i class="fa-solid fa-person-running"></i>
+              <i class='fa-solid fa-person-running'></i>
             {{/if}}
           </span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{#if (eq system.pace.base "ground")}}{{system.pace.ground}}{{else if (eq system.pace.base "fly")}}{{system.pace.fly}}{{else if (eq system.pace.base "burrow")}}{{system.pace.burrow}}{{else if (eq system.pace.base "swim")}}{{system.pace.swim}}{{else}}0{{/if}}</span>
+          <span class='swadehud-bottomstat__value swadehud-bottomstat__value--large'>{{#if
+              (eq system.pace.base 'ground')
+            }}{{system.pace.ground}}{{else if (eq system.pace.base 'fly')}}{{system.pace.fly}}{{else if
+              (eq system.pace.base 'burrow')
+            }}{{system.pace.burrow}}{{else if (eq system.pace.base 'swim')}}{{system.pace.swim}}{{else}}0{{/if}}</span>
         </div>
-        <div class="swadehud-bottomstat swadehud-bottomstat--label"
-          data-tooltip="{{localize 'SWADE.HUD.ParryTooltip' mod=system.stats.parry.modifier shield=system.stats.parry.shield}}">
-          <span class="swadehud-bottomstat__icon"><i class="fa-solid fa-hand-rock"></i></span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{system.stats.parry.value}}</span>
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label'
+          data-tooltip='{{localize
+            "SWADE.HUD.ParryTooltip"
+            mod=system.stats.parry.modifier
+            shield=system.stats.parry.shield
+          }}'
+        >
+          <span class='swadehud-bottomstat__icon'><i class='fa-solid fa-hand-rock'></i></span>
+          <span class='swadehud-bottomstat__value swadehud-bottomstat__value--large'>{{system.stats.parry.value}}</span>
         </div>
-        <div class="swadehud-bottomstat swadehud-bottomstat--label"
-          data-tooltip="{{localize 'SWADE.HUD.SizeTooltip' size=system.stats.size scale=(getScaleName system.stats.size)}}">
-          <span class="swadehud-bottomstat__icon"><i class="fa-solid fa-ruler-vertical"></i></span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{system.stats.size}}</span>
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label'
+          data-tooltip='{{localize
+            "SWADE.HUD.SizeTooltip"
+            size=system.stats.size
+            scale=(getScaleName system.stats.size)
+          }}'
+        >
+          <span class='swadehud-bottomstat__icon'><i class='fa-solid fa-ruler-vertical'></i></span>
+          <span class='swadehud-bottomstat__value swadehud-bottomstat__value--large'>{{system.stats.size}}</span>
         </div>
-        <div class="swadehud-bottomstat swadehud-bottomstat--label"
-          data-tooltip="{{localize 'SWADE.HUD.ToughTooltip' mod=system.stats.toughness.modifier armor=system.stats.toughness.armor}}">
-          <span class="swadehud-bottomstat__icon"><i class="fa-solid fa-shield-halved"></i></span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{system.stats.toughness.value}} ({{system.stats.toughness.armor}})</span>
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label'
+          data-tooltip='{{localize
+            "SWADE.HUD.ToughTooltip"
+            mod=system.stats.toughness.modifier
+            armor=system.stats.toughness.armor
+          }}'
+        >
+          <span class='swadehud-bottomstat__icon'><i class='fa-solid fa-shield-halved'></i></span>
+          <span class='swadehud-bottomstat__value swadehud-bottomstat__value--large'>{{system.stats.toughness.value}}
+            ({{system.stats.toughness.armor}})</span>
         </div>
       </div>
-      <div class="swadehud-bottomrow__right">
+      <div class='swadehud-bottomrow__right'>
         {{#if (and system.details system.details.conviction)}}
-        <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-conviction-clickable"
-             data-tooltip="SWADE.HUD.ConvictionTooltip"
-             data-conviction-value="{{system.details.conviction.value}}"
-             data-conviction-active="{{system.details.conviction.active}}">
-          <span class="swadehud-bottomstat__icon">
-            {{#if system.details.conviction.active}}
-              <i class="fa-solid fa-star" style="color: gold;"></i>
-            {{else}}
-              <i class="fa-regular fa-star"></i>
-            {{/if}}
-          </span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{system.details.conviction.value}}</span>
-        </div>
+          <div
+            class='swadehud-bottomstat swadehud-bottomstat--label swadehud-conviction-clickable'
+            data-tooltip='SWADE.HUD.ConvictionTooltip'
+            data-conviction-value='{{system.details.conviction.value}}'
+            data-conviction-active='{{system.details.conviction.active}}'
+          >
+            <span class='swadehud-bottomstat__icon'>
+              {{#if system.details.conviction.active}}
+                <i class='fa-solid fa-star' style='color: gold;'></i>
+              {{else}}
+                <i class='fa-regular fa-star'></i>
+              {{/if}}
+            </span>
+            <span
+              class='swadehud-bottomstat__value swadehud-bottomstat__value--large'
+            >{{system.details.conviction.value}}</span>
+          </div>
         {{/if}}
-        <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-stat-clickable"
-             data-tooltip="SWADE.HUD.BenniesTooltip"
-             data-stat-path="system.bennies.value"
-             data-stat-min="0">
-          <span class="swadehud-bottomstat__icon"><i class="fa-solid fa-coins"></i></span>
-          <span class="swadehud-bottomstat__value swadehud-bottomstat__value--large">{{system.bennies.value}}</span>
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label swadehud-stat-clickable'
+          data-tooltip='SWADE.HUD.BenniesTooltip'
+          data-stat-path='system.bennies.value'
+          data-stat-min='0'
+        >
+          <span class='swadehud-bottomstat__icon'><i class='fa-solid fa-coins'></i></span>
+          <span class='swadehud-bottomstat__value swadehud-bottomstat__value--large'>{{system.bennies.value}}</span>
         </div>
-        <div class="swadehud-bottomstat swadehud-bottomstat--label swadehud-combat-toggle-clickable"
-             data-tooltip="SWADE.HUD.CombatStateTooltip"
-             data-in-combat="{{token.inCombat}}">
-          <span class="swadehud-bottomstat__icon">
+        <div
+          class='swadehud-bottomstat swadehud-bottomstat--label swadehud-combat-toggle-clickable'
+          data-tooltip='SWADE.HUD.CombatStateTooltip'
+          data-in-combat='{{token.inCombat}}'
+        >
+          <span class='swadehud-bottomstat__icon'>
             {{#if token.inCombat}}
-              <i class="fas fa-swords" style="color: #ff6b6b;"></i>
+              <i class='fas fa-swords' style='color: #ff6b6b;'></i>
             {{else}}
-              <i class="fas fa-swords"></i>
+              <i class='fas fa-swords'></i>
             {{/if}}
           </span>
         </div>

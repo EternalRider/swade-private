@@ -45,8 +45,7 @@ function definePaceSchema(): PaceSchema {
 }
 
 export class PaceSchemaField<
-  Options extends
-    foundry.data.fields.SchemaField.Options<PaceSchema> = foundry.data.fields.SchemaField.DefaultOptions,
+  Options extends foundry.data.fields.SchemaField.Options<PaceSchema> = foundry.data.fields.SchemaField.DefaultOptions,
 > extends foundry.data.fields.SchemaField<PaceSchema, Options> {
   constructor() {
     super(definePaceSchema(), { label: 'SWADE.Pace' } as Options);
@@ -61,7 +60,7 @@ export class PaceSchemaField<
       PaceSchema,
       SimpleMerge<Options, foundry.data.fields.SchemaField.DefaultOptions>
     >,
-    options?: foundry.data.fields.DataField.ValidationOptions | undefined,
+    options?: foundry.data.fields.DataField.ValidationOptions | undefined
   ): boolean | void | foundry.data.validation.DataModelValidationFailure {
     let result = super._validateType(value, options);
     if (!value?.base) return result;
@@ -69,11 +68,10 @@ export class PaceSchemaField<
       if (!result || typeof result === 'boolean') {
         result = new foundry.data.validation.DataModelValidationFailure({});
       }
-      result.fields[this.fieldPath] =
-        new foundry.data.validation.DataModelValidationFailure({
-          invalidValue: value.base,
-          message: game.i18n.localize('SWADE.Validation.InvalidBasePace'),
-        });
+      result.fields[this.fieldPath] = new foundry.data.validation.DataModelValidationFailure({
+        invalidValue: value.base,
+        message: game.i18n.localize('SWADE.Validation.InvalidBasePace'),
+      });
       throw result.asError();
     }
     return result;
@@ -89,7 +87,7 @@ export class PaceSchemaField<
     value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: ActiveEffect.ChangeData,
+    _change: ActiveEffect.ChangeData
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       value[key]! += delta;
@@ -102,7 +100,7 @@ export class PaceSchemaField<
     value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: ActiveEffect.ChangeData,
+    _change: ActiveEffect.ChangeData
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       if (value[key] !== null) value[key]! *= delta;
@@ -115,7 +113,7 @@ export class PaceSchemaField<
     value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: ActiveEffect.ChangeData,
+    _change: ActiveEffect.ChangeData
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       if (value[key] !== null) value[key] = Math.min(value[key]!, delta);
@@ -128,7 +126,7 @@ export class PaceSchemaField<
     value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: ActiveEffect.ChangeData,
+    _change: ActiveEffect.ChangeData
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       if (value[key] !== null) value[key] = Math.max(value[key]!, delta);
@@ -141,7 +139,7 @@ export class PaceSchemaField<
     value: foundry.data.fields.SchemaField.Internal.InitializedType<PaceSchema>,
     delta: number,
     _model: SwadeActor,
-    _change: ActiveEffect.ChangeData,
+    _change: ActiveEffect.ChangeData
   ) {
     for (const key of PaceSchemaField.paceKeys) {
       value[key] = delta;

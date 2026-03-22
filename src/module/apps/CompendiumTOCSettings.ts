@@ -1,11 +1,8 @@
 import { CompendiumTOC } from './CompendiumTOC';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(ApplicationV2) {
   #blockList: Record<string, boolean>;
 
   constructor(options) {
@@ -48,9 +45,7 @@ export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(
     context.buttons = [
       { type: 'submit', icon: 'fa-solid fa-save', label: 'Save Changes' }, // TODO: localize
     ];
-    const packs = game.packs.filter((p) =>
-      CompendiumTOC.ALLOWED_TYPES.includes(p.metadata.type),
-    );
+    const packs = game.packs.filter((p) => CompendiumTOC.ALLOWED_TYPES.includes(p.metadata.type));
 
     const packsByType: Record<string, unknown[]> = {};
     for (const pack of packs) {
@@ -72,7 +67,7 @@ export default class CompendiumTOCSettings extends HandlebarsApplicationMixin(
   static async onSubmit(
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     if (!game.user?.isGM) return;
     // invert the values

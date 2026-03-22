@@ -12,10 +12,7 @@ function makeBaseMemberSchema(): MemberSchema {
       type: 'Actor',
       required: true,
       nullable: false,
-      validate: (
-        value: any,
-        _options: foundry.data.fields.DataField.ValidationOptions,
-      ) => {
+      validate: (value: any, _options: foundry.data.fields.DataField.ValidationOptions) => {
         if (value.startsWith('Compendium')) {
           return new foundry.data.validation.DataModelValidationFailure({
             unresolved: true,
@@ -30,8 +27,7 @@ function makeBaseMemberSchema(): MemberSchema {
 
 export class MemberField<
   Schema extends MemberSchema = MemberSchema,
-  Options extends
-    foundry.data.fields.SchemaField.Options<Schema> = foundry.data.fields.SchemaField.DefaultOptions,
+  Options extends foundry.data.fields.SchemaField.Options<Schema> = foundry.data.fields.SchemaField.DefaultOptions,
 > extends foundry.data.fields.SchemaField<Schema, Options> {
   constructor(schema: foundry.data.fields.DataSchema, options?: Options) {
     super({ ...schema, ...makeBaseMemberSchema() } as Schema, options);

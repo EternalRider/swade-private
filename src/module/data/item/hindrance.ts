@@ -1,13 +1,12 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
-import * as migrations from './_migration';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { ChargesData } from '../fields';
+import * as migrations from './_migration';
 import { SwadeBaseItemData } from './base';
 import { actions, favorite, grants } from './common';
 import { Actions, ChoicesType, Favorite, Grants } from './item-common.interface';
-import * as migrations from './_migration';
 
 declare namespace HindranceData {
   interface Schema extends SwadeBaseItemData.Schema, Favorite, Actions, Grants {
@@ -23,11 +22,7 @@ declare namespace HindranceData {
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
 
-class HindranceData extends SwadeBaseItemData<
-  HindranceData.Schema,
-  HindranceData.BaseData,
-  HindranceData.DerivedData
-> {
+class HindranceData extends SwadeBaseItemData<HindranceData.Schema, HindranceData.BaseData, HindranceData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): HindranceData.Schema {
     const fields = foundry.data.fields;
@@ -55,8 +50,7 @@ class HindranceData extends SwadeBaseItemData<
   get isMajor(): boolean {
     return (
       this.severity === constants.HINDRANCE_SEVERITY.MAJOR ||
-      (this.severity === constants.HINDRANCE_SEVERITY.EITHER &&
-        this.major === true)
+      (this.severity === constants.HINDRANCE_SEVERITY.EITHER && this.major === true)
     );
   }
 
@@ -67,9 +61,7 @@ class HindranceData extends SwadeBaseItemData<
   async getChatChips(): Promise<ItemChatCardChip[]> {
     return [
       {
-        text: this.isMajor
-          ? game.i18n.localize('SWADE.Major')
-          : game.i18n.localize('SWADE.Minor'),
+        text: this.isMajor ? game.i18n.localize('SWADE.Major') : game.i18n.localize('SWADE.Minor'),
       },
     ];
   }
@@ -77,8 +69,8 @@ class HindranceData extends SwadeBaseItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -86,18 +78,13 @@ class HindranceData extends SwadeBaseItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/hindrance-embeds.hbs',
-      ['item-embed', 'hindrance'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/hindrance-embeds.hbs', [
+      'item-embed',
+      'hindrance',
+    ]);
   }
 
   /** @inheritdoc */

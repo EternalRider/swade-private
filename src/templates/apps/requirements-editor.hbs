@@ -1,16 +1,8 @@
 <section class='{{cssClass}}'>
   <header>
     <h2 class='flexrow'>
-      <span class='underline-text'>{{localize
-          'SWADE.Requirements.Editor.Header'
-          name=edge.name
-        }}</span>
-      <button
-        type='button'
-        class='add-requirement'
-        data-action='add'
-        data-tooltip='SWADE.Requirements.Editor.AddHint'
-      >
+      <span class='underline-text'>{{localize 'SWADE.Requirements.Editor.Header' name=edge.name}}</span>
+      <button type='button' class='add-requirement' data-action='add' data-tooltip='SWADE.Requirements.Editor.AddHint'>
         <i class='fa-solid fa-plus'></i>
       </button>
     </h2>
@@ -28,38 +20,22 @@
           <div class='flexrow'>
             {{#if (eq type @root.types.RANK)}}
               <label class='float-label'>
-                <select
-                  name='{{concat "system.requirements." @index ".value"}}'
-                >
+                <select name='{{concat "system.requirements." @index ".value"}}'>
                   {{selectOptions @root.rankChoices selected=value}}
                 </select>
                 <span>{{localize 'SWADE.Rank'}}</span>
               </label>
             {{else if (eq type @root.types.WILDCARD)}}
-              <input
-                type='checkbox'
-                name='{{concat "system.requirements." @index ".value"}}'
-                {{checked value}}
-              />
+              <input type='checkbox' name='{{concat "system.requirements." @index ".value"}}' {{checked value}} />
             {{else if (eq type @root.types.ATTRIBUTE)}}
               <label class='float-label'>
-                <select
-                  name='{{concat "system.requirements." @index ".selector"}}'
-                  required
-                >
-                  {{selectOptions
-                    @root.attributeChoices
-                    selected=selector
-                    localize=true
-                  }}
+                <select name='{{concat "system.requirements." @index ".selector"}}' required>
+                  {{selectOptions @root.attributeChoices selected=selector localize=true}}
                 </select>
                 <span>{{localize 'SWADE.Attribute'}}</span>
               </label>
               <label class='float-label'>
-                <select
-                  name='{{concat "system.requirements." @index ".value"}}'
-                  data-dtype='Number'
-                >
+                <select name='{{concat "system.requirements." @index ".value"}}' data-dtype='Number'>
                   {{selectOptions @root.dieChoices selected=value}}
                 </select>
                 <span>{{localize 'SWADE.DieSides'}}</span>
@@ -87,10 +63,7 @@
                 <span>{{localize 'SWADE.Requirements.Editor.SWID'}}</span>
               </label>
               <label class='float-label'>
-                <select
-                  name='{{concat "system.requirements." @index ".value"}}'
-                  data-dtype='Number'
-                >
+                <select name='{{concat "system.requirements." @index ".value"}}' data-dtype='Number'>
                   {{selectOptions @root.dieChoices selected=value}}
                 </select>
                 <span>{{localize 'SWADE.DieSides'}}</span>
@@ -202,11 +175,7 @@
                 name='{{concat "system.requirements." @index ".combinator"}}'
                 data-tooltip='SWADE.Requirements.Combinator'
               >
-                {{selectOptions
-                  @root.combinatorChoices
-                  selected=combinator
-                  localize=true
-                }}
+                {{selectOptions @root.combinatorChoices selected=combinator localize=true}}
               </select>
               <span></span>
             </label>
@@ -222,11 +191,7 @@
             </select> --}}
           {{/unless}}
         </div>
-        <button
-          type='button'
-          data-action='delete'
-          data-tooltip='SWADE.Requirements.Editor.DeleteHint'
-        >
+        <button type='button' data-action='delete' data-tooltip='SWADE.Requirements.Editor.DeleteHint'>
           <i class='fa-solid fa-trash'></i>
         </button>
       </li>

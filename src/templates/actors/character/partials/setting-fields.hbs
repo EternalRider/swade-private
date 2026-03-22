@@ -52,10 +52,7 @@
               data-dtype='{{attr.dtype}}'
               value='{{attr.value}}'
               data-tooltip='{{attr.value}}'
-              placeholder='{{localize
-                "SWADE.AdditionalStats.Current"
-                stat=attr.label
-              }}'
+              placeholder='{{localize "SWADE.AdditionalStats.Current" stat=attr.label}}'
             />
             {{#if attr.hasMaxValue}}
               <strong class='flex-separator'>/</strong>
@@ -64,10 +61,7 @@
                 name='system.additionalStats.{{key}}.max'
                 data-dtype='{{attr.dtype}}'
                 value='{{attr.max}}'
-                placeholder='{{localize
-                  "SWADE.AdditionalStats.Max"
-                  stat=attr.label
-                }}'
+                placeholder='{{localize "SWADE.AdditionalStats.Max" stat=attr.label}}'
               />
             {{/if}}
           </span>

@@ -1,9 +1,6 @@
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
-import {
-  DocumentFn,
-  ForeignDocumentUUIDField,
-} from '../fields/ForeignDocumentUUIDField';
+import { DocumentFn, ForeignDocumentUUIDField } from '../fields/ForeignDocumentUUIDField';
 import { SwadeBaseActorData } from './base';
 
 const fields = foundry.data.fields;
@@ -42,7 +39,7 @@ class GroupData<
           type: 'Actor',
           validate: (
             value: string,
-            _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+            _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>
           ) => {
             if (value.startsWith('Compendium')) {
               return new foundry.data.validation.DataModelValidationFailure({
@@ -56,7 +53,7 @@ class GroupData<
         {
           label: 'SWADE.Group.Sheet.Members.Header',
           hint: 'SWADE.Group.Sheet.Members.Hint',
-        },
+        }
       ),
       description: new fields.HTMLField({ textSearch: true }),
       locked: new fields.BooleanField({
@@ -95,19 +92,17 @@ class GroupData<
         food: this.#supplyLevelField('SWADE.Supplies.Food.Label'),
         supply: this.#supplyLevelField('SWADE.Supplies.Supply.Label'),
       },
-      { label: 'SWADE.Supplies.Label' },
+      { label: 'SWADE.Supplies.Label' }
     );
 
   override prepareBaseData() {
     super.prepareBaseData();
     this.members = new Map<string, GroupMember>(
-      this.members.map<[string, GroupMember]>(
-        (fn: DocumentFn<SwadeActor<'character' | 'npc'>>) => {
-          const result = fn();
-          if (typeof result === 'string') return [result, { actor: null }];
-          return [result.uuid as string, { actor: result }];
-        },
-      ),
+      this.members.map<[string, GroupMember]>((fn: DocumentFn<SwadeActor<'character' | 'npc'>>) => {
+        const result = fn();
+        if (typeof result === 'string') return [result, { actor: null }];
+        return [result.uuid as string, { actor: result }];
+      })
     );
   }
 

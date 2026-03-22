@@ -15,7 +15,7 @@ export default class SwadeTour extends foundry.nue.Tour {
   advanceEditor?: AdvanceEditor;
   journalEntry?: JournalEntry;
   journalEntryPage?: JournalEntryPage;
-  activeWindows: (Application.Any | foundry.applications.api.ApplicationV2.Any)[] = [];
+  activeWindows: (foundry.appv1.api.Application.Any | foundry.applications.api.ApplicationV2.Any)[] = [];
 
   override async start() {
     delete this.configurator;
@@ -37,26 +37,20 @@ export default class SwadeTour extends foundry.nue.Tour {
     let earlyReturn;
 
     // Modify any game settings we need to make the magic happen
-    if (currentStep.settings)
-      earlyReturn = await this.updateSettings(currentStep.settings);
+    if (currentStep.settings) earlyReturn = await this.updateSettings(currentStep.settings);
 
     if (earlyReturn === true) return;
     if (earlyReturn === false) return this.exit();
 
     // If we need an actor, make it and render
-    if (currentStep.actor)
-      earlyReturn = await this.makeActor(currentStep.actor);
+    if (currentStep.actor) earlyReturn = await this.makeActor(currentStep.actor);
 
     if (earlyReturn === true) return;
     if (earlyReturn === false) return this.exit();
 
     // Journal and Journal Page creation
-    if (currentStep.journalEntry)
-      earlyReturn = await this.makeJournalEntry(currentStep.journalEntry);
-    if (currentStep.journalEntryPage)
-      earlyReturn = await this.makeJournalEntryPage(
-        currentStep.journalEntryPage,
-      );
+    if (currentStep.journalEntry) earlyReturn = await this.makeJournalEntry(currentStep.journalEntry);
+    if (currentStep.journalEntryPage) earlyReturn = await this.makeJournalEntryPage(currentStep.journalEntryPage);
 
     if (earlyReturn === true) return;
     if (earlyReturn === false) return this.exit();
@@ -70,29 +64,17 @@ export default class SwadeTour extends foundry.nue.Tour {
       // If there's tab info, switch to that tab
       await this.switchTab(currentStep.tab);
     // Leaving to the end because we're only ever going to need one actor at a time and it's created much earlier
-    currentStep.selector = currentStep.selector?.replace(
-      'actorSheetID',
-      this.actor?.sheet?.id || '',
-    );
+    currentStep.selector = currentStep.selector?.replace('actorSheetID', this.actor?.sheet?.id || '');
     // Same with Tweaks dialog
-    currentStep.selector = currentStep.selector?.replace(
-      'tweaks',
-      this.tweaks?.id || '',
-    );
+    currentStep.selector = currentStep.selector?.replace('tweaks', this.tweaks?.id || '');
     // And of course the journal pages
-    currentStep.selector = currentStep.selector?.replace(
-      'journalSheetID',
-      this.journalEntry?.sheet?.id || '',
-    );
-    currentStep.selector = currentStep.selector?.replace(
-      'journalPageSheetID',
-      this.journalEntryPage?.sheet?.id || '',
-    );
+    currentStep.selector = currentStep.selector?.replace('journalSheetID', this.journalEntry?.sheet?.id || '');
+    currentStep.selector = currentStep.selector?.replace('journalPageSheetID', this.journalEntryPage?.sheet?.id || '');
 
     // Ensure relevant window is on top
     for (const sheet of [this.actor?.sheet, this.tweaks, this.journalEntry?.sheet, this.journalEntryPage?.sheet]) {
       if (currentStep.selector?.includes(sheet?.id)) {
-        await sheet.render(true);
+        await sheet?.render({ force: true });
       }
     }
     if (currentStep.selector?.includes('div.advance-editor')) {
@@ -103,28 +85,19 @@ export default class SwadeTour extends foundry.nue.Tour {
   override async _postStep() {
     const currentStep = this.currentStep as SwadeTourStep;
     // Un-replace selector info so repeated tours work without refresh
-    if (this.actor?.sheet?.id) currentStep.selector = currentStep.selector?.replace(
-      this.actor.sheet.id,
-      'actorSheetID',
-    );
+    if (this.actor?.sheet?.id)
+      currentStep.selector = currentStep.selector?.replace(this.actor.sheet.id, 'actorSheetID');
     // Same with Tweaks dialog
-    if (this.tweaks?.id) currentStep.selector = currentStep.selector?.replace(
-      this.tweaks.id,
-      'tweaks',
-    );
+    if (this.tweaks?.id) currentStep.selector = currentStep.selector?.replace(this.tweaks.id, 'tweaks');
     // And of course the journal pages
-    if (this.journalEntry?.sheet?.id) currentStep.selector = currentStep.selector?.replace(
-      this.journalEntry.sheet.id,
-      'journalSheetID',
-    );
-    if (this.journalEntryPage?.sheet?.id) currentStep.selector = currentStep.selector?.replace(
-      this.journalEntryPage.sheet.id,
-      'journalPageSheetID',
-    );
+    if (this.journalEntry?.sheet?.id)
+      currentStep.selector = currentStep.selector?.replace(this.journalEntry.sheet.id, 'journalSheetID');
+    if (this.journalEntryPage?.sheet?.id)
+      currentStep.selector = currentStep.selector?.replace(this.journalEntryPage.sheet.id, 'journalPageSheetID');
     await super._postStep();
   }
 
-  async override complete() {
+  override async complete() {
     for (const app of this.activeWindows) {
       app?.close();
     }
@@ -149,11 +122,9 @@ export default class SwadeTour extends foundry.nue.Tour {
           const additionalFields = game.settings.get('swade', k);
           return Object.entries(additionalFields).every(([documentType, f]) => {
             if (!v[documentType]) return true;
-            return Object.entries(v[documentType]).every(
-              ([field, value]: [string, Record<string, any>]) => {
-                return foundry.utils.objectsEqual(f[field], value);
-              },
-            );
+            return Object.entries(v[documentType]).every(([field, value]: [string, Record<string, any>]) => {
+              return foundry.utils.objectsEqual(f[field], value);
+            });
           });
         } else {
           return game.settings.get('swade', k) === v;
@@ -170,7 +141,7 @@ export default class SwadeTour extends foundry.nue.Tour {
           (s, i) =>
             i > this.stepIndex! &&
             !s.selector!.startsWith('#settingConfig') &&
-            !s.selector!.startsWith('#client-settings'),
+            !s.selector!.startsWith('#client-settings')
         );
         await this.earlyProgress(settingsDone);
         return true;
@@ -197,7 +168,7 @@ export default class SwadeTour extends foundry.nue.Tour {
    */
   async makeActor(actor: Partial<SwadeActor>) {
     const actCls = getDocumentClass('Actor') as typeof SwadeActor;
-    
+
     actor = foundry.utils.duplicate(actor);
     actor.name = game.i18n.localize(actor.name!);
     if (actor.items) {
@@ -207,10 +178,7 @@ export default class SwadeTour extends foundry.nue.Tour {
     }
     this.actor = new actCls(actor) as SwadeActor;
     if (this.actor.sheet) this.actor.sheet.options.submitOnClose = false;
-    // TODO: simplify once definitely AppV2
-    // @ts-expect-error _render
-    const renderFunc = this.actor.sheet?._render ?? this.actor.sheet?.render;
-    await renderFunc.call(this.actor.sheet, true);
+    await this.actor.sheet?.render({ force: true });
 
     if (this.actor.sheet) this.activeWindows.push(this.actor.sheet);
   }
@@ -228,17 +196,12 @@ export default class SwadeTour extends foundry.nue.Tour {
     const localizedName = game.i18n.localize(itemName);
     this.item = this.actor?.items.getName(localizedName) as SwadeItem;
     const app = this.item!.sheet;
-    // TODO: simplify once definitely AppV2
-    const renderFunc = app._render ?? app.render;
-    if (!app.rendered) await renderFunc.call(app, true);
+    if (!app.rendered) await app?.render({ force: true });
     this.activeWindows.push(app);
     // Assumption: Any given tour user might need to move back and forth between items
     // but only one actor is active at a time, so itemName is always specified when operating on an embedded item sheet
     // but the framework doesn't allow bouncing back and forth between actors
-    this.currentStep!.selector = this.currentStep!.selector!.replace(
-      'itemSheetID',
-      app!.id,
-    );
+    this.currentStep!.selector = this.currentStep!.selector!.replace('itemSheetID', app!.id);
   }
 
   async makeAdvance(advance: TourAdvance) {
@@ -254,31 +217,28 @@ export default class SwadeTour extends foundry.nue.Tour {
     }
   }
 
-  async makeJournalEntry(journalEntry: Partial<JournalEntry>) {
+  async makeJournalEntry(journalEntry: Partial<JournalEntry> | JournalEntry.CreateData) {
     const journalCls = getDocumentClass('JournalEntry');
 
-    journalEntry = foundry.utils.duplicate(journalEntry);
+    journalEntry = foundry.utils.duplicate(journalEntry) as JournalEntry.CreateData;
     journalEntry.name = game.i18n.localize(journalEntry.name!);
     this.journalEntry = new journalCls(journalEntry);
-    await this.journalEntry?.sheet?.render(true);
+    await this.journalEntry?.sheet?.render({ force: true });
     if (this.journalEntry?.sheet) this.activeWindows.push(this.journalEntry.sheet);
   }
 
   async makeJournalEntryPage(journalEntryPage: Partial<JournalEntryPage>) {
     const journalPageCls = getDocumentClass('JournalEntryPage');
-    
+
     journalEntryPage = foundry.utils.duplicate(journalEntryPage);
     journalEntryPage.name = game.i18n.localize(journalEntryPage.name!);
-    this.journalEntryPage = new journalPageCls(
-      journalEntryPage,
-      { parent: this.journalEntry },
-    );
+    this.journalEntryPage = new journalPageCls(journalEntryPage, { parent: this.journalEntry });
     this.journalEntry?.updateSource({
-      pages: [this.journalEntryPage?.toObject()]
+      pages: [this.journalEntryPage?.toObject()],
     });
     this.journalEntry?.sheet?.render();
-    await this.journalEntryPage?.sheet?.render(true);
-    if (this.journalEntryPage?.sheet) this.activeWindows.push(this.journalEntryPage.sheet)
+    await this.journalEntryPage?.sheet?.render({ force: true });
+    if (this.journalEntryPage?.sheet) this.activeWindows.push(this.journalEntryPage.sheet);
   }
 
   /**
@@ -291,19 +251,19 @@ export default class SwadeTour extends foundry.nue.Tour {
         ui.sidebar.changeTab(tab.id, tab.group);
         break;
       case constants.TOUR_TAB_PARENTS.GAMESETTINGS: {
-        const app = game.settings.sheet as SettingsConfig;
-        await app.render(true);
+        const app = game.settings.sheet as foundry.applications.settings.SettingsConfig;
+        await app.render({ force: true });
         this.activeWindows.push(app);
         app.changeTab(tab.id, tab.group);
         break;
       }
       case constants.TOUR_TAB_PARENTS.CONFIGURATOR: {
         if (!this.configurator) {
-          const configurator: ClientSettings.PartialSettingSubmenuConfig =
+          const configurator: foundry.helpers.ClientSettings.SettingSubmenuConfig =
             game.settings.menus.get('swade.setting-config')!;
           this.configurator = new configurator.type();
         }
-        await this.configurator.render({ force: true });
+        await this.configurator?.render({ force: true });
         this.activeWindows.push(this.configurator!);
         this.configurator!.changeTab(tab.id, tab.group);
         break;
@@ -338,10 +298,7 @@ export default class SwadeTour extends foundry.nue.Tour {
   }
 
   async earlyProgress(stepIndex) {
-    const progress = game.settings.get('core', 'tourProgress') as Record<
-      string,
-      Record<string, number>
-    >;
+    const progress = game.settings.get('core', 'tourProgress') as Record<string, Record<string, number>>;
     const namespace = this.namespace!;
     if (!(namespace in progress)) progress[namespace] = {};
     progress[namespace][this.id!] = stepIndex;

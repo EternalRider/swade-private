@@ -14,7 +14,7 @@ async function setupActionDeck() {
   const data = await foundry.utils.fetchJsonWithTimeout(preset.src);
   const cardsCls = getDocumentClass('Cards');
   const newActionDeck = await cardsCls.create(data as any);
-  await game.settings.set('swade', 'actionDeck', newActionDeck?.id!);
+  await game.settings.set('swade', 'actionDeck', newActionDeck?.id ?? '');
   await newActionDeck?.shuffle({ chatNotification: false });
 }
 
@@ -32,9 +32,5 @@ async function setupDiscardPile() {
     name: 'Action Cards Discard Pile',
     type: 'pile',
   });
-  await game.settings.set(
-    'swade',
-    'actionDeckDiscardPile',
-    newDiscardPile?.id!,
-  );
+  await game.settings.set('swade', 'actionDeckDiscardPile', newDiscardPile?.id ?? '');
 }

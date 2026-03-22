@@ -39,21 +39,15 @@ declare namespace ModifierData {
 /**
  * A data model to represent effects that modify the items they are contained on
  */
-class ModifierData extends foundry.abstract.TypeDataModel<
-  ModifierData.Schema,
-  SwadeActiveEffect<'modifier'>
-> {
+class ModifierData extends foundry.abstract.TypeDataModel<ModifierData.Schema, SwadeActiveEffect<'modifier'>> {
   static override defineSchema() {
     return modifierSchema();
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      ModifierData.Schema,
-      ActiveEffect<'modifier'>
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>,
     options: ActiveEffect.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -67,13 +61,10 @@ class ModifierData extends foundry.abstract.TypeDataModel<
 
   protected override async _preUpdate(
     changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        ModifierData.Schema,
-        ActiveEffect<'modifier'>
-      >
+      foundry.abstract.TypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>
     >,
     options: ActiveEffect.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
