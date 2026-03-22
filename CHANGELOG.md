@@ -27,6 +27,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Added missing asset files for character sheet dark mode. (#1412)
+- Fixed CSS on Vehicle Sheet Trait and Crew tabs. (#1403) **by @florad92**
 
 ## 5.2.2
 
