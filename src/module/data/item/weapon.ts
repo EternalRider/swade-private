@@ -329,7 +329,7 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
     } else if (this.reloadType === constants.RELOAD_TYPE.SELF) {
       const currentShots = Number(this.currentShots);
       const maxShots = Number(this.shots);
-      const usesShots = !!maxShots && !!currentShots;
+      const usesShots = maxShots > 0;
       const quantity = Number(this.quantity);
       const usesRemaining = maxShots * (quantity - 1) + currentShots;
       if (!usesShots || chargesToUse > usesRemaining) {
