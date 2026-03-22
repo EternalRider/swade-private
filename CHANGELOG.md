@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.3
+
+### Fixed
+
+- Added missing asset files for character sheet dark mode. (#1412)
+
 ## 5.2.2
 
 ### Fixed
@@ -2594,7 +2600,6 @@ m
 - Added Active Effect to the Defend status which adds +4 Parry
 - Added new Status _Protection_ which adds an Active Effect that adds 0 to both toughness and armor, making it easy to apply the power. All you need to do is to put the modifier (4 or 6) into the appropriate Active Effect change.
 - Added new Item type `ability`. This item type has two subtypes, `race` and `special`. If the item has the subtype `race` you can drag&drop the following items onto it to create racial abilities:
-
   - Skills
   - Edges
   - Hindrances
@@ -2605,7 +2610,6 @@ m
   When you have prepared the race you can then drag&drop it onto any non-vehicle actor.
 
   Once that is done, several things happen:
-
   - The racial abilities are taken from the race and added to the actor
   - Any active effects that were added to the race are copied to the actor
   - The actors race is set to the name of the race item that was dropped onto the actors
@@ -3086,7 +3090,6 @@ gioness if it is marked as natural armor, has at least the torso location and is
 ### Added
 
 - Layout rework (Thanks to U~Man)
-
   - Added multiple arcane support, filling the Arcane field of power items will sort it in the powers tab and gives it its own PP pool when the filter is enabled
   - Moved sheet config options (initiative, wounds) to a Tweaks dialog in the sheet header
   - Moved Race and Rank fields to the sheet header
