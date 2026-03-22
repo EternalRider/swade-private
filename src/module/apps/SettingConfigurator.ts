@@ -2,12 +2,9 @@ import { AdditionalStats } from '../../globals';
 import { SWADE } from '../config';
 import SwadeCards from '../documents/card/SwadeCards';
 
-/* eslint-disable @typescript-eslint/naming-convention */
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class SettingConfigurator extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class SettingConfigurator extends HandlebarsApplicationMixin(ApplicationV2) {
   config = SWADE.settingConfig;
 
   static override DEFAULT_OPTIONS = {
@@ -52,8 +49,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
       scrollable: [''],
     },
     additionalStats: {
-      template:
-        'systems/swade/templates/apps/configurator/additional-stats.hbs',
+      template: 'systems/swade/templates/apps/configurator/additional-stats.hbs',
       scrollable: [''],
     },
     footer: { template: 'templates/generic/form-footer.hbs' },
@@ -73,38 +69,35 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
 
   override async _prepareContext(options) {
     const settingFields = game.settings.get('swade', 'settingFields');
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        settingRules: {},
-        actorSettingStats: settingFields.actor,
-        itemSettingStats: settingFields.item,
-        dice3d: !!game.dice3d,
-        dtypes: {
-          String: 'SWADE.String',
-          Number: 'SWADE.Number',
-          Boolean: 'SWADE.Checkbox',
-          Die: 'SWADE.Die',
-          Selection: 'SWADE.Selection',
-        },
-        coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
-        actionDeckChoices: this.#buildActionDeckChoices(),
-        discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
-        injuryTableChoices: await this.#buildInjuryTableChoices(),
-        armorStackingChoices: this.#getArmorStackingChoices(),
-        wealthTypes: this.#getWealthTypes(),
-        buttons: [
-          { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
-          {
-            type: 'reset',
-            action: 'reset',
-            icon: 'fa-solid fa-undo',
-            cssClass: 'submit',
-            label: 'SETTINGS.Reset',
-          },
-        ],
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      settingRules: {},
+      actorSettingStats: settingFields.actor,
+      itemSettingStats: settingFields.item,
+      dice3d: !!game.dice3d,
+      dtypes: {
+        String: 'SWADE.String',
+        Number: 'SWADE.Number',
+        Boolean: 'SWADE.Checkbox',
+        Die: 'SWADE.Die',
+        Selection: 'SWADE.Selection',
       },
-    );
+      coreSkillPackChoices: this.#buildCoreSkillPackChoices(),
+      actionDeckChoices: this.#buildActionDeckChoices(),
+      discardPileChoices: this.#buildActionDeckDiscardPileChoices(),
+      injuryTableChoices: await this.#buildInjuryTableChoices(),
+      armorStackingChoices: this.#getArmorStackingChoices(),
+      wealthTypes: this.#getWealthTypes(),
+      buttons: [
+        { type: 'submit', icon: 'fa-solid fa-save', label: 'SETTINGS.Save' },
+        {
+          type: 'reset',
+          action: 'reset',
+          icon: 'fa-solid fa-undo',
+          cssClass: 'submit',
+          label: 'SETTINGS.Reset',
+        },
+      ],
+    });
     for (const setting of this.config.settings) {
       context.settingRules[setting] = game.settings.get('swade', setting);
     }
@@ -112,11 +105,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
   }
 
   override async _preparePartContext(partId, context, options) {
-    const partContext = await super._preparePartContext(
-      partId,
-      context,
-      options,
-    );
+    const partContext = await super._preparePartContext(partId, context, options);
     if (partId in partContext.tabs) partContext.tab = partContext.tabs[partId];
     return partContext;
   }
@@ -125,7 +114,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     this: SettingConfigurator,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     // Gather Data
     const expandedFormData = foundry.utils.expandObject(formData.object);
@@ -133,13 +122,8 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     const formItemAttrs = expandedFormData.itemSettingStats || {};
 
     // Set the "easy" settings
-    for (const [key, settingValue] of Object.entries(
-      expandedFormData.settingRules,
-    )) {
-      if (
-        this.config.settings.includes(key) &&
-        settingValue !== game.settings.get('swade', key)
-      ) {
+    for (const [key, settingValue] of Object.entries(expandedFormData.settingRules)) {
+      if (this.config.settings.includes(key) && settingValue !== game.settings.get('swade', key)) {
         await game.settings.set('swade', key, settingValue);
       }
     }
@@ -159,15 +143,9 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     if (event.submitter) this.close();
   }
 
-  static async #resetSettings(
-    this: SettingConfigurator,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static async #resetSettings(this: SettingConfigurator, _event: PointerEvent, _target: HTMLElement) {
     for (const setting of this.config.settings) {
-      const resetValue = game.settings.settings.get(
-        `swade.${setting}`,
-      )!.default;
+      const resetValue = game.settings.settings.get(`swade.${setting}`)!.default;
       if (game.settings.get('swade', setting) !== resetValue) {
         await game.settings.set('swade', setting, resetValue);
       }
@@ -184,34 +162,20 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
     const newElement = document.createElement('div');
     newElement.innerHTML = `<input type="text" name="${documentType}SettingStats.attr${nk}.key" value="attr${nk}"/>`;
     const newKey = newElement.children[0];
-    form
-      ?.querySelector('[data-application-part="additionalStats"]')
-      ?.appendChild(newKey);
+    form?.querySelector('[data-application-part="additionalStats"]')?.appendChild(newKey);
     await this._onSubmitForm(this.options.form!, event);
     await this.render({ force: true });
   }
 
-  static async #onCreateChar(
-    this: SettingConfigurator,
-    event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static async #onCreateChar(this: SettingConfigurator, event: PointerEvent, _target: HTMLElement) {
     await this.#createHelper(event, false);
   }
 
-  static async #onCreateItem(
-    this: SettingConfigurator,
-    event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static async #onCreateItem(this: SettingConfigurator, event: PointerEvent, _target: HTMLElement) {
     await this.#createHelper(event, true);
   }
 
-  static async #onDelete(
-    this: SettingConfigurator,
-    event: PointerEvent,
-    target: HTMLElement,
-  ) {
+  static async #onDelete(this: SettingConfigurator, event: PointerEvent, target: HTMLElement) {
     event.preventDefault();
     const li = target.closest('.attribute');
     if (li) li.parentElement?.removeChild(li);
@@ -231,7 +195,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
             invalid: invalidKey,
             key: key,
           }),
-          { permanent: true },
+          { permanent: true }
         );
       }
       delete stat.key;
@@ -245,13 +209,10 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
    * @param attributes
    * @param base
    */
-  #handleRemovableAttributes(
-    attributes: AdditionalStats,
-    base: AdditionalStats,
-  ) {
+  #handleRemovableAttributes(attributes: AdditionalStats, base: AdditionalStats) {
     if (!attributes || !base) return {};
     for (const k of Object.keys(base)) {
-      if (!attributes.hasOwnProperty(k)) {
+      if (!Object.hasOwn(attributes, k)) {
         delete attributes[k];
       }
     }
@@ -274,12 +235,12 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
   }
 
   #buildCoreSkillPackChoices() {
-    const packChoices = Array();
+    const packChoices = [];
 
     const packs = game.packs?.filter((p) => {
       const index = Array.from(p.index.values()).filter(
         // Remove the CF entities
-        (e) => e.name !== '#[CF_tempEntity]',
+        (e) => e.name !== '#[CF_tempEntity]'
       );
       const isItem = p.metadata.type === 'Item';
       return isItem && index.every((v) => v['type'] === 'skill');
@@ -314,9 +275,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
 
   #buildActionDeckDiscardPileChoices() {
     const discardPiles: Record<string, string> = {};
-    game.cards
-      ?.filter((stack) => stack.type === 'pile')
-      .forEach((p) => (discardPiles[p.id] = p.name!));
+    game.cards?.filter((stack) => stack.type === 'pile').forEach((p) => (discardPiles[p.id] = p.name!));
     return discardPiles;
   }
 
@@ -333,12 +292,8 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
       });
     }
 
-    const rollTablePacks = game.packs.filter(
-      (p) => p.metadata.type === 'RollTable',
-    );
-    const worldPacks = rollTablePacks.filter(
-      (p) => p.metadata.packageType === 'world',
-    );
+    const rollTablePacks = game.packs.filter((p) => p.metadata.type === 'RollTable');
+    const worldPacks = rollTablePacks.filter((p) => p.metadata.packageType === 'world');
 
     //add world compendium packs, if necessary
     if (worldPacks.length) {
@@ -354,9 +309,7 @@ export default class SettingConfigurator extends HandlebarsApplicationMixin(
 
     //add an entry for every module, if necessary
     for (const module of game.modules.values()) {
-      const packs = rollTablePacks.filter(
-        (p) => p.metadata.packageName === module.id,
-      );
+      const packs = rollTablePacks.filter((p) => p.metadata.packageName === module.id);
       if (!packs.length) continue;
       injuryTables.push({
         group: module.title!,
@@ -377,4 +330,4 @@ interface OptionGroup {
   group: string;
   options: GroupOptions;
 }
-type GroupOptions = Array<{ key: string; label: string }>;
+type GroupOptions = { key: string; label: string }[];

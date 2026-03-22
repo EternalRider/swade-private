@@ -60,19 +60,11 @@ function eachInMap(map: Map<any, any>, block: Handlebars.HelperOptions) {
 }
 
 function stringify(obj: any) {
-  return JSON.stringify(
-    Object.hasOwn(obj, 'toObject') ? obj.toObject() : obj,
-    null,
-    2,
-  );
+  return JSON.stringify(Object.hasOwn(obj, 'toObject') ? obj.toObject() : obj, null, 2);
 }
 
 /** A replacement radioboxes helper that enables the use of numeric values */
-function radioBoxes(
-  name: string,
-  choices: Record<string | number, string>,
-  options: Handlebars.HelperOptions,
-) {
+function radioBoxes(name: string, choices: Record<string | number, string>, options: Handlebars.HelperOptions) {
   const checked = options.hash['checked'] ?? null;
   const localize = options.hash['localize'] ?? false;
   let html = '';
@@ -107,9 +99,7 @@ function suitIcon(suit: string) {
       suitClass = suit;
     }
   }
-  return new Handlebars.SafeString(
-    `<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`,
-  );
+  return new Handlebars.SafeString(`<span class="icon-card-suit ${suitClass}">${suitSymbol}</span>`);
 }
 
 /*****************************
@@ -123,11 +113,7 @@ function collapsible(states: Record<string, boolean>, id: string) {
 
 function localizeSkillAttribute(attribute: string, useShorthand = false) {
   if (!attribute) return '';
-  return game.i18n.localize(
-    useShorthand
-      ? SWADE.attributes[attribute].short
-      : SWADE.attributes[attribute].long,
-  );
+  return game.i18n.localize(useShorthand ? SWADE.attributes[attribute].short : SWADE.attributes[attribute].long);
 }
 
 function advanceType(type: number) {
@@ -184,7 +170,7 @@ function displayEmbedded(array: any[] = []) {
               <i class="fas fa-trash"></i>
             </a>
           </span>
-        </li>`,
+        </li>`
     );
   });
   return `<ul class="effects-list">${entities.join('\n')}</ul>`;
@@ -260,8 +246,7 @@ function formatHindranceSeverity(severity: string) {
   const majorSeverity = game.i18n.localize('SWADE.HindMajor');
 
   // If it's just minor or major, return their respective localizations.
-  if (severity !== 'minor' && severity !== 'major' && severity !== 'either')
-    return '';
+  if (severity !== 'minor' && severity !== 'major' && severity !== 'either') return '';
   if (severity === 'minor') return minorSeverity;
   if (severity === 'major') return majorSeverity;
 
@@ -307,41 +292,18 @@ function equipStatus(state: EquipState) {
 
 function equipStatusLabel(state: EquipState) {
   const states = {
-    [constants.EQUIP_STATE.STORED]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.Stored',
-    ),
-    [constants.EQUIP_STATE.CARRIED]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.Carried',
-    ),
-    [constants.EQUIP_STATE.OFF_HAND]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.OffHand',
-    ),
-    [constants.EQUIP_STATE.EQUIPPED]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.Equipped',
-    ),
-    [constants.EQUIP_STATE.MAIN_HAND]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.MainHand',
-    ),
-    [constants.EQUIP_STATE.TWO_HANDS]: game.i18n.localize(
-      'SWADE.ItemEquipStatus.TwoHands',
-    ),
+    [constants.EQUIP_STATE.STORED]: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
+    [constants.EQUIP_STATE.CARRIED]: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
+    [constants.EQUIP_STATE.OFF_HAND]: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
+    [constants.EQUIP_STATE.EQUIPPED]: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
+    [constants.EQUIP_STATE.MAIN_HAND]: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
+    [constants.EQUIP_STATE.TWO_HANDS]: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
   };
   return new Handlebars.SafeString(states[state]);
 }
 
 function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
-  const {
-    classes,
-    label,
-    hint,
-    rootId,
-    stacked,
-    units,
-    widget,
-    source,
-    document,
-    ...inputConfig
-  } = options.hash;
+  const { classes, label, hint, rootId, stacked, units, widget, source, document, ...inputConfig } = options.hash;
   inputConfig.localize ??= true;
   const groupConfig = {
     label,
@@ -354,10 +316,7 @@ function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
     classes: typeof classes === 'string' ? classes.split(' ') : [],
   };
   const doc: ClientDocument =
-    document ??
-    options.data.root.item ??
-    options.data.root.actor ??
-    options.data.root.document;
+    document ?? options.data.root.item ?? options.data.root.actor ?? options.data.root.document;
   let field: foundry.data.fields.DataField;
   if (path.startsWith('system') && 'system' in doc) {
     const splitPath = path.split('.');
@@ -368,19 +327,13 @@ function prepareFormRendering(path: string, options: Handlebars.HelperOptions) {
   }
 
   if (!('value' in inputConfig)) {
-    inputConfig.value = foundry.utils.getProperty(
-      source ? doc._source : doc,
-      path,
-    );
+    inputConfig.value = foundry.utils.getProperty(source ? doc._source : doc, path);
   }
   return { field, inputConfig, groupConfig };
 }
 
 function formGroupSimple(path: string, options: Handlebars.HelperOptions) {
-  const { field, inputConfig, groupConfig } = prepareFormRendering(
-    path.toString(),
-    options,
-  );
+  const { field, inputConfig, groupConfig } = prepareFormRendering(path.toString(), options);
   const group = field.toFormGroup(groupConfig, inputConfig);
   return new Handlebars.SafeString(group.outerHTML);
 }

@@ -1,21 +1,12 @@
 import SwadeItem from '../documents/item/SwadeItem';
-import {
-  ChoiceSet,
-  MutationOption,
-} from '../documents/item/SwadeItem.interface';
+import { ChoiceSet, MutationOption } from '../documents/item/SwadeItem.interface';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   declare protected selection: ChoiceSet;
 
-  constructor({
-    parent,
-    choiceSet,
-    resolve,
-    ...options
-  }: ChoiceDialogConfiguration) {
+  constructor({ parent, choiceSet, resolve, ...options }: ChoiceDialogConfiguration) {
     super(options);
     this.#callback = resolve;
     this.#parent = parent;
@@ -26,12 +17,8 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   #parent: SwadeItem;
   #keyDownListener;
 
-  static asPromise(
-    ctx: Omit<ChoiceDialogConfiguration, 'resolve'>,
-  ): Promise<ChoiceSet> {
-    return new Promise<ChoiceSet>((resolve) =>
-      new ChoiceDialog({ ...ctx, resolve }).render({ force: true }),
-    );
+  static asPromise(ctx: Omit<ChoiceDialogConfiguration, 'resolve'>): Promise<ChoiceSet> {
+    return new Promise<ChoiceSet>((resolve) => new ChoiceDialog({ ...ctx, resolve }).render({ force: true }));
   }
 
   static override DEFAULT_OPTIONS = {
@@ -65,7 +52,7 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this: ChoiceDialog,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: FormDataExtended,
+    _formData: foundry.applications.ux.FormDataExtended
   ) {
     this.customSubmit();
   }
@@ -76,18 +63,12 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   protected getSelection(): number | null {
-    const radio = this.element.querySelector(
-      'input[name="choiceset"]:checked',
-    ) as HTMLInputElement;
+    const radio = this.element.querySelector('input[name="choiceset"]:checked') as HTMLInputElement;
     if (!radio) return null;
     return Number(radio?.value);
   }
 
-  static #onClose(
-    this: ChoiceDialog,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static #onClose(this: ChoiceDialog, _event: PointerEvent, _target: HTMLElement) {
     this.close();
   }
 
@@ -98,30 +79,27 @@ export class ChoiceDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        parent: this.#parent,
-        prompt: this.selection.title,
-        choices: this.selection.choices.map((choice, index) => ({
-          ...choice,
-          value: index,
-        })),
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-solid fa-check-double',
-            label: 'SWADE.ButtonSubmit',
-          },
-          {
-            type: 'button',
-            icon: 'fa-solid fa-times',
-            label: 'Close',
-            action: 'close',
-          },
-        ],
-      },
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      parent: this.#parent,
+      prompt: this.selection.title,
+      choices: this.selection.choices.map((choice, index) => ({
+        ...choice,
+        value: index,
+      })),
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-check-double',
+          label: 'SWADE.ButtonSubmit',
+        },
+        {
+          type: 'button',
+          icon: 'fa-solid fa-times',
+          label: 'Close',
+          action: 'close',
+        },
+      ],
+    });
     return context;
   }
 

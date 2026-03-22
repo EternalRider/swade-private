@@ -9,10 +9,7 @@ export function registerEnrichers() {
   const toEnrich = ['d', 'damage', 't', 'trait'];
 
   CONFIG.TextEditor.enrichers.push({
-    pattern: new RegExp(
-      `\\[\\[/(?<type>${toEnrich.join('|')})(?<config> .*?)?]](?!])(?:{(?<label>[^}]+)})?`,
-      'gi',
-    ),
+    pattern: new RegExp(`\\[\\[/(?<type>${toEnrich.join('|')})(?<config> .*?)?]](?!])(?:{(?<label>[^}]+)})?`, 'gi'),
     enricher,
   });
 
@@ -20,11 +17,7 @@ export function registerEnrichers() {
   document.body.addEventListener('click', rollTrait);
 }
 
-export function processFormula(
-  formula: string,
-  type: 'damage' | 'trait',
-  actor?: SwadeActor | null,
-): ProcessedFormula {
+export function processFormula(formula: string, type: 'damage' | 'trait', actor?: SwadeActor | null): ProcessedFormula {
   formula = formula.replace(/([+-])/g, ' $1 ').trim(); //add extra spaces around every operator, then trim excess
   const rollData = actor?.getRollData(false) ?? {};
   const terms = foundry.dice.Roll.parse(formula, rollData);
@@ -47,21 +40,19 @@ export function processFormula(
     const newRoll = foundry.dice.Roll.fromTerms(newTerms);
     formula = newRoll.formula;
   }
-  const mods: RollModifier[] = chunkArray(remainingTerms).map(
-    ([operator, number]) => {
-      return {
-        label: number.flavor || game.i18n.localize('SWADE.Addi'),
-        value: operator.expression.trim() + number.expression.trim(),
-      };
-    },
-  );
+  const mods: RollModifier[] = chunkArray(remainingTerms).map(([operator, number]) => {
+    return {
+      label: number.flavor || game.i18n.localize('SWADE.Addi'),
+      value: operator.expression.trim() + number.expression.trim(),
+    };
+  });
   return { formula, mods };
 }
 
 const diceIcon = '<i class="fa-solid fa-image-portrait" inert></i>';
 const damageIcon = '<i class="fa-solid fa-house-flood-water" inert></i>';
 
-const enricher: TextEditor.Enricher = async function (match) {
+const enricher: foundry.applications.ux.TextEditor.Enricher = async function (match) {
   if (!match.groups) return null;
   const { type, config, label } = match.groups;
 
@@ -80,10 +71,7 @@ const enricher: TextEditor.Enricher = async function (match) {
   }
 };
 
-async function enrichDamage(
-  config: ParsedConfig,
-  label: string,
-): Promise<HTMLElement | null> {
+async function enrichDamage(config: ParsedConfig, label: string): Promise<HTMLElement | null> {
   const anchor = document.createElement('a');
   anchor.classList.add('swade-inline-roll', 'damage');
   config.forEach((i) => anchor.setAttribute('data-' + i.type, i.value));
@@ -92,10 +80,7 @@ async function enrichDamage(
   return anchor;
 }
 
-async function enrichTrait(
-  config: ParsedConfig,
-  label: string,
-): Promise<HTMLElement | null> {
+async function enrichTrait(config: ParsedConfig, label: string): Promise<HTMLElement | null> {
   const anchor = document.createElement('a');
   anchor.classList.add('swade-inline-roll', 'trait');
   config.forEach((i) => anchor.setAttribute('data-' + i.type, i.value));
@@ -112,8 +97,7 @@ async function rollTrait(event: PointerEvent) {
   const [type, command] = formula.split('.');
   const match = command.match(/^[a-zA-Z0-9]+/); //get the cleaned command ;
   if (!match) return;
-  const actor =
-    canvas?.tokens?.controlled[0]?.document?.actor || game.user.character;
+  const actor = canvas?.tokens?.controlled[0]?.document?.actor || game.user.character;
   const trait = match[0];
   const { mods } = processFormula(formula, 'trait', actor);
   if (type === '@skill') {
@@ -133,16 +117,13 @@ async function rollDamage(event: PointerEvent) {
   const dataset = target.dataset;
   const baseFormula = dataset.formula;
   if (!baseFormula) return;
-  const actor =
-    canvas?.tokens?.controlled[0]?.document?.actor || game.user.character;
+  const actor = canvas?.tokens?.controlled[0]?.document?.actor || game.user.character;
   if (!actor) return;
   const speaker = CONFIG.ChatMessage.documentClass.getSpeaker({ actor });
   const { formula, mods } = processFormula(baseFormula, 'damage', actor);
   const roll = new DamageRoll(formula);
   const flavor =
-    dataset.flavor !== formula
-      ? dataset.flavor || game.i18n.localize('SWADE.Dmg')
-      : game.i18n.localize('SWADE.Dmg');
+    dataset.flavor !== formula ? dataset.flavor || game.i18n.localize('SWADE.Dmg') : game.i18n.localize('SWADE.Dmg');
   const title = flavor;
   await RollDialog.asPromise({
     roll,
@@ -154,11 +135,7 @@ async function rollDamage(event: PointerEvent) {
   });
 }
 
-function parseConfig(
-  config: string,
-  type: string,
-  label?: string,
-): ParsedConfig | undefined {
+function parseConfig(config: string, type: string, label?: string): ParsedConfig | undefined {
   config = config.trim();
   let pattern = /@[^ ]+/; //default behavior trait
   const isDamage = ['d', 'damage'].includes(type);

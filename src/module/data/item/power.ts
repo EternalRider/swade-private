@@ -1,9 +1,6 @@
 import { PotentialSource } from '../../../globals';
-import {
-  ItemChatCardChip,
-  ItemDisplayPowerPoints,
-} from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { ItemChatCardChip, ItemDisplayPowerPoints } from '../../documents/item/SwadeItem.interface';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { FormulaField } from '../fields';
 import { FormulaDerivedValueField } from '../fields/FormulaDerivedValueField';
 import * as migrations from './_migration';
@@ -11,20 +8,10 @@ import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
 import { actions, activities, favorite, templates } from './common';
-import {
-  Actions,
-  Activities,
-  Favorite,
-  Templates,
-} from './item-common.interface';
+import { Actions, Activities, Favorite, Templates } from './item-common.interface';
 
 declare namespace PowerData {
-  interface Schema
-    extends SwadeBaseItemData.Schema,
-      Actions,
-      Activities,
-      Favorite,
-      Templates {
+  interface Schema extends SwadeBaseItemData.Schema, Actions, Activities, Favorite, Templates {
     rank: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     pp: foundry.data.fields.NumberField<{ initial: 0 }>;
     damage: FormulaField<{ initial: ''; blank: true; label: string }>;
@@ -37,10 +24,7 @@ declare namespace PowerData {
     arcane: foundry.data.fields.StringField<{ initial: ''; textSearch: true }>;
     ap: foundry.data.fields.NumberField<{ initial: 0 }>;
     innate: foundry.data.fields.BooleanField<{ label: string }>;
-    modifiers: foundry.data.fields.ArrayField<
-      foundry.data.fields.ObjectField,
-      { label: string }
-    >;
+    modifiers: foundry.data.fields.ArrayField<foundry.data.fields.ObjectField, { label: string }>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {
@@ -48,11 +32,7 @@ declare namespace PowerData {
   }
 }
 
-class PowerData extends SwadeBaseItemData<
-  PowerData.Schema,
-  PowerData.BaseData,
-  PowerData.DerivedData
-> {
+class PowerData extends SwadeBaseItemData<PowerData.Schema, PowerData.BaseData, PowerData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): PowerData.Schema {
     const fields = foundry.data.fields;
@@ -125,23 +105,15 @@ class PowerData extends SwadeBaseItemData<
   get _powerPoints(): ItemDisplayPowerPoints {
     const actor = this.parent.actor!;
     const arcane = this.arcane || 'general';
-    const value = foundry.utils.getProperty(
-      actor,
-      `system.powerPoints.${arcane}.value`,
-    ) as number;
-    const max = foundry.utils.getProperty(
-      actor,
-      `system.powerPoints.${arcane}.max`,
-    ) as number;
+    const value = foundry.utils.getProperty(actor, `system.powerPoints.${arcane}.value`) as number;
+    const max = foundry.utils.getProperty(actor, `system.powerPoints.${arcane}.max`) as number;
     return { value, max };
   }
 
   get ppModifiers() {
     let cost = this.pp;
     const modifiers: string[] = [];
-    for (const e of this.parent.effects.filter(
-      (e) => e.type === 'modifier' && e.active,
-    )) {
+    for (const e of this.parent.effects.filter((e) => e.type === 'modifier' && e.active)) {
       cost += e.system.cost ?? 0;
       modifiers.push(e.name);
     }
@@ -185,8 +157,8 @@ class PowerData extends SwadeBaseItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -194,18 +166,10 @@ class PowerData extends SwadeBaseItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/power-embeds.hbs',
-      ['item-embed', 'power'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/power-embeds.hbs', ['item-embed', 'power']);
   }
 }
 

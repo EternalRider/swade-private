@@ -9,13 +9,10 @@ interface DevModeApi {
     options?: {
       default?: boolean | LogLevel;
       choiceLabelOverrides?: Record<string, string>; // actually keyed by LogLevel number
-    },
+    }
   ): Promise<boolean>;
 
-  getPackageDebugValue(
-    packageName: string,
-    kind?: 'boolean' | 'level',
-  ): boolean | LogLevel;
+  getPackageDebugValue(packageName: string, kind?: 'boolean' | 'level'): boolean | LogLevel;
 }
 
 declare enum LogLevel {

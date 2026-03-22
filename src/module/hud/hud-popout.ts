@@ -1,13 +1,13 @@
-import {
-  prepareHudContext,
-  getEnrichedDescription,
-  renderCachedTemplate,
-  getItemsByType,
-  getAllApplicableEffects,
-} from './hud-context';
 import { setupHudActionButtonListeners } from './hud-actions';
-import { setupHudStatHandlers } from './hud-stat-handlers';
+import {
+  getAllApplicableEffects,
+  getEnrichedDescription,
+  getItemsByType,
+  prepareHudContext,
+  renderCachedTemplate,
+} from './hud-context';
 import { hudPanelConfig } from './hud-panel-constants';
+import { setupHudStatHandlers } from './hud-stat-handlers';
 import { debounce } from './hud-utils';
 
 /**
@@ -56,8 +56,7 @@ export class SwadePopout {
    */
   constructor(options: SwadePopoutOptions) {
     // Use centralized hudPanelConfig for template paths
-    this._template =
-      hudPanelConfig[options.panelType]?.template || options.template;
+    this._template = hudPanelConfig[options.panelType]?.template || options.template;
     this.context = {};
     this.options = options;
     this.actor = options.actor;
@@ -89,9 +88,7 @@ export class SwadePopout {
    */
   async _prepareContext(_options: any) {
     // Always get fresh actor data for context preparation
-    const freshActor = this.actor?.id
-      ? game.actors.get(this.actor.id) || this.actor
-      : this.actor;
+    const freshActor = this.actor?.id ? game.actors.get(this.actor.id) || this.actor : this.actor;
     // Ensure panel preparation methods use the fresh actor reference so live updates are reflected
     this.actor = freshActor;
     const context = await prepareHudContext(freshActor, this.options.token);
@@ -217,44 +214,31 @@ export class SwadePopout {
     // Attach shared stat handlers
     if (this.element && this.actor) {
       // Always get fresh actor data for stat handlers
-      const freshActor = this.actor?.id
-        ? game.actors.get(this.actor.id) || this.actor
-        : this.actor;
+      const freshActor = this.actor?.id ? game.actors.get(this.actor.id) || this.actor : this.actor;
       setupHudStatHandlers(
         this.element,
         freshActor,
         () => this.render(false, { animate: false }),
-        this.options.token ?? null,
+        this.options.token ?? null
       );
     }
 
     // Register an actor update hook to selectively refresh values inside this popout
     // Use a stored handler reference so we can remove it when closing the popout
     if (this.actor && !this._actorUpdateHandler) {
-      this._actorUpdateHandler = (
-        updatedActor: any,
-        _diff: any,
-        _options: any,
-        _userId: string,
-      ) => {
+      this._actorUpdateHandler = (updatedActor: any, _diff: any, _options: any, _userId: string) => {
         try {
-          if (
-            !updatedActor ||
-            updatedActor.id !== (this.actor && this.actor.id)
-          )
-            return;
+          if (!updatedActor || updatedActor.id !== (this.actor && this.actor.id)) return;
           // Prefer the actor document from game collection if possible
           const fresh = game.actors.get(updatedActor.id) || updatedActor;
           this._handleActorUpdate(fresh, _diff);
         } catch (err) {
           // swallow - don't break the HUD for update errors
-          // eslint-disable-next-line no-console
           console.error('SwadePopout actor update handler error', err);
         }
       };
       // The Foundry Hooks API is intentionally used here; the types mark this as deprecated
       // for the project's typings but runtime usage is correct. Suppress the deprecation linter.
-      // eslint-disable-next-line deprecation/deprecation
       Hooks.on('updateActor', this._actorUpdateHandler);
     }
 
@@ -293,11 +277,7 @@ export class SwadePopout {
    * @param {number} newStatus - The new equipment status value.
    * @param {string} itemType - The type of item (e.g., 'weapon', 'armor').
    */
-  private updateEquipStatusDisplay(
-    indicator: HTMLElement,
-    newStatus: number,
-    itemType: string,
-  ) {
+  private updateEquipStatusDisplay(indicator: HTMLElement, newStatus: number, itemType: string) {
     // Update the indicator text and tooltip based on new status
     let statusText = '';
     let tooltipText = '';
@@ -421,44 +401,16 @@ export class SwadePopout {
 
     const statusEffects =
       CONFIG.statusEffects
-        ?.filter((effect) =>
-          allowedConditions.includes(effect.id.toLowerCase()),
-        )
+        ?.filter((effect) => allowedConditions.includes(effect.id.toLowerCase()))
         .map(async (effect) => {
           // Check if this specific condition is active
-          const isActive =
-            this.actor?.effects?.some((e) => e.statuses?.has(effect.id)) ??
-            false;
+          const isActive = this.actor?.effects?.some((e) => e.statuses?.has(effect.id)) ?? false;
 
           // Enrich the description
-          let enrichedDescription = effect.description || '';
-          try {
-            if (
-              foundry?.applications?.ux?.TextEditor?.implementation &&
-              typeof foundry.applications.ux.TextEditor.implementation
-                .enrichHTML === 'function'
-            ) {
-              enrichedDescription =
-                await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-                  enrichedDescription,
-                  {},
-                );
-            } else if (
-              window.TextEditor &&
-              typeof window.TextEditor.enrichHTML === 'function'
-            ) {
-              // Fallback for older versions
-              enrichedDescription = await window.TextEditor.enrichHTML(
-                enrichedDescription,
-                {},
-              );
-            }
-          } catch (error) {
-            console.warn(
-              'SWADE HUD: Error enriching status effect description:',
-              error,
-            );
-          }
+          const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            effect.description || '',
+            {}
+          );
 
           return {
             ...effect,
@@ -513,32 +465,10 @@ export class SwadePopout {
 
     for (const effect of sheetEffects) {
       // Enrich the effect description
-      let enrichedDescription = effect.description || '';
-      try {
-        if (
-          foundry?.applications?.ux?.TextEditor?.implementation &&
-          typeof foundry.applications.ux.TextEditor.implementation
-            .enrichHTML === 'function'
-        ) {
-          enrichedDescription =
-            await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-              enrichedDescription,
-              {},
-            );
-        } else if (
-          window.TextEditor &&
-          typeof window.TextEditor.enrichHTML === 'function'
-        ) {
-          // Fallback for older versions
-          enrichedDescription = await window.TextEditor.enrichHTML(
-            enrichedDescription,
-            {},
-          );
-        }
-      } catch (error) {
-        console.warn('SWADE HUD: Error enriching effect description:', error);
-      }
 
+      const enrichedDescription = foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        effect.description || ''
+      );
       const isEmbedded = effect.parent === this.actor;
       const effectData: EffectData = {
         id: effect.id,
@@ -605,15 +535,9 @@ export class SwadePopout {
       if (!arcaneBackgrounds[ab]) {
         arcaneBackgrounds[ab] = {
           valuePath: `system.powerPoints.${ab}.value`,
-          value: foundry.utils.getProperty(
-            this.actor,
-            `system.powerPoints.${ab}.value`,
-          ),
+          value: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.value`),
           maxPath: `system.powerPoints.${ab}.max`,
-          max: foundry.utils.getProperty(
-            this.actor,
-            `system.powerPoints.${ab}.max`,
-          ),
+          max: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.max`),
           powers: [],
         };
       }
@@ -624,7 +548,7 @@ export class SwadePopout {
       entry.powers.sort((a, b) => a.sort - b.sort);
     }
     // For template compatibility, convert arcaneBackgrounds to groupedPowers and powerPoints
-    const groupedPowers: { [key: string]: any[] } = {};
+    const groupedPowers: Record<string, any[]> = {};
     const powerPoints: Record<string, { value: number; max: number }> = {};
 
     // Ensure context.system.powerPoints exists and copy entries so templates that
@@ -635,8 +559,7 @@ export class SwadePopout {
 
     Object.entries(arcaneBackgrounds).forEach(([ab, data]) => {
       // Display key: capitalize first letter unless 'general'
-      const displayKey =
-        ab === 'general' ? 'General' : ab.charAt(0).toUpperCase() + ab.slice(1);
+      const displayKey = ab === 'general' ? 'General' : ab.charAt(0).toUpperCase() + ab.slice(1);
       groupedPowers[displayKey] = data.powers;
       powerPoints[displayKey] = { value: data.value, max: data.max };
       // Set the lowercase key in context.system.powerPoints so data-stat-paths like
@@ -705,8 +628,7 @@ export class SwadePopout {
     // Ensure compatibility with template expectations
     if (!context.system) context.system = {};
     if (!context.system.details) context.system.details = {};
-    if (!context.system.details.biography)
-      context.system.details.biography = {};
+    if (!context.system.details.biography) context.system.details.biography = {};
     context.system.details.biography.enrichedValue = enrichedBiography;
     context.system.details.enrichedNotes = enrichedNotes;
     return {
@@ -739,11 +661,7 @@ export class SwadePopout {
     }
 
     // Setup action button listeners for all panels
-    setupHudActionButtonListeners(
-      this.element,
-      this.actor,
-      this.options.hudInstance,
-    );
+    setupHudActionButtonListeners(this.element, this.actor, this.options.hudInstance);
 
     // All stat click logic is handled centrally by setupHudStatHandlers
     // (bennies, conviction, pace, power points, soak, incapacitated, etc)
@@ -788,12 +706,7 @@ export class SwadePopout {
         el.parentNode?.replaceChild(clone, el);
       } catch (err) {
         // Non-fatal - continue cleaning other nodes
-        // eslint-disable-next-line no-console
-        console.warn(
-          'SWADE HUD: cleanupEventListeners failed for node',
-          node,
-          err,
-        );
+        console.warn('SWADE HUD: cleanupEventListeners failed for node', node, err);
       }
     });
   }
@@ -845,11 +758,7 @@ export class SwadePopout {
       if (itemId && this.actor) {
         const item = this.actor.items.get(itemId);
         if (item) {
-          this.updateEquipStatusDisplay(
-            indicator as HTMLElement,
-            item.system.equipStatus || 0,
-            item.type,
-          );
+          this.updateEquipStatusDisplay(indicator as HTMLElement, item.system.equipStatus || 0, item.type);
         }
       }
 
@@ -888,9 +797,7 @@ export class SwadePopout {
         event.preventDefault();
         event.stopPropagation();
 
-        const itemElement = (indicator as HTMLElement).closest(
-          '.swadehud-item',
-        );
+        const itemElement = (indicator as HTMLElement).closest('.swadehud-item');
         if (!itemElement || !this.actor) return;
 
         const itemId = itemElement.getAttribute('data-item-id');
@@ -982,11 +889,7 @@ export class SwadePopout {
           try {
             await item.update({ 'system.equipStatus': newStatus });
             // Update the display
-            this.updateEquipStatusDisplay(
-              indicator as HTMLElement,
-              newStatus,
-              item.type,
-            );
+            this.updateEquipStatusDisplay(indicator as HTMLElement, newStatus, item.type);
           } catch (error) {
             console.error('SWADE HUD: Error updating equip status:', error);
           }
@@ -1007,15 +910,12 @@ export class SwadePopout {
 
   private setupConditionsPanelListeners(html: HTMLElement) {
     // Handle condition toggles
-    const conditionToggles = html.querySelectorAll(
-      '.swadehud-condition-toggle-icon',
-    );
+    const conditionToggles = html.querySelectorAll('.swadehud-condition-toggle-icon');
     conditionToggles.forEach((toggle) => {
       const statusId = (toggle as HTMLElement).dataset.statusId;
       if (statusId && this.actor) {
         // Set initial active state
-        const isActive =
-          this.actor.effects?.some((e) => e.statuses?.has(statusId)) ?? false;
+        const isActive = this.actor.effects?.some((e) => e.statuses?.has(statusId)) ?? false;
         if (isActive) {
           toggle.classList.add('active');
         } else {
@@ -1028,14 +928,10 @@ export class SwadePopout {
         const statusId = (toggle as HTMLElement).dataset.statusId;
         if (statusId && this.actor) {
           try {
-            const isActive =
-              this.actor.effects?.some((e) => e.statuses?.has(statusId)) ??
-              false;
+            const isActive = this.actor.effects?.some((e) => e.statuses?.has(statusId)) ?? false;
             if (isActive) {
               // Remove the condition
-              const effect = this.actor.effects.find((e) =>
-                e.statuses?.has(statusId),
-              );
+              const effect = this.actor.effects.find((e) => e.statuses?.has(statusId));
               if (effect) {
                 await effect.delete();
                 // Update visual state only
@@ -1065,9 +961,7 @@ export class SwadePopout {
         if (this.actor) {
           try {
             // Remove all status effects
-            const effectsToDelete = this.actor.effects.filter(
-              (e) => e.statuses?.size > 0,
-            );
+            const effectsToDelete = this.actor.effects.filter((e) => e.statuses?.size > 0);
             for (const effect of effectsToDelete) {
               if (effect) {
                 await effect.delete();
@@ -1093,9 +987,7 @@ export class SwadePopout {
       }
     }, 100);
     if (!html) {
-      console.error(
-        'SWADE HUD: setupEffectsPanelListeners called with undefined html',
-      );
+      console.error('SWADE HUD: setupEffectsPanelListeners called with undefined html');
       return;
     }
 
@@ -1116,21 +1008,14 @@ export class SwadePopout {
       }
       // Fallback: try to find by name (strip duration text)
       if (!effect) {
-        const effectName = (
-          toggle.closest('.swadehud-item')?.querySelector('.swadehud-item-name')
-            ?.textContent || ''
-        )
+        const effectName = (toggle.closest('.swadehud-item')?.querySelector('.swadehud-item-name')?.textContent || '')
           .replace(/\s*Rounds:\s*\d+$/, '')
           .trim();
         if (effectName) {
-          effect = Array.from(this.actor.effects).find(
-            (e: any) => e.name === effectName,
-          );
+          effect = Array.from(this.actor.effects).find((e: any) => e.name === effectName);
           if (!effect) {
             for (const item of this.actor.items) {
-              effect = Array.from(item.effects || []).find(
-                (e: any) => e.name === effectName,
-              );
+              effect = Array.from(item.effects || []).find((e: any) => e.name === effectName);
               if (effect) break;
             }
           }
@@ -1142,10 +1027,7 @@ export class SwadePopout {
         const isActive = !effect.disabled;
         toggle.classList.toggle('active', isActive);
         const effectName = effect.name || effect.label;
-        toggle.setAttribute(
-          'title',
-          effect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`,
-        );
+        toggle.setAttribute('title', effect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`);
       }
 
       // Always attach the event listener
@@ -1161,22 +1043,14 @@ export class SwadePopout {
           }
         }
         if (!effect) {
-          const effectName = (
-            toggle
-              .closest('.swadehud-item')
-              ?.querySelector('.swadehud-item-name')?.textContent || ''
-          )
+          const effectName = (toggle.closest('.swadehud-item')?.querySelector('.swadehud-item-name')?.textContent || '')
             .replace(/\s*Rounds:\s*\d+$/, '')
             .trim();
           if (effectName) {
-            effect = Array.from(this.actor.effects).find(
-              (e: any) => e.name === effectName,
-            );
+            effect = Array.from(this.actor.effects).find((e: any) => e.name === effectName);
             if (!effect) {
               for (const item of this.actor.items) {
-                effect = Array.from(item.effects || []).find(
-                  (e: any) => e.name === effectName,
-                );
+                effect = Array.from(item.effects || []).find((e: any) => e.name === effectName);
                 if (effect) break;
               }
             }
@@ -1199,36 +1073,23 @@ export class SwadePopout {
 
           // Update all effect toggles visually, including related statuses
           setTimeout(() => {
-            const currentToggleIcons = html.querySelectorAll(
-              '.swadehud-effect-toggle-icon',
-            );
+            const currentToggleIcons = html.querySelectorAll('.swadehud-effect-toggle-icon');
             currentToggleIcons.forEach((icon) => {
-              const itemEl = icon.closest(
-                '.swadehud-item',
-              ) as HTMLElement | null;
+              const itemEl = icon.closest('.swadehud-item') as HTMLElement | null;
               if (!itemEl || !itemEl.dataset.effectId) return;
               const iconEffectId = itemEl.dataset.effectId;
               // Find the current effect state
-              let currentEffect = this.actor.effects?.find(
-                (e: any) => e._id === iconEffectId,
-              );
+              let currentEffect = this.actor.effects?.find((e: any) => e._id === iconEffectId);
               if (!currentEffect) {
                 for (const item of this.actor.items) {
-                  currentEffect = item.effects?.find(
-                    (e: any) => e._id === iconEffectId,
-                  );
+                  currentEffect = item.effects?.find((e: any) => e._id === iconEffectId);
                   if (currentEffect) break;
                 }
               }
               if (currentEffect) {
-                (icon as HTMLElement).classList.toggle(
-                  'active',
-                  !currentEffect.disabled,
-                );
+                (icon as HTMLElement).classList.toggle('active', !currentEffect.disabled);
                 const effectName = currentEffect.name || currentEffect.label;
-                (icon as HTMLElement).title = currentEffect.disabled
-                  ? `Enable ${effectName}`
-                  : `Disable ${effectName}`;
+                (icon as HTMLElement).title = currentEffect.disabled ? `Enable ${effectName}` : `Disable ${effectName}`;
               }
             });
             // Debounced HUD re-render to update all panels and statuses
@@ -1291,9 +1152,7 @@ export class SwadePopout {
 
       // Update the visual indicator
       const target = event.target as HTMLElement;
-      const indicator = target.closest(
-        '.swadehud-equip-indicator',
-      ) as HTMLElement;
+      const indicator = target.closest('.swadehud-equip-indicator') as HTMLElement;
       if (indicator) {
         this.updateEquipStatusDisplay(indicator, newStatus, item.type);
       }
@@ -1409,8 +1268,8 @@ export class SwadePopout {
     // Remove actor update hook if registered
     if (this._actorUpdateHandler) {
       try {
-        // eslint-disable-next-line deprecation/deprecation
         Hooks.off('updateActor', this._actorUpdateHandler);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         // ignore
       }
@@ -1431,9 +1290,7 @@ export class SwadePopout {
     try {
       // For each element that exposes a data-stat-path attribute, compute its new value
       // and update the textContent or value accordingly
-      const statEls = Array.from(
-        this.element.querySelectorAll('[data-stat-path]'),
-      ) as HTMLElement[];
+      const statEls = Array.from(this.element.querySelectorAll('[data-stat-path]')) as HTMLElement[];
       for (const el of statEls) {
         const path = el.getAttribute('data-stat-path');
         if (!path) continue;
@@ -1445,62 +1302,41 @@ export class SwadePopout {
         if (newVal === undefined) {
           // PowerPoints keys sometimes use display case in templates (e.g., 'General').
           // Detect 'system.powerPoints.<Key>...' via string parsing and try lowercase/fallback keys.
-          if (
-            typeof path === 'string' &&
-            path.startsWith('system.powerPoints.')
-          ) {
+          if (typeof path === 'string' && path.startsWith('system.powerPoints.')) {
             const after = path.slice('system.powerPoints.'.length);
             const key = after.split('.')[0] ?? '';
             if (key.toLowerCase() === 'general') {
               const rest = path.slice(`system.powerPoints.${key}`.length);
               const altPath = `system.powerPoints.${key.toLowerCase()}${rest}`;
-              newVal =
-                foundry.utils.getProperty(baseSource, altPath) ??
-                foundry.utils.getProperty(freshActor, altPath);
+              newVal = foundry.utils.getProperty(baseSource, altPath) ?? foundry.utils.getProperty(freshActor, altPath);
               if (newVal === undefined && freshActor?.system?.powerPoints) {
                 const ppObj = freshActor.system.powerPoints;
-                const foundKey = Object.keys(ppObj).find(
-                  (k) => k.toLowerCase() === key.toLowerCase(),
-                );
+                const foundKey = Object.keys(ppObj).find((k) => k.toLowerCase() === key.toLowerCase());
                 if (foundKey) {
                   const altPath2 = `system.powerPoints.${foundKey}${rest}`;
                   newVal =
-                    foundry.utils.getProperty(baseSource, altPath2) ??
-                    foundry.utils.getProperty(freshActor, altPath2);
+                    foundry.utils.getProperty(baseSource, altPath2) ?? foundry.utils.getProperty(freshActor, altPath2);
                 }
               }
             }
           }
         }
         // As a last resort, try on the full actor object (non-system root)
-        if (newVal === undefined)
-          newVal = foundry.utils.getProperty(freshActor, path);
+        if (newVal === undefined) newVal = foundry.utils.getProperty(freshActor, path);
 
         // If the path ends with '.value', prefer showing 'value/max' when a corresponding '.max' exists
         let display = newVal;
         if (typeof path === 'string' && path.endsWith('.value')) {
           const maxPath = path.slice(0, -'.value'.length) + '.max';
-          let maxVal =
-            foundry.utils.getProperty(baseSource, maxPath) ??
-            foundry.utils.getProperty(freshActor, maxPath);
+          let maxVal = foundry.utils.getProperty(baseSource, maxPath) ?? foundry.utils.getProperty(freshActor, maxPath);
           // If maxVal is undefined, try lowercase key fallback similar to above
-          if (
-            (maxVal === undefined || maxVal === null) &&
-            typeof path === 'string'
-          ) {
-            if (
-              path.startsWith('system.powerPoints.') &&
-              path.endsWith('.value')
-            ) {
-              const inside = path.slice(
-                'system.powerPoints.'.length,
-                -'.value'.length,
-              );
+          if ((maxVal === undefined || maxVal === null) && typeof path === 'string') {
+            if (path.startsWith('system.powerPoints.') && path.endsWith('.value')) {
+              const inside = path.slice('system.powerPoints.'.length, -'.value'.length);
               const key = inside.split('.')[0] ?? '';
               const altMaxPath = `system.powerPoints.${key.toLowerCase()}.max`;
               maxVal =
-                foundry.utils.getProperty(baseSource, altMaxPath) ??
-                foundry.utils.getProperty(freshActor, altMaxPath);
+                foundry.utils.getProperty(baseSource, altMaxPath) ?? foundry.utils.getProperty(freshActor, altMaxPath);
             }
           }
           if (maxVal !== undefined && maxVal !== null) {
@@ -1508,23 +1344,17 @@ export class SwadePopout {
           }
         }
         // Update element depending on element type
-        if (
-          el instanceof HTMLInputElement ||
-          el instanceof HTMLTextAreaElement
-        ) {
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
           (el as HTMLInputElement).value = String(display ?? '');
         } else {
           // If element contains a Font Awesome icon, preserve the <i> node and show numbers in a sibling span
           // Match a broad set of Font Awesome class variants (fa-solid, fa-bolt-lightning, fas, far, fab, etc.)
           // querySelector is marked deprecated in the project's fvtt typings but runtime usage is
           // intentional here; suppress the deprecation rule for this DOM lookup.
-          // eslint-disable-next-line deprecation/deprecation
           const icon = el.querySelector && el.querySelector('i[class*="fa"]');
           if (icon) {
             // Ensure there is a span for the numeric value
-            let valSpan = el.querySelector(
-              '.swadehud-stat-value',
-            ) as HTMLElement | null;
+            let valSpan = el.querySelector('.swadehud-stat-value') as HTMLElement | null;
             if (!valSpan) {
               valSpan = document.createElement('span');
               valSpan.className = 'swadehud-stat-value';
@@ -1536,18 +1366,13 @@ export class SwadePopout {
               if (node.nodeType === Node.TEXT_NODE) node.remove();
             }
             // Put a leading space then the numeric display to separate from the icon.
-            valSpan.textContent =
-              display !== undefined && display !== null
-                ? ` ${String(display)}`
-                : '';
+            valSpan.textContent = display !== undefined && display !== null ? ` ${String(display)}` : '';
           } else {
-            el.textContent =
-              display !== undefined && display !== null ? String(display) : '';
+            el.textContent = display !== undefined && display !== null ? String(display) : '';
           }
         }
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error('SwadePopout _handleActorUpdate error', err);
     }
   }

@@ -9,13 +9,9 @@ import SwadeActor from '../documents/actor/SwadeActor';
  * @param {SwadeActor | null} actor - The actor associated with the HUD.
  * @param {any} _hudInstance - The HUD instance (optional, for context).
  */
-export function setupHudActionButtonListeners(
-  popout: HTMLElement,
-  actor: SwadeActor | null,
-  _hudInstance: any,
-) {
+export function setupHudActionButtonListeners(popout: HTMLElement, actor: SwadeActor | null, _hudInstance: any) {
   // Get SWADE's ItemChatCardHelper
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+
   const ItemChatCardHelper = game.swade?.itemChatCardHelper;
 
   // Handle item expand/collapse and rolling
@@ -34,10 +30,7 @@ export function setupHudActionButtonListeners(
 
       const item = header.closest('.swadehud-item');
       if (!item) {
-        console.error(
-          'SWADE HUD: Could not find item element for header',
-          index,
-        );
+        console.error('SWADE HUD: Could not find item element for header', index);
         return;
       }
 
@@ -48,27 +41,13 @@ export function setupHudActionButtonListeners(
       if (clickedElement.classList.contains('swadehud-roll-icon')) {
         const rollType = (clickedElement as HTMLElement).dataset.type;
         const rollKey = (clickedElement as HTMLElement).dataset.key;
-        if (
-          rollType === 'attribute' &&
-          typeof actor?.rollAttribute === 'function' &&
-          rollKey
-        ) {
+        if (rollType === 'attribute' && typeof actor?.rollAttribute === 'function' && rollKey) {
           // Only allow valid attribute keys
-          const validAttributes = [
-            'agility',
-            'smarts',
-            'spirit',
-            'strength',
-            'vigor',
-          ];
+          const validAttributes = ['agility', 'smarts', 'spirit', 'strength', 'vigor'];
           if (validAttributes.includes(rollKey)) {
             actor.rollAttribute(rollKey as any);
           }
-        } else if (
-          rollType === 'skill' &&
-          typeof actor?.rollSkill === 'function' &&
-          rollKey
-        ) {
+        } else if (rollType === 'skill' && typeof actor?.rollSkill === 'function' && rollKey) {
           actor.rollSkill(rollKey);
         }
         return;
@@ -89,10 +68,7 @@ export function setupHudActionButtonListeners(
       }
 
       // If clicked on name, expand/collapse
-      if (
-        clickedElement.classList.contains('swadehud-item-name') ||
-        clickedElement.closest('.swadehud-item-name')
-      ) {
+      if (clickedElement.classList.contains('swadehud-item-name') || clickedElement.closest('.swadehud-item-name')) {
         // Default: expand/collapse
         item.classList.toggle('expanded');
         const isExpanded = item.classList.contains('expanded');
@@ -104,15 +80,9 @@ export function setupHudActionButtonListeners(
           let itemData: any = null;
           if (actor && typeof (actor as any).getOwnedItem === 'function') {
             itemData = (actor as any).getOwnedItem(itemId);
-          } else if (
-            actor?.items?.get &&
-            typeof actor.items.get === 'function'
-          ) {
+          } else if (actor?.items?.get && typeof actor.items.get === 'function') {
             itemData = actor.items.get(String(itemId)) ?? null;
-          } else if (
-            actor?.items?.find &&
-            typeof actor.items.find === 'function'
-          ) {
+          } else if (actor?.items?.find && typeof actor.items.find === 'function') {
             itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
           } else if (Array.isArray(actor?.items)) {
             itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
@@ -122,9 +92,7 @@ export function setupHudActionButtonListeners(
             // Enrich description asynchronously
             getEnrichedDescription(itemData)
               .then((enrichedDesc) => {
-                const descElement = item.querySelector(
-                  '.swadehud-item-description',
-                );
+                const descElement = item.querySelector('.swadehud-item-description');
                 if (descElement) {
                   descElement.innerHTML = enrichedDesc;
                 }
@@ -151,10 +119,7 @@ export function setupHudActionButtonListeners(
           itemData = (actor as any).getOwnedItem(itemId);
         } else if (actor?.items?.get && typeof actor.items.get === 'function') {
           itemData = actor.items.get(String(itemId)) ?? null;
-        } else if (
-          actor?.items?.find &&
-          typeof actor.items.find === 'function'
-        ) {
+        } else if (actor?.items?.find && typeof actor.items.find === 'function') {
           itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
         } else if (Array.isArray(actor?.items)) {
           itemData = actor.items.find((i: any) => i.id === itemId) ?? null;
@@ -164,9 +129,7 @@ export function setupHudActionButtonListeners(
           // Enrich description asynchronously
           getEnrichedDescription(itemData)
             .then((enrichedDesc) => {
-              const descElement = item.querySelector(
-                '.swadehud-item-description',
-              );
+              const descElement = item.querySelector('.swadehud-item-description');
               if (descElement) {
                 descElement.innerHTML = enrichedDesc;
               }
@@ -230,15 +193,12 @@ export function setupHudActionButtonListeners(
 
   // Handle chat buttons for showing item cards
   const chatButtons = popout.querySelectorAll(
-    '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat',
+    '.swadehud-chat, .swadehud-power-chat, .swadehud-edge-chat, .swadehud-hindrance-chat, .swadehud-ability-chat, .swadehud-action-chat'
   );
   chatButtons.forEach((btn) => {
     // Avoid attaching duplicate chat listeners
     if ((btn as any)._swadeHudChatListener) {
-      (btn as any).removeEventListener(
-        'click',
-        (btn as any)._swadeHudChatListener,
-      );
+      (btn as any).removeEventListener('click', (btn as any)._swadeHudChatListener);
     }
     const chatListener = debounce(async (ev: Event) => {
       (ev as Event).preventDefault();
@@ -251,14 +211,11 @@ export function setupHudActionButtonListeners(
           await item.show();
         } else {
           const chatData = await item.getChatData();
-          const content = await renderTemplate(
-            'systems/swade/templates/chat/item-card.hbs',
-            {
-              item: item,
-              data: chatData,
-              actor: actor,
-            },
-          );
+          const content = await renderTemplate('systems/swade/templates/chat/item-card.hbs', {
+            item: item,
+            data: chatData,
+            actor: actor,
+          });
 
           await ChatMessage.create({
             // user: game.user.id, // Removed invalid property

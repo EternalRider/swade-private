@@ -17,12 +17,7 @@ export class BaseCombat<
   Schema extends BaseCombat.Schema = BaseCombat.Schema,
   BaseData extends BaseCombat.BaseData = BaseCombat.BaseData,
   DerivedData extends BaseCombat.DerivedData = BaseCombat.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  SwadeCombat,
-  BaseData,
-  DerivedData
-> {
+> extends foundry.abstract.TypeDataModel<Schema, SwadeCombat, BaseData, DerivedData> {
   static override defineSchema() {
     return baseCombatSchema();
   }

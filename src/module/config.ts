@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import { AbilitySubType } from '../globals';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { RollModifierGroup } from '../interfaces/additional.interface';
@@ -276,7 +274,10 @@ export const SWADE: SwadeConfig = {
     damage: {
       name: 'SWADE.ModDamage',
       modifiers: {
-        calledHeadVitals: { label: 'SWADE.CalledShot.HeadOrVitals', value: '+4' },
+        calledHeadVitals: {
+          label: 'SWADE.CalledShot.HeadOrVitals',
+          value: '+4',
+        },
         weakness: { label: 'SWADE.Weakness', value: '+4' },
         resistance: { label: 'SWADE.Resistance', value: -4 },
         desperate2: { label: 'SWADE.DesperateAttack.2', value: -2 },
@@ -356,13 +357,7 @@ export const SWADE: SwadeConfig = {
     ],
     adventure: [],
     cards: [],
-    item: [
-      'system.description',
-      'system.notes',
-      'system.subtype',
-      'system.arcane',
-      'system.trapping',
-    ],
+    item: ['system.description', 'system.notes', 'system.subtype', 'system.arcane', 'system.trapping'],
     journalentry: ['pages'],
     macro: [],
     playlist: [],
@@ -432,7 +427,7 @@ export interface SwadeConfig {
     maxHandlingPenalty: number;
   };
   settingConfig: {
-    settings: Array<string>;
+    settings: string[];
   };
   diceConfig: {
     flags: Record<string, any>;
@@ -446,7 +441,7 @@ export interface SwadeConfig {
     regular: string;
     compendium: string;
   };
-  measuredTemplatePresets: Array<TemplateConfig>;
+  measuredTemplatePresets: TemplateConfig[];
   activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   rollModifiers: Record<string, RollModifierGroup>;
@@ -454,14 +449,14 @@ export interface SwadeConfig {
   scales: string[];
   chargeRechargeTypes: Record<string, string>;
   textSearch: {
-    scene: Array<string>;
-    rolltable: Array<string>;
-    playlist: Array<string>;
-    macro: Array<string>;
-    journalentry: Array<string>;
-    item: Array<string>;
-    cards: Array<string>;
-    adventure: Array<string>;
-    actor: Array<string>;
+    scene: string[];
+    rolltable: string[];
+    playlist: string[];
+    macro: string[];
+    journalentry: string[];
+    item: string[];
+    cards: string[];
+    adventure: string[];
+    actor: string[];
   };
 }

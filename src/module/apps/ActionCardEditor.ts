@@ -6,12 +6,9 @@ interface CardData {
   isJoker: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class ActionCardEditor extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class ActionCardEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor({ cards, ...options }: ActionCardEditorConfiguration) {
     super(options);
     this.#cards = cards;
@@ -26,7 +23,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     },
     position: {
       width: 600,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'action-card-editor', 'swade-application'],
     tag: 'form',
@@ -59,22 +56,19 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        deckName: this.cards.name,
-        cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
-        suitOptions: this.#getSuitOptions(),
-        cardValues: this.#getCardValues(),
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-regular fa-save',
-            label: 'SETTINGS.Save',
-          },
-        ],
-      },
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      deckName: this.cards.name,
+      cards: Array.from(this.cards.cards.values()).sort(this._sortCards),
+      suitOptions: this.#getSuitOptions(),
+      cardValues: this.#getCardValues(),
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-regular fa-save',
+          label: 'SETTINGS.Save',
+        },
+      ],
+    });
     return context;
   }
 
@@ -114,7 +108,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     this: ActionCardEditor,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     const data = foundry.utils.expandObject(formData.object);
     const cards = Object.entries(data.card) as [string, CardData][];
@@ -148,8 +142,8 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 
   private _sortCards(a: Card, b: Card) {
-    const suitA = a.system['suit'];
-    const suitB = b.system['suit'];
+    const suitA = a.system['suit'] ?? 0;
+    const suitB = b.system['suit'] ?? 0;
     const suit = suitB - suitA;
     if (suit !== 0) return suit;
     const cardA = a.value ?? 0;
@@ -158,24 +152,16 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     return card;
   }
 
-  static #onShowCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
+  static #onShowCard(this: ActionCardEditor, _event: PointerEvent, target: HTMLElement) {
     const id = target.dataset.id!;
     const card = this.cards.cards.get(id);
-    if (!card) return;
+    if (!card.currentFace?.img) return;
     new foundry.applications.apps.ImagePopout({
-      src: card.currentFace?.img!,
+      src: card.currentFace.img,
     }).render({ force: true });
   }
 
-  static async #onAddCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static async #onAddCard(this: ActionCardEditor, _event: PointerEvent, _target: HTMLElement) {
     const newCard = await CONFIG.Card.documentClass.create(
       {
         name: game.i18n.format('DOCUMENT.New', {
@@ -191,7 +177,7 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
         face: 0,
         origin: this.cards.id,
       },
-      { parent: this.cards },
+      { parent: this.cards }
     );
     if (newCard) {
       await this.render({ force: true });
@@ -199,12 +185,8 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
     }
   }
 
-  static async #onDeleteCard(
-    this: ActionCardEditor,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
-    const card = this.cards.cards.get(target.dataset.id);
+  static async #onDeleteCard(this: ActionCardEditor, _event: PointerEvent, target: HTMLElement) {
+    const card = this.cards.cards.get(target.dataset.id!);
     if (!card) return;
     const text = game.i18n.format('SWADE.DeleteEmbeddedCardPrompt', {
       card: card.name,
@@ -222,7 +204,6 @@ export default class ActionCardEditor extends HandlebarsApplicationMixin(
   }
 }
 
-export interface ActionCardEditorConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+export interface ActionCardEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   cards: Cards;
 }

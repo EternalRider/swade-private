@@ -35,13 +35,10 @@ export default class SwadeUser extends User {
   async spendBenny() {
     if (this.isGM) {
       if (this.bennies <= 0) return false;
-      const message = await foundry.applications.handlebars.renderTemplate(
-        CONFIG.SWADE.bennies.templates.spend,
-        {
-          target: game.user,
-          speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
-        },
-      );
+      const message = await foundry.applications.handlebars.renderTemplate(CONFIG.SWADE.bennies.templates.spend, {
+        target: game.user,
+        speaker: CONFIG.ChatMessage.documentClass.getSpeaker(),
+      });
       const chatData = {
         content: message,
       };
@@ -59,13 +56,7 @@ export default class SwadeUser extends User {
       Hooks.call('swadeSpendGameMasterBenny', this);
 
       if (!!game.dice3d && (await shouldShowBennyAnimation())) {
-        game.dice3d.showForRoll(
-          await new Roll('1dB').evaluate(),
-          game.user!,
-          true,
-          null,
-          false,
-        );
+        game.dice3d.showForRoll(await new Roll('1dB').evaluate(), game.user!, true, null, false);
       }
 
       return true;
@@ -108,22 +99,19 @@ export default class SwadeUser extends User {
     } else if (this.character) {
       await this.character.refreshBennies(notify);
     }
-    ui.players?.render(true);
+    ui.players?.render({ force: true });
   }
 
   protected override async _onUpdate(
     changed: foundry.documents.BaseUser.UpdateData,
     options: User.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     await super._onUpdate(changed, options, userId);
 
     // If the user is a gm and their bennies were changed, re-render the players display
-    if (
-      this.isGM &&
-      foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined
-    )
-      ui.players.render(true);
+    if (this.isGM && foundry.utils.getProperty(changed, 'flags.swade.bennies') !== undefined)
+      ui.players.render({ force: true });
   }
 }
 
@@ -134,7 +122,7 @@ export interface DsnCustomWildDieColors {
   edgeColor: string;
 }
 export interface DsnCustomWildDieOptions {
-  texture: Array<string>;
+  texture: string[];
   material: 'plastic' | 'metal' | 'glass' | 'wood' | 'chrome';
   font: string;
 }

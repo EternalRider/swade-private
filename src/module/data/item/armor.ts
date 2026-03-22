@@ -1,20 +1,12 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
-import {
-  actions,
-  activities,
-  arcaneDevice,
-  category,
-  equippable,
-  favorite,
-  grantEmbedded,
-} from './common';
+import { actions, activities, arcaneDevice, category, equippable, favorite, grantEmbedded } from './common';
 import {
   Actions,
   Activities,
@@ -27,7 +19,8 @@ import {
 
 declare namespace ArmorData {
   interface Schema
-    extends SwadePhysicalItemData.Schema,
+    extends
+      SwadePhysicalItemData.Schema,
       Equippable,
       ArcaneDevice,
       Actions,
@@ -78,11 +71,7 @@ declare namespace ArmorData {
   interface BaseData extends SwadePhysicalItemData.BaseData {}
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
 }
-class ArmorData extends SwadePhysicalItemData<
-  ArmorData.Schema,
-  ArmorData.BaseData,
-  ArmorData.DerivedData
-> {
+class ArmorData extends SwadePhysicalItemData<ArmorData.Schema, ArmorData.BaseData, ArmorData.DerivedData> {
   static override defineSchema(): ArmorData.Schema {
     const fields = foundry.data.fields;
     return {
@@ -119,7 +108,7 @@ class ArmorData extends SwadePhysicalItemData<
           }),
           enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
         },
-        { label: 'SWADE.Energy.Label' },
+        { label: 'SWADE.Energy.Label' }
       ),
       mods: new fields.SchemaField({
         value: new fields.NumberField({
@@ -161,15 +150,13 @@ class ArmorData extends SwadePhysicalItemData<
   }
 
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions>
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     for (const [location, covered] of Object.entries(this.locations)) {
       if (!covered) continue;
       chips.push({
-        text: game.i18n.localize(
-          `SWADE.${location.charAt(0).toUpperCase() + location.slice(1)}`,
-        ),
+        text: game.i18n.localize(`SWADE.${location.charAt(0).toUpperCase() + location.slice(1)}`),
       });
     }
     if (this.isReadied) {
@@ -195,23 +182,17 @@ class ArmorData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.notes ?? '',
-          enrichOptions,
-        ),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
         title: game.i18n.localize('SWADE.Notes'),
-      },
+      }
     );
     return chips;
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      ArmorData.Schema,
-      Item<'armor'>
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<ArmorData.Schema, Item<'armor'>>,
     options: Item.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -223,8 +204,8 @@ class ArmorData extends SwadePhysicalItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -232,18 +213,10 @@ class ArmorData extends SwadePhysicalItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/armor-embeds.hbs',
-      ['item-embed', 'armor'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/armor-embeds.hbs', ['item-embed', 'armor']);
   }
 }
 

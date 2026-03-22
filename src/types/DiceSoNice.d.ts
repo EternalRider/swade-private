@@ -23,10 +23,10 @@ export declare class Dice3D {
     roll: Roll,
     user?: User,
     synchronize?: boolean,
-    whisper?: Array<{ id: string } | string> | null,
+    whisper?: ({ id: string } | string)[] | null,
     blind?: boolean,
     chatMessageID?: string,
-    speaker?: ChatMessage['speaker'],
+    speaker?: ChatMessage['speaker']
   ): Promise<boolean>;
 
   /**
@@ -43,8 +43,8 @@ export declare class Dice3D {
     data: Dice3DShowData,
     user?: User,
     synchronize?: boolean,
-    whisper?: Array<{ id: string } | string> | null,
-    blind?: boolean,
+    whisper?: ({ id: string } | string)[] | null,
+    blind?: boolean
   ): Promise<boolean>;
 
   /**
@@ -73,10 +73,7 @@ export declare class Dice3D {
    * @param data The informations on the new dice preset (see below)
    * @param shape should be explicit when using a custom die term. Supported shapes are d2,d4,d6,d8,d10,d12,d20
    */
-  addDicePreset(
-    data: DicePresetData,
-    shape?: 'd2' | 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20',
-  ): void;
+  addDicePreset(data: DicePresetData, shape?: 'd2' | 'd4' | 'd6' | 'd8' | 'd10' | 'd12' | 'd20'): void;
 }
 
 interface Dice3DExports {
@@ -91,18 +88,18 @@ interface Dice3DExports {
 }
 
 interface Dice3DShowData {
-  throws: Array<Dice3DThrows>;
+  throws: Dice3DThrows[];
 }
 
 interface Dice3DThrows {
-  dice: Array<DiceResult>;
+  dice: DiceResult[];
 }
 
 interface DiceResult {
   result: number;
   resultLabel: number | string;
   type: string;
-  vectors: Array<unknown>;
+  vectors: unknown[];
   options: unknown;
 }
 
@@ -110,7 +107,7 @@ interface DicePresetData {
   // should be a registered dice term
   type: string;
   // contains either string (Unicode) or a path to a texture (png, gif, jpg, webp)
-  labels: Array<string>;
+  labels: string[];
   //should be a system ID previously registered
   system: string;
   // is the name of a colorset (either a custom one or from the DsN colorset list)
@@ -120,7 +117,7 @@ interface DicePresetData {
   //  is the scale of the font size (default: 1). This setting overwrite the colorset fontScale setting
   fontScale?: number;
   //is an array of bumpMap textures that should follow the exact same order as labels
-  bumpMaps?: Array<string>;
+  bumpMaps?: string[];
   // is an object with the min and max value on the die
   values?: { min: number; max: number };
 }
@@ -142,7 +139,7 @@ interface DiceColorsetData {
   edge: string;
   //An array of ID, or a single ID of the texture to use if "None / Auto (Theme)" is selected in the settings.
   //If it is a custom texture, make sure to call this function after the Promise from "addTexture" is resolved.
-  texture: Array<string>;
+  texture: string[];
   // ID of the material to use if "Auto (Theme)" is selected in the settings. Supported values are plastic, metal, glass, wood and chrome
   material: 'plastic' | 'metal' | 'glass' | 'wood' | 'chrome';
   // is the name of the font family. This can be a Webfont too. (ex: Arial, monospace, etc)

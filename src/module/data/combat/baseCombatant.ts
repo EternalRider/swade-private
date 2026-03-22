@@ -30,35 +30,23 @@ export declare namespace BaseCombatantModel {
 export class BaseCombatantModel<
   Schema extends BaseCombatantModel.Schema = BaseCombatantModel.Schema,
   BaseData extends BaseCombatantModel.BaseData = BaseCombatantModel.BaseData,
-  DerivedData extends
-    BaseCombatantModel.DerivedData = BaseCombatantModel.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  SwadeCombatant,
-  BaseData,
-  DerivedData
-> {
+  DerivedData extends BaseCombatantModel.DerivedData = BaseCombatantModel.DerivedData,
+> extends foundry.abstract.TypeDataModel<Schema, SwadeCombatant, BaseData, DerivedData> {
   static override defineSchema() {
     return baseCombatantSchema();
   }
 
   override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      Schema,
-      SwadeCombatant
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, SwadeCombatant>,
     options: Combatant.Database.PreUpdateOptions,
-    user: User,
+    user: User
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
 
     const combatants = game?.combat?.combatants.size ?? 0;
-    const tokenID =
-      data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
-    const tokenIndex =
-      canvas.tokens?.controlled.map((t) => t.id).indexOf(tokenID as string) ??
-      0;
+    const tokenID = data.tokenId instanceof TokenDocument ? data.tokenId.id : data.tokenId;
+    const tokenIndex = canvas.tokens?.controlled.map((t) => t.id).indexOf(tokenID as string) ?? 0;
     const sortValue = tokenIndex + combatants;
     this.updateSource({
       firstRound: this.parent.combat?.round,
@@ -68,21 +56,14 @@ export class BaseCombatantModel<
   }
 
   override _onUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        Schema,
-        SwadeCombatant
-      >
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<Schema, SwadeCombatant>>,
     options: Combatant.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     super._onUpdate(changed, options, userId);
     const hasCardChanged =
-      foundry.utils.hasProperty(changed, 'system.cardValue') ||
-      foundry.utils.hasProperty(changed, 'system.suitValue');
-    const holdRemoved =
-      foundry.utils.getProperty(changed, 'system.-=roundHeld') === null;
+      foundry.utils.hasProperty(changed, 'system.cardValue') || foundry.utils.hasProperty(changed, 'system.suitValue');
+    const holdRemoved = foundry.utils.getProperty(changed, 'system.-=roundHeld') === null;
     if (hasCardChanged && !holdRemoved && game.userId === userId) {
       this.handOutBennies();
     }
@@ -101,8 +82,7 @@ export class BaseCombatantModel<
     await this.#createJokersWildMessage();
     // TODO: This is actually going to be a collection, rather than an array
     const combatants = this.parent.parent!.combatants;
-    const isTokenHostile =
-      this.parent.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+    const isTokenHostile = this.parent.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
     //Give bennies to PCs
     if (this.parent.actor?.type === 'character') {
       await this.#friendlyBennies(combatants);
@@ -118,16 +98,13 @@ export class BaseCombatantModel<
     await this.#triggerBennies(pcs);
   }
 
-  async #adversaryBennies(
-    combatants: foundry.utils.Collection<SwadeCombatant>,
-  ) {
+  async #adversaryBennies(combatants: foundry.utils.Collection<SwadeCombatant>) {
     //give all GMs a benny
     const gmUsers = game.users!.filter((u) => u.active && u.isGM);
     for (const gm of gmUsers) await gm.getBenny();
     //give all enemy wildcards a benny
     const hostiles = combatants.filter((c) => {
-      const isHostile =
-        c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
+      const isHostile = c.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE;
       return c.actor?.type === 'npc' && isHostile && c.actor?.isWildcard;
     });
     await this.#triggerBennies(hostiles);
@@ -136,23 +113,16 @@ export class BaseCombatantModel<
   async #triggerBennies(combatants: SwadeCombatant[]) {
     for (const c of combatants) {
       if (c.actor?.isOwner) await c.actor?.getBenny();
-      else
-        game.swade.sockets.giveBenny(
-          [firstOwner(c.actor)?.id as string],
-          [c.actor?.uuid ?? ''],
-        );
+      else game.swade.sockets.giveBenny([firstOwner(c.actor)?.id as string], [c.actor?.uuid ?? '']);
     }
   }
 
   async #createJokersWildMessage() {
     await getDocumentClass('ChatMessage').create({
       author: game.userId,
-      content: await foundry.applications.handlebars.renderTemplate(
-        SWADE.bennies.templates.joker,
-        {
-          speaker: game.user,
-        },
-      ),
+      content: await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.joker, {
+        speaker: game.user,
+      }),
     });
   }
 }

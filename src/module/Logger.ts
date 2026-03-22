@@ -12,11 +12,7 @@ export class Logger {
     Error: 4,
   } as const;
 
-  static log({
-    msg,
-    level,
-    options: { force, toast, permanent, localize } = {},
-  }: LogMessage) {
+  static log({ msg, level, options: { force, toast, permanent, localize } = {} }: LogMessage) {
     const isDebugging = game.modules
       .get('_dev-mode')
       //@ts-expect-error adding an API to the module data is common practice
@@ -64,8 +60,7 @@ export class Logger {
       default:
         if (!force && !isDebugging) break;
         console.log(prefix, localize ? game.i18n.localize(msg) : msg);
-        if (toast)
-          ui.notifications.info(msg.toString(), { permanent, console: false });
+        if (toast) ui.notifications.info(msg.toString(), { permanent, console: false });
         break;
     }
   }
@@ -95,10 +90,7 @@ interface LogMessage {
   level: ValueOf<typeof Logger.LOG_LEVEL>;
 }
 
-interface LogMessageOptions
-  extends foundry.applications.ui.Notifications.NotifyOptions {
+interface LogMessageOptions extends foundry.applications.ui.Notifications.NotifyOptions {
   force?: boolean;
   toast?: boolean;
 }
-
-ui.notifications;

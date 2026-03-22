@@ -1,10 +1,7 @@
 import { constants } from '../../constants';
 
 export function splitTopSpeed(source: any) {
-  if (
-    Object.hasOwn(source, 'topspeed') &&
-    typeof source.topspeed === 'string'
-  ) {
+  if (Object.hasOwn(source, 'topspeed') && typeof source.topspeed === 'string') {
     const stringValue: string = source.topspeed;
     const match = stringValue.match(/^\d*/);
     if (Number.isNumeric(stringValue)) {
@@ -51,13 +48,11 @@ export function migrateDriver(source: any) {
     Object.defineProperty(source.driver, 'id', {
       configurable: true,
       get: () => {
-        foundry.utils.logCompatibilityWarning(
-          'The driver.id property has been replaced by the crew member list',
-          { since: '4.4', until: '5.1' },
-        );
-        return source.crew.members.find(
-          (m) => m.role === constants.CREW_ROLE.OPERATOR,
-        )?.uuid;
+        foundry.utils.logCompatibilityWarning('The driver.id property has been replaced by the crew member list', {
+          since: '4.4',
+          until: '5.1',
+        });
+        return source.crew.members.find((m) => m.role === constants.CREW_ROLE.OPERATOR)?.uuid;
       },
     });
   }

@@ -23,7 +23,6 @@ Automates ammunition usage. This is further controlled by weapon settings.
 - If both halves of the Shots counter are empty, the weapon won't use ammo. Otherwise, the system tries to match ammo options by name; if the ammo field is empty, it will suggest options from your inventory.
 
 - If Reload Procedure is set to **none**, using any trait roll will directly pull from the linked ammunition, bypassing the Shots counter.
-
   - If the ammo is a _gear_ type item, it will use the quantity.
 
   - If the ammo is a _consumable_ type item, it will use the charges.

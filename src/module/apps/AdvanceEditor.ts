@@ -3,7 +3,6 @@ import { constants } from '../constants';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { getRankFromAdvanceAsString } from '../util';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -28,10 +27,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   get advances() {
-    return foundry.utils.getProperty(
-      this.actor,
-      'system.advances.list',
-    ) as Collection<Advance>;
+    return foundry.utils.getProperty(this.actor, 'system.advances.list') as Collection<Advance>;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -41,7 +37,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     position: {
       width: 420,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'advance-editor', 'swade-application'],
     tag: 'form',
@@ -59,30 +55,23 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        advance: this.advance,
-        rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
-        advanceTypes: this.#getAdvanceTypes(),
-        owner: this.actor.isOwner,
-        notes:
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            this.advance.notes,
-            {
-              async: true,
-              secrets: this.actor.isOwner,
-            },
-          ),
-        buttons: [
-          {
-            type: 'submit',
-            icon: 'fa-solid fa-floppy-disk',
-            label: 'Save Changes',
-          },
-        ],
-      },
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      advance: this.advance,
+      rank: getRankFromAdvanceAsString(this.advance.sort ?? 0),
+      advanceTypes: this.#getAdvanceTypes(),
+      owner: this.actor.isOwner,
+      notes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.advance.notes, {
+        async: true,
+        secrets: this.actor.isOwner,
+      }),
+      buttons: [
+        {
+          type: 'submit',
+          icon: 'fa-solid fa-floppy-disk',
+          label: 'Save Changes',
+        },
+      ],
+    });
     return context;
   }
 
@@ -90,7 +79,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this: AdvanceEditor,
     event: SubmitEvent,
     _form: HTMLFormElement,
-    formData: FormDataExtended,
+    formData: foundry.applications.ux.FormDataExtended
   ) {
     const expanded = foundry.utils.expandObject(formData.object);
     const sortHasChanged = expanded.sort !== this.advance.sort;
@@ -104,10 +93,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     if (sortHasChanged) return this.#handleSortingChange(advance);
     // Normal update operation
     this.advances.set(advance.id, advance);
-    await this.actor.update(
-      { 'system.advances.list': this.advances.toJSON() },
-      { diff: false },
-    );
+    await this.actor.update({ 'system.advances.list': this.advances.toJSON() }, { diff: false });
     await this.render({ force: true });
     if (event.submitter) this.close();
   }
@@ -137,8 +123,7 @@ export class AdvanceEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 }
 
-export interface AdvanceEditorConfiguration
-  extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
+export interface AdvanceEditorConfiguration extends Partial<foundry.applications.api.ApplicationV2.Configuration> {
   advance: Advance;
   actor: SwadeActor;
 }

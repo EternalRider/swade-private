@@ -31,10 +31,7 @@ export default class PlayerBennyDisplay {
     //Create counter
     this.counter = document.createElement('span');
     this.counter.classList.add('bennies-count');
-    this.counter.addEventListener(
-      'mouseleave',
-      this.updateBennyCount.bind(this),
-    );
+    this.counter.addEventListener('mouseleave', this.updateBennyCount.bind(this));
     this.counter.addEventListener('mouseover', this.onMouseOver.bind(this));
 
     if (game.user?.isGM) {
@@ -96,9 +93,7 @@ export default class PlayerBennyDisplay {
       await user.refreshBennies(false);
     }
 
-    const npcWildcardsToRefresh = game.actors!.filter(
-      (a) => a.type === 'npc' && a.isWildcard,
-    );
+    const npcWildcardsToRefresh = game.actors!.filter((a) => a.type === 'npc' && a.isWildcard);
 
     const hardChoices = game.settings.get('swade', 'hardChoices');
     for (const actor of npcWildcardsToRefresh) {
@@ -107,14 +102,11 @@ export default class PlayerBennyDisplay {
     }
 
     if (game.settings.get('swade', 'notifyBennies')) {
-      const message = await foundry.applications.handlebars.renderTemplate(
-        SWADE.bennies.templates.refreshAll,
-        {},
-      );
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refreshAll, {});
       CONFIG.ChatMessage.documentClass.create({
         content: message,
       });
     }
-    ui.players?.render(true);
+    ui.players?.render({ force: true });
   }
 }

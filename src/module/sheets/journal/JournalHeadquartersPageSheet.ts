@@ -1,7 +1,8 @@
 import type { HeadquartersData } from '../../data/journal';
 
-export default class JournalHeadquartersPageSheet extends foundry.applications
-  .sheets.journal.JournalEntryPageHandlebarsSheet {
+export default class JournalHeadquartersPageSheet
+  extends foundry.applications.sheets.journal.JournalEntryPageHandlebarsSheet
+{
   static override DEFAULT_OPTIONS = {
     classes: ['headquarters-journal'],
     form: {

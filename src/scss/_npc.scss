@@ -1,3 +1,5 @@
+@use 'variables';
+
 body.theme-dark .swade.sheet.actor.npc,
 .swade.sheet.actor.npc.themed.theme-dark {
   --input-background: rgba(52, 63, 80, 1);
@@ -13,10 +15,10 @@ body.theme-light .swade.sheet.actor.npc,
 .swade.sheet.actor.npc {
   min-height: 240px;
   max-height: 740px;
-  
+
   min-width: 660px;
 
-  [data-application-part="sheet"] {
+  [data-application-part='sheet'] {
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -87,7 +89,7 @@ body.theme-light .swade.sheet.actor.npc,
 
     //Editor
     .editor {
-      border: $section-border;
+      border: variables.$section-border;
       border-top: none;
       width: 100%;
     }
@@ -122,7 +124,7 @@ body.theme-light .swade.sheet.actor.npc,
             align-items: center;
             margin: 0;
             line-height: var(--height);
-            margin-top: $small-spacing;
+            margin-top: variables.$small-spacing;
             flex-wrap: nowrap;
             flex-direction: row;
             border: none;
@@ -160,8 +162,7 @@ body.theme-light .swade.sheet.actor.npc,
               line-height: 27px;
               font-weight: 600;
               text-align: center;
-              background: url('/systems/swade/assets/icons/police-badge.svg')
-                no-repeat center;
+              background: url('/systems/swade/assets/icons/police-badge.svg') no-repeat center;
               background-size: cover;
               cursor: pointer;
               border: none;
@@ -172,9 +173,11 @@ body.theme-light .swade.sheet.actor.npc,
     }
 
     .quickaccess-list {
-      .gear-list, .powers-list {
-        .gear-card, .power-card {
-          border: $decorative-line;
+      .gear-list,
+      .powers-list {
+        .gear-card,
+        .power-card {
+          border: variables.$decorative-line;
           .card-header {
             background: rgba(0, 0, 0, 0.2);
             line-height: 20px;
@@ -200,7 +203,7 @@ body.theme-light .swade.sheet.actor.npc,
             grid-template-rows: 1fr;
             transition: grid-template-rows 250ms ease;
             > div {
-              border-top: $decorative-line;
+              border-top: variables.$decorative-line;
               background: rgba(255, 255, 255, 0.05);
               line-height: 18px;
               padding: 5px;
@@ -273,7 +276,7 @@ body.theme-light .swade.sheet.actor.npc,
 
   .grid-row {
     display: grid;
-    grid-gap: $grid-gap;
+    grid-gap: variables.$grid-gap;
     &.--grid-row-summary,
     &.--grid-row-npc-summary {
       grid-template-columns: 55% 45%;
@@ -302,14 +305,14 @@ body.theme-light .swade.sheet.actor.npc,
         line-height: 22px;
         overflow: hidden;
         border: 1px solid rgba(0, 0, 0, 0.5);
-        background: $header-text;
+        background: variables.$header-text;
         &:hover,
         &:focus {
-          background: $dark-grey;
+          background: variables.$dark-grey;
           text-shadow: none;
         }
         &.active {
-          background: $dark-grey;
+          background: variables.$dark-grey;
         }
       }
     }
@@ -317,7 +320,7 @@ body.theme-light .swade.sheet.actor.npc,
       display: none;
       input {
         width: 40px;
-        color: $light-pastel-blue;
+        color: variables.$light-pastel-blue;
         font-weight: bold;
         background: rgba(255, 255, 255, 0.2);
       }
@@ -356,7 +359,7 @@ body.theme-light .swade.sheet.actor.npc,
             text-indent: 5px;
           }
           .trapping {
-            padding-top: $small-spacing;
+            padding-top: variables.$small-spacing;
           }
           .power-description {
             line-height: 15px;
@@ -495,7 +498,7 @@ body.theme-light .swade.sheet.actor.npc,
   }
 
   .extra-gear-card {
-    border-bottom: $decorative-line;
+    border-bottom: variables.$decorative-line;
     padding-bottom: 2px;
     margin-bottom: 2px;
     .stats {
@@ -525,7 +528,7 @@ body.theme-light .swade.sheet.actor.npc,
     .counter {
       line-height: 25px;
       .seperator {
-        padding-top: $medium-spacing;
+        padding-top: variables.$medium-spacing;
         font-size: 30px;
         line-height: 25px;
       }
@@ -571,8 +574,8 @@ body.theme-light .swade.sheet.actor.npc,
         }
       }
       .gear-card {
-        margin: $small-spacing 0;
-        border: $decorative-line;
+        margin: variables.$small-spacing 0;
+        border: variables.$decorative-line;
         border-top-left-radius: 4px;
         .card-header {
           background: rgba(0, 0, 0, 0.2);
@@ -599,7 +602,7 @@ body.theme-light .swade.sheet.actor.npc,
           grid-template-rows: 1fr;
           transition: grid-template-rows 250ms ease;
           > div {
-            border-top: $decorative-line;
+            border-top: variables.$decorative-line;
             background: rgba(255, 255, 255, 0.05);
             line-height: 18px;
             padding: 5px;

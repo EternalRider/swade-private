@@ -82,10 +82,7 @@ export function convertRequirementsToList(source: PotentialSource<EdgeData>) {
           value: SWADE.ranks.indexOf(requirement),
         };
       }
-      if (
-        requirement === game.i18n.localize('SWADE.WildCard') ||
-        requirement === 'Wild Card'
-      ) {
+      if (requirement === game.i18n.localize('SWADE.WildCard') || requirement === 'Wild Card') {
         return {
           type: constants.REQUIREMENT_TYPE.WILDCARD,
           value: true,
@@ -128,7 +125,7 @@ export function migrateChargesToArray(source) {
   if (!source.charges?.charges || Array.isArray(source.charges.charges)) return;
 
   //Push all of the object entries into an array
-  const charges : ChargeData[] = [];
+  const charges: ChargeData[] = [];
   for (const charge of Object.values(source.charges.charges)) {
     charges.push(charge as ChargeData);
   }

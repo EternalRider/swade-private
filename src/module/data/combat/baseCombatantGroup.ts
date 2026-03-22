@@ -21,18 +21,10 @@ declare namespace BaseCombatantGroupModel {
 }
 
 class BaseCombatantGroupModel<
-  Schema extends
-    BaseCombatantGroupModel.Schema = BaseCombatantGroupModel.Schema,
-  BaseData extends
-    BaseCombatantGroupModel.BaseData = BaseCombatantGroupModel.BaseData,
-  DerivedData extends
-    BaseCombatantGroupModel.DerivedData = BaseCombatantGroupModel.DerivedData,
-> extends foundry.abstract.TypeDataModel<
-  Schema,
-  foundry.abstract.Document.Any,
-  BaseData,
-  DerivedData
-> {
+  Schema extends BaseCombatantGroupModel.Schema = BaseCombatantGroupModel.Schema,
+  BaseData extends BaseCombatantGroupModel.BaseData = BaseCombatantGroupModel.BaseData,
+  DerivedData extends BaseCombatantGroupModel.DerivedData = BaseCombatantGroupModel.DerivedData,
+> extends foundry.abstract.TypeDataModel<Schema, foundry.abstract.Document.Any, BaseData, DerivedData> {
   static override defineSchema() {
     return baseCombatantGroupSchema();
   }

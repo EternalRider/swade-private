@@ -1,15 +1,10 @@
-import { ActorMetadata, ItemMetadata, JournalMetadata } from '../../globals';
 import { Logger } from '../Logger';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 
 export class CompendiumTOC<
-  DocumentClass extends
-    | Actor.ImplementationClass
-    | Item.ImplementationClass
-    | JournalEntry.ImplementationClass,
-  RenderContext extends CompendiumTOCData &
-    foundry.applications.sidebar.apps.Compendium.RenderContext,
+  DocumentClass extends Actor.ImplementationClass | Item.ImplementationClass | JournalEntry.ImplementationClass,
+  RenderContext extends CompendiumTOCData & foundry.applications.sidebar.apps.Compendium.RenderContext,
   Configuration extends TOCApplicationOptions<CompendiumTOCMetadata> &
     foundry.applications.sidebar.apps.Compendium.Configuration,
 > extends foundry.applications.sidebar.apps.Compendium<
@@ -113,15 +108,7 @@ export class CompendiumTOC<
   protected override _initializeApplicationOptions(options) {
     options = super._initializeApplicationOptions(options);
     options.classes ??= [];
-    const toRemove = [
-      'tab',
-      'sidebar-tab',
-      'compendium-directory',
-      'directory',
-      'themed',
-      'theme-light',
-      'theme-dark',
-    ];
+    const toRemove = ['tab', 'sidebar-tab', 'compendium-directory', 'directory', 'themed', 'theme-light', 'theme-dark'];
     options.classes = options.classes.filter((c) => !toRemove.includes(c));
     return options;
   }
@@ -131,14 +118,11 @@ export class CompendiumTOC<
     const html = this.element;
     this.#dragDrop.forEach((d) => d.bind(html));
     this.#filters.forEach((f) => f.bind(html));
-    html
-      .querySelectorAll<HTMLDivElement>('.content')
-      .forEach((e) => (e.style.columnWidth = this.columnWidth));
+    html.querySelectorAll<HTMLDivElement>('.content').forEach((e) => (e.style.columnWidth = this.columnWidth));
     new ResizeObserver(this._onObserveResize.bind(this)).observe(html);
 
     const { colorScheme } = game.settings.get('core', 'uiConfig');
-    if (colorScheme.interface)
-      this.element.classList.remove('themed', `theme-${colorScheme.interface}`);
+    if (colorScheme.interface) this.element.classList.remove('themed', `theme-${colorScheme.interface}`);
   }
 
   override async _prepareContext(options) {
@@ -169,10 +153,7 @@ export class CompendiumTOC<
 
     if (this.isActor) {
       tocContext.actorCategories = Array.from(
-        this.collection.index.reduce(
-          (acc, actor) => acc.add(actor.system?.category ?? ''),
-          new Set(['']),
-        ),
+        this.collection.index.reduce((acc, actor) => acc.add(actor.system?.category ?? ''), new Set(['']))
       );
     }
     return foundry.utils.mergeObject(context, tocContext);
@@ -207,34 +188,22 @@ export class CompendiumTOC<
     this.render(true);
   }
 
-  static #onToggleSearchMode(
-    this: CompendiumTOC,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static #onToggleSearchMode(this: CompendiumTOC, _event: PointerEvent, _target: HTMLElement) {
     this.#fullTextSearch = !this.#fullTextSearch;
     this.render();
   }
 
-  static #onCreateDocument(
-    this: CompendiumTOC,
-    _event: PointerEvent,
-    _target: HTMLElement,
-  ) {
+  static #onCreateDocument(this: CompendiumTOC, _event: PointerEvent, _target: HTMLElement) {
     this.documentClass.createDialog(
       {},
       {
         renderSheet: true,
         pack: this.collection.metadata.id,
-      },
+      }
     );
   }
 
-  static async #onOpenDocument(
-    this: CompendiumTOC,
-    _event: PointerEvent,
-    target: HTMLElement,
-  ) {
+  static async #onOpenDocument(this: CompendiumTOC, _event: PointerEvent, target: HTMLElement) {
     const entryId = target?.closest('[data-entry-id]')?.dataset.entryId;
     const pageId = target?.closest('[data-page-id]')?.dataset.pageId;
     if (!entryId) return;
@@ -242,10 +211,8 @@ export class CompendiumTOC<
     if (pageId) options.pageId = pageId;
     const doc = await this.collection.getDocument(entryId);
     if (!doc) return;
-    if (doc.sheet instanceof Application)
-      await doc.sheet?._render(true, options);
-    else if (doc.sheet instanceof foundry.applications.api.ApplicationV2)
-      await doc.sheet.render({ force: true });
+    if (doc.sheet instanceof foundry.appv1.api.Application) await doc.sheet?._render(true, options);
+    else if (doc.sheet instanceof foundry.applications.api.ApplicationV2) await doc.sheet.render({ force: true });
     if (pageId) doc.sheet.goToPage(pageId);
   }
 
@@ -258,12 +225,7 @@ export class CompendiumTOC<
     });
   }
 
-  protected override _onSearchFilter(
-    _event: KeyboardEvent,
-    _query: string,
-    _rgx: RegExp,
-    html: HTMLElement,
-  ) {
+  protected override _onSearchFilter(_event: KeyboardEvent, _query: string, _rgx: RegExp, html: HTMLElement) {
     const selector = this.isJournal ? '.page' : '.toc-entry';
     const children = html.querySelectorAll<HTMLLIElement>(selector);
     const pack = game.packs.get(this.collection.metadata.id, { strict: true });
@@ -271,7 +233,7 @@ export class CompendiumTOC<
     const queryRaw = this.element.querySelector('[name="search"]')?.value ?? '';
     const query = foundry.applications.ux.SearchFilter.cleanQuery(queryRaw);
     const rgx = new RegExp(RegExp.escape(query), 'i');
-    let searchFields: Array<string> = [];
+    let searchFields: string[] = [];
     switch (this.collection.metadata.type) {
       case 'Actor':
         searchFields = CONFIG.SWADE.textSearch.actor;
@@ -286,9 +248,7 @@ export class CompendiumTOC<
         searchFields = CONFIG.SWADE.textSearch.item;
         break;
       case 'JournalEntry':
-        searchFields = CONFIG.SWADE.textSearch.journalentry.concat(
-          CONFIG.JournalEntry.compendiumIndexFields,
-        );
+        searchFields = CONFIG.SWADE.textSearch.journalentry.concat(CONFIG.JournalEntry.compendiumIndexFields);
         break;
       // case 'Macro':
       //   searchFields = CONFIG.SWADE.textSearch.macro;
@@ -321,11 +281,7 @@ export class CompendiumTOC<
         searchResults = searchResults.filter((i) => rgx.test(i.name));
       }
       for (const li of children) {
-        if (
-          searchResults.some((e) =>
-            [li.dataset.entryId, li.dataset.pageId].includes(e._id),
-          )
-        ) {
+        if (searchResults.some((e) => [li.dataset.entryId, li.dataset.pageId].includes(e._id))) {
           li.style.display = 'flex';
         } else {
           li.style.display = 'none';
@@ -344,7 +300,7 @@ export class CompendiumTOC<
   }
 
   protected async _groupActors(): Promise<CompendiumCategory[]> {
-    const collection = this.collection as CompendiumCollection<ActorMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'Actor'>;
     const documents = (await collection.getIndex({
       fields: [
         /** legacy data start */
@@ -360,9 +316,7 @@ export class CompendiumTOC<
         'prototypeToken.texture.scaleY',
       ],
     })) as Collection<ActorIndexEntry>;
-    const actors = documents.filter(
-      (doc) => doc.name !== CompendiumTOC.CF_ENTITY,
-    );
+    const actors = documents.filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY);
 
     const actorsByType: Record<string, ActorIndexEntry[]> = {};
     for (const actor of actors) {
@@ -387,19 +341,15 @@ export class CompendiumTOC<
   }
 
   protected async _groupItems(): Promise<CompendiumCategory[]> {
-    const collection = this.collection as CompendiumCollection<ItemMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'Item'>;
     const documents = await collection.getDocuments();
-    const items = documents.filter(
-      (doc) => doc.name !== CompendiumTOC.CF_ENTITY,
-    );
+    const items = documents.filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY);
 
     //set up category groups
     const categories: CompendiumCategory[] = [];
 
     //always group powers by type and then rank
-    const powers: Item.Stored<'power'>[] = items.filter(
-      (i) => i.type === 'power',
-    );
+    const powers: Item.Stored<'power'>[] = items.filter((i) => i.type === 'power');
     if (powers.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.power'),
@@ -413,9 +363,7 @@ export class CompendiumTOC<
         groups: this._groupEdges(edges),
       });
     }
-    const hindrances: Item.Stored<'hindrance'>[] = items.filter(
-      (i) => i.type === 'hindrance',
-    );
+    const hindrances: Item.Stored<'hindrance'>[] = items.filter((i) => i.type === 'hindrance');
     if (hindrances.length) {
       categories.push({
         category: game.i18n.localize('TYPES.Item.hindrance'),
@@ -425,9 +373,7 @@ export class CompendiumTOC<
 
     //sort all items by type
     const itemsByType: Record<string, Item.Stored[]> = {};
-    const leftovers = items.filter(
-      (i) => !['edge', 'power', 'hindrance'].includes(i.type),
-    );
+    const leftovers = items.filter((i) => !['edge', 'power', 'hindrance'].includes(i.type));
     for (const item of leftovers) {
       const type = item.type;
       if (!itemsByType[type]) itemsByType[type] = [];
@@ -442,9 +388,7 @@ export class CompendiumTOC<
       const typeLabel = game.i18n.localize(`TYPES.Item.${type}`);
 
       const [unCategorized, categorized] = items.partition(
-        (i) =>
-          i.canHaveCategory &&
-          !!foundry.utils.getProperty(i, 'system.category'),
+        (i) => i.canHaveCategory && !!foundry.utils.getProperty(i, 'system.category')
       );
 
       //handle the un-categorized things first, which are sorted by type
@@ -476,17 +420,13 @@ export class CompendiumTOC<
       .filter((cat) => cat.groups?.length || cat.entries?.length);
   }
 
-  protected _groupHindrances(
-    hindrances: Item.Stored<'hindrance'>[],
-  ): CompendiumEntry[] {
+  protected _groupHindrances(hindrances: Item.Stored<'hindrance'>[]): CompendiumEntry[] {
     return hindrances
       .map((hindrance) => {
         let suffix: string;
         if (hindrance.system.isMajor) {
           suffix = game.i18n.localize('SWADE.Major');
-        } else if (
-          hindrance.system.severity === constants.HINDRANCE_SEVERITY.MINOR
-        ) {
+        } else if (hindrance.system.severity === constants.HINDRANCE_SEVERITY.MINOR) {
           suffix = game.i18n.localize('SWADE.Minor');
         } else {
           suffix = `(${game.i18n.localize('SWADE.HindMajor')} / ${game.i18n.localize('SWADE.HindMinor')})`;
@@ -554,9 +494,7 @@ export class CompendiumTOC<
       }) as CompendiumGroup[];
   }
 
-  protected async _groupUnCategorized(
-    docs: Item.Stored[] | ActorIndexEntry[],
-  ): Promise<CompendiumEntry[]> {
+  protected async _groupUnCategorized(docs: Item.Stored[] | ActorIndexEntry[]): Promise<CompendiumEntry[]> {
     const mapped = docs.map(async (doc) => {
       const isItem = doc?.documentName === 'Item';
       if (isItem) {
@@ -580,7 +518,7 @@ export class CompendiumTOC<
   }
 
   protected async _getJournalEntries(): Promise<CompendiumEntry[]> {
-    const collection = this.collection as CompendiumCollection<JournalMetadata>;
+    const collection = this.collection as foundry.documents.collections.CompendiumCollection<'JournalEntry'>;
     const journals = await collection.getDocuments();
     const entries: CompendiumEntry[] = journals
       .filter((doc) => doc.name !== CompendiumTOC.CF_ENTITY)
@@ -607,10 +545,7 @@ export class CompendiumTOC<
     return entries;
   }
 
-  private _onObserveResize(
-    entries: ResizeObserverEntry[],
-    _observer: ResizeObserver,
-  ) {
+  private _onObserveResize(entries: ResizeObserverEntry[], _observer: ResizeObserver) {
     for (const entry of entries) {
       const content = entry.target.querySelector<HTMLElement>('.content');
       const parent = entry.target.querySelector<HTMLElement>('.window-content');
@@ -644,10 +579,7 @@ export class CompendiumTOC<
     return a.name.localeCompare(b.name);
   }
 
-  private _requestTokenImages(
-    actorId: string,
-    pack: string,
-  ): Promise<string[]> {
+  private _requestTokenImages(actorId: string, pack: string): Promise<string[]> {
     return new Promise((resolve, reject) => {
       game.socket.emit('requestTokenImages', actorId, { pack }, (result) => {
         if (result.error) return reject(new Error(result.error));
@@ -668,10 +600,7 @@ export class CompendiumTOC<
     //Priority 2: random token art
     else if (prototypeToken?.randomImg) {
       try {
-        [path] = await this._requestTokenImages(
-          actor._id,
-          this.collection.metadata.id,
-        );
+        [path] = await this._requestTokenImages(actor._id, this.collection.metadata.id);
       } catch (error) {
         Logger.error(error);
       }
@@ -693,15 +622,12 @@ export class CompendiumTOC<
   }
 
   private _actorIsWildcard(actor: ActorIndexEntry): boolean {
-    // eslint-disable-next-line deprecation/deprecation
     return actor.system?.wildcard || actor.data?.wildcard;
   }
 
   private _getCompendiumArt(actor: ActorIndexEntry): TokenArt {
     const pack = this.collection.metadata.id;
-    const art = game.swade.compendiumArt.map.get(
-      `Compendium.${pack}.${actor._id}`,
-    );
+    const art = game.swade.compendiumArt.map.get(`Compendium.${pack}.${actor._id}`);
     let path = '';
     let scale = 1;
     if (art) {
@@ -718,8 +644,7 @@ export class CompendiumTOC<
 }
 
 // TODO: Evaluate how much we care about keeping this
-interface CompendiumTOCData
-  extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
+interface CompendiumTOCData extends Partial<Compendium.Data<CompendiumTOCMetadata>> {
   isJournal: boolean;
   isActor: boolean;
   header: string;
@@ -756,10 +681,9 @@ export type CompendiumTOCMetadata = CompendiumCollection.Metadata & {
   type: 'Actor' | 'Item' | 'JournalEntry';
 };
 
-type TOCApplicationOptions<Metadata extends CompendiumCollection.Metadata> =
-  Compendium.Options<Metadata> & {
-    disclaimer?: string;
-  };
+type TOCApplicationOptions<Metadata extends CompendiumCollection.Metadata> = Compendium.Options<Metadata> & {
+  disclaimer?: string;
+};
 
 interface CompendiumCategory {
   category: string;

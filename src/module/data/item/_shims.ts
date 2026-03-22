@@ -9,35 +9,23 @@ export function actionProperties(data: any) {
     skill: {
       ...descriptor,
       get: () => {
-        foundry.utils.logCompatibilityWarning(
-          getReplacementMessage('skill', 'trait'),
-          options,
-        );
+        foundry.utils.logCompatibilityWarning(getReplacementMessage('skill', 'trait'), options);
         return data.actions.trait;
       },
       set: (skill: string) => {
-        foundry.utils.logCompatibilityWarning(
-          getReplacementMessage('skill', 'trait'),
-          options,
-        );
+        foundry.utils.logCompatibilityWarning(getReplacementMessage('skill', 'trait'), options);
         data.actions.trait = skill;
       },
     },
     skillMod: {
       ...descriptor,
       get: () => {
-        foundry.utils.logCompatibilityWarning(
-          getReplacementMessage('skillMod', 'traitMod'),
-          options,
-        );
+        foundry.utils.logCompatibilityWarning(getReplacementMessage('skillMod', 'traitMod'), options);
 
         return data.actions.traitMod;
       },
       set: (skillMod: string) => {
-        foundry.utils.logCompatibilityWarning(
-          getReplacementMessage('skill', 'traitMod'),
-          options,
-        );
+        foundry.utils.logCompatibilityWarning(getReplacementMessage('skill', 'traitMod'), options);
         data.actions.traitMod = skillMod;
       },
     },
@@ -48,34 +36,22 @@ export function actionProperties(data: any) {
       rof: {
         ...descriptor,
         get: () => {
-          foundry.utils.logCompatibilityWarning(
-            getReplacementMessage('rof', 'dice'),
-            options,
-          );
+          foundry.utils.logCompatibilityWarning(getReplacementMessage('rof', 'dice'), options);
           return action.dice;
         },
         set: (rof: number) => {
-          foundry.utils.logCompatibilityWarning(
-            getReplacementMessage('rof', 'dice'),
-            options,
-          );
+          foundry.utils.logCompatibilityWarning(getReplacementMessage('rof', 'dice'), options);
           action.dice = rof;
         },
       },
       shotsUsed: {
         ...descriptor,
         get: () => {
-          foundry.utils.logCompatibilityWarning(
-            getReplacementMessage('shotsUsed', 'resourcesUsed'),
-            options,
-          );
+          foundry.utils.logCompatibilityWarning(getReplacementMessage('shotsUsed', 'resourcesUsed'), options);
           return action.resourcesUsed;
         },
         set: (shots: number) => {
-          foundry.utils.logCompatibilityWarning(
-            getReplacementMessage('shotsUsed', 'resourcesUsed'),
-            options,
-          );
+          foundry.utils.logCompatibilityWarning(getReplacementMessage('shotsUsed', 'resourcesUsed'), options);
           action.resourcesUsed = shots;
         },
       },
@@ -84,14 +60,14 @@ export function actionProperties(data: any) {
         get: () => {
           foundry.utils.logCompatibilityWarning(
             'The skillOverride and dmgOverride properties have been combined into a new property named override',
-            options,
+            options
           );
           return action.override;
         },
         set: (skillOverride: string) => {
           foundry.utils.logCompatibilityWarning(
             'The skillOverride and dmgOverride properties have been combined into a new property named override',
-            options,
+            options
           );
           action.override = skillOverride;
         },
@@ -101,14 +77,14 @@ export function actionProperties(data: any) {
         get: () => {
           foundry.utils.logCompatibilityWarning(
             'The skillMod and dmgMod properties have been combined into a new property named modifier',
-            options,
+            options
           );
           return action.modifier;
         },
         set: (skillMod: string) => {
           foundry.utils.logCompatibilityWarning(
             'The skillMod and dmgMod properties have been combined into a new property named modifier',
-            options,
+            options
           );
           action.modifier = skillMod;
         },
@@ -118,14 +94,14 @@ export function actionProperties(data: any) {
         get: () => {
           foundry.utils.logCompatibilityWarning(
             'The skillOverride and dmgOverride properties have been combined into a new property named override',
-            options,
+            options
           );
           return action.override;
         },
         set: (dmgOverride: string) => {
           foundry.utils.logCompatibilityWarning(
             'The skillOverride and dmgOverride properties have been combined into a new property named override',
-            options,
+            options
           );
           action.override = dmgOverride;
         },
@@ -135,14 +111,14 @@ export function actionProperties(data: any) {
         get: () => {
           foundry.utils.logCompatibilityWarning(
             'The skillMod and dmgMod properties have been combined into a new property named modifier',
-            options,
+            options
           );
           return action.modifier;
         },
         set: (dmgMod: string) => {
           foundry.utils.logCompatibilityWarning(
             'The skillMod and dmgMod properties have been combined into a new property named modifier',
-            options,
+            options
           );
           action.modifier = dmgMod;
         },

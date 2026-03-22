@@ -7,11 +7,7 @@
           <ol class='formula-list'>
             {{#each formulaParts}}
               {{#if die}}
-                <li
-                  class='die'
-                  style='background-image: url({{img}});'
-                  data-tooltip='{{hint}}'
-                >
+                <li class='die' style='background-image: url({{img}});' data-tooltip='{{hint}}'>
                   <label class='{{class}}'>{{this.result}}</label>
                 </li>
               {{else}}

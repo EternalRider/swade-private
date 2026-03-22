@@ -24,10 +24,7 @@ export class ProseMirrorTableResultDropFillerPlugin extends ProseMirror.ProseMir
     };
     if (!data.type) return;
     fromUuid(data.uuid).then((doc) => {
-      if (
-        doc instanceof TableResult &&
-        doc.type === CONST.TABLE_RESULT_TYPES.TEXT
-      ) {
+      if (doc instanceof TableResult && doc.type === CONST.TABLE_RESULT_TYPES.TEXT) {
         this.#handleFill(view, doc, pos);
       } else {
         this.#handleCreateContentLink(view, data, pos);

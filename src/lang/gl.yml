@@ -52,7 +52,7 @@ SWADE:
   WildDie: Dado salvaxe
   Mod:
     Value: Valor
-    Ignore: "¿Ignorar?"
+    Ignore: '¿Ignorar?'
     Custom:
       Add: Engadir modificador personalizado
     Support: Apoio
@@ -130,8 +130,8 @@ SWADE:
   MinStr: For. Mín.
   Ok: Correcto
   MajHind: Atranco maior
-  Major: "(Maior)"
-  Minor: "(Menor)"
+  Major: '(Maior)'
+  Minor: '(Menor)'
   Edges: Vantaxes
   ArcBack: Trasfondo Arcano
   Conv: Convencemento
@@ -384,8 +384,8 @@ SWADE:
   CardSuit: Pao
   IsJoker: É o Joker
   OpenACEditor: Abrir en Editor de Mazos de Acción
-  "Yes": Si
-  "No": Non
+  'Yes': Si
+  'No': Non
   OpSkill: Habilidade de Manexo
   RerollWithBenny: Repetir con Beni
   FreeReroll: Repetir de balde
@@ -407,7 +407,7 @@ SWADE:
   DiceConf: Configuración dos Dados
   DiceConfDesc: Configura os axustes da integración SWADE / Dice So Nice
   DiceConfLabel: Abrir Configuración de Dados
-  DSNNone: "- Nada -"
+  DSNNone: '- Nada -'
   Reload: Recarga
   Refresh: Recarga esta tarxeta
   Ammo: Munición
@@ -484,9 +484,9 @@ SWADE:
   Modifiers: Modificadores
   Benny3DFrontBumpDesc: Bump map frontal do beni
   Duplicates: Atopáronse duplicados
-  NoActionDeckFound: "Non se atopou un Mazo de Acción: creando un"
-  NoActionDeckDiscardPileFound: "Non se atopou Descarte do Mazo de Acción: creando
-    un"
+  NoActionDeckFound: 'Non se atopou un Mazo de Acción: creando un'
+  NoActionDeckDiscardPileFound: 'Non se atopou Descarte do Mazo de Acción: creando
+    un'
   MAPenalty.Label: Penalización de acción múltiple
   ApplyEncumbrance: Aplicar penalizadores por Carga
   CannotAddAncestryToAncestry: Non podes engadir unha raza/arquetipo a unha raza/arquetipo!
@@ -637,7 +637,7 @@ SWADE:
       RollSpirit: Tirada de Espíritu
       Title: Quitar el Aturdido de {name}
       UnshakeModifier: Modificador para quitar el aturdimiento
-      Question: "¿Qué quieres hacer?"
+      Question: '¿Qué quieres hacer?'
       Success: Ya no estás aturdido
     Stunned:
       Title: Tirada de vigor para eliminar el Conmocionado
@@ -649,7 +649,7 @@ SWADE:
       Fail: Has muerto
       Success: Aguanta, por ahora.
       Raise: Se ha estabilizado
-  DeleteEmbeddedActionPrompt: "¿Estás seguro de que quieres eliminar la acción {action}?"
+  DeleteEmbeddedActionPrompt: '¿Estás seguro de que quieres eliminar la acción {action}?'
   ItemEquipStatus:
     MainHand: Mano principal
     Label: Localización
@@ -683,7 +683,7 @@ SWADE:
         clientes conectados. Por favor, confirmalo.
     Toggle: interrumpir el uso del Compendio TOC
     Header: Contenido
-  CustomWildDie: "- Dado salvaje personalizado -"
+  CustomWildDie: '- Dado salvaje personalizado -'
   BenniesSpendGM: Gasta un beni del DJ
   DocumentTweaks: Ajustes
   TargetVulnerable: El objetivo es vulnerable
@@ -692,7 +692,7 @@ SWADE:
   Source: Fuente
   Properties: Propiedades
   AddAction: Añadir acción
-  DeleteEmbeddedPowerPrompt: "¿Estás seguro de que quieres eliminar el poder {power}?"
+  DeleteEmbeddedPowerPrompt: '¿Estás seguro de que quieres eliminar el poder {power}?'
   TrademarkWeapon:
     Regular: Regular
     Improved: Mejorada
@@ -714,7 +714,7 @@ SWADE:
     WildSides: Paso do dado de riqueza
     Modifier: Modificador ao dado de riqueza
   MAPenalty:
-    None: "No"
+    None: 'No'
     Label: Penalización de acción múltiple
   ActiveEffects:
     ResetDuration: Restablecer la duración

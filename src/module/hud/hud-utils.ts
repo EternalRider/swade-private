@@ -4,7 +4,7 @@
  * @param {number} wait - The wait time in milliseconds.
  * @returns {Function} Debounced function.
  */
-export function debounce(func: Function, wait: number) {
+export function debounce(func: (...args: unknown[]) => unknown, wait: number) {
   let timeout: NodeJS.Timeout;
   return function executedFunction(...args: any[]) {
     const later = () => {
@@ -26,8 +26,7 @@ export function isElementVisible(element: HTMLElement): boolean {
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
-    rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -56,12 +55,7 @@ export function getElementCenter(element: HTMLElement): {
  * @param {number} y2 - Y coordinate of the second point.
  * @returns {number} The distance between the two points.
  */
-export function getDistance(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-): number {
+export function getDistance(x1: number, y1: number, x2: number, y2: number): number {
   return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 }
 
@@ -70,7 +64,7 @@ export function getDistance(
  * @param {any} hudInstance - The HUD instance to render
  * @param {number} delay - Delay in milliseconds (default: 50)
  */
-export function debounceRender(hudInstance: any, delay: number = 20): void {
+export function debounceRender(hudInstance: any, delay = 20): void {
   if (hudInstance._renderDebounced) {
     hudInstance._renderDebounced();
   } else if (hudInstance.render) {

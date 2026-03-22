@@ -2,28 +2,23 @@ import { DeepPartial } from 'fvtt-types/utils';
 import { constants } from '../constants';
 import { getDieSidesRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
-import { 
-  AdditionalStats,
-  Attribute,
-  DieSidesOption,
-  SwadeApplicationTab
-} from '../../globals';
+import { AdditionalStats, Attribute, DieSidesOption, SwadeApplicationTab } from '../../globals';
 import AttributeManager from '../apps/AttributeManager';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 
 export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderContext> {
-  #activeArcane: string = 'All';
-  
+  #activeArcane = 'All';
+
   static override DEFAULT_OPTIONS = {
     classes: ['swade-application', 'npc'],
     position: {
       width: 660,
-      height: 600
+      height: 600,
     },
     window: {
-      resizable: true
+      resizable: true,
     },
     actions: {
       createGear: SwadeNPCSheet.#createGear,
@@ -39,20 +34,18 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       toggleConviction: SwadeNPCSheet.#toggleConviction,
       toggleStatusEffect: SwadeNPCSheet._toggleStatusEffect,
       useConsumable: SwadeNPCSheet.#useConsumable,
-    }
+    },
   };
 
   static override PARTS = {
     sheet: {
       template: 'systems/swade/templates/actors/npc-sheet.hbs',
       scrollable: ['.tab.sheet-body'],
-      templates: [
-        'templates/generic/tab-navigation.hbs'
-      ]
+      templates: ['templates/generic/tab-navigation.hbs'],
     },
     limited: {
-      template: 'systems/swade/templates/actors/limited-sheet.hbs'
-    }
+      template: 'systems/swade/templates/actors/limited-sheet.hbs',
+    },
   };
 
   static override TABS: Record<string, Partial<SwadeApplicationTab>> = {
@@ -61,27 +54,27 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       group: 'primary',
       label: 'SWADE.Summary',
       cssClass: 'item',
-      tabCssClass: 'sheet-body'
+      tabCssClass: 'sheet-body',
     },
     powers: {
       id: 'powers',
       group: 'primary',
       label: 'SWADE.Pow',
       cssClass: 'item',
-      tabCssClass: 'sheet-body'
-    }
-  }
+      tabCssClass: 'sheet-body',
+    },
+  };
 
   override tabGroups = {
-    primary: 'summary'
-  }
-  
+    primary: 'summary',
+  };
+
   protected override _configureRenderOptions(options): void {
     super._configureRenderOptions(options);
     if (this.document.limited) {
       options.parts = ['limited'];
     } else {
-      options.parts.findSplice(i => i === 'limited');
+      options.parts.findSplice((i) => i === 'limited');
     }
   }
 
@@ -98,34 +91,32 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     });
 
     //Toggle Equipment Card & Power Card collapsible
-    this.element.querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name').forEach((el) =>
-      el.addEventListener('click', (ev) => {
-        const card = ev.currentTarget.closest('.gear-card,.power-card');
-        const content = card.querySelector('.card-content');
-        content.classList.toggle('collapsed');
-      }),
-    );
+    this.element
+      .querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name')
+      .forEach((el) =>
+        el.addEventListener('click', (ev) => {
+          const card = ev.currentTarget.closest('.gear-card,.power-card');
+          const content = card.querySelector('.card-content');
+          content.classList.toggle('collapsed');
+        })
+      );
 
     // TODO: Could just make these normal tooltips, though they'd not be instant
-    this.element
-      .querySelector('.attribute.size input')
-      ?.addEventListener('mouseenter', (event) => {
-        game.tooltip.deactivate();
-        game.tooltip.activate(event.target as HTMLElement, {
-          html: this.actor.system.getSizeTooltip(),
-          cssClass: 'themed theme-dark',
-        });
+    this.element.querySelector('.attribute.size input')?.addEventListener('mouseenter', (event) => {
+      game.tooltip.deactivate();
+      game.tooltip.activate(event.target as HTMLElement, {
+        html: this.actor.system.getSizeTooltip(),
+        cssClass: 'themed theme-dark',
       });
+    });
 
-    this.element
-      .querySelector('.attribute.pace input')
-      ?.addEventListener('mouseenter', (event) => {
-        game.tooltip.deactivate();
-        game.tooltip.activate(event.target as HTMLElement, {
-          html: this.actor.system.getPaceTooltip(),
-          cssClass: 'themed theme-dark',
-        });
+    this.element.querySelector('.attribute.pace input')?.addEventListener('mouseenter', (event) => {
+      game.tooltip.deactivate();
+      game.tooltip.activate(event.target as HTMLElement, {
+        html: this.actor.system.getPaceTooltip(),
+        cssClass: 'themed theme-dark',
       });
+    });
     this._filterPowers();
   }
 
@@ -138,7 +129,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   override async _prepareContext(options): Promise<NpcSheetRenderContext> {
-    if ((this.tabGroups.primary === 'powers') && !this.actor.hasPowers && !this.actor.hasArcaneBackground) {
+    if (this.tabGroups.primary === 'powers' && !this.actor.hasPowers && !this.actor.hasArcaneBackground) {
       this.tabGroups.primary = 'summary';
     }
     const context = await super._prepareContext(options);
@@ -148,43 +139,37 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         relativeTo: this.actor,
         rollData: this.actor.getRollData(),
         secrets: this.options.editable && this.document.isOwner,
-      },
+      }
     );
     const hiddenActionOverride = this.actor.getFlag('swade', 'hiddenActionOverride');
     const itemTypes = {};
     for (const item of context.items) {
-      const {system, type} = item;
+      const { system, type } = item;
       itemTypes[type] ??= [];
-      if (
-        !(system instanceof ActionData) ||
-        !item.system.hidden ||
-        hiddenActionOverride
-      ) {
-        const itemEnrichmentOptions: Partial<TextEditor.EnrichmentOptions> = {
+      if (!(system instanceof ActionData) || !item.system.hidden || hiddenActionOverride) {
+        const itemEnrichmentOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions> = {
           relativeTo: item,
           rollData: item.getRollData(),
           secrets: this.document.isOwner,
         };
-        item.enrichedDescription =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            item.system.description,
-            itemEnrichmentOptions,
-          );
-        item.enrichedNotes =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            item.system.notes,
-            itemEnrichmentOptions,
-          );
+        item.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.description,
+          itemEnrichmentOptions
+        );
+        item.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          item.system.notes,
+          itemEnrichmentOptions
+        );
         itemTypes[type].push(item);
       }
     }
-    const arcanesSet = new Set((itemTypes.power ?? []).map(p => p.system.arcane));
+    const arcanesSet = new Set((itemTypes.power ?? []).map((p) => p.system.arcane));
     const additionalStats = this.#getAdditionalStats();
     return {
       ...context,
       additionalStats: additionalStats,
       allApplicableEffects: Array.from(this.actor.allApplicableEffects()),
-      arcanes: Array.from(arcanesSet).filter(a => a),
+      arcanes: Array.from(arcanesSet).filter((a) => a),
       armorTooltip: this.actor.getArmorTooltip(),
       category: this.actor.system.category,
       enrichedBiography,
@@ -198,7 +183,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         currencyName: game.settings.get('swade', 'currencyName'),
         npcsUseCurrency: game.settings.get('swade', 'npcsUseCurrency'),
       },
-      sortedSkills: this.actor.itemTypes.skill.toSorted((a,b) => a.name.localeCompare(b.name)),
+      sortedSkills: this.actor.itemTypes.skill.toSorted((a, b) => a.name.localeCompare(b.name)),
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       wealthDieTypes: getDieSidesRange(4, 12),
@@ -221,7 +206,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         type: 'Attribute',
         uuid: this.actor.uuid,
         attribute: btn?.dataset.attribute as Attribute,
-      }),
+      })
     );
   }
 
@@ -237,9 +222,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   #getAdditionalStats(): AdditionalStats {
-    const stats = structuredClone<AdditionalStats>(
-      this.actor.system.additionalStats,
-    );
+    const stats = structuredClone<AdditionalStats>(this.actor.system.additionalStats);
     const options = game.settings.get('swade', 'settingFields').actor;
     for (const [key, attr] of Object.entries(stats)) {
       if (!options[key] || !attr.dtype) {
@@ -248,9 +231,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       }
       if (attr.dtype === 'Selection') {
         const optionString = options[key]?.optionString ?? '';
-        attr.options = optionString
-          .split(';')
-          .reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
+        attr.options = optionString.split(';').reduce((a, v) => ({ ...a, [v.trim()]: v.trim() }), {});
       }
     }
     return stats;
@@ -301,17 +282,14 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     let propertyLabel;
     if (displayProperty === 'armor') {
       propertyPath = 'system.stats.toughness.armor';
-      propertyLabel = game.i18n.localize('SWADE.Armor')
+      propertyLabel = game.i18n.localize('SWADE.Armor');
     } else if (displayProperty === 'parry') {
       propertyPath = 'system.stats.parry.shield';
       propertyLabel = game.i18n.localize('SWADE.ShieldBonus');
     } else {
       return;
     }
-    const propertyValue = foundry.utils.getProperty(
-      this.actor,
-      propertyPath,
-    );
+    const propertyValue = foundry.utils.getProperty(this.actor, propertyPath);
     const label = propertyLabel;
     const template = `
     <form><div class="form-group">
@@ -332,10 +310,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
           default: true,
           callback: (_event, button: HTMLButtonElement) => {
             const newData = {};
-            newData[propertyPath] =
-              button.form!.querySelector<HTMLInputElement>(
-                'input[name="modifier"]',
-              )?.value;
+            newData[propertyPath] = button.form!.querySelector<HTMLInputElement>('input[name="modifier"]')?.value;
             this.actor.update(newData);
           },
         },
@@ -363,30 +338,30 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   static async #createGear(this: SwadeNPCSheet, _event: PointerEvent, _target: HTMLElement) {
     const choices = ['weapon', 'armor', 'shield', 'gear', 'consumable'];
     const templateData = {
-      types: Object.fromEntries(choices.map(i => [i, game.i18n.localize(CONFIG.Item.typeLabels[i])])),
+      types: Object.fromEntries(choices.map((i) => [i, game.i18n.localize(CONFIG.Item.typeLabels[i])])),
       hasTypes: true,
-      name: ''
+      name: '',
     };
     const dlg = await foundry.applications.handlebars.renderTemplate(
       'templates/sidebar/document-create.html',
       templateData
     );
-    const response = await foundry.applications.api.Dialog.input({
+    const response = (await foundry.applications.api.Dialog.input({
       window: {
         title: game.i18n.format('DOCUMENT.Create', {
-          type: game.i18n.localize('DOCUMENT.Item')
-        })
+          type: game.i18n.localize('DOCUMENT.Item'),
+        }),
       },
-      content: dlg
-    }) as {type: Item.SubType, name: string | undefined} | null;
+      content: dlg,
+    })) as { type: Item.SubType; name: string | undefined } | null;
     if (!response?.type) return;
     const itemData = {
       name: response.name || SwadeItem.defaultName({ type, parent: this.actor }),
-      type: response.type
+      type: response.type,
     };
     await CONFIG.Item.documentClass.create(itemData, {
       renderSheet: true,
-      parent: this.actor
+      parent: this.actor,
     });
   }
 
@@ -403,17 +378,13 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   #setupItemContextMenu(html: HTMLElement) {
-    const items: ContextMenu.Entry<HTMLElement>[] = [
+    const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
         name: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
         condition: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
-          return (
-            item?.type === 'weapon' &&
-            !!item.system.shots &&
-            game.settings.get('swade', 'ammoManagement')
-          );
+          return item?.type === 'weapon' && !!item.system.shots && game.settings.get('swade', 'ammoManagement');
         },
         callback: (i) => this.actor.items.get(i.dataset.itemId)?.reload(),
       },
@@ -442,25 +413,20 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
           const effectId = i.dataset.effectid;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(
-              this.actor.allApplicableEffects(),
-            );
-            allEffects
-              .find((ef) => ef.id === effectId)
-              ?.sheet?.render({ force: true });
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
+            allEffects.find((ef) => ef.id === effectId)?.sheet?.render({ force: true });
           }
         },
       },
       {
         name: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
-        condition: (i) =>
-          !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
+        condition: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
         callback: async (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const cloned = await item?.clone(
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
-            { save: true },
+            { save: true }
           );
           cloned?.sheet?.render({ force: true });
         },
@@ -473,21 +439,17 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();
           if (effectId) {
-            const allEffects: ActiveEffect[] = Array.from(
-              this.actor.allApplicableEffects(),
-            );
+            const allEffects: ActiveEffect[] = Array.from(this.actor.allApplicableEffects());
             allEffects.find((ef) => ef.id === effectId)?.deleteDialog();
           }
         },
       },
     ];
 
-    new foundry.applications.ux.ContextMenu.implementation(
-      html,
-      'li.item, li.effect',
-      items,
-      {jQuery: false, fixed: true},
-    );
+    new foundry.applications.ux.ContextMenu.implementation(html, 'li.item, li.effect', items, {
+      jQuery: false,
+      fixed: true,
+    });
   }
 }
 

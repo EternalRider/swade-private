@@ -6,9 +6,7 @@ import SwadeToken from '../canvas/SwadeToken';
  * @returns {SwadeActorHUD | null} The current HUD app instance, or null if not found.
  */
 export function getHudApp(): SwadeActorHUD | null {
-  return (
-    (foundry.applications.instances.get('swadehud') as SwadeActorHUD) || null
-  );
+  return (foundry.applications.instances.get('swadehud') as SwadeActorHUD) || null;
 }
 
 /**
@@ -66,7 +64,7 @@ export async function switchHudToToken(token: SwadeToken) {
 export async function handleSwadeHUDTokenControl(
   token: SwadeToken,
   controlled: boolean,
-  hudClass: typeof SwadeActorHUD,
+  hudClass: typeof SwadeActorHUD
 ) {
   // Only handle if it's a SWADE PC
   if (!isSwadePC(token)) {
@@ -125,9 +123,7 @@ export function toggleSwadeHUD(token: SwadeToken | null = null) {
   // If no controlled token, check for player's assigned actor's token
   if (!token && game.user?.character) {
     const assignedActor = game.user.character;
-    token = canvas.tokens?.placeables.find(
-      (t: any) => t.actor?.id === assignedActor.id && isSwadePC(t),
-    );
+    token = canvas.tokens?.placeables.find((t: any) => t.actor?.id === assignedActor.id && isSwadePC(t));
   }
 
   if (!token) return;

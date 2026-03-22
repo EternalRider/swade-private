@@ -1,3 +1,5 @@
+@use '../variables';
+
 .setting-config {
   .sheet-body {
     overflow-x: auto;
@@ -7,9 +9,9 @@
   .form-group {
     --form-element-width: 270px;
     display: grid;
-    grid-template-areas: 
-      "label fields"
-      "hint hint";
+    grid-template-areas:
+      'label fields'
+      'hint hint';
     label {
       grid-area: label;
     }
@@ -40,7 +42,7 @@
     place-items: center;
     column-gap: 10px;
     line-height: 24px;
-    padding: $medium-spacing 0;
+    padding: variables.$medium-spacing 0;
     border-bottom: 1px solid #aaa;
     input,
     select {
@@ -84,6 +86,6 @@
   }
 
   footer {
-    padding: $medium-spacing;
+    padding: variables.$medium-spacing;
   }
 }
