@@ -651,7 +651,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       const adjustment = button.getAttribute('data-adjust') as string;
       const item = this.actor.items.get(itemId)!;
       const key = 'system.powerPoints.value';
-      let newPP = foundry.utils.getProperty(item, key);
+      let newPP = foundry.utils.getProperty(item, key) as number;
       if (adjustment === 'plus') {
         newPP += parseInt(arcaneDevicePPToAdjust, 10);
       } else if (adjustment === 'minus') {

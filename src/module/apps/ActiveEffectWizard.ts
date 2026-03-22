@@ -82,11 +82,11 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     if (target.classList.contains('value')) {
       this.#changes[Number(index)].value = target.value;
     } else if (target.classList.contains('mode')) {
-      this.#changes[Number(index)].mode = Number(target.value);
+      this.#changes[Number(index)].mode = Number(target.value) as CONST.ACTIVE_EFFECT_MODES;
     } else if (target.classList.contains('target')) {
       this[target.name] = target.value;
     }
-    const formData = new foundry.applications.ux.FormDataExtende(this.form);
+    const formData = new foundry.applications.ux.FormDataExtended(this.form!);
     foundry.utils.mergeObject(this.#effect, formData.object);
     this.render();
   }
@@ -136,7 +136,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     this: ActiveEffectWizard,
     _event: SubmitEvent,
     _form: HTMLFormElement,
-    _formData: foundry.applications.ux.FormDataExtende
+    _formData: foundry.applications.ux.FormDataExtended
   ) {
     this.#prepareChanges();
     const data = foundry.utils.mergeObject(this.#effect, {
@@ -371,7 +371,8 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     let key = '';
     if (category === 'skill') {
       if (!target) {
-        return ui.notifications.warn('Please enter a skill name first!');
+        ui.notifications.warn('Please enter a skill name first!');
+        return;
       }
       label = `${target.capitalize()} ${currentTarget.innerText}`.trim();
       key = `@${category.capitalize()}{${target}}[system.${keyPart}]`;
