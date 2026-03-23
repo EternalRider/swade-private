@@ -6,8 +6,7 @@ import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
 
-import { DamageRoll } from '../../dice/DamageRoll';
-import { TraitRoll } from '../../dice/TraitRoll';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import ItemCardService from '../../models/ItemCardService';
 import { VehicleData } from '../actor/vehicle';
 
@@ -55,7 +54,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
-    const additionalActions: ItemActions = foundry.utils.getProperty(this._item, 'system.actions.additional') || {};
+    const additionalActions = foundry.utils.getProperty(this._item, 'system.actions.additional') || ({} as ItemActions);
     return Object.entries(additionalActions)
       .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
       .map(([k, v]) => {
@@ -99,9 +98,9 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     });
   }
 
-  protected override prepareDerivedData(this: ItemCardData) {
+  override prepareDerivedData(this: ItemCardData) {
     if (!this.#hookId) {
-      this.#hookId = Hooks.on('updateItem', async (item: SwadeItem) => {
+      this.#hookId = Hooks.on('updateItem', (item) => {
         if (item.uuid === this.uuid) this._refreshMessage();
       });
     }
@@ -120,7 +119,6 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     const actor = this._getActor(actionObj);
     if (!actor) return;
 
-    let roll: TraitRoll | DamageRoll | null = null;
     const additionalMods = this.#handler.gatherRollModifiers({
       item: this._item,
       html,
@@ -137,34 +135,30 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         break;
       case 'reload':
         await this._item.reload();
-        await this._refreshMessage();
         break;
       case 'consume':
         await this._item.consume();
-        await this._refreshMessage();
         break;
       case 'pp-adjust':
         await this.#handler.handlePowerPoints(this._item, actor, btn, html);
-        await this._refreshMessage();
         break;
       case 'damage':
-        roll = await this.#handler.handleDamageAction(this._item, actor, additionalMods);
+        await this.#handler.handleDamageAction(this._item, actor, additionalMods);
         break;
       case 'formula':
-        roll = await this.#handler.handleFormulaAction(this._item, actor, additionalMods, html);
+        await this.#handler.handleFormulaAction(this._item, actor, additionalMods, html);
         break;
       case 'arcane-device':
-        roll = await actor.makeArcaneDeviceSkillRoll(foundry.utils.getProperty(this._item, 'system.arcaneSkillDie'));
+        await actor.makeArcaneDeviceSkillRoll(
+          foundry.utils.getProperty(this._item, 'system.arcaneSkillDie') as TraitDie
+        );
         break;
       default:
         // No need to call the hook here, as handleAdditionalActions already calls the hook
         // This is so an external API can directly use handleAdditionalActions to use an action and still fire the hook
-        roll = await this.#handler.handleAdditionalAction(this._item, actor, actionObj, action, additionalMods);
+        await this.#handler.handleAdditionalAction(this._item, actor, actionObj, action, additionalMods);
         break;
     }
-
-    //Only refresh the card if there is a roll and the item isn't a power
-    if (roll && this._item.type !== 'power') await this._refreshMessage();
   }
 
   protected _getActor(action?: ItemAction): SwadeActor | null {
@@ -172,8 +166,8 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
     //If the item's parent is a vehicle swap in the operator
     if (actor?.system instanceof VehicleData) {
-      if (this._item.type === 'weapon') {
-        const gunner = actor.system.getCrewMemberForWeapon(this._item);
+      if (this._item?.type === 'weapon') {
+        const gunner = actor.system.getCrewMemberForWeapon(this._item!);
         actor = gunner ?? actor.system.operator ?? actor;
       } else {
         actor = actor.system.operator ?? actor;
@@ -210,28 +204,28 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   }
 
   protected _magazineTooltip(html: HTMLElement) {
+    if (!this._item) return;
     const magazine = html.querySelector<HTMLElement>('.swade.chat-card .magazine');
 
     magazine?.addEventListener('mouseenter', async () => {
+      let enriched: string;
       const loadedAmmo = this._item?.getFlag('swade', 'loadedAmmo');
+      if (loadedAmmo) {
+        enriched = await await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          `<h4>${loadedAmmo?.name}</h4>${loadedAmmo.system?.description ?? ''}`,
+          {
+            relativeTo: this._item!,
+            rollData: this._item!.getRollData(),
+            secrets: this._item!.isOwner,
+          }
+        );
+      } else {
+        enriched = game.i18n.localize('SWADE.Magazine.NoneLoaded');
+      }
 
-      const enriched = loadedAmmo
-        ? await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            `<h4>${loadedAmmo?.name}</h4>${loadedAmmo?.system!.description ?? ''}`,
-            {
-              relativeTo: this._item,
-              rollData: this._item?.getRollData() ?? {},
-              secrets: this._item?.isOwner,
-            }
-          )
-        : game.i18n.localize('SWADE.Magazine.NoneLoaded');
+      const html = foundry.utils.parseHTML('<span>' + enriched + '</span>');
 
-      const content = foundry.utils.parseHTML('<span>' + enriched + '</span>');
-
-      game.tooltip.activate(magazine, {
-        html: content as HTMLElement,
-        cssClass: 'themed theme-dark',
-      });
+      game.tooltip.activate(magazine, { html, cssClass: 'themed theme-dark' });
     });
   }
 
@@ -266,8 +260,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   }
 
   protected _getBaseMessageData(canDelete: boolean, canClose: boolean): ChatMessage.MessageData {
-    const isWhisper = !!this.parent.whisper.length;
-
+    const isWhisper = this.parent.whisper.length;
     // Construct message data
     const messageData: ChatMessage.MessageData = {
       canDelete,
