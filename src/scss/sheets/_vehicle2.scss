@@ -111,6 +111,7 @@
     }
   }
   [data-application-part='traits'] {
+    flex-direction: row;
     align-items: start;
     .mods {
       margin-bottom: 15px;
@@ -195,6 +196,7 @@
     }
   }
   [data-application-part='crew'] {
+    flex-direction: row;
     align-items: start;
     .crew-list {
       list-style: none;

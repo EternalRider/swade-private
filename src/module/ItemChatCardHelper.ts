@@ -13,6 +13,7 @@ import { Logger } from './Logger';
 import { getTrait } from './util';
 
 /**
+ * @deprecated
  * A helper class for Item chat card logic
  */
 export default class ItemChatCardHelper {

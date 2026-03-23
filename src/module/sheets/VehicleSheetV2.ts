@@ -154,7 +154,7 @@ class SwadeVehicleSheetV2 extends SwadeActorSheetV2<SwadeVehicleSheetV2.RenderCo
     return effects;
   }
 
-  protected _prepareMods(type: 'gear' | 'weapon') {
+  protected _prepareMods<T = 'gear' | 'weapon'>(type: T): SwadeItem<T>[] {
     const mods = this.actor.items.filter(
       (i) => i.type === type && i.system.isVehicular && i.system.equipStatus > constants.EQUIP_STATE.CARRIED
     );
