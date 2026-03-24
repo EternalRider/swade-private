@@ -1,0 +1,169 @@
+{{!-- Powers Panel Template --}}
+<div class="powers-panel">
+  <div class="swadehud-item-list">
+    {{#each groupedPowers as |powers arcane|}}
+      <div class="swadehud-arcane-group">
+        <header class="swadehud-section-header">
+          <span class="swadehud-section-name">{{arcane}}</span>
+          {{#if (eq arcane "General")}}
+            {{#with (lookup ../powerPoints "General") as |pp|}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    data-tooltip="{{localize 'SWADE.HUD.PowerPPTooltip' pp=pp.value ppmax=pp.max}}"
+                    data-stat-path="system.powerPoints.General.value"
+                    data-stat-min="0"
+                    data-stat-max="{{#if (gt pp.max 0)}}{{pp.max}}{{/if}}">
+                <i class="fa-solid fa-bolt-lightning"></i> {{pp.value}}/{{pp.max}}
+              </span>
+            {{else}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    data-tooltip="{{localize 'SWADE.HUD.PowerPPTooltip' pp='0' ppmax='0'}}"
+                    data-stat-path="system.powerPoints.General.value"
+                    data-stat-min="0">
+                <i class="fa-solid fa-bolt-lightning"></i> 0/0
+              </span>
+            {{/with}}
+          {{else}}
+            {{#with (lookup ../powerPoints arcane) as |pp|}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    data-tooltip="{{localize 'SWADE.HUD.PowerPPTooltip' pp=pp.value ppmax=pp.max}}"
+                    data-stat-path="system.powerPoints.{{arcane}}.value"
+                    data-stat-min="0"
+                    data-stat-max="{{#if (gt pp.max 0)}}{{pp.max}}{{/if}}">
+                <i class="fa-solid fa-bolt-lightning"></i> {{pp.value}}/{{pp.max}}
+              </span>
+            {{else}}
+              <span class="swadehud-pp-indicator swadehud-stat-clickable"
+                    data-tooltip="{{localize 'SWADE.HUD.PowerPPTooltip' pp='0' ppmax='0'}}"
+                    data-stat-path="system.powerPoints.{{arcane}}.value"
+                    data-stat-min="0">
+                <i class="fa-solid fa-bolt-lightning"></i> 0/0
+              </span>
+            {{/with}}
+          {{/if}}
+        </header>
+        {{#each powers as |item|}}
+        <div class="swadehud-item" data-item-id="{{item.id}}">
+          <div class="swadehud-item-header" data-toggle="expand">
+            <img class="swadehud-item-icon" src="{{item.img}}" alt="{{item.name}}" />
+            <span class="swadehud-item-name">{{item.name}}</span>
+          </div>
+          <div class="swadehud-item-content">
+            <div class="swadehud-action-buttons">
+              {{#if item.system.actions.trait}}
+                <button class="swadehud-action-trait" data-item-id="{{item.id}}" data-action="formula" data-tooltip="{{localize 'SWADE.RollName' name=item.system.actions.trait}}">
+                  {{#if item.system.actions.trait}}{{item.system.actions.trait}}{{#if item.system.actions.traitMod}}{{signedString item.system.actions.traitMod}}{{/if}}{{else}}{{localize 'SWADE.Roll'}}{{/if}}
+                </button>
+                {{!-- Debug: {{json item.system.actions}} --}}
+                {{!-- Alternative: {{item.system.actions.trait.name}} --}}
+                {{!-- Alternative: {{item.system.trait}} --}}
+              {{/if}}
+              {{#if item.system.damage}}
+                <button class="swadehud-damage" data-item-id="{{item.id}}" data-action="damage" data-tooltip="SWADE.RollDamage">
+                  {{item.system.damage}}{{#if item.system.actions.dmgMod}}{{signedString item.system.actions.dmgMod}}{{/if}}
+                </button>
+                {{!-- Debug: {{json item.system.actions}} --}}
+                {{!-- Alternative: {{item.system.damage}} --}}
+                {{!-- Alternative: {{item.system.dmgMod}} --}}
+              {{/if}}
+              {{#each item.system.actions.additional as |action actionId|}}
+                {{#if (eq action.type "trait")}}
+                  <button class="swadehud-action-trait" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.RollName' name=action.name}}">
+                    {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{action.name}}{{/if}}
+                  </button>
+                {{/if}}
+                {{#if (eq action.type "resist")}}
+                  <button class="swadehud-action-resist" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.ResistRollName' name=action.name}}">
+                    {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Resist'}}{{/if}}
+                  </button>
+                {{/if}}
+                {{#if (eq action.type "damage")}}
+                  <button class="swadehud-action-damage" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.RollDamageName' name=action.name}}">
+                    {{#if action.override}}{{action.override}}{{#if action.modifier}}{{signedString action.modifier}}{{/if}}{{else}}{{localize 'SWADE.Dmg'}}{{/if}}
+                  </button>
+                {{/if}}
+                {{#if (eq action.type "macro")}}
+                  <button class="swadehud-action-macro" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.HUD.RunMacroTooltip' name=action.name}}">
+                    {{action.name}}
+                  </button>
+                {{/if}}
+                {{#if (eq action.type "reload")}}
+                  <button class="swadehud-action-reload" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.HUD.ReloadTooltip' name=action.name}}">
+                    {{localize 'SWADE.Reload'}}
+                  </button>
+                {{/if}}
+                {{#if (eq action.type "consume")}}
+                  <button class="swadehud-action-consume" data-item-id="{{item.id}}" data-action="{{actionId}}" data-tooltip="{{localize 'SWADE.HUD.UseConsumableTooltip' name=action.name}}">
+                    {{localize 'SWADE.Consumable.Use'}}
+                  </button>
+                {{/if}}
+              {{/each}}
+              {{#if item.system.templates}}
+                {{#if item.system.templates.scone}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swscone" data-tooltip="SWADE.Templates.SmallCone.Place">
+                    {{localize 'SWADE.Templates.SmallCone.Short'}}
+                  </button>
+                {{/if}}
+                {{#if item.system.templates.cone}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="swcone" data-tooltip="SWADE.Templates.Cone.Place">
+                    {{localize 'SWADE.Templates.Cone.Short'}}
+                  </button>
+                {{/if}}
+                {{#if item.system.templates.stream}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="stream" data-tooltip="SWADE.Templates.Stream.Place">
+                    {{localize 'SWADE.Templates.Stream.Short'}}
+                  </button>
+                {{/if}}
+                {{#if item.system.templates.small}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="sbt" data-tooltip="SWADE.Templates.Small.Place">
+                    {{localize 'SWADE.Templates.Small.Short'}}
+                  </button>
+                {{/if}}
+                {{#if item.system.templates.medium}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="mbt" data-tooltip="SWADE.Templates.Medium.Place">
+                    {{localize 'SWADE.Templates.Medium.Short'}}
+                  </button>
+                {{/if}}
+                {{#if item.system.templates.large}}
+                  <button class="swadehud-action-template" data-item-id="{{item.id}}" data-action="template" data-template="lbt" data-tooltip="SWADE.Templates.Large.Place">
+                    {{localize 'SWADE.Templates.Large.Short'}}
+                  </button>
+                {{/if}}
+              {{/if}}
+              <button class="swadehud-chat" data-item-id="{{item.id}}" data-tooltip="SWADE.ShowInChat">
+                {{localize 'SWADE.ShowInChat'}}
+              </button>
+            </div>
+            {{#if item.effects}}
+              <div class="swadehud-effects-section">
+                <h4 class="effects-heading">
+                  <i class="fa-solid fa-plug"></i>
+                  {{localize 'SWADE.ApplicableEffects'}}
+                </h4>
+                <ul class="swadehud-effects-list">
+                  {{#each item.effects as |effect|}}
+                    <li class="swadehud-effect" data-effect-id="{{effect.id}}" data-item-id="{{item.id}}" draggable="true" data-tooltip="{{localize 'SWADE.HUD.AEDragToApplyName' name=effect.name}}">
+                      <i class="fa-solid fa-hand"></i> {{effect.name}}
+                    </li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{/if}}
+            {{!-- Debug: Check what effects properties are available --}}
+            {{!-- {{#if item.effects}}Powers have item.effects{{/if}} --}}
+            {{!-- {{#if item.system.effects}}Powers have item.system.effects{{/if}} --}}
+            {{!-- {{#if item.appliedEffects}}Powers have item.appliedEffects{{/if}} --}}
+            {{!-- Alternative: {{#each item.effects as |effect|}} --}}
+            {{!--   <div>Effect: {{effect.name}}</div> --}}
+            {{!-- {{/each}} --}}
+            {{#if item.enrichedDescription}}
+              <div class="swadehud-item-description">{{{item.enrichedDescription}}}</div>
+            {{else}}
+              <div class="swadehud-item-description swadehud-no-description">{{localize 'SWADE.NoDescription'}}</div>
+            {{/if}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
+</div>
