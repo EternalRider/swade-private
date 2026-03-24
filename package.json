@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "build:watch": "vite build --watch",
+    "build:watch": "vite serve",
     "build:packs": "node ./tools/build-packs.js",
     "build:ci": "node ./tools/build-packs.js && rollup build",
     "fvtt:launch": "fvtt --config fvttrc.yml launch",
