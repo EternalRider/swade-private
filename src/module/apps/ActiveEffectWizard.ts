@@ -411,7 +411,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   }
 
   static #onClickIcon(this: ActiveEffectWizard, _event: PointerEvent, _target: HTMLElement) {
-    new foundry.applications.apps.FilePicker.implementation({
+    new CONFIG.ux.FilePicker({
       current: this.#effect.img as string,
       type: 'image',
       callback: this.#onChangeIcon.bind(this),

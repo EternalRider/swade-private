@@ -45,7 +45,7 @@ export function SwadeBaseSheetMixin<
           (this.document.constructor as Actor.ImplementationClass | Item.ImplementationClass).getDefaultArtwork?.(
             this.document.toObject()
           ) ?? {};
-        const fp = new foundry.applications.apps.FilePicker({
+        const fp = new CONFIG.ux.FilePicker({
           current: this.document.img,
           type: 'image',
           redirectToRoot: img ? [img] : [],
