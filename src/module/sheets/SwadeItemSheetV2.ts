@@ -604,8 +604,8 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
   }
 
   protected override _getHeaderControls() {
-    if (!this.isEditable) return;
     const controls = super._getHeaderControls();
+    if (!this.isEditable) return controls;
     controls.unshift({
       label: 'SWADE.RefreshOnly',
       icon: 'fa-solid fa-arrows-rotate',
