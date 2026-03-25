@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added missing asset files for character sheet dark mode. (#1412)
 - Fixed CSS on Vehicle Sheet Trait and Crew tabs. (#1403) **by @florad92**
 - Fixed an issue that would cause weapons to not deduct shots/quantity properly when set to self-reload. (#1426) **by @florad92**
+- Currency on group actors now supports decimals. **by @ddbrown30**
 
 ## 5.2.2
 
