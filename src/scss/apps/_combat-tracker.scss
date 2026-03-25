@@ -31,7 +31,7 @@
       }
       .roll {
         --initiative-icon: url('/icons/svg/card-hand.svg');
-        --initiative-icon-hover: url('/systems/swade/assets/ui/card-hand-gradient.svg');
+        --initiative-icon-hover: url('/assets/ui/card-hand-gradient.svg');
         &:hover,
         &:focus-visible {
           color: var(--color-warm-2);
