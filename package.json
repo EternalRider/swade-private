@@ -16,10 +16,10 @@
   },
   "scripts": {
     "build": "vite build",
-    "build:watch": "vite serve",
+    "serve": "vite serve",
+    "fvtt:launch": "fvtt --config fvttrc.yml launch",
     "build:packs": "node ./tools/build-packs.js",
     "build:ci": "node ./tools/build-packs.js && rollup build",
-    "fvtt:launch": "fvtt --config fvttrc.yml launch",
     "link-project": "node ./tools/link-project.js",
     "update-manifest": "node ./tools/update-manifest.js",
     "update-wiki": "node ./tools/update-wiki.js",
