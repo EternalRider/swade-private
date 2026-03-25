@@ -6,6 +6,7 @@ import { constants } from '../constants';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { hotReloadActorSheet } from '../hmr';
 import { Logger } from '../Logger';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
@@ -372,3 +373,7 @@ declare namespace SwadeVehicleSheetV2 {
 }
 
 export default SwadeVehicleSheetV2;
+
+if (import.meta.hot) {
+  import.meta.hot.accept(hotReloadActorSheet('vehicle', 'SwadeVehicleSheetV2', true));
+}
