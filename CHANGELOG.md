@@ -22,6 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.4
+
+### Changed
+
+- Currency on group actors now supports decimals. (!966) **by @ddbrown30**
+
+### Fixed
+
+- Modifier AE should no longer be disabled when the containing equipment item gets un-equipped. (#1410) **by @florad92**
+- Non-editable sheets should render properly again. (#1428) **by @mhilbrunner**
+- FilePicker class gets referenced properly again. (#1428) **by @mhilbrunner**
+
 ## 5.2.3
 
 ### Fixed
@@ -29,7 +41,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added missing asset files for character sheet dark mode. (#1412)
 - Fixed CSS on Vehicle Sheet Trait and Crew tabs. (#1403) **by @florad92**
 - Fixed an issue that would cause weapons to not deduct shots/quantity properly when set to self-reload. (#1426) **by @florad92**
-- Currency on group actors now supports decimals. **by @ddbrown30**
 
 ## 5.2.2
 
