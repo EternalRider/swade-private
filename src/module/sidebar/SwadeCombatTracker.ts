@@ -179,7 +179,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
   protected override async _onRender(context, options) {
     await super._onRender(context, options);
 
-    new foundry.applications.ux.DragDrop({
+    new foundry.applications.ux.DragDrop.implementation({
       dragSelector: '.combatant',
       dropSelector: '.combatant-group, .combatant, .combat-tracker',
       permissions: {

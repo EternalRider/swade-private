@@ -52,12 +52,14 @@ class SwadePhysicalItemData<
     if (!!this.parent?.actor && foundry.utils.hasProperty(diff, 'system.equipStatus')) {
       //toggle all active effects when an item equip status changes
       const newState = foundry.utils.getProperty(diff, 'system.equipStatus') as EquipState;
-      const updates = this.parent.effects.map((ae) => {
-        return {
-          _id: ae.id,
-          disabled: newState < constants.EQUIP_STATE.OFF_HAND,
-        };
-      });
+      const updates = this.parent.effects
+        .filter((ae) => ae.type !== 'modifier')
+        .map((ae) => {
+          return {
+            _id: ae.id,
+            disabled: newState < constants.EQUIP_STATE.OFF_HAND,
+          };
+        });
       await this.parent.updateEmbeddedDocuments('ActiveEffect', updates);
     }
   }

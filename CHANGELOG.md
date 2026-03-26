@@ -22,6 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.4
+
+### Changed
+
+- Currency on group actors now supports decimals. (!966) **by @ddbrown30**
+
+### Fixed
+
+- Modifier AE should no longer be disabled when the containing equipment item gets un-equipped. (#1410) **by @florad92**
+- Non-editable sheets should render properly again. (#1428) **by @mhilbrunner**
+- FilePicker class gets referenced properly again. (#1428) **by @mhilbrunner**
+
 ## 5.2.3
 
 ### Fixed
