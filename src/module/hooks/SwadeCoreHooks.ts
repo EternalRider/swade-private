@@ -790,12 +790,10 @@ export default class SwadeCoreHooks {
     }
   }
 
-  static onHotReload({ packageType, packageId, content, path, extension }: Hooks.HotReloadData) {
-    //return the hook early if it's not a swade system change;
+  static onHotReload({ packageType, packageId, path }: Hooks.HotReloadData) {
+    //return the hook early if it's not a swade system change
     if (packageType !== 'system' && packageId !== 'swade') return;
-    //stop the hook on empty changes
-    if (!content) return false;
-    if (extension === 'js') location.reload();
+    console.debug(`%cHot reloaded ${path}`, 'color: limegreen; font-weight: bold;');
   }
 
   static onCreateProseMirrorEditor(uuid: string, plugins: Record<string, Plugin>, _options: unknown) {
