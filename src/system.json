@@ -139,7 +139,7 @@
   "flags": {
     "hotReload": {
       "extensions": ["hbs", "json"],
-      "paths": ["templates"]
+      "paths": ["templates", "lang"]
     }
   },
   "socket": true,
