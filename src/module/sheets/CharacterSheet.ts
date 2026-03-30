@@ -14,6 +14,7 @@ import { ChargeData } from '../data/fields/ChargesData';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
+import { hotReloadActorSheet } from '../hmr';
 import { Accordion } from '../style/Accordion';
 import * as util from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
@@ -607,8 +608,8 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     return { temporary, permanent, favorite };
   }
 
-  protected async _handleItemActions(ev: PointerEvent) {
-    const button = ev.currentTarget as HTMLButtonElement;
+  protected async _handleItemActions(event: PointerEvent) {
+    const button = event.currentTarget as HTMLButtonElement;
     const action = button.dataset.action!;
     const itemId = button.closest('.chat-card.item-card')?.dataset.itemId;
     const item = this.actor.items.get(itemId, { strict: true });
@@ -663,9 +664,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       const template = button.dataset.template!;
       SwadeMeasuredTemplate.fromPreset(template, item);
     } else {
+      const foo = 'bar';
       ItemChatCardHelper.handleAction(item, this.actor, action, {
         additionalMods,
-        event: ev,
+        event,
       });
     }
   }
@@ -1495,4 +1497,9 @@ interface CharacterSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   toughnessTooltip: string;
   useAttributeShorts: boolean;
   wealthDieTypes: DieSidesOption[];
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(hotReloadActorSheet('character', 'CharacterSheet', true));
+  import.meta.hot.accept(hotReloadActorSheet('npc', 'CharacterSheet', true));
 }

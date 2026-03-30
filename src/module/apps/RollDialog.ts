@@ -109,8 +109,9 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       document.addEventListener('keydown', this.#keydownListener);
     }
     this.element.querySelector('.new-modifier-value')?.addEventListener('input', (ev) => {
-      const addModButton = this.element.querySelector('.add-modifier');
-      if (addModButton) addModButton.disabled = !ev.target?.value?.length;
+      const target = ev.target as HTMLInputElement;
+      const addModButton = this.element.querySelector<HTMLButtonElement>('.add-modifier');
+      if (addModButton) addModButton.disabled = !target.value?.length;
     });
   }
 
@@ -118,7 +119,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const style = getComputedStyle(target);
     const html = this.element;
     html.querySelector('.fa-solid.fa-caret-right')?.classList.toggle('rotate');
-    const dropdown = html.querySelector('.dropdown');
+    const dropdown = html.querySelector<HTMLElement>('.dropdown');
     if (dropdown) {
       dropdown.style.width = style.width;
       dropdown.classList.toggle('collapsed');
@@ -210,7 +211,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static #onClose(this: RollDialog, _event: PointerEvent, _target: HTMLElement) {
-    return this.close();
+    this.close();
   }
 
   protected override _onClose(options) {
@@ -255,13 +256,13 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     finalizedRoll.setRollType(this.ctx.roll.rollType);
 
     // Convert the roll to a chat message and return it
-    const msg = await finalizedRoll.toMessage(
+    const msg = (await finalizedRoll.toMessage(
       {
         flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
       },
       { rollMode: this.rollMode }
-    );
+    )) as ChatMessage;
     // TODO: Remove type annotation after toMessage gets fixed upstream in types
     finalizedRoll.setMessageId(msg?.id as string);
 
@@ -302,7 +303,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     if (typeof mod.value === 'string' && mod.value.startsWith('@')) {
       const key = mod.value.split('@')[1];
       const rollData = this.#getRollData();
-      const value = rollData[key];
+      const value = rollData[key] as string;
       const match = value.match(/\[(\w+)\]/); //extract the roll flavor text
       if (value && match) mod.label = match[1];
     }
@@ -360,7 +361,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     const modifier = foundry.utils.getProperty(
       CONFIG.SWADE.rollModifiers,
       `${target.dataset.group}.modifiers.${target.dataset.modId}`
-    );
+    ) as RollModifier | undefined;
     if (modifier) {
       this.modifiers.push({
         label: modifier.label,

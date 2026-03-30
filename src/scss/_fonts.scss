@@ -2,11 +2,11 @@
   font-family: 'Anton';
   font-style: normal;
   font-weight: 400;
-  src: url('./fonts/Anton-Regular.ttf') format('truetype');
+  src: url('/fonts/Anton-Regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Roboto Slab';
-  src: url('./fonts/RobotoSlab-VariableFont_wght.ttf') format('truetype');
+  src: url('/fonts/RobotoSlab-VariableFont_wght.ttf') format('truetype');
   font-variation-settings: 'wght' 400;
 }

@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 foundryconfig.json
+fvttrc.yml
 .htmlhintrc
 .vscode/*
 !.vscode/extensions.json

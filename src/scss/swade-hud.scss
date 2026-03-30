@@ -4,7 +4,7 @@
 // You may add SCSS variables, mixins, or nesting as needed for future maintainability.
 
 :root {
-  --swadehud-paper-texture: url('assets/paperboard-texture.webp') left top repeat;
+  --swadehud-paper-texture: url('/assets/paperboard-texture.webp') left top repeat;
   --swadehud-accent: #972824;
   --swadehud-font-primary: 'Roboto Slab', 'Signika', serif;
   --swadehud-text: #000000;
@@ -37,7 +37,7 @@
 }
 
 .swadehud-popout .swadehud-note-header {
-  background-image: url('assets/skills_header.webp');
+  background-image: url('/assets/skills_header.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -46,7 +46,7 @@
 }
 
 .swadehud-popout .swadehud-note-main {
-  background-image: url('assets/skills_bg.webp');
+  background-image: url('/assets/skills_bg.webp');
   background-size: contain;
   background-position: center;
   background-repeat: repeat-y;
@@ -57,7 +57,7 @@
 }
 
 .swadehud-popout .swadehud-note-footer {
-  background-image: url('assets/skills_footer.webp');
+  background-image: url('/assets/skills_footer.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

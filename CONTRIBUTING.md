@@ -54,7 +54,7 @@ To link your foundry install with the build output follow these steps:
 Once you have linked the project to your foundry install you can start the build process in watch mode by running either
 
 ```
-npm run build:watch
+npm run serve
 ```
 
 or

@@ -5,6 +5,7 @@ import { constants } from '../constants';
 import { GroupMember } from '../data/actor/group';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
+import { hotReloadActorSheet } from '../hmr';
 import { mapRange } from '../util';
 import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 import { SwadeBaseSheetMixin } from './SwadeBaseSheetMixin';
@@ -307,4 +308,8 @@ interface RenderedMember {
 
 declare namespace GroupSheet {
   interface PartState extends SwadeBaseSheetMixin.PartState {}
+}
+
+if (import.meta.hot) {
+  import.meta.hot.accept(hotReloadActorSheet('group', 'GroupSheet'));
 }

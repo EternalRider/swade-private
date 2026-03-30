@@ -86,13 +86,6 @@ class HindranceData extends SwadeBaseItemData<HindranceData.Schema, HindranceDat
       'hindrance',
     ]);
   }
-
-  /** @inheritdoc */
-  static override migrateData(source: PotentialSource<HindranceData>) {
-    // TODO: Do we need this? Added way after the old action property names were there
-    migrations.renameActionProperties(source);
-    return super.migrateData(source);
-  }
 }
 
 export { HindranceData };
