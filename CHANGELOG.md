@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.5
+
+### Fixed
+
+- Fixed an issue that would cause the wildcard symbol to be rendered multiple times when switching the search method on the actor directory. (#1430) **by @florad92**
+
 ## 5.2.4
 
 ### Changed

@@ -216,14 +216,15 @@ export default class SwadeCoreHooks {
       wildcards.push(...npcWildcards);
     }
 
-    entries.forEach((element) => {
-      const actorID = element.dataset.entryId;
-      if (!actorID) return;
+    for (const entry of entries) {
+      if (entry?.querySelector('img.wildcard-icon')) continue;
+      const actorID = entry.dataset.entryId;
+      if (!actorID) continue;
       const isWildcard = !!wildcards.find((a) => a.id === actorID);
-      if (!isWildcard) return;
-      const thumbnail = element.querySelector<HTMLImageElement>('.thumbnail');
+      if (!isWildcard) continue;
+      const thumbnail = entry.querySelector<HTMLImageElement>('.thumbnail');
       thumbnail?.insertAdjacentHTML('afterend', '<img class="wildcard-icon">');
-    });
+    }
   }
 
   static onRenderSettings(_app: foundry.applications.sidebar.tabs.Settings, html: HTMLElement) {
