@@ -350,6 +350,9 @@ Hooks.once('init', () => {
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 
+  // Add Wild Die as configurable die type
+  CONFIG.Dice.fulfillment.dice.dw = { label: 'SWADE.WildDie', icon: '<i class="fa-solid fa-dice"></i>' };
+
   // Initialize SWADE HUD system
   game.swade.hud = {
     SwadeActorHUD,
