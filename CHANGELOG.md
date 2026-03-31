@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Fixed an issue that would cause the wildcard symbol to be rendered multiple times when switching the search method on the actor directory. (#1430) **by @florad92**
 - The Wild Die can now be configured in the Foundry Dice Config Menu. (#1431) **by @florad92**
+- Restored the ability to use delta values in the currency field of the character sheet. Simply use values like `-200` or `+5` to adjust the input on the fly. **Note** to use this feature you need to replace the entire value with the adjustment. Doing math directly like `200+5` will not work. **by @florad92**
 
 ### Removed
 
