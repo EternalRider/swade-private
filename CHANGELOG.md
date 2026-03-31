@@ -32,7 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Removed
 
-- Removed the SWADE HUD in favor of an upcoming Actor Sheet Refactor. HUD Will be redistributed as a standalone module at a future date.
+- Removed the SWADE HUD in favor of an upcoming Actor Sheet Refactor. HUD Will be redistributed as a standalone module at a future date. **by @florad92**
 
 ## 5.2.4
 
