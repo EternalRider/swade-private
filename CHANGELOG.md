@@ -29,6 +29,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed an issue that would cause the wildcard symbol to be rendered multiple times when switching the search method on the actor directory. (#1430) **by @florad92**
 - The Wild Die can now be configured in the Foundry Dice Config Menu. (#1431) **by @florad92**
 
+### Removed
+
+- Removed the SWADE HUD in favor of an upcoming Actor Sheet Refactor. HUD Will be redistributed as a standalone module at a future date.
+
 ## 5.2.4
 
 ### Changed
