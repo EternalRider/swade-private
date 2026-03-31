@@ -35,10 +35,10 @@
 
 body.theme-dark .swade-official,
 .swade-official.themed.theme-dark {
-  --header-background-image: url('./assets/header_bg_dark.webp');
-  --note-header-background-image: url('./assets/skills_header_dark.webp');
-  --note-main-background-image: url('./assets/skills_bg_dark.webp');
-  --note-footer-background-image: url('./assets/skills_footer_dark.webp');
+  --header-background-image: url('/assets/header_bg_dark.webp');
+  --note-header-background-image: url('/assets/skills_header_dark.webp');
+  --note-main-background-image: url('/assets/skills_bg_dark.webp');
+  --note-footer-background-image: url('/assets/skills_footer_dark.webp');
   --tab-box-shadow-color-1: #ffffff9e;
   --tab-box-shadow-color-2: #ffffff2b;
   --tab-box-shadow-color-3: #ffffff6b;
@@ -58,10 +58,10 @@ body.theme-dark .swade-official,
 
 body.theme-light .swade-official,
 .swade-official.themed.theme-light {
-  --header-background-image: url('./assets/header_bg.webp');
-  --note-header-background-image: url('./assets/skills_header.webp');
-  --note-main-background-image: url('./assets/skills_bg.webp');
-  --note-footer-background-image: url('./assets/skills_footer.webp');
+  --header-background-image: url('/assets/header_bg.webp');
+  --note-header-background-image: url('/assets/skills_header.webp');
+  --note-main-background-image: url('/assets/skills_bg.webp');
+  --note-footer-background-image: url('/assets/skills_footer.webp');
   --tab-box-shadow-color-1: #0000009e;
   --tab-box-shadow-color-2: #0000002b;
   --tab-box-shadow-color-3: #0000006b;
@@ -152,7 +152,7 @@ body.theme-light .swade-official,
   .branding {
     grid-row: 1;
     grid-column: 10/13;
-    background-image: url('assets/peg_swade_logo.webp');
+    background-image: url('/assets/peg_swade_logo.webp');
     background-size: contain;
     background-repeat: no-repeat;
     flex-direction: column;
@@ -168,7 +168,7 @@ body.theme-light .swade-official,
     .branding {
       grid-row: 1/4;
       grid-column: 10/13;
-      background-image: url('assets/peg_swade_logo.webp');
+      background-image: url('/assets/peg_swade_logo.webp');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: top;
@@ -609,14 +609,14 @@ body.theme-light .swade-official,
     text-align: center;
   }
   .wounds {
-    background-image: url('./assets/circle_wounds.webp');
+    background-image: url('/assets/circle_wounds.webp');
     @include vital;
     .values {
       padding-right: 10px;
     }
   }
   .fatigue {
-    background-image: url('./assets/circle_fatigue.webp');
+    background-image: url('/assets/circle_fatigue.webp');
     @include vital;
     .values {
       padding-right: 20px;
@@ -694,7 +694,7 @@ body.theme-light .swade-official,
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('./assets/sheet_armor.svg');
+    background-image: url('/assets/sheet_armor.svg');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -710,7 +710,7 @@ body.theme-light .swade-official,
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('./assets/sheet_parry.svg');
+    background-image: url('/assets/sheet_parry.svg');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

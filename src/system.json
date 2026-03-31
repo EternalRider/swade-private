@@ -31,7 +31,7 @@
     }
   ],
   "esmodules": ["swade.js"],
-  "styles": ["swade.css"],
+  "styles": ["styles/swade.css"],
   "packs": [
     {
       "name": "skills",
@@ -138,8 +138,8 @@
   ],
   "flags": {
     "hotReload": {
-      "extensions": ["js", "css", "html", "hbs", "json"],
-      "paths": ["system/templates", "lang/en.json", "swade.js", "swade.css"]
+      "extensions": ["hbs", "json"],
+      "paths": ["templates", "lang"]
     }
   },
   "socket": true,

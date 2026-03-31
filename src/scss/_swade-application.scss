@@ -7,7 +7,7 @@ body.theme-dark .swade-application,
   //Color definitions
   --swade-primary-color: var(--color-warm-2);
 
-  --swade-background: url('assets/paperboard-texture-dark.webp') repeat left top;
+  --swade-background: url('/assets/paperboard-texture-dark.webp') repeat left top;
   --color-scrollbar: var(--color-text-subtle);
 
   --color-high-contrast: white;
@@ -24,7 +24,7 @@ body.theme-light .swade-application,
   //Color definitions
   --swade-primary-color: rgb(151, 40, 36);
 
-  --swade-background: url('assets/paperboard-texture.webp') repeat left top;
+  --swade-background: url('/assets/paperboard-texture.webp') repeat left top;
   --color-fieldset-border: #aaa;
 
   --color-high-contrast: black;

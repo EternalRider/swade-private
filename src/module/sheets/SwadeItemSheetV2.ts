@@ -12,6 +12,7 @@ import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeActor from '../documents/actor/SwadeActor';
 import SwadeItem from '../documents/item/SwadeItem';
 import { ItemGrant } from '../documents/item/SwadeItem.interface';
+import { hotReloadItemSheet } from '../hmr';
 import { Logger } from '../Logger';
 import { Accordion } from '../style/Accordion';
 import { getDieSidesRange } from '../util';
@@ -1176,4 +1177,24 @@ interface CollapsibleStates {
   actions: Record<string, boolean>;
   powers: Record<string, boolean>;
   effects: Record<string, boolean>;
+}
+
+if (import.meta.hot) {
+  const types = [
+    'ability',
+    'action',
+    'ancestry',
+    'armor',
+    'consumable',
+    'edge',
+    'gear',
+    'hindrance',
+    'power',
+    'shield',
+    'skill',
+    'weapon',
+  ];
+  for (const type of types) {
+    import.meta.hot.accept(hotReloadItemSheet(type, 'SwadeItemSheetV2', true));
+  }
 }
