@@ -175,7 +175,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
             { background: oldBackground, color: oldColor },
             { background: newBackground, color: newColor },
           ];
-          oldBar?.animate(frames, { duration: 250, easing: 'ease-in-out' });
+          newBar?.animate(frames, { duration: 250, easing: 'ease-in-out' });
         }
         break;
       }
